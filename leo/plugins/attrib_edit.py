@@ -124,7 +124,7 @@ def onCreate (tag,key):
 
     attrib_edit_Controller(c)
 #@+node:tbrown.20091103080354.1400: ** class AttributeGetter
-class AttributeGetter(object):
+class AttributeGetter:
 
     implementations = []
 
@@ -166,12 +166,11 @@ class AttributeGetter(object):
         raise NotImplementedError
 #@+node:tbrown.20091103080354.1402: ** class AttributeGetterUA
 class AttributeGetterUA(AttributeGetter):
+    
+    # def __init__(self, c):
+        # super().__init__(c)
 
     #@+others
-    #@+node:tbrown.20091103080354.6240: *3* __init__
-    def __init__(self, c):
-
-        AttributeGetter.__init__(self, c)
     #@+node:tbrown.20091103080354.1409: *3* recSearch
     def recSearch(self, d, path, ans):
         """recursive search of tree of dicts for values whose
@@ -287,12 +286,11 @@ class AttributeGetterUA(AttributeGetter):
 AttributeGetter.register(AttributeGetterUA)
 #@+node:tbrown.20091103080354.1420: ** class AttributeGetterAt
 class AttributeGetterAt(AttributeGetter):
+    
+    # def __init__(self, c):
+        # super().__init__(c)
 
     #@+others
-    #@+node:tbrown.20091103080354.6238: *3* __init__
-    def __init__(self, c):
-
-        AttributeGetter.__init__(self, c)
     #@+node:tbrown.20091103080354.1422: *3* getAttribs
     def getAttribs(self, v):
         """Return a list of tuples describing editable uAs.
@@ -364,12 +362,9 @@ class AttributeGetterAt(AttributeGetter):
 AttributeGetter.register(AttributeGetterAt)
 #@+node:tbrown.20091103080354.1427: ** class AttributeGetterColon
 class AttributeGetterColon(AttributeGetter):
-
+    # def __init__(self, c):
+        # super().__init__(c)
     #@+others
-    #@+node:tbrown.20091103080354.6242: *3* __init__
-    def __init__(self, c):
-
-        AttributeGetter.__init__(self, c)
     #@+node:tbrown.20091103080354.1428: *3* getAttribs
     def getAttribs(self, v):
 
@@ -431,7 +426,7 @@ class ListDialog(QtWidgets.QDialog):
     def __init__(self, parent, title, text, entries):
 
         self.entries = entries
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
         vbox = QtWidgets.QVBoxLayout()
         sa = QtWidgets.QScrollArea()
         salo = QtWidgets.QVBoxLayout()
@@ -467,7 +462,7 @@ class ListDialog(QtWidgets.QDialog):
         self.accept()
     #@-others
 #@+node:tbrown.20091010211613.5257: ** class editWatcher
-class editWatcher(object):
+class editWatcher:
     """class to supply widget for editing attribute and handle
     its textChanged signal"""
 
@@ -522,7 +517,7 @@ class editWatcher(object):
     #X         a = a.setdefault(i, {})
     #X     a[path[-1]] = value
 #@+node:tbrown.20091009210724.10979: ** class attrib_edit_Controller
-class attrib_edit_Controller(object):
+class attrib_edit_Controller:
 
     '''A per-commander class that manages attribute editing.'''
 
@@ -541,7 +536,7 @@ class attrib_edit_Controller(object):
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
         # 'body' or 'tab' mode
-        # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
+        # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
         if self.guiMode == 'body':

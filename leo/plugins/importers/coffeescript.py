@@ -14,7 +14,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20160505101118.1: *3* coffee_i.__init__
     def __init__(self, importCommands, **kwargs):
         '''Ctor for CoffeeScriptScanner class.'''
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'coffeescript',
             state_class = CS_ScanState,
@@ -33,7 +33,6 @@ class CS_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         '''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -70,7 +69,6 @@ class CS_Importer(Importer):
                 add_key(d, comment[0], ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161119170345.1: *3* coffee_i.Overrides for i.gen_lines
     #@+node:ekr.20161118134555.2: *4* coffee_i.end_block
@@ -91,44 +89,29 @@ class CS_Importer(Importer):
     #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False and g.unitTesting
-        if trace:
-            g.trace(new_state)
-            g.printList(stack)
         assert len(stack) > 1 # Fail on entry.
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
-                if trace: g.trace('new_state < top_state', top_state)
                 assert len(stack) > 1, stack # <
                 stack.pop()
             elif top_state.level() == new_state.level():
-                if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
                 stack.pop()
                 break
             else:
                 # This happens often in valid coffescript programs.
-                if trace: g.trace('new_state > top_state', top_state)
                 break
         # Restore the guard entry if necessary.
         if len(stack) == 1:
-            if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
-        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161118134555.6: *4* coffee_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
         assert not new_state.in_context(), new_state
         line = lines[i]
         top = stack[-1]
-        if trace:
-            g.trace('line', repr(line))
-            g.trace('top_state', top.state)
-            g.trace('new_state', new_state)
-            g.printList(stack)
         # Adjust the stack.
         if new_state.indent > top.state.indent:
             pass
@@ -156,26 +139,21 @@ class CS_Importer(Importer):
         line = lines[i]
         for pattern in self.pattern_table:
             if pattern.match(line):
-                # g.trace('='*10, repr(line))
                 return True
         return False
 
     #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
-        if trace:
-            g.trace('='*60)
-            for p in parent.self_and_subtree():
-                print('***** %s' % p.h)
-                g.printList(self.get_lines(p))
-        # ===== Generic: use base Importer methods =====
+        #
+        # Generic: use base Importer methods...
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
-        # ===== Specific to coffeescript =====
         #
+        # Specific to coffeescript...
         self.move_trailing_lines(parent)
-        # ===== Generic: use base Importer methods =====
+        #
+        # Generic: use base Importer methods...
         self.unindent_all_nodes(parent)
         #
         # This sub-pass must follow unindent_all_nodes.
@@ -183,22 +161,16 @@ class CS_Importer(Importer):
         #
         # This probably should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
-        if trace:
-            g.trace('-'*60)
-            for p in parent.self_and_subtree():
-                print('***** %s' % p.h)
-                g.printList(self.get_lines(p))
     #@+node:ekr.20160505170558.1: *4* coffee_i.move_trailing_lines & helper (not ready)
     def move_trailing_lines(self, parent):
         '''Move trailing lines into the following node.'''
-        return ### Not ready yet, and maybe never.
+        return # Not ready yet, and maybe never.
         # pylint: disable=unreachable
         prev_lines = []
         last = None
         for p in parent.subtree():
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
-                # g.trace('moving lines from', last.h, 'to', p.h)
                 self.prepend_lines(p, prev_lines)
             prev_lines = trailing_lines
             last = p.copy()
@@ -233,11 +205,7 @@ class CS_Importer(Importer):
     #@+node:ekr.20160505180032.1: *4* coffee_i.undent_coffeescript_body
     def undent_coffeescript_body(self, s):
         '''Return the undented body of s.'''
-        trace = False and not g.unitTesting and self.root.h.endswith('1.coffee')
         lines = g.splitLines(s)
-        if trace:
-            g.trace('='*20)
-            self.print_lines(lines)
         # Undent all leading whitespace or comment lines.
         leading_lines = []
         for line in lines:
@@ -256,9 +224,6 @@ class CS_Importer(Importer):
                     leading_lines = leading_lines[i:]
                     break
         result = ''.join(leading_lines) + tail
-        if trace:
-            g.trace('-'*20)
-            self.print_lines(g.splitLines(result))
         return result
     #@-others
 #@+node:ekr.20161110045131.1: ** class CS_ScanState

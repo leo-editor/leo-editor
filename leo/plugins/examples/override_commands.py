@@ -18,9 +18,10 @@ def init():
     return ok
 #@+node:edream.110203113231.920: ** onCommand
 def onCommand(tag, keywords):
-    # g.trace(keywords)
+
     if keywords.get("label") == "equalsizedpanes":
         g.es("over-riding Equal Sized Panes")
         return "override" # Anything other than None overrides.
+    return None
 #@-others
 #@-leo

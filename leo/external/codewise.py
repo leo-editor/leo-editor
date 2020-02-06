@@ -91,26 +91,20 @@ This can be much slower if you have a huge database.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110310091639.14293: ** << imports >>
+import sys
+# pylint: disable=unidiomatic-typecheck
+isPython3 = sys.version_info >= (3, 0, 0)
 try:
     import builtins # Python 3
 except ImportError:
     import __builtin__ as builtins # Python 2.
 import os
 import sqlite3
-import sys
-import types
 from sqlite3 import ProgrammingError
-# A hack to get this module without actually importing it.
-
-def get_module():
-    pass
-
-g = sys.modules.get(get_module.__module__)
-assert g, 'no g'
-# print(g)
+import traceback
+# import types
 #@-<< imports >>
-# pylint: disable=unidiomatic-typecheck
-isPython3 = sys.version_info >= (3, 0, 0)
+consoleEncoding = None
 #@+<< define usage >>
 #@+node:ekr.20110310091639.14292: ** << define usage >>
 usage = """
@@ -210,15 +204,15 @@ def cmd_scintilla(args):
         f.close()
 #@+node:ekr.20110310091639.14286: *4* cmd_setup
 def cmd_setup(args):
+    
     ctagsfile = os.path.normpath(os.path.expanduser("~/.ctags"))
-    # assert not os.path.isfile(ctagsfile)
     if os.path.isfile(ctagsfile):
         print("Using template file: %s" % ctagsfile)
     else:
         print("Creating template: %s" % ctagsfile)
         open(ctagsfile, "w").write("--exclude=*.html\n--exclude=*.css\n")
     # No need for this: the docs say to run "init" after "setup"
-    # cmd_init(args)
+        # cmd_init(args)
 #@+node:ekr.20110310091639.14284: *4* cmd_tags
 def cmd_tags(args):
     cw = CodeWise()
@@ -227,19 +221,19 @@ def cmd_tags(args):
 #@+node:ekr.20110310093050.14291: *4* Most common functions... (codewise.py)
 #@+node:ekr.20110310093050.14296: *5* callers & _callerName (codewise)
 def callers(n=4, count=0, excludeCaller=True, files=False):
-    '''Return a list containing the callers of the function that called g.callerList.
+    '''Return a list containing the callers of the function that called callerList.
 
-    If the excludeCaller keyword is True (the default), g.callers is not on the list.
+    If the excludeCaller keyword is True (the default), callers is not on the list.
 
     If the files keyword argument is True, filenames are included in the list.
     '''
     # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
     # The jython stack often has less than 8 entries,
-    # so we must be careful to call g._callerName with smaller values of i first.
+    # so we must be careful to call _callerName with smaller values of i first.
     result = []
     i = 3 if excludeCaller else 2
     while 1:
-        s = g._callerName(i, files=files)
+        s = _callerName(i, files=files)
         if s:
             result.append(s)
         if not s or len(result) >= n: break
@@ -256,20 +250,13 @@ def _callerName(n=1, files=False):
         name = code1.co_name
         if name == '__init__':
             name = '__init__(%s,line %s)' % (
-                g.shortFileName(code1.co_filename), code1.co_firstlineno)
-        if files:
-            return '%s:%s' % (g.shortFilename(code1.co_filename), name)
-        else:
-            return name # The code name
+                shortFileName(code1.co_filename), code1.co_firstlineno)
+        return '%s:%s' % (shortFileName(code1.co_filename), name) if files else name
     except ValueError:
         return '' # The stack is not deep enough.
     except Exception:
-        g.es_exception()
+        es_exception()
         return '' # "<no caller name>"
-#@+node:ekr.20110310093050.14252: *5* choose (codewise)
-def choose(cond, a, b): # warning: evaluates all arguments
-    if cond: return a
-    else: return b
 #@+node:ekr.20110310093050.14253: *5* doKeywordArgs (codewise)
 def doKeywordArgs(keys, d=None):
     '''Return a result dict that is a copy of the keys dict
@@ -288,6 +275,39 @@ def doKeywordArgs(keys, d=None):
         else:
             result[key] = val
     return result
+#@+node:ekr.20180311191907.1: *5* error (codewise)
+def error(*args, **keys):
+    print(args, keys)
+#@+node:ekr.20180311192928.1: *5* es_exception (codewise)
+def es_exception(full=True, c=None, color="red"):
+    typ, val, tb = sys.exc_info()
+    # val is the second argument to the raise statement.
+    if full:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    for line in lines:
+        print(line)
+    fileName, n = getLastTracebackFileAndLineNumber()
+    return fileName, n
+#@+node:ekr.20180311193048.1: *5* getLastTracebackFileAndLineNumber (codewise)
+def getLastTracebackFileAndLineNumber():
+    typ, val, tb = sys.exc_info()
+    if typ == SyntaxError:
+        # IndentationError is a subclass of SyntaxError.
+        # Much easier in Python 2.6 and 3.x.
+        return val.filename, val.lineno
+    #
+    # Data is a list of tuples, one per stack entry.
+    # Tupls have the form (filename,lineNumber,functionName,text).
+    data = traceback.extract_tb(tb)
+    if data:
+        item = data[-1] # Get the item at the top of the stack.
+        filename, n, functionName, text = item
+        return filename, n
+    #
+    # Should never happen.
+    return '<string>', 0
 #@+node:ekr.20110310093050.14293: *5* pdb (codewise)
 def pdb(message=''):
     """Fall into pdb."""
@@ -299,35 +319,44 @@ def pdb(message=''):
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 def pr(*args, **keys): # (codewise!)
     '''Print all non-keyword args, and put them to the log pane.
-    The first, third, fifth, etc. arg translated by g.translateString.
+    The first, third, fifth, etc. arg translated by translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     # Compute the effective args.
     d = {'commas': False, 'newline': True, 'spaces': True}
-    d = g.doKeywordArgs(keys, d)
+    d = doKeywordArgs(keys, d)
     newline = d.get('newline')
     if getattr(sys.stdout, 'encoding', None):
         # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = sys.stdout.encoding
     else:
         encoding = 'utf-8'
-    s = g.translateArgs(args, d)
+    s = translateArgs(args, d)
         # Translates everything to unicode.
-    func = g.toUnicode if g.isPython3 else g.toEncodedString
+    func = toUnicode if isPython3 else toEncodedString
     s = func(s, encoding=encoding, reportErrors=False)
     if newline:
-        s += g.u('\n') if g.isPython3 else '\n'
+        s += u('\n') if isPython3 else '\n'
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
     sys.stdout.write(s)
         # Codewise: unit tests do not change sys.stdout.
+#@+node:ekr.20180311193230.1: *5* shortFileName (codewise)
+def shortFileName(fileName, n=None):
+    '''Return the base name of a path.'''
+    # pylint: disable=invalid-unary-operand-type
+    if not fileName:
+        return ''
+    if n is None or n < 1:
+        return os.path.basename(fileName)
+    return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
 def trace(*args, **keys):
     # Compute the effective args.
     d = {'align': 0, 'newline': True}
-    d = g.doKeywordArgs(keys, d)
+    d = doKeywordArgs(keys, d)
     newline = d.get('newline')
     align = d.get('align')
     if align is None: align = 0
@@ -346,14 +375,12 @@ def trace(*args, **keys):
         if align > 0: name = name + pad
         else: name = pad + name
     # Munge *args into s.
-    # print ('g.trace:args...')
-    # for z in args: print (g.isString(z),repr(z))
     result = [name]
     for arg in args:
-        if g.isString(arg):
+        if isString(arg):
             pass
-        elif g.isBytes(arg):
-            arg = g.toUnicode(arg)
+        elif isBytes(arg):
+            arg = toUnicode(arg)
         else:
             arg = repr(arg)
         if result:
@@ -362,23 +389,23 @@ def trace(*args, **keys):
             result.append(arg)
     s = ''.join(result)
     # 'print s,' is not valid syntax in Python 3.x.
-    g.pr(s, newline=newline)
+    pr(s, newline=newline)
 #@+node:ekr.20110310093050.14264: *5* translateArgs (codewise)
 def translateArgs(args, d):
     '''Return the concatenation of all args, with odd args translated.'''
-    if not hasattr(g, 'consoleEncoding'):
+    global consoleEncoding
+    if not consoleEncoding:
         e = sys.getdefaultencoding()
-        g.consoleEncoding = e if isValidEncoding(e) else 'utf-8'
-        # print 'translateArgs',g.consoleEncoding
+        consoleEncoding = e if isValidEncoding(e) else 'utf-8'
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:
         n += 1
-        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
+        # print('translateArgs: arg',arg,type(arg),isString(arg),'will trans',(n%2)==1)
         # First, convert to unicode.
-        if g.isString(arg):
-            arg = g.toUnicode(arg, g.consoleEncoding)
+        if isString(arg):
+            arg = toUnicode(arg, consoleEncoding)
         # Just do this for the stand-alone version.
-        if not g.isString(arg):
+        if not isString(arg):
             arg = repr(arg)
         if arg:
             if result and spaces: result.append(' ')
@@ -392,32 +419,19 @@ def translateArgs(args, d):
 
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
-    if g.isPython3:
-        return isinstance(s, bytes)
-    else:
-        return False
+    return isinstance(s, bytes)
 
 def isCallable(obj):
-    if g.isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
+    return hasattr(obj, '__call__')
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
-    # pylint: disable=no-member
-    if g.isPython3:
-        return type(s) == type('a') # NOQA
-    else:
-        return type(s) in types.StringTypes
+    return isinstance(s, str)
 
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
-    # pylint: disable=no-member
-    if g.isPython3:
-        return type(s) == type('a') # NOQA
-    else:
-        return type(s) == types.UnicodeType # NOQA
+    return isinstance(s, str)
+
 #@+node:ekr.20110310093050.14283: *5* isValidEncoding (codewise)
 def isValidEncoding(encoding):
     if not encoding:
@@ -435,7 +449,7 @@ def isValidEncoding(encoding):
 #@+node:ekr.20110310093050.14286: *5* toEncodedString (codewise)
 def toEncodedString(s, encoding='utf-8', reportErrors=False):
     '''Convert unicode string to an encoded string.'''
-    if not g.isUnicode(s):
+    if not isUnicode(s):
         return s
     if encoding is None:
         encoding = 'utf-8'
@@ -444,12 +458,12 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     except UnicodeError:
         s = s.encode(encoding, "replace")
         if reportErrors:
-            g.error("Error converting %s from unicode to %s encoding" % (s, encoding))
+            error("Error converting %s from unicode to %s encoding" % (s, encoding))
     return s
 #@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode(s, encoding='utf-8', reportErrors=False):
     '''Connvert a non-unicode string with the given encoding to unicode.'''
-    if g.isUnicode(s):
+    if isUnicode(s):
         return s
     if not encoding:
         encoding = 'utf-8'
@@ -458,16 +472,16 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
     except UnicodeError:
         s = s.decode(encoding, 'replace')
         if reportErrors:
-            g.error("Error converting %s from %s encoding to unicode" % (s, encoding))
+            error("Error converting %s from %s encoding to unicode" % (s, encoding))
     return s
 #@+node:ekr.20110310093050.14288: *5* u & ue (codewise)
-if isPython3: # g.not defined yet.
+if isPython3:
 
     def u(s):
         return s
 
     def ue(s, encoding):
-        return s if g.isUnicode(s) else str(s, encoding)
+        return s if isUnicode(s) else str(s, encoding)
 
 else:
 
@@ -478,7 +492,7 @@ else:
         return builtins.unicode(s, encoding)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
-    #g.trace()
+
     if len(sys.argv) < 2:
         print(usage)
         return
@@ -518,7 +532,7 @@ def run_ctags(paths):
 def test(self):
     pass
 #@+node:ekr.20110310091639.14256: ** class CodeWise
-class CodeWise(object):
+class CodeWise:
     #@+others
     #@+node:ekr.20110310091639.14257: *3* __init__(CodeWise)
     def __init__(self, dbpath=None):
@@ -562,7 +576,8 @@ class CodeWise(object):
             try:
                 return self.dbconn.cursor()
             except ProgrammingError:
-                g.es("No cursor for codewise DB, closed database?")
+                print("No cursor for codewise DB, closed database?")
+        return None
     #@+node:ekr.20110310091639.14262: *3* class_id
     def class_id(self, classname):
         """ return class id. May create new class """
@@ -729,7 +744,7 @@ class CodeWise(object):
                 self.add_source('tagdir', a)
     #@-others
 #@+node:ekr.20110310091639.14275: ** class ContextSniffer
-class ContextSniffer(object):
+class ContextSniffer:
     """ Class to analyze surrounding context and guess class
 
     For simple dynamic code completion engines

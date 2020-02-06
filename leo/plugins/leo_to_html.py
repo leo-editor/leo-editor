@@ -166,16 +166,11 @@ systems.
 #@+node:danr7.20060902215215.4: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
-import subprocess
-import webbrowser
-import tempfile
+import configparser as ConfigParser
 import os
-
+import subprocess
+import tempfile
+import webbrowser
 #@-<< imports >>
 
 __version__ = '2.3'
@@ -228,7 +223,7 @@ def createExportMenus (tag,keywords):
     # pylint: disable=undefined-variable
     # c *is* defined.
     c = keywords.get("c")
-    if c.config.getBool('leo_to_html_no_menus'):
+    if c.config.getBool('leo-to-html-no-menus'):
         return
     for item, cmd in (
         ('Show Node as HTML', 'show-html-node'),
@@ -241,7 +236,7 @@ def createExportMenus (tag,keywords):
             command = lambda c = c, cmd=cmd: c.k.simulateCommand(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
-class pluginController(object):
+class pluginController:
     """A per commander plugin controller to create and handle
     minibuffer commands that control the plugins functions.
     """
@@ -356,7 +351,7 @@ class pluginController(object):
         self.show_html_node(bullet='head')
     #@-others
 #@+node:bob.20080107154746: ** class Leo_to_HTML
-class Leo_to_HTML(object):
+class Leo_to_HTML:
 
     """
     This class provides all the functionality of the leo_to_html plugin.
@@ -483,6 +478,7 @@ class Leo_to_HTML(object):
         s = p.h
         if not self.flagIgnoreFiles or s[:len('@file')] != '@file':
             return True
+        return False
     #@+node:bob.20080107154746.9: *3* main
     def main(self, bullet=None, show=False, node=False):
         """Generate the html and write the files.
@@ -546,9 +542,10 @@ class Leo_to_HTML(object):
 
         def flag(s):
             ss = config(s)
-            if ss: return ss.lower()[0] in ('y', 't', '1')
+            if ss:
+                return ss.lower()[0] in ('y', 't', '1')
+            return None
 
-        #g.trace(g.app.loadDir,"..","plugins","leo_to_html.ini")
         fileName = abspath(g.app.loadDir,"..","plugins","leo_to_html.ini")
         configParser = ConfigParser.ConfigParser()
         configParser.read(fileName)
@@ -653,34 +650,24 @@ class Leo_to_HTML(object):
         Setting browser_command to a bad command will slow down browser launch.
 
         """
-
         tempdir = g.os_path_finalize_join(tempfile.gettempdir(),'leo_show')
-
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
-
         filename = g.sanitize_filename(self.myFileName)
         filepath = g.os_path_finalize_join(tempdir, filename + '.html')
-
         self.write(filepath, self.xhtml, basedir='', path='')
-
         url = "file://%s" % filepath
-
         msg = ''
         if self.browser_command:
-
             g.trace(self.browser_command)
-
             try:
                 subprocess.Popen([self.browser_command, url])
-                return True
+                return
             except Exception:
                 msg = 'can\'t open browser using \n    %s\n'%self.browser_command + \
                 'Using default browser instead.'
-
         if msg:
             self.announce_fail(msg)
-
         webbrowser.open(url)
     #@+node:bob.20080107171331: *3* writeall
     def writeall(self):
@@ -699,24 +686,17 @@ class Leo_to_HTML(object):
         self.path will be used.
 
         """
-
         if basedir is None:
             basedir = self.basedir
-
         if path is None:
             path = self.path
-
         filepath = abspath(basedir,path,name)
-
-        # g.trace('basedir',basedir,'path',path,'name',name)
-
         try:
             f = open(filepath, 'wb')
         except Exception:
             g.error('can not open: %s' % (filepath))
             g.es_exception(full=False,c=self.c)
             return False
-
         try:
             try:
                 f.write(data.encode('utf-8'))

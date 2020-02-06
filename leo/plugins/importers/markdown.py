@@ -12,9 +12,7 @@ class Markdown_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Markdown_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
-            importCommands,
+        super().__init__(importCommands,
             language = 'md',
             state_class = None,
             strict = False,
@@ -25,7 +23,6 @@ class Markdown_Importer(Importer):
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, s, parent):
         '''Node generator for markdown importer.'''
-        trace = False and g.unitTesting
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
@@ -37,7 +34,6 @@ class Markdown_Importer(Importer):
         for i, line in enumerate(lines):
             top = self.stack[-1]
             level, name = self.is_hash(line)
-            if trace: g.trace('%2s skip: %s %r' % (i+1, skip, line))
             if skip > 0:
                 skip -= 1
             elif not in_code and self.lookahead_underline(i, lines):
@@ -63,30 +59,35 @@ class Markdown_Importer(Importer):
         Return the parent at the indicated level, allocating
         place-holder nodes as necessary.
         '''
-        trace = False and g.unitTesting
-        trace_stack = False
         assert level >= 0
-        if trace: g.trace('=====', level, len(self.stack), h)
         while level < len(self.stack):
-            p = self.stack.pop()
-            if trace:
-                g.trace('POP', len(self.get_lines(p)), p.h)
-                if trace and trace_stack:
-                    self.print_list(self.get_lines(p))
+            self.stack.pop()
         top = self.stack[-1]
-        if trace: g.trace('TOP', top.h)
+        if 1: # Experimental fix for #877.
+            if level > len(self.stack):
+                print('')
+                g.trace('Unexpected markdown level for: %s' % h)
+                print('')
+            while level > len(self.stack):
+                child = self.create_child_node(
+                    parent = top,
+                    body = None,
+                    headline = 'INSERTED NODE'
+                )
+                self.stack.append(child)
+        assert level == len(self.stack), (level, len(self.stack))
         child = self.create_child_node(
             parent = top,
             body = None,
             headline = h, # Leave the headline alone
         )
         self.stack.append(child)
-        if trace and trace_stack: self.print_stack(self.stack)
+        assert self.stack
+        assert 0 <= level < len(self.stack), (level, len(self.stack))
         return self.stack[level]
     #@+node:ekr.20161202090722.1: *4* md_i.is_hash
-    # md_hash_pattern = re.compile(r'^(#+)\s*(\w+)(.*)\n')
     md_hash_pattern = re.compile(r'^(#+)\s*(.+)\s*\n')
-        # 2016/12/16: Allow any non-blank after the hashes.
+        # Allow any non-blank after the hashes.
 
     def is_hash(self, line):
         '''
@@ -100,10 +101,7 @@ class Markdown_Importer(Importer):
             name = m.group(2).strip()
             if name:
                 return level, name
-            else:
-                return None, None
-        else:
-            return None, None
+        return None, None
     #@+node:ekr.20161202085119.1: *4* md_i.is_underline
     md_pattern_table = (
         re.compile(r'^(=+)\n'),
@@ -127,8 +125,7 @@ class Markdown_Importer(Importer):
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
             return not ch0 and not line0.isspace() and ch1 and len(line1) >= 4
-        else:
-            return False
+        return False
     #@+node:ekr.20161125113240.1: *4* md_i.make_decls_node
     def make_decls_node(self, line):
         '''Make a decls node.'''

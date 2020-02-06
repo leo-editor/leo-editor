@@ -12,8 +12,7 @@ class Org_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Org_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'plain', # A reasonable @language
             state_class = None,
@@ -32,42 +31,37 @@ class Org_Importer(Importer):
         Return a cleaned up headline for p.
         Also parses org-mode tags.
         '''
-        trace = True and not g.unitTesting
         if p and self.tc:
             # Support for #578: org-mode tags.
             m = self.tag_pattern.search(s)
             if m:
                 i = m.start()
-                head = s[:i].strip()
+                # head = s[:i].strip()
                 tail = s[i+1:-1].strip()
                 tags = tail.split(':')
                 for tag in tags:
                     self.tc.add_tag(p, tag)
-                if trace:
-                    g.trace('head', head, 'tags:', tags)
         return s
 
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
-    org_pattern = re.compile(r'^(\*+)(.*)$')
+    org_pattern = re.compile(r'^(\*+)\s(.*)$')
+        # #1037: eat only one space.
 
     def gen_lines(self, s, parent):
         '''Node generator for org mode.'''
-        trace = False and not g.unitTesting
         self.inject_lines_ivar(parent)
         self.parents = [parent]
         for line in g.splitLines(s):
             m = self.org_pattern.match(line)
             if m:
                 # Cut back the stack, then allocate a new node.
-                if trace: g.trace(m.group(1), m.group(2))
                 level = len(m.group(1))
                 self.parents = self.parents[:level]
                 self.find_parent(
                     level = level,
-                    h = m.group(2).strip())
+                    h = m.group(2))
             else:
                 p = self.parents[-1]
-                if trace: g.trace(p.h, repr(line))
                 self.add_line(p, line)
     #@+node:ekr.20161123194732.2: *4* org_i.find_parent
     def find_parent(self, level, h):
@@ -76,7 +70,6 @@ class Org_Importer(Importer):
         place-holder nodes as necessary.
         '''
         assert level >= 0
-        # g.trace('=====', level, h)
         n = level - len(self.parents)
         while level >= len(self.parents):
             headline = h if n == 0  else 'placeholder'
@@ -89,6 +82,18 @@ class Org_Importer(Importer):
             )
             self.parents.append(child)
         return self.parents[level]
+    #@+node:ekr.20190210091845.1: *4* org_i.create_child_node
+    def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        child = parent.insertAsLastChild()
+        self.inject_lines_ivar(child)
+        if body:
+            self.add_line(child, body)
+        assert isinstance(headline, str), repr(headline)
+        child.h = headline
+            # #1037: do rstrip, not strip.
+            # #1087: do not strip at all!
+        return child
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
         '''

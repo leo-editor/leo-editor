@@ -36,7 +36,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         except IndexError:
-            self._my_widgets[0] ### Huh?
+            self._my_widgets[0] # Huh?
             self.cursor_line = 0
             self.insert_line_value()
             return True
@@ -77,7 +77,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
     #@+node:ekr.20170428084208.165: *3* MultiLineEditable._continue_editing
     def _continue_editing(self):
 
-        g.trace('(MultiLineEditable)')
+        # g.trace('(MultiLineEditable)')
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):
@@ -87,7 +87,6 @@ class MultiLineEditable(wgmultiline.MultiLine):
                 self.display()
                 continue_editing = self.edit_cursor_line_value()
                 active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-
     #@+node:ekr.20170506041638.1: *3* MultiLineEditable.Handlers
     #@+node:ekr.20170428084208.166: *4* MultiLineEditable.h_insert_next_line
     def h_insert_next_line(self, ch):

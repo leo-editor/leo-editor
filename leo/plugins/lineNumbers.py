@@ -61,17 +61,17 @@ def init():
         #@-<< override write methods >>
         #@+<< override read methods >>
         #@+node:ekr.20040419105219.2: ** << override read methods >>
-        readNormalLine = leoAtFile.AtFile.readNormalLine
+        # readNormalLine = leoAtFile.AtFile.readNormalLine
 
-        def skipLineNumberDirective(self, s, i):
+        # def skipLineNumberDirective(self, s, i):
 
-            if linere.search(s):
-                return  # Skipt the line.
-            else:
-                readNormalLine(self,s,i)
+            # if linere.search(s):
+                # return  # Skipt the line.
+            # else:
+                # readNormalLine(self,s,i)
 
-        g.funcToMethod(skipLineNumberDirective,
-            leoAtFile.AtFile,"readNormalLine")
+        # g.funcToMethod(skipLineNumberDirective,
+            # leoAtFile.AtFile,"readNormalLine")
         #@-<< override read methods >>
         g.plugin_signon(__name__)
     return ok

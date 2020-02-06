@@ -23,7 +23,7 @@ def onCreate(tag, keys):
     if c:
         pluginController(c)
 #@+node:ekr.20060621123339.6: ** class pluginController
-class pluginController(object):
+class pluginController:
     #@+others
     #@+node:ekr.20060621123339.7: *3* __init__ (pluginController, print_cp.py)
     def __init__(self, c):

@@ -1,8 +1,0 @@
-*.pyc
-*.*~
-*.egg-info
-.ropeproject/
-docs/build/
-build/
-dist/
-MANIFEST

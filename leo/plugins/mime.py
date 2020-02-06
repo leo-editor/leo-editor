@@ -95,7 +95,7 @@ def open_mimetype(tag, keywords, val=None):
     c = keywords.get('c')
     p = keywords.get('p')
     if not c or not p:
-        return
+        return None
 
     if p.h.startswith('@mime'):
         fname = p.h[6:]
@@ -111,7 +111,7 @@ def open_mimetype(tag, keywords, val=None):
             return True
 
         # user-specified command string, or sys.platform-determined string
-        mime_cmd = c.config.getString('mime_open_cmd') or _mime_open_cmd
+        mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
         if mime_cmd:
             if '%s' not in mime_cmd:
                 mime_cmd += ' %s'

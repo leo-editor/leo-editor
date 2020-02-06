@@ -66,17 +66,9 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
 import leo.core.leoGlobals as g
-
 import os
-# import string
-
-if g.isPython3:
-    import threading
-else:
-    import thread
-    import threading
-
 import subprocess
+import threading
 import time
 #@-<< imports >>
 #@+<< globals >>
@@ -143,9 +135,6 @@ def OnIconDoubleClick(tag,keywords):
     c=keywords.get('c')
     if not c or not c.exists: return
     p = c.p
-
-    # g.trace(c.shortFileName())
-
     h = p.h
     if g.match_word(h,0,"@run"):
         if RunNode or RunList:
@@ -157,13 +146,11 @@ def OnIconDoubleClick(tag,keywords):
 
             for p2 in p.self_and_subtree():
                 if g.match_word(p2.h,0,"@run"):
-                    # g.trace(p2.h)
-                    # 2009/10/30: don't use iter copy arg.
+                    # Don't use iter copy arg.
                     RunList.append(p2.copy())
 
             ExitCode = None
             OwnIdleHook = True
-            ### g.enableIdleTimeHook()
             #@-<< handle double click in @run icon >>
     elif g.match_word(h,0,"@in"):
         if RunNode:
@@ -186,12 +173,10 @@ def OnIdle(tag,keywords):
     global ExitCode,OwnIdleHook
 
     c=keywords.get('c')
-    if not c or not c.exists: return
-
-    if not OwnIdleHook: return
-
-    # g.trace(c.shortFileName())
-
+    if not c or not c.exists:
+        return
+    if not OwnIdleHook:
+        return
     if RunNode:
         o = UpdateText(OutThread)
         e = UpdateText(ErrThread,"red")
@@ -220,13 +205,8 @@ def OnQuit(tag,keywords=None):
 class readingThread(threading.Thread):
 
     File = None
-
-    if g.isPython3:
-        TextLock = threading.Lock()
-        TextLock.acquire()
-    else:
-        TextLock = thread.allocate_lock()
-
+    TextLock = threading.Lock()
+    TextLock.acquire()
     Text = ""
 
     #@+others
@@ -245,7 +225,7 @@ class readingThread(threading.Thread):
             if s != "\n":
                 self.TextLock.acquire()
                 try:
-                    self.Text = self.Text + g.ue(s,Encoding)
+                    self.Text = self.Text + g.toUnicode(s,Encoding)
                 except IOError as ioerr:
                     self.Text = self.Text +"\n"+ "[@run] ioerror :"+str(ioerr)
                 self.TextLock.release()
@@ -354,8 +334,7 @@ def OpenProcess(p):
     ErrThread = readingThread()
 
     # In,OutThread.File,ErrThread.File	= os.popen3(command,"t")
-    #### OutThread.File,In,ErrThread.File = os.popen3(command,"t")
-
+    # OutThread.File,In,ErrThread.File = os.popen3(command,"t")
     # PIPE = subprocess.PIPE
     proc = subprocess.Popen(command, shell=True)
         # bufsize=bufsize,

@@ -1,6 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20140806084727.30174: * @file livecode.py
-"""Show results of code in another pane as it's edited."""
+"""
+Show results of code in another pane as it's edited.
+
+livecode-show opens the livecode pane on c.p.
+
+Thereafter, pressing return in that body pane re-evaluates the code.
+
+The livecode pane shows the results of each line.
+"""
 
 # By TNB
 
@@ -15,14 +23,22 @@ except ImportError:
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init
+warning_given = False
+
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    if g.unitTesting or not asttools:
+    global warning_given
+    if g.unitTesting:
         return False
-    else:
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-        return True
+    if not asttools:
+        if not warning_given:
+            warning_given = True
+            g.es_print('livecode.py: can not import meta')
+            g.es_print('you can install meta with `pip install meta`')
+        return False
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:tbrown.20140806084727.30179: ** onCreate
 def onCreate(tag, keys):
 
@@ -38,7 +54,7 @@ def cmd_show(event):
         w = splitter.get_provided('_leo_livecode_show')
         splitter.add_adjacent(w, 'bodyFrame')
 #@+node:tbrown.20140806084727.30187: ** class LiveCodeDisplay
-class LiveCodeDisplay(object):
+class LiveCodeDisplay:
     """Manage a pane showing livecode"""
 
     CodeBlock = namedtuple('CodeBlock', 'code, result')
@@ -122,38 +138,30 @@ class LiveCodeDisplay(object):
         if not self.active:
             return
         self.status.setText("ACTIVE")
-
         source = c.p.b
         lines = source.split('\n')
-
         try:
             top_level = ast.parse(source)
         except SyntaxError:
             self.status.setText("ACTIVE - INCOMPLETE CODE")
             return
-
         if self.dump:
             self.dump = False
             print(ast.dump(top_level))
-
         block = []  # blocks (strings) of source code
         nodes = list(ast.iter_child_nodes(top_level))
         self.scope['p'] = c.p
         run_count = 0
-
         # break source up into blocks corresponding to top level nodes
         for n, node in enumerate(nodes):
             if n == len(nodes) - 1:
                 next_node = len(lines)
             else:
                 next_node = nodes[n+1].lineno
-            block.append("\n".join(lines[node.lineno-1:next_node-1]))
-
+            block.append("".join(lines[node.lineno-1:next_node-1]))
         result = []
         for n, node in enumerate(nodes):
-
             node_result = None
-
             if (n < len(self.codeblocks) and
                 self.codeblocks[n].code == block[n]
             ):
@@ -163,7 +171,6 @@ class LiveCodeDisplay(object):
                 run_count += 1
                 # drop all remaining stored results (maybe none)
                 del self.codeblocks[n:]
-
                 try:
                     if isinstance(node, ast.Expr):
                         # pylint: disable=eval-used
@@ -176,7 +183,6 @@ class LiveCodeDisplay(object):
                     self.status.setText("ACTIVE: fail at %s" %
                         block[n].split('\n')[0])
                     break
-
                 if isinstance(node, ast.Expr):
                     pass  # already handled above
                 elif isinstance(node, (ast.Assign, ast.AugAssign)):
@@ -194,23 +200,19 @@ class LiveCodeDisplay(object):
                         # pylint: disable=eval-used
                         node_result.append("%s = %r" %
                             (code.strip(), eval(code, self.scope)))
-
-                    node_result = '\n'.join(node_result)
-
+                    node_result = ''.join(node_result) # was '\n'.join
             assert node_result is None or isinstance(node_result, str)
-
-            if node_result is not None:
+            if node_result is None:
+                self.codeblocks.append(self.CodeBlock(block[n], None))
+            else:
                 self.codeblocks.append(self.CodeBlock(block[n], node_result))
                 result.append(node_result)
-            else:
-                self.codeblocks.append(self.CodeBlock(block[n], None))
-
-        self.text.setText('\n\n'.join(result))
+        self.text.setText('\n'.join(result)) ###was '\n\n.join
         if run_count:
             self.status.setText("ACTIVE: %d blocks" % run_count)
     #@-others
 #@+node:tbrown.20140806084727.30203: ** class LiveCodeDisplayProvider
-class LiveCodeDisplayProvider(object):
+class LiveCodeDisplayProvider:
     #@+others
     #@+node:tbrown.20140806084727.30204: *3* __init__
     def __init__(self, c):
@@ -229,6 +231,7 @@ class LiveCodeDisplayProvider(object):
             if not hasattr(c, '_livecode'):
                 c._livecode = LiveCodeDisplay(self.c)
             return c._livecode.w
+        return None
     #@-others
 #@-others
 #@@language python

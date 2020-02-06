@@ -27,13 +27,8 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 import leo.core.leoGlobals as g
 
 from xml.dom import minidom
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
+import io
+StringIO = io.StringIO
 
 try:
     import Ft
@@ -205,9 +200,6 @@ def addXSLTElement( c , element):
     '''adds some xslt to the text node'''
     w = c.frame.body.wrapper
     w.insert( 'insert', element )
-    ### w.event_generate( '<Key>' )
-    ### w.update_idletasks()
-
 #@+node:mork.20041025113021: ** getString (xsltWithNodes.py)
 def getString (c):
     '''
@@ -215,7 +207,8 @@ def getString (c):
     '''
     at = c.atFileCommands
     # EKR: 2017/04/10: needs testing.
-    at.writeOpenFile(c.p, nosentinels=True, toString=True)
+    at.toString = True
+    at.writeOpenFile(c.p, sentinels=False)
     return cleanString(at.stringOutput)
 #@+node:mork.20041025120706: ** doMinidomTest
 def doMinidomTest( c ):
@@ -318,23 +311,16 @@ r'''
 #@+node:ekr.20140906065955.18786: *3* table.leo
 #@@path /boboo/leo-4.2-final/plugins
 #@+node:ekr.20140906065955.18787: *4* @@nosent table.py
-
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-
+import io
+StringIO = io.StringIO
 import Tkinter as Tk
 import tktable as tktab
 import leo.core.leoGlobals as g
-
 import csv
 import weakref
 import Pmw
 
-class CSVVisualizer(object):
+class CSVVisualizer:
     arrays = []
     #@+others
     #@+node:ekr.20140906065955.18788: *5* init

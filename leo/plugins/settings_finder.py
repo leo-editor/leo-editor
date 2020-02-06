@@ -24,7 +24,7 @@ def onCreate (tag, key):
         sf.build_menu()
 
 #@+node:tbrown.20150818161651.1: ** class SettingsFinder
-class SettingsFinder(object):
+class SettingsFinder:
     """SettingsFinder - Let the user pick settings from a menu and then
     find the relevant @settings nodes and open them.
     """
@@ -83,7 +83,8 @@ class SettingsFinder(object):
             self.c.config.getOutlineData("settings-finder-menu"))
         aList = []
         self.tree_to_menulist(aList, finder_menu)
-        menu.createMenuFromConfigList("Edit settings", aList[0][1])
+        menu.createMenuFromConfigList("Edit Settings", aList[0][1])
+            # #1144: Case must match.
             # aList is [['@outline-data settings-finder-menu', <list of submenus>, None]]
             # so aList[0][1] is the list of submenus
         return aList
@@ -106,8 +107,6 @@ class SettingsFinder(object):
         :return: unl of leaf copy in myLeoSettings.leo
         :rtype: str
         """
-        trace = False and not g.unitTesting
-        if trace: g.es(unl)
         path, unl = unl.split('#', 1)
         # Undo the replacements made in p.getUNL.
         path = path.replace("file://", "")
@@ -126,7 +125,6 @@ class SettingsFinder(object):
             return '' # Fix 434.
         found, maxdepth, maxp = g.recursiveUNLFind(unl, c2)
 
-        if trace: g.trace('COPYING', unl)
         nd = settings.insertAsLastChild()
         dest = nd.get_UNL()
         self.copy_recursively(maxp, nd)
@@ -136,7 +134,6 @@ class SettingsFinder(object):
         self.c.config.settingsDict.update(settingsDict)
         my_settings_c.config.settingsDict.update(settingsDict)
 
-        if trace: g.trace('-->'.join([dest] + tail))
         return '-->'.join([dest] + tail)
     #@+node:tbrown.20150818161651.6: *3* sf.find_setting
     def find_setting(self, setting):
@@ -144,7 +141,7 @@ class SettingsFinder(object):
         key = g.app.config.canonicalizeSettingName(setting)
         value = self.c.config.settingsDict.get(key)
         which = None
-        while value and g.isString(value.val) and value.val.startswith('@'):
+        while value and isinstance(value.val, str) and value.val.startswith('@'):
             msg = ("The relevant setting, '@{specific}', is using the value of "
             "a more general setting, '{general}'.  Would you like to edit the "
             "more specific setting, '@{specific}', or the more general setting, "

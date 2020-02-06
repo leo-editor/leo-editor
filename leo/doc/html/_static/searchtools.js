@@ -539,7 +539,7 @@ var Search = {
    * search for full-text terms in the index
    */
   performTermsSearch : function(searchterms, excluded, terms, titleterms) {
-    var filenames = this._index.filenames;
+    var docnames = this._index.docnames;
     var titles = this._index.titles;
 
     var i, j, file;
@@ -613,7 +613,7 @@ var Search = {
         // select one (max) score for the file.
         // for better ranking, we should calculate ranking by using words statistics like basic tf-idf...
         var score = $u.max($u.map(fileMap[file], function(w){return scoreMap[file][w]}));
-        results.push([filenames[file], titles[file], '', null, score]);
+        results.push([docnames[file], titles[file], '', null, score]);
       }
     }
     return results;

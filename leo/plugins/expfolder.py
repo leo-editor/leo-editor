@@ -28,15 +28,9 @@ Manager's Plugin Load Order pane.
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-
 import os
 import os.path
-
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
+import configparser as ConfigParser
 from leo.plugins.textnode import savetextnode
 
 __version__ = "1.0"
@@ -100,7 +94,6 @@ def on_icondclick(tag, keywords):
 
         dirs.sort()
         files.sort()
-
         for f in files:
             pn = p.insertAsNthChild(0)
             if os.path.splitext(f)[1] in textexts:
@@ -108,17 +101,9 @@ def on_icondclick(tag, keywords):
                 pn.clearDirty()
             else:
                 c.setHeadString(pn, f)
-            #pn.clearDirty()
-
         for d in dirs:
             pn = p.insertAsNthChild(0)
             c.setHeadString(pn, "@expfolder "+d)
-            #pn.clearDirty()
-
-        #p.clearDirty()
-
-        #c.setChanged(changed)
-
         c.expandSubtree(p)
 #@-others
 #@-leo

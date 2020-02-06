@@ -51,36 +51,24 @@ Davide Salomoni
 
 # Contributed by Davide Salomoni <dsalomoni@yahoo.com>
 
+# EKR: This plugin does not appear to be ready for Python 3.
+
+# pylint: disable=not-callable
+
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
 import leo.core.leoGlobals as g
 
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import cStringIO
-    StringIO = cStringIO.StringIO
-
+import io
+StringIO = io.StringIO
 import ftplib
 import os
 import sys
-# import urllib
 
-# pylint: disable=no-name-in-module,no-member
-if g.isPython3:
-    import urllib.parse as urlparse
-    import urllib.request.urlopen as urlopen
-else:
-    import urlparse
-    urlopen = urlparse.urlopen
-
+import urllib.parse as urlparse
+from urllib.request import urlopen
 from formatter import AbstractFormatter, DumbWriter
-
-if g.isPython3:
-    import html.parser as HTMLParser
-else:
-    from htmllib   import HTMLParser
+import html.parser as HTMLParser
 #@-<< imports >>
 insertOnTime = None
 insertOffTime = None
@@ -100,7 +88,7 @@ def init ():
         g.plugin_signon(__name__)
     return ok
 #@+node:edream.110203113231.879: ** class FTPurl
-class FTPurl(object):
+class FTPurl:
     """An FTP wrapper class to store/retrieve files using an FTP URL.
 
     To create a connection, call the class with the constructor:
@@ -190,8 +178,7 @@ class FTPurl(object):
             s = self.lst[self.currentLine]
             self.currentLine = self.currentLine + 1
             return s
-        else:
-            return ''
+        return ''
     #@+node:edream.110203113231.884: *3* Setters
     #@+node:edream.110203113231.885: *4* write
     def write(self, s):
@@ -234,15 +221,15 @@ class FTPurl(object):
             raise IOError(msg)
     #@+node:edream.110203113231.890: *4* exists
     def exists(self, path=None):
-        """Return 1 if the specified path exists. If path is omitted, the current file name is tried."""
+        """
+        Return True if the specified path exists.
+        If path is omitted, the current file name is tried.
+        """
         if path is None:
             path = self.filename
-
         s = self.dir(path)
-        if s.lower().find('no such file') == -1:
-            return 1
-        else:
-            return 0
+        # return s.lower().find('no such file') == -1
+        return 'no such file' not in s.lower()
     #@+node:edream.110203113231.891: *4* checkParams
     def checkParams(self):
         if self.mode not in ('','b'):
@@ -320,6 +307,7 @@ def insert_read_only_node (c,p,name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
+            ### pylint: disable=too-many-function-args
             parser = HTMLParser(fmt)
 
             # send the HTML text to the parser
@@ -331,6 +319,7 @@ def insert_read_only_node (c,p,name):
             fh.close()
 
             # finally, get the list of hyperlinks and append to the end of the text
+            ### pylint: disable=no-member
             hyperlinks = parser.anchorlist
             numlinks = len(hyperlinks)
             if numlinks > 0:
@@ -363,7 +352,7 @@ def on_open (tag,keywords):
                 if not p.isDirty():
                     p.setDirty()
                 if not c.isChanged():
-                    c.setChanged(changed)
+                    c.setChanged()
         p.moveToThreadNext()
     c.redraw()
 #@+node:edream.110203113231.897: ** on_bodykey1
@@ -371,7 +360,6 @@ def on_open (tag,keywords):
 
 def on_bodykey1 (tag,keywords):
 
-    # g.trace()
     c = keywords.get("c")
     p = keywords.get("p")
     if g.match_word(p.h,0,"@read-only"):
@@ -384,6 +372,7 @@ def on_bodykey1 (tag,keywords):
             w.delete("1.0","end")
             w.insert("1.0",p.b)
         return 1 # Override the body key event handler.
+    return None
 #@+node:edream.110203113231.898: ** on_headkey2
 # update the body text when we press enter
 
@@ -393,13 +382,13 @@ def on_headkey2 (tag,keywords):
     p = keywords.get("p")
     h = p.h
     ch = keywords.get("ch")
-
-    # g.trace(repr(ch))
-
     if ch in ('\n','\r') and g.match_word(h,0,"@read-only"):
         # on-the-fly update of @read-only directives
         changed = insert_read_only_node(c,p,h[11:])
-        c.setChanged(changed)
+        if changed:
+            c.setChanged()
+        else:
+            c.clearChanged()
 #@+node:edream.110203113231.899: ** on_select1
 def on_select1 (tag,keywords):
 

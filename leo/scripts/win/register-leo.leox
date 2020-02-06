@@ -1,0 +1,162 @@
+# -*- coding: utf-8 -*-
+#@+leo-ver=5-thin
+#@+node:maphew.20130611235500.2658: * @file register-leo.leox
+#@@first
+#@@language python
+#@@tabwidth -4
+"""Add registry keys for Leo file type and .leo file association"""
+#@+others
+#@+node:mhw-debug-1081.20190216130451.1: ** imports
+# py2 shims
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+from future import standard_library
+
+standard_library.install_aliases()
+
+import leo
+import leo.core.leoGlobals as g
+import os
+import sys
+import shutil
+import subprocess
+from winreg import *
+#@+node:maphew.20130510011223.1645: ** docstring
+"""Tell Windows how to handle .leo files, enables double clicking on them to open.
+
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
+        
+Requires elevated User Account Control (UAC) privileges.
+See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+
+Resources used:
+   @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
+   @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
+   @url https://stackoverflow.com/questions/130763/request-uac-elevation-from-within-a-python-script
+"""
+#@+node:mhw-debug-1081.20190227224730.1: ** get_leo_libpath
+def get_leo_libpath():
+    """Return Leo's library path (ie: ./leo-editor/leo or PYTHONHOME/Lib/site-packages/leo)"""
+    import leo
+
+    return leo.__path__[0]
+#@+node:mhw-debug-1081.20190221070850.1: ** get_launch_leo
+def get_launch_leo():
+    """Prefer leo exe script in PATH over launchLeo.py relative to Leo library"""
+    leo_script = os.path.join(sys.exec_prefix, "Scripts", "leo.exe")
+    if os.path.isfile(leo_script):
+        return leo_script
+    else:
+        leo_script = os.path.join(get_leo_libpath(), "../launchLeo.py")
+    if os.path.isfile(leo_script):
+        return leo_script
+    return None
+#@+node:maphew.20130509185752.1607: ** register_leo
+def register_leo(pyexe, launchLeo, icon):
+    """Create registry key for Leo file type, set default icon and launch command    
+    """
+    g.es_print("Attempting to register leo filetype with Windows...")
+    g.es_print("  Python:", pyexe)
+    g.es_print("  Leo:", launchLeo)
+
+    if g.os_path_exists(icon):
+        g.es_print("  Found:", icon)
+        #@+<<filetype>>
+        #@+node:maphew.20130515233516.1659: *3* <<filetype>>
+        try:
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
+            iconKey = CreateKey(leoKey, "DefaultIcon")
+            shellKey = CreateKey(leoKey, "Shell")
+            openKey = CreateKey(shellKey, "Open")
+            cmdKey = CreateKey(openKey, "Command")
+
+            SetValue(leoKey, None, REG_SZ, "Leo Editor File")
+            SetValue(iconKey, None, REG_SZ, icon)
+
+            if "launchLeo.py" in launchLeo:
+                SetValueEx(
+                    cmdKey,
+                    None,
+                    None,
+                    REG_EXPAND_SZ,
+                    '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo),
+                )
+            else:
+                SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "%1" %*'.format(launchLeo))
+
+            for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
+                CloseKey(k)
+
+            g.es_print("  Registered!")
+
+        except WindowsError as e:
+            g.es_print("  Failed:", e)
+        #@-<<filetype>>
+        #@+<<association>>
+        #@+node:maphew.20130515233516.1660: *3* <<association>>
+        try:
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leo")
+            SetValue(leoKey, None, REG_SZ, "Leo.File")
+            # SetValue(leoKey, "Content Type", REG_SZ, "text/xml")  #creates a sub_key instead of a value :(
+            CloseKey(leoKey)
+
+            leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leox")
+            SetValue(leoKey, None, REG_SZ, "Leo.File")
+            CloseKey(leoKey)
+
+            g.es_print("  .leo, .leox files associated as 'Leo.File'")
+
+        except WindowsError as e:
+            g.es_print("  Failed:", e)
+        #@-<<association>>
+    else:
+        g.es_print("  LeoDoc.ico not in expected location, can't continue.")
+#@+node:mhw-debug-1081.20190314005003.1: ** relaunch_elevated
+def relaunch_elevated(script):
+    g.es_print("--- Relaunching and asking for elevated permissions")
+    g.execute_shell_commands(["&{} {} {}".format(sys.executable, elevate, script)])
+    g.es_print("---")
+#@+node:mhw-debug-1081.20190314004045.1: ** get_my_path
+def get_my_path():
+    """Return full path of currently running script or executable
+    
+   Thanks to
+        https://stackoverflow.com/questions/2632199/
+            how-do-i-get-the-path-of-the-current-executed-file-in-python
+        @jose-crespo-barrios, https://stackoverflow.com/a/44592299/14420
+    """
+    import inspect
+
+    filename = inspect.getframeinfo(inspect.currentframe()).filename
+    return filename
+#@-others
+# define script names and paths
+scripts_path = os.path.realpath(os.path.join(leo.__path__[0], "scripts/win"))
+elevate = os.path.join(scripts_path, "elevate.py")
+#this_script = get_my_path()  # #1376, works for python and ctrl-b but not --script=xx
+this_script = os.path.join(scripts_path, "register-leo.leox")
+
+g.es_print("--- Running register-leo Leo script")
+#g.es_print(scripts_path)
+#g.es_print(elevate, this_script)
+import ctypes, sys
+
+if not ctypes.windll.shell32.IsUserAnAdmin():
+    g.es_print("No admin privileges")
+    relaunch_elevated(this_script)
+else:
+    pyexe = g.sys.executable
+    pywexe = pyexe.replace("python.exe", "pythonw.exe")
+    # launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+    launchLeo = get_launch_leo()
+    icon = "%s\Icons\LeoDoc.ico" % get_leo_libpath()
+
+    # # 'pyexe' to launch GUI with a console window for messages
+    # # 'pywexe' to launch GUI only (will lose messages that bypass log)
+
+    register_leo(pywexe, launchLeo, icon)
+
+g.es_print("--- end of script")
+#@-leo

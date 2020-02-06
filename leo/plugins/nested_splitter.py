@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
-'''Nested splitter classes.'''
+"""Nested splitter classes."""
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
 try:
@@ -28,9 +28,8 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17958: *3* __init__(DemoWidget)
         def __init__(self, parent=None, color=None):
-            '''Ctor for DemoWidget class.'''
-            QtWidgets.QWidget.__init__(self, parent)
-                # Init the base class.
+            """Ctor for DemoWidget class."""
+            super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
             self.layout().setSpacing(0)
@@ -72,10 +71,10 @@ if QtWidgets:
             del kargs['owner']
             window_title = kargs.get('window_title')
             del kargs['window_title']
-            QtWidgets.QWidget.__init__(self, *args, **kargs)
+            super().__init__(*args, **kargs)
             if window_title:
                 self.setWindowTitle(window_title)
-        #@+node:tbrown.20120418121002.25714: *3* closeEvent
+        #@+node:tbrown.20120418121002.25714: *3* closeEvent (NestedSplitterTopLevel)
         def closeEvent(self, event):
             """A top-level NestedSplitter window has been closed, check all the
             panes for widgets which must be preserved, and move any found
@@ -113,8 +112,8 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
         def __init__(self, parent=None):
-            '''ctor for NestedSplitterChoice class.'''
-            QtWidgets.QWidget.__init__(self, parent)
+            """ctor for NestedSplitterChoice class."""
+            super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
             button = QtWidgets.QPushButton("Action", self) # EKR: 2011/03/15
             self.layout().addWidget(button)
@@ -134,11 +133,10 @@ if QtWidgets:
         #@+others
         #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
-            '''Ctor for NestedSplitterHandle class.'''
-            # g.trace('NestedSplitterHandle')
-            QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
-            # self.setStyleSheet("background-color: green;")
-                # Confusing!
+            """Ctor for NestedSplitterHandle class."""
+            super().__init__(owner.orientation(), owner)
+            # Confusing!
+                # self.setStyleSheet("background-color: green;")
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
@@ -414,14 +412,9 @@ if QtWidgets: # NOQA
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
-            '''Ctor for NestedSplitter class.'''
-            QtWidgets.QSplitter.__init__(self, orientation, parent)
+            """Ctor for NestedSplitter class."""
+            super().__init__(orientation, parent)
                 # This creates a NestedSplitterHandle.
-            trace = False and g and not g.unitTesting
-                # The import of g will fail when run from main() function.
-            if trace:
-                g.trace('%s parent: %s orientation: %s' % (self, parent, orientation))
-                g.trace(g.callers())
             if root is None:
                 root = self.top(local=True)
                 if root == self:
@@ -433,6 +426,7 @@ if QtWidgets: # NOQA
                     # list of top level NestedSplitter windows opened from 'Open Window'
                     # splitter handle context menu
                     root.zoomed = False
+                #
                 # NestedSplitter is a kind of meta-widget, in that it manages
                 # panes across multiple actual splitters, even windows.
                 # So to create a signal for a click on splitter handle, we
@@ -502,11 +496,8 @@ if QtWidgets: # NOQA
         def add(self, side, w=None):
             """wrap a horizontal splitter in a vertical splitter, or
             visa versa"""
-            trace = False and g and not g.unitTesting
             orientation = self.other_orientation[self.orientation()]
             layout = self.parent().layout()
-            if trace: g.trace('parent: %s side: %s orient: %s layout: %s' % (
-                self.parent(), side, orientation, layout))
             if isinstance(self.parent(), NestedSplitter):
                 # don't add new splitter if not needed, i.e. we're the
                 # only child of a previously more populated splitter
@@ -535,7 +526,6 @@ if QtWidgets: # NOQA
         #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
         def add_adjacent(self, what, widget_id, side='right-of'):
             """add a widget relative to another already present widget"""
-            trace = False and g and not g.unitTesting
             horizontal, vertical = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
             layout = self.top().get_layout()
 
@@ -562,25 +552,16 @@ if QtWidgets: # NOQA
             # pylint: disable=unpacking-non-sequence
             layout, pos = l
             orient = layout['orientation']
-            if trace:
-                print()
-                g.trace('widget_id: %s side: %s pos: %s orient: %s' % (
-                    widget_id, side, pos, orient))
-                # g.trace('before layout...\n%s' % (self.layout_to_text(layout)))
             if (orient == horizontal and side in ('right-of', 'left-of') or
                 orient == vertical and side in ('above', 'below')
             ):
                 # easy case, just insert the new thing, what,
                 # either side of old, in existng splitter
-                if trace: g.trace(
-                    '** use existing splitter: orient %s side: %s' % (orient, side))
                 if side in ('right-of', 'below'):
                     pos += 1
                 layout['splitter'].insert(pos, what)
             else:
                 # hard case, need to replace old with a new splitter
-                if trace: g.trace(
-                    '** create splitter: orient %s side: %s' % (orient, side))
                 if side in ('right-of', 'left-of'):
                     ns = NestedSplitter(orientation=horizontal, root=self.root)
                 else:
@@ -595,8 +576,6 @@ if QtWidgets: # NOQA
                 # now put the old content in the new splitter,
                 # doing this sooner would mess up the index (pos)
                 ns.insert(0 if side in ('right-of', 'below') else 1, old)
-            if trace:
-                g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
             return True
         #@+node:ekr.20110605121601.17972: *3* ns.choice_menu
         def choice_menu(self, button, pos):
@@ -719,12 +698,10 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
-            trace = False and g and not g.unitTesting
             if w is None: # do NOT use 'not w', fails in PyQt 4.8
                 w = NestedSplitterChoice(self)
                 # A QWidget, with self as parent.
                 # This creates the menu.
-            if trace: g.trace('index: %s w: %s' % (index, w))
             self.insertWidget(index, w)
             self.equalize_sizes()
             return w
@@ -866,8 +843,7 @@ if QtWidgets: # NOQA
             if widget.close():
                 widget.setParent(None)
                 return True
-            else:
-                return False
+            return False
         #@+node:ekr.20110605121601.17982: *3* ns.replace_widget & replace_widget_at_index
         def replace_widget(self, old, new):
             "Swap the provided widgets in place" ""
@@ -951,7 +927,6 @@ if QtWidgets: # NOQA
         def split(self, index, side, w=None, name=None):
             """replace the adjacent widget with a NestedSplitter containing
             the widget and an Action button"""
-            trace = False and g and not g.unitTesting
             sizes = self.sizes()
             old = self.widget(index + side - 1)
             #X old_name = old and old.objectName() or '<no name>'
@@ -973,8 +948,6 @@ if QtWidgets: # NOQA
                 new.equalize_sizes()
                 #X index = new.indexOf(w)
                 #X return new,index # For viewrendered plugin.
-            if trace: g.trace('name: %s index: %s side: %s w: %s' % (
-                name, index, side, w))
             self.setSizes(sizes)
         #@+node:ekr.20110605121601.17986: *3* ns.swap
         def swap(self, index):
@@ -1041,7 +1014,7 @@ if QtWidgets: # NOQA
             return self.get_layout(_saveable=True)
         #@+node:ekr.20160416083415.1: *3* ns.get_splitter_by_name
         def get_splitter_by_name(self, name):
-            '''Return the splitter with the given objectName().'''
+            """Return the splitter with the given objectName()."""
             if self.objectName() == name:
                 return self
             for i in range(self.count()):
@@ -1054,8 +1027,7 @@ if QtWidgets: # NOQA
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
         def load_layout(self, layout, level=0):
-            trace = False and g and not g.unitTesting
-            if trace: g.trace('level: %s layout: %s' % (level, layout))
+
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:
@@ -1175,11 +1147,12 @@ if QtWidgets: # NOQA
                     _ans.append("%s%s (%s) from %s" % (
                        '   ' * _depth,
                        i.__class__.__name__,
-                       str(i.objectName()), # not QString
+                       str(i.objectName()),
                        getattr(i, '_ns_id', 'UNKNOWN')
                     ))
             if _depth == 1:
                 return '\n'.join(_ans)
+            return None
         #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
         def zoom_toggle(self, local=False):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane
@@ -1235,7 +1208,7 @@ if QtWidgets: # NOQA
         #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
-    '''The main top-level function executed when this file is executed stand-alone.'''
+    """The main top-level function executed when this file is executed stand-alone."""
     app = Qt.QApplication(sys.argv)
     wdg = DemoWidget()
     wdg2 = DemoWidget()
@@ -1251,6 +1224,7 @@ def main():
         def ns_provide(self, id_):
             if id_ == '_add_demo_widget':
                 return DemoWidget()
+            return None
 
     splitter.register_provider(DemoProvider())
     holder = QtWidgets.QWidget()

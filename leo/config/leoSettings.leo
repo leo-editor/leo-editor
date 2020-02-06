@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
@@ -40,8 +37,9 @@
 <v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
 <v t="ekr.20111006212449.11851"><vh>ctor</vh></v>
-<v t="ekr.20111006212449.11852"><vh>check &amp; helper</vh>
-<v t="ekr.20111007043902.15697"><vh>print_missing</vh></v>
+<v t="ekr.20111006212449.11852"><vh>check &amp; helpers</vh>
+<v t="ekr.20181018060340.1"><vh>filter_get_x</vh></v>
+<v t="ekr.20181018065113.1"><vh>filter_user_config</vh></v>
 </v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
@@ -64,6 +62,7 @@
 <v t="ekr.20111026083456.16490"><vh>Local commands</vh>
 <v t="ekr.20111026083456.16491"><vh>@command print-all-plugins</vh></v>
 </v>
+<v t="ekr.20190324182659.1"><vh>script: make color nodes</vh></v>
 </v>
 <v t="ekr.20041119035137"><vh>About this file, leoSettings.leo</vh>
 <v t="ekr.20041122163623"><vh>About settings names</vh></v>
@@ -102,593 +101,48 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20170304074559.1"><vh>Themes</vh>
-<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
-<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
-<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
-<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
-<v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
-<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
-<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
-<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
-<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
-<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
-<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
-<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
-</v>
-<v t="edward.20150614045745.1"><vh>Rendering pane</vh></v>
-<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
-<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
-<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
-<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
-</v>
-<v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
-<v t="ekr.20170310072826.2"><vh>settings (base dark)</vh>
-<v t="ekr.20170310072814.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310072814.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310072814.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310072814.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310072814.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310072814.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310072814.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310072814.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310072814.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310072814.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310072814.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310072814.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310072814.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310072814.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310072814.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310072814.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310072814.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310072814.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310072814.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310072814.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310072814.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310072814.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310072814.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310072814.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310082759.1"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310072814.33"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310072814.34"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310072814.35"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310072814.36"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310072814.37"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310072814.38"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310072814.39"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310072814.40"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310072814.41"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310072814.42"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310072814.43"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310072814.44"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310102041.1"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310102041.2"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310102041.3"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.4"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.5"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310102041.6"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310102041.7"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310102041.8"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310102041.9"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310102041.10"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310102041.11"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310102041.12"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310102041.13"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310102041.14"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310102041.15"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310102041.16"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.17"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.18"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.19"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.20"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.21"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.22"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.23"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.24"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310102041.25"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310102041.26"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310102041.27"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310072826.73"><vh>theme settings (base dark)</vh>
-<v t="ekr.20170310072826.74"><vh>@string color_theme = base_dark</vh></v>
-<v t="ekr.20170310072826.75"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310072826.76"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310072826.77"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310072826.78"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310072826.79"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310072826.80"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310072826.81"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310072826.82"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310072826.83"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310072826.84"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310072826.85"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310072826.86"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310072826.87"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310072826.88"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310072826.89"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310072826.90"><vh>widgets (base dark)</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170312082833.1"><vh>@theme windows ekr light</vh>
-<v t="ekr.20170312082833.2"><vh>@string focused-border-unfocus-color = @solarized-base2</vh></v>
-<v t="ekr.20140912072521.19160"></v>
-<v t="ekr.20170312082833.3"><vh>@data qt-gui-user-style-sheet</vh></v>
-</v>
-<v t="ekr.20170310100532.1"><vh>@theme windows ekr dark</vh>
-<v t="ekr.20170310100532.2"><vh>settings</vh>
-<v t="ekr.20170310100532.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310100532.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310100532.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310100532.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310100532.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310100532.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310100532.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310100532.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310100532.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310100532.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310100532.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310100532.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310100532.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310100532.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310100532.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310100532.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310100532.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310100532.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310100532.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310100532.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310100532.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310100532.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310100532.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310100532.33"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310100532.34"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310100532.35"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310100532.36"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310100532.37"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310100532.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310100532.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310100532.40"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310100532.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310100532.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310100532.43"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310100532.44"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310100532.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170310100532.46"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310100532.47"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310100532.48"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310100532.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.51"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310100532.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310100532.53"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310100532.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310100532.55"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310100532.56"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310100532.57"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310100532.58"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310100532.59"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310100532.60"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310100532.61"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310100532.62"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.63"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.64"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.65"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.66"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.67"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.68"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.69"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.70"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310100532.71"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310100532.72"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310100532.73"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310100532.74"><vh>zz settings overrides (ekr dark)</vh>
-<v t="ekr.20170310100532.75"><vh>@string focused-border-width = 5px</vh></v>
-<v t="ekr.20170310100532.76"><vh>@string font-size = 16pt</vh></v>
-<v t="ekr.20170310100532.77"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20170310100532.78"><vh>@string font-size-tree = 16pt</vh></v>
-<v t="ekr.20170310100532.79"><vh>@string font-size-log = 16pt</vh></v>
-</v>
-<v t="ekr.20170310100532.80"><vh>theme settings</vh>
-<v t="ekr.20170310100532.81"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170310100532.82"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310100532.83"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310100532.84"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310100532.85"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310100532.86"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310100532.87"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310100532.88"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310100532.89"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310100532.90"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310100532.91"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310100532.92"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310100532.93"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310100532.94"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310100532.95"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310100532.96"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310100532.97"><vh>widgets (base dark)</vh></v>
-</v>
-<v t="ekr.20170310100532.98"><vh>zz overrides</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.1"><vh>@theme linux ekr dark</vh>
-<v t="ekr.20170310095804.2"><vh>settings</vh>
-<v t="ekr.20170310095804.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310095804.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310095804.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310095804.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310095804.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310095804.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310095804.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310095804.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310095804.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310095804.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310095804.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310095804.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310095804.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310095804.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310095804.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310095804.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310095804.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310095804.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310095804.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310095804.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310095804.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310095804.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310095804.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310095804.33"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310095804.34"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310095804.35"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310095804.36"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310095804.37"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310095804.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310095804.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310095804.40"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310095804.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310095804.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310095804.43"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310095804.44"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310095804.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170310095804.46"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310095804.47"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310095804.48"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310095804.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.51"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310095804.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310095804.53"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310095804.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310095804.55"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310095804.56"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310095804.57"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310095804.58"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310095804.59"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310095804.60"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310095804.61"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310095804.62"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.63"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.64"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.65"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.66"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.67"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.68"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.69"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.70"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310095804.71"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310095804.72"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310095804.73"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.74"><vh>zz settings overrides (windows ekr dark)</vh>
-<v t="ekr.20170310095804.75"><vh>@string focused-border-width = 5px</vh></v>
-<v t="ekr.20170310095804.76"><vh>@string font-size = 14pt</vh></v>
-<v t="ekr.20170310095804.77"><vh>@string font-size-body = 14pt</vh></v>
-<v t="ekr.20170310095804.78"><vh>@string font-size-tree = 14pt</vh></v>
-<v t="ekr.20170310095804.79"><vh>@string font-size-log = 14pt</vh></v>
-</v>
-<v t="ekr.20170310095804.80"><vh>theme settings</vh>
-<v t="ekr.20170310095804.81"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170310095804.82"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.83"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310095804.84"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310095804.85"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310095804.86"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310095804.87"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310095804.88"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310095804.89"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310095804.90"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310095804.91"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310095804.92"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310095804.93"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310095804.94"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310095804.95"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310095804.96"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310095804.97"><vh>widgets (base dark)</vh></v>
-</v>
-<v t="ekr.20170310095804.98"><vh>zz overrides (linux ekr dark)</vh></v>
-</v>
-</v>
-<v t="ekr.20170310063446.1"><vh>Monolithic themes</vh>
-<v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
-<v t="ekr.20170304074559.186"><vh>settings</vh>
-<v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
-<v t="ekr.20170304074559.214"><vh>@ignore border</vh>
-<v t="ekr.20170304074559.216"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170304074559.217"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170304074559.218"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170304074559.219"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170304074559.220"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170304074559.188"><vh>colors</vh>
-<v t="ekr.20170304074559.189"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170304074559.190"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.191"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.192"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.193"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.194"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.195"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.196"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170304074559.197"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170304074559.198"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170304074559.199"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170304074559.200"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170304074559.201"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.202"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170304074559.203"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170304074559.204"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170304074559.205"><vh>fonts</vh>
-<v t="ekr.20170304074559.206"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170304074559.207"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170304074559.208"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170304074559.209"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170304074559.210"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170304074559.211"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20170304074559.212"><vh>@string font-size-tree = 16pt</vh></v>
-<v t="ekr.20170304074559.213"><vh>@string font-size-log = 16pt</vh></v>
-</v>
-<v t="ekr.20170304074559.221"><vh>gradients</vh>
-<v t="ekr.20170304074559.222"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170304074559.223"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170308061124.1"><vh>outline indicators</vh>
-<v t="ekr.20170308061124.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061124.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170304074559.224"><vh>plugins</vh>
-<v t="ekr.20170304074559.225"><vh>bookmarks</vh>
-<v t="ekr.20170304074559.226"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.258"><vh>theme settings</vh>
-<v t="ekr.20170304074559.259"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170304074559.260"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.261"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170308051519.1"><vh>active pane highlighting</vh></v>
-<v t="ekr.20170304074559.264"><vh>body editor</vh></v>
-<v t="ekr.20170304074559.287"><vh>bookmarks</vh></v>
-<v t="ekr.20170304074559.270"><vh>buttons</vh></v>
-<v t="ekr.20170304074559.266"><vh>log pane</vh></v>
-<v t="ekr.20170304074559.272"><vh>menus</vh></v>
-<v t="ekr.20170304074559.267"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.285"><vh>status line</vh></v>
-<v t="ekr.20170304074559.273"><vh>scrollbar</vh></v>
-<v t="ekr.20170304074559.274"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.271"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.265"><vh>tree</vh></v>
-<v t="ekr.20170304074559.263"><vh>widgets</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.291"><vh>@theme leo_dark theme 1</vh>
-<v t="ekr.20170304074559.292"><vh>settings</vh>
-<v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
-<v t="ekr.20170309055108.1"><vh>@ignore border</vh>
-<v t="ekr.20170309055108.2"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170309055108.3"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170309055108.4"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170309055108.5"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170309055108.6"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170308082507.1"><vh>colors</vh>
-<v t="ekr.20170304074559.294"><vh>Body pane colors</vh>
-<v t="ekr.20170304074559.295"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.296"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.297"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="ekr.20170304074559.298"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="ekr.20170304074559.299"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.300"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="ekr.20170304074559.301"><vh>Log pane colors</vh>
-<v t="ekr.20170304074559.302"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.303"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.304"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.305"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.306"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.307"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20170304074559.308"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20170304074559.309"><vh>Minibuffer colors</vh>
-<v t="ekr.20170304074559.310"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.311"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-</v>
-<v t="ekr.20170304074559.312"><vh>Outline pane colors</vh>
-<v t="ekr.20170304074559.313"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="ekr.20170304074559.314"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.315"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="ekr.20170304074559.316"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="ekr.20170304074559.317"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20170304074559.318"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.319"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.320"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20170304074559.321"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-<v t="ekr.20170308061334.1"><vh>Outline indicators</vh>
-<v t="ekr.20170308061334.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061334.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-</v>
-<v t="ekr.20170308082458.1"><vh>gradients</vh>
-<v t="ekr.20170308082458.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170308082458.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.353"><vh>theme settings</vh>
-<v t="ekr.20170304074559.354"><vh>@string color_theme = leo_dark_1</vh></v>
-<v t="ekr.20170304074559.355"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.356"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170304074559.360"><vh>body pane</vh></v>
-<v t="ekr.20170304074559.366"><vh>buttons</vh></v>
-<v t="ekr.20170304074559.362"><vh>log</vh></v>
-<v t="ekr.20170304074559.368"><vh>menus</vh></v>
-<v t="ekr.20170304074559.363"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.374"><vh>scroll bars</vh></v>
-<v t="ekr.20170304074559.369"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.377"><vh>status line</vh></v>
-<v t="ekr.20170304074559.367"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.361"><vh>tree</vh></v>
-<v t="ekr.20170308055019.1"><vh>widgets</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.382"><vh>@theme leo_dark theme 2</vh>
-<v t="ekr.20170304074559.383"><vh>settings</vh>
-<v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
-<v t="ekr.20170309055240.1"><vh>@ignore border</vh>
-<v t="ekr.20170309055240.2"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170309055240.3"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170309055240.4"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170309055240.5"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170309055240.6"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170308082535.1"><vh>colors</vh>
-<v t="ekr.20170304074559.385"><vh>Body pane colors</vh>
-<v t="ekr.20170304074559.386"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.387"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.388"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="ekr.20170304074559.389"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="ekr.20170304074559.390"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.391"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="ekr.20170304074559.402"><vh>Log pane colors</vh>
-<v t="ekr.20170304074559.403"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.404"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.405"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.406"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.407"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.408"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20170304074559.409"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20170304074559.410"><vh>Minibuffer colors</vh>
-<v t="ekr.20170304074559.411"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.412"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-</v>
-<v t="ekr.20170308061534.1"><vh>Outline indicators</vh>
-<v t="ekr.20170308061534.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061534.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170304074559.392"><vh>Outline pane colors</vh>
-<v t="ekr.20170304074559.393"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="ekr.20170304074559.394"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.395"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="ekr.20170304074559.396"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="ekr.20170304074559.397"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20170304074559.398"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.399"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.400"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20170304074559.401"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-</v>
-<v t="ekr.20170308082541.1"><vh>gradients</vh>
-<v t="ekr.20170308082541.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170308082541.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.444"><vh>theme settings</vh>
-<v t="ekr.20170304074559.445"><vh>@string color_theme = leo_dark_2</vh></v>
-<v t="ekr.20170304074559.446"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.447"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170304074559.451"><vh>body editor</vh></v>
-<v t="ekr.20170304074559.453"><vh>log</vh></v>
-<v t="ekr.20170304074559.459"><vh>menus</vh></v>
-<v t="ekr.20170304074559.454"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.465"><vh>scroll bars</vh></v>
-<v t="ekr.20170304074559.460"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.468"><vh>status area</vh></v>
-<v t="ekr.20170304074559.458"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.452"><vh>tree</vh></v>
-<v t="ekr.20170308061934.1"><vh>widgets</vh></v>
-</v>
-</v>
-</v>
-</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20180306144001.1"><vh> Color definitions</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+<v t="ekr.20180308050150.1"><vh>Logical colors</vh>
+<v t="ekr.20180308050150.2"><vh>@color log-black-color = black</vh></v>
+<v t="ekr.20180308050150.3"><vh>@color log-blue-color = blue</vh></v>
+<v t="ekr.20180308050150.15"><vh>@color log-cyan-color = cyan</vh></v>
+<v t="ekr.20180308050150.4"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20180308050150.5"><vh>@color log-green-color = green</vh></v>
+<v t="ekr.20180308050150.6"><vh>@color log-info-color = blue</vh></v>
+<v t="ekr.20180308050150.7"><vh>@color log-magenta-color = magenta</vh></v>
+<v t="ekr.20180308050150.8"><vh>@color log-note-color = blue</vh></v>
+<v t="ekr.20180308050150.9"><vh>@color log-orange-color = orange</vh></v>
+<v t="ekr.20180308050150.10"><vh>@color log-red-color = red</vh></v>
+<v t="ekr.20180308050150.11"><vh>@color log-violet-color = violet</vh></v>
+<v t="ekr.20180306155628.1"><vh>@color log-warning-color = red</vh></v>
+<v t="ekr.20180308050150.13"><vh>@color log-white-color = white</vh></v>
+<v t="ekr.20180308050150.14"><vh>@color log-yellow-color = yellow</vh></v>
+</v>
+<v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
+<v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20180307005648.5"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20180307005648.4"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20180307005648.3"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20180307005648.8"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20180307005648.9"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20180307005648.10"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20180307030442.1"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20180307005648.16"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20180307005648.17"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20180307005648.18"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20180307005648.14"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180307005648.12"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180307005648.13"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180307005648.15"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180307030430.1"><vh>@color solarized-white = #fdf6e3 </vh></v>
+<v t="ekr.20180307005648.11"><vh>@color solarized-yellow = #b58900</vh></v>
+</v>
+<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
+</v>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -753,36 +207,13 @@
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
-<v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
-<v t="ekr.20170307055039.1"><vh>Reference</vh></v>
-<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
-</v>
-</v>
+<v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
 <v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
-<v t="ekr.20141020061642.19855"><vh>@color big-text-warning-bg = pink</vh></v>
 </v>
 <v t="ekr.20140915194122.23439"><vh>Border colors</vh>
 <v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
@@ -851,6 +282,7 @@
 <v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
 <v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+<v t="ekr.20180317172528.1"><vh>@color splitter-hover-bg = @LightSteelBlue1</vh></v>
 </v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
@@ -888,13 +320,13 @@
 <v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @body-font-size</vh></v>
 </v>
 <v t="ekr.20140915194122.23441"><vh>Dialog fonts</vh>
-<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = None</vh></v>
-<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = None</vh></v>
-<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
-<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
+<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = @font-weight </vh></v>
+<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = @font-style</vh></v>
 </v>
 <v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
-<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
+<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = @font-family</vh></v>
 <v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
 <v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
 <v t="ekr.20140912075503.19280"><vh>@string find-font-size = @medium-font-size</vh></v>
@@ -943,7 +375,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23443"><vh>Status area fonts</vh>
-<v t="ekr.20140912075503.19350"><vh>@string status-font-family = None</vh></v>
+<v t="ekr.20140912075503.19350"><vh>@string status-font-family = @font-family</vh></v>
 <v t="ekr.20140912075503.19351"><vh>@string status-font-size = @small-font-size</vh></v>
 <v t="ekr.20140912075503.19352"><vh>@string status-font-weight = @font-weight</vh></v>
 <v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
@@ -974,9 +406,10 @@
 <v t="ekr.20140912075503.19347"><vh>@string status-border-width = 1px</vh></v>
 </v>
 <v t="ekr.20140912075503.19365"><vh>Vim mode borders/colors</vh>
-<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = 3px solid @Salmon</vh></v>
-<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = 3px solid blue</vh></v>
-<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = 3px solid gray</vh></v>
+<v t="ekr.20140912075503.19366"><vh>@string vim-mode-normal-border = border: 3px solid white</vh></v>
+<v t="ekr.20140912075503.19367"><vh>@string vim-mode-insert-border = border: 3px solid red</vh></v>
+<v t="ekr.20140912075503.19368"><vh>@string vim-mode-visual-border = border: 3px solid gray</vh></v>
+<v t="ekr.20190622093004.1"><vh>@string vim-mode-unfocused-border = border: 3px dashed white</vh></v>
 </v>
 </v>
 <v t="edward.20150615144141.1"><vh>Outline indicators</vh>
@@ -987,38 +420,38 @@
 <v t="ekr.20140915194122.23440"><vh>Plugins</vh>
 <v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
 <v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
-<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = none</vh></v>
-<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = none</vh></v>
-<v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
-<v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
-<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="ekr.20140915194122.24265"><vh>@string bookmarks_base_style = normal</vh></v>
-<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
+<v t="tbrown.20140101093550.25136"><vh>@color bookmarks-base-color = @text-foreground</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string bookmarks-base-border = "none"</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks-base-decoration = "none"</vh></v>
+<v t="ekr.20140915194122.24263"><vh>@string bookmarks-base-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19356"><vh>@string bookmarks-base-margin = 0</vh></v>
+<v t="ekr.20140912075503.19357"><vh>@string bookmarks-base-padding = 1</vh></v>
+<v t="tbrown.20140101093550.25165"><vh>@string bookmarks-base-size = @bookmarks-font-size</vh></v>
+<v t="ekr.20140915194122.24265"><vh>@string bookmarks-base-style = normal</vh></v>
+<v t="tbrown.20140101093550.25138"><vh>@string bookmarks-base-weight = regular</vh></v>
 </v>
 <v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = none</vh></v>
-<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks-children-color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25164"><vh>@string bookmarks-children-decoration = underline</vh></v>
+<v t="ekr.20140915194122.24264"><vh>@string bookmarks-children-family = @font-family</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks-children-size = ignore</vh></v>
+<v t="ekr.20140915194122.24266"><vh>@string bookmarks-children-style = ignore</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks-children-weight = ignore</vh></v>
 </v>
 <v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
-<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25146"><vh>@color bookmarks-current-color = blue</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks-current-decoration = "none"</vh></v>
+<v t="ekr.20180317175351.1"><vh>@string bookmarks-current-size = @bookmarks-font-size</vh></v>
+<v t="ekr.20140915194122.24267"><vh>@string bookmarks-current-style = "none"</vh></v>
+<v t="tbrown.20140101093550.25147"><vh>@string bookmarks-current-weight = bold</vh></v>
 </v>
 <v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="ekr.20140915194122.24268"><vh>@string bookmarks_expanded_style = ignore</vh></v>
-<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks-expanded-color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25156"><vh>@string bookmarks-expanded-decoration = underline</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks-expanded-size = ignore</vh></v>
+<v t="ekr.20140915194122.24268"><vh>@string bookmarks-expanded-style = ignore</vh></v>
+<v t="tbrown.20140101093550.25155"><vh>@string bookmarks-expanded-weight = bold</vh></v>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks-font-size = 11pt</vh></v>
 </v>
 </v>
 <v t="ekr.20140912075503.19359"><vh>screencast.py plugin</vh>
@@ -1031,67 +464,100 @@
 </v>
 </v>
 <v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
-<v t="ekr.20140912072521.19160"></v>
+<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
+<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
+<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
+<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
+<v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
+<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
+<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
+<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
+<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
+<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
+<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
+</v>
+<v t="edward.20150614045745.1"><vh>Rendering pane</vh></v>
+<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
+<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
+<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+<v t="ekr.20190106080417.1"><vh>zz Must be last</vh></v>
+</v>
 </v>
 <v t="ekr.20150620100951.1"><vh>User Qt Gui style sheet</vh>
 <v t="ekr.20150620100923.1"><vh>@ignore @data qt-gui-user-style-sheet</vh></v>
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
-<v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
-<v t="ekr.20060216170801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20110617081407.14760"><vh>@bool forbid_invalid_completions = False</vh></v>
 <v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
-<v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
+<v t="ekr.20110512085854.14461"><vh>@bool auto-tab-complete = True</vh></v>
+<v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
+<v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
+<v t="ekr.20110617081407.14760"><vh>@bool forbid-invalid-completions = False</vh></v>
+<v t="ekr.20180525053145.1"><vh>@bool use-jedi = False</vh></v>
+<v t="ekr.20110510071925.14589"><vh>@bool use-qcompleter = True</vh></v>
 </v>
 <v t="ekr.20140916113003.20415"><vh>Bracket matching</vh>
-<v t="ekr.20060627084739"><vh>@bool flash_matching_brackets = True</vh></v>
-<v t="ekr.20060627121646"><vh>@color flash_brackets_background_color = DodgerBlue1</vh></v>
-<v t="ekr.20060627121646.1"><vh>@color flash_brackets_foreground_color = white</vh></v>
-<v t="ekr.20060627121646.2"><vh>@int flash_brackets_count = 2</vh></v>
+<v t="ekr.20060627084739"><vh>@bool flash-matching-brackets = True</vh></v>
+<v t="ekr.20060627121646"><vh>@color flash-brackets-background-color = DodgerBlue1</vh></v>
+<v t="ekr.20060627121646.1"><vh>@color flash-brackets-foreground-color = white</vh></v>
+<v t="ekr.20060627121646.2"><vh>@int flash-brackets-count = 2</vh></v>
 <v t="ekr.20060627121646.3"><vh>@int flash-brackets-delay = 75</vh></v>
 </v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
-<v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
-<v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20070604075218"><vh>@bool use-chapter-tabs = True</vh></v>
+<v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
-<v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
-<v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
-<v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
+<v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
+<v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
-<v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
+<v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
-<v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
+<v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
+<v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
+<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
+<v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20150602160413.1"><vh>@bool tidy_autobeautify = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool tidy_keep_blank_lines = True</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
+<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
+<v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
 </v>
-<v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
-<v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
-<v t="ekr.20060804095015"><vh>@string open_flash_brackets = ([{</vh></v>
+<v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
+<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
+</v>
+<v t="ekr.20110611092035.16488"><vh>Bracket matching settings</vh>
+<v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
+<v t="ekr.20060804095015"><vh>@string open-flash-brackets = ([{</vh></v>
 </v>
 <v t="ekr.20110917104720.9414"><vh>c-to-python settings</vh>
 <v t="ekr.20110917104720.9415"><vh>@data c-to-python-class-list</vh></v>
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
 </v>
-<v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
-<v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
+<v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
+<v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
 <v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
 </v>
-<v t="ekr.20110611092035.16482"><vh>Headline commands</vh>
-<v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
-<v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
+<v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
+<v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
+<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
 </v>
-<v t="ekr.20160127043440.1"><vh>make-stub-files</vh>
+<v t="ekr.20160127043440.1"><vh>make-stub-files settings</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
 <v t="ekr.20160318061607.3"><vh>@bool stub-trace-matches = False</vh></v>
 <v t="ekr.20160318061607.4"><vh>@bool stub-trace-patterns = False</vh></v>
 <v t="ekr.20160318061607.6"><vh>@bool stub-trace-reduce = False</vh></v>
 <v t="ekr.20160318061607.5"><vh>@bool stub-trace-visitors = False</vh></v>
 <v t="ekr.20160318061607.7"><vh>@bool stub-update = False</vh></v>
+<v t="ekr.20181018103813.1"><vh>@bool stub-verbose = False</vh></v>
+<v t="ekr.20181018103757.1"><vh>@bool stub-warn = False</vh></v>
 <v t="ekr.20160127043520.1"><vh>@data stub-def-name-patterns</vh></v>
 <v t="ekr.20160130145944.1"><vh>@data stub-general-patterns</vh></v>
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
@@ -1102,55 +568,57 @@
 <v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
 <v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
-<v t="ekr.20071213060239"><vh>rst3 command</vh>
+<v t="ekr.20071213060239"><vh>rst3 command settings</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
-<v t="ekr.20071213061454.1"><vh>@bool rst3_http_server_support = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3_http_attributename = rst_http_attribute</vh></v>
-<v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
+<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
+<v t="ekr.20071213061454.1"><vh>@bool rst3-http-server-support = False</vh></v>
+<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
+<v t="ekr.20071213061454.3"><vh>@string rst3-node-begin-marker = http-node-marker-</vh></v>
 </v>
 <v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
-<v t="ekr.20131027064821.18683"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
-<v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
-<v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
-<v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
-<v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
+<v t="ekr.20131027064821.18683"><vh>@string rst3-write-intermediate-extension = .txt</vh></v>
+<v t="ekr.20071213061504"><vh>@string rst3-default-path = None</vh></v>
+<v t="ekr.20071213061504.1"><vh>@string rst3-stylesheet-name = default.css</vh></v>
+<v t="ekr.20071213061504.2"><vh>@string rst3-stylesheet-path = None</vh></v>
+<v t="ekr.20071213061504.3"><vh>@string rst3-publish-argv-for-missing-stylesheets = None</vh></v>
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
-<v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
-<v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
-<v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+<v t="ekr.20131009050634.17656"><vh>@bool rst3-call-docutils = True</vh></v>
+<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3-underline-characters = #=+*^~`-:&gt;&lt;-</vh></v>
+<v t="ekr.20071213061811.2"><vh>@bool rst3-verbose = True</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3-write-intermediate-file = True</vh></v>
 </v>
 <v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3_doc_only_mode = False</vh></v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3_generate_rst = True</vh></v>
-<v t="ekr.20090430075506.7"><vh>@bool rst3_generate_rst_header_comment = True</vh></v>
+<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
+<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
+<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
+<v t="ekr.20090430075506.7"><vh>@bool rst3-generate-rst-header-comment = True</vh></v>
 </v>
 <v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061930.1"><vh>@bool rst3_show_headlines = True</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3_show_organizer_nodes = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3_show_options_nodes = False</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3_strip_at_file_prefixes = True</vh></v>
+<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
+<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
+<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
+<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
 </v>
 <v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3_show_doc_parts_as_paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3_show_leo_directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3_show_markup_doc_parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3_show_options_doc_parts = False</vh></v>
+<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
+<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
+<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
+<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
-<v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
-<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
 </v>
-<v t="ekr.20110611092035.16477"><vh>Undo</vh>
-<v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
-<v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
-<v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
+<v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
+<v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
+<v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
+<v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
@@ -1159,82 +627,11 @@
 <v t="ekr.20080312075451.1"><vh>Common @command nodes</vh>
 <v t="ekr.20080312075451.2"><vh>@commands</vh></v>
 </v>
-<v t="ekr.20041119034357.16"><vh>Compare panel</vh>
-<v t="ekr.20041119034357.17"><vh>files &amp; directories</vh>
-<v t="ekr.20041119043902"><vh>@string compare_file_1 = None</vh></v>
-<v t="ekr.20041119043902.1"><vh>@string compare_file_2 = None</vh></v>
-<v t="ekr.20041119043902.2"><vh>@string output_file = None</vh></v>
-<v t="ekr.20041119043902.3"><vh>@bool append_output_to_output_file = False</vh></v>
-<v t="ekr.20041119034357.18"><vh>@string limit_directory_search_extension = .py</vh></v>
-</v>
-<v t="ekr.20041119034357.19"><vh>file compare options</vh>
-<v t="ekr.20041119043902.4"><vh>@bool ignore_blank_lines = True</vh></v>
-<v t="ekr.20041119043902.5"><vh>@bool ignore_first_line_of_file_1 = False</vh></v>
-<v t="ekr.20041119043902.6"><vh>@bool ignore_first_line_of_file_2 = False</vh></v>
-<v t="ekr.20041119043902.7"><vh>@bool ignore_interior_whitespace = False</vh></v>
-<v t="ekr.20041119043902.8"><vh>@bool ignore_leading_whitespace = False</vh></v>
-<v t="ekr.20041119043902.9"><vh>@bool ignore_sentinel_lines = False</vh></v>
-</v>
-<v t="ekr.20041119050105"><vh>output options</vh>
-<v t="ekr.20041119043902.10"><vh>@int limit_count = 9</vh></v>
-<v t="ekr.20041119043902.11"><vh>@bool make_whitespace_visible = False</vh></v>
-<v t="ekr.20041119043902.12"><vh>@bool print_both_lines_for_matches = False</vh></v>
-<v t="ekr.20041119043902.13"><vh>@bool print_matching_lines = False</vh></v>
-<v t="ekr.20041119043902.14"><vh>@bool print_mismatching_lines = True</vh></v>
-<v t="ekr.20041119043902.15"><vh>@bool print_trailing_lines = True</vh></v>
-</v>
-</v>
 <v t="ekr.20060524151415"><vh>Debugger</vh>
-<v t="ekr.20070115134125"><vh>@bool write_script_file = True</vh></v>
+<v t="ekr.20070115134125"><vh>@bool write-script-file = True</vh></v>
 <v t="ekr.20070115134125.1"><vh>@@string script_file_path = ../test/scriptFile.py</vh></v>
-<v t="ekr.20060524151415.1"><vh>@string debugger_kind = winpdb</vh></v>
-<v t="ekr.20060521132401"><vh>@string debugger_path = None</vh></v>
-</v>
-<v t="ekr.20051126062243"><vh>Debugging</vh>
-<v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
-<v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
-<v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
-<v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
-<v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
-<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
-<v t="ekr.20060204093736"><vh>@bool trace_doCommand = False</vh></v>
-<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
-<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
-<v t="ekr.20051126062830"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
-<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
-<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
-<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
-<v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
-<v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
-<v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
-<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
-<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
-<v t="ekr.20060216091239"><vh>@bool trace_minibuffer = False</vh></v>
-<v t="ekr.20060121102627"><vh>@bool trace_modes = False</vh></v>
-<v t="ekr.20060306031258"><vh>@bool trace_onBodyChanged = False</vh></v>
-<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
-<v t="ekr.20060210105437"><vh>@bool trace_select = False</vh></v>
-<v t="ekr.20060216130607"><vh>@bool trace_status_line = False</vh></v>
-<v t="ekr.20060202092911"><vh>@bool trace_tree = False</vh></v>
-<v t="ekr.20060206155101"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20060206161839"><vh>@bool trace_tree_edit = False</vh></v>
-<v t="ekr.20070503080312"><vh>@bool trace_tree_gc = False</vh></v>
-<v t="ekr.20051126062243.1"><vh>@bool trace_tree_redraw = False</vh></v>
-<v t="ekr.20060425125015"><vh>@bool verbose_trace_color_parser = False</vh></v>
-<v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
-<v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
-<v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
-<v t="ekr.20060114082205"><vh>@string trace_bindings_filter = </vh></v>
-<v t="ekr.20060114083009"><vh>@string trace_bindings_pane_filter =</vh></v>
-<v t="ekr.20060325071916"><vh>For unit tests</vh>
-<v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
-<v t="ekr.20060325071042.1"><vh>@bool test_win32_setting = True</vh></v>
-</v>
-<v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
-<v t="ekr.20060325071042.3"><vh>@bool test_darwin_setting = True</vh></v>
-</v>
-</v>
+<v t="ekr.20060524151415.1"><vh>@string debugger-kind = winpdb</vh></v>
+<v t="ekr.20060521132401"><vh>@string debugger-path = None</vh></v>
 </v>
 <v t="ekr.20171121100639.1"><vh>Declutter</vh>
 <v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
@@ -1250,107 +647,110 @@
 <v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
 </v>
 </v>
+<v t="ekr.20190613024818.1"><vh>Docks</vh>
+<v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
+<v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
+<v t="ekr.20190808031525.1"><vh>@data pyzo_tool_ids</vh></v>
+<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
+</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
+<v t="ekr.20181018113730.1"><vh>@string external-editor</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20170706103545.1"><vh>@bool report_unchanged_files = True</vh></v>
-<v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
+<v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20170718054928.1"><vh>@bool log_show_save_time = False</vh></v>
-<v t="ekr.20170718054951.1"><vh>@string log_timestamp_format = %H:%M:%S</vh></v>
-<v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
+<v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
+<v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
+<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
+<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
+<v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
-<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
-<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
+<v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
+<v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 </v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
-<v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
-<v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
-<v t="ekr.20041119041747"><vh>@string output_newline = nl</vh></v>
-<v t="ekr.20041119041747.1"><vh>@string trailing_body_newlines = one</vh></v>
+<v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
+<v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
+<v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
 <v t="ekr.20081216090156.5"><vh>@string underindent-escape-string = \\-</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
-<v t="ekr.20101009103953.8642"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
-<v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
+<v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
-<v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
-<v t="vitalije.20170811125150.1"><vh>@string default_leo_extension = .leo</vh></v>
+<v t="ekr.20080921060401.3"><vh>@string default-leo-file = ~/.leo/workbook.leo</vh></v>
+<v t="vitalije.20170811125150.1"><vh>@string default-leo-extension = .leo</vh></v>
 </v>
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
-<v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
-<v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
-<v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="tbrown.20081003103821.1"><vh>@bool recent-files-group = False</vh></v>
+<v t="tbrown.20081003103821.2"><vh>@bool recent-files-group-always = False</vh></v>
 <v t="tbrown.20180212145842.1"><vh>@data path-demangle</vh></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
-<v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
-<v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
+<v t="ekr.20181018110022.1"><vh>@bool shadow-in-home-dir = False</vh></v>
+<v t="ekr.20060730101451.3"><vh>@string shadow-prefix = x</vh></v>
+<v t="ekr.20060730101451.5"><vh>@string shadow-subdir = .leo_shadow</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
 <v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
-<v t="ekr.20150619190137.1"><vh>@bool close-find-dialog-after-search = False</vh></v>
 <v t="ekr.20150629172742.1"><vh>@bool find-ignore-duplicates = False</vh></v>
-<v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
+<v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
-<v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
-<v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
-<v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
-<v t="ekr.20150618105435.1"><vh>@bool use_find_dialog = False</vh></v>
-<v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
-<v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
+<v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
+<v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
+<v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
 <v t="ekr.20131119143342.20108"><vh>Find panel defaults</vh>
 <v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
 <v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
-<v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
-<v t="ekr.20041119050105.6"><vh>@bool mark_changes = False</vh></v>
-<v t="ekr.20041119050105.7"><vh>@bool mark_finds = False</vh></v>
+<v t="ekr.20041119050105.5"><vh>@bool ignore-case = True</vh></v>
+<v t="ekr.20041119050105.6"><vh>@bool mark-changes = False</vh></v>
+<v t="ekr.20041119050105.7"><vh>@bool mark-finds = False</vh></v>
 <v t="ekr.20041119050105.9"><vh>@bool reverse = False</vh></v>
-<v t="ekr.20041119050105.8"><vh>@bool pattern_match = False</vh></v>
-<v t="ekr.20041120152657"><vh>@bool script_change = None</vh></v>
-<v t="ekr.20041119050105.14"><vh>@bool search_body = True</vh></v>
-<v t="ekr.20041119050105.15"><vh>@bool search_headline = True</vh></v>
-<v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
+<v t="ekr.20041119050105.8"><vh>@bool pattern-match = False</vh></v>
+<v t="ekr.20041119050105.14"><vh>@bool search-body = True</vh></v>
+<v t="ekr.20041119050105.15"><vh>@bool search-headline = True</vh></v>
+<v t="ekr.20041119050105.10"><vh>@bool whole-word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
 <v t="ekr.20110611092035.16476"><vh>Radio buttons in the Find panel</vh>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
-<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
+<v t="ekr.20041119050105.12"><vh>@bool node-only = False</vh></v>
+<v t="ekr.20041119050105.16"><vh>@bool suboutline-only = False</vh></v>
 </v>
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
-<v t="ekr.20161011090731.1"><vh>Retired: @bool allow_section_references_in_at_auto = False</vh></v>
-<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
-<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
-<v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
-<v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
-<v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
-<v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
-<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
-<v t="ekr.20170825083426.1"><vh>@data c_import_typedefs</vh></v>
-<v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
-<v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
+<v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
+<v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
+<v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
+<v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
+<v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
+<v t="ekr.20111029055127.16614"><vh>@data import-xml-tags</vh></v>
+<v t="ekr.20181018075844.1"><vh>zim importer options</vh>
+<v t="ekr.20181018075857.1"><vh>@int zim-rst-level = 0</vh></v>
+<v t="ekr.20181018075747.1"><vh>@string path-to-zim = None</vh></v>
+<v t="ekr.20181018075857.3"><vh>@string zim-node-name = Imported Zim Tree</vh></v>
+<v t="ekr.20181018075857.2"><vh>@string zim-rst-type = rst</vh></v>
+</v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
-<v t="ekr.20160504145653.1"><vh>@bool plain_key_outline_search = True</vh></v>
-<v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
-<v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
+<v t="ekr.20120205022040.15410"><vh>@bool enable-alt-ctrl-bindings = True</vh></v>
+<v t="ekr.20131007055150.13034"><vh>@bool ignore-unbound-non-ascii-keys = False</vh></v>
+<v t="ekr.20160504145653.1"><vh>@bool plain-key-outline-search = True</vh></v>
+<v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
-<v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
+<v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
-<v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
+<v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
+<v t="ekr.20181018113612.1"><vh>@string default-editing-state = insert</vh></v>
+<v t="ekr.20181018113656.1"><vh>@string top-level-unbound-key-action = insert</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
 <v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
@@ -1390,8 +790,7 @@
 <v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
 <v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
 <v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
-<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
-<v t="ekr.20140721165014.19166"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20140721165014.19166"><vh>@bool outline-pane-has-initial-focus = True</vh></v>
 <v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 </v>
 <v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
@@ -1586,8 +985,8 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16491"><vh>Leo Directives</vh>
-<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
+<v t="ekr.20041119034357.32"><vh>@int page-width = 80</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab-width = -4</vh></v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
@@ -1596,51 +995,84 @@
 </v>
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
-<v t="ekr.20131213135427.21828"><vh>@item *&amp;new</vh></v>
-<v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
-<v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
+<v t="ekr.20131213135427.21833"><vh>@item &amp;close-window</vh></v>
+<v t="ekr.20140917063815.21917"><vh>@item &amp;file-open-by-name</vh></v>
+<v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
+<v t="ekr.20131213135427.21829"><vh>@item &amp;open-outline</vh></v>
+<v t="ekr.20180403155811.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
-<v t="ekr.20151225142626.1"><vh>@menu Open &amp;Leo File</vh>
+<v t="ekr.20151225142626.1"><vh>@menu Open Specific &amp;Leo File</vh>
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
 <v t="ekr.20131213135427.21872"><vh>@item open-leo-docs-leo</vh></v>
 <v t="ekr.20161025090757.1"><vh>@item open-leo-dist-leo</vh></v>
 <v t="ekr.20131213135427.21873"><vh>@item open-leo-plugins-leo</vh></v>
 <v t="ekr.20151225193848.1"><vh>@item open-leo-py-leo</vh></v>
-<v t="ekr.20170323095822.1"><vh>@item open-myLeoSettings-leo</vh></v>
+<v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
-<v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
+<v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21833"><vh>@item close-window</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-unzipped</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
-<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
-<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
-<v t="ekr.20150420115701.1"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.1"><vh>@menu Print Preview</vh>
-<v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
-<v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
-<v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
-<v t="ekr.20150420122804.5"><vh>@item -</vh></v>
-<v t="peckj.20150421103556.1"><vh>@item preview-expanded-body</vh></v>
-<v t="peckj.20150421103611.1"><vh>@item preview-expanded-html</vh></v>
-<v t="peckj.20150421103616.1"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
-<v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
-<v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
-<v t="ekr.20150420122804.9"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
-<v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
-<v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
+<v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
+<v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-two-leo-files</vh></v>
+<v t="ekr.20131213135427.22151"><vh>@item file-diff-&amp;files</vh></v>
 </v>
-<v t="ekr.20150420115709.1"><vh>@menu Print</vh>
+<v t="ekr.20131213135427.22139"><vh>@menu &amp;Create/Remove Files Or Directories</vh>
+<v t="ekr.20131213135427.22140"><vh>@item directory-&amp;make</vh></v>
+<v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
+<v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22150"><vh>@item file-&amp;delete</vh></v>
+<v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
+</v>
+<v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
+<v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
+<v t="ekr.20131213135427.21843"><vh>@@@item check-leo-file</vh></v>
+<v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
+<v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
+<v t="ekr.20131213135427.21847"><vh>@item read-file-into-node</vh></v>
+<v t="ekr.20131213135427.21848"><vh>@item read-at-auto-nodes</vh></v>
+<v t="ekr.20131213135427.21849"><vh>@item read-at-file-nodes</vh></v>
+<v t="ekr.20131213135427.21850"><vh>@item read-at-shadow-nodes</vh></v>
+<v t="ekr.20131213135427.21851"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21852"><vh>@item write-outline-only</vh></v>
+<v t="ekr.20131213135427.21853"><vh>@item write-file-from-node</vh></v>
+<v t="ekr.20131213135427.21854"><vh>@item write-at-auto-nodes</vh></v>
+<v t="ekr.20131213135427.21855"><vh>@item write-at-file-nodes</vh></v>
+<v t="ekr.20131213135427.21856"><vh>@item write-at-shadow-nodes</vh></v>
+<v t="ekr.20131213135427.21857"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21858"><vh>@item write-dirty-at-auto-nodes</vh></v>
+<v t="ekr.20131213135427.21859"><vh>@item write-dirty-at-file-nodes</vh></v>
+<v t="ekr.20131213135427.21860"><vh>@item write-dirty-at-shadow-nodes</vh></v>
+<v t="ekr.20131213135427.21861"><vh>@item write-missing-at-file-nodes</vh></v>
+</v>
+<v t="ekr.20161006072026.1"><vh>@menu &amp;Import Files</vh>
+<v t="ekr.20131213135427.21862"><vh>@item import-file</vh></v>
+<v t="ekr.20161006072143.1"><vh>@item import-free-mind-files</vh></v>
+<v t="ekr.20161006093610.1"><vh>@item import-mind-jet-files</vh></v>
+<v t="ekr.20161006102148.1"><vh>@item import-MORE-files</vh></v>
+<v t="ekr.20161007090350.1"><vh>@item import-jupyter-notebook</vh></v>
+<v t="ekr.20161006072041.1"><vh>@item import-tabbed-files</vh></v>
+<v t="ekr.20161006093513.1"><vh>@item import-zim-folder</vh></v>
+</v>
+<v t="ekr.20131213135427.21863"><vh>@menu &amp;Export Files</vh>
+<v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
+<v t="ekr.20161007090445.1"><vh>@item export-jupyter-notebook</vh></v>
+<v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
+<v t="ekr.20131213135427.21866"><vh>@item outline-to-cweb</vh></v>
+<v t="ekr.20131213135427.21867"><vh>@item outline-to-noweb</vh></v>
+<v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
+<v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
+</v>
+<v t="ekr.20150420115709.1"><vh>@menu &amp;Print</vh>
 <v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
 <v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
 <v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
@@ -1656,260 +1088,103 @@
 <v t="ekr.20150420120114.1"><vh>@item print-tree-bodies</vh></v>
 <v t="ekr.20150420115936.1"><vh>@item print-tree-html</vh></v>
 </v>
-<v t="ekr.20131213135427.21840"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write</vh>
-<v t="ekr.20131213135427.21842"><vh>@item *check-derived-file</vh></v>
-<v t="ekr.20131213135427.21843"><vh>@item *check-leo-file</vh></v>
-<v t="ekr.20131213135427.21844"><vh>@item file-compare-leo-files</vh></v>
-<v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21846"><vh>@item *read-outline-only</vh></v>
-<v t="ekr.20131213135427.21847"><vh>@item *read-file-into-node</vh></v>
-<v t="ekr.20131213135427.21848"><vh>@item read-at-auto-nodes</vh></v>
-<v t="ekr.20131213135427.21849"><vh>@item read-at-file-nodes</vh></v>
-<v t="ekr.20131213135427.21850"><vh>@item read-at-shadow-nodes</vh></v>
-<v t="ekr.20131213135427.21851"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21852"><vh>@item *write-outline-only</vh></v>
-<v t="ekr.20131213135427.21853"><vh>@item *write-file-from-node</vh></v>
-<v t="ekr.20131213135427.21854"><vh>@item write-at-auto-nodes</vh></v>
-<v t="ekr.20131213135427.21855"><vh>@item write-at-file-nodes</vh></v>
-<v t="ekr.20131213135427.21856"><vh>@item write-at-shadow-nodes</vh></v>
-<v t="ekr.20131213135427.21857"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21858"><vh>@item write-dirty-at-auto-nodes</vh></v>
-<v t="ekr.20131213135427.21859"><vh>@item write-dirty-at-file-nodes</vh></v>
-<v t="ekr.20131213135427.21860"><vh>@item write-dirty-at-shadow-nodes</vh></v>
-<v t="ekr.20131213135427.21861"><vh>@item write-missing-at-file-nodes</vh></v>
+<v t="ekr.20150420122804.1"><vh>@menu &amp;Print Preview</vh>
+<v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
+<v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
+<v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
+<v t="ekr.20150420122804.5"><vh>@item -</vh></v>
+<v t="peckj.20150421103556.1"><vh>@item preview-expanded-body</vh></v>
+<v t="peckj.20150421103611.1"><vh>@item preview-expanded-html</vh></v>
+<v t="peckj.20150421103616.1"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
+<v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
+<v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
+<v t="ekr.20150420122804.9"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
+<v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
+<v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
-<v t="ekr.20161006072026.1"><vh>@menu &amp;Import</vh>
-<v t="ekr.20131213135427.21862"><vh>@item import-file</vh></v>
-<v t="ekr.20161006072143.1"><vh>@item import-free-mind-files</vh></v>
-<v t="ekr.20161006093610.1"><vh>@item import-mind-jet-files</vh></v>
-<v t="ekr.20161006102148.1"><vh>@item import-MORE-files</vh></v>
-<v t="ekr.20161007090350.1"><vh>@item import-jupyter-notebook</vh></v>
-<v t="ekr.20161006072041.1"><vh>@item import-tabbed-files</vh></v>
-<v t="ekr.20161006093513.1"><vh>@item import-zim-folder</vh></v>
-</v>
-<v t="ekr.20131213135427.21863"><vh>@menu &amp;Export</vh>
-<v t="ekr.20131213135427.21864"><vh>@item export-headlines</vh></v>
-<v t="ekr.20161007090445.1"><vh>@item export-jupyter-notebook</vh></v>
-<v t="ekr.20131213135427.21865"><vh>@item flatten-outline</vh></v>
-<v t="ekr.20131213135427.21866"><vh>@item outline-to-cweb</vh></v>
-<v t="ekr.20131213135427.21867"><vh>@item outline-to-noweb</vh></v>
-<v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
-<v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
+<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert/Refresh Files</vh>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
+<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 </v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21878"><vh>@menu &amp;Edit</vh>
-<v t="ekr.20131213135427.21879"><vh>@item undo</vh></v>
-<v t="ekr.20131213135427.21880"><vh>@item redo</vh></v>
+<v t="ekr.20131213135427.21879"><vh>@item &amp;undo</vh></v>
+<v t="ekr.20131213135427.21880"><vh>@item &amp;redo</vh></v>
 <v t="ekr.20131213135427.21881"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21882"><vh>@item cut-text</vh></v>
-<v t="ekr.20131213135427.21883"><vh>@item copy-text</vh></v>
-<v t="ekr.20131213135427.21884"><vh>@item paste-text</vh></v>
-<v t="ekr.20131213135427.21885"><vh>@item backward-delete-char</vh></v>
-<v t="ekr.20131213135427.21886"><vh>@item select-all</vh></v>
-<v t="ekr.20131213135427.21887"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21888"><vh>@menu Edit &amp;Body</vh>
-<v t="ekr.20131213135427.21889"><vh>@item *extract-&amp;names</vh></v>
-<v t="ekr.20131213135427.21890"><vh>@item *&amp;extract</vh></v>
-<v t="ekr.20131213135427.21891"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21892"><vh>@item *convert-all-b&amp;lanks</vh></v>
-<v t="ekr.20131213135427.21893"><vh>@item *convert-all-t&amp;abs</vh></v>
-<v t="ekr.20131213135427.21894"><vh>@item *convert-&amp;blanks</vh></v>
-<v t="ekr.20131213135427.21895"><vh>@item *convert-&amp;tabs</vh></v>
-<v t="ekr.20131213135427.21896"><vh>@item *insert-body-&amp;time</vh></v>
-<v t="ekr.20131213135427.21897"><vh>@item *&amp;reformat-paragraph</vh></v>
-<v t="ekr.20131213135427.21898"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21899"><vh>@item *&amp;indent-region</vh></v>
-<v t="ekr.20131213135427.21900"><vh>@item *&amp;unindent-region</vh></v>
-<v t="ekr.20131213135427.21901"><vh>@item *&amp;match-brackets</vh></v>
-<v t="ekr.20131213135427.21902"><vh>@item *&amp;add-comments</vh></v>
-<v t="ekr.20131213135427.21903"><vh>@item *&amp;delete-comments</vh></v>
+<v t="ekr.20131213135427.21882"><vh>@item &amp;cut-text</vh></v>
+<v t="ekr.20131213135427.21883"><vh>@item &amp;copy-text</vh></v>
+<v t="ekr.20131213135427.21884"><vh>@item &amp;paste-text</vh></v>
+<v t="ekr.20131213135427.21886"><vh>@item &amp;select-all</vh></v>
+<v t="ekr.20180403115138.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22260"><vh>@menu &amp;Check Spelling</vh>
+<v t="ekr.20131213135427.22261"><vh>@item &amp;spell-tab-open</vh></v>
+<v t="ekr.20131213135427.22262"><vh>@item spell-&amp;change</vh></v>
+<v t="ekr.20131213135427.22263"><vh>@item spell-change-&amp;then-find</vh></v>
+<v t="ekr.20131213135427.22264"><vh>@item spell-&amp;find</vh></v>
+<v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
 </v>
-<v t="ekr.20131213135427.21904"><vh>@menu Edit &amp;Headline</vh>
-<v t="ekr.20131213135427.21905"><vh>@item *edit-&amp;headline</vh></v>
-<v t="ekr.20131213135427.21906"><vh>@item *&amp;end-edit-headline</vh></v>
-<v t="ekr.20131213135427.21907"><vh>@item *&amp;abort-edit-headline</vh></v>
-<v t="ekr.20131213135427.21908"><vh>@item *insert-headline-&amp;time</vh></v>
-<v t="ekr.20131213135427.21909"><vh>@item *toggle-&amp;angle-brackets</vh></v>
+<v t="ekr.20131213135427.21904"><vh>@menu &amp;Edit Headline</vh>
+<v t="ekr.20131213135427.21905"><vh>@item edit-&amp;headline</vh></v>
+<v t="ekr.20131213135427.21906"><vh>@item &amp;end-edit-headline</vh></v>
+<v t="ekr.20131213135427.21907"><vh>@item &amp;abort-edit-headline</vh></v>
+<v t="ekr.20131213135427.21908"><vh>@item insert-headline-&amp;time</vh></v>
 </v>
-<v t="ekr.20131213135427.21910"><vh>@item *&amp;goto-global-line</vh></v>
-<v t="ekr.20131213135427.21911"><vh>@item *&amp;execute-script</vh></v>
-<v t="ekr.20131213135427.21912"><vh>@item toggle-invisibles</vh></v>
+<v t="ekr.20131213135427.22266"><vh>@menu &amp;Edit Text</vh>
+<v t="ekr.20131213135427.21885"><vh>@item &amp;backward-delete-char</vh></v>
+<v t="ekr.20180403154327.1"><vh>@item -</vh></v>
+<v t="ekr.20180403114818.1"><vh>@menu &amp;Add/Delete Comments</vh>
+<v t="ekr.20131213135427.21902"><vh>@item &amp;add-comments</vh></v>
+<v t="ekr.20131213135427.21903"><vh>@item &amp;delete-comments</vh></v>
 </v>
-<v t="ekr.20131213135427.21913"><vh>@menu &amp;Search</vh>
-<v t="ekr.20131213135427.21914"><vh>@item *help-for-find-commands</vh></v>
-<v t="ekr.20131213135427.21915"><vh>@item *start-search</vh></v>
-<v t="ekr.20131213135427.21916"><vh>@@@item find-tab-hide</vh></v>
-<v t="ekr.20131213135427.21917"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21918"><vh>@item *find-&amp;next</vh></v>
-<v t="ekr.20131213135427.21919"><vh>@item *find-&amp;prev</vh></v>
-<v t="ekr.20131213135427.21920"><vh>@item *&amp;replace</vh></v>
-<v t="ekr.20131213135427.21921"><vh>@item *replace-&amp;then-find</vh></v>
-<v t="ekr.20131213135427.21922"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21923"><vh>@item *find-&amp;all</vh></v>
-<v t="ekr.20131213135427.21924"><vh>@item *clone-fi&amp;nd-all</vh></v>
-<v t="ekr.20131213135427.21925"><vh>@item *replace-a&amp;ll</vh></v>
-<v t="ekr.20131213135427.21926"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21927"><vh>@item toggle-find-ignore-case-option</vh></v>
-<v t="ekr.20131213135427.21928"><vh>@item toggle-find-mark-changes-option</vh></v>
-<v t="ekr.20131213135427.21929"><vh>@item toggle-find-mark-finds-option</vh></v>
-<v t="ekr.20131213135427.21930"><vh>@item toggle-find-regex-option</vh></v>
-<v t="ekr.20131213135427.21931"><vh>@item toggle-find-word-option</vh></v>
-<v t="ekr.20131213135427.21932"><vh>@item toggle-find-wrap-around-option</vh></v>
-<v t="ekr.20131213135427.21933"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21934"><vh>@item set-find-everywhere</vh></v>
-<v t="ekr.20131213135427.21935"><vh>@item set-find-node-only</vh></v>
-<v t="ekr.20131213135427.21936"><vh>@item set-find-suboutline-only</vh></v>
-<v t="ekr.20131213135427.21937"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21938"><vh>@item *&amp;find-character</vh></v>
-<v t="ekr.20131213135427.21939"><vh>@item find-character-extend-&amp;selection</vh></v>
-<v t="ekr.20131213135427.21940"><vh>@item backward-find-character</vh></v>
-<v t="ekr.20131213135427.21941"><vh>@item backward-find-character-&amp;extend-selection</vh></v>
-<v t="ekr.20131213135427.21942"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21943"><vh>@item *&amp;isearch-forward</vh></v>
-<v t="ekr.20131213135427.21944"><vh>@item *isea&amp;rch-backward</vh></v>
-<v t="ekr.20131213135427.21945"><vh>@item *isearch-forward-rege&amp;xp</vh></v>
-<v t="ekr.20131213135427.21946"><vh>@item *isearch-backward-regex&amp;p</vh></v>
-<v t="ekr.20131213135427.21947"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21948"><vh>@@item *&amp;query-replace</vh></v>
-<v t="ekr.20131213135427.21949"><vh>@@item *q&amp;uery-replace-regex</vh></v>
-<v t="ekr.20131213135427.21950"><vh>Proper names</vh></v>
+<v t="ekr.20180403104616.1"><vh>@menu &amp;Align text</vh>
+<v t="ekr.20131213135427.22270"><vh>@item center-&amp;line</vh></v>
+<v t="ekr.20131213135427.22271"><vh>@item center-&amp;region</vh></v>
 </v>
-<v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
-<v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
-<v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
-<v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
-<v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
-<v t="ekr.20171229135829.1"><vh>@item reload-all-settings</vh></v>
-<v t="ekr.20171229135843.1"><vh>@item reload-settings</vh></v>
-<v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
-<v t="tbrown.20140814090009.57475"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21957"><vh>@item *pri&amp;nt-bindings</vh></v>
-<v t="ekr.20131213135427.21958"><vh>@item *print-c&amp;ommands</vh></v>
-<v t="ekr.20131213135427.21959"><vh>@item *print-&amp;plugins-info</vh></v>
-<v t="ekr.20131213135427.21960"><vh>@item *print-&amp;settings</vh></v>
-<v t="ekr.20131215083347.18154"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
-<v t="ekr.20131213135427.22290"><vh>@item toggle-call&amp;tips</vh></v>
-<v t="ekr.20131213135427.22291"><vh>@item toggle-&amp;extend-mode</vh></v>
-<v t="ekr.20131213135427.22292"><vh>@item toggle-input-&amp;state</vh></v>
-<v t="ekr.20131213135427.22293"><vh>@item toggle-in&amp;visibles</vh></v>
-<v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
-<v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
+<v t="ekr.20180403104558.1"><vh>@menu &amp;Beautify Text</vh>
+<v t="ekr.20170316105542.1"><vh>@item beautify-&amp;c</vh></v>
+<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-node</vh></v>
+<v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;tree</vh></v>
 </v>
-<v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
-<v t="ekr.20131213135427.21962"><vh>@item *c&amp;ut-node</vh></v>
-<v t="ekr.20131213135427.21963"><vh>@item *c&amp;opy-node</vh></v>
-<v t="ekr.20131213135427.21964"><vh>@item *&amp;paste-node</vh></v>
-<v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
-<v t="ekr.20131213135427.21966"><vh>@item *&amp;delete-node</vh></v>
-<v t="ekr.20131213135427.21967"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21968"><vh>@item *&amp;insert-node</vh></v>
-<v t="ekr.20131213135427.21969"><vh>@item *insert-child</vh></v>
-<v t="ekr.20131213135427.21970"><vh>@item *&amp;clone-node</vh></v>
-<v t="ekr.20131213135427.21971"><vh>@item *sort-childre&amp;n</vh></v>
-<v t="ekr.20131213135427.21972"><vh>@item *&amp;sort-siblings</vh></v>
-<v t="ekr.20131213135427.21973"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21974"><vh>@item *&amp;hoist</vh></v>
-<v t="ekr.20131213135427.21975"><vh>@item de-hoist</vh></v>
-<v t="ekr.20131213135427.21976"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21977"><vh>@menu Chec&amp;k</vh>
-<v t="ekr.20131213135427.21978"><vh>@item *check-&amp;outline</vh></v>
-<v t="ekr.20131213135427.21979"><vh>@item *&amp;dump-outline</vh></v>
-<v t="ekr.20131213135427.21980"><vh>@@item -</vh></v>
-<v t="ekr.20131213135427.21981"><vh>@@item *check-&amp;all-python-code</vh></v>
-<v t="ekr.20131213135427.21982"><vh>@@item *&amp;check-python-code</vh></v>
+<v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize Text</vh>
+<v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
+<v t="ekr.20131213135427.22277"><vh>@item d&amp;owncase-region</vh></v>
+<v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
+<v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
+<v t="ekr.20131213135427.22275"><vh>@item &amp;upcase-word</vh></v>
 </v>
-<v t="ekr.20131213135427.21983"><vh>@menu E&amp;xpand/Contract</vh>
-<v t="ekr.20131213135427.21984"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
-<v t="ekr.20131213135427.21985"><vh>@item *&amp;contract-all</vh></v>
-<v t="ekr.20131213135427.21986"><vh>@item *contract-all-o&amp;ther-nodes</vh></v>
-<v t="ekr.20131213135427.21987"><vh>@item *contract-&amp;node</vh></v>
-<v t="ekr.20131213135427.21988"><vh>@item *contract-&amp;parent</vh></v>
-<v t="ekr.20131213135427.21989"><vh>@item *contract-or-go-&amp;left</vh></v>
-<v t="ekr.20131213135427.21990"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21991"><vh>@item *expand-p&amp;rev-level</vh></v>
-<v t="ekr.20131213135427.21992"><vh>@item *expand-n&amp;ext-level</vh></v>
-<v t="ekr.20131213135427.21993"><vh>@item *e&amp;xpand-and-go-right</vh></v>
-<v t="ekr.20131213135427.21994"><vh>@item *expan&amp;d-or-go-right</vh></v>
-<v t="ekr.20131213135427.21995"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21996"><vh>@item *expand-to-level-&amp;1</vh></v>
-<v t="ekr.20131213135427.21997"><vh>@item *expand-to-level-&amp;2</vh></v>
-<v t="ekr.20131213135427.21998"><vh>@item *expand-to-level-&amp;3</vh></v>
-<v t="ekr.20131213135427.21999"><vh>@item *expand-to-level-&amp;4</vh></v>
-<v t="ekr.20131213135427.22000"><vh>@item *expand-to-level-&amp;5</vh></v>
-<v t="ekr.20131213135427.22001"><vh>@item *expand-to-level-&amp;6</vh></v>
-<v t="ekr.20131213135427.22002"><vh>@item *expand-to-level-&amp;7</vh></v>
-<v t="ekr.20131213135427.22003"><vh>@item *expand-to-level-&amp;8</vh></v>
-<v t="ekr.20131213135427.22004"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22005"><vh>@item *expand-&amp;all</vh></v>
-<v t="ekr.20131213135427.22006"><vh>@item *expand-n&amp;ode</vh></v>
+<v t="ekr.20180403114558.1"><vh>@menu &amp;Convert/View Tabs Or Blanks</vh>
+<v t="ekr.20131213135427.21892"><vh>@item convert-all-b&amp;lanks</vh></v>
+<v t="ekr.20131213135427.21893"><vh>@item convert-all-t&amp;abs</vh></v>
+<v t="ekr.20131213135427.21894"><vh>@item convert-&amp;blanks</vh></v>
+<v t="ekr.20131213135427.21895"><vh>@item convert-&amp;tabs</vh></v>
+<v t="ekr.20131213135427.21912"><vh>@item &amp;toggle-invisibles</vh></v>
 </v>
-<v t="ekr.20131213135427.22007"><vh>@menu &amp;Move</vh>
-<v t="ekr.20131213135427.22008"><vh>@item move-outline-down</vh></v>
-<v t="ekr.20131213135427.22009"><vh>@item move-outline-left</vh></v>
-<v t="ekr.20131213135427.22010"><vh>@item move-outline-right</vh></v>
-<v t="ekr.20131213135427.22011"><vh>@item move-outline-up</vh></v>
-<v t="ekr.20131213135427.22012"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22013"><vh>@item *&amp;promote</vh></v>
-<v t="ekr.20131213135427.22014"><vh>@item *&amp;demote</vh></v>
+<v t="ekr.20180403114533.1"><vh>@menu &amp;Create Sections</vh>
+<v t="ekr.20131213135427.21889"><vh>@item extract-&amp;names</vh></v>
+<v t="ekr.20131213135427.21890"><vh>@item &amp;extract</vh></v>
 </v>
-<v t="ekr.20131213135427.22015"><vh>@menu M&amp;ark</vh>
-<v t="ekr.20131213135427.22016"><vh>@item *clone-marked-nodes</vh></v>
-<v t="ekr.20131213135427.22017"><vh>@item *&amp;mark</vh></v>
-<v t="ekr.20131213135427.22018"><vh>@item *mark-&amp;subheads</vh></v>
-<v t="ekr.20131213135427.22019"><vh>@item *mark-changed-&amp;items</vh></v>
-<v t="ekr.20131213135427.22020"><vh>@item *&amp;unmark-all</vh></v>
+<v t="ekr.20131213135427.22205"><vh>@menu &amp;Edit Rectangular Areas</vh>
+<v t="ekr.20131213135427.22206"><vh>@item rectangle-&amp;clear</vh></v>
+<v t="ekr.20131213135427.22207"><vh>@item rectangle-&amp;close</vh></v>
+<v t="ekr.20131213135427.22208"><vh>@item rectangle-&amp;delete</vh></v>
+<v t="ekr.20131213135427.22209"><vh>@item rectangle-&amp;kill</vh></v>
+<v t="ekr.20131213135427.22210"><vh>@item rectangle-&amp;open</vh></v>
+<v t="ekr.20131213135427.22211"><vh>@item rectangle-&amp;string</vh></v>
+<v t="ekr.20131213135427.22212"><vh>@item rectangle-&amp;yank</vh></v>
 </v>
-<v t="ekr.20131213135427.22021"><vh>@menu &amp;Go To</vh>
-<v t="ekr.20131213135427.22022"><vh>@item find-next-clone</vh></v>
-<v t="ekr.20131213135427.22023"><vh>@item goto-first-node</vh></v>
-<v t="ekr.20131213135427.22024"><vh>@item goto-first-visible-node</vh></v>
-<v t="ekr.20131213135427.22025"><vh>@item goto-first-sibling</vh></v>
-<v t="ekr.20131213135427.22026"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22027"><vh>@item goto-next-changed</vh></v>
-<v t="ekr.20131213135427.22028"><vh>@item goto-next-clone</vh></v>
-<v t="ekr.20131213135427.22029"><vh>@item goto-next-marked</vh></v>
-<v t="ekr.20131213135427.22030"><vh>@item goto-next-node</vh></v>
-<v t="ekr.20131213135427.22031"><vh>@item goto-next-sibling</vh></v>
-<v t="ekr.20131213135427.22032"><vh>@item goto-next-visible</vh></v>
-<v t="ekr.20131213135427.22033"><vh>@item go-forward</vh></v>
-<v t="ekr.20131213135427.22034"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22035"><vh>@item goto-parent</vh></v>
-<v t="ekr.20131213135427.22036"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22037"><vh>@item goto-prev-node</vh></v>
-<v t="ekr.20131213135427.22038"><vh>@item goto-prev-sibling</vh></v>
-<v t="ekr.20131213135427.22039"><vh>@item goto-prev-visible</vh></v>
-<v t="ekr.20131213135427.22040"><vh>@item go-back</vh></v>
-<v t="ekr.20131213135427.22041"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22042"><vh>@item goto-last-node</vh></v>
-<v t="ekr.20131213135427.22043"><vh>@item goto-last-sibling</vh></v>
-<v t="ekr.20131213135427.22044"><vh>@item goto-last-visible-node</vh></v>
+<v t="ekr.20180403104732.1"><vh>@menu &amp;Indent Text</vh>
+<v t="ekr.20131213135427.22282"><vh>@item indent-ri&amp;gidly</vh></v>
+<v t="ekr.20131213135427.22280"><vh>@item &amp;indent-region</vh></v>
+<v t="ekr.20131213135427.22281"><vh>@item indent-r&amp;elative</vh></v>
+<v t="ekr.20131213135427.22283"><vh>@item u&amp;nindent-region</vh></v>
 </v>
-</v>
-<v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
-<v t="ekr.20131213135427.22046"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20131213135427.22047"><vh>@item print-plugins-info</vh></v>
-<v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
-</v>
-<v t="ekr.20131213135427.22049"><vh>@menu &amp;Cmds</vh>
-<v t="ekr.20131213135427.22050"><vh>@menu &amp;Abbrev</vh>
-<v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
-<v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
-</v>
-<v t="ekr.20131213135427.22060"><vh>@menu &amp;Body Editors</vh>
-<v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
-<v t="ekr.20131213135427.22062"><vh>@item &amp;cycle-editor-focus</vh></v>
-<v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
-</v>
-<v t="ekr.20131213135427.22072"><vh>@menu &amp;Chapters</vh>
-<v t="ekr.20131213135427.22078"><vh>@item chapter-&amp;select</vh></v>
-<v t="ekr.20170123145248.1"><vh>@item chapter-select-&amp;main</vh></v>
-</v>
-<v t="ekr.20131213135427.22079"><vh>@menu Cursor/Selection</vh>
+<v t="ekr.20131213135427.22079"><vh>@menu &amp;Move Cursor And Make Selections</vh>
+<v t="ekr.20131213135427.21901"><vh>@item &amp;match-brackets</vh></v>
+<v t="ekr.20180403154314.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22080"><vh>@menu Cursor &amp;Back</vh>
 <v t="ekr.20131213135427.22081"><vh>@item back-&amp;char</vh></v>
 <v t="ekr.20131213135427.22082"><vh>@item back-&amp;paragraph</vh></v>
@@ -1963,131 +1238,12 @@
 <v t="ekr.20131213135427.22126"><vh>@item &amp;next-line-extend-selection</vh></v>
 </v>
 </v>
-<v t="ekr.20131213135427.22127"><vh>@menu &amp;Debugging</vh>
-<v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
-<v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
-<v t="ekr.20131213135427.22130"><vh>@item open-python-window</vh></v>
-<v t="ekr.20131213135427.22131"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
-<v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
-<v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
-<v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
-<v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
-<v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
-<v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
-</v>
-<v t="ekr.20131213135427.22139"><vh>@menu &amp;Files and Directories</vh>
-<v t="ekr.20131213135427.22140"><vh>@item directory-&amp;make</vh></v>
-<v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
-<v t="ekr.20131213135427.22142"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22143"><vh>@item open-&amp;cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22144"><vh>@item open-leo-&amp;docs-leo</vh></v>
-<v t="ekr.20131213135427.22145"><vh>@item open-leo-&amp;plugins-leo</vh></v>
-<v t="ekr.20131213135427.22146"><vh>@item open-&amp;quickstart-leo</vh></v>
-<v t="ekr.20131213135427.22147"><vh>@item open-&amp;scripts-leo</vh></v>
-<v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
-<v t="ekr.20131213135427.22150"><vh>@item file-&amp;delete</vh></v>
-<v t="ekr.20131213135427.22151"><vh>@item file-diff-&amp;files</vh></v>
-<v t="ekr.20131213135427.22152"><vh>@item file-&amp;insert</vh></v>
-<v t="ekr.20131213135427.22153"><vh>@item file-&amp;open-by-name</vh></v>
-<v t="ekr.20131213135427.22154"><vh>@item file-&amp;save</vh></v>
-</v>
-<v t="ekr.20131213135427.22177"><vh>@menu &amp;Icons</vh>
-<v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
-<v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
-<v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
-<v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
-</v>
-<v t="ekr.20131213135427.22194"><vh>@menu Minibuffer</vh>
-<v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
-<v t="ekr.20131213135427.22196"><vh>@item keyboard-&amp;quit</vh></v>
-<v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
-<v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
-<v t="ekr.20131213135427.22199"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22200"><vh>@item &amp;help-for-minibuffer</vh></v>
-</v>
-<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pickers</vh>
-<v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
-<v t="ekr.20131213135427.22203"><vh>@item show-find-&amp;options</vh></v>
-<v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
-</v>
-<v t="ekr.20131213135427.22205"><vh>@menu &amp;Rectangles</vh>
-<v t="ekr.20131213135427.22206"><vh>@item rectangle-&amp;clear</vh></v>
-<v t="ekr.20131213135427.22207"><vh>@item rectangle-&amp;close</vh></v>
-<v t="ekr.20131213135427.22208"><vh>@item rectangle-&amp;delete</vh></v>
-<v t="ekr.20131213135427.22209"><vh>@item rectangle-&amp;kill</vh></v>
-<v t="ekr.20131213135427.22210"><vh>@item rectangle-&amp;open</vh></v>
-<v t="ekr.20131213135427.22211"><vh>@item rectangle-&amp;string</vh></v>
-<v t="ekr.20131213135427.22212"><vh>@item rectangle-&amp;yank</vh></v>
-</v>
-<v t="ekr.20131213135427.22223"><vh>@menu Rst commands</vh>
-<v t="ekr.20131213135427.22224"><vh>@item &amp;code-to-rst</vh></v>
-<v t="ekr.20131213135427.22225"><vh>@item &amp;rst3</vh></v>
-</v>
-<v t="ekr.20131213135427.22226"><vh>@menu Run Script/Tests</vh>
-<v t="ekr.20131213135427.22227"><vh>@item &amp;execute-script</vh></v>
-<v t="ekr.20131213135427.22228"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22229"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22230"><vh>@item run-&amp;marked-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22231"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
-<v t="ekr.20131213135427.22232"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22233"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22234"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
-<v t="ekr.20131213135427.22235"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
-</v>
-<v t="ekr.20131213135427.22236"><vh>@menu &amp;Scrolling</vh>
-<v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
-<v t="ekr.20131213135427.22238"><vh>@item scroll-outline-down-&amp;page</vh></v>
-<v t="ekr.20131213135427.22239"><vh>@item scroll-outline-le&amp;ft</vh></v>
-<v t="ekr.20131213135427.22240"><vh>@item scroll-outline-&amp;right</vh></v>
-<v t="ekr.20131213135427.22241"><vh>@item s&amp;croll-outline-up-line</vh></v>
-<v t="ekr.20131213135427.22242"><vh>@item scr&amp;oll-outline-up-page</vh></v>
-<v t="ekr.20131213135427.22243"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22244"><vh>@item scroll-down-half-page</vh></v>
-<v t="ekr.20131213135427.22245"><vh>@item scroll-down-line</vh></v>
-<v t="ekr.20131213135427.22246"><vh>@item scroll-&amp;down-page</vh></v>
-<v t="ekr.20131213135427.22247"><vh>@item scroll-up-half-page</vh></v>
-<v t="ekr.20131213135427.22248"><vh>@item scroll-up-line</vh></v>
-<v t="ekr.20131213135427.22249"><vh>@item scroll-&amp;up-page</vh></v>
-</v>
-<v t="ekr.20131213135427.22257"><vh>@menu Shell</vh>
-<v t="ekr.20131213135427.22258"><vh>@item shell-command</vh></v>
-<v t="ekr.20131213135427.22259"><vh>@item shell-command-on-region</vh></v>
-</v>
-<v t="ekr.20131213135427.22260"><vh>@menu Spell C&amp;heck</vh>
-<v t="ekr.20131213135427.22261"><vh>@item &amp;spell-tab-open</vh></v>
-<v t="ekr.20131213135427.22262"><vh>@item spell-&amp;change</vh></v>
-<v t="ekr.20131213135427.22263"><vh>@item spell-change-&amp;then-find</vh></v>
-<v t="ekr.20131213135427.22264"><vh>@item spell-&amp;find</vh></v>
-<v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
-</v>
-<v t="ekr.20131213135427.22266"><vh>@menu &amp;Text Commands</vh>
-<v t="ekr.20170316105542.1"><vh>@item beautify-&amp;c</vh></v>
-<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-node</vh></v>
-<v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;tree</vh></v>
-<v t="ekr.20131213135427.22269"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22270"><vh>@item center-&amp;line</vh></v>
-<v t="ekr.20131213135427.22271"><vh>@item center-&amp;region</vh></v>
-<v t="ekr.20131213135427.22272"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
-<v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
-<v t="ekr.20131213135427.22275"><vh>@item &amp;upcase-word</vh></v>
-<v t="ekr.20131213135427.22276"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22277"><vh>@item d&amp;owncase-region</vh></v>
-<v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
-<v t="ekr.20131213135427.22279"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22280"><vh>@item &amp;indent-region</vh></v>
-<v t="ekr.20131213135427.22281"><vh>@item indent-r&amp;elative</vh></v>
-<v t="ekr.20131213135427.22282"><vh>@item indent-ri&amp;gidly</vh></v>
-<v t="ekr.20131213135427.22283"><vh>@item u&amp;nindent-region</vh></v>
-<v t="ekr.20131213135427.22284"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22285"><vh>@item sort-colu&amp;mns</vh></v>
+<v t="ekr.20180403104643.1"><vh>@menu &amp;Sort Text</vh>
+<v t="ekr.20131213135427.22285"><vh>@item sort-&amp;columns</vh></v>
 <v t="ekr.20131213135427.22286"><vh>@item sort-&amp;fields</vh></v>
-<v t="ekr.20131213135427.22287"><vh>@item &amp;sort-lines</vh></v>
+<v t="ekr.20131213135427.22287"><vh>@item sort-&amp;lines</vh></v>
 </v>
-<v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank And Kill</vh>
+<v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank/Kill Text</vh>
 <v t="ekr.20131213135427.22308"><vh>@item &amp;rectangle-kill</vh></v>
 <v t="ekr.20131213135427.22309"><vh>@item r&amp;ectangle-yank</vh></v>
 <v t="ekr.20131213135427.22310"><vh>@item -</vh></v>
@@ -2102,33 +1258,278 @@
 <v t="ekr.20131213135427.22319"><vh>@item yank-&amp;pop</vh></v>
 </v>
 </v>
-<v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
-<v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
-<v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
-<v t="ekr.20170509122306.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
-<v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
-<v t="ekr.20170509103245.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103101.1"><vh>@menu &amp;Expand Or Contract</vh>
-<v t="ekr.20131213135427.22325"><vh>@item *contract-&amp;body-pane</vh></v>
-<v t="ekr.20131213135427.22326"><vh>@item *contract-&amp;log-pane</vh></v>
-<v t="ekr.20131213135427.22327"><vh>@item *contract-&amp;outline-pane</vh></v>
-<v t="ekr.20131213135427.22328"><vh>@item *contract-&amp;pane</vh></v>
-<v t="ekr.20131213135427.22329"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22330"><vh>@item *expand-bo&amp;dy-pane</vh></v>
-<v t="ekr.20131213135427.22331"><vh>@item *expand-lo&amp;g-pane</vh></v>
-<v t="ekr.20131213135427.22332"><vh>@item *expand-o&amp;utline-pane</vh></v>
-<v t="ekr.20131213135427.22333"><vh>@item *expand-pa&amp;ne</vh></v>
-<v t="ekr.20131213135427.22334"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22335"><vh>@item *&amp;fully-expand-body-pane</vh></v>
-<v t="ekr.20131213135427.22336"><vh>@item *full&amp;y-expand-log-pane</vh></v>
-<v t="ekr.20131213135427.22337"><vh>@item *fully-e&amp;xpand-outline-pane</vh></v>
-<v t="ekr.20131213135427.22338"><vh>@item *fully-exp&amp;and-pane</vh></v>
+<v t="ekr.20131213135427.22223"><vh>@menu &amp;Format Text</vh>
+<v t="ekr.20131213135427.22224"><vh>@item &amp;code-to-rst</vh></v>
+<v t="ekr.20131213135427.21896"><vh>@item &amp;insert-body-&amp;time</vh></v>
+<v t="ekr.20131213135427.21897"><vh>@item &amp;reformat-paragraph</vh></v>
+<v t="ekr.20131213135427.22225"><vh>@item &amp;rst3</vh></v>
 </v>
-<v t="ekr.20170509103221.1"><vh>@menu &amp;Focus</vh>
-<v t="ekr.20131213135427.22156"><vh>@@@item &amp;cycle-all-focus</vh></v>
-<v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
+<v t="ekr.20131213135427.22072"><vh>@menu &amp;Select Chapters</vh>
+<v t="ekr.20131213135427.22078"><vh>@item chapter-&amp;select</vh></v>
+<v t="ekr.20170123145248.1"><vh>@item chapter-select-&amp;main</vh></v>
+</v>
+</v>
+<v t="ekr.20131213135427.21913"><vh>@menu &amp;Search</vh>
+<v t="ekr.20131213135427.21914"><vh>@item help-for-find-commands</vh></v>
+<v t="ekr.20180403120838.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21910"><vh>@item &amp;goto-global-line</vh></v>
+<v t="ekr.20131213135427.21915"><vh>@item start-search</vh></v>
+<v t="ekr.20131213135427.21918"><vh>@item find-&amp;next</vh></v>
+<v t="ekr.20131213135427.21919"><vh>@item find-&amp;prev</vh></v>
+<v t="ekr.20131213135427.21920"><vh>@item &amp;replace</vh></v>
+<v t="ekr.20131213135427.21921"><vh>@item replace-&amp;then-find</vh></v>
+<v t="ekr.20131213135427.21925"><vh>@item replace-a&amp;ll</vh></v>
+<v t="ekr.20131213135427.22203"><vh>@item show-find-&amp;options</vh></v>
+<v t="ekr.20180403153949.1"><vh>@item -</vh></v>
+<v t="ekr.20180403115620.1"><vh>@menu &amp;Clone-Find Commands</vh>
+<v t="ekr.20131213135427.21923"><vh>@item clone-find-all</vh></v>
+<v t="ekr.20180403115639.1"><vh>@item clone-find-all-flattened</vh></v>
+<v t="ekr.20180403115721.1"><vh>@item clone-find-all-flattened-marked</vh></v>
+<v t="ekr.20180403115738.1"><vh>@item clone-find-parents</vh></v>
+<v t="ekr.20180403115745.1"><vh>@item clone-find-tag</vh></v>
+</v>
+<v t="ekr.20180403115320.1"><vh>@menu &amp;Set Search Settings</vh>
+<v t="ekr.20131213135427.21934"><vh>@item &amp;set-find-everywhere</vh></v>
+<v t="ekr.20131213135427.21935"><vh>@item &amp;set-find-node-only</vh></v>
+<v t="ekr.20131213135427.21936"><vh>@item &amp;set-find-suboutline-only</vh></v>
+<v t="ekr.20131213135427.21933"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21927"><vh>@item &amp;toggle-find-ignore-case-option</vh></v>
+<v t="ekr.20131213135427.21928"><vh>@item &amp;toggle-find-mark-changes-option</vh></v>
+<v t="ekr.20131213135427.21929"><vh>@item &amp;toggle-find-mark-finds-option</vh></v>
+<v t="ekr.20131213135427.21930"><vh>@item &amp;toggle-find-regex-option</vh></v>
+<v t="ekr.20131213135427.21931"><vh>@item &amp;toggle-find-word-option</vh></v>
+<v t="ekr.20131213135427.21932"><vh>@item &amp;toggle-find-wrap-around-option</vh></v>
+</v>
+<v t="ekr.20180403115410.1"><vh>@menu &amp;Find One Character</vh>
+<v t="ekr.20131213135427.21938"><vh>@item &amp;find-character</vh></v>
+<v t="ekr.20131213135427.21939"><vh>@item &amp;find-character-extend-selection</vh></v>
+<v t="ekr.20131213135427.21940"><vh>@item &amp;backward-find-character</vh></v>
+<v t="ekr.20131213135427.21941"><vh>@item &amp;backward-find-character-extend-selection</vh></v>
+</v>
+<v t="ekr.20180403115435.1"><vh>@menu &amp;Find Incrementally</vh>
+<v t="ekr.20131213135427.21943"><vh>@item &amp;isearch-forward</vh></v>
+<v t="ekr.20131213135427.21944"><vh>@item isea&amp;rch-backward</vh></v>
+<v t="ekr.20131213135427.21945"><vh>@item isearch-forward-rege&amp;xp</vh></v>
+<v t="ekr.20131213135427.21946"><vh>@item isearch-backward-regex&amp;p</vh></v>
+</v>
+</v>
+<v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings</vh></v>
+<v t="ekr.20131213135427.21954"><vh>@item open-my-leo-settings</vh></v>
+<v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
+<v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
+<v t="ekr.20180405110859.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
+<v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
+<v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
+</v>
+<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors/Fonts</vh>
+<v t="ekr.20131213135427.22202"><vh>@item show-color-&amp;names</vh></v>
+<v t="ekr.20180406013812.1"><vh>@item show-color-&amp;wheel</vh></v>
+<v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
+</v>
+<v t="ekr.20180403122225.1"><vh>@menu &amp;Reload Settings</vh>
+<v t="ekr.20171229135829.1"><vh>@item reload-all-settings</vh></v>
+<v t="ekr.20171229135843.1"><vh>@item reload-settings</vh></v>
+<v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
+</v>
+<v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
+<v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
+<v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
+<v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
+</v>
+<v t="ekr.20131215083347.18154"><vh>@menu &amp;Toggle Settings</vh>
+<v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
+<v t="ekr.20131213135427.22290"><vh>@item toggle-call&amp;tips</vh></v>
+<v t="ekr.20131213135427.22291"><vh>@item toggle-&amp;extend-mode</vh></v>
+<v t="ekr.20131213135427.22292"><vh>@item toggle-input-&amp;state</vh></v>
+<v t="ekr.20131213135427.22293"><vh>@item toggle-in&amp;visibles</vh></v>
+<v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
+<v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
+</v>
+<v t="lkj.20190714020301.1"><vh>@item open-desktop-integration-leo</vh></v>
+</v>
+<v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
+<v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
+<v t="ekr.20131213135427.21966"><vh>@item &amp;delete-node</vh></v>
+<v t="ekr.20131213135427.21968"><vh>@item &amp;insert-node</vh></v>
+<v t="ekr.20131213135427.21969"><vh>@item insert-child</vh></v>
+<v t="ekr.20191008030417.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21962"><vh>@item c&amp;ut-node</vh></v>
+<v t="ekr.20131213135427.21963"><vh>@item c&amp;opy-node</vh></v>
+<v t="ekr.20131213135427.21964"><vh>@item &amp;paste-node</vh></v>
+<v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
+<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22014"><vh>@item demote</vh></v>
+<v t="ekr.20131213135427.22013"><vh>@item promote</vh></v>
+<v t="ekr.20180405112755.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
+<v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
+<v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
+</v>
+<v t="ekr.20131213135427.21983"><vh>@menu &amp;Expand/Contract Nodes</vh>
+<v t="ekr.20131213135427.21984"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
+<v t="ekr.20131213135427.21985"><vh>@item &amp;contract-all</vh></v>
+<v t="ekr.20131213135427.21986"><vh>@item contract-all-o&amp;ther-nodes</vh></v>
+<v t="ekr.20131213135427.21987"><vh>@item contract-&amp;node</vh></v>
+<v t="ekr.20131213135427.21988"><vh>@item contract-&amp;parent</vh></v>
+<v t="ekr.20131213135427.21989"><vh>@item contract-or-go-&amp;left</vh></v>
+<v t="ekr.20131213135427.21990"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21991"><vh>@item expand-p&amp;rev-level</vh></v>
+<v t="ekr.20131213135427.21992"><vh>@item expand-n&amp;ext-level</vh></v>
+<v t="ekr.20131213135427.21993"><vh>@item e&amp;xpand-and-go-right</vh></v>
+<v t="ekr.20131213135427.21994"><vh>@item expan&amp;d-or-go-right</vh></v>
+<v t="ekr.20131213135427.21995"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21996"><vh>@item expand-to-level-&amp;1</vh></v>
+<v t="ekr.20131213135427.21997"><vh>@item expand-to-level-&amp;2</vh></v>
+<v t="ekr.20131213135427.21998"><vh>@item expand-to-level-&amp;3</vh></v>
+<v t="ekr.20131213135427.21999"><vh>@item expand-to-level-&amp;4</vh></v>
+<v t="ekr.20131213135427.22000"><vh>@item expand-to-level-&amp;5</vh></v>
+<v t="ekr.20131213135427.22001"><vh>@item expand-to-level-&amp;6</vh></v>
+<v t="ekr.20131213135427.22002"><vh>@item expand-to-level-&amp;7</vh></v>
+<v t="ekr.20131213135427.22003"><vh>@item expand-to-level-&amp;8</vh></v>
+<v t="ekr.20131213135427.22004"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22005"><vh>@item expand-&amp;all</vh></v>
+<v t="ekr.20131213135427.22006"><vh>@item expand-n&amp;ode</vh></v>
+</v>
+<v t="ekr.20131213135427.22021"><vh>@menu &amp;Go To Node</vh>
+<v t="ekr.20131213135427.22022"><vh>@item find-next-clone</vh></v>
+<v t="ekr.20131213135427.22023"><vh>@item goto-first-node</vh></v>
+<v t="ekr.20131213135427.22024"><vh>@item goto-first-visible-node</vh></v>
+<v t="ekr.20131213135427.22025"><vh>@item goto-first-sibling</vh></v>
+<v t="ekr.20131213135427.22026"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22027"><vh>@item goto-next-changed</vh></v>
+<v t="ekr.20131213135427.22028"><vh>@item goto-next-clone</vh></v>
+<v t="ekr.20131213135427.22029"><vh>@item goto-next-marked</vh></v>
+<v t="ekr.20131213135427.22030"><vh>@item goto-next-node</vh></v>
+<v t="ekr.20131213135427.22031"><vh>@item goto-next-sibling</vh></v>
+<v t="ekr.20131213135427.22032"><vh>@item goto-next-visible</vh></v>
+<v t="ekr.20131213135427.22033"><vh>@item go-forward</vh></v>
+<v t="ekr.20131213135427.22034"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22035"><vh>@item goto-parent</vh></v>
+<v t="ekr.20131213135427.22036"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22037"><vh>@item goto-prev-node</vh></v>
+<v t="ekr.20131213135427.22038"><vh>@item goto-prev-sibling</vh></v>
+<v t="ekr.20131213135427.22039"><vh>@item goto-prev-visible</vh></v>
+<v t="ekr.20131213135427.22040"><vh>@item go-back</vh></v>
+<v t="ekr.20131213135427.22041"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22042"><vh>@item goto-last-node</vh></v>
+<v t="ekr.20131213135427.22043"><vh>@item goto-last-sibling</vh></v>
+<v t="ekr.20131213135427.22044"><vh>@item goto-last-visible-node</vh></v>
+</v>
+<v t="ekr.20131213135427.21973"><vh>@menu &amp;Hoist/Dehoist nodes</vh>
+<v t="ekr.20131213135427.21974"><vh>@item &amp;hoist</vh></v>
+<v t="ekr.20131213135427.21975"><vh>@item de-hoist</vh></v>
+</v>
+<v t="ekr.20131213135427.22177"><vh>@menu &amp;Insert/Delete Icons</vh>
+<v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
+<v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
+<v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
+<v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
+</v>
+<v t="ekr.20131213135427.22015"><vh>@menu &amp;Mark Nodes</vh>
+<v t="ekr.20131213135427.22016"><vh>@item clone-marked-nodes</vh></v>
+<v t="ekr.20131213135427.22017"><vh>@item &amp;mark</vh></v>
+<v t="ekr.20131213135427.22018"><vh>@item mark-&amp;subheads</vh></v>
+<v t="ekr.20131213135427.22019"><vh>@item mark-changed-&amp;items</vh></v>
+<v t="ekr.20131213135427.22020"><vh>@item &amp;unmark-all</vh></v>
+</v>
+<v t="ekr.20131213135427.22007"><vh>@menu &amp;Move Nodes</vh>
+<v t="ekr.20131213135427.22008"><vh>@item move-outline-down</vh></v>
+<v t="ekr.20131213135427.22009"><vh>@item move-outline-left</vh></v>
+<v t="ekr.20131213135427.22010"><vh>@item move-outline-right</vh></v>
+<v t="ekr.20131213135427.22011"><vh>@item move-outline-up</vh></v>
+</v>
+<v t="ekr.20180403123734.1"><vh>@menu &amp;Sort Nodes</vh>
+<v t="ekr.20131213135427.21971"><vh>@item sort-childre&amp;n</vh></v>
+<v t="ekr.20131213135427.21972"><vh>@item &amp;sort-siblings</vh></v>
+</v>
+</v>
+<v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
+<v t="ekr.20131213135427.22046"><vh>@item open-leo-plugins-leo</vh></v>
+<v t="ekr.20131213135427.22047"><vh>@item show-plugins-info</vh></v>
+<v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
+</v>
+<v t="ekr.20180403122045.1"><vh>@menu Run</vh>
+<v t="ekr.20131213135427.22200"><vh>@item &amp;help-for-minibuffer</vh></v>
+<v t="ekr.20180403120726.1"><vh>@item &amp;execute-script</vh></v>
+<v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
+<v t="ekr.20131213135427.22196"><vh>@item &amp;keyboard-quit</vh></v>
+<v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
+<v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
+<v t="ekr.20180405112939.1"><vh>@item -</vh></v>
+<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
+<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
+<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
+<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
+<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
+<v t="ekr.20180405112923.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
+<v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
+<v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
+<v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
+<v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
+<v t="ekr.20131213135427.22136"><vh>@item gc-show-&amp;summary</vh></v>
+</v>
+<v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
+<v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
+<v t="ekr.20131213135427.22258"><vh>@item &amp;shell-command</vh></v>
+<v t="ekr.20131213135427.22259"><vh>@item &amp;shell-command-on-region</vh></v>
+</v>
+<v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
+<v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
+<v t="ekr.20131213135427.22129"><vh>@item pdb</vh></v>
+</v>
+<v t="ekr.20131213135427.22226"><vh>@menu &amp;Run Unit Tests</vh>
+<v t="ekr.20131213135427.22229"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
+<v t="ekr.20131213135427.22230"><vh>@item run-&amp;marked-unit-tests-locally</vh></v>
+<v t="ekr.20131213135427.22231"><vh>@item run-&amp;selected-unit-tests-locally</vh></v>
+<v t="ekr.20131213135427.22232"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22233"><vh>@item run-&amp;all-unit-tests-externally</vh></v>
+<v t="ekr.20131213135427.22234"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
+<v t="ekr.20131213135427.22235"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
+</v>
+</v>
+<v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
+<v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
+<v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
+<v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
+<v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
+<v t="ekr.20180403154533.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
+<v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
+<v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
+</v>
+<v t="ekr.20170509104949.1"><vh>@menu &amp;Window Layout</vh>
+<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20190724171032.1"><vh>@item -</vh></v>
+<v t="ekr.20190724173715.1"><vh>@item show-hide-body-dock</vh></v>
+<v t="ekr.20190724173724.1"><vh>@item show-hide-outline-dock</vh></v>
+<v t="ekr.20190724173733.1"><vh>@item show-hide-render-dock</vh></v>
+<v t="ekr.20190724171039.1"><vh>@item show-hide-tabs-dock</vh></v>
+</v>
+<v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
+<v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
+<v t="ekr.20131213135427.22238"><vh>@item scroll-outline-down-&amp;page</vh></v>
+<v t="ekr.20131213135427.22239"><vh>@item scroll-outline-le&amp;ft</vh></v>
+<v t="ekr.20131213135427.22240"><vh>@item scroll-outline-&amp;right</vh></v>
+<v t="ekr.20131213135427.22241"><vh>@item s&amp;croll-outline-up-line</vh></v>
+<v t="ekr.20131213135427.22242"><vh>@item scr&amp;oll-outline-up-page</vh></v>
+<v t="ekr.20131213135427.22243"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22244"><vh>@item scroll-down-half-page</vh></v>
+<v t="ekr.20131213135427.22245"><vh>@item scroll-down-line</vh></v>
+<v t="ekr.20131213135427.22246"><vh>@item scroll-&amp;down-page</vh></v>
+<v t="ekr.20131213135427.22247"><vh>@item scroll-up-half-page</vh></v>
+<v t="ekr.20131213135427.22248"><vh>@item scroll-up-line</vh></v>
+<v t="ekr.20131213135427.22249"><vh>@item scroll-&amp;up-page</vh></v>
+</v>
+<v t="ekr.20170509103221.1"><vh>@menu &amp;Set Focus</vh>
+<v t="ekr.20131213135427.22322"><vh>@item &amp;toggle-active-pane</vh></v>
 <v t="ekr.20170509104817.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
@@ -2137,58 +1538,40 @@
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
-<v t="ekr.20170509104949.1"><vh>@menu &amp;Layout</vh>
-<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
-<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
-</v>
-<v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide</vh>
-<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
-<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
-<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
-<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
-<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
-<v t="ekr.20170509104039.7"><vh>@item gui-&amp;toolbar-show</vh></v>
-<v t="ekr.20170509105101.1"><vh>@item -</vh></v>
-<v t="ekr.20170509103811.1"><vh>@item gui-&amp;all-hide</vh></v>
-<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
-<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
-<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
-<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
-<v t="ekr.20170509103944.1"><vh>@item gui-&amp;toolbar-hide</vh></v>
-<v t="ekr.20170509104140.1"><vh>@item -</vh></v>
-<v t="ekr.20170509104140.2"><vh>@item gui-&amp;all-toggle</vh></v>
-<v t="ekr.20170509104140.3"><vh>@item gui-&amp;iconbar-toggle</vh></v>
-<v t="ekr.20170509104140.4"><vh>@item gui-&amp;menu-toggle</vh></v>
-<v t="ekr.20170509104140.5"><vh>@item gui-&amp;minibuffer-toggle</vh></v>
-<v t="ekr.20170509104140.6"><vh>@item gui-&amp;statusbar-toggle</vh></v>
-<v t="ekr.20170509104140.7"><vh>@item gui-&amp;toolbar-toggle</vh></v>
-</v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
-<v t="ekr.20131213135427.22344"><vh>@item about-leo</vh></v>
-<v t="ekr.20131213135427.22345"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22346"><vh>@item open-online-home</vh></v>
-<v t="ekr.20131213135427.22347"><vh>@item open-online-toc</vh></v>
-<v t="ekr.20131213135427.22348"><vh>@item open-users-guide</vh></v>
-<v t="ekr.20131213135427.22349"><vh>@item open-online-tutorials</vh></v>
-<v t="ekr.20131213135427.22350"><vh>@item open-online-videos</vh></v>
-<v t="ekr.20131213135427.22351"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22353"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22354"><vh>@item open-leo-docs-leo</vh></v>
-<v t="ekr.20131213135427.22355"><vh>@item open-quickstart-leo</vh></v>
-<v t="ekr.20131213135427.22356"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22357"><vh>@item *help</vh></v>
-<v t="ekr.20131213135427.22358"><vh>@item *help-for-autocompletion</vh></v>
-<v t="ekr.20131213135427.22359"><vh>@item *help-for-&amp;bindings</vh></v>
-<v t="ekr.20131213135427.22360"><vh>@item *help-for-&amp;command</vh></v>
-<v t="ekr.20131215083347.18147"><vh>@item *help-for-creating-&amp;external-files</vh></v>
-<v t="ekr.20131213135427.22361"><vh>@item *help-for-&amp;debugging-commands</vh></v>
-<v t="ekr.20131213135427.22362"><vh>@item *help-for-&amp;find-commands</vh></v>
-<v t="ekr.20131213135427.22363"><vh>@item *help-for-&amp;minibuffer</vh></v>
-<v t="ekr.20131215083347.18148"><vh>@item *help-for-&amp;scripting</vh></v>
+<v t="ekr.20131213135427.22344"><vh>@item &amp;about-leo</vh></v>
+<v t="ekr.20180403154703.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22356"><vh>@menu &amp;Open Help topics</vh>
+<v t="ekr.20131213135427.22357"><vh>@item help</vh></v>
+<v t="ekr.20180403100653.1"><vh>@item help-for-&amp;abbreviations</vh></v>
+<v t="ekr.20131213135427.22358"><vh>@item help-for-&amp;autocompletion</vh></v>
+<v t="ekr.20131213135427.22359"><vh>@item help-for-&amp;bindings</vh></v>
+<v t="ekr.20131213135427.22360"><vh>@item help-for-&amp;command</vh></v>
+<v t="ekr.20131215083347.18147"><vh>@item help-for-&amp;creating-external-files</vh></v>
+<v t="ekr.20180403100719.1"><vh>@item help-for-&amp;drag-and-drop</vh></v>
+<v t="ekr.20131213135427.22361"><vh>@item help-for-&amp;debugging-commands</vh></v>
+<v t="ekr.20180403100800.1"><vh>@item help-for-&amp;dynamic-abbreviations</vh></v>
+<v t="ekr.20131213135427.22362"><vh>@item help-for-&amp;find-commands</vh></v>
+<v t="ekr.20180403100839.1"><vh>@item help-for-&amp;keystroke</vh></v>
+<v t="ekr.20131213135427.22363"><vh>@item help-for-&amp;minibuffer</vh></v>
+<v t="ekr.20180403100900.1"><vh>@item help-for-&amp;python</vh></v>
+<v t="ekr.20131215083347.18148"><vh>@item help-for-&amp;scripting</vh></v>
+<v t="ekr.20180403100919.1"><vh>@item help-for-&amp;regular-expressions</vh></v>
+<v t="ekr.20180403100935.1"><vh>@item help-for-&amp;settings</vh></v>
+</v>
+<v t="ekr.20180403124541.1"><vh>@menu &amp;Open Tutorial Outlines</vh>
+<v t="ekr.20131213135427.22353"><vh>@item &amp;open-cheat-sheet-leo</vh></v>
+<v t="ekr.20131213135427.22354"><vh>@item &amp;open-leo-docs-leo</vh></v>
+<v t="ekr.20131213135427.22355"><vh>@item &amp;open-quickstart-leo</vh></v>
+</v>
+<v t="ekr.20131213135427.22345"><vh>@menu &amp;Open Web Pages</vh>
+<v t="ekr.20131213135427.22346"><vh>@item &amp;open-online-home</vh></v>
+<v t="ekr.20131213135427.22347"><vh>@item &amp;open-online-toc</vh></v>
+<v t="ekr.20131213135427.22348"><vh>@item &amp;open-users-guide</vh></v>
+<v t="ekr.20131213135427.22349"><vh>@item &amp;open-online-tutorials</vh></v>
+<v t="ekr.20131213135427.22350"><vh>@item &amp;open-online-videos</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
@@ -2221,8 +1604,8 @@
 <v t="ekr.20080515053412.25"><vh>@popup canvas</vh>
 <v t="ekr.20080515053412.26"><vh>@item &amp;</vh></v>
 <v t="ekr.20080515053412.27"><vh>@item -</vh></v>
-<v t="ekr.20080515053412.28"><vh>@item *create-chapter</vh></v>
-<v t="ekr.20080515053412.29"><vh>@item *remove-chapter</vh></v>
+<v t="ekr.20080515053412.28"><vh>@item create-chapter</vh></v>
+<v t="ekr.20080515053412.29"><vh>@item remove-chapter</vh></v>
 </v>
 <v t="ekr.20080515053412.30"><vh>@popup headline</vh></v>
 <v t="ekr.20080515053412.31"><vh>@popup iconbox</vh></v>
@@ -2258,7 +1641,7 @@
 </v>
 </v>
 <v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
-<v t="ville.20091008201813.3911"><vh>@data contextmenu_commands</vh></v>
+<v t="ville.20091008201813.3911"><vh>@data contextmenu-commands</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With menu</vh>
 <v t="ekr.20171206102715.1"><vh>@ifplatform linux, linux2</vh>
@@ -2271,10 +1654,10 @@
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
 <v t="ekr.20171206102759.6"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
 </v>
-<v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = True</vh></v>
-<v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
-<v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
-<v t="TL.20080702085131.5"><vh>@bool open_with_uses_derived_file_extensions = False</vh></v>
+<v t="TL.20080702085131.2"><vh>@bool open-with-save-on-update = True</vh></v>
+<v t="TL.20080702085131.3"><vh>@bool open-with-goto-node-on-update = True</vh></v>
+<v t="TL.20080702085131.4"><vh>@bool open-with-clean-filenames = False</vh></v>
+<v t="TL.20080702085131.5"><vh>@bool open-with-uses-derived-file-extensions = False</vh></v>
 </v>
 <v t="tbrown.20150821171510.1"><vh>@outline-data settings-finder-menu</vh>
 <v t="tbrown.20150821171510.2"><vh>Colors</vh>
@@ -2283,7 +1666,6 @@
 <v t="tbrown.20150821171510.5"><vh>Foreground</vh></v>
 <v t="tbrown.20150821171510.6"><vh>Selected foreground</vh></v>
 <v t="tbrown.20150821171510.7"><vh>Selected background</vh></v>
-<v t="tbrown.20150821171510.8"><vh>Long text warning background</vh></v>
 </v>
 <v t="tbrown.20150821171510.9"><vh>Border colors</vh>
 <v t="tbrown.20150821171510.10"><vh>Focused border</vh></v>
@@ -2449,7 +1831,7 @@
 <v t="tbrown.20150821171510.142"><vh>Style</vh></v>
 </v>
 </v>
-<v t="tbrown.20150821171510.143"><vh>Margins &amp; borders</vh>
+<v t="tbrown.20150821171510.143"><vh>Margins And borders</vh>
 <v t="tbrown.20150821171510.144"><vh>Dialogs styles</vh>
 <v t="tbrown.20150821171510.145"><vh>Border</vh></v>
 <v t="tbrown.20150821171510.146"><vh>Margin</vh></v>
@@ -2531,95 +1913,114 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110611092035.16492"><vh>Mouse</vh>
-<v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
-</v>
+<v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
-<v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
-<v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
+<v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
-<v t="tbrown.20091129085043.11790"><vh>@string active_path_attype = auto</vh></v>
-<v t="tbrown.20091129085043.11792"><vh>@string active_path_event = headdclick1</vh></v>
-<v t="tbrown.20091129085043.11793"><vh>@data active_path_ignore</vh></v>
-<v t="tbrown.20111114201921.23020"><vh>@data active_path_bin_open</vh></v>
-<v t="tbrown.20091129085043.11795"><vh>@data active_path_autoload</vh></v>
-<v t="tbrown.20100304170159.5189"><vh>@bool active_path_load_docstring = False</vh></v>
-<v t="tbrown.20100401100336.16108"><vh>@float active_path_timeout_seconds = 10.</vh></v>
-<v t="tbrown.20100401100336.31583"><vh>@int active_path_max_size = 1000000</vh></v>
+<v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
+<v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
+<v t="tbrown.20091129085043.11793"><vh>@data active-path-ignore</vh></v>
+<v t="tbrown.20111114201921.23020"><vh>@data active-path-bin-open</vh></v>
+<v t="tbrown.20091129085043.11795"><vh>@data active-path-autoload</vh></v>
+<v t="tbrown.20100304170159.5189"><vh>@bool active-path-load-docstring = False</vh></v>
+<v t="tbrown.20100401100336.16108"><vh>@float active-path-timeout-seconds = 10.</vh></v>
+<v t="tbrown.20100401100336.31583"><vh>@int active-path-max-size = 1000000</vh></v>
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
-<v t="vitalije.20100306144625.8945"><vh>@bool mod_autosave_active = True</vh></v>
-<v t="vitalije.20100306144625.8946"><vh>@int mod_autosave_interval = 300</vh></v>
+<v t="vitalije.20100306144625.8945"><vh>@bool mod-autosave-active = True</vh></v>
+<v t="vitalije.20100306144625.8946"><vh>@int mod-autosave-interval = 300</vh></v>
 </v>
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
-<v t="tbrown.20110430104941.30250"><vh>@int backlink_name_levels = 0</vh></v>
+<v t="tbrown.20110430104941.30250"><vh>@int backlink-name-levels = 0</vh></v>
+</v>
+<v t="ekr.20181018080337.1"><vh>bigdash</vh>
+<v t="ekr.20181018080344.1"><vh>@int fts-max-hits = 30</vh></v>
 </v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
-<v t="tbrown.20140102100730.27778"><vh>@int bookmarks_levels = 1</vh></v>
+<v t="ekr.20190712053127.1"><vh>@bool bookmarks-grab-dblclick = False</vh></v>
+<v t="tbrown.20140102100730.27778"><vh>@int bookmarks-levels = 1</vh></v>
 <v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
-<v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
-<v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
-<v t="ekr.20060807103220.3"><vh>@string datenodes_month_node_day_headline = %d: %A</vh></v>
-<v t="ekr.20060807103220.4"><vh>@string datenodes_month_node_month_headline = %B %Y</vh></v>
-<v t="ekr.20060807103220.5"><vh>@bool datenodes_month_node_omit_saturdays = True</vh></v>
-<v t="ekr.20060807103220.6"><vh>@bool datenodes_month_node_omit_sundays = True</vh></v>
-<v t="ekr.20060807103220.7"><vh>@string datenodes_year_node_day_headline = %d: %A</vh></v>
-<v t="ekr.20060807103220.8"><vh>@string datenodes_year_node_month_headline = %B</vh></v>
-<v t="ekr.20060807103220.9"><vh>@string datenodes_year_node_year_headline = %Y</vh></v>
-<v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
-<v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
+<v t="ekr.20181018105625.1"><vh>@bool suppress-datenodes-menus = False</vh></v>
+<v t="ekr.20060807103220.1"><vh>@string datenodes-body-text = To do...</vh></v>
+<v t="ekr.20060807103220.2"><vh>@string datenodes-day-node-headline = %Y-%m-%d</vh></v>
+<v t="ekr.20060807103220.3"><vh>@string datenodes-month-node-day-headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.4"><vh>@string datenodes-month-node-month-headline = %B %Y</vh></v>
+<v t="ekr.20060807103220.5"><vh>@bool datenodes-month-node-omit-saturdays = True</vh></v>
+<v t="ekr.20060807103220.6"><vh>@bool datenodes-month-node-omit-sundays = True</vh></v>
+<v t="ekr.20060807103220.7"><vh>@string datenodes-year-node-day-headline = %d: %A</vh></v>
+<v t="ekr.20060807103220.8"><vh>@string datenodes-year-node-month-headline = %B</vh></v>
+<v t="ekr.20060807103220.9"><vh>@string datenodes-year-node-year-headline = %Y</vh></v>
+<v t="ekr.20060807103220.10"><vh>@bool datenodes-year-node-omit-saturdays = True</vh></v>
+<v t="ekr.20060807103220.11"><vh>@bool datenodes-year-node-omit-sundays = True</vh></v>
 </v>
-<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
-<v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
-<v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
+<v t="ekr.20181018105433.1"><vh>graphcanvas plugin</vh>
+<v t="ekr.20181018105440.1"><vh>@bool graph-manual-layout = False</vh></v>
+</v>
+<v t="vitalije.20190928173155.1"><vh>history_tracer plugin</vh>
+<v t="vitalije.20190928173236.1"><vh>@int history-tracer-port=8087</vh></v>
+</v>
+<v t="ekr.20181018105515.1"><vh>leo_babel plugin</vh>
+<v t="ekr.20181018105529.1"><vh>@bool Leo-Babel-Node-Creation-Default = True</vh></v>
+</v>
+<v t="ekr.20181018105551.1"><vh>leo_to_html plugin</vh>
+<v t="ekr.20181018105559.1"><vh>@bool leo-to-html-no-menus = False</vh></v>
+</v>
+<v t="ekr.20181018112756.1"><vh>leoscreen plugin</vh>
+<v t="ekr.20181018112805.1"><vh>@string leoscreen-prefix = None</vh></v>
+<v t="ekr.20181018112823.1"><vh>@string leoscreen-time-fmt = %Y-%m-%d %H:%M:%S</vh></v>
+</v>
+<v t="ekr.20181018113203.1"><vh>mime plugin</vh>
+<v t="ekr.20181018113210.1"><vh>@string mime-open-cmd = None</vh></v>
 </v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
-<v t="ekr.20111003085631.15489"><vh>@bool http_active = True</vh></v>
-<v t="btheado.20131124162237.2493"><vh>@string http_ip = 127.0.0.1</vh></v>
-<v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
-<v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
-<v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
-<v t="ekr.20161003141513.2"><vh>@data http_stylesheet</vh></v>
-<v t="ekr.20161011130632.1"><vh>@@data http_stylesheet</vh></v>
-</v>
+<v t="ekr.20111003085631.15489"><vh>@bool http-active = True</vh></v>
+<v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
+<v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
+<v t="ekr.20181018113243.1"><vh>@string rst2-http-attributename = None</vh></v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
-<v t="ekr.20161003141448.2"><vh>@data http_script</vh></v>
+<v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
+</v>
+<v t="ekr.20161003141513.1"><vh>mod_http stylesheet</vh>
+<v t="ekr.20161003141513.2"><vh>@data http-stylesheet</vh></v>
+<v t="ekr.20161011130632.1"><vh>@@data http_stylesheet</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
-<v t="tbrown.20100524101550.4704"><vh>@string mod_scripting_subtext = ▼</vh></v>
+<v t="tbrown.20100524101550.4704"><vh>@string mod-scripting-subtext = ▼</vh></v>
+<v t="ekr.20181018105342.1"><vh>@bool eval-redirect = False</vh></v>
+<v t="ekr.20181018105355.1"><vh>@bool legacy-eval = False</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
-<v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
-<v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
+<v t="TL.20090225102340.34"><vh>@bool nodeActions-save-atFile-nodes = False</vh></v>
+<v t="TL.20090303191843.1"><vh>@int nodeActions-message-level = 1</vh></v>
 </v>
 <v t="peckj.20140113150237.4603"><vh>nodediff plugin</vh>
 <v t="peckj.20140113150237.4604"><vh>@string node-diff-style = compare</vh></v>
 </v>
 <v t="peckj.20131101143409.5814"><vh>nodewatch plugin</vh>
-<v t="peckj.20131101143409.5816"><vh>@bool nodewatch_autoexecute_scripts = False</vh></v>
+<v t="peckj.20131101143409.5816"><vh>@bool nodewatch-autoexecute-scripts = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
-<v t="ekr.20060921080239"><vh>@bool opml_read_derived_files = True</vh></v>
-<v t="ekr.20060919171527.1"><vh>@bool opml_use_outline_elements = True</vh></v>
-<v t="ekr.20060919195145"><vh>@string opml_version = 2.0</vh></v>
-<v t="ekr.20060919181622"><vh>@bool opml_write_body_text = True</vh></v>
-<v t="ekr.20060921080239.1"><vh>@bool opml_write_derived_files = True</vh></v>
-<v t="ekr.20060919173031"><vh>@bool opml_write_leo_details = True</vh></v>
-<v t="ekr.20060919173031.1"><vh>@bool opml_write_leo_globals_attributes = True</vh></v>
-<v t="ekr.20060922110220"><vh>@bool opml_write_uAs = True</vh></v>
-<v t="ekr.20060919171527.2"><vh>@string opml_namespace = leo:com:leo-opml-version-1</vh></v>
+<v t="ekr.20060921080239"><vh>@bool opml-read-derived-files = True</vh></v>
+<v t="ekr.20060919171527.1"><vh>@bool opml-use-outline-elements = True</vh></v>
+<v t="ekr.20060919195145"><vh>@string opml-version = 2.0</vh></v>
+<v t="ekr.20060919181622"><vh>@bool opml-write-body-text = True</vh></v>
+<v t="ekr.20060921080239.1"><vh>@bool opml-write-derived-files = True</vh></v>
+<v t="ekr.20060919173031"><vh>@bool opml-write-leo-details = True</vh></v>
+<v t="ekr.20060919173031.1"><vh>@bool opml-write-leo-globals-attributes = True</vh></v>
+<v t="ekr.20060922110220"><vh>@bool opml-write-uAs = True</vh></v>
+<v t="ekr.20060919171527.2"><vh>@string opml-namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
 <v t="peckj.20130514082859.5599"><vh>printing plugin</vh>
 <v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
 <v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
 </v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
-<v t="tbrown.20130813134319.7224"><vh>@bool richtext_cke_autosave = False</vh></v>
-<v t="tbrown.20130813181208.23979"><vh>@data richtext_cke_config</vh></v>
+<v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
+<v t="tbrown.20130813181208.23979"><vh>@data richtext-cke-config</vh></v>
 </v>
 <v t="peckj.20131012154112.5294"><vh>rss plugin</vh>
 <v t="peckj.20131012154112.5295"><vh>@string rss-headline-format = [&lt;date&gt;] &lt;title&gt;</vh></v>
@@ -2627,7 +2028,10 @@
 <v t="peckj.20131012154112.5297"><vh>@string rss-date-format = %Y-%m-%d %I:%M %p</vh></v>
 <v t="peckj.20131012154112.5298"><vh>@bool rss-sort-newest-first = True</vh></v>
 </v>
-<v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
+<v t="ekr.20181018113409.1"><vh>screencapture plugin</vh>
+<v t="ekr.20181018113416.1"><vh>@string screen-capture-save-path = None</vh></v>
+</v>
+<v t="ekr.20100910115903.8297"><vh>screenshot plugin</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
 <v t="ekr.20060930111325"><vh>scripting plugin</vh>
@@ -2644,24 +2048,29 @@
 <v t="peckj.20140218151502.4819"><vh>sftp plugin</vh>
 <v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
 </v>
-<v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
-<v t="tbrown.20130310101647.34744"><vh>@bool valuespace_vs_eval_redirect = True</vh></v>
+<v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
+<v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
+<v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
+<v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
-<v t="ekr.20150327002834.1"><vh>@bool vim_plugin_trace = False</vh></v>
-<v t="ekr.20071114072753"><vh>@bool vim_plugin_opens_url_nodes = False</vh></v>
+<v t="ekr.20150327002834.1"><vh>@bool vim-plugin-trace = False</vh></v>
+<v t="ekr.20071114072753"><vh>@bool vim-plugin-opens-url-nodes = False</vh></v>
 </v>
 <v t="tbrown.20141101105337.1"><vh>wikiview plugin</vh>
 <v t="tbrown.20141101105337.2"><vh>@data wikiview-link-patterns</vh></v>
 <v t="tbrown.20141101105337.3"><vh>@bool wikiview-active = True</vh></v>
 </v>
+<v t="ekr.20181018105650.1"><vh>xdb_pane plugin</vh>
+<v t="ekr.20181018105704.1"><vh>@bool use-xdb-pane-output-area</vh></v>
+</v>
 <v t="ekr.20090202191501.10"><vh>xemacs plugin</vh>
-<v t="ekr.20090202191501.11"><vh>@string xemacs_exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
+<v t="ekr.20090202191501.11"><vh>@string xemacs-exe = c:\XEmacs\XEmacs-21.4.21\i586-pc-win32\xemacs.exe</vh></v>
 </v>
 <v t="ekr.20060904211808"><vh>zodb plugin</vh>
-<v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
+<v t="ekr.20060904211808.1"><vh>@string zodb-storage-file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
 <v t="ekr.20140916113003.19609"><vh>Qt Gui Misc settings</vh>
@@ -2670,62 +2079,87 @@
 <v t="ekr.20150322061147.1"><vh>@int qt-cursor-width = 1</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 0</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
-<v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
-<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
+<v t="ekr.20061029091403"><vh>@bool show-full-tracebacks-in-scripts = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
-<v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
-<v t="ekr.20100904095239.8441"><vh>@string enchant_local_dictionary = None</vh></v>
+<v t="ekr.20100904095239.8440"><vh>@string enchant-language = en-US</vh></v>
+<v t="ekr.20100904095239.8441"><vh>@string enchant-local-dictionary = None</vh></v>
+<v t="ekr.20181018113857.1"><vh>@string main-spelling-dictionary = None</vh></v>
 </v>
 <v t="ekr.20041119034357.70"><vh>Syntax coloring</vh>
+<v t="ekr.20190323043913.1"><vh>@bool use-pygments = False</vh></v>
+<v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
+<v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
-<v t="ekr.20111004182631.15542"><vh>@color doc_part_color = firebrick3</vh></v>
-<v t="ekr.20111004182631.15546"><vh>@color leo_keyword_color = #00aa00</vh></v>
-<v t="ekr.20111004182631.15548"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20111004182631.15549"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20111004182631.15550"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20111004182631.15552"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20111024091133.16671"><vh>@color url_color = purple</vh></v>
+<v t="ekr.20111004182631.15542"><vh>@color doc-part-color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15546"><vh>@color leo-keyword-color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15548"><vh>@color section-name-color = red</vh></v>
+<v t="ekr.20111004182631.15549"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
+<v t="ekr.20111004182631.15550"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
+<v t="ekr.20111004182631.15552"><vh>@color undefined-section-name-color = red</vh></v>
+<v t="ekr.20111024091133.16671"><vh>@color url-color = purple</vh></v>
 </v>
 <v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
-<v t="ekr.20060504140351"><vh>@color comment1_color = firebrick3</vh></v>
-<v t="ekr.20060504140408"><vh>@color comment2_color = firebrick3</vh></v>
-<v t="ekr.20060504140408.1"><vh>@color comment3_color = plum3</vh></v>
-<v t="ekr.20060504140408.2"><vh>@color comment4_color = orchid1</vh></v>
-<v t="ekr.20060504131831.1"><vh>@color keyword1_color = blue</vh></v>
-<v t="ekr.20060827102902"><vh>@color keyword2_color = blue</vh></v>
-<v t="ekr.20060827102902.1"><vh>@color keyword3_color = blue</vh></v>
-<v t="ekr.20060827102902.2"><vh>@color keyword4_color = blue</vh></v>
-<v t="ekr.20060704090341"><vh>@color label_color = red</vh></v>
-<v t="ekr.20060504131831.2"><vh>@color literal1_color = #00aa00</vh></v>
-<v t="ekr.20060504134056"><vh>@color literal2_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.1"><vh>@color literal3_color = #00aa00</vh></v>
-<v t="ekr.20060504134056.2"><vh>@color literal4_color = #00aa00</vh></v>
-<v t="ekr.20060826152759"><vh>@color markup_color = blue</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator_color = None</vh></v>
+<v t="ekr.20060504140351"><vh>@color comment1-color = firebrick3</vh></v>
+<v t="ekr.20060504140408"><vh>@color comment2-color = firebrick3</vh></v>
+<v t="ekr.20060504140408.1"><vh>@color comment3-color = plum3</vh></v>
+<v t="ekr.20060504140408.2"><vh>@color comment4-color = orchid1</vh></v>
+<v t="ekr.20060504131831.1"><vh>@color keyword1-color = blue</vh></v>
+<v t="ekr.20060827102902"><vh>@color keyword2-color = blue</vh></v>
+<v t="ekr.20060827102902.1"><vh>@color keyword3-color = blue</vh></v>
+<v t="ekr.20060827102902.2"><vh>@color keyword4-color = blue</vh></v>
+<v t="ekr.20060704090341"><vh>@color label-color = red</vh></v>
+<v t="ekr.20060504131831.2"><vh>@color literal1-color = #00aa00</vh></v>
+<v t="ekr.20060504134056"><vh>@color literal2-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
+<v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
+</v>
+<v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
+<v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
+<v t="ekr.20190325050733.2"><vh>@color comment.single = solarized-orange</vh></v>
+<v t="ekr.20190325050733.3"><vh>@color generic.deleted = solarized-red</vh></v>
+<v t="ekr.20190325050733.4"><vh>@color generic.emph = solarized-blue</vh></v>
+<v t="ekr.20190325050733.5"><vh>@color generic.heading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.6"><vh>@color generic.inserted = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
+<v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
+<v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
+<v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
+<v t="ekr.20190325050733.14"><vh>@color name.function = white</vh></v>
+<v t="ekr.20190325050733.15"><vh>@color name.other = solarized-red</vh></v>
+<v t="ekr.20190325050733.16"><vh>@color name.tag = solarized-magenta</vh></v>
+<v t="ekr.20190325050733.17"><vh>@color string = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.18"><vh>@color string.doc = solarized-orange</vh></v>
+<v t="ekr.20190325050733.20"><vh>@color string.double = alt-solarized-green</vh></v>
+<v t="ekr.20190325050733.19"><vh>@color string.interpol = alt-solarized-green</vh></v>
+<v t="ekr.20190325052226.1"><vh>@color string.single = alt-solarized-green</vh></v>
 </v>
 </v>
-<v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
-<v t="ekr.20170819113555.2"><vh>@color patch_keyword1_color = green</vh></v>
-<v t="ekr.20170819113555.3"><vh>@color patch_keyword2_color = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch_keyword3_color = blue</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch_literal1_color = blue</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch_literal2_color = blue</vh></v>
+<v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch-keyword3-color = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch-literal1-color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch-literal2-color = blue</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
+<v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth_keyword3_color = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth_keyword4_color = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth_keyword5_color = black</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth-keyword4-color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth-keyword5-color = black</vh></v>
 <v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
 <v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
 <v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
@@ -2740,72 +2174,77 @@
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
-<v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
-<v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
-<v t="tbrown.20170710093248.1"><vh>@bool color_trailing_whitespace = True</vh></v>
+<v t="ekr.20111004182631.15534"><vh>@bool color-cweb-comments-with-latex = True</vh></v>
+<v t="ekr.20111004182631.15535"><vh>@bool color-cweb-doc-parts-with-latex = True</vh></v>
+<v t="ekr.20111004182631.15536"><vh>@bool color-directives-in-plain-text = True</vh></v>
+<v t="tbrown.20170710093248.1"><vh>@bool color-trailing-whitespace = True</vh></v>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
-<v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
-<v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
-<v t="ekr.20060201111002"><vh>@bool use_syntax_coloring = True</vh></v>
-<v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
+<v t="ekr.20111004182631.15537"><vh>@bool underline-undefined-section-names = True</vh></v>
+<v t="ekr.20111004182631.15538"><vh>@bool use-hyperlinks = False</vh></v>
+<v t="ekr.20060201111002"><vh>@bool use-syntax-coloring = True</vh></v>
+<v t="ekr.20090724102842.2492"><vh>@int qt-max-colorized-chars = 0</vh></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
-<v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
-<v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
-<v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
-<v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
-<v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
+<v t="nh910.20110621123823.3423"><vh>@bool collapse-nodes-after-move = True</vh></v>
+<v t="ekr.20060930085532"><vh>@bool collapse-nodes-during-finds = True</vh></v>
+<v t="ekr.20080315083057.7"><vh>@bool collapse-nodes-while-spelling = True</vh></v>
+<v t="ekr.20111109104336.12503"><vh>@bool collapse-on-lt-arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="tbnorth.20160414102131.1"><vh>@bool drag-alt-drag-expands = True</vh></v>
-<v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
-<v t="ekr.20131008181812.17533"><vh>@bool enable_tree_dragging = True</vh></v>
-<v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
-<v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
+<v t="ekr.20041119050749.4"><vh>@bool enable-drag-messages = False</vh></v>
+<v t="ekr.20131008181812.17533"><vh>@bool enable-tree-dragging = True</vh></v>
+<v t="ekr.20061012122620"><vh>@bool insert-new-nodes-at-end = False</vh></v>
+<v t="tbrown.20110212091818.20118"><vh>@bool inter-outline-drag-moves = False</vh></v>
+<v t="ekr.20181018105945.1"><vh>@bool invisible-outline-navigation = False</vh></v>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
-<v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
+<v t="ekr.20110601103939.19339"><vh>@bool single-click-auto-edits-headline = False</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse-move-outline-left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
-<v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="ekr.20061002115414.1"><vh>@float outline-nav-extend-delay = 2.0</vh></v>
+<v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
-<v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.9"><vh>@string default_derived_file_encoding = utf-8</vh></v>
-<v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
-<v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
+<v t="ekr.20041119042929.10"><vh>@string new-leo-file-encoding = utf-8</vh></v>
+<v t="ekr.20080212084020"><vh>@string default-at-auto-file-encoding = utf-8</vh></v>
+<v t="ekr.20041119042929.9"><vh>@string default-derived-file-encoding = utf-8</vh></v>
 </v>
 <v t="ekr.20050203090810"><vh>Unit test option</vh>
-<v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
+<v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
+<v t="ekr.20060325071042.1"><vh>@bool test-win32-setting = True</vh></v>
+</v>
+<v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
+<v t="ekr.20060325071042.3"><vh>@bool test-darwin-setting = True</vh></v>
+</v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
-<v t="ekr.20041119034357.67"><vh>@color split_bar_color = LightSteelBlue2</vh></v>
-<v t="ekr.20130705090546.10663"><vh>@int colorer_delay = 200</vh></v>
-<v t="ekr.20130705090546.10662"><vh>@int colorer_max_lines = 100</vh></v>
-<v t="ekr.20080326060254.3"><vh>@string target_language = plain</vh></v>
+<v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
+<v t="ekr.20130705090546.10663"><vh>@int colorer-delay = 200</vh></v>
+<v t="ekr.20130705090546.10662"><vh>@int colorer-max-lines = 100</vh></v>
+<v t="ekr.20080326060254.3"><vh>@string target-language = plain</vh></v>
 <v t="ekr.20041213105007.2"><vh>Body pane colors (deprecated)</vh>
-<v t="ekr.20041119034357.41"><vh>@color body_cursor_background_color = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body_cursor_foreground_color = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body_insertion_cursor_color = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body_text_background_color = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body_text_foreground_color = None</vh></v>
-<v t="ekr.20060605081712"><vh>@color command_mode_bg_color = #f2fdff</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command_mode_fg_color = None</vh></v>
-<v t="ekr.20080514082950.2"><vh>@color insert_mode_bg_color = #fdf5f5</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert_mode_fg_color = black</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite_mode_bg_color = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite_mode_fg_color = black</vh></v>
-<v t="ekr.20080511041907.1"><vh>@color unselected_body_bg_color = #ffffef</vh></v>
-<v t="ekr.20080511041907.2"><vh>@color unselected_body_fg_color = black</vh></v>
+<v t="ekr.20041119034357.41"><vh>@color body-cursor-background-color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body-cursor-foreground-color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body-insertion-cursor-color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body-text-background-color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body-text-foreground-color = None</vh></v>
+<v t="ekr.20060605081712"><vh>@color command-mode-bg-color = #f2fdff</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command-mode-fg-color = None</vh></v>
+<v t="ekr.20080514082950.2"><vh>@color insert-mode-bg-color = #fdf5f5</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert-mode-fg-color = black</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite-mode-bg-color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite-mode-fg-color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected-body-bg-color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected-body-fg-color = black</vh></v>
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20120928142052.11488"><vh>@color log_warning_color = blue</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log_text_foreground_color = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log_text_background_color = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log_pane_background_color = #f2fdff</vh></v>
-<v t="ekr.20051020125928"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+<v t="ekr.20041119052015"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20120928142052.11488"><vh>@color log-warning-color = blue</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log-text-foreground-color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log-text-background-color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log-pane-background-color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log-pane-Find-tab-background-color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log-pane-Spell-tab-background-color = MistyRose1</vh></v>
 </v>
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
 <v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
@@ -2819,48 +2258,45 @@
 </v>
 </v>
 <v t="ekr.20041213105954"><vh>Windows</vh>
-<v t="ekr.20100929121021.8511"><vh>@bool fixedwindow = False</vh></v>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
-<v t="jlunz.20151119171553.1"><vh>@bool cursor_stay_on_paste = True</vh></v>
-<v t="ekr.20061010111324"><vh>@bool select_all_text_when_editing_headlines = False</vh></v>
-<v t="ekr.20060531094310"><vh>@bool autoindent_in_nocolor_mode = True</vh></v>
-<v t="ekr.20041119034357.43"><vh>@bool body_gmt_time = False</vh></v>
-<v t="jlunz.20151120072157.1"><vh>@bool body_pane_wraps = True</vh></v>
-<v t="ekr.20060216135834"><vh>@bool enable_autocompleter_initially = False</vh></v>
-<v t="ekr.20060603070801"><vh>@bool enable_calltips_initially = False</vh></v>
-<v t="ekr.20041119034357.44"><vh>@bool smart_auto_indent = False</vh></v>
-<v t="ekr.20090213065933.11"><vh>@bool smart_tab = True</vh></v>
+<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
+<v t="ekr.20061010111324"><vh>@bool select-all-text-when-editing-headlines = False</vh></v>
+<v t="ekr.20060531094310"><vh>@bool autoindent-in-nocolor-mode = True</vh></v>
+<v t="ekr.20041119034357.43"><vh>@bool body-gmt-time = False</vh></v>
+<v t="jlunz.20151120072157.1"><vh>@bool body-pane-wraps = True</vh></v>
+<v t="ekr.20060216135834"><vh>@bool enable-autocompleter-initially = False</vh></v>
+<v t="ekr.20060603070801"><vh>@bool enable-calltips-initially = False</vh></v>
+<v t="ekr.20041119034357.44"><vh>@bool smart-auto-indent = False</vh></v>
+<v t="ekr.20090213065933.11"><vh>@bool smart-tab = True</vh></v>
 <v t="ekr.20041119034357.53"><vh>@@@int additional_body_text_border = 0</vh></v>
-<v t="ekr.20041119034357.42"><vh>@string body_time_format_string = %m/%d/%Y %H:%M:%S</vh></v>
-<v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
+<v t="ekr.20041119034357.42"><vh>@string body-time-format-string = %m/%d/%Y %H:%M:%S</vh></v>
 </v>
 <v t="ekr.20080930072519.3"><vh>Icon bar options</vh>
-<v t="ekr.20160918113150.1"><vh>@bool show_iconbar = True</vh></v>
-<v t="ekr.20080930072519.4"><vh>@int icon_bar_widgets_per_row = 20</vh></v>
+<v t="ekr.20160918113150.1"><vh>@bool show-iconbar = True</vh></v>
 </v>
 <v t="ekr.20041213105954.1"><vh>Log pane options</vh>
-<v t="ekr.20041119052015.1"><vh>@bool log_pane_wraps = False</vh></v>
+<v t="ekr.20041119052015.1"><vh>@bool log-pane-wraps = False</vh></v>
 </v>
 <v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
-<v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
-<v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
-<v t="ekr.20041119034357.57"><vh>@ratio initial_horizontal_ratio = 0.4</vh></v>
-<v t="ekr.20041119034357.58"><vh>@ratio initial_horizontal_secondary_ratio = 0.8</vh></v>
-<v t="ekr.20041119034357.60"><vh>@ratio initial_vertical_ratio = 0.5</vh></v>
-<v t="ekr.20041119034357.61"><vh>@ratio initial_vertical_secondary_ratio = 0.65</vh></v>
-<v t="ekr.20041119034357.62"><vh>@int initial_window_height = 600</vh></v>
-<v t="ekr.20041119034357.63"><vh>@int initial_window_left =  20</vh></v>
-<v t="ekr.20041119034357.64"><vh>@int initial_window_top = 20</vh></v>
-<v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
+<v t="ekr.20071024145953"><vh>@bool big-outline-pane = False</vh></v>
+<v t="ekr.20060930085332"><vh>@bool outline-pane-has-initial-focus = False</vh></v>
+<v t="ekr.20041119034357.57"><vh>@ratio initial-horizontal-ratio = 0.4</vh></v>
+<v t="ekr.20041119034357.58"><vh>@ratio initial-horizontal-secondary-ratio = 0.8</vh></v>
+<v t="ekr.20041119034357.60"><vh>@ratio initial-vertical-ratio = 0.5</vh></v>
+<v t="ekr.20041119034357.61"><vh>@ratio initial-vertical-secondary-ratio = 0.65</vh></v>
+<v t="ekr.20041119034357.62"><vh>@int initial-window-height = 600</vh></v>
+<v t="ekr.20041119034357.63"><vh>@int initial-window-left =  20</vh></v>
+<v t="ekr.20041119034357.64"><vh>@int initial-window-top = 20</vh></v>
+<v t="ekr.20041119034357.65"><vh>@int initial-window-width = 800</vh></v>
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
-<v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
-<v t="edward.20081129091117.12"><vh>@string initial_split_orientation = vertical</vh></v>
-<v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
-<v t="tbrown.20130916082438.55678"><vh>@string status_line_split_sizes = 1 2</vh></v>
+<v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = vertical</vh></v>
+<v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
+<v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
-<v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
+<v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2908,6 +2344,7 @@ The following integer values are supported:
 4 = Code debugging messages
 </t>
 <t tx="btheado.20131124162237.2493"></t>
+<t tx="chris.20180324074923.1"></t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 </t>
@@ -2928,19 +2365,10 @@ This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
 
-The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.</t>
+The node "Qt Gui Stylesheet settings" contains most of the setting relating to appearance.
+</t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
 <t tx="ekr.20041119034357.12"></t>
-<t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
-
-Warnings:
-
-- This is a global option ONLY. It can only be set in the leoSettings.leo files
-that Leo reads during startup. Changing this option in other Leo files will have
-NO effect.
-
-- When this option is enabled, plugins could potentially execute HOSTILE CODE
-contained in Leo files. See further warnings in LeoDocs.leo.</t>
 <t tx="ekr.20041119034357.14">This option affects how Leo treats body text in @root trees.
 
 True:    Body text in @root trees start in doc mode.
@@ -2951,19 +2379,7 @@ False:    Body text in @root trees start in code mode.
 
 This way makes @root trees more compatible with @file trees.</t>
 <t tx="ekr.20041119034357.15"></t>
-<t tx="ekr.20041119034357.16"></t>
-<t tx="ekr.20041119034357.17"></t>
-<t tx="ekr.20041119034357.18">Limit directory searches to files with the given file extension.
-
-None  Compares all files when comparing directories.
-.py   Compares only .py files when comparing directories.</t>
-<t tx="ekr.20041119034357.19">These options have no effect when comparing directories.</t>
 <t tx="ekr.20041119034357.20">
-</t>
-<t tx="ekr.20041119034357.29">DEPRECATED
-
-The default directory used if no directory specified in @path, @root or @file directives.
-
 </t>
 <t tx="ekr.20041119034357.31">The width of tabs on the screen.  This setting is also used when writing doc parts.
 
@@ -3005,7 +2421,6 @@ Note: this setting can be overridden by the x_mode_fg_color settings.</t>
 #ffecea
 
 Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="ekr.20041119034357.5">False: Leo writes leoSettings.leo files.</t>
 <t tx="ekr.20041119034357.50">Color of insertion cursor
 
 </t>
@@ -3055,12 +2470,18 @@ always uses this ratio when opening a file that is being split vertically.</t>
 
 These are the settings used by Leo's Qt syntax colorer.
 
-Syntax colors may be any valid Tk color name or color value.
+Syntax colors may be any color value or any color name in Leo's color database in leoColor.py.
 
-For example, "00aa00" is the dark green used by IDLE.
+Examples:
 
-See http://www.tcl.tk/man/tcl8.3/TkCmd/colors.htm for a list of valid color
-names. These names are case sensitive, for example: BlanchedAlmond.</t>
+- "00aa00" is the dark green used by IDLE.
+- mistyRose1 and solarizedred are in the color database.
+
+Leo converts setting names to the standard form used in the database, so the following are valid:
+    
+- Misty-Rose1
+- solarized-red
+</t>
 <t tx="ekr.20041119034357.8">Example:
 
 "Created by Leo at @date"
@@ -3121,9 +2542,6 @@ Creates a user-defined type. For example:
 
 This is much better than using a base type because the dialog creator can
 present the user with a listbox containing only the valid options.</t>
-<t tx="ekr.20041119041019">False: Print sends its output to stdout (console) when doing Execute Script command.
-True:  Print redirected to Leo's log pane when doing Execute Script command.
-</t>
 <t tx="ekr.20041119041019.1">The string to be appended to file names resulting from the Remove Sentinels command.
 If the value starts with . the extension is appended to the original file name.
 Otherwise, the extension is appended before the file extension.
@@ -3167,18 +2585,6 @@ platform: Lines end in platform-specific way.
 With platform Leo opens output files in "w" mode rather than "wb" mode and writes '\n'
 
 Please specify nl when uploading files to Leo's CVS site.</t>
-<t tx="ekr.20041119041747.1">The number of trailing newlines Leo retains at the end of each body text.
-
-asis: Leo retains the number of newlines contained in each body text.
-      
-    Warning: Leo sometimes has problems determining which ending newlines are "real".
-
-zero: Leo removes all trailing whitespace from body text.
-
-one:  Leo ends each non-empty body text with exactly one trailing newline.</t>
-<t tx="ekr.20041119041747.4">
-True:  Leo strips blanks and tabs from otherwise blank lines.
-False: Leo retains whitespace even in otherwise blank lines.</t>
 <t tx="ekr.20041119042929"></t>
 <t tx="ekr.20041119042929.1">Value must be Qt color name or value, such as 'red' or 'xf2fddff' (without the quotes).
 
@@ -3199,65 +2605,7 @@ Important: Once a .leo file is created the &lt;?xml..."&gt; line can only be cha
 <t tx="ekr.20041119042929.9">The encoding used for derived files if no @encoding directive is in effect.
 This setting is also used to encode files created by the Tangle commands.
 Default is UTF-8 (case not important).</t>
-<t tx="ekr.20041119043902">The path to the first file or directory to be compared.
-
-Directory compares ignore a filename part of the path, if present.
-
-E.g., c:/directory2/spam.py is valid for directory compares</t>
-<t tx="ekr.20041119043902.1">The path to the second file or directory to be compared.
-
-Directory compares ignore a filename part of the path, if present.
-
-E.g., c:/directory2/spam.py is valid for directory compares</t>
-<t tx="ekr.20041119043902.10">0: Show lines regardless of the number of mismatches.
-
-n: Stop showing lines after n mismatches.
-
-</t>
-<t tx="ekr.20041119043902.11">
-1: Show blanks as [ ] and tabs as [t]
-
-</t>
-<t tx="ekr.20041119043902.12">True:  Print lines of both files when showing matching lines.
-
-False: Print only the line of compare_file_1 when showing matching lines.
-
-</t>
-<t tx="ekr.20041119043902.13">True: Print lines that match using the print_both_lines_for_matches option.
-
-</t>
-<t tx="ekr.20041119043902.14">True: Print lines that do not compare equal to each other.
-
-</t>
-<t tx="ekr.20041119043902.15">True: Print lines all lines in one file after an end-of-file is seen on the other file.</t>
-<t tx="ekr.20041119043902.2">The path to the output file.
-
-Leo will silently write to this file, regardless of whether it already exists, creating the file if needed.
-
-Leo will write to the log pane if this path is empty or invalid.</t>
-<t tx="ekr.20041119043902.3">True:  Append output to output file.
-
-False: Replace output file with results of compare.</t>
-<t tx="ekr.20041119043902.4">True: Ignore blanks lines when comparing files.
-
-</t>
-<t tx="ekr.20041119043902.5">True: Ignore the first line of compare_file_1 when comparing files.
-
-</t>
-<t tx="ekr.20041119043902.6">True: Ignore the first line of compare_file_2 when comparing files.</t>
-<t tx="ekr.20041119043902.7">True: Ignore whitespace after the leading whitespace of a line when comparing files.</t>
-<t tx="ekr.20041119043902.8">True:  Ignore leading whitespace of each line when comparing files.
-
-False: The recommended setting when comparing Python source files.
-
-</t>
-<t tx="ekr.20041119043902.9">True: Ignore sentinel lines when comparing files.
-
-Leo sets sentinel comment delimiters from the first line of each file.  This option has no effect if the first line is not a @+leo line.</t>
 <t tx="ekr.20041119044139"></t>
-<t tx="ekr.20041119050105">These options affecting how Leo shows the results of file compares.
-
-Leo gathers statistics regardless of these options.</t>
 <t tx="ekr.20041119050105.1">The change string (without the quotes unless quotes are part of the string).
 
 N.B. Leo requires utf-8 encoding for any non-ascii characters.</t>
@@ -3310,13 +2658,6 @@ Examples:
 Thu, 30 Jan 2003 16:57:12
 %a, %d %b %Y %H:%M:%S
 </t>
-<t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
-
-False: use local time.</t>
-<t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
-False: All drags move nodes.
-
-Setting this setting to False allows Leo to be used on Aqua.</t>
 <t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
 False: Don't issue such messages.
 
@@ -3348,64 +2689,6 @@ Examples:
     Enables descendant settings for Windows
     
 </t>
-<t tx="ekr.20041120152657"></t>
-<t tx="ekr.20041120152900.2">When the Script Search radio button is selected Leo treats the contents of the
-Search Text as a script to execute whenever any kind of Find command is
-executed. Similarly, when the Script Change checkbox is selected Leo treats the
-context of the Change Text as a script to execute whenever any kind of Change
-command is executed. See below for just how this works.
-
-Script-based find-change is extremely powerful. In effect, Leo's Find/Change
-panel becomes a new platform for running scripts interactively. Leo now has all
-the find/change capability of pattern matching languages like Snobol and Icon,
-just by using the capabilities of the plain Python language. Moreover, Leo can
-deliver these capabilities interactively or not depending which buttons you push
-in Leo's Find/Change panel.
-
-Script-based find/change frees the user from having to control script-based
-searches interactively. Rather than forcing find/change scripts to implement
-their own interactive controls, it is much easier to use what Leo already has.
-
-HOW IT WORKS
-
-Leo dedicates a Python dictionary called app.searchDict for communication
-between Leo and the search and change scripts. The search and change scripts may
-also use app.searchDict for communication between themselves. Leo sets
-app.searchDict["type"] to "find", "change", "findAll" or "changeAll" to indicate
-the kind of command being executed. Scripts may use all other entries in
-app.searchDict as they please.
-
-Leo executes the find script once when you press the Find button (or the Change
-then Find button) in Leo's Find/Change dialog. Typically, the find script would
-traversing the tree and highlight the found text or otherwise indicate to the
-user that the find operation has succeeded. However, the script can do anything
-it pleases.
-
-Leo executes the the find script repeatedly when you press the Find All button.
-Leo keeps executing the find script until app.searchDict["continue"] evaluates
-to false. Initially there is no entry for app.searchDict["continue"], so the
-find script must set app.searchDict["continue"] = true if it wants Leo to keep
-executing it.
-
-Leo executes the change script once when you press the Change button. Typically,
-the change script would change the selected text. Usually the change script will
-compute the new value of body text and call v.setBodyStringOrPane(newText) to
-make that change permanent. 
-
-The change script also may handle undo, typically by calling
-c.frame.onBodyChanged(v,"Change",oldText=oldText). Leo does not handle undo
-automatically. Indeed, Leo makes no assumptions whatever about what the change
-script really does.
-
-Leo executes the the change script repeatedly when you press the Change All
-button. Just as with the Find All command, Leo keeps executing the change script
-until app.searchDict["continue"] evaluates to false.
-
-Most find and change scripts will ignore settings in the Find Panel like "whole
-word", "pattern match", and "reverse". However, these settings are available to
-the scripts via ivars such as c.whole_word_flag, etc. if desired.
-
-For examples, see the node called 'Script Find and Script Change' in leoDocs.leo.</t>
 <t tx="ekr.20041120155431.1">The body text of @shortcut nodes contain the specification for zero or more shortcuts.
 
 Lines starting with # are ignored.
@@ -3444,9 +2727,6 @@ char granularity: start a new undo unit for each character typed.
 
 Leo used char granularity for all version prior to 4.3. char granularity is not
 recommended; it is clumsy and wasteful of computer memory.</t>
-<t tx="ekr.20050203085250">This is not used in Leo, except in unit tests.
-
-Please do not change this; it would make a unit test fail.</t>
 <t tx="ekr.20050203090810">Please do not change any of these settings.
 
 Doing so would make unit tests fail.
@@ -3604,20 +2884,17 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 </t>
 <t tx="ekr.20051123100536.2"></t>
 <t tx="ekr.20051123100536.3"></t>
-<t tx="ekr.20051126062243"></t>
-<t tx="ekr.20051126062243.1"></t>
-<t tx="ekr.20051126062525"></t>
-<t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
-import leo.core.leoTest as leoTest
-parser = leoConfig.SettingsTreeParser(c)
+# import leo.core.leoTest as leoTest
+parser = leoConfig.SettingsTreeParser(c, localFlag=True)
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
 optionalCommandNames = [
     # These are the command names as defined by plugins.
     # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'find-quick-selected',
     'next-slide-command','next-slide-show-command',
     'prev-slide-command','prev-slide-show-command',
     # The ipython plugin.
@@ -3678,7 +2955,6 @@ main()
                 allNames[key] = key
         else:
             g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-    k = c.keyHandler
     keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
@@ -3775,24 +3051,6 @@ main()
     setsDict[setName] = d
 </t>
 <t tx="ekr.20060112110750"></t>
-<t tx="ekr.20060114073238">If True, Leo will report to the console which bindings have been created.
-
-Thus, you must be running from a console window for this setting to be useful.</t>
-<t tx="ekr.20060114082205">If this setting is non-empty the trace_bindings setting will report only
-bindings that match the string (ignoring case).
-
-For this setting to be useful the following must be true:
-
-- you must be running from a console window.
-
-- @bool trace_bindings must be True.</t>
-<t tx="ekr.20060114083009">If this setting is non-empty the trace_bindings setting will report only bindings for matching panes.  For example, to see all ! text bindings, set this setting to text.
-
-For this setting to be useful the following must be true:
-
-- you must be running from a console window.
-
-- @bool trace_bindings must be True.</t>
 <t tx="ekr.20060116090646">@nocolor
 
 Standard keys (Windows defaults in parens)
@@ -3872,7 +3130,6 @@ special case,
     command-name -&gt; same = binding
 
 will cause the command to be executed without changing mode.</t>
-<t tx="ekr.20060121102627"></t>
 <t tx="ekr.20060122105527.3"></t>
 <t tx="ekr.20060122105527.7">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
 
@@ -3880,34 +3137,9 @@ If this is False it will be harder to use the arrow keys in the headline.
     
 False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20060122105527.8"></t>
-<t tx="ekr.20060125104049">True: (recommended) The Find tab shows only options, not text or buttons.
-False: (legacy)     The Find tab shows text, options and buttons.</t>
-<t tx="ekr.20060126075152"># True: calls to the garbage collector.</t>
-<t tx="ekr.20060126083715"># True: verbose trace the garbage collector.</t>
 <t tx="ekr.20060127050605">Zero (recommended): unlimited stack size.
 Non-zero: limit the maximum stack size to the given number.</t>
-<t tx="ekr.20060131071612">
-</t>
 <t tx="ekr.20060201111002"></t>
-<t tx="ekr.20060202092911"></t>
-<t tx="ekr.20060202113731"></t>
-<t tx="ekr.20060204093736"></t>
-<t tx="ekr.20060204102644"></t>
-<t tx="ekr.20060204124608">True: minibuffer commands show the Find Tab.
-False: minibuffer commands hide the Find Tab.
-
-Important: the Find Tab always exists regardless of this setting.</t>
-<t tx="ekr.20060206155101"></t>
-<t tx="ekr.20060206161839"></t>
-<t tx="ekr.20060207142012"></t>
-<t tx="ekr.20060209045356"></t>
-<t tx="ekr.20060210105437"></t>
-<t tx="ekr.20060212101234"># True: call Python's garbage collector before every screen redraw.
-# There used to be a warning about this slowing Leo, but I seen now problem with it at present.</t>
-<t tx="ekr.20060212103826"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
-<t tx="ekr.20060215054710"></t>
-<t tx="ekr.20060216091239">True: trace all changes to the minibuffer</t>
-<t tx="ekr.20060216130607">True: trace all changes to the status line.</t>
 <t tx="ekr.20060216135834">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
 
@@ -3922,9 +3154,7 @@ configuration value.</t>
 
 Clicks
 
-click-headline
 click-icon-box
-double-click-headline
 double-click-icon-box
 
 Cursor moves and selection (Basic Emacs commands)
@@ -3989,7 +3219,7 @@ zap-to-character
 Focus
 
 abort-edit-headline
-cycle-focus
+# cycle-focus
 edit-headline
 end-edit-headline
 focus-to-body
@@ -4041,23 +3271,6 @@ goto-prev-visible
 
 Panes
 
-contract-body-pane
-contract-log-pane
-contract-outline-pane
-contract-pane
-expand-body-pane
-expand-log-pane
-expand-outline-pane
-expand-pane
-find-tab-hide
-fully-expand-body-pane
-fully-expand-log-pane
-fully-expand-outline-pane
-fully-expand-pane
-hide-body-pane
-hide-log-pane
-hide-pane
-hide-outline-pane
 spell-tab-hide
 
 Furthermore, the find commands are a good tool for using Leo without a mouse
@@ -4097,17 +3310,11 @@ toggle-find-word-option
 toggle-find-wrap-around-option
 word-search-backward
 word-search-forward</t>
-<t tx="ekr.20060306031258"></t>
-<t tx="ekr.20060309022759"></t>
 <t tx="ekr.20060323131801">True: warn if a command has no setting.</t>
 <t tx="ekr.20060325071042"></t>
 <t tx="ekr.20060325071042.1"></t>
 <t tx="ekr.20060325071042.2"></t>
 <t tx="ekr.20060325071042.3"></t>
-<t tx="ekr.20060325071916"></t>
-<t tx="ekr.20060408090018"></t>
-<t tx="ekr.20060425124142"></t>
-<t tx="ekr.20060425125015"></t>
 <t tx="ekr.20060504131831.1"></t>
 <t tx="ekr.20060504131831.2"></t>
 <t tx="ekr.20060504134056"></t>
@@ -4118,11 +3325,6 @@ word-search-forward</t>
 <t tx="ekr.20060504140408.1"></t>
 <t tx="ekr.20060504140408.2"></t>
 <t tx="ekr.20060521132401">c:\Python24\Scripts\_winpdb.py</t>
-<t tx="ekr.20060521134125">The debug target to use if no target is specified otherwise.
-
-c:\prog\tigris-cvs\leo\src\leo.py
-</t>
-<t tx="ekr.20060521134125.1">The debug target to use regardless of the selected node or other settings.</t>
 <t tx="ekr.20060524151415"></t>
 <t tx="ekr.20060524151415.1">idle: use Python's standard Idle debugger.
 
@@ -4215,17 +3417,13 @@ LavenderBlush1
 azure2
 aquamarine1</t>
 <t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060616172614"></t>
-<t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
-horizontal: pack body-pane editors horizontally.</t>
-<t tx="ekr.20060627065953"></t>
 <t tx="ekr.20060627084739">True: flash matching bracket when typing (, ), [, ], { or }.</t>
 <t tx="ekr.20060627121646"></t>
 <t tx="ekr.20060627121646.1"></t>
 <t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
 <t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
 <t tx="ekr.20060704090341"></t>
-<t tx="ekr.20060713101831"># Support for solozized colors requires black.</t>
+<t tx="ekr.20060713101831"># Support for solarized colors requires black.</t>
 <t tx="ekr.20060730101451"></t>
 <t tx="ekr.20060730101451.3"></t>
 <t tx="ekr.20060730101451.5"></t>
@@ -4253,7 +3451,8 @@ horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060828110551.2"></t>
 <t tx="ekr.20060828110551.3"></t>
 <t tx="ekr.20060828145228.1"># php_keyword1_font_family = None
-php_keyword1_font_size = None
+php_keyword1_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 php_keyword1_font_slant = roman
     # roman, italic
 php_keyword1_font_weight = normal
@@ -4305,8 +3504,8 @@ exchange-point-mark                 = Alt-M     # Should be Ctrl-X Ctrl-X.
 end-of-line-extend-selection        = Ctrl-Shift-e
 extend-to-line                      = Alt-L
 extend-to-word                      = Ctrl-W # Alt-W
-forward-paragraph                   = Alt-braceright
-forward-paragraph-extend-selection  = Alt-Shift-braceright
+forward-paragraph                   = Alt-}
+forward-paragraph-extend-selection  = None # Alt-Ctrl-}
 forward-sentence                    = None # Alt-e
 forward-sentence-extend-selection   = None # Alt-Shift-e
 forward-word                        = None # Alt-f
@@ -4315,13 +3514,22 @@ goto-global-line                    = Alt-g
 # match-brackets                    = Ctrl-K    # kill-line
 move-past-close                     = Alt-parenright # Same as Alt-shift-parenright
 move-past-close-extend-selection    = None
+
+# Brian Theado
+# next-or-end-of-line                 ! text = Down
+# next-or-end-of-line-extend-selection ! text = Shift-Down
+
 # next-line                         = Ctrl-N
 # next-line-extend-selection        = Ctrl-Shift-N
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
+
+# Brian Theado
+# previous-or-beginning-of-line                   ! text = Up
+# previous-or-beginning-of-line-extend-selection  ! text = Shift-Up
 select-all                          = Ctrl-a</t>
-<t tx="ekr.20060925060533.2">contract-pane       = Alt-Ctrl--
-expand-pane         = Alt-Ctrl-=
+<t tx="ekr.20060925060533.2"># contract-pane       = Alt-Ctrl--
+# expand-pane         = Alt-Ctrl-=
 focus-to-body       = Alt-d
 focus-to-tree       = Alt-t
 toggle-active-pane  = Ctrl-t
@@ -4344,6 +3552,7 @@ cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 !tree = Delete
+delete-node                 !tree = Keypad+Delete
 delete-node                 !tree = BackSpace
 demote                      = Ctrl-}
 demote                      = Ctrl-]
@@ -4372,9 +3581,12 @@ backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
+delete-char                         = Keypad+Shift+Delete
 delete-char                         !text = Delete
+delete-char                         !text = Keypad+Delete
 delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
+delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
 # indent-region                     = Tab # Only when text is selected.
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
@@ -4470,8 +3682,6 @@ is happening.
 <t tx="ekr.20061003173413"></t>
 <t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.
 </t>
-<t tx="ekr.20061009190510">True: update .leoRecentFiles.txt, creating it if if does not exist.
-False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.
 False: Put the cursor at the end of the headline text.</t>
 <t tx="ekr.20061011082224">@language rest
@@ -4560,12 +3770,10 @@ free_layout.py
 contextmenu.py
     # This is required by the vim.py and xemacs.py plugins.
 leo_to_html.py
-livecode.py
 mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
-python_terminal.py
 screen_capture.py
 settings_finder.py
 stickynotes.py
@@ -4589,7 +3797,6 @@ viewrendered.py
 # bookmarks.py
 # bzr_qcommands.py
 # chapter_hoist.py
-# codewisecompleter.py
 # colorize_headlines.py
 # contextmenu.py
 # ctagscompleter.py
@@ -4769,14 +3976,12 @@ the temp file. Notes:
 menu contains only the items created by those nodes. Similarly, @openwith nodes
 in myLeoSettings.leo override entries in leoSettings.leo.
 </t>
-<t tx="ekr.20070417071249">True: show info as plugins are loaded.</t>
 <t tx="ekr.20070419103554">True:  Leo ensures that non-empty body text ends in a newline in @nosent trees.
 False: Leo leaves body text alone when writing @nosent trees.</t>
-<t tx="ekr.20070503080312">True: trace storage allocation in Leo's tree.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
-<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the print-bindings command.
+<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the show-bindings command.
 menu-shortcut = Alt-C # Cmds menu.
 menu-shortcut = Alt-E # Edit menu.
 menu-shortcut = Alt-F # File menu.
@@ -4792,8 +3997,6 @@ menu-shortcut = Alt-W # Window menu.
 Please don't change this node and its descendants; they are for Leo's
 developers.
 </t>
-<t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
-<t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
@@ -4843,7 +4046,6 @@ True: Top pane contains only outline.  Bottom pane contains body and log panes.<
 for which leading whitespace is not terribly significant.
 
 True: @auto warns about mismatches that occur solely in leading whitespace.</t>
-<t tx="ekr.20071113084330"></t>
 <t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
 <t tx="ekr.20071213060239">@color</t>
 <t tx="ekr.20071213060239.1"></t>
@@ -4927,9 +4129,6 @@ All other @command nodes define **local commands** that are defined only in this
 </t>
 <t tx="ekr.20080315083057.7">True: (Recommended) The spell commands collapse all nodes that are not ancestors of the node containing the match.
 False: The spell commands do not collapse any nodes.</t>
-<t tx="ekr.20080324105006.6">True: allow linux-like pastes using a mouse's middle button.
-
-Important: this may cause crashes on some platforms.</t>
 <t tx="ekr.20080326060254.3">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -4944,7 +4143,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 800
 50
 50</t>
-<t tx="ekr.20080510072134.2">cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
+<t tx="ekr.20080510072134.2"># cycle-focus                       = None
 # cycle-all-focus                   = Ctrl-Shift-tab
 
 back-word                           = Ctrl-LtArrow
@@ -4955,13 +4154,28 @@ end-of-buffer                       = Ctrl-End
 end-of-buffer-extend-selection      = Ctrl-Shift-End
 forward-word                        = Ctrl-RtArrow
 forward-word-extend-selection       = Ctrl-Shift-RtArrow
+#
+# Keypad variants...
+back-word                           = Keypad+Ctrl-LtArrow
+back-word-extend-selection          = Keypad+Ctrl-Shift-LtArrow
+beginning-of-buffer                 = Keypad+Ctrl-Home
+beginning-of-buffer-extend-selection= Keypad+Ctrl-Shift-Home
+end-of-buffer                       = Keypad+Ctrl-End
+end-of-buffer-extend-selection      = Keypad+Ctrl-Shift-End
+forward-word                        = Keypad+Ctrl-RtArrow
+forward-word-extend-selection       = Keypad+Ctrl-Shift-RtArrow
 
 # beginning-of-line                   = Home
 back-to-home                        = Home
 beginning-of-line-extend-selection  = Shift-Home
 end-of-line                         = End
 end-of-line-extend-selection        = Shift-End
-
+#
+# Keypad variants...
+back-to-home                        = Keypad+Home
+beginning-of-line-extend-selection  = Keypad+Shift-Home
+end-of-line                         = Keypad+End
+end-of-line-extend-selection        = Keypad+Shift-End
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
 
@@ -5084,16 +4298,32 @@ end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
 insert-newline              ! text = Insert
+#
+# Keypad variants...
+end-edit-headline           ! tree = Keypad+Return
+insert-newline              ! body = Keypad+Return
 
 back-char                   ! text = LtArrow
 forward-char                ! text = RtArrow
 next-line                   ! text = DnArrow
 previous-line               ! text = UpArrow
+#
+# Keypad variants...
+back-char                   ! text = Keypad+LtArrow
+forward-char                ! text = Keypad+RtArrow
+next-line                   ! text = Keypad+DnArrow
+previous-line               ! text = Keypad+UpArrow
 
 back-char-extend-selection      ! text = Shift-LtArrow
 forward-char-extend-selection   ! text = Shift-RtArrow
 next-line-extend-selection      ! text = Shift-DnArrow
 previous-line-extend-selection  ! text = Shift-UpArrow
+#
+# Keypad variants...
+back-char-extend-selection      ! text = Keypad+Shift-LtArrow
+forward-char-extend-selection   ! text = Keypad+Shift-RtArrow
+next-line-extend-selection      ! text = Keypad+Shift-DnArrow
+previous-line-extend-selection  ! text = Keypad+Shift-UpArrow
 
 contract-or-go-left         ! tree = LtArrow
 expand-and-go-right         ! tree = RtArrow
@@ -5103,11 +4333,20 @@ move-outline-down           ! tree = Shift-DnArrow
 move-outline-left           ! tree = Shift-LtArrow
 move-outline-right          ! tree = Shift-RtArrow
 move-outline-up             ! tree = Shift-UpArrow
-
+#
+# Keypad variants...
+contract-or-go-left         ! tree = Keypad+LtArrow
+expand-and-go-right         ! tree = Keypad+RtArrow
+goto-next-visible           ! tree = Keypad+DnArrow
+goto-prev-visible           ! tree = Keypad+UpArrow
+move-outline-down           ! tree = Keypad+Shift-DnArrow
+move-outline-left           ! tree = Keypad+Shift-LtArrow
+move-outline-right          ! tree = Keypad+Shift-RtArrow
+move-outline-up             ! tree = Keypad+Shift-UpArrow
+#
 # These cause problems with editing headlines.
 # goto-first-visible-node     ! tree= Home
 # goto-last-visible-node      ! tree= End
-
 contract-or-go-left         = Alt-LtArrow
 expand-and-go-right         = Alt-RtArrow
 goto-next-visible           = Alt-DnArrow
@@ -5116,25 +4355,56 @@ move-outline-down           = Alt-Shift-DnArrow
 move-outline-left           = Alt-Shift-LtArrow
 move-outline-right          = Alt-Shift-RtArrow
 move-outline-up             = Alt-Shift-UpArrow
+#
+# Keypad variants...
+contract-or-go-left         = Keypad+Alt-LtArrow
+expand-and-go-right         = Keypad+Alt-RtArrow
+goto-next-visible           = Keypad+Alt-DnArrow
+goto-prev-visible           = Keypad+Alt-UpArrow
+move-outline-down           = Keypad+Alt-Shift-DnArrow
+move-outline-left           = Keypad+Alt-Shift-LtArrow
+move-outline-right          = Keypad+Alt-Shift-RtArrow
+move-outline-up             = Keypad+Alt-Shift-UpArrow
 
 do-nothing                  ! tree = Ctrl-DnArrow
 do-nothing                  ! tree = Ctrl-UpArrow
 move-lines-up               ! body = Ctrl-UpArrow
-move-lines-down             ! body = Ctrl-DnArrow 
+move-lines-down             ! body = Ctrl-DnArrow
+#
+# Keypad variants...
+do-nothing                  ! tree = Keypad+Ctrl-DnArrow
+do-nothing                  ! tree = Keypad+Ctrl-UpArrow
+move-lines-up               ! body = Keypad+Ctrl-UpArrow
+move-lines-down             ! body = Keypad+Ctrl-DnArrow
   
 goto-first-visible-node     = Alt-Home
-# goto-last-visible-node    = Alt-End
 goto-last-sibling           = Alt-End
+#
+# Keypad variants...
+goto-first-visible-node     = Keypad+Alt-Home
+goto-last-sibling           = Keypad+Alt-End
 
 back-page                       ! text = PageUp
 back-page-extend-selection      ! text = Shift-PageUp
 forward-page                    ! text = PageDn
 forward-page-extend-selection   ! text = Shift-PageDn
+#
+# Keypad variants...
+back-page                       ! text = Keypad+PageUp
+back-page-extend-selection      ! text = Keypad+Shift-PageUp
+forward-page                    ! text = Keypad-PageDn
+forward-page-extend-selection   ! text = Keypad+Shift-PageDn
 
 scroll-down-half-page   ! tree = Shift-PageDn
 scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
-scroll-up-page          ! tree = PageUp         
+scroll-up-page          ! tree = PageUp
+#
+# Keypad variants...
+scroll-down-half-page   ! tree = Keypad+Shift-PageDn
+scroll-down-page        ! tree = Keypad+PageDn
+scroll-up-half-page     ! tree = Keypad+Shift-PageUp
+scroll-up-page          ! tree = Keypad+PageUp
 </t>
 <t tx="ekr.20080513095644.1"># q in vim bindings.
 # The mode prompt is everything following the ::
@@ -5296,30 +4566,42 @@ right clicks in the body pane.
 <t tx="ekr.20080703111151.12"># bold words in forth
 
 forth_keyword3_family = None
-forth_keyword3_font_size = None
+forth_keyword3_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword3_font_slant = roman
+    # roman, italic
 forth_keyword3_font_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.14"># bold-italic words in forth
 
 forth_keyword4_family = None
-forth_keyword4_size = None
+forth_keyword4_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword4_slant = slant
+    # roman, italic
 forth_keyword4_weight = bold
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.15"># italic words in forth
 
 forth_keyword5_family = None
-forth_keyword5_size = None
+forth_keyword5_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword5_slant = slant
+    # roman, italic
 forth_keyword5_weight = normal
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.17"># defining words in forth
 
 forth_keyword2_family = None
-forth_keyword2_size = None
+forth_keyword2_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
 forth_keyword2_slant = None
+    # roman, italic
 forth_keyword2_weight = None
+    # normal, bold
 </t>
 <t tx="ekr.20080703111151.18">@language text</t>
 <t tx="ekr.20080703111151.21"># bold keywords defined in forth-bold-words</t>
@@ -5422,8 +4704,6 @@ lcd2c" "
 True: @shadow and @auto create a single node for the entire file.</t>
 <t tx="ekr.20080921060401.3"></t>
 <t tx="ekr.20080930072519.3"></t>
-<t tx="ekr.20080930072519.4">The number of buttons or widget in any one row of icons in the icon area.
-If there are more than this number, a new row is created.</t>
 <t tx="ekr.20081020075840.10">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.
 </t>
@@ -5496,11 +4776,11 @@ print ('done')
 <t tx="ekr.20090213065933.11"></t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 
-add-comments        = Ctrl-Shift-9  # Ctrl-parenleft
-delete-comments     = Ctrl-Shift-0  # Ctrl-parenright
-demote              = Ctrl-Shift-]  # Ctrl-}
-move-past-close     = Alt-Shift-0   # Alt-parenright
-promote             = Ctrl-Shift-[  # Ctrl-{
+# add-comments        = Ctrl-Shift-9  # Ctrl-parenleft
+# delete-comments     = Ctrl-Shift-0  # Ctrl-parenright
+# demote              = Ctrl-Shift-]  # Ctrl-}
+# move-past-close     = Alt-Shift-0   # Alt-parenright
+# promote             = Ctrl-Shift-[  # Ctrl-{
 </t>
 <t tx="ekr.20090430075506.7">True: write comment line of the form:
     
@@ -5524,11 +4804,6 @@ A reasonable alternative would be:
     
 '\n.. class:: code\n..\n\n::\n'</t>
 <t tx="ekr.20090514111518.8379"></t>
-<t tx="ekr.20090620112052.9070">@nocolor
-
-The encoding assumed for strings used by the Qt plugin.
-UTF-8 is a reasonable default.
-Change to your Python's default encoding if you have unicode problems.</t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 
@@ -5553,8 +4828,10 @@ http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 #    name=definition
 
 # Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. Typically you would define @data abbreviation nodes
-# in myLeoSettings.leo
+# global-abbreviation nodes. 
+
+# Typically you would define @data global-abbreviation nodes
+# in myLeoSettings.leo and @data abbreviation nodes in local files.
 
 # type html;; to insert template and ,, to select next &lt;|placeholder|&gt;
 html;;=&lt;html&gt;
@@ -5578,39 +4855,25 @@ date;;={|{x=time.asctime()}|}
 #    name=definition
 
 # Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. Typically you would define @data abbreviation nodes
-# in myLeoSettings.leo
+# global-abbreviation nodes.
+
+# Typically you would define @data global-abbreviation nodes
+# in myLeoSettings.leo and @data abbreviation nodes in local files.
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
 </t>
-<t tx="ekr.20100907092300.6957"></t>
-<t tx="ekr.20100907092300.6958">Path to inkscape template file
-</t>
-<t tx="ekr.20100907092300.6959">Path to Inkscape executable</t>
 <t tx="ekr.20100910115903.8297"></t>
 <t tx="ekr.20100910115903.8299"></t>
-<t tx="ekr.20100929121021.8511"></t>
-<t tx="ekr.20101009103953.8642">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-    
-False: (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.</t>
-<t tx="ekr.20101104191857.8345">True:  put non-definition code in separate nodes.
-False: put trailing non-definition code at the start of the next node.</t>
 <t tx="ekr.20110510071925.14588"></t>
 <t tx="ekr.20110510071925.14589">True:  show completions in a QCompleter popup.
 False: show completions in Leo's Completions tab.
 
 **Note**: this option has effect only when using the qt or qttabs gui's.
 </t>
-<t tx="ekr.20110510071925.14590">True: use codewise completions.
-False: use leo-specific completions.
+<t tx="ekr.20110510071925.14590">This setting is no longer used!
 
-This setting is no longer used!</t>
+Instead, enable the codewisecompleter.py plugin.</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="ekr.20110611092035.16463"></t>
@@ -5618,10 +4881,10 @@ This setting is no longer used!</t>
 <t tx="ekr.20110611092035.16474"></t>
 <t tx="ekr.20110611092035.16476">If neither is checked, Leo searches the entire outline.</t>
 <t tx="ekr.20110611092035.16477"></t>
-<t tx="ekr.20110611092035.16478">These commands are deprecated</t>
 <t tx="ekr.20110611092035.16479"></t>
 <t tx="ekr.20110611092035.16480">@language rest
 @wrap
+
 </t>
 <t tx="ekr.20110611092035.16481"></t>
 <t tx="ekr.20110611092035.16482"></t>
@@ -5836,26 +5099,61 @@ Commands:
 <t tx="ekr.20111003085631.15488"></t>
 <t tx="ekr.20111003085631.15489"></t>
 <t tx="ekr.20111003085631.15490"></t>
-<t tx="ekr.20111003104518.15499"></t>
-<t tx="ekr.20111003130143.15561">    **Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+<t tx="ekr.20111003130143.15561">**Important**: these nodes **only** specify fonts used by Leo's syntax colorizer.
+
+To set fonts in Leo's widgets, change Leo's master style sheet::
     
-    To set fonts in Leo's widgets, change Leo's master style sheet::
-        
-        @data qt-gui-plugin-style-sheet 
+    @data qt-gui-plugin-style-sheet
     
-    Valid values for the body of @font nodes::
-        
-        family: a font family name
-        size:   an integer
-        weight: bold, normal, None
-        slant: roman, italic, None
+**Notes**
     
-    Use the show-fonts command to pick fonts, then copy the values shown by the
-    show-fonts command to the values here.
+- Leo ignores everything in the headline after @font: only the body matters.
+- Body lines starting with '#' are comments.
+- All other body lines should have the form:
+
+    &lt;optional language name&gt;&lt;jEdit or Pygments key&gt;&lt;specifiers&gt;
+
+- Underlines and '-' characters are ignored, and can be used for readability.
+- Valid specifiers are:
+    
+    family: a font family name.
+            None is the default, indicating the default font.
+    size:   an integer.  Leo will ignore suffixes like pt and px.
+    weight: bold, normal, None.'
+            Default is normal.
+    slant:  roman, italic, None.
+            Default is roman.
+
+- **Note**: A single @font node may create settings for different languages.
+            See example 3 below.
+
+Example 1: Sets the comment1 font, for python only:
+
+python_comment1_family = None
+python_comment1_size = 12
+python_comment1_slant = italic
+python_comment1_weight = None
+
+Example 2: Sets the comment1 font for all languages:
+
+comment1_family = None
+comment1_size = 12
+comment1_slant = italic
+comment1_weight = bold
+
+Example 3: Combining the previous two examples:
+
+python_comment1_size = 12
+python_comment1_slant = italic
+comment1_size = 12
+comment1_slant = italic
+
+Use the show-fonts command to pick fonts, then copy the values shown by the
+show-fonts command to the values here.
 </t>
 <t tx="ekr.20111004182631.15533"></t>
 <t tx="ekr.20111004182631.15534">True:  Leo colors C language comments in cweb mode as black with LaTeX keywords highlighted.
-Flase: Leo colors C language comments in cweb mode as comments (default red).
+False: Leo colors C language comments in cweb mode as comments (default red).
 
 Note: this setting does not affect how Leo colors noweb section references and defintions.
 </t>
@@ -5894,193 +5192,165 @@ gray90: #E5E5E5
 <t tx="ekr.20111004182631.15552">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
 <t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
+# https://github.com/leo-editor/leo-editor/issues/993
 
 class Controller:
     @others
 
-Controller(c).run()</t>
-<t tx="ekr.20111006212449.11851">def __init__ (self,c):
-    self.c = c
-
-    self.errors = 0
-
-    # Commanders.
-    self.core = None # Commander for leoPy.leo.
-    self.plugins = None # Commander for leoPlugins.leo.
-    self.settings = None # Commander for leoSettings.leo.
+Controller(c).run()
 </t>
-<t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
-
-    table = ('Bool','Color','Int','Float',# 'Font',
-        'Ratio','Path','String',
-    )
-    format = '%40s %s'
-
-    if 1: # Less important: print missing settings.
-        for kind in table:
-            config_key = 'get%s' % kind
-            settings_key = '@%s' % kind.lower()
-            config_list = configs_d.get(config_key,[])
-            settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [self.munge(s) for s in config_list]
-            munged_settings_list = [self.munge(s) for s in settings_list]
-            print('\nmissing %s settings...' % settings_key)
-            missing = set()
-            for s in munged_config_list:
-                # Ignore plugins settings.
-                if s not in munged_settings_list:
-                    missing.add(s)
-            if missing:
-                print(format % ('Canonical','Actual'))
-                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in sorted(list(missing)):
-                    self.print_missing(format,s,
-                        config_list,settings_list,
-                        munged_config_list,munged_settings_list)
-    # More important: print missing calls to c.config.getX
-    if 1:
-        for kind in table:
-            config_key = 'get%s' % kind
-            settings_key = '@%s' % kind.lower()
-            config_list = configs_d.get(config_key,[])
-            settings_list = settings_d.get(settings_key,[])
-            munged_config_list =   [self.munge(s) for s in config_list]
-            munged_settings_list = [self.munge(s) for s in settings_list]
-            print('\nmissing config.%s calls...' % config_key)
-            missing = set()
-            for s in munged_settings_list:
-                if s not in munged_config_list:
-                    missing.add(s)
-            if missing:
-                print(format % ('Canonical','Actual'))
-                print(format % ('=' * len('Canonical'),'=' * len('Actual')))
-                for s in sorted(list(missing)):
-                    self.print_missing(format,s,
-                        settings_list,config_list,
-                        munged_settings_list,munged_config_list)</t>
-<t tx="ekr.20111006212449.11853">def error (self,s):
-
+<t tx="ekr.20111006212449.11851">def __init__(self, c):
+    self.c = c
+    self.errors = 0
+    # Commanders...
+    self.core = None # leoPy.leo.
+    self.plugins = None # leoPlugins.leo.
+    self.settings = None # leoSettings.leo.
+</t>
+<t tx="ekr.20111006212449.11852">def check(self, configs_d, settings_d):
+    munge = self.munge
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    #
+    # Print missing user settings...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_configs if not z in m_settings])
+        aList = [z for z in missing if self.filter_user_config(z)]
+        if aList:
+            print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
+                g.printObj(aList2)
+    #
+    # Print missing calls to c.config.getX...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_settings if not z in m_configs])
+        aList = [z for z in missing if self.filter_get_x(z)]
+        if aList:
+            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
+                g.printObj(aList2)
+</t>
+<t tx="ekr.20111006212449.11853">def error(self, s):
     print(s)
     self.errors += 1
 </t>
-<t tx="ekr.20111006212449.11854">def get_commanders (self):
-
+<t tx="ekr.20111006212449.11854">def get_commanders(self):
     '''Open files as needed and set the commander ivars.'''
 
     def open_commander(fn):
-        c = g.openWithFileName(fn,old_c=self.c,gui=g.app.nullGui)
-        if c: return c
-        else:
+        c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+        if not c:
             self.error('not found: %s' % fn)
+        return c
 
-    self.core = open_commander(
-        g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
-
-    self.plugins = open_commander(
-        g.os_path_join(g.app.loadDir,'..','plugins','leoPlugins.leo'))
-
-    self.settings = open_commander(
-        g.os_path_join(g.app.loadDir,'..','config','leoSettings.leo'))
-
-    # g.trace('\n%s\n%s\n%s' % (self.core,self.plugins,self.settings))
+    join, loadDir = g.os_path_join, g.app.loadDir
+    self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
+        # Opening LeoPyRef.leo would be slower.
+    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
+    self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
 </t>
 <t tx="ekr.20111006212449.11855">def get_configs(self):
-
-    '''Return a dict containing a representation
-    of all calls to x.config.getX.
     '''
-
+    Return a dict containing a representation of all calls to x.config.getX.
+    '''
     d = {}
-
-    for c in (self.core,self.plugins):
+    for c in (self.core, self.plugins):
         print('scanning: %s' % c.shortFileName())
-        self.get_configs_from_outline(c,d)
-
-    return d</t>
-<t tx="ekr.20111006212449.11856">def get_configs_from_outline (self,c,d):
-
-    '''Scan the outline for all calls to x.config.getX
-    and add items to d.
+        self.get_configs_from_outline(c, d)
+    return d
+</t>
+<t tx="ekr.20111006212449.11856">def get_configs_from_outline(self, c, d):
     '''
-
-    trace = True
+    Scan the outline for all calls to x.config.getX and add items to d.
+    '''
     for p in c.all_positions():
-        self.scan_for_configs(p,d)
-    if trace:
-        for key in sorted(list(d.keys())):
-            print(key)
-            aList = d.get(key)
-            for name in sorted(aList):
-                print('  ' + name)
-    return d</t>
-<t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
-
-    '''Scan the body text of p, finding all calls to getX.'''
-    kinds = ('getBool','getColor','getInt','getFloat',
+        self.scan_for_configs(p, d)
+    return d
+</t>
+<t tx="ekr.20111006212449.11857">def scan_for_configs(self, p, d):
+    '''
+    Scan the body text of p, finding all calls to config.getX.
+    
+    This code does not know about `if 0`, but does know about comments.
+    '''
+    kinds = (
+        'getBool', 'getColor', 'getInt', 'getFloat',
         # '@font', # special case.
-        'getRatio','getPath','getString',
+        'getPath', 'getRatio', 'getString',
     )
-    i,s = 0,p.b
+    i, s = 0, p.b
     while i &lt; len(s):
         progress = i
         ch = s[i]
         if (
             ch == '@' and
-            (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and
-            (i == 0 or s[i-1] == '\n')
+            (g.match(s, i, '@ ') or g.match(s, i, '@\n')) and
+            (i == 0 or s[i - 1] == '\n')
         ):
-            i = s.find('\n@c',i)
+            # Skip the @doc part.
+            i = s.find('\n@c', i)
             if i == -1: break
         elif ch == '#':
-            i = g.skip_to_end_of_line(s,i)
-        elif ch in ('"',"'"):
-            i = g.skip_string(s,i,verbose=False)
+            i = g.skip_to_end_of_line(s, i)
+        elif ch in ('"', "'"):
+            i = g.skip_python_string(s, i, verbose=False)
         elif ch == '_' or ch.isalpha():
-            j = g.skip_id(s,i)
-            kind = s[i:j]
+            j = g.skip_id(s, i)
+            kind = s[i: j]
             if kind in kinds:
-                i = g.skip_ws(s,j)
-                if g.match(s,i,'('):
-                    i = g.skip_ws(s,i+1)
-                    if g.match(s,i,'"') or g.match(s,i,"'"):
-                        j = g.skip_string(s,i)
-                        name = s[i+1:j-1]
-                        aList = d.get(kind,[])
+                # We have found a call to getBool, etc.
+                i = g.skip_ws(s, j)
+                if g.match(s, i, '('):
+                    i = g.skip_ws(s, i + 1)
+                    if g.match(s, i, '"') or g.match(s, i, "'"):
+                        j = g.skip_string(s, i)
+                        name = s[i + 1: j - 1]
+                        aList = d.get(kind, [])
                         if name not in aList:
                             aList.append(name)
-                        d [kind] = aList
+                        d[kind] = aList
+                else:
+                    j = i
             i = j
         else:
             i += 1
         assert progress &lt; i
-    return d</t>
-<t tx="ekr.20111006212449.11858">def get_settings (self):
-
+    return d
+</t>
+<t tx="ekr.20111006212449.11858">def get_settings(self):
     '''Return a dict containing a representation
     of all settings in leoSettings.leo.
     '''
-
     trace = False
-    c,d = self.settings,{}
-
+    c, d = self.settings, {}
     print('scanning: %s' % c.shortFileName())
-
-    settings_node = g.findNodeAnywhere(c,'@settings')
+    settings_node = g.findNodeAnywhere(c, '@settings')
     if not settings_node:
         return self.error('no @settings node')
-
     for p in settings_node.subtree():
         if self.is_setting(p):
-            kind,name = self.parse_setting(p)
+            kind, name = self.parse_setting(p)
             if name:
                 # name = self.munge(name)
-                aList = d.get(kind,[])
+                aList = d.get(kind, [])
                 if name not in aList:
                     aList.append(name)
-                d [kind] = aList
+                d[kind] = aList
             else:
                 self.error('no name for %s' % (kind))
-
     if trace:
         keys = list(d.keys())
         for key in sorted(keys):
@@ -6088,67 +5358,44 @@ Controller(c).run()</t>
             aList = d.get(key)
             for name in sorted(aList):
                 print('  ' + name)
-
-    return d</t>
-<t tx="ekr.20111006212449.11859">def is_setting (self,p):
-
+    return d
+</t>
+<t tx="ekr.20111006212449.11859">def is_setting(self, p):
     # For now, these are enough
     table = (
-        '@bool','@color','@int','@float',
+        '@bool', '@color', '@int', '@float',
         # '@font', # special case.
-        '@ratio','@path','@string',
+        '@ratio', '@path', '@string',
     )
-
     for s in table:
-        if g.match_word(p.h,0,s):
+        if g.match_word(p.h, 0, s):
             return True
-    return False</t>
-<t tx="ekr.20111006212449.11860">def parse_setting (self,p):
-
+    return False
+</t>
+<t tx="ekr.20111006212449.11860">def parse_setting(self, p):
     s = p.h
     assert s[0] == '@'
-    i = g.skip_id(s,1)
-    kind = s[:i]
+    i = g.skip_id(s, 1)
+    kind = s[: i]
     assert kind
-    i = g.skip_ws(s,i)
-    j = g.skip_id(s,i,chars='-')
-    name = s[i:j]
-    return kind,name</t>
-<t tx="ekr.20111006212449.11861">def munge (self,s):
-
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+</t>
+<t tx="ekr.20111006212449.11861">def munge(self, s):
     '''Return the canonicalized name for settings and arguments to c.config.getX.'''
-
-    s = s.replace('-','').replace('_','').lower()
-    return g.toUnicode(s)
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
-
-    import os ; os.system('cls')
-
+    g.cls()
     self.get_commanders()
     configs = self.get_configs()
     settings = self.get_settings()
-
     if self.errors == 0:
-        self.check(configs,settings)
-
-    g.trace('done')</t>
-<t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
-
-    '''Print the canonical name, followed by the list of names that match.'''
-    assert munged_s in munged_in_list,munged_s
-    assert munged_s not in munged_out_list,munged_s
-    if 0: # These should not be necessary.  Something is wrong.
-        # Ignore plugins settings and global switches.
-        for prefix in ('color','datenodes','http','opml','rst3','todo','trace','vim','zodb'):
-            if munged_s.startswith(prefix):
-                return
-    # Ignore color settings.  They are handled differently...
-    for suffix in ('color',):
-        if munged_s.endswith(suffix):
-            return
-    match_list = [s for s in in_list if self.munge(s) == munged_s]
-    print(format % (munged_s,match_list))</t>
+        self.check(configs, settings)
+    g.trace('done')
+</t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
 sets. setNames is a list of the roots of all such sets.'''
 
@@ -6327,7 +5574,13 @@ main()
 </t>
 <t tx="ekr.20111017082630.16086"></t>
 <t tx="ekr.20111024091133.16650"></t>
-<t tx="ekr.20111024091133.16651"></t>
+<t tx="ekr.20111024091133.16651">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
 <t tx="ekr.20111024091133.16671"></t>
 <t tx="ekr.20111026083456.16490"></t>
 <t tx="ekr.20111026083456.16491">import glob
@@ -6449,9 +5702,6 @@ True (Recommended):
 </t>
 <t tx="ekr.20111115083813.12518"></t>
 <t tx="ekr.20120205022040.15410">These are needed to handle shortcuts for the find panel!</t>
-<t tx="ekr.20120205022040.15411">This setting has effect only on MacOS.
-
-When True, bindings that appear to specify the control key actually specify the command (clover) key.</t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
 help            = F1
 # find-prev     = F2    # Set elsewhere
@@ -6595,19 +5845,21 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21826"></t>
 <t tx="ekr.20131213135427.21827"></t>
 <t tx="ekr.20131213135427.21828"></t>
-<t tx="ekr.20131213135427.21829">&amp;Open</t>
+<t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">A placeholder for the actual menu.
-Leo's init code populates this menu as a special case.</t>
+<t tx="ekr.20131213135427.21831"># 文件
+# The first non-blank, non-comment body line is an alternate menu name.
+#
+# A placeholder for the actual menu.
+# Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21832"></t>
-<t tx="ekr.20131213135427.21833">&amp;Close</t>
+<t tx="ekr.20131213135427.21833"></t>
 <t tx="ekr.20131213135427.21834">&amp;Save...</t>
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
 <t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
 <t tx="ekr.20131213135427.21837">Save As &amp;Zipped...</t>
 <t tx="ekr.20131213135427.21838">Save &amp;To...</t>
 <t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
-<t tx="ekr.20131213135427.21840"></t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
 <t tx="ekr.20131213135427.21843"></t>
@@ -6651,22 +5903,16 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21882">Cu&amp;t</t>
 <t tx="ekr.20131213135427.21883">Cop&amp;y</t>
 <t tx="ekr.20131213135427.21884">&amp;Paste</t>
-<t tx="ekr.20131213135427.21885">&amp;Delete</t>
+<t tx="ekr.20131213135427.21885"></t>
 <t tx="ekr.20131213135427.21886">Select &amp;All</t>
-<t tx="ekr.20131213135427.21887"></t>
-<t tx="ekr.20131213135427.21888"></t>
 <t tx="ekr.20131213135427.21889"></t>
 <t tx="ekr.20131213135427.21890"></t>
-<t tx="ekr.20131213135427.21891"></t>
 <t tx="ekr.20131213135427.21892"></t>
 <t tx="ekr.20131213135427.21893"></t>
 <t tx="ekr.20131213135427.21894"></t>
 <t tx="ekr.20131213135427.21895"></t>
 <t tx="ekr.20131213135427.21896"></t>
 <t tx="ekr.20131213135427.21897"></t>
-<t tx="ekr.20131213135427.21898"></t>
-<t tx="ekr.20131213135427.21899"></t>
-<t tx="ekr.20131213135427.21900"></t>
 <t tx="ekr.20131213135427.21901"></t>
 <t tx="ekr.20131213135427.21902"></t>
 <t tx="ekr.20131213135427.21903"></t>
@@ -6675,63 +5921,40 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21906"></t>
 <t tx="ekr.20131213135427.21907"></t>
 <t tx="ekr.20131213135427.21908"></t>
-<t tx="ekr.20131213135427.21909"></t>
 <t tx="ekr.20131213135427.21910"></t>
-<t tx="ekr.20131213135427.21911"></t>
 <t tx="ekr.20131213135427.21912">Show In&amp;visibles</t>
 <t tx="ekr.20131213135427.21913"></t>
 <t tx="ekr.20131213135427.21914"></t>
 <t tx="ekr.20131213135427.21915"></t>
-<t tx="ekr.20131213135427.21916">Hide Find Tab
-</t>
-<t tx="ekr.20131213135427.21917"></t>
 <t tx="ekr.20131213135427.21918"></t>
 <t tx="ekr.20131213135427.21919"></t>
 <t tx="ekr.20131213135427.21920"></t>
 <t tx="ekr.20131213135427.21921"></t>
-<t tx="ekr.20131213135427.21922"></t>
 <t tx="ekr.20131213135427.21923"></t>
-<t tx="ekr.20131213135427.21924"></t>
 <t tx="ekr.20131213135427.21925"></t>
-<t tx="ekr.20131213135427.21926"></t>
-<t tx="ekr.20131213135427.21927">Toggle &amp;Ignore Case
-
-
-
-
-</t>
-<t tx="ekr.20131213135427.21928">Toggle Mark &amp;Changes</t>
-<t tx="ekr.20131213135427.21929">Toggle Mark &amp;Finds</t>
-<t tx="ekr.20131213135427.21930">Toggle Regular E&amp;xpression</t>
-<t tx="ekr.20131213135427.21931">Toggle &amp;Whole Word</t>
-<t tx="ekr.20131213135427.21932">Toggle Wrap &amp;Around</t>
+<t tx="ekr.20131213135427.21927"></t>
+<t tx="ekr.20131213135427.21928"></t>
+<t tx="ekr.20131213135427.21929"></t>
+<t tx="ekr.20131213135427.21930"></t>
+<t tx="ekr.20131213135427.21931"></t>
+<t tx="ekr.20131213135427.21932"></t>
 <t tx="ekr.20131213135427.21933"></t>
-<t tx="ekr.20131213135427.21934">Find &amp;Everywhere</t>
-<t tx="ekr.20131213135427.21935">Find In &amp;Node</t>
-<t tx="ekr.20131213135427.21936">Find In &amp;Suboutline</t>
-<t tx="ekr.20131213135427.21937"></t>
+<t tx="ekr.20131213135427.21934"></t>
+<t tx="ekr.20131213135427.21935"></t>
+<t tx="ekr.20131213135427.21936"></t>
 <t tx="ekr.20131213135427.21938"></t>
-<t tx="ekr.20131213135427.21939">Find Char Extend &amp;Sel</t>
-<t tx="ekr.20131213135427.21940">&amp;Back Find Char</t>
-<t tx="ekr.20131213135427.21941">Back Find Char Extend Sel</t>
-<t tx="ekr.20131213135427.21942"></t>
+<t tx="ekr.20131213135427.21939"></t>
+<t tx="ekr.20131213135427.21940"></t>
+<t tx="ekr.20131213135427.21941"></t>
 <t tx="ekr.20131213135427.21943"></t>
 <t tx="ekr.20131213135427.21944"></t>
 <t tx="ekr.20131213135427.21945"></t>
 <t tx="ekr.20131213135427.21946"></t>
-<t tx="ekr.20131213135427.21947"></t>
-<t tx="ekr.20131213135427.21948"></t>
-<t tx="ekr.20131213135427.21949"></t>
-<t tx="ekr.20131213135427.21950">Alt+Ctrl+E set-find-everywhere
-Alt+Ctrl+N set-find-node-only
-Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.21951"></t>
-<t tx="ekr.20131213135427.21952"></t>
-<t tx="ekr.20131213135427.21953">&amp;leoSettings.leo</t>
-<t tx="ekr.20131213135427.21954">&amp;myLeoSettings.leo
+<t tx="ekr.20131213135427.21953">Open &amp;LeoSettings.leo</t>
+<t tx="ekr.20131213135427.21954">Open &amp;myLeoSettings.leo
 </t>
-<t tx="ekr.20131213135427.21955">Find &amp;Local @settings Tree</t>
-<t tx="ekr.20131213135427.21956"></t>
+<t tx="ekr.20131213135427.21955">&amp;Select Local @settings tree</t>
 <t tx="ekr.20131213135427.21957"></t>
 <t tx="ekr.20131213135427.21958"></t>
 <t tx="ekr.20131213135427.21959"></t>
@@ -6742,7 +5965,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.21964"></t>
 <t tx="ekr.20131213135427.21965">Pas&amp;te Node As Clone</t>
 <t tx="ekr.20131213135427.21966"></t>
-<t tx="ekr.20131213135427.21967"></t>
 <t tx="ekr.20131213135427.21968"></t>
 <t tx="ekr.20131213135427.21969"></t>
 <t tx="ekr.20131213135427.21970"></t>
@@ -6751,13 +5973,9 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.21973"></t>
 <t tx="ekr.20131213135427.21974"></t>
 <t tx="ekr.20131213135427.21975">D&amp;e-Hoist</t>
-<t tx="ekr.20131213135427.21976"></t>
 <t tx="ekr.20131213135427.21977"></t>
 <t tx="ekr.20131213135427.21978"></t>
 <t tx="ekr.20131213135427.21979"></t>
-<t tx="ekr.20131213135427.21980"></t>
-<t tx="ekr.20131213135427.21981"></t>
-<t tx="ekr.20131213135427.21982"></t>
 <t tx="ekr.20131213135427.21983"></t>
 <t tx="ekr.20131213135427.21984">This node just keeps track of the accelerators in the siblings.</t>
 <t tx="ekr.20131213135427.21985"></t>
@@ -6787,9 +6005,8 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22009">Move &amp;Left</t>
 <t tx="ekr.20131213135427.22010">Move &amp;Right</t>
 <t tx="ekr.20131213135427.22011">Move &amp;Up</t>
-<t tx="ekr.20131213135427.22012"></t>
-<t tx="ekr.20131213135427.22013"></t>
-<t tx="ekr.20131213135427.22014"></t>
+<t tx="ekr.20131213135427.22013">&amp;Promote Node</t>
+<t tx="ekr.20131213135427.22014">&amp;Demote node</t>
 <t tx="ekr.20131213135427.22015"></t>
 <t tx="ekr.20131213135427.22016"></t>
 <t tx="ekr.20131213135427.22017"></t>
@@ -6824,13 +6041,11 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22046">Open leo&amp;Plugins.leo</t>
 <t tx="ekr.20131213135427.22047">Print Plugins &amp;Info</t>
 <t tx="ekr.20131213135427.22048"></t>
-<t tx="ekr.20131213135427.22049"></t>
 <t tx="ekr.20131213135427.22050"></t>
 <t tx="ekr.20131213135427.22053"></t>
 <t tx="ekr.20131213135427.22059"></t>
 <t tx="ekr.20131213135427.22060"></t>
 <t tx="ekr.20131213135427.22061"></t>
-<t tx="ekr.20131213135427.22062"></t>
 <t tx="ekr.20131213135427.22063"></t>
 <t tx="ekr.20131213135427.22072"></t>
 <t tx="ekr.20131213135427.22078"></t>
@@ -6885,32 +6100,21 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22127"></t>
 <t tx="ekr.20131213135427.22128">Open External &amp;Debugger</t>
 <t tx="ekr.20131213135427.22129">Open &amp;Pdb Debugger</t>
-<t tx="ekr.20131213135427.22130">Open &amp;Python Shell</t>
+<t tx="ekr.20131213135427.22130"></t>
 <t tx="ekr.20131213135427.22131"></t>
 <t tx="ekr.20131213135427.22132"></t>
 <t tx="ekr.20131213135427.22133"></t>
 <t tx="ekr.20131213135427.22134"></t>
 <t tx="ekr.20131213135427.22135"></t>
 <t tx="ekr.20131213135427.22136"></t>
-<t tx="ekr.20131213135427.22137"></t>
-<t tx="ekr.20131213135427.22138"></t>
 <t tx="ekr.20131213135427.22139"></t>
 <t tx="ekr.20131213135427.22140"></t>
 <t tx="ekr.20131213135427.22141"></t>
-<t tx="ekr.20131213135427.22142"></t>
-<t tx="ekr.20131213135427.22143"></t>
-<t tx="ekr.20131213135427.22144"></t>
-<t tx="ekr.20131213135427.22145"></t>
-<t tx="ekr.20131213135427.22146"></t>
-<t tx="ekr.20131213135427.22147"></t>
 <t tx="ekr.20131213135427.22148"></t>
 <t tx="ekr.20131213135427.22149"></t>
 <t tx="ekr.20131213135427.22150"></t>
 <t tx="ekr.20131213135427.22151"></t>
 <t tx="ekr.20131213135427.22152"></t>
-<t tx="ekr.20131213135427.22153"></t>
-<t tx="ekr.20131213135427.22154"></t>
-<t tx="ekr.20131213135427.22156"></t>
 <t tx="ekr.20131213135427.22157"></t>
 <t tx="ekr.20131213135427.22158"></t>
 <t tx="ekr.20131213135427.22159"></t>
@@ -6919,14 +6123,12 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22178"></t>
 <t tx="ekr.20131213135427.22179"></t>
 <t tx="ekr.20131213135427.22180"></t>
-<t tx="ekr.20131213135427.22181"></t>
 <t tx="ekr.20131213135427.22182"></t>
 <t tx="ekr.20131213135427.22194"></t>
 <t tx="ekr.20131213135427.22195"></t>
 <t tx="ekr.20131213135427.22196"></t>
 <t tx="ekr.20131213135427.22197"></t>
 <t tx="ekr.20131213135427.22198"></t>
-<t tx="ekr.20131213135427.22199"></t>
 <t tx="ekr.20131213135427.22200"></t>
 <t tx="ekr.20131213135427.22201"></t>
 <t tx="ekr.20131213135427.22202"></t>
@@ -6944,8 +6146,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22224"></t>
 <t tx="ekr.20131213135427.22225"></t>
 <t tx="ekr.20131213135427.22226"></t>
-<t tx="ekr.20131213135427.22227"></t>
-<t tx="ekr.20131213135427.22228"></t>
 <t tx="ekr.20131213135427.22229"></t>
 <t tx="ekr.20131213135427.22230"></t>
 <t tx="ekr.20131213135427.22231"></t>
@@ -6967,7 +6167,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22247"></t>
 <t tx="ekr.20131213135427.22248"></t>
 <t tx="ekr.20131213135427.22249"></t>
-<t tx="ekr.20131213135427.22257"></t>
 <t tx="ekr.20131213135427.22258"></t>
 <t tx="ekr.20131213135427.22259"></t>
 <t tx="ekr.20131213135427.22260"></t>
@@ -6979,22 +6178,17 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22266"></t>
 <t tx="ekr.20131213135427.22267"></t>
 <t tx="ekr.20131213135427.22268"></t>
-<t tx="ekr.20131213135427.22269"></t>
 <t tx="ekr.20131213135427.22270"></t>
 <t tx="ekr.20131213135427.22271"></t>
-<t tx="ekr.20131213135427.22272"></t>
 <t tx="ekr.20131213135427.22273"></t>
 <t tx="ekr.20131213135427.22274"></t>
 <t tx="ekr.20131213135427.22275"></t>
-<t tx="ekr.20131213135427.22276"></t>
 <t tx="ekr.20131213135427.22277"></t>
 <t tx="ekr.20131213135427.22278"></t>
-<t tx="ekr.20131213135427.22279"></t>
 <t tx="ekr.20131213135427.22280"></t>
 <t tx="ekr.20131213135427.22281"></t>
 <t tx="ekr.20131213135427.22282"></t>
 <t tx="ekr.20131213135427.22283"></t>
-<t tx="ekr.20131213135427.22284"></t>
 <t tx="ekr.20131213135427.22285"></t>
 <t tx="ekr.20131213135427.22286"></t>
 <t tx="ekr.20131213135427.22287"></t>
@@ -7022,35 +6216,20 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22321"></t>
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
-<t tx="ekr.20131213135427.22325"></t>
-<t tx="ekr.20131213135427.22326"></t>
-<t tx="ekr.20131213135427.22327"></t>
-<t tx="ekr.20131213135427.22328"></t>
-<t tx="ekr.20131213135427.22329"></t>
-<t tx="ekr.20131213135427.22330"></t>
-<t tx="ekr.20131213135427.22331"></t>
-<t tx="ekr.20131213135427.22332"></t>
-<t tx="ekr.20131213135427.22333"></t>
-<t tx="ekr.20131213135427.22334"></t>
-<t tx="ekr.20131213135427.22335"></t>
-<t tx="ekr.20131213135427.22336"></t>
-<t tx="ekr.20131213135427.22337"></t>
-<t tx="ekr.20131213135427.22338"></t>
 <t tx="ekr.20131213135427.22340"></t>
 <t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
 <t tx="ekr.20131213135427.22343"></t>
-<t tx="ekr.20131213135427.22344">&amp;About Leo</t>
+<t tx="ekr.20131213135427.22344"></t>
 <t tx="ekr.20131213135427.22345"></t>
-<t tx="ekr.20131213135427.22346">&amp;Home Page</t>
-<t tx="ekr.20131213135427.22347">Table of &amp;Contents</t>
-<t tx="ekr.20131213135427.22348">&amp;Users Guide</t>
+<t tx="ekr.20131213135427.22346"></t>
+<t tx="ekr.20131213135427.22347"></t>
+<t tx="ekr.20131213135427.22348"></t>
 <t tx="ekr.20131213135427.22349">Text &amp;Tutorials</t>
 <t tx="ekr.20131213135427.22350">&amp;Video Tutorials</t>
-<t tx="ekr.20131213135427.22351"></t>
-<t tx="ekr.20131213135427.22353">&amp;CheatSheet.leo</t>
-<t tx="ekr.20131213135427.22354">Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.22355">&amp;quickstart.leo</t>
+<t tx="ekr.20131213135427.22353"></t>
+<t tx="ekr.20131213135427.22354"></t>
+<t tx="ekr.20131213135427.22355"></t>
 <t tx="ekr.20131213135427.22356"></t>
 <t tx="ekr.20131213135427.22357"></t>
 <t tx="ekr.20131213135427.22358"></t>
@@ -7128,7 +6307,7 @@ copy-text                           = None      # Ctrl-C conflicts with quick-co
 count-region                        = Alt-equal
 cut-node                            = Shift-Ctrl-X
 cut-text                            = None      # Ctrl-X (possible)
-cycle-focus                         = None
+# cycle-focus                         = None
 dabbrev-completion                  = Alt-Ctrl-slash
 dabbrev-expands                     = Alt-slash
 de-hoist                            = None
@@ -7152,9 +6331,6 @@ end-of-line                         = Alt-Down
 end-of-line                         = Ctrl-e
 end-of-line-extend-selection        = None
 equal-sized-panes                   = Alt-Shift-E
-escape                              = Escape
-eval-expression                     = Alt-colon
-eval-expression                     = None
 exchange-point-mark                 = None  # Should be Ctrl-X Ctrl-X.
 execute-script                      = None             # Ctrl-e conflicts with end-of-line
 exit-leo                            = Ctrl-Q
@@ -7279,7 +6455,7 @@ next-line-extend-selection      = None
 open-leo-docs-leo               = None
 open-leo-dist-leo               = None
 open-leo-plugins-leo            = None
-open-leo-settings-leo           = None
+open-leo-settings               = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
 open-online-home                = None
@@ -7293,8 +6469,8 @@ paste-retaining-clones          = None
 paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
 previous-line                   = Ctrl-p
 previous-line-extend-selection  = None
-print-bindings                  = None
-print-commands                  = None
+show-bindings                   = None
+show-commands                   = None
 promote                         = Ctrl-{            
 quick-command                   = Ctrl-c
 re-search-backward              = None
@@ -7487,8 +6663,8 @@ clear-kill-ring                     = None
 clear-recent-files                  = None
 clear-selected-text                 = None
 click-click-box                     = None
-click-headline                      = None
-click-icon-box                      = None
+# click-headline                    = None
+# click-icon-box                    = None
 clone-find-all                      = None
 clone-node                          = None
 close-window                        = None
@@ -7496,10 +6672,10 @@ close-window                        = None
 contract-all                        = None
 contract-node                       = None
 contract-or-go-left                 = None
-contract-body-pane                  = None
-contract-log-pane                   = None
-contract-outline-pane               = None
-contract-pane                       = None
+# contract-body-pane                  = None
+# contract-log-pane                   = None
+# contract-outline-pane               = None
+# contract-pane                       = None
 contract-parent                     = None
 convert-all-blanks                  = None
 convert-all-tabs                    = None
@@ -7512,8 +6688,8 @@ count-region                        = None
 cut-node                            = None
 cut-text                            = None
 # cycle-all-focus                     = None
-cycle-focus                         = None
-cycle-editor-focus                  = None
+# cycle-focus                         = None
+# cycle-editor-focus                  = None
 dabbrev-completion                  = None
 dabbrev-expands                     = None
 debug                               = None
@@ -7535,7 +6711,7 @@ disable-calltips                    = None
 do-nothing                          = None
 downcase-region                     = None
 downcase-word                       = None
-double-click-headline               = None
+# double-click-headline             = None
 double-click-icon-box               = None
 dump-outline                        = None
 edit-headline                       = None
@@ -7549,8 +6725,6 @@ end-of-buffer-extend-selection      = None
 end-of-line                         = None
 end-of-line-extend-selection        = None
 equal-sized-panes                   = None
-escape                              = None
-eval-expression                     = None
 exchange-point-mark                 = None
 push-to-ipython                     = None
 execute-script                      = None
@@ -7561,10 +6735,10 @@ expand-and-go-right                 = None
 expand-next-level                   = None
 expand-node                         = None
 expand-or-go-right                  = None
-expand-body-pane                    = None
-expand-log-pane                     = None
-expand-outline-pane                 = None
-expand-pane                         = None
+# expand-body-pane                    = None
+# expand-log-pane                     = None
+# expand-outline-pane                 = None
+# expand-pane                         = None
 expand-prev-level                   = None
 # expand-region-abbrevs             = None
 expand-to-level-1                   = None
@@ -7624,17 +6798,17 @@ forward-sentence-extend-selection   = None
 forward-word                        = None
 forward-word-extend-selection       = None
 full-command                        = None
-fully-expand-body-pane              = None
-fully-expand-log-pane               = None
-fully-expand-outline-pane           = None
-fully-expand-pane                   = None
+# fully-expand-body-pane              = None
+# fully-expand-log-pane               = None
+# fully-expand-outline-pane           = None
+# fully-expand-pane                   = None
 gc-collect-garbage                  = None
 gc-dump-all-objects                 = None
 gc-dump-new-objects                 = None
 gc-dump-objects-verbose             = None
-gc-print-summary                    = None
-gc-trace-disable                    = None
-gc-trace-enable                     = None
+gc-show-summary                     = None
+# gc-trace-disable                  = None
+# gc-trace-enable                   = None
 get-ipython-results                 = None
 go-back                             = None
 go-forward                          = None
@@ -7672,10 +6846,10 @@ help-for-command                    = None
 help-for-find-commands              = None
 help-for-minibuffer                 = None
 help-for-python                     = None
-hide-body-pane                      = None
-hide-log-pane                       = None
-hide-pane                           = None
-hide-outline-pane                   = None
+# hide-body-pane                      = None
+# hide-log-pane                       = None
+# hide-pane                           = None
+# hide-outline-pane                   = None
 spell-tab-hide                      = None
 hoist                               = None
 iconify-frame                       = None
@@ -7734,10 +6908,12 @@ new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
+next-or-end-of-line                 = None # ! text = Down      # Brian Theado
+next-or-end-of-line-extend-selection= None #! text = Shift-Down # Brian Theado
 open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
 open-leo-plugins-leo                = None
-open-leo-settings-leo               = None
+open-leo-settings                   = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
 open-online-home                    = None
@@ -7751,9 +6927,11 @@ paste-retaining-clones              = None
 paste-text                          = None
 previous-line                       = None
 previous-line-extend-selection      = None
-print-bindings                      = None
-print-commands                      = None
-print-focus                         = None
+previous-or-beginning-of-line                   = None # ! text = Up        # Brian Theado
+previous-or-beginning-of-line-extend-selection  = None # ! text = Shift-Up  # Brian Theado
+show-bindings                       = None
+show-commands                       = None
+show-focus                          = None
 promote                             = None
 quick-command                       = None
 re-search-backward                  = None
@@ -7834,8 +7012,8 @@ show-color-wheel                    = None
 show-find-options                   = None
 show-fonts                          = None
 show-invisibles                     = None
-simulate-begin-drag                 = None
-simulate-end-drag                   = None
+# simulate-begin-drag               = None
+# simulate-end-drag                 = None
 sort-children                       = None
 sort-columns                        = None
 sort-fields                         = None
@@ -8118,7 +7296,6 @@ Vim Modeline (used by Vim for file specific settings)
 		Leo Configuration:
 		| The following configuration was used for all testing:
 			@strings top_level_unbound_key_action = command
-			@bool stayInTreeAfterEditHeadline = True
 			@bool stayInTreeAfterSelect = True
 			@bool outline_pane_has_initial_focus = True
 		
@@ -8354,7 +7531,6 @@ The valid values are::
 command:  Leo ignores the key (like Vim).
 insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
-<t tx="ekr.20140721165014.19165">This allows the newline character to switch from the outline pane to the body pane.</t>
 <t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
 False: Body pane gets focus when a new window is opened.</t>
 <t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
@@ -9996,6 +9172,8 @@ its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 <t tx="ekr.20140912072521.19160">/*
 @language css
 
+    leoSettings.leo: @data qt-gui-plugin-style-sheet
+
     =========== Leo's new, fully parameterized, stylesheet. ===========
     
     This stylesheet is responsible for most of Leo's appearance.
@@ -10175,7 +9353,7 @@ QTextEdit#richTextEdit {
 }
 
 QTextEdit#bigtextwarning {
-    background-color: @big-text-warning-bg;
+    background-color: red; /* No longer used */
 }</t>
 <t tx="ekr.20140915194122.19459">/* ========== Components of the Find Tab ========== */
 
@@ -10256,16 +9434,6 @@ QLabel#minibufferLabel {
     font-style:     @minibuffer-font-style;
 }
 
-/* ----- Minibuffer ----- */
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color: @minibuffer_warning_color;
-}
-
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color: @minibuffer_error_color;
-    background-color: @minibuffer_warning_color;
-}
 </t>
 <t tx="ekr.20140915194122.19463"></t>
 <t tx="ekr.20140915194122.19464">/* ========== bookmarks.py plugin ========== */
@@ -10282,29 +9450,7 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     text-decoration:    @bookmarks_base_decoration;
 }
 
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    color:              @bookmarks_children_color;
-    font-family:        @bookmarks_children_family;
-    font-size:          @bookmarks_children_size;
-    font-weight:        @bookmarks_children_weight;
-    text-decoration:    @bookmarks_children_decoration;
-}
 
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size:          @bookmarks_expanded_size;
-    color:              @bookmarks_expanded_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_expanded_weight;
-    text-decoration:    @bookmarks_expanded_decoration;
-}
-
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size:          @bookmarks_current_size;
-    color:              @bookmarks_current_color;
-    font-style:         @bookmarks_expanded_style;
-    font-weight:        @bookmarks_current_weight;
-    text-decoration:    @bookmarks_current_decoration;
-}
 </t>
 <t tx="ekr.20140915194122.19465">/* ========== screencast.py plugin========== */
 
@@ -10349,8 +9495,8 @@ QCheckBox#TipCheckbox {
 
 /* -----
 QPushButton {
-    font-family: @push-button-font-family;
-    font-size:   @push-button-font-size;
+    font-family: at-push-button-font-family;
+    font-size:   at-push-button-font-size;
 }
 ----- */
 
@@ -10450,15 +9596,6 @@ QLineEdit#status1, QLineEdit#status2 {
     font-style:         @status-font-style;
 }
 
-QLineEdit#status1[style_class ~= 'info'], QLineEdit#status2[style_class ~= 'info'] {
-    background-color:   @find-found-bg;
-    color:              @find-found-fg;
-}
-
-QLineEdit#status1[style_class ~= 'fail'], QLineEdit#status2[style_class ~= 'fail'] {
-    background-color:   @find-not-found-bg;
-    color:              @find-not-found-fg;
-}
 </t>
 <t tx="ekr.20140915194122.19474">/* ========== Outline pane ========== */
 
@@ -10527,20 +9664,6 @@ QTreeView::branch:open:has-children{
 ===== */
 
 </t>
-<t tx="ekr.20140915194122.19475">/* Vim mode borders... */
-
-QTextEdit#richTextEdit[vim_state~="vim_normal"] {
-  border: @vim-mode-normal-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_insert"] {
-  border: @vim-mode-insert-border;
-}
-
-QTextEdit#richTextEdit[vim_state~="vim_visual"] {
-  border: @vim-mode-visual-border;
-}
-</t>
 <t tx="ekr.20140915194122.21837">A small font size used by default in the status area.</t>
 <t tx="ekr.20140915194122.23413">A small font size used by default in the check boxes in the Find tab.</t>
 <t tx="ekr.20140915194122.23418"></t>
@@ -10600,14 +9723,30 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19779"></t>
-<t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
+<t tx="ekr.20141010095448.19779">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
-<t tx="ekr.20150216135059.1"></t>
+<t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
+information consists of the node’s gnx (Global Node Index) and the node’s
+uA, (User Attributes).
+
+The gnx gives each node a unique, immutable identity. Gnx’s make clones
+possible. The uA allows scripts and plugins to associate arbitrarily much
+additional data with each node.
+
+By default, Leo’s importers preserve neither gnx’s nor uA’s. This makes
+imported @auto trees second class citizens. To remedy this, if an outline
+contains an @persistence node, Leo will save data in the @persistence tree
+that allows Leo to recover gnx’s and uA’s when re-reading @auto files
+later. This allows clone links and uA’s to persist.
+
+This is an optional feature. The stored data is akin to bookmarks. The data
+can “break” (become inaccessible) if the structure (including
+class/method/function names) changes.
+</t>
 <t tx="ekr.20150227102835.1">True: (Recommended) Make a "Recovered Nodes" node whenever Leo reads a file that has been changed outside of Leo.
 </t>
 <t tx="ekr.20150321090958.1">True: write check messages to Leo's log pane as well as the console.
@@ -10620,7 +9759,6 @@ Note: check-outline always writes error messages to both log and console.</t>
 Warning: Checking many networked files can hang Leo. See:
 https://github.com/leo-editor/leo-editor/issues/262
 </t>
-<t tx="ekr.20150420115701.1"></t>
 <t tx="ekr.20150420115709.1"></t>
 <t tx="ekr.20150420115903.1"></t>
 <t tx="ekr.20150420115928.1"></t>
@@ -10872,11 +10010,10 @@ except KeyError:
             return "self, "
     return ""
 </t>
-<t tx="ekr.20150602160413.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.</t>
 <t tx="ekr.20150618105435.1"></t>
-<t tx="ekr.20150619190137.1">True: close the Find Dialog after any search.
-False: leave the Find Dialog open after any search.</t>
-<t tx="ekr.20150620100923.1">/* alternative active pane highlighting */
+<t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
+
+/* alternative active pane highlighting */
 
 QTextEdit#log-widget,
 QLineEdit#lineEdit,
@@ -11215,25 +10352,10 @@ code {
 <t tx="ekr.20161006102148.1">Import M&amp;ORE Files...</t>
 <t tx="ekr.20161007090350.1">Import &amp;Jupyter Notebook...</t>
 <t tx="ekr.20161007090445.1">Export &amp;Jupyter Notebook</t>
-<t tx="ekr.20161010085256.1">True: The javascript importer cleans blank lines and regularizes indentaion.
-</t>
-<t tx="ekr.20161010172424.1">If &gt; 0, the importer rescans blocks only if they have more than the indicated number of lines.</t>
-<t tx="ekr.20161010172441.1">If &gt; 0, the importer scans files only if they have more than the indicated number of lines.</t>
-<t tx="ekr.20161011090731.1">True: (Experimental): The @auto write code expands section references.
-False: (Legacy):      The @auto write code ignores section references.
-
-@language rest
-@wrap
-
-**Note**: This setting has been retired for the following reasons:
-
-1. The new javascript importer *always* generate section references for non-trivial programs. As a result, the legacy value for this setting would cause the javascript importer to fail.
-
-2. The new @auto write code writes expands section references if they exist.  Otherwise, the write code writes the line as is, without any complaint. As a result, there should be no problem if an imported code contains something that looks like a section reference but isn't.
-</t>
 <t tx="ekr.20161011130632.1">/*
-From Chris George:
-https://groups.google.com/d/msg/leo-editor/ALxuMy-rmv8/rXsbe28KAgAJ
+    The main .css stylesheet for the mod_http.py plugin.
+    From Chris George:
+    https://groups.google.com/d/msg/leo-editor/ALxuMy-rmv8/rXsbe28KAgAJ
 */
 ul {
     font-family: "Sans-serif";
@@ -11432,7 +10554,7 @@ scroll-down-page        ! tree = PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
 scroll-up-page          ! tree = PageUp         
 
-cycle-focus                         = None # Ctrl-tab: now tab-cycle-next
+# cycle-focus                       = None
 # cycle-all-focus                   = Ctrl-Shift-tab
 
 back-word                            ! text = Alt-LtArrow
@@ -11520,8 +10642,8 @@ toggle-find-wrap-around-option      = None
 
 ###
 
-contract-pane       = None
-expand-pane         = None
+# contract-pane       = None
+# expand-pane         = None
 focus-to-body       = Meta-d
 focus-to-tree       = Meta-t
 toggle-active-pane  = Ctrl-t
@@ -11632,7 +10754,7 @@ copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
 delete-char                         !text = Delete
-delete-comments                     = Ctrl-Shift-#
+delete-comments                     = None # Ctrl-Shift-#
 # delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
@@ -11788,889 +10910,9 @@ def title(text, **keys):
     w = demo_module.Title(text, **keys)
 </t>
 <t tx="ekr.20170208063946.1"></t>
-<t tx="ekr.20170304074559.1">@language rest
-@wrap
+<t tx="ekr.20170307055039.1">To see these colors: http://ethanschoonover.com/solarized
 
-A **theme** is a combination of settings, stylesheets and optional icons. Most themes create @data qt-gui-plugin-style-sheet. Leo looks for icons in /leo/themes and ~/.leo/themes.
-
-To enable a theme:
-
-- *Select* one of the @theme trees below.
-- *Copy* the entire @theme tree to myLeoSettings.leo.
-- *Move* the copied tree to the *end* of the @settings tree.
-- *Test* by restarting Leo.
-
-To disable a theme:
-- Move the entire @theme node out of the @settings tree *or*
-- Change the headline to @ignore @theme...
-</t>
-<t tx="ekr.20170304074559.185">Solarized" dark theme.
-
-</t>
-<t tx="ekr.20170304074559.186"></t>
-<t tx="ekr.20170304074559.187"></t>
-<t tx="ekr.20170304074559.188">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-</t>
-<t tx="ekr.20170304074559.189"></t>
-<t tx="ekr.20170304074559.190"></t>
-<t tx="ekr.20170304074559.191">Color for error messages written to the log window.</t>
-<t tx="ekr.20170304074559.192">Background color of log text.</t>
-<t tx="ekr.20170304074559.193">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170304074559.194"></t>
-<t tx="ekr.20170304074559.195"></t>
-<t tx="ekr.20170304074559.196"></t>
-<t tx="ekr.20170304074559.197"></t>
-<t tx="ekr.20170304074559.198"></t>
-<t tx="ekr.20170304074559.199"></t>
-<t tx="ekr.20170304074559.200"></t>
-<t tx="ekr.20170304074559.201"></t>
-<t tx="ekr.20170304074559.202"></t>
-<t tx="ekr.20170304074559.203"></t>
-<t tx="ekr.20170304074559.204"></t>
-<t tx="ekr.20170304074559.205"></t>
-<t tx="ekr.20170304074559.206">test text</t>
-<t tx="ekr.20170304074559.207">test text</t>
-<t tx="ekr.20170304074559.208"></t>
-<t tx="ekr.20170304074559.209"></t>
-<t tx="ekr.20170304074559.210"></t>
-<t tx="ekr.20170304074559.211">(some body text here so there's something to see)</t>
-<t tx="ekr.20170304074559.212"></t>
-<t tx="ekr.20170304074559.213"></t>
-<t tx="ekr.20170304074559.214"></t>
-<t tx="ekr.20170304074559.216"></t>
-<t tx="ekr.20170304074559.217"></t>
-<t tx="ekr.20170304074559.218">Was cyan</t>
-<t tx="ekr.20170304074559.219"></t>
-<t tx="ekr.20170304074559.220"></t>
-<t tx="ekr.20170304074559.221"></t>
-<t tx="ekr.20170304074559.222"></t>
-<t tx="ekr.20170304074559.223"></t>
-<t tx="ekr.20170304074559.224"></t>
-<t tx="ekr.20170304074559.225"></t>
-<t tx="ekr.20170304074559.226"></t>
-<t tx="ekr.20170304074559.258"></t>
-<t tx="ekr.20170304074559.259">Name of the theme, used to find icon files</t>
-<t tx="ekr.20170304074559.260">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20170304074559.261">/*
-@language css
-
-leo_dark theme 0
-*/</t>
-<t tx="ekr.20170304074559.263">/* ===== widgets ===== */
-
-QLabel {
-    color:          @solarized-base1;
-}
-QLineEdit {
-    border:         none;
-    padding:        3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-QWidget {
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1; 
-    color:              @solarized-base1;
-    font-size:          16px;
-}
-QWidget#body-text-renderer {
-    background-color:   white;
-    color:              black;
-}
-</t>
-<t tx="ekr.20170304074559.264">/* ===== The body pane ===== */
-QTextEdit#richTextEdit {
-    background-color:           @solarized-base03;
-    color:                      @text-foreground;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-}
-</t>
-<t tx="ekr.20170304074559.265">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* Selected items, but NOT editing items.*/
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit {
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:     @solarized-green;
-    color:          @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:     @solarized-yellow;
-    color:          @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::branch:closed:has-children{
-    image:                      @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image:                      @tree-image-open;
-}
-</t>
-<t tx="ekr.20170304074559.266">/* ===== Log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @log_text_background_color;
-    color:                      @log_text_foreground_color;
-    font-family:                @font-family-log;
-    font-size:                  @font-size-log;
-    font-style:                 normal; /* normal, italic,oblique */
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    selection-background-color: blue;
-    selection-color:            white;
-}
-</t>
-<t tx="ekr.20170304074559.267">/* ===== Mini-buffer ===== */
-
-QLineEdit#lineEdit {
-    color:                      @minibuffer_foreground_color;
-    background-color:           @minibuffer_background_color;
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-QLabel#minibufferLabel {
-    color:              @solarized-violet;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color:   @minibuffer_warning_color;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color:              @minibuffer_error_color;
-    background-color:   @minibuffer_warning_color;
-}
-</t>
-<t tx="ekr.20170304074559.27"></t>
-<t tx="ekr.20170304074559.270">/* ===== Buttons ===== */
-
-QPushButton {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-
-QPushButton:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
-}</t>
-<t tx="ekr.20170304074559.271">/* ===== Tab bar ===== */
-
-QTabBar::tab { 
-   margin-right:    5px;
-   padding:         2px; 
-}
-QTabBar::tab {
-    background:     @bg-gradient;
-    color:          @text-foreground; 
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-}
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}</t>
-<t tx="ekr.20170304074559.272">/* ===== Menues ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item {
-    color:      @text-foreground;
-    background: @bg-gradient;
-}
-QMenuBar::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-QMenuBar::item:pressed {
-    color:      @text-foreground-bright;
-    background: @bg-gradient;
-}
-</t>
-<t tx="ekr.20170304074559.273">/* ===== Scroll bars ===== */
-
-QScrollBar::horizontal {
-     height: 7px;
-}
-QScrollBar::vertical {
-     width: 7px;
-}
-QScrollBar::add-page, QScrollBar::sub-page {
-    background: @solarized-base03;
-}
-QScrollBar::handle { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-QScrollBar::handle:hover { 
-  background:   @solarized-base0;
-  color:        @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line, QScrollBar::sub-line { 
-  background:   @solarized-base01;
-  color:        @solarized-base01;
-}</t>
-<t tx="ekr.20170304074559.274">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170304074559.285">/* ===== Status line ===== */
-
-QLineEdit#status1,
-QLineEdit#status2 {
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-
-</t>
-<t tx="ekr.20170304074559.287">/* ===== bookmarks plugin styling ===== */
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-</t>
-<t tx="ekr.20170304074559.29"></t>
-<t tx="ekr.20170304074559.291">Sublime Text 2-like dark theme.
-</t>
-<t tx="ekr.20170304074559.292"></t>
-<t tx="ekr.20170304074559.293"></t>
-<t tx="ekr.20170304074559.294"></t>
-<t tx="ekr.20170304074559.295">Background color of body text.  This setting *is* used in the QtGui.
-
-#ffecea
-
-Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="ekr.20170304074559.296">#f9f0f4 light pink
-#fbfdfd very light blue
-
-For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
-<t tx="ekr.20170304074559.297"></t>
-<t tx="ekr.20170304074559.298">Foreground color of body text.  This setting *is* used in the QtGui.
-
-Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="ekr.20170304074559.299">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
-<t tx="ekr.20170304074559.30"></t>
-<t tx="ekr.20170304074559.300">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20170304074559.301"></t>
-<t tx="ekr.20170304074559.302">Color for error messages written to the log window.</t>
-<t tx="ekr.20170304074559.303"></t>
-<t tx="ekr.20170304074559.304">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170304074559.305">Background color of log text.</t>
-<t tx="ekr.20170304074559.306">LightYellow1
-
-#f2fdff</t>
-<t tx="ekr.20170304074559.307">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="ekr.20170304074559.308">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
-<t tx="ekr.20170304074559.309"></t>
-<t tx="ekr.20170304074559.31"></t>
-<t tx="ekr.20170304074559.310"></t>
-<t tx="ekr.20170304074559.311"></t>
-<t tx="ekr.20170304074559.312"></t>
-<t tx="ekr.20170304074559.313">Background color of unselected headline text.
-
-LavenderBlush1</t>
-<t tx="ekr.20170304074559.314">Foreground color of unselected headline text.</t>
-<t tx="ekr.20170304074559.315">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
-<t tx="ekr.20170304074559.316">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="ekr.20170304074559.317">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.318">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.319">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.32"></t>
-<t tx="ekr.20170304074559.320">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.321">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
-<t tx="ekr.20170304074559.33"></t>
-<t tx="ekr.20170304074559.34"></t>
-<t tx="ekr.20170304074559.35"></t>
-<t tx="ekr.20170304074559.353"></t>
-<t tx="ekr.20170304074559.354"></t>
-<t tx="ekr.20170304074559.355"></t>
-<t tx="ekr.20170304074559.356">/*
-@language css
-
-leo_dark theme 1
-*/</t>
-<t tx="ekr.20170304074559.36"></t>
-<t tx="ekr.20170304074559.360">/* ===== Body pane ===== */
-
-QTextEdit#richTextEdit {
-    background-color:           @solarized-base03;
-    color:                      @bodytextforegroundcolor;
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-style:                 normal; /* normal,italic,oblique */
-    font-weight:                normal; /* normal,bold,100,..,900 */
-}
-</t>
-<t tx="ekr.20170304074559.361">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* Selected items, but NOT edit items.*/
-    font-family:    @font-family-tree;
-    font-size:      16px;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit View{
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      16px;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:     @solarized-green;
-    color:          @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:     @solarized-yellow;
-    color:          @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* Selected items, but NOT edit items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView::branch:closed:has-children{
-    image:                      @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image:                      @tree-image-open;
-}
-</t>
-<t tx="ekr.20170304074559.362">/* ===== The log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @solarized-base02;
-    color:                      @solarized-base0;
-    font-family:                @font-family-log;
-    font-size:                  16px;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal, italic,oblique */
-    selection-color:            white;
-    selection-background-color: blue;
-}
-</t>
-<t tx="ekr.20170304074559.363">/* ===== The mini-buffer ===== */
-QLineEdit#lineEdit {
-    background-color:           @solarized-base03;
-    color:                      red; 
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-
-QLabel#minibufferLabel {
-    color: @solarized-violet;
-}
-</t>
-<t tx="ekr.20170304074559.366">QPushButton {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QPushButton:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
-}
-</t>
-<t tx="ekr.20170304074559.367">/* ===== Tab bar ===== */
-
-QTabBar::tab {
-    color:          @text-foreground; 
-    background:     @bg-gradient;
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-} 
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}</t>
-<t tx="ekr.20170304074559.368">/* ===== Menus ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item:hover {
-    background: white;
-    color:      red;
-}
-QMenuBar::item {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QMenuBar::item:pressed {
-    background: @bg-gradient;
-    color:      @text-foreground-bright;
-}
-</t>
-<t tx="ekr.20170304074559.369">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170304074559.37"></t>
-<t tx="ekr.20170304074559.374">QScrollBar::horizontal {
-    height: 7px;
-}
-QScrollBar::vertical {
-    width: 7px;
-}
-QScrollBar::add-page, QScrollBar::sub-page {
-    background: @solarized-base03;
-}
-QScrollBar::handle { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-QScrollBar::handle:hover { 
-    background: @solarized-base0;
-    color:      @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line, QScrollBar::sub-line { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-</t>
-<t tx="ekr.20170304074559.377">/* ===== Status line ===== */
-
-QLineEdit#status1, QLineEdit#status2 {
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-</t>
-<t tx="ekr.20170304074559.38"></t>
-<t tx="ekr.20170304074559.382">Sublime Text 2-like dark theme.
-
-This is like leo_dark_1, but more appealing on Mac
-</t>
-<t tx="ekr.20170304074559.383"></t>
-<t tx="ekr.20170304074559.384"></t>
-<t tx="ekr.20170304074559.385"></t>
-<t tx="ekr.20170304074559.386">Background color of body text.  This setting *is* used in the QtGui.
-
-#ffecea
-
-Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="ekr.20170304074559.387">#f9f0f4 light pink
-#fbfdfd very light blue
-
-For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
-<t tx="ekr.20170304074559.388"></t>
-<t tx="ekr.20170304074559.389">Foreground color of body text.  This setting *is* used in the QtGui.
-
-Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="ekr.20170304074559.39"></t>
-<t tx="ekr.20170304074559.390">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
-<t tx="ekr.20170304074559.391">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20170304074559.392"></t>
-<t tx="ekr.20170304074559.393">Background color of unselected headline text.
-
-LavenderBlush1</t>
-<t tx="ekr.20170304074559.394">Foreground color of unselected headline text.</t>
-<t tx="ekr.20170304074559.395">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
-<t tx="ekr.20170304074559.396">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="ekr.20170304074559.397">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.398">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.399">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.40"></t>
-<t tx="ekr.20170304074559.400">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.401">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
-<t tx="ekr.20170304074559.402"></t>
-<t tx="ekr.20170304074559.403">Color for error messages written to the log window.</t>
-<t tx="ekr.20170304074559.404"></t>
-<t tx="ekr.20170304074559.405">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170304074559.406">Background color of log text.</t>
-<t tx="ekr.20170304074559.407">LightYellow1
-
-#f2fdff</t>
-<t tx="ekr.20170304074559.408">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="ekr.20170304074559.409">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
-<t tx="ekr.20170304074559.41"></t>
-<t tx="ekr.20170304074559.410"></t>
-<t tx="ekr.20170304074559.411"></t>
-<t tx="ekr.20170304074559.412"></t>
-<t tx="ekr.20170304074559.413"># All colors are solarized colors, except for 'red', 'white', etc.</t>
-<t tx="ekr.20170304074559.42"></t>
-<t tx="ekr.20170304074559.43"></t>
-<t tx="ekr.20170304074559.44"></t>
-<t tx="ekr.20170304074559.444"></t>
-<t tx="ekr.20170304074559.445"></t>
-<t tx="ekr.20170304074559.446"></t>
-<t tx="ekr.20170304074559.447">/*
-@language css
-
-leo_dark theme 2
-*/</t>
-<t tx="ekr.20170304074559.451">/* ===== Body Editor ===== */
-
-QTextEdit#richTextEdit {
-    background-color:           @solarized-base03;
-    color:                      @bodytextforegroundcolor;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-}
-</t>
-<t tx="ekr.20170304074559.452">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* Selected items, but NOT edit items.*/
-    font-family:    @font-family-tree;
-    font-size:      @font-size-other;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit View{
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      @font-size-other;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* Selected items, but NOT edit items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    background-color:           @solarized-yellow;
-    color:                      @solarized-base03;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::branch:closed:has-children{
-    image:                      @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image:                      @tree-image-open;
-}
-</t>
-<t tx="ekr.20170304074559.453">/* ===== Log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @solarized-base02;
-    color:                      @solarized-base0;
-    font-family:                @font-family-log;
-    font-size:                  @font-size-other;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal, italic,oblique */
-    selection-color:            white;
-    selection-background-color: blue;
-}
-</t>
-<t tx="ekr.20170304074559.454">/* ===== The mini-buffer ===== */
-
-QLineEdit#lineEdit {
-    background-color:           @solarized-base03;
-    color:                      red; 
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-
-QLabel#minibufferLabel {
-    color:                      @solarized-violet;
-}
-</t>
-<t tx="ekr.20170304074559.458">/* ===== Tab bar ===== */
-
-QTabBar::tab { 
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab {
-    color:          @text-foreground; 
-    background:     @bg-gradient;
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-} 
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}
-</t>
-<t tx="ekr.20170304074559.459">/* ===== Menus ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item:hover {
-    background: white;
-    color:      red;
-}
-QMenuBar::item {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QMenuBar::item:pressed {
-    background: @bg-gradient;
-    color:      @text-foreground-bright;
-}
-</t>
-<t tx="ekr.20170304074559.460">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170304074559.465">/* ===== Scroll bars ===== */
-
-QScrollBar::horizontal {
-    height: 7px;
-}
-QScrollBar::vertical {
-    width: 7px;
-}
-QScrollBar::add-page,
-QScrollBar::sub-page {
-    background:     @solarized-base03;
-}
-QScrollBar::handle { 
-    background:     @solarized-base01;
-    color:          @solarized-base01;
-}
-QScrollBar::handle:hover { 
-    background:     @solarized-base0;
-    color:          @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line,
-QScrollBar::sub-line { 
-    background:     @solarized-base01;
-    color:          @solarized-base01;
-}
-</t>
-<t tx="ekr.20170304074559.468">QLineEdit#status1,
-QLineEdit#status2 {
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-</t>
-<t tx="ekr.20170307055039.1">For both light and dark
+For both light and dark
 =======================
 
 blue      #268bd2
@@ -12721,1478 +10963,13 @@ Light
     base2 background highlights (selected background)
   * base3 background
 </t>
-<t tx="ekr.20170308051519.1">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget,
-LeoQTreeWidget#treeWidget,
-QTextEdit#richTextEdit { 
-    border-color:   @focused-border-unfocus-color; 
-    border-style:   @focused-border-style;
-    border-width:   @focused-border-width; 
-}
-
-QTextEdit:focus#log-widget,
-LeoQTreeWidget:focus#treeWidget,
-QTextEdit:focus#richTextEdit { 
-    border-color:   @focused-border-focus-color; 
-}
-
-QTextEdit:hover#log-widget,
-LeoQTreeWidget:hover#treeWidget,
-QTextEdit:hover#richTextEdit { 
-    border-color:   @focused-border-hover-color; 
-}
-</t>
-<t tx="ekr.20170308055019.1">/* ===== Widgets ===== */
-
-QWidget {
-    color:              @solarized-base1;
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1;
-    font-size:          16px;
-}
-QLabel {
-    color:              @solarized-base1;
-}
-QLineEdit {
-    border:         none;
-    padding:        3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-</t>
-<t tx="ekr.20170308061124.1">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170308061124.2">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170308061124.3">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170308061334.1">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170308061334.2">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170308061334.3">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170308061534.1">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170308061534.2">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170308061534.3">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170308061934.1">/* ===== Widgets ===== */
-
-QWidget {
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1; 
-    color:              @solarized-base1;
-    font-size:          @font-size-other;
-}
-QLabel {
-    color:              @solarized-base1;
-}
-QLineEdit {
-    border:         none;
-    padding:        3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-QPushButton {
-    background:     @bg-gradient;
-    color:          @text-foreground;
-}
-QPushButton:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}
-
-</t>
-<t tx="ekr.20170308082458.1"></t>
-<t tx="ekr.20170308082458.2"></t>
-<t tx="ekr.20170308082458.3"></t>
-<t tx="ekr.20170308082507.1"></t>
-<t tx="ekr.20170308082535.1"></t>
-<t tx="ekr.20170308082541.1"></t>
-<t tx="ekr.20170308082541.2"></t>
-<t tx="ekr.20170308082541.3"></t>
-<t tx="ekr.20170309055108.1"></t>
-<t tx="ekr.20170309055108.2"></t>
-<t tx="ekr.20170309055108.3"></t>
-<t tx="ekr.20170309055108.4">Was cyan</t>
-<t tx="ekr.20170309055108.5"></t>
-<t tx="ekr.20170309055108.6"></t>
-<t tx="ekr.20170309055240.1"></t>
-<t tx="ekr.20170309055240.2"></t>
-<t tx="ekr.20170309055240.3"></t>
-<t tx="ekr.20170309055240.4">Was cyan</t>
-<t tx="ekr.20170309055240.5"></t>
-<t tx="ekr.20170309055240.6"></t>
-<t tx="ekr.20170310063446.1">@language rest
-@wrap
-
-The differences between these themes are not confined to "zz" nodes, as is true of most of the other themes in this file. As a result, it is difficult to understand the differences between them.
-
-No further work is planned on these themes.</t>
-<t tx="ekr.20170310072814.10">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-</t>
-<t tx="ekr.20170310072814.11"></t>
-<t tx="ekr.20170310072814.12"></t>
-<t tx="ekr.20170310072814.13">Color for error messages written to the log window.</t>
-<t tx="ekr.20170310072814.14">Background color of log text.</t>
-<t tx="ekr.20170310072814.15">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170310072814.16"></t>
-<t tx="ekr.20170310072814.17"></t>
-<t tx="ekr.20170310072814.18"></t>
-<t tx="ekr.20170310072814.19"></t>
-<t tx="ekr.20170310072814.20"></t>
-<t tx="ekr.20170310072814.21"></t>
-<t tx="ekr.20170310072814.22"></t>
-<t tx="ekr.20170310072814.23"></t>
-<t tx="ekr.20170310072814.24">@solarized-base02</t>
-<t tx="ekr.20170310072814.25"></t>
-<t tx="ekr.20170310072814.26"></t>
-<t tx="ekr.20170310072814.27"></t>
-<t tx="ekr.20170310072814.28">test text</t>
-<t tx="ekr.20170310072814.29">test text</t>
-<t tx="ekr.20170310072814.3"></t>
-<t tx="ekr.20170310072814.30"></t>
-<t tx="ekr.20170310072814.31"></t>
-<t tx="ekr.20170310072814.32"></t>
-<t tx="ekr.20170310072814.33">(some body text here so there's something to see)</t>
-<t tx="ekr.20170310072814.34"></t>
-<t tx="ekr.20170310072814.35"></t>
-<t tx="ekr.20170310072814.36"></t>
-<t tx="ekr.20170310072814.37"></t>
-<t tx="ekr.20170310072814.38"></t>
-<t tx="ekr.20170310072814.39">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170310072814.4"></t>
-<t tx="ekr.20170310072814.40">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170310072814.41">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170310072814.42"></t>
-<t tx="ekr.20170310072814.43"></t>
-<t tx="ekr.20170310072814.44"></t>
-<t tx="ekr.20170310072814.5"></t>
-<t tx="ekr.20170310072814.6">Was cyan</t>
-<t tx="ekr.20170310072814.7"></t>
-<t tx="ekr.20170310072814.8"></t>
-<t tx="ekr.20170310072814.9"></t>
-<t tx="ekr.20170310072826.1"></t>
-<t tx="ekr.20170310072826.2"></t>
-<t tx="ekr.20170310072826.73"></t>
-<t tx="ekr.20170310072826.74">Name of the theme, used to find icon files</t>
-<t tx="ekr.20170310072826.75">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20170310072826.76">/*
-@language css (base dark)
-*/</t>
-<t tx="ekr.20170310072826.77"></t>
-<t tx="ekr.20170310072826.78">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget,
-LeoQTreeWidget#treeWidget,
-QTextEdit#richTextEdit { 
-    border-color:   @focused-border-unfocus-color; 
-    border-style:   @focused-border-style;
-    border-width:   @focused-border-width; 
-}
-
-QTextEdit:focus#log-widget,
-LeoQTreeWidget:focus#treeWidget,
-QTextEdit:focus#richTextEdit { 
-    border-color:   @focused-border-focus-color; 
-}
-
-QTextEdit:hover#log-widget,
-LeoQTreeWidget:hover#treeWidget,
-QTextEdit:hover#richTextEdit { 
-  border-color:     @focused-border-hover-color; 
-}
-</t>
-<t tx="ekr.20170310072826.79">/* ===== The body pane ===== */
-
-QTextEdit#richTextEdit {
-    background-color:           @test-background; /* @solarized-base03; */
-    color:                      @text-foreground;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-}</t>
-<t tx="ekr.20170310072826.80">/* ===== bookmarks plugin styling ===== */
-
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-</t>
-<t tx="ekr.20170310072826.81">/* ===== Buttons ===== */
-
-QPushButton {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QPushButton:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
-}</t>
-<t tx="ekr.20170310072826.82">/* ===== Log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @log_text_background_color;
-    color:                      @log_text_foreground_color;
-    font-family:                @font-family-log;
-    font-size:                  @font-size-log;
-    font-style:                 normal; /* normal, italic,oblique */
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    selection-background-color: blue;
-    selection-color:            white;
-}
-</t>
-<t tx="ekr.20170310072826.83">/* ===== Menues ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item {
-    color:      @text-foreground;
-    background: @bg-gradient;
-}
-QMenuBar::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-QMenuBar::item:pressed {
-    color:      @text-foreground-bright;
-    background: @bg-gradient;
-}
-</t>
-<t tx="ekr.20170310072826.84">/* ===== Mini-buffer ===== */
-
-QLineEdit#lineEdit {
-    color:                      @minibuffer_foreground_color;
-    background-color:           @minibuffer_background_color;
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-
-QLabel#minibufferLabel {
-    color:              @solarized-violet;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color:   @minibuffer_warning_color;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color:              @minibuffer_error_color;
-    background-color:   @minibuffer_warning_color;
-}
-</t>
-<t tx="ekr.20170310072826.85">/* ===== Status line ===== */
-
-QLineEdit#status1,
-QLineEdit#status2 
-{
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-
-</t>
-<t tx="ekr.20170310072826.86">/* ===== Scroll bars ===== */
-
-QScrollBar::horizontal {
-     height: 7px;
-}
-QScrollBar::vertical {
-     width: 7px;
-}
-QScrollBar::add-page,
-QScrollBar::sub-page {
-    background: @solarized-base03;
-}
-QScrollBar::handle { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-QScrollBar::handle:hover { 
-  background:   @solarized-base0;
-  color:        @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line,
-QScrollBar::sub-line { 
-  background:   @solarized-base01;
-  color:        @solarized-base01;
-}</t>
-<t tx="ekr.20170310072826.87">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170310072826.88">/* ===== Tab bar ===== */
-
-QTabBar::tab { 
-   margin-right:    5px;
-   padding:         2px; 
-}
-QTabBar::tab {
-    background:     @bg-gradient;
-    color:          @text-foreground; 
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-}
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}</t>
-<t tx="ekr.20170310072826.89">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit {
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:     @solarized-green;
-    color:          @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:     @solarized-yellow;
-    color:          @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::branch:closed:has-children{
-    image: @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image: @tree-image-open;
-}
-</t>
-<t tx="ekr.20170310072826.90">/* ===== widgets ===== */
-
-QLabel {
-    color: @solarized-base1;
-}
-QLineEdit {
-    border:     none;
-    padding:    3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-QWidget {
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1; 
-    color:              @solarized-base1;
-    font-size:          @font-size;
-}
-QWidget#body-text-renderer {
-    background-color:   white;
-    color:              black;
-}
-</t>
-<t tx="ekr.20170310082759.1"></t>
-<t tx="ekr.20170310095804.1">Same as @theme base dark, except for overrides in zz nodes.</t>
-<t tx="ekr.20170310095804.10">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-</t>
-<t tx="ekr.20170310095804.11"></t>
-<t tx="ekr.20170310095804.12"></t>
-<t tx="ekr.20170310095804.13">Color for error messages written to the log window.</t>
-<t tx="ekr.20170310095804.14">Background color of log text.</t>
-<t tx="ekr.20170310095804.15">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170310095804.16"></t>
-<t tx="ekr.20170310095804.17"></t>
-<t tx="ekr.20170310095804.18"></t>
-<t tx="ekr.20170310095804.19"></t>
-<t tx="ekr.20170310095804.2"></t>
-<t tx="ekr.20170310095804.20"></t>
-<t tx="ekr.20170310095804.21"></t>
-<t tx="ekr.20170310095804.22"></t>
-<t tx="ekr.20170310095804.23"></t>
-<t tx="ekr.20170310095804.24">@solarized-base02</t>
-<t tx="ekr.20170310095804.25"></t>
-<t tx="ekr.20170310095804.26"></t>
-<t tx="ekr.20170310095804.27"></t>
-<t tx="ekr.20170310095804.28">test text</t>
-<t tx="ekr.20170310095804.29">test text</t>
-<t tx="ekr.20170310095804.3"></t>
-<t tx="ekr.20170310095804.30"></t>
-<t tx="ekr.20170310095804.31"></t>
-<t tx="ekr.20170310095804.32"></t>
-<t tx="ekr.20170310095804.33"></t>
-<t tx="ekr.20170310095804.34">(some body text here so there's something to see)</t>
-<t tx="ekr.20170310095804.35"></t>
-<t tx="ekr.20170310095804.36"></t>
-<t tx="ekr.20170310095804.37"></t>
-<t tx="ekr.20170310095804.38"></t>
-<t tx="ekr.20170310095804.39"></t>
-<t tx="ekr.20170310095804.4"></t>
-<t tx="ekr.20170310095804.40">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170310095804.41">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170310095804.42">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170310095804.43"></t>
-<t tx="ekr.20170310095804.44"></t>
-<t tx="ekr.20170310095804.45"></t>
-<t tx="ekr.20170310095804.46"></t>
-<t tx="ekr.20170310095804.47">@language rest
-@wrap
-
-Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310095804.48">The color of text in doc parts.
-
-was firebrick3. now comment1_color
-</t>
-<t tx="ekr.20170310095804.49">The color of Leo keywords such as @ignore, @color, etc.
-
-Was #00aa00.
-Now solarized-blue
-</t>
-<t tx="ekr.20170310095804.5"></t>
-<t tx="ekr.20170310095804.50">Was blue, now solarized-blue
-</t>
-<t tx="ekr.20170310095804.51">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
-
-was red. Now comment1_color</t>
-<t tx="ekr.20170310095804.52">The background color that represents spaces when Show Invisibles mode is in effect.
-
-solarized-magenta</t>
-<t tx="ekr.20170310095804.53">The foreground color that represents tabs when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20170310095804.54">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
-
-Was red. Now now comment1_color</t>
-<t tx="ekr.20170310095804.55"></t>
-<t tx="ekr.20170310095804.56">Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310095804.57">solarized-magenta
-</t>
-<t tx="ekr.20170310095804.58"></t>
-<t tx="ekr.20170310095804.59"></t>
-<t tx="ekr.20170310095804.6">Was cyan</t>
-<t tx="ekr.20170310095804.60"></t>
-<t tx="ekr.20170310095804.61"></t>
-<t tx="ekr.20170310095804.62"></t>
-<t tx="ekr.20170310095804.63"></t>
-<t tx="ekr.20170310095804.64"></t>
-<t tx="ekr.20170310095804.65"></t>
-<t tx="ekr.20170310095804.66">#00aa00 (Idle comment green)
-
-</t>
-<t tx="ekr.20170310095804.67"></t>
-<t tx="ekr.20170310095804.68"></t>
-<t tx="ekr.20170310095804.69"></t>
-<t tx="ekr.20170310095804.7"></t>
-<t tx="ekr.20170310095804.70"></t>
-<t tx="ekr.20170310095804.71">base2     #eee8d5</t>
-<t tx="ekr.20170310095804.72"></t>
-<t tx="ekr.20170310095804.73"></t>
-<t tx="ekr.20170310095804.74"></t>
-<t tx="ekr.20170310095804.75"></t>
-<t tx="ekr.20170310095804.76"></t>
-<t tx="ekr.20170310095804.77">(some body text here so there's something to see)</t>
-<t tx="ekr.20170310095804.78"></t>
-<t tx="ekr.20170310095804.79"></t>
-<t tx="ekr.20170310095804.8"></t>
-<t tx="ekr.20170310095804.80"></t>
-<t tx="ekr.20170310095804.81">Name of the theme, used to find icon files</t>
-<t tx="ekr.20170310095804.82">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20170310095804.83">/*
-@language css linux ekr dark
-*/</t>
-<t tx="ekr.20170310095804.84"></t>
-<t tx="ekr.20170310095804.85">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget,
-LeoQTreeWidget#treeWidget,
-QTextEdit#richTextEdit { 
-    border-color:   @focused-border-unfocus-color; 
-    border-style:   @focused-border-style;
-    border-width:   @focused-border-width; 
-}
-
-QTextEdit:focus#log-widget,
-LeoQTreeWidget:focus#treeWidget,
-QTextEdit:focus#richTextEdit { 
-    border-color:   @focused-border-focus-color; 
-}
-
-QTextEdit:hover#log-widget,
-LeoQTreeWidget:hover#treeWidget,
-QTextEdit:hover#richTextEdit { 
-  border-color:     @focused-border-hover-color; 
-}
-</t>
-<t tx="ekr.20170310095804.86">/* ===== The body pane ===== */
-
-QTextEdit#richTextEdit {
-    background-color:           @test-background; /* @solarized-base03; */
-    color:                      @text-foreground;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-}</t>
-<t tx="ekr.20170310095804.87">/* ===== bookmarks plugin styling ===== */
-
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-</t>
-<t tx="ekr.20170310095804.88">/* ===== Buttons ===== */
-
-QPushButton {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QPushButton:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
-}</t>
-<t tx="ekr.20170310095804.89">/* ===== Log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @log_text_background_color;
-    color:                      @log_text_foreground_color;
-    font-family:                @font-family-log;
-    font-size:                  @font-size-log;
-    font-style:                 normal; /* normal, italic,oblique */
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    selection-background-color: blue;
-    selection-color:            white;
-}
-</t>
-<t tx="ekr.20170310095804.9"></t>
-<t tx="ekr.20170310095804.90">/* ===== Menues ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item {
-    color:      @text-foreground;
-    background: @bg-gradient;
-}
-QMenuBar::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-QMenuBar::item:pressed {
-    color:      @text-foreground-bright;
-    background: @bg-gradient;
-}
-</t>
-<t tx="ekr.20170310095804.91">/* ===== Mini-buffer ===== */
-
-QLineEdit#lineEdit {
-    color:                      @minibuffer_foreground_color;
-    background-color:           @minibuffer_background_color;
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-
-QLabel#minibufferLabel {
-    color:              @solarized-violet;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color:   @minibuffer_warning_color;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color:              @minibuffer_error_color;
-    background-color:   @minibuffer_warning_color;
-}
-</t>
-<t tx="ekr.20170310095804.92">/* ===== Status line ===== */
-
-QLineEdit#status1,
-QLineEdit#status2 
-{
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-
-</t>
-<t tx="ekr.20170310095804.93">/* ===== Scroll bars ===== */
-
-QScrollBar::horizontal {
-     height: 7px;
-}
-QScrollBar::vertical {
-     width: 7px;
-}
-QScrollBar::add-page,
-QScrollBar::sub-page {
-    background: @solarized-base03;
-}
-QScrollBar::handle { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-QScrollBar::handle:hover { 
-  background:   @solarized-base0;
-  color:        @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line,
-QScrollBar::sub-line { 
-  background:   @solarized-base01;
-  color:        @solarized-base01;
-}</t>
-<t tx="ekr.20170310095804.94">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170310095804.95">/* ===== Tab bar ===== */
-
-QTabBar::tab { 
-   margin-right:    5px;
-   padding:         2px; 
-}
-QTabBar::tab {
-    background:     @bg-gradient;
-    color:          @text-foreground; 
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-}
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}</t>
-<t tx="ekr.20170310095804.96">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit {
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:     @solarized-green;
-    color:          @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:     @solarized-yellow;
-    color:          @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::branch:closed:has-children{
-    image: @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image: @tree-image-open;
-}
-</t>
-<t tx="ekr.20170310095804.97">/* ===== widgets ===== */
-
-QLabel {
-    color: @solarized-base1;
-}
-QLineEdit {
-    border:     none;
-    padding:    3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-QWidget {
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1; 
-    color:              @solarized-base1;
-    font-size:          @font-size;
-}
-QWidget#body-text-renderer {
-    background-color:   white;
-    color:              black;
-}
-</t>
-<t tx="ekr.20170310095804.98">/* ===== Overrides of previous settings ===== */
-
-QTreeWidget {
-    font-size:                  14pt;
-    background:                 @solarized-base02;
-}
-QTreeWidget QLineEdit {
-    /* Editing */
-    font-size:                  14pt;
-    background:                 @solarized-base1;
-    selection-color:            @solarized-base1;
-    selection-background-color: @solarized-blue;
-}
-QTreeWidget::selected,
-QTreeWidget::active:selected,
-QTreeView::item:selected,
-QTreeView::item:active:selected {
-    background: @solarized-base01; /* one step darker than backround */
-}
-</t>
-<t tx="ekr.20170310100532.1">Same as @theme base dark except for zz nodes.</t>
-<t tx="ekr.20170310100532.10">Here you can edit the colors by Leo, just edit the
-node headings, and click the reload-style button.
-</t>
-<t tx="ekr.20170310100532.11"></t>
-<t tx="ekr.20170310100532.12"></t>
-<t tx="ekr.20170310100532.13">Color for error messages written to the log window.</t>
-<t tx="ekr.20170310100532.14">Background color of log text.</t>
-<t tx="ekr.20170310100532.15">Foreground color of log text.
-
-</t>
-<t tx="ekr.20170310100532.16"></t>
-<t tx="ekr.20170310100532.17"></t>
-<t tx="ekr.20170310100532.18"></t>
-<t tx="ekr.20170310100532.19"></t>
-<t tx="ekr.20170310100532.2"></t>
-<t tx="ekr.20170310100532.20"></t>
-<t tx="ekr.20170310100532.21"></t>
-<t tx="ekr.20170310100532.22"></t>
-<t tx="ekr.20170310100532.23"></t>
-<t tx="ekr.20170310100532.24">@solarized-base02</t>
-<t tx="ekr.20170310100532.25"></t>
-<t tx="ekr.20170310100532.26"></t>
-<t tx="ekr.20170310100532.27"></t>
-<t tx="ekr.20170310100532.28">test text</t>
-<t tx="ekr.20170310100532.29">test text</t>
-<t tx="ekr.20170310100532.3"></t>
-<t tx="ekr.20170310100532.30"></t>
-<t tx="ekr.20170310100532.31"></t>
-<t tx="ekr.20170310100532.32"></t>
-<t tx="ekr.20170310100532.33"></t>
-<t tx="ekr.20170310100532.34">(some body text here so there's something to see)</t>
-<t tx="ekr.20170310100532.35"></t>
-<t tx="ekr.20170310100532.36"></t>
-<t tx="ekr.20170310100532.37"></t>
-<t tx="ekr.20170310100532.38"></t>
-<t tx="ekr.20170310100532.39"></t>
-<t tx="ekr.20170310100532.4"></t>
-<t tx="ekr.20170310100532.40">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20170310100532.41">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20170310100532.42">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20170310100532.43"></t>
-<t tx="ekr.20170310100532.44"></t>
-<t tx="ekr.20170310100532.45"></t>
-<t tx="ekr.20170310100532.46"></t>
-<t tx="ekr.20170310100532.47">@language rest
-@wrap
-
-Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310100532.48">The color of text in doc parts.
-
-was firebrick3. now comment1_color
-</t>
-<t tx="ekr.20170310100532.49">The color of Leo keywords such as @ignore, @color, etc.
-
-Was #00aa00.
-Now solarized-blue
-</t>
-<t tx="ekr.20170310100532.5"></t>
-<t tx="ekr.20170310100532.50">Was blue, now solarized-blue
-</t>
-<t tx="ekr.20170310100532.51">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
-
-was red. Now comment1_color</t>
-<t tx="ekr.20170310100532.52">The background color that represents spaces when Show Invisibles mode is in effect.
-
-solarized-magenta</t>
-<t tx="ekr.20170310100532.53">The foreground color that represents tabs when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20170310100532.54">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
-
-Was red. Now now comment1_color</t>
-<t tx="ekr.20170310100532.55"></t>
-<t tx="ekr.20170310100532.56">Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310100532.57">solarized-magenta
-</t>
-<t tx="ekr.20170310100532.58"></t>
-<t tx="ekr.20170310100532.59"></t>
-<t tx="ekr.20170310100532.6">Was cyan</t>
-<t tx="ekr.20170310100532.60"></t>
-<t tx="ekr.20170310100532.61"></t>
-<t tx="ekr.20170310100532.62"></t>
-<t tx="ekr.20170310100532.63"></t>
-<t tx="ekr.20170310100532.64"></t>
-<t tx="ekr.20170310100532.65"></t>
-<t tx="ekr.20170310100532.66">#00aa00 (Idle comment green)
-
-</t>
-<t tx="ekr.20170310100532.67"></t>
-<t tx="ekr.20170310100532.68"></t>
-<t tx="ekr.20170310100532.69"></t>
-<t tx="ekr.20170310100532.7"></t>
-<t tx="ekr.20170310100532.70"></t>
-<t tx="ekr.20170310100532.71">base2     #eee8d5</t>
-<t tx="ekr.20170310100532.72"></t>
-<t tx="ekr.20170310100532.73"></t>
-<t tx="ekr.20170310100532.74"></t>
-<t tx="ekr.20170310100532.75"></t>
-<t tx="ekr.20170310100532.76"></t>
-<t tx="ekr.20170310100532.77">(some body text here so there's something to see)</t>
-<t tx="ekr.20170310100532.78"></t>
-<t tx="ekr.20170310100532.79"></t>
-<t tx="ekr.20170310100532.8"></t>
-<t tx="ekr.20170310100532.80"></t>
-<t tx="ekr.20170310100532.81">Name of the theme, used to find icon files</t>
-<t tx="ekr.20170310100532.82">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20170310100532.83">/*
-@language css windows ekr dark
-*/</t>
-<t tx="ekr.20170310100532.84"></t>
-<t tx="ekr.20170310100532.85">/* ===== active pane highlighting ===== */
-QTextEdit#log-widget,
-LeoQTreeWidget#treeWidget,
-QTextEdit#richTextEdit { 
-    border-color:   @focused-border-unfocus-color; 
-    border-style:   @focused-border-style;
-    border-width:   @focused-border-width; 
-}
-
-QTextEdit:focus#log-widget,
-LeoQTreeWidget:focus#treeWidget,
-QTextEdit:focus#richTextEdit { 
-    border-color:   @focused-border-focus-color; 
-}
-
-QTextEdit:hover#log-widget,
-LeoQTreeWidget:hover#treeWidget,
-QTextEdit:hover#richTextEdit { 
-  border-color:     @focused-border-hover-color; 
-}
-</t>
-<t tx="ekr.20170310100532.86">/* ===== The body pane ===== */
-
-QTextEdit#richTextEdit {
-    background-color:           @test-background; /* @solarized-base03; */
-    color:                      @text-foreground;
-    font-family:                @font-family-body;
-    font-size:                  @font-size-body;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            @solarized-base03;
-    selection-background-color: @solarized-yellow;
-}</t>
-<t tx="ekr.20170310100532.87">/* ===== bookmarks plugin styling ===== */
-
-#show_bookmarks QPushButton { 
-    margin: 0; padding: 1; border: none;
-    font-size: @bookmarks_base_size;
-    color: @bookmarks_base_color;
-    font-weight: @bookmarks_base_weight;
-    text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-</t>
-<t tx="ekr.20170310100532.88">/* ===== Buttons ===== */
-
-QPushButton {
-    background: @bg-gradient;
-    color:      @text-foreground;
-}
-QPushButton:hover {
-    background: @bg-gradient-hover;
-    color:      @button-hover-fg;
-}</t>
-<t tx="ekr.20170310100532.89">/* ===== Log panes ===== */
-
-QTextEdit#log-widget {
-    background-color:           @log_text_background_color;
-    color:                      @log_text_foreground_color;
-    font-family:                @font-family-log;
-    font-size:                  @font-size-log;
-    font-style:                 normal; /* normal, italic,oblique */
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    selection-background-color: blue;
-    selection-color:            white;
-}
-</t>
-<t tx="ekr.20170310100532.9"></t>
-<t tx="ekr.20170310100532.90">/* ===== Menues ===== */
-
-QMenu {
-    color:      @text-foreground-bright;
-}
-QMenu::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-
-QMenuBar::item {
-    color:      @text-foreground;
-    background: @bg-gradient;
-}
-QMenuBar::item:selected {
-    color:      @button-hover-fg;
-    background: @bg-gradient-hover;
-}
-QMenuBar::item:pressed {
-    color:      @text-foreground-bright;
-    background: @bg-gradient;
-}
-</t>
-<t tx="ekr.20170310100532.91">/* ===== Mini-buffer ===== */
-
-QLineEdit#lineEdit {
-    color:                      @minibuffer_foreground_color;
-    background-color:           @minibuffer_background_color;
-    font-family:                @font-family;
-    font-size:                  @font-size;
-    font-weight:                normal; /* normal,bold,100,..,900 */
-    font-style:                 normal; /* normal,italic,oblique */
-    selection-color:            red;
-    selection-background-color: lightgrey;
-}
-
-QLabel#minibufferLabel {
-    color:              @solarized-violet;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
-    background-color:   @minibuffer_warning_color;
-}
-QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
-    color:              @minibuffer_error_color;
-    background-color:   @minibuffer_warning_color;
-}
-</t>
-<t tx="ekr.20170310100532.92">/* ===== Status line ===== */
-
-QLineEdit#status1,
-QLineEdit#status2 
-{
-    background-color:   @solarized-base03;
-    border-color:       @solarized-base02;
-    border-style:       solid;
-    border-width:       1px;
-}
-
-</t>
-<t tx="ekr.20170310100532.93">/* ===== Scroll bars ===== */
-
-QScrollBar::horizontal {
-     height: 7px;
-}
-QScrollBar::vertical {
-     width: 7px;
-}
-QScrollBar::add-page,
-QScrollBar::sub-page {
-    background: @solarized-base03;
-}
-QScrollBar::handle { 
-    background: @solarized-base01;
-    color:      @solarized-base01;
-}
-QScrollBar::handle:hover { 
-  background:   @solarized-base0;
-  color:        @solarized-base0;
-}
-/* to make these show up, remove the ::handle style above... bug? */
-QScrollBar::add-line,
-QScrollBar::sub-line { 
-  background:   @solarized-base01;
-  color:        @solarized-base01;
-}</t>
-<t tx="ekr.20170310100532.94">/* ===== Splitters ===== */
-
-QSplitter::handle {
-    background-color: @splitter-bg;
-}
-QSplitter::handle:hover {
-    background-color: @splitter-hover-bg;
-}
-</t>
-<t tx="ekr.20170310100532.95">/* ===== Tab bar ===== */
-
-QTabBar::tab { 
-   margin-right:    5px;
-   padding:         2px; 
-}
-QTabBar::tab {
-    background:     @bg-gradient;
-    color:          @text-foreground; 
-    margin-right:   5px;
-    padding:        2px; 
-}
-QTabBar::tab:selected {
-    color:          @solarized-green;
-}
-QTabBar::tab:hover {
-    background:     @bg-gradient-hover;
-    color:          @button-hover-fg;
-}</t>
-<t tx="ekr.20170310100532.96">/* ===== Tree Widgets ===== */
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */
-}
-QTreeWidget QLineEdit {
-    /* Headline edit widgets */
-    font-family:    @font-family-tree;
-    font-size:      @font-size-tree;
-    font-weight:    normal; /* normal,bold,100,..,900 */
-    font-style:     normal; /* normal, italic,oblique */ 
-}
-QTreeWidget::selected {
-    background:     @solarized-green;
-    color:          @solarized-base03; 
-}
-QTreeWidget::active:selected {
-    background:     @solarized-yellow;
-    color:          @solarized-base03; 
-}
-
-/* ===== Tree Views ===== */
-
-QTreeView {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color:           @solarized-base03;
-    color:                      @solarized-base0;
-    selection-color:            @solarized-orange;
-    selection-background-color: @solarized-base03;
-    show-decoration-selected:   0;
-}
-QTreeView::item:selected {
-    background:                 @solarized-green;
-    color:                      @solarized-base03; 
-}
-QTreeView::item:active:selected {
-    background:                 @solarized-yellow;
-    color:                      @solarized-base03; 
-}
-QTreeView QLineEdit {
-    /* Headline edit widgets */
-    color:                      @solarized-base03;
-    background-color:           @solarized-yellow;
-    selection-color:            @solarized-base3;
-    selection-background-color: @solarized-blue;  
-}
-QTreeView::branch:closed:has-children{
-    image: @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image: @tree-image-open;
-}
-</t>
-<t tx="ekr.20170310100532.97">/* ===== widgets ===== */
-
-QLabel {
-    color: @solarized-base1;
-}
-QLineEdit {
-    border:     none;
-    padding:    3px;
-}
-QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-QWidget {
-    background-color:   @solarized-base03; 
-    border-color:       @solarized-base1; 
-    color:              @solarized-base1;
-    font-size:          @font-size;
-}
-QWidget#body-text-renderer {
-    background-color:   white;
-    color:              black;
-}
-</t>
-<t tx="ekr.20170310100532.98">/* ===== Overrides of previous settings ===== */
-
-QTreeWidget QLineEdit {
-    /* Editing */
-    background:                 @solarized-base1;
-    selection-color:            @solarized-base1;
-    selection-background-color: @solarized-blue;
-}
-QTreeWidget::selected,
-QTreeWidget::active:selected,
-QTreeView::item:selected,
-QTreeView::item:active:selected {
-    background: @solarized-base01; /* one step darker than backround */
-}
-</t>
-<t tx="ekr.20170310102041.1">@language rest
-@wrap
-
-Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310102041.10">Note: Do not use @-constants here.</t>
-<t tx="ekr.20170310102041.11">solarized-magenta
-</t>
-<t tx="ekr.20170310102041.12">solarized-magenta</t>
-<t tx="ekr.20170310102041.13">solarized-magenta</t>
-<t tx="ekr.20170310102041.14">solarized-magenta</t>
-<t tx="ekr.20170310102041.15">solarized-magenta</t>
-<t tx="ekr.20170310102041.16">solarized-blue
-</t>
-<t tx="ekr.20170310102041.17">solarized-blue
-</t>
-<t tx="ekr.20170310102041.18">solarized-blue
-</t>
-<t tx="ekr.20170310102041.19">solarized-blue
-</t>
-<t tx="ekr.20170310102041.2">solarized-magenta</t>
-<t tx="ekr.20170310102041.20">solarized-cyan</t>
-<t tx="ekr.20170310102041.21">solarized-cyan</t>
-<t tx="ekr.20170310102041.22">solarized-cyan</t>
-<t tx="ekr.20170310102041.23">solarized-cyan</t>
-<t tx="ekr.20170310102041.24">solarized-base2
-</t>
-<t tx="ekr.20170310102041.25">solarized-base2
-</t>
-<t tx="ekr.20170310102041.26"></t>
-<t tx="ekr.20170310102041.27"></t>
-<t tx="ekr.20170310102041.3">solarized-blue
-</t>
-<t tx="ekr.20170310102041.4">solarized-blue
-</t>
-<t tx="ekr.20170310102041.5">solarized-magenta</t>
-<t tx="ekr.20170310102041.6">solarized-magenta</t>
-<t tx="ekr.20170310102041.7"></t>
-<t tx="ekr.20170310102041.8">solarized-magenta</t>
-<t tx="ekr.20170310102041.9">Solarized violet
-</t>
-<t tx="ekr.20170312082833.1">This theme uses the default qt-gui-plugin-style-sheet.</t>
-<t tx="ekr.20170312082833.2"></t>
-<t tx="ekr.20170312082833.3">/*
-@language css EKR: qt-gui-user-style-sheet
-*/
-
-/*
-    solarized-base3 (lightest) provides contrast in the main window.
-    QWidget styling is useful for testing, and not much else.
-*/
-
-/* Defaults */
-QWidget, QFrame {
-    background: @solarized-base2;
-}
-QDialog {
-    background:     lightgrey;
-}
-QDialog &gt; QLabel {
-    font-size:      12pt;
-}
-QLabel, QScrollBar, QStatusBar {
-    background:     lightgrey;
-}
-
-/* Widgets */
-/* ===== covered by defaults.
-QCheckBox,  QComboBox, QGroupBox, QPushButton, QRadioButton,
-QLineEdit,
-QTabBar, QTabWidget, QToolBar,
-{
-    background:     @solarized-base2;
-}
-===== */
-
-/* ===== Not used
-QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-    border:         none;
-    margin-right:   5px;
-    padding:        3px;
-}
-===== */
-
-QTextEdit#log-widget {
-    background:         @LightSteelBlue1;
-    /* border-color interferes with border coloring. */
-}
-QTreeView,
-QTreeWidget,
-QTextEdit#richTextEdit {
-    background-color:   @solarized-base2;
-    /* border-color interferes with border coloring. */
-    /* border-color:           @solarized-base2;  */
-}
-
-/* Menu Bar and menus */
-QMenu,
-QMenuBar,
-QMenu::item,
-QMenuBar::item {
-    background:         @solarized-base2;
-}
-QMenu::item:selected,
-QMenuBar::item:selected,
-QMenuBar::item:pressed {
-    background:         @LightSteelBlue1;
-    color: black;
-}
-</t>
 <t tx="ekr.20170316105542.1"></t>
 <t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
 <t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
 </t>
-<t tx="ekr.20170509103101.1"></t>
 <t tx="ekr.20170509103221.1"></t>
-<t tx="ekr.20170509103245.1"></t>
-<t tx="ekr.20170509103811.1"></t>
-<t tx="ekr.20170509103823.1"></t>
-<t tx="ekr.20170509103833.1"></t>
-<t tx="ekr.20170509103834.1"></t>
-<t tx="ekr.20170509103931.1"></t>
-<t tx="ekr.20170509103944.1"></t>
-<t tx="ekr.20170509104039.1"></t>
-<t tx="ekr.20170509104039.2"></t>
-<t tx="ekr.20170509104039.3"></t>
-<t tx="ekr.20170509104039.4"></t>
-<t tx="ekr.20170509104039.5"></t>
-<t tx="ekr.20170509104039.6"></t>
-<t tx="ekr.20170509104039.7"></t>
-<t tx="ekr.20170509104140.1"></t>
-<t tx="ekr.20170509104140.2"></t>
-<t tx="ekr.20170509104140.3"></t>
-<t tx="ekr.20170509104140.4"></t>
-<t tx="ekr.20170509104140.5"></t>
-<t tx="ekr.20170509104140.6"></t>
-<t tx="ekr.20170509104140.7"></t>
 <t tx="ekr.20170509104817.1"></t>
 <t tx="ekr.20170509104949.1"></t>
-<t tx="ekr.20170509105101.1"></t>
-<t tx="ekr.20170509122306.1"></t>
 <t tx="ekr.20170530035032.1"></t>
 <t tx="ekr.20170530035032.2">'''
 The @auto importer for the {|{x=get_language()}|} language.
@@ -14217,8 +10994,7 @@ importer_dict = {
 
     def __init__(self, importCommands):
         '''{|{x=cap_name}|}_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = '{|{x=name}|}',
             state_class = {|{x=cap_name}|}_ScanState,
@@ -14321,7 +11097,6 @@ if 0: # The base class
       function/method into the headline of the imported node.
       
 **Note**: The importer will copy only the first line of a multiline decorator.</t>
-<t tx="ekr.20170706103545.1">True: Report unchanged written files.</t>
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
@@ -14336,22 +11111,18 @@ if 0: # The base class
 
 Notes:
 
-- The menu name always follows @menu. If the menu name is 'Plugins', Leo will
-create the Plugins menu and populate the menu by calling the
-'create-optional-menus' hook. This creates the Plugins menu as usual.
+- The menu name always follows @menu. If the menu name is 'Plugins', Leo will create the Plugins menu and populate the menu by calling the 'create-optional-menus' hook. This creates the Plugins menu as usual.
+
+- The first non-blank, non-comment line of the body of an @menu item is an an alternate name for the menu.  This allows translations of menus.
 
 - Nested @menu nodes contain submenus.
 
-- The command name follows @item. If the body text of an @item node exists, this
-body text is the menu name. Otherwise, the menu name is the command name.
-However, if the command name starts with a '*', hyphens are removed from the
-menu name.
+- The command name follows @item. If the body text of an @item node exists, the first non-blank, non-comment line of the body text is the menu name. Otherwise, the menu name is the command name. However, if the command name starts with a '*', hyphens are removed from the menu name.
 
-- Menu names and command names may contain a single ampersand (&amp;). If present,
-the following character is underlined in the name.
+- Menu names and command names may contain a single ampersand (&amp;). If present, the following character is underlined in the name.
 
-- If the command name in an @item node is just a hyphen (-), the item represents
-a menu separator.</t>
+- If the command name in an @item node is just a hyphen (-), the item represents a menu separator.
+</t>
 <t tx="ekr.20170825083426.1"># typedef names, one per line
 
 # These fix #545:
@@ -14578,6 +11349,464 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 
 0 causes all lines to be shown.
 </t>
+<t tx="ekr.20180306144001.1">These are definitions of colors not defined by default, so you can refer to "solarized-red" as "@solarized-red" instead of "#dc322f".
+
+**Please do not change these definitions**.
+
+Feel free to *add* to them.
+</t>
+<t tx="ekr.20180306155628.1"></t>
+<t tx="ekr.20180307005648.1">Devs *must not* change these definitions, even within a specific theme!
+
+Use different names instead.</t>
+<t tx="ekr.20180307005648.10"></t>
+<t tx="ekr.20180307005648.11"></t>
+<t tx="ekr.20180307005648.12"></t>
+<t tx="ekr.20180307005648.13"></t>
+<t tx="ekr.20180307005648.14"></t>
+<t tx="ekr.20180307005648.15"></t>
+<t tx="ekr.20180307005648.16"></t>
+<t tx="ekr.20180307005648.17"></t>
+<t tx="ekr.20180307005648.18"></t>
+<t tx="ekr.20180307005648.3"></t>
+<t tx="ekr.20180307005648.4"></t>
+<t tx="ekr.20180307005648.5"></t>
+<t tx="ekr.20180307005648.6"></t>
+<t tx="ekr.20180307005648.7"></t>
+<t tx="ekr.20180307005648.8"></t>
+<t tx="ekr.20180307005648.9"></t>
+<t tx="ekr.20180307030430.1"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180307030442.1"># Not an official solarized color.  Same as dark-base-03</t>
+<t tx="ekr.20180308050150.1">These defaults settings ensure that legacy themes continue to work as before.
+
+May be overridden by themes.</t>
+<t tx="ekr.20180308050150.10"></t>
+<t tx="ekr.20180308050150.11"></t>
+<t tx="ekr.20180308050150.13"></t>
+<t tx="ekr.20180308050150.14"></t>
+<t tx="ekr.20180308050150.15"></t>
+<t tx="ekr.20180308050150.2"></t>
+<t tx="ekr.20180308050150.3"></t>
+<t tx="ekr.20180308050150.4"></t>
+<t tx="ekr.20180308050150.5"></t>
+<t tx="ekr.20180308050150.6"></t>
+<t tx="ekr.20180308050150.7"></t>
+<t tx="ekr.20180308050150.8"></t>
+<t tx="ekr.20180308050150.9"></t>
+<t tx="ekr.20180317172528.1"></t>
+<t tx="ekr.20180317175351.1"></t>
+<t tx="ekr.20180320113441.1">Open A &amp;Theme File</t>
+<t tx="ekr.20180403100653.1"></t>
+<t tx="ekr.20180403100719.1"></t>
+<t tx="ekr.20180403100800.1"></t>
+<t tx="ekr.20180403100839.1"></t>
+<t tx="ekr.20180403100900.1"></t>
+<t tx="ekr.20180403100919.1"></t>
+<t tx="ekr.20180403100935.1"></t>
+<t tx="ekr.20180403104558.1"></t>
+<t tx="ekr.20180403104616.1"></t>
+<t tx="ekr.20180403104643.1"></t>
+<t tx="ekr.20180403104732.1"></t>
+<t tx="ekr.20180403104751.1"></t>
+<t tx="ekr.20180403105112.1"></t>
+<t tx="ekr.20180403105526.1"></t>
+<t tx="ekr.20180403105541.1"></t>
+<t tx="ekr.20180403105609.1"></t>
+<t tx="ekr.20180403105636.1"></t>
+<t tx="ekr.20180403105722.1"></t>
+<t tx="ekr.20180403114533.1"></t>
+<t tx="ekr.20180403114558.1"></t>
+<t tx="ekr.20180403114818.1"></t>
+<t tx="ekr.20180403115138.1"></t>
+<t tx="ekr.20180403115320.1"># Alt+Ctrl+E set-find-everywhere
+# Alt+Ctrl+N set-find-node-only
+# Alt+Ctrl+S set-find-suboutline-only
+</t>
+<t tx="ekr.20180403115410.1"></t>
+<t tx="ekr.20180403115435.1"></t>
+<t tx="ekr.20180403115620.1"></t>
+<t tx="ekr.20180403115639.1"></t>
+<t tx="ekr.20180403115721.1"></t>
+<t tx="ekr.20180403115738.1"></t>
+<t tx="ekr.20180403115745.1"></t>
+<t tx="ekr.20180403120726.1"></t>
+<t tx="ekr.20180403120838.1"></t>
+<t tx="ekr.20180403122045.1"></t>
+<t tx="ekr.20180403122225.1"></t>
+<t tx="ekr.20180403123734.1"></t>
+<t tx="ekr.20180403124541.1"></t>
+<t tx="ekr.20180403153650.1"></t>
+<t tx="ekr.20180403153949.1"></t>
+<t tx="ekr.20180403154314.1"></t>
+<t tx="ekr.20180403154327.1"></t>
+<t tx="ekr.20180403154533.1"></t>
+<t tx="ekr.20180403154703.1"></t>
+<t tx="ekr.20180403155811.1"></t>
+<t tx="ekr.20180405110859.1"></t>
+<t tx="ekr.20180405112647.1"></t>
+<t tx="ekr.20180405112755.1"></t>
+<t tx="ekr.20180405112923.1"></t>
+<t tx="ekr.20180405112939.1"></t>
+<t tx="ekr.20180406013812.1"></t>
+<t tx="ekr.20180411070112.1">The setting only has effect on MacOS.
+False: Legacy operation.
+True:  Replace the Meta key with the Alt Key.
+       This allows Windows Keyboards to be used without changing key bindings.
+</t>
+<t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
+See https://jedi.readthedocs.io/en/latest/index.html
+</t>
+<t tx="ekr.20181018060340.1">def filter_get_x(self, setting):
+    '''
+    Return False if we can safely ignore a missing call to config.get(setting).
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # These *ivars* are set by the GlobalConfigManager class.
+    # There *should* be settings for all of these, despite missing config.get calls.
+    table = (
+        # encodingIvarsDict...
+            "default_at_auto_file_encoding",
+            "default_derived_file_encoding",
+            "new_leo_file_encoding",
+        # defaultsDict...
+            "color_directives_in_plain_text",
+            "output_doc_chunks",
+            "page_width",
+            "tab_width",
+            "tangle_outputs_header",
+            "target_language",
+            "underline_undefined_section_names",
+        # ivarsDict
+            "at_root_bodies_start_in_doc_mode",
+            "create_nonexistent_directories",
+            "output_initial_comment",
+            "output_newline",
+            "page_width",
+            "read_only",
+            "redirect_execute_script_output_to_log_pane",
+            "relative_path_base_directory",
+            "remove_sentinels_extension",
+            "save_clears_undo_buffer",
+            "stylesheet",
+            "tab_width",
+            "target_language",
+            "trailing_body_newlines",
+            "use_plugins",
+            "undo_granularity",
+            "write_strips_blank_lines",
+    )
+    table = [munge(z) for z in table]
+    if setting in table:
+        return False
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
+    #
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+</t>
+<t tx="ekr.20181018065113.1">def filter_user_config(self, setting):
+    '''
+    Return False if we can safely ignore a setting that does not exist in leoSettings.leo.
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # The calls to config.get* are commented out in the code,
+    # but get_configs isn't smart enough to know that.
+    for ignore in (
+        'auto-set-ignore-case',
+        'find-def-creates-clones',
+        'qt-rich-text-zoom-in',
+        'theme-name',
+        'pytest-path', # In a (disabled) @button node
+        'leo-to-html-%s', # Loads multiple settings from an .ini file.
+    ):
+        if setting == munge(ignore):
+            return False
+    #
+    # Stylesheets use these settings.
+    # It would be a major project to discover what settings
+    # are actually used in the present stylesheet.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
+    #
+    # These plugins use settings in non-standard ways.
+    if setting.startswith(
+        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Tangle/untagle settings are deprecated and imo should not exist.
+    for pattern in (
+        'output-doc-flag', 'tangle-batch-flag',
+        'untangle-batch-flag', 'use-header-flag',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+</t>
+<t tx="ekr.20181018075747.1"></t>
+<t tx="ekr.20181018075844.1"></t>
+<t tx="ekr.20181018075857.1"></t>
+<t tx="ekr.20181018075857.2"></t>
+<t tx="ekr.20181018075857.3"></t>
+<t tx="ekr.20181018080337.1"></t>
+<t tx="ekr.20181018080344.1"></t>
+<t tx="ekr.20181018103757.1">
+</t>
+<t tx="ekr.20181018103813.1">True: use verbose mode.</t>
+<t tx="ekr.20181018104056.1">True: use smart quotes when typing.</t>
+<t tx="ekr.20181018105342.1"></t>
+<t tx="ekr.20181018105355.1"></t>
+<t tx="ekr.20181018105433.1"></t>
+<t tx="ekr.20181018105440.1"></t>
+<t tx="ekr.20181018105515.1"></t>
+<t tx="ekr.20181018105529.1"></t>
+<t tx="ekr.20181018105551.1"></t>
+<t tx="ekr.20181018105559.1"></t>
+<t tx="ekr.20181018105625.1"></t>
+<t tx="ekr.20181018105650.1"></t>
+<t tx="ekr.20181018105704.1"></t>
+<t tx="ekr.20181018105748.1"></t>
+<t tx="ekr.20181018105800.1"></t>
+<t tx="ekr.20181018105904.1"></t>
+<t tx="ekr.20181018105945.1"></t>
+<t tx="ekr.20181018110022.1"></t>
+<t tx="ekr.20181018110051.1"></t>
+<t tx="ekr.20181018112756.1"></t>
+<t tx="ekr.20181018112805.1"></t>
+<t tx="ekr.20181018112823.1"></t>
+<t tx="ekr.20181018113203.1"></t>
+<t tx="ekr.20181018113210.1"></t>
+<t tx="ekr.20181018113243.1"></t>
+<t tx="ekr.20181018113409.1"></t>
+<t tx="ekr.20181018113416.1"></t>
+<t tx="ekr.20181018113446.1"></t>
+<t tx="ekr.20181018113502.1"></t>
+<t tx="ekr.20181018113612.1"></t>
+<t tx="ekr.20181018113656.1"></t>
+<t tx="ekr.20181018113730.1"></t>
+<t tx="ekr.20181018113812.1">
+</t>
+<t tx="ekr.20181018113813.1"></t>
+<t tx="ekr.20181018113857.1"></t>
+<t tx="ekr.20190106080417.1">/* ----- bookmarks.py ----- */
+
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    color:              @bookmarks_children_color;
+    font-family:        @bookmarks_children_family;
+    font-size:          @bookmarks_children_size;
+    font-weight:        @bookmarks_children_weight;
+    text-decoration:    @bookmarks_children_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size:          @bookmarks_expanded_size;
+    color:              @bookmarks_expanded_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_expanded_weight;
+    text-decoration:    @bookmarks_expanded_decoration;
+}
+
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size:          @bookmarks_current_size;
+    color:              @bookmarks_current_color;
+    font-style:         @bookmarks_expanded_style;
+    font-weight:        @bookmarks_current_weight;
+    text-decoration:    @bookmarks_current_decoration;
+}</t>
+<t tx="ekr.20190323043913.1">True: Leo uses pygments if available.
+
+
+@string pygments-style-name
+
+The default is "default" (without the quotes). This setting has effect only if @bool use-pygments is True.  It should be the name of a pygments style residing in the pygments/styles folder.  leonine.py defines a style that I used for testing.
+
+</t>
+<t tx="ekr.20190323043928.1">The name of the pygments style to use.
+This setting has effect only if *both* @bool use-pygments and @bool use-pygments-styles are True.
+
+The 'leonine' style is recommended. Install it from leo-editor-contrib.
+</t>
+<t tx="ekr.20190324042831.1">True: Use the pygments style given by @string pygments-style-name.
+
+False: Use @color settings to configure pygments tokens.
+       This allows per-language configuration, just as with Leo's jEdit-based colorers.
+
+
+</t>
+<t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
+# Not all tokens are represented here.</t>
+<t tx="ekr.20190324182659.1">from  leo.core.leoColor import leo_color_database as color_d
+
+d = {
+    'Comment':            'solarized-orange',
+    'Comment.Single':     'solarized-orange',
+    'Generic.Deleted':    'solarized-red',
+    'Generic.Emph':       'solarized-blue',
+    'Generic.Heading':    'solarized-magenta',
+    'Generic.Inserted':   'alt-solarized-green',
+    'Generic.Strong':     'solarized-blue',
+    'Generic.Subheading': 'solarized-magenta',
+    'Keyword':            'solarized-blue',
+    'Name':               'white',
+    'Name.Class':         'white',
+    'Name.Decorator':     'solarized-orange',
+    'Name.Entity':        'solarized-blue',
+    'Name.Function':      'white',
+    'Name.Other':         'solarized-red',
+    'Name.Tag':           'solarized-magenta',
+    'String':             'alt-solarized-green',
+    'String.Doc':         'solarized-orange', # docstring.
+    'String.Double':      'alt-solarized-green',
+    'String.Interpol':    'alt-solarized-green',
+    'String.Single':      'alt-solarized-green',
+}
+root = p.copy()
+for key, val in d.items():
+    p = root.insertAsLastChild()
+    # p.h = '@color %s = %s' % (key.lower(), color_d.get(val, 'white'))
+    p.h = '@color %s = %s' % (key.lower(), val)
+    # p.b = val
+c.redraw()
+    </t>
+<t tx="ekr.20190325050733.1"></t>
+<t tx="ekr.20190325050733.10"></t>
+<t tx="ekr.20190325050733.11"></t>
+<t tx="ekr.20190325050733.12"></t>
+<t tx="ekr.20190325050733.13"></t>
+<t tx="ekr.20190325050733.14"></t>
+<t tx="ekr.20190325050733.15"></t>
+<t tx="ekr.20190325050733.16"></t>
+<t tx="ekr.20190325050733.17"></t>
+<t tx="ekr.20190325050733.18"></t>
+<t tx="ekr.20190325050733.19"></t>
+<t tx="ekr.20190325050733.2"></t>
+<t tx="ekr.20190325050733.20"></t>
+<t tx="ekr.20190325050733.3"></t>
+<t tx="ekr.20190325050733.4"></t>
+<t tx="ekr.20190325050733.5"></t>
+<t tx="ekr.20190325050733.6"></t>
+<t tx="ekr.20190325050733.7"></t>
+<t tx="ekr.20190325050733.8"></t>
+<t tx="ekr.20190325050733.9"></t>
+<t tx="ekr.20190325052226.1"></t>
+<t tx="ekr.20190422173857.1"></t>
+<t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
+<t tx="ekr.20190613024818.1"></t>
+<t tx="ekr.20190613024836.1">valid values are: outline, body, tabs
+
+Warning: you may have to clear the caches in .leo/db after changing this setting.
+
+</t>
+<t tx="ekr.20190613024838.1">False: (recommended) Plugins create areas in the Tabs dock.
+
+True: create separate docks for plugins that used to be in Log pane.</t>
+<t tx="ekr.20190614191608.1">True: The VR dock is (can be) moved.
+False: (Recommended) The VR dock splits the body dock.
+
+*Warning*: You may have to clear caches if you change this setting.
+
+The --init-docks command-line option is the easy way to do this.</t>
+<t tx="ekr.20190622093004.1"></t>
+<t tx="ekr.20190712053127.1"></t>
+<t tx="ekr.20190724171032.1"></t>
+<t tx="ekr.20190724171039.1"></t>
+<t tx="ekr.20190724173715.1"></t>
+<t tx="ekr.20190724173724.1"></t>
+<t tx="ekr.20190724173733.1"></t>
+<t tx="ekr.20190808031525.1"># Valid ids are:
+
+# pyzofilebrowser
+# pyzohistoryviewer
+# pyzointeractivehelp
+# pyzologger
+# pyzowebbrowser
+# pyzosourcestructure
+    # Partially functional.
+
+# Not ready yet:
+# pyzoworkspace</t>
+<t tx="ekr.20190915192551.1"></t>
+<t tx="ekr.20190915192624.1"></t>
+<t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
+<t tx="ekr.20190915192705.1"></t>
+<t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
+<t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926110217.1"></t>
+<t tx="ekr.20191008030417.1"></t>
+<t tx="ekr.20191023140453.1"></t>
+<t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
+
+Otherwise, the sphinx command will cd to the directory containing the input file.</t>
+<t tx="ekr.20191023140453.3">If given, *only* this command will be executed after the cd command.</t>
+<t tx="ekr.20191023140453.4">Used only if the default command is *not* given.
+
+The input_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
+<t tx="ekr.20191023140453.5">Used only if the default command is *not* given.
+
+The output_dir directory specified in the command:
+
+sphinx-build {input_dir} {output_dir} {i_path}</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14617,7 +11846,7 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
-<t tx="leohag.20081204085551.13"># Don't change this unless you know what you are doing.</t>
+<t tx="lkj.20190714020301.1">Open desktop-integration</t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
@@ -14786,9 +12015,6 @@ the ``&lt;|`` in::
 This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``,
 if that's an abbreviation linked to next_place(), see 
 ``@@data abbreviations examples``, would select ``&lt;|code|&gt;``.</t>
-<t tx="tbrown.20130310101647.34743"></t>
-<t tx="tbrown.20130310101647.34744"># if set to True, g.redirectStdout/err will be used to
-# redirect stdout and stderr to the log pane when vs-eval is used</t>
 <t tx="tbrown.20130813134319.7223"></t>
 <t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
 
@@ -14830,31 +12056,6 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.23828">This section defines color values not necessarily defined by Qt.
-
-For example, you can use @LeoYellow instead of #ffffec
-
-Leo style sheets now support all colors names in Leo's color_db, defined in
-leoColor.py. Case is not important in such definitions.
-
-To see the names for the colors, click the pick-color-name button.
-This creates a color picker in the icon area.
-
-For example, the following setting works without any explicit
-definition of mistyrose2.
-    
-    @color head-bg = @mistyrose2
-    
-These colors are (mostly) the same as:
-http://www.yourhtmlsource.com/stylesheets/namedcolours.html
-
-Finally, there is a semi-interactive color map for these colors here:
-http://leo-editor.github.io/snippets/colormap.html
-Hover over a color to get Leo's color name for each color.
-
-Please don't change the following definitions, but feel free to add your
-own color names in myLeoSettings.leo.
-</t>
 <t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
 <t tx="tbrown.20131122091143.23834"></t>
@@ -14881,7 +12082,6 @@ valid values are: normal,bold,100,..,900
 <t tx="tbrown.20140101093550.25163">bold or regular</t>
 <t tx="tbrown.20140101093550.25164">none or underline</t>
 <t tx="tbrown.20140101093550.25165"></t>
-<t tx="tbrown.20140101093550.25167"></t>
 <t tx="tbrown.20140101093550.25169"></t>
 <t tx="tbrown.20140101093550.25171"></t>
 <t tx="tbrown.20140101093550.25173"></t>
@@ -15178,7 +12378,6 @@ version of Leo.
 do at first. All other font settings are defined in terms of the basic fonts.</t>
 <t tx="tbrown.20150821171510.79"># All other fonts are defined in terms of these basic fonts.
 # Changing the basic fonts are all that most users will want to do.</t>
-<t tx="tbrown.20150821171510.8">big-text-warning-bg</t>
 <t tx="tbrown.20150821171510.80">font-family</t>
 <t tx="tbrown.20150821171510.81">font-size</t>
 <t tx="tbrown.20150821171510.82">medium-font-size</t>
@@ -15209,11 +12408,10 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130095933.1">Pane management menu</t>
-<t tx="tbrown.20160130095933.2">Load pane layout</t>
-<t tx="tbrown.20160130095933.3">Restore pane layout</t>
-<t tx="tbrown.20160130095933.4">Zoom pane</t>
-<t tx="tbrown.20160130100023.1">Pane layout help</t>
+<t tx="tbrown.20160130095933.1"></t>
+<t tx="tbrown.20160130095933.2"></t>
+<t tx="tbrown.20160130095933.3"></t>
+<t tx="tbrown.20160130095933.4"></t>
 <t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
 with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="tbrown.20171128211219.1"># These control the effects of modifiers (Shift, Control, Alt) on left
@@ -15249,6 +12447,13 @@ AltControlShift hoist
 #     WITH: /
 
 </t>
+<t tx="tbrown.20180525163032.1">If True, names uses headline "Foo.bar" for bar() defined in class
+Foo, and headline "bar (foo.py)" for bar() defined at top level in
+foo.py.  This is useful if you've cloned the node so its origin is
+not obvious from context.
+
+If False, does not do the above, useful if you don't use clones
+and don't want the visual clutter of repeated class / file names.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
@@ -15270,5 +12475,7 @@ paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
 <t tx="vitalije.20170811125150.1"></t>
+<t tx="vitalije.20190928173155.1"></t>
+<t tx="vitalije.20190928173236.1"></t>
 </tnodes>
 </leo_file>

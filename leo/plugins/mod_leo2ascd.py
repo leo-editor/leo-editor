@@ -10,7 +10,7 @@ import os
 #@+node:ekr.20141110071911.17: ** << define classes >>
 #@+others
 #@+node:ekr.20101110094152.5824: *3* class _AssignUniqueConstantValue
-class   _AssignUniqueConstantValue(object):
+class   _AssignUniqueConstantValue:
     """ Provide unique value to be used as a constant """
 
     #@+others
@@ -45,7 +45,7 @@ class   _AssignUniqueConstantValue(object):
         return(self.UniqueInternalValue)
     #@-others
 #@+node:ekr.20101110094152.5830: *3* class _ConfigOptions
-class _ConfigOptions(object):
+class _ConfigOptions:
     """Hold current configuration options."""
     #@+others
     #@+node:ekr.20101110094152.5831: *4* __init__
@@ -87,15 +87,14 @@ class _ConfigOptions(object):
 #@-others
 #@-<< define classes >>
 #@+<< constants >>
-#@+node:ekr.20101110094152.5834: ** << constants >>
+#@+node:ekr.20101110094152.5834: ** << constants >> (mod_leo2ascd.py)
 CV = _AssignUniqueConstantValue()
 CV.NODE_IGNORE = CV.Next()      # demo of adding in code
 Conf = _ConfigOptions()
 
 # compile the patterns we'll be searching for frequently
-# pylint: disable=anomalous-backslash-in-string
-patternSectionName = re.compile("\<\< *(.+?) *\>\>")
-patternSectionDefinition = re.compile("(\<\< *)(.+?)( *\>\>)(=)")
+patternSectionName = re.compile(r"\<\< *(.+?) *\>\>")
+patternSectionDefinition = re.compile(r"(\<\< *)(.+?)( *\>\>)(=)")
 patternDirective = re.compile(r"^@")
 patternCodeDirective = re.compile(r"^(@c *$)|(@code)")
 patternDocDirective = re.compile(r"^(@ |@doc)(.*)")
@@ -359,6 +358,7 @@ def WriteNode(v,startinglevel, ascFile):
             inCodeExtract = False
     if containsAscIignore is not None:
         return CV.NODE_IGNORE # flag ignore tree to caller
+    return None
 #@+node:ekr.20101110094152.5838: *3* WriteTreeAsAsc
 def WriteTreeAsAsc(p,fn):
     'Writes the tree under p to the file ascFile'
@@ -374,7 +374,7 @@ def WriteTreeAsAsc(p,fn):
         if  val == CV.END_PROGRAM:
             ascFile.close()
             return
-        elif val == CV.NODE_IGNORE:
+        if val == CV.NODE_IGNORE:
             p.moveToNodeAfterTree() # ran into an @ascignore
         else:
             p.moveToThreadNext()

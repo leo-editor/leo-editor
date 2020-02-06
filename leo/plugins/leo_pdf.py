@@ -270,14 +270,9 @@ except ImportError:
     stylesheet = None
     StyleSheet1 = ParagraphStyle = None
     # raise
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    # pylint: disable=no-member
-    import StringIO
-    StringIO = StringIO.StringIO
-# import types
+import io
+StringIO = io.StringIO
+
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions
@@ -471,7 +466,7 @@ def getStyleSheet():
 def get_language (doctree):
     '''A wrapper for changing docutils get_language method.'''
 
-    class Reporter (object):
+    class Reporter:
         def warning(self,s):
             g.es_print('Reporter.warning',s)
 
@@ -500,7 +495,7 @@ def get_language (doctree):
 #         point.isok = True
 #@@c
 
-class Bunch (object):
+class Bunch:
 
     """A class that represents a colection of things.
 
@@ -524,8 +519,7 @@ class Bunch (object):
             for key in self.ivars() if key != 'tag']
         if tag:
             return "Bunch(tag=%s)...\n%s\n" % (tag,'\n'.join(entries))
-        else:
-            return "Bunch...\n%s\n" % '\n'.join(entries)
+        return "Bunch...\n%s\n" % '\n'.join(entries)
 
     # Used by new undo code.
     def __setitem__ (self,key,value):
@@ -576,46 +570,34 @@ if docutils:
         output = None
             # Final translated form of `document`.
         #@-<< class Writer declarations >>
+    
+        # def __init__(self):
+            # super().__init__()
+
         #@+others
-        #@+node:ekr.20090704103932.5183: *3* __init__ (Writer)
-        def __init__(self):
-
-            docutils.writers.Writer.__init__(self)
-
-            # self.translator_class = PDFTranslator
         #@+node:ekr.20090704103932.5184: *3* createParagraphsFromIntermediateFile
         def createParagraphsFromIntermediateFile (self,s,story,visitor):
 
-            if 0: # Not needed now that putParaFromIntermediateFile is in the visitor.
-                self.styleSheet = visitor.styleSheet
-                self.encode = visitor.encode
-            if reportlab:
-                # out = StringIO.StringIO()
-                out = StringIO()
-                reportlab.platypus.SimpleDocTemplate(out,
-                    pagesize=reportlab.lib.pagesizes.A4)
-                # The 'real' code is doc.build(story)
-                visitor.buildFromIntermediateFile(s,story,visitor)
-                return out.getvalue()
-            else:
+            if not reportlab:
                 return ''
+            out = StringIO()
+            reportlab.platypus.SimpleDocTemplate(out,
+                pagesize=reportlab.lib.pagesizes.A4)
+            #
+            # The 'real' code is doc.build(story)
+            visitor.buildFromIntermediateFile(s,story,visitor)
+            return out.getvalue()
         #@+node:ekr.20090704103932.5185: *3* createPDF_usingPlatypus
         def createPDF_usingPlatypus (self,story):
 
-            if reportlab:
-
-                # out = StringIO.StringIO()
-                out = StringIO()
-
-                doc = reportlab.platypus.SimpleDocTemplate(out,
-                    pagesize=reportlab.lib.pagesizes.A4)
-
-                doc.build(story)
-
-                return out.getvalue()
-
-            else:
+            if not reportlab:
                 return ''
+            out = StringIO()
+            doc = reportlab.platypus.SimpleDocTemplate(out,
+                pagesize=reportlab.lib.pagesizes.A4)
+            doc.build(story)
+            return out.getvalue()
+
         #@+node:ekr.20090704103932.5186: *3* lower
         def lower(self):
 
@@ -632,21 +614,14 @@ if docutils:
                 try:
                     filename = 'intermediateFile.txt'
                     s = open(filename).read()
-                    # g.trace('creating .pdf file from %s...' % filename)
                     visitor = dummyPDFTranslator(self,self.document,s)
                 except IOError:
-                    # g.trace('can not open %s' % filename)
                     return
-
+            #
             # Create a list of paragraphs using Platypus.
             self.document.walkabout(visitor)
             story = visitor.as_what()
-
-            if 0: # Not useful: story is a list of reportlab.platypus.para.Para objects.
-                # Use the trace in createParagraph instead.
-                g.trace('story','*'*40)
-                g.pr(story)
-
+            #
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
@@ -672,7 +647,7 @@ if docutils:
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
+            super().__init__(doctree) # Init the base class.
             self.language = get_language(doctree)
                 # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
         #@+node:ekr.20090704103932.5190: *3* as_what
@@ -686,8 +661,8 @@ if docutils:
 
             # if type(text) is types.UnicodeType:
             if g.isUnicode(text):
-                # text = text.replace(g.u('\u2020'),g.u(' '))
-                # text = text.replace(g.u('\xa0'), g.u(' '))
+                # text = text.replace('\u2020',' ')
+                # text = text.replace('\xa0', ' ')
                 text = text.encode('utf-8')
             return text
 
@@ -751,9 +726,9 @@ if docutils: # NOQA
             self.settings = doctree.settings
             # self.styleSheet = stylesheet and stylesheet.getStyleSheet()
             self.styleSheet = getStyleSheet()
-            docutils.nodes.NodeVisitor.__init__(self, doctree) # Init the base class.
+            super().__init__(doctree) # Init the base class.
             self.language = get_language(doctree)
-                ### docutils.languages.get_language(doctree.settings.language_code,self.reporter)
+                # docutils.languages.get_language(doctree.settings.language_code,self.reporter)
             self.in_docinfo = False
             self.head = [] # Set only by meta() method.
             self.body = [] # The body text being accumulated.
@@ -787,11 +762,12 @@ if docutils: # NOQA
                     self.starttag(node,'setLink','',destination=a['ids']))
                 markup.append('</setLink>')
 
-            if   node.hasattr('refid'):   href = a ['refid']
-            elif node.hasattr('refname'): href = self.document.nameids [a ['refname']]
-            else:                         href = ''
-            # g.trace('href:',href)
-
+            if   node.hasattr('refid'):
+                href = a ['refid']
+            elif node.hasattr('refname'):
+                href = self.document.nameids [a ['refname']]
+            else:
+                href = ''
             format = self.settings.footnote_references
             if format == 'brackets':
                 suffix = '[' ; markup.append(']')
@@ -799,12 +775,10 @@ if docutils: # NOQA
                 suffix = '<super>' ; markup.append('</super>')
             else: # shouldn't happen
                 suffix = None
-
             if suffix:
                 self.body.append(
                     self.starttag(node,'link',suffix,destination=href))
                 markup.append('</link>')
-
             markup.reverse()
             self.push(kind='footnote-ref',markup=markup)
         #@+node:ekr.20090704103932.5201: *6* depart_footnote_reference
@@ -986,7 +960,6 @@ if docutils: # NOQA
 
         def starttag (self,node,tagname,suffix='\n',caller='',**attributes):
 
-            # g.trace(repr(attributes))
             atts = {}
             for (name,value) in attributes.items():
                 atts [name.lower()] = value
@@ -1002,7 +975,6 @@ if docutils: # NOQA
             parts = [tagname]
             # Convert the attributes in attlist to a single string.
             for name, value in attlist:
-                # g.trace('attlist element:',repr(name),repr(value))
                 if value is None: # boolean attribute
                     parts.append(name.lower().strip())
                 elif g.isList(value):
@@ -1015,7 +987,6 @@ if docutils: # NOQA
                         name.lower(),self.encode(str(value).strip())))
 
             val = '<%s>%s' % (' '.join(parts),suffix)
-            # g.trace('%-24s %s' % (caller,val))
             return val
         #@+node:ekr.20090704103932.5215: *4* as_what
         def as_what(self):
@@ -1033,7 +1004,7 @@ if docutils: # NOQA
             style = self.styleSheet.get(style)
             try:
                 s = reportlab.platypus.para.Paragraph (
-                    text, ### self.encode(text),
+                    text,
                     style,
                     bulletText = bulletText,
                     context = self.styleSheet,
@@ -1158,8 +1129,6 @@ if docutils: # NOQA
 
             bunch = Bunch(**keys)
             self.context.append(bunch)
-            # g.trace(bunch)
-
 
         def pop (self,kind):
 
@@ -1167,7 +1136,6 @@ if docutils: # NOQA
             assert bunch.kind == kind,\
                 'wrong bunch kind popped.  Expected: %s Got: %s' % (
                     kind, bunch.kind)
-
             return bunch
 
         def peek (self,kind):

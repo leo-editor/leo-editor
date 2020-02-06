@@ -38,11 +38,7 @@ except ImportError:
     g.cantImport('win32com.client')
     client = None
 
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
-
+import configparser as ConfigParser
 import sys
 #@-<< imports >>
 

@@ -13,13 +13,9 @@ Plugins may define their own gui classes by setting g.app.gui.
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
     # for NullGui and StringTextWrapper.
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui (object)
-class LeoGui(object):
+class LeoGui:
     """The base class of all gui classes.
 
     Subclasses are expected to override all do-nothing methods of this class.
@@ -27,12 +23,10 @@ class LeoGui(object):
     #@+others
     #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName):
-        '''Ctor for the LeoGui class.'''
-        # g.trace("LeoGui",guiName,g.callers())
+        """Ctor for the LeoGui class."""
         self.active = None # Used only by qt_gui.
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
-        self.globalFindDialog = None
         self.globalFindTab = None
         self.idleTimeClass = None
         self.isNullGui = False
@@ -45,17 +39,28 @@ class LeoGui(object):
         self.root = None
         self.script = None
         self.splashScreen = None
-        self.trace = False
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
+        #
+        # Define special keys that may be overridden is subclasses.
+        self.ignoreChars = []
+            # Keys that are always to be ignore.
+        self.FKeys = []
+            # The representation of F-keys.
+        self.specialChars = []
+            # A list of characters/keys to be handle specially.
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
-    def create_key_event(self, c, char, stroke, w, event=None, x=None, y=None, x_root=None, y_root=None):
+    def create_key_event(self, c,
+        binding=None, char=None, event=None, w=None,
+        x=None, x_root=None,
+        y=None, y_root=None,
+    ):
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-        return LeoKeyEvent(c, char, event, stroke, w, x, y, x_root, y_root)
+        return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
     #@+node:ekr.20031218072017.3740: *4* LeoGui.guiName
     def guiName(self):
         try:
@@ -68,7 +73,7 @@ class LeoGui(object):
         self.scriptFileName = scriptFileName
     #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
     def event_generate(self, c, char, shortcut, w):
-        event = self.create_key_event(c, char, shortcut, w)
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* LeoGu: Must be defined in subclasses
@@ -184,7 +189,7 @@ class LeoGui(object):
         self.oops()
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
+
         self.oops()
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
     def getFullVersion(self, c=None):
@@ -235,29 +240,29 @@ class LeoGui(object):
         # First try the widget's getName method.
         if not 'w':
             return '<no widget>'
-        elif hasattr(w, 'getName'):
+        if hasattr(w, 'getName'):
             return w.getName()
-        elif hasattr(w, '_name'):
+        if hasattr(w, '_name'):
             return w._name
-        else:
-            return repr(w)
+        return repr(w)
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
-class LeoKeyEvent(object):
-    '''A gui-independent wrapper for gui events.'''
+class LeoKeyEvent:
+    """A gui-independent wrapper for gui events."""
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
-    def __init__(self, c, char, event, shortcut, w, x=None, y=None, x_root=None, y_root=None):
-        '''Ctor for LeoKeyEvent class.'''
-        trace = False and not g.unitTesting
-        if g.isStroke(shortcut):
-            g.trace('***** (LeoKeyEvent) oops: already a stroke', shortcut, g.callers())
-            stroke = shortcut
+    def __init__(self, c, char, event, binding, w,
+        x=None, y=None, x_root=None, y_root=None
+    ):
+        """Ctor for LeoKeyEvent class."""
+        if g.isStroke(binding):
+            g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
+            stroke = binding
         else:
-            stroke = g.KeyStroke(shortcut) if shortcut else None
-        assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
-            repr(stroke), g.callers())
-        if trace: g.trace('(LeoKeyEvent) stroke', stroke)
+            stroke = g.KeyStroke(binding) if binding else None
+        assert g.isStrokeOrNone(stroke), f"(LeoKeyEvent) {stroke!r} {g.callers()}"
+        if 'keys' in g.app.debug:
+            print(f"LeoKeyEvent: binding: {binding}, stroke: {stroke}, char: {char!r}")
         self.c = c
         self.char = char or ''
         self.event = event # New in Leo 4.11.
@@ -278,11 +283,11 @@ class LeoKeyEvent(object):
         return 'LeoKeyEvent:\n%s' % g.objToString(d)
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
     def get(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
+        """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
     def __getitem__(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
+        """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
     #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type
     def type(self):
@@ -294,9 +299,8 @@ class NullGui(LeoGui):
     #@+others
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName='nullGui'):
-        '''ctor for the NullGui class.'''
-        LeoGui.__init__(self, guiName)
-            # init the base class.
+        """ctor for the NullGui class."""
+        super().__init__(guiName)
         self.clipboardContents = ''
         self.focusWidget = None
         self.script = None
@@ -373,7 +377,7 @@ class NullGui(LeoGui):
     def set_focus(self, commander, widget):
         self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
-    def alert(self, message): pass
+    def alert(self, c, message): pass
     def attachLeoIcon(self, window): pass
     def destroySelf(self): pass
     def finishCreate(self): pass
@@ -385,12 +389,13 @@ class NullGui(LeoGui):
     def get_window_info(self, window): return 600, 500, 20, 20
     def onActivateEvent(self, *args, **keys): pass
     def onDeactivateEvent(self, *args, **keys): pass
+    def set_top_geometry(self, w, h, x, y): pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True # Must be True for unit tests.
 
     def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
     def oops(self):
@@ -412,22 +417,19 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2229: *3* NullGui.runMainLoop
     def runMainLoop(self):
         """Run the null gui's main loop."""
-        trace = False
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log
-            if trace: g.trace("NullGui: start of batch script")
             self.lastFrame.c.executeScript(script=self.script)
-            if trace: g.trace("NullGui: end of batch script")
         else:
             print('**** NullGui.runMainLoop: terminating Leo.')
         # Getting here will terminate Leo.
     #@-others
 #@+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
-class NullScriptingControllerClass(object):
-    '''A default, do-nothing class to be overridden by mod_scripting or other plugins.
+class NullScriptingControllerClass:
+    """A default, do-nothing class to be overridden by mod_scripting or other plugins.
 
-    This keeps pylint happy.'''
+    This keeps pylint happy."""
 
     def __init__(self, c, iconBar=None):
         self.c = c
@@ -436,8 +438,8 @@ class NullScriptingControllerClass(object):
     def createAllButtons(self):
         pass
 #@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
-class StringCheckBox(object):
-    '''Simulate a QCheckBox.'''
+class StringCheckBox:
+    """Simulate a QCheckBox."""
     
     def __init__(self, name, label):
         self.label = label
@@ -457,34 +459,23 @@ class StringCheckBox(object):
         self.value = not self.value
 #@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
 class StringGui(LeoGui):
-    '''
+    """
     A class representing all on-screen objects using subclasses of the
     leoFrame.StringTextWrapper class.
-    '''
+    """
     #@+others
-    #@+node:ekr.20170613095422.2: *3* StringGui.__init__ (not used yet)
-    # def __init__(self, guiName='StringGui'):
-        # '''ctor for the StringGui class.'''
-        # LeoGui.__init__(self, guiName)
-            # # init the base class.
-        # self.clipboardContents = ''
-        # self.theDict = {}
-        # self.focusWidget = None
-        # self.frameFactory = g.NullObject()
-        # self.iconimages = {}
-        # self.script = None
-        # self.isNullGui = True
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
+
         g.trace("StringGui", g.callers(4))
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self):
         self.oops()
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
-class StringLineEdit(object):
+class StringLineEdit:
     
-    '''Simulate a QLineEdit.'''
+    """Simulate a QLineEdit."""
         
     def __init__(self, name, disabled):
         self.disabled = disabled
@@ -508,9 +499,9 @@ class StringLineEdit(object):
     def text(self):
         return self.s
 #@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
-class StringRadioButton(object):
+class StringRadioButton:
     
-    '''Simulate QRadioButton.'''
+    """Simulate QRadioButton."""
     
     def __init__(self, name, label):
         self.label = label
@@ -529,17 +520,15 @@ class StringRadioButton(object):
    
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
-    '''A gui class for use by unit tests.'''
+    """A gui class for use by unit tests."""
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict=None, trace=False):
-        '''ctor for the UnitTestGui class.'''
+    def __init__(self, theDict=None):
+        """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
-        NullGui.__init__(self, "UnitTestGui")
-            # Init the base class
+        super().__init__("UnitTestGui")
         self.theDict = {} if theDict is None else theDict
-        self.trace = trace
         g.app.gui = self
 
     def destroySelf(self):
@@ -551,18 +540,11 @@ class UnitTestGui(NullGui):
     if 1: # Huh?
 
         def runAtIdle(self, aFunc):
-            '''Run aFunc immediately for a unit test.
+            """Run aFunc immediately for a unit test.
 
             This is a kludge, but it is probably the best that can be done.
-            '''
+            """
             aFunc()
-    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode
-    def toUnicode(self, s):
-        # pylint: disable=no-member
-        if g.isPython3:
-            return str(s)
-        else:
-            return builtins.unicode(s)
     #@-others
 #@-others
 #@@language python

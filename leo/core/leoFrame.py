@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3655: * @file leoFrame.py
-'''
+"""
 The base classes for all Leo Windows, their body, log and tree panes, key bindings and menus.
 
 These classes should be overridden to create frames for a particular gui.
-'''
+"""
 big_text_buttons = True
     # True: show buttons instead of immediately loading big text.
 #@+<< imports >>
@@ -15,6 +15,7 @@ import leo.core.leoColorizer as leoColorizer
 import leo.core.leoMenu as LeoMenu
 import leo.core.leoNodes as leoNodes
 import time
+assert time
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
@@ -50,8 +51,8 @@ import time
 # These classes are for documentation and unit testing.
 # They are the base class for no class.
 #@+node:ekr.20140904043623.18576: *3* class StatusLineAPI
-class StatusLineAPI(object):
-    '''The required API for c.frame.statusLine.'''
+class StatusLineAPI:
+    """The required API for c.frame.statusLine."""
 
     def __init__(self, c, parentFrame): pass
 
@@ -71,8 +72,8 @@ class StatusLineAPI(object):
 
     def update(self): pass
 #@+node:ekr.20140907201613.18663: *3* class TreeAPI
-class TreeAPI(object):
-    '''The required API for c.frame.tree.'''
+class TreeAPI:
+    """The required API for c.frame.tree."""
 
     def __init__(self, frame): pass
     # Must be defined in subclasses.
@@ -83,7 +84,7 @@ class TreeAPI(object):
 
     def edit_widget(self, p): return None
 
-    def redraw(self, p=None, scroll=True, forceDraw=False): pass
+    def redraw(self, p=None): pass
     redraw_now = redraw
 
     def scrollTo(self, p): pass
@@ -91,16 +92,12 @@ class TreeAPI(object):
 
     def initAfterLoad(self): pass
 
-    def afterSelectHint(self, p, old_p): pass
-
-    def beforeSelectHint(self, p, old_p): pass
-
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None): pass
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p=None): pass
+    def redraw_after_contract(self, p): pass
 
-    def redraw_after_expand(self, p=None): pass
+    def redraw_after_expand(self, p): pass
 
     def redraw_after_head_changed(self): pass
 
@@ -120,12 +117,12 @@ class TreeAPI(object):
 
     def onHeadlineKey(self, event): pass
 
-    def select(self, p, scroll=True): pass
+    def select(self, p): pass
 
     def updateHead(self, event, w): pass
 #@+node:ekr.20140903025053.18631: *3* class WrapperAPI
-class WrapperAPI(object):
-    '''A class specifying the wrapper api used throughout Leo's core.'''
+class WrapperAPI:
+    """A class specifying the wrapper api used throughout Leo's core."""
 
     def __init__(self, c): pass
 
@@ -187,8 +184,8 @@ class WrapperAPI(object):
 
     def toPythonIndexRowCol(self, index): return (0, 0, 0)
 #@+node:ekr.20140904043623.18552: ** class IconBarAPI
-class IconBarAPI(object):
-    '''The required API for c.frame.iconBar.'''
+class IconBarAPI:
+    """The required API for c.frame.iconBar."""
 
     def __init__(self, c, parentFrame): pass
 
@@ -210,12 +207,12 @@ class IconBarAPI(object):
 
     def setCommandForButton(self, button, command, command_p, controller, gnx, script): pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
-class LeoBody(object):
-    '''The base class for the body pane in Leo windows.'''
+class LeoBody:
+    """The base class for the body pane in Leo windows."""
     #@+others
     #@+node:ekr.20031218072017.3657: *3* LeoBody.__init__
     def __init__(self, frame, parentFrame):
-        '''Ctor for LeoBody class.'''
+        """Ctor for LeoBody class."""
         c = frame.c
         frame.body = self
         self.c = c
@@ -224,8 +221,8 @@ class LeoBody(object):
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
         # May be overridden in subclasses...
-        self.widget = None # set in LeoQtBody.setWidget.
-        self.wrapper = None # set in LeoQtBody.setWidget.
+        self.widget = None # set in LeoQtBody.set_widget.
+        self.wrapper = None # set in LeoQtBody.set_widget.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
         # Must be overridden in subclasses...
@@ -235,7 +232,7 @@ class LeoBody(object):
             # May be overridden in subclasses.
     #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the c.frame.body class.'''
+        """Command decorator for the c.frame.body class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
@@ -259,7 +256,7 @@ class LeoBody(object):
     # Fail loudly if these methods are not defined.
 
     def oops(self):
-        '''Say that a required method in a subclass is missing.'''
+        """Say that a required method in a subclass is missing."""
         g.trace("(LeoBody) %s should be overridden in a subclass", g.callers())
 
     def createEditorFrame(self, w):
@@ -278,7 +275,7 @@ class LeoBody(object):
     #@+node:ekr.20070424053629: *4* LeoBody.entries
     #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor (overridden)
     def addEditor(self, event=None):
-        '''Add another editor to the body pane.'''
+        """Add another editor to the body pane."""
         c, p = self.c, self.c.p
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
@@ -293,7 +290,7 @@ class LeoBody(object):
                 self.selectLabel(w_old) # Immediately create the label in the old editor.
             else:
                 g.trace('can not happen: unexpected editorWidgets', d)
-        name = '%d' % self.totalNumberOfEditors
+        name = f"{self.totalNumberOfEditors}"
         pane = self.pb.add(name)
         panes = self.pb.panes()
         minSize = float(1.0 / float(len(panes)))
@@ -318,32 +315,14 @@ class LeoBody(object):
         c.bodyWantsFocus()
     #@+node:ekr.20060528132829: *5* LeoBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
-        '''Called *only* from tree.select to select the present body editor.'''
+        """Called *only* from tree.select to select the present body editor."""
         c = self.c
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-        # g.trace('===',id(w),w.leo_chapter.name,w.leo_p.h)
-    #@+node:ekr.20060528170438: *5* LeoBody.cycleEditorFocus
-    @cmd('editor-cycle-focus')
-    @cmd('cycle-editor-focus') # There is no LeoQtBody method
-    def cycleEditorFocus(self, event=None):
-        '''Cycle keyboard focus between the body text editors.'''
-        c = self.c
-        d = self.editorWidgets
-        w = c.frame.body.wrapper
-        values = list(d.values())
-        # g.printDict(d)
-        if len(values) > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
-            w2 = values[i]
-            assert(w != w2)
-            self.selectEditor(w2)
-            c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
     def deleteEditor(self, event=None):
-        '''Delete the presently selected body text editor.'''
+        """Delete the presently selected body text editor."""
         c = self.c
         w = c.frame.body.wapper
         d = self.editorWidgets
@@ -362,7 +341,7 @@ class LeoBody(object):
         self.selectEditor(w)
     #@+node:ekr.20070425180705: *5* LeoBody.findEditorForChapter
     def findEditorForChapter(self, chapter, p):
-        '''Return an editor to be assigned to chapter.'''
+        """Return an editor to be assigned to chapter."""
         c = self.c
         d = self.editorWidgets
         values = list(d.values())
@@ -373,15 +352,12 @@ class LeoBody(object):
                     hasattr(w, 'leo_chapter') and w.leo_chapter == chapter and
                     hasattr(w, 'leo_p') and w.leo_p and w.leo_p == p
                 ):
-                    # g.trace('***',id(w),'match chapter and p',p.h)
                     return w
         # Next, try to match just the chapter.
         for w in values:
             if hasattr(w, 'leo_chapter') and w.leo_chapter == chapter:
-                # g.trace('***',id(w),'match only chapter',p.h)
                 return w
         # As a last resort, return the present editor widget.
-        # g.trace('***',id(self.wrapper),'no match',p.h)
         return c.frame.body.wrapper
     #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel(self, w):
@@ -396,7 +372,6 @@ class LeoBody(object):
             self.createChapterIvar(w)
             self.packEditorLabelWidget(w)
             s = self.computeLabel(w)
-            # g.trace(s,g.callers())
             if hasattr(w, 'leo_label') and w.leo_label:
                 w.leo_label.configure(text=s, bg='white')
         elif hasattr(w, 'leo_label') and w.leo_label:
@@ -406,16 +381,16 @@ class LeoBody(object):
     selectEditorLockout = False
 
     def selectEditor(self, w):
-        '''Select the editor given by w and node w.leo_p.'''
+        """Select the editor given by w and node w.leo_p."""
         #  Called whenever wrapper must be selected.
         c = self.c
         if self.selectEditorLockout:
-            return
+            return None
         if w and w == self.c.frame.body.widget:
             if w.leo_p and w.leo_p != c.p:
                 c.selectPosition(w.leo_p)
                 c.bodyWantsFocus()
-            return
+            return None
         try:
             val = None
             self.selectEditorLockout = True
@@ -425,15 +400,11 @@ class LeoBody(object):
         return val # Don't put a return in a finally clause.
     #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
     def selectEditorHelper(self, wrapper):
-        '''Select the editor whose widget is given.'''
+        """Select the editor whose widget is given."""
         c = self.c
-        trace = False and not g.unitTesting
         if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
             g.trace('no wrapper.leo_p')
             return
-        if trace: g.trace('==1', id(wrapper),
-            hasattr(wrapper, 'leo_chapter') and wrapper.leo_chapter and wrapper.leo_chapter.name,
-            hasattr(wrapper, 'leo_p') and wrapper.leo_p and wrapper.leo_p.h)
         self.deactivateActiveEditor(wrapper)
         # The actual switch.
         c.frame.body.wrapper = wrapper
@@ -443,11 +414,6 @@ class LeoBody(object):
         if not self.ensurePositionExists(wrapper):
             g.trace('***** no position editor!')
             return
-        if trace:
-            g.trace('==2', id(wrapper),
-                hasattr(wrapper, 'leo_chapter') and wrapper.leo_chapter and wrapper.leo_chapter.name,
-                hasattr(wrapper, 'leo_p') and wrapper.leo_p and wrapper.leo_p.h)
-        # g.trace('expanding ancestors of ',wrapper.leo_p.h,g.callers())
         p = wrapper.leo_p
         c.redraw(p)
         c.recolor()
@@ -465,7 +431,6 @@ class LeoBody(object):
             if v and v == p.v and wrapper != c.frame.body.wrapper:
                 wrapper.delete(0, 'end')
                 wrapper.insert('end', p.b)
-                # g.trace('update',wrapper,v)
                 self.recolorWidget(p, wrapper)
         c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
@@ -473,7 +438,7 @@ class LeoBody(object):
     def computeLabel(self, w):
         s = w.leo_label_s
         if hasattr(w, 'leo_chapter') and w.leo_chapter:
-            s = '%s: %s' % (w.leo_chapter.name, s)
+            s = f"{w.leo_chapter.name}: {s}"
         return s
     #@+node:ekr.20070422094710: *5* LeoBody.createChapterIvar
     def createChapterIvar(self, w):
@@ -486,24 +451,23 @@ class LeoBody(object):
                 w.leo_chapter = None
     #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
     def ensurePositionExists(self, w):
-        '''Return True if w.leo_p exists or can be reconstituted.'''
+        """Return True if w.leo_p exists or can be reconstituted."""
         c = self.c
         if c.positionExists(w.leo_p):
             return True
-        else:
-            g.trace('***** does not exist', w.leo_name)
-            for p2 in c.all_unique_positions():
-                if p2.v and p2.v == w.leo_v:
-                    w.leo_p = p2.copy()
-                    return True
-            # This *can* happen when selecting a deleted node.
-            w.leo_p = c.p
-            return False
+        g.trace('***** does not exist', w.leo_name)
+        for p2 in c.all_unique_positions():
+            if p2.v and p2.v == w.leo_v:
+                w.leo_p = p2.copy()
+                return True
+        # This *can* happen when selecting a deleted node.
+        w.leo_p = c.p
+        return False
     #@+node:ekr.20070424080640: *5* LeoBody.deactivateActiveEditor
     # Not used in Qt.
 
     def deactivateActiveEditor(self, w):
-        '''Inactivate the previously active editor.'''
+        """Inactivate the previously active editor."""
         d = self.editorWidgets
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
         for key in d:
@@ -518,7 +482,6 @@ class LeoBody(object):
         c = self.c
         colorizer = c.frame.body.colorizer
         if p and colorizer and hasattr(colorizer, 'colorize'):
-            g.trace(p.h)
             old_wrapper = c.frame.body.wrapper
             c.frame.body.wrapper = w
             try:
@@ -527,27 +490,26 @@ class LeoBody(object):
                 c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
     def switchToChapter(self, w):
-        '''select w.leo_chapter.'''
+        """select w.leo_chapter."""
         c = self.c; cc = c.chapterController
         if hasattr(w, 'leo_chapter') and w.leo_chapter:
             chapter = w.leo_chapter
             name = chapter and chapter.name
             oldChapter = cc.getSelectedChapter()
             if chapter != oldChapter:
-                # g.trace('===','old',oldChapter.name,'new',name,w.leo_p)
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
     #@+node:ekr.20070424092855: *5* LeoBody.updateInjectedIvars
     # Called from addEditor and assignPositionToEditor.
 
     def updateInjectedIvars(self, w, p):
-        '''Inject updated ivars in w, a gui widget.'''
+        """Inject updated ivars in w, a gui widget."""
         if not w:
             return
         c = self.c
         cc = c.chapterController
         # Was in ctor.
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if cc and use_chapters:
             w.leo_chapter = cc.getSelectedChapter()
         else:
@@ -555,11 +517,10 @@ class LeoBody(object):
         w.leo_p = p.copy()
         w.leo_v = w.leo_p.v
         w.leo_label_s = p.h
-        # g.trace('   ===', id(w),w.leo_chapter and w.leo_chapter.name,p.h)
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines(self):
-        '''
+        """
         Return before,after where:
 
         before is all the lines before the line containing the insert point.
@@ -567,7 +528,7 @@ class LeoBody(object):
         after is all the lines after the line containing the insert point.
 
         All lines end in a newline, except possibly the last line.
-        '''
+        """
         body = self
         w = body.wrapper
         s = w.getAllText()
@@ -576,13 +537,13 @@ class LeoBody(object):
         before = s[0: i]
         ins = s[i: j]
         after = s[j:]
-        before = g.toUnicode(before)
-        ins = g.toUnicode(ins)
-        after = g.toUnicode(after)
+        before = g.checkUnicode(before)
+        ins = g.checkUnicode(ins)
+        after = g.checkUnicode(after)
         return before, ins, after
     #@+node:ekr.20031218072017.4031: *4* LeoBody.getSelectionAreas
     def getSelectionAreas(self):
-        '''
+        """
         Return before,sel,after where:
 
         before is the text before the selected text
@@ -590,7 +551,7 @@ class LeoBody(object):
         sel is the selected text (or "" if no selection)
         after is the text after the selected text
         (or the text after the insert point if no selection)
-        '''
+        """
         body = self
         w = body.wrapper
         s = w.getAllText()
@@ -599,13 +560,13 @@ class LeoBody(object):
         before = s[0: i]
         sel = s[i: j]
         after = s[j:]
-        before = g.toUnicode(before)
-        sel = g.toUnicode(sel)
-        after = g.toUnicode(after)
+        before = g.checkUnicode(before)
+        sel = g.checkUnicode(sel)
+        after = g.checkUnicode(after)
         return before, sel, after
     #@+node:ekr.20031218072017.2377: *4* LeoBody.getSelectionLines
     def getSelectionLines(self):
-        '''
+        """
         Return before,sel,after where:
 
         before is the all lines before the selected text
@@ -613,7 +574,7 @@ class LeoBody(object):
         sel is the selected text (or "" if no selection)
         after is all lines after the selected text
         (or the text after the insert point if no selection)
-        '''
+        """
         if g.app.batchMode:
             return '', '', ''
         # At present, called only by c.getBodyLines.
@@ -626,23 +587,21 @@ class LeoBody(object):
         else:
             i, junk = g.getLine(s, i)
             junk, j = g.getLine(s, j)
-        before = g.toUnicode(s[0: i])
-        sel = g.toUnicode(s[i: j])
-        after = g.toUnicode(s[j: len(s)])
-        # g.trace(i,j,'sel',repr(s[i:j]),'after',repr(after))
+        before = g.checkUnicode(s[0: i])
+        sel = g.checkUnicode(s[i: j])
+        after = g.checkUnicode(s[j: len(s)])
         return before, sel, after # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
 
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
-        '''Update Leo after the body has been changed.'''
-        trace = False and not g.unitTesting
+        """Update Leo after the body has been changed."""
         c = self.c
         body, w = self, self.wrapper
         p = c.p
         insert = w.getInsertPoint()
         ch = '' if insert == 0 else w.get(insert - 1)
-        ch = g.toUnicode(ch)
+        ch = g.checkUnicode(ch)
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
@@ -650,9 +609,6 @@ class LeoBody(object):
         else:
             changed = oldText != newText
         if not changed: return
-        if trace:
-            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-            g.trace('oldSel', oldSel, 'newSel', newSel)
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
@@ -664,15 +620,15 @@ class LeoBody(object):
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
-        if not c.changed: c.setChanged(True)
+        if not c.changed: c.setChanged()
         self.updateEditors()
         p.v.contentModified()
         #@+<< update icons if necessary >>
         #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
         redraw_flag = False
         # Update dirty bits.
-        # p.setDirty() sets all cloned and @file dirty bits.
-        if not p.isDirty() and p.setDirty():
+        if not p.isDirty():
+            p.setDirty()
             redraw_flag = True
         # Update icons. p.v.iconVal may not exist during unit tests.
         val = p.computeIcon()
@@ -684,10 +640,10 @@ class LeoBody(object):
         #@-<< update icons if necessary >>
     #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
     def setSelectionAreas(self, before, sel, after):
-        '''
+        """
         Replace the body text by before + sel + after and
         set the selection so that the sel text is selected.
-        '''
+        """
         body = self
         w = body.wrapper
         # 2012/02/05: save/restore Yscroll position.
@@ -700,14 +656,13 @@ class LeoBody(object):
         w.insert(0, before + sel + after)
         i = len(before)
         j = max(i, len(before) + len(sel) - 1)
-        # g.trace(i,j,repr(sel))
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(pos)
         return i, j
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
-class LeoFrame(object):
-    '''The base class for all Leo windows.'''
+class LeoFrame:
+    """The base class for all Leo windows."""
     instances = 0
     #@+others
     #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
@@ -756,7 +711,7 @@ class LeoFrame(object):
         # c.setRootPosition() # New in 4.4.2.
     #@+node:ekr.20150509194519.1: *3* LeoFrame.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the LeoFrame class.'''
+        """Command decorator for the LeoFrame class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
@@ -771,11 +726,10 @@ class LeoFrame(object):
         return self.title
 
     def setTitle(self, title):
-        # g.trace('**(LeoFrame)',title)
         self.title = title
     #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
     def initAfterLoad(self):
-        '''Provide offical hooks for late inits of components of Leo frames.'''
+        """Provide offical hooks for late inits of components of Leo frames."""
         frame = self
         frame.body.initAfterLoad()
         frame.log.initAfterLoad()
@@ -787,7 +741,7 @@ class LeoFrame(object):
         pass
     #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
     def setTabWidth(self, w):
-        '''Set the tab width in effect for this frame.'''
+        """Set the tab width in effect for this frame."""
         # Subclasses may override this to affect drawing.
         self.tab_width = w
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
@@ -797,16 +751,15 @@ class LeoFrame(object):
         s = c.config.get("initial_split_orientation", "string")
         verticalFlag = s is None or (s != "h" and s != "horizontal")
         if verticalFlag:
-            r = c.config.getRatio("initial_vertical_ratio")
+            r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.5
-            r2 = c.config.getRatio("initial_vertical_secondary_ratio")
+            r2 = c.config.getRatio("initial-vertical-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         else:
-            r = c.config.getRatio("initial_horizontal_ratio")
+            r = c.config.getRatio("initial-horizontal-ratio")
             if r is None or r < 0.0 or r > 1.0: r = 0.3
-            r2 = c.config.getRatio("initial_horizontal_secondary_ratio")
+            r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
-        # g.trace(r,r2)
         return verticalFlag, r, r2
     #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName
     def longFileName(self):
@@ -819,14 +772,11 @@ class LeoFrame(object):
         g.pr("LeoFrame oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
     def promptForSave(self):
-        '''
+        """
         Prompt the user to save changes.
         Return True if the user vetos the quit or save operation.
-        '''
+        """
         c = self.c
-        # if g.app.gui.guiName() == 'curses':
-            # g.trace('Saves disabled for curses gui')
-            # return False
         theType = "quitting?" if g.app.quitting else "closing?"
         # See if we are in quick edit/save mode.
         root = c.rootPosition()
@@ -835,10 +785,11 @@ class LeoFrame(object):
             name = g.shortFileName(root.atEditNodeName())
         else:
             name = c.mFileName if c.mFileName else self.title
-        answer = g.app.gui.runAskYesNoCancelDialog(c,
-            title="Confirm",
-            message='Save changes to %s before %s' % (
-                g.splitLongFileName(name), theType))
+        answer = g.app.gui.runAskYesNoCancelDialog(
+            c,
+            title='Confirm',
+            message=f"Save changes to {g.splitLongFileName(name)} before {theType}",
+        )
         if answer == "cancel":
             return True # Veto.
         if answer == "no":
@@ -851,42 +802,47 @@ class LeoFrame(object):
                 # See https://bugs.launchpad.net/leo-editor/+bug/381527
                 # Write the @edit node if needed.
                 if root.isDirty():
-                    c.atFileCommands.writeOneAtEditNode(root,
-                        toString=False, force=True)
+                    c.atFileCommands.writeOneAtEditNode(root) 
                 return False # Don't save and don't veto.
-            else:
-                c.mFileName = g.app.gui.runSaveFileDialog(c,
-                    initialfile='',
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo")],
-                    defaultextension=".leo")
-                c.bringToFront()
+            c.mFileName = g.app.gui.runSaveFileDialog(c,
+                initialfile='',
+                title="Save",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
+            c.bringToFront()
         if c.mFileName:
             if g.app.gui.guiName() == 'curses':
-                g.pr('Saving: %s' % c.mFileName)
+                g.pr(f"Saving: {c.mFileName}")
             ok = c.fileCommands.save(c.mFileName)
-            return not ok # New in 4.2: Veto if the save did not succeed.
-        else:
-            return True # Veto.
+            return not ok
+                # Veto if the save did not succeed.
+        return True # Veto.
     #@+node:ekr.20031218072017.1375: *4* LeoFrame.frame.scanForTabWidth
     def scanForTabWidth(self, p):
-        '''Return the tab width in effect at p.'''
+        """Return the tab width in effect at p."""
         c = self.c
         tab_width = c.getTabWidth(p)
         c.frame.setTabWidth(tab_width)
     #@+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
     def addIconButton(self, *args, **keys):
-        if self.iconBar: return self.iconBar.add(*args, **keys)
-        else: return None
+        if self.iconBar:
+            return self.iconBar.add(*args, **keys)
+        return None
 
     def addIconRow(self):
-        if self.iconBar: return self.iconBar.addRow()
+        if self.iconBar:
+            return self.iconBar.addRow()
+        return None
 
     def addIconWidget(self, w):
-        if self.iconBar: return self.iconBar.addWidget(w)
+        if self.iconBar:
+            return self.iconBar.addWidget(w)
+        return None
 
     def clearIconBar(self):
-        if self.iconBar: self.iconBar.clear()
+        if self.iconBar:
+            return self.iconBar.clear()
+        return None
 
     def createIconBar(self):
         c = self.c
@@ -938,8 +894,9 @@ class LeoFrame(object):
         if self.statusLine: self.statusLine.setFocus()
 
     def statusLineIsEnabled(self):
-        if self.statusLine: return self.statusLine.isEnabled()
-        else: return False
+        if self.statusLine:
+            return self.statusLine.isEnabled()
+        return False
 
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
@@ -947,12 +904,10 @@ class LeoFrame(object):
     #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @cmd('copy-text')
     def copyText(self, event=None):
-        '''Copy the selected text from the widget to the clipboard.'''
-        trace = False and not g.unitTesting
-        f = self; c = f.c
+        """Copy the selected text from the widget to the clipboard."""
+        # f = self
         w = event and event.widget
-        wname = c.widget_name(w)
-        if trace: g.trace(g.isTextWrapper(w), wname, w)
+        # wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             return
         # Set the clipboard text.
@@ -970,11 +925,9 @@ class LeoFrame(object):
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @cmd('cut-text')
     def cutText(self, event=None):
-        '''Invoked from the mini-buffer and from shortcuts.'''
-        trace = False and not g.unitTesting
+        """Invoked from the mini-buffer and from shortcuts."""
         f = self; c = f.c; w = event and event.widget
         if not w or not g.isTextWrapper(w):
-            if trace: g.trace('not wrapper', w, g.callers())
             return
         name = c.widget_name(w)
         oldSel = w.getSelectionRange()
@@ -1008,16 +961,14 @@ class LeoFrame(object):
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
-        '''
+        """
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
-        '''
-        trace = False # and not g.unitTesting
+        """
         c = self.c
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
-            if trace: g.trace('not a text widget', w)
             return
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
@@ -1031,8 +982,7 @@ class LeoFrame(object):
             c.k.previousSelection = None
         else:
             s = g.app.gui.getTextFromClipboard()
-        s = g.toUnicode(s)
-        if trace: g.trace('pasteText','wname',wname)
+        s = g.checkUnicode(s)
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
@@ -1079,7 +1029,7 @@ class LeoFrame(object):
     #@+node:ekr.20031218072017.3981: *5* LeoFrame.abortEditLabelCommand
     @cmd('abort-edit-headline')
     def abortEditLabelCommand(self, event=None):
-        '''End editing of a headline and revert to its previous value.'''
+        """End editing of a headline and revert to its previous value."""
         frame = self; c = frame.c; tree = frame.tree
         p = c.p
         if g.app.batchMode:
@@ -1093,23 +1043,22 @@ class LeoFrame(object):
     #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
-        '''End editing of a headline and move focus to the body pane.'''
+        """End editing of a headline and move focus to the body pane."""
         frame = self
         c = frame.c; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
+            return
+        w = c.get_focus()
+        w_name = g.app.gui.widget_name(w)
+        if w_name.startswith('head'):
+            c.endEditing()
+            c.treeWantsFocus()
         else:
-            w = c.get_focus()
-            w_name = g.app.gui.widget_name(w)
-            if w_name.startswith('head'):
-                c.endEditing()
-                c.treeWantsFocus()
-            else:
-                # c.endEditing()
-                c.bodyWantsFocus()
-                k.setDefaultInputState()
+            c.bodyWantsFocus()
+            k.setDefaultInputState()
+            k.showStateAndMode(w=c.frame.body.wrapper)
                 # Recolor the *body* text, **not** the headline.
-                k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self): self.oops()
     def cascade(self, event=None): self.oops()
@@ -1139,18 +1088,18 @@ class LeoFrame(object):
     def resizePanesToRatio(self, ratio, secondary_ratio): self.oops()
     def resizeToScreen(self, event=None): self.oops()
     def setInitialWindowGeometry(self): self.oops()
-    def setTopGeometry(self, w, h, x, y, adjustSize=True): self.oops()
+    def setTopGeometry(self, w, h, x, y): self.oops()
     def toggleActivePane(self, event=None): self.oops()
     def toggleSplitDirection(self, event=None): self.oops()
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog
-class LeoLog(object):
-    '''The base class for the log pane in Leo windows.'''
+class LeoLog:
+    """The base class for the log pane in Leo windows."""
     #@+others
     #@+node:ekr.20150509054436.1: *3* LeoLog.Birth
     #@+node:ekr.20031218072017.3695: *4* LeoLog.ctor
     def __init__(self, frame, parentFrame):
-        '''Ctor for LeoLog class.'''
+        """Ctor for LeoLog class."""
         self.frame = frame
         self.c = frame.c if frame else None
         self.enabled = True
@@ -1168,9 +1117,9 @@ class LeoLog(object):
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {} # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd
+    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the LeoLog class.'''
+        """Command decorator for the LeoLog class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
@@ -1191,19 +1140,6 @@ class LeoLog(object):
     #@+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
     def createTextWidget(self, parentFrame):
         return None
-    #@+node:ekr.20070302094848.4: *3* LeoLog.cycleTabFocus
-    @cmd('cycle-tab-focus')
-    def cycleTabFocus(self, event=None):
-        '''Cycle keyboard focus between the tabs in the log pane.'''
-        d = self.frameDict # Keys are page names. Values are Tk.Frames.
-        w = d.get(self.tabName)
-        values = list(d.values())
-        if self.numberOfVisibleTabs() > 1:
-            i = values.index(w) + 1
-            if i == len(values): i = 0
-            tabName = list(d.keys())[i]
-            self.selectTab(tabName)
-            return i
     #@+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName, force=False):
         c = self.c
@@ -1258,10 +1194,9 @@ class LeoLog(object):
         pass
     #@+node:ekr.20070302094848.11: *3* LeoLog.selectTab
     def selectTab(self, tabName, createText=True, widget=None, wrap='none'): # widget unused.
-        '''Create the tab if necessary and make it active.'''
+        """Create the tab if necessary and make it active."""
         c = self.c
         tabFrame = self.frameDict.get(tabName)
-        # g.trace(tabName, c.shortFileName())
         if not tabFrame:
             self.createTab(tabName, createText=createText)
         # Update the status vars.
@@ -1276,12 +1211,12 @@ class LeoLog(object):
         return tabFrame
     #@-others
 #@+node:ekr.20031218072017.3704: ** class LeoTree
-class LeoTree(object):
-    '''The base class for the outline pane in Leo windows.'''
+class LeoTree:
+    """The base class for the outline pane in Leo windows."""
     #@+others
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
     def __init__(self, frame):
-        '''Ctor for the LeoTree class.'''
+        """Ctor for the LeoTree class."""
         self.frame = frame
         self.c = frame.c
         self.edit_text_dict = {}
@@ -1297,92 +1232,78 @@ class LeoTree(object):
         self.use_chapters = False # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
-        self.trace_select = None
     #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
     # These are new in Leo 4.6.
 
     def initAfterLoad(self):
-        '''Do late initialization. Called in g.openWithFileName after a successful load.'''
+        """Do late initialization. Called in g.openWithFileName after a successful load."""
 
-    def afterSelectHint(self, p, old_p):
-        '''Called at end of tree.select.'''
-
-    def beforeSelectHint(self, p, old_p):
-        '''Called at start of tree.select.'''
     # Hints for optimization. The proper default is c.redraw()
 
-    def redraw_after_contract(self, p=None): self.c.redraw()
+    def redraw_after_contract(self, p):
+        self.c.redraw()
 
-    def redraw_after_expand(self, p=None): self.c.redraw()
+    def redraw_after_expand(self, p):
+        self.c.redraw()
 
-    def redraw_after_head_changed(self): self.c.redraw()
+    def redraw_after_head_changed(self):
+        self.c.redraw()
 
-    def redraw_after_icons_changed(self): self.c.redraw()
+    def redraw_after_icons_changed(self):
+        self.c.redraw()
 
-    def redraw_after_select(self, p=None): self.c.redraw()
+    def redraw_after_select(self, p=None):
+        self.c.redraw()
     #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (Used by the leoBridge module)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None): # e used in qt_tree.py.
-        '''
+        """
         Officially change a headline.
         Set the old undo text to the previous revert point.
-        '''
-        trace = False and not g.unitTesting
+        """
         c = self.c; u = c.undoer
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
-            if trace: g.trace('c.suppressHeadChanged')
             return
         if not w:
-            if trace: g.trace('****** no w for p: %s', repr(p))
             return
-        ch = '\n' # New in 4.4: we only report the final keystroke.
+        ch = '\n' # We only report the final keystroke.
         if s is None: s = w.getAllText()
-        if trace:
-            g.trace('*** LeoTree', g.callers(5))
-            g.trace(p and p.h, 'w', repr(w), 's', repr(s))
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
-        # Remove one or two trailing newlines before warning of truncation.
-        # for i in (0,1):
-            # if s and s[-1] == '\n':
-                # if len(s) > 1: s = s[:-1]
-                # else: s = ''
+        # Remove trailing newlines before warning of truncation.
         while s and s[-1] == '\n':
             s = s[: -1]
         # Warn if there are multiple lines.
         i = s.find('\n')
         if i > -1:
-            # g.trace(i,len(s),repr(s))
             g.warning("truncating headline to one line")
             s = s[: i]
         limit = 1000
         if len(s) > limit:
             g.warning("truncating headline to", limit, "characters")
             s = s[: limit]
-        s = g.toUnicode(s or '')
+        s = g.checkUnicode(s or '')
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
         oldRevert = self.revertHeadline
         changed = s != oldRevert
         self.revertHeadline = s
         p.initHeadString(s)
-        if trace: g.trace('changed', changed, 'new', repr(s))
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return # The hook claims to have handled the event.
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
-            if not c.changed: c.setChanged(True)
+            if not c.changed: c.setChanged()
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
             c.frame.body.recolor(p)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True)
+            p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
         if changed:
             c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
@@ -1390,16 +1311,16 @@ class LeoTree(object):
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
-        '''End editing of a headline and update p.h.'''
-        trace = False and not g.unitTesting
+        """End editing of a headline and update p.h."""
         c = self.c; k = c.k; p = c.p
-        if trace: g.trace('LeoTree', p and p.h, g.callers(4))
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
-        if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        if 0:
+            # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
             k.setDefaultInputState()
             k.showStateAndMode()
-        if 0: # This interferes with the find command and interferes with focus generally!
+        if 0:
+            # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v):
@@ -1414,7 +1335,7 @@ class LeoTree(object):
         #@+others
         #@+node:ekr.20040803072955.23: *6* OnHyperLinkControlClick
         def OnHyperLinkControlClick(self, event=None, c=c):
-            '''Callback injected into position class.'''
+            """Callback injected into position class."""
             p = self
             if c and c.exists:
                 try:
@@ -1427,7 +1348,7 @@ class LeoTree(object):
                     g.es_event_exception("hypercclick")
         #@+node:ekr.20040803072955.24: *6* OnHyperLinkEnter
         def OnHyperLinkEnter(self, event=None, c=c):
-            '''Callback injected into position class.'''
+            """Callback injected into position class."""
             try:
                 p = self
                 g.doHook("hyperenter1", c=c, p=p, event=event)
@@ -1436,7 +1357,7 @@ class LeoTree(object):
                 g.es_event_exception("hyperenter")
         #@+node:ekr.20040803072955.25: *6* OnHyperLinkLeave
         def OnHyperLinkLeave(self, event=None, c=c):
-            '''Callback injected into position class.'''
+            """Callback injected into position class."""
             try:
                 p = self
                 g.doHook("hyperleave1", c=c, p=p, event=event)
@@ -1449,7 +1370,7 @@ class LeoTree(object):
             g.funcToMethod(f, leoNodes.position)
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
     def onHeadlineKey(self, event):
-        '''Handle a key event in a headline.'''
+        """Handle a key event in a headline."""
         w = event.widget if event else None
         ch = event.char if event else ''
         # This test prevents flashing in the headline when the control key is held down.
@@ -1460,32 +1381,41 @@ class LeoTree(object):
         g.openUrl(p)
     #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
     def OnIconDoubleClick(self, p):
-        if 0: g.trace(p and p.h)
+        pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event, w):
-        '''Update a headline from an event.
+        """Update a headline from an event.
 
-        The headline officially changes only when editing ends.'''
-        c = self.c; k = c.k
+        The headline officially changes only when editing ends."""
+        k = self.c.k
         ch = event.char if event else ''
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        if i != j: ins = i
-        # g.trace('w',w,'ch',repr(ch),g.callers())
-        if ch == '\b':
-            if i != j: w.delete(i, j)
-            else: w.delete(ins - 1)
-            w.setSelectionRange(i - 1, i - 1, insert=i - 1)
+        if i != j:
+            ins = i
+        if ch in ('\b', 'BackSpace'):
+            if i != j:
+                w.delete(i, j)
+                # Bug fix: 2018/04/19.
+                w.setSelectionRange(i, i, insert=i)
+            elif i > 0:
+                i -= 1
+                w.delete(i)
+                w.setSelectionRange(i, i, insert=i)
+            else:
+                w.setSelectionRange(0, 0, insert=0)
         elif ch and ch not in ('\n', '\r'):
-            if i != j: w.delete(i, j)
-            elif k.unboundKeyAction == 'overwrite': w.delete(i, i + 1)
+            if i != j:
+                w.delete(i, j)
+            elif k.unboundKeyAction == 'overwrite':
+                w.delete(i, i + 1)
             w.insert(ins, ch)
             w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
         s = w.getAllText()
         if s.endswith('\n'):
             s = s[: -1]
         # 2011/11/14: Not used at present.
-        # w.setWidth(self.headWidth(s=s))
+            # w.setWidth(self.headWidth(s=s))
         if ch in ('\n', '\r'):
             self.endEditLabel() # Now calls self.onHeadChanged.
     #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
@@ -1493,11 +1423,11 @@ class LeoTree(object):
 
     def drawIcon(self, p): self.oops()
 
-    def redraw(self, p=None, scroll=True, forceDraw=False): self.oops()
+    def redraw(self, p=None): self.oops()
     redraw_now = redraw
 
     def scrollTo(self, p): self.oops()
-    # idle_scrollTo = scrollTo # For compatibility.
+
     # Headlines.
 
     def editLabel(self, p, selectAll=False, selection=None): self.oops()
@@ -1506,199 +1436,152 @@ class LeoTree(object):
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
 
-    def select(self, p, scroll=True):
-        '''
+    def select(self, p):
+        """
         Select a node.
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.
-        '''
-        if g.app.killed or self.tree_select_lockout:
-            return None
-        traceTime = False and not g.unitTesting
-        if traceTime:
-            t1 = time.time()
+        """
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'LeoTree.select'
+        c = self.c
+        if g.app.killed or self.tree_select_lockout: # Essential.
+            # if trace: print('%30s: LOCKOUT' % (tag))
+            return
+        if trace: # and c.p != p:
+            print('%30s: %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
+                # Format matches traces in leoflexx.py
         try:
-            c = self.c; old_p = c.p
-            val = 'break'
             self.tree_select_lockout = True
-            c.frame.tree.beforeSelectHint(p, old_p)
-            val = self.selectHelper(p, scroll=scroll)
+            self.prev_v = c.p.v
+            self.selectHelper(p)
         finally:
             self.tree_select_lockout = False
-            c.frame.tree.afterSelectHint(p, old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:outer', delta_t))
-        return val # Don't put a return in a finally clause.
-    #@+node:ekr.20070423101911: *4* selectHelper (LeoTree) & helpers
-    def selectHelper(self, p, scroll):
-        '''
+            if c.enableRedrawFlag:
+                p = c.p
+                # Don't redraw during unit testing: an important speedup.
+                if c.expandAllAncestors(p) and not g.unitTesting:
+                    # This can happen when doing goto-next-clone.
+                    c.redraw_later()
+                        # This *does* happen sometimes.
+                else:
+                    c.outerUpdate() # Bring the tree up to date.
+                    if hasattr(self, 'setItemForCurrentPosition'):
+                        # pylint: disable=no-member
+                        self.setItemForCurrentPosition()
+            else:
+                c.requestLaterRedraw = True
+    #@+node:ekr.20070423101911: *4* LeoTree.selectHelper & helpers
+    def selectHelper(self, p):
+        """
         A helper function for leoTree.select.
         Do **not** "optimize" this by returning if p==c.p!
-        '''
-        traceTime = False and not g.unitTesting
-        if traceTime:
-            t1 = time.time()
+        """
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
-
             return
         c = self.c
         if not c.frame.body.wrapper:
             return # Defensive.
-        assert p.v.context == c
+        if p.v.context != c:
             # Selecting a foreign position will not be pretty.
+            g.trace('Wrong context: %r != %r' % (p.v.context, c))
+            return
         old_p = c.p
         call_event_handlers = p != old_p
         # Order is important...
-        self.unselect_helper(old_p, p, traceTime)
-        self.select_new_node(old_p, p, traceTime)
-        self.change_current_position(old_p, p, traceTime)
-        self.scroll_cursor(p, traceTime)
-        self.set_status_line(p, traceTime)
+        self.unselect_helper(old_p, p)
+            # 1. Call c.endEditLabel.
+        self.select_new_node(old_p, p)
+            # 2. Call set_body_text_after_select.
+        self.change_current_position(old_p, p)
+            # 3. Call c.undoer.onSelect.
+        self.scroll_cursor(p)
+            # 4. Set cursor in body.
+        self.set_status_line(p)
+            # 5. Last tweaks.
         if call_event_handlers:
             g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
             g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:total', delta_t))
-    #@+node:ekr.20140831085423.18637: *5* LeoTree.is_qt_body (not used)
-    if 0:
-
-        def is_qt_body(self):
-            '''Return True if the body widget is a QTextEdit.'''
-            c = self.c
-            import leo.plugins.qt_text as qt_text
-            w = c.frame.body.wrapper.widget
-            val = isinstance(w, qt_text.LeoQTextBrowser)
-                # c.frame.body.wrapper.widget is a LeoQTextBrowser.
-                # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-            # if not val: g.trace(val,w,g.callers())
-            return val
-    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
-    def unselect_helper(self, old_p, p, traceTime):
-        '''Unselect the old node, calling the unselect hooks.'''
-        trace = False and not g.unitTesting
-        if traceTime:
-            t1 = time.time()
+    #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper
+    def unselect_helper(self, old_p, p):
+        """Unselect the old node, calling the unselect hooks."""
         c = self.c
         call_event_handlers = p != old_p
         if call_event_handlers:
             unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         else:
             unselect = True
-        if unselect and old_p != p:
-            if trace: g.trace(p.h)
-            # Actually unselect the old node.
+        
+        # Actually unselect the old node.
+        if unselect and old_p and old_p != p:
             self.endEditLabel()
+            # #1168: Ctrl-minus selects multiple nodes.
+            if hasattr(self, 'unselectItem'):
+                # pylint: disable=no-member 
+                self.unselectItem(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:unselect', delta_t))
     #@+node:ekr.20140829053801.18455: *5* 2. LeoTree.select_new_node & helper
-    def select_new_node(self, old_p, p, traceTime):
-        '''Select the new node, part 1.'''
-        if traceTime:
-            t1 = time.time()
+    def select_new_node(self, old_p, p):
+        """Select the new node, part 1."""
         c = self.c
         call_event_handlers = p != old_p
-        if call_event_handlers:
-            select = not g.doHook("select1",
-                c=c, new_p=p, old_p=old_p,
-                new_v=p, old_v=old_p)
-        else:
-            select = True
-        if select:
-            self.revertHeadline = p.h
+        if (
+            call_event_handlers and g.doHook("select1",
+            c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        ):
+            if 'select' in g.app.debug:
+                g.trace('select1 override')
+            return
+        self.revertHeadline = p.h
+        c.frame.setWrap(p)
             # Not that expensive
-            c.frame.setWrap(p)
-            self.set_body_text_after_select(p, old_p, traceTime)
-            c.nodeHistory.update(p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:select1', delta_t))
+        self.set_body_text_after_select(p, old_p)
+        c.nodeHistory.update(p)
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
-    def set_body_text_after_select(self, p, old_p, traceTime, force=False):
-        '''Set the text after selecting a node.'''
-        trace = False and not g.unitTesting
-        trace_pass = False # Trace early return.
-        trace_time = (True or traceTime)
-        if trace_time: t1 = time.time()
+    def set_body_text_after_select(self, p, old_p, force=False):
+        """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        if trace and trace_time:
-            t2 = time.time()
-            if t2-t1 > 0.1:
-                print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
-            if trace and trace_pass:
-                g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text. This forces a recolor.
         c.setCurrentPosition(p)
             # Important: do this *before* setting text,
             # so that the colorizer will have the proper c.p.
         w.setAllText(s)
-        if trace and trace_time:
-            t3 = time.time()
-            if t3-t2 > 0.1:
-                print('  part2: setAllText %4.2f sec' % (t3-t2))
-        if trace and trace_time:
-            t4 = time.time()
-            if t4-t3 > 0.1:
-                print('  part3: colorize   %4.2f sec' % (t4-t3))
-                print('n_calls', c.frame.body.colorizer.highlighter.n_calls)
-            if t4-t1 > 0.1:
-                print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
-    def change_current_position(self, old_p, p, traceTime):
-        '''Select the new node, part 2.'''
-        if traceTime:
-            t1 = time.time()
+    def change_current_position(self, old_p, p):
+        """Select the new node, part 2."""
         c = self.c
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
         c.frame.scanForTabWidth(p)
             #GS I believe this should also get into the select1 hook
-        use_chapters = c.config.getBool('use_chapters')
+        use_chapters = c.config.getBool('use-chapters')
         if use_chapters:
             cc = c.chapterController
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
-        c.treeFocusHelper()
+        # Do not call treeFocusHelper here!
+            # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:select2', delta_t))
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
-    def scroll_cursor(self, p, traceTime):
-        '''Scroll the cursor. It deserves separate timing stats.'''
-        if traceTime:
-            t1 = time.time()
+    def scroll_cursor(self, p):
+        """Scroll the cursor."""
         p.restoreCursorAndScroll()
             # Was in setBodyTextAfterSelect
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:scroll', delta_t))
     #@+node:ekr.20140829053801.18460: *5* 5. LeoTree.set_status_line
-    def set_status_line(self, p, traceTime=False):
-        '''Update the status line.'''
-        if traceTime:
-            t1 = time.time()
+    def set_status_line(self, p):
+        """Update the status line."""
         c = self.c
         c.frame.body.assignPositionToEditor(p)
             # New in Leo 4.4.1.
@@ -1708,17 +1591,13 @@ class LeoTree(object):
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
         if p and p.v:
             c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
-        if traceTime:
-            delta_t = time.time() - t1
-            if delta_t > 0.1:
-                print('%20s: %2.3f sec' % ('tree-select:status', delta_t))
-    #@+node:ekr.20031218072017.3718: *3* oops
+    #@+node:ekr.20031218072017.3718: *3* LeoTree.oops
     def oops(self):
         g.pr("LeoTree oops:", g.callers(4), "should be overridden in subclass")
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
-class LeoTreeTab(object):
-    '''A class representing a tabbed outline pane.'''
+class LeoTreeTab:
+    """A class representing a tabbed outline pane."""
     #@+others
     #@+node:ekr.20070317073627.1: *3*  ctor (LeoTreeTab)
     def __init__(self, c, chapterController, parentFrame):
@@ -1747,14 +1626,12 @@ class LeoTreeTab(object):
     #@-others
 #@+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody(LeoBody):
-    '''A do-nothing body class.'''
+    """A do-nothing body class."""
     #@+others
     #@+node:ekr.20031218072017.2192: *3*  NullBody.__init__
-    def __init__(self, frame, parentFrame):
-        '''Ctor for NullBody class.'''
-        # g.trace('NullBody','frame',frame,g.callers())
-        LeoBody.__init__(self, frame, parentFrame)
-            # Init the base class.
+    def __init__(self, frame=None, parentFrame=None):
+        """Ctor for NullBody class."""
+        super().__init__(frame, parentFrame)
         self.insertPoint = 0
         self.selection = 0, 0
         self.s = "" # The body text
@@ -1798,7 +1675,7 @@ class NullBody(LeoBody):
     #@-others
 #@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
 class NullColorizer(leoColorizer.BaseColorizer):
-    '''A colorizer class that doesn't color.'''
+    """A colorizer class that doesn't color."""
     
     recolorCount = 0
             
@@ -1807,14 +1684,12 @@ class NullColorizer(leoColorizer.BaseColorizer):
             # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
-    '''A null frame class for tests and batch execution.'''
+    """A null frame class for tests and batch execution."""
     #@+others
     #@+node:ekr.20040327105706: *3* NullFrame.ctor
     def __init__(self, c, title, gui):
-        '''Ctor for the NullFrame class.'''
-        # g.trace('NullFrame')
-        LeoFrame.__init__(self, c, gui)
-            # Init the base class.
+        """Ctor for the NullFrame class."""
+        super().__init__(c, gui)
         assert self.c
         self.wrapper = None
         self.iconBar = NullIconBarClass(self.c, self)
@@ -1865,7 +1740,7 @@ class NullFrame(LeoFrame):
     def resizePanesToRatio(self, ratio, secondary_ratio): pass
     def resizeToScreen(self, event=None): pass
     def setInitialWindowGeometry(self): pass
-    def setTopGeometry(self, w, h, x, y, adjustSize=True): return 0, 0, 0, 0
+    def setTopGeometry(self, w, h, x, y): return 0, 0, 0, 0
     def setWrap(self, flag, force=False): pass
     def toggleActivePane(self, event=None): pass
     def toggleSplitDirection(self, event=None): pass
@@ -1878,12 +1753,12 @@ class NullFrame(LeoFrame):
             # Call the base LeoFrame method.
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass
-class NullIconBarClass(object):
-    '''A class representing the singleton Icon bar'''
+class NullIconBarClass:
+    """A class representing the singleton Icon bar"""
     #@+others
     #@+node:ekr.20070301164543.1: *3*  NullIconBarClass.ctor
     def __init__(self, c, parentFrame):
-        '''Ctor for NullIconBarClass.'''
+        """Ctor for NullIconBarClass."""
         self.c = c
         self.iconFrame = None
         self.parentFrame = parentFrame
@@ -1906,7 +1781,7 @@ class NullIconBarClass(object):
     def show(self): pass
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args, **keys):
-        '''Add a (virtual) button to the (virtual) icon bar.'''
+        """Add a (virtual) button to the (virtual) icon bar."""
         command = keys.get('command')
         text = keys.get('text')
         try:
@@ -1914,11 +1789,11 @@ class NullIconBarClass(object):
         except Exception:
             g.app.iconWidgetCount = 1
         n = g.app.iconWidgetCount
-        name = 'nullButtonWidget %d' % n
+        name = f"nullButtonWidget {n}"
         if not command:
 
             def commandCallback(name=name):
-                g.pr("command for %s" % (name))
+                g.pr(f"command for {name}")
 
             command = commandCallback
 
@@ -1945,36 +1820,39 @@ class NullIconBarClass(object):
     #@-others
 #@+node:ekr.20031218072017.2232: ** class NullLog (LeoLog)
 class NullLog(LeoLog):
-    '''A do-nothing log class.'''
+    """A do-nothing log class."""
     #@+others
-    #@+node:ekr.20070302095500: *3* Birth
+    #@+node:ekr.20070302095500: *3* NullLog.Birth
     #@+node:ekr.20041012083237: *4* NullLog.__init__
     def __init__(self, frame=None, parentFrame=None):
-        # Init the base class.
-        LeoLog.__init__(self, frame, parentFrame)
+
+        super().__init__(frame, parentFrame)
         self.isNull = True
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
             # self.logCtrl is now a property of the base LeoLog class.
-    #@+node:ekr.20120216123546.10951: *4* finishCreate (NullLog)
+    #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self):
         pass
-    #@+node:ekr.20041012083237.1: *4* createControl
+    #@+node:ekr.20041012083237.1: *4* NullLog.createControl
     def createControl(self, parentFrame):
         return self.createTextWidget(parentFrame)
-    #@+node:ekr.20070302095121: *4* createTextWidget (NullLog)
+    #@+node:ekr.20070302095121: *4* NullLog.createTextWidge
     def createTextWidget(self, parentFrame):
         self.logNumber += 1
         c = self.c
-        log = StringTextWrapper(c=c, name="log-%d" % self.logNumber)
+        log = StringTextWrapper(c=c, name=f"log-{self.logNumber}")
         return log
-    #@+node:ekr.20111119145033.10186: *3* isLogWidget (NullLog)
+    #@+node:ekr.20181119135041.1: *3* NullLog.hasSelection
+    def hasSelection(self):
+        return self.widget.hasSelection()
+    #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
     def isLogWidget(self, w):
         return False
-    #@+node:ekr.20041012083237.2: *3* oops
+    #@+node:ekr.20041012083237.2: *3* NullLog.oops
     def oops(self):
         g.trace("NullLog:", g.callers(4))
-    #@+node:ekr.20041012083237.3: *3* put and putnl (NullLog)
+    #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
         if self.enabled:
@@ -1987,7 +1865,7 @@ class NullLog(LeoLog):
     def putnl(self, tabName='Log'):
         if self.enabled:
             g.pr('')
-    #@+node:ekr.20060124085830: *3* tabs (NullLog)
+    #@+node:ekr.20060124085830: *3* NullLog.tabs
     def clearTab(self, tabName, wrap='none'): pass
 
     def createCanvas(self, tabName): pass
@@ -2007,11 +1885,11 @@ class NullLog(LeoLog):
     def selectTab(self, tabName, createText=True, widget=None, wrap='none'): pass
     #@-others
 #@+node:ekr.20070302171509: ** class NullStatusLineClass
-class NullStatusLineClass(object):
-    '''A do-nothing status line.'''
+class NullStatusLineClass:
+    """A do-nothing status line."""
 
     def __init__(self, c, parentFrame):
-        '''Ctor for NullStatusLine class.'''
+        """Ctor for NullStatusLine class."""
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
@@ -2050,21 +1928,20 @@ class NullStatusLineClass(object):
     #@-others
 #@+node:ekr.20031218072017.2233: ** class NullTree (LeoTree)
 class NullTree(LeoTree):
-    '''A do-almost-nothing tree class.'''
+    """A do-almost-nothing tree class."""
     #@+others
     #@+node:ekr.20031218072017.2234: *3*  NullTree.__init__
     def __init__(self, frame):
-        '''Ctor for NullTree class.'''
-        LeoTree.__init__(self, frame) # Init the base class.
+        """Ctor for NullTree class."""
+        super().__init__(frame)
         assert(self.frame)
         self.c = frame.c
-        self.editWidgetsDict = {} # Keys are tnodes, values are StringTextWidgets.
+        self.editWidgetsDict = {}
+            # Keys are tnodes, values are StringTextWidgets.
         self.font = None
         self.fontName = None
         self.canvas = None
         self.redrawCount = 0
-        self.trace_edit = False
-        self.trace_select = False
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
     def edit_widget(self, p):
@@ -2080,7 +1957,7 @@ class NullTree(LeoTree):
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
-        '''Start editing p's headline.'''
+        """Start editing p's headline."""
         self.endEditLabel()
         if p:
             self.revertHeadline = p.h
@@ -2088,8 +1965,7 @@ class NullTree(LeoTree):
             wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
             e = None
             return e, wrapper
-        else:
-            return None, None
+        return None, None
     #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self):
         d = self.editWidgetsDict
@@ -2101,16 +1977,17 @@ class NullTree(LeoTree):
     def drawIcon(self, p):
         pass
 
-    def redraw(self, p=None, scroll=True, forceDraw=False):
+    def redraw(self, p=None):
         self.redrawCount += 1
-        # g.trace(p and p.h, self.c.p.h)
         return p
             # Support for #503: Use string/null gui for unit tests
     redraw_now = redraw
 
-    def redraw_after_contract(self, p=None): self.redraw()
+    def redraw_after_contract(self, p):
+        self.redraw()
 
-    def redraw_after_expand(self, p=None): self.redraw()
+    def redraw_after_expand(self, p):
+        self.redraw()
 
     def redraw_after_head_changed(self): self.redraw()
 
@@ -2122,10 +1999,9 @@ class NullTree(LeoTree):
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
-        '''Set the actual text of the headline widget.
+        """Set the actual text of the headline widget.
 
-        This is called from the undo/redo logic to change the text before redrawing.'''
-        # g.trace('p',p.h,'s',repr(s),g.callers())
+        This is called from the undo/redo logic to change the text before redrawing."""
         w = self.edit_widget(p)
         if w:
             w.delete(0, 'end')
@@ -2133,17 +2009,16 @@ class NullTree(LeoTree):
                 s = s[: -1]
             w.insert(0, s)
             self.revertHeadline = s
-            # g.trace(repr(s),w.getAllText())
         else:
             g.trace('-' * 20, 'oops')
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
-class StringTextWrapper(object):
-    '''A class that represents text as a Python string.'''
+class StringTextWrapper:
+    """A class that represents text as a Python string."""
     #@+others
     #@+node:ekr.20070228074228.2: *3* stw.ctor
     def __init__(self, c, name):
-        '''Ctor for the StringTextWrapper class.'''
+        """Ctor for the StringTextWrapper class."""
         self.c = c
         self.name = name
         self.ins = 0
@@ -2151,13 +2026,12 @@ class StringTextWrapper(object):
         self.s = ''
         self.supportsHighLevelInterface = True
         self.widget = None # This ivar must exist, and be None.
-        self.trace = False
 
     def __repr__(self):
-        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
+        return f"<StringTextWrapper: {id(self)} {self.name}>"
 
     def getName(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         return self.name # Essential.
     #@+node:ekr.20140903172510.18578: *3* stw.Clipboard
     def clipboard_clear(self):
@@ -2191,13 +2065,14 @@ class StringTextWrapper(object):
     #@+node:ekr.20140903172510.18591: *3* stw.Text
     #@+node:ekr.20140903172510.18592: *4* stw.appendText
     def appendText(self, s):
-        '''StringTextWrapper.'''
-        self.s = self.s + s
+        """StringTextWrapper."""
+        self.s = self.s + g.toUnicode(s)
+            # defensive
         self.ins = len(self.s)
         self.sel = self.ins, self.ins
     #@+node:ekr.20140903172510.18593: *4* stw.delete
     def delete(self, i, j=None):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
         j = self.toPythonIndex(j)
@@ -2209,12 +2084,12 @@ class StringTextWrapper(object):
         self.setSelectionRange(i, i, insert=i)
     #@+node:ekr.20140903172510.18594: *4* stw.deleteTextSelection
     def deleteTextSelection(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i, j = self.getSelectionRange()
         self.delete(i, j)
     #@+node:ekr.20140903172510.18595: *4* stw.get
     def get(self, i, j=None):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
         j = self.toPythonIndex(j)
@@ -2222,12 +2097,12 @@ class StringTextWrapper(object):
         return g.toUnicode(s)
     #@+node:ekr.20140903172510.18596: *4* stw.getAllText
     def getAllText(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         s = self.s
-        return g.toUnicode(s)
+        return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18584: *4* stw.getInsertPoint
     def getInsertPoint(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i = self.ins
         if i is None:
             if self.virtualInsertPoint is None:
@@ -2235,33 +2110,31 @@ class StringTextWrapper(object):
             else:
                 i = self.virtualInsertPoint
         self.virtualInsertPoint = i
-        # g.trace('BaseTextWrapper): i:',i,'virtual',self.virtualInsertPoint)
         return i
     #@+node:ekr.20140903172510.18597: *4* stw.getSelectedText
     def getSelectedText(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i, j = self.sel
         s = self.s[i: j]
-        return g.toUnicode(s)
+        return g.checkUnicode(s)
     #@+node:ekr.20140903172510.18585: *4* stw.getSelectionRange
     def getSelectionRange(self, sort=True):
-        '''Return the selected range of the widget.'''
+        """Return the selected range of the widget."""
         sel = self.sel
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
             i, j = sel
             if sort and i > j: sel = j, i # Bug fix: 10/5/07
             return sel
-        else:
-            i = self.ins
-            return i, i
+        i = self.ins
+        return i, i
     #@+node:ekr.20140903172510.18586: *4* stw.hasSelection
     def hasSelection(self):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i, j = self.getSelectionRange()
         return i != j
     #@+node:ekr.20140903172510.18598: *4* stw.insert
     def insert(self, i, s):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i = self.toPythonIndex(i)
         s1 = s
         self.s = self.s[: i] + s1 + self.s[i:]
@@ -2270,35 +2143,34 @@ class StringTextWrapper(object):
         self.sel = i, i
     #@+node:ekr.20140903172510.18589: *4* stw.selectAllText
     def selectAllText(self, insert=None):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         self.setSelectionRange(0, 'end', insert=insert)
     #@+node:ekr.20140903172510.18600: *4* stw.setAllText
     def setAllText(self, s):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         self.s = s
         i = len(self.s)
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
     def setInsertPoint(self, pos, s=None):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         self.virtualInsertPoint = i = self.toPythonIndex(pos)
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
     def setSelectionRange(self, i, j, insert=None):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
-        if self.trace: g.trace('i', i, 'j', j, 'insert', repr(insert))
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
-        '''StringTextWrapper.'''
+        """StringTextWrapper."""
         s = self.getAllText()
         i = self.toPythonIndex(index)
         row, col = g.convertPythonIndexToRowCol(s, i)

@@ -1,9 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060328125248: * @file mod_scripting.py
-#@+<< docstring >>
-#@+node:ekr.20060328125248.1: ** << docstring >>
-r""" Creates script buttons and @button, @command, @plugin and @script
-nodes.
+#@+<< mod_scripting docstring >>
+#@+node:ekr.20060328125248.1: ** << mod_scripting docstring >>
+r"""This plugin script buttons and eval* commands.
+
+Overview of script buttons
+--------------------------
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will
 create the 'Run Script', the 'Script Button' and the 'Debug Script' buttons.
@@ -23,11 +25,16 @@ For example, to run a script on any part of an outline do the following:
 3.  Select the node on which you want to run the script.
 4.  Push the *new* button.
 
-That's all.
+Script buttons create commands
+------------------------------
 
 For every @button node, this plugin creates two new minibuffer commands: x and
 delete-x-button, where x is the 'cleaned' name of the button. The 'x' command is
 equivalent to pushing the script button.
+
+
+Global buttons and commands
+---------------------------
 
 You can specify **global buttons** in leoSettings.leo or myLeoSettings.leo by
 putting \@button nodes as children of an @buttons node in an \@settings trees.
@@ -49,21 +56,16 @@ Thus, cleaning headline text converts it to a valid minibuffer command name.
 You can delete a script button by right-clicking on it, or by
 executing the delete-x-button command.
 
-The 'Debug Script' button runs a script using an external debugger.
+.. The 'Debug Script' button runs a script using an external debugger.
 
-This plugin optionally scans for @button nodes, @command, @plugin nodes and
-@script nodes whenever a .leo file is opened.
+This plugin optionally scans for @script nodes whenever a .leo file is opened.
+Such @script nodes cause a script to be executed when opening a .leo file.
+They are security risks, and are never enabled by default.
 
-- @button nodes create script buttons.
-- @command nodes create minibuffer commands.
-- @plugin nodes cause plugins to be loaded.
-- @script nodes cause a script to be executed when opening a .leo file.
+Settings
+--------
 
-Such nodes may be security risks. This plugin scans for such nodes only if the
-corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
-to True in this plugin.
-
-You can specify the following options in leoSettings.leo.  See the node:
+You can specify the following options in myLeoSettings.leo.  See the node:
 @settings-->Plugins-->scripting plugin.  Recommended defaults are shown::
 
     @bool scripting-at-button-nodes = True
@@ -95,6 +97,9 @@ You can specify the following options in leoSettings.leo.  See the node:
 
     @int scripting-max-button-size = 18
     The maximum length of button names: longer names are truncated.
+    
+Shortcuts for script buttons
+----------------------------
 
 You can bind key shortcuts to @button and @command nodes as follows:
 
@@ -108,93 +113,128 @@ You can bind key shortcuts to @button and @command nodes as follows:
 
     Creates a new minibuffer command and binds shortcut to it. As with @buffer
     nodes, the name of the command is the cleaned name of the headline.
+    
+Binding arguments to script buttons with @args
+----------------------------------------------
 
-This plugin is based on ideas from e's dynabutton plugin, quite possibly the
-most brilliant idea in Leo's history.
+You can run @button and @command scripts with sys.argv initialized to string values using @args.
+For example::
 
-You can run the script with sys.argv initialized to string values using @args.
-For example:
+    @button test-args @args = a,b,c
 
-@button test-args @args = a,b,c
+will set sys.argv to ['a', 'b', 'c'].
 
-will set sys.argv to [u'a',u'b',u'c']
+You can set the background color of buttons created by @button nodes by using @color.
+For example::
 
-You can set the background color of buttons created by @button nodes by using @color:
-
-@button name @color=color
-
-For example:
-
-@button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
+    @button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
 
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
-of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the script.
+of Ctrl+Alt+1, and sets sys.argv to ['a', 'b', 'c'] within the context of the script.
 
+Eval Commands
+-------------
+
+The mod_scripting plugin creates the following 5 eval* commands:
+
+eval
+----
+
+Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
+For example::
+    
+    a = 10
+    
+sets:
+    
+    c.vs['a'] = 10
+
+This command prints the result of the last expression or assignment in the log pane
+and select the next line of the body pane. Handy for executing line by line.
+
+eval-last
+---------
+
+Inserts the result of the last eval in the body.
+Suppose you have this text::
+
+    The cat is 7 years, or 7*365 days old.
+
+To replace 7*365 with 2555, do the following::
+
+    select 7*367
+    eval
+    delete 7*365
+    do eval-last
+    
+eval-replace
+------------
+
+Evaluates the expression and replaces it with the computed value.
+For example, the example above can be done as follows::
+
+    
+    select 7*367
+    eval-replace
+
+eval-last-pretty
+----------------
+
+Like eval-last, but format with pprint.pformat.
+
+eval-block
+----------
+
+Evaluates a series of blocks of code in the body, separated like this::
+
+    # >>>
+    code to run
+    # <<<
+    output of code
+    # >>>
+    code to run
+    # <<<
+    output of code
+    ...
+
+For example::
+
+    import datetime
+    datetime.datetime.now()
+    # >>>
+    2018-03-21 21:46:13.582835
+    # <<<
+    datetime.datetime.now()+datetime.timedelta(days=1000)
+    # >>>
+    2020-12-15 21:46:34.403814
+    # <<<
+
+eval-block inserts the separators, blocks can be re-run by placing the cursor in them and doing eval-block, and the cursor is placed in the next block, so you can go back up, change something, then quickly
+re-execute everything.
+
+Acknowledgements
+----------------
+
+This plugin is based on ideas from e's dynabutton plugin, possibly the
+most brilliant idea in Leo's history.
 """
-#@-<< docstring >>
+#@-<< mod_scripting docstring >>
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
-# import os
-import string
+import pprint
+import re
+# import string
 import sys
-from collections import namedtuple
+import textwrap
 #@-<< imports >>
-__version__ = '2.5'
-#@+<< version history >>
-#@+node:ekr.20060328125248.3: ** << version history >>
-#@@nocolor
-#@+at
-# 
-# 2.1 EKR: Support common @button nodes in @settings trees.
-# 2.2 EKR: Bug fix: use g.match_word rather than s.startswith to discover names.
-# This prevents an 's' button from being created from @buttons nodes.
-# 2.3 bobjack:
-#     - added 'event' parameter to deleteButtonCallback to support rClick menus
-#     - exposed the scripting contoller class as
-#          g.app.gui.ScriptingControllerClass
-# 2.4 bobjack:
-#     - exposed the scripting controller instance as
-#         c.theScriptingController
-# 2.5 EKR: call c.outerUpdate in callbacks.
-#@-<< version history >>
-# Fix bug: create new command if button command conflicts with existing command.
-# This would fix an unbounded recursion.
+__version__ = '3.0' # Added EvalController class.
+
 #@+others
-#@+node:ekr.20060328125248.4: ** init
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    if g.app.gui is None:
-        g.app.createQtGui(__file__)
-    # This plugin is now gui-independent.
-    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
-    if ok:
-        sc = 'ScriptingControllerClass'
-        if (not hasattr(g.app.gui, sc) or
-            getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass
-        ):
-            setattr(g.app.gui, sc, ScriptingController)
-        # Note: call onCreate _after_ reading the .leo file.
-        # That is, the 'after-create-leo-frame' hook is too early!
-        g.registerHandler(('new', 'open2'), onCreate)
-        g.plugin_signon(__name__)
-    return ok
-#@+node:ekr.20060328125248.5: ** onCreate
-def onCreate(tag, keys):
-    """Handle the onCreate event in the mod_scripting plugin."""
-    c = keys.get('c')
-    if c:
-        # g.trace('mod_scripting',c)
-        sc = g.app.gui.ScriptingControllerClass(c)
-        c.theScriptingController = sc
-        sc.createAllButtons()
-#@+node:tbrown.20140819100840.37720: ** type RClick
-# representation of an rclick node
-# this used to have more elements, but evolved to be simpler
-RClick = namedtuple('RClick', 'position,children')
-#@+node:tbrown.20140819100840.37719: ** build_rclick_tree (mod_scripting.py)
+#@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
+#@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p, rclicks=None, top_level=False):
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -209,8 +249,11 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     - `rclicks`: list of RClicks to add to, created if needed
     - `top_level`: is this the top level?
     """
+    # representation of an rclick node
+    from collections import namedtuple
+    RClick = namedtuple('RClick', 'position,children')
+
     # Called from QtIconBarClass.setCommandForButton.
-    # g.trace('=====', command_p and command_p.h or 'no command_p')
     if rclicks is None:
         rclicks = list()
     if top_level:
@@ -241,8 +284,35 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
     return rclicks
+#@+node:ekr.20060328125248.4: *3* init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    if g.app.gui is None:
+        g.app.createQtGui(__file__)
+    # This plugin is now gui-independent.
+    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
+    if ok:
+        sc = 'ScriptingControllerClass'
+        if (not hasattr(g.app.gui, sc) or
+            getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass
+        ):
+            setattr(g.app.gui, sc, ScriptingController)
+        # Note: call onCreate _after_ reading the .leo file.
+        # That is, the 'after-create-leo-frame' hook is too early!
+        g.registerHandler(('new', 'open2'), onCreate)
+        g.plugin_signon(__name__)
+    return ok
+#@+node:ekr.20060328125248.5: *3* onCreate
+def onCreate(tag, keys):
+    """Handle the onCreate event in the mod_scripting plugin."""
+    c = keys.get('c')
+    if c:
+        sc = g.app.gui.ScriptingControllerClass(c)
+        c.theScriptingController = sc
+        sc.createAllButtons()
+        c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
-class AtButtonCallback(object):
+class AtButtonCallback:
     '''A class whose __call__ method is a callback for @button nodes.'''
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
@@ -279,37 +349,45 @@ class AtButtonCallback(object):
         '''AtButtonCallback.__getattr__. Implement __name__.'''
         if attr == '__name__':
             return 'AtButtonCallback: %s' % self.gnx
-        else:
-            return None
-    #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script
+        raise AttributeError
+            # Returning None is not correct.
+    #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         '''Execute the script associated with this button.'''
-        trace = False and not g.unitTesting
-        c, gnx, script = self.c, self.gnx, self.script
-        if trace:
-            g.trace('%s len(script): %s' % (
-                self.c.shortFileName(),
-                len(self.script or ''),
-            ))
-        if not script:
-            # Find the node in c with the given gnx.
-            for p in c.all_positions():
-                if p.gnx == gnx:
-                    script = self.controller.getScript(p)
-                    break
-            else:
-                g.trace('can not find gnx: %s in %s' % (gnx, c.shortFileName()))
+        script = self.find_script()
         if script:
             self.controller.executeScriptFromButton(
                 b=self.b,
                 buttonText=self.buttonText,
                 p=None,
-                script_gnx=gnx,
+                script_gnx=self.gnx,
                 script=script,
             )
+    #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
+    def find_script(self):
+        
+        gnx = self.gnx
+        # First, search self.c for the gnx.
+        for p in self.c.all_positions():
+            if p.gnx == gnx:
+                script = self.controller.getScript(p)
+                return script
+        # See if myLeoSettings.leo is open.
+        for c in g.app.commanders():
+            if c.shortFileName().endswith('myLeoSettings.leo'):
+                break
+        else:
+            c = None
+        if c:
+            # Search myLeoSettings.leo file for the gnx.
+            for p in c.all_positions():
+                if p.gnx == gnx:
+                    script = self.controller.getScript(p)
+                    return script
+        return self.script
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
-class ScriptingController(object):
+class ScriptingController:
     '''A class defining scripting commands.'''
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
@@ -318,7 +396,7 @@ class ScriptingController(object):
         self.gui = c.frame.gui
         getBool = c.config.getBool
         self.scanned = False
-        kind = c.config.getString('debugger_kind') or 'idle'
+        kind = c.config.getString('debugger-kind') or 'idle'
         self.buttonsDict = {} # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         self.atButtonNodes = getBool('scripting-at-button-nodes')
@@ -334,10 +412,7 @@ class ScriptingController(object):
             # DANGEROUS!
         # Do not allow this setting to be changed in local (non-settings) .leo files.
         if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes', 'bool'):
-            g.es('Security warning! Ignoring...', color='red')
-            g.es('@bool scripting-at-script-nodes = True', color='red')
-            g.es('This setting can be True only in')
-            g.es('leoSettings.leo or myLeoSettings.leo')
+            g.issueSecurityWarning('@bool scripting-at-script-nodes')
             # Restore the value in myLeoSettings.leo
             val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
             if val is None: val = False
@@ -424,6 +499,8 @@ class ScriptingController(object):
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule'] # Essential.
+                # pylint: disable=import-error
+                    # This *will* exist.
                 import leo.core.leoScriptModule as leoScriptModule
                 assert leoScriptModule # for pyflakes.
             else:
@@ -446,6 +523,7 @@ class ScriptingController(object):
         if self.scanned:
             return # Defensive.
         self.scanned = True
+        #
         # First, create standard buttons.
         if self.createRunScriptButton:
             self.createRunScriptIconButton()
@@ -453,33 +531,37 @@ class ScriptingController(object):
             self.createScriptButtonIconButton()
         if self.createDebugButton:
             self.createDebugIconButton()
+        #
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
-        # Last, scan for user-defined nodes.
-        table = (
-            ('@button', self.handleAtButtonNode),
-            ('@command', self.handleAtCommandNode),
-            ('@plugin', self.handleAtPluginNode),
-            ('@rclick', self.handleAtRclickNode), # Jake Peck.
-            ('@script', self.handleAtScriptNode),
-        )
+        #
+        # Handle all other nodes.
+        d = {
+            'button': self.handleAtButtonNode,
+            'command': self.handleAtCommandNode,
+            'plugin': self.handleAtPluginNode,
+            'rclick': self.handleAtRclickNode,
+            'script': self.handleAtScriptNode,
+        }
+        pattern = re.compile(r'^@(button|command|plugin|rclick|script)\b')
         p = c.rootPosition()
         while p:
             gnx = p.v.gnx
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
-                # tag:#657
-                if g.match_word(p.h, 0, '@rclick'):
+                # #657
+                # if g.match_word(p.h, 0, '@rclick'):
+                if p.h.startswith('@rlick'):
                     self.handleAtRclickNode(p)
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
-                for kind, func in table:
-                    if g.match_word(p.h, 0, kind):
-                        func(p)
-                        break
+                m = pattern.match(p.h)
+                if m:
+                    func = d.get(m.group(1))
+                    func(p)
                 p.moveToThreadNext()
     #@+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
     def createLocalAtButtonHelper(self, p, h, statusLine,
@@ -590,7 +672,7 @@ class ScriptingController(object):
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return None
+            return
         if not p and not script:
             g.trace('can not happen: no p and no script')
             return
@@ -611,13 +693,13 @@ class ScriptingController(object):
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
+        
+        Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
-        trace = False and not g.unitTesting
         if not gnx: g.trace('can not happen: no gnx')
         # First, look in commander c.
         for p2 in c.all_positions():
             if p2.gnx == gnx:
-                if trace: g.trace('Found', c.shortFileName(), p2.h)
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
@@ -625,16 +707,15 @@ class ScriptingController(object):
             if c2:
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
-                        if trace: g.trace('Found', c2.shortFileName(), p2.h)
                         return c2, p2
                 c2.close()
         # Fix bug 92: restore the previously selected tab.
-        if trace: g.trace('Not found', gnx)
         if g.app.qt_use_tabs:
             c.frame.top.leo_master.select(c)
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
         return None, None # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
+    # Important: common @button and @command nodes do **not** update dynamically!
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self):
         '''Handle all global @button nodes.'''
@@ -652,9 +733,14 @@ class ScriptingController(object):
         '''
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
+        
+        Important: Common @button and @command scripts now *do* update
+        dynamically provided that myLeoSettings.leo is open. Otherwise the
+        callback executes the static script.
+        
+        See https://github.com/leo-editor/leo-editor/issues/171
         '''
         c = self.c
-        # g.trace('global @button', c.shortFileName(), p.gnx, p.h)
         gnx = p.gnx
         args = self.getArgs(p)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
@@ -679,12 +765,14 @@ class ScriptingController(object):
         # Yes, the callback *does* use b (to delete b if requested by the script).
         buttonText = self.cleanButtonText(p.h)
         cb = AtButtonCallback(
-            controller=self,
             b=b,
-            c=c,
             buttonText=buttonText,
+            c=c,
+            controller=self,
             docstring=docstring,
-            gnx=gnx, # tag:#367: the gnx is needed for the Goto Script command.
+            gnx=gnx,
+                # tag:#367: the gnx is needed for the Goto Script command.
+                # 2018/03/13: Use gnx to search myLeoSettings.leo if it is open.
             script=script,
         )
         # Now patch the button.
@@ -719,22 +807,34 @@ class ScriptingController(object):
                 self.createCommonCommand(p, script)
     #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command)
     def createCommonCommand(self, p, script):
-        '''Handle a single @command node.'''
+        '''
+        Handle a single @command node.
+        
+        Important: Common @button and @command scripts now *do* update
+        dynamically provided that myLeoSettings.leo is open. Otherwise the
+        callback executes the static script.
+        
+        See https://github.com/leo-editor/leo-editor/issues/171
+        '''
         c = self.c
         args = self.getArgs(p)
-
-        def commonCommandCallback(event=None, script=script):
-            c.executeScript(args=args, script=script, silent=True)
-
-        commonCommandCallback.__doc__ = g.getDocString(script).strip()
-            # Bug fix: 2015/03/28.
+        commonCommandCallback = AtButtonCallback(
+            b=None,
+            buttonText=None,
+            c=c,
+            controller=self,
+            docstring=g.getDocString(p.b).strip(),
+            gnx=p.v.gnx, # Used to search myLeoSettings.leo if it is open.
+            script=script, # Fallback when myLeoSettings.leo is not open.
+        )
         self.registerAllCommands(
             args=args,
             func=commonCommandCallback,
             h=p.h,
             pane='button', # Fix bug 416: use 'button', NOT 'command', and NOT 'all'
             source_c=p.v.context,
-            tag='global @command')
+            tag='global @command',
+        )
     #@+node:ekr.20150401130313.1: *3* sc.Scripts, individual
     #@+node:ekr.20060328125248.12: *4* sc.handleAtButtonNode @button
     def handleAtButtonNode(self, p):
@@ -748,7 +848,6 @@ class ScriptingController(object):
         An optional @color=colorname defines a color for the button's background.  It does
         not appear in the status line nor the button name.
         '''
-        trace = False and not g.app.unitTesting and not g.app.batchMode
         h = p.h
         shortcut = self.getShortcut(h)
         docstring = g.getDocString(p.b).strip()
@@ -756,9 +855,7 @@ class ScriptingController(object):
         if shortcut:
             statusLine = '%s = %s' % (statusLine, shortcut)
         g.app.config.atLocalButtonsList.append(p.copy())
-        # g.trace(c.config,p.h)
         # This helper is also called by the script-button callback.
-        if trace: g.trace('local @button', h)
         self.createLocalAtButtonHelper(p, h, statusLine, verbose=False)
     #@+node:ekr.20060328125248.10: *4* sc.handleAtCommandNode @command
     def handleAtCommandNode(self, p):
@@ -884,15 +981,13 @@ class ScriptingController(object):
     #@+node:ekr.20061014075212: *3* sc.Utils
     #@+node:ekr.20060929135558: *4* sc.cleanButtonText
     def cleanButtonText(self, s, minimal=False):
-        '''Clean the text following @button or @command so that it is a valid name of a minibuffer command.'''
-        # 2011/10/16: Delete {tag}
-        s = s.strip()
-        i, j = s.find('{'), s.find('}')
-        if -1 < i < j:
-            s = s[: i] + s[j + 1:]
-            s = s.strip()
+        '''
+        Clean the text following @button or @command so
+        that it is a valid name of a minibuffer command.
+        '''
+        # #1121: Don't lowercase anything.
         if minimal:
-            return s.lower()
+            return s.replace(' ','-').strip('-')
         for tag in ('@key', '@args', '@color',):
             i = s.find(tag)
             if i > -1:
@@ -902,13 +997,7 @@ class ScriptingController(object):
                 else:
                     s = s[: i]
                 s = s.strip()
-        if 1: # Not great, but spaces, etc. interfere with tab completion.
-            # 2011/10/16 *do* allow '@' sign.
-            chars = g.toUnicode(string.ascii_letters + string.digits + '@' + '-')
-            aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
-            s = ''.join(aList)
-            s = s.replace('--', '-')
-        return s.strip('-').lower()
+        return s.replace(' ','-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon(self, w, label):
         'Create a balloon for a widget.'
@@ -1005,17 +1094,12 @@ class ScriptingController(object):
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self, args, func, h, pane, source_c=None, tag=None):
         '''Register @button <name> and @rclick <name> and <name>'''
-        trace = False and not g.unitTesting
-        trace_name = False
         c, k = self.c, self.c.k
+        trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
-        if trace: g.trace('pane', pane, 'shortcut', shortcut, h)
         commandName = self.cleanButtonText(h)
-        if trace and trace_name:
-            if hasattr(func, '__name__'):
-                g.trace(func.__name__, func.__doc__)
-            else:
-                g.trace(func)
+        if trace and not g.isascii(commandName):
+            g.trace(commandName)
         # Register the original function.
         k.registerCommand(
             allowBinding=True,
@@ -1040,8 +1124,8 @@ class ScriptingController(object):
                 registerAllCommandsCallback.__doc__ = func.__doc__
                 # Make sure we never redefine an existing commandName.
                 if commandName2 in c.commandsDict:
-                    # A warning here would probably be annoying.
-                    pass
+                    # A warning here would be annoying.
+                    if trace: g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
                         commandName=commandName2,
@@ -1084,5 +1168,399 @@ class ScriptingController(object):
     #@-others
 
 scriptingController = ScriptingController
+#@+node:ekr.20180328085038.1: ** class EvalController
+class EvalController:
+    '''A class defining all eval-* commands.'''
+    #@+others
+    #@+node:ekr.20180328130835.1: *3* eval.Birth
+    def __init__(self, c):
+        '''Ctor for EvalController class.'''
+        self.answers = []
+        self.c = c
+        self.d = {}
+        self.globals_d = {'c':c, 'g':g, 'p':c.p}
+        self.locals_d = {}
+        self.legacy = c.config.getBool('legacy-eval', default=True)
+        if g.app.ipk:
+            # Use the IPython namespace.
+            self.c.vs = g.app.ipk.namespace
+        elif self.legacy:
+            self.c.vs = self.d
+        else:
+            self.c.vs = self.globals_d
+        # allow the auto-completer to complete in this namespace
+        self.c.keyHandler.autoCompleter.namespaces.append(self.c.vs)
+                # Updated by do_exec.
+        self.last_result = None
+        self.old_stderr = None
+        self.old_stdout = None
+
+    def cmd(name):
+        '''Command decorator for the EvalController class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name, ['c', 'evalController',])
+    #@+node:ekr.20180328092221.1: *3* eval.Commands
+    #@+node:ekr.20180328085426.2: *4* eval
+    @cmd("eval")
+    def eval_command(self, event):
+        #@+<< eval docstring >>
+        #@+node:ekr.20180328100519.1: *5* << eval docstring >>
+        """
+        Execute the selected text, if any, or the line containing the cursor.
+
+        Select next line of text.
+
+        Tries hard to capture the result of from the last expression in the
+        selected text::
+
+            import datetime
+            today = datetime.date.today()
+
+        will capture the value of ``today`` even though the last line is a
+        statement, not an expression.
+
+        Stores results in ``c.vs['_last']`` for insertion
+        into body by ``eval-last`` or ``eval-last-pretty``.
+
+        Removes common indentation (``textwrap.dedent()``) before executing,
+        allowing execution of indented code.
+
+        ``g``, ``c``, and ``p`` are available to executing code, assignments
+        are made in the ``c.vs`` namespace and persist for the life of ``c``.
+        """
+        #@-<< eval docstring >>
+        c = self.c
+        if c == event.get('c'):
+            s = self.get_selected_lines()
+            if self.legacy and s is None:
+                return
+            self.eval_text(s)
+                # Updates self.last_answer if there is exactly one answer.
+    #@+node:ekr.20180328085426.3: *4* eval-block
+    @cmd("eval-block")
+    def eval_block(self, event):
+        #@+<< eval-block docstring >>
+        #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
+        '''
+        In the body, "# >>>" marks the end of a code block, and "# <<<" marks
+        the end of an output block.  E.g.::
+
+        a = 2
+        # >>>
+        4
+        # <<<
+        b = 2.0*a
+        # >>>
+        4.0
+        # <<<
+
+        ``eval-block`` evaluates the current code block, either the code block
+        the cursor's in, or the code block preceding the output block the cursor's
+        in.  Subsequent output blocks are marked "# >>> *" to show they may need
+        re-evaluation.
+
+        Note: you don't really need to type the "# >>>" and "# <<<" markers
+        because ``eval-block`` will add them as needed.  So just type the
+        first code block and run ``eval-block``.
+
+        '''
+        #@-<< eval-block docstring >>
+        c = self.c
+        if c != event.get('c'):
+            return
+        pos = 0
+        lines = []
+        current_seen = False
+        for current, source, output in self.get_blocks():
+            lines.append(source)
+            lines.append("# >>>" + (" *" if current_seen else ""))
+            if current:
+                old_log = c.frame.log.logCtrl.getAllText()
+                self.eval_text(source)
+                new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
+                lines.append(new_log.strip())
+                if not self.legacy:
+                    if self.last_result:
+                        lines.append(self.last_result)
+                pos = len('\n'.join(lines))+7
+                current_seen = True
+            else:
+                lines.append(output)
+            lines.append("# <<<")
+        c.p.b = '\n'.join(lines) + '\n'
+        c.frame.body.wrapper.setInsertPoint(pos)
+        c.redraw()
+        c.bodyWantsFocusNow()
+    #@+node:ekr.20180328085426.5: *4* eval-last
+    @cmd("eval-last")
+    def eval_last(self, event, text=None):
+        """
+        Insert the last result from ``eval``.
+
+        Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
+        insert no quotes, for ``repr()`` style insertion use ``last-pretty``.
+        """
+        c  = self.c
+        if c != event.get('c'):
+            return
+        if self.legacy:
+            text = str(c.vs.get('_last'))
+        else:
+            if not text and not self.last_result:
+                return
+            if not text:
+                text = str(self.last_result)
+        w = c.frame.body.wrapper
+        i = w.getInsertPoint()
+        w.insert(i, text+'\n')
+        w.setInsertPoint(i+len(text)+1)
+        c.setChanged()
+    #@+node:ekr.20180328085426.6: *4* eval-last-pretty
+    @cmd("eval-last-pretty")
+    def vs_last_pretty(self, event):
+        """
+        Insert the last result from ``eval``.
+
+        Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
+        '``"1\n2\n3\n4"``', see all ``last``.
+        """
+        c  = self.c
+        if c != event.get('c'):
+            return
+        if self.legacy:
+            text = str(c.vs.get('_last'))
+        else:
+            text = self.last_result
+        if text:
+            text=pprint.pformat(text)
+            self.eval_last(event, text=text)
+    #@+node:ekr.20180328085426.4: *4* eval-replace
+    @cmd("eval-replace")
+    def eval_replace(self, event):
+        """
+        Execute the selected text, if any.
+        Undoably replace it with the result.
+        """
+        c = self.c
+        if c != event.get('c'):
+            return
+        w = c.frame.body.wrapper
+        s = w.getSelectedText()
+        if not s.strip():
+            g.es_print('no selected text')
+            return
+        self.eval_text(s)
+        if self.legacy:
+            last = c.vs.get('_last')
+        else:
+            last = self.last_result
+        if not last:
+            return
+        s = pprint.pformat(last)
+        i, j = w.getSelectionRange()
+        new_text = c.p.b[:i]+s+c.p.b[j:]
+        bunch = c.undoer.beforeChangeNodeContents(c.p)
+        w.setAllText(new_text)
+        c.p.b = new_text
+        w.setInsertPoint(i+len(s))
+        c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
+        c.setChanged()
+    #@+node:ekr.20180328151652.1: *3* eval.Helpers
+    #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
+    def eval_text(self, s):
+        '''Evaluate string s.'''
+        s = textwrap.dedent(s)
+        if not s.strip():
+            return None
+        self.redirect()
+        if self.legacy:
+            blocks = re.split('\n(?=[^\\s])', s)
+            ans = self.old_exec(blocks, s)
+            self.show_legacy_answer(ans, blocks)
+            return ans  # needed by mod_http
+        self.new_exec(s)
+        self.show_answers()
+        self.unredirect()
+        return None
+    #@+node:ekr.20180329130626.1: *5* eval.new_exec
+    def new_exec(self, s):
+        try:
+            self.answers = []
+            self.locals_d = {}
+            exec(s, self.globals_d, self.locals_d)
+            for key in self.locals_d:
+                val = self.locals_d.get(key)
+                self.globals_d [key] = val
+                self.answers.append((key, val),)
+            if len(self.answers) == 1:
+                key, val = self.answers[0]
+                self.last_result = val
+            else:
+                self.last_result = None
+        except Exception:
+            g.es_exception()
+    #@+node:ekr.20180329130623.1: *5* eval.old_exec
+    def old_exec(self, blocks, txt):
+
+        # pylint: disable=eval-used
+        c = self.c
+        leo_globals = {'c':c, 'g':g, 'p':c.p}
+        all_done, ans = False, None
+        try:
+            # Execute all but the last 'block'
+            exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
+            all_done = False
+        except SyntaxError:
+            # Splitting the last block caused syntax error
+            try:
+                # Is the whole thing a single expression?
+                ans = eval(txt, leo_globals, c.vs)
+            except SyntaxError:
+                try:
+                    exec(txt, leo_globals, c.vs)
+                except Exception:
+                    g.es_exception()
+            all_done = True  # Either way, the last block will be used.
+        if not all_done:  # last block still needs using
+            try:
+                ans = eval(blocks[-1], leo_globals, c.vs)
+            except SyntaxError:
+                try:
+                    exec(txt, leo_globals, c.vs)
+                except Exception:
+                    g.es_exception()
+        return ans
+    #@+node:ekr.20180328130526.1: *5* eval.redirect & unredirect
+    def redirect(self):
+        c = self.c
+        if c.config.getBool('eval-redirect'):
+            self.old_stderr = g.stdErrIsRedirected()
+            self.old_stdout = g.stdOutIsRedirected()
+            if not self.old_stderr:
+                g.redirectStderr()
+            if not self.old_stdout:
+                g.redirectStdout()
+
+    def unredirect(self):
+        c = self.c
+        if c.config.getBool('eval-redirect'):
+            if not self.old_stderr:
+                g.restoreStderr()
+            if not self.old_stdout:
+                g.restoreStdout()
+    #@+node:ekr.20180328132748.1: *5* eval.show_answers
+    def show_answers(self):
+        ''' Show all new values computed by do_exec.'''
+        if len(self.answers) > 1:
+            g.es('')
+        for answer in self.answers:
+            key, val = answer
+            g.es('%s = %s' % (key, val))
+    #@+node:ekr.20180329154232.1: *5* eval.show_legacy_answer
+    def show_legacy_answer(self, ans, blocks):
+
+        cvs = self.c.vs
+        if ans is None:  # see if last block was a simple "var =" assignment
+            key = blocks[-1].split('=', 1)[0].strip()
+            if key in cvs:
+                ans = cvs[key]
+        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+            key = blocks[0].split('=', 1)[0].strip()
+            if key in cvs:
+                ans = cvs[key]
+        cvs['_last'] = ans
+        if ans is not None:
+            # annoying to echo 'None' to the log during line by line execution
+            txt = str(ans)
+            lines = txt.split('\n')
+            if len(lines) > 10:
+                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+            if len(txt) > 500:
+                txt = txt[:500] + ' <truncated>'
+            g.es(txt)
+        return ans
+    #@+node:ekr.20180329125626.1: *4* eval.exec_then_eval (not used yet)
+    def exec_then_eval(self, code, ns):
+        # From Milan Melena.
+        import ast
+        block = ast.parse(code, mode='exec')
+        if block.body and isinstance(block.body[-1], ast.Expr):
+            last = ast.Expression(block.body.pop().value)
+            exec(compile(block, '<string>', mode='exec'), ns)
+            # pylint: disable=eval-used
+            return eval(compile(last, '<string>', mode='eval'), ns)
+        exec(compile(block, '<string>', mode='exec'), ns)
+        return ""
+    #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
+    def get_blocks(self):
+        """get_blocks - iterate code blocks
+
+        :return: (current, source, output)
+        :rtype: (bool, str, str)
+        """
+        c = self.c
+        pos = c.frame.body.wrapper.getInsertPoint()
+        chrs = 0
+        lines = c.p.b.split('\n')
+        block = {'source': [], 'output': []}
+        reading = 'source'
+        seeking_current = True
+        # if the last non-blank line isn't the end of a possibly empty
+        # output block, make it one
+        if [i for i in lines if i.strip()][-1] != "# <<<":
+            lines.append("# <<<")
+        while lines:
+            line = lines.pop(0)
+            chrs += len(line)+1
+            if line.startswith("# >>>"):
+                reading = 'output'
+                continue
+            if line.startswith("# <<<"):
+                current = seeking_current and (chrs >= pos+1)
+                if current:
+                    seeking_current = False
+                yield current, '\n'.join(block['source']), '\n'.join(block['output'])
+                block = {'source': [], 'output': []}
+                reading = 'source'
+                continue
+            block[reading].append(line)
+    #@+node:ekr.20180328145035.1: *4* eval.get_selected_lines
+    def get_selected_lines(self):
+
+        c, p = self.c, self.c.p
+        w = c.frame.body.wrapper
+        body = w.getAllText()
+        i = w.getInsertPoint()
+        if w.hasSelection():
+            if self.legacy:
+                i1, i2 = w.getSelectionRange()
+            else:
+                j, k = w.getSelectionRange()
+                i1, junk = g.getLine(body, j)
+                junk, i2 = g.getLine(body, k)
+            s = body[i1:i2]
+        else:
+            if self.legacy:
+                k = w.getInsertPoint()
+                junk, i2 = g.getLine(body, k)
+                w.setSelectionRange(k, i2)
+                return None
+            i1, i2 = g.getLine(body, i)
+            s = body[i1:i2].strip()
+        # Select next line for next eval.
+        if self.legacy:
+            i = j = i2
+            j += 1
+            while j < len(body) and body[j] != '\n':
+                j += 1
+            w.setSelectionRange(i, j)
+        else:
+            if not body.endswith('\n'):
+                if i >= len(p.b): i2 += 1
+                p.b = p.b + '\n'
+            ins = min(len(p.b), i2)
+            w.setSelectionRange(i1, ins, insert=ins, s=p.b)
+        return s
+    #@-others
 #@-others
 #@-leo

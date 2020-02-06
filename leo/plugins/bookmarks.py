@@ -228,22 +228,27 @@ import hashlib
 #@+node:ekr.20100128073941.5371: ** init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not g.unitTesting
-    if ok:
-        g.registerHandler('after-create-leo-frame', onCreate)
-        # temporary until double-click is bindable in user settings
-        if g.app.config.getBool('bookmarks-grab-dblclick'):
-            g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k))
-        g.plugin_signon(__name__)
-    return ok
+    if g.unitTesting:
+        return False
+    g.registerHandler('after-create-leo-frame', onCreate)
+    # temporary until double-click is bindable in user settings
+    if g.app.config.getBool('bookmarks-grab-dblclick', default=False):
+        g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k))
+    g.plugin_signon(__name__)
+    return True
 
 #@+node:tbrown.20110712121053.19751: ** onCreate
 def onCreate(tag, keys):
 
     c = keys.get('c')
-
+    if not c:
+        return
     BookMarkDisplayProvider(c)
-
+    if not g.app.dock:
+        return
+    # #1214: Create a dock or an area in the Log pane.
+    bmd = BookMarkDisplay(c)
+    c.frame.log.createTab("Bookmarks", widget=bmd.w)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
@@ -273,13 +278,17 @@ def cmd_open_node(event):
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 @g.command('bookmarks-show')
 def cmd_show(event):
+    
+    if g.app.dock:
+       return
     c = event.get('c')
     bmd = BookMarkDisplay(c)
+    if g.app.dock:
+       return
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
-
 #@+node:tbrown.20131226095537.26309: ** bookmarks-switch
 @g.command('bookmarks-switch')
 def cmd_switch(event):
@@ -460,6 +469,7 @@ def cmd_mark_as_target(event):
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
+#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline
 @g.command('bookmarks-use-other-outline')
 def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
@@ -470,9 +480,9 @@ def cmd_use_other_outline(event):
         g.es("Use bookmarks-mark-as-target first")
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
-
+    if g.app.dock:
+       return
     bmd = BookMarkDisplay(c, g._bookmarks_target_v)
-
     splitter = c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
@@ -518,13 +528,12 @@ class FlowLayout(QtWidgets.QLayout):
 
     #@+node:ekr.20140917180536.17902: *3* itemAt
     def itemAt(self, index):
-        if index >= 0 and index < len(self.itemList):
+        if 0 <= index < len(self.itemList):
             return self.itemList[index]
         return None
-
     #@+node:ekr.20140917180536.17903: *3* takeAt
     def takeAt(self, index):
-        if index >= 0 and index < len(self.itemList):
+        if 0 <= index < len(self.itemList):
             return self.itemList.pop(index)
         return None
 
@@ -606,7 +615,7 @@ class FlowLayout(QtWidgets.QLayout):
     #@-others
 
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
-class BookMarkDisplay(object):
+class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
 
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
@@ -662,7 +671,7 @@ class BookMarkDisplay(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.dark = c.config.getBool("color_theme_is_dark")
+        self.dark = c.config.getBool("color-theme-is-dark")
         mod_map = c.config.getData("bookmarks-modifiers")
         if not mod_map:
             mod_map = """
@@ -688,7 +697,8 @@ class BookMarkDisplay(object):
         """
 
         if event.button() == QtCore.Qt.RightButton:
-            return self.context_menu(event, container=row_parent)
+            self.context_menu(event, container=row_parent)
+            return
 
         # Alt => edit bookmarks in the outline
         mods = event.modifiers()
@@ -708,7 +718,8 @@ class BookMarkDisplay(object):
         """
 
         if event.button() == QtCore.Qt.RightButton:
-            return self.button_menu(event, bm, but, up=up)
+            self.button_menu(event, bm, but, up=up)
+            return
 
         action_name = self.mod_map.get(self.ModMap.get(int(event.modifiers())))
         if action_name is None:
@@ -725,7 +736,7 @@ class BookMarkDisplay(object):
             # simple bookmark actions
             getattr(self, action_name)(bm)
             return
-        elif action_name == 'add_child':
+        if action_name == 'add_child':
             cmd_bookmark_child(event={'c': bm.v.context})
             return
 
@@ -750,7 +761,6 @@ class BookMarkDisplay(object):
         else:
             # don't leave focus adrift when clicking organizer node
             self.c.bodyWantsFocusNow()
-
     #@+node:tbrown.20140807091931.30231: *3* button_menu
     def button_menu(self, event, bm, but, up=False):
         """button_menu - handle a button being right-clicked
@@ -819,15 +829,12 @@ class BookMarkDisplay(object):
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
-
-        if g.isPython3:
-            text = g.toEncodedString(text,'utf-8')
+        text = g.toEncodedString(text,'utf-8')
         x = hashlib.md5(text).hexdigest()[-6:]
         add = int('bb',16) if not dark else int('33',16)
         x = tuple([int(x[2*i:2*i+2], 16)//4+add for i in range(3)])
         x = '%02x%02x%02x' % x
         return x
-
     #@+node:tbrown.20131227100801.23856: *3* find_node
     def find_node(self, url):
         """find_node - Return position which is a bookmark for url, or None
@@ -867,7 +874,7 @@ class BookMarkDisplay(object):
         # v might not be in this outline
         p = self.v.context.vnode2position(self.v)
         if not p:
-            return
+            return None
 
         if levels is None:
             levels = self.levels
@@ -919,15 +926,13 @@ class BookMarkDisplay(object):
         :Parameters:
         - `p`: position to use instead of self.c.p
         """
-
         p = p or self.c.p
         c = p.v.context  # just in case it's not self.c
         if self.v.context == c:
             # local
             return "#"+p.get_UNL(with_file=False, with_proto=False)
-        else:
-            # not local
-            return p.get_UNL(with_file=True, with_proto=True)
+        # not local
+        return p.get_UNL(with_file=True, with_proto=True)
 
     #@+node:tbrown.20131227100801.23858: *3* show_list
     def show_list(self, links, up=False):
@@ -1008,7 +1013,7 @@ class BookMarkDisplay(object):
                         todo.append(bm.children)
                         row_parent = bm.v
 
-                if bm.v.u['__bookmarks']['is_dupe']:
+                if bm.v.u['__bookmarks'].get('is_dupe'):
                     style_sheet = "background: red; color: white;"
                 else:
                     style_sheet = ("background: #%s;" %
@@ -1068,7 +1073,7 @@ class BookMarkDisplay(object):
         """re-show the current list of bookmarks"""
 
         if keywords['c'] is not self.c:
-            return
+            return None
 
         self.show_list(self.get_list())
 
@@ -1082,15 +1087,14 @@ class BookMarkDisplay(object):
         u = c.undoer
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next()
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)
         if self.current == p.v:
             self.current = p.v.parents[0]
         p.doDelete(newNode)  # p is deleted, newNode is where to go afterwards
-        c.setChanged(True)
-        u.afterDeleteNode(newNode, "Bookmark deletion", undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        c.setChanged()
+        u.afterDeleteNode(newNode, "Bookmark deletion", undoData)
         c.redraw()
         self.c.bodyWantsFocusNow()
 
@@ -1102,7 +1106,7 @@ class BookMarkDisplay(object):
         p = bm.v.context.vnode2position(bm.v)
         p.moveToFirstChildOf(p.parent())
         bm.v.setDirty()
-        bm.v.context.setChanged(True)
+        bm.v.context.setChanged()
         bm.v.context.redraw()
         bm.v.context.bodyWantsFocusNow()
         self.show_list(self.get_list())
@@ -1138,7 +1142,7 @@ class BookMarkDisplay(object):
         g.es("Bookmark updated")
         bm.v.b = new_url
         bm.v.setDirty()
-        bm.v.context.setChanged(True)
+        bm.v.context.setChanged()
         bm.v.context.redraw()
         bm.v.context.bodyWantsFocusNow()
         self.show_list(self.get_list())
@@ -1159,15 +1163,11 @@ class BookMarkDisplay(object):
     #@-others
 
 #@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
-class BookMarkDisplayProvider(object):
+class BookMarkDisplayProvider:
     #@+others
     #@+node:tbrown.20110712121053.19747: *3* __init__
     def __init__(self, c):
         self.c = c
-
-        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # Second hasattr temporary until free_layout merges with trunk
-
         splitter = c.free_layout.get_top_splitter()
         # Careful: we could be unit testing.
         if splitter:
@@ -1220,6 +1220,7 @@ class BookMarkDisplayProvider(object):
 
             bmd = BookMarkDisplay(self.c, v=v)
             return bmd.w
+        return None
 
     #@-others
 

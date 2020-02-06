@@ -13,7 +13,7 @@ class Elisp_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''Elisp_Importer.__init__'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'lisp',
             state_class = Elisp_ScanState,
@@ -26,7 +26,6 @@ class Elisp_Importer(Importer):
 
     def get_new_dict(self, context):
         '''elisp state dictionary for the given context.'''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, pattern, data):
@@ -40,7 +39,7 @@ class Elisp_Importer(Importer):
                 # key    kind   pattern  ends?
                 '\\':   [('len+1', '\\', None),],
                 '"':    [('len', '"',    context == '"'),],
-                ### "'":    [('len', "'",    context == "'"),],
+                # "'":    [('len', "'",    context == "'"),],
             }
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
@@ -51,7 +50,7 @@ class Elisp_Importer(Importer):
                 # key    kind pattern new-ctx  deltas
                 '\\':[('len+1', '\\', context, None),],
                 '"':    [('len', '"', '"',     None),],
-                ### "'":    [('len', "'", "'",     None),],
+                # "'":    [('len', "'", "'",     None),],
                 '{':    [('len', '{', context, (1,0,0)),],
                 '}':    [('len', '}', context, (-1,0,0)),],
                 '(':    [('len', '(', context, (0,1,0)),],
@@ -63,7 +62,6 @@ class Elisp_Importer(Importer):
                 add_key(d, comment, ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1, ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %4r state ' % (self.name, context))
         return d
     #@+node:ekr.20161127184128.4: *3* elisp_i.clean_headline
     elisp_clean_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
@@ -73,8 +71,7 @@ class Elisp_Importer(Importer):
         m = self.elisp_clean_pattern.match(s)
         if m and m.group(1):
             return 'defun %s' % m.group(1)
-        else:
-            return s.strip()
+        return s.strip()
     #@+node:ekr.20161127185851.1: *3* elisp_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
@@ -140,7 +137,8 @@ class Elisp_ScanState:
 #@-others
 importer_dict = {
     'class': Elisp_Importer,
-    'extensions': ['.el'],
+        # Also clojure, clojurescript
+    'extensions': ['.el', '.clj', '.cljs', '.cljc',],
 }
 #@@language python
 #@@tabwidth -4

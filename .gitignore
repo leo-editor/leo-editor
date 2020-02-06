@@ -1,9 +1,23 @@
 # Byte-compiled / optimized / DLL files
+profile.txt
 __pycache__/
+.mypy_cache/
+.cache/
 *.py[cod]
+*.history
 
 # .db files
 *.db
+
+# Per user stuff
+.coverage
+htmlcov/
+.gitconfig
+.viminfo
+.leo
+*.leo_db
+.leo_shadow
+
 
 # Files in leo/proto
 leo/proto/*
@@ -25,6 +39,11 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.eggs/
+pip-wheel-metadata/
+
+# Test results
+/.pytest_cache/
 
 # PyInstaller folders.
 /build/
@@ -40,15 +59,12 @@ leo/test/unittest/rst_write_test.txt
 *.tmp
 *.pyc
 *.pyo
-*.leo_db
 *Thumbs.db
 *.zip
-
+*.*.swp # vim swap files
 ./*.zip
 ./*.exe
 
-.leo_shadow
-.leo
 .ropeProject
 
 gradient.png

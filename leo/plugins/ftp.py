@@ -22,10 +22,9 @@ def init ():
     if g.app.gui.guiName() != "qt":
         print('ftp.py plugin not loading because gui is not Qt')
         return False
-    else:
-        leoPlugins.registerHandler("after-create-leo-frame", onCreate)
-        g.plugin_signon(__name__)
-        return True
+    leoPlugins.registerHandler("after-create-leo-frame", onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:ekr.20110110105526.5468: ** onCreate
 def onCreate (tag, keys):
     c = keys.get('c')
@@ -36,7 +35,7 @@ def onCreate (tag, keys):
         if p:
             pluginController(c)
 #@+node:ekr.20110110105526.5469: ** class pluginController
-class pluginController(object):
+class pluginController:
 
     #@+others
     #@+node:ekr.20110110105526.5470: *3* __init__(pluginController, ftp.py)

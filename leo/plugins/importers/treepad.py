@@ -15,7 +15,6 @@ class TreePad_Scanner():
     #@+node:ekr.20180201204402.2: *3* treepad.add_node
     def add_node(self, article, level, title):
         
-        # g.trace(level, title)
         assert level >= 0, level
         if level == 0:
             # Special case: use the @auto node.
@@ -62,9 +61,8 @@ class TreePad_Scanner():
         '''Return the next line from self.lines, or None.'''
         if self.i >= len(self.lines):
             return None
-        else:
-            self.i += 1
-            return self.lines[self.i-1]
+        self.i += 1
+        return self.lines[self.i-1]
     #@+node:ekr.20180201204402.5: *3* treepad.read_node
     END_RE = re.compile(r'^<end node> ([^ ]+)$')
 
@@ -99,10 +97,13 @@ class TreePad_Scanner():
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            c.setChanged(changed)
+            if changed:
+                c.setChanged()
+            else:
+                c.clearChanged()
         else:
-            parent.setDirty(setDescendentsDirty=False)
-            c.setChanged(True)
+            parent.setDirty() # setDescendentsDirty=False)
+            c.setChanged()
         return ok
     #@-others
 #@-others

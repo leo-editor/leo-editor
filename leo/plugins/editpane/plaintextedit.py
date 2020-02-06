@@ -14,7 +14,8 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 def DBG(text):
     """DBG - temporary debugging function
 
-    :param str text: text to print
+    Args:
+        text (str): text to print
     """
     print("LEP: %s" % text)
 
@@ -48,7 +49,8 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setPlainText(text)
 
@@ -65,7 +67,8 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     def update_text(self, text):
         """update_text - update for current text
 
-        :param str text: current text
+        Args:
+            text (str): current text
         """
         DBG("update editor text")
         self.setPlainText(text)

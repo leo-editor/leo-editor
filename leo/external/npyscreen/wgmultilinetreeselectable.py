@@ -106,7 +106,8 @@ class MLTreeMultiSelect(wgmultilinetree.MLTree):
 
     #@+node:ekr.20170428084208.222: *3* MLTreeMultiSelect.h_select
     def h_select(self, ch):
-        g.trace('===== (MLTreeMultiSelect)')
+
+        # g.trace('===== (MLTreeMultiSelect)')
         vl = self.values[self.cursor_line]
         vl_to_set = not vl.selected
         if self.select_cascades:

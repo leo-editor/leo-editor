@@ -1,0 +1,69 @@
+||* Tests *|| 2018-04-03 12:13:1522782799
+||* Test Name *|| Script in a file and Results in this Leo file
+||* stdout *||
+bob       8690  8689  0 12:13 pts/0    00:00:00 bash /sec/tmp/leoScript.py
+bob       8691  8690  0 12:13 pts/0    00:00:00 ps -ef
+bob       8692  8689  0 12:13 pts/0    00:00:00 /usr/bin/python3 /pri/git/leo-editor/leo/plugins/leo_babel/babel_kill.py 8690
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:13:20 End Time
+||* Other Color *|| black
+12:13:21 saved: examples_external.leo
+||* Test Name *|| Script in a file and Results in a separate file
+||* stdout *||
+d41d8cd98f00b204e9800998ecf8427e  /tmp/config-err-Rn0ehn
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-37-generic
+c698fd6aab6c09849b39572023d35094  /boot/abi-4.13.0-38-generic
+b6091b92a5bd001c0908b710d07248f0  /boot/config-4.13.0-37-generic
+62024f71286fd97cd0ad059ecf21ada1  /boot/config-4.13.0-38-generic
+c478eeed7d96179c03c22c5a1bb62cd9  /boot/initrd.img-4.13.0-37-generic
+af15839bb765e37969584e6f002599dd  /boot/initrd.img-4.13.0-38-generic
+f0fc0ff4ad6055c3a6ba5524de414fcd  /boot/memtest86+.bin
+d9b1ae4a129bf3b77ba61137b4081e24  /boot/memtest86+.elf
+eedb8b06ebad36265b9624350b369c1b  /boot/memtest86+_multiboot.bin
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-37-generic
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-38-generic
+||* stderr *||
+md5sum: /tmp/ssh-O5UM638bX7hw: Is a directory
+md5sum: /tmp/systemd-private-442abd4f0c06437da74355cde6f672ad-rtkit-daemon.service-I51Cd3: Permission denied
+md5sum: /tmp/systemd-private-442abd4f0c06437da74355cde6f672ad-systemd-timesyncd.service-KJpZWv: Permission denied
+md5sum: /boot/grub: Is a directory
+md5sum: /boot/lost+found: Permission denied
+md5sum: /boot/System.map-4.13.0-37-generic: Permission denied
+md5sum: /boot/System.map-4.13.0-38-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-37-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-38-generic: Permission denied
+||* Completion *||
+1 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:13:22 End Time
+||* Other Color *|| black
+12:13:23 unchanged: md5.sh
+12:13:23 wrote: md5.txt
+12:13:23 saved: examples_external.leo
+||* Test Name *|| Section used to root script subtree at third child
+||* stdout *||
+21
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:13:24 End Time
+||* Other Color *|| black
+12:13:26 saved: examples_external.leo
+||* Test Name *|| Script and Results out of Babel Root Subtree to Babel Parameter Script can occupy Babel Root Subtree
+||* stdout *||
+21
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:13:27 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_external.leo
+read 4 files in 0.02 seconds
+read outline in 0.03 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_external.leo
+read 4 files in 0.02 seconds
+read outline in 0.03 seconds
+12:13:28 wrote: externalExamples.txt
+12:13:28 saved: examples_external.leo

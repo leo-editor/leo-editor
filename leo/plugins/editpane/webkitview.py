@@ -6,7 +6,7 @@ import os
 import leo.core.leoGlobals as g
 assert g
 from leo.core.leoQt import QtWebKit, QtWebKitWidgets
-if 'engine' in g.os_path_basename(QtWebKitWidgets.__file__).lower():
+if not QtWebKitWidgets or 'engine' in g.os_path_basename(QtWebKitWidgets.__file__).lower():
     # not loading webkit view, webengine masquerading as webkit
     raise ImportError
 #@-<< webkitview.py imports >>
@@ -17,9 +17,11 @@ def _path_from_pos(c, p):
 
     FIXME: should be in Leo core somewhere.
 
-    :param possition p: position
-    :return: path
-    :rtype: str
+    Args:
+        p (position): position
+
+    Returns:
+        str: path
     """
     p = p.copy()
 
@@ -71,7 +73,8 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         owd = os.getcwd()
         path = _path_from_pos(self.c, self.c.p)
@@ -85,7 +88,8 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
     def update_text(self, text):
         """update_text - update for current text
 
-        :param str text: current text
+        Args:
+            text (str): current text
         """
         self.new_text(text)
 

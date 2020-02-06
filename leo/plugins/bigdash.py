@@ -65,19 +65,22 @@ def global_search_f(event):
     """
     c = event['c']
     if hasattr(g.app,'_global_search'):
-        g.app._global_search.fts_max_hits = c.config.getInt('fts_max_hits') or 30
+        g.app._global_search.fts_max_hits = c.config.getInt('fts-max-hits') or 30
             # Use the per-commander setting.
         g.app._global_search.show()
 #@+node:ville.20120302233106.3580: *3* init (bigdash.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
+    # Fix #1114: Don't require QtWebKitWidgets here.
+        # if not QtWebKitWidgets:
+            # return False
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.app._global_search = GlobalSearch()
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20140919160020.17909: ** class BigDash
-class BigDash(object):
+class BigDash:
     #@+others
     #@+node:ekr.20140919160020.17916: *3* __init__
     def __init__(self):
@@ -96,8 +99,12 @@ class BigDash(object):
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-        # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-        if isQt5 and sys.platform.startswith('win'):
+        if (
+            not QtWebKitWidgets
+                # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            or isQt5 and sys.platform.startswith('win')
+                # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
+        ):
             self.web = web = QtWidgets.QTextBrowser(w)
         else:
             self.web = web = QtWebKitWidgets.QWebView(w)
@@ -178,12 +185,12 @@ class BigDash(object):
 
     #@-others
 #@+node:ekr.20140919160020.17897: ** class GlobalSearch
-class GlobalSearch(object):
+class GlobalSearch:
     #@+others
     #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
     def __init__(self):
         '''Ctor for GlobalSearch class.'''
-        self.fts_max_hits = g.app.config.getInt('fts_max_hits') or 30
+        self.fts_max_hits = g.app.config.getInt('fts-max-hits') or 30
             # A default: will be overridden by the global-search command.
         self.bd = BigDash()
         self.gnxcache = GnxCache()
@@ -271,10 +278,10 @@ class GlobalSearch(object):
         if ss.startswith("f "):
             q = ss[2:]
         if not (q or ss.startswith("fts ")):
-            return False
+            return
         if not whoosh:
             g.es("Whoosh not installed (easy_install whoosh)")
-            return False
+            return
         # print("Doing fts: %s" % qs)
         fts = self.fts
         if ss.strip() == "fts init":
@@ -338,10 +345,12 @@ class GlobalSearch(object):
 
         ss = str(qs)
         hitparas = []
+        
         def em(l):
             hitparas.append(l)
+
         if not ss.startswith("s "):
-            return False
+            return
         s = ss[2:]
         for ndxc,c2 in enumerate(g.app.commanders()):
             hits = c2.find_b(s)
@@ -361,7 +370,6 @@ class GlobalSearch(object):
         html = "".join(hitparas)
         tgt.web.setHtml(html)
         self.bd.set_link_handler(self.do_link)
-
     #@+node:ekr.20140919160020.17900: *3* do_stats
     def do_stats(self, tgt, qs):
         '''Show statistics.'''
@@ -403,7 +411,7 @@ if QtCore:
     class LeoConnector(QtCore.QObject):
         pass
 #@+node:ekr.20140920041848.17939: ** class LeoFts
-class LeoFts(object):
+class LeoFts:
     #@+others
     #@+node:ekr.20140920041848.17940: *3* fts.__init__
     def __init__(self,gnxcache,idx_dir):
@@ -521,7 +529,7 @@ class LeoFts(object):
         self.ix.close()
     #@-others
 #@+node:ekr.20140920041848.17933: ** class GnxCache
-class GnxCache(object):
+class GnxCache:
     """ map gnx => vnode """
     #@+others
     #@+node:ekr.20140920041848.17934: *3* __init__

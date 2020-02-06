@@ -32,6 +32,7 @@ will return None.
 """
 #@-<< docstring >>
 import leo.core.leoGlobals as g
+assert g
 # import re
 # import string
 #@+<< define leo_color_database >>
@@ -50,6 +51,30 @@ leo_color_database = {
     "leoblue": "#F0F8FF", #alice blue
     "leoyellow": "#ffffec",
     "leopink": "#FFE4E1", # misty rose
+    # Solarized colors
+    'altsolarizedgreen': '#84c805',
+    'darkbase0': '#fdffdd',
+    'darkbase00': '#657b83',
+    'darkbase01': '#586e75',
+    'darkbase02': '#073642',
+    'darkbase03': '#000005',
+    'darkbase04': '#000059',
+    'darkbase05': '#003b00',
+    'darkbase06': '#3b0000',
+    'darkbase1': '#93a1a1',
+    'darkbase2': '#eee8d5',
+    'darkbase3': '#fdf6e3',
+    'solarizedblack': '#000005', # Unofficial.
+    'solarizedblue': '#268bd2',
+    'solarizedcyan': '#2aa198',
+    'solarizedgreen': '#859900',
+    'solarizedmagenta': '#d33682',
+    'solarizedred': '#dc322f',
+    'solarizedorange': '#cb4b16',
+    'solarizedviolet': '#6c71c4',
+    'solarizedwhite': '#fdf6e3',  # Unofficial: same as solorarized-base3
+    'solarizedyellow': '#b58900',
+    # Qt colors
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",
     "antiquewhite1": "#FFEFDB",
@@ -708,6 +733,12 @@ leo_color_database = {
     "yellowgreen": "#9ACD32"
 }
 #@-<< define leo_color_database >>
+#
+# Check that all keys are normalized.
+# This is essential for Leo's jEdit-based colorizers.
+for key in leo_color_database:
+    if not key.isalnum():
+        print('\nleoColor.py: non-normalized key: %s\n' % repr(key))
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor
@@ -721,15 +752,13 @@ def getColor(name, default=None):
     If 'name' is not in global_color_database then getColor(default, None)
     is called and that result returned.
     """
-    if not g.isString(name):
+    if not isinstance(name, str):
         return name
-    #g.trace(name, default)
     if name[0] == '#':
         return name
     name = name.replace(' ', '').lower().strip()
     if name in leo_color_database:
         name2 = leo_color_database[name]
-        # g.trace(name,name2)
         return name2
     if default:
         return getColor(default, default=None)
@@ -753,10 +782,9 @@ def getColorCairo(name, default=None):
     # pylint: disable=unpacking-non-sequence
     color = getColorRGB(name, default)
     if color is None:
-        return
-    else:
-        r, g, b = color
-        return r / 255.0, g / 255.0, b / 255.0
+        return None
+    r, g, b = color
+    return r / 255.0, g / 255.0, b / 255.0
 
 getCairo = getColorCairo
 #@-others

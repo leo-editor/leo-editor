@@ -12,8 +12,7 @@ class Otl_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Otl_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'plain',
             state_class = None,

@@ -77,13 +77,14 @@ except ImportError:
 from leo.core.leoQt import isQt5, Qt, QtWidgets
 
 # pylint: disable=no-name-in-module
+# pylint: disable= import-error
 if isQt5:
     from PyQt5.QtCore import QTimer
     try:
         from PyQt5.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt5.QtGui import QFont,QIcon,QTextCharFormat
+    from PyQt5.QtGui import QFont,QTextCharFormat # QIcon
     from PyQt5.QtWidgets import (
         QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
             # QPlainTextEdit,
@@ -93,7 +94,7 @@ else:
         from PyQt4.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt4.QtGui import QAction,QFont,QIcon,QTextCharFormat,QTextEdit
+    from PyQt4.QtGui import QAction,QFont,QTextCharFormat,QTextEdit # QIcon
     from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
         # QPlainTextEdit,
 #@-<< imports >>
@@ -101,7 +102,8 @@ else:
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    g.app.gui.attachLeoIcon(w)
+        # w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():
@@ -128,7 +130,7 @@ def stickynote_new_f(event):
     p2.h = time.asctime()
     mknote(c, p2)
     # Fix #249: Leo and Stickynote plugin do not request to save.
-    c.setChanged(True)
+    c.setChanged()
     c.redraw(p2)
 #@+node:ville.20091023181249.5266: *3* g.command('stickynoter')
 @g.command('stickynoter')
@@ -143,20 +145,20 @@ def stickynoter_f(event):
 
     def focusin():
         if v is c.p.v:
-            nf.setHtml(g.u(v.b))
+            nf.setHtml(v.b)
             nf.setWindowTitle(p.h)
             nf.dirty = False
 
     def focusout():
         if nf.dirty:
-            v.b = g.u(nf.toHtml())
+            v.b = nf.toHtml()
             v.setDirty()
             nf.dirty = False
             p = c.p
             if p.v is v:
                 c.selectPosition(c.p)
             # Fix #249: Leo and Stickynote plugin do not request to save
-            c.setChanged(True)
+            c.setChanged()
             c.redraw()
 
     nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
@@ -167,7 +169,7 @@ def stickynoter_f(event):
     # Fix #249: Leo and Stickynote plugin do not request to save.
     # Do this only on focusout:
         # p.setDirty()
-        # c.setChanged(True)
+        # c.setChanged()
         # c.redraw()
 
     def textchanged_cb():
@@ -213,7 +215,7 @@ if encOK:
                 v.b = enc
                 v.setDirty()
                 # Fix #249: Leo and Stickynote plugin do not request to save
-                c.setChanged(True)
+                c.setChanged()
             nf.dirty = False
             p = c.p
             if p.v is v:
@@ -228,30 +230,43 @@ if encOK:
             secret = sn_encode(unsecret)
             v.b = secret
 
-        ### c = event['c']
-        ### p = c.p
-        decoded = sn_decode(v.b)
-        if decoded is None:
-            return
+        if v.b:
+            decoded = sn_decode(v.b)
+            if decoded is None:
+                return
+        else:
+            decoded = v.b
         nf = mknote(c,p, focusin=focusin, focusout=focusout)
         nf.setPlainText(decoded)
         if rekey:
             g.es("Key updated, data decoded with new key shown in window")
 #@+node:tbrown.20100120100336.7830: *3* g.command('stickynoteenckey')
 if encOK:
+
+    def get_AES():
+        if hasattr(AES, 'MODE_EAX'):
+            # pylint: disable=no-member
+            return AES.new(__ENCKEY[0], AES.MODE_EAX)
+                # #1265: When in doubt, use MODE_EAX.
+                # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
+        # pylint: disable=no-value-for-parameter
+        return AES.new(__ENCKEY[0])
+
     def sn_decode(s):
         try:
-            return AES.new(__ENCKEY[0]).decrypt(base64.b64decode(s)).decode('utf-8').strip()
-        except UnicodeDecodeError:
-            g.es("Decode failed")
+            s1 = base64.b64decode(s)
+            return get_AES().decrypt(s1).decode('utf8').strip()
+        except Exception:
+            g.es("encryption failed")
             __ENCKEY[0] = None
             return None
 
     def sn_encode(s):
-        pad = ' '*(16-len(s)%16)
-        txt = base64.b64encode(AES.new(__ENCKEY[0]).encrypt((s+pad).encode('utf-8')))
-        if g.isPython3:
-            txt = str(txt, 'utf-8')
+        s1 = s.encode('utf8')
+        pad = b' '*(16-len(s1)%16)
+        txta = get_AES().encrypt(s1 + pad)
+        txt = base64.b64encode(txta)
+        txt = str(txt, 'utf-8')
         wrapped = textwrap.wrap(txt, break_long_words=True)
         return '\n'.join(wrapped)
 
@@ -263,12 +278,10 @@ if encOK:
         )
         if not ok:
             return
-
         if str(txt).startswith('v0:'):
             txt = QString(txt[3:])
         else:
             txt = g.toUnicode(txt)
-
         # arbitrary kludge to convert string to 256 bits - don't change
         sha = SHA.new()
         md5 = MD5.new()
@@ -295,7 +308,7 @@ class TextEditSearch(QtWidgets.QWidget):
         return f
 
     def __init__(self, *args, **kwargs):
-        QtWidgets.QWidget.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
         self.textedit.focusInEvent = self._call_old_first(
@@ -341,7 +354,7 @@ class FocusingPlaintextEdit(TextEditSearch):
         self.focusin = focusin
         self.focusout = focusout
         self.closed = closed
-        TextEditSearch.__init__(self, parent)
+        super().__init__(parent)
 
     def focusOutEvent (self, event):
         self.focusout()
@@ -360,7 +373,7 @@ class SimpleRichText(QTextEdit):
     # pylint: disable=method-hidden
 
     def __init__(self, focusin, focusout):
-        QTextEdit.__init__(self)
+        super().__init__()
         self.focusin = focusin
         self.focusout = focusout
         self.createActions()
@@ -383,7 +396,7 @@ class SimpleRichText(QTextEdit):
         self.boldAct.setShortcut(self.tr("Ctrl+B"))
         self.boldAct.setStatusTip(self.tr("Make the text bold"))
         self.boldAct.triggered.connect(self.setBold)
-        ### self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
+        # self.connect(self.boldAct, SIGNAL("triggered()"), self.setBold)
         self.addAction(self.boldAct)
 
         boldFont = self.boldAct.font()
@@ -395,7 +408,7 @@ class SimpleRichText(QTextEdit):
         self.italicAct.setShortcut(self.tr("Ctrl+I"))
         self.italicAct.setStatusTip(self.tr("Make the text italic"))
         self.italicAct.triggered.connect(self.setItalic)
-        ### self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
+        # self.connect(self.italicAct, SIGNAL("triggered()"), self.setItalic)
         self.addAction(self.italicAct)
 
     def setBold(self):
@@ -469,6 +482,7 @@ def get_workbook():
     for co in g.app.commanders():
         if co.mFileName.endswith('workbook.leo'):
             return co
+    return None
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c,p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
@@ -481,7 +495,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
             if v is c.p.v:
                 if v.b.encode('utf-8') != nf.toPlainText():
                     # only when needed to avoid scroll jumping
-                    nf.setPlainText(g.u(v.b))
+                    nf.setPlainText(v.b)
                 nf.setWindowTitle(v.h)
                 nf.dirty = False
 
@@ -489,10 +503,10 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
         def focusout():
             if nf.dirty:
                 if v.b.encode('utf-8') != nf.toPlainText():
-                    v.b = g.u(nf.toPlainText())
+                    v.b = nf.toPlainText()
                     v.setDirty()
                     # Fix #249: Leo and Stickynote plugin do not request to save
-                    c.setChanged(True)
+                    c.setChanged()
                 nf.dirty = False
                 p = c.p
                 if p.v is v:
@@ -576,7 +590,7 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5445: *4* __init__
     def __init__(self, c):
 
-        QMainWindow.__init__(self)
+        super().__init__()
         mdi = self.mdi = QMdiArea(self)
         self.setCentralWidget(mdi)
         self.create_actions()
@@ -609,35 +623,36 @@ class Tabula(QMainWindow):
         self.notes[gnx] = n
         n.show()
         return n
-    #@+node:ekr.20101114061906.5442: *4* closeEvent
+    #@+node:ekr.20101114061906.5442: *4* closeEvent (Tabula)
     def closeEvent(self,event):
 
         self.save_states()
-        g.trace(event)
         event.accept() # EKR: doesn't help: we don't get the event.
-
     #@+node:ekr.20101114061906.5444: *4* create_actions (has all toolbar commands!)
     def create_actions(self):
 
         self.tb = self.addToolBar("toolbar")
         self.tb.setObjectName("toolbar")
         #self.addToolBar(Qt.BottomToolBarArea, self.tb)
+
         def do_tile():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.tileSubWindows()
+        
         def do_cascade():
             self.mdi.setViewMode(QMdiArea.SubWindowView)
             self.mdi.cascadeSubWindows()
+            
         def do_un_tab():
             if self.mdi.viewMode() == QMdiArea.SubWindowView:
                 self.mdi.setViewMode(QMdiArea.TabbedView)
             else:
                 self.mdi.setViewMode(QMdiArea.SubWindowView)
+
         def do_close_all():
             for i in self.mdi.subWindowList():
                 self.mdi.removeSubWindow(i)
             self.notes = {}
-
 
         def do_go():
             p, _ = self.get_current_pos()
@@ -651,11 +666,11 @@ class Tabula(QMainWindow):
 
         def do_edit_h():
             p, w = self.get_current_pos()
-
-            new, r = QInputDialog.getText(None, "Edit headline", "", QLineEdit.Normal, p.h)
+            new, r = QInputDialog.getText(None,
+                "Edit headline", "", 
+                QLineEdit.Normal, p.h)
             if not r:
                 return
-            new = g.u(new)
             p.h = new
             w.setWindowTitle(new)
 
@@ -674,10 +689,10 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5440: *4* load_states
     def load_states(self):
 
-        if not self.c.cacher.db:
+        if not self.c.db:
             return
         try:
-            stored = self.c.cacher.db['tabulanotes']
+            stored = self.c.db['tabulanotes']
         except KeyError:
             return
 
@@ -700,7 +715,6 @@ class Tabula(QMainWindow):
     #@+node:ekr.20101114061906.5446: *4* on_quit
     def on_quit(self,tag, kw):
 
-        g.trace(tag,kw,self)
         # saving when hidden nukes all
 
         if self.isVisible():
@@ -726,16 +740,33 @@ class Tabula(QMainWindow):
 
     #@+node:ekr.20101114061906.5441: *4* save_states
     def save_states(self):
+        
+        self.update_notes()
 
         # n.parent() because the wrapper QMdiSubWindow holds the geom relative to parent
-        geoms = dict(
+        geoms = dict (
             (gnx, n.parent().saveGeometry())
                 for (gnx, n) in self.notes.items() if n.isVisible())
 
         geoms['mainwindow'] = self.saveState()
 
-        if self.c.cacher.db:
-            self.c.cacher.db['tabulanotes'] = geoms
+        if self.c.db:
+            self.c.db['tabulanotes'] = geoms
+    #@+node:ekr.20180822134952.1: *4* update_nodes (new)
+    def update_notes(self):
+        
+        # #940: update self.notes. Ensure note n still exists.
+        visible = []
+        for (gnx, n) in self.notes.items():
+            try:
+                if n.isVisible():
+                    visible.append(gnx)
+            except RuntimeError:
+                pass
+        self.notes = dict (
+            (gnx, n) for (gnx, n) in self.notes.items()
+                if gnx in visible
+        )
     #@-others
 #@-others
 #@@language python

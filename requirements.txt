@@ -1,0 +1,5 @@
+# Just a dot ( . )   delegates all the requirements to setup.py
+# instead of hard coding version numbers and duplicating package lists.
+# https://stackoverflow.com/a/49684835/14420
+# https://caremad.io/posts/2013/07/setup-vs-requirement/
+--editable .

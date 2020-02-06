@@ -25,6 +25,7 @@ def init():
     ok = g.app.gui.guiName() == "qt"
     if ok:
         g.registerHandler('select1', onSelect)
+        g.registerHandler('start2', onSelect)
         g.plugin_signon(__name__)
     return ok
 #@+node:vitalije.20170727222624.1: ** Commands
@@ -56,8 +57,8 @@ def onSelect (tag, keys):
     if not c.hash(): return
     ok = c.config.getBool('use-gutter', default=False)
     ok = ok and not c.user_dict.get(LNOFF, False)
-    if  ok:
-        new_p = keys.get('new_p')
+    if ok:
+        new_p = keys.get('new_p') or c.p
         nums = NUMBERINGS.get(c.hash() + new_p.gnx, tuple())
         request_update(c)
         c.user_dict[LNT] = nums
@@ -262,9 +263,8 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         n += 2 if delim_st else 1
         tlast = tuple(range(n, n + last))
         return tfirst + flines + tlast
-    else:
-        k = pkey(target_p)
-        return flines_data.get(k, (tuple(), ))[0]
+    k = pkey(target_p)
+    return flines_data.get(k, (tuple(), ))[0]
 #@-others
 #@@language python
 #@@tabwidth -4

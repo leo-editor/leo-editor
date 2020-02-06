@@ -78,16 +78,11 @@ printElements = [] # ['all','outline','head','body',]
 import leo.core.leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 import leo.core.leoNodes as leoNodes
-import string
 import xml.sax
 import xml.sax.saxutils
-if g.isPython3:
-    import io # Python 3.x
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-else:
-    import cStringIO # Python 2.x
-    StringIO = cStringIO.StringIO
+import io
+StringIO = io.StringIO
+BytesIO = io.BytesIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
@@ -103,7 +98,7 @@ def onCreate(tag, keys):
     if c:
         c.opmlController = OpmlController(c)
 #@+node:ekr.20060904141220: ** class NodeClass
-class NodeClass(object):
+class NodeClass:
     '''
     A class representing one outline element.
 
@@ -135,7 +130,7 @@ class NodeClass(object):
         print('attrs: %s' % self.attributes.values())
     #@-others
 #@+node:ekr.20060904103412.6: ** class OpmlController
-class OpmlController(object):
+class OpmlController:
     '''The controller class for this plugin.'''
     #@+others
     #@+node:ekr.20060904103412.7: *3* oc.__init__& reloadSettings
@@ -153,8 +148,8 @@ class OpmlController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
-        self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
+        # self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
+        self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
 
     #@+node:ekr.20060914163456: *3* oc.createVnodes & helpers
     def createVnodes(self, c, dummyRoot):
@@ -201,7 +196,7 @@ class OpmlController(object):
             # 'C' (clone) and 'D' bits are not used.
             if 'M' in a: v.setMarked()
             if 'E' in a: v.expand()
-            if 'O' in a: v.setOrphan()
+            # if 'O' in a: v.setOrphan()
             if 'T' in a: self.topVnode = v
             if 'V' in a: self.currentVnode = v
         if 0: # Leo no longer uses the tnodeList.
@@ -209,7 +204,6 @@ class OpmlController(object):
             tnodeList = s and s.split(',')
             if tnodeList:
                 # This tnode list will be resolved later.
-                # g.trace('found tnodeList',v.headString(),len(tnodeList))
                 v.tempTnodeList = tnodeList
     #@+node:ekr.20060913220707: *3* oc.dumpTree
     def dumpTree(self, root, dummy=True):
@@ -232,10 +226,7 @@ class OpmlController(object):
             return g.trace('can not open %s' % path)
         # pylint:disable=catching-non-exception
         try:
-            if g.isPython3:
-                theFile = BytesIO(s)
-            else:
-                theFile = cStringIO.StringIO(s)
+            theFile = BytesIO(s)
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges, 1)
             # Do not include external general entities.
@@ -265,15 +256,10 @@ class OpmlController(object):
         badchars.remove('\n')
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-        # pylint:disable=no-member
-        if g.isPython3:
-            flatten = bytes(flatten, 'utf-8')
-            pad = bytes(pad, 'utf-8')
-            transtable = bytes.maketrans(flatten, pad)
-        else:
-            transtable = string.maketrans(flatten, pad)
+        flatten = bytes(flatten, 'utf-8')
+        pad = bytes(pad, 'utf-8')
+        transtable = bytes.maketrans(flatten, pad)
         return s.translate(transtable)
-    # for i in range(32): print i,repr(chr(i))
     #@+node:ekr.20141020112451.18342: *3* oc.putToOPML
     def putToOPML(self, owner):
         '''
@@ -284,14 +270,15 @@ class OpmlController(object):
         '''Read the opml file.'''
         dumpTree = False
         if not fileName:
-            return g.trace('no fileName')
+            g.trace('no fileName')
+            return None
         c = self.c.new()
             # Create the new commander *now*
             # so that created vnodes will have the proper context.
         # Pass one: create the intermediate nodes.
         dummyRoot = self.parse_opml_file(fileName)
         if not dummyRoot:
-            return
+            return None
         if dumpTree:
             self.dumpTree(dummyRoot)
         # Pass two: create the outline from the sax nodes.
@@ -301,7 +288,8 @@ class OpmlController(object):
         errors = c.checkOutline()
         if errors:
             c.dumpOutline()
-            return g.trace('%s errors!' % errors)
+            g.trace('%s errors!' % errors)
+            return None
         # if self.opml_read_derived_files:
             # at = c.atFileCommands
             # c.fileCommands.tnodesDict = self.createTnodesDict()
@@ -320,7 +308,6 @@ class OpmlController(object):
         d = {}
         for key in list(self.generated_gnxs.keys()):
             v = self.generated_gnxs.get(key)
-            # g.trace('v',id(v),'fileIndex',v.fileIndex,v.headString()[:20])
             d[key] = v
         return d
     #@+node:ekr.20060917214140: *4* oc.setCurrentPosition
@@ -340,7 +327,6 @@ class OpmlController(object):
                 for gnx in p.v.tempTnodeList:
                     v = self.generated_gnxs.get(gnx)
                     if v:
-                        # g.trace('found',v,gnx,v)
                         result.append(v)
                     else:
                         g.trace('No tnode for %s' % gnx)
@@ -395,7 +381,7 @@ class OpmlController(object):
             c.opmlCommands.writeFile(fileName)
     #@-others
 #@+node:ekr.20060919172012.2: ** class PutToOPML
-class PutToOPML(object):
+class PutToOPML:
     '''Write c.p's tree as OPML, using the owner's put method.'''
 
     def __init__(self, owner):
@@ -418,7 +404,7 @@ class PutToOPML(object):
         self.opml_write_leo_details = True
         self.opml_write_leo_globals_attributes = True
         self.opml_write_body_text = True
-        self.opml_write_ua_attributes = True
+        self.opml_write_uAs = True
         self.opml_expand_ua_dictionary = True
         self.opml_skip_ua_dictionary_blanks = True
         for ivar in (
@@ -427,11 +413,14 @@ class PutToOPML(object):
             'opml_write_leo_details',
             'opml_write_leo_globals_attributes',
             'opml_write_body_text',
-            'opml_write_ua_attributes',
+            'opml_write_uAs',
             'opml_expand_ua_dictionary',
             'opml_skip_ua_dictionary_blanks',
         ):
-            setattr(self, ivar, c.config.getBool(ivar))
+            val = c.config.getBool(ivar)
+            if val in (True, False):
+                g.trace(ivar, val)
+                setattr(self, ivar, val)
     #@+node:ekr.20141020112451.18337: *3* putAll
     def putAll(self):
         '''
@@ -446,22 +435,52 @@ class PutToOPML(object):
         self.putOPMLPostlog()
     #@+node:ekr.20060919172012.3: *3* putOPMLProlog
     def putOPMLProlog(self):
-        s = self.c.config.getString('opml_namespace') or 'leo:com:leo-opml'
-        ver = self.c.config.getString('opml_version') or '2.0'
+        s = self.c.config.getString('opml-namespace') or 'leo:com:leo-opml'
+        ver = self.c.config.getString('opml-version') or '2.0'
         self.put('<opml version="%s" xmlns:leo="%s">' % (ver, s))
     #@+node:ekr.20060919172012.4: *3* putOPMLHeader
+    # The <head> element may include any of these optional elements:
+    # title, dateCreated, dateModified, ownerName, ownerEmail, expansionState,
+    # vertScrollState, windowTop, windowLeft, windowBottom, windowRight.
+
+    # Each element is a simple text element.
+
+    # dateCreated and dateModified contents conform to the date-time format
+    # specified in RFC 822.
+
+    # expansionState contains a comma-separated list of line numbers that should
+    # be expanded on display.
+
+
+
     def putOPMLHeader(self):
-        '''Put the OPML header, including attributes for globals, prefs and  find settings.'''
-        c = self.c; indent = ' ' * 4
-        if self.opml_write_leo_globals_attributes:
-            self.put('\n<head leo:body_outline_ratio="%s">' % str(c.frame.ratio))
-            width, height, left, top = c.frame.get_window_info()
-            self.put('\n%s<leo:global_window_position' % indent)
-            self.put(' top="%s" left="%s" height="%s" width="%s"/>' % (
-                str(top), str(left), str(height), str(width)))
-            self.put('\n</head>')
-        else:
-            self.put('\n<head/>')
+        '''
+        Put the OPML header, including attributes for globals, prefs and  find settings.
+        
+        An OPML processor may ignore all the head sub-elements.
+        
+        The windowXXX elements define the position and size of the display
+        window.
+        
+        If the outline is opened inside another outline then the processor must
+        ignore the window elements.
+        '''
+        if not self.opml_write_leo_globals_attributes:
+            self.put('<head />')
+            return
+        c = self.c
+        indent = ' '*4
+        width, height, left, top = c.frame.get_window_info()
+        bottom = str(top + height)
+        right = str(left + width)
+        left, top = str(left), str(top)
+        self.put('\n<head>')
+        self.put(f'\n{indent}<windowTop>{top}</windowTop>')
+        self.put(f'\n{indent}<windowLeft>{left}</windowLeft>')
+        self.put(f'\n{indent}<windowBottom>{bottom}</windowBottom>')
+        self.put(f'\n{indent}<windowRight>{right}</windowRight>')
+        self.put('\n</head>')
+
     #@+node:ekr.20060919172012.5: *3* putOPMLNodes
     def putOPMLNodes(self):
         c = self.c; root = c.rootPosition()
@@ -472,41 +491,45 @@ class PutToOPML(object):
     #@+node:ekr.20060919172012.6: *3* putOPMLNode
     def putOPMLNode(self, p):
 
-        indent = ' ' * (4 * p.level()) # Always use 4-space indents.
+        indent = ''
         body = p.bodyString() or ''; head = p.headString() or ''
-        attrFormat = ' %s="%s"'
-        self.put('\n%s<outline' % indent)
-        if self.opml_write_leo_details: # Put leo-specific attributes.
+        self.put(f'\n{indent}<outline')
+        head_s = self.attributeEscape(head)
+        self.put(f' text="{head_s}"')
+        if self.opml_write_leo_details:
+            # Put leo-specific attributes.
             for name, val in (
                 ('leo:v', p.v.fileIndex),
                 ('leo:a', self.aAttributes(p)),
-                # ('leo:tnodeList',self.tnodeListAttributes(p)),
             ):
-                if val: self.put(attrFormat % (name, val))
+                if val:
+                    self.put(f' {name}="{val}"')
             data = self.uAAttributes(p)
             if data:
-                # for name,val in data.iteritems():
+                # g.printObj(data, tag=f'uAs for {p.h}')
                 for name in list(data.keys()):
                     val = data.get(name)
-                    self.put(attrFormat % (name, val))
-        self.put(attrFormat % ('text', self.attributeEscape(head)))
+                    self.put(f' {name}="{val}"')
         closed = False
         if body and self.opml_write_body_text:
             if self.opml_use_outline_elements:
-                self.put('>'); closed = True
-                self.put('<leo:body>%s</leo:body>' % xml.sax.saxutils.escape(body))
+                self.put('>')
+                body_s = xml.sax.saxutils.escape(body)
+                self.put(f'\n{indent}<leo:body>{body_s}</leo:body>')
+                closed = True
             else:
-                self.put(attrFormat % ('leo:body', self.attributeEscape(body)))
+                body_s = self.attributeEscape(body)
+                self.put(f' leo:body="{body_s}"')
         if p.hasChildren():
             if not closed:
-                self.put('>'); closed = True
+                self.put('>')
             for p2 in p.children_iter():
                 self.putOPMLNode(p2)
+                closed = True
         if closed:
             self.put('\n%s</outline>' % indent)
-            # self.put('</outline>\n')
         else:
-            self.put('/>')
+            self.put(' />')
     #@+node:ekr.20060919172012.7: *4* attributeEscape
     def attributeEscape(self, s):
         # Unlike xml.sax.saxutils.escape, replace " by &quot; and replace newlines by character reference.
@@ -525,8 +548,6 @@ class PutToOPML(object):
         if p.isExpanded(): attr.append('E')
         if p.isMarked(): attr.append('M')
         if c.isCurrentPosition(p): attr.append('V')
-        #if p.v.isOrphan():              attr.append('O')
-        #if p.equal(self.topPosition):   attr.append('T')
         return ''.join(attr)
     #@+node:ekr.20060919172012.9: *4* tnodeListAttributes (Not used)
     # Based on fileCommands.putTnodeList.
@@ -536,7 +557,6 @@ class PutToOPML(object):
         # Remember: entries in the tnodeList correspond to @+node sentinels, _not_ to tnodes!
         if not hasattr(p.v, 'tnodeList') or not p.v.tnodeList:
             return None
-        # g.trace('tnodeList',p.v.tnodeList)
         # Assign fileIndices.
         for v in p.v.tnodeList:
             try: # Will fail for None or any pre 4.1 file index.
@@ -551,13 +571,12 @@ class PutToOPML(object):
     def uAAttributes(self, p):
         """write unknownAttributes with various levels of expansion"""
         data = {}
-        if self.opml_write_ua_attributes and hasattr(p.v, 'unknownAttributes'):
-            # for uak, uav in p.v.unknownAttributes.iteritems():
+        # g.trace(self.opml_write_uAs, getattr(p.v, 'unknownAttributes', None))
+        if self.opml_write_uAs and hasattr(p.v, 'unknownAttributes'):
             d = p.u
             for uak in list(d.keys()):
                 uav = d.get(uak)
                 if self.opml_expand_ua_dictionary and isinstance(uav, dict):
-                    # for uakc, uavc in uav.iteritems():
                     for uakc in list(uav.keys()):
                         uavc = uav.get(uakc)
                         if str(uavc) != '' or not self.opml_skip_ua_dictionary_blanks:
@@ -585,8 +604,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         '''Ctor for SaxContentHandler class (OMPL plugin).'''
         self.c = c
         self.inputFileName = inputFileName
-        xml.sax.saxutils.XMLGenerator.__init__(self)
-            # Init the base class.
+        super().__init__()
         self.dispatchDict = self.define_dispatch_dict()
         # Semantics.
         self.content = []
@@ -744,7 +762,6 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
             if name == 'leo:body_outline_ratio':
                 try:
                     ratio = float(val)
-                    # g.trace(ratio)
                 except ValueError:
                     pass
         self.ratio = ratio
@@ -796,7 +813,6 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
                 elif name == 'width': width = int(val)
         except ValueError:
             pass
-        # g.trace(top,left,height,width)
         c.frame.setTopGeometry(width, height, left, top)
         c.frame.deiconify()
         c.frame.lift()

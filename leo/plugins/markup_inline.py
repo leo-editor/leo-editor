@@ -63,7 +63,7 @@ def markup_inline(c, kind='unknown'):
         ])
         c.frame.body.bodyCtrl.setAllText(p.b)
         c.frame.body.bodyCtrl.setInsertPoint(i+len(delim))
-    c.setChanged(True)
+    c.setChanged()
     p.setDirty(True)
     c.redraw()
     c.bodyWantsFocusNow()

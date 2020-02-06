@@ -26,7 +26,8 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setPlainText(text)
 
@@ -34,7 +35,8 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
     def update_text(self, text):
         """update_text - update for current text
 
-        :param str text: current text
+        Args:
+            text (str): current text
         """
         h = self.horizontalScrollBar().value()
         v = self.verticalScrollBar().value()

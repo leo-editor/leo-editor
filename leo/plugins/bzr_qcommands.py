@@ -30,7 +30,7 @@ def bzr_qcommands(c, p, menu):
         stdout,stderr = cmd.communicate()
         g.es("\n\n".join([stdout,stderr]))
     action = menu.addAction('stat')
-    ### action.connect(action, QtCore.SIGNAL("triggered()"), bzr_stat)
+    # action.connect(action, QtCore.SIGNAL("triggered()"), bzr_stat)
     action.triggered.connect(bzr_stat)
 
     qcoms = "qadd qannotate qbind qbranch qbrowse qcat qcommit qconfig " \
@@ -43,7 +43,7 @@ def bzr_qcommands(c, p, menu):
             cmd = subprocess.Popen(['bzr', qcom, path])
             cmd.communicate()
         action = menu.addAction(qcom)
-        ### action.connect(action, QtCore.SIGNAL("triggered()"), cmd)
+        # action.connect(action, QtCore.SIGNAL("triggered()"), cmd)
         action.triggered.connect(cmd)
 #@-others
 #@@language python

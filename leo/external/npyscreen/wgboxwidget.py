@@ -130,7 +130,7 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.511: *3* BoxTitle.make_contained_widget
     def make_contained_widget(self, contained_widget_arguments=None):
-        ### The *only* make_contained_widget (singular) in npyscreen.
+        # The *only* make_contained_widget (singular) in npyscreen.
         self._my_widgets = []
         if contained_widget_arguments:
             self._my_widgets.append(
@@ -171,11 +171,9 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.514: *3* BoxTitle.edit
     def edit(self):
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
-                self.__class__.__name__, self.entry_widget.__class__.__name__))
-            # g.trace('CALLERS', g.callers(verbose=True))
+        
+        # g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
+            # self.__class__.__name__, self.entry_widget.__class__.__name__))
         self.editing=True
         self.display()
         self.entry_widget.edit()

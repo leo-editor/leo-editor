@@ -20,11 +20,13 @@ Devs may create a branch at any time.  The most important branches:
   - All distribution-related work.
   - Urgent last-minute bug fixes.<br>
 
-<img width="75%" height="75%" src="https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png">
+<img width="75%" height="75%" src="leo/Icons/Gitflow-Workflow-3.png">
 
 # Branch descriptions
 
 Devs, please add your descriptions here.
+
+- **clean-up-root**: Refresh/audit root folder contents; MANIFEST.in excludes/includes #1077
 
 ## master
 
@@ -40,3 +42,7 @@ Devs, please add your descriptions here.
 
 - A long-lived branch a long-lived branch containing prototype code related to client/server/javascript/vue.js code.
 - There are no plans to merge or delete this branch at this time.
+
+## gh-pages
+
+- The branch that hosts the website. This is a permanent branch.

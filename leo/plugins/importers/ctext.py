@@ -39,7 +39,7 @@ class CText_Importer(Importer):
     #@+node:ekr.20161130053335.1: *3* ctext_i.__init__
     def __init__(self, importCommands, **kwargs):
         '''Ctor for CoffeeScriptScanner class.'''
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'ctext',
             state_class = None,
@@ -54,9 +54,8 @@ class CText_Importer(Importer):
     #@+node:tbrown.20140801105909.47553: *3* ctext_i.run
     def run(self, s, parent, parse_body=False):
         '''Override Importer.run()'''
-        c = self.c
+        # c = self.c
         root = parent.copy()
-        changed = c.isChanged()
         cchar = '#'
         if self.fileType.lower() == '.tex':
             cchar = '%'
@@ -91,7 +90,11 @@ class CText_Importer(Importer):
         # It's always useless for an an import to dirty the outline.
         for p in root.self_and_subtree():
             p.clearDirty()
-        c.setChanged(changed)
+        # #1451: The caller should be responsible for this.
+            # if changed:
+                # c.setChanged()
+            # else:
+                # c.clearChanged()
         return True
     #@-others
 #@-others

@@ -1,0 +1,80 @@
+#@+leo-ver=5-thin
+#@+node:bob.20170830132009.1: * @file md5.txt
+#@+others
+#@+node:bob.20180403121323.1: ** 00:00:01 Elapsed Time. 2018-04-03 12:13:22 End Time
+1 Subprocess Termination Code
+#@+node:bob.20180403121323.2: *3* stdout
+d41d8cd98f00b204e9800998ecf8427e  /tmp/config-err-Rn0ehn
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-37-generic
+c698fd6aab6c09849b39572023d35094  /boot/abi-4.13.0-38-generic
+b6091b92a5bd001c0908b710d07248f0  /boot/config-4.13.0-37-generic
+62024f71286fd97cd0ad059ecf21ada1  /boot/config-4.13.0-38-generic
+c478eeed7d96179c03c22c5a1bb62cd9  /boot/initrd.img-4.13.0-37-generic
+af15839bb765e37969584e6f002599dd  /boot/initrd.img-4.13.0-38-generic
+f0fc0ff4ad6055c3a6ba5524de414fcd  /boot/memtest86+.bin
+d9b1ae4a129bf3b77ba61137b4081e24  /boot/memtest86+.elf
+eedb8b06ebad36265b9624350b369c1b  /boot/memtest86+_multiboot.bin
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-37-generic
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-38-generic
+#@+node:bob.20180403121323.3: *3* stderr
+md5sum: /tmp/ssh-O5UM638bX7hw: Is a directory
+md5sum: /tmp/systemd-private-442abd4f0c06437da74355cde6f672ad-rtkit-daemon.service-I51Cd3: Permission denied
+md5sum: /tmp/systemd-private-442abd4f0c06437da74355cde6f672ad-systemd-timesyncd.service-KJpZWv: Permission denied
+md5sum: /boot/grub: Is a directory
+md5sum: /boot/lost+found: Permission denied
+md5sum: /boot/System.map-4.13.0-37-generic: Permission denied
+md5sum: /boot/System.map-4.13.0-38-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-37-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-38-generic: Permission denied
+#@+node:bob.20180402161319.1: ** 00:00:01 Elapsed Time. 2018-04-02 16:13:18 End Time
+1 Subprocess Termination Code
+#@+node:bob.20180402161319.2: *3* stdout
+d41d8cd98f00b204e9800998ecf8427e  /tmp/config-err-qQLGNv
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-36-generic
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-37-generic
+b2ee94c27b5c45b24501467a4e988c12  /boot/config-4.13.0-36-generic
+b6091b92a5bd001c0908b710d07248f0  /boot/config-4.13.0-37-generic
+40fb241241af97ba5e6f0f3fb677b5b1  /boot/initrd.img-4.13.0-36-generic
+c478eeed7d96179c03c22c5a1bb62cd9  /boot/initrd.img-4.13.0-37-generic
+f0fc0ff4ad6055c3a6ba5524de414fcd  /boot/memtest86+.bin
+d9b1ae4a129bf3b77ba61137b4081e24  /boot/memtest86+.elf
+eedb8b06ebad36265b9624350b369c1b  /boot/memtest86+_multiboot.bin
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-36-generic
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-37-generic
+#@+node:bob.20180402161319.3: *3* stderr
+md5sum: /tmp/ssh-6xGLGqonXchf: Is a directory
+md5sum: /tmp/systemd-private-12c7f61773614be6ab6891fd43a08f99-rtkit-daemon.service-U4G06n: Permission denied
+md5sum: /tmp/systemd-private-12c7f61773614be6ab6891fd43a08f99-systemd-timesyncd.service-V2Ep8S: Permission denied
+md5sum: /boot/grub: Is a directory
+md5sum: /boot/lost+found: Permission denied
+md5sum: /boot/System.map-4.13.0-36-generic: Permission denied
+md5sum: /boot/System.map-4.13.0-37-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-36-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-37-generic: Permission denied
+#@+node:bob.20180331162138.1: ** 00:00:01 Elapsed Time. 2018-03-31 16:21:36 End Time
+1 Subprocess Termination Code
+#@+node:bob.20180331162138.2: *3* stdout
+d41d8cd98f00b204e9800998ecf8427e  /tmp/config-err-Ku4c01
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-36-generic
+af52a7cd96e58cac41ad6312892d8b5d  /boot/abi-4.13.0-37-generic
+b2ee94c27b5c45b24501467a4e988c12  /boot/config-4.13.0-36-generic
+b6091b92a5bd001c0908b710d07248f0  /boot/config-4.13.0-37-generic
+40fb241241af97ba5e6f0f3fb677b5b1  /boot/initrd.img-4.13.0-36-generic
+c478eeed7d96179c03c22c5a1bb62cd9  /boot/initrd.img-4.13.0-37-generic
+f0fc0ff4ad6055c3a6ba5524de414fcd  /boot/memtest86+.bin
+d9b1ae4a129bf3b77ba61137b4081e24  /boot/memtest86+.elf
+eedb8b06ebad36265b9624350b369c1b  /boot/memtest86+_multiboot.bin
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-36-generic
+180bf90ff0f54dab40035ec9f55eca8f  /boot/retpoline-4.13.0-37-generic
+#@+node:bob.20180331162138.3: *3* stderr
+md5sum: /tmp/ssh-nUNeIJxzihIJ: Is a directory
+md5sum: /tmp/systemd-private-5b9c2c5104b340359bbb1bc0f33c345c-rtkit-daemon.service-2ceHoo: Permission denied
+md5sum: /tmp/systemd-private-5b9c2c5104b340359bbb1bc0f33c345c-systemd-timesyncd.service-5QdqSY: Permission denied
+md5sum: /boot/grub: Is a directory
+md5sum: /boot/lost+found: Permission denied
+md5sum: /boot/System.map-4.13.0-36-generic: Permission denied
+md5sum: /boot/System.map-4.13.0-37-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-36-generic: Permission denied
+md5sum: /boot/vmlinuz-4.13.0-37-generic: Permission denied
+#@-others
+#@-leo

@@ -5,7 +5,7 @@
 import weakref
 
 #@+node:ekr.20170428084207.113: ** class Event
-class Event(object):
+class Event:
     # a basic event class
     #@+others
     #@+node:ekr.20170428084207.114: *3* __init__
@@ -16,7 +16,7 @@ class Event(object):
 
     #@-others
 #@+node:ekr.20170428084207.115: ** class EventHandler
-class EventHandler(object):
+class EventHandler:
     # This partial base class provides the framework to handle events.
 
     #@+others

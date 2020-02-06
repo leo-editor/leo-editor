@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20150313053238.38"><vh>Read Me</vh></v>
 <v t="ekr.20150313053238.1"><vh>@settings</vh>
 <v t="ekr.20150313053238.2"><vh>@bool wikiview-active = False</vh></v>
 <v t="ekr.20150313053238.4"><vh>@string target_language = rest</vh></v>
@@ -44,7 +42,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150313053238.38"><vh>Read Me</vh></v>
 <v t="ekr.20160311184117.1"><vh>Leo 4.x</vh>
 <v t="ekr.20150313054219.4"><vh>4.0... New read logic eliminates read errors, eliminated child indices</vh>
 <v t="ekr.20150313054219.5"><vh>4.0 final</vh>
@@ -3147,6 +3144,193 @@
 <v t="ekr.20180227003757.131"><vh>New leo_cloud.py plugin</vh></v>
 <v t="ekr.20180227003757.132"><vh>New line_numbering.py plugin</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20180406011314.1"><vh>Leo 5.7.1 Themes</vh>
+<v t="ekr.20180406011314.2"><vh>Bugs</vh>
+<v t="ekr.20180406011314.3"><vh>#780: @tabwidth -2 in @data qt-gui-plugin-style-sheet crashes Leo</vh></v>
+<v t="ekr.20180406011314.4"><vh>#781: ViewRendered Plugin fails on Python 2.7 (Bad Import Statement)</vh></v>
+<v t="ekr.20180406011314.5"><vh>#783: print- commands fail under pythonw</vh></v>
+<v t="ekr.20180406011314.6"><vh>#788: Fix theme-related bugs</vh></v>
+<v t="ekr.20180406011314.7"><vh>#792: python_console plugin doesn't handle copy/paste properly</vh></v>
+<v t="ekr.20180406011314.8"><vh>#802: @color @image display in vr pane</vh></v>
+<v t="ekr.20180406011314.9"><vh>#808: Loading Images in Themes is Broken</vh></v>
+<v t="ekr.20180406011314.10"><vh>#809: Themes dialog doesn't always start in leo/themes</vh></v>
+<v t="ekr.20180406011314.11"><vh>#812: g.glob_glob problems</vh></v>
+<v t="ekr.20180406011314.12"><vh>#832: Leo crashes on non English systems</vh></v>
+<v t="ekr.20180406011314.13"><vh>#840: config.getData(foo) strips comments inconsistently</vh></v>
+<v t="ekr.20180406011314.14"><vh>#843: Cannot Open Any Non Leo File From Command Line</vh></v>
+</v>
+<v t="ekr.20180406011314.15"><vh>Code</vh>
+<v t="ekr.20180406011314.16"><vh>Added add_path keyword argument to c.recursiveImport</vh></v>
+<v t="ekr.20180406011314.17"><vh>Added g.backupGitIssues</vh></v>
+<v t="ekr.20180406011314.18"><vh>Added g.caller</vh></v>
+<v t="ekr.20180406011314.19"><vh>g.log is a synonym for g.es</vh></v>
+</v>
+<v t="ekr.20180406011314.20"><vh>Commands</vh>
+<v t="ekr.20180406011314.21"><vh>#839: Replaced 5 vs-* commands with eval* commands</vh></v>
+<v t="ekr.20180406011314.22"><vh>Added open-theme-file command</vh></v>
+<v t="ekr.20180406011314.23"><vh>Retired the 'escape' and 'eval-expression' commands</vh></v>
+</v>
+<v t="ekr.20180406011314.24"><vh>Features</vh>
+<v t="ekr.20180406011314.25"><vh>#467: Add setting for preferred directory</vh></v>
+<v t="ekr.20180406011314.26"><vh>#663: Regularize slashes and back slashes</vh></v>
+<v t="ekr.20180406011314.27"><vh>#748: Improve print-settings command</vh></v>
+<v t="ekr.20180406011314.28"><vh>#763: Use html comments to support @file x.md</vh></v>
+<v t="ekr.20180406011314.29"><vh>#766: Create Theme menu, etc.</vh></v>
+<v t="ekr.20180406011314.30"><vh>#784: Warn if stylesheet substitution leaves undefined @-constants</vh></v>
+<v t="ekr.20180406011314.31"><vh>Feature: Allow @path in body text</vh></v>
+<v t="ekr.20180406011314.32"><vh>Won't do: #822: Put outline tabs below the main window bar</vh></v>
+</v>
+<v t="ekr.20180406011314.33"><vh>Settings &amp; command-line arguments</vh></v>
+</v>
+<v t="ekr.20180507105516.1"><vh>Leo 5.7.2 New key code</vh></v>
+<v t="ekr.20180527085214.1"><vh>Leo 5.7.3 Jedi, leo_babel, python_terminal</vh>
+<v t="ekr.20180527085214.2"><vh>Bugs</vh>
+<v t="ekr.20180527085214.3"><vh>#841: Python importer does not always handle decorators properly </vh></v>
+<v t="ekr.20180527085214.4"><vh>#892: Crash in checkForChangedNodes</vh></v>
+<v t="ekr.20180527085214.5"><vh>#893: Python Console gets stuck on IndentationError </vh></v>
+<v t="ekr.20180527085214.6"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
+</v>
+<v t="ekr.20180527085214.7"><vh>Code</vh>
+<v t="ekr.20180527085214.8"><vh>#875: Rename json reader/writer plugins</vh></v>
+<v t="ekr.20180527085214.9"><vh>BackgroundProcessManager supports clickable links</vh></v>
+<v t="ekr.20180527085214.10"><vh>Removed most g.trace statements</vh></v>
+</v>
+<v t="ekr.20180527085214.11"><vh>Info items</vh>
+<v t="ekr.20180527085214.12"><vh>#909: How to use LaTeX with Leo</vh></v>
+<v t="ekr.20180527085214.13"><vh>#910: Summary of developer info items</vh></v>
+</v>
+<v t="ekr.20180527085214.14"><vh>Features</vh>
+<v t="ekr.20180527085214.15"><vh>#309: Support Jedi autocompletion</vh></v>
+<v t="ekr.20180527085214.16"><vh>#738: Links in Tips dialogs are now clickable</vh></v>
+<v t="ekr.20180527085214.17"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
+<v t="ekr.20180527085214.18"><vh>#904: Allow local overrides of abbreviations</vh></v>
+<v t="ekr.20180527085214.19"><vh>Added diff-related wrappers</vh></v>
+<v t="ekr.20180527085214.20"><vh>Added leo_babel plugin</vh></v>
+<v t="ekr.20180527085214.21"><vh>Improved recursive import script</vh></v>
+<v t="ekr.20180527085214.22"><vh>Improved typescript importer</vh></v>
+<v t="ekr.20180527085214.23"><vh>pylint creates clickable links</vh></v>
+<v t="ekr.20180527085214.24"><vh>Removed settings</vh></v>
+<v t="ekr.20180527085214.25"><vh>Smart searches for functions and methods</vh></v>
+</v>
+</v>
+<v t="ekr.20180828034324.1"><vh>Leo 5.8 Big code revisions, no more caching </vh>
+<v t="ekr.20180828034324.2"><vh>Bugs</vh>
+<v t="ekr.20180828034324.3"><vh>#841: Python importer does not always handle decorators properly</vh></v>
+<v t="ekr.20180828034324.4"><vh>#893: Python Console gets stuck on IndentationError</vh></v>
+<v t="ekr.20180828034324.5"><vh>#917: System keys on Microsoft keyboard insert unwanted text</vh></v>
+<v t="ekr.20180828034324.6"><vh>#922: text following @others is ignored</vh></v>
+<v t="ekr.20180828034324.7"><vh>#933: Leo clears the user's clipboard on first time startup</vh></v>
+<v t="ekr.20180828034324.8"><vh>#936: hang on sesson start</vh></v>
+<v t="ekr.20180828034324.9"><vh>#938: New code breakes tree abbreviations </vh></v>
+<v t="ekr.20180828034324.10"><vh>#940: Crashes in stickynotes.py</vh></v>
+<v t="ekr.20180828034324.11"><vh>#943: Error in reload-all-settings</vh></v>
+<v t="ekr.20180828034324.12"><vh>#947: replace-all</vh></v>
+<v t="ekr.20180828034324.13"><vh>#956: syntax error</vh></v>
+<v t="ekr.20180828034324.14"><vh>#967: Cross-bile backlink errors</vh></v>
+<v t="ekr.20180828034324.15"><vh>backup script saves/restores cwd</vh></v>
+<v t="ekr.20180828034324.16"><vh>Fixed crasher in LeoQtLog.linkClicked</vh></v>
+<v t="ekr.20180828034324.17"><vh>Fixed problems with git-diff command</vh></v>
+<v t="ekr.20180828034324.18"><vh>git-diff now works outside of leo-editor folder</vh></v>
+</v>
+<v t="ekr.20180828034324.19"><vh>Code</vh>
+<v t="ekr.20180828034324.20"><vh>#296: private plugin directories</vh></v>
+<v t="ekr.20180828034324.21"><vh>#924: Improved performance of at.readAll</vh>
+<v t="ekr.20180828034324.22"><vh>Stats...</vh>
+<v t="ekr.20180828034324.23"><vh>CProfile: .leo FAST = False</vh></v>
+<v t="ekr.20180828034324.24"><vh>cProfile: .leo FAST = True</vh>
+<v t="ekr.20180828034324.25"><vh>originals</vh></v>
+</v>
+<v t="ekr.20180828034324.26"><vh>cProfile, with FAST = True (much improved)</vh></v>
+<v t="ekr.20180828034324.27"><vh>Stats: g.isUnicode (before &amp; after)</vh></v>
+<v t="ekr.20180828034324.28"><vh>Stats: is_special: before (no change)</vh></v>
+<v t="ekr.20180828034324.29"><vh>Stats: g.match_word: before &amp; after</vh></v>
+<v t="ekr.20180828034324.30"><vh>Stats: p.ctor (no change will be made)</vh></v>
+</v>
+</v>
+<v t="ekr.20180828034324.31"><vh>Much faster reading of external files</vh></v>
+<v t="ekr.20180828034324.32"><vh>Added copy kwarg to generators</vh>
+<v t="ekr.20180828034324.33"><vh>Stats: p.copy (before)</vh></v>
+<v t="ekr.20180828034324.34"><vh>Stats: p.copy (after, with s.bat)</vh></v>
+<v t="ekr.20180828034324.35"><vh>Stats: p.copy (after changing p.get_UNL)</vh></v>
+<v t="ekr.20180828034324.36"><vh>Stats: p.copy (after2)</vh></v>
+<v t="ekr.20180828034324.37"><vh>Stats: p.copy (after 3)</vh></v>
+</v>
+<v t="ekr.20180828034324.38"><vh>Removed "adjust" and "reassignIndices" kwargs</vh></v>
+<v t="ekr.20180828034324.39"><vh>Removed qtree.update_appearance*</vh></v>
+<v t="ekr.20180828034324.40"><vh>Improved Leo's outline drawing code</vh></v>
+</v>
+<v t="ekr.20180828034324.41"><vh>Features</vh>
+<v t="ekr.20180828034324.42"><vh>#871: A setting to position the icon bar </vh></v>
+<v t="ekr.20180828034324.43"><vh>#913: Show base classes in python importer</vh></v>
+<v t="ekr.20180828034324.44"><vh>#932: use "show" prefix for many commands</vh></v>
+<v t="ekr.20180828034324.45"><vh>#949: Smart quotes</vh></v>
+<v t="ekr.20180828034324.46"><vh>#953: better warnings about importing qt</vh></v>
+<v t="ekr.20180828034324.47"><vh>#961: curses gui</vh></v>
+<v t="ekr.20180828034324.48"><vh>#966: Better support for clojurescript</vh></v>
+<v t="ekr.20180828034324.49"><vh>Added --trace-drawing and --trace-startup</vh></v>
+<v t="ekr.20180828034324.50"><vh>Added .sty and .latex entries in extension_dict</vh></v>
+<v t="ekr.20180828034324.51"><vh>Added @nosearch to results of cff</vh></v>
+<v t="ekr.20180828034324.52"><vh>Added dump-clone-parents command</vh></v>
+<v t="ekr.20180828034324.53"><vh>Added md_docer.py plugin</vh></v>
+<v t="ekr.20180828034324.54"><vh>Added print-stats command &amp; improved tracing</vh></v>
+<v t="ekr.20180828034324.55"><vh>Leo ecognizes .latex and .sty as LaTeX files</vh></v>
+<v t="ekr.20180828034324.56"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
+</v>
+</v>
+<v t="ekr.20190122052932.1"><vh>Leo 5.9: LeoWapp, debugger, pygments TravisCI</vh>
+<v t="ekr.20190122052932.2"><vh>5.8.1: Bugs fixed</vh>
+<v t="ekr.20190122052932.3"><vh>#0804: ~= in style sheets</vh></v>
+<v t="ekr.20190122052932.4"><vh>#0998: Fix recursive import problems</vh></v>
+<v t="ekr.20190122052932.5"><vh>#1002 self.assertEqual in a @test node is not comparing lists properly</vh></v>
+<v t="ekr.20190122052932.6"><vh>#1007: console gui doesn't load</vh></v>
+<v t="ekr.20190122052932.7"><vh>#1021: Fixed add-editor</vh></v>
+<v t="ekr.20190122052932.8"><vh>#1023: Marked and expansion bits no longer affect .leo files</vh></v>
+<v t="ekr.20190122052932.9"><vh>#1032: importers should not clean blank lines</vh></v>
+<v t="ekr.20190122052932.10"><vh>#1033: No @path directive added for empty imported files</vh></v>
+<v t="ekr.20190122052932.11"><vh>#1036 and #1046: strip control chars before reading .leo files</vh></v>
+<v t="ekr.20190122052932.12"><vh>#1048 &amp; #1037: trailing blank lines</vh></v>
+<v t="ekr.20190122052932.13"><vh>#1049: crash kills Leo</vh></v>
+<v t="ekr.20190122052932.14"><vh>#1051: eliminate ui interface refs</vh></v>
+<v t="ekr.20190122052932.15"><vh>#1053: Unwanted @shadow message on saves</vh></v>
+<v t="ekr.20190122052932.16"><vh>#1056: Column numbers in the status line do not work</vh></v>
+<v t="ekr.20190122052932.17"><vh>#1057: Unwanted loadOnePlugin messages on startup</vh></v>
+<v t="ekr.20190122052932.18"><vh>#1059: cycle-tab-focus exception</vh></v>
+</v>
+<v t="ekr.20190122052932.19"><vh>5.8.1: Features</vh>
+<v t="ekr.20190122052932.20"><vh>#0525: Nested @clean</vh></v>
+<v t="ekr.20190122052932.21"><vh>#0672: Leo uses TravisCI</vh></v>
+<v t="ekr.20190122052932.22"><vh>#0915: Leo debugger</vh></v>
+<v t="ekr.20190122052932.23"><vh>#0926: Organize @outline-data tree-abbreviations</vh></v>
+<v t="ekr.20190122052932.24"><vh>#1005: LeoWapp: Leo in a browser</vh></v>
+<v t="ekr.20190122052932.25"><vh>#1031, #1050 and #1003: Better error recovery</vh></v>
+<v t="ekr.20190122052932.26"><vh>#1040: Simplify atFile.write code</vh></v>
+<v t="ekr.20190122052932.27"><vh>#1047: Tree Window Resizes on Paste Node</vh></v>
+</v>
+<v t="ekr.20190122052932.28"><vh>5.8.1: Settings &amp; command-line arguments</vh></v>
+</v>
+<v t="ekr.20190617074238.1"><vh>Leo 6.0: Python 3, dock-based gui</vh></v>
+<v t="ekr.20191026200311.1"><vh>Leo 6.1: Pyzo, markup support</vh>
+<v t="ekr.20191026200311.2"><vh>6.1: Major features</vh>
+<v t="ekr.20191026200311.3"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+<v t="ekr.20191026200311.4"><vh>#1093: pyzo_in_leo plugin</vh></v>
+<v t="ekr.20191026200311.5"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
+<v t="ekr.20191026200311.6"><vh>Support for asciidoc and asciidoctor</vh></v>
+<v t="ekr.20191026200311.7"><vh>Support for pandoc, including @language pandoc</vh></v>
+<v t="ekr.20191026200311.8"><vh>Support for black</vh></v>
+<v t="ekr.20191026200311.9"><vh>Support for sphinx</vh></v>
+</v>
+<v t="ekr.20191026200311.10"><vh>6.1: Bugs</vh>
+<v t="ekr.20191026200311.11"><vh>Minor bugs</vh></v>
+<v t="ekr.20191026200311.12"><vh>#1338: {{ conflicts</vh></v>
+</v>
+<v t="ekr.20191026200311.13"><vh>6.1: Code features</vh></v>
+<v t="ekr.20191026200311.14"><vh>6.1: Features</vh></v>
+<v t="ekr.20191026200311.15"><vh>6.1: Settings, directives, command-line arguments</vh>
+<v t="ekr.20191026200311.16"><vh>#1263: --window-spot</vh></v>
+<v t="ekr.20191026200311.17"><vh>#1289: --global-docks</vh></v>
+<v t="ekr.20191026200311.18"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
 </vnodes>
@@ -24266,5 +24450,1654 @@ What I did:
 </t>
 <t tx="ekr.20180227003757.98">https://github.com/leo-editor/leo-editor/issues/414</t>
 <t tx="ekr.20180227003757.99">https://github.com/leo-editor/leo-editor/issues/417</t>
+<t tx="ekr.20180406011314.1">Leo 5.7.1 April 6, 2018
+
+Leo 5.7.1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.1**
+
+- Improved support for themes, including the open-theme-file command.
+    - Added --theme=&lt;name&gt; command-line option.
+    - Added @string theme-name setting.
+    - Leo warns if stylesheets contain undefined @-constants.
+- Replaced 5 vs-* commands by corresponding eval* commands.
+- Support @file x.md using html sentinels.
+- Allow @path in @&lt;file&gt; nodes, and optionally generate same in recursive imports.
+- Improved menus.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180406011314.10">https://github.com/leo-editor/leo-editor/issues/809
+</t>
+<t tx="ekr.20180406011314.11">https://github.com/leo-editor/leo-editor/issues/812
+PickleShareDB.keys should definitely not call g.glob_glob.
+</t>
+<t tx="ekr.20180406011314.12">https://github.com/leo-editor/leo-editor/issues/832
+</t>
+<t tx="ekr.20180406011314.13">https://github.com/leo-editor/leo-editor/issues/840
+Changed c.config.getData and gcm.getData.
+</t>
+<t tx="ekr.20180406011314.14">https://github.com/leo-editor/leo-editor/issues/843
+</t>
+<t tx="ekr.20180406011314.15"></t>
+<t tx="ekr.20180406011314.16">When True, adds @path directives to the root node of imported files.
+</t>
+<t tx="ekr.20180406011314.17"></t>
+<t tx="ekr.20180406011314.18"></t>
+<t tx="ekr.20180406011314.19"></t>
+<t tx="ekr.20180406011314.2">is:issue milestone:5.7.1 is:closed
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.7.1+-label%3AWaiting+is%3Aclosed</t>
+<t tx="ekr.20180406011314.20"></t>
+<t tx="ekr.20180406011314.21">https://github.com/leo-editor/leo-editor/issues/839
+The eval* commands are now in mod_scripting.py.
+</t>
+<t tx="ekr.20180406011314.22"></t>
+<t tx="ekr.20180406011314.23">They have been replaced by new eval- commands.
+</t>
+<t tx="ekr.20180406011314.24"></t>
+<t tx="ekr.20180406011314.25">https://github.com/leo-editor/leo-editor/issues/467
+@string initial-chooser-directory</t>
+<t tx="ekr.20180406011314.26">https://github.com/leo-editor/leo-editor/issues/663
+</t>
+<t tx="ekr.20180406011314.27">https://github.com/leo-editor/leo-editor/issues/748
+</t>
+<t tx="ekr.20180406011314.28">https://github.com/leo-editor/leo-editor/issues/763
+</t>
+<t tx="ekr.20180406011314.29">https://github.com/leo-editor/leo-editor/issues/766
+</t>
+<t tx="ekr.20180406011314.3">https://github.com/leo-editor/leo-editor/issues/780
+</t>
+<t tx="ekr.20180406011314.30">https://github.com/leo-editor/leo-editor/issues/784
+</t>
+<t tx="ekr.20180406011314.31">Removed unnecessary check in g.get_directives_dict.
+</t>
+<t tx="ekr.20180406011314.32">https://github.com/leo-editor/leo-editor/issues/822
+
+</t>
+<t tx="ekr.20180406011314.33">Command-line options:
+- Added --theme=&lt;name&gt;
+- Added --trace-themes
+
+Settings:
+- Added @string theme-name
+- Added @string initial-chooser-directory
+  Used by Ctrl-O (file-open-by-name)
+</t>
+<t tx="ekr.20180406011314.4">https://github.com/leo-editor/leo-editor/issues/781
+</t>
+<t tx="ekr.20180406011314.5">https://github.com/leo-editor/leo-editor/issues/783
+</t>
+<t tx="ekr.20180406011314.6">https://github.com/leo-editor/leo-editor/issues/788
+</t>
+<t tx="ekr.20180406011314.7">https://github.com/leo-editor/leo-editor/issues/792
+</t>
+<t tx="ekr.20180406011314.8">https://github.com/leo-editor/leo-editor/issues/802
+</t>
+<t tx="ekr.20180406011314.9">https://github.com/leo-editor/leo-editor/issues/808
+</t>
+<t tx="ekr.20180507105516.1">May 7, 2018
+
+Leo 5.7.2, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.2**
+
+- Much improved support for Jupyter (.ipynb) files.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180527085214.1">May 28, 2018
+Leo 5.7.3, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.3**
+
+- Added support for Jedi autocompletion.
+- Much improved python_terminal plugin.
+- Much improved recursive import script.
+- New leo_babel plugin.
+- Leo's pylint command writes clickable links.
+- Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
+- Added easy-to-use diff-related wrappers for scripts.
+- Allow local overrides of all abbreviations.
+- Improved TypeScript importer.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180527085214.10">A mass cleanup of Leo's code, removing many unused tracing statements.</t>
+<t tx="ekr.20180527085214.11"></t>
+<t tx="ekr.20180527085214.12">https://github.com/leo-editor/leo-editor/issues/909
+</t>
+<t tx="ekr.20180527085214.13">https://github.com/leo-editor/leo-editor/issues/910</t>
+<t tx="ekr.20180527085214.14"></t>
+<t tx="ekr.20180527085214.15">https://github.com/leo-editor/leo-editor/issues/309
+</t>
+<t tx="ekr.20180527085214.16">https://github.com/leo-editor/leo-editor/issues/738
+</t>
+<t tx="ekr.20180527085214.17">https://github.com/leo-editor/leo-editor/issues/868
+
+As usual, spellings are not significant. For example:
+
+clone-find-all-flattened = Key_Pad+9
+clone-find-all = keypad-PageUp
+    # Same as keypad+pageup, etc. etc.</t>
+<t tx="ekr.20180527085214.18">Allow local overrides of @data global-abbreviations &amp; @outline-data tree-abbreviations
+https://github.com/leo-editor/leo-editor/issues/904</t>
+<t tx="ekr.20180527085214.19">@language rest
+
+Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:
+
+@language python
+
+# creates outline-oriented diffs between all changed files between any two revs.
+# In this case, rev1 is the last rev in devel not affected by removing trace statements.
+
+c.diff_two_revs(
+ rev1="24abd822b", # devel
+ rev2="HEAD", # will work in *any* branch
+)
+
+# Leo's git-diff command:
+c.git_diff()
+
+# Compares a file in two different branches:
+c.diff_two_branches(
+    branch1='master',
+    branch2='devel',
+    fn='leo/core/leoCommands.py',
+)
+</t>
+<t tx="ekr.20180527085214.2"></t>
+<t tx="ekr.20180527085214.20">For documentation, see the leo/plugins/leo_babel/doc folder.</t>
+<t tx="ekr.20180527085214.21">The recursive import script now adds disambiguating headline comments as follows:
+
+- If a node is a descendant of a class node, the script prepends the class's name:
+
+    aClass.headline
+
+- Otherwise, the script appends the file name:
+
+    headline (x.py)
+
+This is a huge help when using the clone-find commands.
+</t>
+<t tx="ekr.20180527085214.22"></t>
+<t tx="ekr.20180527085214.23">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
+<t tx="ekr.20180527085214.24">- Removed @bool trace_import.
+- Removed @bool trace_bind_key_exceptions.</t>
+<t tx="ekr.20180527085214.25">The find-def command is typically invoked by control-clicking a function name. This command now will search for possible *alternative spellings* of the name if no match is found initially:
+
+- If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.
+
+- Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.
+
+A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
+
+The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
+<t tx="ekr.20180527085214.3">https://github.com/leo-editor/leo-editor/issues/841</t>
+<t tx="ekr.20180527085214.4">https://github.com/leo-editor/leo-editor/issues/892
+</t>
+<t tx="ekr.20180527085214.5">https://github.com/leo-editor/leo-editor/issues/893
+
+A complete rewrite of the python_terminal plugin.</t>
+<t tx="ekr.20180527085214.6">https://github.com/leo-editor/leo-editor/issues/901
+</t>
+<t tx="ekr.20180527085214.7"></t>
+<t tx="ekr.20180527085214.8">https://github.com/leo-editor/leo-editor/issues/875</t>
+<t tx="ekr.20180527085214.9">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
+
+- link_pattern: a regex string or compiled regex pattern, used to determine whether a message contains a link.
+
+- link_root: the root @file node.
+
+When present, bpm.put_log uses these as follows::
+
+    unl = link_root.get_UNL(with_proto=True, with_count=True)
+    nodeLink = "%s,%d" % (unl, -line)
+    c.frame.log.put(s + '\n', nodeLink=nodeLink)
+</t>
+<t tx="ekr.20180828034324.1">Leo 5.8, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.8**
+
+- Much faster file-read code.
+- Leo no longer caches file contents. Removed --no-cache!
+- Leo using ElementTree instead of sax to read .leo files.
+- Refactored and improved Leo's key-handling code.
+- Improved Leo's outline drawing code.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180828034324.10">https://github.com/leo-editor/leo-editor/issues/940
+
+added update_nodes method.
+</t>
+<t tx="ekr.20180828034324.11">https://github.com/leo-editor/leo-editor/issues/943
+
+The fix was to getVnodeFromClipboard.
+</t>
+<t tx="ekr.20180828034324.12">The fix was to set @&lt;file&gt; nodes dirty by brute force in find.changeAllCommand.
+
+https://github.com/leo-editor/leo-editor/issues/947
+
+See also:
+    
+https://github.com/leo-editor/leo-editor/issues/722
+https://github.com/leo-editor/leo-editor/issues/880
+</t>
+<t tx="ekr.20180828034324.13">https://github.com/leo-editor/leo-editor/issues/956
+
+async is a new keyword.
+</t>
+<t tx="ekr.20180828034324.14">https://github.com/leo-editor/leo-editor/issues/967</t>
+<t tx="ekr.20180828034324.15">See c.backup_helper.</t>
+<t tx="ekr.20180828034324.16">Traceback (most recent call last):
+  File "c:\leo.repo\leo-editor\leo\plugins\qt_frame.py", line 3152, in linkClicked
+    url = link.url()
+AttributeError: 'QUrl' object has no attribute 'url'</t>
+<t tx="ekr.20180828034324.17">It now works in folders besides the leo-editor folder.
+</t>
+<t tx="ekr.20180828034324.18"></t>
+<t tx="ekr.20180828034324.19"></t>
+<t tx="ekr.20180828034324.2">For the full list, see: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8+-label%3Awaiting+is%3Aclosed</t>
+<t tx="ekr.20180828034324.20">https://github.com/leo-editor/leo-editor/issues/296
+
+The legacy code (plugins.regularizeName) tries to import leo.plugins.x if x.py is given in the @enabled-plugins node.
+
+The new code just makes regularizeName more flexible.</t>
+<t tx="ekr.20180828034324.21">https://github.com/leo-editor/leo-editor/issues/924
+</t>
+<t tx="ekr.20180828034324.22"></t>
+<t tx="ekr.20180828034324.23">
+         12766782 function calls (12734775 primitive calls) in 8.997 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   
+        1    1.571    1.571    1.857    1.857 {built-in method exec_}
+      584    1.029    0.002    1.029    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
+     6787    0.217    0.000    0.217    0.000 {built-in method nt.stat}
+
+   145181    0.205    0.000    0.421    0.000 spellCommands.py:243(add_expanded_line)
+   
+      165    0.181    0.001    0.353    0.002 leoAtFile.py:5163(scan_lines)
+      
+   630654    0.162    0.000    0.222    0.000 leoGlobals.py:5551(isUnicode)
+   212111    0.140    0.000    0.247    0.000 leoGlobals.py:4530(match_word) #
+    35851    0.130    0.000    0.261    0.000 ntpath.py:471(normpath)
+   608210    0.124    0.000    0.124    0.000 {method 'find' of 'str' objects}
+     1829    0.119    0.000    0.229    0.001 sre_parse.py:470(_parse)
+   204516    0.106    0.000    0.106    0.000 leoNodes.py:198(__init__) # Position!!!
+
+   105948    0.097    0.000    0.168    0.000 leoFileCommands.py:184(characters) # sax !!!
+   204348    0.096    0.000    0.202    0.000 leoNodes.py:1338(copy) # !!! Creates new position.
+   360621    0.096    0.000    0.228    0.000 leoGlobals.py:5628(toUnicode) #
+    11498    0.095    0.000    0.095    0.000 leoGlobals.py:2961(&lt;listcomp&gt;) # g.compute_directives_re
+   679634    0.095    0.000    0.095    0.000 {method 'add' of 'set' objects}
+   891774    0.093    0.000    0.094    0.000 {built-in method builtins.isinstance}
+   106763    0.093    0.000    0.316    0.000 leoNodes.py:1203(moveToThreadNext)
+    10434    0.093    0.000    0.405    0.000 leoGlobals.py:4494(is_special)
+  1251070    0.092    0.000    0.093    0.000 {built-in method builtins.len}
+    11498    0.092    0.000    0.306    0.000 leoGlobals.py:2911(get_directives_dict)
+   357802    0.085    0.000    0.085    0.000 {method 'replace' of 'str' objects}
+     5428    0.083    0.000    0.083    0.000 {built-in method winreg.OpenKey}
+   132725    0.083    0.000    0.211    0.000 leoNodes.py:2228(headString)
+    98090    0.078    0.000    0.106    0.000 leoNodes.py:1150(moveToNext)
+    72669    0.078    0.000    0.371    0.000 leoCommands.py:812(all_unique_positions)
+    58372    0.074    0.000    0.102    0.000 ntpath.py:121(splitdrive)
+   122175    0.073    0.000    0.112    0.000 leoNodes.py:780(hasNext)
+    12535    0.072    0.000    0.088    0.000 leoNodes.py:1931(__init__)
+   158376    0.071    0.000    0.118    0.000 leoGlobals.py:4585(skip_line)
+      692    0.067    0.000    0.067    0.000 {built-in method marshal.loads}
+        2    0.061    0.031    0.106    0.053 spellCommands.py:132(add_words_from_dict)
+   393812    0.061    0.000    0.061    0.000 {method 'startswith' of 'str' objects}
+     1070    0.058    0.000    0.058    0.000 {method 'splitlines' of 'str' objects}
+   239689    0.055    0.000    0.055    0.000 leoNodes.py:1025(_parentVnode)
+     2718    0.050    0.000    0.285    0.000 {built-in method builtins.__build_class__}
+     
+     
+   175148    0.048    0.000    0.049    0.000 {built-in method builtins.hasattr}
+    58267    0.047    0.000    0.113    0.000 leoGlobals.py:6958(toUnicodeFileEncoding)
+       46    0.046    0.001    0.373    0.008 {method 'Parse' of 'pyexpat.xmlparser' objects}
+   459482    0.044    0.000    0.044    0.000 {method 'lower' of 'str' objects}
+   185835    0.044    0.000    0.060    0.000 leoGlobals.py:5579(isWordChar)
+        1    0.042    0.042    0.665    0.665 mod_scripting.py:521(createAllButtons)
+   506941    0.041    0.000    0.041    0.000 {method 'append' of 'list' objects}
+      754    0.041    0.000    0.041    0.000 {built-in method io.open}
+   119664    0.039    0.000    0.229    0.000 leoNodes.py:654(headString)
+   268078    0.039    0.000    0.042    0.000 {method 'get' of 'dict' objects}
+      895    0.038    0.000    0.217    0.000 leoNodes.py:740(get_UNL)
+   312129    0.038    0.000    0.038    0.000 {method 'strip' of 'str' objects}
+        2    0.037    0.019    0.469    0.234 spellCommands.py:231(read_words)
+   122208    0.036    0.000    0.036    0.000 sre_parse.py:232(__next)
+      695    0.036    0.000    0.061    0.000 &lt;frozen importlib._bootstrap_external&gt;:830(get_data)
+   119664    0.034    0.000    0.263    0.000 leoNodes.py:1601(__get_h)
+    40561    0.034    0.000    0.102    0.000 leoNodes.py:517(self_and_parents)
+     9827    0.033    0.000    0.105    0.000 todo.py:525(loadIcons)
+    93422    0.031    0.000    0.035    0.000 {method 'join' of 'str' objects}
+    11993    0.030    0.000    0.053    0.000 leoGlobals.py:6665(os_path_expandExpression)
+   118705    0.029    0.000    0.064    0.000 sre_parse.py:253(get)
+        8    0.027    0.003    0.027    0.003 {built-in method setStyleSheet}
+    55751    0.026    0.000    0.036    0.000 leoNodes.py:1184(moveToParent)
+     8005    0.026    0.000    0.287    0.000 leoGlobals.py:6784(os_path_join)
+     7894    0.025    0.000    0.497    0.000 leoGlobals.py:6744(os_path_finalize_join)
+      932    0.025    0.000    0.028    0.000 sre_compile.py:250(_optimize_charset)
+      695    0.025    0.000    0.025    0.000 {method 'read' of '_io.FileIO' objects}
+   206990    0.025    0.000    0.025    0.000 leoNodes.py:282(__bool__)
+     3386    0.025    0.000    0.382    0.000 leoGlobals.py:2965(get_directives_dict_list)
+    50243    0.023    0.000    0.023    0.000 {method 'match' of '_sre.SRE_Pattern' objects}
+     4659    0.023    0.000    0.025    0.000 leoFileCommands.py:1187(handleVnodeSaxAttributes)
+      541    0.022    0.000    0.022    0.000 {method 'read' of '_io.BufferedReader' objects}
+        6    0.022    0.004    0.144    0.024 leoCommands.py:1317(checkGnxs)
+    20098    0.022    0.000    0.038    0.000 editCommands.py:834(getIconList)
+    10469    0.022    0.000    0.054    0.000 ntpath.py:74(join)
+    750/1    0.021    0.000    9.016    9.016 {built-in method builtins.exec}
+    14584    0.021    0.000    0.339    0.000 re.py:286(_compile)
+   250111    0.020    0.000    0.020    0.000 {method 'isalnum' of 'str' objects}
+    13190    0.020    0.000    0.166    0.000 leoGlobals.py:6717(os_path_expanduser)
+    13769    0.019    0.000    0.080    0.000 leoNodes.py:1282(safeMoveToThreadNext)
+    17085    0.019    0.000    0.032    0.000 nodetags.py:185(get_tags)
+        1    0.018    0.018    0.018    0.018 {msleep}
+    64193    0.018    0.000    0.025    0.000 leoGlobals.py:5543(isString)
+    24206    0.018    0.000    0.021    0.000 leoNodes.py:1117(moveToFirstChild)
+    11498    0.018    0.000    0.123    0.000 leoGlobals.py:2954(compute_directives_re)
+     5428    0.017    0.000    0.017    0.000 {built-in method winreg.EnumKey}
+    19656    0.017    0.000    0.100    0.000 leoCommands.py:749(all_positions)
+       65    0.016    0.000    0.016    0.000 {method 'execute' of 'sqlite3.Connection' objects}
+    13025    0.016    0.000    0.027    0.000 leoFileCommands.py:143(&lt;listcomp&gt;)
+    19424    0.016    0.000    0.022    0.000 leoNodes.py:1104(moveToBack)
+     4659    0.015    0.000    0.119    0.000 leoFileCommands.py:1155(createSaxVnode)
+    17/15    0.015    0.001    0.024    0.002 {built-in method _imp.create_dynamic}
+        4    0.015    0.004    0.015    0.004 {built-in method show}
+     3362    0.015    0.000    0.440    0.000 leoCommands.py:1936(scanAtPathDirectives)
+     6737    0.015    0.000    0.031    0.000 leoGlobals.py:4572(skip_id)
+      524    0.015    0.000    0.015    0.000 {built-in method nt._isdir}
+    26695    0.015    0.000    0.024    0.000 leoGlobals.py:4516(match)
+   134173    0.014    0.000    0.014    0.000 {built-in method nt.fspath}
+    13593    0.014    0.000    0.032    0.000 leoFileCommands.py:198(endElement)
+    13593    0.014    0.000    0.109    0.000 leoFileCommands.py:258(startElement)
+ 3186/403    0.014    0.000    0.057    0.000 sre_compile.py:64(_compile)
+        1    0.014    0.014    0.132    0.132 mimetypes.py:230(read_windows_registry)
+    11130    0.014    0.000    0.068    0.000 leoNodes.py:1999(findAtFileName)
+      169    0.014    0.000    0.015    0.000 leoAtFile.py:225(initReadIvars)
+    13775    0.013    0.000    0.107    0.000 leoCommands.py:832(safe_all_positions)
+     9834    0.013    0.000    0.013    0.000 {built-in method today}
+       27    0.013    0.000    0.013    0.000 {built-in method repaint}
+    46946    0.013    0.000    0.023    0.000 leoNodes.py:2599(__get_u)
+     4755    0.013    0.000    0.026    0.000 ntpath.py:199(split)
+      834    0.013    0.000    0.013    0.000 {built-in method winreg.QueryValueEx}
+    36552    0.013    0.000    0.013    0.000 {method 'split' of 'str' objects}
+        2    0.013    0.006    0.018    0.009 QNCalendarWidget.py:35(build)
+    67396    0.012    0.000    0.012    0.000 {method 'pop' of 'list' objects}
+        8    0.012    0.001    0.012    0.002 {built-in method addTab}
+     1347    0.012    0.000    0.935    0.001 leoGlobals.py:3448(fullPath)
+   105011    0.011    0.000    0.012    0.000 sre_parse.py:248(match)
+    13593    0.011    0.000    0.123    0.000 expatreader.py:332(start_element)
+    26391    0.011    0.000    0.011    0.000 {method 'finditer' of '_sre.SRE_Pattern' objects}
+     1307    0.011    0.000    0.139    0.000 &lt;frozen importlib._bootstrap_external&gt;:1233(find_spec)
+    17084    0.011    0.000    0.061    0.000 leoChapters.py:245(parseHeadline)
+     8200    0.011    0.000    0.015    0.000 leoGlobals.py:4654(skip_ws)
+    39321    0.010    0.000    0.015    0.000 todo.py:607(getat)
+    13196    0.010    0.000    0.017    0.000 ntpath.py:308(expanduser)
+     7582    0.010    0.000    0.062    0.000 leoGlobals.py:6748(&lt;listcomp&gt;)
+    10437    0.010    0.000    0.424    0.000 leoNodes.py:2116(isAtIgnoreNode)
+    19424    0.010    0.000    0.049    0.000 leoNodes.py:697(getBack)
+     4659    0.009    0.000    0.028    0.000 leoNodes.py:112(scanGnx)
+    13025    0.009    0.000    0.047    0.000 leoFileCommands.py:138(attrsToList)
+    13025    0.009    0.000    0.011    0.000 xmlreader.py:308(getNames)
+    29515    0.009    0.000    0.156    0.000 leoCommands.py:737(all_unique_nodes)
+        2    0.009    0.004    0.009    0.004 {built-in method setCalendarWidget}
+      727    0.009    0.000    0.009    0.000 {method 'connect' of 'PyQt5.QtCore.pyqtBoundSignal' objects}
+        1    0.009    0.009    0.009    0.009 backend.py:71(Backend)
+        2    0.009    0.004    0.162    0.081 leoChapters.py:318(setAllChapterNames)
+     8780    0.009    0.000    0.082    0.000 ntpath.py:538(abspath)
+     8780    0.008    0.000    0.008    0.000 {built-in method nt._getfullpathname}
+     7582    0.008    0.000    0.484    0.000 leoCommands.py:1884(os_path_finalize_join)
+    17318    0.008    0.000    0.008    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+     4043    0.008    0.000    0.012    0.000 leoMenu.py:247(&lt;listcomp&gt;)
+      190    0.008    0.000    0.008    0.000 {built-in method _hashlib.openssl_md5}
+      172    0.008    0.000    0.008    0.000 {built-in method nt.access}
+  4669/10    0.008    0.000    0.128    0.013 leoFileCommands.py:1138(createSaxChildren)
+   9828/1    0.008    0.000    0.189    0.189 todo.py:497(new)
+        1    0.008    0.008    0.063    0.063 backlink.py:412(loadLinksInt)
+      677    0.008    0.000    0.008    0.000 {method 'decode' of 'bytes' objects}
+     4706    0.007    0.000    0.041    0.000 leoFileCommands.py:389(startVnode)
+    14989    0.007    0.000    0.012    0.000 {built-in method builtins.getattr}
+   104772    0.007    0.000    0.007    0.000 {built-in method builtins.ord}
+    12535    0.007    0.000    0.015    0.000 leoNodes.py:102(new_vnode_helper)
+    34954    0.007    0.000    0.007    0.000 {method 'lstrip' of 'str' objects}
+    96309    0.007    0.000    0.007    0.000 {method 'isspace' of 'str' objects}
+     5893    0.007    0.000    0.018    0.000 enum.py:801(__and__)
+     5628    0.007    0.000    0.013    0.000 leoGlobals.py:1881(add)
+    16355    0.007    0.000    0.013    0.000 leoNodes.py:2173(bodyString)
+        1    0.007    0.007    0.173    0.173 todo.py:519(loadAllIcons)
+    42287    0.006    0.000    0.006    0.000 {method 'group' of '_sre.SRE_Match' objects}
+4489/2090    0.006    0.000    0.008    0.000 sre_parse.py:173(getwidth)
+     4158    0.006    0.000    0.034    0.000 leoFileCommands.py:361(tnodeAttributes)
+     4706    0.006    0.000    0.029    0.000 leoFileCommands.py:406(vnodeAttributes)
+     5632    0.006    0.000    0.067    0.000 leoGlobals.py:6826(os_path_normpath)
+    11224    0.006    0.000    0.013    0.000 leoGlobals.py:1931(get)
+     8005    0.006    0.000    0.167    0.000 leoGlobals.py:6801(&lt;listcomp&gt;)
+     2294    0.006    0.000    0.030    0.000 leoAtFile.py:3705(putCodeLine)
+     4252    0.006    0.000    0.063    0.000 leoKeys.py:2956(registerCommandShortcut)
+     5220    0.006    0.000    0.015    0.000 leoAtFile.py:4321(os)
+    13832    0.006    0.000    0.009    0.000 leoGlobals.py:4647(skip_to_char)
+       19    0.006    0.000    0.073    0.004 leoCommands.py:1181(setChanged)
+     6405    0.006    0.000    0.027    0.000 leoConfig.py:1728(getShortcut)
+    24357    0.006    0.000    0.006    0.000 leoNodes.py:2621(__get_gnx)
+    13593    0.006    0.000    0.037    0.000 expatreader.py:335(end_element)
+       98    0.006    0.000    0.009    0.000 {built-in method builtins.sorted}
+3137/2629    0.006    0.000    0.007    0.000 proxy_metaclass.py:77(__getattribute__)
+    12884    0.006    0.000    0.007    0.000 enum.py:515(__new__)
+  794/141    0.006    0.000    2.083    0.015 &lt;frozen importlib._bootstrap&gt;:966(_find_and_load)
+     1928    0.006    0.000    0.370    0.000 leoConfig.py:1898(visitNode)
+        1    0.006    0.006    1.436    1.436 leoAtFile.py:703(readAll)
+     4605    0.006    0.000    0.051    0.000 leoGlobals.py:6641(os_path_basename)
+    15928    0.006    0.000    0.018    0.000 leoNodes.py:651(bodyString)
+    12535    0.006    0.000    0.007    0.000 leoNodes.py:45(check_gnx)
+    14212    0.006    0.000    0.336    0.000 re.py:231(compile)
+      167    0.006    0.000    0.049    0.000 leoGlobals.py:3683(readFileIntoString)
+        1    0.006    0.006    0.040    0.040 qt_gui.py:46(__init__)
+        7    0.005    0.001    0.058    0.008 leoKeys.py:2264(makeBindingsFromCommandsDict)
+      749    0.005    0.000    0.162    0.000 &lt;frozen importlib._bootstrap&gt;:870(_find_spec)
+      693    0.005    0.000    0.007    0.000 &lt;frozen importlib._bootstrap_external&gt;:430(_validate_bytecode_header)
+    13208    0.005    0.000    0.009    0.000 leoGlobals.py:207(__init__)
+    15928    0.005    0.000    0.023    0.000 leoNodes.py:1572(__get_b)
+       80    0.005    0.000    0.008    0.000 qt_frame.py:4354(__init__)
+     8005    0.005    0.000    0.031    0.000 leoGlobals.py:6792(&lt;listcomp&gt;)
+     6570    0.005    0.000    0.013    0.000 &lt;frozen importlib._bootstrap_external&gt;:57(_path_join)
+      693    0.005    0.000    0.178    0.000 &lt;frozen importlib._bootstrap_external&gt;:743(get_code)
+    18155    0.005    0.000    0.005    0.000 leoGlobals.py:1866(_checkKeyType)
+     4055    0.005    0.000    0.057    0.000 leoNodes.py:2014(anyAtFileNodeName)
+     4252    0.005    0.000    0.069    0.000 leoKeys.py:2913(registerCommand)
+    13517    0.005    0.000    0.007    0.000 sre_parse.py:163(__getitem__)
+</t>
+<t tx="ekr.20180828034324.24">         11685846 function calls (11653798 primitive calls) in 8.145 seconds
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   
+# Slow but not terrible.
+   145181    0.208    0.000    0.422    0.000 spellCommands.py:243(add_expanded_line)
+   
+# Benchmark: scan_lines is fast.
+# Cumulative time is a bit surprising. It calls regex methods and the Vnode ctor.
+      165    0.162    0.001    0.333    0.002 leoAtFile.py:5163(scan_lines)
+      
+# Expected...
+    12544    0.067    0.000    0.082    0.000 leoNodes.py:1931(vnode.__init__)  # Expected.
+     1829    0.119    0.000    0.230    0.001 sre_parse.py:470(_parse)          # Expected.
+      
+# Marks big surprises.
+# These take almost as long as fast_at.scan_line.
+  
+# Benchmarks: lots of calls. Fast, but these do add almost 1.0 seconds to the total.
+   679649    0.093    0.000    0.093    0.000 {method 'add' of 'set' objects}
+  1236269    0.089    0.000    0.089    0.000 {built-in method builtins.len}
+      691    0.088    0.000    0.088    0.000 {built-in method marshal.loads}
+     5428    0.087    0.000    0.087    0.000 {built-in method winreg.OpenKey}
+   776730    0.082    0.000    0.082    0.000 {built-in method builtins.isinstance}
+    57936    0.072    0.000    0.100    0.000 ntpath.py:121(splitdrive)
+   248025    0.067    0.000    0.067    0.000 {method 'replace' of 'str' objects}
+        2    0.061    0.030    0.105    0.053 spellCommands.py:132(add_words_from_dict)
+   393127    0.061    0.000    0.061    0.000 {method 'startswith' of 'str' objects}
+     1070    0.058    0.000    0.058    0.000 {method 'splitlines' of 'str' objects}
+   166257    0.046    0.000    0.047    0.000 {built-in method builtins.hasattr}
+     2718    0.042    0.000    0.279    0.000 {built-in method builtins.__build_class__}
+        1    0.041    0.041    0.655    0.655 mod_scripting.py:521(createAllButtons) #
+    40356    0.033    0.000    0.101    0.000 leoNodes.py:517(p.self_and_parents)
+   
+# Benchmarks: the actual read code is very fast.
+      748    0.040    0.000    0.041    0.000 {built-in method io.open}
+        6    0.031    0.005    0.031    0.005 {method 'feed' of 'xml.etree.ElementTree.XMLParser' objects}
+      696    0.028    0.000    0.028    0.000 {method 'read' of '_io.FileIO' objects} #
+      
+# g functions.  Why are they called so often? These add about 1.0 seconds.
+   521491    0.138    0.000    0.188    0.000 leoGlobals.py:5551(g.isUnicode) #
+   212321    0.135    0.000    0.243    0.000 leoGlobals.py:4530(g.match_word) #
+   355472    0.095    0.000    0.229    0.000 leoGlobals.py:5628(g.toUnicode) #
+    11373    0.095    0.000    0.095    0.000 leoGlobals.py:2961(&lt;listcomp&gt;) # g.compute_directives_re
+    10435    0.093    0.000    0.397    0.000 leoGlobals.py:4494(g.is_special) #
+    11373    0.091    0.000    0.302    0.000 leoGlobals.py:2911(g.get_directives_dict) #
+   158556    0.069    0.000    0.115    0.000 leoGlobals.py:4585(g.skip_line) #
+    57881    0.048    0.000    0.115    0.000 leoGlobals.py:6958(g.toUnicodeFileEncoding) #
+   186038    0.044    0.000    0.061    0.000 leoGlobals.py:5579(g.isWordChar) #
+      
+# Position and vnode methods.  Why are they called so often?
+   204403    0.104    0.000    0.104    0.000 leoNodes.py:198(p.__init__) # Very bad
+   204235    0.094    0.000    0.198    0.000 leoNodes.py:1338(p.copy) # Very bad
+   106781    0.091    0.000    0.311    0.000 leoNodes.py:1203(p.moveToThreadNext) # 
+   132602    0.082    0.000    0.214    0.000 leoNodes.py:2228(v.headString) #
+    72681    0.079    0.000    0.367    0.000 leoCommands.py:812(c.all_unique_positions) #
+    98137    0.078    0.000    0.105    0.000 leoNodes.py:1150(p.moveToNext) #
+   122195    0.073    0.000    0.111    0.000 leoNodes.py:780(p.hasNext) #
+   239756    0.053    0.000    0.053    0.000 leoNodes.py:1025(v._parentVnode) #
+   119593    0.039    0.000    0.231    0.000 leoNodes.py:654(p.headString) #
+   119593    0.034    0.000    0.265    0.000 leoNodes.py:1601(p.__get_h) #
+    55575    0.026    0.000    0.035    0.000 leoNodes.py:1184(p.moveToParent) #</t>
+<t tx="ekr.20180828034324.25">         11685846 function calls (11653798 primitive calls) in 8.145 seconds
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+
+# Probably from cProfile, not a big deal...
+        1    1.129    1.129    1.305    1.305 {built-in method exec_}
+      584    1.025    0.002    1.025    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
+     6775    0.219    0.000    0.219    0.000 {built-in method nt.stat}
+
+# Surprise, but not horrible.
+   145181    0.208    0.000    0.422    0.000 spellCommands.py:243(add_expanded_line) # 
+   
+# The first benchmark: 165 files scanned in about 0.16 seconds.  Very good.
+      165    0.162    0.001    0.333    0.002 leoAtFile.py:5163(fast_at.scan_lines)
+
+# marks routines that have way too many calls, and add way too much time.
+# Each of these items adds almost as much time as scan_lines!
+
+   521491    0.138    0.000    0.188    0.000 leoGlobals.py:5551(g.isUnicode) #
+   212321    0.135    0.000    0.243    0.000 leoGlobals.py:4530(g.match_word) #
+    35564    0.131    0.000    0.260    0.000 ntpath.py:471(normpath)
+     1829    0.119    0.000    0.230    0.001 sre_parse.py:470(_parse) # Expected, imo.
+   585766    0.119    0.000    0.119    0.000 {method 'find' of 'str' objects}
+   204403    0.104    0.000    0.104    0.000 leoNodes.py:198(__init__)
+   355472    0.095    0.000    0.229    0.000 leoGlobals.py:5628(g.toUnicode) #
+    11373    0.095    0.000    0.095    0.000 leoGlobals.py:2961(g.compute_directives_re()) # 
+   204235    0.094    0.000    0.198    0.000 leoNodes.py:1338(p.copy) # Very bad, very surprising.
+   679649    0.093    0.000    0.093    0.000 {method 'add' of 'set' objects}
+    10435    0.093    0.000    0.397    0.000 leoGlobals.py:4494(g.is_special) #
+    11373    0.091    0.000    0.302    0.000 leoGlobals.py:2911(g.get_directives_dict) #
+   106781    0.091    0.000    0.311    0.000 leoNodes.py:1203(p.moveToThreadNext) # Slow!
+
+# Benchmark: lots of calls, not too much time.
+  1236269    0.089    0.000    0.089    0.000 {built-in method builtins.len} 
+   ...
+   132602    0.082    0.000    0.214    0.000 leoNodes.py:2228(v.headString) #
+...
+    72681    0.079    0.000    0.367    0.000 leoCommands.py:812(c.all_unique_positions) #
+    98137    0.078    0.000    0.105    0.000 leoNodes.py:1150(p.moveToNext) #
+   122195    0.073    0.000    0.111    0.000 leoNodes.py:780(p.hasNext) #
+    57936    0.072    0.000    0.100    0.000 ntpath.py:121(splitdrive)
+   158556    0.069    0.000    0.115    0.000 leoGlobals.py:4585(g.skip_line) #
+   248025    0.067    0.000    0.067    0.000 {method 'replace' of 'str' objects}
+
+# Another benchmark: about the expected number of calls, and a reasonable time.
+    12544    0.067    0.000    0.082    0.000 leoNodes.py:1931(v.__init__)
+
+        2    0.061    0.030    0.105    0.053 spellCommands.py:132(add_words_from_dict)
+   393127    0.061    0.000    0.061    0.000 {method 'startswith' of 'str' objects}
+     1070    0.058    0.000    0.058    0.000 {method 'splitlines' of 'str' objects}
+   239756    0.053    0.000    0.053    0.000 leoNodes.py:1025(p._parentVnode) # 
+    57881    0.048    0.000    0.115    0.000 leoGlobals.py:6958(g.toUnicodeFileEncoding) # ???
+   166257    0.046    0.000    0.047    0.000 {built-in method builtins.hasattr}
+   186038    0.044    0.000    0.061    0.000 leoGlobals.py:5579(g.isWordChar) #
+...
+# The last benchmarks: Python's readers are very fast.
+        6    0.031    0.005    0.031    0.005 {method 'feed' of 'xml.etree.ElementTree.XMLParser' objects}
+      696    0.028    0.000    0.028    0.000 {method 'read' of '_io.FileIO' objects}</t>
+<t tx="ekr.20180828034324.26">         9245840 function calls (9213587 primitive calls) in 7.827 seconds
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   
+# cProfile stuff.
+        1    1.727    1.727    2.014    2.014 {built-in method exec_}
+      584    1.022    0.002    1.022    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
+     6785    0.212    0.000    0.212    0.000 {built-in method nt.stat}
+
+# Costly, but no obvious improvements.
+   145181    0.184    0.000    0.355    0.000 spellCommands.py:243(add_expanded_line)
+   
+# Benchmark: good speed.
+      165    0.165    0.001    0.337    0.002 leoAtFile.py:5163(scan_lines)
+
+    37909    0.139    0.000    0.275    0.000 ntpath.py:471(normpath)
+ 1837/450    0.118    0.000    0.228    0.001 sre_parse.py:470(_parse)
+    12016    0.099    0.000    0.099    0.000 leoGlobals.py:2988(&lt;listcomp&gt;) # g.compute_directives_re
+   671831    0.093    0.000    0.093    0.000 {method 'add' of 'set' objects}
+    12016    0.092    0.000    0.313    0.000 leoGlobals.py:2938(get_directives_dict) # improved.
+     5428    0.086    0.000    0.086    0.000 {built-in method winreg.OpenKey}
+      692    0.081    0.000    0.081    0.000 {built-in method marshal.loads}
+    97755    0.078    0.000    0.272    0.000 leoNodes.py:1202(moveToThreadNext) # reasonable.
+    61012    0.076    0.000    0.105    0.000 ntpath.py:121(splitdrive)
+706639/706638    0.073    0.000    0.074    0.000 {built-in method builtins.isinstance}
+   316660    0.071    0.000    0.111    0.000 leoGlobals.py:5652(toUnicode) # improved
+    12677    0.071    0.000    0.087    0.000 leoNodes.py:1930(__init__)
+    91198    0.070    0.000    0.094    0.000 leoNodes.py:1149(moveToNext)
+    73099    0.067    0.000    0.313    0.000 leoCommands.py:812(all_unique_positions) #
+   113534    0.066    0.000    0.099    0.000 leoNodes.py:779(hasNext) #
+   258990    0.065    0.000    0.065    0.000 {method 'replace' of 'str' objects}
+        2    0.062    0.031    0.107    0.053 spellCommands.py:132(add_words_from_dict) #
+   398502    0.061    0.000    0.061    0.000 {method 'startswith' of 'str' objects}
+     1070    0.057    0.000    0.057    0.000 {method 'splitlines' of 'str' objects}
+    89903    0.056    0.000    0.114    0.000 leoNodes.py:2226(headString)
+   723318    0.053    0.000    0.053    0.000 {built-in method builtins.len}
+    61081    0.050    0.000    0.099    0.000 leoGlobals.py:7007(toUnicodeFileEncoding)
+   224156    0.048    0.000    0.048    0.000 leoNodes.py:1024(_parentVnode)
+   234204    0.045    0.000    0.045    0.000 {method 'find' of 'str' objects}
+   167094    0.043    0.000    0.044    0.000 {built-in method builtins.hasattr}
+    74688    0.042    0.000    0.042    0.000 leoNodes.py:198(p.__init__) # Improved
+   385978    0.041    0.000    0.041    0.000 {method 'append' of 'list' objects}
+2714/2693    0.040    0.000    0.275    0.000 {built-in method builtins.__build_class__}
+    74513    0.039    0.000    0.081    0.000 leoNodes.py:1337(p.copy) # Improved
+      748    0.038    0.000    0.038    0.000 {built-in method io.open} # Benchmark
+   122261    0.037    0.000    0.037    0.000 sre_parse.py:232(__next)
+   298205    0.036    0.000    0.036    0.000 {method 'strip' of 'str' objects}
+      695    0.036    0.000    0.061    0.000 &lt;frozen importlib._bootstrap_external&gt;:830(get_data)
+     9902    0.034    0.000    0.106    0.000 todo.py:525(loadIcons)
+    748/1    0.034    0.000    7.845    7.845 {built-in method builtins.exec}
+   246489    0.033    0.000    0.036    0.000 {method 'get' of 'dict' objects}
+   329433    0.033    0.000    0.033    0.000 {method 'lower' of 'str' objects}
+        2    0.032    0.016    0.397    0.199 spellCommands.py:231(read_words)
+    12629    0.031    0.000    0.050    0.000 leoGlobals.py:6714(os_path_expandExpression)
+        6    0.031    0.005    0.031    0.005 {method 'feed' of 'xml.etree.ElementTree.XMLParser' objects}
+       47    0.030    0.001    0.030    0.001 {method 'execute' of 'sqlite3.Connection' objects}
+   124514    0.030    0.000    0.042    0.000 leoGlobals.py:5585(isUnicode) # Improved
+   118750    0.029    0.000    0.065    0.000 sre_parse.py:253(get)
+      895    0.029    0.000    0.140    0.000 leoNodes.py:738(get_UNL)
+    87970    0.029    0.000    0.032    0.000 {method 'join' of 'str' objects}
+        8    0.027    0.003    0.027    0.003 {built-in method setStyleSheet}
+     8417    0.027    0.000    0.288    0.000 leoGlobals.py:6833(os_path_join)
+    76292    0.026    0.000    0.122    0.000 leoNodes.py:652(headString) # 
+    41651    0.026    0.000    0.063    0.000 leoNodes.py:515(self_and_parents) #
+      695    0.026    0.000    0.026    0.000 {method 'read' of '_io.FileIO' objects}
+     8308    0.025    0.000    0.502    0.000 leoGlobals.py:6793(os_path_finalize_join)
+    54732    0.024    0.000    0.033    0.000 leoNodes.py:1183(moveToParent)
+      932    0.024    0.000    0.027    0.000 sre_compile.py:250(_optimize_charset)
+   197714    0.023    0.000    0.023    0.000 leoNodes.py:282(__bool__)
+    50253    0.023    0.000    0.023    0.000 {method 'match' of '_sre.SRE_Pattern' objects}
+    12016    0.023    0.000    0.131    0.000 leoGlobals.py:2981(compute_directives_re) #
+    20236    0.022    0.000    0.038    0.000 editCommands.py:834(getIconList)
+    10881    0.022    0.000    0.055    0.000 ntpath.py:74(join)
+    16381    0.022    0.000    0.338    0.000 re.py:286(_compile)
+     3598    0.022    0.000    0.370    0.000 leoGlobals.py:2992(get_directives_dict_list) # Improved!
+    76292    0.021    0.000    0.143    0.000 leoNodes.py:1600(__get_h)
+      541    0.021    0.000    0.021    0.000 {method 'read' of '_io.BufferedReader' objects}
+   4731/6    0.021    0.000    0.052    0.009 leoFileCommands.py:2689(v_element_visitor) # benchmark
+    13788    0.021    0.000    0.169    0.000 leoGlobals.py:6766(os_path_expanduser)
+        6    0.020    0.003    0.107    0.018 leoCommands.py:1317(checkGnxs) # Improved
+    17125    0.018    0.000    0.031    0.000 nodetags.py:185(get_tags)
+    13994    0.018    0.000    0.063    0.000 leoNodes.py:1281(safeMoveToThreadNext)
+     5428    0.017    0.000    0.017    0.000 {built-in method winreg.EnumKey}
+        1    0.017    0.017    0.017    0.017 {msleep}
+    19806    0.017    0.000    0.098    0.000 leoCommands.py:749(all_positions)
+        4    0.016    0.004    0.016    0.004 {built-in method show}
+    17/15    0.016    0.001    0.025    0.002 {built-in method _imp.create_dynamic}
+    62440    0.016    0.000    0.022    0.000 leoGlobals.py:5571(isString)
+    22448    0.015    0.000    0.018    0.000 leoNodes.py:1116(moveToFirstChild)
+     3574    0.015    0.000    0.449    0.000 leoCommands.py:1936(scanAtPathDirectives)
+    19424    0.015    0.000    0.021    0.000 leoNodes.py:1103(moveToBack)
+   140295    0.015    0.000    0.015    0.000 {built-in method nt.fspath}
+     6737    0.015    0.000    0.030    0.000 leoGlobals.py:4593(skip_id)
+      524    0.015    0.000    0.015    0.000 {built-in method nt._isdir}
+ 3195/405    0.014    0.000    0.056    0.000 sre_compile.py:64(_compile)
+        1    0.014    0.014    0.134    0.134 mimetypes.py:230(read_windows_registry)
+    11554    0.014    0.000    0.064    0.000 leoNodes.py:1997(findAtFileName)
+      169    0.014    0.000    0.015    0.000 leoAtFile.py:225(initReadIvars)
+    38576    0.013    0.000    0.013    0.000 {method 'split' of 'str' objects}
+    47187    0.013    0.000    0.023    0.000 leoNodes.py:2597(__get_u)
+     9909    0.013    0.000    0.013    0.000 {built-in method today}
+      834    0.013    0.000    0.013    0.000 {built-in method winreg.QueryValueEx}
+     4747    0.012    0.000    0.025    0.000 ntpath.py:199(split)
+     1406    0.012    0.000    0.925    0.001 leoGlobals.py:3476(fullPath)
+   105023    0.012    0.000    0.012    0.000 sre_parse.py:248(match)
+        2    0.012    0.006    0.017    0.009 QNCalendarWidget.py:35(build)
+        8    0.011    0.001    0.012    0.001 {built-in method addTab}
+    27635    0.011    0.000    0.011    0.000 {method 'finditer' of '_sre.SRE_Pattern' objects}
+    13794    0.011    0.000    0.018    0.000 ntpath.py:308(expanduser)
+     1307    0.011    0.000    0.134    0.000 &lt;frozen importlib._bootstrap_external&gt;:1233(find_spec)
+    45828    0.011    0.000    0.015    0.000 leoGlobals.py:5617(isWordChar) #
+    18002    0.011    0.000    0.017    0.000 leoGlobals.py:4540(match)
+     8200    0.011    0.000    0.015    0.000 leoGlobals.py:4675(skip_ws)
+    39621    0.010    0.000    0.015    0.000 todo.py:607(getat)
+      683    0.010    0.000    0.010    0.000 {method 'decode' of 'bytes' objects}
+     8006    0.010    0.000    0.059    0.000 leoGlobals.py:6797(&lt;listcomp&gt;)
+    17124    0.009    0.000    0.053    0.000 leoChapters.py:245(parseHeadline)
+    17991    0.009    0.000    0.009    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+       25    0.009    0.000    0.009    0.000 {built-in method repaint}
+        1    0.009    0.009    0.009    0.009 backend.py:71(Backend)
+        2    0.009    0.004    0.009    0.004 {built-in method setCalendarWidget}
+    48232    0.009    0.000    0.009    0.000 {method 'pop' of 'list' objects}
+    14000    0.009    0.000    0.074    0.000 leoCommands.py:832(safe_all_positions)
+      721    0.009    0.000    0.009    0.000 {method 'connect' of 'PyQt5.QtCore.pyqtBoundSignal' objects}
+     9202    0.009    0.000    0.085    0.000 ntpath.py:538(abspath)
+     9202    0.008    0.000    0.008    0.000 {built-in method nt._getfullpathname}
+     4040    0.008    0.000    0.012    0.000 leoMenu.py:247(&lt;listcomp&gt;)
+      184    0.008    0.000    0.008    0.000 {built-in method _hashlib.openssl_md5}
+        2    0.008    0.004    0.150    0.075 leoChapters.py:318(setAllChapterNames)
+     8006    0.008    0.000    0.491    0.000 leoCommands.py:1884(os_path_finalize_join)
+     8712    0.008    0.000    0.014    0.000 leoGlobals.py:4554(match_word) # Much improved
+   109997    0.008    0.000    0.008    0.000 {method 'isalnum' of 'str' objects}
+   9903/1    0.008    0.000    0.185    0.185 todo.py:497(new)
+        1    0.008    0.008    0.062    0.062 backlink.py:412(loadLinksInt)
+    37052    0.007    0.000    0.007    0.000 {method 'lstrip' of 'str' objects}
+    14946    0.007    0.000    0.012    0.000 {built-in method builtins.getattr}
+      172    0.007    0.000    0.007    0.000 {built-in method nt.access}
+    17008    0.007    0.000    0.013    0.000 leoNodes.py:2171(bodyString)
+     6248    0.007    0.000    0.070    0.000 leoGlobals.py:6875(os_path_normpath)
+     5920    0.007    0.000    0.018    0.000 enum.py:801(__and__)
+   104812    0.007    0.000    0.007    0.000 {built-in method builtins.ord}
+    96311    0.007    0.000    0.007    0.000 {method 'isspace' of 'str' objects}
+    12677    0.007    0.000    0.014    0.000 leoNodes.py:102(new_vnode_helper)
+     5628    0.007    0.000    0.013    0.000 leoGlobals.py:2053(add)
+     8417    0.007    0.000    0.171    0.000 leoGlobals.py:6850(&lt;listcomp&gt;)
+        1    0.007    0.007    0.174    0.174 todo.py:519(loadAllIcons)
+4500/2094    0.007    0.000    0.008    0.000 sre_parse.py:173(getwidth)
+    42452    0.007    0.000    0.007    0.000 {method 'group' of '_sre.SRE_Match' objects}
+    29691    0.006    0.000    0.113    0.000 leoCommands.py:737(all_unique_nodes)
+     8417    0.006    0.000    0.029    0.000 leoGlobals.py:6841(&lt;listcomp&gt;)
+    10931    0.006    0.000    0.012    0.000 leoGlobals.py:2103(get)
+     4250    0.006    0.000    0.059    0.000 leoKeys.py:2956(registerCommandShortcut)
+     2294    0.006    0.000    0.029    0.000 leoAtFile.py:3705(putCodeLine)
+    12946    0.006    0.000    0.007    0.000 enum.py:515(__new__)
+     5220    0.006    0.000    0.014    0.000 leoAtFile.py:4321(os)
+     6406    0.006    0.000    0.027    0.000 leoConfig.py:1728(getShortcut)
+       96    0.006    0.000    0.009    0.000 {built-in method builtins.sorted}
+        1    0.006    0.006    1.403    1.403 leoAtFile.py:703(readAll)
+     4603    0.006    0.000    0.047    0.000 leoGlobals.py:6690(os_path_basename)
+        1    0.006    0.006    0.040    0.040 qt_gui.py:46(__init__)
+  794/141    0.006    0.000    2.087    0.015 &lt;frozen importlib._bootstrap&gt;:966(_find_and_load)
+    16628    0.006    0.000    0.024    0.000 leoNodes.py:1571(__get_b)
+3137/2629    0.006    0.000    0.007    0.000 proxy_metaclass.py:77(__getattribute__)
+     1928    0.005    0.000    0.281    0.000 leoConfig.py:1898(visitNode)
+      167    0.005    0.000    0.047    0.000 leoGlobals.py:3711(readFileIntoString)
+    16628    0.005    0.000    0.018    0.000 leoNodes.py:649(bodyString)
+        7    0.005    0.001    0.058    0.008 leoKeys.py:2264(makeBindingsFromCommandsDict)
+      749    0.005    0.000    0.156    0.000 &lt;frozen importlib._bootstrap&gt;:870(_find_spec)
+    15370    0.005    0.000    0.334    0.000 re.py:231(compile)
+     8853    0.005    0.000    0.008    0.000 leoGlobals.py:4606(skip_line) # Much improved.
+    12677    0.005    0.000    0.007    0.000 leoNodes.py:45(check_gnx)
+      693    0.005    0.000    0.007    0.000 &lt;frozen importlib._bootstrap_external&gt;:430(_validate_bytecode_header)
+        1    0.005    0.005    0.005    0.005 qt_gui.py:879(getIconImage)
+     4267    0.005    0.000    0.055    0.000 leoNodes.py:2012(anyAtFileNodeName)
+       19    0.005    0.000    0.055    0.003 leoCommands.py:1181(setChanged)
+      693    0.005    0.000    0.194    0.000 &lt;frozen importlib._bootstrap_external&gt;:743(get_code)
+     4250    0.005    0.000    0.065    0.000 leoKeys.py:2913(registerCommand)
+        2    0.005    0.002    0.005    0.002 {built-in method minimumSizeHint}
+    13566    0.005    0.000    0.007    0.000 sre_parse.py:163(__getitem__)
+      171    0.005    0.000    0.026    0.000 leoExternalFiles.py:334(checksum)
+     1386    0.005    0.000    0.014    0.000 &lt;frozen importlib._bootstrap_external&gt;:263(cache_from_source)
+        6    0.005    0.001    0.005    0.001 leoFileCommands.py:2655(scanTnodes)
+     6570    0.005    0.000    0.012    0.000 &lt;frozen importlib._bootstrap_external&gt;:57(_path_join)
+    12956    0.005    0.000    0.013    0.000 enum.py:265(__call__)
+       84    0.005    0.000    0.005    0.000 {built-in method nt.listdir}
+     1034    0.005    0.000    0.008    0.000 &lt;frozen importlib._bootstrap&gt;:157(_get_module_lock)
+       80    0.005    0.000    0.007    0.000 qt_frame.py:4354(__init__)
+        1    0.004    0.004    0.078    0.078 backlink.py:116(fixIDs)
+     4265    0.004    0.000    0.008    0.000 leoConfig.py:1129(canonicalizeSettingName)
+    17694    0.004    0.000    0.004    0.000 leoGlobals.py:539(__hash__)
+      165    0.004    0.000    0.657    0.004 leoAtFile.py:464(read)
+    16834    0.004    0.000    0.004    0.000 {built-in method builtins.min}
+     6570    0.004    0.000    0.006    0.000 &lt;frozen importlib._bootstrap_external&gt;:59(&lt;listcomp&gt;)
+    17862    0.004    0.000    0.004    0.000 leoGlobals.py:2038(_checkKeyType)
+       82    0.004    0.000    0.008    0.000 &lt;frozen importlib._bootstrap_external&gt;:1067(_path_hooks)
+        1    0.004    0.004    0.063    0.063 nodetags.py:175(get_tagged_gnxes)
+        1    0.004    0.004    0.062    0.062 nodetags.py:140(initialize_taglist)
+     1928    0.004    0.000    0.016    0.000 leoConfig.py:713(parseHeadline)
+    23391    0.004    0.000    0.004    0.000 leoNodes.py:775(hasBack)
+        2    0.004    0.002    0.021    0.011 QNCalendarWidget.py:20(__init__)
+ 1197/405    0.004    0.000    0.230    0.001 sre_parse.py:407(_parse_sub)
+      876    0.004    0.000    0.150    0.000 leoConfig.py:845(set)
+    35055    0.004    0.000    0.004    0.000 leoGlobals.py:4532(is_ws)
+     1324    0.004    0.000    0.019    0.000 leoKeys.py:2025(bindKey)
+      165    0.004    0.000    0.010    0.000 leoAtFile.py:5120(post_pass)
+      714    0.004    0.000    0.018    0.000 &lt;frozen importlib._bootstrap&gt;:504(_init_module_attrs)
+     6286    0.004    0.000    0.007    0.000 leoGlobals.py:458(write)
+     9902    0.003    0.000    0.021    0.000 editCommands.py:842(setIconList)
+     5428    0.003    0.000    0.021    0.000 mimetypes.py:243(enum_types)
+        6    0.003    0.001    0.110    0.018 leoCommands.py:1516(checkOutline)
+
+</t>
+<t tx="ekr.20180828034324.27"> 145181 g.isUnicode:__init__,read_words,add_expanded_line,toUnicode
+  66369 g.isUnicode:__get_h,headString,headString,toUnicode
+  52902 g.isUnicode:get_UNL,__get_h,headString,headString
+  11400 g.isUnicode:munge,os_path_normpath,toUnicodeFileEncoding,toUnicode
+   8924 g.isUnicode:shortFileName,os_path_basename,toUnicodeFileEncoding,toUnicode
+   7744 g.isUnicode:get_directives_dict,__get_b,bodyString,bodyString
+   7488 g.isUnicode:&lt;listcomp&gt;,os_path_expanduser,toUnicodeFileEncoding,toUnicode
+   7449 g.isUnicode:anyAtFileNodeName,findAtFileName,headString,toUnicode
+   6986 g.isUnicode:v_element_visitor,v_element_visitor,v_element_visitor,v_element_visitor
+   6539 g.isUnicode:os_path_finalize_join,&lt;listcomp&gt;,os_path_expandExpression,toUnicode
+   5643 g.isUnicode:get_directives_dict,__get_h,headString,headString
+   
+   4841 g.isUnicode:isAnyAtFileNode,isAnyAtFileNode,headString,toUnicode
+   4797 g.isUnicode:idle_check_commander,isAnyAtFileNode,isAnyAtFileNode,headString
+   4580 g.isUnicode:os_path_finalize_join,os_path_join,toUnicodeFileEncoding,toUnicode
+   4565 g.isUnicode:anyAtFileNodeName,findAtFileName,skip_id,toUnicode
+   4044 g.isUnicode:anyAtFileNodeName,anyAtFileNodeName,findAtFileName,headString
+   3405 g.isUnicode:isAnyAtFileNode,anyAtFileNodeName,findAtFileName,headString
+   2489 g.isUnicode:createAllButtons,__get_h,headString,headString
+   2280 g.isUnicode:parse,parse,feed,characters
+   2054 g.isUnicode:visitNode,__get_h,headString,headString
+   1866 g.isUnicode:putLine,putCodeLine,onl,os
+   1747 g.isUnicode:visitNode,parseHeadline,skip_id,toUnicode
+   1715 g.isUnicode:putBody,putLine,putCodeLine,os
+   1302 g.isUnicode:parseHeadline,__get_h,headString,headString
+
+==== After 1
+
+  52902 g.isUnicode:get_UNL,__get_h,headString,headString
+   7459 g.isUnicode:get_directives_dict,__get_b,bodyString,bodyString
+   6986 g.isUnicode:v_element_visitor,v_element_visitor,v_element_visitor,v_element_visitor
+   5423 g.isUnicode:get_directives_dict,__get_h,headString,headString
+   3919 g.isUnicode:anyAtFileNodeName,anyAtFileNodeName,findAtFileName,headString
+   2489 g.isUnicode:createAllButtons,__get_h,headString,headString
+   2280 g.isUnicode:parse,parse,feed,characters
+   2132 g.isUnicode:idle_check_commander,isAnyAtFileNode,isAnyAtFileNode,headString
+   2054 g.isUnicode:visitNode,__get_h,headString,headString
+   1866 g.isUnicode:putLine,putCodeLine,onl,os
+   1715 g.isUnicode:putBody,putLine,putCodeLine,os
+   1550 g.isUnicode:isAnyAtFileNode,anyAtFileNodeName,findAtFileName,headString
+   1302 g.isUnicode:parseHeadline,__get_h,headString,headString
+   
+===== After 2
+
+     10 g._toUnicode:read,openFileForReading,readFileToUnicode,toUnicode
+      7 g._toUnicode:readAll,readOneAtCleanNode,read_at_clean_lines,toUnicode
+      6 g._toUnicode:openLeoFile,getLeoFile,readFile,toUnicode
+      5 g._toUnicode:read,read_into_root,readFileIntoString,toUnicode
+      3 g._toUnicode:read_into_root,readFileIntoString,getPythonEncodingFromString,toUnicode
+      2 g._toUnicode:__init__,__init__,read_words,toUnicode
+      1 g._toUnicode:createOutline,init_import,readFileIntoString,toUnicode
+</t>
+<t tx="ekr.20180828034324.28">    584 g.is_special:readExternalFiles,readAll,isAtIgnoreNode,isAtIgnoreNode
+    474 g.is_special:putVnode,putVnode,isAtIgnoreNode,isAtIgnoreNode
+    134 g.is_special:onCreate,createAllButtons,isAtIgnoreNode,isAtIgnoreNode
+     43 g.is_special:putVnodes,putVnode,isAtIgnoreNode,isAtIgnoreNode
+     32 g.is_special:visitNode,doCommands,isAtIgnoreNode,isAtIgnoreNode
+      6 g.is_special:visitNode,doButtons,isAtIgnoreNode,isAtIgnoreNode
+      5 g.is_special:findReference,findReference,isAtIgnoreNode,isAtIgnoreNode</t>
+<t tx="ekr.20180828034324.29"># After s.bat.
+
+# Yikes: createAllButtons takes a long time.
+244179 g.match_word:createAllButtons,isAtIgnoreNode,isAtIgnoreNode,is_special
+ 76017 g.match_word:doHandlersForTag,callTagHandler,onCreate,createAllButtons
+ 16801 g.match_word:onCreate,createAllButtons,isAtIgnoreNode,isAtIgnoreNode
+  
+# Nothing else matters much...
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+2861 g.match_word:readAll,isAtIgnoreNode,isAtIgnoreNode,is_special
+2572 g.match_word:putVnode,isAtIgnoreNode,isAtIgnoreNode,is_special
+1824 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1089 g.match_word:isAnyAtFileNode,isAnyAtFileNode,anyAtFileNodeName,findAtFileName
+   
+===== After
+
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1645 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+</t>
+<t tx="ekr.20180828034324.3">https://github.com/leo-editor/leo-editor/issues/841
+</t>
+<t tx="ekr.20180828034324.30"># Called from get_directives_dict_list
+  76528 p.__init__:fullPath,get_directives_dict_list,self_and_parents,copy
+  31818 p.__init__:readAll,fullPath,get_directives_dict_list,copy
+   2196 p.__init__:idle_check_at_file_node,fullPath,get_directives_dict_list,copy
+
+# p.generators...
+  30701 p.__init__:safe_all_positions,safeMoveToThreadNext,self_and_parents,copy
+  30158 p.__init__:fixIDs,all_unique_nodes,all_unique_positions,copy
+  22121 p.__init__:setChanged,all_unique_nodes,all_unique_positions,copy
+  24422 p.__init__:checkOutline,checkGnxs,safe_all_positions,copy
+  19398 p.__init__:readAll,fullPath,self_and_parents,copy
+  15079 p.__init__:finishCreate,setAllChapterNames,all_unique_positions,copy
+  14756 p.__init__:find_at_persistence_node,findNodeAnywhere,all_unique_positions,copy
+  17211 p.__init__:new,loadAllIcons,all_positions,copy
+  12537 p.__init__:readExternalFiles,restoreDescendentAttributes,all_unique_positions,copy
+  10726 p.__init__:getLeoFile,resolveTnodeLists,all_unique_positions,copy
+   9991 p.__init__:contractAllHeadlinesCommand,contractAllHeadlines,all_positions,copy
+   5008 p.__init__:set,get_UNL,self_and_parents,copy
+   4327 p.__init__:putVnodes,clearAllVisited,all_unique_positions,copy
+  
+# All others.
+  19898 p.__init__:set,get_UNL,getBack,copy
+   9315 p.__init__:doBool,set,get_UNL,copy
+   6745 p.__init__:doColor,set,get_UNL,copy
+   6004 p.__init__:doString,set,get_UNL,copy
+   1973 p.__init__:createSettingsDicts,traverse,visitNode,copy
+   1706 p.__init__:doData,set,get_UNL,copy
+   1563 p.__init__:doInt,set,get_UNL,copy
+   1531 p.__init__:eventFilter,__get_p,currentPosition,copy
+   1129 p.__init__:drawChildren,drawNode,rememberItem,copy
+   1120 p.__init__:visitNode,set,get_UNL,copy
+   1001 p.__init__:doFont,set,get_UNL,copy
+</t>
+<t tx="ekr.20180828034324.31">This branch incorporates Vitalije's great new read code.  This code reads external files (from @file nodes) almost exactly as fast as when using the cacher.
+
+As a result, file caching is no longer needed, The --no-cache option is gone.
+
+** Highlights of the fast-read branch **
+
+1. It includes the no-sax branch.  That is, the fast-read branch contains new code for reading both external files and .leo files.
+
+2. Caching has been radically simplified:
+
+A. No file caching whatever is done.  The cache contains only non-essential items, such as marked and expanded bits.
+
+B. ~/.leo/db now contains only two sub-folders: g_app_db and global_data.  g_app_db corresponds to the old "global" folder.  It contains the cached result of g.app.db.  The global_data folder contains all expanded and marked bits, plus some other data.  The keys are simply the full path names of each .leo file.  This should be safe enough.
+
+3. Leo writes only a vestigial &lt;globals&gt; element in .leo files.  This should be enough to allow old (Leo 4.5 and above) versions of Leo to read .leo files.
+
+4. Leo no longer writes expanded and marked bits to the root node of @file trees.
+
+5. As a result of 2, 3 and 4, all Leo files are essentially "fixed".  Their contents will change much less often than before.  As a result, the c.fixed switch has been eliminated, along with the @bool fixedwindow setting.
+
+6. The g.enableDB switch has been eliminated. The --no-cache command-line argument has been deprecated.
+
+**Summary**
+
+Leo now works as if --no-cache were permanently in effect.  In other words, Leo always recreates outlines directly from external files.  This eliminates an important source of confusion.
+
+Leo's new read code is almost exactly as fast as reading cached data, a remarkable accomplishment.
+
+Leo no longer pollutes .leo files with non-essential data, resulting in fewer diffs of .leo files.
+
+**Code**
+
+https://github.com/leo-editor/leo-editor/issues/934</t>
+<t tx="ekr.20180828034324.32">This branch greatly reduces overhead during startup.
+
+1. All generators yielding positions now accept a "copy" kwarg.
+
+   The default value is True, for compatibility with user scripts.
+   
+   When True, these generators yield *copies* of all positions.
+
+   Leo's core sets copy=False in several places, greatly reducing
+   unnecessary positions.
+
+2. g.isUnicode and g.toUnicode are simpler and faster.
+
+3. Rewrote g.is_special, greatly reduced calls to g.match_words.</t>
+<t tx="ekr.20180828034324.33"># get_UNL makes way too many copies.
+
+  11831 p.copy:visitNode,doBool,set,get_UNL
+   6827 p.copy:visitNode,doColor,set,get_UNL
+   9217 p.copy:doBool,set,get_UNL,getBack
+   6717 p.copy:visitNode,doString,set,get_UNL
+   4581 p.copy:doString,set,get_UNL,getBack
+   4287 p.copy:doColor,set,get_UNL,getBack
+   2470 p.copy:visitNode,doData,set,get_UNL
+   2089 p.copy:visitNode,doInt,set,get_UNL
+   1986 p.copy:doData,set,get_UNL,getBack
+   1673 p.copy:doInt,set,get_UNL,getBack
+   1668 p.copy:doBool,set,get_UNL,self_and_parents
+   1503 p.copy:doColor,set,get_UNL,self_and_parents
+   1477 p.copy:traverse,visitNode,set,get_UNL
+   1282 p.copy:doString,set,get_UNL,self_and_parents
+   1183 p.copy:visitNode,set,get_UNL,getBack
+   1001 p.copy:visitNode,doFont,set,get_UNL
+   
+# All others
+   6828 p.copy:readAll,fullPath,get_directives_dict_list,self_and_parents
+   4303 p.copy:putLeoOutline,putVnodes,clearAllVisited,all_unique_positions
+   4220 p.copy:checkGnxs,safe_all_positions,safeMoveToThreadNext,self_and_parents
+   4183 p.copy:getLeoFile,checkOutline,checkGnxs,safe_all_positions
+   4080 p.copy:openLeoFile,getLeoFile,resolveTnodeLists,all_unique_positions
+   3762 p.copy:readExternalFiles,readAll,fullPath,get_directives_dict_list
+   2372 p.copy:readExternalFiles,readAll,fullPath,self_and_parents
+   2054 p.copy:computeLocalSettings,createSettingsDicts,traverse,visitNode
+</t>
+<t tx="ekr.20180828034324.34"># g.get_directive_dict_list
+  67470 p.copy:readAll,fullPath,get_directives_dict_list,self_and_parents
+  31172 p.copy:readExternalFiles,readAll,fullPath,get_directives_dict_list
+  
+# g.safeMoveToThreadNext
+  30497 p.copy:checkGnxs,safe_all_positions,safeMoveToThreadNext,self_and_parents
+  
+# c.checkGnxs
+  24119 p.copy:getLeoFile,checkOutline,checkGnxs,safe_all_positions
+  
+  
+  18974 p.copy:readExternalFiles,readAll,fullPath,self_and_parents
+  17110 p.copy:__init__,new,loadAllIcons,all_positions
+  15083 p.copy:finishOpen,finishCreate,setAllChapterNames,all_unique_positions
+  14756 p.copy:update_after_read_foreign_file,find_at_persistence_node,findNodeAnywhere,all_unique_positions
+  10423 p.copy:openLeoFile,getLeoFile,resolveTnodeLists,all_unique_positions
+   4327 p.copy:putLeoOutline,putVnodes,clearAllVisited,all_unique_positions
+   3983 p.copy:getLeoFile,readExternalFiles,restoreDescendentAttributes,all_unique_positions
+   3264 p.copy:idle_check_at_file_node,fullPath,get_directives_dict_list,self_and_parents
+   1973 p.copy:computeLocalSettings,createSettingsDicts,traverse,visitNode
+   1559 p.copy:openFileForReading,fullPath,get_directives_dict_list,self_and_parents
+   1464 p.copy:idle_check_commander,idle_check_at_file_node,fullPath,get_directives_dict_list
+   
+# get_UNL is not a problem
+   1264 p.copy:visitNode,doColor,set,get_UNL
+   1113 p.copy:visitNode,doBool,set,get_UNL
+   1050 p.copy:visitNode,doString,set,get_UNL
+   </t>
+<t tx="ekr.20180828034324.35">#
+   6828 p.copy:readAll,fullPath,get_directives_dict_list,self_and_parents
+   4303 p.copy:putLeoOutline,putVnodes,clearAllVisited,all_unique_positions
+   4220 p.copy:checkGnxs,safe_all_positions,safeMoveToThreadNext,self_and_parents
+   4183 p.copy:getLeoFile,checkOutline,checkGnxs,safe_all_positions
+   4080 p.copy:openLeoFile,getLeoFile,resolveTnodeLists,all_unique_positions
+   3762 p.copy:readExternalFiles,readAll,fullPath,get_directives_dict_list
+   2372 p.copy:readExternalFiles,readAll,fullPath,self_and_parents
+   2054 p.copy:computeLocalSettings,createSettingsDicts,traverse,visitNode
+
+# p.get_UNL now creates the minimum number of copies.
+   1307 p.copy:visitNode,doBool,set,get_UNL
+   1270 p.copy:visitNode,doColor,set,get_UNL
+   1068 p.copy:visitNode,doString,set,get_UNL
+</t>
+<t tx="ekr.20180828034324.36"># After changing p.safeMoveToThreadNext, g.get_directives_dict_list, c.checkGnxs.
+
+   4303 p.copy:putLeoOutline,putVnodes,clearAllVisited,all_unique_positions
+   
+   4080 p.copy:openLeoFile,getLeoFile,resolveTnodeLists,all_unique_positions
+   
+# Change g.fullPath
+   3762 p.copy:readExternalFiles,readAll,fullPath,get_directives_dict_list
+   2372 p.copy:readExternalFiles,readAll,fullPath,self_and_parents
+   1881 p.copy:readAll,fullPath,get_directives_dict_list,self_and_parents
+   
+   2054 p.copy:computeLocalSettings,createSettingsDicts,traverse,visitNode
+   1307 p.copy:visitNode,doBool,set,get_UNL
+   1270 p.copy:visitNode,doColor,set,get_UNL
+   1068 p.copy:visitNode,doString,set,get_UNL
+   </t>
+<t tx="ekr.20180828034324.37">2054 p.copy:computeLocalSettings,createSettingsDicts,traverse,visitNode
+    # These copies are essential.
+1881 p.copy:readAll,fullPath,get_directives_dict_list,self_and_parents
+    # self_and_parents makes one copy, so this also is minimal.</t>
+<t tx="ekr.20180828034324.38">This is an important simplification of the code.</t>
+<t tx="ekr.20180828034324.39"></t>
+<t tx="ekr.20180828034324.4">https://github.com/leo-editor/leo-editor/issues/893
+</t>
+<t tx="ekr.20180828034324.40">Leo now redraws the screen only once during startup.
+
+Removed qtree.update_appearance and qtree.update_appearance_idle.
+</t>
+<t tx="ekr.20180828034324.41"></t>
+<t tx="ekr.20180828034324.42">https://github.com/leo-editor/leo-editor/issues/871
+
+In fact, this setting has existed for a long time.
+</t>
+<t tx="ekr.20180828034324.43">https://github.com/leo-editor/leo-editor/issues/913
+</t>
+<t tx="ekr.20180828034324.44">https://github.com/leo-editor/leo-editor/issues/932
+
+Commands that *DO* use the printer:
+
+    print-body
+    print-html
+    print-node
+    print-expanded-body
+    print-expanded-html
+    print-marked-bodies
+    print-marked-html
+    print-marked-nodes
+    print-tree-bodies
+    print-tree-html
+    print-tree-nodes
+
+Commands that *DON'T* use the printer:
+
+    gc-show-summary
+    show-all-uas
+    show-bindings
+    show-buttons
+    show-commands
+    show-focus
+    show-node-uas
+    show-plugin-handlers
+    show-plugins-info
+    show-settings
+    show-stats
+    show-style-sheet
+</t>
+<t tx="ekr.20180828034324.45">https://github.com/leo-editor/leo-editor/issues/949
+
+The present code converts a straight quote (single or double) to an opening curly quote if the cursor is at the start of a line or if a blank or tab precedes the cursor.  Otherwise, the code converts a straight quote (single or double) to a closing curly quote.
+</t>
+<t tx="ekr.20180828034324.46">https://github.com/leo-editor/leo-editor/issues/953
+</t>
+<t tx="ekr.20180828034324.47">https://github.com/leo-editor/leo-editor/issues/961
+
+Better tracing if the cursor gui fails to load.</t>
+<t tx="ekr.20180828034324.48">https://github.com/leo-editor/leo-editor/issues/966
+</t>
+<t tx="ekr.20180828034324.49"></t>
+<t tx="ekr.20180828034324.5">https://github.com/leo-editor/leo-editor/issues/917
+</t>
+<t tx="ekr.20180828034324.50"></t>
+<t tx="ekr.20180828034324.51"></t>
+<t tx="ekr.20180828034324.52">This is for debugging only.</t>
+<t tx="ekr.20180828034324.53">https://groups.google.com/forum/#!topic/leo-editor/Nun7rRRhato
+</t>
+<t tx="ekr.20180828034324.54">@language rest
+
+This command just calls g.printStats, which prints the contents of g.app.statsDict.
+
+Put the following snippet at the start of any function/method you wish to profile:
+
+@language python
+
+    if not g.app.statsLockout:
+        g.app.statsLockout = True
+        try:
+            d = g.app.statsDict
+            key = 'g.isUnicode:' + g.callers()
+            d [key] = d.get(key, 0) + 1
+        finally:
+            g.app.statsLockout = False
+            
+@language rest
+
+To see the stats, restart Leo, then do print-stats.
+
+This pattern produces superb statistics that show how many times the *callers* of a routine called the routine.  Here are before/after statistics for g.match_word:
+
+@language python
+
+# Yikes: createAllButtons takes a long time.
+244179 g.match_word:createAllButtons,isAtIgnoreNode,isAtIgnoreNode,is_special
+ 76017 g.match_word:doHandlersForTag,callTagHandler,onCreate,createAllButtons
+ 16801 g.match_word:onCreate,createAllButtons,isAtIgnoreNode,isAtIgnoreNode
+  
+# Nothing else matters much...
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+2861 g.match_word:readAll,isAtIgnoreNode,isAtIgnoreNode,is_special
+2572 g.match_word:putVnode,isAtIgnoreNode,isAtIgnoreNode,is_special
+1824 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1089 g.match_word:isAnyAtFileNode,isAnyAtFileNode,anyAtFileNodeName,findAtFileName
+   
+# After improvements...
+
+7540 g.match_word:writeFromString,writeOpenFile,putBody,directiveKind4
+1646 g.match_word:putLine,putAtOthersLine,putBody,directiveKind4
+1645 g.match_word:fullPath,anyAtFileNodeName,anyAtFileNodeName,findAtFileName
+</t>
+<t tx="ekr.20180828034324.55">https://groups.google.com/forum/#!topic/leo-editor/09H5wX1QRxw
+
+Added .latex and *.sty files, would automatically be recognized as LaTeX. </t>
+<t tx="ekr.20180828034324.56"></t>
+<t tx="ekr.20180828034324.6">https://github.com/leo-editor/leo-editor/issues/922</t>
+<t tx="ekr.20180828034324.7">https://github.com/leo-editor/leo-editor/issues/933
+
+Changes:
+    
+- LM.openEmptyWorkBook now saves/restores clipboard.
+- Deleted qt_gui.setClipboardSelection.
+  It is now a synonym for replaceClipboardWith.
+- qtew.setSelectionRange now sets the selection only if there is selected text.
+</t>
+<t tx="ekr.20180828034324.8">https://github.com/leo-editor/leo-editor/issues/936
+
+The change was to load_session.</t>
+<t tx="ekr.20180828034324.9">https://github.com/leo-editor/leo-editor/issues/938
+
+The fix was in abbrev.init_tree_abbrev_helper.
+</t>
+<t tx="ekr.20190122052932.1">Leo 5.9 final http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.9**
+
+Major features
+- LeoWapp: Leo in a browser.
+- Optional syntax coloring using pygments.
+  Optional: you may use @color &amp; @font directives instead of pygments styles.
+- Integrated debugger.
+
+Other features
+- Nested @clean nodes, useful for LaTex files.
+- A major refactoring of the code that writes external files.
+- Better error recovery.
+- Support for continuous integration with TravisCI.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20190122052932.10">https://github.com/leo-editor/leo-editor/issues/1033
+</t>
+<t tx="ekr.20190122052932.11">https://github.com/leo-editor/leo-editor/issues/1036
+https://github.com/leo-editor/leo-editor/issues/1046</t>
+<t tx="ekr.20190122052932.12">Leo no longer generates @nonl sentinels, so regularizing trailing ws is much easier.
+
+#1048 @clean: https://github.com/leo-editor/leo-editor/issues/1048
+#1037 @file:  https://github.com/leo-editor/leo-editor/issues/1037
+
+</t>
+<t tx="ekr.20190122052932.13">https://github.com/leo-editor/leo-editor/issues/1049
+</t>
+<t tx="ekr.20190122052932.14">https://github.com/leo-editor/leo-editor/issues/1051
+
+Removed @string qt-ui-file-name.
+</t>
+<t tx="ekr.20190122052932.15">https://github.com/leo-editor/leo-editor/issues/1053
+
+This was an ancient bug!
+
+The fix was to call c.setFileTimeStamp(fileName) in x.replaceFileWithString.
+</t>
+<t tx="ekr.20190122052932.16">https://github.com/leo-editor/leo-editor/issues/1056
+</t>
+<t tx="ekr.20190122052932.17">https://github.com/leo-editor/leo-editor/issues/1057
+</t>
+<t tx="ekr.20190122052932.18">https://github.com/leo-editor/leo-editor/issues/1059
+</t>
+<t tx="ekr.20190122052932.19"></t>
+<t tx="ekr.20190122052932.2">For the complete list, see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.8.1+label%3Abug+is%3Aclosed</t>
+<t tx="ekr.20190122052932.20">https://github.com/leo-editor/leo-editor/issues/525
+
+See this posting:
+https://groups.google.com/forum/#!msg/leo-editor/WGQIzBzQ058/QTJRUvl9CwAJ</t>
+<t tx="ekr.20190122052932.21">https://github.com/leo-editor/leo-editor/issues/672
+
+TravisCI: https://travis-ci.org/
+</t>
+<t tx="ekr.20190122052932.22">https://github.com/leo-editor/leo-editor/issues/915
+
+Creates the xdb command and db-* commands.The xdb_pane.py plugin is optional, but recommended.
+</t>
+<t tx="ekr.20190122052932.23">https://github.com/leo-editor/leo-editor/issues/926
+</t>
+<t tx="ekr.20190122052932.24">https://github.com/leo-editor/leo-editor/issues/1005
+</t>
+<t tx="ekr.20190122052932.25">When saving a file, Leo now raises a dialog warning if quitting might lose data.
+
+There are three related issues:
+https://github.com/leo-editor/leo-editor/issues/1031
+https://github.com/leo-editor/leo-editor/issues/1050
+https://github.com/leo-editor/leo-editor/issues/1003
+</t>
+<t tx="ekr.20190122052932.26">https://github.com/leo-editor/leo-editor/issues/1040
+
+This was a major refactoring of Leo's code.
+
+See this post: https://groups.google.com/forum/#!topic/leo-editor/JfAUMMOSdvQ
+</t>
+<t tx="ekr.20190122052932.27">https://github.com/leo-editor/leo-editor/issues/1047
+
+The following call FastRead().readFileFromClipboard:
+    
+- fc.getLeoOutlineFromClipBoard.
+- fc.getLeoOutlineFromClipBoardRetainingClones.
+- fc.getPos/VnodeFromClipboard.
+</t>
+<t tx="ekr.20190122052932.28">- Removed @string trailing-body-newlines.
+- Remove @string qt-ui-file-name.
+- #993: use -, not underscore, for settings names.
+  https://github.com/leo-editor/leo-editor/issues/993
+</t>
+<t tx="ekr.20190122052932.3">https://github.com/leo-editor/leo-editor/issues/804
+
+Changed various style sheets as a workaround for a serious Qt bug.
+</t>
+<t tx="ekr.20190122052932.4">https://github.com/leo-editor/leo-editor/issues/998
+</t>
+<t tx="ekr.20190122052932.5">https://github.com/leo-editor/leo-editor/issues/1002
+</t>
+<t tx="ekr.20190122052932.6">https://github.com/leo-editor/leo-editor/issues/1007
+</t>
+<t tx="ekr.20190122052932.7">https://github.com/leo-editor/leo-editor/issues/1021
+
+The culprit was a mistaken fix to #690:
+https://github.com/leo-editor/leo-editor/issues/690
+</t>
+<t tx="ekr.20190122052932.8">https://github.com/leo-editor/leo-editor/issues/1023
+</t>
+<t tx="ekr.20190122052932.9">https://github.com/leo-editor/leo-editor/issues/1032</t>
+<t tx="ekr.20190617074238.1">Leo 6.0 final, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.0**
+
+- Leo now requires python 3.6 or above.
+  This greatly simplifies Leo's code.
+- Leo's default gui uses Qt Docks.
+  Use --no-dock to use Leo's legacy gui.
+- Several commands now generate clickable links in the Log pane.
+  This greatly speeds navigation.
+- The usual assortment of bug fixes and minor improvements.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20191026200311.1">Leo 6.1 http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.1**
+
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
+- Added support for pandoc and sphinx.
+- Added support for black.
+- The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
+
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20191026200311.10">This page shows all bugs related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Abug</t>
+<t tx="ekr.20191026200311.11">#0490: scroll wheel problems
+https://github.com/leo-editor/leo-editor/issues/490
+
+#1273: dashed border after dialog
+https://github.com/leo-editor/leo-editor/issues/1273
+
+#1274: leoQt.py should return None for everything when in bridge
+https://github.com/leo-editor/leo-editor/issues/1274
+
+#1276: clear-*-uas don't set outline dirty
+https://github.com/leo-editor/leo-editor/issues/1276
+
+#1285: Control-clicks can find definitions in the wrong outline
+https://github.com/leo-editor/leo-editor/issues/1285
+
+#1295: too many @first lines
+https://github.com/leo-editor/leo-editor/issues/1295
+
+#1307: @first/last invalid in @clean
+https://github.com/leo-editor/leo-editor/issues/1307
+
+#1318: better arrangement for docks in new windows
+https://github.com/leo-editor/leo-editor/issues/1318
+
+#1327: Missing outlines for non-existent files
+https://github.com/leo-editor/leo-editor/issues/1327
+
+#1333: undo glitch
+https://github.com/leo-editor/leo-editor/issues/1333
+
+#1334: @language C crashes Leo
+https://github.com/leo-editor/leo-editor/issues/1334
+
+#1335: ipython--exec
+https://github.com/leo-editor/leo-editor/issues/1336
+
+#1340: body/outline ratio in new files
+https://github.com/leo-editor/leo-editor/issues/1344
+
+#1345: unit tests fail from bridge
+https://github.com/leo-editor/leo-editor/issues/1345
+
+#1347: @asis problems
+https://github.com/leo-editor/leo-editor/issues/1347
+
+#1349: Find Status
+https://github.com/leo-editor/leo-editor/issues/1349
+
+#1361: at.precheck is broken
+https://github.com/leo-editor/leo-editor/issues/1361
+
+#1362: crash when reloading
+https://github.com/leo-editor/leo-editor/issues/1362
+
+#1373: Adoc writes to Scripts folder instead of .leo folder when no @path given
+https://github.com/leo-editor/leo-editor/issues/1373
+
+#1379: Crash on saving workbook while simulating a new user's experience
+https://github.com/leo-editor/leo-editor/issues/1378
+
+#1380: Opening workbook for new user selects top-level nodes repeatedly
+https://github.com/leo-editor/leo-editor/issues/1380
+
+#1381: Crash on reloading workbook while simulating newbie experience
+https://github.com/leo-editor/leo-editor/issues/1381
+
+#1385: Console gui doesn't ask to create leoid
+https://github.com/leo-editor/leo-editor/issues/1385
+
+#1392: external file not always saved
+https://github.com/leo-editor/leo-editor/issues/1392
+
+#1403: Catch exceptions during startup
+https://github.com/leo-editor/leo-editor/issues/1403
+
+#1404: ensure well-formed gnx's
+https://github.com/leo-editor/leo-editor/issues/1404
+
+#1415: crash when .leo doesn't exist
+https://github.com/leo-editor/leo-editor/issues/1415
+
+#1416: select first .leo file on the command line
+https://github.com/leo-editor/leo-editor/issues/1416
+</t>
+<t tx="ekr.20191026200311.12">https://github.com/leo-editor/leo-editor/issues/1338
+
+g.getUrlFromNode was expanding path expressions in body text!
+
+This was a serious bug that could lead to the execution of unchecked code.
+
+See also: #1341: limit path expressions
+https://github.com/leo-editor/leo-editor/issues/1341</t>
+<t tx="ekr.20191026200311.13">#1316: unify g.TypedDict classes
+https://github.com/leo-editor/leo-editor/issues/1316
+
+#1323: convert to fstrings
+https://github.com/leo-editor/leo-editor/issues/1323
+
+#1350: LeoBridge option to not use the cache
+https://github.com/leo-editor/leo-editor/issues/1350
+
+#1364: Use """ for all docstrings
+https://github.com/leo-editor/leo-editor/issues/1364
+
+#1394: External file not always saved
+https://github.com/leo-editor/leo-editor/issues/1394
+- p.setDirty() is now much faster than before.
+- Added c.all_positions_for_v generator.
+
+</t>
+<t tx="ekr.20191026200311.14">This page shows all enhancements related to Leo 6.1:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aenhancement
+
+#1253: Support @language asciidoc
+https://github.com/leo-editor/leo-editor/issues/1253
+
+#1297: warnings about @first &amp; @last
+https://github.com/leo-editor/leo-editor/issues/1297
+
+#1342: use labels in Find Tab
+https://github.com/leo-editor/leo-editor/issues/1342
+
+#1351: removed click/drag commands
+https://github.com/leo-editor/leo-editor/issues/1351
+
+#1353: new cursor commands
+https://github.com/leo-editor/leo-editor/issues/1353
+
+#1371: support pandoc and @language pandoc
+https://github.com/leo-editor/leo-editor/issues/1371
+
+#1383: Expand ~ in all paths
+https://github.com/leo-editor/leo-editor/issues/1383
+
+#1398: Support path expressions in @rst, @adoc, @pandoc and @sphinx nodes
+https://github.com/leo-editor/leo-editor/issues/1398
+
+New show-clone-ancestors and show-clone-parents commands</t>
+<t tx="ekr.20191026200311.15"></t>
+<t tx="ekr.20191026200311.16">https://github.com/leo-editor/leo-editor/issues/1263
+</t>
+<t tx="ekr.20191026200311.17">https://github.com/leo-editor/leo-editor/issues/1289</t>
+<t tx="ekr.20191026200311.18">https://github.com/leo-editor/leo-editor/issues/1306
+</t>
+<t tx="ekr.20191026200311.2"></t>
+<t tx="ekr.20191026200311.3">https://github.com/leo-editor/leo-editor/issues/1281</t>
+<t tx="ekr.20191026200311.4">https://github.com/leo-editor/leo-editor/issues/1093
+The pyzo_in_leo plugin embeds pyzo (https://pyzo.org/) within Leo.
+</t>
+<t tx="ekr.20191026200311.5">https://github.com/leo-editor/leo-editor/issues/1315</t>
+<t tx="ekr.20191026200311.6">Issues related to asciidoc:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A6.1+label%3Aasciidoc+
+
+**Background**
+
+asciidoc3 is a python tool. asciidoctor is a ruby tool, claiming to be 100
+times faster than asciidoc.
+
+The asciidoc markup language is virtually identical, regardless of the tool
+used. For full details, see the asciidoctor User manual:
+https://asciidoctor.org/docs/user-manual/
+
+Here are the recent improvements...
+
+**Live rendering of asciidoc and pandoc markup**
+
+The VR plugin recognizes @adoc node and @language md. The VR plugin renders only p.b.
+
+**Improved adoc command**
+
+Given an @adoc node of the form @adoc &lt;full path&gt;, this command does the following:
+
+1. Scan the @adoc tree, writing the result to adoc_test.adoc.
+
+The scan converts headlines to section markup. See help-for-command for adoc for more details.
+
+2. Calls asciidoctor or asciidoc3 to convert adoc_test to adoc.html.
+
+This command prefers asciidoctor to to asciidoc3 if both exist. 
+
+**New adoc-with-preview command**
+
+Runs the adoc command, then shows the resulting html in the default browser.
+
+</t>
+<t tx="ekr.20191026200311.7">**Background**
+
+pandoc is a tool for converting pandoc markup (a variant of markdown) to html, and many other formats.
+
+**Support for @language pandoc**
+
+leo/modes/pandoc.py is based on leo/modes/md.py.
+
+**Live rendering of pandoc markup**
+
+The VR plugin recognizes @pandoc nodes (see below) and @language pandoc.
+
+The VR plugin renders only p.b.
+
+**New pandoc and pandoc-with-preview commands**
+
+Much like the corresponding adoc commands, but uses pandoc markup, which is a variant of markdown.
+
+The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
+<t tx="ekr.20191026200311.8">#1266: orange (beautify &amp; blacken)
+https://github.com/leo-editor/leo-editor/issues/1266
+
+#1272: Added support for black (https://pypi.org/project/black/)
+https://github.com/leo-editor/leo-editor/issues/1272
+
+#1325: black keeps overindent comments:
+https://github.com/leo-editor/leo-editor/issues/1325
+</t>
+<t tx="ekr.20191026200311.9">https://github.com/leo-editor/leo-editor/issues/1388
+</t>
 </tnodes>
 </leo_file>

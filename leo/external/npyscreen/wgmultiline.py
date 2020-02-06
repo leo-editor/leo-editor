@@ -122,7 +122,7 @@ class MultiLine(widget.Widget):
 
     #@+node:ekr.20170428084208.77: *3* MultiLine.make_contained_widgets
     def make_contained_widgets(self):
-        ### The *only* make_contained_widgets (plural) in npyscreen.
+        # The *only* make_contained_widgets (plural) in npyscreen.
         trace = False
         trace_widgets = True
         self._my_widgets = []
@@ -130,7 +130,7 @@ class MultiLine(widget.Widget):
         if trace: g.trace(self.__class__.__name__, height) #, g.callers(2))
             # Called from BoxTitle.make_contained_widget.
         for h in range(height):
-            ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
+            # EKR: it's LeoMLTree._contained_widgets that we have to emulate.
             self._my_widgets.append(
                 self._contained_widgets(
                     self.parent,
@@ -168,7 +168,7 @@ class MultiLine(widget.Widget):
         self._last_value  = False
     #@+node:ekr.20170428084208.82: *3* MultiLine.update (LeoMLTree overrides this)
     def update(self, clear=True):
-        trace = False ### LeoMLTree.update overrides this.
+        trace = False # LeoMLTree.update overrides this.
         if trace and self.hidden:
             g.trace('hidden')
         if self.hidden and clear:
@@ -305,7 +305,7 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.84: *3* MultiLine._print_line
     def _print_line(self, line, value_indexer):
 
-        trace = False ### LeoMLTree.update overrides this.
+        trace = False # LeoMLTree.update overrides this.
         if self.widgets_inherit_color and self.do_colors():
             line.color = self.color
         self._set_line_values(line, value_indexer)
@@ -352,6 +352,7 @@ class MultiLine(widget.Widget):
         line.show_bold = value
     #@+node:ekr.20170428084208.90: *4* MultiLine.set_is_line_cursor
     def set_is_line_cursor(self, line, value):
+
         # g.trace('Multiline')
         line.highlight = value
     #@+node:ekr.20170504211232.1: *3* MultiLine.filters
@@ -613,7 +614,6 @@ class MultiLine(widget.Widget):
         trace = False and not g.unitTesting
         if trace:
             g.trace('===== (MultiLine:%s)' % self.__class__.__name__)
-            # g.trace('CALLERS', g.callers(verbose=True))
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value

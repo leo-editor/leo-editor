@@ -140,8 +140,8 @@ The basic form is::
 The query parameters are:
 
 ``cmd`` (required)
-    A valid python snippet for Leo to execute. Executed by the ``vs-eval``
-    command in the ``valuespace`` plug-in. Can be specified multiple times, each
+    A valid python snippet for Leo to execute. Executed by the ``eval``
+    command in the ``mod_scripting`` plug-in. Can be specified multiple times, each
     is executed in order. May contain newlines, see examples.
 
 ``c`` (optional)
@@ -218,36 +218,20 @@ which node is selected.
 import leo.core.leoGlobals as g
 import asynchat
 import asyncore
-import cgi
 import json
-if g.isPython3:
-    import http.server
-    SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
-else:
-    import SimpleHTTPServer
-    SimpleHTTPRequestHandler = SimpleHTTPServer.SimpleHTTPRequestHandler
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-    BytesIO = io.BytesIO
-else:
-    import io
-    import StringIO # Python 2.x
-    StringIO = StringIO.StringIO
-    BytesIO = io.BytesIO
-if g.isPython3:
-    # pylint: disable=no-name-in-module
-    import urllib.parse as urlparse
-else:
-    import urlparse
+import http.server
+SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+import io
+StringIO = io.StringIO
+BytesIO = io.BytesIO
+import urllib
+import urllib.parse as urlparse
 import os
 import select
 import shutil
 import socket
 import time
 from xml.sax.saxutils import quoteattr
-
-from leo.plugins import valuespace
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
@@ -282,23 +266,23 @@ def init():
 def getGlobalConfiguration():
     """read config."""
     # timeout.
-    newtimeout = g.app.config.getInt("http_timeout")
+    newtimeout = g.app.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # ip.
-    newip = g.app.config.getString("http_ip")
+    newip = g.app.config.getString("http-ip")
     if newip:
         config.http_ip = newip
     # port.
-    newport = g.app.config.getInt("http_port")
+    newport = g.app.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = g.app.config.getBool("http_active")
+    newactive = g.app.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = g.app.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = g.app.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:EKR.20040517080250.45: *3* plugin_wrapper
@@ -325,34 +309,40 @@ def onFileOpen(tag, keywords):
 def getConfiguration(c):
     """Called when the user opens a new file."""
     # timeout.
-    newtimeout = c.config.getInt("http_timeout")
+    newtimeout = c.config.getInt("http-timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout / 1000.0
     # port.
-    newport = c.config.getInt("http_port")
+    newport = c.config.getInt("http-port")
     if newport:
         config.http_port = newport
     # active.
-    newactive = c.config.getBool("http_active")
+    newactive = c.config.getBool("http-active")
     if newactive is not None:
         config.http_active = newactive
     # attribute name.
-    new_rst2_http_attributename = c.config.getString("rst2_http_attributename")
+    new_rst2_http_attributename = c.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
 #@+node:ekr.20161003140938.1: ** getData
 def getData(setting):
     '''Return the given @data node.'''
+    # Plug an important security hole.
+    c = g.app and g.app.log and g.app.log.c
+    key = g.app.config.munge(setting)
+    if c and key == 'httpscript' and c.config.isLocalSetting(key, 'data'):
+        g.issueSecurityWarning('@data http-script')
+        return ""
     aList = g.app.config.getData(
-        setting,
+        key,
         strip_comments=False,
         strip_data=False,
     )
     s = ''.join(aList or [])
-    # g.trace(setting, len(s))
     return s
 #@+node:bwmulder.20050326191345: ** class config
-class config(object):
+class config:
+    enabled = None # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
     http_ip = '127.0.0.1'
@@ -374,7 +364,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         self.buffer.append(data)
     #@+node:EKR.20040517080250.7: *3* initiate_sending
     def initiate_sending(self):
-        ### Create a bytes string.
+        # Create a bytes string.
         aList = [g.toEncodedString(z) for z in self.buffer]
         self.out_buffer = b''.join(aList)
         del self.buffer
@@ -397,7 +387,7 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
         return result
     #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
-class leo_interface(object):
+class leo_interface:
     # pylint: disable=no-member
         # .path, .send_error, .send_response and .end_headers
         # appear to be undefined.
@@ -443,7 +433,7 @@ class leo_interface(object):
                     self.send_error(404, "Node not found")
                     return None
             if f is None:
-                return
+                return None
             length = f.tell()
             f.seek(0)
             self.send_response(200)
@@ -455,6 +445,7 @@ class leo_interface(object):
             import traceback
             traceback.print_exc()
             raise
+        return None
     #@+node:EKR.20040517080250.26: *4* find_window_and_root
     def find_window_and_root(self, path):
         """
@@ -682,7 +673,7 @@ class leo_interface(object):
             f.write("</h2>\n")
     #@-others
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
-class LeoActions(object):
+class LeoActions:
     """
     A place to collect other URL based actions like saving bookmarks from
     the browser. Conceptually this stuff could go in class leo_interface
@@ -692,7 +683,7 @@ class LeoActions(object):
     #@+node:tbrown.20110930220448.18077: *3* __init__(LeoActions)
     def __init__(self, request_handler):
         self.request_handler = request_handler
-        self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')
+        self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
         self.exec_handler = ExecHandler(request_handler)
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
@@ -714,7 +705,6 @@ class LeoActions(object):
         parent = None # parent node for new bookmarks
         using_root = False
         path = self.bookmark_unl
-        # g.trace(path)
         if path:
             parsed = urlparse.urlparse(path)
             leo_path = os.path.expanduser(parsed.path)
@@ -776,7 +766,7 @@ class LeoActions(object):
                 selection,
                 query.get('description', [''])[0],
             )
-            c.setChanged(True)
+            c.setChanged()
             c.selectPosition(nd) # required for body text redraw
             c.redraw()
             return f
@@ -859,7 +849,6 @@ class LeoActions(object):
 
         i.e. just above the "Users comments" line.
         '''
-        # g.trace(node.h)
         b = node.b.split('\n')
         insert = ['', '"""', text, '"""']
         collected = None
@@ -884,10 +873,8 @@ class LeoActions(object):
     #@+node:tbrown.20111005093154.17683: *3* get_favicon
     def get_favicon(self):
         path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
-        # g.trace(g.os_path_exists(path),path)
         try:
             f = StringIO()
-            # f.write(open(path).read())
             f2 = open(path)
             s = f2.read()
             f.write(s)
@@ -906,7 +893,7 @@ class LeoActions(object):
         return f
     #@-others
 #@+node:tbrown.20150729112701.1: ** class ExecHandler
-class ExecHandler(object):
+class ExecHandler:
     """
     Quasi-RPC GET based interface
     """
@@ -919,8 +906,16 @@ class ExecHandler(object):
         """Return the file like 'f' that leo_interface.send_head makes"""
         # self.request_handler.path.startswith('/_/exec/')
 
-        if not g.app.config.getBool("http_allow_remote_exec"):
+        if not g.app.config.getBool("http-allow-remote-exec"):
             return None  # fail deliberately
+            
+        c = g.app and g.app.log and g.app.log.c
+        if c and config.enable is None:
+            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
+                g.issueSecurityWarning('@bool http-allow-remote-exec')
+                config.enable = False
+            else:
+                config.enable = True
 
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
@@ -945,15 +940,15 @@ class ExecHandler(object):
             f.write(str(ans))
         return f
 
-    #@+node:tbrown.20150729150843.1: *3* proc_cmds
+    #@+node:tbrown.20150729150843.1: *3* proc_cmds (mod_http.py)
     def proc_cmds(self):
 
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
-
         # work out which commander to use, zero index int, full path name, or file name
         c_idx = query.get('c', [0])[0]
-        if c_idx is not 0:
+        # pylint: disable=literal-comparison
+        if c_idx != 0:
             try:
                 c_idx = int(c_idx)
             except ValueError:
@@ -963,10 +958,11 @@ class ExecHandler(object):
                 else:
                     paths = [os.path.basename(i) for i in paths]
                     c_idx = paths.index(c_idx)
-
         ans = None
-        for cmd in query['cmd']:
-            ans = valuespace.eval_text(g.app.commanders()[c_idx], cmd)
+        c = g.app.commanders()[c_idx]
+        if c and c.evalController:
+            for cmd in query['cmd']:
+                ans = c.evalController.eval_text(cmd)
         return ans  # the last answer, if multiple commands run
     #@-others
 #@+node:EKR.20040517080250.10: ** class nodeNotFound
@@ -991,7 +987,7 @@ class RequestHandler(
     #@+node:EKR.20040517080250.14: *3* __init__
     def __init__(self, conn, addr, server):
         self.leo_actions = LeoActions(self)
-        asynchat.async_chat.__init__(self, conn)
+        super().__init__(conn)
         self.client_address = addr
         self.connection = conn
         self.server = server
@@ -1000,9 +996,9 @@ class RequestHandler(
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
         self.set_terminator(self.term)
-        self.buffer = BytesIO() ###
-        ### Set self.use_encoding and self.encoding.
-        ### This is used by asyn_chat.
+        self.buffer = BytesIO()
+        # Set self.use_encoding and self.encoding.
+        # This is used by asyn_chat.
         self.use_encoding = True
         self.encoding = 'utf-8'
     #@+node:EKR.20040517080250.15: *3* copyfile
@@ -1068,15 +1064,19 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
-        """Begins serving a POST request. The request data must be readable
-         on a file-like object called self.rfile"""
-        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        """
+        Begins serving a POST request. The request data must be readable
+        on a file-like object called self.rfile
+        """
+        # pylint: disable=undefined-variable
+            # urlparse_header and urlparse_multipart appear to be undefined.
+        ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
-            query = cgi.parse_multipart(self.rfile, pdict)
+            query = urlparse_multipart(self.rfile, pdict)
         elif ctype == 'application/x-www-form-urlencoded':
             qs = self.rfile.read(length)
-            query = cgi.parse_qs(qs, keep_blank_values=1)
+            query = urllib.parse.parse_qs(qs, keep_blank_values=1)
         else:
             query = '' # Unknown content-type
         # some browsers send 2 more bytes...
@@ -1087,7 +1087,7 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.33: *3* query
     def query(self, parsedQuery):
-        """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
+        """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
          except that :
          - if the key ends with [], returns the value (a Python list)
          - if not, returns a string, empty if the list is empty, or with the
@@ -1122,7 +1122,7 @@ class RequestHandler(
         if self.path.find('?') >= 0:
             self.qs = self.path[self.path.find('?') + 1:]
             self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(cgi.parse_qs(self.qs, 1))
+        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))
         if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method = "do_" + self.command
@@ -1156,7 +1156,7 @@ class Server(asyncore.dispatcher):
         self.ip = ip
         self.port = port
         self.handler = handler
-        asyncore.dispatcher.__init__(self)
+        super().__init__()
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.set_reuse_addr()
         self.bind((ip, port))
@@ -1186,7 +1186,6 @@ def a_read(obj):
     except asyncore.ExitNow:
         raise
     except Exception:
-        # g.trace('error')
         obj.handle_error()
 #@+node:ekr.20110522152535.18252: *3* escape
 def escape(s):

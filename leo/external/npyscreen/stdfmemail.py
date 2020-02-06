@@ -4,7 +4,7 @@
 #@+node:ekr.20170428084207.435: ** Declarations
 import curses
 import weakref
-import npyscreen
+from .. import npyscreen ### Changed
 # import email
 import mimetypes
 import os.path

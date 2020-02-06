@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 5.7
+Version: 6.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -18,4 +18,3 @@ Classifier: Programming Language :: Python
 Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
-

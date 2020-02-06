@@ -39,7 +39,7 @@ def onCreate (tag,key):
 def onQuit(tag,key):
     g.pygeotag.stop_server()
 #@+node:tbrown.20091214233510.5353: ** class geotag_Controller
-class geotag_Controller(object):
+class geotag_Controller:
 
     '''A per-commander class that manages geotagging.'''
 
@@ -67,7 +67,7 @@ class geotag_Controller(object):
         nd = self.getAttr(p)
 
         nd.h = '@LatLng %(lat)f %(lng)f %(zoom)d %(maptype)s  %(description)s ' % data
-        c.setChanged(True)
+        c.setChanged()
         if hasattr(c, 'attribEditor'):
             c.attribEditor.updateEditorInt()
         c.redraw()

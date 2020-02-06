@@ -132,14 +132,16 @@ def init():
 #@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
 def attachToCommander(t,k):
+    
+    # pylint: disable=simplifiable-if-statement
     c = k.get('c')
-    event = c.config.getString('active_path_event') or "headdclick1"
+    event = c.config.getString('active-path-event') or "headdclick1"
     # pylint: disable=unnecessary-lambda
     g.registerHandler(event, lambda t,k: onSelect(t,k))
 
     # not using a proper class, so
     c.__active_path = {'ignore': [], 'autoload': [],
-        'do_autoload': c.config.getBool('active_path_do_autoload', default=True)}
+        'do_autoload': c.config.getBool('active-path-do-autoload', default=True)}
 
     if c.config.getData('active_path_ignore'):
         c.__active_path['ignore'] = [re.compile(i, re.IGNORECASE)
@@ -149,29 +151,23 @@ def attachToCommander(t,k):
         c.__active_path['autoload'] = [re.compile(i, re.IGNORECASE)
             for i in c.config.getData('active_path_autoload')]
 
-    if c.config.getBool('active_path_load_docstring'):
+    if c.config.getBool('active-path-load-docstring'):
         c.__active_path['load_docstring'] = True
     else:
         c.__active_path['load_docstring'] = False
 
-    if c.config.getFloat('active_path_timeout_seconds'):
-        c.__active_path['timeout'] = c.config.getFloat('active_path_timeout_seconds')
+    if c.config.getFloat('active-path-timeout-seconds'):
+        c.__active_path['timeout'] = c.config.getFloat('active-path-timeout-seconds')
     else:
         c.__active_path['timeout'] = 10.
 
-    if c.config.getInt('active_path_max_size'):
-        c.__active_path['max_size'] = c.config.getInt('active_path_max_size')
+    if c.config.getInt('active-path-max-size'):
+        c.__active_path['max_size'] = c.config.getInt('active-path-max-size')
     else:
         c.__active_path['max_size'] = 1000000
 
     c.__active_path['DS_SENTINEL'] = "@language rest # AUTOLOADED DOCSTRING"
 #@+node:tbrown.20091128094521.15042: ** popup_entry (active_path)
-### Old code.
-# def mkCmd(cmd, c):
-    # def f():
-        # return cmd(c)
-    # return f
-
 def popup_entry(c,p,menu):
     '''Populate the Path submenu of the popup.'''
     pathmenu = menu.addMenu("Path")
@@ -186,15 +182,6 @@ def popup_entry(c,p,menu):
                 command(event)
 
             a.triggered.connect(active_path_wrapper)
-    ### Old code
-    # for i in globals():
-        # if i.startswith('cmd_'):
-            # a = pathmenu.addAction(PlugIn.niceMenuName(i))
-            # CMD = globals()[i]
-            # if isQt5:
-                # a.triggered.connect(mkCmd(CMD,c))
-            # else:
-                # a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
 #@+node:tbrown.20091128094521.15037: ** isDirNode
 def isDirNode(p):
 
@@ -218,33 +205,16 @@ def isFileNode(p):
 def inAny(item, group, regEx=False):
     """ Helper function to check if word from list is in a string """
     if regEx:
-        if any(re.search(word,item) for word in group):
-            return True
-        else:
-            return False
-    else:
-        if any(word in item for word in group):
-            return True
-        else:
-            return False
-
+        return any(re.search(word,item) for word in group)
+    return any(word in item for word in group)
 #@+node:jlunz.20150611151003.1: ** checkIncExc
 def checkIncExc(item,inc,exc,regEx):
     """ Primary logic to check if an item is in either the include or exclude list """
     if inc and not exc:
-        if inAny(item,inc,regEx):
-            return True
-        else:
-            return False
-    elif exc and not inc:
-        if not inAny(item,exc,regEx):
-            return True
-        else:
-            return False
-    elif exc and inc:
-        return True
-    else:
-        return True
+        return inAny(item,inc,regEx)
+    if exc and not inc:
+        return not inAny(item,exc,regEx)
+    return True
 #@+node:tbrown.20091129085043.9329: ** inReList
 def inReList(txt, lst):
     for pat in lst:
@@ -274,21 +244,15 @@ def subDir(d, p):
 def onSelect (tag,keywords):
     """Determine if a file or directory node was clicked, and the path"""
     c = keywords.get('c') or keywords.get('new_c')
-    if not c: return
+    if not c:
+        return None
     p = keywords.get("p")
-
     p.expand()
-
     pos = p.copy()
-
     path = getPath(c, p)
-
-    if path:
-        if sync_node_to_folder(c,pos,path):
-            ### c.requestRedrawFlag = True
-            c.redraw()
-            return True
-
+    if path and sync_node_to_folder(c,pos,path):
+        c.redraw()
+        return True
     return None
 #@+node:tbrown.20080616153649.4: ** getPath
 def getPath(c, p):
@@ -312,28 +276,20 @@ def getPath(c, p):
 def getPathOld(p):
     # NOT USED, my version which does its own @path scanning
     p = p.copy()
-
     path = []
-
     while p:
         h = p.h
-
         if g.match_word(h,0,"@path"):  # top of the tree
             path.insert(0,os.path.expanduser(h[6:].strip()))
             d = os.path.join(*path)
             return d
-
-        elif h.startswith('@'):  # some other directive, run away
+        if h.startswith('@'):  # some other directive, run away
             break
-
         elif isDirNode(p):  # a directory
             path.insert(0,h.strip('/*'))
-
         elif not p.hasChildren():  # a leaf node, assume a file
             path.insert(0,h.strip('*'))
-
         p = p.parent()
-
     return None
 #@+node:tbrown.20080613095157.5: ** flattenOrganizers
 def flattenOrganizers(p):
@@ -412,7 +368,7 @@ def createFile(c,parent,d):
         return False
 
     d = os.path.basename(d)
-    atType = c.config.getString('active_path_attype') or 'auto'
+    atType = c.config.getString('active-path-attype') or 'auto'
     ok = g.app.gui.runAskYesNoDialog(c, 'Create / load file?',
         'Create file @'+atType+' '+d+'?')
     if ok == 'no':
@@ -457,7 +413,7 @@ def openFile(c,parent,d, autoload=False):
     if autoload and oversize:
         return
 
-    atType = c.config.getString('active_path_attype') or 'auto'
+    atType = c.config.getString('active-path-attype') or 'auto'
     parent.h = '@' + atType + ' ' + parent.h
     c.selectPosition(parent)
     if atType == 'asis':
@@ -561,7 +517,7 @@ def openDir(c,parent,d):
             continue
 
         p = parent.insertAsNthChild(0)
-        c.setChanged(True)
+        c.setChanged()
         c.setHeadString(p,name)
         if name.startswith('/'):
             # sufficient test of dirness as we created newlist
@@ -651,18 +607,13 @@ def cmd_ActOnNode(event, p=None):
     # implementation mostly copied from onSelect
     if p is None:
         p = c.currentPosition()
-
     pos = p.copy()
     path = getPath(c, p)
-
     if path:
         sync_node_to_folder(c,pos,path)
-        ### c.requestRedrawFlag = True
         c.redraw()
         return True
-
-    else:
-        raise leoPlugins.TryNext
+    raise leoPlugins.TryNext
 
 active_path_act_on_node = cmd_ActOnNode
 #@+node:tbrown.20111207143354.19381: ** cmd_MakeDir (active_path.py)

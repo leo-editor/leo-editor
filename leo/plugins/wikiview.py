@@ -59,10 +59,9 @@ def init():
     '''Return True if this plugin should be enabled.'''
     if g.unitTesting:
         return False
-    else:
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.plugin_signon(__name__)
-        return True
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.plugin_signon(__name__)
+    return True
 #@+node:tbrown.20141101114322.5: ** onCreate
 def onCreate(tag, keys):
 
@@ -93,7 +92,7 @@ def cmd_show_all(event):
     c = event.get('c')
     c._wikiview.unhide(all=True)
 #@+node:tbrown.20141101114322.9: ** class WikiView
-class WikiView(object):
+class WikiView:
     """Manage wikiview for an outline"""
 
     #@+others
@@ -138,7 +137,6 @@ class WikiView(object):
         for s in data:
             leadin = self.get_leadin(s)
             if leadin:
-                # g.trace(repr(leadin), repr(s))
                 leadins.append(leadin)
                 patterns.append(re.compile(s, re.IGNORECASE))
             else:
@@ -154,29 +152,17 @@ class WikiView(object):
     #@+node:tbrown.20141101114322.11: *3* hide
     def hide(self, tag, kwargs, force=False):
         '''Hide all wikiview tags. Now done in the colorizer.'''
-        trace = False and not g.unitTesting
-        trace_parts = True
-        trace_pats = False
         c = self.c
         if not (self.active or force) or kwargs['c'] != c:
             return
         w = c.frame.body.widget
         cursor = w.textCursor()
         s = w.toPlainText()
-        if trace:
-            g.trace('=====', g.callers())
-            g.printList(g.splitLines(s))
         for urlpat in self.urlpats:
-            if trace and trace_pats: g.trace(repr(urlpat))
             for m in urlpat.finditer(s):
-                if trace: g.trace('FOUND', urlpat.pattern, m.start(0), repr(m.group(0)))
                 for group_n, group in enumerate(m.groups()):
                     if group is None:
                         continue
-                    if trace and trace_parts: g.trace(
-                            m.start(group_n+1),
-                            m.end(group_n+1),
-                            repr(m.group(group_n+1)))
                     cursor.setPosition(m.start(group_n+1))
                     cursor.setPosition(m.end(group_n+1), cursor.KeepAnchor)
                     cfmt = cursor.charFormat()
@@ -187,13 +173,11 @@ class WikiView(object):
                         # Triggers a recolor.
     #@+node:tbrown.20141101114322.12: *3* unhide
     def unhide(self, all=False):
-        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.widget
         cursor = w.textCursor()
         cfmt = cursor.charFormat()
         if cfmt.fontPointSize() == self.pts or all:
-            if trace: g.trace()
             if all:
                 cursor.setPosition(0)
                 cursor.setPosition(len(w.toPlainText()), cursor.KeepAnchor)

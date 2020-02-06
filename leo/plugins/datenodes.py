@@ -46,7 +46,6 @@ __version__ = "0.7"
 #     - exposed the pluginController as c.theDateNodesController
 #     - added support for settings:
 #         - @bool suppress-datenodes-menus
-#         - @bool suppress-all-plugin-menus
 #     - added minibuffer commands
 #         - datenodes-today
 #         - datenodes-this-month
@@ -85,7 +84,7 @@ def init():
     g.plugin_signon(__name__)
     return True # OK for unit testing.
 #@+node:gfunch.20041207100416.5: ** class DateNodes
-class DateNodes(object):
+class DateNodes:
     """Main DateNodes class"""
 
     # The defaults for all possible settings.
@@ -126,137 +125,111 @@ class DateNodes(object):
     #@+node:gfunch.20041209073652: *3* _get_settings
     def _get_settings(self):
         """Get any configuration options."""
-
         settings = {}
-
         for setting in DateNodes.default_settings:
             if setting in DateNodes.boolean_settings:
                 getter = self.c.config.getBool
             else:
                 getter = self.c.config.getString
-
             value = getter(setting)
-
             if value is None:
                 value = DateNodes.default_settings[setting]
-
             settings[setting[10:]] = value  # Omit datenodes_ prefix
-
         self.settings = settings
-    #@+node:gfunch.20041208095742: *3* _format_node_label
-    def _format_node_label(self, date, fmt):
-        """Format a node label (heading)."""
-
-        # Convert fmt to ASCII string, because strftime() doesn't like Unicode strings
-        try:
-            ascii_fmt = DateNodes.ascii_encoder(fmt)[0]
-        except UnicodeError:
-            g.es("datenodes plugin: WARNING: The format string " + fmt + " contains non-ASCII characters.")
-            # Bug fix: EKR, on orders from pylint.
-            ascii_fmt = DateNodes.ascii_encoder(fmt,'replace')[0]
-
-        return date.strftime(ascii_fmt)
-
     #@+node:dcb.20060806185031: *3* _insert_date_node
     def _insert_date_node(self, parent, date, format):
 
-        c = self.c
-
-        node = parent.insertAsLastChild()
-
-        label = self._format_node_label(date, format)
-
-        c.setHeadString(node,label)
-
-        return node
-
+        p = parent.insertAsLastChild()
+        p.h = date.strftime(g.toUnicode(format))
+        return p
     #@+node:dcb.20060806183810: *3* _insert_day_node
     def _insert_day_node(self, parent, date, day_fmt):
 
-        c = self.c
-        day_node = self._insert_date_node(parent, date, day_fmt)
-
-        c.setBodyString(day_node,self.settings.get("body_text", ''))
-
-        return day_node
+        p = self._insert_date_node(parent, date, day_fmt)
+        p.b = self.settings.get("body_text", '')
+        return p
     #@+node:gfunch.20041207100416.11: *3* _insert_month_node
     def _insert_month_node(self, parent, date, day_fmt, month_fmt, omit_saturdays, omit_sundays):
         """Insert a months-worth of date nodes into the outline ."""
 
         month_node = self._insert_date_node(parent, date, month_fmt)
-
         year, month = date.timetuple()[:2]
-
         first_day_of_month, num_days = calendar.monthrange(year, month)
-
         for day in range(1, num_days + 1):
             day_date = datetime.date(year, month, day)
             isoweekday = day_date.isoweekday()
-
-            if (isoweekday == 6 and omit_saturdays) or (isoweekday == 7 and omit_sundays):
+            if (
+                (isoweekday == 6 and omit_saturdays) or
+                (isoweekday == 7 and omit_sundays)
+            ):
                 continue
-
-            self._insert_day_node(parent = month_node, date = day_date, day_fmt = day_fmt)
-
+            self._insert_day_node(
+                parent = month_node,
+                date = day_date,
+                day_fmt = day_fmt)
         return month_node
     #@+node:gfunch.20041207100416.12: *3* _insert_year_node
-    def _insert_year_node(self, parent, date, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays):
+    def _insert_year_node(self,
+        parent,
+        date,
+        day_fmt,
+        month_fmt,
+        year_fmt,
+        omit_saturdays,
+        omit_sundays,
+    ):
         """Insert a years-worth of date nodes into the outline."""
-
         year_node = self._insert_date_node(parent, date, year_fmt)
-
         year, month, day = date.timetuple()[:3]
-
         for month in range(1, 13):
             month_date = datetime.date(year, month, day)
-
-            self._insert_month_node(parent = year_node, date = month_date, day_fmt = day_fmt, month_fmt = month_fmt,
-                                    omit_saturdays = omit_saturdays, omit_sundays = omit_sundays)
-
-
+            self._insert_month_node(
+                parent = year_node,
+                date = month_date,
+                day_fmt = day_fmt,
+                month_fmt = month_fmt,
+                omit_saturdays = omit_saturdays,
+                omit_sundays = omit_sundays)
         return year_node
     #@+node:gfunch.20041208074734: *3* insert_day_node
     def insert_day_node(self, event = None):
 
+        c = self.c
         today = datetime.date.today()
         day_fmt = self.settings["day_node_headline"]
-
         day_node = self._insert_day_node(self.c.p, today, day_fmt)
-
-        self.c.selectPosition(day_node)
-
-
-
+        c.selectPosition(day_node)
+        c.redraw()
     #@+node:dcb.20060806183928: *3* insert_month_node
     def insert_month_node(self, event = None):
 
+        c = self.c
         today = datetime.date.today()
         day_fmt = self.settings["month_node_day_headline"]
         month_fmt = self.settings["month_node_month_headline"]
         omit_saturdays = self.settings["month_node_omit_saturdays"]
         omit_sundays = self.settings["month_node_omit_sundays"]
-
         month_node = self._insert_month_node(
-            self.c.p, today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
-
-        self.c.selectPosition(month_node)
+            c.p, today, day_fmt, month_fmt, omit_saturdays, omit_sundays)
+        c.selectPosition(month_node)
+        c.redraw()
 
 
 
     #@+node:dcb.20060806184117: *3* insert_year_node
     def insert_year_node(self, event = None):
 
+        c = self.c
         today = datetime.date.today()
         day_fmt = self.settings["year_node_day_headline"]
         month_fmt = self.settings["year_node_month_headline"]
         year_fmt = self.settings["year_node_year_headline"]
         omit_saturdays = self.settings["year_node_omit_saturdays"]
         omit_sundays = self.settings["year_node_omit_sundays"]
-
         year_node = self._insert_year_node(
-            self.c.p, today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
-
-        self.c.selectPosition(year_node)
+            c.p, today, day_fmt, month_fmt, year_fmt, omit_saturdays, omit_sundays)
+        c.selectPosition(year_node)
+        c.redraw()
 
     #@-others
 #@+node:gfunch.20041207100654: ** on_create
@@ -275,10 +248,7 @@ def on_create(tag, keywords):
 
     #@+<< Create the plug-in menu. >>
     #@+node:bobjack.20080615065747.3: *3* << Create the plug-in menu. >>
-    if not (
-        c.config.getBool('suppress-datenodes-menus') or
-        c.config.getBool('suppress-all-plugin-menus')
-    ):
+    if not c.config.getBool('suppress-datenodes-menus'):
         # create a menu separator
         c.frame.menu.createMenuItemsFromTable("Outline", [("-", None, None),])
 

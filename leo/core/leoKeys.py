@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20061031131434: * @file leoKeys.py
+#@@first
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
 # pylint: disable=deprecated-method
@@ -7,14 +9,16 @@
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
+import leo.commands.gotoCommands as gotoCommands
 import leo.external.codewise as codewise
-import glob
+# import glob
 import inspect
 import os
 import re
 import string
 import sys
 import time
+assert time
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -116,10 +120,9 @@ import time
 # ivar                    Keys                Values
 # ----                    ----                ------
 # c.commandsDict          command names (1)   functions
-# k.bindingsDict          shortcuts           lists of ShortcutInfo objects
+# k.bindingsDict          shortcuts           lists of BindingInfo objects
 # k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
-# k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
 # inverseBindingDict (5)  command names       lists of tuples (pane,key)
 # modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
 # 
@@ -130,32 +133,31 @@ import time
 # 
 # (1) Command names are minibuffer names (strings)
 # (2) Scope names are 'all','text',etc.
-# (3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
-# (4) k.settingsNameDict has no inverse.
+# (3) Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
 # (5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
 # (6) A global dict: g.app.gui.modeCommandsDict
 # (7) enter-x-command
-# (8) Keys are command names, values are lists of ShortcutInfo objects.
+# (8) Keys are command names, values are lists of BindingInfo objects.
 #@-<< about key dicts >>
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
-class AutoCompleterClass(object):
-    '''A class that inserts autocompleted and calltip text in text widgets.
+class AutoCompleterClass:
+    """A class that inserts autocompleted and calltip text in text widgets.
     This class shows alternatives in the tabbed log pane.
 
     The keyHandler class contains hooks to support these characters:
     invoke-autocompleter-character (default binding is '.')
     invoke-calltips-character (default binding is '(')
-    '''
+    """
     #@+others
     #@+node:ekr.20150509035140.1: *3* ac.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the AutoCompleter class.'''
+        """Command decorator for the AutoCompleter class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'k', 'autoCompleter'])
     #@+node:ekr.20061031131434.5: *3* ac.ctor & reloadSettings
     def __init__(self, k):
-        '''Ctor for AutoCompleterClass class.'''
+        """Ctor for AutoCompleterClass class."""
         # Ivars...
         self.c = k.c
         self.k = k
@@ -183,86 +185,80 @@ class AutoCompleterClass(object):
         
     def reloadSettings(self):
         c = self.c
-        self.auto_tab = c.config.getBool('auto_tab_complete', False)
-        self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
-        self.use_qcompleter = c.config.getBool('use_qcompleter', False)
+        self.auto_tab = c.config.getBool('auto-tab-complete', True)
+        self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
+        self.use_jedi = c.config.getBool('use-jedi', False)
+        self.use_qcompleter = c.config.getBool('use-qcompleter', False)
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
     #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
-        '''An event handler for autocompletion.'''
-        trace = False and not g.unitTesting
+        """An event handler for autocompletion."""
         c, k = self.c, self.k
         state = k.unboundKeyAction
         # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
         self.force = force
         if state not in ('insert', 'overwrite'):
-            if trace: g.trace('not in insert/overwrite mode')
             return
         # First, handle the invocation character as usual.
         if not force:
             # Ctrl-period does *not* insert a period.
-            if trace: g.trace('not force')
             k.masterCommand(event=event)
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
-            if trace: g.trace('not body')
             return
         self.language = g.scanForAtLanguage(c, c.p)
         if w and (k.enable_autocompleter or force): # self.language == 'python':
-            if trace: g.trace('starting')
             self.w = w
             self.start(event)
-        else:
-            if trace: g.trace('autocompletion not enabled')
     #@+node:ekr.20061031131434.10: *4* ac.autoCompleteForce
     @cmd('auto-complete-force')
     def autoCompleteForce(self, event=None):
-        '''Show autocompletion, even if autocompletion is not presently enabled.'''
+        """Show autocompletion, even if autocompletion is not presently enabled."""
         return self.autoComplete(event, force=True)
     #@+node:ekr.20061031131434.12: *4* ac.enable/disable/toggleAutocompleter/Calltips
     @cmd('disable-autocompleter')
     def disableAutocompleter(self, event=None):
-        '''Disable the autocompleter.'''
+        """Disable the autocompleter."""
         self.k.enable_autocompleter = False
         self.showAutocompleterStatus()
 
     @cmd('disable-calltips')
     def disableCalltips(self, event=None):
-        '''Disable calltips.'''
+        """Disable calltips."""
         self.k.enable_calltips = False
         self.showCalltipsStatus()
 
     @cmd('enable-autocompleter')
     def enableAutocompleter(self, event=None):
-        '''Enable the autocompleter.'''
+        """Enable the autocompleter."""
         self.k.enable_autocompleter = True
         self.showAutocompleterStatus()
 
     @cmd('enable-calltips')
     def enableCalltips(self, event=None):
-        '''Enable calltips.'''
+        """Enable calltips."""
         self.k.enable_calltips = True
         self.showCalltipsStatus()
 
     @cmd('toggle-autocompleter')
     def toggleAutocompleter(self, event=None):
-        '''Toggle whether the autocompleter is enabled.'''
+        """Toggle whether the autocompleter is enabled."""
         self.k.enable_autocompleter = not self.k.enable_autocompleter
         self.showAutocompleterStatus()
 
     @cmd('toggle-calltips')
     def toggleCalltips(self, event=None):
-        '''Toggle whether calltips are enabled.'''
+        """Toggle whether calltips are enabled."""
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
     #@+node:ekr.20061031131434.13: *4* ac.showCalltips
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
-        '''Show the calltips at the cursor.'''
+        """Show the calltips at the cursor."""
         c = self.c; k = c.k
         w = event and event.w
         if not w: return
@@ -277,11 +273,11 @@ class AutoCompleterClass(object):
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     @cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
-        '''Show the calltips at the cursor, even if calltips are not presently enabled.'''
+        """Show the calltips at the cursor, even if calltips are not presently enabled."""
         return self.showCalltips(event, force=True)
     #@+node:ekr.20061031131434.15: *4* ac.showAutocompleter/CalltipsStatus
     def showAutocompleterStatus(self):
-        '''Show the autocompleter status.'''
+        """Show the autocompleter status."""
         k = self.k
         if not g.unitTesting:
             s = 'autocompleter %s' % (
@@ -289,19 +285,17 @@ class AutoCompleterClass(object):
             g.red(s)
 
     def showCalltipsStatus(self):
-        '''Show the autocompleter status.'''
+        """Show the autocompleter status."""
         k = self.k
         if not g.unitTesting:
-            s = 'calltips %s' % 'On' if k.enable_calltips else 'Off'
+            s = f"calltips {'On'}" if k.enable_calltips else 'Off'
             g.red(s)
     #@+node:ekr.20061031131434.16: *3* ac.Helpers
     #@+node:ekr.20110512212836.14469: *4* ac.exit
     def exit(self):
-        trace = False and not g.unitTesting
-        if trace: g.trace(g.callers())
+
         c = self.c
         w = self.w or c.frame.body.wrapper
-        if trace: g.trace(g.callers())
         c.k.keyboardQuit()
         if self.use_qcompleter:
             if self.qw:
@@ -359,8 +353,6 @@ class AutoCompleterClass(object):
         with a __getattr__ hook is evaluated.
 
         """
-        trace = False and not g.unitTesting
-        verbose = False
         # Seems to work great. Catches things like ''.<tab>
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", s)
         if not m:
@@ -375,30 +367,21 @@ class AutoCompleterClass(object):
         words = dir(obj)
         n = len(attr)
         result = ["%s.%s" % (expr, w) for w in words if w[: n] == attr]
-        if trace:
-            if verbose:
-                g.trace(s, result)
-            else:
-                g.trace(repr(s))
         return result
     #@+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
     def auto_completer_state_handler(self, event):
-        '''Handle all keys while autocompleting.'''
-        trace = False and not g.app.unitTesting
+        """Handle all keys while autocompleting."""
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
         ch = event.char if event else ''
         stroke = event.stroke if event else ''
         is_plain = k.isPlainKey(stroke)
-        if trace: g.trace('state: %s, ch: %s, stroke: %s' % (
-            state, repr(ch), repr(stroke)))
         if state == 0:
             c.frame.log.clearTab(self.tabName)
             common_prefix, prefix, tabList = self.compute_completion_list()
             if tabList:
                 k.setState(tag, 1, handler=self.auto_completer_state_handler)
             else:
-                if trace: g.trace('abort: not tabList')
                 self.exit()
         elif ch in ('\n', 'Return'):
             self.exit()
@@ -417,7 +400,7 @@ class AutoCompleterClass(object):
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
             kind = 'ON' if self.verbose else 'OFF'
-            message = 'verbose completions %s' % (kind)
+            message = f"verbose completions {kind}"
             g.es_print(message)
             # This doesn't work because compute_completion_list clears the autocomplete tab.
             # self.put('', message, tabName=self.tabName)
@@ -429,29 +412,25 @@ class AutoCompleterClass(object):
         # elif ch == 'Up' and hasattr(self,'onUp'):
             # self.onUp()
         elif is_plain and ch and ch in string.printable:
-            if trace: g.trace('plain: %r' % (ch))
             self.insert_general_char(ch)
-        else:
-            if stroke == k.autoCompleteForceKey:
-                # This is probably redundant because completions will exist.
-                # However, it doesn't hurt, and it may be useful rarely.
-                if trace: g.trace('auto-complete-force', repr(stroke))
-                common_prefix, prefix, tabList = self.compute_completion_list()
-                if tabList:
-                    self.show_completion_list(common_prefix, prefix, tabList)
-                else:
-                    g.warning('No completions')
-                    self.exit()
-                return None
+        elif stroke == k.autoCompleteForceKey:
+            # This is probably redundant because completions will exist.
+            # However, it doesn't hurt, and it may be useful rarely.
+            common_prefix, prefix, tabList = self.compute_completion_list()
+            if tabList:
+                self.show_completion_list(common_prefix, prefix, tabList)
             else:
-                if trace: g.trace('ignore non plain key', repr(stroke), g.callers())
-                self.abort() # 2011/06/17.
-                return 'do-standard-keys'
+                g.warning('No completions')
+                self.exit()
+        else:
+            self.abort()
+            return 'do-standard-keys'
+        return None
     #@+node:ekr.20061031131434.20: *4* ac.calltip & helpers
     def calltip(self):
-        '''Show the calltips for the present prefix.
+        """Show the calltips for the present prefix.
         ch is '(' if the user has just typed it.
-        '''
+        """
         obj, prefix = self.get_object()
         if obj:
             self.calltip_success(prefix, obj)
@@ -460,21 +439,15 @@ class AutoCompleterClass(object):
         self.exit()
     #@+node:ekr.20110512090917.14468: *5* ac.calltip_fail
     def calltip_fail(self, prefix):
-        '''Evaluation of prefix failed.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.es('eval failed for "%s"' % repr(prefix))
+        """Evaluation of prefix failed."""
         self.insert_string('(')
     #@+node:ekr.20110512090917.14469: *5* ac.calltip_success
     def calltip_success(self, prefix, obj):
-        trace = False and not g.unitTesting
         try:
             # Get the parenthesized argument list.
             s1, s2, s3, s4 = inspect.getargspec(obj)
             s = inspect.formatargspec(s1, s2, s3, s4)
-            if trace: g.trace(obj, repr(s))
         except Exception:
-            if trace: g.trace('inspect failed. obj: %s' % (obj))
             self.insert_string('(')
             return
         # Clean s and insert it: don't include the opening "(".
@@ -488,34 +461,21 @@ class AutoCompleterClass(object):
         self.insert_string(s, select=True)
     #@+node:ekr.20061031131434.28: *4* ac.compute_completion_list & helper
     def compute_completion_list(self):
-        '''Return the autocompleter completion list.'''
-        trace = False and not g.unitTesting
-        verbose = False
-            # True: report hits and misses.
-            # False: report misses.
+        """Return the autocompleter completion list."""
         prefix = self.get_autocompleter_prefix()
         key, options = self.get_cached_options(prefix)
-        if options:
-            if trace and verbose: g.trace('**prefix hit: %s, %s' % (prefix, key))
-        else:
-            if trace: g.trace('**prefix miss: %s, %s' % (prefix, key))
+        if not options:
             options = self.get_completions(prefix)
         tabList, common_prefix = g.itemsMatchingPrefixInList(
             prefix, options, matchEmptyPrefix=False)
         if not common_prefix:
             tabList, common_prefix = g.itemsMatchingPrefixInList(
                 prefix, options, matchEmptyPrefix=True)
-        if trace and verbose:
-            g.trace('prefix: %s, common: %s, len(tabList): %s' % (
-                repr(prefix), repr(common_prefix), len(tabList)))
-            # if verbose: g.trace('options[:10]...\n',
-                # g.listToString(options[:10],sort=True))
         if tabList:
             self.show_completion_list(common_prefix, prefix, tabList)
         return common_prefix, prefix, tabList
     #@+node:ekr.20110514051607.14524: *5* ac.get_cached_options
     def get_cached_options(self, prefix):
-        trace = False and not g.unitTesting
         d = self.completionsDict
         # Search the completions Dict for shorter and shorter prefixes.
         i = len(prefix)
@@ -524,19 +484,14 @@ class AutoCompleterClass(object):
             i -= 1
             # Make sure we report hits only of real objects.
             if key.endswith('.'):
-                if trace: g.trace('== period: %s' % (key))
                 return key, []
             options = d.get(key)
             if options:
-                if trace: g.trace('== hit: %s len: %s' % (
-                    key, len(options)))
                 return key, options
-            else:
-                if trace: g.trace('== miss: %s' % (key))
         return None, []
     #@+node:ekr.20061031131434.29: *4* ac.do_backspace
     def do_backspace(self):
-        '''Delete the character and recompute the completion list.'''
+        """Delete the character and recompute the completion list."""
         c, w = self.c, self.w
         c.bodyWantsFocusNow()
         i = w.getInsertPoint()
@@ -554,33 +509,47 @@ class AutoCompleterClass(object):
                 self.exit()
     #@+node:ekr.20110510133719.14548: *4* ac.do_qcompleter_tab (not used)
     def do_qcompleter_tab(self, prefix, options):
-        '''Return the longest common prefix of all the options.'''
-        trace = False and not g.unitTesting
+        """Return the longest common prefix of all the options."""
         matches, common_prefix = g.itemsMatchingPrefixInList(
             prefix, options, matchEmptyPrefix=False)
-        if trace: g.trace(repr(common_prefix))
         return common_prefix
     #@+node:ekr.20110509064011.14561: *4* ac.get_autocompleter_prefix
     def get_autocompleter_prefix(self):
-        trace = False and not g.unitTesting
         # Only the body pane supports auto-completion.
         w = self.c.frame.body.wrapper
         s = w.getAllText()
         if not s: return ''
         i = w.getInsertPoint() - 1
-        i1 = i = j = max(0, i)
+        i = j = max(0, i)
         while i >= 0 and (s[i].isalnum() or s[i] in '._'):
             i -= 1
         i += 1
         j += 1
         prefix = s[i: j]
-        if trace: g.trace(repr(prefix), 'ins', s[i1:])
         return prefix
     #@+node:ekr.20110512212836.14471: *4* ac.get_completions & helpers
+    jedi_warning = False
+
     def get_completions(self, prefix):
-        trace = False and not g.unitTesting
-        verbose = False # True: report hits and misses.  False: report misses.
+        """Return jedi or codewise completions."""
         d = self.completionsDict
+        if self.use_jedi:
+            try:
+                import jedi
+            except ImportError:
+                if not self.jedi_warning:
+                    self.jedi_warning = False
+                    g.es_print('can not import jedi')
+                    g.es_print('ignoring @bool use_jedi = True')
+            if jedi:
+                aList = (
+                    self.get_jedi_completions(prefix) or
+                        # Prefer the jedi completions.
+                    self.get_leo_completions(prefix))
+                d[prefix] = aList
+                return aList
+        #
+        # Not jedi. Use codewise.
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
             aList = self.get_codewise_completions('self.')
@@ -589,25 +558,17 @@ class AutoCompleterClass(object):
         # Use the cached list if it exists.
         aList = d.get(prefix)
         if aList:
-            if trace and verbose: g.trace('**cache hit: %s' % (prefix))
             return aList
-        # elif self.use_codewise:
-            # aList = self.get_codewise_completions(prefix)
-        # else:
-            # aList = self.get_leo_completions(prefix)
-        # Always try the Leo completions first.
-        # Fall back to the codewise completions.
         aList = (
             self.get_leo_completions(prefix) or
+                # Prefer the Leo completions.
             self.get_codewise_completions(prefix)
         )
-        if trace: g.trace('**cash miss: %s' % (prefix))
         d[prefix] = aList
         return aList
     #@+node:ekr.20110510120621.14539: *5* ac.get_codewise_completions & helpers
     def get_codewise_completions(self, prefix):
-        '''Use codewise to generate a list of hits.'''
-        trace = False and not g.unitTesting
+        """Use codewise to generate a list of hits."""
         c = self.c
         m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix)
         if m:
@@ -631,26 +592,18 @@ class AutoCompleterClass(object):
             else:
                 hits = []
         if 1: # A kludge: add the prefix to each hit.
-            hits = ['%s.%s' % (varname, z) for z in hits]
-        if trace:
-            g.trace('kind', kind, 'varname', varname, 'ivar', ivar, 'prefix', prefix)
-            # g.trace('prefix',prefix,'kind',kind,'varname',varname,'ivar',ivar,'len(hits)',len(hits))
-            # g.trace('hits[:10]',g.listToString(hits[:10],sort=False))
+            hits = [f"{varname}.{z}" for z in hits]
         return hits
     #@+node:ekr.20110510120621.14540: *6* ac.clean
     def clean(self, hits):
-        '''Clean up hits, a list of ctags patterns, for use in completion lists.'''
-        trace = False and not g.unitTesting
+        """Clean up hits, a list of ctags patterns, for use in completion lists."""
         # Just take the function name: ignore the signature & file.
         aList = list(set([z[0] for z in hits]))
         aList.sort()
-        if trace:
-            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110512232915.14481: *6* ac.clean_for_display (not used)
     def clean_for_display(self, hits):
-        '''Clean up hits, a list of ctags patterns, for display purposes.'''
-        trace = False and not g.unitTesting
+        """Clean up hits, a list of ctags patterns, for display purposes."""
         aList = []
         for h in hits:
             s = h[0]
@@ -660,16 +613,13 @@ class AutoCompleterClass(object):
                 sig = fn[2: -4].strip()
             else:
                 sig = fn
-            aList.append('%s: %s' % (s, sig))
+            aList.append(f"{s}: {sig}")
         aList = list(set(aList))
         aList.sort()
-        if trace:
-            # g.trace('hits[:50]',g.listToString(hits[:50])
-            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
     def guess_class(self, c, varname):
-        '''Return kind, class_list'''
+        """Return kind, class_list"""
         # if varname == 'g':
             # return 'module',['leoGlobals']
         if varname == 'p':
@@ -680,8 +630,7 @@ class AutoCompleterClass(object):
             # Return the nearest enclosing class.
             for p in c.p.parents():
                 h = p.h
-                # pylint: disable=anomalous-backslash-in-string
-                m = re.search('class\s+(\w+)', h)
+                m = re.search(r'class\s+(\w+)', h)
                 if m:
                     return 'class', [m.group(1)]
         if 1:
@@ -705,29 +654,103 @@ class AutoCompleterClass(object):
         aList = codewise.cmd_functions([aList[0]])
         hits = [z.split(None, 1) for z in aList if z.strip()]
         return self.clean(hits)
+    #@+node:ekr.20180519111302.1: *5* ac.get_jedi_completions & helper
+    def get_jedi_completions(self, prefix):
+
+        c = self.c
+        w = c.frame.body.wrapper
+        i = w.getInsertPoint()
+        p = c.p
+        body_s = p.b
+        #
+        # Get the entire source for jedi.
+        t1 = time.process_time()
+        goto = gotoCommands.GoToCommands(c)
+        root, fileName = goto.find_root(p)
+        if root:
+            source = goto.get_external_file_with_sentinels(root=root or p)
+            n0 = goto.find_node_start(p=p, s=source)
+            if n0 is None: n0 = 0
+        else:
+            source = body_s
+            n0 = 0
+        t2 = time.process_time()
+        #
+        # Get local line
+        lines = g.splitLines(body_s)
+        row, column = g.convertPythonIndexToRowCol(body_s, i)
+        line = lines[row]
+        #
+        # Find the global line, and compute offsets.
+        source_lines = g.splitLines(source)
+        for jedi_line, g_line in enumerate(source_lines[n0:]):
+            if line.lstrip() == g_line.lstrip():
+                # Adjust the column.
+                indent1 = len(line)-len(line.lstrip())
+                indent2 = len(g_line)-len(g_line.lstrip())
+                if indent2 >= indent1:
+                    local_column = column # For traces.
+                    column += abs(indent2-indent1)
+                    break
+        else:
+            completions = None
+            jedi_line, indent1, indent2 = None, None, None
+            g.printObj(source_lines[n0-1:n0+30])
+            print('can not happen: not found: %r' % line)
+        #
+        # Get the jedi completions.
+        if jedi_line is not None:
+            import jedi
+            try:
+                script = jedi.Script(
+                    source=source,
+                    line=1+n0+jedi_line,
+                    column=column,
+                    path = g.shortFileName(fileName),
+                    # encoding='utf-8',
+                    # sys_path=None):
+                ) 
+                completions = script.completions()
+                t3 = time.process_time()
+            except ValueError:
+                t3 = time.process_time()
+                completions = None
+                g.printObj(source_lines[n0-1:n0+30])
+                print('ERROR', p.h)
+        if not completions:
+            return []
+        # May be used in traces below.
+        assert t3 >= t2 >= t1
+        assert local_column is not None  
+        completions = [z.name for z in completions]
+        completions = [self.add_prefix(prefix, z) for z in completions]
+        # Retain these for now...
+            # g.printObj(completions[:5])
+            # head = line[:local_column]
+            # ch = line[local_column:local_column+1]
+            # g.trace(len(completions), repr(ch), head.strip())
+        return completions
+    #@+node:ekr.20180526211127.1: *6* ac.add_prefix
+    def add_prefix(self, prefix, s):
+        """A hack to match the callers expectations."""
+        if prefix.find('.') > -1:
+            aList = prefix.split('.')
+            prefix = '.'.join(aList[:-1]) + '.'
+        return s if s.startswith(prefix) else prefix + s
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix):
-        '''Return completions in an environment defining c, g and p.'''
-        trace = False and not g.unitTesting
-        verbose = False
+        """Return completions in an environment defining c, g and p."""
         aList = []
         for d in self.namespaces + [self.get_leo_namespace(prefix)]:
-            if trace: g.trace(list(d.keys()))
             aList.extend(self.attr_matches(prefix, d))
         aList.sort()
-        if trace:
-            if verbose:
-                g.trace('prefix', repr(prefix), 'aList...\n', g.listToString(aList))
-            else:
-                g.trace('len(aList): %3s, prefix: %s' % (len(aList), repr(prefix)))
         return aList
     #@+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
     def get_leo_namespace(self, prefix):
-        '''
+        """
         Return an environment in which to evaluate prefix.
         Add some common standard library modules as needed.
-        '''
-        trace = False and not g.unitTesting
+        """
         k = self.k
         d = {'c': k.c, 'p': k.c.p, 'g': g}
         aList = prefix.split('.')
@@ -736,26 +759,19 @@ class AutoCompleterClass(object):
             m = sys.modules.get(name)
             if m:
                 d[name] = m
-        if trace:
-            g.trace('prefix', prefix, 'aList', aList)
-            for key in sorted(d.keys()):
-                g.trace(key, d.get(key))
         return d
     #@+node:ekr.20110512170111.14472: *4* ac.get_object
     def get_object(self):
-        '''Return the object corresponding to the current prefix.'''
-        trace = False and not g.unitTesting
+        """Return the object corresponding to the current prefix."""
         common_prefix, prefix1, aList = self.compute_completion_list()
         if not aList:
-            if trace: g.trace('no completion list for: %s' % (prefix1))
             return None, prefix1
-        elif len(aList) == 1:
+        if len(aList) == 1:
             prefix = aList[0]
         else:
             prefix = common_prefix
         if prefix.endswith('.') and self.use_qcompleter:
             prefix += self.qcompleter.get_selection()
-        if trace: g.trace(repr(prefix))
         safe_prefix = self.strip_brackets(prefix)
         for d in self.namespaces + [self.get_leo_namespace(prefix)]:
             try:
@@ -773,7 +789,7 @@ class AutoCompleterClass(object):
         return obj, prefix
     #@+node:ekr.20061031131434.38: *4* ac.info
     def info(self):
-        '''Show the docstring for the present completion.'''
+        """Show the docstring for the present completion."""
         c = self.c
         obj, prefix = self.get_object()
         c.frame.log.clearTab('Info', wrap='word')
@@ -795,7 +811,7 @@ class AutoCompleterClass(object):
                 put('    (none)')
             for i in range(defn):
                 arg = argspec.args[-defn + i]
-                put("    %s = %s" % (arg, repr(argspec.defaults[i])))
+                put(f"    {arg} = {repr(argspec.defaults[i])}")
             if argspec.varargs:
                 put("varargs: *" + argspec.varargs)
             if argspec.keywords:
@@ -807,11 +823,10 @@ class AutoCompleterClass(object):
         put(doc if doc else "No docstring for " + repr(prefix))
     #@+node:ekr.20110510071925.14586: *4* ac.init_qcompleter
     def init_qcompleter(self, event=None):
-        trace = False and not g.unitTesting
+
         # Compute the prefix and the list of options.
         prefix = self.get_autocompleter_prefix()
         options = self.get_completions(prefix)
-        if trace: g.trace('prefix: %s, len(options): %s' % (repr(prefix), len(options)))
         w = self.c.frame.body.wrapper.widget
             # A LeoQTextBrowser.  May be none for unit tests.
         if w and options:
@@ -835,20 +850,19 @@ class AutoCompleterClass(object):
             self.exit()
     #@+node:ekr.20061031131434.39: *4* ac.insert_general_char
     def insert_general_char(self, ch):
-        trace = False and not g.unitTesting
+
         k, w = self.k, self.w
-        if trace: g.trace(repr(ch))
         if g.isWordChar(ch):
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
-            if trace: g.trace('ch', repr(ch), 'prefix', repr(prefix), 'len(aList)', len(aList))
             if not aList:
-                if self.forbid_invalid: # 2011/06/17.
+                if self.forbid_invalid:
                     # Delete the character we just inserted.
                     self.do_backspace()
+            # @bool auto_tab_complete is deprecated.
+            # Auto-completion makes no sense if it is False.
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix):]
-                if trace: g.trace('*** extend', extend)
                 ins = w.getInsertPoint()
                 w.insert(ins, extend)
         else:
@@ -856,12 +870,11 @@ class AutoCompleterClass(object):
                 # This calls self.exit if the '(' is valid.
                 self.calltip()
             else:
-                if trace: g.trace('ch', repr(ch), 'calling exit')
                 self.insert_string(ch)
                 self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
-        '''Insert s at the insertion point.'''
+        """Insert s at the insertion point."""
         c = self.c
         w = self.w
         if not g.isTextWrapper(w): # Bug fix: 2016/10/29.
@@ -874,12 +887,11 @@ class AutoCompleterClass(object):
             w.setSelectionRange(i, j, insert=j)
         c.frame.body.onBodyChanged('Typing')
         if self.use_qcompleter:
-            # g.trace(self.qw.leo_qc)
             if self.qw:
                 c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
     def is_leo_source_file(self):
-        '''Return True if this is one of Leo's source files.'''
+        """Return True if this is one of Leo's source files."""
         c = self.c
         table = (z.lower() for z in (
             'leoDocs.leo',
@@ -893,9 +905,9 @@ class AutoCompleterClass(object):
         return c.shortFileName().lower() in table
     #@+node:ekr.20101101175644.5891: *4* ac.put
     def put(self, *args, **keys):
-        '''Put s to the given tab.
+        """Put s to the given tab.
 
-        May be overridden in subclasses.'''
+        May be overridden in subclasses."""
         # print('autoCompleter.put',args,keys)
         if g.unitTesting:
             pass
@@ -906,7 +918,7 @@ class AutoCompleterClass(object):
         c = self.c
         aList = common_prefix.split('.')
         header = '.'.join(aList[: -1])
-        # g.trace(self.use_qcompleter,len(tabList))
+        # "!" toggles self.verbose.
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header, tabList,)
         else:
@@ -924,15 +936,15 @@ class AutoCompleterClass(object):
             self.put('', s, tabName=self.tabName)
     #@+node:ekr.20110513104728.14453: *5* ac.clean_completion_list
     def clean_completion_list(self, header, tabList):
-        '''Return aList with header removed from the start of each list item.'''
+        """Return aList with header removed from the start of each list item."""
         return [
             z[len(header) + 1:] if z.startswith(header) else z
                 for z in tabList]
     #@+node:ekr.20110513104728.14454: *5* ac.get_summary_list
     def get_summary_list(self, header, tabList):
-        '''Show the possible starting letters,
+        """Show the possible starting letters,
         but only if there are more than one.
-        '''
+        """
         d = {}
         for z in tabList:
             tail = z[len(header):] if z else ''
@@ -941,7 +953,7 @@ class AutoCompleterClass(object):
             if ch:
                 n = d.get(ch, 0)
                 d[ch] = n + 1
-        aList = ['%s %d' % (ch2, d.get(ch2)) for ch2 in sorted(d)]
+        aList = [f"{ch2} {d.get(ch2)}" for ch2 in sorted(d)]
         if len(aList) > 1:
             tabList = aList
         else:
@@ -950,23 +962,25 @@ class AutoCompleterClass(object):
     #@+node:ekr.20061031131434.46: *4* ac.start
     def start(self, event):
         # We don't need to clear this now that we don't use ContextSniffer.
-        # self.completionsDict = {}
+        c = self.c
+        if c.config.getBool('use-jedi', default=True):
+            self.completionsDict = {}
         if self.use_qcompleter:
             self.init_qcompleter(event)
         else:
             self.init_tabcompleter(event)
     #@+node:ekr.20110512170111.14471: *4* ac.strip_brackets
     def strip_brackets(self, s):
-        '''Return s with all brackets removed.
+        """Return s with all brackets removed.
 
         This (mostly) ensures that eval will not execute function calls, etc.
-        '''
+        """
         for ch in '[]{}()':
             s = s.replace(ch, '')
         return s
     #@-others
 #@+node:ekr.20110312162243.14260: ** class ContextSniffer
-class ContextSniffer(object):
+class ContextSniffer:
     """ Class to analyze surrounding context and guess class
 
     For simple dynamic code completion engines.
@@ -978,7 +992,7 @@ class ContextSniffer(object):
     #@+others
     #@+node:ekr.20110312162243.14261: *3* get_classes
     def get_classes(self, s, varname):
-        '''Return a list of classes for string s.'''
+        """Return a list of classes for string s."""
         self.push_declarations(s)
         aList = self.vars.get(varname, [])
         return aList
@@ -1004,80 +1018,73 @@ class ContextSniffer(object):
         vars.append(klass)
     #@-others
 #@+node:ekr.20140813052702.18194: ** class FileNameChooser
-class FileNameChooser(object):
-    '''A class encapsulation file selection & completion logic.'''
-    # pylint: disable=no-self-argument
-    # The first argument is fnc.
+class FileNameChooser:
+    """A class encapsulation file selection & completion logic."""
     #@+others
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
-    def __init__(fnc, c):
-        '''Ctor for FileNameChooser class.'''
-        # g.trace('(FileNameChooser)',c.shortFileName(),g.callers())
-        fnc.c = c
-        fnc.k = c.k
+    def __init__(self, c):
+        """Ctor for FileNameChooser class."""
+        self.c = c
+        self.k = c.k
         assert c and c.k
-        fnc.log = c.frame.log or g.NullObject()
-        fnc.callback = None
-        fnc.filterExt = None
-        fnc.log = None # inited later.
-        fnc.prompt = None
-        fnc.tabName = None
+        self.log = c.frame.log or g.NullObject()
+        self.callback = None
+        self.filterExt = None
+        self.log = None # inited later.
+        self.prompt = None
+        self.tabName = None
     #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
-    def compute_tab_list(fnc):
-        '''Compute the list of completions.'''
-        trace = False and not g.unitTesting
-        path = fnc.get_label()
-        # Fix bug 215: insert-file-name doesn't process ~
-        # https://github.com/leo-editor/leo-editor/issues/215
+    def compute_tab_list(self):
+        """Compute the list of completions."""
+        path = self.get_label()
+        # #215: insert-file-name doesn't process ~
         path = g.os_path_expanduser(path)
         sep = os.path.sep
         if g.os_path_exists(path):
-            if trace: g.trace('existing directory', path)
             if g.os_path_isdir(path):
                 if path.endswith(os.sep):
-                    aList = glob.glob(path + '*')
+                    aList = g.glob_glob(path + '*')
                 else:
-                    aList = glob.glob(path + sep + '*')
+                    aList = g.glob_glob(path + sep + '*')
                 tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
             else:
                 # An existing file.
                 tabList = [path]
         else:
-            if trace: g.trace('does not exist', path)
             if path and path.endswith(sep):
                 path = path[: -1]
-            aList = glob.glob(path + '*')
+            aList = g.glob_glob(path + '*')
             tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
-        if fnc.filterExt:
-            for ext in fnc.filterExt:
+        if self.filterExt:
+            for ext in self.filterExt:
                 tabList = [z for z in tabList if not z.endswith(ext)]
+        tabList = [g.os_path_normslashes(z) for z in tabList]
         junk, common_prefix = g.itemsMatchingPrefixInList(path, tabList)
-        if trace: g.trace('common_prefix', common_prefix)
         return common_prefix, tabList
     #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
-    def do_back_space(fnc):
-        '''Handle a back space.'''
-        w = fnc.c.k.w
+    def do_back_space(self):
+        """Handle a back space."""
+        w = self.c.k.w
         if w and w.hasSelection():
             # s = w.getAllText()
             i, j = w.getSelectionRange()
             w.delete(i, j)
-            s = fnc.get_label()
+            s = self.get_label()
         else:
-            s = fnc.get_label()
+            s = self.get_label()
             if s:
                 s = s[: -1]
-            fnc.set_label(s)
+            self.set_label(s)
         if s:
-            common_prefix, tabList = fnc.compute_tab_list()
+            common_prefix, tabList = self.compute_tab_list()
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
-        fnc.show_tab_list(tabList)
+        self.show_tab_list(tabList)
     #@+node:ekr.20140813052702.18198: *3* fnc.do_char
-    def do_char(fnc, char):
-        '''Handle a non-special character.'''
-        w = fnc.c.k.w
+    def do_char(self, char):
+        """Handle a non-special character."""
+        w = self.c.k.w
         if w and w.hasSelection:
             # s = w.getAllText()
             i, j = w.getSelectionRange()
@@ -1085,139 +1092,149 @@ class FileNameChooser(object):
             w.setInsertPoint(i)
             w.insert(i, char)
         else:
-            fnc.extend_label(char)
-        common_prefix, tabList = fnc.compute_tab_list()
-        fnc.show_tab_list(tabList)
+            self.extend_label(char)
+        common_prefix, tabList = self.compute_tab_list()
+        self.show_tab_list(tabList)
         if common_prefix:
             if 0:
                 # This is a bit *too* helpful.
                 # It's too easy to type ahead by mistake.
                 # Instead, completion should happen only when the user types <tab>.
-                fnc.set_label(common_prefix)
+                self.set_label(common_prefix)
             # Recompute the tab list.
-            common_prefix, tabList = fnc.compute_tab_list()
-            fnc.show_tab_list(tabList)
+            common_prefix, tabList = self.compute_tab_list()
+            self.show_tab_list(tabList)
             if len(tabList) == 1:
                 # Automatically complete the typing only if there is only one item in the list.
-                fnc.set_label(common_prefix)
+                self.set_label(common_prefix)
         else:
             # Restore everything.
-            fnc.set_label(fnc.get_label()[: -1])
-            fnc.extend_label(char)
+            self.set_label(self.get_label()[: -1])
+            self.extend_label(char)
     #@+node:ekr.20140813052702.18199: *3* fnc.do_tab
-    def do_tab(fnc):
-        '''Handle tab completion.'''
-        old = fnc.get_label()
-        common_prefix, tabList = fnc.compute_tab_list()
-        fnc.show_tab_list(tabList)
-        if len(common_prefix) > len(old):
-            fnc.set_label(common_prefix)
+    def do_tab(self):
+        """Handle tab completion."""
+        old = self.get_label()
+        common_prefix, tabList = self.compute_tab_list()
+        self.show_tab_list(tabList)
+        if len(tabList) == 1:
+            common_prefix = tabList[0]
+            self.set_label(common_prefix)
+        elif len(common_prefix) > len(old):
+            self.set_label(common_prefix)
     #@+node:ekr.20140813052702.18200: *3* fnc.get_file_name (entry)
-    def get_file_name(fnc, event, callback, filterExt, prompt, tabName):
-        '''Get a file name, supporting file completion.'''
-        trace = False and not g.unitTesting
-        c, k = fnc.c, fnc.c.k
+    def get_file_name(self, event, callback, filterExt, prompt, tabName):
+        """Get a file name, supporting file completion."""
+        c, k = self.c, self.c.k
         tag = 'get-file-name'
         state = k.getState(tag)
         char = event.char if event else ''
-        if trace:
-            g.trace('state', state, 'char', char or '<**no char**>')
         if state == 0:
             # Re-init all ivars.
-            fnc.log = c.frame.log or g.NullObject()
-            fnc.callback = callback
-            fnc.filterExt = filterExt or ['.pyc', '.bin',]
-            fnc.prompt = prompt
-            fnc.tabName = tabName
+            self.log = c.frame.log or g.NullObject()
+            self.callback = callback
+            self.filterExt = filterExt or ['.pyc', '.bin',]
+            self.prompt = prompt
+            self.tabName = tabName
+            join = g.os_path_finalize_join
+            finalize = g.os_path_finalize
+            normslashes = g.os_path_normslashes
+            # #467: Add setting for preferred directory.
+            directory = c.config.getString('initial-chooser-directory')
+            if directory:
+                directory = finalize(directory)
+                if not g.os_path_exists(directory):
+                    g.es_print('@string initial-chooser-directory not found', 
+                        normslashes(directory))
+                    directory = None
+            if not directory:
+                directory = finalize(os.curdir)
             # Init the label and state.
-            if k.functionTail:
-                path = k.functionTail.strip()
-                fnc.set_label(g.os_path_finalize_join(os.curdir, path))
-            else:
-                fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
-            k.setState(tag, 1, fnc.get_file_name)
-            fnc.log.selectTab(fnc.tabName)
-            junk, tabList = fnc.compute_tab_list()
-            fnc.show_tab_list(tabList)
+            tail = k.functionTail and k.functionTail.strip()
+            label = join(directory, tail) if tail else directory + os.sep
+            self.set_label(normslashes(label))
+            k.setState(tag, 1, self.get_file_name)
+            self.log.selectTab(self.tabName)
+            junk, tabList = self.compute_tab_list()
+            self.show_tab_list(tabList)
             c.minibufferWantsFocus()
         elif char == 'Escape':
             k.keyboardQuit()
         elif char in ('\n', 'Return'):
-            fnc.log.deleteTab(fnc.tabName)
-            path = fnc.get_label()
+            self.log.deleteTab(self.tabName)
+            path = self.get_label()
             k.keyboardQuit()
-            if fnc.callback:
+            if self.callback:
                 # pylint: disable=not-callable
-                fnc.callback(path)
+                self.callback(path)
             else:
                 g.trace('no callback')
         elif char in ('\t', 'Tab'):
-            fnc.do_tab()
+            self.do_tab()
             c.minibufferWantsFocus()
         elif char in ('\b', 'BackSpace'):
-            fnc.do_back_space()
+            self.do_back_space()
             c.minibufferWantsFocus()
         elif k.isPlainKey(char):
-            fnc.do_char(char)
+            self.do_char(char)
         else:
             pass
     #@+node:ekr.20140813052702.18201: *3* fnc.extend/get/set_label
-    def extend_label(fnc, s):
-        '''Extend the label by s.'''
-        fnc.c.k.extendLabel(s, select=False, protect=False)
+    def extend_label(self, s):
+        """Extend the label by s."""
+        self.c.k.extendLabel(s, select=False, protect=False)
 
-    def get_label(fnc):
-        '''Return the label, not including the prompt.'''
-        return fnc.c.k.getLabel(ignorePrompt=True)
+    def get_label(self):
+        """Return the label, not including the prompt."""
+        return self.c.k.getLabel(ignorePrompt=True)
 
-    def set_label(fnc, s):
-        '''Set the label after the prompt to s. The prompt never changes.'''
-        fnc.c.k.setLabel(fnc.prompt, protect=True)
-        fnc.c.k.extendLabel(s or '', select=False, protect=False)
+    def set_label(self, s):
+        """Set the label after the prompt to s. The prompt never changes."""
+        self.c.k.setLabel(self.prompt, protect=True)
+        self.c.k.extendLabel(s or '', select=False, protect=False)
     #@+node:ekr.20140813052702.18202: *3* fnc.show_tab_list
-    def show_tab_list(fnc, tabList):
-        '''Show the tab list in the log tab.'''
-        fnc.log.clearTab(fnc.tabName)
+    def show_tab_list(self, tabList):
+        """Show the tab list in the log tab."""
+        self.log.clearTab(self.tabName)
         s = g.os_path_finalize(os.curdir) + os.sep
-        # g.es('',s,tabName=fnc.tabName)
+        es = []
         for path in tabList:
             theDir, fileName = g.os_path_split(path)
             s = theDir if path.endswith(os.sep) else fileName
             s = fileName or g.os_path_basename(theDir) + os.sep
-            g.es('', s, tabName=fnc.tabName)
+            es.append(s)
+        g.es('', '\n'.join(es), tabName=self.tabName)
     #@-others
 #@+node:ekr.20140816165728.18940: ** class GetArg
-class GetArg(object):
-    '''
+class GetArg:
+    """
     A class encapsulating all k.getArg logic.
 
     k.getArg maps to ga.get_arg, which gets arguments in the minibuffer.
 
     For details, see the docstring for ga.get_arg
-    '''
-    # pylint: disable=no-self-argument
-    # The first argument is ga.
+    """
     #@+others
     #@+node:ekr.20140818052417.18241: *3* ga.birth
     #@+node:ekr.20140816165728.18952: *4* ga.__init__
-    def __init__(ga, c, prompt='full-command: ', tabName='Completion'):
-        '''Ctor for GetArg class.'''
+    def __init__(self, c, prompt='full-command: ', tabName='Completion'):
+        """Ctor for GetArg class."""
         # Common ivars.
-        ga.c = c
-        ga.k = c.k
+        self.c = c
+        self.k = c.k
         assert c
         assert c.k
-        ga.log = c.frame.log or g.NullObject()
-        ga.tabName = tabName
+        self.log = c.frame.log or g.NullObject()
+        self.tabName = tabName
         # State vars.
-        ga.after_get_arg_state = None, None, None
-        ga.arg_completion = True
-        ga.handler = None
-        ga.tabList = []
+        self.after_get_arg_state = None, None, None
+        self.arg_completion = True
+        self.handler = None
+        self.tabList = []
         # Tab cycling ivars...
-        ga.cycling_prefix = None
-        ga.cycling_index = -1
-        ga.cycling_tabList = []
+        self.cycling_prefix = None
+        self.cycling_index = -1
+        self.cycling_tabList = []
         # The following are k globals.
             # k.arg.
             # k.argSelectedText
@@ -1225,29 +1242,24 @@ class GetArg(object):
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
-    def compute_tab_list(ga, tabList, backspace=False, allow_empty_completion=False):
-        '''Compute and show the available completions.'''
+    def compute_tab_list(self, tabList, backspace=False, allow_empty_completion=False):
+        """Compute and show the available completions."""
         # Support vim-mode commands.
-        command = ga.get_label()
-        # g.trace(len(tabList), ga.is_command(command),command)
-        if ga.is_command(command):
-            # if trace: g.trace('\n'.join(tabList))
+        command = self.get_label()
+        if self.is_command(command):
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
-                # note order.
-        else:
-            # For now, disallow further completions if something follows the command.
-            command = ga.get_command(command)
-            return command, [command]
+        #
+        # For now, disallow further completions if something follows the command.
+        command = self.get_command(command)
+        return command, [command]
     #@+node:ekr.20140816165728.18965: *3* ga.do_back_space (entry)
     # Called from k.fullCommand: with defaultTabList = list(c.commandsDict.keys())
 
-    def do_back_space(ga, tabList, completion=True):
-        '''Handle a backspace and update the completion list.'''
-        trace = False and not g.unitTesting
-        k = ga.k
-        ga.tabList = tabList[:] if tabList else []
-        if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+    def do_back_space(self, tabList, completion=True):
+        """Handle a backspace and update the completion list."""
+        k = self.k
+        self.tabList = tabList[:] if tabList else []
         # Update the label.
         w = k.w
         i, j = w.getSelectionRange()
@@ -1264,134 +1276,110 @@ class GetArg(object):
                 w.delete(i, j)
                 w.setSelectionRange(i, i, insert=ins)
         if w.getAllText().strip():
-            junk, tabList = ga.compute_tab_list(ga.tabList)
+            junk, tabList = self.compute_tab_list(self.tabList)
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
         if completion:
-            # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-            common_prefix, tabList = ga.compute_tab_list(tabList)
-            ga.show_tab_list(tabList)
-            ga.reset_tab_cycling()
+            # #323.
+            common_prefix, tabList = self.compute_tab_list(tabList)
+            self.show_tab_list(tabList)
+            self.reset_tab_cycling()
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
-    def do_tab(ga, tabList, completion=True):
-        '''Handle tab completion when the user hits a tab.'''
-        trace = False and not g.unitTesting
-        # g.trace('\n'+'\n'.join([z for z in tabList if z.startswith('@')]))
-        c = ga.c
+    def do_tab(self, tabList, completion=True):
+        """Handle tab completion when the user hits a tab."""
+        c = self.c
         if completion:
-            tabList = ga.tabList = tabList[:] if tabList else []
-            if trace: g.trace('len(ga.tabList)', len(tabList))
-            # command = ga.get_label()
-            common_prefix, tabList = ga.compute_tab_list(tabList)
-            if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
-                ga.cycling_prefix = common_prefix
-            if trace:
-                g.trace('len(tabList): %s common_prefix: %r cycling_prefix: %r' % (
-                    len(tabList), common_prefix, ga.cycling_prefix))
-                g.printList(tabList)
+            tabList = self.tabList = tabList[:] if tabList else []
+            common_prefix, tabList = self.compute_tab_list(tabList)
+            if self.cycling_prefix and not self.cycling_prefix.startswith(common_prefix):
+                self.cycling_prefix = common_prefix
+            #
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
-            if len(tabList) == 1 and ga.do_tab_callback():
+            if len(tabList) == 1 and self.do_tab_callback():
                 return
-            else:
-                # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-                # A big simplifcation: always call ga.do_tab_list
-                ga.do_tab_cycling(common_prefix, tabList)
-
+            # #323: *Always* call ga.do_tab_list.
+            self.do_tab_cycling(common_prefix, tabList)
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
-    def do_tab_callback(ga):
-        '''
+    def do_tab_callback(self):
+        """
         If the command-name handler has a tab_callback,
         call handler.tab_callback() and return True.
-        '''
-        trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        """
+        c, k = self.c, self.k
         commandName, tail = k.getMinibufferCommandName()
         handler = c.commandsDict.get(commandName)
-        if trace: g.trace(commandName, handler and handler.__name__ or 'None')
         if hasattr(handler, 'tab_callback'):
-            ga.reset_tab_cycling()
+            self.reset_tab_cycling()
             k.functionTail = tail
                 # For k.getFileName.
             handler.tab_callback()
             return True
-        else:
-            return False
+        return False
     #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
-    def do_tab_cycling(ga, common_prefix, tabList):
-        '''Put the next (or first) completion in the minibuffer.'''
-        trace = False and not g.unitTesting
-        s = ga.get_label()
-        if trace:
-            g.trace('===== label: %r prefix: %r len(tabList): %s' % (
-                s, ga.cycling_prefix, len(tabList)))
+    def do_tab_cycling(self, common_prefix, tabList):
+        """Put the next (or first) completion in the minibuffer."""
+        s = self.get_label()
         if not common_prefix:
             # Leave the minibuffer as it is.
-            if trace: g.trace('0: NO COMMON PREFIX')
-            ga.show_tab_list(tabList)
-        # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
+            self.show_tab_list(tabList)
+        # #323.
         elif (
-            ga.cycling_prefix and s.startswith(ga.cycling_prefix) and
-            sorted(ga.cycling_tabList) == sorted(tabList) # Bug fix: 2016/10/14
+            self.cycling_prefix and
+            s.startswith(self.cycling_prefix) and
+            sorted(self.cycling_tabList) == sorted(tabList) # Bug fix: 2016/10/14
         ):
-            if trace: g.trace('1: CYCLE: %s %r: tabList[0]: %r' % (
-                ga.cycling_index, s, tabList and tabList[0] or '<none>'))
-            n = ga.cycling_index
-            n = ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
-            ga.set_label(ga.cycling_tabList[n])
-            ga.show_tab_list(ga.cycling_tabList)
+            n = self.cycling_index
+            n = self.cycling_index = n + 1 if n + 1 < len(self.cycling_tabList) else 0
+            self.set_label(self.cycling_tabList[n])
+            self.show_tab_list(self.cycling_tabList)
         else:
             # Restart.
-            if trace:
-                g.trace('2: RESTART: %r:' % (s))
-                g.printList(tabList)
-            ga.show_tab_list(tabList)
-            ga.cycling_tabList = tabList[:]
-            ga.cycling_prefix = common_prefix
-            ga.set_label(common_prefix)
+            self.show_tab_list(tabList)
+            self.cycling_tabList = tabList[:]
+            self.cycling_prefix = common_prefix
+            self.set_label(common_prefix)
             if tabList and common_prefix == tabList[0]:
-                if trace: g.trace('select the first command.')
-                ga.cycling_index = 0
+                self.cycling_index = 0
             else:
-                if trace: g.trace('show common prefix.')
-                ga.cycling_index = -1
+                self.cycling_index = -1
     #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
-    def reset_tab_cycling(ga):
-        '''Reset all tab cycling ivars.'''
-        ga.cycling_prefix = None
-        ga.cycling_index = -1
-        ga.cycling_tabList = []
+    def reset_tab_cycling(self):
+        """Reset all tab cycling ivars."""
+        self.cycling_prefix = None
+        self.cycling_index = -1
+        self.cycling_tabList = []
     #@+node:ekr.20140816165728.18958: *3* ga.extend/get/set_label
     # Not useful because k.entendLabel doesn't handle selected text.
     if 0:
 
-        def extend_label(ga, s):
-            '''Extend the label by s.'''
-            ga.c.k.extendLabel(s, select=False, protect=False)
+        def extend_label(self, s):
+            """Extend the label by s."""
+            self.c.k.extendLabel(s, select=False, protect=False)
 
-    def get_label(ga):
-        '''Return the label, not including the prompt.'''
-        return ga.c.k.getLabel(ignorePrompt=True)
+    def get_label(self):
+        """Return the label, not including the prompt."""
+        return self.c.k.getLabel(ignorePrompt=True)
 
-    def set_label(ga, s):
-        '''Set the label after the prompt to s. The prompt never changes.'''
-        k = ga.c.k
+    def set_label(self, s):
+        """Set the label after the prompt to s. The prompt never changes."""
+        k = self.c.k
         # Using k.mb_prefix is simplest.  No ga.ivars need be inited.
         k.setLabel(k.mb_prefix, protect=True)
         k.extendLabel(s or '', select=False, protect=False)
     #@+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
-    def get_arg(ga, event,
+    def get_arg(self, event,
         returnKind=None, returnState=None, handler=None,
         tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):
         #@+<< ga.get_arg docstring >>
         #@+node:ekr.20140822051549.18299: *4* << ga.get_arg docstring >>
-        '''
+        """
         Accumulate an argument. Enter the given return state when done.
 
         Ctrl-G will abort this processing at any time.
@@ -1421,60 +1409,49 @@ class GetArg(object):
         useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                             False allows sort-lines, for example, to show the selection range.
 
-        '''
+        """
         #@-<< ga.get_arg docstring >>
-        # pylint: disable=unpacking-non-sequence
-        trace = False and not g.app.unitTesting
         if tabList is None: tabList = []
-        c, k = ga.c, ga.k
+        c, k = self.c, self.k
         state = k.getState('getArg')
         c.check_event(event)
+        c.minibufferWantsFocusNow()
         char = event.char if event else ''
         if state > 0:
             k.setLossage(char, stroke)
         if state == 0:
-            ga.do_state_zero(completion, event, handler, oneCharacter,
+            self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
-            if trace: ga.trace_state(char, completion, handler, state, stroke)
+            return
+        if char == 'Escape':
+            k.keyboardQuit()
+        elif self.should_end(char, stroke):
+            self.do_end(event, char, stroke)
+        elif char in ('\t', 'Tab'):
+            self.do_tab(self.tabList, self.arg_completion)
+        elif char in ('\b', 'BackSpace'):
+            self.do_back_space(self.tabList, self.arg_completion)
+            c.minibufferWantsFocus()
+        elif k.isFKey(stroke):
+            # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
+            pass
         else:
-            if trace: ga.trace_state(char, completion, handler, state, stroke)
-            if char == 'Escape':
-                k.keyboardQuit()
-            elif ga.should_end(char, stroke):
-                ga.do_end(event, char, stroke)
-            elif char in ('\t', 'Tab'):
-                if trace: g.trace('***tab*** len(ga.tabList)', len(ga.tabList))
-                ga.do_tab(ga.tabList, ga.arg_completion)
-            elif char in ('\b', 'BackSpace'):
-                ga.do_back_space(ga.tabList, ga.arg_completion)
-                c.minibufferWantsFocus()
-            elif k.isFKey(stroke):
-                # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
-                pass
-            else:
-                ga.do_char(event, char)
+            self.do_char(event, char)
     #@+node:ekr.20161019060054.1: *4* ga.cancel_after_state
-    def cancel_after_state(ga):
+    def cancel_after_state(self):
 
-        ga.after_get_arg_state = None
+        self.after_get_arg_state = None
     #@+node:ekr.20140816165728.18955: *4* ga.do_char
-    def do_char(ga, event, char):
-        '''Handle a non-special character.'''
-        k = ga.k
+    def do_char(self, event, char):
+        """Handle a non-special character."""
+        k = self.k
         k.updateLabel(event)
         # Any plain key resets tab cycling.
-        ga.reset_tab_cycling()
+        self.reset_tab_cycling()
     #@+node:ekr.20140817110228.18316: *4* ga.do_end
-    def do_end(ga, event, char, stroke):
-        '''A return or escape has been seen.'''
-        trace = False and not g.unitTesting
-        k = ga.k
-        if trace:
-            g.trace('oneCharacterArg: %r' % k.oneCharacterArg)
-            g.trace('char: %r stroke: %r escapes: %s' % (char, stroke, k.getArgEscapes))
-            if ga.after_get_arg_state:
-                kind, n, handler = ga.after_get_arg_state
-                g.trace('after state', kind, n, handler and handler.__name__ or 'None')
+    def do_end(self, event, char, stroke):
+        """A return or escape has been seen."""
+        k = self.k
         if char == '\t' and char in k.getArgEscapes:
             k.getArgEscapeFlag = True
         if stroke and stroke in k.getArgEscapes:
@@ -1485,39 +1462,35 @@ class GetArg(object):
             k.arg = char
         else:
             # A hack to support the curses gui.
-            k.arg = gui_arg or ga.get_label()
-        if trace:
-            g.trace('k.w: %r, prefix: %r, arg: %r gui_arg: %r' % (
-                k.w, k.mb_prefix, k.arg, gui_arg))
-        kind, n, handler = ga.after_get_arg_state
-        if trace: g.trace('handler: %s' % (handler and handler.__name__))
-        if kind: k.setState(kind, n, handler)
-        ga.log.deleteTab('Completion')
-        if trace: g.trace('kind', kind, 'n', n, 'handler', handler and handler.__name__)
-        # pylint: disable=not-callable
-        ga.reset_tab_cycling()
+            k.arg = gui_arg or self.get_label()
+        kind, n, handler = self.after_get_arg_state
+        if kind:
+            k.setState(kind, n, handler)
+        self.log.deleteTab('Completion')
+        self.reset_tab_cycling()
         if handler:
-            # g.trace(handler)
+            # pylint: disable=not-callable
             handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
-    def do_state_zero(ga, completion, event, handler, oneCharacter,
+    def do_state_zero(self, completion, event, handler, oneCharacter,
         returnKind, returnState, tabList, useMinibuffer
     ):
-        '''Do state 0 processing.'''
-        trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        """Do state 0 processing."""
+        c, k = self.c, self.k
+        #
         # Set the ga globals...
         k.getArgEscapeFlag = False
-        ga.after_get_arg_state = returnKind, returnState, handler
-        ga.arg_completion = completion
-        ga.cycling_prefix = None
-        ga.handler = handler
-        ga.tabList = tabList[:] if tabList else []
-        if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+        self.after_get_arg_state = returnKind, returnState, handler
+        self.arg_completion = completion
+        self.cycling_prefix = None
+        self.handler = handler
+        self.tabList = tabList[:] if tabList else []
+        #
         # Set the k globals...
         k.argSelectedText = c.frame.body.wrapper.getSelectedText()
         k.functionTail = None
         k.oneCharacterArg = oneCharacter
+        #
         # Do *not* change the label here!
         # Enter the next state.
         c.widgetWantsFocus(c.frame.body.wrapper)
@@ -1526,11 +1499,9 @@ class GetArg(object):
         k.afterArgWidget = event and event.widget or c.frame.body.wrapper
         if useMinibuffer: c.minibufferWantsFocus()
     #@+node:ekr.20140818103808.18234: *4* ga.should_end
-    def should_end(ga, char, stroke):
-        '''Return True if ga.get_arg should return.'''
-        trace = False and not g.unitTesting
-        k = ga.k
-        if trace: g.trace('char', repr(char), 'stroke', repr(stroke))
+    def should_end(self, char, stroke):
+        """Return True if ga.get_arg should return."""
+        k = self.k
         return (
             char in ('\n', 'Return',) or
             k.oneCharacterArg or
@@ -1539,84 +1510,41 @@ class GetArg(object):
                 # The Find Easter Egg.
         )
     #@+node:ekr.20140818103808.18235: *4* ga.trace_state
-    def trace_state(ga, char, completion, handler, state, stroke):
-        '''Trace the vars and ivars.'''
-        k = ga.c.k
+    def trace_state(self, char, completion, handler, state, stroke):
+        """Trace the vars and ivars."""
+        k = self.c.k
         g.trace(
             'state', state, 'char', repr(char), 'stroke', repr(stroke),
             # 'isPlain',k.isPlainKey(stroke),
             '\n',
             'escapes', k.getArgEscapes,
-            'completion', ga.arg_completion,
-            'handler', ga.handler and ga.handler.__name__ or 'None',
+            'completion', self.arg_completion,
+            'handler', self.handler and self.handler.__name__ or 'None',
         )
     #@+node:ekr.20140818074502.18222: *3* ga.get_command
-    def get_command(ga, s):
-        '''Return the command part of a minibuffer contents s.'''
-        trace = False and not g.unitTesting
-        if s.startswith(':'):
-            # A vim-like command.
-            if len(s) == 1:
-                if trace: g.trace(':x', s)
-                return s
-            elif s[1].isalpha():
-                command = [':']
-                for ch in s[1:]:
-                    if ch.isalnum() or ch == '-':
-                        command.append(ch)
-                    else: break
-                if trace: g.trace('alpha', ''.join(command))
-                return ''.join(command)
-            elif s.startswith(':%s'):
-                if trace: g.trace(':%s', ''.join(command))
-                return s[: 3]
-            else:
-                # Special case for :! and :% etc.
-                if trace: g.trace(':...', ''.join(command))
-                return s[: 2]
-        else:
-            command = []
-            for ch in s:
-                if ch.isalnum() or ch in '@_-':
-                    command.append(ch)
-                else: break
-            if trace: g.trace('normal', ''.join(command))
-            return ''.join(command)
+    def get_command(self, s):
+        """Return the command part of a minibuffer contents s."""
+        # #1121.
+        if ' ' in s:
+            return s[:s.find(' ')].strip()
+        return s
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
-    def get_minibuffer_command_name(ga):
-        '''Return the command name in the minibuffer.'''
-        s = ga.get_label()
-        command = ga.get_command(s)
+    def get_minibuffer_command_name(self):
+        """Return the command name in the minibuffer."""
+        s = self.get_label()
+        command = self.get_command(s)
         tail = s[len(command):]
-        # g.trace('command:',command,'tail:',tail)
         return command, tail
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
-    def is_command(ga, s):
-        '''Return False if something, even a blank, follows a command.'''
-        if s.startswith('@'):
-            return True
-        elif s.startswith(':'):
-            if len(s) == 1:
-                return True
-            elif s[1].isalpha():
-                for ch in s[1:]:
-                    if not ch.isalnum() and ch != '-':
-                        return False
-                return True
-            else:
-                # assert not s[1].isalpha()
-                # Special case for :! and :% etc.
-                return len(s) == 2
-        else:
-            for ch in s:
-                if not ch.isalnum() and ch not in '_-':
-                    return False
-            return True
+    def is_command(self, s):
+        """Return False if something, even a blank, follows a command."""
+        # #1121: only ascii space terminates a command.
+        return ' ' not in s
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
-    def show_tab_list(ga, tabList):
-        '''Show the tab list in the log tab.'''
-        k = ga.k
-        ga.log.clearTab(ga.tabName)
+    def show_tab_list(self, tabList):
+        """Show the tab list in the log tab."""
+        k = self.k
+        self.log.clearTab(self.tabName)
         d = k.computeInverseBindingDict()
         data, legend, n = [], False, 0
         for commandName in tabList:
@@ -1624,10 +1552,10 @@ class GetArg(object):
             if dataList:
                 for z in dataList:
                     pane, key = z
-                    s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
+                    s1a = '' if pane in ('all:', 'button:') else f"{pane} "
                     s1b = k.prettyPrintKey(key)
                     s1 = s1a + s1b
-                    s2 = ga.command_source(commandName)
+                    s2 = self.command_source(commandName)
                     if s2 != ' ': legend = True
                     s3 = commandName
                     data.append((s1, s2, s3),)
@@ -1644,17 +1572,17 @@ class GetArg(object):
                 'M myLeoSettings.leo',
                 'L local .leo File',
             ])
-        g.es('', '\n'.join(aList), tabName=ga.tabName)
+        g.es('', '\n'.join(aList), tabName=self.tabName)
     #@+node:ekr.20150402034643.1: *4* ga.command_source
-    def command_source(ga, commandName):
-        '''
+    def command_source(self, commandName):
+        """
         Return the source legend of an @button/@command node.
         'G' leoSettings.leo
         'M' myLeoSettings.leo
         'L' local .leo File
         ' ' not an @command or @button node
-        '''
-        c = ga.c
+        """
+        c = self.c
         if commandName.startswith('@'):
             d = c.commandsDict
             func = d.get(commandName)
@@ -1663,28 +1591,23 @@ class GetArg(object):
                 fn2 = c2.shortFileName().lower()
                 if fn2.endswith('myleosettings.leo'):
                     return 'M'
-                elif fn2.endswith('leosettings.leo'):
+                if fn2.endswith('leosettings.leo'):
                     return 'G'
-                else:
-                    return 'L'
-            else:
-                return '?'
-        else:
-            return ' '
+                return 'L'
+            return '?'
+        return ' '
     #@-others
 #@+node:ekr.20061031131434.74: ** class KeyHandlerClass
-class KeyHandlerClass(object):
-    '''
+class KeyHandlerClass:
+    """
     A class to support emacs-style commands.
     c.k is an instance of this class.
-    '''
+    """
     #@+others
     #@+node:ekr.20061031131434.75: *3*  k.Birth
     #@+node:ekr.20061031131434.76: *4* k.__init__& helpers
     def __init__(self, c):
-        '''Create a key handler for c.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(k)')
+        """Create a key handler for c."""
         self.c = c
         self.dispatchEvent = None
         self.fnc = None
@@ -1695,8 +1618,8 @@ class KeyHandlerClass(object):
             # Set at end of finishCreate.
         self.killedBindings = []
             # A list of commands whose bindings have been set to None in the local file.
-        self.swap_mac_keys = False
-            # How to init this??
+        self.replace_meta_with_alt = False
+            # True: (Mac only) swap Meta and Alt keys.
         self.w = None
             # Note: will be None for NullGui.
         # Generalize...
@@ -1708,8 +1631,6 @@ class KeyHandlerClass(object):
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
         self.reloadSettings()
-        self.defineTkNames()
-        self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
         self.autoCompleter = AutoCompleterClass(self)
@@ -1740,12 +1661,12 @@ class KeyHandlerClass(object):
         self.state = g.bunch(kind=None, n=None, handler=None)
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self):
-        '''Define internal ivars of the KeyHandlerClass class.'''
+        """Define internal ivars of the KeyHandlerClass class."""
         self.abbreviationsDict = {}
             # Abbreviations created by @alias nodes.
         # Previously defined bindings...
         self.bindingsDict = {}
-            # Keys are Tk key names, values are lists of ShortcutInfo's.
+            # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
         self.bindtagsDict = {}
             # Keys are strings (the tag), values are 'True'
@@ -1755,7 +1676,7 @@ class KeyHandlerClass(object):
             # Up arrow will select commandHistory[commandIndex]
         self.masterBindingsDict = {}
             # Keys are scope names: 'all','text',etc. or mode names.
-            # Values are dicts: keys are strokes, values are ShortcutInfo's.
+            # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterGuiBindingsDict = {}
             # Keys are strokes; value is True;
         # Special bindings for k.fullCommand...
@@ -1966,121 +1887,17 @@ class KeyHandlerClass(object):
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
         ]
-    #@+node:ekr.20070123085931: *5* k.defineSpecialKeys
-    def defineSpecialKeys(self):
-        '''Define k.guiBindNamesDict and k.guiBindNamesInverseDict.
-
-        Important: all gui's use these dictionaries because bindings in
-        leoSettings.leo use these representations.'''
-        k = self
-        # These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-        # Important: only the inverse dict is actually used in the new key binding scheme.
-        # Tk may return the *values* of this dict in event.keysym fields.
-        # Leo will warn if it gets a event whose keysym not in values of this table.
-        k.guiBindNamesDict = {
-            "&": "ampersand",
-            "^": "asciicircum",
-            "~": "asciitilde",
-            "*": "asterisk",
-            "@": "at",
-            "\\": "backslash",
-            "|": "bar",
-            "{": "braceleft",
-            "}": "braceright",
-            "[": "bracketleft",
-            "]": "bracketright",
-            ":": "colon", # removed from code.
-            ",": "comma",
-            "$": "dollar",
-            "=": "equal",
-            "!": "exclam", # removed from code.
-            ">": "greater",
-            "<": "less",
-            "-": "minus",
-            "#": "numbersign",
-            '"': "quotedbl",
-            "'": "quoteright",
-            "(": "parenleft",
-            ")": "parenright", # removed from code.
-            "%": "percent",
-            ".": "period", # removed from code.
-            "+": "plus",
-            "?": "question",
-            "`": "quoteleft",
-            ";": "semicolon",
-            "/": "slash",
-            " ": "space", # removed from code.
-            "_": "underscore",
-        }
-        # No translation.
-        for s in k.tkNamesList:
-            k.guiBindNamesDict[s] = s
-        # Create the inverse dict.
-        k.guiBindNamesInverseDict = {}
-        for key in k.guiBindNamesDict:
-            k.guiBindNamesInverseDict[k.guiBindNamesDict.get(key)] = key
-    #@+node:ekr.20070123143428: *5* k.defineTkNames
-    def defineTkNames(self):
-        k = self
-        # These are the key names used in Leo's core *regardless* of the gui actually in effect.
-        # The gui is responsible for translating gui-dependent keycodes into these values.
-        k.tkNamesList = (
-            # Arrow keys.
-            'Left', 'Right', 'Up', 'Down',
-            # Page up/down keys.
-            'Next', 'Prior',
-            # Home end keys.
-            'Home', 'End'
-            # Modifier keys.
-            'Caps_Lock', 'Num_Lock',
-            # F-keys.
-            'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-            # All others.
-            'Begin', 'Break', 'Clear', 'Delete', 'Escape',
-            # Dubious: these are ascii characters!
-            # But there is no harm in retaining these in Leo's core.
-            'BackSpace', 'Linefeed', 'Return', 'Tab',
-        )
-        # These keys settings that may be specied in leoSettings.leo.
-        # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
-        k.settingsNameDict = {
-            'bksp': 'BackSpace', # Dubious: should be '\b'
-            'dnarrow': 'Down',
-            'esc': 'Escape',
-            'ltarrow': 'Left',
-            'pageup': 'Prior',
-            'pagedn': 'Next',
-            'rtarrow': 'Right',
-            'uparrow': 'Up',
-        }
-        # Add lowercase version of special keys.
-        for s in k.tkNamesList:
-            k.settingsNameDict[s.lower()] = s
-    #@+at
-    # The following are not translated, so what appears in the menu is the
-    # same as what is passed to the gui. Case is significant. Note: the Tk
-    # documentation states that not all of these may be available on all
-    # platforms.
-    # 
-    # Num_Lock, Pause, Scroll_Lock, Sys_Req,
-    # KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-    # KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
-    # KP_F1,KP_F2,KP_F3,KP_F4,
-    # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
-    # Insert
     #@+node:ekr.20150509035028.1: *4* k.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the leoKeys class.'''
+        """Command decorator for the leoKeys class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'k',])
     #@+node:ekr.20061031131434.80: *4* k.finishCreate & helpers
     def finishCreate(self):
-        '''
+        """
         Complete the construction of the keyHandler class.
         c.commandsDict has been created when this is called.
-        '''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(k)', self.c)
+        """
         c, k = self.c, self
         k.w = c.frame.miniBufferWidget
             # Will be None for NullGui.
@@ -2097,6 +1914,7 @@ class KeyHandlerClass(object):
         k.resetLabel()
     #@+node:ekr.20061101071425: *4* k.oops
     def oops(self):
+
         g.trace('Should be defined in subclass:', g.callers(4))
     #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
     def reloadSettings(self):
@@ -2104,60 +1922,56 @@ class KeyHandlerClass(object):
         c = self.c
         getBool = c.config.getBool
         getColor = c.config.getColor
-        self.enable_autocompleter = getBool('enable_autocompleter_initially')
-        self.enable_calltips = getBool('enable_calltips_initially')
-        self.ignore_caps_lock = getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys = getBool('ignore_unbound_non_ascii_keys')
-        self.minibuffer_background_color = getColor('minibuffer_background_color') or 'lightblue'
-        self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
-        self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
-        self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
-        self.swap_mac_keys = getBool('swap_mac_keys')
-        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+        self.enable_autocompleter = getBool('enable-autocompleter-initially')
+        self.enable_calltips = getBool('enable-calltips-initially')
+        self.ignore_unbound_non_ascii_keys = getBool('ignore-unbound-non-ascii-keys')
+        self.minibuffer_background_color = getColor('minibuffer-background-color') or 'lightblue'
+        self.minibuffer_foreground_color = getColor('minibuffer-foreground-color') or 'black'
+        self.minibuffer_warning_color = getColor('minibuffer-warning-color') or 'lightgrey'
+        self.minibuffer_error_color = getColor('minibuffer-error-color') or 'red'
+        self.replace_meta_with_alt = getBool('replace-meta-with-alt')
+        self.warn_about_redefined_shortcuts = getBool('warn-about-redefined-shortcuts')
         # Has to be disabled (default) for AltGr support on Windows
-        self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
+        self.enable_alt_ctrl_bindings = c.config.getBool('enable-alt-ctrl-bindings')
         # Part 2: These were in finishCreate.
         # Set mode colors used by k.setInputState.
-        bg = c.config.getColor('body_text_background_color') or 'white'
-        fg = c.config.getColor('body_text_foreground_color') or 'black'
-        self.command_mode_bg_color = getColor('command_mode_bg_color') or bg
-        self.command_mode_fg_color = getColor('command_mode_fg_color') or fg
-        self.insert_mode_bg_color = getColor('insert_mode_bg_color') or bg
-        self.insert_mode_fg_color = getColor('insert_mode_fg_color') or fg
-        self.overwrite_mode_bg_color = getColor('overwrite_mode_bg_color') or bg
-        self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
-        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
-        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
-        # g.trace(self.c.shortFileName())
-    #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
+        bg = c.config.getColor('body-text-background-color') or 'white'
+        fg = c.config.getColor('body-text-foreground-color') or 'black'
+        self.command_mode_bg_color = getColor('command-mode-bg-color') or bg
+        self.command_mode_fg_color = getColor('command-mode-fg-color') or fg
+        self.insert_mode_bg_color = getColor('insert-mode-bg-color') or bg
+        self.insert_mode_fg_color = getColor('insert-mode-fg-color') or fg
+        self.overwrite_mode_bg_color = getColor('overwrite-mode-bg-color') or bg
+        self.overwrite_mode_fg_color = getColor('overwrite-mode-fg-color') or fg
+        self.unselected_body_bg_color = getColor('unselected-body-bg-color') or bg
+        self.unselected_body_fg_color = getColor('unselected-body-fg-color') or bg
+    #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction
     def setDefaultEditingAction(self):
         k = self; c = k.c
-        action = c.config.getString('default_editing_state') or 'insert'
+        action = c.config.getString('default-editing-state') or 'insert'
         action.lower()
         if action not in ('command', 'insert', 'overwrite'):
-            g.trace('ignoring default_editing_state: %s' % (action))
+            g.trace(f"ignoring default_editing_state: {action}")
             action = 'insert'
         self.defaultEditingAction = action
     #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction(self, allowCommandState=True):
         k = self; c = k.c
-        # g.trace(g.callers())
-        defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
+        defaultAction = c.config.getString('top-level-unbound-key-action') or 'insert'
         defaultAction.lower()
         if defaultAction == 'command' and not allowCommandState:
             self.unboundKeyAction = 'insert'
         elif defaultAction in ('command', 'insert', 'overwrite'):
             self.unboundKeyAction = defaultAction
         else:
-            g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
+            g.trace(f"ignoring top_level_unbound_key_action setting: {defaultAction}")
             self.unboundKeyAction = 'insert'
-        # g.trace(self.unboundKeyAction)
         self.defaultUnboundKeyAction = self.unboundKeyAction
         k.setInputState(self.defaultUnboundKeyAction)
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* k.bindKey & helpers
     def bindKey(self, pane, shortcut, callback, commandName, modeFlag=False, tag=None):
-        '''
+        """
         Bind the indicated shortcut (a Tk keystroke) to the callback.
 
         No actual gui bindings are made: only entries in k.masterBindingsDict
@@ -2166,9 +1980,7 @@ class KeyHandlerClass(object):
         tag gives the source of the binding.
         
         Return True if the binding was made successfully.
-        '''
-        trace = False and not g.unitTesting
-        trace_list = False
+        """
         k = self
         if not shortcut:
             # Don't use this method to undo bindings.
@@ -2183,25 +1995,25 @@ class KeyHandlerClass(object):
                 stroke = shortcut
                 assert stroke.s, stroke
             else:
-                stroke = k.strokeFromSetting(shortcut)
-            if trace:
-                tag = tag.split(' ')[-1]
-                g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
-                g.trace(g.callers())
-            si = g.ShortcutInfo(kind=tag, pane=pane,
-                func=callback, commandName=commandName, stroke=stroke)
+                assert shortcut, g.callers()
+                stroke = g.KeyStroke(binding=shortcut)
+            bi = g.BindingInfo(
+                kind=tag,
+                pane=pane,
+                func=callback,
+                commandName=commandName,
+                stroke=stroke)
             if shortcut:
-                k.bindKeyToDict(pane, shortcut, si)
+                k.bindKeyToDict(pane, shortcut, bi)
                     # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
                 aList = k.remove_conflicting_definitions(
                     aList, commandName, pane, shortcut)
                 # 2013/03/02: a real bug fix.
-            aList.append(si)
+            aList.append(bi)
             if shortcut:
                 assert stroke
                 k.bindingsDict[stroke] = aList
-                if trace and trace_list: g.trace(shortcut, aList)
             return True
         except Exception: # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
@@ -2212,30 +2024,28 @@ class KeyHandlerClass(object):
 
     bindShortcut = bindKey # For compatibility
     #@+node:ekr.20120130074511.10228: *5* k.check_bind_key
-    def check_bind_key(self, commandName, pane, shortcut):
-        '''
-        Return True if the binding of shortcut to commandName for the given
+    def check_bind_key(self, commandName, pane, stroke):
+        """
+        Return True if the binding of stroke to commandName for the given
         pane can be made.
-        '''
+        """
         # k = self
-        assert g.isStroke(shortcut)
+        assert g.isStroke(stroke)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
-            if shortcut.lower().find(s) > -1:
-                g.warning('ignoring invalid key binding:', '%s = %s' % (
-                    commandName, shortcut))
+            if stroke.lower().find(s) > -1:
+                g.warning('ignoring invalid key binding:', f"{commandName} = {stroke}")
                 return False
         if pane.endswith('-mode'):
-            g.trace('oops: ignoring mode binding', shortcut, commandName, g.callers())
+            g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20120130074511.10227: *5* k.kill_one_shortcut
     def kill_one_shortcut(self, stroke):
-        '''
+        """
         Update the *configuration* dicts so that c.config.getShortcut(name)
         will return None for all names *presently* bound to the stroke.
-        '''
+        """
         k = self; c = k.c
         lm = g.app.loadManager
         if 0:
@@ -2249,49 +2059,38 @@ class KeyHandlerClass(object):
             assert g.isStroke(stroke), stroke
         d = c.config.shortcutsDict
         if d is None:
-            d = g.TypedDictOfLists(
+            d = g.TypedDict( # was TypedDictOfLists.
                 name='empty shortcuts dict',
                 keyType=type('commandName'),
-                valType=g.ShortcutInfo)
+                valType=g.BindingInfo,
+            )
         inv_d = lm.invert(d)
-        # g.trace('1', stroke, stroke in c.config.shortcutsDict.d)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
-        # g.trace('2', stroke, stroke in c.config.shortcutsDict.d)
-        # g.trace('3', c.config.shortcutsDict.d.get('help'))
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(self, aList, commandName, pane, shortcut):
-        trace = False and not g.unitTesting
+
         k = self
         result = []
-        for si in aList:
-            assert g.isShortcutInfo(si), si
-            if pane in ('button', 'all', si.pane):
-                if trace:
-                    # This is too annoying to report here. See bug 951921.
-                    g.es_print('c for %s in %s' % (
-                        si.stroke, k.c.shortFileName()))
-                    g.es_print('previous: %s new: %s' % (si.commandName, commandName))
+        for bi in aList:
+            if pane in ('button', 'all', bi.pane):
                 k.kill_one_shortcut(shortcut)
             else:
-                result.append(si)
+                result.append(bi)
         return result
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
-    def bindKeyToDict(self, pane, stroke, si):
-        '''Update k.masterBindingsDict for the stroke.'''
+    def bindKeyToDict(self, pane, stroke, bi):
+        """Update k.masterBindingsDict for the stroke."""
         # New in Leo 4.4.1: Allow redefintions.
         # Called from makeBindingsFromCommandsDict.
-        trace = False and not g.unitTesting
         k = self
         assert g.isStroke(stroke), stroke
         d = k.masterBindingsDict.get(pane, {})
-        d[stroke] = si
+        d[stroke] = bi
         k.masterBindingsDict[pane] = d
-        if trace and si.commandName.startswith('goto-next-visible'):
-            g.trace('%4s %10s' % (pane, stroke.s), si.commandName, si.func.__name__)
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith(self, d):
-        '''Register an open-with command.'''
+        """Register an open-with command."""
         k = self; c = k.c
         shortcut = d.get('shortcut') or ''
         name = d.get('name')
@@ -2311,50 +2110,50 @@ class KeyHandlerClass(object):
         )
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
-        '''Print warnings if commands do not have any @shortcut entry.
-        The entry may be `None`, of course.'''
+        """
+        Print warnings if commands do not have any @shortcut entry.
+        The entry may be `None`, of course."""
         k = self; c = k.c
-        if not c.config.getBool('warn_about_missing_settings'): return
+        if not c.config.getBool('warn-about-missing-settings'): return
         for name in sorted(c.commandsDict):
             abbrev = k.abbreviationsDict.get(name)
             key = c.frame.menu.canonicalizeMenuName(abbrev or name)
             key = key.replace('&', '')
             if not c.config.exists(key, 'shortcut'):
                 if abbrev:
-                    g.trace('No shortcut for abbrev %s -> %s = %s' % (
-                        name, abbrev, key))
+                    g.trace(f"No shortcut for abbrev {name} -> {abbrev} = {key}")
                 else:
-                    g.trace('No shortcut for %s = %s' % (name, key))
+                    g.trace(f"No shortcut for {name} = {key}")
     #@+node:ekr.20061031131434.97: *4* k.completeAllBindings
     def completeAllBindings(self, w=None):
-        '''New in 4.4b3: make an actual binding in *all* the standard places.
+        """
+        Make an actual binding in *all* the standard places.
 
         The event will go to k.masterKeyHandler as always, so nothing really changes.
-        except that k.masterKeyHandler will know the proper stroke.'''
-        # g.trace(w)
+        except that k.masterKeyHandler will know the proper stroke.
+        """
         k = self
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             k.makeMasterGuiBinding(stroke, w=w)
     #@+node:ekr.20061031131434.96: *4* k.completeAllBindingsForWidget
     def completeAllBindingsForWidget(self, w):
-        '''Make all a master gui binding for widget w.'''
+        """Make all a master gui binding for widget w."""
         k = self
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             k.makeMasterGuiBinding(stroke, w=w)
     #@+node:ekr.20070218130238: *4* k.dumpMasterBindingsDict
     def dumpMasterBindingsDict(self):
-        '''Dump k.masterBindingsDict.'''
+        """Dump k.masterBindingsDict."""
         k = self; d = k.masterBindingsDict
         g.pr('\nk.masterBindingsDict...\n')
         for key in sorted(d):
             g.pr(key, '-' * 40)
             d2 = d.get(key)
             for key2 in sorted(d2):
-                si = d2.get(key2)
-                assert g.isShortcutInfo(si), si
-                g.pr('%20s %s' % (key2, si.commandName))
+                bi = d2.get(key2)
+                g.pr('%20s %s' % (key2, bi.commandName))
     #@+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
     def initAbbrev(self):
         k = self; c = k.c; d = c.config.getAbbrevDict()
@@ -2367,7 +2166,7 @@ class KeyHandlerClass(object):
                     self.initOneAbbrev(commandName, key)
     #@+node:ekr.20130924035029.12741: *5* k.initOneAbbrev
     def initOneAbbrev(self, commandName, key):
-        '''Enter key as an abbreviation for commandName in c.commandsDict.'''
+        """Enter key as an abbreviation for commandName in c.commandsDict."""
         c = self.c
         if c.commandsDict.get(key):
             g.trace('ignoring duplicate abbrev: %s', key)
@@ -2379,10 +2178,9 @@ class KeyHandlerClass(object):
                 g.warning('bad abbrev:', key, 'unknown command name:', commandName)
     #@+node:ekr.20061031131434.101: *4* k.initSpecialIvars
     def initSpecialIvars(self):
-        '''Set ivars for special keystrokes from previously-existing bindings.'''
-        k = self; c = k.c
-        trace = False or c.config.getBool('trace_bindings_verbose')
-        warn = c.config.getBool('warn_about_missing_settings')
+        """Set ivars for special keystrokes from previously-existing bindings."""
+        c, k = self.c, self
+        warn = c.config.getBool('warn-about-missing-settings')
         for ivar, commandName in (
             ('fullCommandKey', 'full-command'),
             ('abortAllModesKey', 'keyboard-quit'),
@@ -2394,19 +2192,15 @@ class KeyHandlerClass(object):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
             for pane in ('text', 'all'):
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.pane == pane:
-                        if trace: g.trace(commandName, ivar, si.stroke)
-                        setattr(k, ivar, si.stroke)
+                for bi in aList:
+                    if bi.pane == pane:
+                        setattr(k, ivar, bi.stroke)
                         found = True; break
             if not found and warn:
-                g.trace('no setting for %s' % commandName)
+                g.trace(f"no setting for {commandName}")
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
-        '''Make all key bindings in all of Leo's panes.'''
-        trace = False and not g.unitTesting
-        if trace: t1 = time.clock()
+        """Make all key bindings in all of Leo's panes."""
         k = self
         k.bindingsDict = {}
         k.addModeCommands()
@@ -2415,50 +2209,43 @@ class KeyHandlerClass(object):
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-        if trace: g.trace('%4.2f sec.' % (time.clock()-t1))
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
-        '''Add bindings for all entries in c.commandsDict.'''
-        trace = False and not g.unitTesting
+        """Add bindings for all entries in c.commandsDict."""
         c, k = self.c, self
         d = c.commandsDict
-        t1 = time.time()
+        #
         # Step 1: Create d2.
-        # Keys are strokes. Values are lists of si with si.stroke == stroke.
-        d2 = g.TypedDictOfLists(
+        # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
+        d2 = g.TypedDict( # was TypedDictOfLists.
             name='makeBindingsFromCommandsDict helper dict',
-            keyType=g.KeyStroke, valType=g.ShortcutInfo)
+            keyType=g.KeyStroke,
+            valType=g.BindingInfo,
+        )
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
-            for si in aList:
-                if trace and commandName == 'help':
-                    g.trace(key, repr(si.stroke), aList)
-                assert isinstance(si, g.ShortcutInfo)
-                # Important: si.stroke is already canonicalized.
-                stroke = si.stroke
-                si.commandName = commandName
+            for bi in aList:
+                # Important: bi.stroke is already canonicalized.
+                stroke = bi.stroke
+                bi.commandName = commandName
                 if stroke:
                     assert g.isStroke(stroke)
-                    d2.add(stroke, si)
+                    d2.add_to_list(stroke, bi)
+        #
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
             aList2 = d2.get(stroke)
-            for si in aList2:
-                assert isinstance(si, g.ShortcutInfo)
-                commandName = si.commandName
+            for bi in aList2:
+                commandName = bi.commandName
                 command = c.commandsDict.get(commandName)
-                tag = si.kind
-                pane = si.pane
+                tag = bi.kind
+                pane = bi.pane
                 if stroke and not pane.endswith('-mode'):
                     k.bindKey(pane, stroke, command, commandName, tag=tag)
-        t2 = time.time()
-        if trace:
-            g.trace('%0.2f sec %s' % ((t2 - t1), c.shortFileName()))
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke, w=None, trace=False):
-        '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
-        trace = False and not g.unitTesting
+        """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
         k = self; c = k.c; f = c.frame
         if w:
             widgets = [w]
@@ -2475,24 +2262,23 @@ class KeyHandlerClass(object):
             if w not in aList:
                 aList.append(w)
                 k.masterGuiBindingsDict[stroke] = aList
-        if trace: g.trace(len(aList), stroke)
     #@+node:ekr.20150402111403.1: *3* k.Command history
     #@+node:ekr.20150402111413.1: *4* k.addToCommandHistory
     def addToCommandHistory(self, commandName):
-        '''Add a name to the command history.'''
+        """Add a name to the command history."""
         k = self
         h = k.commandHistory
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
         k.commandIndex = None
-        # g.trace(commandName,h)
+
     #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryFwd(self):
-        '''
+        """
         Move down the Command History - fall off the bottom (return empty string)
         if necessary
-        '''
+        """
         k = self
         h, i = k.commandHistory, k.commandIndex
         if h:
@@ -2500,49 +2286,46 @@ class KeyHandlerClass(object):
             if i == len(h) -1:
                 # fall off the bottom
                 i = None
-            elif i != None:
+            elif i is not None:
                 # move to next down in list
                 i += 1
                 commandName = h[i]
-            # (else i == None; no change to index, command == '')
-            # g.trace(i,h)
             k.commandIndex = i
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150402171131.1: *4* k.commandHistoryUp
     def commandHistoryBackwd(self):
-        '''
+        """
         Return the previous entry in the Command History - stay at the top
         if we are there
-        '''
+        """
         k = self
         h, i = k.commandHistory, k.commandIndex
         if h:
-            if i == None:
+            if i is None:
                 # first time in - set to last entry
                 i = len(h) -1
             elif i > 0:
                 i -= 1
             commandName = h[i]
             k.commandIndex = i
-            # g.trace(i,h)
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150425143043.1: *4* k.initCommandHistory
     def initCommandHistory(self):
-        '''Init command history from @data command-history nodes.'''
+        """Init command history from @data command-history nodes."""
         k, c = self, self.c
         aList = c.config.getData('history-list') or []
         for command in reversed(aList):
             k.addToCommandHistory(command)
 
     def resetCommandHistory(self):
-        ''' reset the command history index to indicate that
+        """ reset the command history index to indicate that
             we are pointing 'past' the last entry
-        '''
+        """
         self.commandIndex = None
         #
     #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self):
-        '''Sort the command history.'''
+        """Sort the command history."""
         k = self
         k.commandHistory.sort()
         k.commandIndex = None
@@ -2550,9 +2333,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     @cmd('full-command')
     def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
-        '''Handle 'full-command' (alt-x) mode.'''
-        trace = False and not g.unitTesting
-        verbose = False
+        """Handle 'full-command' (alt-x) mode."""
         try:
             k = self; c = k.c
             state = k.getState('full-command')
@@ -2560,7 +2341,6 @@ class KeyHandlerClass(object):
             c.check_event(event)
             ch = char = event.char if event else ''
             stroke = event.stroke if event else ''
-            if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
@@ -2580,10 +2360,6 @@ class KeyHandlerClass(object):
             elif char == 'Up':
                 k.commandHistoryBackwd()
             elif char in ('\n', 'Return'):
-                if trace and verbose: g.trace('***Return')
-                # if trace and trace_event:
-                    # g.trace('hasSelection %r' % (
-                        # k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
                 # Fix bug 157: save and restore the selection.
                 w = k.mb_event and k.mb_event.w
                 if w and hasattr(w, 'hasSelection') and w.hasSelection():
@@ -2607,15 +2383,12 @@ class KeyHandlerClass(object):
                     if ok:
                         k.addToCommandHistory(commandName)
             elif char in ('\t', 'Tab'):
-                if trace and verbose: g.trace('***Tab')
                 k.doTabCompletion(list(c.commandsDict.keys()))
                 c.minibufferWantsFocus()
             elif char in ('\b', 'BackSpace'):
-                if trace and verbose: g.trace('***BackSpace')
                 k.doBackSpace(list(c.commandsDict.keys()))
                 c.minibufferWantsFocus()
             elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
-                # g.trace('non-ascii')
                 if specialStroke:
                     g.trace(specialStroke)
                     specialFunc()
@@ -2626,18 +2399,15 @@ class KeyHandlerClass(object):
                 k.updateLabel(event)
                 k.mb_tabListPrefix = k.getLabel()
                 c.minibufferWantsFocus()
-                # g.trace('new prefix',k.mb_tabListPrefix)
         except Exception:
             g.es_exception()
             self.keyboardQuit()
     #@+node:ekr.20061031131434.112: *5* k.callAltXFunction
     def callAltXFunction(self, event):
-        '''Call the function whose name is in the minibuffer.'''
-        trace = False and not g.unitTesting
+        """Call the function whose name is in the minibuffer."""
         c, k = self.c, self
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
-        if trace: g.trace('command:', commandName, 'tail:', tail)
         k.functionTail = tail
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
@@ -2646,7 +2416,6 @@ class KeyHandlerClass(object):
         else:
             func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
-        # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
         if func:
             # These must be done *after* getting the command.
             k.clearState()
@@ -2668,22 +2437,21 @@ class KeyHandlerClass(object):
                 c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
-        else:
-            # Show possible completions if the command does not exist.
-            if 1: # Useful.
-                if trace: g.trace('*** tab completion')
-                k.doTabCompletion(list(c.commandsDict.keys()))
-            else: # Annoying.
-                k.keyboardQuit()
-                k.setStatusLabel('Command does not exist: %s' % commandName)
-                c.bodyWantsFocus()
-            return False
+        #
+        # Show possible completions if the command does not exist.
+        if 1: # Useful.
+            k.doTabCompletion(list(c.commandsDict.keys()))
+        else: # Annoying.
+            k.keyboardQuit()
+            k.setStatusLabel(f"Command does not exist: {commandName}")
+            c.bodyWantsFocus()
+        return False
     #@+node:ekr.20061031131434.113: *4* k.endCommand
     def endCommand(self, commandName):
-        '''Make sure Leo updates the widget following a command.
+        """Make sure Leo updates the widget following a command.
 
         Never changes the minibuffer label: individual commands must do that.
-        '''
+        """
         k = self; c = k.c
         # The command may have closed the window.
         if g.app.quitting or not c.exists: return
@@ -2705,9 +2473,9 @@ class KeyHandlerClass(object):
         # This method must exist, but it never gets called.
         pass
     #@+node:ekr.20061031131434.119: *4* k.printBindings & helper
-    @cmd('print-bindings')
+    @cmd('show-bindings')
     def printBindings(self, event=None):
-        '''Print all the bindings presently in effect.'''
+        """Print all the bindings presently in effect."""
         k = self; c = k.c
         d = k.bindingsDict; tabName = 'Bindings'
         c.frame.log.clearTab(tabName)
@@ -2726,12 +2494,11 @@ class KeyHandlerClass(object):
         for stroke in sorted(d):
             assert g.isStroke(stroke), stroke
             aList = d.get(stroke, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                s1 = '' if si.pane == 'all' else si.pane
+            for bi in aList:
+                s1 = '' if bi.pane == 'all' else bi.pane
                 s2 = k.prettyPrintKey(stroke)
-                s3 = si.commandName
-                s4 = si.kind or '<no hash>'
+                s3 = bi.commandName
+                s4 = bi.kind or '<no hash>'
                 data.append((s1, s2, s3, s4),)
         # Print keys by type:
         result = []
@@ -2763,14 +2530,14 @@ class KeyHandlerClass(object):
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
     def printBindingsHelper(self, result, data, prefix):
-        lm = g.app.loadManager
+        """Helper for k.printBindings"""
+        c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            # g.trace('%10s %s' % (key, repr(kind)))
-            letter = lm.computeBindingLetter(kind)
-            pane = '%s: ' % (pane) if pane else ''
+            letter = lm.computeBindingLetter(c, kind)
+            pane = '%4s: ' % (pane if pane else 'all')
             left = pane + key # pane and shortcut fields
             n = max(n, len(left))
             data2.append((letter, left, commandName),)
@@ -2780,9 +2547,9 @@ class KeyHandlerClass(object):
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
-    @cmd('print-buttons')
+    @cmd('show-buttons')
     def printButtons(self, event=None):
-        '''Print all @button and @command commands, their bindings and their source.'''
+        """Print all @button and @command commands, their bindings and their source."""
         k = self; c = k.c
         tabName = '@buttons && @commands'
         c.frame.log.clearTab(tabName)
@@ -2800,7 +2567,7 @@ class KeyHandlerClass(object):
         for aList in [g.app.config.atLocalButtonsList, g.app.config.atLocalCommandsList]:
             for p in aList:
                 data.append((p.h, 'L'),)
-        result = ['%s %s' % (z[1], z[0]) for z in sorted(data)]
+        result = [f"{z[1]} {z[0]}" for z in sorted(data)]
         result.extend([
             '',
             'legend:',
@@ -2810,9 +2577,9 @@ class KeyHandlerClass(object):
         ])
         put('\n'.join(result))
     #@+node:ekr.20061031131434.121: *4* k.printCommands
-    @cmd('print-commands')
+    @cmd('show-commands')
     def printCommands(self, event=None):
-        '''Print all the known commands and their bindings, if any.'''
+        """Print all the known commands and their bindings, if any."""
         k = self; c = k.c; tabName = 'Commands'
         c.frame.log.clearTab(tabName)
         inverseBindingDict = k.computeInverseBindingDict()
@@ -2821,7 +2588,7 @@ class KeyHandlerClass(object):
             dataList = inverseBindingDict.get(commandName, [('', ''),])
             for z in dataList:
                 pane, key = z
-                pane = '%s ' % (pane) if pane != 'all:' else ''
+                pane = f"{pane} " if pane != 'all:' else ''
                 key = k.prettyPrintKey(key).replace('+Key', '')
                 s1 = pane + key
                 s2 = commandName
@@ -2833,7 +2600,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):
-        '''Repeat the previously executed minibuffer command.'''
+        """Repeat the previously executed minibuffer command."""
         k = self
         if k.mb_history:
             k.setState('last-full-command', 1, handler=k.repeatComplexCommandHelper)
@@ -2850,44 +2617,40 @@ class KeyHandlerClass(object):
             k.clearState() # Bug fix.
             c.commandsDict[last](event)
         else:
-            # g.trace('oops')
-            return k.keyboardQuit()
+            k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
     @cmd('set-command-state')
     def setCommandState(self, event):
-        '''Enter the 'command' editing state.'''
-        # g.trace(g.callers())
+        """Enter the 'command' editing state."""
         k = self
         k.setInputState('command', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     @cmd('set-insert-state')
     def setInsertState(self, event):
-        '''Enter the 'insert' editing state.'''
-        # g.trace(g.callers())
+        """Enter the 'insert' editing state."""
         k = self
         k.setInputState('insert', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     @cmd('set-overwrite-state')
     def setOverwriteState(self, event):
-        '''Enter the 'overwrite' editing state.'''
-        # g.trace(g.callers())
+        """Enter the 'overwrite' editing state."""
         k = self
         k.setInputState('overwrite', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
     #@+node:ekr.20061031131434.124: *4* k.toggle-input-state
     @cmd('toggle-input-state')
     def toggleInputState(self, event=None):
-        '''The toggle-input-state command.'''
+        """The toggle-input-state command."""
         k = self; c = k.c
-        default = c.config.getString('top_level_unbound_key_action') or 'insert'
+        default = c.config.getString('top-level-unbound-key-action') or 'insert'
         state = k.unboundKeyAction
         if default == 'insert':
             state = 'command' if state == 'insert' else 'insert'
@@ -2901,12 +2664,13 @@ class KeyHandlerClass(object):
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
     # New in Leo 5.4
     def getNextArg(self, handler):
-        '''
+        """
         Get the next arg.  For example, after a Tab in the find commands.
         See the docstring for k.get1Arg for examples of its use.
-        '''
+        """
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
+        self.c.minibufferWantsFocusNow()
 
     # New in Leo 5.4
     def get1Arg(self, event, handler,
@@ -2916,10 +2680,10 @@ class KeyHandlerClass(object):
     ):
         #@+<< docstring for k.get1arg >>
         #@+node:ekr.20161020031633.1: *5* << docstring for k.get1arg >>
-        '''
-        k.get1Arg: Handle the next character the user types when accumulating a
-        user argument from the minibuffer. Ctrl-G will abort this processing at any
-        time.
+        """
+        k.get1Arg: Handle the next character the user types when accumulating
+        a user argument from the minibuffer. Ctrl-G will abort this processing
+        at any time.
 
         Commands should use k.get1Arg to get the first minibuffer argument and
         k.getNextArg to get all other arguments.
@@ -2929,7 +2693,7 @@ class KeyHandlerClass(object):
 
         Example 1: get one argument from the user:
 
-            @cmd('my-command')
+            @g.command('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
@@ -2947,7 +2711,7 @@ class KeyHandlerClass(object):
 
         Example 2: get two arguments from the user:
 
-            @cmd('my-command')
+            @g.command('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
@@ -2956,7 +2720,7 @@ class KeyHandlerClass(object):
             def myCommand1(self, event):
                 k = self.c.k
                 self.arg1 = k.arg
-                k.setLabelBlue('second prompt: ')
+                k.extendLabel(' second prompt: ', select=False, protect=True)
                 k.getNextArg(handler=self.myCommand2)
 
             def myCommand2(self, event):
@@ -2969,15 +2733,15 @@ class KeyHandlerClass(object):
                 k.resetLabel()
                 k.showStateAndMode()
 
-        k.get1Arg and k.getNextArg are a convenience methods. They simply passes
-        their arguments to the get_arg method of the singleton GetArg instance. This
-        docstring describes k.get1arg and k.getNextArg as if they were the
-        corresponding methods of the GetArg class.
+        k.get1Arg and k.getNextArg are a convenience methods. They simply pass
+        their arguments to the get_arg method of the singleton GetArg
+        instance. This docstring describes k.get1arg and k.getNextArg as if
+        they were the corresponding methods of the GetArg class.
 
-        k.get1Arg is a state machine. Logically, states are tuples (kind, n, handler)
-        though they aren't represented that way. When the state machine in the
-        GetArg class is active, the kind is 'getArg'.  This constant has special
-        meaning to Leo's key-handling code.
+        k.get1Arg is a state machine. Logically, states are tuples (kind, n,
+        handler) though they aren't represented that way. When the state
+        machine in the GetArg class is active, the kind is 'getArg'. This
+        constant has special meaning to Leo's key-handling code.
 
         The arguments to k.get1Arg are as follows:
 
@@ -2998,7 +2762,7 @@ class KeyHandlerClass(object):
         useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                             False allows sort-lines, for example, to show the selection range.
 
-        '''
+        """
         #@-<< docstring for k.get1arg >>
         returnKind, returnState = None, None
         assert handler, g.callers()
@@ -3010,35 +2774,33 @@ class KeyHandlerClass(object):
         prefix=None, tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):
-        '''Convenience method mapping k.getArg to ga.get_arg.'''
+        """Convenience method mapping k.getArg to ga.get_arg."""
         self.getArgInstance.get_arg(event, returnKind, returnState, handler,
             tabList, completion, oneCharacter, stroke, useMinibuffer)
 
     def doBackSpace(self, tabList, completion=True):
-        '''Convenience method mapping k.doBackSpace to ga.do_back_space.'''
+        """Convenience method mapping k.doBackSpace to ga.do_back_space."""
         self.getArgInstance.do_back_space(tabList, completion)
 
     def doTabCompletion(self, tabList):
-        '''Convenience method mapping k.doTabCompletion to ga.do_tab.'''
+        """Convenience method mapping k.doTabCompletion to ga.do_tab."""
         self.getArgInstance.do_tab(tabList)
 
     def getMinibufferCommandName(self):
-        '''
+        """
         Convenience method mapping k.getMinibufferCommandName to
         ga.get_minibuffer_command_name.
-        '''
+        """
         return self.getArgInstance.get_minibuffer_command_name()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     @cmd('keyboard-quit')
     def keyboardQuit(self, event=None, setFocus=True, mouseClick=False):
-        '''
+        """
         This method clears the state and the minibuffer label.
 
         k.endCommand handles all other end-of-command chores.
-        '''
-        trace = False and not g.unitTesting
+        """
         k = self; c = k.c
-        if trace: g.trace(g.callers())
         if g.app.quitting:
             return
         # 2011/05/30: We may be called from Qt event handlers.
@@ -3065,32 +2827,26 @@ class KeyHandlerClass(object):
             # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)
         k.resetCommandHistory()
-    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
+    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName
     def manufactureKeyPressForCommandName(self, w, commandName):
-        '''Implement a command by passing a keypress to the gui.'''
-        trace = False and not g.unitTesting
+        """
+        Implement a command by passing a keypress to the gui.
+        
+        **Only unit tests use this method.**
+        """
         c, k = self.c, self
-        stroke = k.getShortcutForCommandName(commandName)
-        if not stroke:
-            shortcut = None
-        elif g.isStroke(stroke):
-            shortcut = stroke.s
-        else:
-            stroke = k.strokeFromSetting(stroke)
-            shortcut = stroke.s
-        assert g.isString(shortcut)
-        if trace and shortcut: g.trace(
-            'shortcut', repr(shortcut), 'commandName', commandName)
+        stroke = k.getStrokeForCommandName(commandName)
+        assert g.isStroke(stroke), (commandName, stroke.__class__.__name__)
+        shortcut = stroke.s
+        shortcut = g.checkUnicode(shortcut)
         if shortcut and w:
             g.app.gui.set_focus(c, w)
             g.app.gui.event_generate(c, None, shortcut, w)
         else:
-            message = 'no shortcut for %s' % (commandName)
-            if trace: g.trace(message)
+            message = f"no shortcut for {commandName}"
             if g.app.unitTesting:
                 raise AttributeError(message)
-            else:
-                g.error(message)
+            g.error(message)
     #@+node:ekr.20071212104050: *4* k.overrideCommand
     def overrideCommand(self, commandName, func):
         # Override entries in c.k.masterBindingsDict
@@ -3099,11 +2855,10 @@ class KeyHandlerClass(object):
         for key in d:
             d2 = d.get(key)
             for key2 in d2:
-                si = d2.get(key2)
-                assert g.isShortcutInfo(si), si
-                if si.commandName == commandName:
-                    si.func = func
-                    d2[key2] = si
+                bi = d2.get(key2)
+                if bi.commandName == commandName:
+                    bi.func = func
+                    d2[key2] = bi
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand(self, commandName, func,
         allowBinding=False,
@@ -3111,7 +2866,7 @@ class KeyHandlerClass(object):
         shortcut=None, # Must be None unless allowBindings is True.
         **kwargs
     ):
-        '''
+        """
         Make the function available as a minibuffer command.
         
         You can wrap any method in a callback function, so the
@@ -3121,7 +2876,7 @@ class KeyHandlerClass(object):
         
         Only k.bindOpenWith and the mod_scripting.py plugin should set
         allowBinding.
-        '''
+        """
         c, k = self.c, self
         if not func:
             g.es_print('Null func passed to k.registerCommand\n', commandName)
@@ -3137,7 +2892,7 @@ class KeyHandlerClass(object):
             shortcut = None
         for arg, val in kwargs.items():
             if val is not None:
-                g.es_print('The "%s" keyword arg to k.registerCommand is deprecated' % arg)
+                g.es_print(f'The "{arg}" keyword arg to k.registerCommand is deprecated')
                 g.es_print('Called from', g.callers())
         # Make requested bindings, even if a warning has been given.
         # This maintains strict compatibility with existing plugins and scripts.
@@ -3149,18 +2904,17 @@ class KeyHandlerClass(object):
         )
     #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
     def registerCommandShortcut(self, commandName, func, pane, shortcut):
-        '''
+        """
         Register a shortcut for the a command.
         
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
-        '''
-        trace = False and not g.unitTesting and not g.app.silentMode
+        """
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         assert not g.isStroke(shortcut)
         if shortcut:
-            stroke = k.strokeFromSetting(shortcut)
+            stroke = g.KeyStroke(binding=shortcut) if shortcut else None
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
         elif is_local:
@@ -3170,20 +2924,15 @@ class KeyHandlerClass(object):
             # Try to get a stroke from leoSettings.leo.
             stroke = None
             junk, aList = c.config.getShortcut(commandName)
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                assert g.isStrokeOrNone(si.stroke)
-                if si.stroke and not si.pane.endswith('-mode'):
-                    stroke = si.stroke
-                    pane = si.pane # 2015/05/11.
+            for bi in aList:
+                if bi.stroke and not bi.pane.endswith('-mode'):
+                    stroke = bi.stroke
+                    pane = bi.pane # 2015/05/11.
                     break
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
-            k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-        if trace:
-            # pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
-            g.trace('@command %-45s' % (commandName), g.callers(2))
+            k.makeMasterGuiBinding(stroke) # Must be a stroke.
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()
@@ -3195,37 +2944,33 @@ class KeyHandlerClass(object):
                         break
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
-        '''Execute a Leo command by name.'''
-        trace = False and not g.unitTesting
+        """Execute a Leo command by name."""
         c, k = self.c, self
         func = self.commandExists(commandName)
         if func:
             # Support @g.commander_command
             c_func = getattr(c, func.__name__, None)
             if c_func:
-                if trace:
-                    g.trace('@g.commander_command(%s): %s' % (commandName,func.__name__))
                 return c_func(event=event)
             if event:
                 pass
             elif commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
-                event = g.app.gui.create_key_event(c, None, None, None)
-            if trace: g.trace(event)
+                event = g.app.gui.create_key_event(c)
             k.masterCommand(event=event, func=func)
             if c.exists:
                 return k.funcReturn
-            else:
-                return None
-        elif g.app.unitTesting:
-            raise AttributeError
-        else:
-            g.error('simulateCommand: no command for %s' % (commandName))
             return None
+        if g.app.unitTesting:
+            raise AttributeError(f"no such command: {commandName}")
+        if g.app.inBridge:
+            raise AttributeError(f"no such command: {commandName}")
+        g.error(f"simulateCommand: no command for {commandName}")
+        return None
     #@+node:ekr.20170324143353.1: *5* k.commandExists
     def commandExists(self, commandName):
-        '''Return the command handler for the given command name, or None.'''
+        """Return the command handler for the given command name, or None."""
         c, k = self.c, self
         commandName = commandName.strip()
         if commandName:
@@ -3235,157 +2980,225 @@ class KeyHandlerClass(object):
             else:
                 commandName = aList[0]
                 k.givenArgs = aList[1:]
-            # g.trace(commandName,k.givenArgs)
             func = c.commandsDict.get(commandName)
             return func
-        else:
-            return None
+        return None
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'
     ):
-        '''Get a file name from the minibuffer.'''
+        """Get a file name from the minibuffer."""
         k = self
         k.fnc.get_file_name(event, callback, filterExt, prompt, tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
-    master_key_count = 0
-
     def masterKeyHandler(self, event):
-        '''The master key handler for almost all key bindings.'''
-        trace = False and not g.app.unitTesting
-        traceGC = False and not g.app.unitTesting
-        verbose = True
-        trace_unbound = True
-        k, c = self, self.c
+        """The master key handler for almost all key bindings."""
+        k = self
+        # Setup...
+        if 'keys' in g.app.debug:
+            g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
+        k.checkKeyEvent(event)
+        k.setEventWidget(event)
+        k.traceVars(event)
+        # Order is very important here...
+        if k.isSpecialKey(event):
+            return
+        if k.doKeyboardQuit(event):
+            return
+        if k.doDemo(event):
+            return
+        if k.doMode(event):
+            return
+        if k.doVim(event):
+            return
+        if k.doUnboundPlainKey(event):
+            return
+        k.doBinding(event)
+            # Calls handleUnboundKeys if no binding.
+    #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
+    def checkKeyEvent(self, event):
+        """Perform sanity checks on the incoming event."""
+        # These assert's should be safe, because eventFilter
+        # calls k.masterKeyHandler inside a try/except block.
+        c = self.c
+        assert event is not None
         c.check_event(event)
-        #@+<< define vars >>
-        #@+node:ekr.20061031131434.147: *5* << define vars >>
-        w = event and event.widget
-        char = event.char if event else ''
-        stroke = event.stroke if event else ''
-        w_name = c.widget_name(w)
-        if w_name.startswith('log'):
-            # A hack: send the event to the text part of the log.
-            w = event.widget = c.frame.log.logCtrl
-        state = k.state.kind
-        special_keys = (
-            'Alt_L', 'Alt_R',
-            'Caps_Lock', 'Control_L', 'Control_R',
-            'Meta_L', 'Meta_R', # Meta support.
-            'Num_Lock',
-            'Shift_L', 'Shift_R',
-            'Win_L', 'Win_R',
-        )
-        self.master_key_count += 1
-        isPlain = k.isPlainKey(stroke)
-        #@-<< define vars >>
-        assert g.isStrokeOrNone(stroke)
-        if char in special_keys:
-            if trace and verbose: g.trace('char', char)
+        assert hasattr(event, 'char')
+        assert hasattr(event, 'stroke')
+        if not hasattr(event, 'widget'):
+            event.widget = None
+        assert g.isStrokeOrNone(event.stroke)
+        if event:
+            assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
+                # A continuous unit test, better than "@test k.isPlainKey".
+
+    #@+node:ekr.20180418033838.1: *5* k.doBinding
+    def doBinding(self, event):
+        """
+        The last phase of k.masertKeyHandler.
+        Execute the command associated with stroke's binding.
+        Call k.handleUnboundKeys for killed or non-existent bindings.
+        """
+        c, k = self.c, self
+        char, stroke, w = event.char, event.stroke, event.widget
+        #
+        # Use getPaneBindings for *all* keys.
+        #
+        bi = k.getPaneBinding(stroke, w)
+        #
+        # Call k.handleUnboudKeys for all killed bindings.
+        #
+        if bi and bi.commandName in k.killedBindings:
+            #327: ignore killed bindings.
+            k.handleUnboundKeys(event)
             return
-        if traceGC: g.printNewObjects('masterKey 1')
-        if trace and verbose: g.trace('stroke:', repr(stroke), 'char:',
-            repr(event and event.char),
-            'ch:', repr(event and event.char),
-            'state', state, 'state2', k.unboundKeyAction)
-        # Handle keyboard-quit first.
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            if hasattr(c, 'screenCastController') and c.screenCastController:
-                c.screenCastController.quit()
-            k.masterCommand(commandName='keyboard-quit',
-                event=event, func=k.keyboardQuit, stroke=stroke)
+        #
+        # Call k.masterCommandHandler if the binding exists.
+        #
+        if bi:
+            k.masterCommand(
+                event=event,
+                commandName=bi.commandName,
+                func=bi.func,
+                stroke=bi.stroke)
             return
-        # 2017/01/31: Important support for the demo.py plugin.
-        demo = getattr(g.app, 'demo', None)
-        if demo:
-            # Shortcut everything so that demo-next or demo-prev
-            # won't alter of our ivars.
-            if k.demoNextKey and stroke == k.demoNextKey:
-                if demo.trace: g.trace('demo-next', stroke)
-                demo.next_command()
-                return
-            elif k.demoPrevKey and stroke == k.demoPrevKey:
-                if demo.trace: g.trace('demo-prev', stroke)
-                demo.prev_command()
-                return
-        # Always handle modes regardless of vim.
-        if k.inState():
-            if trace: g.trace('   state %-15s %s' % (state, stroke))
-            done = k.doMode(event, state, stroke)
-            if done: return
-        # Handle vim keys only if not in a state.
-        if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.do_key(event)
-            if trace: g.trace('vc.do_key returns', ok)
-            if ok: return
-        if traceGC: g.printNewObjects('masterKey 2')
-        # 2011/02/08: An important simplification.
-        if isPlain and k.unboundKeyAction != 'command':
-            if w_name.startswith('canvas'):
-                # 2016/04/09: experimental.
-                if trace: g.trace('plain key in tree')
-            elif self.isAutoCompleteChar(stroke):
-                if trace: g.trace('autocomplete key', stroke)
-            else:
-                if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
-                k.handleUnboundKeys(event, char, stroke)
-                return
-        # 2011/02/08: Use getPaneBindings for *all* keys.
-        si = k.getPaneBinding(stroke, w)
-        if si and si.commandName in k.killedBindings:
-            # 327: ignore killed bindings.
-            if trace and trace_unbound: g.trace('  killed', stroke)
-            k.handleUnboundKeys(event, char, stroke)
-        elif si:
-            assert g.isShortcutInfo(si), si
-            if traceGC: g.printNewObjects('masterKey 3')
-            if trace: g.trace('   bound', stroke, si.func.__name__)
-            k.masterCommand(event=event,
-                commandName=si.commandName, func=si.func, stroke=si.stroke)
-        elif w_name.startswith('canvas'):
-            # 2016/04/09: experimental.
-            if trace: g.trace('unbound plain key in tree: search')
+        #
+        # Handle unbound keys in the tree (not headlines).
+        # 
+        if c.widget_name(w).startswith('canvas'):
             k.searchTree(char)
-        else:
-            if traceGC: g.printNewObjects('masterKey 4')
-            if trace and trace_unbound: g.trace(' unbound', stroke)
-            k.handleUnboundKeys(event, char, stroke)
+            return
+        #
+        # No binding exists. Call k.handleUnboundKey.
+        #
+        k.handleUnboundKeys(event)
+    #@+node:ekr.20180418023827.1: *5* k.doDemo
+    def doDemo(self, event):
+        """
+        Support the demo.py plugin.
+        Return True if k.masterKeyHandler should return.
+        """
+        k = self
+        stroke = event.stroke
+        demo = getattr(g.app, 'demo', None)
+        if not demo:
+            return False
+        #
+        # Shortcut everything so that demo-next or demo-prev won't alter of our ivars.
+        if k.demoNextKey and stroke == k.demoNextKey:
+            if demo.trace:
+                g.trace('demo-next', stroke)
+            demo.next_command()
+            return True
+        if k.demoPrevKey and stroke == k.demoPrevKey:
+            if demo.trace:
+                g.trace('demo-prev', stroke)
+            demo.prev_command()
+            return True
+        return False
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
-        trace = False and not g.unitTesting
-        k, val = self, None
-        ch = event.char if event else ''
-        stroke = event.stroke if event else ''
-        if trace: g.trace(k.state.kind, 'ch', ch, 'stroke', stroke,
-            'ignore_unbound_non_ascii_keys', k.ignore_unbound_non_ascii_keys)
+        """Call the state handler associated with this event."""
+        k = self
+        ch = event.char
+        #
+        # Defensive programming
+        #
+        if not k.state.kind:
+            return None
+        if not k.state.handler:
+            g.error('callStateFunction: no state function for', k.state.kind)
+            return None
+        #
+        # Handle auto-completion before checking for unbound keys.
+        #
         if k.state.kind == 'auto-complete':
-            # 2011/06/17.
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
-            if trace: g.trace('auto-complete returns', repr(val))
             return val
-        elif k.state.kind:
-            if (
-                k.ignore_unbound_non_ascii_keys and
-                len(ch) == 1 and # 2011/04/01
-                ch and ch not in ('\b', '\n', '\r', '\t') and
-                (ord(ch) < 32 or ord(ch) > 128)
-            ):
-                # g.trace('non-ascii',ord(ch))
-                pass
-            elif k.state.handler:
-                # if trace: g.trace(k.state.handler.__name__)
-                val = k.state.handler(event)
-                if val != 'continue':
-                    k.endCommand(k.commandName)
-            else:
-                g.error('callStateFunction: no state function for', k.state.kind)
+        #
+        # Ignore unbound non-ascii keys.
+        #
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and
+            ch and ch not in ('\b', '\n', '\r', '\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            return None
+        #
+        # Call the state handler.
+        #
+        val = k.state.handler(event)
+        if val != 'continue':
+            k.endCommand(k.commandName)
         return val
+    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
+    def doUnboundPlainKey(self, event):
+        """
+        Handle unbound plain keys.
+        Return True if k.masterKeyHandler should return.
+        """
+        c, k = self.c, self
+        stroke, w = event.stroke, event.widget
+        #
+        # Ignore non-plain keys.
+        if not k.isPlainKey(stroke):
+            return False
+        #
+        # Ignore any keys in the background tree widget.
+        if c.widget_name(w).startswith('canvas'):
+            return False
+        #
+        # Ignore the char if it is bound to the auto-complete command.
+        if self.isAutoCompleteChar(stroke):
+            return False
+        #
+        # Handle the unbound key.
+        k.handleUnboundKeys(event)
+        return True
+    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
+    def isAutoCompleteChar(self, stroke):
+        """
+        Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.
+        """
+        k = self; state = k.unboundKeyAction
+        assert g.isStrokeOrNone(stroke)
+        if stroke and state in ('insert', 'overwrite'):
+            for key in (state, 'body', 'log', 'text', 'all'):
+                d = k.masterBindingsDict.get(key, {})
+                if d:
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
+                        if bi.commandName == 'auto-complete':
+                            return True
+        return False
+    #@+node:ekr.20180418025241.1: *5* k.doVim
+    def doVim(self, event):
+        """
+        Handle vim mode.
+        Return True if k.masterKeyHandler should return.
+        """
+        c = self.c
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.do_key(event)
+            return ok
+        return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
-    def doMode(self, event, state, stroke):
-        trace = False and not g.unitTesting
+    def doMode(self, event):
+        """
+        Handle mode bindings.
+        Return True if k.masterKeyHandler should return.
+        """
         k = self
+        state = k.state.kind
+        stroke = event.stroke
+        if not k.inState():
+            return False
+        #
         # First, honor minibuffer bindings for all except user modes.
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
@@ -3393,51 +3206,164 @@ class KeyHandlerClass(object):
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
+        #
         # Second, honor general modes.
+        #
         if state == 'getArg':
-            k.getArg(event, stroke=stroke)
-            return True
-        elif state in ('getFileName', 'get-file-name'):
-            if trace: g.trace(event, state, stroke)
+            # New in Leo 5.8: Only call k.getArg for keys it can handle.
+            if k.isPlainKey(stroke):
+                k.getArg(event, stroke=stroke)
+                return True
+            if stroke.s in ('Escape', 'Tab', 'BackSpace'):
+                k.getArg(event, stroke=stroke)
+                return True
+            return False 
+        if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
-        elif state in ('full-command', 'auto-complete'):
-            # Do the default state action.
-            if trace: g.trace('calling state function', k.state.kind)
-            val = k.callStateFunction(event) # Calls end-command.
-            if trace: g.trace('state function returns', repr(val))
+        if state in ('full-command', 'auto-complete'):
+            val = k.callStateFunction(event)
+                # Do the default state action.
+                # Calls end-command.
             return val != 'do-standard-keys'
+        #
         # Third, pass keys to user modes.
+        #
         d = k.masterBindingsDict.get(state)
         if d:
             assert g.isStrokeOrNone(stroke)
-            si = d.get(stroke)
-            if si:
-                assert g.isShortcutInfo(si), si
-                if trace: g.trace('calling generalModeHandler', stroke)
+            bi = d.get(stroke)
+            if bi:
+                # Bound keys continue the mode.
                 k.generalModeHandler(event,
-                    commandName=si.commandName, func=si.func,
-                    modeName=state, nextMode=si.nextMode)
+                    commandName=bi.commandName,
+                    func=bi.func,
+                    modeName=state,
+                    nextMode=bi.nextMode)
                 return True
+            # Unbound keys end mode.
+            k.endMode()
+            return False
+        #
+        # Fourth, call the state handler.
+        #
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        return True
+    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding & helper
+    def getPaneBinding(self, stroke, w):
+       
+        k = self
+        if not g.assert_is(stroke, g.KeyStroke):
+            return None
+        for key, name in (
+            # Order here is similar to bindtags order.
+            ('command', None),
+            ('insert', None),
+            ('overwrite', None),
+            ('button', None),
+            ('body', 'body'),
+            ('text', 'head'), # Important: text bindings in head before tree bindings.
+            ('tree', 'head'),
+            ('tree', 'canvas'),
+            ('log', 'log'),
+            ('text', 'log'),
+            ('text', None),
+            ('all', None),
+        ):
+            val = k.getBindingHelper(key, name, stroke, w)
+            if val:
+                return val
+        return None
+    #@+node:ekr.20180418105228.1: *6* getPaneBindingHelper
+    def getBindingHelper(self, key, name, stroke, w):
+        """Find a binding for the widget with the given name."""
+        c, k = self.c, self
+        #
+        # Return if the pane's name doesn't match the event's widget.
+        state = k.unboundKeyAction
+        w_name = c.widget_name(w)
+        pane_matches = (
+            name and w_name.startswith(name) or
+            key in ('command', 'insert', 'overwrite') and state == key or
+            key in ('text', 'all') and g.isTextWrapper(w) or
+            key in ('button', 'all')
+        )
+        if not pane_matches:
+            return None
+        #
+        # Return if there is no binding at all.
+        d = k.masterBindingsDict.get(key, {})
+        if not d:
+            return None
+        bi = d.get(stroke)
+        if not bi:
+            return None
+        #
+        # Ignore previous/next-line commands while editing headlines.
+        if (
+            key == 'text' and
+            name == 'head' and
+            bi.commandName in ('previous-line', 'next-line')
+        ):
+            return None
+        #
+        # The binding has been found.
+        return bi
+    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+    def handleDefaultChar(self, event, stroke):
+        """
+        Handle an unbound key, based on the event's widget.
+        Do not assume that stroke exists.
+        """
+        c, k, w = self.c, self, event.widget
+        name = c.widget_name(w)
+        #
+        # Ignore unbound alt-ctrl key
+        if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
+            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
+            return
+        #
+        # Handle events in the body pane.
+        if name.startswith('body'):
+            action = k.unboundKeyAction
+            if action in ('insert', 'overwrite'):
+                c.editCommands.selfInsertCommand(event, action=action)
             else:
-                # New in Leo 4.5: unbound keys end mode.
-                # if trace: g.trace('unbound key ends mode',stroke,state)
-                if 0: # 2012/05/20: I dislike this warning.
-                    g.warning('unbound key ends mode', stroke) # 2011/02/02
-                k.endMode()
-                return False
-        else:
-            # New in 4.4b4.
-            handler = k.getStateHandler()
-            if handler:
-                if trace: g.trace('handler', handler)
-                handler(event)
-            else:
-                if trace: g.trace('No state handler for %s' % state)
-            return True
+                pass # Ignore the key
+            return
+        #
+        # Handle events in headlines.
+        if name.startswith('head'):
+            c.frame.tree.onHeadlineKey(event)
+            return
+        #
+        # Handle events in the background tree.
+        if name.startswith('canvas'):
+            if not stroke: # Not exactly right, but it seems to be good enough.
+                c.onCanvasKey(event)
+            return
+        #
+        # Handle events in the log pane.
+        if name.startswith('log'):
+            # Make sure we can insert into w.
+            log_w = event.widget
+            if not hasattr(log_w, 'supportsHighLevelInterface'):
+                return
+            # Send the event to the text widget, not the LeoLog instance.
+            if not stroke:
+                stroke = event.stroke
+            if stroke:
+                i = log_w.getInsertPoint()
+                s = stroke.toGuiChar()
+                log_w.insert(i, s)
+            return
+        #
+        # Ignore all other events.
     #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
-        k = self; c = k.c; p = c.p
+        c, k, p = self.c, self, self.c.p
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
@@ -3445,7 +3371,7 @@ class KeyHandlerClass(object):
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
             assert m # edit-shortcut was invoked on a malformed body line
-            sel = g.u('%s %s\n')%(m.group(0), stroke.s)
+            sel = f"{m.group(0)} {stroke.s}"
             udata = c.undoer.beforeChangeNodeContents(p)
             w.setSelectionAreas(before, sel, after)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
@@ -3453,10 +3379,10 @@ class KeyHandlerClass(object):
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
-        elif p.h.startswith(('@command', '@button')):
+        if p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
-            cmd = p.h.split(g.u('@key'),1)[0]
-            p.h = g.u('%s @key=%s')%(cmd, stroke.s)
+            cmd = p.h.split('@key',1)[0]
+            p.h = f"{cmd} @key={stroke.s}"
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
             try:
                 cmdname = cmd.split(' ', 1)[1].strip()
@@ -3464,12 +3390,11 @@ class KeyHandlerClass(object):
             except IndexError:
                 pass
             return
-        else:
-            # this should never happen
-            g.error('not in settings node shortcut')
-
+        # this should never happen
+        g.error('not in settings node shortcut')
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
-    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
+
     def isInShortcutBodyLine(self):
         k = self; c = k.c; p = c.p
         if p.h.startswith(('@shortcuts', '@mode')):
@@ -3490,314 +3415,285 @@ class KeyHandlerClass(object):
         if cmdfunc:
             k.bindKey('all', stroke, cmdfunc, cmdname)
             g.es('bound', stroke, 'to command', cmdname)
-    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
-    def getPaneBinding(self, stroke, w):
-        trace = False and not g.unitTesting
-        trace_dict = False
-        verbose = False
-        k, w_name = self, self.c.widget_name(w)
-        state = k.unboundKeyAction
-        if not g.isStroke(stroke):
-            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
-            return None
-        if trace: g.trace('===== w_name', repr(w_name), 'stroke', stroke,
-            # 'w', w,
-            'isTextWrapper(w)', g.isTextWrapper(w))
-        for key, name in (
-            # Order here is similar to bindtags order.
-            ('command', None),
-            ('insert', None),
-            ('overwrite', None),
-            ('button', None),
-            ('body', 'body'),
-            ('text', 'head'), # Important: text bindings in head before tree bindings.
-            ('tree', 'head'),
-            ('tree', 'canvas'),
-            ('log', 'log'),
-            ('text', 'log'),
-            ('text', None),
-            ('all', None),
-        ):
-            if trace and trace_dict:
-                d = k.masterBindingsDict.get(key, {})
-                g.trace('key:', key)
-                if d:
-                    g.trace('d.get(%s)' % (stroke))
-                    g.trace(d.get(stroke))
-
-            if (
-                # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-                name and w_name.startswith(name) or
-                key in ('command', 'insert', 'overwrite') and state == key or # 2010/02/09
-                key in ('text', 'all') and g.isTextWrapper(w) or
-                key in ('button', 'all')
-            ):
-                d = k.masterBindingsDict.get(key, {})
-                if trace and verbose:
-                    # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
-                    g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
-                        (key, name, stroke, stroke in d))
-                    # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
-                if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                            # masterBindingsDict: keys are KeyStrokes
-                        assert g.isShortcutInfo(si), si
-                        table = ('previous-line', 'next-line',)
-                        if key == 'text' and name == 'head' and si.commandName in table:
-                            if trace: g.trace('***** special case', si.commandName)
-                        else:
-                            if trace: g.trace('key: %7s name: %6s  found: %s = %s' % (
-                                key, name, repr(si.stroke), si.commandName))
-                            return si
-        return None
-    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
-    def handleDefaultChar(self, event, stroke):
-        '''Handle an unbound key.'''
-        trace = False and not g.unitTesting
-        verbose = True
-        c, k = self.c, self
-        w = event and event.widget
-        name = c.widget_name(w)
-        if trace and verbose:
-            g.trace('widget_name', name, 'stroke', stroke,
-            'enable alt-ctrl', self.enable_alt_ctrl_bindings)
-        if (stroke and
-            not stroke.startswith('Alt+Ctrl') and
-            # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
-            k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
-            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
-        ):
-            if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
-            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
-        elif name.startswith('body'):
-            action = k.unboundKeyAction
-            if action in ('insert', 'overwrite'):
-                c.editCommands.selfInsertCommand(event, action=action)
-            else: # Ignore the key
-                if trace: g.trace('ignoring', stroke)
-        elif name.startswith('head'):
-            c.frame.tree.onHeadlineKey(event)
-        elif name.startswith('canvas'):
-            if not stroke: # Not exactly right, but it seems to be good enough.
-                c.onCanvasKey(event) # New in Leo 4.4.2
-        elif name.startswith('log'):
-            # Bug fix: 2011/11/21: Because of universal bindings
-            # we may not be able to insert anything into w.
-            log_w = event.widget
-            if log_w and hasattr(log_w, 'supportsHighLevelInterface'):
-                # Send the event to the text widget, not the LeoLog instance.
-                i = log_w.getInsertPoint()
-                if not stroke:
-                    stroke = event and event.stroke
-                if stroke:
-                    s = stroke.toGuiChar()
-                    log_w.insert(i, s)
-            elif trace: g.trace('not supportsHighLevelInterface', log_w)
-        else:
-            pass # Ignore the event
     #@+node:ekr.20061031131434.152: *5* k.handleMiniBindings
     def handleMiniBindings(self, event, state, stroke):
-        k = self; c = k.c
-        trace = False and not g.app.unitTesting
+        """Find and execute commands bound to the event."""
+        k = self
+        #
         # Special case for bindings handled in k.getArg:
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
+        #
+        # Ignore other special keys in the minibuffer.
         if state in ('getArg', 'full-command'):
-            if stroke in ('\b', 'BackSpace', '\r', 'Linefeed', '\n', 'Return', '\t', 'Tab', 'Escape',):
+            if stroke in (
+                '\b', 'BackSpace',
+                '\r', 'Linefeed',
+                '\n', 'Return',
+                '\t', 'Tab',
+                'Escape',
+            ):
                 return False
             if k.isFKey(stroke):
                 return False
-        if not state.startswith('auto-'):
-            # New in Leo 4.5: ignore plain key binding in the minibuffer.
-            if not stroke or k.isPlainKey(stroke):
-                if trace: g.trace('plain key', stroke)
-                return False
-            # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-            # for all single-line editing commands.
-            for pane in ('mini', 'all', 'text'):
-                d = k.masterBindingsDict.get(pane)
-                if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                            # masterBindingsDict: keys are KeyStrokes
-                        assert g.isShortcutInfo(si), si
-                        if si.commandName == 'replace-string' and state == 'getArg':
-                            if trace: g.trace('%s binding for replace-string' % (pane), stroke)
-                            return False # Let getArg handle it.
-                        elif si.commandName not in k.singleLineCommandList:
-                            if trace: g.trace('%s binding terminates minibuffer' % (
-                                pane), si.commandName, stroke)
-                            k.keyboardQuit()
-                        else:
-                            if trace: g.trace(repr(stroke), 'mini binding', si.commandName)
-                            c.minibufferWantsFocus() # New in Leo 4.5.
-                        # Pass this on for macro recording.
-                        k.masterCommand(commandName=si.commandName, event=event, func=si.func, stroke=stroke)
-                        # Careful: the command could exit.
-                        if c.exists and not k.silentMode:
-                            c.minibufferWantsFocus()
-                        return True
+        #
+        # Ignore autocompletion state.
+        if state.startswith('auto-'):
+            return False
+        # 
+        # Ignore plain key binding in the minibuffer.
+        if not stroke or k.isPlainKey(stroke):
+            return False
+        #
+        # Get the command, based on the pane.
+        for pane in ('mini', 'all', 'text'):
+            result = k.handleMinibufferHelper(event, pane, state, stroke)
+            assert result in ('continue', 'found', 'ignore')
+            if result == 'ignore':
+                return False # Let getArg handle it.
+            if result == 'found':
+                # Do not call k.keyboardQuit here!
+                return True
+        #
+        # No binding exists.
+        return False
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper
+    def handleMinibufferHelper(self, event, pane, state, stroke):
+        """
+        Execute a pane binding in the minibuffer.
+        
+        Return 'continue', 'ignore', 'found'
+        """
+        c, k = self.c, self
+        d = k.masterBindingsDict.get(pane)
+        if not d:
+            return 'continue'
+        bi = d.get(stroke)
+        if not bi:
+            return 'continue'
+        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
+        #
+        # Special case the replace-string command in the minibuffer.
+        #
+        if bi.commandName == 'replace-string' and state == 'getArg':
+            return 'ignore'
+        #
+        # Execute this command.
+        #
+        if bi.commandName not in k.singleLineCommandList:
+            k.keyboardQuit()
+        else:
+            c.minibufferWantsFocus() # New in Leo 4.5.
+        # Pass this on for macro recording.
+        k.masterCommand(
+            commandName=bi.commandName,
+            event=event,
+            func=bi.func,
+            stroke=stroke)
+        # Careful: the command could exit.
+        if c.exists and not k.silentMode:
+            # Use the state *after* executing the command.
+            if k.state.kind:
+                c.minibufferWantsFocus()
+            else:
+                c.bodyWantsFocus()
+        return 'found'
+    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
+    def isSpecialKey(self, event):
+        """Return True if char is a special key."""
+        if not event:
+            # An empty event is not an error.
+            return False
+        # Fix #917.
+        if len(event.char) > 1 and not event.stroke.s:
+            # stroke.s was cleared, but not event.char.
+            return True
+        return event.char in g.app.gui.ignoreChars
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
+    def doKeyboardQuit(self, event):
+        """
+        Handle keyboard-quit logic.
+        return True if k.masterKeyHandler should return.
+        """
+        c, k = self.c, self
+        stroke = event.stroke
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            if getattr(c, 'screenCastController', None):
+                c.screenCastController.quit()
+            k.masterCommand(
+                commandName='keyboard-quit',
+                event=event,
+                func=k.keyboardQuit,
+                stroke=stroke)
+            return True
         return False
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
-    def handleUnboundKeys(self, event, char, stroke):
-        trace = False and not g.unitTesting
-        verbose = True
-        k = self; c = k.c
-        modesTuple = ('insert', 'overwrite')
-        # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
-        if not g.isStroke(stroke):
-            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+    def handleUnboundKeys(self, event):
+       
+        c, k = self.c, self
+        stroke = event.stroke
+        if not g.assert_is(stroke, g.KeyStroke):
             return
-        if trace and verbose: g.trace('ch: %s, stroke %s' % (
-            repr(event and event.char), repr(stroke)))
-        # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+        # #1448: Very late special case for getArg state.
+        #        This is not needed for other states.
+        if stroke.isNumPadKey() and k.state.kind == 'getArg':
+            stroke.removeNumPadModifier()
+            k.getArg(event, stroke=stroke)
+            return
+        #
+        # Ignore all unbound characters in command mode.
         if k.unboundKeyAction == 'command':
-            # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
-            if trace: g.trace('ignoring unbound character in command mode', stroke)
             return
-        elif stroke.isFKey():
-            if trace: g.trace('ignoring F-key', stroke)
+        #
+        # Ignore unbound F-keys.
+        if stroke.isFKey():
             return
-        elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-            # insert/overwrite normal character.  <Return> is *not* a normal character.
-            if trace: g.trace('plain key in insert mode', repr(stroke))
+        #
+        #  Handle a normal character in insert/overwrite.
+        # <Return> is *not* a normal character.
+        if (
+            stroke and k.isPlainKey(stroke) and
+            k.unboundKeyAction in ('insert', 'overwrite')
+        ):
             k.masterCommand(event=event, stroke=stroke)
             return
-        elif(not self.enable_alt_ctrl_bindings and
-            (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
-        ):
-            # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-            if trace: g.trace('ignoring unbound Alt/Ctrl key',
-                repr(char), repr(stroke))
+        #
+        # Always ignore unbound Alt/Ctrl keys.
+        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return
-        elif k.ignore_unbound_non_ascii_keys and (
-            len(char) > 1 or
-            char not in string.printable # 2011/06/10: risky test?
-        ):
-            if trace: g.trace('ignoring unbound non-ascii key',
-                repr(char), repr(stroke))
+        # #868
+        if stroke.isPlainNumPad():
+            stroke.removeNumPadModifier()
+            k.masterCommand(event=event, stroke=stroke)
             return
-        elif(
+        # #868
+        if stroke.isNumPadKey():
+            # To have effect, these must be bound.
+            return
+        #
+        # Ignore unbound non-ascii character.
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            not stroke.isPlainKey()
+        ):
+            return
+        #
+        # Never insert escape or insert characters.
+        if (
             stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
-            # Never insert escape or insert characters.
-            if trace: g.trace('ignore Escape/Ignore', stroke)
             return
-        else:
-            if trace: g.trace('no func', repr(char), repr(stroke))
-            k.masterCommand(event=event, stroke=stroke)
-            return
-    #@+node:ekr.20110209083917.16004: *5* k.isAutoCompleteChar
-    def isAutoCompleteChar(self, stroke):
-        '''Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.'''
-        k = self; state = k.unboundKeyAction
-        assert g.isStrokeOrNone(stroke)
-        if stroke and state in ('insert', 'overwrite'):
-            for key in (state, 'body', 'log', 'text', 'all'):
-                d = k.masterBindingsDict.get(key, {})
-                if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                        assert g.isShortcutInfo(si), si
-                        if si.commandName == 'auto-complete':
-                            return True
-        return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
+        #
+        # Let k.masterCommand handle the unbound character.
+        k.masterCommand(event=event, stroke=stroke)
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
-        '''
+        """
         This is the central dispatching method.
         All commands and keystrokes pass through here.
         This returns None, but may set k.funcReturn.
-        '''
+        """
         c, k = self.c, self
-        trace = False and not g.unitTesting
-        traceGC = False
-        traceStroke = True
-        # if trace: g.trace(commandName, func)
-        if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()
         k.stroke = stroke # Set this global for general use.
-        char = ch = event.char if event else ''
-        # 2011/10/28: compute func if not given.
+        ch = event.char if event else ''
+        #
+        # Ignore all special keys.
+        if k.isSpecialKey(event):
+            return
+        #
+        # Compute func if not given.
+        # It is *not* an error for func to be None.
         if commandName and not func:
-            func = c.commandsDict.get(commandName)
-        # Important: it is *not* an error for func to be None.
+            func = c.commandsDict.get(commandName.replace('&', ''))
+            if not func:
+                g.es_print('no command for @item %r' % (commandName), color='red')
+                return
         commandName = commandName or func and func.__name__ or '<no function>'
+        if 'keys' in g.app.debug:
+            # A very important trace.
+            g.trace(commandName, 'stroke', stroke)
         k.funcReturn = None # For unit testing.
-        #@+<< define specialKeysyms >>
-        #@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
-        specialKeysyms = (
-            'Alt_L', 'Alt_R',
-            'Meta_L', 'Meta_R', # Meta support.
-            'Caps_Lock', 'Control_L', 'Control_R',
-            'Num_Lock',
-            'Shift_L', 'Shift_R',
-        )
-        #@-<< define specialKeysyms >>
-        special = char in specialKeysyms
-        inserted = not special
-        if trace and traceStroke: # Useful.
-            g.trace('stroke: %s ch: %s func: %s' % (
-                stroke, repr(ch), func and func.__name__))
-        if inserted:
-            k.setLossage(ch, stroke)
-        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        #
+        # Remember the key.
+        k.setLossage(ch, stroke)
+        #
+        # Handle keyboard-quit.
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
             k.endCommand(commandName)
             return
-        if special: # Don't pass these on.
+        #
+        # Ignore abbreviations.
+        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
             return
-        if k.abbrevOn:
-            expanded = c.abbrevCommands.expandAbbrev(event, stroke)
-            if expanded: return
-        if func: # Func is an argument.
+        #
+        # Handle the func argument, if given.
+        if func:
             if commandName.startswith('specialCallback'):
-                # The callback function will call c.doCommand
-                if trace: g.trace('calling specialCallback for', commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
+                # The callback function will call c.doCommand.
                 val = func(event)
-                # k.simulateCommand uses k.funcReturn.
-                k.funcReturn = k.funcReturn or val # For unit tests.
+                # Set k.funcReturn for k.simulateCommand..
+                k.funcReturn = k.funcReturn or val
             else:
                 # Call c.doCommand directly.
-                if trace:
-                    g.trace('calling command directly', commandName)
                 c.doCommand(func, commandName, event=event)
             if c.exists:
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 2')
-        elif k.inState():
-            pass #Ignore unbound keys in a state.
-        else:
-            if traceGC: g.printNewObjects('masterCom 3')
-            k.handleDefaultChar(event, stroke)
-            if c.exists:
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 4')
+            return
+        #
+        # Ignore unbound keys in a state.
+        if k.inState():
+            return
+        #
+        # Finally, call k.handleDefaultChar.
+        k.handleDefaultChar(event, stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        
+    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
+    def setEventWidget(self, event):
+        """
+        A hack: redirect the event to the text part of the log.
+        """
+        c = self.c
+        w = event.widget
+        w_name = c.widget_name(w)
+        if w_name.startswith('log'):
+            event.widget = c.frame.log.logCtrl
+    #@+node:ekr.20180418031417.1: *5* k.traceVars
+    def traceVars(self, event):
+        
+        trace = False and not g.unitTesting
+        traceGC = False
+        verbose = False
+        k = self
+        if not trace:
+            return
+        if traceGC:
+            g.printNewObjects('masterKey 1')
+        if verbose:
+            char = event.char
+            state = k.state.kind
+            stroke = event.stroke
+            g.trace('stroke: %r, char: %r, state: %s, state2: %s' % (
+                stroke, char, state, k.unboundKeyAction))
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
-        '''Search all visible nodes for a headline starting with stroke.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(char)
+        """Search all visible nodes for a headline starting with stroke."""
         if not char: return
         c = self.c
         if not c.config.getBool('plain-key-outline-search'):
             return
 
         def match(p):
-            '''Return True if p contains char.'''
+            """Return True if p contains char."""
             s = p.h.lower() if char.islower() else p.h
             return s.find(char) > -1
 
@@ -3807,13 +3703,11 @@ class KeyHandlerClass(object):
             if p == c.p and match(p):
                 p.moveToVisNext(c)
             while p:
-                if trace: g.trace(p.h)
                 if match(p):
                     c.selectPosition(p)
                     c.redraw()
                     return
-                else:
-                    p.moveToVisNext(c)
+                p.moveToVisNext(c)
 
         # Too confusing for the user.
         # re_pat = re.compile(r'^@(\w)+[ \t](.+)')
@@ -3834,10 +3728,10 @@ class KeyHandlerClass(object):
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
     def extendLabel(self, s, select=False, protect=False):
-        trace = False and not g.unitTesting
+
         k = self; c = k.c; w = self.w
-        if not (w and s): return
-        if trace: g.trace(s)
+        if not (w and s):
+            return
         c.widgetWantsFocusNow(w)
         w.insert('end', s)
         if select:
@@ -3859,8 +3753,7 @@ class KeyHandlerClass(object):
         s = w.getAllText()
         if ignorePrompt:
             return s[len(k.mb_prefix):]
-        else:
-            return s or ''
+        return s or ''
     #@+node:ekr.20080408060320.791: *4* k.killLine
     def killLine(self, protect=True):
         k = self
@@ -3883,7 +3776,7 @@ class KeyHandlerClass(object):
         k.mb_prefix = w.getAllText()
     #@+node:ekr.20061031170011.7: *4* k.resetLabel
     def resetLabel(self):
-        '''Reset the minibuffer label.'''
+        """Reset the minibuffer label."""
         k = self
         c, w = k.c, k.w
         k.setLabelGrey('')
@@ -3897,17 +3790,15 @@ class KeyHandlerClass(object):
                 k.setLabelBlue(label='%s State' % (state.capitalize()))
     #@+node:ekr.20080408060320.790: *4* k.selectAll
     def selectAll(self):
-        '''Select all the user-editable text of the minibuffer.'''
+        """Select all the user-editable text of the minibuffer."""
         w = self.w
         i, j = self.getEditableTextRange()
         w.setSelectionRange(i, j, insert=j)
     #@+node:ekr.20061031170011.8: *4* k.setLabel
     def setLabel(self, s, protect=False):
-        '''Set the label of the minibuffer.'''
-        trace = False and not g.app.unitTesting
+        """Set the label of the minibuffer."""
         c, k, w = self.c, self, self.w
         if w:
-            if trace: g.trace(s)
             # Support for the curses gui.
             if hasattr(g.app.gui, 'set_minibuffer_label'):
                 g.app.gui.set_minibuffer_label(c, s)
@@ -3916,22 +3807,16 @@ class KeyHandlerClass(object):
             w.setSelectionRange(n, n, insert=n)
             if protect:
                 k.mb_prefix = s
-        elif trace:
-            g.trace('*** no w ***')
     #@+node:ekr.20061031170011.10: *4* k.setLabelBlue
     def setLabelBlue(self, label, protect=True):
-        '''Set the minibuffer label.'''
-        trace = False and not g.unitTesting
+        """Set the minibuffer label."""
         k, w = self, self.w
-        if trace: g.trace('label:', label)
         if hasattr(g.app.gui, 'set_minibuffer_label'):
             g.app.gui.set_minibuffer_label(self.c, label)
         elif w:
             w.setStyleClass('') # normal state, not warning or error
             if label is not None:
                 k.setLabel(label, protect=protect)
-        elif trace:
-            g.trace('*** no w ***')
     #@+node:ekr.20061031170011.11: *4* k.setLabelGrey
     def setLabelGrey(self, label=None):
         k = self; w = self.w
@@ -3950,28 +3835,27 @@ class KeyHandlerClass(object):
             k.setLabel(label, protect)
     #@+node:ekr.20140822051549.18298: *4* k.setStatusLabel
     def setStatusLabel(self, s):
-        '''
+        """
         Set the label to s.
 
         Use k.setStatusLabel, not k.setLael, to report the status of a Leo
         command. This allows the option to use g.es instead of the minibuffer
         to report status.
-        '''
+        """
         k = self
         k.setLabel(s, protect=False)
     #@+node:ekr.20061031170011.12: *4* k.updateLabel
     def updateLabel(self, event):
-        '''Mimic what would happen with the keyboard and a Text editor
-        instead of plain accumulation.'''
-        trace = False or g.trace_minibuffer and not g.app.unitTesting
+        """
+        Mimic what would happen with the keyboard and a Text editor
+        instead of plain accumulation.
+        """
         k = self; c = k.c; w = self.w
         ch = event.char if event else ''
-        if trace: g.trace('ch', ch, 'k.stroke', k.stroke)
         if ch and ch not in ('\n', '\r'):
             c.widgetWantsFocusNow(w)
             i, j = w.getSelectionRange()
             ins = w.getInsertPoint()
-            # g.trace(i,j,ins)
             if i != j:
                 w.delete(i, j)
             if ch == '\b':
@@ -3985,9 +3869,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands(self):
-        '''Add commands created by @mode settings to c.commandsDict.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('(k)')
+        """Add commands created by @mode settings to c.commandsDict."""
         k = self; c = k.c
         d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
         # Create the callback functions and update c.commandsDict.
@@ -3997,19 +3879,16 @@ class KeyHandlerClass(object):
             def enterModeCallback(event=None, name=key):
                 k.enterNamedMode(event, name)
 
-            c.commandsDict[key] = f = enterModeCallback
-            if trace: g.trace(f.__name__, key,
-                'len(c.commandsDict.keys())', len(list(c.commandsDict.keys())))
+            c.commandsDict[key] = enterModeCallback
     #@+node:ekr.20061031131434.157: *4* k.badMode
     def badMode(self, modeName):
         k = self
         k.clearState()
         if modeName.endswith('-mode'): modeName = modeName[: -5]
-        k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
+        k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
     #@+node:ekr.20061031131434.158: *4* k.createModeBindings
     def createModeBindings(self, modeName, d, w):
-        '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
-        trace = False and not g.unitTesting
+        """Create mode bindings for the named mode using dictionary d for w, a text widget."""
         k = self; c = k.c
         assert d.name().endswith('-mode')
         for commandName in d.keys():
@@ -4021,28 +3900,21 @@ class KeyHandlerClass(object):
                 g.es_print('no such command:', commandName, 'Referenced from', modeName)
                 continue
             aList = d.get(commandName, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                stroke = si.stroke
-                # Important: si.val is canonicalized.
+            for bi in aList:
+                stroke = bi.stroke
+                # Important: bi.val is canonicalized.
                 if stroke and stroke not in ('None', 'none', None):
-                    if trace:
-                        g.trace(
-                            g.app.gui.widget_name(w), modeName,
-                            '%10s' % (stroke),
-                            '%20s' % (commandName),
-                            si.nextMode)
                     assert g.isStroke(stroke)
                     k.makeMasterGuiBinding(stroke)
                     # Create the entry for the mode in k.masterBindingsDict.
                     # Important: this is similar, but not the same as k.bindKeyToDict.
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
-                    d2[stroke] = g.ShortcutInfo(
-                        kind='mode<%s>' % (modeName), # 2012/01/23
+                    d2[stroke] = g.BindingInfo(
+                        kind=f"mode<{modeName}>",
                         commandName=commandName,
                         func=func,
-                        nextMode=si.nextMode,
+                        nextMode=bi.nextMode,
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
     #@+node:ekr.20120208064440.10179: *4* k.endMode
@@ -4067,7 +3939,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.161: *4* k.exitNamedMode
     @cmd('exit-named-mode')
     def exitNamedMode(self, event=None):
-        '''Exit an input mode.'''
+        """Exit an input mode."""
         k = self
         if k.inState():
             k.endMode()
@@ -4075,13 +3947,14 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper (revise helper)
     @cmd('mode-help')
     def modeHelp(self, event):
-        '''The mode-help command.
+        """
+        The mode-help command.
 
         A possible convention would be to bind <Tab> to this command in most modes,
-        by analogy with tab completion.'''
+        by analogy with tab completion.
+        """
         k = self; c = k.c
         c.endEditing()
-        # g.trace(k.inputModeName)
         if k.inputModeName:
             d = g.app.config.modeCommandsDict.get('enter-' + k.inputModeName)
             k.modeHelpHelper(d)
@@ -4097,9 +3970,8 @@ class KeyHandlerClass(object):
                 pass
             else:
                 aList = d.get(key)
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    stroke = si.stroke
+                for bi in aList:
+                    stroke = bi.stroke
                     if stroke not in (None, 'None'):
                         s1 = key
                         s2 = k.prettyPrintKey(stroke)
@@ -4137,11 +4009,9 @@ class KeyHandlerClass(object):
         nextMode=None,
         prompt=None
     ):
-        '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+        """Handle a mode defined by an @mode node in leoSettings.leo."""
         k = self; c = k.c
         state = k.getState(modeName)
-        trace = (False or g.trace_modes) and not g.unitTesting
-        if trace: g.trace(modeName, 'state', state)
         if state == 0:
             k.inputModeName = modeName
             k.modePrompt = prompt or modeName
@@ -4162,13 +4032,11 @@ class KeyHandlerClass(object):
                 func(event)
             else:
                 self.endMode()
-                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
-                    event = g.app.gui.create_key_event(c, None, None, k.modeWidget)
-                if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
+                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
@@ -4184,11 +4052,11 @@ class KeyHandlerClass(object):
                 else:
                     k.silentMode = False # All silent modes must do --> set-silent-mode.
                     self.initMode(event, nextMode) # Enter another mode.
-    #@+node:ekr.20061031131434.156: *3* k.Modes (changed)
-    #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
+    #@+node:ekr.20061031131434.156: *3* k.Modes
+    #@+node:ekr.20061031131434.163: *4* k.initMode
     def initMode(self, event, modeName):
+
         k = self; c = k.c
-        trace = (False or g.trace_modes) and not g.unitTesting
         if not modeName:
             g.trace('oops: no modeName')
             return
@@ -4196,29 +4064,20 @@ class KeyHandlerClass(object):
         if not d:
             self.badMode(modeName)
             return
-        else:
-            k.modeBindingsDict = d
-            si = d.get('*command-prompt*')
-            if si:
-                prompt = si.kind # A kludge.
-            else:
-                prompt = modeName
-            if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
-                modeName, prompt, sorted(list(d.keys()))))
+        k.modeBindingsDict = d
+        bi = d.get('*command-prompt*')
+        prompt = bi.kind if bi else modeName
         k.inputModeName = modeName
         k.silentMode = False
         aList = d.get('*entry-commands*', [])
         if aList:
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                commandName = si.commandName
-                if trace: g.trace('entry command:', commandName)
+            for bi in aList:
+                commandName = bi.commandName
                 k.simulateCommand(commandName)
                 # Careful, the command can kill the commander.
                 if g.app.quitting or not c.exists: return
                 # New in Leo 4.5: a startup command can immediately transfer to another mode.
                 if commandName.startswith('enter-'):
-                    if trace: g.trace('redirect to mode', commandName)
                     return
         # Create bindings after we know whether we are in silent mode.
         w = k.modeWidget if k.silentMode else k.w
@@ -4232,11 +4091,9 @@ class KeyHandlerClass(object):
         nextMode=None,
         prompt=None
     ):
-        '''Handle a mode defined by an @mode node in leoSettings.leo.'''
+        """Handle a mode defined by an @mode node in leoSettings.leo."""
         k = self; c = k.c
         state = k.getState(modeName)
-        trace = (False or g.trace_modes) and not g.unitTesting
-        if trace: g.trace(modeName, 'state', state)
         if state == 0:
             k.inputModeName = modeName
             k.modePrompt = prompt or modeName
@@ -4257,13 +4114,11 @@ class KeyHandlerClass(object):
                 func(event)
             else:
                 self.endMode()
-                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
-                    event = g.app.gui.create_key_event(c, None, None, k.modeWidget)
-                if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
+                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
@@ -4290,122 +4145,63 @@ class KeyHandlerClass(object):
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                shortcutList = k.bindingsDict.get(si.commandName, [])
+            for bi in aList:
+                shortcutList = k.bindingsDict.get(bi.commandName, [])
                     # Bug fix: 2017/03/26.
-                aList = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
-                    # Important: only si.pane is required below.
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    pane = '%s:' % (si.pane)
+                bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
+                    # Important: only bi.pane is required below.
+                for bi in bi_list:
+                    pane = f"{bi.pane}:"
                     data = (pane, stroke)
                     if data not in shortcutList:
                         shortcutList.append(data)
-                d[si.commandName] = shortcutList
+                d[bi.commandName] = shortcutList
         return d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
-    def getShortcutForCommandName(self, commandName):
+    def getStrokeForCommandName(self, commandName):
         k = self; c = k.c
         command = c.commandsDict.get(commandName)
         if command:
-            for stroke in k.bindingsDict:
-                assert g.isStroke(stroke), repr(stroke)
-                aList = k.bindingsDict.get(stroke, [])
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.commandName == commandName:
-                        return stroke
-        return None
-
-    def getShortcutForCommand(self, command):
-        k = self
-        if command:
-            for stroke in k.bindingsDict:
-                assert g.isStroke(stroke), repr(stroke)
-                aList = k.bindingsDict.get(stroke, [])
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.commandName == command.__name__:
+            for stroke, aList in k.bindingsDict.items():
+                for bi in aList:
+                    if bi.commandName == commandName:
                         return stroke
         return None
     #@+node:ekr.20090518072506.8494: *4* k.isFKey
     def isFKey(self, stroke):
         # k = self
         if not stroke: return False
-        assert g.isString(stroke) or g.isStroke(stroke)
+        assert isinstance(stroke, str) or g.isStroke(stroke)
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke):
-        '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-        trace = False and not g.unitTesting
-        k = self
+        """Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key."""
         if not stroke:
             return False
-        assert g.isString(stroke) or g.isStroke(stroke)
-        shortcut = stroke.s if g.isStroke(stroke) else stroke
+        if not g.isStroke(stroke):
+            # Happens during unit tests.
+            stroke = g.KeyStroke(stroke)
+        #
         # altgr combos (Alt+Ctrl) are always plain keys
-        if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        # g.KeyStroke does not handle this, because it has no "c" ivar.
+        #
+        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return True
-        for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-            if shortcut.find(z) != -1:
-                return False
-        # Careful, allow bare angle brackets for unit tests.
-        if shortcut.startswith('<') and shortcut.endswith('>'):
-            shortcut = shortcut[1: -1]
-        isPlain = (
-            len(shortcut) == 1 or
-            len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
-            # A hack: allow Return to be bound to command.
-            shortcut in ('Tab', '\t')
-        )
-        if trace: g.trace(isPlain,repr(shortcut))
-        return isPlain and not self.isFKey(shortcut)
+        return stroke.isPlainKey()
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
     def prettyPrintKey(self, stroke, brief=False):
-        trace = False and not g.unitTesting
-        k = self
+        
         if not stroke:
-            s = ''
-        elif g.isStroke(stroke):
-            s = stroke.s
-        else:
-            s = stroke
-        if not s: return ''
-        shift = s.find("shift") >= 0 or s.find("shft") >= 0
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'): s = s[: -1].replace('-', '+') + '-'
-        else: s = s.replace('-', '+')
-        fields = s.split('+')
-        last = fields and fields[-1]
-        if trace: g.trace('fields', fields)
-        if last and len(last) == 1:
-            prev = s[: -1]
-            if last.isalpha():
-                if last.isupper():
-                    if not shift:
-                        s = prev + 'Shift+' + last
-                elif last.islower():
-                    if not prev:
-                        s = last.upper()
-                    else:
-                        s = prev + last.upper()
-        else:
-            last = k.guiBindNamesInverseDict.get(last, last)
-            if fields and fields[: -1]:
-                s = '%s+%s' % ('+'.join(fields[: -1]), last)
-            else:
-                s = last
-        if s.endswith(' '):
-            s = s[: -1] + 'Space' # 2010/11/06
-        return s
+            return ''
+        if not g.assert_is(stroke, g.KeyStroke):
+            return stroke
+        return stroke.prettyPrint()
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage(self, ch, stroke):
-        trace = False and not g.unitTesting
+
         # k = self
-        if trace: g.trace(repr(stroke), g.callers())
         if ch or stroke:
             if len(g.app.lossage) > 99:
                 g.app.lossage.pop()
@@ -4413,155 +4209,20 @@ class KeyHandlerClass(object):
         g.app.lossage.insert(0, (ch, stroke),)
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char(self, stroke):
-        '''
+        """
         Convert a stroke to an (insertable) char.
         This method allows Leo to use strokes everywhere.
-        '''
-        # pylint: disable=len-as-condition
-        trace = False and not g.unitTesting
-        trace = trace and stroke.lower().find('1') > -1
-        k = self
-        if not stroke: return ''
-        s = stroke.s if g.isStroke(stroke) else stroke
-        # Allow bare angle brackets for unit tests.
-        if s.startswith('<') and s.endswith('>'):
-            s = s[1: -1]
-        if len(s) == 0: return ''
-        if len(s) == 1: return s
-        for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-            if s.find(z) != -1:
-                return ''
-                # This is not accurate: LeoQtEventFilter retains
-                # the spelling of Alt-Ctrl keys because of the
-                # @bool enable_alt_ctrl_bindings setting.
-        # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
-        d = {
-            'BackSpace': '\b',
-            'Escape': 'Escape',
-            'Linefeed': '\r',
-            'PageDn': 'Next', # Fix #416.
-            'PageUp': 'Prior', # Fix #416.
-            'Return': '\n',
-            'Tab': '\t',
-        }
-        ch = d.get(s)
-        if ch: return ch
-        # First, do the common translations.
-        ch = k.guiBindNamesInverseDict.get(s)
-        if ch:
-            if trace: g.trace(repr(stroke), repr(ch))
-            return ch
-        # A much-simplified form of code in k.strokeFromSetting.
-        shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-        s = s.replace('Shift+', '').replace('Shift-', '')
-        last = s #  Everything should have been stripped.
-        if len(s) == 1 and s.isalpha():
-            if shift:
-                s = last.upper()
-            else:
-                s = last.lower()
-        val = s if len(s) == 1 else ''
-        if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
-        return val
-    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting (changed in Leo 5.3)
-    def strokeFromSetting(self, setting):
-        k = self
-        trace = False and not g.unitTesting
-        trace = trace and setting.lower().find('1') > -1
-        verbose = False
-        if not setting:
-            return None
-        assert g.isString(setting)
-        s = g.stripBrackets(setting.strip())
-        #@+<< define cmd, ctrl, alt, shift >>
-        #@+node:ekr.20061031131434.185: *5* << define cmd, ctrl, alt, shift >>
-        s2 = s.lower()
-        cmd = s2.find("cmd") >= 0 or s2.find("command") >= 0
-        ctrl = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-        alt = s2.find("alt") >= 0
-        shift = s2.find("shift") >= 0 or s2.find("shft") >= 0
-        meta = s2.find("meta") >= 0
-        #@-<< define cmd, ctrl, alt, shift >>
-        if k.swap_mac_keys and sys.platform == "darwin":
-            #@+<< swap cmd and ctrl keys >>
-            #@+node:ekr.20061031131434.186: *5* << swap cmd and ctrl keys >>
-            if ctrl and not cmd:
-                cmd = True; ctrl = False
-            if alt and not ctrl:
-                ctrl = True; alt = False
-            #@-<< swap cmd and ctrl keys >>
-        #@+<< convert minus signs to plus signs >>
-        #@+node:ekr.20061031131434.187: *5* << convert minus signs to plus signs >>
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'):
-            s = s[: -1].replace('-', '+') + '-'
-        else:
-            s = s.replace('-', '+')
-        #@-<< convert minus signs to plus signs >>
-        #@+<< compute the last field >>
-        #@+node:ekr.20061031131434.188: *5* << compute the last field >>
-        if s.endswith('+'):
-            last = '+'
-        else:
-            fields = s.split('+') # Don't lower this field.
-            last = fields and fields[-1]
-            if not last:
-                if not g.app.menuWarningsGiven:
-                    g.pr("bad shortcut specifier:", repr(s), repr(setting))
-                    g.trace(g.callers())
-                return None
-        if len(last) == 1:
-            last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-            if last2:
-                last = last2
-            else:
-                if last.isalpha():
-                    if shift:
-                        last = last.upper()
-                        shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-                    else:
-                        last = last.lower()
-                # New in Leo 4.4.2: Alt-2 is not a key event!
-                # New in Leo 5.3: 2016/04/12: a major bug fix, with new unit test.
-                if (cmd or ctrl or alt or shift) and last.isdigit():
-                    last = 'Key-' + last
-        else:
-            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-            # This is a *one-way* translation, done only here.
-            d = k.settingsNameDict
-            last = d.get(last.lower(), last)
-        #@-<< compute the last field >>
-        #@+<< compute shortcut >>
-        #@+node:ekr.20061031131434.189: *5* << compute shortcut >>
-        table = (
-            (alt, 'Alt+'),
-            (ctrl, 'Ctrl+'),
-            (cmd, 'Command+'),
-            (meta, 'Meta+'),
-            (shift, 'Shift+'),
-            (True, last),
-        )
-        # new in 4.4b3: convert all characters to unicode first.
-        shortcut = ''.join([g.toUnicode(val) for flag, val in table if flag])
-        #@-<< compute shortcut >>
-        if trace and verbose:
-            g.trace('%20s %s' % (setting, shortcut), g.callers())
-        return g.KeyStroke(shortcut) if shortcut else None
-
-    canonicalizeShortcut = strokeFromSetting # For compatibility.
-    #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
-    def traceBinding(self, si, shortcut, w):
-        k = self; c = k.c; gui = g.app.gui
-        if not c.config.getBool('trace_bindings'): return
-        theFilter = c.config.getString('trace_bindings_filter') or ''
-        if theFilter and shortcut.lower().find(theFilter.lower()) == -1: return
-        pane_filter = c.config.getString('trace_bindings_pane_filter')
-        if not pane_filter or pane_filter.lower() == si.pane:
-            g.trace(si.pane, shortcut, si.commandName, gui.widget_name(w))
+        """
+        if not stroke:
+            return ''
+        if not g.isStroke(stroke):
+            # vim commands pass a plain key.
+            stroke = g.KeyStroke(stroke)
+        return stroke.toInsertableChar()
     #@+node:ekr.20061031131434.193: *3* k.States
     #@+node:ekr.20061031131434.194: *4* k.clearState
     def clearState(self):
-        '''Clear the key handler state.'''
+        """Clear the key handler state."""
         k = self
         k.state.kind = None
         k.state.n = None
@@ -4570,7 +4231,6 @@ class KeyHandlerClass(object):
     def getState(self, kind):
         k = self
         val = k.state.n if k.state.kind == kind else 0
-        # g.trace(state,'returns',val)
         return val
     #@+node:ekr.20061031131434.195: *4* k.getStateHandler
     def getStateHandler(self):
@@ -4583,17 +4243,14 @@ class KeyHandlerClass(object):
         k = self
         if kind:
             return k.state.kind == kind and k.state.n is not None
-        else:
-            return k.state.kind and k.state.n is not None
+        return k.state.kind and k.state.n is not None
     #@+node:ekr.20080511122507.4: *4* k.setDefaultInputState
     def setDefaultInputState(self):
         k = self; state = k.defaultUnboundKeyAction
-        # g.trace(state)
         k.setInputState(state)
     #@+node:ekr.20110209093958.15411: *4* k.setEditingState
     def setEditingState(self):
         k = self; state = k.defaultEditingAction
-        # g.trace(state)
         k.setInputState(state)
     #@+node:ekr.20061031131434.133: *4* k.setInputState
     def setInputState(self, state, set_border=False):
@@ -4601,28 +4258,23 @@ class KeyHandlerClass(object):
         k.unboundKeyAction = state
     #@+node:ekr.20061031131434.199: *4* k.setState
     def setState(self, kind, n, handler=None):
-        trace = False and not g.unitTesting
+
         k = self
         if kind and n is not None:
-            if trace: g.trace('**** setting %s %s %s' % (
-                kind, n, handler and handler.__name__), g.callers())
             k.state.kind = kind
             k.state.n = n
             if handler:
                 k.state.handler = handler
         else:
-            if trace: g.trace('clearing')
             k.clearState()
         # k.showStateAndMode()
     #@+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(self, w=None, prompt=None, setFocus=True):
-        '''Show the state and mode at the start of the minibuffer.'''
-        trace = False and not g.unitTesting
+        """Show the state and mode at the start of the minibuffer."""
         c, k = self.c, self
         state = k.unboundKeyAction
         mode = k.getStateKind()
         if not g.app.gui:
-            if trace: g.trace('no gui')
             return
         if not w:
             if hasattr(g.app.gui, 'set_minibuffer_label'):
@@ -4630,12 +4282,10 @@ class KeyHandlerClass(object):
             else:
                 w = g.app.gui.get_focus(c)
                 if not w:
-                    if trace: g.trace('no focus')
                     return
         isText = g.isTextWrapper(w)
         # This fixes a problem with the tk gui plugin.
         if mode and mode.lower().startswith('isearch'):
-            if trace: g.trace('isearch')
             return
         wname = g.app.gui.widget_name(w).lower()
         # Get the wrapper for the headline widget.
@@ -4656,16 +4306,12 @@ class KeyHandlerClass(object):
                     mode = mode[: -5]
                 s = '%s Mode' % mode.capitalize()
         elif c.vim_mode and c.vimCommands:
-            if trace: g.trace('vim')
             c.vimCommands.show_status()
             return
         else:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-        if trace:
-            # g.trace('state: %s, text?: %s, w: %s' % (state, isText, w))
-            g.trace(repr(s))
         if s:
             k.setLabelBlue(s)
         if w and isText:
@@ -4676,11 +4322,10 @@ class KeyHandlerClass(object):
             c.frame.tree.set_status_line(c.p)
     #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor(self, state, w):
-        # g.trace(state,w)
         pass
     #@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers
     def universalDispatcher(self, event):
-        '''Handle accumulation of universal argument.'''
+        """Handle accumulation of universal argument."""
         #@+<< about repeat counts >>
         #@+node:ekr.20061031131434.201: *4* << about repeat counts >>
         #@@nocolor
@@ -4772,7 +4417,7 @@ class KeyHandlerClass(object):
             k.doControlU(event, stroke)
     #@+node:ekr.20061031131434.202: *4* k.executeNTimes
     def executeNTimes(self, event, n):
-        trace = False and not g.unitTesting
+
         c, k = self.c, self
         w = event and event.widget
         stroke = event.stroke if event else ''
@@ -4781,14 +4426,15 @@ class KeyHandlerClass(object):
             for z in range(n):
                 k.fullCommand(event)
         else:
-            si = k.getPaneBinding(stroke, event and event.widget)
-            if si:
-                assert g.isShortcutInfo(si), si
-                if trace: g.trace('repeat', n, 'method', si.func.__name__,
-                    'stroke', stroke, 'widget', w)
+            bi = k.getPaneBinding(stroke, event and event.widget)
+            if bi:
                 for z in range(n):
-                    event = g.app.gui.create_key_event(c, None, event, stroke, w)
-                    k.masterCommand(commandName=None, event=event, func=si.func, stroke=stroke)
+                    event = g.app.gui.create_key_event(c, event=event, w=w)
+                    k.masterCommand(
+                        commandName=None,
+                        event=event,
+                        func=bi.func,
+                        stroke=stroke)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)
@@ -4802,26 +4448,26 @@ class KeyHandlerClass(object):
             k.resetLabel()
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
-class ModeInfo(object):
+class ModeInfo:
 
     def __repr__(self):
-        return '<ModeInfo %s>' % self.name
+        return f"<ModeInfo {self.name}>"
 
     __str__ = __repr__
     #@+others
-    #@+node:ekr.20120208064440.10193: *3*  ctor (ModeInfo)
+    #@+node:ekr.20120208064440.10193: *3* mode_i. ctor
     def __init__(self, c, name, aList):
-        g.trace(name, aList)
+
         self.c = c
         self.d = {} # The bindings in effect for this mode.
-            # Keys are names of (valid) command names, values are ShortcutInfo objects.
+            # Keys are names of (valid) command names, values are BindingInfo objects.
         self.entryCommands = []
-            # A list of ShortcutInfo objects.
+            # A list of BindingInfo objects.
         self.k = c.k
         self.name = self.computeModeName(name)
         self.prompt = self.computeModePrompt(self.name)
         self.init(name, aList)
-    #@+node:ekr.20120208064440.10152: *3* computeModeName (ModeInfo)
+    #@+node:ekr.20120208064440.10152: *3* mode_i.computeModeName
     def computeModeName(self, name):
         s = name.strip().lower()
         j = s.find(' ')
@@ -4836,7 +4482,7 @@ class ModeInfo(object):
             # The prompt is everything after the prompt.
             s = s[: i]
         return s + '-mode'
-    #@+node:ekr.20120208064440.10156: *3* computeModePrompt (ModeInfo)
+    #@+node:ekr.20120208064440.10156: *3* mode_i.computeModePrompt
     def computeModePrompt(self, name):
         assert name == self.name
         s = 'enter-' + name.replace(' ', '-')
@@ -4847,45 +4493,34 @@ class ModeInfo(object):
         else:
             prompt = s
         return prompt
-    #@+node:ekr.20120208064440.10160: *3* createModeBindings (ModeInfo) (NOT USED)
+    #@+node:ekr.20120208064440.10160: *3* mode_i.createModeBindings
     def createModeBindings(self, w):
-        '''Create mode bindings for w, a text widget.'''
-        trace = False and not g.unitTesting
+        """Create mode bindings for w, a text widget."""
         c, d, k, modeName = self.c, self.d, self.k, self.name
         for commandName in d:
             func = c.commandsDict.get(commandName)
             if not func:
-                g.es_print('no such command: %s Referenced from %s' % (
-                    commandName, modeName))
+                g.es_print(f"no such command: {commandName} Referenced from {modeName}")
                 continue
             aList = d.get(commandName, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                if trace: g.trace(si)
-                stroke = si.stroke
-                # Important: si.val is canonicalized.
+            for bi in aList:
+                stroke = bi.stroke
+                # Important: bi.val is canonicalized.
                 if stroke and stroke not in ('None', 'none', None):
-                    if trace:
-                        g.trace(
-                            g.app.gui.widget_name(w), modeName,
-                            '%10s' % (stroke),
-                            '%20s' % (commandName),
-                            si.nextMode)
                     assert g.isStroke(stroke)
                     k.makeMasterGuiBinding(stroke)
                     # Create the entry for the mode in k.masterBindingsDict.
                     # Important: this is similar, but not the same as k.bindKeyToDict.
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
-                    d2[stroke] = g.ShortcutInfo(
-                        kind='mode<%s>' % (modeName), # 2012/01/23
+                    d2[stroke] = g.BindingInfo(
+                        kind=f"mode<{modeName}>",
                         commandName=commandName,
                         func=func,
-                        nextMode=si.nextMode,
+                        nextMode=bi.nextMode,
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
-                    if trace: g.trace(modeName, d2)
-    #@+node:ekr.20120208064440.10195: *3* createModeCommand (ModeInfo) (not used)
+    #@+node:ekr.20120208064440.10195: *3* mode_i.createModeCommand
     def createModeCommand(self):
         c = self.c
         key = 'enter-' + self.name.replace(' ', '-')
@@ -4896,58 +4531,46 @@ class ModeInfo(object):
         c.commandsDict[key] = f = enterModeCallback
         g.trace('(ModeInfo)', f.__name__, key,
             'len(c.commandsDict.keys())', len(list(c.commandsDict.keys())))
-    #@+node:ekr.20120208064440.10180: *3* enterMode (ModeInfo)
+    #@+node:ekr.20120208064440.10180: *3* mode_i.enterMode
     def enterMode(self):
-        g.trace('(ModeInfo)')
+
         c, k = self.c, self.k
         c.inCommand = False
             # Allow inner commands in the mode.
         event = None
         k.generalModeHandler(event, modeName=self.name)
-    #@+node:ekr.20120208064440.10153: *3* init (ModeInfo) (Can we check command names here??)
+    #@+node:ekr.20120208064440.10153: *3* mode_i.init
     def init(self, name, dataList):
-        '''aList is a list of tuples (commandName,si).'''
-        trace = False and not g.unitTesting
+        """aList is a list of tuples (commandName,bi)."""
         c, d, modeName = self.c, self.d, self.name
-        for name, si in dataList:
-            assert g.isShortcutInfo(si), si
+        for name, bi in dataList:
             if not name:
-                if trace: g.trace('entry command', si)
                 # An entry command: put it in the special *entry-commands* key.
-                # d.add('*entry-commands*',si)
-                self.entryCommands.append(si)
-            elif si is not None:
+                self.entryCommands.append(bi)
+            elif bi is not None:
                 # A regular shortcut.
-                si.pane = modeName
+                bi.pane = modeName
                 aList = d.get(name, [])
-                for z in aList:
-                    assert g.isShortcutInfo(z), z
                 # Important: use previous bindings if possible.
                 key2, aList2 = c.config.getShortcut(name)
-                for z in aList2:
-                    assert g.isShortcutInfo(z), z
                 aList3 = [z for z in aList2 if z.pane != modeName]
                 if aList3:
-                    if trace: g.trace('inheriting', [si.val for si in aList3])
                     aList.extend(aList3)
-                aList.append(si)
+                aList.append(bi)
                 d[name] = aList
-    #@+node:ekr.20120208064440.10158: *3* initMode (ModeInfo)
+    #@+node:ekr.20120208064440.10158: *3* mode_i.initMode
     def initMode(self):
-        trace = False and not g.unitTesting
+
         c, k = self.c, self.c.k
         k.inputModeName = self.name
         k.silentMode = False
-        for si in self.entryCommands:
-            assert g.isShortcutInfo(si), si
-            commandName = si.commandName
-            if trace: g.trace('entry command:', commandName)
+        for bi in self.entryCommands:
+            commandName = bi.commandName
             k.simulateCommand(commandName)
             # Careful, the command can kill the commander.
             if g.app.quitting or not c.exists: return
             # New in Leo 4.5: a startup command can immediately transfer to another mode.
             if commandName.startswith('enter-'):
-                if trace: g.trace('redirect to mode', commandName)
                 return
         # Create bindings after we know whether we are in silent mode.
         w = k.modeWidget if k.silentMode else k.w

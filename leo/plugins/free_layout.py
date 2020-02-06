@@ -16,7 +16,7 @@ Commands (bindable with @settings-->@keys-->@shortcuts):
 
 free-layout-load
     Open context menu for loading a different layout,
-    conventient keyboard shortcut target.
+    convenient keyboard shortcut target.
 free-layout-restore
     Use the layout this outline had when it was opened.
 free-layout-zoom
@@ -37,10 +37,10 @@ import json
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init():
-    '''Return True if the free_layout plugin can be loaded.'''
+    """Return True if the free_layout plugin can be loaded."""
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
-class FreeLayoutController(object):
+class FreeLayoutController:
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
     code should be in here, none in NestedSplitter.
 
@@ -49,8 +49,7 @@ class FreeLayoutController(object):
     NestedSplitter uses as callbacks to populate splitter-handle context-menu
     and the empty pane Action button menu:
 
-    see (ctrl-click this URL)
-    file://{{g.getBaseDirectory(c)}}/LeoPyRef.leo#Code-->Qt%20gui-->@file%20../plugins/nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
+    see nested_splitter.py-->class%20NestedSplitter%20(QSplitter)-->register_provider
 
     ns_provides
       tell NestedSplitter which Action button items we can provide
@@ -67,8 +66,8 @@ class FreeLayoutController(object):
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
-        '''Ctor for FreeLayoutController class.'''
-        # g.trace('(FreeLayoutController)',c) # ,g.callers(files=True))
+        """Ctor for FreeLayoutController class."""
+
         # if hasattr(c,'free_layout'):
             # return
         self.c = c
@@ -98,12 +97,10 @@ class FreeLayoutController(object):
         c = self.c
         if c != keys.get('c'):
             return
-        # g.trace(c.frame.title)
         # Careful: we could be unit testing.
         splitter = self.get_top_splitter() # A NestedSplitter.
         if not splitter:
-            # g.trace('no splitter!')
-            return None
+            return
         # by default NestedSplitter's context menus are disabled, needed
         # once to globally enable them
         NestedSplitter.enabled = True
@@ -154,53 +151,47 @@ class FreeLayoutController(object):
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter & helper
     def get_main_splitter(self, w=None):
-        '''
+        """
         Return the splitter the main splitter, or None. The main splitter is a
         NestedSplitter that contains the body pane.
 
         Yes, the user could delete the secondary splitter but if so, there is
         not much we can do here.
-        '''
-        trace = False and not g.unitTesting
+        """
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, "bodyFrame")
             while w:
                 if isinstance(w, NestedSplitter):
-                    if trace: g.trace('found splitter', id(w))
                     return w
                 w = w.parent()
-        if trace: g.trace('not found')
         return None
     #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter & helper
     def get_secondary_splitter(self):
-        '''
+        """
         Return the secondary splitter, if it exists. The secondary splitter
         contains the outline pane.
 
         Yes, the user could delete the outline pane, but if so, there is not
         much we can do here.
-        '''
-        trace = False and not g.unitTesting
+        """
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
             while w:
                 if isinstance(w, NestedSplitter):
-                    if trace: g.trace('found splitter', id(w))
                     return w
                 w = w.parent()
-        if trace: g.trace('not found')
         return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):
-        '''Return the top splitter of c.frame.top.'''
+        """Return the top splitter of c.frame.top."""
         # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
-            return f.top.findChild(NestedSplitter).top()
-        else:
-            return None
+            child = f.top.findChild(NestedSplitter)
+            return child and child.top()
+        return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
         """loadLayouts - Load the outlines layout
@@ -219,16 +210,14 @@ class FreeLayoutController(object):
         c = self.c
         if not (g.app and g.app.db):
             return # Can happen when running from the Leo bridge.
-        d = g.app.db.get('ns_layouts', {})
+        d = g.app.db.get('ns_layouts') or {}
         if c != keys.get('c'):
             return
-        # g.trace(c.frame.title)
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))
         name = c.db.get('_ns_layout')
         if name:
-            # g.trace('Layout:',name,'reloading',reloading)
             if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name
@@ -272,7 +261,7 @@ class FreeLayoutController(object):
         ans.append(('Restore default layout', '_fl_restore_default:'))
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
-    #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context (FreeLayoutController)
+    #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
     def ns_do_context(self, id_, splitter, index):
         if id_.startswith('_fl_embed_layout'):
             self.embed()
@@ -289,7 +278,9 @@ class FreeLayoutController(object):
             return True
         if id_ == '_fl_save_layout':
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
+                g.es("WARNING: embedded layout in")
+                g.es("@settings/@data free-layout-layout")
+                g.es("will override saved layout")
             layout = self.get_top_splitter().get_saveable_layout()
             name = g.app.gui.runAskOkCancelStringDialog(self.c,
                 title="Save layout",
@@ -304,7 +295,9 @@ class FreeLayoutController(object):
             return True
         if id_.startswith('_fl_load_layout:'):
             if self.c.config.getData("free-layout-layout"):
-                g.es("WARNING: embedded layout in @settings/@data free-layout-layout " "will override saved layout")
+                g.es("WARNING: embedded layout in")
+                g.es("@settings/@data free-layout-layout")
+                g.es("will override saved layout")
             name = id_.split(':', 1)[1]
             self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]
@@ -359,7 +352,7 @@ class FreeLayoutController(object):
         # list of things in tab widget
         logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
         for n in range(logTabWidget.count()):
-            text = str(logTabWidget.tabText(n)) # not QString
+            text = str(logTabWidget.tabText(n))
             if text in ('Body', 'Tree'):
                 continue # handled below
             if text == 'Log':
@@ -406,6 +399,11 @@ def free_layout_context_menu(event):
     """free_layout_context_menu - open free layout's context menu, using
     the first divider of the top splitter for context, for now.
     """
+    if g.app.dock:
+        # #1216
+        g.es('free-layout-context-menu works only when')
+        g.es('--no-dock is in effect')
+        return
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
@@ -415,6 +413,11 @@ def free_layout_context_menu(event):
 def free_layout_restore(event):
     """free_layout_restore - restore layout outline had when it was loaded
     """
+    if g.app.dock:
+        # #1216
+        g.es('free-layout-restore works only when')
+        g.es('--no-dock is in effect')
+        return
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 #@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
@@ -422,6 +425,11 @@ def free_layout_restore(event):
 def free_layout_load(event):
     """free_layout_load - load layout from menu
     """
+    if g.app.dock:
+        # #1216
+        g.es('free-layout-load works only when')
+        g.es('--no-dock is in effect')
+        return
     c = event.get('c')
     d = g.app.db.get('ns_layouts', {})
     menu = QtWidgets.QMenu(c.frame.top)
@@ -443,11 +451,16 @@ def free_layout_load(event):
 def free_layout_zoom(event):
     """free_layout_zoom - (un)zoom the current pane.
     """
+    if g.app.dock:
+        # #1216
+        g.es('free-layout-zoom works only when')
+        g.es('--no-dock is in effect')
+        return
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c, provider_instance):
-    '''Register the provider instance with the top splitter.'''
+    """Register the provider instance with the top splitter."""
     # Careful: c.free_layout may not exist during unit testing.
     if c and hasattr(c, 'free_layout'):
         splitter = c.free_layout.get_top_splitter()

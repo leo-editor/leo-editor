@@ -2,6 +2,7 @@
 #@+node:ekr.20140723122936.17926: * @file importers/c.py
 '''The @auto importer for the C language and other related languages.'''
 import leo.core.leoGlobals as g
+assert g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer
@@ -13,7 +14,7 @@ class C_Importer(Importer):
     def __init__(self, importCommands, **kwargs):
         '''C_Importer.__init__'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'c',
             state_class = C_ScanState,
@@ -46,12 +47,9 @@ class C_Importer(Importer):
 
     def match_name_patterns(self, line):
         '''Set self.headline if the line defines a typedef name.'''
-        trace = False and g.unitTesting
-        if trace: g.trace(repr(line))
         m = self.c_name_pattern.match(line)
         if m:
             word = m.group(1)
-            if trace: g.trace('NAME', word)
             if not self.c_types_pattern.match(word):
                 self.headline = word
     #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
@@ -64,46 +62,33 @@ class C_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         '''
-        trace = False and g.unitTesting
-        if trace: g.trace(repr(line))
         m = self.c_extern_pattern.match(line)
         if m:
             self.headline = line.strip()
-            if trace: g.trace('EXTERN', m)
             return True
         m = self.c_class_pattern.match(line)
         if m:
             prefix = m.group(1).strip() if m.group(1) else ''
             self.headline = '%sclass %s' % (prefix, m.group(3))
             self.headline = self.headline.strip()
-            if trace: g.trace('CLASS', m, self.headline)
             return True
         m = self.c_func_pattern.match(line)
         if m:
             if self.c_types_pattern.match(m.group(3)):
-                if trace: g.trace('TWO TYPES', m)
                 return True
-            else:
-                prefix = m.group(1).strip() if m.group(1) else ''
-                self.headline = '%s %s' % (prefix, m.group(3))
-                self.headline = self.headline.strip()
-                if trace: g.trace('FUNC', m, self.headline)
-                return True
+            prefix = m.group(1).strip() if m.group(1) else ''
+            self.headline = '%s %s' % (prefix, m.group(3))
+            self.headline = self.headline.strip()
+            return True
         m = self.c_typedef_pattern.match(line)
         if m:
             # Does not set self.headline.
-            if trace: g.trace('TYPEDEF', m)
             return True
         m = self.c_types_pattern.match(line)
-        if m:
-            if trace: g.trace('ONE TYPE', m)
-            return True
-        return False
+        return bool(m)
     #@+node:ekr.20161204072326.1: *3* c_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
-        trace_stack = False
         line = lines[i]
         target = stack[-1]
         # Insert the reference in *this* node.
@@ -119,8 +104,6 @@ class C_Importer(Importer):
             new_state.curlies = prev_state.curlies + 1
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
-        if trace: g.trace('=====', repr(line))
-        if trace and trace_stack: g.printList(stack)
         # Add all additional lines of the signature.
         skip = self.skip # Don't change the ivar!
         while skip > 0:
@@ -128,7 +111,6 @@ class C_Importer(Importer):
             i += 1
             assert i < len(lines), (i, len(lines))
             line = lines[i]
-            if trace: g.trace('SCAN', 'name', self.headline, 'line', repr(line))
             if not self.headline:
                 self.match_name_patterns(line)
                 if self.headline:
@@ -137,27 +119,22 @@ class C_Importer(Importer):
     #@+node:ekr.20161204155335.1: *3* c_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
-        trace = False and g.unitTesting
         self.headline = None
         line = lines[i]
         if prev_state.context:
             return False
         if self.c_keywords_pattern.match(line):
-            if trace: g.trace('KEYWORD', repr(line))
             return False
         if not self.match_start_patterns(line):
             return False
-        if trace: g.trace('MATCH', repr(line))
         # Must not be a complete statement.
         if line.find(';') > -1:
-            if trace: g.trace('STATEMENT', repr(line))
             return False
         # Scan ahead until an open { is seen. the skip count.
         self.skip = 0
         while self.skip < 10:
             if new_state.level() > prev_state.level():
                 return True
-            if trace: g.trace('SKIP', repr(lines[i]))
             self.skip += 1
             i += 1
             if i < len(lines):
@@ -166,9 +143,6 @@ class C_Importer(Importer):
                 new_state = self.scan_line(line, prev_state)
             else:
                 break
-        if trace:
-            g.trace('Run-on C function def')
-            g.printList(lines[i-self.skip:i])
         return False
     #@-others
 #@+node:ekr.20161108223159.1: ** class C_ScanState

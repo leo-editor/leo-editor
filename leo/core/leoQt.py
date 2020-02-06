@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
-'''
+"""
 A module to allow careful, uniform imports from PyQt4 or PyQt5.
 The isQt5 constant is True only if all important PyQt5 modules were imported.
 Optional modules may fail to load without affecting the isQt5 constant.
@@ -9,35 +9,34 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtWidgets, not QtGui, for all widget classes.
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
-'''
+"""
 # pylint: disable=unused-import, no-member
 
 # Define...
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
     # QtDeclarative, QtMultimedia, Qsci, QString, QtSvg,
     # QtWebKit, QtWebKitWidgets
-    # printsupport
+    # printsupport, Signal
 import leo.core.leoGlobals as g
 strict = False
 trace = False
 fail = g.in_bridge
-if fail:
-    pass
-else:
+    # #1274: Do *not* allow Qt imports when in the bridge!
+try:
+    isQt5 = True
+    from PyQt5 import Qt
+except ImportError:
+    isQt5 = False
     try:
-        isQt5 = True
-        from PyQt5 import Qt
+        from PyQt4 import Qt
+        assert Qt # for pyflakes
     except ImportError:
-        isQt5 = False
-        try:
-            from PyQt4 import Qt
-            assert Qt # for pyflakes
-        except ImportError:
-            if strict:
-                print('leoQt.py: can not import either PyQt4 or PyQt5.')
-                raise
-            else:
-                fail = True
+        fail = True
+        if strict:
+            print('leoQt.py: can not import either PyQt4 or PyQt5.')
+            g.es_exception() # #339.
+            print('')
+            raise
 # Complete the imports.
 if fail:
     isQt5 = False
@@ -47,28 +46,35 @@ if fail:
     phonon = uic = None
     QtMultimedia = None # Replacement for phonon.
     qt_version = '<no version>'
-    printsupport = None
+    printsupport = Signal = None
 elif isQt5:
     try:
         from PyQt5 import QtCore
         from PyQt5 import QtGui
         from PyQt5 import QtWidgets
         from PyQt5.QtCore import QUrl
+        from PyQt5.QtCore import pyqtSignal as Signal
         QtConst = QtCore.Qt
         printsupport = Qt
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
+        g.es_exception() # PR #339.
+        print('')
 else:
     try:
         from PyQt4 import QtCore
         from PyQt4 import QtGui
         from PyQt4.QtCore import QUrl
+        from PyQt4.QtCore import pyqtSignal as Signal
         assert QUrl # for pyflakes.
+        assert Signal # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
+        g.es_exception() # PR #339.
+        print('')
 # Define qt_version
 if fail:
     pass
@@ -77,8 +83,6 @@ else:
     if 0:
         import leo.core.leoGlobals as g
         isNewQt = g.CheckVersion(qt_version, '4.5.0')
-if trace:
-    print('leoQt.py: isQt5: %s' % isQt5)
 # Define phonon,Qsci,QtSvg,QtWebKit,QtWebKitWidgets,uic.
 # These imports may fail without affecting the isQt5 constant.
 if fail:

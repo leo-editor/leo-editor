@@ -138,7 +138,7 @@ SIGNALS_THAT_SHOULD_THROW_EXCEPTION = (
 # https://github.com/amoffat/sh/issues/97#issuecomment-10610629
 class CommandNotFound(AttributeError): pass
 
-rc_exc_regex = re.compile("(ErrorReturnCode|SignalException)_(\d+)")
+rc_exc_regex = re.compile(r"(ErrorReturnCode|SignalException)_(\d+)")
 rc_exc_cache = {}
 
 def get_rc_exc(rc):

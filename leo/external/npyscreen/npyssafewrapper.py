@@ -68,7 +68,6 @@ def wrapper_fork(call_function, reset=True):
         curses.cbreak()
         curses.def_prog_mode()
         curses.reset_prog_mode()
-        ### return_code = call_function(_SCREEN)
         call_function(_SCREEN)
         _SCREEN.keypad(0)
         curses.echo()

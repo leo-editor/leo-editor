@@ -211,7 +211,7 @@ def keyboard_action(event):
         return
     c.quickMove.keyboard_action()
 #@+node:tbrown.20070117104409.4: ** class quickMove
-class quickMove(object):
+class quickMove:
 
     """quickMove binds to a controller, adds menu entries for
        creating buttons, and creates buttons as needed
@@ -389,8 +389,8 @@ class quickMove(object):
             b = None
             mb.has_parent = True
             # New code.
-            t = c.config.getString('mod_scripting_subtext') or ''
-            t2 = g.u(pb.text())
+            t = c.config.getString('mod-scripting-subtext') or ''
+            t2 = pb.text()
             if not t.endswith(t):
                 pb.setText(t2+t)
         else:
@@ -460,7 +460,7 @@ class quickMove(object):
 
         if cnt:
             g.es('Made buttons permanent')
-            c.setChanged(True)
+            c.setChanged()
         else:
             g.es("Didn't find button")
     #@+node:tbrown.20091217114654.5374: *3* clearButton
@@ -473,7 +473,7 @@ class quickMove(object):
 
         if 'quickMove' in v.u:
             del v.u['quickMove']
-            c.setChanged(True)
+            c.setChanged()
             g.es('Removing buttons - reload to apply')
         else:
             g.es('Quickmove buttons not found')
@@ -619,7 +619,7 @@ class quickMove(object):
         if not ans:
             g.es("Didn't find button")
             return
-        elif len(ans) != 1:
+        if len(ans) != 1:
             g.es("Note: found multiple %s/first=%s buttons, using first"%(type_,first))
 
         qmb, b = ans[0]
@@ -691,12 +691,12 @@ class quickMove(object):
         if cut:
             self.c.selectPosition(p)
             self.c.deleteOutline()
-            self.c.setChanged(True)
+            self.c.setChanged()
 
         if nxt:
             self.c.selectPosition(self.c.vnode2position(nxt))
 
-        c2.setChanged(True)
+        c2.setChanged()
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
@@ -755,7 +755,7 @@ class quickMove(object):
         copy / move
         """
 
-        if g.isString(c2):
+        if isinstance(c2, str):
             # c2 is an UNL indicating where to insert
             full_path = c2
             path, unl = full_path.split('#', 1)
@@ -841,7 +841,7 @@ class quickMove(object):
     #@-others
 
 #@+node:tbrown.20070117104409.5: ** class quickMoveButton
-class quickMoveButton(object):
+class quickMoveButton:
 
     """contains target data and function for moving node"""
 
@@ -894,7 +894,7 @@ class quickMoveButton(object):
             if self.type_ != 'jump':
                 p.setDirty()  # before move to dirty current parent
                 p2.setDirty()
-                c.setChanged(changedFlag=True)
+                c.setChanged()
 
             if self.type_ == 'clone':
                 p = p.clone()
@@ -972,7 +972,7 @@ class quickMoveButton(object):
 
         if needs_undo:
             c.undoer.afterMoveNode(p,'Quick Move', bunch)
-            c.setChanged(True)
+            c.setChanged()
 
         c.redraw()
     #@+node:ekr.20070123061606: *3* checkMove

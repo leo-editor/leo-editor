@@ -10,6 +10,8 @@ except ImportError:
     from io import StringIO
 
 TableRow = namedtuple('TableRow', 'line row')
+TableDelim = namedtuple('TableDelim', 'sep start end')
+DEFAULTDELIM = TableDelim(sep=',', start='', end='')
 
 DELTA = {  # offsets for selection when moving row/column
     'go-top': (-1, 0),
@@ -17,6 +19,23 @@ DELTA = {  # offsets for selection when moving row/column
     'go-first': (0, -1),
     'go-last': (0, +1)
 }
+
+# list of separators to try, need a single chr separator that doesn't
+# occur in text
+SEPS = [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 47, 58,
+59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76,
+77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 93, 94, 95,
+96, 123, 124, 125, 126, 174, 175, 176, 177, 178, 179, 180, 181, 182,
+183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
+197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
+225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238,
+239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
+253, 254, 46, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78,
+79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 97, 98, 99, 100, 101,
+102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115,
+116, 117, 118, 119, 120, 121, 122, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]
+SEPS = [chr(i) for i in SEPS]
 
 # import time  # temporary for debugging
 
@@ -32,29 +51,47 @@ class ListTable(QtCore.QAbstractTableModel):
     """
 
     @staticmethod
-    def get_table_list(text):
+    def get_table_list(text, delim=None):
         """get_table_list - return a list of tables, based
         on number of columns
 
         :param str text: text
         """
+        if delim is None:
+            delim = DEFAULTDELIM
 
-        reader = csv.reader(StringIO(text))
+        # look for seperator not in text
+        sep_i = 0
+        while SEPS[sep_i] in text and sep_i < len(SEPS)-1:
+            sep_i += 1
+        if sep_i == len(SEPS)-1:
+            sep_i = 0  # probably not going to work
+        rep = SEPS[sep_i]
+
+        text = text.replace(delim.sep, rep)
+        reader = csv.reader(text.replace('\r', '').split('\n'), delimiter=rep)
         rows = [TableRow(line=reader.line_num-1, row=row) for row in reader]
         tables = []
         for row in rows:
+            # replace separators that weren't removed (1, "2,4", 5)
+            row.row[:] = [i.replace(rep, delim.sep) for i in row.row]
+            if row.row and delim.start and row.row[0].startswith(delim.start):
+                row.row[0] = row.row[0][len(delim.start):]
+            if row.row and delim.end and row.row[-1].endswith(delim.end):
+                row.row[-1] = row.row[-1][:-len(delim.end)]
             if not tables or len(row.row) != len(tables[-1][0].row):
                 tables.append([])
             tables[-1].append(row)
         return tables
-    def __init__(self, text, tbl, *args, **kwargs):
+    def __init__(self, text, tbl, delim=None, *args, **kwargs):
         self.tbl = tbl
+        self.delim = delim or DEFAULTDELIM
         self.get_table(text)
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
     def get_table(self, text):
-        tables = self.get_table_list(text)
+        tables = self.get_table_list(text, delim=self.delim)
         self.tbl = min(self.tbl, len(tables)-1)
         lines = text.split('\n')
         if tables and tables[self.tbl]:
@@ -75,14 +112,31 @@ class ListTable(QtCore.QAbstractTableModel):
             return self.data[index.row()][index.column()]
         return None
     def get_text(self):
+
+        # look for seperator not in text
+        sep_i = 0
+        tmp = ''.join([''.join(i) for i in self.data])
+        while SEPS[sep_i] in tmp and sep_i < len(SEPS)-1:
+            sep_i += 1
+        if sep_i == len(SEPS)-1:
+            sep_i = 0  # probably not going to work
+        rep = SEPS[sep_i]
+
         out = StringIO()
-        writer = csv.writer(out)
+        writer = csv.writer(out, delimiter=rep)
         writer.writerows(self.data)
-        text = out.getvalue()
+        text = out.getvalue().replace(rep, self.delim.sep)
         if text.endswith('\n'):
             text = text[:-1]
+
+        if self.delim.start or self.delim.end:
+            text = text.replace('\r', '').split('\n')
+            text = ["%s%s%s" % (self.delim.start, line, self.delim.end) for line in text]
+            text = '\n'.join(text)
         text = self.pretext + [text] + self.posttext
-        return '\n'.join(text)
+        text = '\n'.join(text)
+
+        return text
     def setData(self, index, value, role):
         self.data[index.row()][index.column()] = value
         self.dataChanged.emit(index, index)
@@ -101,15 +155,45 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.c = c
         self.lep = lep
         self.tbl = 0
+        self.state = {
+            'rows': 2,
+            'sep': ',',
+            'start': '',
+            'end': '',
+        }
+        if c:  # update state with anything stored in uA
+            u = c.p.v.u
+            if '_lep' in u:
+                if 'csv' in u['_lep']:
+                    self.state.update(u['_lep']['csv'])
+                    # add anything not already present
+                    u['_lep']['csv'].update(self.state)
+                else:
+                    u['_lep']['csv'] = dict(self.state)
+            else:
+                u['_lep'] = {'csv': dict(self.state)}
+
         self.ui = self.make_ui()
+    def get_delim(self):
+        """get_delim - get the current delimiter parts"""
+        return TableDelim(
+            sep=self.ui.sep_txt.text().replace('\\t', chr(9)),
+            start=self.ui.start_txt.text().replace('\\t', chr(9)),
+            end=self.ui.end_txt.text().replace('\\t', chr(9))
+        )
+
     def make_ui(self):
         """make_ui - build up UI"""
 
         ui = type('CSVEditUI', (), {})
+        # a QVBox containing two QHBoxes
         self.setLayout(QtWidgets.QVBoxLayout())
         buttons = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons)
+        buttons2 = QtWidgets.QHBoxLayout()
+        self.layout().addLayout(buttons2)
 
+        # make 4 directional buttons
         def mkbuttons(what, function):
 
             list_ = [
@@ -128,27 +212,44 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                 button.clicked.connect(lambda checked, name=name: function(name))
                 buttons.addWidget(button)
 
+        # add buttons to move rows / columns
         mkbuttons("Move", self.move)
+        # add buttons to insert rows / columns
         mkbuttons("Insert", self.insert)
 
-        for text, function in [
-            ("Del row", lambda clicked: self.delete_col(row=True)),
-            ("Del col.", lambda clicked: self.delete_col()),
-            ("Prev", lambda clicked: self.prev_tbl()),
-            ("Next", lambda clicked: self.prev_tbl(next=True)),
+        for text, function, layout in [
+            ("Del row", lambda clicked: self.delete_col(row=True), buttons),
+            ("Del col.", lambda clicked: self.delete_col(), buttons),
+            ("Prev", lambda clicked: self.prev_tbl(), buttons2),
+            ("Next", lambda clicked: self.prev_tbl(next=True), buttons2),
         ]:
             btn = QtWidgets.QPushButton(text)
-            buttons.addWidget(btn)
+            layout.addWidget(btn)
             btn.clicked.connect(function)
 
+        # input for minimum rows to count as a table
         ui.min_rows = QtWidgets.QSpinBox()
-        buttons.addWidget(ui.min_rows)
+        buttons2.addWidget(ui.min_rows)
         ui.min_rows.setMinimum(1)
         ui.min_rows.setPrefix("tbl with ")
         ui.min_rows.setSuffix(" rows")
-        ui.min_rows.setValue(4)
+        ui.min_rows.setValue(self.state['rows'])
+        # separator text and line start / end text
+        for attr in 'sep', 'start', 'end':
+            buttons2.addWidget(QtWidgets.QLabel(attr.title()+':'))
+            w = QtWidgets.QLineEdit()
+            w.setText(self.state[attr])
+            setattr(ui, attr+'_txt', w)
+            # w.textEdited.connect(self.delim_changed)
+            buttons2.addWidget(w)
+        ui.sep_txt.setToolTip("Use Prev/Next to rescan table with new sep")
+        w = QtWidgets.QPushButton('Change')
+        w.setToolTip("Change separator in text")
+        w.clicked.connect(lambda checked: self.delim_changed())
+        buttons2.addWidget(w)
 
         buttons.addStretch(1)
+        buttons2.addStretch(1)
 
         ui.table = QtWidgets.QTableView()
         self.layout().addWidget(ui.table)
@@ -167,6 +268,13 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             d[:] = [d[i][:c] + d[i][c+1:] for i in range(len(d))]
         self.update_text(self.new_data())
         self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
+    def delim_changed(self):
+        """delim_changed - new delimiter"""
+
+        # self.update_text(self.lep.get_position().b)
+        self.ui.data.delim = self.get_delim()
+        self.update_state()
+        self.new_data()
     def insert(self, name, move=False):
         index = self.ui.table.currentIndex()
         row = None
@@ -226,8 +334,11 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     def move(self, name):
         self.insert(name, move=True)
     def prev_tbl(self, next=False):
-        text = self.ui.data.get_text()
-        tables = ListTable.get_table_list(text)
+        # this feels wrong, like it should be self.ui.data.get_text(),
+        # but that's not round tripping correctly, or is acting on the
+        # wrong table, so grab p.b
+        text = self.lep.get_position().b
+        tables = ListTable.get_table_list(text, delim=self.get_delim())
         self.tbl += 1 if next else -1
         while 0 <= self.tbl <= len(tables)-1:
             if len(tables[self.tbl]) >= self.ui.min_rows.value():
@@ -235,6 +346,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             self.tbl += 1 if next else -1
         self.tbl = min(max(0, self.tbl), len(tables)-1)
         self.update_text(text)
+        self.update_state()
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -253,22 +365,38 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         :param str text: new text
         """
-        tables = ListTable.get_table_list(text)
+        tables = ListTable.get_table_list(text, delim=self.get_delim())
         self.tbl = 0
         # find largest table, or first table of more than n rows
         for i in range(1, len(tables)):
+            if len(tables[self.tbl]) >= self.ui.min_rows.value():
+                break
             if len(tables[i]) > len(tables[self.tbl]):
                 self.tbl = i
-            if len(tables[self.tbl]) > self.ui.min_rows.value():
-                break
         self.update_text(text)
 
+    def update_state(self):
+        """Copy state to uA"""
+        self.state = {
+            'rows': self.ui.min_rows.value(),
+            'sep': self.ui.sep_txt.text(),
+            'start': self.ui.start_txt.text(),
+            'end': self.ui.end_txt.text(),
+        }
+        u = self.c.p.v.u
+        if '_lep' in u:
+            if 'csv' in u['_lep']:
+                u['_lep']['csv'].update(self.state)
+            else:
+                u['_lep']['csv'] = dict(self.state)
+        else:
+            u['_lep'] = {'csv': dict(self.state)}
     def update_text(self, text):
         """update_text - update for current text
 
         :param str text: current text
         """
         DBG("update editor text")
-        self.ui.data = ListTable(text, self.tbl)
+        self.ui.data = ListTable(text, self.tbl, delim=self.get_delim())
         self.ui.data.dataChanged.connect(self.new_data)
         self.ui.table.setModel(self.ui.data)

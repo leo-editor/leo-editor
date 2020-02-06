@@ -75,7 +75,7 @@ import time
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
-    from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets,uic ### isQt5
+    from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets,uic
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
@@ -83,7 +83,7 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
     if name != "qt":
-        if name not in ('curses', 'nullGui'):
+        if name not in ('browser', 'curses', 'nullGui'):
             print('todo.py plugin not loading because gui is not Qt')
         return False
     g.registerHandler('after-create-leo-frame',onCreate)
@@ -109,10 +109,12 @@ if g.app.gui.guiName() == "qt":
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
-            QtWidgets.QWidget.__init__(self)
+            super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
             # change dir to get themed icons, needed for uic resources
-            theme = g.app.config.getString('color_theme')
+            # 20180327 this is working, these are icons for todo UI, not
+            # the tree.
+            theme = g.app.config.getString('color-theme')
             if theme:
                 testPath = g.os_path_join(
                     g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
@@ -138,29 +140,16 @@ if g.app.gui.guiName() == "qt":
             self.menu = QtWidgets.QMenu()
             self.populateMenu(self.menu, o)
             u.butMenu.setMenu(self.menu)
-            if True: ### isQt5:
-                u.butHelp.clicked.connect(lambda checked: o.showHelp())
-                u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
-                u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
-                u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
-                # if live update is too slow change valueChanged(*) to editingFinished()
-                u.spinTime.valueChanged.connect(
-                    lambda v: o.set_time_req(val=u.spinTime.value()))
-                u.spinProg.valueChanged.connect(
-                    lambda v: o.set_progress(val=u.spinProg.value()))
-            # else:
-                # self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
-                # self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
-                    # o.progress_clear)
-                # self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
-                    # o.clear_time_req)
-                # self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
-                    # o.priority_clear)
-                # # if live update is too slow change valueChanged(*) to editingFinished()
-                # self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
-                    # lambda v: o.set_time_req(val=u.spinTime.value()))
-                # self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
-                    # lambda v: o.set_progress(val=u.spinProg.value()))
+            
+            u.butHelp.clicked.connect(lambda checked: o.showHelp())
+            u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
+            u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
+            u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
+            # if live update is too slow change valueChanged(*) to editingFinished()
+            u.spinTime.valueChanged.connect(
+                lambda v: o.set_time_req(val=u.spinTime.value()))
+            u.spinProg.valueChanged.connect(
+                lambda v: o.set_progress(val=u.spinProg.value()))
 
             u.dueDateEdit.dateChanged.connect(
                 lambda v: o.set_due_date(val=u.dueDateEdit.date()))
@@ -203,10 +192,7 @@ if g.app.gui.guiName() == "qt":
                 def setter(pri=pri):
                     o.setPri(pri)
 
-                if True: ### isQt5:
-                    w.clicked.connect(lambda checked, setter=setter: setter())
-                # else:
-                    # self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+                w.clicked.connect(lambda checked, setter=setter: setter())
 
             offsets = self.owner.c.config.getData('todo_due_date_offsets')
             if not offsets:
@@ -217,21 +203,14 @@ if g.app.gui.guiName() == "qt":
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
 
-            if True: ### isQt5:
-                self.UI.dueDateOffset.activated.connect(
-                    lambda v: o.set_date_offset(field='duedate'))
-            # else:
-                # self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
-                    # lambda v: o.set_date_offset(field='duedate'))
+            self.UI.dueDateOffset.activated.connect(
+                lambda v: o.set_date_offset(field='duedate'))
+
             u.nxtwkDateOffset.addItems(offsets)
             u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
 
-            if True: ### isQt5:
-                self.UI.nxtwkDateOffset.activated.connect(
-                    lambda v: o.set_date_offset(field='nextworkdate'))
-            # else:
-                # self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
-                    # lambda v: o.set_date_offset(field='nextworkdate'))
+            self.UI.nxtwkDateOffset.activated.connect(
+                lambda v: o.set_date_offset(field='nextworkdate'))
 
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
@@ -249,36 +228,23 @@ if g.app.gui.guiName() == "qt":
                 self.UI.nxtwkTimeToggle, 'setTime',
                 datetime.datetime.now().time())
 
-            if True: ### isQt5:
-                self.UI.butDetails.clicked.connect(
-                    lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
-            # else:
-                # self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
-                    # lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
-            if self.owner.c.config.getBool("todo_compact_interface"):
+            self.UI.butDetails.clicked.connect(
+                lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+
+            if self.owner.c.config.getBool("todo-compact-interface"):
                 self.UI.frmDetails.setVisible(False)
+            
+            self.UI.butNext.clicked.connect(
+                lambda checked: self.owner.c.selectVisNext())
+            self.UI.butNextTodo.clicked.connect(
+                lambda checked: self.owner.find_todo())
+            self.UI.butApplyDueOffset.clicked.connect(
+                lambda checked: o.set_date_offset(field='duedate'))
+            self.UI.butApplyOffset.clicked.connect(
+                lambda checked: o.set_date_offset(field='nextworkdate'))
 
-            if True: ### isQt5:
-                self.UI.butNext.clicked.connect(
-                    lambda checked: self.owner.c.selectVisNext())
-                self.UI.butNextTodo.clicked.connect(
-                    lambda checked: self.owner.find_todo())
-                self.UI.butApplyDueOffset.clicked.connect(
-                    lambda checked: o.set_date_offset(field='duedate'))
-                self.UI.butApplyOffset.clicked.connect(
-                    lambda checked: o.set_date_offset(field='nextworkdate'))
-            # else:
-                # self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
-                    # lambda: self.owner.c.selectVisNext())
-                # self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
-                    # self.owner.find_todo)
-                # self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
-                    # lambda: o.set_date_offset(field='duedate'))
-                # self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
-                    # lambda: o.set_date_offset(field='nextworkdate'))
-
-            n = g.app.config.getInt("todo_calendar_n")
-            cols = g.app.config.getInt("todo_calendar_cols")
+            n = g.app.config.getInt("todo-calendar-n")
+            cols = g.app.config.getInt("todo-calendar-cols")
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
@@ -338,7 +304,7 @@ if g.app.gui.guiName() == "qt":
         #@-others
 
 #@+node:tbrown.20090119215428.9: ** class todoController
-class todoController(object):
+class todoController:
 
     '''A per-commander class that manages tasks.'''
 
@@ -380,8 +346,6 @@ class todoController(object):
         #X self.smiley = None
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
-        self.iconDir = g.os_path_abspath(g.os_path_normpath(
-            g.os_path_join(g.app.loadDir,"..","Icons")))
         self.reloadSettings()
         self.handlers = [
            ("close-frame",self.close),
@@ -403,10 +367,10 @@ class todoController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.time_name = c.config.getString('todo_time_name') or 'days'
-        self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
-        self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
-        self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
+        self.time_name = c.config.getString('todo-time-name') or 'days'
+        self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
+        self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
+        self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
@@ -494,7 +458,7 @@ class todoController(object):
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def todo_redrawer_callback(self, *args, **kargs):
             self.redrawLevels += 1
             try:
                 # pylint: disable=not-callable
@@ -504,17 +468,17 @@ class todoController(object):
                 if self.redrawLevels == 0:
                     self.redraw()
             return ans
-        return new
+        return todo_redrawer_callback
     #@+node:tbrown.20090119215428.14: *3* projectChanger
     def projectChanger(fn):
         """decorator for methods which change projects"""
         # pylint: disable=no-self-argument
-        def new(self, *args, **kargs):
+        def project_changer_callback(self, *args, **kargs):
             # pylint: disable=not-callable
             ans = fn(self,*args, **kargs)
             self.update_project()
             return ans
-        return new
+        return project_changer_callback
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
     def loadAllIcons(self, tag=None, k=None, clear=None):
@@ -540,20 +504,18 @@ class todoController(object):
                 pri = self.getat(p.v, 'priority')
                 if pri: pri = int(pri)
                 if pri in self.priorities:
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo',self.priorities[pri]['icon']),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', self.priorities[pri]['icon']),
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
             elif which == 'progress':
                 prog = self.getat(p.v, 'progress')
                 # pylint: disable=literal-comparison
-                if prog is not '':
+                if prog != '':
                     prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo',use),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
             elif which == 'duedate':
                 duedate = self.getat(p.v, 'duedate')
@@ -566,8 +528,7 @@ class todoController(object):
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo', icon),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
 
         com.setIconList(p, icons, setDirty=False)
@@ -615,13 +576,12 @@ class todoController(object):
             attrib in node.unknownAttributes["annotate"]
         ):
             x = node.unknownAttributes["annotate"][attrib]
-            if attrib in self._date_fields and g.isString(x):
+            if attrib in self._date_fields and isinstance(x, str):
                 x = self._date(x)
-            if attrib in self._time_fields and g.isString(x):
+            if attrib in self._time_fields and isinstance(x, str):
                 x = self._time(x)
             return x
-        else:
-            return 9999 if attrib == "priority" else ''
+        return 9999 if attrib == "priority" else ''
     #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
@@ -658,7 +618,7 @@ class todoController(object):
                 op = node._cached_src_c.vnode2position(node._cached_src_vnode)
                 node._cached_src_c.cleo.loadIcons(op)
                 node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
-                node._cached_src_c.setChanged(True)
+                node._cached_src_c.setChanged()
 
         isDefault = self.testDefault(attrib, val)
 
@@ -684,7 +644,7 @@ class todoController(object):
         if (attrib not in node.unknownAttributes["annotate"] or
             node.unknownAttributes["annotate"][attrib] != val
         ):
-            self.c.setChanged(True)
+            self.c.setChanged()
             node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
@@ -708,7 +668,7 @@ class todoController(object):
 
             if isDefault:  # no non-defaults seen, drop the whole cleo dictionary
                 del node.unknownAttributes["annotate"]
-                self.c.setChanged(True)
+                self.c.setChanged()
                 return True
 
         return False
@@ -721,7 +681,9 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        self.c.redraw()
+        if not g.app.initing:
+            self.c.redraw()
+                # This is disabled (converted to redraw_later) during startup.
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
@@ -1297,7 +1259,7 @@ def todo_fix_datetime(event):
     for nd in c.all_unique_nodes():
         for key in c.cleo._datetime_fields:
             x = c.cleo.getat(nd, key)
-            if not g.isString(x):
+            if not isinstance(x, str):
                 c.cleo.setat(nd, key, x)
                 changed += 1
                 g.es("%r -> %r" % (x, c.cleo.getat(nd, key)))

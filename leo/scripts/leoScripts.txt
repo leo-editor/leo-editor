@@ -2916,6 +2916,542 @@ def make_toc(self, p):
     else:
         self.root.b = ''.join(result)
     c.redraw()
+#@+node:ekr.20181019042717.1: *3* @ignore at-button nodes in LeoSettings.leo
+#@+node:ekr.20181019042907.1: *4* @button check-bindings
+'''Check for commands that exist in some but not all key- binding sets.'''
+g.cls()
+import leo.core.leoConfig as leoConfig
+# import leo.core.leoTest as leoTest
+parser = leoConfig.SettingsTreeParser(c)
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+    # The viewrendered plugin.
+    'vr-toggle',
+]
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+@others
+main()
+#@+node:ekr.20181019042907.2: *5* defineSetNames
+def defineSetNames():
+    global setNames
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+#@+node:ekr.20181019042907.3: *5* doSet
+def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+#@+node:ekr.20181019042907.4: *5* doShortcuts
+def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,si = parser.parseShortcutLine('test',line)
+            if not si:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = si.stroke
+                pane = si.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+#@+node:ekr.20181019042907.5: *5* checkSets
+def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+    keys = sorted(allNames.keys())
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in keys:
+                if key not in ('none','None',None) and key not in d.keys():
+                    # Don't warn about missing 'enter-xxx-mode' commands.
+                    if (
+                        not (key.startswith('enter-') and key.endswith('-mode')) and
+                        not (key.startswith('press-') and key.endswith('-button'))
+                    ):
+                        g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+        else:
+            g.es_print("'@keys No bindings' not found",color='blue')
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+#@+node:ekr.20181019042907.6: *5* main
+def main ():
+
+    global setNames
+    defineSetNames()
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+#@+node:ekr.20181019042834.1: *4* @button check-menus-cmds
+'''Check that all commands mentioned in the @menus tree actually exist.'''
+
+def checkMenu (p):
+    for p2 in p.subtree_iter():
+        if p2.h.startswith('@item'):
+            checkItem(p.h,p2)
+
+def checkItem (menuName,p):
+    h = p.h[len('@item'):].replace('&','').replace('*','').strip()
+    if h != '-' and h not in c.commandsDict:
+        print ('command not found: %s: %s' % (menuName,p.h))
+
+menus = g.findNodeAnywhere(c,'@menus')
+assert menus, 'no @menus tree'
+for p in menus.subtree_iter():
+    if p.h.startswith('@menu'):
+        checkMenu(p.copy())
+
+print ('done')
+#@+node:ekr.20181019042808.1: *4* @button check-settings
+'''Check the consistency of all settings.'''
+# https://github.com/leo-editor/leo-editor/issues/993
+
+class Controller:
+    @others
+
+Controller(c).run()
+#@+node:ekr.20181019042808.2: *5* ctor
+def __init__(self, c):
+    self.c = c
+    self.errors = 0
+    # Commanders...
+    self.core = None # leoPy.leo.
+    self.plugins = None # leoPlugins.leo.
+    self.settings = None # leoSettings.leo.
+#@+node:ekr.20181019042808.3: *5* check & helpers
+def check(self, configs_d, settings_d):
+    munge = self.munge
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    #
+    # Print missing user settings...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_configs if not z in m_settings])
+        aList = [z for z in missing if self.filter_user_config(z)]
+        if aList:
+            print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
+                g.printObj(aList2)
+    #
+    # Print missing calls to c.config.getX...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_settings if not z in m_configs])
+        aList = [z for z in missing if self.filter_get_x(z)]
+        if aList:
+            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
+                g.printObj(aList2)
+#@+node:ekr.20181019042808.4: *6* filter_get_x
+def filter_get_x(self, setting):
+    '''
+    Return False if we can safely ignore a missing call to config.get(setting).
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # These *ivars* are set by the GlobalConfigManager class.
+    # There *should* be settings for all of these, despite missing config.get calls.
+    table = (
+        # encodingIvarsDict...
+            "default_at_auto_file_encoding",
+            "default_derived_file_encoding",
+            "new_leo_file_encoding",
+        # defaultsDict...
+            "color_directives_in_plain_text",
+            "output_doc_chunks",
+            "page_width",
+            "tab_width",
+            "tangle_outputs_header",
+            "target_language",
+            "underline_undefined_section_names",
+        # ivarsDict
+            "at_root_bodies_start_in_doc_mode",
+            "create_nonexistent_directories",
+            "output_initial_comment",
+            "output_newline",
+            "page_width",
+            "read_only",
+            "redirect_execute_script_output_to_log_pane",
+            "relative_path_base_directory",
+            "remove_sentinels_extension",
+            "save_clears_undo_buffer",
+            "stylesheet",
+            "tab_width",
+            "target_language",
+            "trailing_body_newlines",
+            "use_plugins",
+            "undo_granularity",
+            "write_strips_blank_lines",
+    )
+    table = [munge(z) for z in table]
+    if setting in table:
+        return False
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) > -1:
+            return False
+    #
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+#@+node:ekr.20181019042808.5: *6* filter_user_config
+def filter_user_config(self, setting):
+    '''
+    Return False if we can safely ignore a setting that does not exist in leoSettings.leo.
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # The calls to config.get* are commented out in the code,
+    # but get_configs isn't smart enough to know that.
+    for ignore in (
+        'auto-set-ignore-case',
+        'find-def-creates-clones',
+        'qt-rich-text-zoom-in',
+        'theme-name',
+        'pytest-path', # In a (disabled) @button node
+        'leo-to-html-%s', # Loads multiple settings from an .ini file.
+    ):
+        if setting == munge(ignore):
+            return False
+    #
+    # Stylesheets use these settings.
+    # It would be a major project to discover what settings
+    # are actually used in the present stylesheet.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) > -1:
+            return False
+    #
+    # These plugins use settings in non-standard ways.
+    if setting.startswith(
+        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Tangle/untagle settings are deprecated and imo should not exist.
+    for pattern in (
+        'output-doc-flag', 'tangle-batch-flag',
+        'untangle-batch-flag', 'use-header-flag',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+#@+node:ekr.20181019042808.6: *5* error
+def error(self, s):
+    print(s)
+    self.errors += 1
+#@+node:ekr.20181019042808.7: *5* get_commanders
+def get_commanders(self):
+    '''Open files as needed and set the commander ivars.'''
+
+    def open_commander(fn):
+        c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+        if not c:
+            self.error('not found: %s' % fn)
+        return c
+
+    join, loadDir = g.os_path_join, g.app.loadDir
+    self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
+        # Opening LeoPyRef.leo would be slower.
+    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
+    self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
+#@+node:ekr.20181019042808.8: *5* get_configs & helpers
+def get_configs(self):
+    '''
+    Return a dict containing a representation of all calls to x.config.getX.
+    '''
+    d = {}
+    for c in (self.core, self.plugins):
+        print('scanning: %s' % c.shortFileName())
+        self.get_configs_from_outline(c, d)
+    return d
+#@+node:ekr.20181019042808.9: *6* get_configs_from_outline & helper
+def get_configs_from_outline(self, c, d):
+    '''
+    Scan the outline for all calls to x.config.getX and add items to d.
+    '''
+    for p in c.all_positions():
+        self.scan_for_configs(p, d)
+    return d
+#@+node:ekr.20181019042808.10: *7* scan_for_configs
+def scan_for_configs(self, p, d):
+    '''
+    Scan the body text of p, finding all calls to config.getX.
+    
+    This code does not know about `if 0`, but does know about comments.
+    '''
+    kinds = (
+        'getBool', 'getColor', 'getInt', 'getFloat',
+        # '@font', # special case.
+        'getPath', 'getRatio', 'getString',
+    )
+    i, s = 0, p.b
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if (
+            ch == '@' and
+            (g.match(s, i, '@ ') or g.match(s, i, '@\n')) and
+            (i == 0 or s[i - 1] == '\n')
+        ):
+            # Skip the @doc part.
+            i = s.find('\n@c', i)
+            if i == -1: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s, i)
+        elif ch in ('"', "'"):
+            i = g.skip_python_string(s, i, verbose=False)
+        elif ch == '_' or ch.isalpha():
+            j = g.skip_id(s, i)
+            kind = s[i: j]
+            if kind in kinds:
+                # We have found a call to getBool, etc.
+                i = g.skip_ws(s, j)
+                if g.match(s, i, '('):
+                    i = g.skip_ws(s, i + 1)
+                    if g.match(s, i, '"') or g.match(s, i, "'"):
+                        j = g.skip_string(s, i)
+                        name = s[i + 1: j - 1]
+                        aList = d.get(kind, [])
+                        if name not in aList:
+                            aList.append(name)
+                        d[kind] = aList
+                else:
+                    j = i
+            i = j
+        else:
+            i += 1
+        assert progress < i
+    return d
+#@+node:ekr.20181019042808.11: *5* get_settings & helper
+def get_settings(self):
+    '''Return a dict containing a representation
+    of all settings in leoSettings.leo.
+    '''
+    trace = False
+    c, d = self.settings, {}
+    print('scanning: %s' % c.shortFileName())
+    settings_node = g.findNodeAnywhere(c, '@settings')
+    if not settings_node:
+        return self.error('no @settings node')
+    for p in settings_node.subtree():
+        if self.is_setting(p):
+            kind, name = self.parse_setting(p)
+            if name:
+                # name = self.munge(name)
+                aList = d.get(kind, [])
+                if name not in aList:
+                    aList.append(name)
+                d[kind] = aList
+            else:
+                self.error('no name for %s' % (kind))
+    if trace:
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print(key)
+            aList = d.get(key)
+            for name in sorted(aList):
+                print('  ' + name)
+    return d
+#@+node:ekr.20181019042808.12: *6* is_setting
+def is_setting(self, p):
+    # For now, these are enough
+    table = (
+        '@bool', '@color', '@int', '@float',
+        # '@font', # special case.
+        '@ratio', '@path', '@string',
+    )
+    for s in table:
+        if g.match_word(p.h, 0, s):
+            return True
+    return False
+#@+node:ekr.20181019042808.13: *6* parse_setting
+def parse_setting(self, p):
+    s = p.h
+    assert s[0] == '@'
+    i = g.skip_id(s, 1)
+    kind = s[: i]
+    assert kind
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+#@+node:ekr.20181019042808.14: *5* munge
+def munge(self, s):
+    '''Return the canonicalized name for settings and arguments to c.config.getX.'''
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
+#@+node:ekr.20181019042808.15: *5* run
+def run(self):
+    g.cls()
+    self.get_commanders()
+    configs = self.get_configs()
+    settings = self.get_settings()
+    if self.errors == 0:
+        self.check(configs, settings)
+    g.trace('done')
 #@+node:ekr.20150416062553.1: ** Command-line scripts
 #@+node:ekr.20130812034101.12558: *3* Add docutils to python3
 @language python
@@ -2973,141 +3509,6 @@ package.
 ::    Package Structure
 ::    =================
 ::: ...snip...
-#@+node:ekr.20140704052551.17941: *3* Add Windows handler for .leo files
-# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
-
-@language python
-@tabwidth -4
-
-'''Tell Windows how to handle .leo files, enables double clicking on them to open.
-
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
-
-It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
-where python.exe and the Leo launch script is. It's the equivalent of:
-
-    assoc .leo=Leo.File
-    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
-       
-Requires elevated User Account Control (UAC) priviliges.
-See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
-'''
-
-pyexe = g.sys.executable
-leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
-
-g.es(leo)
-g.es(pyexe)
-
-g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
-
-    cwd=tmp, shell=True)
-#@+node:ekr.20140704052551.17948: *3* Console script: Install Leo from scratch on Windows
-@language batch
-
-mkdir X:\testing
-pushd X:\testing
-
-wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
-SET OSGEO4W_ROOT=%~dp0\root
-apt setup
-apt update
-apt install pyqt4 sip
-
-call root\osgeo4w.bat
-
-wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
-python install-pip.py GO
-python install-pip.py GO
-
-pip install -i https://testpypi.python.org/pypi leo-editor
-
-python apps\Python27\Scripts\leo
-#@+node:ekr.20130803125244.18164: *3* Create bat file
-:: https://code.google.com/p/maphew/source/browse/other/create-leobat.bat
-:: https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/bat$20file/leo-editor/li9ILUWuNAs/1zhjcNPWybEJ
-
-@language batch
-
-@echo off
-:: A batch file which generates other batch files to run the Leo Editor,
-:: adapted for the local machine. Optionally, it will also set the Windows
-:: filetype and association so .leo files can be opened from Explorer.
-::
-:: It needs to live in the same folder as "launchLeo.py"
-::
-:: Open Source X/MIT License
-:: initial version * 2012-Dec-13 * matt wilkie <maphew@gmail.com>
-
-if "%1"=="" goto :Usage
-
-call :pyCheck %1
-call :main %1
-if "%2"=="register" call :register %1
-goto :eof
-
-:main
-:: %1 is the path to folder containing python .exe's
-set pyexe=%~dp1\python.exe
-set pywexe=%~dp1\pythonw.exe
-echo.
-echo. Generating...
-echo.
-echo. Leo.bat - run leo in Windows mode
-echo. Leoc.bat - run leo and keep console window open
-echo.
-echo. These can be placed anywhere in PATH.
-echo.
-echo @"%pyexe%" "%~dp0\launchLeo.py" %%* > leoc.bat
-echo @"%pywexe%" "%~dp0\launchLeo.py" %%* > leo.bat
-goto :eof
-
-:register
-:: perms check courtesy of http://stackoverflow.com/questions/4051883
-:: batch-script-how-to-check-for-admin-rights
-net session >nul 2>&1
-if %errorlevel% == 0 (
-echo.
-echo. Setting .leo filetype and registering association with Windows
-echo.
-ftype LeoFile=%pywexe% "%~dp0\launchLeo.py" %%*
-assoc .leo=LeoFile
-) else (
-echo. Error: Can't set filetype and register association.
-echo. Please run from elevated shell to do that.
-echo.
-)
-goto :eof
-
-:pyCheck
-if not exist "%1" goto :Usage
-goto :eof
-
-:usage
-echo.
-echo. -=[%~nx0]=-
-echo.
-echo. Create batch files to launch Leo Editor that can be
-echo. placed and run from anywhere on this machine.
-echo.
-echo. and optionally register filetype with windows
-echo.
-echo. Usage:
-echo. %~n0 "c:\path\to\python.exe"
-echo. %~n0 "c:\path\to\python.exe" register
-echo.
-goto :eof
-
 #@+node:ekr.20110301092139.14873: *3* Terry Brown's command-line scripts
 @language python
 #@+node:ekr.20110301092139.14874: *4* docs
@@ -3291,254 +3692,6 @@ c.k.simulateCommand('stickynote')
 """.format(timestamp=time.asctime(), content=' '.join(sys.argv[1:]))
 pc.send(cmd)
 # print cmd
-#@+node:maphew.20130612230051.2793: *3* Windows-only scripts
-Scripts only of interest when on Microsoft Windows platform.
-#@+node:maphew.20130809155103.2862: *4* @auto create-leobat.bat
-@language batch
-@echo off
-:: A batch file which generates other batch files to run the Leo Editor,
-:: adapted for the local machine. Optionally, it will also set the Windows
-:: filetype and association so .leo files can be opened from Explorer.
-::
-:: It needs to live in the same folder as "launchLeo.py"
-::
-:: Open Source X/MIT License
-:: initial version * 2012-Dec-13 * matt wilkie <maphew@gmail.com>
-
-if "%1"=="" goto :Usage
-
-call :pyCheck %1
-call :main %1
-if "%2"=="register" call :register %1
-goto :eof
-
-:main
-  :: %1 is the path to folder containing python .exe's
-  set pyexe=%~dp1python.exe
-  set pywexe=%~dp1pythonw.exe
-  echo.
-  echo. Generating...
-  echo.
-  echo. Leo.bat  - run leo in Windows mode
-  echo. Leoc.bat - run leo and keep console window open
-  echo.  
-  echo. These can be placed anywhere in PATH.
-  echo.
-  echo @"%pyexe%" "%~dp0launchLeo.py" %%* > leoc.bat
-  echo @start /b "Leo" "%pywexe%" "%~dp0launchLeo.py" %%* > leo.bat
-  goto :eof
-
-:register
-  :: perms check courtesy of http://stackoverflow.com/questions/4051883
-  :: batch-script-how-to-check-for-admin-rights
-  net session >nul 2>&1
-  if %errorlevel% == 0 (    
-    echo.
-    echo. Setting .leo filetype and registering association with Windows
-    echo.
-    assoc .leo=
-    ftype Leo.File=
-    assoc .leo=Leo.File
-    ftype Leo.File=%pywexe% "%~dp0launchLeo.py" "%%1" %%*
-   ) else (
-    echo. Error: must be run from an elevated command prompt to set filetype and register association.
-    echo.
-    )
-  goto :eof
-
-:pyCheck
-  if not exist "%1" goto :Usage
-  goto :eof
-
-:usage
-  echo.
-  echo. -=[%~nx0]=-
-  echo.
-  echo. Create batch files to launch Leo Editor that can be 
-  echo. placed and run from anywhere on this machine.
-  echo.
-  echo. and optionally register filetype with windows
-  echo.
-  echo. Usage:  
-  echo.       %~n0 "c:\path\to\python.exe"
-  echo.       %~n0 "c:\path\to\python.exe" register
-  echo.  
-  goto :eof
-#@+node:maphew.20130809155103.2863: *4* @file build-leo.bat
-@ Create a ~Setuptools~ Windows binary installer package
-@c
-pushd ..\..
-python setup.py sdist
-python setup.py bdist_wininst --user-access-control=auto --bitmap leo\Icons\SplashScreen-installer.bmp
-start dist
-#@+node:maphew.20130613230258.2801: *4* @file elevate.py
-''' Open a new python intepreter after asking for elevated UAC permissions, and feed it the python script specified on the command line.
-
-    python elevate.py d:\full\path\to\some-script.py {args for some-script}
-'''
-import sys
-import ctypes
-import tempfile
-
-# -i : ask python interpreter to stay open when done, to see messages
-params = "-i {} ".format(' '.join(sys.argv[1:]))
-print(params)
-
-@others
-
-elevate(params)
-#@+node:maphew.20130613230258.2803: *5* UAC Elevation
-def elevate(params):
-    hwnd = 0                # parent window
-    lpOperation = 'runas'   # force elevated UAC prompt
-    lpFile = sys.executable # path to python
-    lpFile = lpFile.replace('pythonw.exe', 'python.exe') # force console python, only way to see messages
-    lpParameters = params   # arguments to pass to python
-    lpDirectory = tempfile.gettempdir() # working dir
-    nShowCmd = 1            # window visibility, must be 1 for Leo.
-    
-    print(lpFile, lpParameters)
-    #g.es(lpFile, lpParameters)
-    retcode = ctypes.windll.shell32.ShellExecuteA(hwnd, lpOperation, lpFile, lpParameters, lpDirectory, nShowCmd)
-    msg = 'Exit code: {0} - {1}'.format(retcode, ctypes.FormatError(retcode))
-    print(msg)
-    #g.es(msg)
-    
-#@+node:maphew.20130611235500.2658: *4* @file register-leo.leox
-@language python
-@tabwidth -4
-@others
-from _winreg import *
-
-# g.es("\n--- Running register-leo Leo script")
-
-pyexe = g.sys.executable
-pywexe = pyexe.replace('python.exe', 'pythonw.exe')
-launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
-
-# use 'pywexe' instead to not open a console window when launching Leo
-register_leo(pywexe, launchLeo, icon)
-#@+node:maphew.20130510011223.1645: *5* docstring
-'''Tell Windows how to handle .leo files, enables double clicking on them to open.
-
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
-        
-Requires elevated User Account Control (UAC) privileges.
-See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
-
-Resources used:
-   @url  http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
-   @url http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
-'''
-#@+node:maphew.20130509185752.1607: *5* register_leo
-def register_leo(pyexe, launchLeo, icon):
-    '''Create registry key for Leo file type, set default icon and launch command    
-    '''    
-    g.es("\nAttempting to register leo filetype with Windows...")
-    g.es("Python:", pyexe)
-    g.es("Leo:", launchLeo)
-    
-    if g.os_path_exists(icon):
-        g.es("Found:", icon)
-        <<filetype>>
-        <<association>>
-    else:
-        g.es("LeoDoc.ico not in expected location, can't continue.")  
-#@+node:maphew.20130515233516.1659: *6* <<filetype>>
-try:
-    leoKey = CreateKey(HKEY_CLASSES_ROOT, "Leo.File")
-    iconKey = CreateKey(leoKey, "DefaultIcon")
-    shellKey = CreateKey(leoKey, "Shell")
-    openKey = CreateKey(shellKey, "Open")
-    cmdKey = CreateKey(openKey, "Command")
-
-    SetValue(leoKey, None, REG_SZ, "Leo Editor File")
-    SetValue(iconKey, None, REG_SZ, icon)
-    SetValueEx(cmdKey, None, None, REG_EXPAND_SZ, '"{0}" "{1}" "%1" %*'.format(pyexe, launchLeo))
-    
-    for k in (leoKey, iconKey, shellKey, openKey, cmdKey):
-        CloseKey(k)
-        
-    g.es("Registered!")
-
-except WindowsError as e:
-    g.es("Failed:", e)
-#@+node:maphew.20130515233516.1660: *6* <<association>>
-try:
-    leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leo")
-    SetValue(leoKey, None, REG_SZ, "Leo.File")
-    # SetValue(leoKey, "Content Type", REG_SZ, "text/xml")  #creates a sub_key instead of a value :(
-    CloseKey(leoKey)
-    
-    leoKey = CreateKey(HKEY_CLASSES_ROOT, ".leox")
-    SetValue(leoKey, None, REG_SZ, "Leo.File")
-    CloseKey(leoKey)
-    
-    g.es(".leo, .leox files associated as 'Leo.File'")        
-
-except WindowsError as e:
-    g.es("Failed:", e)
-#@+node:maphew.20130510011223.1646: *6* sample registry outcome
-'''This is what the resulting registry key should look like, once exported from
-regedit. The translated hex code is:
-    
-    "d:\Python27\python.exe" "C:\Users\Matt\Dropbox\apps\leo-editor\launchLeo.py" "%1" %*
-    
-'''
-@
-Windows Registry Editor Version 5.00
-
-[HKEY_CLASSES_ROOT\.leo]
-@="Leo.File"
-
-[HKEY_CLASSES_ROOT\.leox]
-@="Leo.File"
-
-[HKEY_CLASSES_ROOT\Leo.File]
-@="Leo Editor File"
-
-[HKEY_CLASSES_ROOT\Leo.File\DefaultIcon]
-@="C:\\Users\\Matt\\Dropbox\\apps\\leo-editor\\leo\\Icons\\LeoDoc.ico"
-
-[HKEY_CLASSES_ROOT\Leo.File\Shell]
-
-[HKEY_CLASSES_ROOT\Leo.File\Shell\Open]
-
-[HKEY_CLASSES_ROOT\Leo.File\Shell\Open\Command]
-@=hex(2):22,00,64,00,3a,00,5c,00,50,00,79,00,74,00,68,00,6f,00,6e,00,32,00,37,\
-  00,5c,00,70,00,79,00,74,00,68,00,6f,00,6e,00,2e,00,65,00,78,00,65,00,22,00,\
-  20,00,22,00,43,00,3a,00,5c,00,55,00,73,00,65,00,72,00,73,00,5c,00,4d,00,61,\
-  00,74,00,74,00,5c,00,44,00,72,00,6f,00,70,00,62,00,6f,00,78,00,5c,00,61,00,\
-  70,00,70,00,73,00,5c,00,6c,00,65,00,6f,00,2d,00,65,00,64,00,69,00,74,00,6f,\
-  00,72,00,5c,00,6c,00,61,00,75,00,6e,00,63,00,68,00,4c,00,65,00,6f,00,2e,00,\
-  70,00,79,00,22,00,20,00,22,00,25,00,31,00,22,00,20,00,25,00,2a,00,00,00
-#@+node:maphew.20130611235500.2665: *4* @file unregister-leo.leox
-@language python
-@tabwidth -4
-
-'''Remove registry key for Leo file type and .leo file association'''    
-from _winreg import *
-
-# g.es("\nAttempting to un-register leo filetype with Windows...")            
-try:
-    leoKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
-    DeleteKey(leoKey, "Shell\\Open\\Command")
-    DeleteKey(leoKey, "Shell\\Open")
-    DeleteKey(leoKey, "Shell")
-    DeleteKey(leoKey, "DefaultIcon")
-    DeleteKey(HKEY_CLASSES_ROOT, "Leo.File")        
-    # CloseKey(leoKey)
-    g.es("Leo file type has been removed from registry")
-except WindowsError as e:
-    g.es("Unregistering Leo file type failed: ", e)  
-
-try:
-    DeleteKey(HKEY_CLASSES_ROOT, ".leo")
-    DeleteKey(HKEY_CLASSES_ROOT, ".leox")
-    g.es(".leo, .leox file associations removed from registry")
-except WindowsError as e:
-    g.es("Removing .leo, leox associations failed: ", e)  
 #@+node:ekr.20150416071458.1: ** Commands acting on nodes
 #@+node:ekr.20060824181946: *3* @@button convert-to-at-shadow
 """
@@ -3868,7 +4021,7 @@ def move_shebang_line (self,c,root):
     p.setMarked()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12354: *5* move_doc_string
@@ -3901,7 +4054,7 @@ def move_doc_string(self,c,root):
     p.setMarked()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12355: *5* rename_decls (test)
@@ -3931,7 +4084,7 @@ def rename_decls (self,c,root):
     p.setDirty()
     root.setDirty()
     root.setMarked()
-    c.setChanged(True)
+    c.setChanged()
     self.changed += 1
     g.trace('%s --> %s' % (p.h,root.h))
 #@+node:ekr.20120602062004.12356: *5* clean_blank_lines
@@ -3958,7 +4111,7 @@ def clean_blank_lines(self,c,p):
         p.b = s
         p.setDirty()
         # p.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         # if self.trace: g.trace(p.h)
         
@@ -3980,7 +4133,7 @@ def merge_comment_nodes(self,c,p):
         p.doDelete(p2)
         p2.setDirty()
         # p2.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         if self.trace: g.trace(h,' --> ',p2.h)
 #@+node:ekr.20120602062004.12358: *5* merge_extra_nodes
@@ -4004,7 +4157,7 @@ def merge_extra_nodes(self,c,p):
         p.doDelete(p2)
         p2.setDirty()
         # p2.setMarked()
-        c.setChanged(True)
+        c.setChanged()
         self.changed += 1
         if self.trace: g.trace(h,' --> ',p2.h)
 #@+node:ekr.20071113150213: *3* Clone all nodes to child node
@@ -4518,7 +4671,7 @@ for p in c.all_unique_positions():
     if hasattr(v,"tnodeList") and len(v.tnodeList) > 0 and not v.isAnyAtFileNode():
         g.es("deleting tnodeList for " + `v`,color="blue")
         delattr(v,"tnodeList")
-        c.setChanged(True)
+        c.setChanged()
 
 s = "%d nodes" % count
 print s ; g.es(s)
@@ -4848,6 +5001,645 @@ try:
 finally:
     print('closing ZODB')
     db.close()
+#@+node:ekr.20181019042505.1: ** Developing & maintaining Leo
+#@+node:ekr.20181019042544.1: *3* script: regularize settings names
+# Replace underscore by - in settings names.
+# See https://github.com/leo-editor/leo-editor/issues/993
+g.cls()
+import re
+kinds = (
+    'Bool', 'Color', 'Data',
+    'Directory', 'Encoding', # Not found.
+    'Float', 'Int',
+    'Path', 'Ratio', # Not found.
+    'String',
+)
+for kind in kinds:
+    print('===== %s =====\n' % kind)
+    pat = re.compile(r"get%s\s*\([\'\"]([\w_]+)[\'\"][,)]" % kind)
+    for p in c.all_positions():
+        s = p.b
+        i, found = 0, False
+        while True:
+            m = pat.search(s[i:])
+            if not m:
+                break
+            start, end = m.start(1), m.end(1)
+            all = s[i+m.start(0):i+m.end(0)]
+            word = s[i+start:i+end]
+            if '_' in word:
+                found = True
+                print('')
+                print('-----', p.h)
+                print(all)
+                s = s[:i+start] + word.replace('_','-') + s[i+end:]
+                print(s[i+m.start(0):i+m.end(0)])
+            i += end
+        if found:
+            assert p.b != s, p.h
+            # print(s)
+            p.b = s
+            p.v.setDirty()
+c.setChanged()
+c.redraw()     
+#@+node:ekr.20181019043251.1: *3* @ignore at-button nodes in leoPy.leo
+#@+node:ekr.20181019043237.1: *4* @button backup-repo
+@language python
+import os
+import subprocess
+import sys
+import time
+win = sys.platform.startswith('win')
+old_dir = g.os_path_abspath('.')
+if win:
+    new_dir = r'C:\leo.repo\leo-editor'
+    path = r'C:\Users\edreamleo\Backup'
+else:
+    new_dir = '/home/edward/leo.repo/leo-editor'
+    path = '/home/edward/Backup'
+assert g.os_path_exists(new_dir), repr(new_dir)
+assert g.os_path_exists(path), repr(path)
+stamp = time.strftime("%Y%m%d-%H%M%S")
+fn = g.os_path_finalize_join(path, 'leo-bundle-all-%s' % (stamp))
+bundle_command = 'git bundle create %s --all' % fn
+print(bundle_command)
+os.chdir(new_dir)
+# os.system(bundle_command)
+proc = subprocess.Popen(bundle_command, shell=True)
+proc.wait()
+os.chdir(old_dir)
+print('done! wrote %s' % fn)
+#@+node:ekr.20181019042717.1: *3* @ignore at-button nodes in LeoSettings.leo
+#@+node:ekr.20181019042907.1: *4* @button check-bindings
+'''Check for commands that exist in some but not all key- binding sets.'''
+g.cls()
+import leo.core.leoConfig as leoConfig
+# import leo.core.leoTest as leoTest
+parser = leoConfig.SettingsTreeParser(c)
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+    # The viewrendered plugin.
+    'vr-toggle',
+]
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+@others
+main()
+#@+node:ekr.20181019042907.2: *5* defineSetNames
+def defineSetNames():
+    global setNames
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+#@+node:ekr.20181019042907.3: *5* doSet
+def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+#@+node:ekr.20181019042907.4: *5* doShortcuts
+def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,si = parser.parseShortcutLine('test',line)
+            if not si:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = si.stroke
+                pane = si.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+#@+node:ekr.20181019042907.5: *5* checkSets
+def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+    keys = sorted(allNames.keys())
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in keys:
+                if key not in ('none','None',None) and key not in d.keys():
+                    # Don't warn about missing 'enter-xxx-mode' commands.
+                    if (
+                        not (key.startswith('enter-') and key.endswith('-mode')) and
+                        not (key.startswith('press-') and key.endswith('-button'))
+                    ):
+                        g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+        else:
+            g.es_print("'@keys No bindings' not found",color='blue')
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+#@+node:ekr.20181019042907.6: *5* main
+def main ():
+
+    global setNames
+    defineSetNames()
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+#@+node:ekr.20181019042834.1: *4* @button check-menus-cmds
+'''Check that all commands mentioned in the @menus tree actually exist.'''
+
+def checkMenu (p):
+    for p2 in p.subtree_iter():
+        if p2.h.startswith('@item'):
+            checkItem(p.h,p2)
+
+def checkItem (menuName,p):
+    h = p.h[len('@item'):].replace('&','').replace('*','').strip()
+    if h != '-' and h not in c.commandsDict:
+        print ('command not found: %s: %s' % (menuName,p.h))
+
+menus = g.findNodeAnywhere(c,'@menus')
+assert menus, 'no @menus tree'
+for p in menus.subtree_iter():
+    if p.h.startswith('@menu'):
+        checkMenu(p.copy())
+
+print ('done')
+#@+node:ekr.20181019042808.1: *4* @button check-settings
+'''Check the consistency of all settings.'''
+# https://github.com/leo-editor/leo-editor/issues/993
+
+class Controller:
+    @others
+
+Controller(c).run()
+#@+node:ekr.20181019042808.2: *5* ctor
+def __init__(self, c):
+    self.c = c
+    self.errors = 0
+    # Commanders...
+    self.core = None # leoPy.leo.
+    self.plugins = None # leoPlugins.leo.
+    self.settings = None # leoSettings.leo.
+#@+node:ekr.20181019042808.3: *5* check & helpers
+def check(self, configs_d, settings_d):
+    munge = self.munge
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    #
+    # Print missing user settings...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_configs if not z in m_settings])
+        aList = [z for z in missing if self.filter_user_config(z)]
+        if aList:
+            print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
+                g.printObj(aList2)
+    #
+    # Print missing calls to c.config.getX...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_settings if not z in m_configs])
+        aList = [z for z in missing if self.filter_get_x(z)]
+        if aList:
+            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
+                g.printObj(aList2)
+#@+node:ekr.20181019042808.4: *6* filter_get_x
+def filter_get_x(self, setting):
+    '''
+    Return False if we can safely ignore a missing call to config.get(setting).
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # These *ivars* are set by the GlobalConfigManager class.
+    # There *should* be settings for all of these, despite missing config.get calls.
+    table = (
+        # encodingIvarsDict...
+            "default_at_auto_file_encoding",
+            "default_derived_file_encoding",
+            "new_leo_file_encoding",
+        # defaultsDict...
+            "color_directives_in_plain_text",
+            "output_doc_chunks",
+            "page_width",
+            "tab_width",
+            "tangle_outputs_header",
+            "target_language",
+            "underline_undefined_section_names",
+        # ivarsDict
+            "at_root_bodies_start_in_doc_mode",
+            "create_nonexistent_directories",
+            "output_initial_comment",
+            "output_newline",
+            "page_width",
+            "read_only",
+            "redirect_execute_script_output_to_log_pane",
+            "relative_path_base_directory",
+            "remove_sentinels_extension",
+            "save_clears_undo_buffer",
+            "stylesheet",
+            "tab_width",
+            "target_language",
+            "trailing_body_newlines",
+            "use_plugins",
+            "undo_granularity",
+            "write_strips_blank_lines",
+    )
+    table = [munge(z) for z in table]
+    if setting in table:
+        return False
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) > -1:
+            return False
+    #
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+#@+node:ekr.20181019042808.5: *6* filter_user_config
+def filter_user_config(self, setting):
+    '''
+    Return False if we can safely ignore a setting that does not exist in leoSettings.leo.
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # The calls to config.get* are commented out in the code,
+    # but get_configs isn't smart enough to know that.
+    for ignore in (
+        'auto-set-ignore-case',
+        'find-def-creates-clones',
+        'qt-rich-text-zoom-in',
+        'theme-name',
+        'pytest-path', # In a (disabled) @button node
+        'leo-to-html-%s', # Loads multiple settings from an .ini file.
+    ):
+        if setting == munge(ignore):
+            return False
+    #
+    # Stylesheets use these settings.
+    # It would be a major project to discover what settings
+    # are actually used in the present stylesheet.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) > -1:
+            return False
+    #
+    # These plugins use settings in non-standard ways.
+    if setting.startswith(
+        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Tangle/untagle settings are deprecated and imo should not exist.
+    for pattern in (
+        'output-doc-flag', 'tangle-batch-flag',
+        'untangle-batch-flag', 'use-header-flag',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+#@+node:ekr.20181019042808.6: *5* error
+def error(self, s):
+    print(s)
+    self.errors += 1
+#@+node:ekr.20181019042808.7: *5* get_commanders
+def get_commanders(self):
+    '''Open files as needed and set the commander ivars.'''
+
+    def open_commander(fn):
+        c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+        if not c:
+            self.error('not found: %s' % fn)
+        return c
+
+    join, loadDir = g.os_path_join, g.app.loadDir
+    self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
+        # Opening LeoPyRef.leo would be slower.
+    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
+    self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
+#@+node:ekr.20181019042808.8: *5* get_configs & helpers
+def get_configs(self):
+    '''
+    Return a dict containing a representation of all calls to x.config.getX.
+    '''
+    d = {}
+    for c in (self.core, self.plugins):
+        print('scanning: %s' % c.shortFileName())
+        self.get_configs_from_outline(c, d)
+    return d
+#@+node:ekr.20181019042808.9: *6* get_configs_from_outline & helper
+def get_configs_from_outline(self, c, d):
+    '''
+    Scan the outline for all calls to x.config.getX and add items to d.
+    '''
+    for p in c.all_positions():
+        self.scan_for_configs(p, d)
+    return d
+#@+node:ekr.20181019042808.10: *7* scan_for_configs
+def scan_for_configs(self, p, d):
+    '''
+    Scan the body text of p, finding all calls to config.getX.
+    
+    This code does not know about `if 0`, but does know about comments.
+    '''
+    kinds = (
+        'getBool', 'getColor', 'getInt', 'getFloat',
+        # '@font', # special case.
+        'getPath', 'getRatio', 'getString',
+    )
+    i, s = 0, p.b
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if (
+            ch == '@' and
+            (g.match(s, i, '@ ') or g.match(s, i, '@\n')) and
+            (i == 0 or s[i - 1] == '\n')
+        ):
+            # Skip the @doc part.
+            i = s.find('\n@c', i)
+            if i == -1: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s, i)
+        elif ch in ('"', "'"):
+            i = g.skip_python_string(s, i, verbose=False)
+        elif ch == '_' or ch.isalpha():
+            j = g.skip_id(s, i)
+            kind = s[i: j]
+            if kind in kinds:
+                # We have found a call to getBool, etc.
+                i = g.skip_ws(s, j)
+                if g.match(s, i, '('):
+                    i = g.skip_ws(s, i + 1)
+                    if g.match(s, i, '"') or g.match(s, i, "'"):
+                        j = g.skip_string(s, i)
+                        name = s[i + 1: j - 1]
+                        aList = d.get(kind, [])
+                        if name not in aList:
+                            aList.append(name)
+                        d[kind] = aList
+                else:
+                    j = i
+            i = j
+        else:
+            i += 1
+        assert progress < i
+    return d
+#@+node:ekr.20181019042808.11: *5* get_settings & helper
+def get_settings(self):
+    '''Return a dict containing a representation
+    of all settings in leoSettings.leo.
+    '''
+    trace = False
+    c, d = self.settings, {}
+    print('scanning: %s' % c.shortFileName())
+    settings_node = g.findNodeAnywhere(c, '@settings')
+    if not settings_node:
+        return self.error('no @settings node')
+    for p in settings_node.subtree():
+        if self.is_setting(p):
+            kind, name = self.parse_setting(p)
+            if name:
+                # name = self.munge(name)
+                aList = d.get(kind, [])
+                if name not in aList:
+                    aList.append(name)
+                d[kind] = aList
+            else:
+                self.error('no name for %s' % (kind))
+    if trace:
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print(key)
+            aList = d.get(key)
+            for name in sorted(aList):
+                print('  ' + name)
+    return d
+#@+node:ekr.20181019042808.12: *6* is_setting
+def is_setting(self, p):
+    # For now, these are enough
+    table = (
+        '@bool', '@color', '@int', '@float',
+        # '@font', # special case.
+        '@ratio', '@path', '@string',
+    )
+    for s in table:
+        if g.match_word(p.h, 0, s):
+            return True
+    return False
+#@+node:ekr.20181019042808.13: *6* parse_setting
+def parse_setting(self, p):
+    s = p.h
+    assert s[0] == '@'
+    i = g.skip_id(s, 1)
+    kind = s[: i]
+    assert kind
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+#@+node:ekr.20181019042808.14: *5* munge
+def munge(self, s):
+    '''Return the canonicalized name for settings and arguments to c.config.getX.'''
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
+#@+node:ekr.20181019042808.15: *5* run
+def run(self):
+    g.cls()
+    self.get_commanders()
+    configs = self.get_configs()
+    settings = self.get_settings()
+    if self.errors == 0:
+        self.check(configs, settings)
+    g.trace('done')
+#@+node:ekr.20181020064400.1: *3* @ignore at-button nodes in leoPlugins.leo
+#@+node:ekr.20181020064321.1: *4* @button make-md-test
+'''Make an @test node for the importer whose name is given.'''
+name = 'markdown'
+d = g.app.permanentScriptDict
+tag = 'make_test_%s_n' % name
+n = d.get(tag, 0) + 1
+d [tag] = n
+d = {'cap_name': name.capitalize(), 'n': n, 'name': name}
+<< define preamble >>
+p = c.lastTopLevel().insertAfter()
+p.b = preamble
+p.h = '@test %(name)s importer-%(n)s' % d
+c.redraw()
+c.selectPosition(p)
+c.bodyWantsFocusNow()
+c.frame.body.wrapper.setInsertPoint(len(p.b))
+#@+node:ekr.20181020064321.2: *5* << define preamble >>
+preamble = '''\
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.markdown as markdown
+    # Reload all.
+    import imp
+    imp.reload(linescanner)
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    x = markdown.Markdown_Importer(ic, atAuto=False)   
+# insert test for %(name)s here.
+''' % d
 #@+node:ekr.20160308173429.1: ** Docstrings
 #@+node:ekr.20120525155800.10870: *3* Print all docstrings from a module (obsolete)
 import leo.core.leoTest as leoTest
@@ -6398,7 +7190,7 @@ nameList = (
 'get_line_after',
 'getpreferredencoding',
 'idleTimeHookHandler',
-'importFromPath',
+# 'importFromPath',
 'initScriptFind',
 'init_sherlock',
 'init_trace',
@@ -9072,7 +9864,7 @@ for p in c.all_positions():
             a["icons"] = []
             a["lineYOffset"] = 0
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
 c.redraw()
 #@+node:ekr.20071116114235: *3* Print all Tango icons in wiki-markup format
 # Prints all icons in the Icons/Tango folder in wiki-markup format.
@@ -13548,17 +14340,10 @@ opt_print_elements = False
 main()
 #@+node:ekr.20060824111500.109: *4* << imports >>
 import glob
+import os
 import string
 import xml.sax
 import xml.sax.saxutils
-
-# if g.isPython3:
-    # import io # Python 3.x
-    # StringIO = io.StringIO
-    # BytesIO = io.BytesIO
-# else:
-    # import cStringIO # Python 2.x
-    # StringIO = cStringIO.StringIO
 #@+node:ekr.20060824111500.110: *4* << to do >>
 @nocolor
 @
@@ -13585,7 +14370,8 @@ errors = [] # 'cil',] # End keyword not matched by start.
 errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
 # for s in errors: print(s)
 if 1: # A a list of files.
-    files = [r'%s\%s.xml' % (theDir,s) for s in ('test',)]
+    short_files = ['asciidoc']
+    files = [rf"{theDir}{os.path.sep}{z}.xml" for z in short_files]
 elif 1: # translate all files.
     files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
 elif 1: # error files
@@ -13615,23 +14401,6 @@ def cleanSaxInputString(s):
         transtable = string.maketrans(flatten, pad)
     return s.translate(transtable)
 # for i in range(32): print i,repr(chr(i))
-#@+node:ekr.20060824111500.114: *5* convert
-def convert (c,inputFileName,outputFileName):
-
-    junk, fn = g.os_path_split(inputFileName)
-    language, junk = g.os_path_splitext(fn)
-    g.es_print('convert: %s' % (language))
-    mode = parse_jEdit_file(inputFileName,language)
-    if mode:
-        try:
-            f = open(outputFileName,'w')
-        except IOError:
-            g.trace('can not create %s' % outputFileName)
-            return
-        try:
-            mode.write(f,language)
-        finally:
-            f.close()
 #@+node:ekr.20060824111500.115: *5* parse_jEdit_file
 def parse_jEdit_file(inputFileName,language):
 
@@ -13669,6 +14438,21 @@ def parse_jEdit_file(inputFileName,language):
     finally:
         f.close()
         return mode
+#@+node:ekr.20060824111500.114: *5* convert
+def convert (c,inputFileName, outputFileName):
+
+    junk, fn = g.os_path_split(inputFileName)
+    language, junk = g.os_path_splitext(fn)
+    mode = parse_jEdit_file(inputFileName, language)
+    if not mode:
+        g.trace('FAIL: no mode', language, inputFileName)
+        return
+    with open(outputFileName,'w') as f:
+        try:
+            mode.write(f, language)
+            g.es_print('wrote', outputFileName)
+        except IOError:
+            g.es_print('can not create', outputFileName)
 #@+node:ekr.20060824111500.116: *5* munge
 def munge(s):
 
@@ -13684,14 +14468,14 @@ def main():
         return
     for path1 in files:
         if path1 in errors:
-            print('skipping %s' % path1)
-        else:
-            path2 = path1[:-3] + 'py'
-            try:
-                convert (c,path1,path2)
-            except Exception:
-                print('Exception creating', path2)
-                g.es_exception()
+            print(f"skipping {path1}")
+            continue
+        path2 = path1[:-3] + 'py'
+        try:
+            convert (c, path1, path2)
+        except Exception:
+            print('Exception creating', path2)
+            g.es_exception()
     g.es_print('done')
 #@+node:ekr.20060824111500.117: *4* class modeClass
 class modeClass:
@@ -13817,8 +14601,6 @@ def putAttributes (self):
                 else: val = g.choose(val,val,'')
             # if val: g.trace(key,repr(val))
             d [key] = val
-
-
         self.putDict('%s_attributes_dict' % (prefix),d)
         dd [ prefix ] = '%s_attributes_dict' % (prefix)
 
@@ -13829,19 +14611,20 @@ def putDict (self,name,theDict,escape=True):
 
     esc = self.escapeString
     esc2 = g.choose(escape,self.escapeString,lambda a: a)
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
-    s = ''.join(['\t%s: %s,\n' % (esc(key),esc2(theDict.get(key))) for key in keys])
-    if s: s = '\n' + s
+    keys = list(set((theDict.keys())))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
+    s = ''.join([
+        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
+            for key in keys])
+    if s:
+        s = '\n' + s
     self.put('%s = {%s}\n\n' % (name,s))
 
 def putDictOfLists (self,name,theDict,strings=False):
 
     esc = self.escapeString
-    keys = list(theDict.keys())
-    keys = [g.toUnicode(z) for z in keys]
-    keys.sort()
+    keys = list(set(theDict.keys()))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
     theList = []
     for key in keys:
         if strings:
@@ -13882,26 +14665,23 @@ def putKeywordsData (self):
         prefix = '%s_%s' % (self.modeName,ruleset.name)
         prefix = g.toUnicode(prefix)
         ignore_case = ruleset.attributes.get('ignore_case','false')
-        if type(ignore_case) != type(True): # Bug fix: 2013/08/03.
+        if not isinstance(ignore_case, bool):
             ignore_case = ignore_case.lower() == 'false'
         self.put('# Keywords dict for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             if rule.name == 'keywords':
-                d = rule.keywordsDict
-                # g.trace([z for z in d.keys() if not g.isString(z)])
-                for key in list(d.keys()):
-                    key = g.toUnicode(key)
-                    if not key.strip():
-                        if key in d:
-                            del d [key]
-                    elif key.find(' ') != -1 or key.find('\t') != -1:
+                # d = rule.keywordsDict
+                d = { g.toUnicode(key): g.toUnicode(val)
+                    for key, val in rule.keywordsDict.items() if key.strip() }
+                # g.trace()
+                # g.printObj(d)
+                for key in sorted(set(d.keys())):
+                    if ' ' in key or '\t' in key:
                         del d [key]
-                        g.es_print('Warning: ignoring keyword containing whitespace: %s' % (
-                            repr(key)))
+                        g.es_print(f"Ignoring keyword containing whitespace: {key!r}")
                     elif ignore_case: # New in 4.4.1 final.
                         # Downcase all keys.
                         val = d.get(key)
-                        val = g.toUnicode(val)
                         key2 = key.lower()
                         if key2 != key:
                             if key in d: del d[key]
@@ -13927,7 +14707,7 @@ def putList (self,name,theList,escape=True,lineCount=0):
 
     result = []
     n = len(theList)
-    for i in xrange(n):
+    for i in range(n):
         result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
 
     vals = ''.join(result)
@@ -14219,11 +14999,8 @@ def putRules (self):
     d = {} ; d2Count = 0
     for ruleset in self.rulesets:
         d2 = {}
-        start_count = self.handlerCount
-        # prefix = '%s::%s' % (self.modeName,ruleset.name)
-        prefix2 = '%s_%s_rules' % (self.modeName,ruleset.name)
-        prefix3 = '%s_%s'% (self.modeName,ruleset.name)
-        self.put('# Rules for %s ruleset.\n' % (prefix3))
+        prefix = '%s_%s'% (self.modeName,ruleset.name)
+        self.put('# Rules for %s ruleset.\n' % (prefix))
         for rule in ruleset.rules:
             ch = self.putRule(rule)
             self.put('\n')
@@ -14237,13 +15014,14 @@ def putRules (self):
                 theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
                 d2 [ch] = theList
         # Create the rules dict for the ruleset.
-        self.put('\n# Rules dict for %s ruleset.\n' % (prefix3))
-        d2Count += 1 ; name = 'rulesDict%d' % d2Count
+        self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
+        d2Count += 1
+        name = 'rulesDict%d' % d2Count
         self.putDictOfLists(name,d2)
-        d [prefix3] = name
+        d [prefix] = name
     # Create rulesDictDict.
     self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
-    self.putDict('rulesDictDict',d,escape=False)
+    self.putDict('rulesDictDict', d, escape=False)
 #@+node:ekr.20060824111500.143: *6* write
 def write (self,theFile,language):
 
@@ -14259,9 +15037,7 @@ def write (self,theFile,language):
                         self.keywordChars.append(ch)
         
     # g.trace('keywordChars',repr(self.keywordChars))
-    self.keywordChars = ''.join(self.keywordChars)
-    
-
+    self.keywordChars = ''.join(list(set(self.keywordChars)))
     self.outputFile = theFile
     self.put('# Leo colorizer control file for %s mode.\n' % language)
     self.put('# This file is in the public domain.\n\n')
@@ -14786,13 +15562,14 @@ def doEndElement (self,elementName):
         print('</' + self.clean(elementName).strip() + '>')
 
     if elementName.lower() == 'mode':
-        if opt_print_summary: self.mode.printSummary()
+        if opt_print_summary:
+            self.mode.printSummary()
     elif self.mode:
         self.mode.endElement(elementName)
     else:
         self.error('End element appears outside of Mode:%s' % elementName)
-        for bunch in self.attrsToList(attrs):
-            self.error('Attribute appears outside of Mode:%s' %bunch.name)
+        # for bunch in self.attrsToList(attrs):
+        #    self.error('Attribute appears outside of Mode:%s' %bunch.name)
 #@+node:ekr.20060824111500.181: *5* getMode
 def getMode (self):
 

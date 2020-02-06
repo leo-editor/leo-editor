@@ -84,7 +84,7 @@ Tk = None
 Qt = None
 #@+others
 #@+node:ekr.20090616105756.3942: ** class backlinkController
-class backlinkController(object):
+class backlinkController:
     """Display and edit links in leo trees"""
     #@+others
     #@+node:ekr.20090616105756.3943: *3* __init__ & reloadSettings (backlinkController)
@@ -111,7 +111,7 @@ class backlinkController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.name_levels = c.config.getInt('backlink_name_levels') or 0
+        self.name_levels = c.config.getInt('backlink-name-levels') or 0
     #@+node:tbrown.20091005145931.5227: *3* fixIDs
     def fixIDs(self, c):
 
@@ -150,7 +150,7 @@ class backlinkController(object):
         for n,link in enumerate(links):
 
             on.setDirty()
-            self.c.setChanged(True)
+            self.c.setChanged()
 
             if type_ == link[0] and to == link[1]:
                 del links[n]
@@ -215,7 +215,7 @@ class backlinkController(object):
                     new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
                     new_c.backlinkController.updateTabInt()
                     new_p.setDirty()
-                    new_c.setChanged(True)
+                    new_c.setChanged()
                     g.es("NOTE: created back link automatically")
         else:
             g.handleUrl(url, c=self.c)
@@ -271,7 +271,7 @@ class backlinkController(object):
         self.vlink(from_.v, to.v, type_=type_)
         from_.setDirty()
         to.setDirty()
-        self.c.setChanged(True)
+        self.c.setChanged()
 
     #@+node:ekr.20090616105756.3950: *3* vlink
     def vlink(self, v0, v1, type_='directed'):
@@ -311,19 +311,16 @@ class backlinkController(object):
             else:
                 self.handleURL(url.rsplit('##', 1)[0])
             return
-
-        if not self.deleteMode:
-            assert self.c.positionExists(self.dests[selected][1])
-            self.c.selectPosition(self.dests[selected][1])
-            return
-
-        elif self.deleteMode:
+        if self.deleteMode:
             self.deleteLink(
                 self.c.p.v,
                 self.dests[selected][1].v.gnx,
                 self.dests[selected][0]
             )
             self.updateTabInt()
+            return
+        assert self.c.positionExists(self.dests[selected][1])
+        self.c.selectPosition(self.dests[selected][1])
     #@+node:ekr.20090616105756.3952: *3* linkDst
     def linkDst(self):
         """link from current position to dest. node"""
@@ -399,7 +396,7 @@ class backlinkController(object):
             return
         c.p.v.u['_bklnk']['urls'].append(url)
         c.p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
 
     #@+node:ekr.20090616105756.3957: *3* loadLinks
     def loadLinks(self, tag, keywords):
@@ -427,6 +424,7 @@ class backlinkController(object):
 
         for vnode in idsSeen:  # just the vnodes with link info.
             if 'links' not in self.vnode[vnode].u['_bklnk']:
+                g.trace(self.vnode[vnode].u)
                 # graphcanvas.py will only init x and y keys
                 self.vnode[vnode].u['_bklnk']['links'] = []
             links = self.vnode[vnode].u['_bklnk']['links']
@@ -570,12 +568,11 @@ class backlinkController(object):
     #@+node:ekr.20090616105756.3964: *3* showMenu
     def showMenu(self,tag,k):
 
-        if k['c'] != self.c: return  # not our problem
-
+        if k['c'] != self.c:
+            return # not our problem
         p = k['p']
         self.c.selectPosition(p)
         v = p.v
-
         c = self.c
 
         # Create the menu.
@@ -589,7 +586,6 @@ class backlinkController(object):
             (True, 'Undirected link', self.linkUnd),
             (True, 'Rescan links', self.loadLinksInt),
         ]
-
         if hasattr(v, 'unknownAttributes') and '_bklnk' in v.unknownAttributes:
             i = 0
             links = v.unknownAttributes['_bklnk']['links']
@@ -626,13 +622,10 @@ class backlinkController(object):
                 continue
             c.add_command(menu,label=text,
                 underline=0,command=com)
-
-
+        #
         # Show the menu.
         event = k['event']
         g.app.gui.postPopupMenu(self.c, menu, event.x_root,event.y_root)
-
-        return None # 'break' # EKR: Prevent other right clicks.
     #@+node:ekr.20090616105756.3965: *3* showMessage
     def showMessage(self, msg, optional=False, color='black'):
         """Show the message, but don't overwrite earlier important
@@ -675,23 +668,24 @@ class backlinkController(object):
             pass
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
-            i = 0
             links = v.u['_bklnk']['links']
             dests = []
             self.dests = dests
-            while i < len(links):
-                linkType, other = links[i]
-                otherV = self.vnode[other]
-                otherP = self.vnodePosition(otherV)
-                if not self.c.positionExists(otherP):
-                    self.showMessage('Lost link(s) deleted', color='red')
-                    del links[i]
-                else:
-                    i += 1
+            for data in links[:]: # Must use a copy.
+                linkType, other = data
+                try:
+                    otherV = self.vnode[other]
+                    otherP = self.vnodePosition(otherV)
                     dests.append((linkType, otherP))
+                except KeyError:
+                    self.showMessage('Lost link(s) deleted', other, color='red')
+                    links.remove(data)
+                except Exception:
+                    g.es_exception()
             if dests:
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
+                # pylint: disable=cell-var-from-loop
                 for i in dests:
                     
                     def goThere(where = i[1]):
@@ -746,7 +740,7 @@ if g.app.gui.guiName() == "qt":
         def __init__(self, owner):
             '''Ctor for backlinkQtUI class.'''
             self.owner = owner
-            QtWidgets.QWidget.__init__(self)
+            super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'Backlink.ui')
             form_class, base_class = uic.loadUiType(uiPath)
             self.owner.c.frame.log.createTab('Links', widget = self)
@@ -822,12 +816,9 @@ if g.app.gui.guiName() == "qt":
 #@+node:ekr.20140920145803.17994: ** class backlinkTkUI
 if g.app.gui.guiName() == "tkinter":
 
-    Tk = g.importExtension('Tkinter',
-        pluginName=__name__,
-        verbose=True,
-        required=True)
+    Tk = g.import_module('tkinter')
 
-    class backlinkTkUI(object):
+    class backlinkTkUI:
         # pylint: disable=no-member
         # This is old code.
         #@+others

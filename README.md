@@ -1,36 +1,23 @@
-Leo 5.7 final February 27, 2018
-
-Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 6.1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-# Install and run
+**The highlights of Leo 6.1**
 
-    >pip install leo
-    >leo
+- Pyzo in Leo: Pyzo can optionally run *within* Leo.
+- Added support for asciidoc and asciidoctor.
+- Added support for pandoc and sphinx.
+- Added support for black.
+- The history_tracer plugin animates git commits.
+- Integration of Leo with VS code.
+- New command-line arguments: --global-docks and --window-spot.
+- New cursor-movement commands.
 
-# The highlights of Leo 5.7
+Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
+their contributions to Leo 6.1.
 
-- pip install leo.
-- A debian package for Leo.
-- A web-based Leo Viewer, written by Joe Orr.
-- Added diff-leo-files and diff-and-open-leo-files commands.
-  These create outline-oriented diffs for .leo files.
-- New reload-settings command.
-- Leo optionally shows user tips on startup.
-- Added a new Tips page to Leo's documentation.
-- A visual widget for editing cvs tables.
-- Spell checking works without pyenchant
-- Improved the console_gui plugin.
-- Added live links from urls in the log pane.
-- Unit tests use a string gui, making them faster and more robust.
-- The line_numbering plugin shows line numbers in external files.
-- Improved the javascript importer.
-- Added a TreePad importer.
-- Added 6 new commands.
-- Dozens of bug fixes.
-
-# Links
+**Links**
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)

@@ -30,16 +30,11 @@ from math import atan2, sin, cos
 # import time
 import os
 import tempfile
-
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    import urllib.request as urllib
-else:
-    import urllib2 as urllib
-
-# from xml.sax.saxutils import quoteattr
+import urllib.request as urllib
 
 try:
+    # pylint: disable=import-error
+        # These are optional.
     import pydot
     import dot_parser
     assert dot_parser
@@ -127,7 +122,7 @@ class graphcanvasUI(QtWidgets.QWidget):
     def __init__(self, owner=None):
 
         self.owner = owner
-        QtWidgets.QWidget.__init__(self)
+        super().__init__()
         uiPath = g.os_path_join(g.app.leoDir,
             'plugins', 'GraphCanvas', 'GraphCanvas.ui')
         # change directory for this to work
@@ -200,7 +195,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, glue, *args, **kargs):
         self.glue = glue
         self.current_scale = 0
-        QtWidgets.QGraphicsView.__init__(self, *args)
+        super().__init__(*args)
     #@+node:tbrown.20110122085529.15399: *3* wheelEvent
     def wheelEvent(self, event):
 
@@ -223,7 +218,7 @@ class GraphicsView(QtWidgets.QGraphicsView):
         self.glue.newNode(pnt=self.mapToScene(event.pos()))
     #@-others
 #@+node:tbrown.20110413094721.24681: ** class GetImage
-class GetImage(object):
+class GetImage:
     """Image handling functions"""
 
     @staticmethod
@@ -261,37 +256,24 @@ class GetImage(object):
             testpath = src
             if '//' in testpath:
                 testpath = testpath.split('//',1)[-1]
-
+            #
             # file on local file system
             testpath = g.os_path_finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-
+            #
             # explicit file://, but no such file exists
             if src.startswith('file://'):
-                if fail_ok:
-                    return None
-                else:
-                    return GetImage._no_image()
-
+                return None if fail_ok else GetImage._no_image()
+        #
         # no explict file://, so try other protocols
-
-        if '//' not in src:
-            testpath = 'http://%s' % src
-        else:
-            testpath = src
-
+        testpath = src if '//' in src else 'http://%s' % (src)
         data = GetImage.get_url(testpath)
-
         if data:
             img = QtGui.QPixmap()
             if img.loadFromData(data):
                 return QtWidgets.QGraphicsPixmapItem(img)
-
-        if fail_ok:
-            return None
-
-        return GetImage._no_image()
+        return None if fail_ok else GetImage._no_image()
 
     @staticmethod
     def get_url(url):
@@ -300,7 +282,6 @@ class GetImage(object):
             response = urllib.urlopen(url)
         except urllib.URLError:  # hopefully not including redirection
             return False
-
         return response.read()
 
     @staticmethod
@@ -309,7 +290,6 @@ class GetImage(object):
         testpath = g.os_path_abspath(g.os_path_join(
             g.app.loadDir,'../plugins/GraphCanvas/no_image.png'))
         return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtWidgets.QGraphicsItemGroup):
 
@@ -321,7 +301,7 @@ class nodeBase(QtWidgets.QGraphicsItemGroup):
 
     def __init__(self, owner, node, *args, **kargs):
 
-        QtWidgets.QGraphicsItemGroup.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
 
         self.owner = owner
@@ -362,12 +342,12 @@ class nodeRect(nodeBase):
     """text with shape behind it node type"""
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.text = self.text_item()
         # .text must be first for nodeComment, see its bg_item()
         self.bg = self.bg_item()
-        if g.app.config.getBool("color_theme_is_dark"):
+        if g.app.config.getBool("color-theme-is-dark"):
             bgcolor = QtGui.QColor(30,50,30)
         else:
             bgcolor = QtGui.QColor(200,240,200)
@@ -419,7 +399,7 @@ class nodeNone(nodeBase):
     """text with shape behind it node type"""
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.text = self.text_item()
 
@@ -530,18 +510,14 @@ nodeBase.node_types[nodeComment.__name__] = nodeComment
 class nodeTable(nodeRect):
 
     def __init__(self, *args, **kargs):
-        nodeRect.__init__(self, *args, **kargs)
-
+        super().__init__(*args, **kargs)
         # can't load children here, because we don't know where we are yet
-
         self.updating = False
 
     def do_update(self):
         nodeRect.do_update(self)
-
         if self.updating:
             return
-
         what = []
         dy = self.text.document().size().height()
         for n, child in enumerate(self.node.children):
@@ -580,7 +556,7 @@ nodeBase.node_types[nodeTable.__name__] = nodeTable
 class nodeImage(nodeBase):
 
     def __init__(self, *args, **kargs):
-        nodeBase.__init__(self, *args, **kargs)
+        super().__init__(*args, **kargs)
 
         self.bg = self.bg_item()
 
@@ -619,7 +595,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         # pylint: disable=keyword-arg-before-vararg
             # putting *args first is invalid in Python 2.x.
         self.glue = glue
-        QtWidgets.QGraphicsItemGroup.__init__(self)
+        super().__init__()
         self.line = QtWidgets.QGraphicsLineItem(*args)
 
         pen = QtGui.QPen()
@@ -672,7 +648,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
         self.head.setPolygon(QtGui.QPolygonF(pts))
     #@-others
 #@+node:bob.20110119123023.7408: ** class graphcanvasController
-class graphcanvasController(object):
+class graphcanvasController:
     """Display and edit links in leo"""
     #@+others
     #@+node:bob.20110119123023.7409: *3* __init__ & reloadSettings (graphcanvasController)
@@ -694,7 +670,8 @@ class graphcanvasController(object):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.graph_manual_layout = c.config.getBool('graph-manual-layout',default=False)
+        self.graph_manual_layout = \
+            c.config.getBool('graph-manual-layout',default=False)
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""
@@ -717,7 +694,7 @@ class graphcanvasController(object):
                 ('dot', lambda: self.layout('dot')),
                 ('dot LR', lambda: self.layout('dot LR')),
             ]
-        elif pydot:
+        if pydot:
             return [
                 ('PyDot:', lambda: None),
                 ('neato', lambda: self.layout('neato')),
@@ -728,8 +705,7 @@ class graphcanvasController(object):
                 ('osage', lambda: self.layout('osage')),
                 ('sfdp', lambda: self.layout('sfdp')),
         ]
-        else:
-            return [('install pygraphviz or pydot for layouts', lambda: None)]
+        return [('install pygraphviz or pydot for layouts', lambda: None)]
 
     #@+node:tbrown.20110122085529.15403: *3* layout
     def layout(self, type_):

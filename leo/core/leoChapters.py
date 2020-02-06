@@ -1,25 +1,25 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20070317085508.1: * @file leoChapters.py
-'''Classes that manage chapters in Leo's core.'''
+"""Classes that manage chapters in Leo's core."""
 import re
 import string
 import leo.core.leoGlobals as g
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
-class ChapterController(object):
-    '''A per-commander controller that manages chapters and related nodes.'''
+class ChapterController:
+    """A per-commander controller that manages chapters and related nodes."""
     #@+others
     #@+node:ekr.20070530075604: *3* Birth
     #@+node:ekr.20070317085437.2: *4*  cc.ctor
     def __init__(self, c):
-        '''Ctor for ChapterController class.'''
+        """Ctor for ChapterController class."""
         self.c = c
         self.chaptersDict = {}
             # Keys are chapter names, values are chapters.
             # Important: chapter names never change,
             # even if their @chapter node changes.
         self.initing = True
-            # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+            # #31
             # True: suppress undo when creating chapters.
         self.re_chapter = None
             # Set where used.
@@ -32,10 +32,10 @@ class ChapterController(object):
         
     def reloadSettings(self):
         c = self.c
-        self.use_tabs = c.config.getBool('use_chapter_tabs')
+        self.use_tabs = c.config.getBool('use-chapter-tabs')
     #@+node:ekr.20160402024827.1: *4* cc.createIcon
     def createIcon(self):
-        '''Create chapter-selection Qt ListBox in the icon area.'''
+        """Create chapter-selection Qt ListBox in the icon area."""
         cc = self
         c = cc.c
         if cc.use_tabs:
@@ -46,35 +46,26 @@ class ChapterController(object):
     # This must be called late in the init process, after the first redraw.
 
     def finishCreate(self):
-        '''Create the box in the icon area.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(cc)')
+        """Create the box in the icon area."""
         cc = self
         cc.createIcon()
-        if trace: g.trace('===== ChapterController.finishCreate')
         cc.setAllChapterNames()
             # Create all chapters.
-        # Fix bug: https://github.com/leo-editor/leo-editor/issues/31
+        # #31.
         cc.initing = False
         cc.selectChapterByName('main', collapse=False)
             # Always select the main chapter.
             # It can be alarming to open a small chapter in a large .leo file.
     #@+node:ekr.20160411145155.1: *4* cc.makeCommand
     def makeCommand(self, chapterName, binding=None):
-        '''Make chapter-select-<chapterName> command.'''
-        trace = False and not g.unitTesting
-        trace_redef = True
+        """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
-        commandName = 'chapter-select-%s' % chapterName
-        inverseBindingsDict = c.k.computeInverseBindingDict()
+        commandName = f"chapter-select-{chapterName}"
+        #
+        # For tracing:
+        # inverseBindingsDict = c.k.computeInverseBindingDict()
         if commandName in c.commandsDict:
-            if trace and trace_redef:
-                g.trace('===== already defined', commandName)
-                g.trace('inverse', inverseBindingsDict.get(commandName))
             return
-        if trace:
-            g.trace('===== defining', commandName, binding, g.callers(1))
-            g.trace('inverse', inverseBindingsDict.get(commandName))
 
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
@@ -96,13 +87,13 @@ class ChapterController(object):
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
-        '''Command decorator for the ChapterController class.'''
+        """Command decorator for the ChapterController class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'chapterController',])
     #@+node:ekr.20070604165126: *3* cc.selectChapter
     @cmd('chapter-select')
     def selectChapter(self, event=None):
-        '''Use the minibuffer to get a chapter name, then create the chapter.'''
+        """Use the minibuffer to get a chapter name, then create the chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
         g.es('Chapters:\n' + '\n'.join(names))
@@ -135,17 +126,16 @@ class ChapterController(object):
         cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
     def selectChapterByName(self, name, collapse=True):
-        '''Select a chapter.  Return True if a redraw is needed.'''
-        trace = False and not g.unitTesting
+        """Select a chapter.  Return True if a redraw is needed."""
         cc = self
         if self.selectChapterLockout:
-            if trace: g.trace('lockout', g.callers())
             return
-        if g.isInt(name):
-            return cc.note('PyQt5 chapters not supported')
+        if isinstance(name, int):
+            cc.note('PyQt5 chapters not supported')
+            return
         chapter = cc.getChapter(name)
         if not chapter:
-            g.es_print('no such @chapter node: %s' % name)
+            g.es_print(f"no such @chapter node: {name}")
             return
         try:
             cc.selectChapterLockout = True
@@ -154,20 +144,15 @@ class ChapterController(object):
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
     def selectChapterByNameHelper(self, chapter, collapse=True):
-        '''Select the chapter, and redraw if necessary.'''
-        trace = False and not g.unitTesting
+        """Select the chapter, and redraw if necessary."""
         cc, c = self, self.c
-        if trace: g.trace('===== %s' % chapter)
         if not cc.selectedChapter and chapter.name == 'main':
             chapter.p = c.p
-            if trace: g.trace('main already selected:', chapter)
             return
         if chapter == cc.selectedChapter:
             chapter.p = c.p
-            if trace: g.trace('already selected:', chapter)
             return
         if cc.selectedChapter:
-            if trace: g.trace('unselecting:', cc.selectedChapter)
             cc.selectedChapter.unselect()
         else:
             main_chapter = cc.getChapter('main')
@@ -180,9 +165,7 @@ class ChapterController(object):
         else:
             p = chapter.p = chapter.findRootNode()
             if not p:
-                if trace: g.trace('no root node!', chapter)
                 return
-        if trace: g.trace('select:', chapter)
         chapter.select()
         c.setCurrentPosition(chapter.p)
         # Clean up, but not initially.
@@ -197,7 +180,7 @@ class ChapterController(object):
     #@+node:ekr.20070317130648: *3* cc.Utils
     #@+node:ekr.20070320085610: *4* cc.error/note/warning
     def error(self, s):
-        g.error('Error: %s' % (s))
+        g.error(f"Error: {s}")
 
     def note(self, s, killUnitTest=False):
         if g.unitTesting:
@@ -206,13 +189,13 @@ class ChapterController(object):
             if killUnitTest:
                 assert False, s
         else:
-            g.note('Note: %s' % (s))
+            g.note(f"Note: {s}")
 
     def warning(self, s):
-        g.es_print('Warning: %s' % (s))
+        g.es_print(f"Warning: {s}")
     #@+node:ekr.20160402025448.1: *4* cc.findAnyChapterNode
     def findAnyChapterNode(self):
-        '''Return True if the outline contains any @chapter node.'''
+        """Return True if the outline contains any @chapter node."""
         cc = self
         for p in cc.c.all_unique_positions():
             if p.h.startswith('@chapter '):
@@ -220,7 +203,7 @@ class ChapterController(object):
         return False
     #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
     def findChapterNameForPosition(self, p):
-        '''Return the name of a chapter containing p or None if p does not exist.'''
+        """Return the name of a chapter containing p or None if p does not exist."""
         cc, c = self, self.c
         if not p or not c.positionExists(p):
             return None
@@ -232,20 +215,19 @@ class ChapterController(object):
         return 'main'
     #@+node:ekr.20070325093617: *4* cc.findChapterNode
     def findChapterNode(self, name):
-        '''Return the position of the first @chapter node with the given name
+        """
+        Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
 
         All @chapter nodes are created as children of the @chapters node,
-        but users may move them anywhere.'''
-        trace = False and not g.unitTesting
+        but users may move them anywhere.
+        """
         cc = self
-        name = g.toUnicode(name)
+        name = g.checkUnicode(name)
         for p in cc.c.all_positions():
             chapterName, binding = self.parseHeadline(p)
             if chapterName == name:
-                if trace: g.trace('found @chapter', name)
                 return p
-        if trace: g.trace('not found: @chapter', name)
         return None # Not an error.
     #@+node:ekr.20070318124004: *4* cc.getChapter
     def getChapter(self, name):
@@ -262,7 +244,7 @@ class ChapterController(object):
         return theChapter and theChapter.name != 'main'
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
     def parseHeadline(self, p):
-        '''Return the chapter name and key binding for p.h.'''
+        """Return the chapter name and key binding for p.h."""
         if not self.re_chapter:
             self.re_chapter = re.compile(
                 r'^@chapter\s+([^@]+)\s*(@key\s*=\s*(.+)\s*)?')
@@ -279,7 +261,7 @@ class ChapterController(object):
         return chapterName, binding
     #@+node:ekr.20160414183716.1: *4* cc.sanitize
     def sanitize(self, s):
-        '''Convert s to a safe chapter name.'''
+        """Convert s to a safe chapter name."""
         # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
@@ -292,31 +274,23 @@ class ChapterController(object):
         return s[: 128]
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
     def selectChapterForPosition(self, p, chapter=None):
-        '''
+        """
         Select a chapter containing position p.
         New in Leo 4.11: prefer the given chapter if possible.
         Do nothing if p if p does not exist or is in the presently selected chapter.
 
         Note: this code calls c.redraw() if the chapter changes.
-        '''
-        trace = False and not g.unitTesting
+        """
         c, cc = self.c, self
         # New in Leo 4.11
         if cc.selectChapterLockout:
             return
         selChapter = cc.getSelectedChapter()
-        if trace: g.trace('***', p.h,
-            chapter.name if chapter else 'main',
-            selChapter.name if selChapter else 'main',
-            g.callers(2))
         if not chapter and not selChapter:
-            if trace: g.trace('*** selecting main chapter')
             return
         if not p:
-            if trace: g.trace('no p')
             return
         if not c.positionExists(p):
-            if trace: g.trace('does not exist', p.h)
             return
         # New in Leo 4.11: prefer the given chapter if possible.
         theChapter = chapter or selChapter
@@ -324,23 +298,18 @@ class ChapterController(object):
             return
         # First, try the presently selected chapter.
         firstName = theChapter.name
-        # g.trace('===== firstName', firstName)
         if firstName == 'main':
-            if trace: g.trace('no search: main chapter:', p.h)
             return
         if theChapter.positionIsInChapter(p):
-            if trace: g.trace('position found in chapter:', theChapter.name, p.h)
             cc.selectChapterByName(theChapter.name)
             return
         for name in cc.chaptersDict:
             if name not in (firstName, 'main'):
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
-                    if trace: g.trace('select:', theChapter.name)
                     cc.selectChapterByName(name)
                     break
         else:
-            if trace: g.trace('select main')
             cc.selectChapterByName('main')
         # Fix bug 869385: Chapters make the nav_qt.py plugin useless
         assert not self.selectChapterLockout
@@ -348,7 +317,7 @@ class ChapterController(object):
         c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
-        '''Called early and often to discover all chapter names.'''
+        """Called early and often to discover all chapter names."""
         c, cc = self.c, self
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         if 'main' not in cc.chaptersDict:
@@ -367,37 +336,35 @@ class ChapterController(object):
         return result
     #@-others
 #@+node:ekr.20070317085708: ** class Chapter
-class Chapter(object):
-    '''A class representing the non-gui data of a single chapter.'''
+class Chapter:
+    """A class representing the non-gui data of a single chapter."""
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__
     def __init__(self, c, chapterController, name):
         self.c = c
         self.cc = cc = chapterController
-        self.name = g.toUnicode(name)
+        self.name = g.checkUnicode(name)
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
         self.p = c.p
         self.root = self.findRootNode()
         if cc.tt:
-            #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__
     def __str__(self):
-        '''Chapter.__str__'''
-        return '<chapter: %s, p: %s>' % (self.name, repr(self.p and self.p.h))
+        """Chapter.__str__"""
+        return f"<chapter: {self.name}, p: {repr(self.p and self.p.h)}>"
 
     __repr__ = __str__
     #@+node:ekr.20110607182447.16464: *3* chapter.findRootNode
     def findRootNode(self):
-        '''Return the @chapter node for this chapter.'''
+        """Return the @chapter node for this chapter."""
         if self.name == 'main':
             return None
-        else:
-            return self.cc.findChapterNode(self.name)
+        return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
     def select(self, w=None, selectEditor=True):
-        '''Restore chapter information and redraw the tree when a chapter is selected.'''
+        """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
         try:
@@ -411,9 +378,8 @@ class Chapter(object):
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
     def chapterSelectHelper(self, w=None, selectEditor=True):
-        trace = False and not g.unitTesting
+
         c, cc = self.c, self.cc
-        if trace: g.trace('-----------', self, 'w:', bool(w))
         cc.selectedChapter = self
         if self.name == 'main':
             return # 2016/04/20
@@ -424,23 +390,19 @@ class Chapter(object):
             return
         if self.p and not c.positionExists(self.p):
             self.p = p = root.copy()
-            if trace: g.trace('switch to root', self)
         # Next, recompute p and possibly select a new editor.
         if w:
             assert w == c.frame.body.wrapper
             assert w.leo_p
             self.p = p = self.findPositionInChapter(w.leo_p) or root.copy()
-            if trace: g.trace('recomputed1:', self)
         else:
             # This must be done *after* switching roots.
             self.p = p = self.findPositionInChapter(self.p) or root.copy()
-            if trace: g.trace('recomputed2', self)
             if selectEditor:
                 # Careful: c.selectPosition would pop the hoist stack.
                 w = self.findEditorInChapter(p)
                 c.frame.body.selectEditor(w) # Switches text.
                 self.p = p # 2016/04/20: Apparently essential.
-            if trace: g.trace('recomputed3', self)
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
                 self.p = p = p.firstChild()
@@ -448,47 +410,37 @@ class Chapter(object):
                 # 2016/04/20: Create a dummy first child.
                 self.p = p = p.insertAsLastChild()
                 p.h = 'New Headline'
-                if trace: g.trace('inserted child of @chapter node', p.h)
         c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         # Careful: c.selectPosition would pop the hoist stack.
-        if trace: g.trace('done:', self)
         c.setCurrentPosition(p)
         g.doHook('hoist-changed', c=c)
     #@+node:ekr.20070317131708: *4* chapter.findPositionInChapter
     def findPositionInChapter(self, p1, strict=False):
-        '''Return a valid position p such that p.v == v.'''
-        trace = False and not g.unitTesting
-        verbose = False
+        """Return a valid position p such that p.v == v."""
         c, name = self.c, self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.
         if name == 'main' and c.positionExists(p1):
             return p1
         if not p1:
-            if trace and verbose: g.trace('no p1', self)
             return None
         root = self.findRootNode()
         if not root:
-            if trace: g.trace('no root:', self)
             return None
         if c.positionExists(p1, root=root.copy()):
-            if trace and verbose: g.trace('found', p1.h, 'in', self)
             return p1
         if strict:
-            if trace: g.trace('strict test fails', p1.h, 'in', self)
             return None
         if name == 'main':
             theIter = c.all_unique_positions
         else:
             theIter = root.self_and_subtree
-        for p in theIter():
+        for p in theIter(copy=False):
             if p.v == p1.v:
-                if trace: g.trace('found vnode', p1.h, 'in', self)
                 return p.copy()
-        if trace: g.trace('not found', p1.h, 'in', self)
         return None
     #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter
     def findEditorInChapter(self, p):
-        '''return w, an editor displaying position p.'''
+        """return w, an editor displaying position p."""
         chapter, c = self, self.c
         w = c.frame.body.findEditorForChapter(chapter, p)
         if w:
@@ -498,42 +450,29 @@ class Chapter(object):
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter(self, p):
         p2 = self.findPositionInChapter(p, strict=True)
-        # g.trace(self.name,'returns',p2)
         return p2
     #@+node:ekr.20070320091806.1: *3* chapter.unselect
     def unselect(self):
-        '''Remember chapter info when a chapter is about to be unselected.'''
-        trace = False and not g.unitTesting
+        """Remember chapter info when a chapter is about to be unselected."""
         c = self.c
         # Always try to return to the same position.
-        if trace:
-            g.trace('======================', self)
-            # g.trace('main', self.cc.getChapter('main'))
         self.p = c.p
         if self.name == 'main':
-            if trace: g.trace(self)
             return
         root = None
         while c.hoistStack:
             bunch = c.hoistStack.pop()
             root = bunch.p
             if root == self.root:
-                if trace: g.trace('found', root.h)
                 break
-        if trace and not root:
-            # Not serious. Can be caused by a user de-hoist.
-            g.trace('error unselecting', self)
         # Re-institute the previous hoist.
         if c.hoistStack:
             p = c.hoistStack[-1].p
-            if trace: g.trace('re-hoist', p.h, c.positionExists(p))
             # Careful: c.selectPosition would pop the hoist stack.
             c.setCurrentPosition(p)
         else:
-            if trace: g.trace('empty hoist-stack')
             p = root or c.p
             c.setCurrentPosition(p)
-        if trace: g.trace(c.hoistStack)
     #@-others
 #@-others
 #@@language python

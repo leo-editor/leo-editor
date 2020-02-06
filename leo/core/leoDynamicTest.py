@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.5: * @file leoDynamicTest.py
-'''
+"""
 A module to run unit tests with the leoBridge module.
 Leo's unit test code uses this module when running unit tests externally.
-'''
+"""
 g_trace = False
     # Enables the trace in main.
 trace_argv = False
@@ -28,20 +28,20 @@ import leo.core.leoBridge as leoBridge
 #@+others
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
 def main():
-    '''Run a dynamic test using the Leo bridge.'''
+    """Run a dynamic test using the Leo bridge."""
     tag = 'leoDynamicTests.leo'
     if g_trace: t1 = time.time()
     options = scanOptions()
     if g_trace and trace_main:
         print('leoDynamicTest.py:main: options...')
-        print('  curdir         %s' % cwd)
-        print('  path:          %s' % options.path)
-        print('  gui:           %s' % options.gui)
-        print('  load_plugins:  %s' % options.load_plugins)
-        print('  read_settings: %s' % options.read_settings)
-        print('  silent:        %s' % options.silent)
-        print('  trace_plugins: %s' % options.trace_plugins)
-        print('  verbose:       %s' % options.verbose)
+        print(f"  curdir         {cwd}")
+        print(f"  path:          {options.path}")
+        print(f"  gui:           {options.gui}")
+        print(f"  load_plugins:  {options.load_plugins}")
+        print(f"  read_settings: {options.read_settings}")
+        print(f"  silent:        {options.silent}")
+        print(f"  trace_plugins: {options.trace_plugins}")
+        print(f"  verbose:       {options.verbose}")
     bridge = leoBridge.controller(
         gui=options.gui,
         loadPlugins=options.load_plugins,
@@ -73,7 +73,7 @@ def runUnitTests(c, g):
 #@@nobeautify
 
 def scanOptions():
-    '''Handle all options and remove them from sys.argv.'''
+    """Handle all options and remove them from sys.argv."""
     parser = optparse.OptionParser()
     parser.add_option('--path', dest='path')
     parser.add_option('--gui',  dest='gui')

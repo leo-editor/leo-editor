@@ -2,7 +2,7 @@
 #@+node:ekr.20140726091031.18143: * @file writers/basewriter.py
 '''A module defining the base class for all writers in leo.plugins.writers.'''
 
-class BaseWriter(object):
+class BaseWriter:
     '''The base writer class for all writers in leo.plugins.writers.'''
 
     def __init__(self, c):
@@ -34,11 +34,8 @@ class BaseWriter(object):
     #@+node:ekr.20161125140611.1: ** basewriter.split_lines
     def split_lines(self, s):
         '''Exactly the same as g.splitLines(s).'''
-        if s:
-            return s.splitlines(True)
-                # This is a Python string function!
-        else:
-            return []
+        return s.splitlines(True) if s else []
+            # This is a Python string function!
     #@-others
 
 #@@language python

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
-'''Leo's Qt-related commands defined by @g.command.'''
+"""Leo's Qt-related commands defined by @g.command."""
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoConfig as leoConfig
@@ -8,7 +8,7 @@ from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init():
-    '''Top-level init function for qt_commands.py.'''
+    """Top-level init function for qt_commands.py."""
     ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
@@ -65,50 +65,10 @@ def undetach_editor(c):
     wdg.show()
     parent.setSizes(sizes)
     c.frame.detached_body_info = None
-#@+node:tbrown.20140620095406.40066: ** qt: gui-show/hide/toggle
-# create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
-widgets = [
-    ('menu', lambda c: c.frame.top.menuBar()),
-    ('iconbar', lambda c: c.frame.top.iconBar),
-    ('statusbar', lambda c: c.frame.top.statusBar),
-    ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
-    ('tabbar', lambda c: g.app.gui.frameFactory.masterFrame.tabBar()),
-]
-for vis in 'hide', 'show', 'toggle':
-    for name, widget in widgets:
-
-        def dovis(event, widget=widget, vis=vis):
-            c = event['c']
-            w = widget(c)
-            if vis == 'toggle':
-                vis = 'hide' if w.isVisible() else 'show'
-            # Executes either w.hide() or w.show()
-            getattr(w, vis)()
-
-        g.command("gui-%s-%s" % (name, vis))(dovis)
-
-    def doall(event, vis=vis):
-        c = event['c']
-        for name, widget in widgets:
-            w = widget(c)
-            if vis == 'toggle':
-                # note, this *intentionally* toggles all to on/off
-                # based on the state of the first
-                vis = 'hide' if w.isVisible() else 'show'
-            getattr(w, vis)()
-
-    g.command("gui-all-%s" % vis)(doall)
-#@+node:ekr.20140918124632.17893: ** qt: print-style-sheet
-@g.command('print-style-sheet')
-def print_style_sheet(event):
-    '''print-style-sheet command.'''
-    c = event.get('c')
-    if c:
-        c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
 def showColorNames(event=None):
-    '''Put up a dialog showing color names.'''
+    """Put up a dialog showing color names."""
     c = event.get('c')
     template = '''
         QComboBox {
@@ -149,7 +109,7 @@ def showColorNames(event=None):
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
 def showColorWheel(self, event=None):
-    '''Show a Qt color dialog.'''
+    """Show a Qt color dialog."""
     c = self.c; p = c.p
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
@@ -165,8 +125,7 @@ def showColorWheel(self, event=None):
         g.es("No color selected")
     elif in_color_setting:
         udata = c.undoer.beforeChangeNodeContents(p)
-        p.h = '%s = %s'%(p.h.split('=', 1)[0].strip(),
-                         g.u(picker.selectedColor().name()))
+        p.h = f"{p.h.split('=', 1)[0].strip()} = {picker.selectedColor().name()}"
         c.undoer.afterChangeNodeContents(p, 'change-color', udata)
     else:
         text = picker.selectedColor().name()
@@ -175,7 +134,7 @@ def showColorWheel(self, event=None):
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
 def showFonts(self, event=None):
-    '''Open a tab in the log pane showing a font picker.'''
+    """Open a tab in the log pane showing a font picker."""
     c = self.c; p = c.p
 
     picker = QtWidgets.QFontDialog()
@@ -198,7 +157,6 @@ def showFonts(self, event=None):
         font = picker.selectedFont()
         udata = c.undoer.beforeChangeNodeContents(p)
         comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
-
         defs = [
             '\n' if comments else '',
             '%s_family = %s\n'%(name, font.family()),
@@ -206,9 +164,99 @@ def showFonts(self, event=None):
             '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
             '%s_size = %s\n'%(name, font.pointSizeF())
         ]
-
-        p.b = g.u('').join(comments + defs)
+        p.b = ''.join(comments + defs)
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
+#@+node:ekr.20190724172314.1: ** qt: show-hide-body-dock
+@g.command('show-hide-body-dock')
+def show_hide_body_dock(event):
+    """Show or hide the Tabs dock."""
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.body_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'body':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724172258.1: ** qt: show-hide-outline-dock
+@g.command('show-hide-outline-dock')
+def show_hide_outline_dock(event):
+    """Show or hide the Outline dock."""
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.outline_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'outline':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724172547.1: ** qt: show-hide-render-dock
+@g.command('show-hide-render-dock')
+def show_hide_render_dock(event):
+    """Show or hide the Tabs dock."""
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    pc = g.app.pluginsController
+    vr = pc.getPluginModule('leo.plugins.viewrendered')
+    x = vr and vr.controllers.get(c.hash())
+    dock = x and x.leo_dock
+    if not dock:
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20190724170436.1: ** qt: show-hide-tabs-dock
+@g.command('show-hide-tabs-dock')
+def show_hide_tabs_dock(event):
+    """Show or hide the Tabs dock."""
+    c = event.get('c')
+    dw = c and c.frame.top
+    if not dw:
+        return
+    if not g.app.dock:
+        g.es('this command works only when using docks')
+        return
+    dock = dw.tabs_dock
+    if not dock:
+        return
+    if g.app.get_central_widget(c) == 'tabs':
+        g.es('can not hide the central dock widget')
+        return
+    if dock.isVisible():
+        dock.hide()
+    else:
+        dock.show()
+#@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
+@g.command('show-style-sheet')
+def print_style_sheet(event):
+    """show-style-sheet command."""
+    c = event.get('c')
+    if c:
+        c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')
@@ -226,7 +274,7 @@ def style_reload(event):
 #@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
 def style_set_selected(event):
-    '''style-set-selected command. Set the global stylesheet to c.p.b. (For testing)'''
+    """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
     c = event.get('c')
     if c:
         c.styleSheetManager.set_selected_style_sheet()

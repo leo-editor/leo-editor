@@ -10,8 +10,7 @@ class Csharp_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Csharp_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'csharp',
             state_class = Csharp_ScanState,

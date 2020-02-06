@@ -22,20 +22,47 @@
 
     <!-- scale screen-shot to fit parent container -->
     <style type="text/css">
-    img { max-width:100%; max-height:100%; }
+    img {
+        max-width:50%; max-height:50%;
+    }
     </style>
 
-    <!--
     <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '5.7',
-        COLLAPSE_MODINDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
-      };
+    var DOCUMENTATION_OPTIONS = {
+      URL_ROOT:    './',
+      VERSION:     '6.1',
+      COLLAPSE_INDEX: false,
+      FILE_SUFFIX: '.html',
+      HAS_SOURCE:  true,
+      SOURCELINK_SUFFIX: '.txt'
+    };
     </script>
-    -->
+
+    <script type="text/javascript">
+    function search(event) {
+      if (event === null || (event.keyCode || event.which) === 13) {
+        window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+      }
+    }
+    </script>
+
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+
+    <link rel="search" title="Search" href="search.html" />
+
+    <div id="searchbox" style="display: none" role="search">
+      <h3>Quick search</h3>
+        <form class="search" action="search.html" method="get">
+          <div><input type="text" name="q" /></div>
+          <div><input type="submit" value="Go" /></div>
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+
     <!--@+<< flattr head >>-->
     <!--@+node:ekr.20110518101739.18155: *3* << flattr head >>-->
     <script type="text/javascript">
@@ -50,7 +77,6 @@
     /* ]]> */
     </script>
     <!--@-<< flattr head >>-->
-
     <!--@+<< feed2js stylesheet >>-->
     <!--@+node:ekr.20111028195854.16608: *3* << feed2js stylesheet >>-->
     <style type="text/css" media="all">
@@ -75,20 +101,10 @@
 
     </style>
     <!--@-<< feed2js stylesheet >>-->
-
-    <!-- <script type="text/javascript" src="_static/jquery.js"></script>-->
-    <!-- <script type="text/javascript" src="_static/doctools.js"></script>-->
-    <link rel="top" title="Leo 5.7 documentation" href="index.html" />
+    <link rel="top" title="Leo 6.1 documentation" href="index.html" />
+    <link rel="next" title="Table of Contents" href="leo_toc.html" />
     <link rel="Users Guide" title="Leo&#8217;s Users Guide" href="leo_toc.html" />
-    <!-- <link rel="prev" title="Using Leo's Commands" href="commands.html" />--> 
 
-    <script type="text/javascript">
-    function search(event) {
-      if (event === null || (event.keyCode || event.which) === 13) {
-        window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
-      }
-    }
-    </script>
     <!--@-<< head >>-->
 </head>
 <body>
@@ -106,7 +122,7 @@
       <li class="right" >
         <a href="leo_toc.html" title="Users Guide"
            accesskey="N">contents</a> |</li>
-      <li><a href="leo_toc.html">Leo 5.7 documentation</a></li>
+      <li><a href="leo_toc.html">Leo 6.1 documentation</a></li>
       <!--  &raquo; -->
     </ul>
   </div>
@@ -144,6 +160,9 @@
               <em>Outline nodes may appear in more than one place</em>, allowing multiple organizations of data within a single outline.
 
               <p>
+                <a href="https://kaleguy.github.io/leovue/#/t/2/">
+                  <strong>Joe Orr's must see demo</strong></a>.
+                <br>
                 <a href="preface.html">
                   <strong>A brief summary of Leo</strong></a>.
                 <br>
@@ -173,12 +192,24 @@
               </script>
               -->
               <!--@-<< Leo Google group & postcard >>-->
+              <!--@+<< embed leovue demo >>-->
+              <!--@+node:ekr.20190415091241.1: *3* << embed leovue demo >>-->
+              <!-- <p> -->
+              <!-- The following is -->
+              <!-- <a class="reference external" href="https://kaleguy.github.io/leovue/#/t/2/"> -->
+              <!-- Joe Orr's <strong>must see</strong> demo</a>: -->
+              <!-- </p> -->
+              <!-- <iframe -->
+                <!-- src="https://chrisgeorge.ca/leovue/#/t/1" -->
+                <!-- style="height:768px;width:1024px" > -->
+              <!-- </iframe> -->
+              <!--@-<< embed leovue demo >>-->
               <!--@+<< screenshot >>-->
               <!--@+node:ekr.20130924043646.21624: *3* << screenshot >>-->
-              <p>Here is a screenshot of Leo's main window:</p>
+              <p>Here is reduced screenshot of Leo's main window. You can view the full-sized image using something like "view image" in your browser.</p>
 
               <img class="screenshot"
-                  src="screen-shots/leo-workbook.png"
+                  src="screen-shots/DarkScreenShot.png"
                   alt="ScreenShot"/>
               <!--@-<< screenshot >>-->
               <!--@+<< embed leo-editor >>-->
@@ -217,7 +248,7 @@
             </p>
 
             <p>
-              <a class="reference external" href="leo_toc.html">Table of contents</a>: click the lion!
+              <a class="reference external" href="leo_toc.html">Table of contents</a>: Click the lion!
             </p>
             <p>
             <form>
@@ -228,25 +259,30 @@
             </form>
             </p>
 
+            <a class="reference external"
+              href="https://kaleguy.github.io/leovue/#/t/2/">
+              Joe Orr's <strong>must see</strong> demo</a><br>
+
             <a class="reference external" href="tutorial.html">
               Tutorial</a><br>
 
             <a class="reference external" href="leo_toc.html">
               Documentation</a><br>
               
-            <a class="reference external" href="http:screen-shots.html">
+            <a class="reference external" href="screen-shots.html">
               Screen shots</a><br>
               
             <a class="reference external" href="screencasts.html">
               Videos</a><br>
               
-            <!--
             <a class="reference external" href="testimonials.html">
-              Quotes from Leo&#8217;s Users</a><br>
-            -->
+              What people are saying</a><br>
               
             <a class="reference external" href="slides.html">
               Tutorial Slide Shows</a><br>
+              
+            <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1064">
+              Leo's Public To Do List</a><br>
               
             <a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&uio=d4">
               #leo IRC</a><br>
@@ -257,24 +293,11 @@
             <a class="reference external" href="https://github.com/leo-editor">
               Leo at GitHub</a><br>
               
-            <a class="reference external" href="https://github.com/kaleguy/leovue#leo-vue">
-              LeoVue, by Joe Orr</a><br>
-              
             <a class="reference external" href="https://github.com/leo-editor/snippets">
               Code Snippets</a><br>
-
-            <!--
-            <a class="reference external" href="http://leo.zwiki.org">
-              Leo&#8217;s Wiki</a><br>
-            -->
               
             <a class="reference external" href="http://leo-editor.readthedocs.org/en/latest/">
-              Readthedocs (API)</a><br>
-              
-            <!--
-            <a class="reference external" href="http://www.mind-mapping.org/">
-              Mind Mapping</a><br>
-            -->
+              Read the docs (API)</a><br>
 
             <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues">
               Report a bug</a><br>
@@ -285,18 +308,16 @@
             </p>
             <p>
             <div id="searchbox" style="">
-              <!-- <h4>Google Search</h4> -->
                 <input id='q' type="text" name="q" onkeypress="search(event)">
               <div><button onclick="search(null)">Google Search</button></div>
               <div class="searchtip" style="font-size: 90%">
-                Use quotes for "@file" and similar symbols.
+                <!-- Use quotes for "@file" and similar symbols. -->
               </div>
             </div>
             </p>
 
-            <!-- <p>Leo: Leonine Editor with Outlines</p> -->
-
-            <p>Written by <a HREF="ekr.html">Edward K. Ream</a>
+            <p>Written by <a HREF="ekr.html">Edward K. Ream</a><br>
+            and <a HREF="acknowledgements.html">many others</a>.
             <!--@+<< flattr icon >>-->
             <!--@+node:ekr.20110518101739.18154: *4* << flattr icon >>-->
             <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
@@ -330,16 +351,16 @@
         <a href="leo_toc.html" title="Users Guide"
            >contents</a> |</li>
 
-      <li><a href="leo_toc.html">Leo 5.7 documentation</a></li> 
+      <li><a href="leo_toc.html">Leo 6.1 documentation</a></li> 
     </ul>
   </div>
   <!--@-<< div bottom nav >>-->
   <!--@+<< div footer >>-->
   <!--@+node:ekr.20100808060203.4278: ** << div footer >>-->
   <div class="footer">
-    &copy; Copyright 1997-2018, Edward K. Ream.
-    Last updated on February 27, 2018.
-    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    &copy; Copyright 1997-2019, Edward K. Ream.
+    Last updated on October 26, 2019.
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.6.
   </div>
   <!--@-<< div footer >>-->
 </body>

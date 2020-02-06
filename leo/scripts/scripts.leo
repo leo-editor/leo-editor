@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070615131954"><vh>Startup</vh>
-<v t="ekr.20150302053516.3"><vh>@settings</vh></v>
+<v t="ekr.20150302053516.3"><vh>@settings</vh>
+<v t="mhw.20181210131101.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
+</v>
 <v t="ekr.20070427110751"><vh>@chapters</vh></v>
 <v t="ekr.20141116105945.2"><vh>@persistence</vh>
 <v t="ekr.20141116105945.3"><vh>@data:@auto create-leobat.bat</vh>
@@ -19,18 +18,198 @@
 <v t="ekr.20161206070406.1"><vh>@data:@auto-md ../doc/c2py.md</vh>
 <v t="ekr.20161206090903.1"><vh>@gnxs</vh></v>
 </v>
+<v t="maphew.20190209160547.1"><vh>@data:@auto build-leo.bat</vh>
+<v t="lkj.20190712002811.1"><vh>@gnxs</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
-<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e372e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
+<v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d71005806000000302e382e323371017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a71156573732e"><vh>@file leoScripts.txt</vh></v>
+<v t="mhw-debug-1081.20190310203401.1"><vh>Windows-only scripts</vh>
+<v t="maphew.20130613230258.2801"><vh>@file elevate.py</vh></v>
+<v t="maphew.20130809155103.2863"><vh>@auto build-leo.bat</vh></v>
 </v>
-<v t="ekr.20170303064120.1"><vh>What's new in this file</vh>
-<v t="ekr.20170303064128.1"><vh>Leo 5.5</vh>
-<v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
-<v t="ekr.20161017063308.1"><vh>Find problems in pylint-leo-rc.txt</vh></v>
-<v t="ekr.20141105055521.16"><vh>Replace body.x with body.wrapper.x</vh></v>
-<v t="ekr.20170120110948.4"><vh>Print Qt color names</vh></v>
+</v>
+<v t="ekr.20111017085134.16069"><vh>@ignore @button nodes</vh>
+<v t="ekr.20111017085134.16072"><vh>@button check-dirty</vh></v>
+<v t="ekr.20150508132450.1"><vh>@button create decorators</vh>
+<v t="ekr.20150508132450.2"><vh>create_d</vh></v>
+<v t="ekr.20150508132450.3"><vh>create_decorator</vh></v>
+<v t="ekr.20150508132450.4"><vh>create_decorators</vh></v>
+<v t="ekr.20150508132450.5"><vh>create_fixups</vh></v>
+<v t="ekr.20150508132450.6"><vh>find_class</vh></v>
+<v t="ekr.20150508132450.7"><vh>find_next_clone</vh></v>
+<v t="ekr.20150508132450.8"><vh>munge_lines</vh></v>
+<v t="ekr.20150508132450.9"><vh>run</vh></v>
+</v>
+<v t="ekr.20111017085134.16070"><vh>@button jython</vh></v>
+<v t="ekr.20111017085134.16074"><vh>@button Lines Down</vh>
+<v t="ekr.20111017085134.16075"><vh>moveLinesDown</vh></v>
+</v>
+<v t="ekr.20111017085134.16076"><vh>@button Lines Up</vh>
+<v t="ekr.20111017085134.16077"><vh>moveLinesUp</vh></v>
+</v>
+<v t="ekr.20111017085134.16078"><vh>@button lispCall @key=alt+6</vh>
+<v t="ekr.20111017085134.16079"><vh>ctor</vh></v>
+<v t="ekr.20111017085134.16080"><vh>run &amp; helpers</vh>
+<v t="ekr.20111017085134.16081"><vh>findCalls</vh></v>
+<v t="ekr.20111017085134.16082"><vh>findDefs</vh></v>
+<v t="ekr.20111017085134.16083"><vh>stripComments</vh></v>
+<v t="ekr.20111017085134.16084"><vh>stripLispIds</vh></v>
+<v t="ekr.20111017085134.16085"><vh>stripStrings</vh></v>
+</v>
+<v t="ekr.20111017085134.16086"><vh>class token</vh></v>
+<v t="ekr.20111017085134.16087"><vh>choose</vh></v>
+<v t="ekr.20111017085134.16088"><vh>dumpList</vh></v>
+<v t="ekr.20111017085134.16089"><vh>Parsing...</vh>
+<v t="ekr.20111017085134.16090"><vh>parse</vh></v>
+<v t="ekr.20111017085134.16091"><vh>scan &amp; helpers</vh>
+<v t="ekr.20111017085134.16092"><vh>skipComment</vh></v>
+<v t="ekr.20111017085134.16093"><vh>skipId</vh></v>
+<v t="ekr.20111017085134.16094"><vh>skipString</vh></v>
+</v>
+<v t="ekr.20111017085134.16095"><vh>scanForest</vh></v>
+</v>
+<v t="ekr.20111017085134.16096"><vh>Code generators...</vh>
+<v t="ekr.20111017085134.16097"><vh>gen</vh></v>
+<v t="ekr.20111017085134.16098"><vh>gen_token</vh></v>
+<v t="ekr.20111017085134.16099"><vh>gen_block &amp; helper</vh>
+<v t="ekr.20111017085134.16100"><vh>gen_block_id</vh></v>
+</v>
+<v t="ekr.20111017085134.16101"><vh>gen_call &amp; helper</vh>
+<v t="ekr.20111017085134.16102"><vh>gen_arg</vh></v>
+</v>
+<v t="ekr.20111017085134.16103"><vh>gen_def</vh></v>
+<v t="ekr.20111017085134.16104"><vh>gen_if &amp; helpers</vh>
+<v t="ekr.20111017085134.16105"><vh>gen_then</vh></v>
+</v>
+<v t="ekr.20111017085134.16106"><vh>gen_expr</vh></v>
+<v t="ekr.20111017085134.16107"><vh>gen_let &amp; helper</vh>
+<v t="ekr.20111017085134.16108"><vh>gen_let_bindings</vh></v>
+</v>
+<v t="ekr.20111017085134.16109"><vh>put...</vh>
+<v t="ekr.20111017085134.16110"><vh>put</vh></v>
+<v t="ekr.20111017085134.16111"><vh>put_token</vh></v>
+<v t="ekr.20111017085134.16112"><vh>put_code &amp; put_code_line</vh></v>
+<v t="ekr.20111017085134.16113"><vh>put_code_token</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20160123185308.1"><vh>@button make_stub_files script</vh>
+<v t="ekr.20160123185308.2"><vh>class MakeStubFile</vh>
+<v t="ekr.20160123185308.3"><vh>msf.ctors &amp; helpers</vh>
+<v t="ekr.20160123185308.4"><vh>msf.make_types_dict</vh></v>
+<v t="ekr.20160123185308.5"><vh>msf.scan_types_data</vh></v>
+</v>
+<v t="ekr.20160123185308.6"><vh>msf.make_stub_file</vh></v>
+<v t="ekr.20160123185308.7"><vh>msf.run</vh></v>
+</v>
+<v t="ekr.20160123185308.8"><vh>class AstFormatter</vh>
+<v t="ekr.20160123185308.9"><vh> f.Entries</vh>
+<v t="ekr.20160123185308.10"><vh>f.format</vh></v>
+<v t="ekr.20160123185308.11"><vh>f.visit</vh></v>
+</v>
+<v t="ekr.20160123185308.12"><vh>f.Contexts</vh>
+<v t="ekr.20160123185308.13"><vh>f.ClassDef</vh></v>
+<v t="ekr.20160123185308.14"><vh>f.FunctionDef</vh></v>
+<v t="ekr.20160123185308.15"><vh>f.Interactive</vh></v>
+<v t="ekr.20160123185308.16"><vh>f.Module</vh></v>
+<v t="ekr.20160123185308.17"><vh>f.Lambda</vh></v>
+</v>
+<v t="ekr.20160123185308.18"><vh>f.Expressions</vh>
+<v t="ekr.20160123185308.19"><vh>f.Expr</vh></v>
+<v t="ekr.20160123185308.20"><vh>f.Expression</vh></v>
+<v t="ekr.20160123185308.21"><vh>f.GeneratorExp</vh></v>
+<v t="ekr.20160123185308.22"><vh>f.ctx nodes</vh></v>
+</v>
+<v t="ekr.20160123185308.23"><vh>f.Operands</vh>
+<v t="ekr.20160123185308.24"><vh>f.arguments</vh></v>
+<v t="ekr.20160123185308.25"><vh>f.arg (Python3 only)</vh></v>
+<v t="ekr.20160123185308.26"><vh>f.Attribute</vh></v>
+<v t="ekr.20160123185308.27"><vh>f.Bytes</vh></v>
+<v t="ekr.20160123185308.28"><vh>f.Call &amp; f.keyword</vh>
+<v t="ekr.20160123185308.29"><vh>f.keyword</vh></v>
+</v>
+<v t="ekr.20160123185308.30"><vh>f.comprehension</vh></v>
+<v t="ekr.20160123185308.31"><vh>f.Dict</vh></v>
+<v t="ekr.20160123185308.32"><vh>f.Ellipsis</vh></v>
+<v t="ekr.20160123185308.33"><vh>f.ExtSlice</vh></v>
+<v t="ekr.20160123185308.34"><vh>f.Index</vh></v>
+<v t="ekr.20160123185308.35"><vh>f.List</vh></v>
+<v t="ekr.20160123185308.36"><vh>f.ListComp</vh></v>
+<v t="ekr.20160123185308.37"><vh>f.Name</vh></v>
+<v t="ekr.20160123185308.38"><vh>f.Num</vh></v>
+<v t="ekr.20160123185308.39"><vh>f.Repr</vh></v>
+<v t="ekr.20160123185308.40"><vh>f.Slice</vh></v>
+<v t="ekr.20160123185308.41"><vh>f.Str</vh></v>
+<v t="ekr.20160123185308.42"><vh>f.Subscript</vh></v>
+<v t="ekr.20160123185308.43"><vh>f.Tuple</vh></v>
+</v>
+<v t="ekr.20160123185308.44"><vh>f.Operators</vh>
+<v t="ekr.20160123185308.45"><vh>f.BinOp</vh></v>
+<v t="ekr.20160123185308.46"><vh>f.BoolOp</vh></v>
+<v t="ekr.20160123185308.47"><vh>f.Compare</vh></v>
+<v t="ekr.20160123185308.48"><vh>f.UnaryOp</vh></v>
+<v t="ekr.20160123185308.49"><vh>f.ifExp (ternary operator)</vh></v>
+</v>
+<v t="ekr.20160123185308.50"><vh>f.Statements</vh>
+<v t="ekr.20160123185308.51"><vh>f.Assert</vh></v>
+<v t="ekr.20160123185308.52"><vh>f.Assign</vh></v>
+<v t="ekr.20160123185308.53"><vh>f.AugAssign</vh></v>
+<v t="ekr.20160123185308.54"><vh>f.Break</vh></v>
+<v t="ekr.20160123185308.55"><vh>f.Continue</vh></v>
+<v t="ekr.20160123185308.56"><vh>f.Delete</vh></v>
+<v t="ekr.20160123185308.57"><vh>f.ExceptHandler</vh></v>
+<v t="ekr.20160123185308.58"><vh>f.Exec</vh></v>
+<v t="ekr.20160123185308.59"><vh>f.For</vh></v>
+<v t="ekr.20160123185308.60"><vh>f.Global</vh></v>
+<v t="ekr.20160123185308.61"><vh>f.If</vh></v>
+<v t="ekr.20160123185308.62"><vh>f.Import &amp; helper</vh>
+<v t="ekr.20160123185308.63"><vh>f.get_import_names</vh></v>
+</v>
+<v t="ekr.20160123185308.64"><vh>f.ImportFrom</vh></v>
+<v t="ekr.20160123185308.65"><vh>f.Pass</vh></v>
+<v t="ekr.20160123185308.66"><vh>f.Print</vh></v>
+<v t="ekr.20160123185308.67"><vh>f.Raise</vh></v>
+<v t="ekr.20160123185308.68"><vh>f.Return</vh></v>
+<v t="ekr.20160123185308.69"><vh>f.Suite</vh></v>
+<v t="ekr.20160123185308.70"><vh>f.TryExcept</vh></v>
+<v t="ekr.20160123185308.71"><vh>f.TryFinally</vh></v>
+<v t="ekr.20160123185308.72"><vh>f.While</vh></v>
+<v t="ekr.20160123185308.73"><vh>f.With</vh></v>
+<v t="ekr.20160123185308.74"><vh>f.Yield</vh></v>
+</v>
+<v t="ekr.20160123185308.75"><vh>f.Utils</vh>
+<v t="ekr.20160123185308.76"><vh>f.kind</vh></v>
+<v t="ekr.20160123185308.77"><vh>f.indent</vh></v>
+<v t="ekr.20160123185308.78"><vh>f.op_name</vh></v>
+</v>
+</v>
+<v t="ekr.20160123185308.79"><vh>class StubFormatter (AstFormatter)</vh>
+<v t="ekr.20160123185308.80"><vh>sf.Constants &amp; Name</vh></v>
+</v>
+<v t="ekr.20160123185308.81"><vh>class StubTraverser (ast.NodeVisitor)</vh>
+<v t="ekr.20160123185308.82"><vh>st.indent &amp; out</vh></v>
+<v t="ekr.20160123185308.83"><vh>st.run</vh></v>
+<v t="ekr.20160123185308.84"><vh>st.visit (not used)</vh></v>
+<v t="ekr.20160123185308.85"><vh>st.Visitors</vh>
+<v t="ekr.20160123185308.86"><vh>st.ClassDef</vh></v>
+<v t="ekr.20160123185308.87"><vh>st.FunctionDef &amp; helpers</vh>
+<v t="ekr.20160123185308.88"><vh>format_arguments &amp; helper</vh>
+<v t="ekr.20160123185308.89"><vh>munge_arg</vh></v>
+</v>
+<v t="ekr.20160123185308.90"><vh>format_returns</vh></v>
+</v>
+<v t="ekr.20160123185308.91"><vh>st.Return</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111017085134.16114"><vh>@button outlineToClipboard</vh></v>
+<v t="ekr.20111017085134.16071"><vh>@button pydoc</vh></v>
+<v t="ekr.20150525161132.1"><vh>@button tokens2tree</vh>
+<v t="ekr.20150525161132.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20170301022829.1"><vh>@ignore buttons new in Leo 5.5</vh>
 <v t="ekr.20170301014329.1"><vh>@button cycling syntax coloring</vh></v>
 <v t="ekr.20170211083757.1"><vh>@button Demo @key=Ctrl-9</vh>
@@ -124,17 +303,2149 @@
 </v>
 </v>
 </v>
+<v t="ekr.20181019042717.1"><vh>@ignore at-button nodes in LeoSettings.leo</vh>
+<v t="ekr.20181019042907.1"><vh>@button check-bindings</vh>
+<v t="ekr.20181019042907.2"><vh>defineSetNames</vh></v>
+<v t="ekr.20181019042907.3"><vh>doSet</vh></v>
+<v t="ekr.20181019042907.4"><vh>doShortcuts</vh></v>
+<v t="ekr.20181019042907.5"><vh>checkSets</vh></v>
+<v t="ekr.20181019042907.6"><vh>main</vh></v>
+</v>
+<v t="ekr.20181019042834.1"><vh>@button check-menus-cmds</vh></v>
+<v t="ekr.20181019042808.1"><vh>@button check-settings</vh>
+<v t="ekr.20181019042808.2"><vh>ctor</vh></v>
+<v t="ekr.20181019042808.3"><vh>check &amp; helpers</vh>
+<v t="ekr.20181019042808.4"><vh>filter_get_x</vh></v>
+<v t="ekr.20181019042808.5"><vh>filter_user_config</vh></v>
+</v>
+<v t="ekr.20181019042808.6"><vh>error</vh></v>
+<v t="ekr.20181019042808.7"><vh>get_commanders</vh></v>
+<v t="ekr.20181019042808.8"><vh>get_configs &amp; helpers</vh>
+<v t="ekr.20181019042808.9"><vh>get_configs_from_outline &amp; helper</vh>
+<v t="ekr.20181019042808.10"><vh>scan_for_configs</vh></v>
+</v>
+</v>
+<v t="ekr.20181019042808.11"><vh>get_settings &amp; helper</vh>
+<v t="ekr.20181019042808.12"><vh>is_setting</vh></v>
+<v t="ekr.20181019042808.13"><vh>parse_setting</vh></v>
+</v>
+<v t="ekr.20181019042808.14"><vh>munge</vh></v>
+<v t="ekr.20181019042808.15"><vh>run</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170303064120.1"><vh>What's new in this file</vh>
+<v t="ekr.20181020061554.1"><vh>Curses gui stuff</vh>
+<v t="ekr.20181020061600.1"><vh>@test to_key</vh></v>
+<v t="ekr.20181020061502.1"><vh>script: verify links (to check curses gui)</vh></v>
+</v>
+<v t="ekr.20181019042505.1"><vh>Developing &amp; maintaining Leo</vh>
+<v t="ekr.20181019042544.1"><vh>script: regularize settings names</vh></v>
+<v t="ekr.20181019043251.1"><vh>@ignore at-button nodes in leoPy.leo</vh>
+<v t="ekr.20181019043237.1"><vh>@button backup-repo</vh></v>
+</v>
+<v t="ekr.20181019042717.1"></v>
+<v t="ekr.20181020064400.1"><vh>@ignore at-button nodes in leoPlugins.leo</vh>
+<v t="ekr.20181020064321.1"><vh>@button make-md-test</vh>
+<v t="ekr.20181020064321.2"><vh>&lt;&lt; define preamble &gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170303064128.1"><vh>Leo 5.5</vh>
+<v t="ekr.20160923133728.1"><vh>Remove tabs from leo/modes/*.py</vh></v>
+<v t="ekr.20161017063308.1"><vh>Find problems in pylint-leo-rc.txt</vh></v>
+<v t="ekr.20141105055521.16"><vh>Replace body.x with body.wrapper.x</vh></v>
+<v t="ekr.20170120110948.4"><vh>Print Qt color names</vh></v>
+<v t="ekr.20170301022829.1"></v>
 </v>
 <v t="ekr.20170804153254.1"><vh>Leo 5.6</vh>
 <v t="ekr.20170411105625.1"><vh>Script: get git branch name using pygit2</vh></v>
 <v t="ekr.20170804153229.1"><vh>script: find non-tracing g.unitTesting</vh></v>
 </v>
+<v t="ekr.20180529105231.1"><vh>Leo 5.7.4</vh>
+<v t="ekr.20180529105204.1"><vh>script: get-child-headlines</vh></v>
+</v>
+</v>
+<v t="ekr.20181231155722.1"><vh>Leo 5.8.1</vh>
+<v t="ekr.20190117144022.1"><vh>@@button goto-test (Terry Brown)</vh>
+<v t="ekr.20190117144022.2"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20181231155727.1"><vh>@@command make-vim-node</vh></v>
+<v t="ekr.20190106073221.1"><vh>script: find-chains (EKR)</vh>
+<v t="ekr.20190106073221.2"><vh>standard methods</vh></v>
+</v>
+<v t="ekr.20190117144035.3"><vh>script: run pytest in separate process</vh></v>
+<v t="ekr.20190117144035.2"><vh>script: stand-alone run pytest</vh></v>
+<v t="ekr.20190307044803.1"><vh>script: recursive-clean-lines</vh></v>
+</v>
+<v t="ekr.20190609162248.1"><vh>Leo 6.0</vh>
+<v t="ekr.20190509062342.1"><vh>sqlite3 demo</vh></v>
+</v>
+<v t="ekr.20190911074700.1"><vh>Leo 6.1</vh>
+<v t="ekr.20190911074705.1"><vh>script: find trailing comments</vh></v>
+<v t="ekr.20190911232205.1"><vh>@@button next-trailing-comment @key=ctrl-1</vh></v>
+</v>
+<v t="ekr.20060824111500.108"><vh>@button jEdit2Py</vh>
+<v t="ekr.20060824111500.109"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.110"><vh>&lt;&lt; to do &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.111"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.112"><vh>&lt;&lt; set files to convert &gt;&gt;</vh></v>
+<v t="ekr.20060824111500.113"><vh>top-level</vh>
+<v t="ekr.20160319080102.1"><vh>cleanSaxInputString</vh></v>
+<v t="ekr.20060824111500.115"><vh>parse_jEdit_file</vh></v>
+<v t="ekr.20060824111500.114"><vh>convert</vh></v>
+<v t="ekr.20060824111500.116"><vh>munge</vh></v>
+<v t="ekr.20160319081141.1"><vh>main</vh></v>
+</v>
+<v t="ekr.20060824111500.117"><vh>class modeClass</vh>
+<v t="ekr.20060824111500.118"><vh> mode.__init__</vh></v>
+<v t="ekr.20060824111500.119"><vh> mode.__str__ &amp; __repr__</vh></v>
+<v t="ekr.20060824111500.120"><vh> Output...</vh>
+<v t="ekr.20060827162343"><vh>fullDelegate</vh></v>
+<v t="ekr.20060824111500.121"><vh>escapeString &amp; quoteString</vh></v>
+<v t="ekr.20060824111500.122"><vh>put, putTripleString</vh></v>
+<v t="ekr.20060824111500.123"><vh>putAttributes</vh></v>
+<v t="ekr.20060824111500.124"><vh>putDict &amp; putDictOfLists</vh></v>
+<v t="ekr.20060824111500.125"><vh>putImportDict</vh></v>
+<v t="ekr.20060824111500.126"><vh>putKeywordsData</vh></v>
+<v t="ekr.20060824111500.127"><vh>putList</vh></v>
+<v t="ekr.20060824111500.128"><vh>putModeProperties</vh></v>
+<v t="ekr.20060824111500.129"><vh>putRule &amp; rule creators</vh>
+<v t="ekr.20060824111500.130"><vh>putBadRule</vh></v>
+<v t="ekr.20060824111500.131"><vh>putEolSpan</vh></v>
+<v t="ekr.20060824111500.132"><vh>putEolSpanRegexp</vh></v>
+<v t="ekr.20060824111500.133"><vh>putImport</vh></v>
+<v t="ekr.20060824111500.134"><vh>putKeywords</vh></v>
+<v t="ekr.20060824111500.135"><vh>putMarkFollowing</vh></v>
+<v t="ekr.20060824111500.136"><vh>putMarkPrevious</vh></v>
+<v t="ekr.20060824111500.137"><vh>putSeq</vh></v>
+<v t="ekr.20060824111500.138"><vh>putSeqRegexp</vh></v>
+<v t="ekr.20060824111500.139"><vh>putSpan</vh></v>
+<v t="ekr.20060824111500.140"><vh>putSpanRegexp</vh></v>
+<v t="ekr.20060824111500.141"><vh>putTerminate</vh></v>
+</v>
+<v t="ekr.20060824111500.142"><vh>putRules</vh></v>
+<v t="ekr.20060824111500.143"><vh>write</vh></v>
+</v>
+<v t="ekr.20060824111500.144"><vh> Printing...</vh>
+<v t="ekr.20060824111500.145"><vh>printModeAttributes, printRulesetAttributes &amp; printAttributesHelper</vh></v>
+<v t="ekr.20060824111500.146"><vh>printProperty</vh></v>
+<v t="ekr.20060824111500.147"><vh>printRule</vh></v>
+<v t="ekr.20060824111500.148"><vh>printRuleset</vh></v>
+<v t="ekr.20060824111500.149"><vh>printSummary</vh></v>
+</v>
+<v t="ekr.20060824111500.150"><vh>doAttribute</vh></v>
+<v t="ekr.20060824111500.151"><vh>doContent</vh></v>
+<v t="ekr.20060824111500.152"><vh>endElement</vh></v>
+<v t="ekr.20060824111500.153"><vh>error</vh></v>
+<v t="ekr.20060824111500.154"><vh>getters</vh></v>
+<v t="ekr.20060824111500.155"><vh>inRule</vh></v>
+<v t="ekr.20060824111500.156"><vh>startElement</vh></v>
+</v>
+<v t="ekr.20060824111500.157"><vh>class rulesetClass</vh>
+<v t="ekr.20060824111500.158"><vh>ctor &amp; __str__</vh></v>
+</v>
+<v t="ekr.20060824111500.159"><vh>class ruleClass</vh>
+<v t="ekr.20060824111500.160"><vh>ctor &amp; __str__</vh></v>
+<v t="ekr.20060824111500.161"><vh>rule.getters</vh></v>
+</v>
+<v t="ekr.20060824111500.162"><vh>class contentHandler (xml.sax.saxutils.XMLGenerator)</vh>
+<v t="ekr.20060824111500.163"><vh> __init__ &amp; helpers</vh></v>
+<v t="ekr.20060824111500.164"><vh>helpers</vh>
+<v t="ekr.20060824111500.165"><vh>attrsToList</vh></v>
+<v t="ekr.20060824111500.166"><vh>attrsToString</vh></v>
+<v t="ekr.20060824111500.167"><vh>clean</vh></v>
+<v t="ekr.20060824111500.168"><vh>error</vh></v>
+<v t="ekr.20060824111500.169"><vh>printStartElement</vh></v>
+<v t="ekr.20060824111500.170"><vh>printSummary</vh></v>
+</v>
+<v t="ekr.20060824111500.171"><vh>sax over-rides</vh>
+<v t="ekr.20060824111500.172"><vh> Do nothing...</vh>
+<v t="ekr.20060824111500.173"><vh>other methods</vh></v>
+<v t="ekr.20060824111500.174"><vh>endDocument</vh></v>
+<v t="ekr.20060824111500.175"><vh>startDocument</vh></v>
+</v>
+<v t="ekr.20060824111500.176"><vh>characters</vh></v>
+<v t="ekr.20060824111500.177"><vh>endElement</vh></v>
+<v t="ekr.20060824111500.178"><vh>startElement</vh></v>
+</v>
+<v t="ekr.20060824111500.179"><vh>doStartElement</vh></v>
+<v t="ekr.20060824111500.180"><vh>doEndElement</vh></v>
+<v t="ekr.20060824111500.181"><vh>getMode</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
+<t tx="ekr.20060824111500.108">'''Convert jEdit language description file to an equivalent .py file.'''
+
+@language python
+@tabwidth -4
+@pagewidth 80
+
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; to do &gt;&gt;
+&lt;&lt; version history &gt;&gt;
+&lt;&lt; set files to convert &gt;&gt;
+opt_print_summary = False # True: print summary in doEndElement.
+opt_print_elements = False
+@others
+main()
+</t>
+<t tx="ekr.20060824111500.109">import glob
+import os
+import string
+import xml.sax
+import xml.sax.saxutils
+</t>
+<t tx="ekr.20060824111500.110">@nocolor
+@
+
+AT_LINE_START, AT_WHITESPACE_END and AT_WORD_START attributes can also be used
+on the BEGIN and END elements. Setting these attributes to the same value on
+both elements has the same effect as setting them on the SPAN element.
+</t>
+<t tx="ekr.20060824111500.111">@nocolor
+@
+
+7/23/06 EKR: Ignore keywords containing whitespace.
+7/30/06 EKR: Compute keywordChars properly.  This fixes erlang bug, e.g.
+8/24/06 EKR: Lowercase all keywords if ignore_case is true.
+8/25/06 EKR: Prefixed all rule names with fileName (w/o extension) so I can makes sense of imported rules.
+8/26/06 EKR: No need for hash_char in pattern matchers, because they are called only if the hash_char matches.
+9/4/06  EKR: Added support for ESCAPE attribute of RULES element.
+             This is required so the new colorizer plugin can support the no_escape argument to pattern matchers.
+</t>
+<t tx="ekr.20060824111500.112"># theDir = r'c:\prog\tigris-cvs\leo\modes'
+theDir = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','modes'))
+fixed = ['antlr','applescript','apacheconf','bibtex','cil','pl1','shell','shellscript','ssharp','text']
+errors = [] # 'cil',] # End keyword not matched by start.
+errors = [r'%s\%s.xml' % (theDir,s) for s in errors]
+# for s in errors: print(s)
+if 1: # A a list of files.
+    short_files = ['asciidoc']
+    files = [rf"{theDir}{os.path.sep}{z}.xml" for z in short_files]
+elif 1: # translate all files.
+    files = glob.glob(g.os_path_abspath(g.os_path_join(theDir,'*.xml')))
+elif 1: # error files
+    files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in errors]
+else: # translate two representative files.
+    files = [g.os_path_abspath(g.os_path_join(theDir,s)) for s in ('python','php')]
+# for s in files: print(s)
+</t>
+<t tx="ekr.20060824111500.113"></t>
+<t tx="ekr.20060824111500.114">def convert (c,inputFileName, outputFileName):
+
+    junk, fn = g.os_path_split(inputFileName)
+    language, junk = g.os_path_splitext(fn)
+    mode = parse_jEdit_file(inputFileName, language)
+    if not mode:
+        g.trace('FAIL: no mode', language, inputFileName)
+        return
+    with open(outputFileName,'w') as f:
+        try:
+            mode.write(f, language)
+            g.es_print('wrote', outputFileName)
+        except IOError:
+            g.es_print('can not create', outputFileName)
+</t>
+<t tx="ekr.20060824111500.115">def parse_jEdit_file(inputFileName,language):
+
+    if not inputFileName:
+        return None
+    if not inputFileName.endswith('.xml'):
+        inputFileName = inputFileName + '.xml'
+    path = g.os_path_join(g.app.loadDir,'../','modes',inputFileName)
+    path = g.os_path_normpath(path)
+    if not g.os_path_exists(path):
+        g.es_print('not found:', path)
+        return
+    try:
+        f = open(path,'r')
+    except IOError:
+        g.trace('can not open %s'%path)
+        return None
+    try:
+        try:
+            mode = None
+            parser = xml.sax.make_parser()
+                # Do not include external general entities.
+                # The actual feature name is
+                # "http://xml.org/sax/features/external-general-entities"
+            parser.setFeature(xml.sax.handler.feature_external_ges,0)
+            handler = contentHandler(c,inputFileName,language)
+            parser.setContentHandler(handler)
+            parser.parse(f)
+                # Works with Python 3.
+                # Fails with Python 2 when the file contains non-ascii characters.
+            mode = handler.getMode()
+        except:
+            g.es('unexpected exception parsing %s' % (inputFileName),color='red')
+            g.es_exception()
+    finally:
+        f.close()
+        return mode
+</t>
+<t tx="ekr.20060824111500.116">def munge(s):
+
+    '''Munge a mode name so that it is a valid python id.'''
+
+    valid = string.ascii_letters + string.digits + '_'
+    return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+</t>
+<t tx="ekr.20060824111500.117">class modeClass:
+
+    '''A class representing one jEdit language-description mode.
+
+    Use getters to access the attributes, properties and rules of this mode.'''
+
+    @others
+</t>
+<t tx="ekr.20060824111500.118">def __init__ (self,contentHandler,fileName):
+
+    # g.trace('mode',fileName)
+
+    self.contentHandler = contentHandler
+    self.c = contentHandler.c
+    self.fileName = g.shortFileName(fileName) # The file from which the mode was imported.
+    modeName, junk = g.os_path_splitext(self.fileName)
+    self.fileModeName = modeName
+    self.modeName = munge(modeName).lower()
+    self.outputFile = None # The open output file to which Python statements get written.
+    self.tab_width = c.scanAllDirectives().get('tab_width')
+
+    # Mode statistics...
+    self.numberOfAttributes = 0
+    self.numberOfElements = 0
+    self.numberOfErrors = 0
+    self.numberOfPropertyAttributes = 0
+    self.numberOfRuleAttributes = 0
+
+    # List of boolean attributes.
+    self.boolAttrs = [
+        'at_line_start','at_whitespace_end','at_word_start',
+        'exclude_match','highlight_digits','ignore_case',
+        'no_escape','no_line_break','no_word_break',]
+
+    # List of elements that start a rule.
+    self.ruleElements = [
+        'eol_span','eol_span_regexp','import','keywords',
+        'mark_following','mark_previous','seq','seq_regexp',
+        'span','span_regexp','terminate',]
+
+    if 0: # Not used at present.
+        self.seqSpanElements = [
+            'eol_span','eol_span_regexp','seq','seq_regexp',
+            'span','span_regexp',]
+
+    # Mode semantics.
+    self.attributes = {}
+    self.handlerCount = 0
+    self.importedRules = [] # A bunch describing the imported ruleset.
+    self.inProps = False
+    self.inRules = False
+    self.keywords = None
+    self.modeProperties = []
+    self.presentProperty = None # A bunch to be assigned to modeProperties or rulesetProperties.
+    self.rule = None
+    self.rulesets = []
+    self.rules = [] # The rules of the present rules element.
+    self.rulesetProperties = []
+    self.rulesetAttributes = {} # The attributes of the present rules element.
+</t>
+<t tx="ekr.20060824111500.119">def __str__ (self):
+
+    return '&lt;modeClass for %s&gt;' % self.fileName
+
+__repr__ = __str__
+</t>
+<t tx="ekr.20060824111500.120"># Similar to printing, but generates the output file.
+</t>
+<t tx="ekr.20060824111500.121">def escapeString (self,s):
+    '''Return string s enclosed in double quotes.'''
+    if not s: s = ''
+    if isinstance(s, (list, tuple)):
+        s = ''.join(s)
+    s = g.toUnicode(s)
+    # Order is important: escape backspaces first.
+    return '"%s"' % s.replace('\\','\\\\').replace('"','\\"').replace('\t','\\t')
+
+quoteString = escapeString
+</t>
+<t tx="ekr.20060824111500.122">def put (self,s):
+
+    self.outputFile.write(s)
+
+def putTripleString(self,s):
+
+    self.put(g.adjustTripleString(s,self.tab_width))
+</t>
+<t tx="ekr.20060824111500.123">def putAttributes (self):
+
+    dd = {}
+    data = (
+        ('default','null'),
+        ('digit_re',''),
+        ('escape',''),
+        ('highlight_digits',True),
+        ('ignore_case',True),
+        ('no_word_sep',None), # could be false or ''.
+    )
+
+    for ruleset in self.rulesets:
+        d = {}
+        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        self.put('# Attributes dict for %s ruleset.\n' % (prefix))
+        for key,default in data:
+            val = ruleset.attributes.get(key,default)
+            if default == True: val = g.choose(val,'true','false')
+            elif default == None:
+                if val and val.lower() == 'false': val = ''
+                else: val = g.choose(val,val,'')
+            # if val: g.trace(key,repr(val))
+            d [key] = val
+        self.putDict('%s_attributes_dict' % (prefix),d)
+        dd [ prefix ] = '%s_attributes_dict' % (prefix)
+
+    self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
+    self.putDict('attributesDictDict',dd,escape=False)
+</t>
+<t tx="ekr.20060824111500.124">def putDict (self,name,theDict,escape=True):
+
+    esc = self.escapeString
+    esc2 = g.choose(escape,self.escapeString,lambda a: a)
+    keys = list(set((theDict.keys())))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
+    s = ''.join([
+        '\t%s: %s,\n' % (esc(key),esc2(theDict.get(key)))
+            for key in keys])
+    if s:
+        s = '\n' + s
+    self.put('%s = {%s}\n\n' % (name,s))
+
+def putDictOfLists (self,name,theDict,strings=False):
+
+    esc = self.escapeString
+    keys = list(set(theDict.keys()))
+    keys = sorted([g.toUnicode(z) for z in keys if z])
+    theList = []
+    for key in keys:
+        if strings:
+            # Not completely general, but it works for the import dict, and that's good enough.
+            s = ''.join(['"%s",' % (item) for item in theDict.get(key)])
+        else:
+             s = ''.join(['%s,' % (item) for item in theDict.get(key)])
+        theList.append('\t%s: [%s],\n' % (esc(key),s))
+    s = ''.join(theList)
+    if s: s = '\n' + s
+    self.put('%s = {%s}\n\n' % (name,s))
+</t>
+<t tx="ekr.20060824111500.125">def putImportDict (self):
+
+    d = {}
+    for ruleset in self.rulesets:
+        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        for rule in ruleset.rules:
+            if rule.name == 'import':
+                delegate = rule.getStrAttrib('delegate').lower()
+                if delegate:
+                    i = delegate.find('::')
+                    delegate_name = g.choose(i==-1,
+                        '%s::%s' % (prefix,delegate), # Can indeed happen.
+                        '%s' % (delegate))
+                    theList = d.get(prefix,[])
+                    if delegate_name not in theList:
+                        theList.append(delegate_name)
+                        d [prefix] = theList
+
+    self.put('# Import dict for %s mode.\n' % (self.modeName))
+    self.putDictOfLists('importDict',d,strings=True)
+</t>
+<t tx="ekr.20060824111500.126">def putKeywordsData (self):
+
+    dd = {}
+    for ruleset in self.rulesets:
+        prefix = '%s_%s' % (self.modeName,ruleset.name)
+        prefix = g.toUnicode(prefix)
+        ignore_case = ruleset.attributes.get('ignore_case','false')
+        if not isinstance(ignore_case, bool):
+            ignore_case = ignore_case.lower() == 'false'
+        self.put('# Keywords dict for %s ruleset.\n' % (prefix))
+        for rule in ruleset.rules:
+            if rule.name == 'keywords':
+                # d = rule.keywordsDict
+                d = { g.toUnicode(key): g.toUnicode(val)
+                    for key, val in rule.keywordsDict.items() if key.strip() }
+                # g.trace()
+                # g.printObj(d)
+                for key in sorted(set(d.keys())):
+                    if ' ' in key or '\t' in key:
+                        del d [key]
+                        g.es_print(f"Ignoring keyword containing whitespace: {key!r}")
+                    elif ignore_case: # New in 4.4.1 final.
+                        # Downcase all keys.
+                        val = d.get(key)
+                        key2 = key.lower()
+                        if key2 != key:
+                            if key in d: del d[key]
+                        d[key2] = val
+                break
+        else:
+            d = {}
+        self.putDict('%s_keywords_dict' % (prefix),d)
+        dd [ prefix ] = '%s_keywords_dict' % (prefix)
+    self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
+    self.putDict('keywordsDictDict',dd,escape=False)
+</t>
+<t tx="ekr.20060824111500.127">def putList (self,name,theList,escape=True,lineCount=0):
+
+    def comma(i):
+        return ',' # return g.choose(i==len(theList)-1,'',',')
+    def nl(i):
+        return g.choose(lineCount == 0 or ((i%lineCount)==lineCount-1),'\n',' ')
+    def tab(i,n):
+        # return g.choose(i == 0 or nl(i-1) != ' ','\t','')
+        return g.choose(i &gt; 0 and nl(i-1) != ' ','\t','')
+    esc = g.choose(escape,self.escapeString,lambda a:a)
+
+    result = []
+    n = len(theList)
+    for i in range(n):
+        result.append('%s%s%s%s' % (tab(i,n),esc(theList[i]),comma(i),nl(i)))
+
+    vals = ''.join(result)
+    # if n &gt; 1: vals = '\n' + vals
+    self.put('%s = [%s]\n\n' % (name,vals))
+</t>
+<t tx="ekr.20060824111500.128">def putModeProperties (self,language):
+
+    d = {}
+
+    self.put('# Properties for %s mode.\n' % (language))
+
+    for prop in self.modeProperties:
+        d2 = prop.attributes
+        name = d2.get('name')
+        d [name] = d2.get('value')
+
+    self.putDict('properties', d)
+</t>
+<t tx="ekr.20060824111500.129">def putRule (self, rule):
+
+    '''Call the rule creator for the given rule.'''
+
+    d = {
+        'eol_span':         self.putEolSpan,
+        'eol_span_regexp':  self.putEolSpanRegexp,
+        'import':           self.putImport,
+        'keywords':         self.putKeywords,
+        'mark_following':   self.putMarkFollowing,
+        'mark_previous':    self.putMarkPrevious,
+        'seq':              self.putSeq,
+        'seq_regexp':       self.putSeqRegexp,
+        'span':             self.putSpan,
+        'span_regexp':      self.putSpanRegexp,
+        'terminate':        self.putTerminate,
+    }
+
+    # Call the rule creator.
+    f = d.get(rule.name,self.putBadRule)
+    val = f (rule)
+    self.handlerCount += 1
+
+    return val
+</t>
+<t tx="ekr.20060824111500.130">def putBadRule (self,rule):
+
+    self.put('\n\n# *****no output creator for %s*****' % rule.name)
+</t>
+<t tx="ekr.20060824111500.131">def putEolSpan (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind=%s, seq=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+        delegate=%s, exclude_match=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+        rule.getBoolAttrib('exclude_match'),
+    )
+
+    self.putTripleString(s)
+    return seq[0]
+</t>
+<t tx="ekr.20060824111500.132">def putEolSpanRegexp (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+    hash_char = rule.getStrAttrib('hash_char') or seq[0]
+    # g.trace('hash_char',hash_char)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_eol_span_regexp(s, i, kind=%s, regexp=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+        delegate=%s, exclude_match=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        # quote(rule.getStrAttrib('hash_char')),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+        rule.getBoolAttrib('exclude_match'),
+    )
+
+    self.putTripleString(s)
+    return hash_char  # Bug fix: was seq[0]
+</t>
+<t tx="ekr.20060824111500.133"># Do nothing here: putImportDict creates x.importDict.
+
+def putImport (self,rule):
+
+    # Decrement the count to indicate that this method did not generate a rule.
+    self.handlerCount -= 1
+    return ''
+</t>
+<t tx="ekr.20060824111500.134">def putKeywords (self,rule):
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_keywords(s, i)''' % (
+    self.fileModeName,
+    self.handlerCount)
+
+    self.putTripleString(s)
+    return 'keywords'
+</t>
+<t tx="ekr.20060824111500.135">def putMarkFollowing (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind=%s, pattern=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s, exclude_match=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        rule.getBoolAttrib('exclude_match'),
+    )
+
+    self.putTripleString(s)
+    return seq[0]
+</t>
+<t tx="ekr.20060824111500.136">def putMarkPrevious (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_mark_previous(s, i, kind=%s, pattern=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s, exclude_match=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        rule.getBoolAttrib('exclude_match'),
+    )
+
+    self.putTripleString(s)
+    return seq[0]
+</t>
+<t tx="ekr.20060824111500.137">def putSeq (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_seq(s, i, kind=%s, seq=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s, delegate=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+    )
+
+    self.putTripleString(s)
+    return seq[0]
+</t>
+<t tx="ekr.20060824111500.138">def putSeqRegexp (self,rule):
+
+    quote = self.quoteString
+    seq = rule.getSeq(rule.name)
+    hash_char = rule.getStrAttrib('hash_char') or seq[0]
+    # g.trace('hash_char',hash_char)
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind=%s, regexp=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s, delegate=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(seq),
+        # quote(rule.getStrAttrib('hash_char')),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+    )
+
+    self.putTripleString(s)
+    return hash_char # Bug fix: was seq[0]
+</t>
+<t tx="ekr.20060824111500.139">def putSpan (self,rule):
+
+    quote = self.quoteString
+    begin,end = rule.getSpan()
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_span(s, i, kind=%s, begin=%s, end=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+        delegate=%s,exclude_match=%s,
+        no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(begin),quote(end),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+        rule.getBoolAttrib('exclude_match'),
+        rule.getBoolAttrib('no_escape'),
+        rule.getBoolAttrib('no_line_break'),
+        rule.getBoolAttrib('no_word_break'),
+    )
+
+    self.putTripleString(s)
+    return begin[0]
+</t>
+<t tx="ekr.20060824111500.140">def putSpanRegexp (self,rule):
+
+    quote = self.quoteString
+    begin,end = rule.getSpan()
+    hash_char = rule.getStrAttrib('hash_char') or begin[0]
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_span_regexp(s, i, kind=%s, begin=%s, end=%s,
+        at_line_start=%s, at_whitespace_end=%s, at_word_start=%s,
+        delegate=%s,exclude_match=%s,
+        no_escape=%s, no_line_break=%s, no_word_break=%s)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        quote(begin),quote(end),
+        # quote(rule.getStrAttrib('hash_char')),
+        rule.getBoolAttrib('at_line_start'),
+        rule.getBoolAttrib('at_whitespace_end'),
+        rule.getBoolAttrib('at_word_end'),
+        quote(self.fullDelegate(rule.getStrAttrib('delegate'))),
+        rule.getBoolAttrib('exclude_match'),
+        rule.getBoolAttrib('no_escape'),
+        rule.getBoolAttrib('no_line_break'),
+        rule.getBoolAttrib('no_word_break'),
+    )
+
+    self.putTripleString(s)
+    return hash_char # Bug fix: was begin[0]
+</t>
+<t tx="ekr.20060824111500.141">def putTerminate (self,rule):
+
+    quote = self.quoteString
+
+    n = rule.getIntAttrib('at_char')
+    if n == None: return
+
+    s = '''\n\
+def %s_rule%d(colorer, s, i):
+    return colorer.match_terminate(s, i, kind=%s, at_char=%d)''' % (
+        self.fileModeName,
+        self.handlerCount,
+        quote(rule.getStrAttrib('type').lower()),
+        n)
+
+    self.putTripleString(s)
+</t>
+<t tx="ekr.20060824111500.142">def putRules (self):
+
+    '''Create all rule matchers, a rules dict for each ruleset and x.rulesDictDict.'''
+
+    d = {} ; d2Count = 0
+    for ruleset in self.rulesets:
+        d2 = {}
+        prefix = '%s_%s'% (self.modeName,ruleset.name)
+        self.put('# Rules for %s ruleset.\n' % (prefix))
+        for rule in ruleset.rules:
+            ch = self.putRule(rule)
+            self.put('\n')
+            if ch == 'keywords':
+                for ch in self.keywordChars:
+                    theList = d2.get(ch,[])
+                    theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
+                    d2 [ch] = theList
+            elif ch:
+                theList = d2.get(ch,[])
+                theList.append('%s_rule%d' % (self.fileModeName,self.handlerCount-1))
+                d2 [ch] = theList
+        # Create the rules dict for the ruleset.
+        self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
+        d2Count += 1
+        name = 'rulesDict%d' % d2Count
+        self.putDictOfLists(name,d2)
+        d [prefix] = name
+    # Create rulesDictDict.
+    self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
+    self.putDict('rulesDictDict', d, escape=False)
+</t>
+<t tx="ekr.20060824111500.143">def write (self,theFile,language):
+
+    # Compute all the letters that can occur in a keyword.
+    self.keywordChars = [ch for ch in string.ascii_letters + string.digits + '@']
+    for ruleset in self.rulesets:
+        for rule in ruleset.rules:
+            d = rule.keywordsDict
+            for key in list(d.keys()):
+                key = g.toUnicode(key)
+                for ch in key:
+                    if ch not in self.keywordChars and ch not in (' ','\t','\n'):
+                        self.keywordChars.append(ch)
+        
+    # g.trace('keywordChars',repr(self.keywordChars))
+    self.keywordChars = ''.join(list(set(self.keywordChars)))
+    self.outputFile = theFile
+    self.put('# Leo colorizer control file for %s mode.\n' % language)
+    self.put('# This file is in the public domain.\n\n')
+    self.putModeProperties(language)
+    self.putAttributes()
+    self.putKeywordsData()
+    self.putRules()
+    self.putImportDict()
+</t>
+<t tx="ekr.20060824111500.144"></t>
+<t tx="ekr.20060824111500.145">def printModeAttributes (self):
+
+    self.printAttributesHelper('mode attributes',self.attributes)
+
+def printRulesetAttributes (self,ruleset,tag=None):
+
+    if not tag: tag = 'main ruleset'
+
+    self.printAttributesHelper(tag,ruleset.attributes)
+
+def printAttributesHelper (self,kind,attrs):
+
+    print('%-15s' % (kind),'attrs:',attrs)
+</t>
+<t tx="ekr.20060824111500.146">def printProperty (self,theProperty):
+
+    # A property is a bunch.
+    d = theProperty.attributes
+    if d:
+        self.printAttributesHelper('property',d)
+</t>
+<t tx="ekr.20060824111500.147">def printRule (self,rule):
+
+    # A rule is a g.Bunch.
+    if rule.name == 'keywords':
+        print('%-15s' % ('rule:keywords')) ## ,
+        d = rule.keywordsDict
+        d2 = {}
+        for key in d:
+            val = d.get(key)
+            d2 [val] = d2.get(val,0) + 1
+        keys = list(d2.keys())
+        keys.sort()
+        for key in keys:
+            print('%s: %d' % (key,d2.get(key))) ## ,
+        print()
+    else:
+        d = rule.attributes
+        d2 = rule.contents
+        if d or d2:
+            print('%-15s' % ('rule:'+rule.name)) ## ,
+            if d:  print('attrs:',d) ## ,
+            if d2: print('contents:',d2) ## ,
+            print()
+</t>
+<t tx="ekr.20060824111500.148">def printRuleset (self,ruleset,tag):
+
+    self.printRulesetAttributes(ruleset,tag)
+
+    for rule in self.rulesets[0].rules:
+        self.printRule(rule)
+</t>
+<t tx="ekr.20060824111500.149">def printSummary (self,printStats=True):
+
+    if printStats:
+        print('-' * 10, 'mode statistics')
+        print('elements',self.numberOfElements)
+        print('errors',self.numberOfErrors)
+        print('mode attributes',self.numberOfAttributes)
+        print('property attributes',self.numberOfPropertyAttributes)
+        print('rule attributes',self.numberOfRuleAttributes)
+
+    self.printModeAttributes()
+
+    for bunch in self.modeProperties:
+        self.printProperty(bunch)
+
+    self.printRuleset(self.rulesets[0],tag='main ruleset')
+</t>
+<t tx="ekr.20060824111500.150">def doAttribute (self,name,val):
+
+    name = str(name.lower())
+
+    if name in self.boolAttrs:
+        val = g.choose(val.lower()=='true',True,False)
+    else:
+        val = str(val) # Do NOT lower this value!
+
+    if self.rule:
+        d = self.rule.attributes
+        d [name] = val
+        self.numberOfRuleAttributes += 1
+    elif self.presentProperty:
+        d = self.presentProperty.get('attributes')
+        d [name] = val
+        self.numberOfPropertyAttributes += 1
+    elif self.inRules:
+        self.rulesetAttributes[name] = val
+        self.numberOfAttributes += 1
+    else:
+        self.attributes[name] = val
+        self.numberOfAttributes += 1
+</t>
+<t tx="ekr.20060824111500.151">def doContent (self,elementName,content):
+
+    if not content:
+        return
+
+    name = str(elementName.lower())
+
+    if self.inRule('keywords'):
+        # g.trace('in keywords',name,content)
+        d = self.rule.keywordsDict
+        d [ content ] = name
+
+    elif self.rule:
+        d = self.rule.contents
+        s = d.get(name,'')
+        d [name] = s + g.toUnicode(content)
+        self.contents = d
+</t>
+<t tx="ekr.20060824111500.152">def endElement (self,elementName):
+
+    name = elementName.lower()
+
+    if name == 'props':
+        self.inProps = True
+    if name == 'rules':
+        self.inRules = False
+        ruleset = rulesetClass(self.rulesetAttributes,self.keywords,self.rulesetProperties,self.rules)
+        self.rulesets.append(ruleset)
+        #g.trace('rules...\n',g.listToString(self.rules))
+        #g.trace('ruleset attributes...\n',g.dictToString(self.rulesetAttributes))
+    if name == 'property':
+        bunch = self.presentProperty
+        if bunch:
+            if self.inRules:
+                self.rulesetProperties.append(bunch)
+            else:
+                self.modeProperties.append(bunch)
+        else:
+            self.error('end %s not matched by start %s' % (name,name))
+        self.presentProperty = None
+    if name in self.ruleElements:
+        if self.inRule(name):
+            self.rules.append(self.rule)
+            self.rule = None
+        else:
+            self.error('end %s not matched by start %s' % (name,name))
+</t>
+<t tx="ekr.20060824111500.153">def error (self,message):
+
+    self.numberOfErrors += 1
+
+    self.contentHandler.error(message)
+</t>
+<t tx="ekr.20060824111500.154">def getAttributes (self):
+    return self.attributes
+
+def getAttributesForRuleset (self,ruleset):
+    bunch = ruleset
+    return bunch.attributes
+
+def getFileName (self):
+    return self.fileName
+
+def getKeywords (self,n,ruleset):
+    bunch = ruleset
+    keywords = bunch.keywords
+    if keywords:
+        return keywords.get('keyword%d'%(n),[])
+    return []
+
+def getLanguage (self):
+    path,name = g.os_path_split(self.fileName)
+    language,ext = g.os_path_splitext(name)
+    return language
+
+def getPropertiesForMode (self):
+    return self.props
+
+def getPropertiesForRuleset (self,name=''):
+    bunch = self.getRuleset(name)
+    if bunch:
+        return bunch.properties
+    else:
+        return []
+
+def getRuleset(self,name=''):
+    if not name:
+        return self.rulesets[0] # Return the main ruleset.
+    for ruleset in self.rulesets:
+        if ruleset.name.lower()==name.lower():
+            return ruleset
+    else: return None
+
+def getRulesets(self):
+    return self.rulesets
+
+def getRulesForRuleset (self,name=''):
+    bunch = self.getRuleset(name)
+    if bunch:
+        return bunch.rules
+    else:
+        return []
+</t>
+<t tx="ekr.20060824111500.155">def inRule (self,elementName):
+
+    return self.rule and self.rule.name == elementName
+</t>
+<t tx="ekr.20060824111500.156">def startElement (self,elementName):
+
+    name = elementName.lower()
+
+    if name == 'props':
+        self.inProps = True
+    if name == 'rules':
+        self.inRules = True
+        self.attributes=[]
+        self.keywords=[]
+        self.rulesetProperties=[]
+        self.rules=[]
+    if name == 'property':
+        if self.inProps:
+            self.presentProperty = g.bunch(name=name,attributes={})
+        else:
+            self.error('property not in props element')
+    if name in self.ruleElements:
+        if self.inRules:
+            self.rule = ruleClass(name=name)
+            if name == 'keywords':
+                self.keywords = self.rule
+        else:
+            self.error('%s not in rules element' % name)
+</t>
+<t tx="ekr.20060824111500.157">class rulesetClass:
+
+    @others
+</t>
+<t tx="ekr.20060824111500.158">def __init__ (self,attributes,keywords,properties,rules):
+
+    self.name=munge(attributes.get('set','main'))
+    self.attributes=attributes.copy() # A dict.
+    self.properties=properties[:] # A list.
+    self.keywords=keywords # A bunch.
+    self.rules=rules[:] # A list.
+
+    # g.trace('ruleset',self.name or 'main')
+
+    self.defaultColor = self.attributes.get('default')
+
+def __str__ (self):
+
+    return '&lt;ruleset %s&gt;' % self.name
+
+__repr__ = __str__
+</t>
+<t tx="ekr.20060824111500.159">class ruleClass:
+
+    '''A class to represent one xml rule.'''
+
+    @others
+</t>
+<t tx="ekr.20060824111500.160">def __init__ (self,name):
+
+    self.attributes = {}
+    self.contents = {}
+    self.keywordsDict = {}
+    self.name = name
+
+def __str__ (self):
+
+    return '&lt;rule %s\nattr: %s\ncontents: %s&gt;' % (
+        self.name,g.dictToString(self.attributes),g.dictToString(self.contents))
+
+__repr__ = __str__
+</t>
+<t tx="ekr.20060824111500.161">def getBoolAttrib(self,name):
+    d = self.attributes
+    val = d.get(name)
+    return g.choose(val,'True','False')
+
+def getIntAttrib(self,name):
+    d = self.attributes
+    val = d.get(name)
+    if val is not None:
+        try:
+            val = int(val)
+        except ValueError:
+            g.trace('bad int argument: %s = %s' % (name,val))
+            val = None
+    return val
+
+def getSpan (self):
+    d = self.contents
+    begin = d.get('begin','')
+    end   = d.get('end','')
+    return begin,end
+
+def getStrAttrib(self,name):
+    d = self.attributes
+    val = d.get(name,'')
+    return str(val)
+
+def getSeq(self,kind):
+    # g.trace(repr(self.contents))
+    d = self.contents
+    return d.get(kind,'')
+</t>
+<t tx="ekr.20060824111500.162">class contentHandler (xml.sax.saxutils.XMLGenerator):
+
+    '''A sax content handler class that handles jEdit language-description files.
+
+    Creates mode that can be retrieved using the getMode method.'''
+
+    @others
+</t>
+<t tx="ekr.20060824111500.163">def __init__ (self,c,inputFileName,language):
+
+    self.c = c
+    self.inputFileName = inputFileName
+    self.language = language
+
+    # Init the base class.
+    xml.sax.saxutils.XMLGenerator.__init__(self)
+
+    # Non-mode statistics.
+    self.numberOfAttributes = 0
+    self.numberOfElements = 0
+
+    # Options...
+    self.ignoreWs = True # True: don't print contents with only ws.
+    self.newLineAfterStartElement = [
+        'keywords','mode','props','property','rules','span','eol_span',
+        # 'seq',
+    ]
+
+    # Printing options
+    if opt_print_elements:
+        self.printAllElements = True
+        self.printCharacters = False or self.printAllElements
+        self.printAttributes = False and not self.printAllElements
+        self.printElements = [
+            #'begin','end',
+            #'eol_span',
+            #'keyword1','keyword2','keyword3','keyword4',
+            #'mark_previous',
+            #'mode',
+            #'props',
+            #'property',
+            #'rules',
+            #'span',
+            #'seq',
+        ]
+
+        if self.printAllElements:
+            self.suppressContent = []
+        else:
+            self.suppressContent = ['keyword1','keyword2','keyword3','keyword4']
+    else:
+        self.printAllElements = False
+        self.printCharacters = False
+        self.printAttributes = False
+        self.printElements = []
+
+    # Semantics: most of these should be mode ivars.
+    self.elementStack = []
+    self.errors = 0
+    self.mode = None # The present mode, or None if outside all modes.
+    self.modes = [] # All modes defined here or by imports.
+</t>
+<t tx="ekr.20060824111500.164"></t>
+<t tx="ekr.20060824111500.165">def attrsToList (self,attrs):
+
+    '''Convert the attributes to a list of g.Bunches.
+
+    attrs: an Attributes item passed to startElement.
+
+    sep: the separator charater between attributes.'''
+
+    return [
+        g.Bunch(name=name,val=attrs.getValue(name))
+        for name in attrs.getNames()
+    ]
+</t>
+<t tx="ekr.20060824111500.166">def attrsToString (self,attrs,sep='\n'):
+
+    '''Convert the attributes to a string.
+
+    attrs: an Attributes item passed to startElement.
+
+    sep: the separator charater between attributes.'''
+
+    result = [
+        '%s="%s"' % (bunch.name,bunch.val)
+        for bunch in self.attrsToList(attrs)
+    ]
+
+    return sep.join(result)
+</t>
+<t tx="ekr.20060824111500.167">def clean(self,s):
+
+    return g.toEncodedString(s,"ascii")
+</t>
+<t tx="ekr.20060824111500.168">def error (self, message):
+
+    print()
+    print()
+    print('XML error: %s' % (message))
+    print()
+
+    self.errors += 1
+</t>
+<t tx="ekr.20060824111500.169">def printStartElement(self,name,attrs):
+
+    if attrs.getLength() &gt; 0:
+        print('&lt;%s %s&gt;' % (
+            self.clean(name).strip(),
+            self.attrsToString(attrs,sep=' '))) ## ,
+    else:
+        print('&lt;%s&gt;' % (self.clean(name).strip())) ## ,
+
+    if name.lower() in self.newLineAfterStartElement:
+        print()
+</t>
+<t tx="ekr.20060824111500.170">def printSummary (self):
+
+    print('Summary...')
+    print('-' * 10, 'non- mode statistics')
+    print('modes',len(self.modes))
+    print('elements', self.numberOfElements)
+</t>
+<t tx="ekr.20060824111500.171"></t>
+<t tx="ekr.20060824111500.172"></t>
+<t tx="ekr.20060824111500.173">def ignorableWhitespace(self):
+    g.trace()
+
+def processingInstruction (self,target,data):
+    g.trace()
+
+def skippedEntity(self,name):
+    g.trace(name)
+
+def startElementNS(self,name,qname,attrs):
+    g.trace(name)
+
+def endElementNS(self,name,qname):
+    g.trace(name)
+</t>
+<t tx="ekr.20060824111500.174">def endDocument(self):
+
+    pass
+
+
+</t>
+<t tx="ekr.20060824111500.175">def startDocument(self):
+
+    pass
+</t>
+<t tx="ekr.20060824111500.176">def characters(self,content):
+
+    # content = content.replace('\r','').strip()
+    content = content.replace('\r','')
+    if content.strip(): content = content.strip()
+    content = self.clean(content)
+
+    elementName = self.elementStack and self.elementStack[-1].lower() or '&lt;no element name&gt;'
+
+    if self.printAllElements:
+        print(content) ## ,
+    elif self.printCharacters and content and elementName not in self.suppressContent:
+        print('content:',elementName,repr(content))
+
+    if self.mode:
+        self.mode.doContent(elementName,content)
+    else:
+        self.error('characters outside of mode')
+</t>
+<t tx="ekr.20060824111500.177">def endElement(self,name):
+
+    self.doEndElement(name)
+
+    name2 = self.elementStack.pop()
+    assert name == name2
+</t>
+<t tx="ekr.20060824111500.178">def startElement(self,name,attrs):
+
+    if self.mode:
+        self.mode.numberOfElements += 1
+    else:
+        self.numberOfElements += 1
+
+    self.elementStack.append(name)
+    self.doStartElement(name,attrs)
+</t>
+<t tx="ekr.20060824111500.179">def doStartElement (self,elementName,attrs):
+
+    if self.printAllElements or elementName.lower() in self.printElements:
+        self.printStartElement(elementName,attrs)
+
+    elementName = elementName.lower()
+
+    if elementName == 'mode':
+        if self.mode:
+            self.error('Multiple modes')
+        else:
+            self.mode = modeClass(self,self.inputFileName)
+    elif self.mode:
+        self.mode.startElement(elementName)
+        for bunch in self.attrsToList(attrs):
+            if self.printAttributes:
+                print('attr:',elementName,bunch.name,'=',bunch.val)
+            self.mode.doAttribute(bunch.name,bunch.val)
+    else:
+        self.error('Start element appears outside of Mode:%s' % elementName)
+        for bunch in self.attrsToList(attrs):
+            self.error('Attribute appears outside of Mode:%s' % bunch.name)
+</t>
+<t tx="ekr.20060824111500.180">def doEndElement (self,elementName):
+
+    if self.printAllElements or elementName.lower() in self.printElements:
+        print('&lt;/' + self.clean(elementName).strip() + '&gt;')
+
+    if elementName.lower() == 'mode':
+        if opt_print_summary:
+            self.mode.printSummary()
+    elif self.mode:
+        self.mode.endElement(elementName)
+    else:
+        self.error('End element appears outside of Mode:%s' % elementName)
+        # for bunch in self.attrsToList(attrs):
+        #    self.error('Attribute appears outside of Mode:%s' %bunch.name)
+</t>
+<t tx="ekr.20060824111500.181">def getMode (self):
+
+    if self.errors:
+        return None
+    else:
+        return self.mode
+</t>
+<t tx="ekr.20060827162343">def fullDelegate (self,delegate):
+
+    if delegate:
+        delegate = delegate.lower()
+        i = delegate.find('::')
+        if i == -1:
+            return '%s::%s' % (self.fileModeName.lower(),delegate)
+        else:
+            return delegate
+    else:
+        return ''
+</t>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
 <t tx="ekr.20070615131954"></t>
+<t tx="ekr.20111017085134.16069"></t>
+<t tx="ekr.20111017085134.16070"># **** Change these as needed ***
+import os, sys
+
+tempFileName = g.os_path_abspath(
+    g.os_path_join(g.app.testDir,'jythonScript.py'))
+
+if sys.platform == 'win32':
+    jython = r'C:\Jython-21\jython.bat'
+    command = '%s "%s"' % (jython,tempFileName) 
+else:
+    jython = r'cd ~/jython-2.1 ; ./jython'
+    command = '%s "%s" &amp;' % (jython,tempFileName)
+
+script = g.getScript(c,p).strip()
+if not script:
+    s = "no script in %s" % p.h
+    g.es(s) ; print s
+else:
+    f = file(tempFileName,'w')
+    f.write(script + '\n')
+    f.close()
+    print command
+    os.system(command)
+</t>
+<t tx="ekr.20111017085134.16071">import os, sys, threading
+
+python = sys.executable
+pythonDir,junk = g.os_path_split(python)
+pydoc = g.os_path_join(pythonDir,'Lib','pydoc.py')
+command = '%s %s -g' % (python,pydoc)
+
+# Execute the command in a separate thread.
+def go():
+    os.system(command)
+    
+threading.Thread(target=go).start()
+</t>
+<t tx="ekr.20111017085134.16072"># This works, but is too slow to be really useful.
+
+count = 0
+for p in c.all_unique_positions():
+    if p.isDirty():
+        c.checkPythonNode (p,suppressErrors=False)
+        count += 1
+        
+g.es('%s nodes checked' % count)
+</t>
+<t tx="ekr.20111017085134.16074"># Move selected text of the body down one line.
+
+@others
+
+moveLinesDown(c,p)
+</t>
+<t tx="ekr.20111017085134.16075">def moveLinesDown(c,p):
+    
+    undoType = 'Move Lines Down'
+    head,lines,tail,oldSel,oldYview = c.getBodyLines()
+    if not tail or not lines: return
+    tail = g.splitLines(tail)[1:]
+    lines = '\n'.join(lines) + '\n'
+    lines = g.splitLines(lines)
+    # Move the lines down.
+    lines.insert(0,tail[0])
+    tail = tail[1:]
+    if not tail: lines.insert(1,'\n')
+    # Convert back to strings.
+    tail = ''.join(tail)
+    lines = ''.join(lines)
+    # Adjust selection.
+    sel1,sel2 = oldSel
+    row,col = sel1.split('.') ; sel1 = '%d.%s' % (int(row)+1,col)
+    row,col = sel2.split('.') ; sel2 = '%d.%s' % (int(row)+1,col)
+    newSel = sel1,sel2
+    c.updateBodyPane(head,lines,tail,undoType,newSel,oldYview)
+</t>
+<t tx="ekr.20111017085134.16076"># Move selected text of the body up one line.
+
+@others
+
+moveLinesUp(c,p)
+</t>
+<t tx="ekr.20111017085134.16077">def moveLinesUp(c,p):
+    
+    undoType = 'Move Lines Up'
+    head,lines,tail,oldSel,oldYview = c.getBodyLines()
+    if not head or not lines: return
+    # A slight adjustment: lines doesn't end in '\n'.
+    head = g.splitLines(head)
+    lines = '\n'.join(lines) + '\n'
+    lines = g.splitLines(lines)
+    # Move the lines up.
+    lines.append(head[-1])
+    head = head[:-1]
+    # Convert back to strings.
+    head = ''.join(head)
+    lines = ''.join(lines)[:-1] # Undo the adjustment above.
+    # Adjust selection.
+    sel1,sel2 = oldSel
+    row,col = sel1.split('.') ; sel1 = '%d.%s' % (int(row)-1,col)
+    row,col = sel2.split('.') ; sel2 = '%d.%s' % (int(row)-1,col)
+    newSel = sel1,sel2
+    c.updateBodyPane(head,lines,tail,undoType,newSel,oldYview)
+</t>
+<t tx="ekr.20111017085134.16078">'''Analyze external calls in lisp files.'''
+
+import glob
+class lispAnalyzer:
+    @others
+
+base = '/media/disk/XEmacs/XEmacs-21.4.13/lisp/*.el'
+paths = glob.glob(base)
+# g.es(g.listToString(paths))
+paths = [paths[0]]
+
+x = lispAnalyzer(c,paths)
+x.run()
+</t>
+<t tx="ekr.20111017085134.16079">def __init__ (self,c,paths):
+
+    self.c = c
+    self.paths = paths
+
+    # Debugging.
+    self.debug = True
+    self.trace = False
+
+    # Semantic info.
+    self.def_keywords = ('defun','defvar',)
+    self.indent_keywords = ('if','prog','prog1','progn','set',)
+    self.expr_keywords = ('and','not','or',)
+
+    self.indent = 0 # Indentation of production output.
+
+    # Dispatch dictionary.
+    self.dispatchDict = {}
+</t>
+<t tx="ekr.20111017085134.16080">def run(self):
+
+    fn = self.paths[0]
+    f = open(fn)
+    s = f.read()
+    g.es_print(fn)
+    # g.trace(s)
+    s = self.stripStrings(s)
+    s = self.stripComments(s)
+    defs = self.findDefs(s)
+    calls = self.findCalls(s,defs)
+    calls = self.stripLispIds(calls)
+    defs.sort()
+    calls.sort()
+    g.trace('defs...\n',g.listToString(defs))
+    g.trace('calls...\n',g.listToString(calls))
+</t>
+<t tx="ekr.20111017085134.16081">def findCalls (self,s,defs):
+
+    calls = []
+    i = 0
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if ch.isalnum() or ch == u'_':
+            j = self.skipId(s,i)
+            theId = s[i:j].strip()
+            if theId not in defs and theId not in calls:
+                calls.append(theId)
+            i = j
+        else: i += 1
+        assert progress &lt; i
+
+    return calls       
+</t>
+<t tx="ekr.20111017085134.16082">def findDefs (self,s):
+
+    defs = [] ; tag = '(defun'
+    i = 0
+    while True:
+        progress = i
+        j = s.find(tag,i)
+        if j == -1:
+            return defs
+        i = j + len(tag)
+        j = g.skip_ws(s,i)
+        if j &gt; i:
+            k = self.skipId(s,j)
+            if k &gt; j:
+                defs.append(s[j:k])
+            i = k
+        assert progress &lt; i 
+</t>
+<t tx="ekr.20111017085134.16083">def stripComments(self,s):
+
+    result = []
+    i = 0
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if ch == ';':
+            i = self.skipComment(s,i)
+        else:
+            result.append(ch)
+            i += 1
+        assert progress &lt; i
+
+    return ''.join(result)
+</t>
+<t tx="ekr.20111017085134.16084">def stripLispIds (self,aList):
+
+    lispIds = [
+        't','f',
+        'apply',
+        'boundp',
+        'car','cons','cdr','consp',
+        'eq','equal','eval',
+        'lamda','lambda',
+        'macro',
+        'nil','not','null','numberp',
+        'or',
+        'unless',
+        'vector','vectorp',
+        # special forms
+        'and',
+        'catch',
+        'cond',
+        'condition-case',
+        'defconst',
+        'defmacro',
+        'defun',
+        'defvar',
+        'function',
+        'if',
+        'interactive',
+        'let',
+        'let*',
+        'or',
+        'prog1',
+        'prog2',
+        'progn',
+        'quote',
+        'save-current-buffer',
+        'save-excursion',
+        'save-restriction',
+        'save-window-excursion',
+        'setq',
+        'setq-default',
+        'track-mouse',
+        'unwind-protect',
+        'while',
+        'with-output-to-temp-buffer',
+    ]
+
+    return [z for z in aList if z not in lispIds]
+</t>
+<t tx="ekr.20111017085134.16085">def stripStrings(self,s):
+
+    result = []
+    i = 0
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if ch == '"':
+            i = self.skipString(s,i)
+        elif ch == "'":
+            i = self.skipId(s,i+1)
+        else:
+            result.append(ch)
+            i += 1
+        assert progress &lt; i
+
+    return ''.join(result)
+</t>
+<t tx="ekr.20111017085134.16086">class token:
+
+    '''Representing one elisp syntactic entity,
+    with a list of preceding comments.'''
+
+    def __init__ (self,comments,kind,val):
+        self.comments = comments[:]
+        self.kind = kind
+        self.val = val
+            # For blocks, a list of tokens.
+            # For all other tokens, the spelling of the token.
+
+    def __repr__ (self):
+        return '&lt;token kind: %s, val: %s&gt;' % (self.kind,self.val)
+
+    def __str__ (self):
+        if self.kind == 'block:':
+            return 'block: [snip]'
+        elif self.kind == 'string:':
+            return '%s%s' % (self.kind,self.val[:20])
+        else:
+            return '%s%s' % (self.kind,self.val)
+</t>
+<t tx="ekr.20111017085134.16087">def choose(self,cond,a,b): # warning: evaluates all arguments
+
+    if cond: return a
+    else: return b
+</t>
+<t tx="ekr.20111017085134.16088">def dumpList(self,aList):
+
+    if type(aList) == type([]):
+        result = self.dumpListHelper(aList,indent=0)
+        return '\n'.join(result)
+    else:
+        return repr(aList)
+
+def dumpListHelper(self,aList,indent):
+
+    result = []
+    leading = ' ' * (4 * indent)
+
+    for z in aList:
+        if z is None:
+            result.append('%s%s' % (leading,'None'))
+        elif z == []:
+            result.append('%s%s' % (leading,'[]'))
+        elif type(z) == type([]):
+            result.append('%s%s' % (leading,'['))
+            result.extend(self.dumpListHelper(z,indent+1))
+            result.append('%s%s' % (leading,']'))
+        elif isinstance(z,self.token):
+            if z.kind=='block:':
+                result.append('%s%s' % (leading,'block:'))
+                result.extend(self.dumpListHelper(z.val,indent+1))
+                # result.append('%s%s' % (leading,'block:]'))
+            else:
+                result.append('%s%s' % (leading,str(z)))
+        else:
+            result.append('%s%s' % (leading,str(z)))
+
+    return result
+
+listToString = dumpList
+</t>
+<t tx="ekr.20111017085134.16089"></t>
+<t tx="ekr.20111017085134.16090">def parse(self,s):
+
+    # Generate the nodes, including directive and section references.
+    return self.scanForest(s)
+</t>
+<t tx="ekr.20111017085134.16091">def scan(self,s,i):
+
+    '''Scan an elisp expression.'''
+
+    start = i ; end = len(s) ; result = []
+    comments = [] ; token = self.token
+    # A hack. ignore initial @language lisp
+    tag = '@language lisp'
+    if i == 0 and s[i:i+len(tag)]==tag:
+        i += len(tag)
+    while i &lt; end:
+        progress = i
+        ch = s[i]
+        if ch == ';':
+            j = self.skipComment(s,i)
+            start = i = j
+        elif ch == '"':
+            j = self.skipString(s,i)
+            start = i = j
+        elif ch.isalnum() or ch == u'_':
+            j = self.skipId(s,i)
+            result.append(token(comments,'id:',s[i:j]))
+            start = i = j
+        elif ch =='(':
+            i += 1
+            j,aList = self.scan(s,i)
+            result.append(token(comments,'block:',aList))
+            start = i = j
+        elif ch == ')':
+            i += 1
+            return i,result
+        else:
+            # if ch == "'": ch = 'quote'
+            # if ch not in (' ','\t','\n','\r'):
+                # result.append(token(comments,'op:',ch))
+            i += 1
+        assert progress &lt; i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    if start &lt; end:
+        tail = s[start:end].strip()
+        if tail:
+            result.append(token(comments,'tail:',tail))
+            comment = []
+    if comments:
+        result.append(token(comments,'trailing-comment:',''))
+
+    return i,result
+</t>
+<t tx="ekr.20111017085134.16092">def skipComment (self,s,i):
+
+    '''Skip a comment.'''
+
+    while i &lt; len(s):
+        if s[i] == '\n':
+            break
+        i += 1
+    return i
+</t>
+<t tx="ekr.20111017085134.16093">def skipId (self,s,i):
+
+    while i &lt; len(s):
+        ch = s[i]
+        if ch.isalnum() or ch in ('_','-'):
+            i += 1
+        else:
+            break
+    return i
+</t>
+<t tx="ekr.20111017085134.16094">def skipString(self,s,i):
+
+    """Skip a string literal."""
+
+    assert(s[i] == '"')
+    i += 1
+    while i &lt; len(s):
+        ch = s[i]
+        if ch == '\\' : i += 2
+        elif ch == '"':
+            i += 1 ; break
+        else: i += 1
+
+    return i
+</t>
+<t tx="ekr.20111017085134.16095">def scanForest (self,s):
+
+    i = 0 ; result = []
+
+    while i &lt; len(s):
+        progress = i
+        i,aList = self.scan(s,i)
+        aList and result.extend(aList)
+        assert i &gt; progress
+
+    return result
+
+
+</t>
+<t tx="ekr.20111017085134.16096">@ From Richard Deibenkorn:
+
+1. Attempt what is not certain. Certainty may or may not come later. It may then
+be a valuable delusion.
+
+2. The pretty, initial position which falls short of completeness is not to be
+valued--except as stimulus for further moves.
+
+3. Do search.  But in order to find other than what is looked for.
+
+4. Use and respond to the initial fresh qualities but consider them absolutely
+expendable.
+</t>
+<t tx="ekr.20111017085134.16097">def gen(self,tokens,indent,init=False):
+
+    result = []
+
+    if init: result.append('='*40)
+
+    for token in tokens:
+        aList = self.gen_token(token,indent)
+        result.extend(aList)
+
+    if init: result.append('-'*40)
+
+    return result
+
+</t>
+<t tx="ekr.20111017085134.16098">def gen_token(self,token,indent):
+
+    result = []
+
+    if self.debug:
+        if token.kind == 'block:':
+            aList = self.gen_block(token,indent)
+            result.extend(aList)
+        else:
+            self.put_token(token,indent,result)
+    else:
+        if token.kind == 'block:':
+            self.gen_block(token,indent)
+        else:
+            self.put_code_token(token)
+
+    return result
+</t>
+<t tx="ekr.20111017085134.16099">def gen_block (self,token,indent):
+
+    if not (token and token.val):
+        return []
+
+    blockList = token.val
+    token2 = blockList[0]
+    result = []
+
+    if token2.kind.startswith('id'):
+        aList = self.gen_block_id(token2.val,blockList,indent)
+    else:
+        if self.debug:
+            self.put('block...',[],indent,result)
+        aList = self.gen(token.val,indent+1)
+
+    result.extend(aList)
+    return result
+</t>
+<t tx="ekr.20111017085134.16100">def gen_block_id (self,theId,tokens,indent):
+
+    result = []
+
+    # Eventually there will be a lookup of the dispatch dict here.
+    if theId == 'let':
+        aList = self.gen_let(tokens,indent)
+    elif theId == 'if':
+        aList = self.gen_if(tokens,indent)
+    elif theId in self.def_keywords:
+        aList = self.gen_def(theId,tokens,indent)
+    elif theId in self.indent_keywords:
+        self.put('%s...' % (theId),[],indent,result)
+        aList = self.gen(tokens[1:],indent+1)
+    elif theId in self.expr_keywords:
+        aList = self.gen_expr(theId,tokens[1:],indent+1)
+    else:
+        aList = self.gen_call(theId,tokens[1:],indent)
+
+    result.extend(aList)
+    return result
+</t>
+<t tx="ekr.20111017085134.16101">def gen_call (self,funcId,tokens,indent):
+
+    result = []
+
+    if self.debug:
+        self.put('call: %s' % (funcId),[],indent,result)
+        for token in tokens:
+            aList = self.gen_arg(token,indent+1)
+            result.extend(aList)
+    else:
+        self.put_code_line('%s(' % (funcId))
+        for token in tokens:
+            self.gen_arg(token,indent+1)
+        self.put_code(')')
+
+    return result
+
+</t>
+<t tx="ekr.20111017085134.16102">def gen_arg(self,token,indent):
+
+    result = []
+
+    if self.debug:
+        if token.kind == 'block:':
+            self.put('arg block:...',[],indent,result)
+            aList = self.gen_block(token,indent)
+            result.extend(aList)
+        else:
+            self.put_token(token,indent,result)
+    else:
+        if token.kind == 'block:':
+            aList = self.gen_block(token,indent)
+            self.put_code(''.join(aList))
+        else:
+            self.put_code_token(token)
+
+    return result
+</t>
+<t tx="ekr.20111017085134.16103">def gen_def(self,theId,tokens,indent):
+
+    result = []
+
+    if not tokens or len(tokens) &lt; 3:
+        result.append('*** bad def tokens')
+        return result
+
+    defToken,idToken = tokens[0:2]
+    if idToken.kind != 'id:':
+        result.append('*** bad def id')
+        return result
+
+    if self.debug:
+        self.put(theId,idToken.val,indent,result)
+        aList = self.gen(tokens[2:],indent+1)
+        result.extend(aList)
+    else:
+        self.put_code('def %s (' % idToken.val)
+        self.gen_token(tokens[2],indent)
+        self.put_code('): # end def\n')
+        self.indent += 1
+        self.gen(tokens[3:],indent+1)
+        self.indent -= 1
+
+    return result
+</t>
+<t tx="ekr.20111017085134.16104">@ if condition then-form else-forms.
+
+If the evaluated condition is non-nil, then-form is evaluated and the result
+returned. Otherwise, the else-forms are evaluated in textual order, and the
+value of the last one is returned. If condition has the value nil, and no
+else-forms are given, if returns nil.
+@c
+
+def gen_if (self,tokens,indent):
+
+    # tokens[0]: id:if
+    # tokens[1] cond
+
+    for i in xrange(len(tokens)):
+        g.trace('tokens[%d]: %s' % (i,self.dumpList(tokens[i])))
+
+    # g.trace(self.dumpList(tokens))
+
+    result = []
+
+    if self.debug:
+        self.put('if...',[],indent,result)
+        aList = self.gen(tokens[1:],indent+1)
+        result.extend(aList)
+    else:
+        self.put_code('if ')
+        self.gen(tokens[1:],indent+1)
+        self.put_code(': # end if\n')
+
+    return result
+</t>
+<t tx="ekr.20111017085134.16105">def gen_then (self,token):
+
+    pass
+</t>
+<t tx="ekr.20111017085134.16106">def gen_expr (self,theId,aList,indent):
+
+    binops = ('and','or',)
+    result = []
+
+    self.put(theId,[],indent,result)
+    aList = self.gen(aList,indent+1)
+
+    result.extend(aList)
+    return result
+</t>
+<t tx="ekr.20111017085134.16107">@
+(let ((variable value)
+      (variable value)
+      ...)
+  body...)
+@c
+
+def gen_let (self,tokens,indent):
+
+    if not tokens: return []
+    if len(tokens) != 3:
+        g.trace('unusual let')
+        result = self.gen(tokens,indent+1)
+        return result
+
+    if 0:
+        for i in xrange(len(tokens)):
+            g.trace('token',i,tokens[i])
+
+    letToken,bindingToken,bodyToken = tokens
+    result = []
+    self.put('let...',[],indent,result)
+    self.put('let-bindings...',[],indent+1,result)
+    aList = self.gen_let_bindings(bindingToken,indent+2)
+    result.extend(aList)
+    self.put('let-block...',[],indent+1,result)
+    aList = self.gen_block(bodyToken,indent+2)
+    result.extend(aList)
+    return result
+</t>
+<t tx="ekr.20111017085134.16108">def gen_let_bindings (self,token,indent):
+
+    result = []
+
+    if token.kind != 'block:':
+        g.trace('unexpected let')
+        return result
+
+    for z in token.val:
+        if z.kind == 'block:': # one (id,val) pair
+            if z.val and len(z.val) == 2:
+                token1 = z.val[0]
+                token2 = z.val[1]
+                self.put('let-id',token1,indent,result)
+                self.put('let-val...',[],indent,result)
+                if token2.kind == 'block:':
+                    aList = self.gen_block(token2,indent+1)
+                    result.extend(aList)
+                else:
+                    #g.trace('no let list')
+                    self.put_token(token2,indent+1,result)
+            else:
+                g.trace('unexpected let 2')
+
+    return result
+</t>
+<t tx="ekr.20111017085134.16109"></t>
+<t tx="ekr.20111017085134.16110">def put (self,kind,val,indent,result):
+
+    '''Append one or more lines of output to result.'''
+
+    leading = '%2d: %s' % (indent,' ' * indent)
+
+    if kind == 'string:':
+        val = self.choose(len(val)&gt;20,val[:20]+'..."',val)
+
+    if val:
+        s = '%s%s %s' % (leading,str(kind),str(val))
+    else:
+        s = '%s%s' % (leading,str(kind))
+
+    result.append(s)
+</t>
+<t tx="ekr.20111017085134.16111">def put_token (self,token,indent,result):
+
+    for z in token.comments:
+        self.put('comment:',z,indent,result)
+
+    self.put(token.kind,token.val,indent,result)
+</t>
+<t tx="ekr.20111017085134.16112">def put_code_line (self,s):
+
+    s2 = '%s%s' % (' '*self.indent,s)
+    print s2,
+
+def put_code (self,s):
+
+    print s,
+</t>
+<t tx="ekr.20111017085134.16113">def put_code_token (self,token):
+
+    if token.kind == 'block:':
+        self.put_code('&lt;block&gt;')
+    else:
+        self.put_code(token.val)
+
+</t>
+<t tx="ekr.20111017085134.16114">result = []
+firstLevel = p.level()
+
+for p in p.self_and_subtree_iter():
+    head = p.moreHead(firstLevel)
+    head = g.toEncodedString(head,'ascii',reportErrors=True)
+    result.append(head)
+    body = p.moreBody() # Inserts escapes for '+' and '-' characters.
+    if body:
+        body = g.toEncodedString(body,'ascii',reportErrors=True)
+        result.append(body)
+
+result = '\n'.join(result) + '\n'
+# print result
+w = c.frame.body.bodyCtrl
+w.clipboard_clear()
+w.clipboard_append(result)
+</t>
 <t tx="ekr.20141105055521.16">@language python
 
 '''
@@ -184,6 +2495,1141 @@ for p in c.all_unique_positions():
 </t>
 <t tx="ekr.20141116105945.4"></t>
 <t tx="ekr.20150302053516.3"></t>
+<t tx="ekr.20150508132450.1">g.cls()
+
+class CreateDecorators:
+    '''
+    A class to create decorators from tables in getPublicCommands.
+    This class uses a node called "Found: getPublicCommands".
+    
+    This @button node must be executed in LeoPy.leo.
+    '''
+    def __init__(self,c):
+        self.c = c
+        self.fixups = self.create_fixups()
+        self.n = 0
+        self.n_fail = 0
+    @others
+
+CreateDecorators(c).run()
+</t>
+<t tx="ekr.20150508132450.2">def create_d(self,lines,publicCommands):
+    '''Create a dict. keys are method names; values are command names.'''
+    trace = False
+    if trace:
+        print('')
+        g.trace(publicCommands.h)
+    d = {}
+    for s in lines:
+        aList = s.split()
+        if len(aList) &gt; 2:
+            aList = [aList[0],' '.join(aList[1:])]
+        c_name,f_name = aList[0].strip(),aList[1].strip()
+        if ' ' not in f_name:
+            f_name = f_name.split('.')[-1]
+        # if '(' in f_name:
+            # f_name = f_name[:f_name.find('(')]
+        if trace: g.trace('%45s %s' % (c_name,f_name))
+        d [f_name] = c_name
+    return d
+</t>
+<t tx="ekr.20150508132450.3">def create_decorator(self,c_name,f_name,root):
+    '''
+    Search root for a definition of f_name.
+    If found, insert @cmd(f_name) before the definition.
+    '''
+    # g.trace('%45s %s' % (c_name,f_name))
+    found = False
+    for p in root.self_and_subtree():
+        result = []
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,'def ' + f_name):
+                if found:
+                    g.trace('duplicate def',f_name)
+                else:
+                    found = True
+                    decorator = '@cmd(%s)\n' % (c_name)
+                    result.append(decorator)
+                    # print('%s%s' % (decorator,s))
+            result.append(s)
+    return found
+</t>
+<t tx="ekr.20150508132450.4">def create_decorators(self,d,root):
+    '''Create decorators for all items in d in root's tree.'''
+    print('\n%s\n' % root.h)
+    if root.h in self.fixups:
+        roots = []
+        aList = self.fixups.get(root.h)
+        for root2_h in aList:
+            root2 = g.findNodeAnywhere(self.c,root2_h)
+            if root2:
+                g.trace(root.h,'=====&gt;',root2.h)
+                roots.append(root2)
+            else:
+                g.trace('===== not found',root2_h)
+    else:
+        roots = [root]
+    for f_name in sorted(d.keys()):
+        found = False
+        for root in roots:
+            c_name = d.get(f_name)
+            found = self.create_decorator(c_name,f_name,root)
+            if found: break
+        if not found:
+            g.trace('not found',f_name)
+            self.n_fail += 1
+</t>
+<t tx="ekr.20150508132450.5">def create_fixups(self):
+    '''
+    Return a fixup dict.
+    Keys are headlines for classes.
+    Values are new headlines of nodes containing the actual class.
+    '''
+    return {
+        'ChapterCommandsClass': ['class ChapterController'],
+        'EditCommandsClass': [
+            'EditCommandsClass',
+            'class Commands',
+            'class LeoQtFrame',
+            'class LeoBody',
+        ],
+        'class SearchCommandsClass': ['class LeoFind (LeoFind.py)'],
+        'KeyHandlerCommandsClass (add docstrings)': [
+            'class KeyHandlerClass',
+            'class AutoCompleterClass',
+        ]
+    }
+</t>
+<t tx="ekr.20150508132450.6">def find_class(self,p):
+    '''Return the position of the class enclosing p.'''
+    for p2 in p.parents():
+        if p2.h.lower().find('class') &gt; -1 and p2.b.find('class') &gt; -1:
+            return p2
+    else:
+        g.trace('*** no class for p.h')
+        return None
+</t>
+<t tx="ekr.20150508132450.7">def find_next_clone(self,p):
+    v = p.v
+    p = p.copy()
+    p.moveToThreadNext()
+    wrapped = False
+    while 1:
+        # g.trace(p.v,p.h)
+        if p and p.v == v:
+            break
+        elif p:
+            p.moveToThreadNext()
+        elif wrapped:
+            break
+        else:
+            wrapped = True
+            p = c.rootPosition()
+    return p
+</t>
+<t tx="ekr.20150508132450.8">def munge_lines(self,root,publicCommands):
+    '''Return munged lines of '''
+    # print('')
+    # g.trace(root.h)
+    s = publicCommands.b
+    i,j = s.find('{'),s.find('}')
+    s = s[i+1:j]
+    # print(s)
+    lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
+    lines = [z for z in lines if not z.startswith('#')]
+    lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
+    lines = [z.rstrip().rstrip(',') for z in lines]
+    lines = [z[1:] for z in lines]
+    lines = [z.replace("':",' ') for z in lines]
+    # print('\n'.join(lines))
+    self.n += len(lines)
+    return lines
+</t>
+<t tx="ekr.20150508132450.9">def run(self):
+    '''Top-level code.'''
+    self.n = 0
+    found = g.findNodeAnywhere(c,'Found: getPublicCommands')
+    assert found
+    for child in found.children():
+        publicCommands = self.find_next_clone(child)
+        root = self.find_class(publicCommands)
+        if root:
+            lines = self.munge_lines(root,publicCommands)
+            d = self.create_d(lines,publicCommands)
+            self.create_decorators(d,root)
+    print('\n%s commands %s failed' % (self.n,self.n_fail))
+</t>
+<t tx="ekr.20150525161132.1">r'''The script to test AddTokensToTree class.'''
+g.cls()
+if c.isChanged():
+    c.save()
+&lt;&lt; imports &gt;&gt;
+project = False
+if project:
+    aList = leoBeautify.ProjectUtils().project_files('leo')
+    aList = ['@file %s' % (g.shortFileName(z).rstrip()) for z in aList]
+    aList = aList
+    settings_d = {}
+else:
+    aList = [
+        'unit test: leoBeautify.py',
+        # '@file leoFileCommands.py',
+        # '@file leoBeautify.py',
+    ]
+    settings_d = {
+        'ast_tokens_d': False,
+        'stats': True,
+        'input_string': True,
+        'input_lines': False,
+        'input_tokens': False,
+        'token_list': False,
+        'code_list': False,
+        'output_string': True,
+    }
+assert aList,'no input in %s' % (p.h)
+t1 = time.clock()
+for h in aList:
+    p2 = g.findNodeAnywhere(c,h)
+    if p2:
+        try:
+            leoBeautify.test_LeoTidy(c,h,p2,settings_d)
+        except Exception:
+            g.es_exception()
+if project:
+    print('done: %4.2f sec.' % (time.clock()-t1))
+</t>
+<t tx="ekr.20150525161132.2"># import leo.external.PythonTidy as PythonTidy
+import leo.core.leoAst as leoAst
+import leo.core.leoBeautify as leoBeautify
+import imp
+import time
+imp.reload(leoAst)
+imp.reload(leoBeautify)
+# imp.reload(PythonTidy)
+</t>
+<t tx="ekr.20160123185308.1">'''
+Make a stub file in the ~/home directory for every @&lt;file&gt; node in the
+selected tree.
+'''
+import ast
+import os
+import textwrap
+import leo.core.leoGlobals as g
+@others
+MakeStubFile(c).run(c.p)
+</t>
+<t tx="ekr.20160123185308.10">def format(self, node):
+    '''Format the node (or list of nodes) and its descendants.'''
+    self.level = 0
+    val = self.visit(node)
+    return val and val.strip() or ''
+</t>
+<t tx="ekr.20160123185308.11">def visit(self, node):
+    '''Return the formatted version of an Ast node, or list of Ast nodes.'''
+    if isinstance(node, (list, tuple)):
+        return ','.join([self.visit(z) for z in node])
+    elif node is None:
+        return 'None'
+    else:
+        assert isinstance(node, ast.AST), node.__class__.__name__
+        method_name = 'do_' + node.__class__.__name__
+        method = getattr(self, method_name)
+        s = method(node)
+        # pylint: disable=unidiomatic-typecheck
+        assert type(s) == type('abc'), type(s)
+        return s
+</t>
+<t tx="ekr.20160123185308.12"></t>
+<t tx="ekr.20160123185308.13"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+def do_ClassDef(self, node):
+    result = []
+    name = node.name # Only a plain string is valid.
+    bases = [self.visit(z) for z in node.bases] if node.bases else []
+    if bases:
+        result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
+    else:
+        result.append(self.indent('class %s:\n' % name))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.14"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def do_FunctionDef(self, node):
+    '''Format a FunctionDef node.'''
+    result = []
+    if node.decorator_list:
+        for z in node.decorator_list:
+            result.append('@%s\n' % self.visit(z))
+    name = node.name # Only a plain string is valid.
+    args = self.visit(node.args) if node.args else ''
+    result.append(self.indent('def %s(%s):\n' % (name, args)))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.15">def do_Interactive(self, node):
+    for z in node.body:
+        self.visit(z)
+</t>
+<t tx="ekr.20160123185308.16">def do_Module(self, node):
+    assert 'body' in node._fields
+    result = ''.join([self.visit(z) for z in node.body])
+    return result # 'module:\n%s' % (result)
+</t>
+<t tx="ekr.20160123185308.17">def do_Lambda(self, node):
+    return self.indent('lambda %s: %s' % (
+        self.visit(node.args),
+        self.visit(node.body)))
+</t>
+<t tx="ekr.20160123185308.18"></t>
+<t tx="ekr.20160123185308.19">def do_Expr(self, node):
+    '''An outer expression: must be indented.'''
+    return self.indent('%s\n' % self.visit(node.value))
+</t>
+<t tx="ekr.20160123185308.2">class MakeStubFile:
+    '''A class to make Python stub (.pyi) files.'''
+    @others
+</t>
+<t tx="ekr.20160123185308.20">def do_Expression(self, node):
+    '''An inner expression: do not indent.'''
+    return '%s\n' % self.visit(node.body)
+</t>
+<t tx="ekr.20160123185308.21">def do_GeneratorExp(self, node):
+    elt = self.visit(node.elt) or ''
+    gens = [self.visit(z) for z in node.generators]
+    gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
+    return '&lt;gen %s for %s&gt;' % (elt, ','.join(gens))
+</t>
+<t tx="ekr.20160123185308.22">def do_AugLoad(self, node):
+    return 'AugLoad'
+
+def do_Del(self, node):
+    return 'Del'
+
+def do_Load(self, node):
+    return 'Load'
+
+def do_Param(self, node):
+    return 'Param'
+
+def do_Store(self, node):
+    return 'Store'
+</t>
+<t tx="ekr.20160123185308.23"></t>
+<t tx="ekr.20160123185308.24"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+def do_arguments(self, node):
+    '''Format the arguments node.'''
+    kind = self.kind(node)
+    assert kind == 'arguments', kind
+    args = [self.visit(z) for z in node.args]
+    defaults = [self.visit(z) for z in node.defaults]
+    # Assign default values to the last args.
+    args2 = []
+    n_plain = len(args) - len(defaults)
+    for i in range(len(args)):
+        if i &lt; n_plain:
+            args2.append(args[i])
+        else:
+            args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+    # Now add the vararg and kwarg args.
+    name = getattr(node, 'vararg', None)
+    if name: args2.append('*' + name)
+    name = getattr(node, 'kwarg', None)
+    if name: args2.append('**' + name)
+    return ','.join(args2)
+</t>
+<t tx="ekr.20160123185308.25"># Python 3:
+# arg = (identifier arg, expr? annotation)
+
+def do_arg(self, node):
+    if node.annotation:
+        return self.visit(node.annotation)
+    else:
+        return ''
+</t>
+<t tx="ekr.20160123185308.26"># Attribute(expr value, identifier attr, expr_context ctx)
+
+def do_Attribute(self, node):
+    return '%s.%s' % (
+        self.visit(node.value),
+        node.attr) # Don't visit node.attr: it is always a string.
+</t>
+<t tx="ekr.20160123185308.27">def do_Bytes(self, node): # Python 3.x only.
+    assert g.isPython3
+    return str(node.s)
+</t>
+<t tx="ekr.20160123185308.28"># Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+def do_Call(self, node):
+    # g.trace(node,Utils().dump_ast(node))
+    func = self.visit(node.func)
+    args = [self.visit(z) for z in node.args]
+    for z in node.keywords:
+        # Calls f.do_keyword.
+        args.append(self.visit(z))
+    if getattr(node, 'starargs', None):
+        args.append('*%s' % (self.visit(node.starargs)))
+    if getattr(node, 'kwargs', None):
+        args.append('**%s' % (self.visit(node.kwargs)))
+    args = [z for z in args if z] # Kludge: Defensive coding.
+    return '%s(%s)' % (func, ','.join(args))
+</t>
+<t tx="ekr.20160123185308.29"># keyword = (identifier arg, expr value)
+
+def do_keyword(self, node):
+    # node.arg is a string.
+    value = self.visit(node.value)
+    # This is a keyword *arg*, not a Python keyword!
+    return '%s=%s' % (node.arg, value)
+</t>
+<t tx="ekr.20160123185308.3">def __init__(self, c):
+    self.c = c
+    self.d = self.scan_types_data(c) or self.make_types_dict(c)
+        # Keys are strings, values are Type objects.
+</t>
+<t tx="ekr.20160123185308.30">def do_comprehension(self, node):
+    result = []
+    name = self.visit(node.target) # A name.
+    it = self.visit(node.iter) # An attribute.
+    result.append('%s in %s' % (name, it))
+    ifs = [self.visit(z) for z in node.ifs]
+    if ifs:
+        result.append(' if %s' % (''.join(ifs)))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.31">def do_Dict(self, node):
+    result = []
+    keys = [self.visit(z) for z in node.keys]
+    values = [self.visit(z) for z in node.values]
+    if len(keys) == len(values):
+        result.append('{\n' if keys else '{')
+        items = []
+        for i in range(len(keys)):
+            items.append('  %s:%s' % (keys[i], values[i]))
+        result.append(',\n'.join(items))
+        result.append('\n}' if keys else '}')
+    else:
+        print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
+            repr(keys), repr(values)))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.32">def do_Ellipsis(self, node):
+    return '...'
+</t>
+<t tx="ekr.20160123185308.33">def do_ExtSlice(self, node):
+    return ':'.join([self.visit(z) for z in node.dims])
+</t>
+<t tx="ekr.20160123185308.34">def do_Index(self, node):
+    return self.visit(node.value)
+</t>
+<t tx="ekr.20160123185308.35">def do_List(self, node):
+    # Not used: list context.
+    # self.visit(node.ctx)
+    elts = [self.visit(z) for z in node.elts]
+    elst = [z for z in elts if z] # Defensive.
+    return '[%s]' % ','.join(elts)
+</t>
+<t tx="ekr.20160123185308.36">def do_ListComp(self, node):
+    elt = self.visit(node.elt)
+    gens = [self.visit(z) for z in node.generators]
+    gens = [z if z else '&lt;**None**&gt;' for z in gens] ### Kludge: probable bug.
+    return '%s for %s' % (elt, ''.join(gens))
+</t>
+<t tx="ekr.20160123185308.37">def do_Name(self, node):
+    return node.id
+</t>
+<t tx="ekr.20160123185308.38">def do_Num(self, node):
+    return repr(node.n)
+</t>
+<t tx="ekr.20160123185308.39"># Python 2.x only
+
+def do_Repr(self, node):
+    return 'repr(%s)' % self.visit(node.value)
+</t>
+<t tx="ekr.20160123185308.4">def make_types_dict(self, c):
+    '''Return a dict whose keys are names and values are type specs.'''
+    return {
+        'aList': 'Sequence',
+        'aList2': 'Sequence',
+        'c': 'Commander',
+        'i': 'int',
+        'j': 'int',
+        'k': 'int',
+        'node': 'ast.Ast',
+        'p': 'Position',
+        's': 'str',
+        's2': 'str',
+        'v': 'VNode',
+    }
+</t>
+<t tx="ekr.20160123185308.40">def do_Slice(self, node):
+    lower, upper, step = '', '', ''
+    if getattr(node, 'lower', None) is not None:
+        lower = self.visit(node.lower)
+    if getattr(node, 'upper', None) is not None:
+        upper = self.visit(node.upper)
+    if getattr(node, 'step', None) is not None:
+        step = self.visit(node.step)
+    if step:
+        return '%s:%s:%s' % (lower, upper, step)
+    else:
+        return '%s:%s' % (lower, upper)
+</t>
+<t tx="ekr.20160123185308.41">def do_Str(self, node):
+    '''This represents a string constant.'''
+    return repr(node.s)
+</t>
+<t tx="ekr.20160123185308.42"># Subscript(expr value, slice slice, expr_context ctx)
+
+def do_Subscript(self, node):
+    value = self.visit(node.value)
+    the_slice = self.visit(node.slice)
+    return '%s[%s]' % (value, the_slice)
+</t>
+<t tx="ekr.20160123185308.43">def do_Tuple(self, node):
+    elts = [self.visit(z) for z in node.elts]
+    return '(%s)' % ','.join(elts)
+</t>
+<t tx="ekr.20160123185308.44"></t>
+<t tx="ekr.20160123185308.45">def do_BinOp(self, node):
+    return '%s%s%s' % (
+        self.visit(node.left),
+        self.op_name(node.op),
+        self.visit(node.right))
+</t>
+<t tx="ekr.20160123185308.46">def do_BoolOp(self, node):
+    op_name = self.op_name(node.op)
+    values = [self.visit(z) for z in node.values]
+    return op_name.join(values)
+</t>
+<t tx="ekr.20160123185308.47">def do_Compare(self, node):
+    result = []
+    lt = self.visit(node.left)
+    # ops   = [self.visit(z) for z in node.ops]
+    ops = [self.op_name(z) for z in node.ops]
+    comps = [self.visit(z) for z in node.comparators]
+    result.append(lt)
+    if len(ops) == len(comps):
+        for i in range(len(ops)):
+            result.append('%s%s' % (ops[i], comps[i]))
+    else:
+        g.trace('ops', repr(ops), 'comparators', repr(comps))
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.48">def do_UnaryOp(self, node):
+    return '%s%s' % (
+        self.op_name(node.op),
+        self.visit(node.operand))
+</t>
+<t tx="ekr.20160123185308.49">def do_IfExp(self, node):
+    return '%s if %s else %s ' % (
+        self.visit(node.body),
+        self.visit(node.test),
+        self.visit(node.orelse))
+</t>
+<t tx="ekr.20160123185308.5">def scan_types_data(self, c):
+    '''Create self.d from @data stub-types nodes.'''
+    aList = c.config.getData(
+        'stub-types',
+        strip_comments=True,
+        strip_data=True)
+    d = {}
+    for s in aList:
+        name, value = s.split(None,1)
+        d[name.strip()] = value.strip()
+    if False:
+        for key in sorted(d.keys()):
+            g.trace(key, d.get(key))
+    return d
+</t>
+<t tx="ekr.20160123185308.50"></t>
+<t tx="ekr.20160123185308.51">def do_Assert(self, node):
+    test = self.visit(node.test)
+    if getattr(node, 'msg', None):
+        message = self.visit(node.msg)
+        return self.indent('assert %s, %s' % (test, message))
+    else:
+        return self.indent('assert %s' % test)
+</t>
+<t tx="ekr.20160123185308.52">def do_Assign(self, node):
+    return self.indent('%s=%s\n' % (
+        '='.join([self.visit(z) for z in node.targets]),
+        self.visit(node.value)))
+</t>
+<t tx="ekr.20160123185308.53">def do_AugAssign(self, node):
+    return self.indent('%s%s=%s\n' % (
+        self.visit(node.target),
+        self.op_name(node.op), # Bug fix: 2013/03/08.
+        self.visit(node.value)))
+</t>
+<t tx="ekr.20160123185308.54">def do_Break(self, node):
+    return self.indent('break\n')
+</t>
+<t tx="ekr.20160123185308.55">def do_Continue(self, node):
+    return self.indent('continue\n')
+</t>
+<t tx="ekr.20160123185308.56">def do_Delete(self, node):
+    targets = [self.visit(z) for z in node.targets]
+    return self.indent('del %s\n' % ','.join(targets))
+</t>
+<t tx="ekr.20160123185308.57">def do_ExceptHandler(self, node):
+    result = []
+    result.append(self.indent('except'))
+    if getattr(node, 'type', None):
+        result.append(' %s' % self.visit(node.type))
+    if getattr(node, 'name', None):
+        if isinstance(node.name, ast.AST):
+            result.append(' as %s' % self.visit(node.name))
+        else:
+            result.append(' as %s' % node.name) # Python 3.x.
+    result.append(':\n')
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.58"># Python 2.x only
+
+def do_Exec(self, node):
+    body = self.visit(node.body)
+    args = [] # Globals before locals.
+    if getattr(node, 'globals', None):
+        args.append(self.visit(node.globals))
+    if getattr(node, 'locals', None):
+        args.append(self.visit(node.locals))
+    if args:
+        return self.indent('exec %s in %s\n' % (
+            body, ','.join(args)))
+    else:
+        return self.indent('exec %s\n' % (body))
+</t>
+<t tx="ekr.20160123185308.59">def do_For(self, node):
+    result = []
+    result.append(self.indent('for %s in %s:\n' % (
+        self.visit(node.target),
+        self.visit(node.iter))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append(self.indent('else:\n'))
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.6">def make_stub_file(self, p):
+    '''Make a stub file in ~/stubs for the @&lt;file&gt; node at p.'''
+    import ast
+    import leo.core.leoAst as leoAst
+    assert p.isAnyAtFileNode()
+    c = self.c
+    fn = p.anyAtFileNodeName()
+    if not fn.endswith('.py'):
+        g.es_print('not a python file', fn)
+        return
+    ### abs_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+    abs_fn = g.fullPath(c, p)
+    if not g.os_path_exists(abs_fn):
+        g.es_print('not found', abs_fn)
+        return
+    stubs = g.os_path_finalize(g.os_path_expanduser('~/stubs'))
+    if g.os_path_exists(stubs):
+        base_fn = g.os_path_basename(fn)
+        out_fn = g.os_path_finalize_join(stubs,base_fn)
+    else:
+        g.es_print('not found', stubs)
+        return
+        # out_fn = g.os_path_finalize_join(g.app.loadDir, fn)
+    out_fn = out_fn[:-3] + '.pyi'
+    s = open(abs_fn).read()
+    node = ast.parse(s,filename=fn,mode='exec')
+    leoAst.StubTraverser(self.c, self.d, out_fn).run(node)
+</t>
+<t tx="ekr.20160123185308.60">def do_Global(self, node):
+    return self.indent('global %s\n' % (
+        ','.join(node.names)))
+</t>
+<t tx="ekr.20160123185308.61">def do_If(self, node):
+    result = []
+    result.append(self.indent('if %s:\n' % (
+        self.visit(node.test))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append(self.indent('else:\n'))
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.62">def do_Import(self, node):
+    names = []
+    for fn, asname in self.get_import_names(node):
+        if asname:
+            names.append('%s as %s' % (fn, asname))
+        else:
+            names.append(fn)
+    return self.indent('import %s\n' % (
+        ','.join(names)))
+</t>
+<t tx="ekr.20160123185308.63">def get_import_names(self, node):
+    '''Return a list of the the full file names in the import statement.'''
+    result = []
+    for ast2 in node.names:
+        if self.kind(ast2) == 'alias':
+            data = ast2.name, ast2.asname
+            result.append(data)
+        else:
+            g.trace('unsupported kind in Import.names list', self.kind(ast2))
+    return result
+</t>
+<t tx="ekr.20160123185308.64">def do_ImportFrom(self, node):
+    names = []
+    for fn, asname in self.get_import_names(node):
+        if asname:
+            names.append('%s as %s' % (fn, asname))
+        else:
+            names.append(fn)
+    return self.indent('from %s import %s\n' % (
+        node.module,
+        ','.join(names)))
+</t>
+<t tx="ekr.20160123185308.65">def do_Pass(self, node):
+    return self.indent('pass\n')
+</t>
+<t tx="ekr.20160123185308.66"># Python 2.x only
+
+def do_Print(self, node):
+    vals = []
+    for z in node.values:
+        vals.append(self.visit(z))
+    if getattr(node, 'dest', None):
+        vals.append('dest=%s' % self.visit(node.dest))
+    if getattr(node, 'nl', None):
+        # vals.append('nl=%s' % self.visit(node.nl))
+        vals.append('nl=%s' % node.nl)
+    return self.indent('print(%s)\n' % (
+        ','.join(vals)))
+</t>
+<t tx="ekr.20160123185308.67">def do_Raise(self, node):
+    args = []
+    for attr in ('type', 'inst', 'tback'):
+        if getattr(node, attr, None) is not None:
+            args.append(self.visit(getattr(node, attr)))
+    if args:
+        return self.indent('raise %s\n' % (
+            ','.join(args)))
+    else:
+        return self.indent('raise\n')
+</t>
+<t tx="ekr.20160123185308.68">def do_Return(self, node):
+    if node.value:
+        return self.indent('return %s\n' % (
+            self.visit(node.value)))
+    else:
+        return self.indent('return\n')
+</t>
+<t tx="ekr.20160123185308.69"># def do_Suite(self,node):
+    # for z in node.body:
+        # s = self.visit(z)
+</t>
+<t tx="ekr.20160123185308.7">def run(self, p):
+    '''Make stub files for all files in p's tree.'''
+    if p.isAnyAtFileNode():
+        self.make_stub_file(p)
+        return
+    # First, look down tree.
+    after, p2 = p.nodeAfterTree(), p.firstChild()
+    found = False
+    while p2 and p != after:
+        if p2.isAnyAtFileNode():
+            self.make_stub_file(p2)
+            p2.moveToNext()
+            found = True
+        else:
+            p2.moveToThreadNext()
+    if not found:
+        # Look up the tree.
+        for p2 in p.parents():
+            if p2.isAnyAtFileNode():
+                self.make_stub_file(p2)
+                break
+        else:
+            g.es('no files found in tree:', p.h)
+</t>
+<t tx="ekr.20160123185308.70">def do_TryExcept(self, node):
+    result = []
+    result.append(self.indent('try:\n'))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.handlers:
+        for z in node.handlers:
+            result.append(self.visit(z))
+    if node.orelse:
+        result.append('else:\n')
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.71">def do_TryFinally(self, node):
+    result = []
+    result.append(self.indent('try:\n'))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    result.append(self.indent('finally:\n'))
+    for z in node.finalbody:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.72">def do_While(self, node):
+    result = []
+    result.append(self.indent('while %s:\n' % (
+        self.visit(node.test))))
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    if node.orelse:
+        result.append('else:\n')
+        for z in node.orelse:
+            self.level += 1
+            result.append(self.visit(z))
+            self.level -= 1
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.73">def do_With(self, node):
+    result = []
+    result.append(self.indent('with '))
+    if hasattr(node, 'context_expression'):
+        result.append(self.visit(node.context_expresssion))
+    vars_list = []
+    if hasattr(node, 'optional_vars'):
+        try:
+            for z in node.optional_vars:
+                vars_list.append(self.visit(z))
+        except TypeError: # Not iterable.
+            vars_list.append(self.visit(node.optional_vars))
+    result.append(','.join(vars_list))
+    result.append(':\n')
+    for z in node.body:
+        self.level += 1
+        result.append(self.visit(z))
+        self.level -= 1
+    result.append('\n')
+    return ''.join(result)
+</t>
+<t tx="ekr.20160123185308.74">def do_Yield(self, node):
+    if getattr(node, 'value', None):
+        return self.indent('yield %s\n' % (
+            self.visit(node.value)))
+    else:
+        return self.indent('yield\n')
+</t>
+<t tx="ekr.20160123185308.75"></t>
+<t tx="ekr.20160123185308.76">def kind(self, node):
+    '''Return the name of node's class.'''
+    return node.__class__.__name__
+</t>
+<t tx="ekr.20160123185308.77">def indent(self, s):
+    return '%s%s' % (' ' * 4 * self.level, s)
+</t>
+<t tx="ekr.20160123185308.78">@nobeautify
+
+def op_name (self,node,strict=True):
+    '''Return the print name of an operator node.'''
+    d = {
+        # Binary operators. 
+        'Add':       '+',
+        'BitAnd':    '&amp;',
+        'BitOr':     '|',
+        'BitXor':    '^',
+        'Div':       '/',
+        'FloorDiv':  '//',
+        'LShift':    '&lt;&lt;',
+        'Mod':       '%',
+        'Mult':      '*',
+        'Pow':       '**',
+        'RShift':    '&gt;&gt;',
+        'Sub':       '-',
+        # Boolean operators.
+        'And':   ' and ',
+        'Or':    ' or ',
+        # Comparison operators
+        'Eq':    '==',
+        'Gt':    '&gt;',
+        'GtE':   '&gt;=',
+        'In':    ' in ',
+        'Is':    ' is ',
+        'IsNot': ' is not ',
+        'Lt':    '&lt;',
+        'LtE':   '&lt;=',
+        'NotEq': '!=',
+        'NotIn': ' not in ',
+        # Context operators.
+        'AugLoad':  '&lt;AugLoad&gt;',
+        'AugStore': '&lt;AugStore&gt;',
+        'Del':      '&lt;Del&gt;',
+        'Load':     '&lt;Load&gt;',
+        'Param':    '&lt;Param&gt;',
+        'Store':    '&lt;Store&gt;',
+        # Unary operators.
+        'Invert':   '~',
+        'Not':      ' not ',
+        'UAdd':     '+',
+        'USub':     '-',
+    }
+    name = d.get(self.kind(node),'&lt;%s&gt;' % node.__class__.__name__)
+    if strict: assert name,self.kind(node)
+    return name
+</t>
+<t tx="ekr.20160123185308.79">class StubFormatter (AstFormatter):
+    @others
+</t>
+<t tx="ekr.20160123185308.8">class AstFormatter:
+    '''
+    A class to recreate source code from an AST.
+    
+    This does not have to be perfect, but it should be close.
+    
+    Also supports optional annotations such as line numbers, file names, etc.
+    '''
+    # No ctor.
+    # pylint: disable=consider-using-enumerate
+    @others
+</t>
+<t tx="ekr.20160123185308.80"># Return generic markers allow better pattern matches.
+
+def do_BoolOp(self, node): # Python 2.x only.
+    return 'bool'
+
+def do_Bytes(self, node): # Python 3.x only.
+    return 'bytes' # return str(node.s)
+
+def do_Name(self, node):
+    return 'bool' if node.id in ('True', 'False') else node.id
+
+def do_Num(self, node):
+    return 'number' # return repr(node.n)
+
+def do_Str(self, node):
+    '''This represents a string constant.'''
+    return 'str' # return repr(node.s)
+</t>
+<t tx="ekr.20160123185308.81">class StubTraverser (ast.NodeVisitor):
+    
+    def __init__(self, c, d, output_fn):
+        '''Ctor for StubTraverser class.'''
+        self.c = c
+        self.d = d
+        self.format = StubFormatter().format
+        self.in_function = False
+        self.level = 0
+        self.output_file = None
+        self.output_fn = output_fn
+        self.returns = set()
+
+    @others
+</t>
+<t tx="ekr.20160123185308.82">def indent(self, s):
+    '''Return s, properly indented.'''
+    return '%s%s' % (' ' * 4 * self.level, s)
+
+def out(self, s):
+    '''Output the string to the console or the file.'''
+    if self.output_file:
+        self.output_file.write(self.indent(s)+'\n')
+    else:
+        print(self.indent(s))
+</t>
+<t tx="ekr.20160123185308.83">def run(self, node):
+    '''StubTraverser.run: write the stubs in node's tree to self.output_fn.'''
+    c = self.c
+    dir_ = g.os_path_dirname(self.output_fn)
+    if g.os_path_exists(dir_):
+        self.output_file = open(self.output_fn, 'w')
+        aList = c.config.getData('stub-prefix')
+        if aList:
+            for z in aList:
+                self.out(z.strip())
+        self.visit(node)
+        self.output_file.close()
+        self.output_file = None
+        g.es_print('wrote', self.output_fn)
+    else:
+        g.es_print('not found:', dir_)
+
+</t>
+<t tx="ekr.20160123185308.84"># This is needed only when subclassing from the leoAst.AstFullTraverser class.
+
+# def visit(self, node):
+    # '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
+    # assert isinstance(node, ast.AST), node.__class__.__name__
+    # method = getattr(self, 'do_' + node.__class__.__name__)
+    # method(node)
+</t>
+<t tx="ekr.20160123185308.85"></t>
+<t tx="ekr.20160123185308.86"># ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+def visit_ClassDef(self, node):
+
+    # Format...
+    if not node.name.startswith('_'):
+        if node.bases:
+            s = '(%s)' % ','.join([self.format(z) for z in node.bases])
+        else:
+            s = ''
+        self.out('class %s%s:' % (node.name, s))
+    # Visit...
+    self.level += 1
+    old_in_function = self.in_function
+    self.in_function = False
+    for z in node.body:
+        self.visit(z)
+    self.level -= 1
+    self.in_function = old_in_function
+</t>
+<t tx="ekr.20160123185308.87"># FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+def visit_FunctionDef(self, node):
+    
+    # Do nothing if we are already in a function.
+    # We do not generate stubs for inner defs.
+    if self.in_function or node.name.startswith('_'):
+        return
+    # First, visit the function body.
+    self.returns = set()
+    self.in_function = True
+    self.level += 1
+    for z in node.body:
+        self.visit(z)
+    self.level -= 1
+    self.in_function = False
+    # Format *after* traversing
+    self.out('def %s(%s) -&gt; %s: ...' % (
+        node.name,
+        self.format_arguments(node.args),
+        self.format_returns(node)))
+</t>
+<t tx="ekr.20160123185308.88"># arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+def format_arguments(self, node):
+    '''
+    Format the arguments node.
+    Similar to AstFormat.do_arguments, but it is not a visitor!
+    '''
+    assert isinstance(node,ast.arguments), node
+    args = [self.format(z) for z in node.args]
+    defaults = [self.format(z) for z in node.defaults]
+    # Assign default values to the last args.
+    result = []
+    n_plain = len(args) - len(defaults)
+    # pylint: disable=consider-using-enumerate
+    for i in range(len(args)):
+        s = self.munge_arg(args[i])
+        if i &lt; n_plain:
+            result.append(s)
+        else:
+            result.append('%s=%s' % (s, defaults[i - n_plain]))
+    # Now add the vararg and kwarg args.
+    name = getattr(node, 'vararg', None)
+    if name: result.append('*' + name)
+    name = getattr(node, 'kwarg', None)
+    if name: result.append('**' + name)
+    return ', '.join(result)
+</t>
+<t tx="ekr.20160123185308.89">def munge_arg(self, s):
+    '''Add an annotation for s if possible.'''
+    a = self.d.get(s)
+    return '%s: %s' % (s, a) if a else s
+</t>
+<t tx="ekr.20160123185308.9"></t>
+<t tx="ekr.20160123185308.90">def format_returns(self, node):
+    '''Calculate the return type.'''
+    def split(s):
+        return '\n     ' + self.indent(s) if len(s) &gt; 30 else s
+        
+    r = list(self.returns)
+    r = [self.format(z) for z in r]
+    # if r: g.trace(r)
+    if len(r) == 0:
+        return 'None'
+    if len(r) == 1:
+        return split(r[0])
+    elif 'None' in r:
+        r.remove('None')
+        return split('Optional[%s]' % ', '.join(r))
+    else:
+        # return 'Any'
+        s = ', '.join(r)
+        if len(s) &gt; 30:
+            return ', '.join(['\n    ' + self.indent(z) for z in r])
+        else:
+            return split(', '.join(r))
+</t>
+<t tx="ekr.20160123185308.91">def visit_Return(self, node):
+
+    self.returns.add(node.value)
+</t>
+<t tx="ekr.20160319080102.1">def cleanSaxInputString(s):
+    '''Clean control characters from s.
+    s may be a bytes or a (unicode) string.'''
+    # Note: form-feed ('\f') is 12 decimal.
+    badchars = [chr(ch) for ch in range(32)]
+    badchars.remove('\t')
+    badchars.remove('\r')
+    badchars.remove('\n')
+    flatten = ''.join(badchars)
+    pad = ' ' * len(flatten)
+    # pylint: disable=no-member
+    # Class 'str' has no 'maketrans' member
+    if g.isPython3:
+        flatten = bytes(flatten, 'utf-8')
+        pad = bytes(pad, 'utf-8')
+        transtable = bytes.maketrans(flatten, pad)
+    else:
+        transtable = string.maketrans(flatten, pad)
+    return s.translate(transtable)
+# for i in range(32): print i,repr(chr(i))
+</t>
+<t tx="ekr.20160319081141.1">def main():
+    
+    if not g.isPython3:
+        g.es_print('Python 3 is now required for this script.')
+        return
+    for path1 in files:
+        if path1 in errors:
+            print(f"skipping {path1}")
+            continue
+        path2 = path1[:-3] + 'py'
+        try:
+            convert (c, path1, path2)
+        except Exception:
+            print('Exception creating', path2)
+            g.es_exception()
+    g.es_print('done')
+</t>
 <t tx="ekr.20160923132656.1">@language python
 """Introspect"""
 
@@ -1470,5 +4916,1073 @@ p.h = 'clone-find-predicate: real use of g.unitTesting'
 p.b = '%s nodes' % p.numberOfChildren()
 </t>
 <t tx="ekr.20170804153254.1"></t>
+<t tx="ekr.20180529105204.1">s = p.b
+for child in p.children():
+    s = s + '\n- ' + child.h
+p.b = s</t>
+<t tx="ekr.20180529105231.1"></t>
+<t tx="ekr.20181019042505.1"></t>
+<t tx="ekr.20181019042544.1"># Replace underscore by - in settings names.
+# See https://github.com/leo-editor/leo-editor/issues/993
+g.cls()
+import re
+kinds = (
+    'Bool', 'Color', 'Data',
+    'Directory', 'Encoding', # Not found.
+    'Float', 'Int',
+    'Path', 'Ratio', # Not found.
+    'String',
+)
+for kind in kinds:
+    print('===== %s =====\n' % kind)
+    pat = re.compile(r"get%s\s*\([\'\"]([\w_]+)[\'\"][,)]" % kind)
+    for p in c.all_positions():
+        s = p.b
+        i, found = 0, False
+        while True:
+            m = pat.search(s[i:])
+            if not m:
+                break
+            start, end = m.start(1), m.end(1)
+            all = s[i+m.start(0):i+m.end(0)]
+            word = s[i+start:i+end]
+            if '_' in word:
+                found = True
+                print('')
+                print('-----', p.h)
+                print(all)
+                s = s[:i+start] + word.replace('_','-') + s[i+end:]
+                print(s[i+m.start(0):i+m.end(0)])
+            i += end
+        if found:
+            assert p.b != s, p.h
+            # print(s)
+            p.b = s
+            p.v.setDirty()
+c.setChanged()
+c.redraw()     
+</t>
+<t tx="ekr.20181019042717.1"></t>
+<t tx="ekr.20181019042808.1">'''Check the consistency of all settings.'''
+# https://github.com/leo-editor/leo-editor/issues/993
+
+class Controller:
+    @others
+
+Controller(c).run()
+</t>
+<t tx="ekr.20181019042808.10">def scan_for_configs(self, p, d):
+    '''
+    Scan the body text of p, finding all calls to config.getX.
+    
+    This code does not know about `if 0`, but does know about comments.
+    '''
+    kinds = (
+        'getBool', 'getColor', 'getInt', 'getFloat',
+        # '@font', # special case.
+        'getPath', 'getRatio', 'getString',
+    )
+    i, s = 0, p.b
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if (
+            ch == '@' and
+            (g.match(s, i, '@ ') or g.match(s, i, '@\n')) and
+            (i == 0 or s[i - 1] == '\n')
+        ):
+            # Skip the @doc part.
+            i = s.find('\n@c', i)
+            if i == -1: break
+        elif ch == '#':
+            i = g.skip_to_end_of_line(s, i)
+        elif ch in ('"', "'"):
+            i = g.skip_python_string(s, i, verbose=False)
+        elif ch == '_' or ch.isalpha():
+            j = g.skip_id(s, i)
+            kind = s[i: j]
+            if kind in kinds:
+                # We have found a call to getBool, etc.
+                i = g.skip_ws(s, j)
+                if g.match(s, i, '('):
+                    i = g.skip_ws(s, i + 1)
+                    if g.match(s, i, '"') or g.match(s, i, "'"):
+                        j = g.skip_string(s, i)
+                        name = s[i + 1: j - 1]
+                        aList = d.get(kind, [])
+                        if name not in aList:
+                            aList.append(name)
+                        d[kind] = aList
+                else:
+                    j = i
+            i = j
+        else:
+            i += 1
+        assert progress &lt; i
+    return d
+</t>
+<t tx="ekr.20181019042808.11">def get_settings(self):
+    '''Return a dict containing a representation
+    of all settings in leoSettings.leo.
+    '''
+    trace = False
+    c, d = self.settings, {}
+    print('scanning: %s' % c.shortFileName())
+    settings_node = g.findNodeAnywhere(c, '@settings')
+    if not settings_node:
+        return self.error('no @settings node')
+    for p in settings_node.subtree():
+        if self.is_setting(p):
+            kind, name = self.parse_setting(p)
+            if name:
+                # name = self.munge(name)
+                aList = d.get(kind, [])
+                if name not in aList:
+                    aList.append(name)
+                d[kind] = aList
+            else:
+                self.error('no name for %s' % (kind))
+    if trace:
+        keys = list(d.keys())
+        for key in sorted(keys):
+            print(key)
+            aList = d.get(key)
+            for name in sorted(aList):
+                print('  ' + name)
+    return d
+</t>
+<t tx="ekr.20181019042808.12">def is_setting(self, p):
+    # For now, these are enough
+    table = (
+        '@bool', '@color', '@int', '@float',
+        # '@font', # special case.
+        '@ratio', '@path', '@string',
+    )
+    for s in table:
+        if g.match_word(p.h, 0, s):
+            return True
+    return False
+</t>
+<t tx="ekr.20181019042808.13">def parse_setting(self, p):
+    s = p.h
+    assert s[0] == '@'
+    i = g.skip_id(s, 1)
+    kind = s[: i]
+    assert kind
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+</t>
+<t tx="ekr.20181019042808.14">def munge(self, s):
+    '''Return the canonicalized name for settings and arguments to c.config.getX.'''
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
+</t>
+<t tx="ekr.20181019042808.15">def run(self):
+    g.cls()
+    self.get_commanders()
+    configs = self.get_configs()
+    settings = self.get_settings()
+    if self.errors == 0:
+        self.check(configs, settings)
+    g.trace('done')
+</t>
+<t tx="ekr.20181019042808.2">def __init__(self, c):
+    self.c = c
+    self.errors = 0
+    # Commanders...
+    self.core = None # leoPy.leo.
+    self.plugins = None # leoPlugins.leo.
+    self.settings = None # leoSettings.leo.
+</t>
+<t tx="ekr.20181019042808.3">def check(self, configs_d, settings_d):
+    munge = self.munge
+    table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    #
+    # Print missing user settings...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_configs if not z in m_settings])
+        aList = [z for z in missing if self.filter_user_config(z)]
+        if aList:
+            print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
+                g.printObj(aList2)
+    #
+    # Print missing calls to c.config.getX...
+    for kind in table:
+        config_key = 'get%s' % kind
+        settings_key = '@%s' % kind.lower()
+        configs = configs_d.get(config_key, [])
+        settings = settings_d.get(settings_key, [])
+        m_configs = [munge(z) for z in configs]
+        m_settings = [munge(z) for z in settings]
+        missing = set([z for z in m_settings if not z in m_configs])
+        aList = [z for z in missing if self.filter_get_x(z)]
+        if aList:
+            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            for z in sorted(aList):
+                aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
+                g.printObj(aList2)
+</t>
+<t tx="ekr.20181019042808.4">def filter_get_x(self, setting):
+    '''
+    Return False if we can safely ignore a missing call to config.get(setting).
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # These *ivars* are set by the GlobalConfigManager class.
+    # There *should* be settings for all of these, despite missing config.get calls.
+    table = (
+        # encodingIvarsDict...
+            "default_at_auto_file_encoding",
+            "default_derived_file_encoding",
+            "new_leo_file_encoding",
+        # defaultsDict...
+            "color_directives_in_plain_text",
+            "output_doc_chunks",
+            "page_width",
+            "tab_width",
+            "tangle_outputs_header",
+            "target_language",
+            "underline_undefined_section_names",
+        # ivarsDict
+            "at_root_bodies_start_in_doc_mode",
+            "create_nonexistent_directories",
+            "output_initial_comment",
+            "output_newline",
+            "page_width",
+            "read_only",
+            "redirect_execute_script_output_to_log_pane",
+            "relative_path_base_directory",
+            "remove_sentinels_extension",
+            "save_clears_undo_buffer",
+            "stylesheet",
+            "tab_width",
+            "target_language",
+            "trailing_body_newlines",
+            "use_plugins",
+            "undo_granularity",
+            "write_strips_blank_lines",
+    )
+    table = [munge(z) for z in table]
+    if setting in table:
+        return False
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # Stylesheets use these settings.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
+    #
+    # These plugins/use settings in non-standard ways.
+    if setting.startswith(
+        ('bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+</t>
+<t tx="ekr.20181019042808.5">def filter_user_config(self, setting):
+    '''
+    Return False if we can safely ignore a setting that does not exist in leoSettings.leo.
+    
+    Everything here is a hack. Some are bigger than others.
+    '''
+    munge = self.munge
+    #
+    # unitTest.leo tests test-darwin-setting and test-win32-setting
+    if setting in ('testdarwinsetting', 'testwin32setting'):
+        return False
+    #
+    # The calls to config.get* are commented out in the code,
+    # but get_configs isn't smart enough to know that.
+    for ignore in (
+        'auto-set-ignore-case',
+        'find-def-creates-clones',
+        'qt-rich-text-zoom-in',
+        'theme-name',
+        'pytest-path', # In a (disabled) @button node
+        'leo-to-html-%s', # Loads multiple settings from an .ini file.
+    ):
+        if setting == munge(ignore):
+            return False
+    #
+    # Stylesheets use these settings.
+    # It would be a major project to discover what settings
+    # are actually used in the present stylesheet.
+    for pattern in (
+        'bg', 'border', 'color', 'fg', 'font',
+        'leogreen', 'leoyello',
+        'margin', 'padding', 'relief',
+        'solarized', 'split-bar', 'text-foreground', 'tree-image',
+    ):
+        if setting.find(munge(pattern)) &gt; -1:
+            return False
+    #
+    # These plugins use settings in non-standard ways.
+    if setting.startswith(
+        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'zodb'),
+    ):
+        return False
+    #
+    # Find settings are defined in non-standard ways.
+    for pattern in (
+        'batch', 'change-text', 'find-text', 'ignore-case',
+        'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
+        'reverse', 'search-body', 'search-headline', 'suboutline-only',
+        'whole-word', 'wrap',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Tangle/untagle settings are deprecated and imo should not exist.
+    for pattern in (
+        'output-doc-flag', 'tangle-batch-flag',
+        'untangle-batch-flag', 'use-header-flag',
+    ):
+        if setting == munge(pattern):
+            return False
+    #
+    # Issue a warning.
+    return True
+</t>
+<t tx="ekr.20181019042808.6">def error(self, s):
+    print(s)
+    self.errors += 1
+</t>
+<t tx="ekr.20181019042808.7">def get_commanders(self):
+    '''Open files as needed and set the commander ivars.'''
+
+    def open_commander(fn):
+        c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+        if not c:
+            self.error('not found: %s' % fn)
+        return c
+
+    join, loadDir = g.os_path_join, g.app.loadDir
+    self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
+        # Opening LeoPyRef.leo would be slower.
+    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
+    self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
+</t>
+<t tx="ekr.20181019042808.8">def get_configs(self):
+    '''
+    Return a dict containing a representation of all calls to x.config.getX.
+    '''
+    d = {}
+    for c in (self.core, self.plugins):
+        print('scanning: %s' % c.shortFileName())
+        self.get_configs_from_outline(c, d)
+    return d
+</t>
+<t tx="ekr.20181019042808.9">def get_configs_from_outline(self, c, d):
+    '''
+    Scan the outline for all calls to x.config.getX and add items to d.
+    '''
+    for p in c.all_positions():
+        self.scan_for_configs(p, d)
+    return d
+</t>
+<t tx="ekr.20181019042834.1">'''Check that all commands mentioned in the @menus tree actually exist.'''
+
+def checkMenu (p):
+    for p2 in p.subtree_iter():
+        if p2.h.startswith('@item'):
+            checkItem(p.h,p2)
+
+def checkItem (menuName,p):
+    h = p.h[len('@item'):].replace('&amp;','').replace('*','').strip()
+    if h != '-' and h not in c.commandsDict:
+        print ('command not found: %s: %s' % (menuName,p.h))
+
+menus = g.findNodeAnywhere(c,'@menus')
+assert menus, 'no @menus tree'
+for p in menus.subtree_iter():
+    if p.h.startswith('@menu'):
+        checkMenu(p.copy())
+
+print ('done')
+</t>
+<t tx="ekr.20181019042907.1">'''Check for commands that exist in some but not all key- binding sets.'''
+g.cls()
+import leo.core.leoConfig as leoConfig
+# import leo.core.leoTest as leoTest
+parser = leoConfig.SettingsTreeParser(c)
+# Add these as required to handle commands defined by plugins.
+optionalCommandPrefixes = ['group-operations']
+optionalCommandNames = [
+    # These are the command names as defined by plugins.
+    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
+    'next-slide-command','next-slide-show-command',
+    'prev-slide-command','prev-slide-show-command',
+    # The ipython plugin.
+    'start-ipython','get-ipython-results','push-to-ipython',
+    # The viewrendered plugin.
+    'vr-toggle',
+]
+setNames = []
+setsDict = {} # keys are set names, values are dicts of command names.
+shortcutsDict = {}
+@others
+main()
+</t>
+<t tx="ekr.20181019042907.2">def defineSetNames():
+    global setNames
+    if 1:
+        setNames = []
+        for p in c.allNodes_iter():
+            h = p.headString()
+            if h.startswith('@keys'):
+                h = h[5:].strip()
+                if h not in setNames:
+                    setNames.append(h)
+        g.es('Found these sets...')
+        for setName in setNames:
+            g.es_print('  %s' % str(setName))
+    else:
+        setNames = [
+            'Default Emacs shortcuts',
+            'Legacy Leo bindings',
+            'Legacy Leo shortcuts with important Emacs bindings',
+            'No bindings',
+            'EKR bindings: a mix',
+            'EKR bindings: Mode-oriented',
+        ]
+
+    setNames.sort()
+</t>
+<t tx="ekr.20181019042907.3">def doSet(p,name):
+
+    global shortcutsDict
+
+    shortcutsDict = {}
+
+    for p in p.subtree_iter():
+        if p.headString().startswith('@shortcuts'):
+            doShortcuts(p,name)
+</t>
+<t tx="ekr.20181019042907.4">def doShortcuts(p,setName):
+
+    global parser,setsDict,shortcutsDict
+
+    d = setsDict.get(setName,{})
+    s = p.bodyString()
+    lines = g.splitLines(s)
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('#'):
+            commandName,si = parser.parseShortcutLine('test',line)
+            if not si:
+                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
+                    p.headString(),repr(line)),color='red')
+            else:
+                # Having multiple shortcuts for a command if fine,
+                # But having multiple commands for a shortcut is not.
+                shortcut = si.stroke
+                pane = si.pane
+                if shortcut not in (None,'None','none'):
+                    aList = shortcutsDict.get(shortcut,[])
+                    if aList:
+                        for commandName2,pane2 in aList:
+                            if pane == pane2:
+                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
+                                    shortcut,setName,commandName2),color='red')
+                        else:
+                            aList.append((commandName,pane),)
+                    else:
+                        shortcutsDict [shortcut] = [(commandName,pane),]
+
+                data = d.get(commandName)
+                if data:
+                    shortcut2,pane2 = data
+                    if shortcut == shortcut2 and pane == pane2:
+                        g.es_print('duplicate %s in set %s' % (
+                            commandName,setName),color='red')
+                else:
+                    data = shortcut,pane
+                    d[commandName] = data
+
+    setsDict[setName] = d
+</t>
+<t tx="ekr.20181019042907.5">def checkSets():
+
+    global setNames, optionalCommandPrefixes, optionalCommandNames
+    # Compute the union of all the command names.
+    allNames = {}
+    for setName in setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in d.keys():
+                allNames[key] = key
+        else:
+            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
+    keys = sorted(allNames.keys())
+    # Warn about missing names.
+    for setName in ('No bindings',): # setNames:
+        d = setsDict.get(setName)
+        if d:
+            for key in keys:
+                if key not in ('none','None',None) and key not in d.keys():
+                    # Don't warn about missing 'enter-xxx-mode' commands.
+                    if (
+                        not (key.startswith('enter-') and key.endswith('-mode')) and
+                        not (key.startswith('press-') and key.endswith('-button'))
+                    ):
+                        g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+        else:
+            g.es_print("'@keys No bindings' not found",color='blue')
+    # Warn about undefined commands.
+    for key in keys:
+        if not c.commandsDict.get(key):
+            ok = False
+            # full-command and quick command are weird special cases.
+            if key not in ('None',None,'full-command','quick-command'):
+                # Don't warn about missing 'enter-xxx-mode' commands.
+                if key.startswith('enter-') and key.endswith('-mode'):
+                    ok = True
+                elif key.startswith('press-') and key.endswith('-button'):
+                    ok = True
+                for prefix in optionalCommandPrefixes:
+                    if key.startswith(prefix):
+                        ok = True
+                for optionalCommand in optionalCommandNames:
+                    if key == optionalCommand:
+                        ok = True
+                if not ok:
+                    g.es_print('Undefined command name: %s' % (key))
+</t>
+<t tx="ekr.20181019042907.6">def main ():
+
+    global setNames
+    defineSetNames()
+
+    g.es_print('-' * 40)
+    seen = {}
+    for p in c.allNodes_iter():
+        h = p.headString()
+        if h.startswith('@keys'):
+            h = h[5:].strip()
+            if not seen.get(h):
+                seen[h] = True
+                doSet(p,h)
+    checkSets()
+    g.es('Check Bindings done')
+</t>
+<t tx="ekr.20181019043237.1">@language python
+import os
+import subprocess
+import sys
+import time
+win = sys.platform.startswith('win')
+old_dir = g.os_path_abspath('.')
+if win:
+    new_dir = r'C:\leo.repo\leo-editor'
+    path = r'C:\Users\edreamleo\Backup'
+else:
+    new_dir = '/home/edward/leo.repo/leo-editor'
+    path = '/home/edward/Backup'
+assert g.os_path_exists(new_dir), repr(new_dir)
+assert g.os_path_exists(path), repr(path)
+stamp = time.strftime("%Y%m%d-%H%M%S")
+fn = g.os_path_finalize_join(path, 'leo-bundle-all-%s' % (stamp))
+bundle_command = 'git bundle create %s --all' % fn
+print(bundle_command)
+os.chdir(new_dir)
+# os.system(bundle_command)
+proc = subprocess.Popen(bundle_command, shell=True)
+proc.wait()
+os.chdir(old_dir)
+print('done! wrote %s' % fn)
+</t>
+<t tx="ekr.20181019043251.1"></t>
+<t tx="ekr.20181020061502.1">g.cls()
+table = (
+    ('c.frame', c.frame),
+    ('c.frame.tree', c.frame.tree),
+    ('c.frame.tree.canvas', c.frame.tree.canvas),
+    ('c.frame.tree.treeWidget', c.frame.tree.treeWidget), # Qt only.
+    ('-----', None),
+    ('c.frame.body', c.frame.body),
+    ('c.frame.body.widget', c.frame.body.widget),
+    ('c.frame.body.wrapper', c.frame.body.wrapper),
+)
+for tag, obj in table:
+    print('%30s %s' % (tag, obj.__class__.__name__ if obj else ''))
+</t>
+<t tx="ekr.20181020061554.1"></t>
+<t tx="ekr.20181020061600.1"># Tests curses gui.
+g.cls()
+import imp
+import curses.ascii as a
+import leo.plugins.cursesGui2 as cursesGui2
+imp.reload(cursesGui2)
+h = cursesGui2.CursesKeyHandler()
+for i in range(255):
+    char, shortcut = h.to_key(i)
+    s = a.controlnames[i] if i &lt;= 32 else a.unctrl(i)
+    print('%3s %-8s %-7r %r' % (i, s, char, shortcut))
+for i in range(352):
+    if i &gt; 255:
+        char, shortcut = h.to_key(i)
+        # s = a.controlnames[i] if i &lt;= 32 else a.unctrl(i)
+        print('%3s %-7r %r' % (i, char, shortcut))
+</t>
+<t tx="ekr.20181020064321.1">'''Make an @test node for the importer whose name is given.'''
+name = 'markdown'
+d = g.app.permanentScriptDict
+tag = 'make_test_%s_n' % name
+n = d.get(tag, 0) + 1
+d [tag] = n
+d = {'cap_name': name.capitalize(), 'n': n, 'name': name}
+&lt;&lt; define preamble &gt;&gt;
+p = c.lastTopLevel().insertAfter()
+p.b = preamble
+p.h = '@test %(name)s importer-%(n)s' % d
+c.redraw()
+c.selectPosition(p)
+c.bodyWantsFocusNow()
+c.frame.body.wrapper.setInsertPoint(len(p.b))
+</t>
+<t tx="ekr.20181020064321.2">preamble = '''\
+if 1:
+    # The preamble...
+    g.cls()
+    if c.isChanged(): c.save()
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.markdown as markdown
+    # Reload all.
+    import imp
+    imp.reload(linescanner)
+    imp.reload(markdown)
+    imp.reload(leoImport)
+    ic = leoImport.LeoImportCommands(c)
+    x = markdown.Markdown_Importer(ic, atAuto=False)   
+# insert test for %(name)s here.
+''' % d
+</t>
+<t tx="ekr.20181020064400.1"></t>
+<t tx="ekr.20181231155722.1"></t>
+<t tx="ekr.20181231155727.1">'''
+Select from the cursor to a line starting with "endfunction",
+then do 'extract' command.
+'''
+s = c.p.b
+w = c.frame.body.wrapper
+i = w.getInsertPoint()
+target = '\nendfunction'
+j = s.find(target, i)
+if j &gt; -1:
+    j += len(target)
+    j = g.skip_line(s,j)
+    w.setSelectionRange(i, j, insert=i)
+    c.frame.body.wrapper.setSelectionRange(i, j, insert=i)
+    c.k.simulateCommand('extract')
+</t>
+<t tx="ekr.20190106073221.1">'''To be run in leoPy.leo: find Leo's important chains.'''
+g.cls()
+import re
+bases, chains = ['self.', 'c.', 'g.'], set()
+id_pat = r'\w[\w0-9]*'
+
+def get_lines():
+    '''Return a list of lines containing chains.'''
+    pat = re.compile(r'%s\.%s\.\w' % (id_pat, id_pat))
+    lines = set()
+    for p in c.all_unique_positions():
+        for line in g.splitLines(p.b):
+            if pat.search(line):
+                lines.add(line)
+    lines = list(lines)
+    print('%s lines' % len(lines))
+    return lines
+    
+s = ''.join(get_lines())
+
+def find_chains(base):
+    chains.add(base)
+    base = base.replace('.', r'\.')
+    pat = re.compile(r'\b(%s%s\.)(%s)' % (base, id_pat, id_pat))
+    for m in re.finditer(pat, s) or []:
+        chain, follow = m.group(1), m.group(2)
+        if chain not in chains: # and follow not in methods:
+            bases.append(chain)
+            chains.add(chain)
+            
+def munge_chains(chains):
+    '''Remove simple ivars and use c instead of self.c.'''
+    chains = [z.rstrip('.') for z in sorted(list(chains))]
+    chains = sorted(list(set([z[5:] if z.startswith('self.c.') else z for z in chains])))
+        # Replace self.c with c.
+    chains = [z for z in chains if z.count('.') &gt; 0]
+    chains = [z for z in chains if not z.startswith('self.') or z.count('.') &gt; 1]
+    return chains
+
+while bases:
+    find_chains(bases.pop())
+chains = munge_chains(chains)
+g.printObj(chains, tag='%s chains' % len(chains))</t>
+<t tx="ekr.20190106073221.2">if 0:
+    methods = (
+        'copy', # general method.
+        'add', # set methods
+        'append', 'extend', 'insert', 'pop', 'remove', 'split', 'sort', # list methods
+        'get',  'keys', 'items', 'values', # dict methods.
+        'endswith', 'finditer', 'lower', 'strip', 'lstrip', 'rstrip', 'startswith', 'upper',
+            # string methods.
+    )</t>
+<t tx="ekr.20190117144022.1">&lt;&lt; docstring &gt;&gt;
+import re
+tests_path = c.config.getString("pytest-path") or "tests"
+info = {}
+
+# climb up node tree collecting info.
+for nd in p.self_and_parents_iter():
+    definition = re.match(r'def ([^( ]*)\(', p.b)
+    if definition and not info.get('func'):
+        info['func'] = definition.group(1)
+    if nd.h.endswith('.py') and not info.get('file'):
+        info['file'] = nd.h.split()[-1].split('/')[-1]
+    if nd.h.strip('/') == tests_path.strip('/'):
+        info['test'] = True
+
+nd = p.copy()
+
+if info.get('test'):  # we started in these tests folder
+    while nd.h.strip('/') != tests_path.strip('/'):
+        nd = nd.parent()  # climb up to code folder
+    if info.get('file'):  # find or create code file
+        target = info['file'][5:]
+        for sib in nd.self_and_siblings():
+            if sib.h.endswith(target):
+                nd = sib
+                break
+        else:
+            nd = nd.insertAfter()
+            nd.h = '@auto ' + target
+    if info.get('func'):  # find or create code function
+        target = info['func'][5:]
+        for child in nd.children():
+            if child.h == target:
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = target
+            nd.b = 'def'  # let abbreviation build the rest
+else:  # we stared in the code folder
+    if info.get('func'):  # get up to file level (weak, could be deeper)
+        nd.moveToParent()
+    for sib in nd.self_and_siblings():  # find or create tests folder
+        if sib.h.strip('/') == tests_path.strip('/'):
+            nd = sib
+            break
+    else:
+        nd = nd.insertBefore()
+        nd.h = "/%s/" % tests_path.strip('/')
+        nd.b = "@path %s" % tests_path
+    if info.get('file'):  # find or create test file
+        target = 'test_' + info['file']
+        for child in nd.children():
+            if child.h.endswith(target):
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = "@auto %s" % target
+            nd.b = "import %s\n\n@others\n" % info['file'].replace('.py', '')
+    if info.get('func'):  # find or create test function
+        target = 'test_' + info['func']
+        for child in nd.children():
+            if child.h == target:
+                nd = child
+                break
+        else:
+            nd = nd.insertAsLastChild()
+            nd.h = target
+            nd.b = "def %s():\n    assert %s. == 'otters'\n" % (
+                target, info['file'].replace('.py', ''))
+
+c.selectPosition(nd)
+c.redraw()
+</t>
+<t tx="ekr.20190117144022.2">"""
+switch between code and test
+
+If you're using `pytest`[1] and use the layout described below, this @button code
+will jump you between a function and its test, creating the (test)function
+if it doesn't already exist.  Also the tests folder and `test_foo.py` file.
+It assumes use of the `active_path` plugin which headlines folders as
+`/myFolder/` with body text `@path myFolder`.
+
+This code is very heavy on assumptions, but a lot of those are driven
+by pytest default behavior.
+
+To run tests, use `python -m pytest`, as anything involving py.test is
+deprecated, and for some reason `pytest` finds files but runs no tests.
+Tested with pytest 3.x, note Ubuntu 16.04 seems to still be on 2.x
+
+Assumed layout:
+
+/tests/
+    test_utils.py
+        def test_add_one()...
+        def test_sub_one()...
+    test_gui.py
+        def test_load_buttons()...
+utils.py
+    def add_one()...
+    def sub_one()...
+gui.py
+    def load_buttons()...
+
+So running this code from a button will jump you from
+test_sub_one() back to sub_one() and visa versa creating any
+missing parts of the hierarchy in the process.
+
+[1] https://docs.pytest.org/en/latest/
+"""</t>
+<t tx="ekr.20190117144035.2">g.cls()
+import os
+import subprocess
+loadDir = g.app.loadDir
+if 1:
+    table = (
+        (os.path.abspath(os.path.join(loadDir, '..', '..')), None),
+    )
+else:
+    table = (
+        (os.path.abspath(os.path.join(loadDir, '..', 'core')), None),
+        (os.path.abspath(os.path.join(loadDir, '..', 'test')), None),
+        (os.path.abspath(os.path.join(loadDir, '..', 'plugins', 'test')), None),
+    )
+for path, ignore in table:
+    assert os.path.exists(path), repr(path)
+    # subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
+    ignore = '-k %s ' % (ignore) if ignore else ''
+    command = r'pytest %s%s' % (ignore, path)
+    subprocess.Popen(command, shell=True)</t>
+<t tx="ekr.20190117144035.3">g.cls()
+import os
+import subprocess
+loadDir = g.app.loadDir
+prog = g.os_path_finalize_join(loadDir, '..', '..', 'run_pytest_tests.py')
+if 1:
+    paths = (
+        os.path.abspath(os.path.join(loadDir, '..', '..')),
+    )
+else:
+    paths = (
+        os.path.abspath(os.path.join(loadDir, '..', 'core')),
+        os.path.abspath(os.path.join(loadDir, '..', 'test')),
+        os.path.abspath(os.path.join(loadDir, '..', 'plugins', 'test')),
+    )
+for path in paths:
+    assert os.path.exists(path), repr(path)
+    subprocess.Popen(r'python %s %s' % (prog, path), shell=True)
+</t>
+<t tx="ekr.20190307044803.1">'''
+Recursively clean all lines in a folder.
+
+Do this before importing to @clean.
+'''
+g.cls()
+
+directory = r'C:\apps\pyzo\source\pyzo'
+
+def clean_dir(directory):
+    for path in g.get_files_in_directory(directory, kinds=['.py']):
+        clean_file(path)
+        
+def clean_file(path):
+    with open(path, 'r') as f:
+        file_s = f.read()
+    lines = []
+    for line in g.splitLines(file_s):
+        if line.rstrip():
+            lines.append(line.rstrip())
+        if line.endswith('\n'):
+            lines.append('\n')
+    new_s = ''.join(lines)
+    if file_s != new_s:
+        with open(path, 'w') as f:
+            f.write(new_s)
+            print('wrote: %s' % path)
+    
+clean_dir(directory)
+</t>
+<t tx="ekr.20190509062342.1"># From https://docs.python.org/3/library/sqlite3.html
+
+# I'll only mention changes to the python demo here.
+
+import datetime
+import sqlite3
+conn = sqlite3.connect('example.db')
+
+# Change 1:  Name the cursor 'cursor' to preserve Leo's c.
+cursor = conn.cursor()
+    
+# Change 2: Catch any exception.
+# This allows this demo to continue if the table already exists.
+try:
+    cursor.execute('''CREATE TABLE stocks
+    (date text, trans text, symbol text, qty real, price real)''')
+except Exception:
+    pass
+
+cursor.execute("INSERT INTO stocks VALUES ('2006-01-05','BUY','RHAT',100,35.14)")
+conn.commit()
+
+# Change 3: don't bother closing and reopning the connection.
+
+t = ('RHAT',)
+cursor.execute('SELECT * FROM stocks WHERE symbol=?', t)
+purchases = [
+    ('2006-03-28', 'BUY',  'IBM',  1000, 45.00),
+    ('2006-04-05', 'BUY',  'MSFT', 1000, 72.00),
+    ('2006-04-06', 'SELL', 'IBM',  500,  53.00),
+]
+cursor.executemany('INSERT INTO stocks VALUES (?,?,?,?,?)', purchases)
+
+# Change 4: Get the result as a iterator.
+
+# Don't exhaust the iterator by printing results!
+query = 'SELECT * FROM stocks ORDER BY price'
+result = cursor.execute(query)
+
+# Change 5: Put the results a new @query node, with a timestamp.
+last = c.lastTopLevel()
+p = last.insertAfter()
+timestamp = datetime.datetime.now().strftime("%Y%m%d:%H%M%S")
+p.h = '@query %s: %s' % (timestamp, query)
+p.b = '\n'.join([str(z) for z in result])
+#
+# Make the new node visible.
+last.expand()
+c.redraw() 
+</t>
+<t tx="ekr.20190609162248.1"></t>
+<t tx="ekr.20190911074700.1"></t>
+<t tx="ekr.20190911074705.1">"""Find all comments of the form:
+    
+    .. some code ..
+        A trailing, overindented comment
+        
+    Write the summary to the given file.
+"""
+g.cls()
+import re
+file_name = 'c:/test/trailing_comments.txt'
+count = 0
+pattern = re.compile(r'\w+\s*=\s\w+')
+
+def do_node(f, p):
+    prev_assign = False
+    old_lws = 0
+    lines = g.splitLines(p.b)
+    for i, line in enumerate(lines):
+        lws = g.computeLeadingWhitespaceWidth(line, tab_width=-4)
+        if line.strip().startswith('#'):
+            if prev_assign and lws &gt; old_lws:
+                # Found a likely trailing comment.
+                f.write(f"\n{i} {p.h}")
+                f.write(g.objToString(
+                    [f"{i+i2:3} {z}" for i2, z in enumerate(lines[i-1:i+1])],
+                    tag=f"line {i} {p.h}"),
+                )
+                return True
+            prev_assign = False
+        else:
+            old_lws = lws
+            prev_assign = pattern.search(line)
+    return False
+
+with open(file_name, 'w') as f:
+    for p in c.all_unique_positions():
+        if do_node(f, p):
+            count += 1
+print(f"found {count} nodes. wrote results to {file_name}")
+</t>
+<t tx="ekr.20190911232205.1">g.cls()
+import re
+pattern = re.compile(r'\w+\s*=\s\w+')
+
+def do_node(p):
+    prev_assign = False
+    old_lws = 0
+    lines = g.splitLines(p.b)
+    for i, line in enumerate(lines):
+        lws = g.computeLeadingWhitespaceWidth(line, tab_width=-4)
+        if line.strip().startswith('@nobeautify'):
+            return False
+        if line.strip().startswith('#'):
+            if prev_assign and lws &gt; old_lws:
+                # Found a likely trailing comment.
+                print(f"\n{i} {p.h}")
+                print(g.objToString(
+                    [f"{i+i2:3} {z}" for i2, z in enumerate(lines[i-1:i+1])],
+                    tag=f"line {i} {p.h}"),
+                )
+                return True
+            prev_assign = False
+        else:
+            old_lws = lws
+            prev_assign = pattern.search(line)
+    return False
+    
+p = c.p
+if do_node(p):
+    p.moveToThreadNext()
+while p:
+    if do_node(p):
+        c.selectPosition(p)
+        break
+    p.moveToThreadNext()
+</t>
+<t tx="lkj.20190712002811.1"></t>
+<t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
+</t>
+<t tx="mhw-debug-1081.20190310203401.1">Scripts only of interest when on Microsoft Windows platform.
+@path win
+
+The register- and unregister-leo scripts have been moved to Desktop-integration.leo</t>
+<t tx="mhw.20181210131101.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
 </tnodes>
 </leo_file>

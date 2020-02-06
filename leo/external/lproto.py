@@ -54,7 +54,7 @@ def mk_send_bytes(msg):
     return lendesc + msg
 
 #@+node:ville.20091010205847.1362: ** class LProtoBuf
-class LProtoBuf(object):
+class LProtoBuf:
     def __init__(self):
 
         self.plen = -1
@@ -95,7 +95,7 @@ class LProtoBuf(object):
 
         lprint("in buf",self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
-class LProtoServer(object):
+class LProtoServer:
 
     #@+others
     #@+node:ekr.20111012070545.7254: *3* __init__ (LProtoServer)
@@ -112,10 +112,7 @@ class LProtoServer(object):
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
 
-        # g.trace(name,g.callers())
-
         self.srv.listen(name)
-
         lprint("lproto.py: listen on",self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received
@@ -172,7 +169,7 @@ if 0:
             lprint("client connected")
         #@-others
 #@+node:ville.20091010233144.10051: ** class LProtoClient
-class LProtoClient(object):
+class LProtoClient:
 
     #@+others
     #@+node:ekr.20111012070545.7210: *3* ctor (LProtoClient)
@@ -188,13 +185,7 @@ class LProtoClient(object):
             self.recvbuf = None
     #@+node:ekr.20111012070545.7212: *3* connect
     def connect (self,fname):
-
         '''Connect to the server.  Return True if the connection was established.'''
-
-        trace = False and not g.unitTesting
-
-        if trace: g.trace(fname,socket)
-
         if hasattr(socket,'AF_UNIX'):
             try:
                 # pylint: disable=no-member

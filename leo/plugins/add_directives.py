@@ -22,7 +22,6 @@ def addPluginDirectives (tag,keywords):
     for s in directives:
         if s.startswith('@'): s = s[1:]
         if s not in g.globalDirectiveList:
-            # g.trace(s)
             g.globalDirectiveList.append(s)
 #@+node:edream.110203113231.743: ** scanPluginDirectives (no longer used)
 def scanPluginDirectives (tag, keywords):

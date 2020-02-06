@@ -14,7 +14,7 @@ import weakref
 import curses
 
 #@+node:ekr.20170428084208.255: ** class MenuViewerController
-class MenuViewerController(object):
+class MenuViewerController:
     #@+others
     #@+node:ekr.20170428084208.256: *3* MenuViewerController.__init__
     def __init__(self, menu=None):
@@ -210,7 +210,7 @@ class MenuDisplayScreen(Form.Form):
 
     #@-others
 #@+node:ekr.20170428084208.278: ** class HasMenus
-class HasMenus(object):
+class HasMenus:
     MENU_KEY          = "^X"
     MENU_DISPLAY_TYPE = MenuDisplay
     MENU_WIDTH        = None

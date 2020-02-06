@@ -60,7 +60,7 @@ def onCreate(tag, keys):
     if not c: return
     slideshowController(c)
 #@+node:ekr.20060831165845.6: ** class slideshowController
-class slideshowController(object):
+class slideshowController:
     #@+others
     #@+node:ekr.20060831165845.7: *3* __init__
     def __init__(self, c):
@@ -87,7 +87,7 @@ class slideshowController(object):
             if h.startswith('@slideshow'):
                 self.firstSlideShow = p.copy()
                 return p
-            elif g.match_word(h, 0, '@ignore'):
+            if g.match_word(h, 0, '@ignore'):
                 p = p.nodeAfterTree()
         self.firstSlideShow = None
         return None
@@ -125,9 +125,11 @@ class slideshowController(object):
         c = self.c
         self.findFirstSlideShow()
         if not self.firstSlideShow:
-            return g.es('No slide show found')
-        elif not self.slideShowRoot:
-            return self.select(self.firstSlideShow)
+            g.es('No slide show found')
+            return
+        if not self.slideShowRoot:
+            self.select(self.firstSlideShow)
+            return
         p = c.p
         h = p.h.strip()
         if h.startswith('@slideshow'):
@@ -137,7 +139,8 @@ class slideshowController(object):
             if self.ignored(p):
                 p = p.threadNext()
             elif h.startswith('@slideshow'):
-                return self.select(p)
+                self.select(p)
+                return
             elif g.match_word(h, 0, '@ignore'):
                 p = p.nodeAfterTree()
             else:
@@ -170,16 +173,17 @@ class slideshowController(object):
         if p:
             self.select(p)
             return g.es('At start of first slide show')
-        else:
-            return g.es('No slide show found')
+        return g.es('No slide show found')
     #@+node:ekr.20060901142848.1: *3* prevSlideShow
     def prevSlideShow(self, event=None):
         c = self.c
         self.findFirstSlideShow()
         if not self.firstSlideShow:
-            return g.es('No slide show found')
-        elif not self.slideShowRoot:
-            return self.select(self.firstSlideShow)
+            g.es('No slide show found')
+            return
+        if not self.slideShowRoot:
+            self.select(self.firstSlideShow)
+            return
         p = c.p
         h = p.h.strip()
         if h.startswith('@slideshow'):
@@ -189,7 +193,8 @@ class slideshowController(object):
             if self.ignored(p):
                 p = p.threadBack()
             elif h.startswith('@slideshow'):
-                return self.select(p)
+                self.select(p)
+                return
             else:
                 p = p.threadBack()
         self.select(self.firstSlideShow)

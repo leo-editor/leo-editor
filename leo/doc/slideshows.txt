@@ -1087,7 +1087,7 @@ body text of a node as a Leo script.
 #@+node:ekr.20101121125326.4962: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-001.html
 #@+node:ekr.20101119112650.5368: *3* @slide c, g and p
-.. _`Scripting Chapter`: scripting.html
+.. _`Scripting Chapter`: tutorial-scripting.html
 .. _`Leo's Users Guide`: leo_toc.html
 
 Leo scripts execute in an environment containing
@@ -1188,13 +1188,10 @@ are few examples (there are many more):
 #@+node:ekr.20101121125326.4967: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-006.html
 #@+node:ekr.20101121021109.5351: *3* @slide Using iterators
-Using iterators, it is easy to gain access to all
-the data in a Leo outline. For example, the
-following script prints all headlines in an
-outline, indented to show outline level::
+Using iterators, it is easy to gain access to all the data in a Leo outline. For example, the following script prints all headlines in an outline, indented to show outline level::
 
     for p in c.all_positions():
-        g.es(' '*p.level(),p.h)
+        print(' '*p.level(), p.h)
 
 The output of this script, when run from LeoDocs.leo,
 will look something like this::
@@ -1205,10 +1202,19 @@ will look something like this::
        Disabled buttons
        ... and hundreds of other nodes.
 
-**Note**: p.level() is a method of the position
-class that returns the outline level of the node
-at position p: 0 for top-level nodes, 1 for their
-children, and so on.
+**Note**: p.level() is a method of the position class that returns the outline level of the node at position p: 0 for top-level nodes, 1 for their children, and so on.
+
+**Note**: There are performance problems when writing many strings to Leo's log pane. The following will hang Leo when run within large .leo files:
+
+    for p in c.all_positions():
+        g.es(' '*p.level(), p.h)
+        
+The workaround is to precompute a single string, and pass it to c.frame.log.put:
+
+    s = ''.join([
+        '%s%s\n' % (' '*p.level(), p.h) for p in c.all_positions()
+    ])
+    c.frame.log.put(s)
 #@+node:ekr.20101121125326.4968: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
 #@+node:ekr.20101119112650.5370: *3* @slide Building scripts from outlines
@@ -1267,7 +1273,7 @@ full-screen `Pudb debugger`_ instead of pdb.
 #@+node:ekr.20101121130516.4962: *4* @url built slide
 c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-010.html
 #@+node:ekr.20101121021109.5352: *3* @slide Further reading
-.. _`Scripting Chapter`: scripting.html
+.. _`Scripting Chapter`: tutorial-scripting.html
 .. _`Leo's Users Guide`: leo_toc.html
 
 This concludes our brief introduction to scripting in Leo.

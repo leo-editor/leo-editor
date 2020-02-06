@@ -17,14 +17,8 @@ import leo.core.leoKeys as leoKeys
 import leo.core.leoFrame as leoFrame
 import leo.core.leoMenu as leoMenu
 import leo.core.leoNodes as leoNodes
-try:
-    import builtins # Python 3
-except ImportError:
-    import __builtin__ as builtins # Python 2.
 import os
-if 1: # Limit the disable to this statement.
-    # pylint: disable=no-member
-    get_input = input if g.isPython3 else builtins.raw_input
+get_input = input
 #@-<< imports >>
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
@@ -73,7 +67,7 @@ class textGui(leoGui.LeoGui):
     #@+others
     #@+node:ekr.20150107090324.7: *3* __init__
     def __init__(self):
-        leoGui.LeoGui.__init__(self, "text")
+        super().__init__("text")
         self.frames = []
         self.killed = False
         # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
@@ -170,11 +164,10 @@ class TextFrame(leoFrame.LeoFrame):
     #@+others
     #@+node:ekr.20150107090324.22: *3* __init__
     def __init__(self, c, gui):
-        leoFrame.LeoFrame.__init__(self, c, gui)
+        super().__init__(c, gui)
         assert self.c == c
-        self.top = None ###
+        self.top = None
         self.ratio = self.secondary_ratio = 0.0
-        ### self.title = title # Per leoFrame.__init__
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
     def createFirstTreeNode(self):
         c = self.c
@@ -185,7 +178,7 @@ class TextFrame(leoFrame.LeoFrame):
         # the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         # c.setRootPosition(p) # New in 4.4.2.
-        ### c.editPosition(p)
+
     #@+node:ekr.20150107090324.24: *3* deiconify
     def deiconify(self): pass # N/A
 
@@ -203,7 +196,6 @@ class TextFrame(leoFrame.LeoFrame):
         if f.body.use_chapters:
             c.chapterController = leoChapters.ChapterController(c)
         f.createFirstTreeNode()
-        ### c.initVersion()
         # (*after* setting self.log)
         c.setLog() # writeWaitingLog hangs without this(!)
         # So updateRecentFiles will update our menus.
@@ -217,7 +209,7 @@ class TextFrame(leoFrame.LeoFrame):
     def setMinibufferBindings(self):
         pass
 
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
+    def setTopGeometry(self, w, h, x, y):
         pass # N/A
     #@+node:ekr.20150107090324.29: *3* text_key
     def text_key(self):
@@ -252,7 +244,7 @@ class textBody(leoFrame.LeoBody):
     #@+others
     #@+node:ekr.20150107090324.32: *3* __init__
     def __init__(self, frame, parentFrame):
-        leoFrame.LeoBody.__init__(self, frame, parentFrame)
+        super().__init__(frame, parentFrame)
         c = frame.c
         name = 'body'
         self.bodyCtrl = textBodyCtrl(c, name)
@@ -280,7 +272,7 @@ class textBody(leoFrame.LeoBody):
 class textBodyCtrl(leoFrame.StringTextWrapper):
     pass
 #@+node:ekr.20150107090324.37: ** class textMenuCascade
-class textMenuCascade(object):
+class textMenuCascade:
     #@+others
     #@+node:ekr.20150107090324.38: *3* __init__
     def __init__(self, menu, label, underline):
@@ -295,7 +287,7 @@ class textMenuCascade(object):
         return ret
     #@-others
 #@+node:ekr.20150107090324.40: ** class textMenuEntry
-class textMenuEntry(object):
+class textMenuEntry:
     #@+others
     #@+node:ekr.20150107090324.41: *3* __init__
     def __init__(self, label, underline, accel, callback):
@@ -308,7 +300,7 @@ class textMenuEntry(object):
         return "%s %s" % (underline(self.label, self.underline), self.accel,)
     #@-others
 #@+node:ekr.20150107090324.43: ** class textMenuSep
-class textMenuSep(object):
+class textMenuSep:
     #@+others
     #@+node:ekr.20150107090324.44: *3* display
     def display(self):
@@ -321,8 +313,7 @@ class textLeoMenu(leoMenu.LeoMenu):
     def __init__(self, frame):
         self.entries = []
         self.c = frame.c
-        # Init the base class
-        leoMenu.LeoMenu.__init__(self, frame)
+        super().__init__(frame)
     #@+node:ekr.20150107090324.47: *3* createMenuBar
     def createMenuBar(self, frame):
         g.trace(frame.c)
@@ -341,14 +332,11 @@ class textLeoMenu(leoMenu.LeoMenu):
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command
-    ### def add_command(self, menu, label, underline, command, accelerator=''):
-
     def add_command(self, **keys):
         # ?
         # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
         # accelerator - For display only; these are implemented by Leo's key handling.
         menu = self
-        # g.trace(keys)
 
         def doNothingCallback():
             pass
@@ -444,7 +432,7 @@ class textTree(leoFrame.LeoTree):
         # undoc: openWithFileName -> treeWantsFocus -> c.frame.tree.canvas
         self.c = frame.c
         self.canvas = None
-        leoFrame.LeoTree.__init__(self, frame)
+        super().__init__(frame)
     #@+node:ekr.20150107090324.65: *3* select
     def select(self, p, scroll=True):
         # TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
@@ -463,7 +451,7 @@ class textTree(leoFrame.LeoTree):
         return None
     #@+node:ekr.20150107090324.67: *3* text_draw_tree & helper
     def text_draw_tree(self):
-        # g.trace(g.callers())
+
         g.pr('--- tree ---')
         self.draw_tree_helper(self.c.rootPosition(), indent=0)
 

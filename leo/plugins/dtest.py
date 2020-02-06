@@ -79,7 +79,7 @@ class DT(BaseLeoPlugin):
 
         """Init doctest plugin
         """
-        BaseLeoPlugin.__init__(self, tag, keywords)
+        super().__init__(tag, keywords)
         self.setCommand('dt', self.dtest)
 
         self.c = keywords['c']

@@ -5,7 +5,7 @@
 import sys
 
 #@+node:ekr.20170428084208.438: ** class _LinePrinter
-class _LinePrinter(object):
+class _LinePrinter:
     """A base class for printing lines to the screen.
        Do not use directly. For internal use only.
        Experimental.

@@ -37,8 +37,6 @@ def new_figure_manager(num, *args, **kwargs):
     """
     Create a new figure manager instance
     """
-    # g.trace('(VR)', g.callers())
-    # g.trace('(VR): kwargs', kwargs)
     FigureClass = kwargs.pop('FigureClass', Figure)
     thisFig = FigureClass(*args, **kwargs)
     return new_figure_manager_given_figure(num, thisFig)
@@ -48,8 +46,6 @@ def new_figure_manager_given_figure(num, figure):
     Create a new figure manager instance for the given figure.
     """
     canvas = FigureCanvasQTAgg(figure)
-    # g.trace('(VR) %s\ncanvas: %s\nfigure: %s' % (
-        # num, canvas.__class__, figure.__class__))
     return LeoFigureManagerQT(canvas, num)
 #@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT
 # From backend_qt5.py
@@ -77,8 +73,7 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
     def __init__(self, canvas, num):
         '''Ctor for the LeoFigureManagerQt class.'''
         self.c = c = g.app.log.c
-        # g.trace('LeoFigureManagerQT', c)
-        FigureManagerBase.__init__(self, canvas, num)
+        super().__init__(canvas, num)
         self.canvas = canvas
 
         # New code for Leo: embed the canvas in the viewrendered area.
@@ -87,7 +82,8 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)
-        vc.embed_widget(w)
+        if vc:
+            vc.embed_widget(w)
 
         class DummyWindow:
 

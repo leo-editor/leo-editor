@@ -12,8 +12,7 @@ class Php_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Php_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'php',
             state_class = Php_ScanState,
@@ -35,7 +34,6 @@ class Php_Importer(Importer):
         Return a *general* state dictionary for the given context.
         Subclasses may override...
         '''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
 
         def add_key(d, key, data):
@@ -71,7 +69,6 @@ class Php_Importer(Importer):
                 add_key(d, comment[0], ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1[0], ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %r state ' % (self.name, context))
         return d
     #@+node:ekr.20161129214803.1: *3* php_i.scan_dict (supports here docs)
     def scan_dict(self, context, i, s, d):
@@ -79,9 +76,6 @@ class Php_Importer(Importer):
         i.scan_dict: Scan at position i of s with the give context and dict.
         Return the 6-tuple: (new_context, i, delta_c, delta_p, delta_s, bs_nl)
         '''
-        trace = False and g.unitTesting
-        trace_fail = False
-        if trace and trace_fail: g.trace('='*20, repr(context))
         found = False
         delta_c = delta_p = delta_s = 0
         if self.here_doc_target:
@@ -89,13 +83,10 @@ class Php_Importer(Importer):
             n = len(self.here_doc_target)
             if self.here_doc_target.lower() == s[:n].lower():
                 self.here_doc_target = None
-                if trace: g.trace('   MATCH heredoc: %r' % s)
                 i = n
                 return '', i, 0, 0, 0, False
-            else:
-                if trace and trace_fail: g.trace('NO MATCH (heredoc): %r' % s)
-                # Skip the rest of the line
-                return '', len(s), 0, 0, 0, False
+            # Skip the rest of the line
+            return '', len(s), 0, 0, 0, False
         ch = s[i] # For traces.
         aList = d.get(ch)
         if aList and context:
@@ -139,18 +130,10 @@ class Php_Importer(Importer):
                 assert kind == 'len', (kind, self.name)
                 i += len(pattern)
             bs_nl = pattern == '\\\n'
-            if trace:
-                g.trace(
-                    '   MATCH: i: %s ch: %r kind: %r pattern: %r '
-                    'context: %r new_context: %r line: %r' % (
-                        i, ch, kind, pattern, context, new_context, s))
             return new_context, i, delta_c, delta_p, delta_s, bs_nl
-        else:
-            # No match: stay in present state. All deltas are zero.
-            new_context = context
-            if trace and trace_fail: g.trace(
-                'NO MATCH: i: %s ch: %r context: %r line: %r' % (
-                    i, ch, context, s))
+        #
+        # No match: stay in present state. All deltas are zero.
+        new_context = context
         return new_context, i+1, 0, 0, 0, False
     #@+node:ekr.20161130044051.1: *3* php_i.skip_heredoc_string (not used)
     # EKR: This is Dave Hein's heredoc code from the old PHP scanner.
@@ -179,8 +162,7 @@ class Php_Importer(Importer):
         #@-<< skip_heredoc docstrig >>
         j = i
         assert(g.match(s, i, "<<<"))
-        # pylint: disable=anomalous-backslash-in-string
-        m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
+        m = re.match(r"\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
         if m is None:
             i += 3
             return i

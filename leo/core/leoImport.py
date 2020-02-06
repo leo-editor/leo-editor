@@ -15,8 +15,8 @@ try:
 except ImportError:
     docutils = None
     # print('leoImport.py: can not import docutils')
-# import glob
-# import importlib
+import io
+StringIO = io.StringIO
 import json
 try:
     import lxml.html
@@ -24,22 +24,16 @@ except ImportError:
     lxml = None
 import os
 import re
-if g.isPython3:
-    import io
-    StringIO = io.StringIO
-else:
-    import StringIO
-    StringIO = StringIO.StringIO
 import time
 import urllib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
-class FreeMindImporter(object):
-    '''Importer class for FreeMind (.mmap) files.'''
+class FreeMindImporter:
+    """Importer class for FreeMind (.mmap) files."""
 
     def __init__(self, c):
-        '''ctor for FreeMind Importer class.'''
+        """ctor for FreeMind Importer class."""
         self.c = c
         self.count = 0
         self.d = {}
@@ -47,23 +41,22 @@ class FreeMindImporter(object):
     #@+others
     #@+node:ekr.20170222084048.1: *3* freemind.add_children
     def add_children(self, parent, element):
-        '''
+        """
         parent is the parent position, element is the parent element.
         Recursively add all the child elements as descendants of parent_p.
-        '''
+        """
         p = parent.insertAsLastChild()
         attrib_text = element.attrib.get('text','').strip()
-        tag = element.tag if g.isString(element.tag) else ''
+        tag = element.tag if isinstance(element.tag, str) else ''
         text = element.text or ''
         if not tag: text = text.strip()
-        # g.trace('tag: %5r text: %10r attrib.text: %r' % (tag, text, attrib_text))
         p.h = attrib_text or tag or 'Comment'
         p.b = text if text.strip() else ''
         for child in element:
             self.add_children(p, child)
     #@+node:ekr.20160503125844.1: *3* freemind.create_outline
     def create_outline(self, path):
-        '''Create a tree of nodes from a FreeMind file.'''
+        """Create a tree of nodes from a FreeMind file."""
         c = self.c
         junk, fileName = g.os_path_split(path)
         undoData = c.undoer.beforeInsertNode(c.p)
@@ -76,7 +69,7 @@ class FreeMindImporter(object):
         return c.p
     #@+node:ekr.20160503191518.4: *3* freemind.import_file
     def import_file(self, path):
-        '''The main line of the FreeMindImporter class.'''
+        """The main line of the FreeMindImporter class."""
         c = self.c
         sfn = g.shortFileName(path)
         if g.os_path_exists(path):
@@ -84,7 +77,7 @@ class FreeMindImporter(object):
             root = htmltree.getroot()
             body = root.findall('body')[0]
             if body is None:
-                g.error('no body in: %s' % sfn)
+                g.error(f"no body in: {sfn}")
             else:
                 root_p = c.lastTopLevel().insertAfter()
                 root_p.h = g.shortFileName(path)
@@ -94,10 +87,10 @@ class FreeMindImporter(object):
                 c.selectPosition(root_p)
                 c.redraw()
         else:
-            g.error('file not found: %s' % sfn)
+            g.error(f"file not found: {sfn}")
     #@+node:ekr.20160503145113.1: *3* freemind.import_files
     def import_files(self, files):
-        '''Import a list of FreeMind (.mmap) files.'''
+        """Import a list of FreeMind (.mmap) files."""
         c = self.c
         if files:
             self.tab_width = c.getTabWidth(c.p)
@@ -106,11 +99,11 @@ class FreeMindImporter(object):
                 p = self.create_outline(fileName)
                 p.contract()
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
             c.redraw(p)
     #@+node:ekr.20160504043823.1: *3* freemind.prompt_for_files
     def prompt_for_files(self):
-        '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
+        """Prompt for a list of FreeMind (.mm.html) files and import them."""
         c = self.c
         types = [
             ("FreeMind files", "*.mm.html"),
@@ -126,98 +119,27 @@ class FreeMindImporter(object):
             g.chdir(names[0])
             self.import_files(names)
     #@-others
-#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper (To do)
-class JSON_Import_Helper(object):
-    '''
+#@+node:ekr.20160504144241.1: ** class JSON_Import_Helper
+class JSON_Import_Helper:
+    """
     A class that helps client scripts import .json files.
 
     Client scripts supply data describing how to create Leo outlines from
     the .json data.
-    '''
+    """
 
     def __init__(self, c):
-        '''ctor for the JSON_Import_Helper class.'''
+        """ctor for the JSON_Import_Helper class."""
         self.c = c
         self.vnodes_dict = {}
 
     #@+others
-    #@+node:ekr.20160505044925.1: *3*  unused code
-    if 0:
-        #@+others
-        #@+node:ekr.20160505045041.1: *4* unused write code
-        #@+node:ekr.20160504144545.1: *5* json.put
-        def put(self, s):
-            '''Write line s using at.os, taking special care of newlines.'''
-            at = self.c.leoAtFile
-            at.os(s[: -1] if s.endswith('\n') else s)
-            at.onl()
-        #@+node:ekr.20160504144241.7: *5* json.vnode_dict
-        def vnode_dict(self, v):
-            return {
-                'gnx': v.gnx,
-                'h': v.h, 'b': v.b,
-                # 'ua': v.u,
-                'children': [z.gnx for z in v.children]
-            }
-        #@+node:ekr.20160504144455.1: *5* json.write
-        def write(self, root):
-            """Write all the @auto-json node."""
-            nodes = list(set([p.v for p in root.subtree()]))
-            nodes = [self.vnode_dict(v) for v in nodes]
-            d = {
-                'top': self.vnode_dict(root.v),
-                'nodes': nodes,
-            }
-            s = json.dumps(d,
-                sort_keys=True,
-                indent=2, # Pretty print.
-                separators=(',', ': '))
-            self.put(s)
-            root.setVisited()
-            return True
-        #@+node:ekr.20160505045049.1: *4* unused read code
-        #@+node:ekr.20160504144241.3: *5* json.import_files
-        def import_files(self, files):
-            '''Import a list of MindMap (.csv) files.'''
-            c = self.c
-            if files:
-                self.tab_width = c.getTabWidth(c.p)
-                for fileName in files:
-                    g.setGlobalOpenDir(fileName)
-                    p = self.create_outline(fileName)
-                    p.contract()
-                    p.setDirty()
-                    c.setChanged(True)
-                c.redraw(p)
-        #@+node:ekr.20160504144241.4: *5* json.prompt_for_files
-        def prompt_for_files(self):
-            '''Prompt for a list of MindJet (.csv) files and import them.'''
-            c = self.c
-            types = [
-                ("JSON files", "*.json"),
-                ("All files", "*"),
-            ]
-            names = g.app.gui.runOpenFileDialog(c,
-                title="Import MindJet File",
-                filetypes=types,
-                defaultextension=".csv",
-                multiple=True)
-            c.bringToFront()
-            if names:
-                g.chdir(names[0])
-                self.import_files(names)
-        #@-others
     #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
     def create_nodes(self, parent, parent_d):
-        '''Create the tree of nodes rooted in parent.'''
-        import pprint
-        trace = False and not g.unitTesting
+        """Create the tree of nodes rooted in parent."""
         d = self.gnx_dict
-        if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
-            if trace:
-                g.trace('child', pprint.pprint(d2))
             if child_gnx in self.vnodes_dict:
                 # It's a clone.
                 v = self.vnodes_dict.get(child_gnx)
@@ -228,7 +150,7 @@ class JSON_Import_Helper(object):
             else:
                 child = parent.insertAsLastChild()
                 child.h = d2.get('h') or '<**no h**>'
-                child.b = d2.get('b') or g.u('')
+                child.b = d2.get('b') or ''
                 if d2.get('gnx'):
                     child.v.findIndex = gnx = d2.get('gnx')
                     self.vnodes_dict[gnx] = child.v
@@ -251,12 +173,10 @@ class JSON_Import_Helper(object):
         return p
     #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
     def scan(self, s, parent):
-        '''Create an outline from a MindMap (.csv) file.'''
-        trace = False and not g.unitTesting
+        """Create an outline from a MindMap (.csv) file."""
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')
-            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
             self.gnx_dict[gnx] = d2
         top_d = d.get('top')
         if top_d:
@@ -267,17 +187,17 @@ class JSON_Import_Helper(object):
         return bool(top_d)
     #@-others
 #@+node:ekr.20071127175948: ** class LeoImportCommands
-class LeoImportCommands(object):
-    '''
+class LeoImportCommands:
+    """
     A class implementing all of Leo's import/export code. This class
     uses **importers** in the leo/plugins/importers folder.
 
     For more information, see leo/plugins/importers/howto.txt.
-    '''
+    """
     #@+others
     #@+node:ekr.20031218072017.3207: *3* ic.__init__& ic.reload_settings
     def __init__(self, c):
-        '''ctor for LeoImportCommands class.'''
+        """ctor for LeoImportCommands class."""
         self.c = c
         self.default_directory = None # For @path logic.
         self.encoding = 'utf-8'
@@ -288,24 +208,22 @@ class LeoImportCommands(object):
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width
-        self.trace = False # set below.
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
         self.reload_settings()
         
     def reload_settings(self):
-        self.trace = self.c.config.getBool('trace_import')
+        pass
         
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s, i, p, result):
-        '''
+        """
         # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
-        '''
-        # g.trace(g.get_line(s,i))
+        """
         ic = self
         nl = ic.output_newline
         head_ref = ic.getHeadRef(p)
@@ -345,9 +263,8 @@ class LeoImportCommands(object):
                 head_ref = file_name or "*"
             else:
                 head_ref = "@others"
-            result += ("<<" + head_ref +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12
+            result += (g.angleBrackets(head_ref) + "=" + nl)
     #@+node:ekr.20140630085837.16719: *5* ic.appendRefToFileName
     def appendRefToFileName(self, file_name, result):
         ic = self
@@ -361,15 +278,16 @@ class LeoImportCommands(object):
         else:
             if not file_name:
                 file_name = "*"
-            result += ("<<" + file_name +
-                ">>" + "=" + nl)
-                # Must be on separate lines.
+            # 2019/09/12.
+            lt = "<<"
+            rt = ">>"
+            result += (lt + file_name + rt + "=" + nl)
     #@+node:ekr.20140630085837.16721: *5* ic.getHeadRef
     def getHeadRef(self, p):
-        '''
+        """
         Look for either noweb or cweb brackets.
         Return everything between those brackets.
-        '''
+        """
         h = p.h.strip()
         if g.match(h, 0, "<<"):
             i = h.find(">>", 2)
@@ -380,7 +298,7 @@ class LeoImportCommands(object):
         return h[2: i].strip()
     #@+node:ekr.20031218072017.3292: *5* ic.getFileName
     def getFileName(self, p):
-        '''Return the file name from an @file or @root node.'''
+        """Return the file name from an @file or @root node."""
         h = p.h.strip()
         if g.match(h, 0, "@file") or g.match(h, 0, "@root"):
             line = h[5:].strip()
@@ -400,7 +318,6 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb(self, s, i, result):
         nl = self.output_newline
-        # g.trace(g.get_line(s,i))
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
         elif g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@*"):
@@ -420,7 +337,7 @@ class LeoImportCommands(object):
         return i, result
     #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
     def convertVnodeToWeb(self, v):
-        '''
+        """
         This code converts a VNode to noweb text as follows:
 
         Convert @doc to @
@@ -428,7 +345,7 @@ class LeoImportCommands(object):
         Ignore other directives
         Format doc parts so they fit in pagewidth columns.
         Output code parts as is.
-        '''
+        """
         c = self.c
         if not v or not c: return ""
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
@@ -439,7 +356,6 @@ class LeoImportCommands(object):
         i, result, docSeen = 0, "", False
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             i = g.skip_ws_and_nl(s, i)
             if self.isDocStart(s, i) or g.match_word(s, i, "@doc"):
                 i, result = self.convertDocPartToWeb(s, i, result)
@@ -471,7 +387,7 @@ class LeoImportCommands(object):
     # Copies characters to result until the end of the present section is seen.
 
     def copyPart(self, s, i, result):
-        # g.trace(g.get_line(s,i))
+
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
         theType = self.webType
@@ -486,58 +402,54 @@ class LeoImportCommands(object):
                 g.match_word(s, i, "@code") # 2/25/03
             ):
                 return i, result
-            elif(g.match(s, i, "<<") and # must be on separate lines.
-                g.find_on_line(s, i, ">>=") > -1
-            ):
+             # 2019/09/12
+            lt = "<<"
+            rt = ">>="
+            if g.match(s, i, lt) and g.find_on_line(s, i, rt) > -1:
                 return i, result
+            # Copy the entire line, escaping '@' and
+            # Converting @others to < < @ others > >
+            i = g.skip_line(s, j); line = s[j: i]
+            if theType == "cweb":
+                line = line.replace("@", "@@")
             else:
-                # Copy the entire line, escaping '@' and
-                # Converting @others to < < @ others > >
-                i = g.skip_line(s, j); line = s[j: i]
-                if theType == "cweb":
-                    line = line.replace("@", "@@")
-                else:
-                    j = g.skip_ws(line, 0)
-                    if g.match(line, j, "@others"):
-                        line = line.replace("@others", lb + "@others" + rb)
-                    elif g.match(line, 0, "@"):
-                        # Special case: do not escape @ %defs.
-                        k = g.skip_ws(line, 1)
-                        if not g.match(line, k, "%defs"):
-                            line = "@" + line
-                result += line
+                j = g.skip_ws(line, 0)
+                if g.match(line, j, "@others"):
+                    line = line.replace("@others", lb + "@others" + rb)
+                elif g.match(line, 0, "@"):
+                    # Special case: do not escape @ %defs.
+                    k = g.skip_ws(line, 1)
+                    if not g.match(line, k, "%defs"):
+                        line = "@" + line
+            result += line
             assert(progress < i)
         return i, result.rstrip()
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName):
         c = self.c; p = c.p
-        nl = g.u(self.output_newline)
-        if not p: return
+        nl = self.output_newline
+        if not p:
+            return
         self.setEncoding()
         firstLevel = p.level()
         try:
-            theFile = open(fileName, 'w')
+            with open(fileName, 'w') as theFile:
+                for p in p.self_and_subtree(copy=False):
+                    head = p.moreHead(firstLevel, useVerticalBar=True)
+                    theFile.write(head + nl)
         except IOError:
             g.warning("can not open", fileName)
             c.testManager.fail()
-            return
-        for p in p.self_and_subtree():
-            head = p.moreHead(firstLevel, useVerticalBar=True)
-            s = head + nl
-            if not g.isPython3: # 2010/08/27
-                s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
-            theFile.write(s)
-        theFile.close()
     #@+node:ekr.20031218072017.1147: *4* ic.flattenOutline
     def flattenOutline(self, fileName):
-        '''
+        """
         A helper for the flatten-outline command.
 
         Export the selected outline to an external file.
         The outline is represented in MORE format.
-        '''
+        """
         c = self.c
-        nl = g.u(self.output_newline)
+        nl = self.output_newline
         p = c.p
         if not p:
             return
@@ -550,7 +462,7 @@ class LeoImportCommands(object):
             g.warning("can not open", fileName)
             c.testManager.fail()
             return
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             s = p.moreHead(firstLevel) + nl
             s = g.toEncodedString(s, encoding=self.encoding, reportErrors=True)
             theFile.write(s)
@@ -575,17 +487,16 @@ class LeoImportCommands(object):
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
         for p in current.parents():
-            flag, junk = g.is_special(p.b, 0, "@root")
+            flag, junk = g.is_special(p.b, "@root")
             if flag:
                 self.treeType = "@root"
                 break
-        for p in current.self_and_subtree():
+        for p in current.self_and_subtree(copy=False):
             s = self.convertVnodeToWeb(p)
             if s:
-                if not g.isPython3: # 2010/08/27
-                    s = g.toEncodedString(s, self.encoding, reportErrors=True)
                 theFile.write(s)
-                if s[-1] != '\n': theFile.write(nl)
+                if s[-1] != '\n':
+                    theFile.write(nl)
         theFile.close()
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand(self, paths, toString=False):
@@ -595,7 +506,8 @@ class LeoImportCommands(object):
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if s is None: return
+            if s is None:
+                return None
             if e: self.encoding = e
             #@+<< set delims from the header line >>
             #@+node:ekr.20031218072017.3302: *5* << set delims from the header line >>
@@ -609,46 +521,41 @@ class LeoImportCommands(object):
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
                 if not toString: g.es("invalid @+leo sentinel in", fileName)
-                return
+                return None
             if end_delim:
                 line_delim = None
             else:
                 line_delim, start_delim = start_delim, None
             #@-<< set delims from the header line >>
-            # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
             ext = c.config.remove_sentinels_extension
             if not ext:
                 ext = ".txt"
             if ext[0] == '.':
-                newFileName = c.os_path_finalize_join(path, fileName + ext)
+                newFileName = g.os_path_finalize_join(path, fileName + ext) # 1341
             else:
                 head, ext2 = g.os_path_splitext(fileName)
-                newFileName = c.os_path_finalize_join(path, head + ext + ext2)
+                newFileName = g.os_path_finalize_join(path, head + ext + ext2) # 1341
             if toString:
                 return s
-            else:
-                #@+<< Write s into newFileName >>
-                #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels) (changed)
-                # Remove sentinels command.
-                try:
-                    theFile = open(newFileName, 'w')
-                    if not g.isPython3: # 2010/08/27
-                        s = g.toEncodedString(s, self.encoding, reportErrors=True)
+            #@+<< Write s into newFileName >>
+            #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
+            # Remove sentinels command.
+            try:
+                with open(newFileName, 'w') as theFile:
                     theFile.write(s)
-                    theFile.close()
-                    if not g.unitTesting:
-                        g.es("created:", newFileName)
-                except Exception:
-                    g.es("exception creating:", newFileName)
-                    g.es_print_exception()
-                #@-<< Write s into newFileName >>
-                return None
+                if not g.unitTesting:
+                    g.es("created:", newFileName)
+            except Exception:
+                g.es("exception creating:", newFileName)
+                g.es_print_exception()
+            #@-<< Write s into newFileName >>
+        return None
     #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
     # This does not handle @nonl properly, but that no longer matters.
 
     def removeSentinelLines(self, s, line_delim, start_delim, unused_end_delim):
-        '''Properly remove all sentinle lines in s.'''
+        """Properly remove all sentinle lines in s."""
         delim = (line_delim or start_delim or '') + '@'
         verbatim = delim + 'verbatim'; verbatimFlag = False
         result = []; lines = g.splitLines(s)
@@ -669,48 +576,35 @@ class LeoImportCommands(object):
         p = c.p
         if not p: return
         self.setEncoding()
-        #@+<< open filename to f, or return >>
-        #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >> (weave)
         try:
-            if g.isPython3:
-                f = open(filename, 'w', encoding=self.encoding)
-            else:
-                f = open(filename, 'w')
+            with open(filename, 'w', encoding=self.encoding) as f:
+                for p in p.self_and_subtree():
+                    s = p.b
+                    s2 = s.strip()
+                    if s2:
+                        f.write("-" * 60); f.write(nl)
+                        #@+<< write the context of p to f >>
+                        #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
+                        # write the headlines of p, p's parent and p's grandparent.
+                        context = []; p2 = p.copy(); i = 0
+                        while i < 3:
+                            i += 1
+                            if not p2: break
+                            context.append(p2.h)
+                            p2.moveToParent()
+                        context.reverse()
+                        indent = ""
+                        for line in context:
+                            f.write(indent)
+                            indent += '\t'
+                            f.write(line)
+                            f.write(nl)
+                        #@-<< write the context of p to f >>
+                        f.write("-" * 60); f.write(nl)
+                        f.write(s.rstrip() + nl)
         except Exception:
             g.es("exception opening:", filename)
             g.es_print_exception()
-            return
-        #@-<< open filename to f, or return >>
-        for p in p.self_and_subtree():
-            s = p.b
-            s2 = s.strip()
-            if s2:
-                f.write("-" * 60); f.write(nl)
-                #@+<< write the context of p to f >>
-                #@+node:ekr.20031218072017.1465: *5* << write the context of p to f >> (weave)
-                # write the headlines of p, p's parent and p's grandparent.
-                context = []; p2 = p.copy(); i = 0
-                while i < 3:
-                    i += 1
-                    if not p2: break
-                    context.append(p2.h)
-                    p2.moveToParent()
-                context.reverse()
-                indent = ""
-                for line in context:
-                    f.write(indent)
-                    indent += '\t'
-                    if not g.isPython3: # 2010/08/27.
-                        line = g.toEncodedString(line, self.encoding, reportErrors=True)
-                    f.write(line)
-                    f.write(nl)
-                #@-<< write the context of p to f >>
-                f.write("-" * 60); f.write(nl)
-                if not g.isPython3:
-                    s = g.toEncodedString(s, self.encoding, reportErrors=True)
-                f.write(s.rstrip() + nl)
-        f.flush()
-        f.close()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self,
@@ -721,7 +615,7 @@ class LeoImportCommands(object):
         s=None,
         # force_at_others=False,  # tag:no-longer-used
     ):
-        '''
+        """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
 
@@ -729,8 +623,7 @@ class LeoImportCommands(object):
         fileName:   A string or None. The name of the file to be read.
         parent:     The parent position of the created outline.
         s:          A string or None. The file's contents.
-        '''
-        trace = False and not g.unitTesting
+        """
         c = self.c
         p = parent.copy()
         self.treeType = '@file'
@@ -745,19 +638,14 @@ class LeoImportCommands(object):
         )
         ext, s = self.init_import(atShadow, ext, fileName, s)
         if s is None:
-            if trace: g.trace('read failed', fileName)
-            return
-        if trace and not s:
-            g.trace('empty file: but calling importer', fileName)
+            return None
         # Get the so-called scanning func.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
-        if trace: g.trace('%8s %20s %20s %s' % (
-            ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
-            assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
-        if func and not c.config.getBool('suppress_import_parsing', default=False):
+            assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
+        if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is actually a factory: it instantiates the importer class.
@@ -778,16 +666,16 @@ class LeoImportCommands(object):
         return p
     #@+node:ekr.20140724064952.18038: *5* ic.dispatch & helpers
     def dispatch(self, ext, p):
-        '''Return the correct scanner function for p, an @auto node.'''
+        """Return the correct scanner function for p, an @auto node."""
         # Match the @auto type first, then the file extension.
         c = self.c
         return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self, fileName, parent):
-        '''Return the absolute path of the file and set .default_directory.'''
+        """Return the absolute path of the file and set .default_directory."""
         c = self.c
         self.default_directory = g.setDefaultDirectory(c, parent, importing=False)
-        fileName = c.os_path_finalize_join(self.default_directory, fileName)
+        fileName = g.os_path_finalize_join(self.default_directory, fileName) # 1341
         fileName = fileName.replace('\\', '/') # 2011/11/25
         return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
@@ -800,14 +688,14 @@ class LeoImportCommands(object):
             p = parent.insertAsLastChild()
         else:
             p = c.lastTopLevel().insertAfter()
-        p.h = '@url file://%s' % fileName
+        p.h = f"@url file://{fileName}"
         return p
     #@+node:ekr.20140724175458.18052: *5* ic.init_import
     def init_import(self, atShadow, ext, fileName, s):
-        '''
+        """
         Init ivars imports and read the file into s.
         Return ext, s.
-        '''
+        """
         junk, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext: ext = self.fileType
@@ -830,9 +718,7 @@ class LeoImportCommands(object):
         return ext, s
     #@+node:ekr.20070713075352: *5* ic.scanUnknownFileType & helper
     def scanUnknownFileType(self, s, p, ext):
-        '''Scan the text of an unknown file type.'''
-        c = self.c
-        changed = c.isChanged()
+        """Scan the text of an unknown file type."""
         body = ''
         if ext in ('.html', '.htm'): body += '@language html\n'
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
@@ -842,13 +728,11 @@ class LeoImportCommands(object):
         self.setBodyString(p, body + self.rootLine + s)
         for p in p.self_and_subtree():
             p.clearDirty()
-        if not changed:
-            c.setChanged(False)
         g.app.unitTestDict = {'result': True}
         return True
     #@+node:ekr.20080811174246.1: *6* ic.languageForExtension
     def languageForExtension(self, ext):
-        '''Return the language corresponding to the extension ext.'''
+        """Return the language corresponding to the extension ext."""
         unknown = 'unknown_language'
         if ext.startswith('.'): ext = ext[1:]
         if ext:
@@ -861,7 +745,6 @@ class LeoImportCommands(object):
                 language = unknown
         else:
             language = unknown
-        # g.trace(ext,repr(language))
         # Return the language even if there is no colorizer mode for it.
         return language
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
@@ -887,11 +770,11 @@ class LeoImportCommands(object):
         c.redraw()
     #@+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(self, parent=None, paths=None, command='Import'):
-        '''
+        """
         Import one or more external files.
         This is not a command.  It must *not* have an event arg.
         command is None when importing from the command line.
-        '''
+        """
         at, c, u = self.c.atFileCommands, self.c, self.c.undoer
         current = c.p or c.rootPosition()
         self.tab_width = c.getTabWidth(current)
@@ -903,7 +786,6 @@ class LeoImportCommands(object):
             fileName = fileName.replace('\\', '/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
             isThin = at.scanHeaderForThin(fileName)
-            # g.trace('isThin',isThin,fileName)
             if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
@@ -917,7 +799,7 @@ class LeoImportCommands(object):
             p.setDirty() # 2011/10/09: tell why the file is dirty!
             if command: u.afterInsertNode(p, command, undoData)
         current.expand()
-        c.setChanged(True)
+        c.setChanged()
         if command: u.afterChangeGroup(p, command)
         c.redraw(current)
         return p
@@ -946,7 +828,7 @@ class LeoImportCommands(object):
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAsLastChild()
-                p.h = '%s %s' % (treeType, fn)
+                p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(fn, parent=p)
                     #  force_at_others=force_at_others) #tag:no-longer-used
@@ -955,7 +837,7 @@ class LeoImportCommands(object):
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
                     p.contract()
                     p.setDirty()
-                    c.setChanged(True)
+                    c.setChanged()
             except Exception:
                 g.es_print('Exception importing', fn)
                 g.es_exception()
@@ -973,7 +855,7 @@ class LeoImportCommands(object):
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
         if s is None or not s.strip():
-            return ''
+            return
         s = s.replace('\r', '') # Fixes bug 626101.
         array = s.split("\n")
         # Convert the string to an outline and insert it after the current node.
@@ -992,27 +874,27 @@ class LeoImportCommands(object):
         if p:
             c.validateOutline()
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
             u.afterInsertNode(p, 'Import', undoData)
             c.redraw(p)
         # elif not g.unitTesting:
             # g.es_print("not a valid MORE file", fileName)
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
-        '''
+        """
         Import a list of .mm.html files exported from FreeMind:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
-        '''
+        """
         if lxml:
             FreeMindImporter(self.c).import_files(files)
         else:
             g.es_print('can not import lxml.html')
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
-        '''
+        """
         Import a list of .csv files exported from MindJet:
         https://www.mindjet.com/
-        '''
+        """
         MindMapImporter(self.c).import_files(files)
     #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files, webType):
@@ -1026,7 +908,7 @@ class LeoImportCommands(object):
             p = self.createOutlineFromWeb(fileName, current)
             p.contract()
             p.setDirty()
-            c.setChanged(True)
+            c.setChanged()
         c.redraw(current)
     #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
     def createOutlineFromWeb(self, path, parent):
@@ -1052,9 +934,11 @@ class LeoImportCommands(object):
             if g.is_c_id(s[i]):
                 j = i; i = g.skip_c_id(s, i); name = s[j: i]
             elif s[i] == '(':
-                if name: return name
-                else: break
-            else: i += 1
+                if name:
+                    return name
+                break
+            else:
+                i += 1
         return None
     #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
     #@+at This method returns the proper headline text.
@@ -1072,7 +956,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 # Allow constructs such as @ @c, or @ @<.
                 if self.isDocStart(s, i):
                     i += 2; i = g.skip_ws(s, i)
@@ -1081,13 +964,14 @@ class LeoImportCommands(object):
                     directive = s[i: i + 2]
                     i = g.skip_ws(s, i + 2) # skip the @d or @f
                     if i < len(s) and g.is_c_id(s[i]):
-                        j = i; g.skip_c_id(s, i); return s[j: i]
-                    else: return directive
-                elif g.match(s, i, "@c") or g.match(s, i, "@p"):
+                        j = i; g.skip_c_id(s, i)
+                        return s[j: i]
+                    return directive
+                if g.match(s, i, "@c") or g.match(s, i, "@p"):
                     # Look for a function def.
                     name = self.findFunctionDef(s, i + 2)
                     return name if name else "outer function"
-                elif g.match(s, i, "@<"):
+                if g.match(s, i, "@<"):
                     # Look for a section def.
                     # A small bug: the section def must end on this line.
                     j = i; k = g.find_on_line(s, i, "@>")
@@ -1101,7 +985,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 if g.match(s, i, "<<"):
                     k = g.find_on_line(s, i, ">>=")
                     if k > -1:
@@ -1129,7 +1012,6 @@ class LeoImportCommands(object):
         while i < len(s):
             progress = i
             i = g.skip_ws_and_nl(s, i)
-            # line = g.get_line(s,i) ; g.trace(line)
             if self.isDocStart(s, i):
                 if theType == "cweb": i += 2
                 else: i = g.skip_line(s, i)
@@ -1140,7 +1022,6 @@ class LeoImportCommands(object):
                 if k > -1: self.cstEnter(s[j: k])
             else: i += 1
             assert(i > progress)
-        # g.trace(self.cstDump())
         #@-<< Create a symbol table of all section names >>
         #@+<< Create nodes for limbo text and the root section >>
         #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
@@ -1165,7 +1046,7 @@ class LeoImportCommands(object):
                 else: i = g.skip_line(s, i)
                 assert(i > progress)
             self.createHeadline(parent, s[j: i], g.angleBrackets(" @ "))
-        # g.trace(g.get_line(s,i))
+
         #@-<< Create nodes for limbo text and the root section >>
         while i < len(s):
             outer_progress = i
@@ -1226,7 +1107,8 @@ class LeoImportCommands(object):
             assert(i > outer_progress)
     #@+node:ekr.20031218072017.3236: *5* Symbol table
     #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
-    # We canonicalize strings before looking them up, but strings are entered in the form they are first encountered.
+    # We canonicalize strings before looking them up,
+    # but strings are entered in the form they are first encountered.
 
     def cstCanonicalize(self, s, lower=True):
         if lower:
@@ -1269,17 +1151,17 @@ class LeoImportCommands(object):
             cs = self.cstCanonicalize(s)
             if cs[: len(ctarget)] == ctarget:
                 if found:
-                    g.es('', "****** %s" % (target), "is also a prefix of", s)
+                    g.es('', f"****** {target}", 'is also a prefix of', s)
                 else:
                     found = True; result = s
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helper
     def parse_body(self, p):
-        '''
+        """
         Parse p.b as source code, creating a tree of descendant nodes.
         This is essentially an import of p.b.
-        '''
+        """
         if not p: return
         c, ic = self.c, self
         if p.hasChildren():
@@ -1297,7 +1179,6 @@ class LeoImportCommands(object):
             d = g.app.language_extension_dict
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        # g.trace(language, ext, parser and parser.__name__ or '<NO PARSER>')
         if parser:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
@@ -1315,7 +1196,7 @@ class LeoImportCommands(object):
             g.es_print('parse-body: no parser for @language %s' % (language or 'None'))
     #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
     def body_parser_for_ext(self, ext):
-        '''A factory returning a body parser function for the given file extension.'''
+        """A factory returning a body parser function for the given file extension."""
         aClass = ext and g.app.classDispatchDict.get(ext)
 
         def body_parser_for_class(parent, s):
@@ -1378,8 +1259,7 @@ class LeoImportCommands(object):
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
         if docutils:
             return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
-        else:
-            return None
+        return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
@@ -1394,16 +1274,14 @@ class LeoImportCommands(object):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, ext=None, fileName=None, s=None, showTree=False):
-        '''
+        """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
-        '''
-        trace = False
+        """
         c, h = self.c, p.h
         old_root = p.copy()
         self.treeType = '@file'
             # Fix #352.
-        oldChanged = c.changed
         # A hack.  Let unit tests set the kill-check flag first.
         d = g.app.unitTestDict
         if d.get('kill-check'):
@@ -1421,7 +1299,7 @@ class LeoImportCommands(object):
         else:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
-        parent.h = '%s %s' % (kind, fileName)
+        parent.h = f"{kind} {fileName}"
         self.createOutline(
             ext = ext,
             fileName = title.strip(),
@@ -1431,9 +1309,6 @@ class LeoImportCommands(object):
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
-        if trace:
-            g.trace('-'*10, ok, p.h)
-            g.printDict(d)
         # Clean up.
         if showTree:
             # 2016/11/17: Make sure saving the outline doesn't create any file.
@@ -1443,7 +1318,6 @@ class LeoImportCommands(object):
         else:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
-            c.setChanged(oldChanged)
         c.redraw(old_root)
         if g.app.unitTesting:
             d['kill-check'] = False
@@ -1453,7 +1327,7 @@ class LeoImportCommands(object):
         return ok
     #@+node:ekr.20170405201254.1: *5* ic.compute_unit_test_kind
     def compute_unit_test_kind(self, ext, fn):
-        '''Return kind from fn's file extension.'''
+        """Return kind from fn's file extension."""
         if not ext:
             junk, ext = g.os_path_splitext(fn)
         if ext:
@@ -1462,14 +1336,13 @@ class LeoImportCommands(object):
                 d2 = g.app.atAutoDict
                 for z in d2:
                     if d2.get(z) == aClass:
-                        # g.trace('found',z,'for',ext,aClass.__name__)
                         return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p, s):
-        '''Similar to c.appendStringToBody,
-        but does not recolor the text or redraw the screen.'''
+        """Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen."""
         if s:
             body = p.b
             assert(g.isUnicode(body))
@@ -1477,8 +1350,8 @@ class LeoImportCommands(object):
             self.setBodyString(p, body + s)
 
     def setBodyString(self, p, s):
-        '''Similar to c.setBodyString,
-        but does not recolor the text or redraw the screen.'''
+        """Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen."""
         c = self.c; v = p.v
         if not c or not p: return
         s = g.toUnicode(s, self.encoding)
@@ -1494,17 +1367,14 @@ class LeoImportCommands(object):
             v.setSelection(0, 0)
             p.setDirty()
             if not c.isChanged():
-                c.setChanged(True)
+                c.setChanged()
     #@+node:ekr.20031218072017.3306: *4* ic.createHeadline
     def createHeadline(self, parent, body, headline):
-        '''Create a new VNode as the last child of parent position.'''
+        """Create a new VNode as the last child of parent position."""
         p = parent.insertAsLastChild()
-        body = g.u(body)
-        headline = g.u(headline)
         p.initHeadString(headline)
         if body:
             self.setBodyString(p, body)
-        # g.trace(p.v.gnx,p.h)
         return p
     #@+node:ekr.20031218072017.3307: *4* ic.error
     def error(self, s):
@@ -1519,18 +1389,16 @@ class LeoImportCommands(object):
         j = g.skip_ws(s, i + 1)
         if g.match(s, j, "%defs"):
             return False
-        elif self.webType == "cweb" and g.match(s, i, "@*"):
+        if self.webType == "cweb" and g.match(s, i, "@*"):
             return True
-        else:
-            return g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@\n")
+        return g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@\n")
 
     def isModuleStart(self, s, i):
         if self.isDocStart(s, i):
             return True
-        else:
-            return self.webType == "cweb" and (
-                g.match(s, i, "@c") or g.match(s, i, "@p") or
-                g.match(s, i, "@d") or g.match(s, i, "@f"))
+        return self.webType == "cweb" and (
+            g.match(s, i, "@c") or g.match(s, i, "@p") or
+            g.match(s, i, "@d") or g.match(s, i, "@f"))
     #@+node:ekr.20031218072017.3312: *4* ic.massageWebBody
     def massageWebBody(self, s):
         theType = self.webType
@@ -1567,7 +1435,6 @@ class LeoImportCommands(object):
                         doc = "@ " if self.webType == "cweb" else "@\n"
                     else:
                         doc += "\n\n"
-                    # g.trace("new doc:",doc)
                     s = s[: start] + doc + s[end:]
                     i = start + len(doc)
             else: i = g.skip_line(s, i)
@@ -1578,7 +1445,6 @@ class LeoImportCommands(object):
         i = 0
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             if g.match(s, i, lb):
                 i += 2; j = i; k = g.find_on_line(s, j, rb)
                 if k > -1:
@@ -1586,7 +1452,6 @@ class LeoImportCommands(object):
                     name2 = self.cstLookup(name)
                     if name != name2:
                         # Replace name by name2 in s.
-                        # g.trace("replacing %s by %s" % (name,name2))
                         s = s[: j] + name2 + s[k:]
                         i = j + len(name2)
             i = g.skip_line(s, i)
@@ -1606,11 +1471,11 @@ class LeoImportCommands(object):
             self.encoding = 'utf-8'
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
-class MindMapImporter(object):
-    '''Mind Map Importer class.'''
+class MindMapImporter:
+    """Mind Map Importer class."""
 
     def __init__(self, c):
-        '''ctor for MindMapImporter class.'''
+        """ctor for MindMapImporter class."""
         self.c = c
 
     #@+others
@@ -1633,7 +1498,7 @@ class MindMapImporter(object):
         return p
     #@+node:ekr.20160503144647.1: *3* mindmap.import_files
     def import_files(self, files):
-        '''Import a list of MindMap (.csv) files.'''
+        """Import a list of MindMap (.csv) files."""
         c = self.c
         if files:
             self.tab_width = c.getTabWidth(c.p)
@@ -1642,11 +1507,11 @@ class MindMapImporter(object):
                 p = self.create_outline(fileName)
                 p.contract()
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
             c.redraw(p)
     #@+node:ekr.20160504043243.1: *3* mindmap.prompt_for_files
     def prompt_for_files(self):
-        '''Prompt for a list of MindJet (.csv) files and import them.'''
+        """Prompt for a list of MindJet (.csv) files and import them."""
         c = self.c
         types = [
             ("MindJet files", "*.csv"),
@@ -1663,7 +1528,7 @@ class MindMapImporter(object):
             self.import_files(names)
     #@+node:ekr.20160503130256.1: *3* mindmap.scan & helpers
     def scan(self, path, target):
-        '''Create an outline from a MindMap (.csv) file.'''
+        """Create an outline from a MindMap (.csv) file."""
         c = self.c
         f = open(path)
         reader = csv.reader(f)
@@ -1701,37 +1566,35 @@ class MindMapImporter(object):
         f.close()
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
     def csv_level(self, row):
-        '''Return the level of the given row.'''
+        """Return the level of the given row."""
         count = 0
         while count <= len(row):
             if row[count]:
                 return count+1
-            else:
-                count = count+1
+            count = count+1
         return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
-        '''Return the string for the given csv row.'''
+        """Return the string for the given csv row."""
         count = 0
         while count<=len(row):
             if row[count]:
                 return row[count]
-            else:
-                count = count+1
+            count = count+1
         return None
     #@-others
 #@+node:ekr.20161006100941.1: ** class MORE_Importer
-class MORE_Importer(object):
-    '''Class to import MORE files.'''
+class MORE_Importer:
+    """Class to import MORE files."""
 
     def __init__(self, c):
-        '''ctor for MORE_Importer class.'''
+        """ctor for MORE_Importer class."""
         self.c = c
 
     #@+others
     #@+node:ekr.20161006101111.1: *3* MORE.prompt_for_files
     def prompt_for_files(self):
-        '''Prompt for a list of MORE files and import them.'''
+        """Prompt for a list of MORE files and import them."""
         c = self.c
         types = [
             ("All files", "*"),
@@ -1747,7 +1610,7 @@ class MORE_Importer(object):
             self.import_files(names)
     #@+node:ekr.20161006101218.1: *3* MORE.import_files
     def import_files(self, files):
-        '''Import a list of MORE (.csv) files.'''
+        """Import a list of MORE (.csv) files."""
         c = self.c
         if files:
             changed = False
@@ -1758,7 +1621,7 @@ class MORE_Importer(object):
                 if p:
                     p.contract()
                     p.setDirty()
-                    c.setChanged(True)
+                    c.setChanged()
                     changed = True
             if changed:
                 c.redraw(p)
@@ -1766,11 +1629,13 @@ class MORE_Importer(object):
     def import_file(self, fileName): # Not a command, so no event arg.
         c = self.c; u = c.undoer
         ic = c.importCommands
-        if not c.p: return
+        if not c.p:
+            return None
         ic.setEncoding()
         g.setGlobalOpenDir(fileName)
         s, e = g.readFileIntoString(fileName)
-        if s is None: return None
+        if s is None:
+            return None
         s = s.replace('\r', '') # Fixes bug 626101.
         lines = g.splitLines(s)
         # Convert the string to an outline and insert it after the current node.
@@ -1784,7 +1649,7 @@ class MORE_Importer(object):
                 c.endEditing()
                 c.validateOutline()
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
                 u.afterInsertNode(root, 'Import MORE File', undoData)
                 c.selectPosition(root)
                 c.redraw()
@@ -1868,12 +1733,12 @@ class MORE_Importer(object):
             assert progress < index
         if theRoot:
             theRoot.setDirty()
-            c.setChanged(True)
+            c.setChanged()
         c.redraw()
         return theRoot
     #@+node:ekr.20031218072017.3222: *3* MORE.headlineLevel
     def headlineLevel(self, s):
-        '''return the headline level of s,or -1 if the string is not a MORE headline.'''
+        """return the headline level of s,or -1 if the string is not a MORE headline."""
         level = 0; i = 0
         while i < len(s) and s[i] in ' \t': # 2016/10/06: allow blanks or tabs.
             level += 1
@@ -1881,8 +1746,7 @@ class MORE_Importer(object):
         plusFlag = g.match(s, i, "+")
         if g.match(s, i, "+ ") or g.match(s, i, "- "):
             return level, plusFlag
-        else:
-            return -1, plusFlag
+        return -1, plusFlag
     #@+node:ekr.20031218072017.3223: *3* MORE.check & check_lines
     def check(self, s):
         s = s.replace("\r", "")
@@ -1890,42 +1754,43 @@ class MORE_Importer(object):
         return self.check_lines(strings)
 
     def check_lines(self, strings):
-        trace = False and not g.unitTesting
-        if len(strings) < 1: return False
+
+        if not strings: return False
         level1, plusFlag = self.headlineLevel(strings[0])
         if level1 == -1: return False
         # Check the level of all headlines.
         lastLevel = level1
         for s in strings:
             level, newFlag = self.headlineLevel(s)
-            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
-                level1, level, lastLevel, s.rstrip()))
             if level == -1:
                 return True # A body line.
-            elif level < level1 or level > lastLevel + 1:
+            if level < level1 or level > lastLevel + 1:
                 return False # improper level.
-            elif level > lastLevel and not plusFlag:
+            if level > lastLevel and not plusFlag:
                 return False # parent of this node has no children.
-            elif level == lastLevel and plusFlag:
+            if level == lastLevel and plusFlag:
                 return False # last node has missing child.
-            else:
-                lastLevel = level
-                plusFlag = newFlag
+            lastLevel = level
+            plusFlag = newFlag
         return True
     #@-others
 #@+node:ekr.20130823083943.12596: ** class RecursiveImportController
-class RecursiveImportController(object):
-    '''Recursively import all python files in a directory and clean the result.'''
+class RecursiveImportController:
+    """Recursively import all python files in a directory and clean the result."""
     #@+others
-    #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
+    #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
         # force_at_others = False, #tag:no-longer-used
+        add_path=True,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
+        ignore_pattern=None,
     ):
-        '''Ctor for RecursiveImportController class.'''
+        """Ctor for RecursiveImportController class."""
         self.c = c
+        self.add_path = add_path
+        self.file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         # self.force_at_others = force_at_others #tag:no-longer-used
@@ -1933,12 +1798,13 @@ class RecursiveImportController(object):
         self.root = None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
+        self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
-        '''
+        """
         Import all files whose extension matches self.theTypes in dir_.
         In fact, dir_ can be a path to a single file.
-        '''
+        """
         if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es('bad kind param', self.kind, color='red')
         try:
@@ -1958,14 +1824,15 @@ class RecursiveImportController(object):
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
-                self.post_process(parent, dir_)
+            self.post_process(parent, dir_)
+                # Fix # 1033.
             c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
         except Exception:
             g.es_print('Exception in recursive import')
             g.es_exception()
         finally:
             g.app.disable_redraw = False
-            for p2 in parent.self_and_subtree():
+            for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
             c.redraw(parent)
         t2 = time.time()
@@ -1974,9 +1841,7 @@ class RecursiveImportController(object):
             n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
-        '''Import selected files from dir_, a directory.'''
-        trace = False and not g.unitTesting
-        limit = True # True: only one file per directory.
+        """Import selected files from dir_, a directory."""
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
@@ -1987,13 +1852,14 @@ class RecursiveImportController(object):
             try:
                 # Fix #408. Catch path exceptions.
                 # The idea here is to keep going on small errors.
-                path = g.os_path_join(dir_, path, expanduser=False)
+                path = g.os_path_join(dir_, path)
                 if g.os_path_isfile(path):
                     name, ext = g.os_path_splitext(path)
                     if ext in self.theTypes:
                         files2.append(path)
                 elif self.recursive:
-                    dirs.append(path)
+                    if not self.ignore_pattern.search(path):
+                        dirs.append(path)
             except OSError:
                 g.es_print('Exception computing', path)
                 g.es_exception()
@@ -2003,15 +1869,15 @@ class RecursiveImportController(object):
             parent.v.h = dir_
             if files2:
                 for f in files2:
-                    self.import_one_file(f, parent=parent)
-                    if trace and limit: break
+                    if not self.ignore_pattern.search(f):
+                        self.import_one_file(f, parent=parent)
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *4* ric.import_one_file
     def import_one_file(self, path, parent):
-        '''Import one file to the last top-level node.'''
+        """Import one file to the last top-level node."""
         c = self.c
         self.n_files += 1
         assert parent and parent.v != self.root.v, g.callers()
@@ -2021,32 +1887,25 @@ class RecursiveImportController(object):
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return
-        elif self.kind == '@auto':
-            p = parent.insertAsLastChild()
-            p.v.h = path.replace('\\', '/')
-            p.clearDirty()
-        else:
-            c.importCommands.importFilesCommand(
-                files=[path],
-                # force_at_others = self.force_at_others, #tag:no-longer-used
-                parent=parent,
-                redrawFlag=False,
-                shortFn=True,
-                treeType='@file', # '@auto','@clean','@nosent' cause problems.
-            )
-            p = parent.lastChild()
-            p.h = self.kind + p.h[5:]
-                # Bug fix 2017/10/27: honor the requested kind.
+        # #1484: Use this for @auto as well.
+        c.importCommands.importFilesCommand(
+            files=[path],
+            parent=parent,
+            redrawFlag=False,
+            shortFn=True,
+            treeType='@file', # '@auto','@clean','@nosent' cause problems.
+        )
+        p = parent.lastChild()
+        p.h = self.kind + p.h[5:]
+            # Bug fix 2017/10/27: honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
     def post_process(self, p, prefix):
-        '''
+        """
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
-        '''
-        trace = False and not g.unitTesting
-        if trace: t1 = time.time()
+        """
         self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
@@ -2054,32 +1913,67 @@ class RecursiveImportController(object):
         if p.firstChild():
             self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
-        if trace:
-            t2 = time.time()
-            g.trace('%2.2f sec' % (t2-t1))
+        self.add_class_names(p)
+    #@+node:ekr.20180524100258.1: *5* ric.add_class_names
+    def add_class_names(self, p):
+        """Add class names to headlines for all descendant nodes."""
+        after, class_name = None, None
+        class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
+        paren_pattern = re.compile(r'(.*)\(.*\.py\)')
+        for p in p.self_and_subtree(copy=False):
+            # Part 1: update the status.
+            m = self.file_pattern.match(p.h)
+            if m:
+                # prefix = m.group(1)
+                # fn = g.shortFileName(p.h[len(prefix):].strip())
+                after, class_name = None, None
+                continue
+            elif p.h.startswith('@path '):
+                after, class_name = None, None
+            elif p.h.startswith('class '):
+                class_name = p.h[5:].strip()
+                if class_name:
+                    after = p.nodeAfterTree()
+                    continue
+            elif p == after:
+                after, class_name = None, None
+            # Part 2: update the headline.
+            if class_name:
+                if p.h.startswith(class_name):
+                    m = class_paren_pattern.match(p.h)
+                    if m:
+                        p.h = f"{m.group(1)}.{m.group(2)}".rstrip()
+                else:
+                    p.h = f"{class_name}.{p.h}"
+            else:
+                m = paren_pattern.match(p.h)
+                if m:
+                    p.h = m.group(1).rstrip()
+            # elif fn:
+                # tag = ' (%s)' % fn
+                # if not p.h.endswith(tag):
+                    # p.h += tag
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
-        c.setChanged(False)
-        for p in p.self_and_subtree():
+        c.clearChanged()  # Clears *all* dirty bits.
+        for p in p.self_and_subtree(copy=False):
             p.clearDirty()
     #@+node:ekr.20130823083943.12609: *5* ric.dump_headlines
     def dump_headlines(self, p):
         # show all headlines.
-        for p in p.self_and_subtree():
+        for p in p.self_and_subtree(copy=False):
             print(p.h)
     #@+node:ekr.20130823083943.12610: *5* ric.fix_back_slashes
     def fix_back_slashes(self, p):
-        '''Convert backslash to slash in all headlines.'''
-        for p in p.self_and_subtree():
+        """Convert backslash to slash in all headlines."""
+        for p in p.self_and_subtree(copy=False):
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s
-    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines
-    file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-
+    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
     def minimize_headlines(self, p, prefix):
-        '''Create @path nodes to minimize the paths required in descendant nodes.'''
+        """Create @path nodes to minimize the paths required in descendant nodes."""
         if prefix and not prefix.endswith('/'):
             prefix = prefix + '/'
         m = self.file_pattern.match(p.h)
@@ -2088,7 +1982,11 @@ class RecursiveImportController(object):
             kind = m.group(0)
             path = p.h[len(kind):].strip()
             stripped = self.strip_prefix(path, prefix)
-            p.h = '%s %s' % (kind, stripped or path)
+            p.h = f"{kind} {stripped or path}"
+            # Put the *full* @path directive in the body.
+            if self.add_path and prefix:
+                tail = g.os_path_dirname(stripped).rstrip('/')
+                p.b = '@path %s%s\n%s'  % (prefix, tail, p.b)
         else:
             # p.h is a path.
             path = p.h
@@ -2099,15 +1997,14 @@ class RecursiveImportController(object):
 
     #@+node:ekr.20170404134052.1: *6* ric.strip_prefix
     def strip_prefix(self, path, prefix):
-        '''Strip the prefix from the path and return the result.'''
+        """Strip the prefix from the path and return the result."""
         if path.startswith(prefix):
             return path[len(prefix):]
-        else:
-            return '' # A signal.
+        return '' # A signal.
 
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
-        '''Remove empty nodes. Not called for @auto or @edit trees.'''
+        """Remove empty nodes. Not called for @auto or @edit trees."""
         c = self.c
         aList = [p2 for p2 in p.self_and_subtree()
             if not p2.b and not p2.hasChildren()]
@@ -2116,13 +2013,13 @@ class RecursiveImportController(object):
     #@-others
 #@+node:ekr.20161006071801.1: ** class TabImporter
 class TabImporter:
-    '''
+    """
     A class to import a file whose outline levels are indicated by
     leading tabs or blanks (but not both).
-    '''
+    """
 
     def __init__(self, c, separate=True):
-        '''Ctor for the TabImporter class.'''
+        """Ctor for the TabImporter class."""
         self.c = c
         self.stack = []
         self.root = None
@@ -2132,7 +2029,7 @@ class TabImporter:
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
     def check(self, lines, warn=True):
-        '''Return False and warn if lines contains mixed leading tabs/blanks.'''
+        """Return False and warn if lines contains mixed leading tabs/blanks."""
         blanks, tabs = 0, 0
         for s in lines:
             lws = self.lws(s)
@@ -2142,18 +2039,17 @@ class TabImporter:
             if warn:
                 g.es_print('intermixed leading blanks and tabs.')
             return False
-        else:
-            return True
+        return True
     #@+node:ekr.20161006071801.3: *3* tabbed.dump_stack
     def dump_stack(self):
-        '''Dump the stack, containing (level, p) tuples.'''
+        """Dump the stack, containing (level, p) tuples."""
         g.trace('==========')
         for i, data in enumerate(self.stack):
             level, p = data
             print('%2s %s %r' % (i, level, p.h))
     #@+node:ekr.20161006073129.1: *3* tabbed.import_files
     def import_files(self, files):
-        '''Import a list of tab-delimited files.'''
+        """Import a list of tab-delimited files."""
         c, u = self.c, self.c.undoer
         if files:
             p = None
@@ -2174,11 +2070,11 @@ class TabImporter:
                     p.setDirty()
                     u.afterInsertNode(p, 'Import Tabbed File', undoData)
                 if p:
-                    c.setChanged(True)
+                    c.setChanged()
                     c.redraw(p)
     #@+node:ekr.20161006071801.4: *3* tabbed.lws
     def lws(self, s):
-        '''Return the length of the leading whitespace of s.'''
+        """Return the length of the leading whitespace of s."""
         for i, ch in enumerate(s):
             if ch not in ' \t':
                 return s[:i]
@@ -2187,7 +2083,7 @@ class TabImporter:
 
     #@+node:ekr.20161006072958.1: *3* tabbed.prompt_for_files
     def prompt_for_files(self):
-        '''Prompt for a list of FreeMind (.mm.html) files and import them.'''
+        """Prompt for a list of FreeMind (.mm.html) files and import them."""
         c = self.c
         types = [
             ("All files", "*"),
@@ -2203,8 +2099,7 @@ class TabImporter:
             self.import_files(names)
     #@+node:ekr.20161006071801.5: *3* tabbed.scan
     def scan(self, s1, fn=None, root=None):
-        '''Create the outline corresponding to s1.'''
-        trace = False and not g.unitTesting
+        """Create the outline corresponding to s1."""
         c = self.c
         # Self.root can be None if we are called from a script or unit test.
         if not self.root:
@@ -2216,23 +2111,19 @@ class TabImporter:
         self.stack = []
         # Redo the checks in case we are called from a script.
         if s1.strip() and self.check(lines):
-            if trace: g.trace('importing to %s' % self.root.h)
             for s in lines:
                 if s.strip() or not self.separate:
                     self.scan_helper(s)
         return self.root
     #@+node:ekr.20161006071801.6: *3* tabbed.scan_helper
     def scan_helper(self, s):
-        '''Update the stack as necessary and return (level, parent, stack).'''
-        trace = False and not g.unitTesting
+        """Update the stack as necessary and return (level, parent, stack)."""
         root, separate, stack = self.root, self.separate, self.stack
         if stack:
             level, parent = stack[-1]
         else:
             level, parent = 0, None
         lws = len(self.lws(s))
-        if trace:
-            g.trace('----- level: %s lws: %s %s' % (level, lws, s.rstrip()))
         h = s.strip()
         if lws == level:
             if separate or not parent:
@@ -2253,7 +2144,6 @@ class TabImporter:
             stack.append((level, parent),)
         else:
             # Find the previous parent.
-            if trace: self.dump_stack()
             while stack:
                 level2, parent2 = stack.pop()
                 if level2 == lws:
@@ -2268,9 +2158,6 @@ class TabImporter:
                 parent = root.insertAsLastChild()
                 parent.h = h
                 stack = [(0, parent),]
-        if trace:
-            g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
-            self.dump_stack()
         assert parent and parent == stack[-1][1]
             # An important invariant.
         assert level == stack[-1][0], (level, stack[-1][0])
@@ -2279,8 +2166,7 @@ class TabImporter:
         return level
     #@+node:ekr.20161006071801.7: *3* tabbed.undent
     def undent(self, level, s):
-        '''Unindent all lines of p.b by level.'''
-        # g.trace(level, s.rstrip())
+        """Unindent all lines of p.b by level."""
         if level <= 0:
             return s
         if s.strip():
@@ -2294,12 +2180,11 @@ class TabImporter:
                     g.trace('bad indentation: %r' % s)
                     return s
             return ''.join([z[len(lws):] for z in lines])
-        else:
-            return ''
+        return ''
     #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
-class ZimImportController(object):
-    '''
+class ZimImportController:
+    """
     A class to import Zim folders and files: http://zim-wiki.org/
     First use Zim to export your project to rst files.
 
@@ -2311,16 +2196,16 @@ class ZimImportController(object):
         @string zim_node_name
         @string path_to_zim
 
-    '''
+    """
     #@+others
     #@+node:ekr.20141210051628.31: *3* zic.__init__ & zic.reloadSettings
     def __init__(self, c):
-        '''Ctor for ZimImportController class.'''
+        """Ctor for ZimImportController class."""
         self.c = c
-        self.pathToZim = c.config.getString('path_to_zim')
-        self.rstLevel = c.config.getInt('rst_level') or 0
-        self.rstType = c.config.getString('rst_type') or 'rst'
-        self.zimNodeName = c.config.getString('zim_node_name') or 'Imported Zim Tree'
+        self.pathToZim = c.config.getString('path-to-zim')
+        self.rstLevel = c.config.getInt('zim-rst-level') or 0
+        self.rstType = c.config.getString('zim-rst-type') or 'rst'
+        self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
     #@+node:ekr.20141210051628.28: *3* zic.parseZimIndex
     def parseZimIndex(self):
         """
@@ -2330,20 +2215,18 @@ class ZimImportController(object):
         pathToZim = g.os_path_abspath(self.pathToZim)
         pathToIndex = g.os_path_join(pathToZim, 'index.rst')
         if not g.os_path_exists(pathToIndex):
-            g.es('not found: %s' % (pathToIndex), color='red')
+            g.es(f"not found: {pathToIndex}", color='red')
             return None
         index = open(pathToIndex).read()
-        # pylint: disable=anomalous-backslash-in-string
-        parse = re.findall('(\t*)-\s`(.+)\s<(.+)>`_', index)
+        parse = re.findall(r'(\t*)-\s`(.+)\s<(.+)>`_', index)
         if not parse:
-            g.es('invalid index: %s' % (pathToIndex), color='red')
+            g.es(f"invalid index: {pathToIndex}", color='red')
             return None
         results = []
         for result in parse:
             level = len(result[0])
             name = result[1].decode('utf-8')
-            # pylint: disable=no-member
-            unquote = urllib.parse.unquote if g.isPython3 else urllib.unquote
+            unquote = urllib.parse.unquote
             path = [g.os_path_abspath(g.os_path_join(
                 pathToZim, unquote(result[2]).decode('utf-8')))]
             results.append((level, name, path))
@@ -2402,7 +2285,7 @@ class ZimImportController(object):
                 p.b = '\n'.join(lines[3:])
     #@+node:ekr.20141210051628.30: *3* zic.run
     def run(self):
-        '''Create the zim node as the last top-level node.'''
+        """Create the zim node as the last top-level node."""
         c = self.c
         # Make sure a path is given.
         if not self.pathToZim:
@@ -2420,7 +2303,7 @@ class ZimImportController(object):
             rstNodes = {'0': zimNode,}
             for level, name, rst in files:
                 if level == self.rstLevel:
-                    name = "%s %s" % (self.rstType, name)
+                    name = f"{self.rstType} {name}"
                 rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
@@ -2431,112 +2314,73 @@ class ZimImportController(object):
             c.redraw()
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
-#@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
-@g.command('head-to-prev-node')
-def headToPrevNode(event):
-    '''Move the code preceding a def to end of previous node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, i, junk = scanner.find_class(p)
-    p2 = p.back()
-    if p2 and kind in ('class', 'def') and i > 0:
-        u = c.undoer; undoType = 'move-head-to-prev'
-        head = p.b[: i].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[i:]
-        u.afterChangeNodeContents(p, undoType, b)
-        if head:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = p2.b.rstrip() + '\n\n' + head + '\n'
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
 if lxml:
 
     @g.command('import-free-mind-files')
     def import_free_mind_files(event):
-        '''Prompt for free-mind files and import them.'''
+        """Prompt for free-mind files and import them."""
         c = event.get('c')
         if c:
             FreeMindImporter(c).prompt_for_files()
+
+else:
+    
+    @g.command('import-free-mind-files')
+    def import_free_mind_files(event):
+        """
+        Prompt for free-mind files and import them.
+        
+        This command is disabled.  Please install lxml:
+        https://lxml.de/installation.html
+        """
+    
 #@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event):
-    '''Prompt for mind-jet files and import them.'''
+    """Prompt for mind-jet files and import them."""
     c = event.get('c')
     if c:
         MindMapImporter(c).prompt_for_files()
 #@+node:ekr.20161006100854.1: *3* @g.command(import-MORE-files)
 @g.command('import-MORE-files')
 def import_MORE_files_command(event):
-    '''Prompt for MORE files and import them.'''
+    """Prompt for MORE files and import them."""
     c = event.get('c')
     if c:
         MORE_Importer(c).prompt_for_files()
 #@+node:ekr.20161006072227.1: *3* @g.command(import-tabbed-files)
 @g.command('import-tabbed-files')
 def import_tabbed_files_command(event):
-    '''Prompt for tabbed files and import them.'''
+    """Prompt for tabbed files and import them."""
     c = event.get('c')
     if c:
         TabImporter(c).prompt_for_files()
 #@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
 @g.command('import-zim-folder')
 def import_zim_command(event):
-    '''
+    """
     Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+    
+    First use Zim to export your project to rst files.
+    
     This command requires the following Leo settings::
 
         @int rst_level = 0
         @string rst_type
         @string zim_node_name
         @string path_to_zim
-    '''
+    """
     c = event.get('c')
     if c:
         ZimImportController(c).run()
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
 def parse_body_command(event):
-    '''The parse-body command.'''
+    """The parse-body command."""
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)
-#@+node:ekr.20101103093942.5943: *3* @g.command(tail-to-next-node)
-@g.command('tail-to-next-node')
-def tailToNextNode(event=None):
-    '''Move the code following a def to start of next node.'''
-    c = event.get('c')
-    if not c: return
-    p = c.p
-    try:
-        import leo.plugins.importers.python as python
-    except ImportError:
-        return
-    scanner = python.Py_Importer(c.importCommands)
-    kind, junk, j = scanner.find_class(p)
-    p2 = p.next()
-    if p2 and kind in ('class', 'def') and j < len(p.b):
-        u = c.undoer; undoType = 'move-tail-to-next'
-        tail = p.b[j:].rstrip()
-        u.beforeChangeGroup(p, undoType)
-        b = u.beforeChangeNodeContents(p)
-        p.b = p.b[: j]
-        u.afterChangeNodeContents(p, undoType, b)
-        if tail:
-            b2 = u.beforeChangeNodeContents(p2)
-            p2.b = tail + '\n\n' + p2.b
-            u.afterChangeNodeContents(p2, undoType, b2)
-        u.afterChangeGroup(p, undoType)
-        c.selectPosition(p2)
 #@-others
 #@@language python
 #@@tabwidth -4

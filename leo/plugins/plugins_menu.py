@@ -58,10 +58,7 @@ __plugin_priority__
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
 import leo.core.leoGlobals as g
-if g.isPython3:
-    import configparser as ConfigParser
-else:
-    import ConfigParser
+import configparser as ConfigParser
 import os
 #@-<< imports >>
 __version__ = "2.3"
@@ -76,7 +73,6 @@ def addPluginMenuItem(p, c):
     @param p:  Plugin object for one currently loaded plugin
     @param c:  Leo-editor "commander" for the current .leo file
     """
-    trace = False
     plugin_name = p.name.split('.')[-1] # TNB 20100304 strip module path
     if p.hastoplevel:
         # Check at runtime to see if the plugin has actually been loaded.
@@ -117,17 +113,16 @@ def addPluginMenuItem(p, c):
                 items.append((cmd, None, fn),)
                     # No need for a callback.
             table.extend(sorted(items))
-        if trace: g.trace(table)
         c.frame.menu.createMenuEntries(m, table, dynamicMenu=True)
     else:
         table = ((plugin_name, None, p.about),)
-        if trace: g.trace(plugin_name)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table, dynamicMenu=True)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu(tag, keywords):
     '''Create the plugins menu: calld from create-optional-menus hook.'''
     c = keywords.get("c")
     if not c: return
+    menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
     lmd = pc.loadedModules
     if lmd:
@@ -138,14 +133,14 @@ def createPluginsMenu(tag, keywords):
 
         impModSpecList.sort(key=key)
         plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
-        c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
+        c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
         # 2013/12/13: Add any items in @menu plugins
         add_menu_from_settings(c)
         PluginDatabase.setMenu("Default", pluginMenu)
         # Add group menus
         for group_name in PluginDatabase.getGroups():
             PluginDatabase.setMenu(group_name,
-                c.frame.menu.createNewMenu(group_name, "&Plugins"))
+                c.frame.menu.createNewMenu(group_name, menu_name))
         for plgObj in plgObList:
             addPluginMenuItem(plgObj, c)
 #@+node:ekr.20131213072223.19531: *4* add_menu_from_settings
@@ -183,7 +178,7 @@ def init():
         g.plugin_signon(__name__)
     return ok
 #@+node:pap.20050305152751: ** class PluginDatabase
-class _PluginDatabase(object):
+class _PluginDatabase:
     """Stores information on Plugins"""
     #@+others
     #@+node:pap.20050305152751.1: *3* __init__
@@ -219,7 +214,7 @@ class _PluginDatabase(object):
 
 PluginDatabase = _PluginDatabase()
 #@+node:EKR.20040517080555.3: ** class Plugin
-class PlugIn(object):
+class PlugIn:
     """A class to hold information about one plugin"""
     #@+others
     #@+node:EKR.20040517080555.4: *3* __init__ (Plugin) & helper
@@ -316,7 +311,7 @@ class PlugIn(object):
             options = {}
             for option in config.options(section):
                 #g.pr('config', section, option )
-                options[option] = g.u(config.get(section, option))
+                options[option] = config.get(section, option)
             data[section] = options
         # Save the original config data. This will not be changed.
         self.sourceConfig = data

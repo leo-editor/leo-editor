@@ -16,7 +16,7 @@ class Xml_Importer(Importer):
     def __init__(self, importCommands, tags_setting='import_xml_tags', **kwargs):
         '''Xml_Importer.__init__'''
         # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'xml',
             state_class = Xml_ScanState,
@@ -37,12 +37,9 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
-        trace = False
         c, setting = self.c, self.tags_setting
         aList = c.config.getData(setting) or []
         aList = [z.lower() for z in aList]
-        if trace: g.trace(setting, aList)
-            # g.printList(aList)
         return aList
     #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
     def clean_headline(self, s, p=None):
@@ -59,11 +56,9 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
     def scan_line(self, s, prev_state):
         '''Update the xml scan state by scanning line s.'''
-        trace = False
         context, tag_level = prev_state.context, prev_state.tag_level
         i = 0
         while i < len(s):
-            if i == 0 and trace: g.trace('context: %3r line: %r' % (context, s))
             progress = i
             if context:
                 context, i = self.scan_in_context(context, i, s)
@@ -121,10 +116,6 @@ class Xml_Importer(Importer):
 
         Ignore ">" except for void tags.
         '''
-        trace = False
-        if trace:
-            g.trace(tag, repr(s))
-            g.printList(self.stack)
         if self.stack:
             if tag == '/>':
                 top = self.stack.pop()
@@ -149,7 +140,6 @@ class Xml_Importer(Importer):
         - "<" adds the tag to the stack.
         - "</" removes the top of the stack if it matches.
         '''
-        trace = False
         assert s[i] == '<', repr(s[i])
         end_tag = self.match(s, i, '</')
         # Scan the tag.
@@ -171,10 +161,6 @@ class Xml_Importer(Importer):
             self.stack.append(tag)
             if tag in self.start_tags:
                 tag_level += 1
-        if trace:
-            g.trace(tag, repr(s))
-            g.trace('Returns level: ', tag_level)
-            g.printList(self.stack)
         return i, tag_level
     #@+node:ekr.20170416043508.1: *6* xml_i.pop_to_tag
     def pop_to_tag(self, tag, s):
@@ -183,26 +169,15 @@ class Xml_Importer(Importer):
 
         If the top doesn't match, issue a warning and attempt to recover.
         '''
-        trace = False
         if not self.stack:
             self.error('Empty tag stack: %s' % tag)
             g.es_print(repr(s))
             return
-        if trace:
-            g.trace(tag, repr(s))
-            g.printList(self.stack)
         top = self.stack[-1]
         if top == tag:
             self.stack.pop()
             return
         # Only issue one warning per file.
-        if trace or self.tag_warning_given:
-            self.tag_warning_given = True
-            self.error('mismatched closing tag: %s top: %s' % (tag, top))
-            g.es_print(repr(s))
-            if trace:
-                g.trace(self.root.h)
-                g.printList(self.stack)
         # Attempt a recovery.
         if tag in self.stack:
             while self.stack:

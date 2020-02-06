@@ -89,7 +89,7 @@ def main():
     b.show()
     a.exec_()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
-class NowOrLater(object):
+class NowOrLater:
     #@+others
     #@+node:ekr.20121126095734.12434: *3* __init__
 
@@ -140,7 +140,7 @@ class Repeater(QtCore.QThread):
     #@+node:ekr.20121126095734.12428: *3* __init__
     def __init__(self, f, parent = None):
 
-        QtCore.QThread.__init__(self, parent)
+        super().__init__(parent)
         self.f = f
 
     #@+node:ekr.20121126095734.12429: *3* run
@@ -159,7 +159,7 @@ class RRunner(QtCore.QThread):
     #@+node:ekr.20121126095734.12425: *3* __init__
     def __init__(self, f, parent = None):
 
-        QtCore.QThread.__init__(self, parent)
+        super().__init__(parent)
         self.f = f
 
     #@+node:ekr.20121126095734.12426: *3* run
@@ -168,7 +168,7 @@ class RRunner(QtCore.QThread):
 
     #@-others
 #@+node:ekr.20140910173844.17824: ** class SysProcessRunner
-class SysProcessRunner(object):
+class SysProcessRunner:
     def __init__(self):
         # dict of lists (queues)
         self.q = {}
@@ -210,7 +210,7 @@ class SysProcessRunner(object):
         p.finished.connect(fini)
 
 #@+node:ekr.20121126095734.12419: ** class ThreadQueue
-class ThreadQueue(object):
+class ThreadQueue:
     #@+others
     #@+node:ekr.20121126095734.12420: *3* __init__
     def __init__(self):
@@ -240,7 +240,7 @@ class UnitWorker(QtCore.QThread):
     #@+others
     #@+node:ekr.20121126095734.12437: *3* __init__
     def __init__(self):
-        QtCore.QThread.__init__(self)
+        super().__init__()
         self.cond = QtCore.QWaitCondition()
         self.mutex = QtCore.QMutex()
         self.input = None

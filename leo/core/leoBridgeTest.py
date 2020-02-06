@@ -1,13 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20080730161153.2: * @file leoBridgeTest.py
-'''
+"""
 A module that runs unit tests with the leoBridge module.
 
 All options come from sys.argv.  See scan_options for the available options.
 
 **Important**: Leo's core does not use this module in any way.
-'''
-trace = False # True: enable traces in main.
+"""
 import leo.core.leoBridge as leoBridge
 import optparse
 import sys
@@ -17,7 +16,7 @@ import sys
 #@@nobeautify
 
 def main():
-    '''The main line of leoBridgeTest.py.'''
+    """The main line of leoBridgeTest.py."""
     tag = 'leoTestBridge'
     options = scanOptions()
     bridge = leoBridge.controller(
@@ -32,30 +31,29 @@ def main():
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test') #relative_path)
         c = bridge.openLeoFile(path)
-        if trace: g.es('%s %s' % (tag, c.shortFileName()))
         if c:
             runUnitTests(c, g)
     g.pr(tag, 'done')
 #@+node:ekr.20080730161153.4: *3* runUnitTests (leoBridgeTest.py)
 def runUnitTests(c, g):
-    '''Run all the unit tests from the leoBridge.'''
+    """Run all the unit tests from the leoBridge."""
     nodeName = 'All unit tests' # The tests to run.
     try:
         p = g.findNodeAnywhere(c, nodeName)
         if p:
-            g.es('running unit tests in %s...' % nodeName)
+            g.es(f"running unit tests in {nodeName}...")
             c.selectPosition(p)
             c.debugCommands.runUnitTests()
             g.es('unit tests complete')
         else:
-            g.es('node not found:' % nodeName)
+            g.es('node not found:', nodeName)
     except Exception:
         g.es('unexpected exception')
         g.es_exception()
         raise
 #@+node:ekr.20090121164439.6177: *3* scanOptions (leoBridgeTest.py)
 def scanOptions():
-    '''Handle all options and remove them from sys.argv.'''
+    """Handle all options and remove them from sys.argv."""
     parser = optparse.OptionParser()
     parser.add_option('--gui', dest='gui')
     parser.add_option('--path', dest='path')
@@ -78,6 +76,6 @@ def scanOptions():
 #@@tabwidth -4
 #@@pagewidth 70
 if __name__ == '__main__':
-    print('leoBridgeTest.py: argv: %s' % repr(sys.argv))
+    print(f"leoBridgeTest.py: argv: {sys.argv!r}")
     main()
 #@-leo

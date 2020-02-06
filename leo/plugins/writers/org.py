@@ -9,7 +9,7 @@ class OrgModeWriter(basewriter.BaseWriter):
     '''The writer class for .org files.'''
 
     def __init__(self,c):
-        basewriter.BaseWriter.__init__(self,c)
+        super().__init__(c)
         self.tc = self.load_nodetags()
 
     #@+others

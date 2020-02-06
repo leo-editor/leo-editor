@@ -170,7 +170,7 @@ def onCreate (tag,key):
 
     leoscreen_Controller(c)
 #@+node:tbrown.20100226095909.12783: ** class leoscreen_Controller
-class leoscreen_Controller(object):
+class leoscreen_Controller:
 
     '''A per-commander class that manages screen interaction.'''
 
@@ -202,9 +202,9 @@ class leoscreen_Controller(object):
         c = self.c
         c.registerReloadSettings(self)
         # line prefix for pasting results into leo (#, --, //, C, etc.)
-        x = self.c.config.getString('leoscreen_prefix')
+        x = self.c.config.getString('leoscreen-prefix')
         self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
-        self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
+        self.time_fmt = self.c.config.getString('leoscreen-time-fmt') or '%Y-%m-%d %H:%M:%S'
     #@+node:tbrown.20100226095909.12785: *3* __del__
     def __del__(self):
         """remove temporary file"""
@@ -273,24 +273,18 @@ class leoscreen_Controller(object):
         insert_point = editor.getInsertPoint()
         editor.insert(insert_point, self.get_line_prefix+line+'\n')
         editor.setInsertPoint(insert_point)
-        c.setChanged(True)
+        c.setChanged()
     #@+node:tbrown.20100528205637.5725: *3* _get_output
     def _get_output(self):
         """grab some output"""
         self.screen_cmd(['hardcopy -h "%s"'%self.tmpfile])
-
         # seems new output file isn't visible to the process
         # without this call
         cmd = ['ls', self.tmpfile]
         proc = subprocess.Popen(cmd,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         proc.communicate()
-
-        if g.isPython3:
-            f = open(self.tmpfile, encoding='latin-1')
-        else:
-            f = open(self.tmpfile)
-
+        f = open(self.tmpfile, encoding='latin-1')
         self.output = f.read().strip().split('\n')
         self.next_unread_line = self.first_line
     #@+node:tbrown.20100226095909.12788: *3* get_line
@@ -298,45 +292,32 @@ class leoscreen_Controller(object):
         """Get the next line of output from the last command"""
 
         if c and c != self.c:
-            return
-
+            return None
         if not c:
             c = self.c
-
         if not self.output:
             self._get_output()
-
         if not self.output:
             g.es('No output retreived')
-            return
-
+            return ''
         line = self.output[self.next_unread_line]
-
         self.next_unread_line -= 1
-
         return line
     #@+node:tbrown.20100422203442.5579: *3* get_all
     def get_all(self, c=None):
         """Get all output from the last command"""
 
         if c and c != self.c:
-            return
-
+            return None
         if not c:
             c = self.c
-
         self.output = None  # trick get_line into getting output
         self.get_line()     # updates self.output, ignore returned line
-
         sm = difflib.SequenceMatcher(None, self.old_output, self.output)
         x = sm.find_longest_match(0, len(self.old_output)-1, 0, len(self.output)-1)
-        # print x, len(self.old_output), len(self.output)
-
         ans = self.output[:]
         del ans[x.b:x.b+x.size]
-
         return '\n'.join(ans[:self.first_line])
-
     #@+node:tbrown.20100502155649.5599: *3* get_note
     def get_note(self, c=None):
         """Get all output from the last command"""
@@ -353,7 +334,7 @@ class leoscreen_Controller(object):
         n = p.insertAsLastChild()
         n.h = time.strftime(self.time_fmt)
         n.b = dat
-        c.setChanged(True)
+        c.setChanged()
         c.selectPosition(n)
         c.redraw()
     #@+node:tbrown.20100424115939.5735: *3* show
@@ -406,6 +387,7 @@ class leoscreen_Controller(object):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         out, err = proc.communicate()
+        out = out.decode('utf-8')
 
         screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i]
                    for i in out.split('\n') if i.startswith('\t')]

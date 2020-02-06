@@ -53,22 +53,10 @@ Installing Leo on Windows
 
 Install Python and Qt, as described above.
 
-Now you have a choice.  You can use Leo's binary (single-click) installer
-or download Leo's sources directly.
-
-1. Using the single-click installer
-
-Leo has a binary installer for Windows, available at
-http://sourceforge.net/projects/leo/files/Leo/ The binary installer
-installs Leo and sets Windows file associations.
-
-2. Installing from sources
-
 You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unpack them
 into a temp folder. You may place the sources anywhere you like, including
-Python's *site-packages* folder, for example,
-C:\Python26\Lib\site-packages.
+Python's *site-packages* folder, for example, C:\Python36\Lib\site-packages.
 
 
 Running Leo

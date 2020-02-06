@@ -81,7 +81,7 @@ def onCreate (tag, keywords):
 
     c.frame.menu.createMenuEntries(menu,table,dynamicMenu=True)
 #@+node:ekr.20050301083306.6: ** class controller
-class controller(object):
+class controller:
 
     #@+others
     #@+node:ekr.20050301083306.7: *3* ctor
@@ -158,7 +158,7 @@ class controller(object):
             if dossiers:
                 for d in dossiers:
                     compteurglobal = self.importDir(d,compteurglobal)
-            c.setChanged(True)
+            c.setChanged()
             #sélectionne le noeud parent
             c.selectPosition(current)
         except Exception:

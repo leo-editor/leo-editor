@@ -52,11 +52,11 @@ def init():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() in ('qt', 'qttabs')
     if ok:
-        ### g.registerHandler('after-create-leo-frame', onCreate)
+        # g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20170128213103.8: ** class Demo
-class Demo(object):
+class Demo:
     #@+others
     #@+node:ekr.20170128213103.9: *3* demo.__init__ & init_*
     def __init__(self, c, trace=False):
@@ -96,8 +96,6 @@ class Demo(object):
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
-        self.trace = trace
-            # True: enable traces in k.masterKeyWidget.
         self.user_dict = {}
             # For use by scripts.
         self.widgets = []
@@ -112,8 +110,6 @@ class Demo(object):
         old_demo = getattr(g.app, 'demo', None)
         if old_demo:
             old_demo.delete_all_widgets()
-            if self.trace: g.trace('deleting old demo:',
-                old_demo.__class__.__name__)
         g.app.demo = self
     #@+node:ekr.20170208124125.1: *4* demo.init_namespace
     def init_namespace(self):
@@ -143,7 +139,6 @@ class Demo(object):
         # Add most ivars.
         for key, value in self.namespace.items():
             if not hasattr(self, key) and key not in 'cgp':
-                # g.trace('SET', key, value)
                 setattr(self, key, value)
     #@+node:ekr.20170128222411.1: *3* demo.Control
     #@+node:ekr.20170207090715.1: *4* demo.bind
@@ -153,7 +148,6 @@ class Demo(object):
             g.trace('redefining', name)
             g.printDict(self.namespace)
         self.namespace [name] = object_
-        # g.trace(name, object_, object_.__init__)
         return object_
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
@@ -193,15 +187,11 @@ class Demo(object):
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self, chain=True, wait=None):
         '''Execute the next demo script, or call end().'''
-        trace = False
-        # g.trace(chain, g.callers(2), self.c.p.h)
         if wait is not None:
             self.wait(wait)
         if self.script_i < len(self.script_list):
             # Execute the next script.
             script = self.script_list[self.script_i]
-            if trace:
-                self.print_script(script)
             self.script_i += 1
             self.setup_script()
             self.exec_node(script)
@@ -225,13 +215,8 @@ class Demo(object):
             self.script_i += 1
                 # Restore invariant, and make net change = -1.
             self.teardown_script()
-        elif self.trace:
-            g.trace('no previous script')
 
     prev_command = prev
-
-    # def prev_command(self):
-        # self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
@@ -347,7 +332,6 @@ class Demo(object):
                     # Experimental: allow escapes.
         if lines:
             aList.append(''.join(lines))
-        # g.trace('===== delim', delim) ; g.printList(aList)
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
     def key_wait(self, speed=None, n1=None, n2=None):
@@ -413,9 +397,8 @@ class Demo(object):
         path = g.os_path_finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
-        else:
-            g.trace('does not exist: %s' % (path))
-            return None
+        g.trace('does not exist: %s' % (path))
+        return None
     #@+node:ekr.20170211045726.1: *3* demo.Keys
     #@+node:ekr.20170128213103.11: *4* demo.body_keys
     def body_keys(self, s, speed=None, undo=False):
@@ -443,9 +426,8 @@ class Demo(object):
         w = tree.edit_widget(p)
         if undo:
             undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
-            dirtyVnodeList = p.setDirty()
-            c.undoer.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList)
+            p.setDirty()
+            c.undoer.afterChangeNodeContents(p, undoType, undoData)
         for ch in s:
             p.h = p.h + ch
             tree.repaint() # *not* tree.update.
@@ -477,16 +459,16 @@ class Demo(object):
     #@+node:ekr.20170128213103.39: *4* demo.new_key_event
     def new_key_event(self, shortcut, w):
         '''Create a LeoKeyEvent for a *raw* shortcut.'''
+        # pylint: disable=literal-comparison
         # Using the *input* logic seems best.
         event = self.filter_.create_key_event(
             event=None,
             c=self.c,
             w=w,
-            ch=shortcut if len(shortcut) is 1 else '',
+            ch=shortcut if len(shortcut) == 1 else '',
             tkKey=None,
             shortcut=shortcut,
         )
-        # g.trace('%10r %r' % (shortcut, event))
         return event
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
@@ -553,21 +535,20 @@ class Demo(object):
         '''Return the x, y, width, height coordinates of p, for use by demo.set_geometry.'''
         tree = self.c.frame.tree
         item = tree.position2itemDict.get(p.key())
-        if item:
-            treeWidget = tree.treeWidget
-            w = treeWidget.itemWidget(item, 0)
-            if w:
-                geom = w.geometry()
-            else:
-                # Create a temp edit item
-                treeWidget.editItem(item)
-                w = treeWidget.itemWidget(item, 0)
-                geom = w.geometry()
-                # End the editing.
-                treeWidget.closeEditor(w, QtWidgets.QAbstractItemDelegate.NoHint)
-            return geom.x(), geom.y(), geom.width(), geom.height()
-        else:
+        if not item:
             return None
+        treeWidget = tree.treeWidget
+        w = treeWidget.itemWidget(item, 0)
+        if w:
+            geom = w.geometry()
+        else:
+            # Create a temp edit item
+            treeWidget.editItem(item)
+            w = treeWidget.itemWidget(item, 0)
+            geom = w.geometry()
+            # End the editing.
+            treeWidget.closeEditor(w, QtWidgets.QAbstractItemDelegate.NoHint)
+        return geom.x(), geom.y(), geom.width(), geom.height()
     #@+node:ekr.20170210232228.1: *4* demo.get/set_top_geometry/size
     def get_top_geometry(self):
         top = self.c.frame.top
@@ -586,10 +567,6 @@ class Demo(object):
     def set_top_size(self, height, width):
         top = self.c.frame.top
         widget = getattr(top, 'leo_master', None) or top
-        # if isinstance(size, (QtCore.QSize, QtCore.QRect)):
-            # w, h = size.width(), size.height()
-        # else:
-            # w, h = size
         r = self.get_top_geometry()
         r.setHeight(height)
         r.setWidth(width)
@@ -693,13 +670,12 @@ class Demo(object):
         '''Convert obj to an int, if needed.'''
         if isinstance(obj, int):
             return obj
-        else:
-            try:
-                return int(obj)
-            except ValueError:
-                g.es_exception()
-                g.trace('bad x position', repr(obj))
-                return None
+        try:
+            return int(obj)
+        except ValueError:
+            g.es_exception()
+            g.trace('bad x position', repr(obj))
+            return None
     #@+node:ekr.20170213145241.1: *4* demo.get/set_ratios
     def get_ratios(self):
         '''Return the two pane ratios.'''
@@ -756,7 +732,7 @@ class Label (QtWidgets.QLabel):
         '''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QLabel.__init__(self, text, parent)
+        super().__init__(text, parent)
         # w.setWordWrap(True)
         self.init(font, position, stylesheet)
         w.show()
@@ -791,7 +767,7 @@ class Arrow(Label):
                 background: transparent;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
+        super().__init__(text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
@@ -809,8 +785,11 @@ class Callout(Label):
                 background-color : lightblue;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
-                position=position, stylesheet=stylesheet)
+        super().__init__(text,
+            font=font,
+            pane=pane,
+            position=position,
+            stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
@@ -821,7 +800,7 @@ class Image (QtWidgets.QLabel):
         '''Image.__init__.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QLabel.__init__(self, parent=parent)
+        super().__init__(parent=parent)
         self.init_image(fn, magnification, position, size)
         w.show()
         demo.widgets.append(w)
@@ -837,7 +816,8 @@ class Image (QtWidgets.QLabel):
             return
         pixmap = QtGui.QPixmap(fn)
         if not pixmap:
-            return g.trace('Not a pixmap:', fn)
+            g.trace('Not a pixmap:', fn)
+            return
         if magnification:
             if size:
                 h, w = size
@@ -869,7 +849,7 @@ class Text (QtWidgets.QPlainTextEdit):
         '''Pop up a QPlainTextEdit in the indicated pane.'''
         demo, w = g.app.demo, self
         parent = demo.pane_widget(pane)
-        QtWidgets.QPlainTextEdit.__init__(self, text.rstrip(), parent=parent)
+        super().__init__(text.rstrip(), parent=parent)
         self.init(font, position, size, stylesheet)
         w.show()
         demo.widgets.append(self)
@@ -914,7 +894,7 @@ class Title(Label):
                 background-color : mistyrose;
                 color : black;
             }'''
-        Label.__init__(self, text, font=font, pane=pane,
+        super().__init__(text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
         demo.set_position(w, position or

@@ -42,7 +42,7 @@ class FormMutt(fmForm.FormBaseNew):
 
     #@+node:ekr.20170428084207.253: *3* create
     def create(self):
-        ### MAXY, MAXX    = self.lines, self.columns
+
         MAXY = self.lines
 
         self.wStatus1 = self.add(self.__class__.STATUS_WIDGET_CLASS,  rely=0,
@@ -85,7 +85,6 @@ class FormMutt(fmForm.FormBaseNew):
     #@+node:ekr.20170428084207.255: *3* resize
     def resize(self):
         super(FormMutt, self).resize()
-        ### MAXY, MAXX    = self.lines, self.columns
         MAXY = self.lines
         self.wStatus2.rely = MAXY-2-self.BLANK_LINES_BASE
         self.wCommand.rely = MAXY-1-self.BLANK_LINES_BASE

@@ -18,8 +18,7 @@ class Lua_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Lua_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'lua',
             state_class = Lua_ScanState,
@@ -44,19 +43,13 @@ class Lua_Importer(Importer):
     #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
-        trace = False # and g.unitTesting
-        if trace:
-            g.trace(new_state)
-            g.printList(stack)
         assert len(stack) > 1 # Fail on entry.
-        # function/end's are strictly nested, so this suffices.
+            # function/end's are strictly nested, so this suffices.
         stack.pop()
         # Restore the guard entry if necessary.
         if len(stack) == 1:
-            if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
         assert len(stack) > 1 # Fail on exit.
-        if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
     def ends_block(self, i, lines, new_state, prev_state, stack):
         '''True if line ends the block.'''
@@ -69,8 +62,7 @@ class Lua_Importer(Importer):
             if self.start_stack:
                 top = self.start_stack.pop()
                 return top == 'function'
-            else:
-                g.trace('unmatched "end" statement at line', i)
+            g.trace('unmatched "end" statement at line', i)
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
     def gen_lines(self, s, parent):
@@ -78,7 +70,6 @@ class Lua_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False # and g.unitTesting
         tail_p = None
         self.tail_lines = []
         prev_state = self.state_class()
@@ -90,7 +81,6 @@ class Lua_Importer(Importer):
         for i, line in enumerate(lines):
             new_state = self.scan_line(line, prev_state)
             top = stack[-1]
-            if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
             elif line.isspace() and delete_blank_lines and not prev_state.context:
@@ -122,7 +112,6 @@ class Lua_Importer(Importer):
 
     def get_new_dict(self, context):
         '''The scan dict for the lua language.'''
-        trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert comment
 
@@ -171,12 +160,10 @@ class Lua_Importer(Importer):
                 add_key(d, comment, ('all', comment, '', None))
             if block1 and block2:
                 add_key(d, block1, ('len', block1, block1, None))
-        if trace: g.trace('created %s dict for %4r state ' % (self.name, context))
         return d
     #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
         if hasattr(new_state, 'in_context'):
             assert not new_state.in_context(), ('start_new_block', new_state)
         line = lines[i]
@@ -189,9 +176,6 @@ class Lua_Importer(Importer):
             self.prepend_lines(child, self.tail_lines)
             self.tail_lines = []
         stack.append(Target(child, new_state))
-        if trace:
-            g.trace('=====', repr(line))
-            g.printList(stack)
     #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
     function_pattern = re.compile(r'^(local\s+)?function')
         # Buggy: this could appear in a string or comment.

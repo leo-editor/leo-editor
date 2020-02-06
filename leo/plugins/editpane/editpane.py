@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
-'''Support for the edit-pane-test-open command and window.'''
+#@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
+"""Support for the edit-pane-test-open command and window."""
 #@+<<editpane.py imports>>
-#@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
+#@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
 import leo.core.leoGlobals as g
-
+import leo.core.signal_manager as sig
 try:
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
@@ -12,26 +12,12 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-
-import os
-
 from collections import defaultdict
-
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    StringTypes = str
-else:
-    from types import StringTypes
-
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
-
-if g.isPython3:
-    from importlib import import_module
-
-import leo.core.signal_manager as sig
-
+from importlib import import_module
+import os
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
@@ -52,6 +38,7 @@ def edit_pane_test_open(event):
 
     if not hasattr(c, '__edit_pane_test'):
         c.__edit_pane_test = True
+
         class MinimalDemoProvider:
             def ns_provides(self):
                 return [("Demo editor", "__demo_provider_minimal_slider")]
@@ -62,6 +49,7 @@ def edit_pane_test_open(event):
                 return None
             def ns_provider_id(self):
                 return "__demo_provider_minimal"
+
         c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
 
     s = c.free_layout.get_top_splitter()
@@ -101,7 +89,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.setAttribute(QtConst.WA_DeleteOnClose)
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
-        if isinstance(lep_type, StringTypes):
+        if isinstance(lep_type, str):
             lep_type = [lep_type]
         if len(lep_type) < 2:
             lep_type.append('TEXT')
@@ -199,16 +187,10 @@ class LeoEditPane(QtWidgets.QWidget):
         :param dict keywords: c, p, etc.
         :return: None
         """
-
         p = self.c.vnode2position(v)
-
         DBG("after body key")
-
         #X if self.update:
         self.update_position(p)
-
-        return None
-
     #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node
@@ -252,7 +234,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
     #@+node:tbrown.20171028115438.11: *3* _find_gnx_node
     def _find_gnx_node(self, gnx):
-        '''Return the first position having the given gnx.'''
+        """Return the first position having the given gnx."""
         if self.c.p.gnx == gnx:
             return self.c.p
         for p in self.c.all_unique_positions():
@@ -313,7 +295,7 @@ class LeoEditPane(QtWidgets.QWidget):
             lambda checked: self.mode_menu())
 
         # misc. menu
-        btn = self.control_menu_button = QtWidgets.QPushButton(u"More\u25BE", self)
+        btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
         self.control.layout().addWidget(btn)
         btn.setContextMenuPolicy(QtConst.CustomContextMenu)
         btn.customContextMenuRequested.connect(  # right click
@@ -430,18 +412,10 @@ class LeoEditPane(QtWidgets.QWidget):
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
-                if g.isPython3:
-                    modules.append(import_module('leo.plugins.editpane.'+name))
-                else:
-                    try:
-                        exec ( "import %s" % name )  # parens for Python 3 syntax
-                        modules.append(locals()[name])
-                    except Exception:
-                        pass
+                modules.append(import_module('leo.plugins.editpane.'+name))
                 DBG("Loaded module: %s" % name)
-            except ImportError as err:
-                DBG("Module not loaded (unmet dependencies?): %s" % name)
-
+            except ImportError as e:
+                DBG(f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)
@@ -629,7 +603,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         """
         self.mode = mode
-        self.btn_mode.setText(u"%s\u25BE" % mode.title())
+        self.btn_mode.setText("%s\u25BE" % mode.title())
         self.state_changed()
 
     #@+node:tbrown.20171028115438.39: *3* state_changed

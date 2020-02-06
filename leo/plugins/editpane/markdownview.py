@@ -23,9 +23,11 @@ from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 def to_html(text):
     """to_html - convert to HTML
 
-    :param str text: markdown text to convert
-    :return: html
-    :rtype: str
+    Args:
+        text (str): markdown text to convert
+
+    Returns:
+        str: html
     """
 
     return markdown.markdown(
@@ -54,7 +56,8 @@ class LEP_MarkdownView(HtmlView):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setHtml(to_html(text))
 
@@ -62,7 +65,8 @@ class LEP_MarkdownView(HtmlView):
     def update_text(self, text):
         """update_text - update for current text
 
-        :param str text: current position
+        Args:
+            text (str): current position
         """
         # h = self.horizontalScrollBar().value()
         # v = self.verticalScrollBar().value()
@@ -90,7 +94,8 @@ class LEP_MarkdownHtmlView(TextView):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setPlainText(to_html(text))
 

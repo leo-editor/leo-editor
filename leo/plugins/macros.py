@@ -85,7 +85,6 @@ __version__ = "2.0" # BobS & EKR.
 #@-<< version history >>
 import leo.core.leoGlobals as g
 import re
-import pprint
 #@+others
 #@+node:ekr.20070302121133: ** init
 def init ():
@@ -101,21 +100,19 @@ def onCreate(tag,keywords):
     if c:
         ParamClass(c)
 #@+node:ekr.20040916091520.2: ** class ParamClass
-class ParamClass(object):
+class ParamClass:
 
     #@+others
     #@+node:ekr.20040916091520.3: *3* __init__
     def __init__ (self,c):
         '''Ctor for ParamClass.'''
         self.c = c
-        # self.pattern = g.angleBrackets(r'\w*?\(([^,]*?,)*?([^,])+?\)') + '$'
         self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
-        # g.trace("self.pattern: %s" % self.pattern)
         self.regex = re.compile(self.pattern)
         self.addMenu() # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* parameterize
     def parameterize (self,event=None):
-        trace = False and not g.unitTesting
+
         c = self.c
         w = c.frame.body.wrapper
         # EKR: always search for parms.
@@ -123,20 +120,17 @@ class ParamClass(object):
         if not params:
             return
         sr = s = w.getAllText()
-        if trace: g.trace("body: %s" % sr)
         sr = sr.split('\n')
         i = w.getInsertPoint()
         row,col = g.convertPythonIndexToRowCol(s,i)
         sr = sr[row]
         sr = sr[:col]
         sr = sr.rstrip()
-        if trace: g.trace("regex search on: %s" % sr)
         match = self.regex.search(sr)
         if not match:
             g.es("no match")
             return
         sr = sr [match.start(): match.end()]
-        if trace: g.trace("found sr",sr)
         for child in c.p.children():
             if child.h == sr:
                 return
@@ -146,20 +140,14 @@ class ParamClass(object):
         pieces [1] = pieces [1].rstrip().rstrip('>')
         pieces [1] = pieces [1].rstrip().rstrip(')')
         sections = pieces [1].split(',')
-        if trace: g.trace(
-            "pieces: %s\n" % (pprint.pformat(pieces)),
-            "searchline: %s\n" % (searchline),
-            "sections: %s\n" % (pprint.pformat(sections)))
         node = None
         for child in params.children():
             if child.matchHeadline(searchline):
                 node = child
                 break
         else:
-            if trace: g.trace('not found',searchline)
             return
         c.setCurrentPosition(node)
-        if trace: g.trace("found: %s'\n%s" % (node.h,node.b))
         for i, section in enumerate(sections):
             p = c.p.insertAsNthChild(i)
             p.b = section
@@ -168,13 +156,10 @@ class ParamClass(object):
     #@+node:ekr.20040916084945.2: *3* findParameters
     def findParameters (self,p):
         '''Find the parameterized nodes in p's parents..'''
-        trace = False and not g.unitTesting
         tag = "parameterized nodes"
         for parent in p.parents():
-            if trace: g.trace('parent:',parent.h)
             for sib in parent.self_and_siblings():
                 if sib.h.lower() == tag:
-                    if trace: g.trace('found:',sib.h)
                     return sib
         g.es('not found',tag)
         return None

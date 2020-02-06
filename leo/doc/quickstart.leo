@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
-	<global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
+<leo_header file_format="2"/>
+<globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ekr.20090628091852.6030"><vh>Startup</vh>
 <v t="ville.20090627211608.5783"><vh>@chapters</vh></v>
 <v t="ekr.20090628091852.6031"><vh>@settings</vh>
 <v t="ekr.20090628091852.8471"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20090628092246.4267"><vh>@int page_width = 60</vh></v>
+<v t="ekr.20180410083042.1"><vh>@bool body_pane_wraps = True</vh></v>
+<v t="mhw.20181210131031.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 </v>
 <v t="ekr.20090628092604.1829"><vh>change log</vh></v>
 </v>
-<v t="ville.20090627211608.5782"><vh>Welcome to Leo!</vh></v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
 <v t="ville.20090630234425.12394"><vh>Programming</vh>
 <v t="ville.20090627211608.10118"><vh>External files</vh>
-<v t="ville.20090627211608.10116"><vh>Thin nodes (explanation &amp; exercise)</vh>
+<v t="ville.20090627211608.10116"><vh>\@file (explanation &amp; exercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
-<v t="ville.20090627211608.10117"><vh>@@thin myfile_thin.py</vh>
+<v t="ville.20090627211608.10117"><vh>@@file myfile_file.py</vh>
 <v t="ville.20090627211608.10120"><vh>imports &amp; setup routines</vh>
 <v t="ville.20090627211608.10127"><vh>imports</vh></v>
 <v t="ville.20090627211608.10128"><vh>init1, init2</vh></v>
@@ -36,7 +35,22 @@
 </v>
 </v>
 </v>
-<v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
+<v t="ekr.20180410082027.1"><vh>\@clean</vh>
+<v t="ekr.20180410082058.2"><vh>@path ~</vh>
+<v t="ekr.20180410082058.3"><vh>@@clean myfile_clean.py</vh>
+<v t="ekr.20180410082058.4"><vh>imports &amp; setup routines</vh>
+<v t="ekr.20180410082058.5"><vh>imports</vh></v>
+<v t="ekr.20180410082058.6"><vh>init1, init2</vh></v>
+</v>
+<v t="ekr.20180410082058.7"><vh>class Foo</vh>
+<v t="ekr.20180410082058.8"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20180410082058.9"><vh>spam</vh></v>
+<v t="ekr.20180410082058.10"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ville.20090627211608.10129"><vh>\@auto</vh>
 <v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
 <v t="ekr.20130916065121.11556"><vh>myfile_auto declarations</vh></v>
@@ -49,7 +63,7 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701175849.1532"><vh>Shadow nodes</vh>
+<v t="ville.20090701175849.1532"><vh>\@shadow</vh>
 <v t="ville.20090701175849.1542"><vh>@path ~</vh>
 <v t="ville.20090701175849.1543"><vh>@@shadow myfile_shadow.py</vh>
 <v t="ville.20090701175849.1544"><vh>imports &amp; setup routines</vh>
@@ -79,17 +93,10 @@
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
 <v t="ekr.20160429174727.1"><vh>Creating Windows file associations</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>\@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
-<v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
-<v t="ville.20090806210322.1436"><vh>default look (Linux)</vh>
-<v t="ville.20090806210322.1439"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ville.20090806210322.1437"><vh>A mac look</vh>
-<v t="ville.20090806210322.1440"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-</v>
+<v t="ville.20090806210322.1435"><vh>Themes</vh></v>
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
 <v t="ville.20120303151721.3838"><vh>@bool use_body_focus_border = False</vh></v>
@@ -109,8 +116,8 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you
-can usually ignore.</t>
+<t tx="ekr.20090628091852.6030">This node contains settings and other "machinery" that you can usually ignore.
+</t>
 <t tx="ekr.20090628091852.6031"></t>
 <t tx="ekr.20090628091852.8471"></t>
 <t tx="ekr.20090628092246.4267">The page width for wrapping doc parts in derived files.
@@ -180,28 +187,62 @@ And put this leo.bat in %PATH%::
     
 You may omit the /b option if you want to create a separate console window for Leo.
 </t>
-<t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
-(ctrl+s) to create an **external file** which is directly
-usable outside leo. Try opening the resulting myfile.py in a
-normal text editor (e.g. from right-click menu on the @thin
-node) to see what it looks like.
+<t tx="ekr.20180410082027.1">In this tree, you can experiment with @clean. It combines the benefits of @file and @auto. That is, it publishes a file without sentinels, but still allows the tree structure to survive, even if the external file is edited outside Leo.
+
+Experiment by editing the external file outside Leo and doing Right click
+-&gt; refresh from disk on the @clean node. </t>
+<t tx="ekr.20180410082058.10">def eggs(self):
+    pass</t>
+<t tx="ekr.20180410082058.2"></t>
+<t tx="ekr.20180410082058.3">@language python
+@nowrap
+@others
+</t>
+<t tx="ekr.20180410082058.4"></t>
+<t tx="ekr.20180410082058.5">import os
+import sys
+
+</t>
+<t tx="ekr.20180410082058.6">def init1():
+    print("init1")
+
+def init2():
+    print("init2")</t>
+<t tx="ekr.20180410082058.7">class Foo:
+    &lt;&lt; docstring &gt;&gt;
+    @others
+
+
+</t>
+<t tx="ekr.20180410082058.8">""" Some sort of useful class """
+
+</t>
+<t tx="ekr.20180410082058.9">def spam(self):
+    pass
+
+</t>
+<t tx="ekr.20180410083042.1"></t>
+<t tx="mhw.20181210131031.1">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
+    
+False: (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.</t>
+<t tx="ville.20090627211608.10116">Remove the first @ from @file in the subtree below and save (ctrl+s) to create an **external file** which is directly usable outside leo. Try opening the resulting myfile.py in a normal text editor (e.g. from right-click menu on the @file node) to see what it looks like.
 
 Note the @others directive, and the the lines that look like
 
 #@-node:ville.20090627211608.10122:class Foo
 
-These are called **sentinels**. They are needed to preserve
-the tree structure in the external files. They allow your
-tree structure to survive, even when someone else edits the
-source (or you edit it yourself in an external editor).
+These are called **sentinels**. They are needed to preserve the tree structure in the external files. They allow your tree structure to survive, even when someone else edits the source (or you edit it yourself in an external editor).
 </t>
 <t tx="ville.20090627211608.10117">@language python
 @others
 </t>
-<t tx="ville.20090627211608.10118">An **External file*** is a file that resides on your file
-system. If you are programming, these are the files you
-eventually want to create to get something useful out of
-Leo, for example, your C++ or Python source code files.</t>
+<t tx="ville.20090627211608.10118">An **External file*** is a file that resides on your file system. If you are programming, these are the files you eventually want to create to get something useful out of Leo, for example, your C++ or Python source code files.
+</t>
 <t tx="ville.20090627211608.10119"> </t>
 <t tx="ville.20090627211608.10120"></t>
 <t tx="ville.20090627211608.10122">class Foo:
@@ -224,15 +265,9 @@ import sys
 
 def init2():
     print("init2")</t>
-<t tx="ville.20090627211608.10129">If the sentinels in thin nodes are unacceptable for your workflow 
-(typically the case when you are the only one using Leo in a 
-particular project), you can use @auto nodes to "play well with 
-others". @auto nodes understand the structure of the source code
-(parsers exist for popular languages), and create the "typical"
-outline for the code when the file is loaded. When you save, the outline is 
-written back.
+<t tx="ville.20090627211608.10129">If the sentinels in @file nodes are unacceptable for your workflow (typically the case when you are the only one using Leo in a particular project), you can use @auto nodes to "play well with others". @auto nodes understand the structure of the source code (parsers exist for popular languages), and create the "typical" outline for the code when the file is loaded. When you save, the outline is written back.
 
-Do the same thing you did with @@thin - i.e., 
+Do the same thing you did with @@file - i.e., 
 
 - Remove the first @, and save. 
 - Check the resulting file (`/myfile_auto.py) and observe that it has 
@@ -242,23 +277,14 @@ Do the same thing you did with @@thin - i.e.,
   this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
-<t tx="ville.20090627211608.5782">This is a brief tutorial for getting familiar with basic Leo
-functionality. Click around and experiment.
+<t tx="ville.20090627211608.5782">This is a brief tutorial for getting familiar with basic Leo functionality. Click around and experiment.
 
-Note that you probably want to save your own "working copy"
-of this file before proceeding further. Do that by "File -&gt;
-Save as".
+Note that you probably want to save your own "working copy" of this file before proceeding further. Do that by "File -&gt; Save as".
 
-This guide is intentionally quite brief and minimal -
-therefore, it merely scratches the surface of what Leo can
-do. You can begin leveraging Leo for mindmapping-like tasks
-by just reading the node "Tree manipulation basics", and
-moving on to other topics after acquiring some basic
-familiarity.
+This guide is intentionally quite brief and minimal - therefore, it merely scratches the surface of what Leo can do. You can begin leveraging Leo for mindmapping-like tasks by just reading the node "Tree manipulation basics", and moving on to other topics after acquiring some basic familiarity.
 </t>
 <t tx="ville.20090627211608.5783"></t>
-<t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
-some of the commands from the Outline menu:
+<t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with some of the commands from the Outline menu:
 
 - Click the expansion box of nodes_ to show and hide their
   children.
@@ -293,14 +319,12 @@ some of the commands from the Outline menu:
 - To edit the headline, use press ``Ctrl+H``. This works
   regardless of whether body or headline has focus.
 
-You enter `body text` for any node by selecting the node's
-headline in the outline pane and then typing in the body
-pane. Leo has a full range of `editing commands` that apply
-to the body pane.
+You enter `body text` for any node by selecting the node's headline in the outline pane and then typing in the body pane. Leo has a full range of `editing commands` that apply to the body pane.
 
 See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090630145410.1509">@language python
 @tabwidth -4
+@nowrap
 @others
 </t>
 <t tx="ville.20090630145410.1514">""" Some sort of useful class """
@@ -316,13 +340,9 @@ Create the file first:
   - Navigate to ~/.leo
   - save as myLeoSettings.leo
 
-In the current tree, there is @@settings subtree. We are
-copying this to the new file. Go to node @@settings, and
-copy the whole tree to clipboard (ctrl+shift+c).
+In the current tree, there is @@settings subtree. We are copying this to the new file. Go to node @@settings, and copy the whole tree to clipboard (ctrl+shift+c).
   
-Select the document that has myLeoSettings.leo (the one you
-just created). Drop the settings tree there (ctrl+shift+v),
-Remove extra @ from @@settings, and save again.
+Select the document that has myLeoSettings.leo (the one you just created). Drop the settings tree there (ctrl+shift+v), Remove extra @ from @@settings, and save again.
 
 Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings.leo
 </t>
@@ -332,19 +352,15 @@ Now, you should be all set. Verify that it worked by Help-&gt;open myLeoSettings
 g.es('Homedir is at ',g.app.homeLeoDir)
 
 </t>
-<t tx="ville.20090701175849.1532">In this tree, you can experiment with @shadow. It combines the benefits
-of @thin and @auto - namely, it publishes a file without sentinels, but
-still allows the tree structure to survive, even if the external file
-is edited outside Leo.
+<t tx="ville.20090701175849.1532">In this tree, you can experiment with @shadow. Like @clean, it publishes files without sentinels. However, @clean saves reference data in the outline itself, while @shadow creates a "shadow file" that remembers the structure.
 
-The cost is complexity; @shadow relies on a "shadow file" that remembers
-the structure, and a sophisticated diff/patch algorithm that merges
-the changes from the external file to the tree structure.
+My advice is to use @clean rather than @shadow in most cases.
 
 Experiment by editing the external file outside Leo and doing Right click
 -&gt; refresh from disk on the @shadow node. </t>
 <t tx="ville.20090701175849.1542"></t>
 <t tx="ville.20090701175849.1543">@language python
+@nowrap
 @others
 </t>
 <t tx="ville.20090701175849.1544"></t>
@@ -372,40 +388,21 @@ def init2():
 </t>
 <t tx="ville.20090701175849.1550">def eggs(self):
     pass</t>
-<t tx="ville.20090701182804.1550">Press ctrl + F to enter "minibuffer find" mode. Press F3 to
-"find again".
+<t tx="ville.20090701182804.1550">Press ctrl + F to enter "minibuffer find" mode. Press F3 to "find again".
 
-For large scale searches (classic "find in files"
-functionality for the whole tree), look for the "Nav" tab in
-the log pane (in upper right of the screen). Enter your
-search string and press enter, then click on the matches.
+For large scale searches (classic "find in files" functionality for the whole tree), look for the "Nav" tab in the log pane (in upper right of the screen). Enter your search string and press enter, then click on the matches.
 
 You can also activate the "Nav" functionality with ctrl+shift+f.
 
-To perform find-and replace, press ctrl-f, enter the text
-to search, then press ctrl+shift+r, and enter the text to replace
-the matches with, and press Enter.
+To perform find-and replace, press ctrl-f, enter the text to search, then press ctrl+shift+r, and enter the text to replace the matches with, and press Enter.
 
-To limit the replace operations to particular external file,
-you can use your external editor. That is, right click on
-the @thin node (say, @thin myfile.py), choose "Edit
-myfile.py in MYEDITOR", and perform the necessary operations.
-After that, right click on the node and choose "Refresh from 
-disk".
+To limit the replace operations to particular external file, you can use your external editor. That is, right click on the @file node (say, @file myfile.py), choose "Edit myfile.py in MYEDITOR", and perform the necessary operations. After that, right click on the node and choose "Refresh from disk".
 </t>
-<t tx="ville.20090701182804.1551">The minibuffer is the text input area at the bottom of the
-screen, familiar to users of emacs and vi.
+<t tx="ville.20090701182804.1551">The minibuffer is the text input area at the bottom of the screen, familiar to users of emacs and vi.
 
-Press alt-x to enter a minibuffer command (e.g. alt-x
-fill-paragraph). Press ctrl+p (repeat-complex-command)
-folowed by Enter to re-run a previous minibuffer command.</t>
-<t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html)
-is an efficient way of authoring documentation as plain text.
-Leo provides first-class support for RST authoring, including 
-the unique feature of representing RST outline structure
-as Leo tree. You can find an example in the tree below - again,
-just remove the first @ character from @@auto-rst and save,
-opening the external file afterwards.
+Press alt-x to enter a minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p (repeat-complex-command) followed by Enter to re-run a previous minibuffer command.
+</t>
+<t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html) is an efficient way of authoring documentation as plain text. Leo provides first-class support for RST authoring, including the unique feature of representing RST outline structure as Leo tree. You can find an example in the tree below - again, just remove the first @ character from @@auto-rst and save, opening the external file afterwards.
 </t>
 <t tx="ville.20090701184416.1555"></t>
 <t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e65733171036802752e">@language rest
@@ -422,7 +419,7 @@ opening the external file afterwards.
 </t>
 <t tx="ville.20090703222440.1472">More text in other chapter.</t>
 <t tx="ville.20090708172716.16846">horizontal: body pane to the left
-vertical: body pane on the botton
+vertical: body pane on the bottom.
 
 vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
 <t tx="ville.20090728003644.3957"># Leo loads plugins in the order they appear here.
@@ -565,306 +562,30 @@ viewrendered.py
 </t>
 <t tx="ville.20090806182306.6324">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
-<t tx="ville.20090806210322.1435">This tree containt some suggested "looks" for Leo.
+<t tx="ville.20090806210322.1435">To enable a theme .leo file, put the following setting in myLeoSettings.leo::
 
-To experiment, you may want to use a @button that applies
-the stylesheet in current node; look for "@button set-style-sheet" 
-in scripts.leo.
+    @string theme-name = &lt;theme file, without the .leo extension&gt;
 
-For information on stylesheets, see
+The leo/themes folder contains the actual themes files.
 
-http://doc.trolltech.com/stylesheet.html
-
-Style contributions are welcome.</t>
-<t tx="ville.20090806210322.1436">Classic Leo colors. This should look good on Linux.</t>
-<t tx="ville.20090806210322.1437">This is the classic Leo look, but with fonts that
-allegedly look better on Mac.</t>
-<t tx="ville.20090806210322.1439">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
-
-To experiment, you may want to use a @button that applies
-the current stylesheet; look for "@button set-style-sheet" in
-scripts.leo.
-
-*/
-
-/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
-
-/* A QWidget: supports only background attributes.*/
-
-QSplitter::handle {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The log panes */
-QTextEdit {
-    background-color: #f2fdff;
-    selection-color: white;
-    selection-background-color: blue;
-    /* font-family: Courier New; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The body pane */
-QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* Editor labels */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-
-/* The mini-buffer */
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#status1 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-XXQPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-</t>
-<t tx="ville.20090806210322.1440">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
-
-/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
-
-/* A QWidget: supports only background attributes.*/
-
-QSplitter::handle {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The log panes */
-QTextEdit {
-    background-color: #f2fdff;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: Monaco;
-    font-size: 10px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The body pane */
-QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: Monaco;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel {
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* Editor labels */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-
-/* The mini-buffer */
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: Monaco;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#status1 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-XXQPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}</t>
+Leo's open-theme-file command will prompt you for a theme file, then open that file in a separate process so you can see it in action.</t>
 <t tx="ville.20091008194838.3931"># Add commands to contextmenu
 # The format is &lt;command&gt; SPACE &lt;description&gt;
 
 # stickynote Create a sticky note
 # read-at-file-nodes Read file node</t>
-<t tx="ville.20101221125548.2199">Eventually, you will want to add extra functionality to your
-Leo documents. There are a few simple ways, and unlimited 
-power for advanced users.
+<t tx="ville.20101221125548.2199">Eventually, you will want to add extra functionality to your Leo documents. There are a few simple ways, and unlimited power for advanced users.
 
-For more information, see CheatSheat.leo. You can open it
-with the leo-cheat-sheet command.
-
+For more information, see CheatSheat.leo. You can open it with the leo-cheat-sheet command.
 </t>
-<t tx="ville.20101221131940.2204">You can write scripts in your document trees, and execute
-them with ctrl+b. Try it on the child of this node - it
-should display the list of nodes that have a headline
-starting with @ in the log pane.
+<t tx="ville.20101221131940.2204">You can write scripts in your document trees, and execute them with ctrl+b. Try it on the child of this node - it should display the list of nodes that have a headline starting with @ in the log pane.
 
 It will also append the summary as a new node under itself.
 
 </t>
 <t tx="ville.20101221131940.2211">@language python
+@nowrap
+
 # c is "commander", central api object specific to current document 
 
 # get a list of "position" objects
@@ -884,12 +605,9 @@ child.b = "\n".join(res)
 child.h = "Report"
 
 c.redraw()    </t>
-<t tx="ville.20101221131940.2217">You can create buttons in the button bar by adding @button
-nodes to your outline.
+<t tx="ville.20101221131940.2217">You can create buttons in the button bar by adding @button nodes to your outline.
 
-A button does not appear automatically when you add it - you
-need to reopen the document to make it appear.
-
+A button does not appear automatically when you add it - you need to reopen the document to make it appear.
 </t>
 <t tx="ville.20101221131940.2218"># p is current position
 

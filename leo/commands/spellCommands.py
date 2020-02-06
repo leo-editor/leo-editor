@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
 #@@first
-'''Leo's spell-checking commands.'''
+"""Leo's spell-checking commands."""
 
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
@@ -10,25 +10,27 @@ import re
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
     import enchant
 except Exception: # May throw WinError(!)
     enchant = None
 #@-<< imports >>
 
 def cmd(name):
-    '''Command decorator for the SpellCommandsClass class.'''
+    """Command decorator for the SpellCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'spellCommands',])
 #@+others
 #@+node:ekr.20180207071908.1: ** class BaseSpellWrapper
-class BaseSpellWrapper(object):
-    '''Code common to EnchantWrapper and DefaultWrapper'''
+class BaseSpellWrapper:
+    """Code common to EnchantWrapper and DefaultWrapper"""
     # pylint: disable=no-member
     # Subclasses set self.c and self.d
     
     #@+others
     #@+node:ekr.20180207071114.3: *3* spell.add
     def add(self, word):
-        '''Add a word to the user dictionary.'''
+        """Add a word to the user dictionary."""
         self.d.add(word)
     #@+node:ekr.20150514063305.513: *3* spell.clean_dict
     def clean_dict(self, fn):
@@ -46,37 +48,44 @@ class BaseSpellWrapper(object):
                 f.close()
     #@+node:ekr.20180207071114.5: *3* spell.create
     def create(self, fn):
-        '''Create the given file with empty contents.'''
+        """Create the given file with empty contents."""
+        # Make the directories as needed.
         theDir = g.os_path_dirname(fn)
-        g.makeAllNonExistentDirectories(theDir, c=self.c, force=True, verbose=True)
-            # Make the directories as needed.
+        if theDir:
+            ok = g.makeAllNonExistentDirectories(theDir)
+            # #1453: Don't assume the directory exists.
+            if not ok:
+                g.error(f"did not create directory: {theDir}")
+                return
+        # Create the file.
         try:
             f = open(fn, mode='wb')
             f.close()
-            g.note('created: %s' % (fn))
+            g.note(f"created: {fn}")
         except IOError:
-            g.error('can not create: %s' % (fn))
+            g.error(f"can not create: {fn}")
         except Exception:
-            g.error('unexpected error creating: %s' % (fn))
+            g.error(f"unexpected error creating: {fn}")
             g.es_exception()
     #@+node:ekr.20180207072351.1: *3* spell.find_user_dict
     def find_user_dict(self):
-        '''Return the full path to the local dictionary.'''
+        """Return the full path to the local dictionary."""
         c = self.c
-        fn = c.config.getString('enchant_local_dictionary')
-        if not fn:
-            fn = g.os_path_finalize_join(
-                g.app.loadDir,
-                "..", "plugins",
-                'spellpyx.txt',
-            )
-        # Fix bug https://github.com/leo-editor/leo-editor/issues/108
-        if not g.os_path_exists(fn):
-            fn = g.os_path_finalize_join(
-                g.app.homeDir,
-                '.leo',
-                'spellpyx.txt')
-        return fn
+        join = g.os_path_finalize_join
+        table = (
+            c.config.getString('enchant-local-dictionary'),
+                # Settings first.
+            join(g.app.homeDir, '.leo', 'spellpyx.txt'),
+                # #108: then the .leo directory.
+            join(g.app.loadDir, "..", "plugins", 'spellpyx.txt'),
+                # The plugins directory as a last resort.
+        )
+        for path in table:
+            if g.os_path_exists(path):
+                return path
+        g.es_print('Creating ~/.leo/spellpyx.txt')
+        # #1453: Return the default path.
+        return join(g.app.homeDir, '.leo', 'spellpyx.txt')
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word):
         
@@ -90,7 +99,7 @@ class BaseSpellWrapper(object):
         d = self.d
         if not d:
             return None
-        elif d.check(word):
+        if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
         word = ''.join([i for i in word if not i.isdigit()])
@@ -110,12 +119,11 @@ class BaseSpellWrapper(object):
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
             return None
-        else:
-            return d.suggest(word)
+        return d.suggest(word)
     #@-others
 #@+node:ekr.20180207075606.1: ** class DefaultDict (object)
-class DefaultDict(object):
-    '''A class with the same interface as the enchant dict class.'''
+class DefaultDict:
+    """A class with the same interface as the enchant dict class."""
     
     def __init__(self, words=None):
         self.added_words = set()
@@ -125,16 +133,12 @@ class DefaultDict(object):
     #@+others
     #@+node:ekr.20180207075740.1: *3* dict.add
     def add(self, word):
-        '''Add a word to the dictionary.'''
+        """Add a word to the dictionary."""
         self.words.add(word)
         self.added_words.add(word)
     #@+node:ekr.20180207101513.1: *3* dict.add_words_from_dict
     def add_words_from_dict(self, kind, fn, words):
-        '''For use by DefaultWrapper.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.es_print('%6s words in %6s dictionary: %s' % (
-                len(words or []), kind, g.os_path_normpath(fn)))
+        """For use by DefaultWrapper."""
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
@@ -144,7 +148,7 @@ class DefaultDict(object):
         self.ignored_words.add(word)
     #@+node:ekr.20180207080007.1: *3* dict.check
     def check(self, word):
-        '''Return True if the word is in the dict.'''
+        """Return True if the word is in the dict."""
         for s in (word, word.lower(), word.capitalize()):
             if s in self.words or s in self.ignored_words:
                 return True
@@ -153,7 +157,7 @@ class DefaultDict(object):
     def suggest(self, word):
         
         def known(words):
-            '''Return the words that are in the dictionary.'''
+            """Return the words that are in the dictionary."""
             return [z for z in list(set(words)) if z in self.words]
 
         assert not known([word]), repr(word)
@@ -162,7 +166,6 @@ class DefaultDict(object):
             known(self.edits2(word))
             # [word] # Fall back to the unknown word itself.
         )
-        # g.trace(word, suggestions)
         return suggestions
     #@+node:ekr.20180207085717.1: *4* dict.edits1 & edits2
     def edits1(self, word):
@@ -217,15 +220,15 @@ class DefaultWrapper(BaseSpellWrapper):
                 self.d.add_words_from_dict(kind, fn, words)
     #@+node:ekr.20180207110701.1: *3* default.add
     def add(self, word):
-        '''Add a word to the user dictionary.'''
+        """Add a word to the user dictionary."""
         self.d.add(word)
         self.d.add(word.lower())
         self.save_user_dict()
     #@+node:ekr.20180207100238.1: *3* default.find_main_dict
     def find_main_dict(self):
-        '''Return the full path to the global dictionary.'''
+        """Return the full path to the global dictionary."""
         c = self.c
-        fn = c.config.getString('main_spelling_dictionary')
+        fn = c.config.getString('main-spelling-dictionary')
         if fn and g.os_path_exists(fn):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
@@ -234,7 +237,7 @@ class DefaultWrapper(BaseSpellWrapper):
         return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words & helper
     def read_words(self, kind, fn):
-        '''Return all the words from the dictionary file.'''
+        """Return all the words from the dictionary file."""
         words = set()
         try:
             with open(fn, 'rb') as f:
@@ -242,11 +245,11 @@ class DefaultWrapper(BaseSpellWrapper):
                 for line in g.splitLines(s):
                     self.add_expanded_line(line, words)
         except Exception:
-            g.es_print('can not open %s dictionary: %s' % (kind, fn))
+            g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
     #@+node:ekr.20180207132550.1: *4* default.add_expanded_line
     def add_expanded_line(self, s, words):
-        '''Add the expansion of line s to the words set.'''
+        """Add the expansion of line s to the words set."""
         s = g.toUnicode(s).strip()
         if not s or s.startswith('#'):
             return
@@ -269,10 +272,10 @@ class DefaultWrapper(BaseSpellWrapper):
       
     #@+node:ekr.20180207110718.1: *3* default.save_dict
     def save_dict(self, kind, fn, trace=False):
-        '''
+        """
         Save the dictionary whose name is given, alphabetizing the file.
         Write added words to the file if kind is 'user'.
-        '''
+        """
         if not fn:
             return
         words = self.read_words(kind, fn)
@@ -283,9 +286,6 @@ class DefaultWrapper(BaseSpellWrapper):
             for word in self.d.added_words:
                 words.add(word)
         aList = sorted(words, key=lambda s: s.lower())
-        if trace:
-            # The clean-*-spell-dict commands set trace = True.
-            print('%s words in %s' % (len(aList), fn))
         f = open(fn, mode='wb')
         s = '\n'.join(aList) + '\n'
         f.write(g.toEncodedString(s))
@@ -315,8 +315,7 @@ class DefaultWrapper(BaseSpellWrapper):
                 ('user', self.user_fn),
             )
         for kind, fn in table:
-            g.es_print('%s dictionary: %s' % (
-                kind, g.os_path_normpath(fn) if fn else 'None'))
+            g.es_print(f"{kind} dictionary: {(g.os_path_normpath(fn) if fn else 'None')}")
     #@-others
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
@@ -340,9 +339,9 @@ class EnchantWrapper(BaseSpellWrapper):
         return enchant.Dict(language)
     #@+node:ekr.20180207072846.1: *3* enchant.init_language
     def init_language(self):
-        '''Init self.language.'''
+        """Init self.language."""
         c = self.c
-        language = g.toUnicode(c.config.getString('enchant_language'))
+        language = g.checkUnicode(c.config.getString('enchant-language'))
         if language:
             try:
                 ok = enchant.dict_exists(language)
@@ -351,17 +350,16 @@ class EnchantWrapper(BaseSpellWrapper):
             if not ok:
                 g.warning('Invalid language code for Enchant', repr(language))
                 g.es_print('Using "en_US" instead')
+                g.es_print('Use @string enchant_language to specify your language')
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
     def open_dict_file(self, fn):
-        '''Open or create the dict with the given fn.'''
-        trace = False and not g.unitTesting
+        """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
             return None
         if g.app.spellDict:
-            if trace: g.trace('already open', self.c.fileName(), fn)
             return g.app.spellDict
         if not g.os_path_exists(fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
@@ -372,10 +370,10 @@ class EnchantWrapper(BaseSpellWrapper):
             try:
                 self.clean_dict(fn)
                 d = enchant.DictWithPWL(language, fn)
-                if trace: g.trace('open', g.shortFileName(self.c.fileName()), fn)
             except Exception:
-                g.es('Error reading dictionary file', fn)
-                g.es_exception()
+                # This is off-putting, and not necessary.
+                # g.es('Error reading dictionary file', fn)
+                # g.es_exception()
                 d = enchant.Dict(language)
         else:
             # A fallback.  Unlikely to happen.
@@ -408,7 +406,7 @@ class EnchantWrapper(BaseSpellWrapper):
         d = self.d
         if not d:
             return None
-        elif d.check(word):
+        if d.check(word):
             return None
         # Speed doesn't matter here. The more we find, the more convenient.
         word = ''.join([i for i in word if not i.isdigit()])
@@ -428,45 +426,44 @@ class EnchantWrapper(BaseSpellWrapper):
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
             return None
-        else:
-            return d.suggest(word)
+        return d.suggest(word)
     #@+node:ekr.20180209142310.1: *3* spell.show_info
     def show_info(self):
 
         g.es_print('pyenchant spell checker')
-        g.es_print('user dictionary:   %s' % self.find_user_dict())
+        g.es_print(f"user dictionary:   {self.find_user_dict()}")
         try:
             aList = enchant.list_dicts()
             aList2 = [a for a, b in aList]
-            g.es_print('main dictionaries: %s' % ', '.join(aList2))
+            g.es_print(f"main dictionaries: {', '.join(aList2)}")
         except Exception:
             g.es_exception()
 
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
 class SpellCommandsClass(BaseEditCommandsClass):
-    '''Commands to support the Spell Tab.'''
+    """Commands to support the Spell Tab."""
     #@+others
     #@+node:ekr.20150514063305.482: *3* ctor & reloadSettings(SpellCommandsClass)
     def __init__(self, c):
-        '''
+        """
         Ctor for SpellCommandsClass class.
         Inits happen when the first frame opens.
-        '''
+        """
         # pylint: disable=super-init-not-called
         self.c = c
         self.handler = None
         self.reloadSettings()
         
     def reloadSettings(self):
-        '''SpellCommandsClass.reloadSettings.'''
+        """SpellCommandsClass.reloadSettings."""
         c = self.c
         self.page_width = c.config.getInt("page-width")
             # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
     def openSpellTab(self, event=None):
-        '''Open the Spell Checker tab in the log pane.'''
+        """Open the Spell Checker tab in the log pane."""
         c = self.c
         log = c.frame.log
         tabName = 'Spell'
@@ -488,12 +485,12 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20171205043931.1: *4* add
     @cmd('spell-add')
     def add(self, event=None):
-        '''
+        """
         Simulate pressing the 'add' button in the Spell tab.
 
         Just open the Spell tab if it has never been opened.
         For minibuffer commands, we must also force the Spell tab to be visible.
-        '''
+        """
         # self.handler is a SpellTabHandler object (inited by openSpellTab)
         if self.handler:
             self.openSpellTab()
@@ -503,12 +500,12 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.486: *4* find
     @cmd('spell-find')
     def find(self, event=None):
-        '''
+        """
         Simulate pressing the 'Find' button in the Spell tab.
 
         Just open the Spell tab if it has never been opened.
         For minibuffer commands, we must also force the Spell tab to be visible.
-        '''
+        """
         # self.handler is a SpellTabHandler object (inited by openSpellTab)
         if self.handler:
             self.openSpellTab()
@@ -518,7 +515,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
     def change(self, event=None):
-        '''Simulate pressing the 'Change' button in the Spell tab.'''
+        """Simulate pressing the 'Change' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
             self.handler.change()
@@ -527,7 +524,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
     def changeThenFind(self, event=None):
-        '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
+        """Simulate pressing the 'Change, Find' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
             # A workaround for a pylint warning:
@@ -539,14 +536,14 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
     def hide(self, event=None):
-        '''Hide the Spell tab.'''
+        """Hide the Spell tab."""
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
     def ignore(self, event=None):
-        '''Simulate pressing the 'Ignore' button in the Spell tab.'''
+        """Simulate pressing the 'Ignore' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
             self.handler.ignore()
@@ -555,7 +552,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.491: *4* focusToSpell
     @cmd('focus-to-spell-tab')
     def focusToSpell(self, event=None):
-        '''Put focus in the spell tab.'''
+        """Put focus in the spell tab."""
         self.openSpellTab()
             # Makes Spell tab visible.
         # This is not a great idea. There is no indication of focus.
@@ -691,7 +688,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20150514063305.499: ** class SpellTabHandler
-class SpellTabHandler(object):
+class SpellTabHandler:
     """A class to create and manage Leo's Spell Check dialog."""
     #@+others
     #@+node:ekr.20150514063305.501: *3* SpellTabHandler.__init__
@@ -740,7 +737,7 @@ class SpellTabHandler(object):
     def change(self, event=None):
         """Make the selected change to the text"""
         if not self.loaded:
-            return
+            return False
         c = self.c
         w = c.frame.body.wrapper
         selection = self.tab.getSuggestion()
@@ -750,7 +747,6 @@ class SpellTabHandler(object):
                 start = getattr(self.tab, 'change_i')
                 end = getattr(self.tab, 'change_j')
                 oldSel = start, end
-                # g.trace('using',start,end)
             else:
                 start, end = oldSel = w.getSelectionRange()
             if start is not None:
@@ -769,13 +765,9 @@ class SpellTabHandler(object):
     #@+node:ekr.20150514063305.505: *4* find & helper
     def find(self, event=None):
         """Find the next unknown word."""
-        trace = False and not g.unitTesting
-        trace_lookup = False
-        trace_end_body = False
         if not self.loaded:
             return
         c, n, p = self.c, 0, self.c.p
-        if trace: g.trace('entry', p.h)
         sc = self.spellController
         w = c.frame.body.wrapper
         c.selectPosition(p)
@@ -797,10 +789,8 @@ class SpellTabHandler(object):
                 k2 = ins + start + len(word)
                 if k2 < len(s) and s[k2].isdigit():
                     continue
-                if trace and trace_lookup: g.trace('lookup', word)
                 alts = sc.process_word(word)
                 if alts:
-                    if trace: g.trace('%s searches' % n)
                     self.currentWord = word
                     i = ins + start
                     j = i + len(word)
@@ -811,16 +801,13 @@ class SpellTabHandler(object):
                     w.setSelectionRange(i, j, insert=j)
                     w.see(j)
                     return
-                else:
-                    self.seen.add(word)
+                self.seen.add(word)
             # No more misspellings in p
-            if trace and trace_end_body: g.trace('----- end of text', p.h)
             p.moveToThreadNext()
             if p:
                 ins = 0
                 s = p.b
             else:
-                if trace: g.trace('%s searches' % n)
                 g.es("no more misspellings")
                 c.selectPosition(last_p)
                 self.tab.fillbox([])
@@ -829,15 +816,15 @@ class SpellTabHandler(object):
                 return
     #@+node:ekr.20160415033936.1: *5* showMisspelled
     def showMisspelled(self, p):
-        '''Show the position p, contracting the tree as needed.'''
+        """Show the position p, contracting the tree as needed."""
         c = self.c
         redraw = not p.isVisible(c)
         # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
         if c.sparse_spell and not c.p.isAncestorOf(p):
-            for p2 in c.p.self_and_parents():
+            for p2 in c.p.self_and_parents(copy=False):
                 p2.contract()
                 redraw = True
-        for p2 in p.parents():
+        for p2 in p.parents(copy=False):
             if not p2.isExpanded():
                 p2.expand()
                 redraw = True
@@ -866,24 +853,24 @@ def show_spell_info(event=None):
 #@+node:ekr.20180211104019.1: ** @g.command('clean-main-spell-dict')
 @g.command('clean-main-spell-dict')
 def clean_main_spell_dict(event):
-    '''
+    """
     Clean the main spelling dictionary used *only* by the default spell
     checker.
     
     This command works regardless of the spell checker being used.
-    '''
+    """
     c = event and event.get('c')
     if c:
         DefaultWrapper(c).save_main_dict(trace=True)
 #@+node:ekr.20180211105748.1: ** @g.command('clean-user-spell-dict')
 @g.command('clean-user-spell-dict')
 def clean_user_spell_dict(event):
-    '''
+    """
     Clean the user spelling dictionary used *only* by the default spell
     checker. Mostly for debugging, because this happens automatically.
     
     This command works regardless of the spell checker being used.
-    '''
+    """
     c = event and event.get('c')
     if c:
         DefaultWrapper(c).save_user_dict(trace=True)

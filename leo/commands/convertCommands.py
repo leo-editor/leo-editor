@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160316095222.1: * @file ../commands/convertCommands.py
 #@@first
-'''Leo's file-conversion commands.'''
+"""Leo's file-conversion commands."""
 #@+<< imports >>
 #@+node:ekr.20161023150723.1: ** << imports >>
 import leo.core.leoGlobals as g
@@ -13,22 +13,22 @@ from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsC
 #@-<< imports >>
 
 def cmd(name):
-    '''Command decorator for the ConvertCommandsClass class.'''
+    """Command decorator for the ConvertCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'convertCommands',])
 
 #@+<< class To_Python >>
 #@+node:ekr.20150514063305.123: ** << class To_Python >>
-class To_Python(object):
-    '''The base class for x-to-python commands.'''
+class To_Python:
+    """The base class for x-to-python commands."""
     #@+others
     #@+node:ekr.20150514063305.125: *3* To_Python.ctor
     def __init__(self, c):
-        '''Ctor for To_Python class.'''
+        """Ctor for To_Python class."""
         self.c = c
         self.p = self.c.p.copy()
         aList = g.get_directives_dict_list(self.p)
         self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-    #@+node:ekr.20150514063305.126: *3* To_Python.go
+    #@+node:ekr.20150514063305.126: *3* To_Python.go (changed)
     def go(self):
         import time
         t1 = time.time()
@@ -36,11 +36,11 @@ class To_Python(object):
         u, undoType = c.undoer, 'typescript-to-python'
         pp = leoBeautify.CPrettyPrinter(c)
         u.beforeChangeGroup(c.p, undoType)
-        changed, dirtyVnodeList = False, []
+        changed = False
         n_files, n_nodes = 0, 0
         special = ('class ', 'module ', '@file ', '@@file ')
         files = ('@file ', '@@file ')
-        for p in self.p.self_and_subtree():
+        for p in self.p.self_and_subtree(copy=False):
             if p.b:
                 n_nodes += 1
                 if any([p.h.startswith(z) for z in special]):
@@ -54,29 +54,27 @@ class To_Python(object):
                 s = ''.join(aList)
                 if s != p.b:
                     p.b = s
-                    p.v.setDirty()
-                    dirtyVnodeList.append(p.v)
+                    p.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
         if changed:
-            u.afterChangeGroup(c.p, undoType,
-                reportFlag=False, dirtyVnodeList=dirtyVnodeList)
+            u.afterChangeGroup(c.p, undoType, reportFlag=False)
         t2 = time.time()
         g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files, n_nodes, t2 - t1))
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, aList):
-        '''The main search/replace method.'''
+        """The main search/replace method."""
         g.trace('must be defined in subclasses.')
     #@+node:ekr.20150514063305.128: *3* To_Python.Utils
     #@+node:ekr.20150514063305.129: *4* match...
     #@+node:ekr.20150514063305.130: *5* match
     def match(self, s, i, pat):
-        '''
+        """
         Return True if s[i:] matches the pat string.
 
         We can't use g.match because s is usually a list.
-        '''
+        """
         assert pat
         j = 0
         while i + j < len(s) and j < len(pat):
@@ -89,27 +87,25 @@ class To_Python(object):
         return False
     #@+node:ekr.20150514063305.131: *5* match_word
     def match_word(self, s, i, pat):
-        '''
+        """
         Return True if s[i:] word matches the pat string.
 
         We can't use g.match_word because s is usually a list
         and g.match_word uses s.find.
-        '''
+        """
         if self.match(s, i, pat):
             j = i + len(pat)
             if j >= len(s):
                 return True
-            elif not pat[-1].isalnum():
+            if not pat[-1].isalnum():
                 # Bug fix 10/16/2012: The pattern terminates the word.
                 return True
-            else:
-                ch = s[j]
-                return not ch.isalnum() and ch != '_'
-        else:
-            return False
+            ch = s[j]
+            return not ch.isalnum() and ch != '_'
+        return False
     #@+node:ekr.20150514063305.132: *4* insert_not
     def insert_not(self, aList):
-        '''Change "!" to "not" except before "="'''
+        """Change "!" to "not" except before an equal sign."""
         i = 0
         while i < len(aList):
             if self.is_string_or_comment(aList, i):
@@ -195,16 +191,14 @@ class To_Python(object):
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
     def removeMatchingBrackets(self, aList, i):
         j = self.skip_to_matching_bracket(aList, i)
-        if j > i and j < len(aList):
-            # print "del brackets:", ''.join(aList[i:j+1])
+        if i < j < len(aList):
             c = aList[j]
             if c == ')' or c == ']' or c == '}':
                 del aList[j: j + 1]
                 del aList[i: i + 1]
-                # print "returning:", ''.join(aList[i:j])
                 return j - 1
-            else: return j + 1
-        else: return j
+            return j + 1
+        return j
     #@+node:ekr.20150514063305.143: *5* removeSemicolonsAtEndOfLines
     def removeSemicolonsAtEndOfLines(self, aList):
         i = 0
@@ -238,10 +232,10 @@ class To_Python(object):
     #@+node:ekr.20150514063305.145: *4* replace... & safe_replace
     #@+node:ekr.20150514063305.146: *5* replace
     def replace(self, aList, findString, changeString):
-        '''
+        """
         Replaces all occurances of findString by changeString.
         changeString may be the empty string, but not None.
-        '''
+        """
         if not findString:
             return
         changeList = list(changeString)
@@ -287,7 +281,7 @@ class To_Python(object):
             i = j
     #@+node:ekr.20150514063305.148: *6* munge_block_comment
     def munge_block_comment(self, comment_lines):
-        trace = False
+
         n = len(comment_lines)
         assert n > 0
         s = comment_lines[0]
@@ -303,13 +297,10 @@ class To_Python(object):
                 pass # Omit the line entirely.
             else:
                 result.append('') # Add a blank line
-        if trace:
-            g.trace()
-            for z in result: print(repr(z))
         return result
     #@+node:ekr.20150514063305.149: *5* replaceSectionDefs
     def replaceSectionDefs(self, aList):
-        '''Replaces < < x > > = by @c (at the start of lines).'''
+        """Replaces < < x > > = by @c (at the start of lines)."""
         if not aList:
             return
         i = 0
@@ -325,11 +316,11 @@ class To_Python(object):
             else: i += 1
     #@+node:ekr.20150514063305.150: *5* safe_replace
     def safe_replace(self, aList, findString, changeString):
-        '''
+        """
         Replaces occurances of findString by changeString,
         but only outside of C comments and strings.
         changeString may be the empty string, but not None.
-        '''
+        """
         if not findString:
             return
         changeList = list(changeString)
@@ -358,8 +349,7 @@ class To_Python(object):
         while i < len(s):
             if self.match(s, i, "*/"):
                 return i + 2
-            else:
-                i += 1
+            i += 1
         return i
     #@+node:ekr.20150514063305.153: *5* skip_line
     def skip_line(self, s, i):
@@ -394,7 +384,7 @@ class To_Python(object):
         while i < len(s):
             if s[i] == delim:
                 return i + 1
-            elif s[i] == '\\':
+            if s[i] == '\\':
                 i += 2
             else:
                 i += 1
@@ -450,10 +440,10 @@ class To_Python(object):
 #@+others
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
-    '''Leo's file-conversion commands'''
+    """Leo's file-conversion commands"""
 
     def __init__(self, c):
-        '''Ctor for EditCommandsClass class.'''
+        """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
 
@@ -461,11 +451,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
     def cToPy(self, event):
-        '''
+        """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.
-        '''
+        """
         self.C_To_Python(self.c).go()
         self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.160: *4* class C_To_Python (To_Python)
@@ -473,10 +463,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+others
         #@+node:ekr.20150514063305.161: *5* ctor & helpers (C_To_Python)
         def __init__(self, c):
-            '''Ctor for C_To_Python class.'''
-            # pylint: disable=super-init-not-called
-            c.convertCommands.To_Python.__init__(self, c)
-                # init the base class
+            """Ctor for C_To_Python class."""
+            super().__init__(c)
+            #
             # Internal state...
             self.class_name = ''
                 # The class name for the present function.  Used to modify ivars.
@@ -496,16 +485,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
-            if 0:
-                #g.trace('class_list',self.class_list)
-                #g.trace('type_list',self.type_list)
-                g.trace('ivars_dict...')
-                d = self.ivars_dict
-                keys = list(d.keys())
-                for key in sorted(keys):
-                    print('%s:' % (key))
-                    for val in d.get(key):
-                        print('  %s' % (val))
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
         def parse_ivars_data(self, aList):
             d, key = {}, None
@@ -585,10 +564,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             r(aList, "\t ", "\t") # happens when deleting declarations.
         #@+node:ekr.20150514063305.165: *6* handle_all_keywords
         def handle_all_keywords(self, aList):
-            '''
+            """
             converts if ( x ) to if x:
             converts while ( x ) to while x:
-            '''
+            """
             i = 0
             while i < len(aList):
                 if self.is_string_or_comment(aList, i):
@@ -632,7 +611,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     k += 1
                 if not found:
                     j = self.removeMatchingBrackets(aList, i)
-                if j > i and j < len(aList):
+                if i < j < len(aList):
                     ch = aList[j]
                     aList[j: j + 1] = [ch, ":", " "]
                     j = j + 2
@@ -640,7 +619,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return i
         #@+node:ekr.20150514063305.167: *6* mungeAllFunctions
         def mungeAllFunctions(self, aList):
-            '''Scan for a '{' at the top level that is preceeded by ')' '''
+            """Scan for a '{' at the top level that is preceeded by ')' """
             prevSemi = 0 # Previous semicolon: header contains all previous text
             i = 0
             firstOpen = None
@@ -664,7 +643,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                     prevSemi = j
                     firstOpen = None # restart the scan
-                    # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                 else:
                     j = i + 1
                 # Handle unusual cases.
@@ -674,14 +652,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = j
         #@+node:ekr.20150514063305.168: *7* handlePossibleFunctionHeader
         def handlePossibleFunctionHeader(self, aList, i, prevSemi, firstOpen):
-            '''
+            """
             Converts function header lines from c++ format to python format.
             That is, converts
                 x1..nn w::y ( t1 z1,..tn zn) {
             to
                 def y (z1,..zn): {
-            '''
-            trace = False
+            """
             assert(self.match(aList, i, "{"))
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList, i)
@@ -710,15 +687,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             args = aList[open_paren: close + 1]
             k = 1 + self.skip_to_matching_bracket(aList, i)
             body = aList[close + 1: k]
-            if True and trace:
-                g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
-            if False and trace:
-                g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             result = []
             if head: result.extend(head)
             if args: result.extend(args)
@@ -761,7 +732,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             prevWord = []
             self.class_name = ''
             i = 0
-            # g.trace(repr(''.join(head)))
             while i < len(head):
                 i = self.skip_ws_and_nl(head, i)
                 if i < len(head) and head[i].isalpha():
@@ -801,9 +771,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return body
         #@+node:ekr.20150514063305.172: *8* dedentBlocks
         def dedentBlocks(self, body):
-            '''Look for '{' preceded by '{' or '}' or ';'
+            """Look for '{' preceded by '{' or '}' or ';'
             (with intervening whitespace and comments).
-            '''
+            """
             i = 0
             while i < len(body):
                 j = i
@@ -823,7 +793,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.match(body, j, '{'):
                         k = j
                         j = self.skip_to_matching_bracket(body, j)
-                        # g.trace('found block\n',''.join(body[k:j+1]))
                         m = '# <Start dedented block>...'
                         body[k: k + 1] = list(m)
                         j += len(m)
@@ -905,7 +874,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             return body
         #@+node:ekr.20150514063305.175: *8* removeTypeNames
         def removeTypeNames(self, body):
-            '''Do _not_ remove type names when preceeded by new.'''
+            """Do _not_ remove type names when preceeded by new."""
             i = 0
             while i < len(body):
                 if self.is_string_or_comment(body, i):
@@ -934,25 +903,26 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160111190632.1: *3* ccc.makeStubFiles
     @cmd('make-stub-files')
     def make_stub_files(self, event):
-        '''
+        """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
-        '''
+        """
         #@+others
         #@+node:ekr.20160213070235.1: *4* class MakeStubFileAdapter
-        class MakeStubFileAdapter(object):
-            '''
+        class MakeStubFileAdapter:
+            """
             An class that adapts leo/external/make_stub_files.py to Leo.
 
             Settings are taken from Leo settings nodes, not a .cfg file.
-            '''
+            """
             #@+others
             #@+node:ekr.20160213070235.2: *5* msf.ctor & helpers
             def __init__(self, c):
-                '''MakeStubFile.ctor. From StandAloneMakeStubFile.ctor.'''
+                """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
-                self.msf = msf = g.importExtension(moduleName='make_stub_files',
-                    pluginName=None, verbose=False, required=False)
+                ### self.msf = msf = g.importExtension(moduleName='make_stub_files',
+                ###     pluginName=None, verbose=False, required=False)
+                self.msf = msf = g.import_module('make_stub_files')
                 x = msf.StandAloneMakeStubFile()
                     # x is used *only* to init ivars.
                 # Ivars set on the command line...
@@ -988,63 +958,47 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 x.prefix_lines = self.prefix_lines
             #@+node:ekr.20160213070235.3: *6* msf.scan
             def scan(self, kind):
-                '''Return a list of *all* lines from an @data node, including comments.'''
+                """Return a list of *all* lines from an @data node, including comments."""
                 c = self.c
                 aList = c.config.getData(kind,
                     strip_comments=False,
                     strip_data=False)
                 if not aList:
-                    g.trace('warning: no @data %s node' % kind)
+                    g.trace(f"warning: no @data {kind} node")
                 return aList
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
             def scan_d(self, kind):
-                '''Return a dict created from an @data node of the given kind.'''
-                trace = False and not g.unitTesting
+                """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
                 if aList is None:
-                    g.trace('warning: no @data %s node' % kind)
+                    g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
                     name, value = s.split(':',1)
-                    # g.trace('name',name,'value',value)
                     d[name.strip()] = value.strip()
-                if trace:
-                    print('@data %s...' % kind)
-                    for key in sorted(d):
-                        print('  %s: %s' % (key, d.get(key)))
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind):
-                '''Parse the config section into a list of patterns, preserving order.'''
-                trace = False or self.trace_patterns
+                """Parse the config section into a list of patterns, preserving order."""
                 d = self.scan_d(kind)
                 aList = []
                 seen = set()
                 for key in d:
                     value = d.get(key)
-                    # A kludge: strip leading \\ from patterns.
-                    # if key.startswith(r'\\'):
-                        # key = '[' + key[2:]
-                        # if trace: g.trace('removing escapes', key)
                     if key in seen:
                         g.trace('duplicate key', key)
                     else:
                         seen.add(key)
                         aList.append(self.msf.Pattern(key, value))
-                if trace:
-                    g.trace('@data %s ...\n' % kind)
-                    for z in aList:
-                        print(z)
-                    print('')
                 return aList
             #@+node:ekr.20160213070235.6: *5* msf.finalize
             def finalize(self, fn):
-                '''Finalize and regularize a filename.'''
+                """Finalize and regularize a filename."""
                 return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
             #@+node:ekr.20160213070235.7: *5* msf.make_stub_file
             def make_stub_file(self, p):
-                '''Make a stub file in ~/stubs for the @<file> node at p.'''
+                """Make a stub file in ~/stubs for the @<file> node at p."""
                 import ast
                 assert p.isAnyAtFileNode()
                 c = self.c
@@ -1079,7 +1033,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 x.run(node)
             #@+node:ekr.20160213070235.8: *5* msf.run
             def run(self, p):
-                '''Make stub files for all files in p's tree.'''
+                """Make stub files for all files in p's tree."""
                 if p.isAnyAtFileNode():
                     self.make_stub_file(p)
                     return
@@ -1107,18 +1061,18 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
     def python2coffeescript(self, event):
-        '''
+        """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
-        '''
+        """
         #@+others
         #@+node:ekr.20160316092837.1: *4* class Python_To_Coffeescript_Adapter
-        class Python_To_Coffeescript_Adapter(object):
-            '''An interface class between Leo and leo/external/py2cs.py.'''
+        class Python_To_Coffeescript_Adapter:
+            """An interface class between Leo and leo/external/py2cs.py."""
             #@+others
             #@+node:ekr.20160316112717.1: *5* py2cs.ctor
             def __init__(self,c):
-                '''Ctor for Python_To_Coffeescript_Adapter class.'''
+                """Ctor for Python_To_Coffeescript_Adapter class."""
                 self.c = c
                 self.files = []
                 self.output_directory = self.finalize(
@@ -1126,26 +1080,28 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # self.output_fn = None
                 self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
                 # Connect to the external module.
-                self.py2cs = g.importExtension(
-                    'py2cs',
-                    pluginName=None,
-                    verbose=False,
-                    required=False,
-                )
+                self.py2cs = g.import_module('leo.external.py2cs')
+                ###
+                    # self.py2cs = g.importExtension(
+                        # 'py2cs',
+                        # pluginName=None,
+                        # verbose=False,
+                        # required=False,
+                    # )
             #@+node:ekr.20160316093019.1: *5* py2cs.main
             def main(self):
-                '''Main line for Python_To_CoffeeScript class.'''
+                """Main line for Python_To_CoffeeScript class."""
                 if self.py2cs:
                     self.run()
                 else:
                     g.es_print('can not load py2cs.py')
             #@+node:ekr.20160316094011.7: *5* py2cs.finalize
             def finalize(self, fn):
-                '''Finalize and regularize a filename.'''
+                """Finalize and regularize a filename."""
                 return g.os_path_normpath(g.os_path_abspath(g.os_path_expanduser(fn)))
             #@+node:ekr.20160316094011.8: *5* py2cs.to_coffeescript
             def to_coffeescript(self, p):
-                '''Convert the @<file> node at p to a .coffee file.'''
+                """Convert the @<file> node at p to a .coffee file."""
                 assert p.isAnyAtFileNode()
                 c = self.c
                 fn = p.anyAtFileNodeName()
@@ -1178,7 +1134,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 x.make_coffeescript_file(abs_fn, s=s)
             #@+node:ekr.20160316094011.9: *5* py2cs.run
             def run(self):
-                '''Create .coffee files for all @<file> nodes in p's tree.'''
+                """Create .coffee files for all @<file> nodes in p's tree."""
                 p = c.p
                 if p.isAnyAtFileNode():
                     self.to_coffeescript(p)
@@ -1202,10 +1158,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 g.es_print('no files found in tree:', p.h)
             #@+node:ekr.20160316141812.1: *5* py2cs.strip_sentinels
             def strip_sentinels(self, s):
-                '''
+                """
                 Strip s of all sentinel lines.
                 This may be dubious because it destroys outline structure.
-                '''
+                """
                 delims = ['#', None, None]
                 return ''.join([z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
             #@-others
@@ -1216,21 +1172,19 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
     def tsToPy(self, event):
-        '''
+        """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious
         text manipulation.
-        '''
+        """
         #@+others
         #@+node:ekr.20150514063305.176: *4* class TS_To_Python (To_Python)
         class TS_To_Python(To_Python):
             #@+others
             #@+node:ekr.20150514063305.177: *5* ctor (TS_To_Python)
             def __init__(self, c):
-                '''Ctor for TS_To_Python class.'''
-                # pylint: disable=super-init-not-called
-                c.convertCommands.To_Python.__init__(self, c)
-                    # init the base class
+                """Ctor for TS_To_Python class."""
+                super().__init__(c)
                 self.class_name = ''
                     # The class name for the present function.  Used to modify ivars.
             #@+node:ekr.20150514063305.178: *5* convertCodeList (TS_To_Python) & helpers
@@ -1300,7 +1254,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 r(aList, '\t ', '\t') # happens when deleting declarations.
             #@+node:ekr.20150514063305.179: *6* comment_scope_ids
             def comment_scope_ids(self, aList):
-                '''convert (public|private|export) aLine to aLine # (public|private|export)'''
+                """convert (public|private|export) aLine to aLine # (public|private|export)"""
                 scope_ids = ('public', 'private', 'export',)
                 i = 0
                 if any([self.match_word(aList, i, z) for z in scope_ids]):
@@ -1322,14 +1276,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def handle_scope_keyword(self, aList, i):
                 i1 = i
                 # pylint: disable=undefined-loop-variable
-                # word *is* defined below.
                 for word in ('public', 'private', 'export'):
                     if self.match_word(aList, i, word):
                         i += len(word)
                         break
                 else:
-                    return
-                    # assert False, 'not a scope id: %s' % word
+                    return None
                 # Skip any following spaces.
                 i2 = self.skip_ws(aList, i)
                 # Scan to the next newline:
@@ -1339,14 +1291,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Change the list in place.
                 aList[i1: i3] = aList[i2: i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
-                # g.trace(''.join(aList[i1:i]))
                 return i
             #@+node:ekr.20150514063305.181: *6* handle_all_keywords
             def handle_all_keywords(self, aList):
-                '''
+                """
                 converts if ( x ) to if x:
                 converts while ( x ) to while x:
-                '''
+                """
                 statements = ('elif', 'for', 'if', 'while',)
                 i = 0
                 while i < len(aList):
@@ -1393,7 +1344,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         k += 1
                     if not found:
                         j = self.removeMatchingBrackets(aList, i)
-                    if j > i and j < len(aList):
+                    if i < j < len(aList):
                         ch = aList[j]
                         aList[j: j + 1] = [ch, ":", " "]
                         j = j + 2
@@ -1401,7 +1352,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return i
             #@+node:ekr.20150514063305.183: *6* mungeAllClasses
             def mungeAllClasses(self, aList):
-                '''Scan for a '{' at the top level that is preceeded by ')' '''
+                """Scan for a '{' at the top level that is preceeded by ')' """
                 i = 0
                 while i < len(aList):
                     progress = i
@@ -1431,7 +1382,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     assert i > progress
             #@+node:ekr.20150514063305.184: *6* mungeAllFunctions & helpers
             def mungeAllFunctions(self, aList):
-                '''Scan for a '{' at the top level that is preceeded by ')' '''
+                """Scan for a '{' at the top level that is preceeded by ')' """
                 prevSemi = 0 # Previous semicolon: header contains all previous text
                 i = 0
                 firstOpen = None
@@ -1451,7 +1402,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                         prevSemi = j
                         firstOpen = None # restart the scan
-                        # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                     else:
                         j = i + 1
                     # Handle unusual cases.
@@ -1461,15 +1411,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i = j
             #@+node:ekr.20150514063305.185: *7* handlePossibleFunctionHeader
             def handlePossibleFunctionHeader(self, aList, i, prevSemi, firstOpen):
-                '''
+                """
                 converts function header lines from typescript format to python format.
                 That is, converts
                     x1..nn w::y ( t1 z1,..tn zn) { C++
                     (public|private|export) name (t1: z1, ... tn: zn {
                 to
                     def y (z1,..zn): { # (public|private|export)
-                '''
-                trace = False
+                """
                 assert(self.match(aList, i, "{"))
                 prevSemi = self.skip_ws_and_nl(aList, prevSemi)
                 close = self.prevNonWsOrNlChar(aList, i)
@@ -1498,15 +1447,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 args = aList[open_paren: close + 1]
                 k = 1 + self.skip_to_matching_bracket(aList, i)
                 body = aList[close + 1: k]
-                if trace:
-                    g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
-                if False and trace:
-                    g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 result = []
                 if head: result.extend(head)
                 if args: result.extend(args)
@@ -1548,7 +1491,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 prevWord = []
                 self.class_name = ''
                 i = 0
-                # g.trace(repr(''.join(head)))
                 while i < len(head):
                     i = self.skip_ws_and_nl(head, i)
                     if i < len(head) and head[i].isalpha():
@@ -1588,10 +1530,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return body
             #@+node:ekr.20150514063305.189: *8* dedentBlocks
             def dedentBlocks(self, body):
-                '''
+                """
                 Look for '{' preceded by '{' or '}' or ';'
                 (with intervening whitespace and comments).
-                '''
+                """
                 i = 0
                 while i < len(body):
                     j = i
@@ -1611,7 +1553,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         if self.match(body, j, '{'):
                             k = j
                             j = self.skip_to_matching_bracket(body, j)
-                            # g.trace('found block\n',''.join(body[k:j+1]))
                             m = '# <Start dedented block>...'
                             body[k: k + 1] = list(m)
                             j += len(m)
@@ -1652,7 +1593,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20160321042444.1: *3* ccc.import-jupyter-notebook
     @cmd('import-jupyter-notebook')
     def importJupyterNotebook(self, event):
-        '''Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline.'''
+        """Prompt for a Jupyter (.ipynb) file and convert it to a Leo outline."""
         try:
             import nbformat
             assert nbformat
@@ -1667,14 +1608,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         if fn:
             p = c.lastTopLevel()
             root = p.insertAfter()
-            root.h = fn ### Not yet. '@auto fn'
+            root.h = fn
             x.import_file(fn, root)
             c.redraw(root)
         c.bodyWantsFocus()
     #@+node:ekr.20160321072007.1: *3* ccc.export-jupyter-notebook
     @cmd('export-jupyter-notebook')
     def exportJupyterNotebook(self, event):
-        '''Convert the present outline to a .ipynb file.'''
+        """Convert the present outline to a .ipynb file."""
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c
         Export_IPYNB(c).export_outline(c.p)

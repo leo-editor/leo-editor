@@ -408,8 +408,8 @@ def xml_validate(event):
     # in xml_for_subtree doesn't work
     # etree.fromstring only returns the root node,
     # losing the DTD, so etree.parse instead
-    import StringIO
-    xml_ = StringIO.StringIO(xml_)
+    from io import StringIO
+    xml_ = StringIO(xml_)
     xml_ = etree.tostring(etree.parse(xml_), pretty_print=True)
 
     parser = etree.XMLParser(dtd_validation=True)

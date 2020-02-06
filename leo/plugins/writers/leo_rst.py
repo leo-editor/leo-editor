@@ -20,7 +20,7 @@ class RstWriter(basewriter.BaseWriter):
     This is *very* different from rst3 command's write code.
     '''
     # def __init__(self,c):
-        # basewriter.BaseWriter.__init__(self,c)
+        # super().__init__(c)
     #@+others
     #@+node:ekr.20140726091031.18150: *3* rstw.underline_char
     def underline_char(self, p, root_level):
@@ -33,9 +33,7 @@ class RstWriter(basewriter.BaseWriter):
     #@+node:ekr.20140726091031.18089: *3* rstw.write
     def write(self, root):
         '''Write an @auto tree containing imported rST code.'''
-        trace = False and not g.unitTesting
         root_level = root.level()
-        if trace: g.trace('='*20, root.h)
         self.write_root(root)
         for p in root.subtree():
             if hasattr(self.at, 'force_sentinels'):
@@ -49,7 +47,6 @@ class RstWriter(basewriter.BaseWriter):
             # Ensure that every section ends with exactly two newlines.
             s = p.b.rstrip() + '\n\n'
             lines = s.splitlines(False)
-            if trace: g.printList(lines)
             if lines and lines[0].strip():
                 self.put('')
             # Put the body.

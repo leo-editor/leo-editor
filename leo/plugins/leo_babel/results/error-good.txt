@@ -1,0 +1,152 @@
+||* Tests *|| 2018-04-02 16:16:1522710974
+||* Test Name *|| No Script Root
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 399, in _babelExec
+    cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'script')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 561, in scrOrResRoot
+    sor=scrOrRes))
+leo.plugins.leo_babel.babel_api.BABEL_ROOT: First child of current node must be the script root.
+||* Test Name *|| No Results Root
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 401, in _babelExec
+    cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'results')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 561, in scrOrResRoot
+    sor=scrOrRes))
+leo.plugins.leo_babel.babel_api.BABEL_ROOT: Second child of current node must be the results root.
+||* Test Name *|| Error in Babel Parameters Script
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 385, in _babelExec
+    code = compile(script, 'Babel Parameter Script', 'exec')
+  File "Babel Parameter Script", line 5
+    babel_results = 'unl:///pri/git/leo_babel/examples.leo#Targets%20for%20UNL's-->Results-->babel%20results%2001'
+                                                                               ^
+SyntaxError: invalid syntax
+||* Test Name *|| No Script Root, UNL for Results Root
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 399, in _babelExec
+    cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'script')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 561, in scrOrResRoot
+    sor=scrOrRes))
+leo.plugins.leo_babel.babel_api.BABEL_ROOT: First child of current node must be the script root.
+||* Test Name *|| No Results Root, UNL for Script Root
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 401, in _babelExec
+    cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'results')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 561, in scrOrResRoot
+    sor=scrOrRes))
+leo.plugins.leo_babel.babel_api.BABEL_ROOT: Second child of current node must be the results root.
+||* Test Name *|| Script UNL does not match any position
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 399, in _babelExec
+    cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'script')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 572, in scrOrResRoot
+    'position.'.format(scrOrRes.capitalize()))
+leo.plugins.leo_babel.babel_api.BABEL_UNL_NO_POS: Script Root UNL does not match any position.
+||* Test Name *|| Results UNL does not match any position
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 401, in _babelExec
+    cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'results')
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 572, in scrOrResRoot
+    'position.'.format(scrOrRes.capitalize()))
+leo.plugins.leo_babel.babel_api.BABEL_UNL_NO_POS: Results Root UNL does not match any position.
+||* Test Name *|| Multiple Script Targets Warning
+||* stdout *||
+Correct target chosen
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-02 16:16:14 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+16:16:15 saved: examples_error.leo
+||* Other Color *|| blue
+Script Root UNL satisfies 2 positions.
+||* Test Name *|| Multiple Results Targets Warning
+||* stdout *||
+Was the first results target root in tree order target chosen?
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-02 16:16:15 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+16:16:16 saved: examples_error.leo
+||* Other Color *|| blue
+Results Root UNL satisfies 2 positions.
+||* Test Name *|| Multiple Matches for Script and Results Targets Warning
+||* stdout *||
+Correct target chosen
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-02 16:16:17 End Time
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.03 seconds
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_error.leo
+read outline in 0.06 seconds
+16:16:18 saved: examples_error.leo
+||* Other Color *|| blue
+Script Root UNL satisfies 2 positions.
+Results Root UNL satisfies 2 positions.

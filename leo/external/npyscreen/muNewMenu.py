@@ -8,7 +8,7 @@ import weakref
 
 
 #@+node:ekr.20170428084207.334: ** class NewMenu
-class NewMenu(object):
+class NewMenu:
     """docstring for NewMenu"""
     #@+others
     #@+node:ekr.20170428084207.335: *3* __init__
@@ -57,7 +57,7 @@ class NewMenu(object):
 
     #@-others
 #@+node:ekr.20170428084207.342: ** class MenuItem
-class MenuItem(object):
+class MenuItem:
     """docstring for MenuItem"""
     #@+others
     #@+node:ekr.20170428084207.343: *3* __init__

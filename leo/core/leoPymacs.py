@@ -4,7 +4,7 @@
 #@@first
 #@+<< docstring>>
 #@+node:ekr.20061024060248.2: ** << docstring >> (leoPymacs.py)
-'''A module to allow the Pymacs bridge to access Leo data.
+"""A module to allow the Pymacs bridge to access Leo data.
 
 All code in this module must be called *from* Emacs:
 calling Pymacs.lisp in other situations will hang Leo.
@@ -23,7 +23,7 @@ Notes:
 
   Note that full path names are required in each case.
 
-'''
+"""
 #@-<< docstring>>
 # As in leo.py we must be very careful about imports.
 # pylint: disable = global-variable-not-assigned
@@ -39,7 +39,7 @@ def dump(anObject):
     return str(g.toEncodedString(repr(anObject), encoding='ascii'))
 #@+node:ekr.20061024130957: ** getters (pymacs)
 def get_app():
-    '''Scripts can use g.app.scriptDict for communication with pymacs.'''
+    """Scripts can use g.app.scriptDict for communication with pymacs."""
     global g
     init()
     return g.app
@@ -56,14 +56,13 @@ def script_result():
 #@+node:ekr.20061024060248.3: ** hello (pymacs)
 def hello():
     init()
-    return 'Hello from Leo.  g.app: %s' % g.app
+    return f"Hello from Leo.  g.app: {g.app}"
 #@+node:ekr.20061024075542: ** init  (pymacs)
 def init():
     global inited
     if inited:
         return
-    else:
-        inited = True # Only try once, no matter what happens.
+    inited = True # Only try once, no matter what happens.
     # Add the parent path of this file to sys.path
     import os
     import sys
@@ -93,7 +92,7 @@ def open(fileName=None):
     global g
     init()
     if g.app.unitTesting:
-        return
+        return None
     if not fileName:
         g.es_print('', 'leoPymacs.open:', 'no file name')
         return None
@@ -121,7 +120,6 @@ def run_script(c, script, p=None):
         define_name='__main__',
         silent=True, # Don't write to the log.
     )
-    # g.trace('script returns: ',repr(g.app.scriptResult))
     return g.app.scriptResult
 #@-others
 #@@language python

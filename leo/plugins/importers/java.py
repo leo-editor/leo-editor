@@ -3,6 +3,7 @@
 '''The @auto importer for the java language.'''
 import re
 import leo.core.leoGlobals as g
+assert g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
@@ -13,8 +14,7 @@ class Java_Importer(Importer):
 
     def __init__(self, importCommands, **kwargs):
         '''Java_Importer.__init__'''
-        # Init the base class.
-        Importer.__init__(self,
+        super().__init__(
             importCommands,
             language = 'java',
             state_class = Java_ScanState,
@@ -40,23 +40,15 @@ class Java_Importer(Importer):
     #@+node:ekr.20161126163014.1: *3* java_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return the cleaned headline.'''
-        if s.strip().endswith('{'):
-            return s.strip('{').strip()
-        else:
-            return s.strip()\
-
-
+        return s.strip('{').strip() if s.strip().endswith('{') else s.strip()
     #@+node:ekr.20161205042019.2: *3* java_i.match_name_patterns
     java_name_pattern = re.compile(r'\s*([\w:]+)')
 
     def match_name_patterns(self, line):
         '''Set self.headline if the line defines a typedef name.'''
-        trace = False and g.unitTesting
-        if trace: g.trace(repr(line))
         m = self.java_name_pattern.match(line)
         if m:
             word = m.group(1)
-            if trace: g.trace('NAME', word)
             if not self.java_types_pattern.match(word):
                 self.headline = word
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
@@ -69,25 +61,19 @@ class Java_Importer(Importer):
         True if line matches any block-starting pattern.
         If true, set self.headline.
         '''
-        trace = False and g.unitTesting
-        if trace: g.trace(repr(line))
         m = self.java_class_pattern.match(line)
         if m:
             self.headline = line
-            if trace: g.trace('CLASS', m, line)
             return True
         m = self.java_func_pattern.match(line)
         if m:
             i = line.find('(')
             self.headline = line[:i] if i > -1 else line
-            if trace: g.trace('FUNC', self.headline)
             return True
         return False
     #@+node:ekr.20161205042019.4: *3* java_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
-        trace = False and g.unitTesting
-        trace_stack = False
         line = lines[i]
         target = stack[-1]
         # Insert the reference in *this* node.
@@ -103,8 +89,6 @@ class Java_Importer(Importer):
             new_state.curlies = prev_state.curlies + 1
             child = self.create_child_node(target.p, line, h)
         stack.append(Target(child, new_state))
-        if trace: g.trace('=====', repr(line))
-        if trace and trace_stack: g.printList(stack)
         # Add all additional lines of the signature.
         skip = self.skip # Don't change the ivar!
         while skip > 0:
@@ -112,7 +96,6 @@ class Java_Importer(Importer):
             i += 1
             assert i < len(lines), (i, len(lines))
             line = lines[i]
-            if trace: g.trace('SCAN', 'name', self.headline, 'line', repr(line))
             if not self.headline:
                 self.match_name_patterns(line)
                 if self.headline:
@@ -121,27 +104,22 @@ class Java_Importer(Importer):
     #@+node:ekr.20161205042019.5: *3* java_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
-        trace = False and g.unitTesting
         self.headline = None
         line = lines[i]
         if prev_state.context:
             return False
         if self.java_keywords_pattern.match(line):
-            if trace: g.trace('KEYWORD', repr(line))
             return False
         if not self.match_start_patterns(line):
             return False
-        if trace: g.trace('MATCH', repr(line))
         # Must not be a complete statement.
         if line.find(';') > -1:
-            if trace: g.trace('STATEMENT', repr(line))
             return False
         # Scan ahead until an open { is seen. the skip count.
         self.skip = 0
         while self.skip < 10:
             if new_state.level() > prev_state.level():
                 return True
-            if trace: g.trace('SKIP', repr(lines[i]))
             self.skip += 1
             i += 1
             if i < len(lines):
@@ -150,9 +128,6 @@ class Java_Importer(Importer):
                 new_state = self.scan_line(line, prev_state)
             else:
                 break
-        if trace:
-            g.trace('Run-on C function def')
-            g.printList(lines[i-self.skip:i])
         return False
     #@-others
 #@+node:ekr.20161126161824.6: ** class class Java_ScanState

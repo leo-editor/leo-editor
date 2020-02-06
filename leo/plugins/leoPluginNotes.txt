@@ -1,33 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090430075506.3: * @file leoPluginNotes.txt
 #@+all
-#@+node:ekr.20100909111553.5583: ** Unit tests
-#@+node:ekr.20100909121239.5797: *3* @ignore
-#@+node:ekr.20100909121239.5670: *4* @test get_directive_path
-# Works in external unit tests.
-g.loadOnePlugin(c,'screenshots')
-sc = c.screenshotController
-assert sc
-
-fn = sc.get_directive_path(p)
-assert fn
-#@+node:ekr.20100909121239.5951: *4* @test find_at_screenshot_tree_node
-g.loadOnePlugin(c,'screenshots')
-sc = c.screenshotController
-
-h = 'Headline and body text'
-p2 = g.findNodeAnywhere(c,h)
-assert p2
-
-root,h = sc.find_at_screenshot_tree_node(p2)
-assert root
-assert h == 'Urgent'
-
-#@+node:ekr.20100909193419.5596: *4* set g.app.unitTestGui
-if 0: # Doesn't work well.
-    g.app.unitTestGui = 'qt'
-#@+node:ekr.20100909111553.5588: *3* @mark-for-unit-tests
-# Add the tree to the external unit test
 #@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
 # pylint: disable=syntax-error
 
@@ -214,49 +187,6 @@ Terry Brown created this initial version of this plugin, and the free_layout and
 EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
 
 Jacob Peck added markdown support.
-#@+node:ekr.20171230051636.1: ** OLD org_i.gen_lines
-org_pattern = re.compile(r'^(\*+)(.*)$')
-
-def gen_lines(self, s, parent):
-    '''Node generator for org mode.'''
-    self.inject_lines_ivar(parent)
-    # We may as well do this first.  See note below.
-    self.add_line(parent, '@others\n')
-    self.parents = [parent]
-    for line in g.splitLines(s):
-        m = self.org_pattern.match(line)
-        if m:
-            # Cut back the stack, then allocate a new node.
-            level = len(m.group(1))
-            self.parents = self.parents[:level]
-            self.find_parent(
-                level = level,
-                h = m.group(2).strip())
-        else:
-            p = self.parents[-1]
-            self.add_line(p, line)
-    note = (
-        'Note: This node\'s body text is ignored when writing this file.\n\n' +
-        'The @others directive is not required.\n'
-    )
-    self.add_line(parent, note)
-#@+node:ekr.20171230051823.1: ** OLD orgw.write
-def write(self, root):
-    """Write all the *descendants* of an @auto-org-mode node."""
-    root_level = root.level()
-    first = root.firstChild()
-    for p in root.subtree():
-        if p == first and p.h == 'declarations':
-            pass
-        else:
-            if hasattr(self.at, 'force_sentinels'):
-                self.put_node_sentinel(p, '#')
-            indent = p.level() - root_level
-            self.put('%s %s' % ('*' * indent, p.h))
-        for s in p.b.splitlines(False):
-            self.put(s)
-    root.setVisited()
-    return True
 #@-all
 #@@killbeautify
 # This file contains unused plugins and code

@@ -237,11 +237,10 @@ def onIconDoubleClickNA(tag, keywords):
         return None
 
     if doNodeAction(p,c):
-        return True #Action was taken - Stop other double-click handlers from running
-    else:
-        return None #No action taken - Let other double-click handlers run
-
-
+        return True
+            #Action was taken - Stop other double-click handlers from running
+    return None
+        #No action taken - Let other double-click handlers run
 #@+node:TL.20080507213950.7: ** init (nodeActions.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
@@ -264,13 +263,13 @@ def doNodeAction(pClicked, c):
     #    3 = log 1,2 & 'no match to pattern'
     #    4 = log 1,2,3, & any code debugging messages,
     #              matched pattern's 'directives', and '@file saved' settings
-    messageLevel = c.config.getInt('nodeActions_message_level')
+    messageLevel = c.config.getInt('nodeActions-message-level')
 
     if messageLevel >= 1:
         g.es( "nodeActions: triggered" )
 
     #Save @file type nodes before running script if enabled
-    saveAtFile = c.config.getBool('nodeActions_save_atFile_nodes')
+    saveAtFile = c.config.getBool('nodeActions-save-atFile-nodes')
     if messageLevel >= 4:
         g.blue( "nA: Global nodeActions_save_atFile_nodes=",saveAtFile)
     #Find the "nodeActions" node
@@ -298,8 +297,7 @@ def doNodeAction(pClicked, c):
                 g.blue( "nA: Checking pattern '" + pattern)
 
             #if directives exist, parse them and set directive flags for later use
-            # pylint: disable=anomalous-backslash-in-string
-            directiveExists = re.search( " \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
+            directiveExists = re.search(r" \[[V>X],?[V>X]?,?[V>X]?]$", pattern )
             if directiveExists:
                 directives = directiveExists.group(0)
             else:
@@ -310,9 +308,9 @@ def doNodeAction(pClicked, c):
             if not passEventExternal: #don't disable once enabled.
                 passEventExternal = re.search(">", directives) is not None
             #Remove the directives from the end of the pattern (if they exist)
-            pattern = re.sub( " \[.*]$", "", pattern, 1)
+            pattern = re.sub(r" \[.*]$", "", pattern, 1)
             if messageLevel >= 4:
-                g.blue( "nA:    Pattern='" + pattern + "' " + "(after directives removed)")
+                g.blue("nA:    Pattern='" + pattern + "' " + "(after directives removed)")
 
             #Keep copy of pattern without directives for message log
             patternOriginal = pattern
@@ -347,42 +345,41 @@ def doNodeAction(pClicked, c):
                     if saveAtFile:
                         #Problem - No way found to just save clicked node, saving all
                         c.fileCommands.writeAtFileNodes()
-                        ### c.requestRedrawFlag = True
                         c.redraw()
                         if messageLevel >= 3:
                             g.blue( "nA:    Saved '" + hClicked + "'")
-                #Run the script
+                # Run the script
                 applyNodeAction(pScript, pClicked, c)
-                #Indicate that at least one pattern was matched
+                # Indicate that at least one pattern was matched
                 foundPattern = True
-                #Don't trigger more patterns unless enabled in patterns' headline
+                # Don't trigger more patterns unless enabled in patterns' headline
                 if not passEventInternal:
                     break
             else:
                 if messageLevel >= 3:
                     g.blue("nA: Did not match '" + patternOriginal + "'")
 
-        #Finished checking headline against patterns
+        # Finished checking headline against patterns
         if not foundPattern:
             #no match to any pattern, always pass event to next plugin
             if messageLevel >= 1:
                 g.blue("nA: No patterns matched to """ + hClicked + '"')
             return False #TL - Inform onIconDoubleClick that no action was taken
-        elif passEventExternal:
+        if passEventExternal:
             #last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
             return False #TL - Inform onIconDoubleClick to pass double-click event
-        else:
-            #last matched pattern did not have directive to pass event to plugin
-            if messageLevel >= 2:
-                g.blue("nA: Event not passed to next plugin")
-            return True #TL - Inform onIconDoubleClick to not pass double-click
-    else:
-        #nodeActions plugin enabled without a 'nodeActions' node
-        if messageLevel >= 4:
-            g.blue("nA: The ""nodeActions"" node does not exist")
-        return False #TL - Inform onIconDoubleClick that no action was taken
+        #
+        #last matched pattern did not have directive to pass event to plugin
+        if messageLevel >= 2:
+            g.blue("nA: Event not passed to next plugin")
+        return True #TL - Inform onIconDoubleClick to not pass double-click
+    # 
+    # nodeActions plugin enabled without a 'nodeActions' node
+    if messageLevel >= 4:
+        g.blue("nA: The ""nodeActions"" node does not exist")
+    return False #TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 

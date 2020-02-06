@@ -12,16 +12,11 @@ from collections import defaultdict
 #@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
-    #@+others
-    #@+node:tbrown.20171028115601.3: *3* __init__
+    
     def __init__(self):
-        # pylint: disable=unnecessary-lambda
-        self.listeners = defaultdict(lambda: list())
+        self.listeners = defaultdict(list)
         self.emitters = []
         self.locked = False
-
-
-    #@-others
 #@+node:tbrown.20171028115601.4: ** class MsgSignalHandled
 class MsgSignalHandled:
     """A listener can return SignalManager.MsgSignalHandled to prevent
@@ -93,7 +88,7 @@ def unlock(obj):
     _setup(obj)
     obj._signal_data.locked = False
 #@+node:tbrown.20171028115601.12: ** class SignalManager
-class SignalManager(object):
+class SignalManager:
     """SignalManager - light weight signal management mixin."""
 
     #@+others
@@ -120,7 +115,7 @@ def main():
             self.emit('the_emission', 12, [1,2,3])
 
     def hear_emit(n, l):
-        print("Got %s %s" % (n,l))
+        print(f"Got {n} {l}")
 
     emitter = Emitter()
     emitter.connect('the_emission', hear_emit)
@@ -138,7 +133,7 @@ def main():
         def check_work(self, num, animal='eels'):
             if is_locked(self):
                 return
-            print("%s heard about %s %s" % (self.name, num, animal))
+            print(f"{self.name} heard about {num} {animal}")
 
     class SomeProxy:
         """Like a public notice board"""

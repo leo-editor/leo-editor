@@ -2,17 +2,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
-'''Handling background processes'''
+"""Handling background processes"""
 
 import leo.core.leoGlobals as g
+import re
 import subprocess
 
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
-class BackgroundProcessManager(object):
+class BackgroundProcessManager:
     #@+<< BPM docstring>>
     #@+node:ekr.20161029063227.1: *3* << BPM docstring>>
-    '''
+    """
     #@@language rest
     #@@wrap
 
@@ -47,13 +48,12 @@ class BackgroundProcessManager(object):
     To run processes that *don't* produce output, just call subprocess.Popen.
     You can run as many of these process as you like, without involving the BPM
     in any way.
-    '''
+    """
     #@-<< BPM docstring>>
-
-    # Use self.put_log, not g.es or g.es_print!
-
+    #@+others
+    #@+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self):
-        '''Ctor for the base BackgroundProcessManager class.'''
+        """Ctor for the base BackgroundProcessManager class."""
         self.data = None
             # a ProcessData instance.
         self.process_queue = []
@@ -61,52 +61,52 @@ class BackgroundProcessManager(object):
         self.pid = None
             # The process id of the running process.
         g.app.idleTimeManager.add_callback(self.on_idle)
-
-    #@+others
     #@+node:ekr.20161028090624.1: *3* class ProcessData
-    class ProcessData(object):
-        '''A class to hold data about running or queued processes.'''
+    class ProcessData:
+        """A class to hold data about running or queued processes."""
 
-        def __init__(self, c, kind, fn, shell):
-            '''Ctor for the ProcessData class.'''
+        def __init__(self, c, kind, fn, link_pattern, link_root, shell):
+            """Ctor for the ProcessData class."""
             self.c = c
             self.callback = None
             self.fn = fn
             self.kind = kind
+            self.link_pattern = None
+            self.link_root = link_root
             self.shell = shell
+            #
+            # Check and compile the link pattern.
+            if link_pattern and isinstance(link_pattern, str):
+                try:
+                    self.link_pattern = re.compile(link_pattern)
+                except Exception:
+                    g.trace(f"Invalid link pattern: {link_pattern}")
+                    self.link_pattern = None
 
         def __repr__(self):
-            return 'c: %s kind: %s callback: %s fn: %s shell: %s' % (
-                self.c.shortFileName(),
-                self.kind,
-                id(self.callback) if self.callback else None,
-                self.fn,
-                self.shell,
+            return (
+                f"c: {self.c.shortFileName()} "
+                f"kind: {self.kind} "
+                f"callback: {id(self.callback) if self.callback else None} "
+                f"fn: {self.fn} "
+                f"shell: {self.shell}"
             )
 
         __str__ = __repr__
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
-        '''Check the running process, and switch if necessary.'''
-        trace = False and not g.unitTesting
-        trace_inactive = True
-        trace_running = False
+        """Check the running process, and switch if necessary."""
         if self.pid:
             if self.pid.poll() is None:
-                if trace and trace_running:
-                    self.put_log('running: %s' % id(self.pid))
+                pass
             else:
-                if trace:
-                    self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
         elif self.process_queue:
             self.start_next() # Start the next process.
-        elif trace and trace_inactive:
-            self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
-        '''End the present process.'''
+        """End the present process."""
         # Send the output to the log.
         for s in self.pid.stdout:
             self.put_log(s)
@@ -118,17 +118,17 @@ class BackgroundProcessManager(object):
         self.pid = None
     #@+node:ekr.20161028063800.1: *4* bpm.start_next
     def start_next(self):
-        '''The previous process has finished. Start the next one.'''
+        """The previous process has finished. Start the next one."""
         if self.process_queue:
             self.data = self.process_queue.pop(0)
             self.data.callback()
         else:
-            self.put_log('%s finished' % self.data.kind)
+            self.put_log(f"{self.data.kind} finished")
             self.data = None
             self.pid = None
     #@+node:ekr.20161026193609.3: *3* bpm.kill
     def kill(self, kind=None):
-        '''Kill the presently running process, if any.'''
+        """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
         if kind == 'all':
@@ -136,46 +136,79 @@ class BackgroundProcessManager(object):
         else:
             self.process_queue = [z for z in self.process_queue if z.kind != kind]
         if self.pid and kind in ('all', self.data.kind):
-            self.put_log('killing %s process' % kind)
+            self.put_log(f"killing {kind} process")
             try:
                 self.pid.kill()
             except OSError:
                 pass
             self.pid = None
-        self.put_log('%s finished' % kind)
+        self.put_log(f"{kind} finished")
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
-        '''The idle-time callback for leo.commands.checkerCommands.'''
-        # g.trace('(BPM)', 'pid:', self.pid, 'queue:', len(self.process_queue))
+        """The idle-time callback for leo.commands.checkerCommands."""
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log
     def put_log(self, s):
-        '''
+        """
         Put a string to the originating log.
         This is not what g.es_print does!
-        '''
+        """
+        # Warning: don't use g.es or g.es_print here!
+        data = self.data
         s = s and s.rstrip()
-        if s:
-            # Put the message to the originating log pane, if it still exists.
-            c = self.data and self.data.c
-            if c and c.exists:
-                c.frame.log.put(s + '\n')
-                print(s)
-            else:
-                g.es_print(s)
+        if not s or not data:
+            return
+        #
+        # Make sure c still exists.
+        c = data.c
+        if not c or not c.exists:
+            return
+        log = c.frame.log
+        #
+        # Always print the message.
+        print(s)
+        #
+        # Put the plain message if the link is not valid.
+        link_pattern, link_root = data.link_pattern, data.link_root
+        if not (link_pattern and link_root):
+            log.put(s + '\n')
+            return
+        try:
+            m = link_pattern.match(s)
+        except Exception:
+            m = None
+        if not m:
+            log.put(s + '\n')
+            return
+        try:
+            line = int(m.group(1))
+        except Exception:
+            # g.es_exception()
+            log.put(s + '\n')
+            return
+        #
+        # Put a clickable link.
+        unl = link_root.get_UNL(with_proto=True, with_count=True)
+        nodeLink = f"{unl},{-line}"
+        log.put(s + '\n', nodeLink=nodeLink)
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
-    def start_process(self, c, command, kind, fn=None, shell=False):
-        '''Start or queue a process described by command and fn.'''
-        trace = False and not g.unitTesting
-        self.data = data = self.ProcessData(c, kind, fn, shell)
+    def start_process(self, c, command, kind,
+        fn=None,
+        link_pattern=None,
+        link_root=None,
+        shell=False,
+    ):
+        """Start or queue a process described by command and fn."""
+        data = self.ProcessData(c, kind, fn, link_pattern, link_root, shell)
+            # 2019/06/05: don't set self.data unless we start the process!
         if self.pid:
             # A process is already active.  Add a new callback.
-            if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
+            # g.trace('\nQUEUE', link_root.h)
 
-            def callback(data=data):
-                fn = data.fn
-                self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
+            def callback(data=data, kind=kind):
+                """This is called when a process ends."""
+                self.put_log('%s: %s\n' % (kind, g.shortFileName(data.fn)))
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -183,13 +216,13 @@ class BackgroundProcessManager(object):
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
-                if trace: self.put_log('===== Starting: %s for %s' % (
-                    id(self.pid), g.shortFileName(fn)))
-
             data.callback = callback
             self.process_queue.append(data)
         else:
             # Start the process immediately.
+            self.data = data
+            # g.trace('\nSTART', link_root.h)
+            self.kind = kind
             self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
             self.pid = subprocess.Popen(
                 command,
@@ -198,8 +231,6 @@ class BackgroundProcessManager(object):
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-            if trace: self.put_log('===== Starting: %s for %s' % (
-                id(self.pid), g.shortFileName(fn)))
     #@-others
 #@-others
 #@@language python

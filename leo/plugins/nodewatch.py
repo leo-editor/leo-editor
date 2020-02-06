@@ -125,7 +125,7 @@ def onCreate (tag, keys):
     theNodewatchController = NodewatchController(c)
     c.theNodewatchController = theNodewatchController
 #@+node:peckj.20131101132841.6450: ** class NodewatchController
-class NodewatchController(object):
+class NodewatchController:
     #@+others
     #@+node:peckj.20131101132841.6452: *3* __init__
     def __init__(self, c):
@@ -144,16 +144,13 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
     #@+others
     #@+node:peckj.20131101132841.6454: *3* __init__
     def __init__(self,c,parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.c = c
         self.initUI()
         self.registerCallbacks()
-        autoexecute_nodewatch_nodes = c.config.getBool('nodewatch_autoexecute_scripts', default=False)
+        autoexecute_nodewatch_nodes = c.config.getBool('nodewatch-autoexecute-scripts', default=False)
         if autoexecute_nodewatch_nodes and c.config.isLocalSetting('nodewatch_autoexecute_scripts', 'bool'):
-            g.es('Security warning! Ignoring...',color='red')
-            g.es('@bool nodewatch_autoexecute_scripts = True',color='red')
-            g.es('This setting can be True only in')
-            g.es('leoSettings.leo or myLeoSettings.leo')
+            g.issueSecurityWarning('@bool nodewatch_autoexecute_scripts')
             autoexecute_nodewatch_nodes = False
         if autoexecute_nodewatch_nodes:
             self.update_all()

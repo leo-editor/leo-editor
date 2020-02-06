@@ -1,0 +1,308 @@
+||* Tests *|| 2018-04-03 12:30:1522783802
+||* Test Name *|| No script UNL, Results UNL
+||* stdout *||
+total 37
+-rw-rw-r-- 1 bob bob  9935 Apr  3 12:10 examples_error.leo
+-rw-rw-r-- 1 bob bob  5665 Apr  3 12:13 examples_external.leo
+-rw-rw-r-- 1 bob bob  6354 Apr  3 12:16 examples_multi_leo.leo
+-rw-rw-r-- 1 bob bob 19718 Apr  3 12:21 examples_no_error.leo
+-rw-rw-r-- 1 bob bob 22158 Apr  3 12:29 examples_unl.leo
+-rw-rw-r-- 1 bob bob  2018 Apr  3 12:13 externalExamples.txt
+-rw-rw-r-- 1 bob bob   131 Mar 31 16:18 md5.sh
+-rw-rw-r-- 1 bob bob  4732 Apr  3 12:13 md5.txt
+-rw-rw-r-- 1 bob bob   129 Apr  3 11:06 shell_name.sh
+-rwxrwxr-x 1 bob bob   551 Jan 20 17:38 slowOutNoFlush.py
+-rwxrwxr-x 1 bob bob   542 Jan 20 17:38 slowOut.py
+-rwxrwxr-x 1 bob bob   281 Mar 24 10:36 slowOut.sh
+-rw-rw-r-- 1 bob bob  5162 Apr  3 12:23 test_results.leo
+-rw-rw-r-- 1 bob bob  1767 Apr  3 11:24 test_scripts.leo
+-rw-rw-r-- 1 bob bob  2975 Apr  3 12:23 test_scripts_results.leo
+||* Completion *||
+0 Subprocess Termination Code
+00:00:01 Elapsed Time. 2018-04-03 12:30:03 End Time
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+12:30:04 saved: examples_unl.leo
+||* Test Name *|| Tuples - Pos for Script, Pos for Results, no cross file
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:04 End Time
+||* Other Color *|| black
+12:30:05 saved: examples_unl.leo
+||* Test Name *|| Lists - Pos for Script, Pos for Results, no cross file
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:06 End Time
+||* Other Color *|| black
+12:30:07 saved: examples_unl.leo
+||* Test Name *|| Cross-File Pos to file 1 for Script, Cross-file Pos to file 2 for Results
+||* stdout *||
+39K	.
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:07 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_results.leo
+read outline in 0.02 seconds
+12:30:08 saved: test_results.leo
+||* Test Name *|| Cross-file Pos to file 1 for Script, Cross-file Pos to file 1 for Results
+||* stdout *||
+LANG=en_US.utf8
+LANGUAGE=en_US.utf8
+LC_CTYPE=en_US.utf8
+LC_NUMERIC="en_US.utf8"
+LC_TIME=en_US_bob.UTF-8
+LC_COLLATE=en_US.utf8
+LC_MONETARY="en_US.utf8"
+LC_MESSAGES=en_US.utf8
+LC_PAPER="en_US.utf8"
+LC_NAME="en_US.utf8"
+LC_ADDRESS="en_US.utf8"
+LC_TELEPHONE="en_US.utf8"
+LC_MEASUREMENT="en_US.utf8"
+LC_IDENTIFICATION="en_US.utf8"
+LC_ALL=
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:08 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts_results.leo
+read outline in 0.01 seconds
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts_results.leo
+read outline in 0.01 seconds
+12:30:09 saved: test_scripts_results.leo
+||* Test Name *|| This file Pos for Script, Cross-file Pos for Results
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 6, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299813953152: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| Cross-file Pos for Script, this file Pos for Results
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+read outline in 0.04 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 12, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299812702920: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| Pos for Script, UNL for Results, no cross file
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 6, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299936995312: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| UNL for Script, Pos for Results, no cross file
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 8, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299937280968: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| This file UNL for Script, Cross file Pos for Results
+||* stdout *||
+/pri/git/leo_babel/examples
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:10 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_results.leo
+read outline in 0.02 seconds
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+12:30:11 saved: test_results.leo
+||* Test Name *|| Cross-file Pos for Script, this file UNL for Results
+||* stdout *||
+Linux Z420-2UA31629NP 4.13.0-38-generic #43~16.04.1-Ubuntu SMP Wed Mar 14 17:48:43 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:11 End Time
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_scripts.leo
+read outline in 0.00 seconds
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+12:30:12 saved: examples_unl.leo
+||* Test Name *|| Script UNL, Results UNL
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:12 End Time
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+12:30:14 saved: examples_unl.leo
+||* Test Name *|| Script UNL, no Results UNL
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:14 End Time
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.07 seconds
+12:30:15 saved: examples_unl.leo
+||* Test Name *|| unl2pos() called
+||* Other Color *|| black
+read outline in 0.00 seconds
+reading:
+/pri/git/leo_babel/examples/test_results.leo
+read outline in 0.02 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 7, in <module>
+AssertionError: Unexpected Commander returned: Commander 140299809773440: '/pri/git/leo_babel/examples/test_results.leo'
+||* Test Name *|| No Error - Pathname, no cmdr
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 6, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299809404240: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| No Error - No protocol, Pathname, no cmdr
+||* Other Color *|| black
+read outline in 0.01 seconds
+reading:
+/pri/git/leo_babel/examples/examples_unl.leo
+read outline in 0.06 seconds
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 6, in <module>
+AssertionError: Expected current file Commander 140299825312264: '/pri/git/leo_babel/examples/examples_unl.leo', but got Commander 140299808919904: '/pri/git/leo_babel/examples/examples_unl.leo'
+||* Test Name *|| No Error - No protocol, No Pathname, cmdr
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:15 End Time
+||* Other Color *|| black
+12:30:16 saved: examples_unl.leo
+||* Test Name *|| No Error - Protocol, No Pathname, cmdr
+||* stdout *||
+Babel Script 01
+||* Completion *||
+0 Subprocess Termination Code
+00:00:00 Elapsed Time. 2018-04-03 12:30:16 End Time
+||* Other Color *|| black
+12:30:17 saved: examples_unl.leo
+||* Test Name *|| Error - Protocol, Pathname, cmdr
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 5, in <module>
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 184, in unl2pos
+    raise ValueError('Commander for {0} and pathname in {1}'.format(cmdr.fileName(), unl))
+ValueError: Commander for /pri/git/leo_babel/examples/examples_unl.leo and pathname in unl:///pri/git/leo_babel/examples/examples_unl.leo#UNL%20Targets-->Scripts-->babel%20script%2001
+||* Test Name *|| Error - Protocol, No pathname, no cmdr
+||* Other Color *|| red
+Traceback (most recent call last):
+  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2011, in executeAnyCommand
+    return command(event)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 728, in babelExec
+    _babelExec(babelG, babelCmdr, babelRoot)
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 393, in _babelExec
+    exec(code, gld)
+  File "Babel Parameter Script", line 5, in <module>
+  File "/pri/git/leo-editor/leo/plugins/leo_babel/babel_lib.py", line 182, in unl2pos
+    raise ValueError('No commander and No pathname in {0}'.format(unl))
+ValueError: No commander and No pathname in unl://#UNL%20Targets-->Scripts-->babel%20script%2001

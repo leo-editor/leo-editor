@@ -29,9 +29,11 @@ from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 def to_html(text, from_='markdown'):
     """to_html - convert to HTML
 
-    :param str text: markdown text to convert
-    :return: html
-    :rtype: str
+    Args:
+        text (str): markdown text to convert
+
+    Returns:
+        str: html
     """
 
     cmd = "pandoc --smart --standalone --mathjax --from %s --to html" % from_
@@ -65,7 +67,8 @@ class LEP_PanDownView(HtmlView):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setHtml(to_html(text, from_=self.from_fmt))
 
@@ -73,7 +76,8 @@ class LEP_PanDownView(HtmlView):
     def update_text(self, text):
         """update_text - update for current text
 
-        :param str text: current text
+        Args:
+            text (str): current text
         """
         # h = self.horizontalScrollBar().value()
         # v = self.verticalScrollBar().value()
@@ -102,7 +106,8 @@ class LEP_PanDownHtmlView(TextView):
     def new_text(self, text):
         """new_text - update for new text
 
-        :param str text: new text
+        Args:
+            text (str): new text
         """
         self.setPlainText(to_html(text, from_=self.from_fmt))
 

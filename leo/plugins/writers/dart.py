@@ -8,7 +8,7 @@ import leo.plugins.writers.basewriter as basewriter
 class DartWriter(basewriter.BaseWriter):
     '''The writer class for .dart files.'''
     # def __init__(self,c):
-        # basewriter.BaseWriter.__init__(self,c)
+        # super().__init__(c)
     #@+others
     #@+node:ekr.20141116100154.4: ** dart.write
     def write (self,root):

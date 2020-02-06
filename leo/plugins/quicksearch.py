@@ -94,7 +94,13 @@ from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #@-<< imports >>
 #@+others
-#@+node:ville.20090314215508.8: ** init
+#@+node:ekr.20190210123045.1: ** top level
+#@+node:ville.20121223213319.3670: *3* dumpfocus (quicksearch.py)
+def dumpfocus():
+    f = QtWidgets.QApplication.instance().focusWidget()
+    g.es("Focus: " + f)
+    print("Focus: " + f)
+#@+node:ville.20090314215508.8: *3* init (quicksearch.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
@@ -103,7 +109,94 @@ def init ():
         g.plugin_signon(__name__)
     return ok
 
-#@+node:ville.20090314215508.9: ** onCreate
+#@+node:tbrown.20111011152601.48462: *3* install_qt_quicksearch_tab (Creates commands)
+def install_qt_quicksearch_tab(c):
+
+    wdg = LeoQuickSearchWidget(c, mode="nav")
+    c.frame.log.createTab("Nav", widget = wdg)
+
+    def focus_quicksearch_entry(event):
+        c.frame.log.selectTab('Nav')
+        wdg.ui.lineEdit.selectAll()
+        wdg.ui.lineEdit.setFocus()
+
+    def focus_to_nav(event):
+        c.frame.log.selectTab('Nav')
+        wdg.ui.listWidget.setFocus()
+
+    def find_selected(event):
+        text = c.frame.body.wrapper.getSelectedText()
+        if text.strip():
+            wdg.ui.lineEdit.setText(text)
+            wdg.returnPressed()
+            focus_to_nav(event)
+        else:
+            focus_quicksearch_entry(event)
+
+    def nodehistory(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doNodeHistory()
+
+    def show_dirty(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doChanged()
+
+    def timeline(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doTimeline()
+
+    c.k.registerCommand('find-quick', focus_quicksearch_entry)
+    c.k.registerCommand('find-quick-selected', find_selected)
+    c.k.registerCommand('focus-to-nav', focus_to_nav)
+    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
+    c.k.registerCommand('find-quick-timeline', timeline)
+    c.k.registerCommand('find-quick-changed', show_dirty)
+    c.k.registerCommand('history', nodehistory)
+
+    @g.command('marked-list')
+    def showmarks(event):
+        """ List marked nodes in nav tab """
+        wdg.scon.doShowMarked()
+
+    @g.command('go-anywhere')
+    def find_popout_f(event):
+        c = event['c']
+        w = LeoQuickSearchWidget(c, mode="popout", parent = c.frame.top)
+        topgeo = c.frame.top.geometry()
+        wid = topgeo.width()
+        w.setGeometry(wid/2,0, wid/2, 500)
+        w.show()
+        w.setFocus(QtConst.OtherFocusReason)
+        c._popout = w
+
+    c.frame.nav = wdg
+
+    # make activating this tab activate the input box
+    def activate_input(idx, c=c):
+        wdg = c.frame.nav
+        tab_widget = wdg.parent().parent()
+        if (tab_widget and
+            hasattr(tab_widget, 'currentWidget') and
+            tab_widget.currentWidget() == wdg
+        ):
+            wdg.ui.lineEdit.selectAll()
+            wdg.ui.lineEdit.setFocus()
+
+    # Careful: we may be unit testing.
+    if wdg and wdg.parent() and not g.app.dock:
+        tab_widget = wdg.parent().parent()
+        tab_widget.currentChanged.connect(activate_input)
+#@+node:ekr.20111014074810.15659: *3* matchLines
+def matchlines(b, miter):
+
+    res = []
+    for m in miter:
+        st, en = g.getLine(b, m.start())
+        li = b[st:en].strip()
+        res.append((li, (m.start(), m.end() )))
+    return res
+
+#@+node:ville.20090314215508.9: *3* onCreate (quicksearch.py)
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -111,7 +204,7 @@ def onCreate (tag, keys):
 
     install_qt_quicksearch_tab(c)
 
-#@+node:tbrown.20111011152601.48461: ** show_unittest_failures
+#@+node:tbrown.20111011152601.48461: *3* show_unittest_failures
 def show_unittest_failures(event):
     c = event.get('c')
     fails = c.db.get('unittest/cur/fail')
@@ -139,92 +232,7 @@ def show_unittest_failures(event):
             it.setToolTip(stack)
 
     c.k.simulateCommand('focus-to-nav')
-#@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab (Creates commands)
-def install_qt_quicksearch_tab(c):
-
-    # tabw = c.frame.top.tabWidget
-    wdg = LeoQuickSearchWidget(c, mode="nav")
-    c.frame.log.createTab("Nav", widget = wdg)
-    # tabw.addTab(wdg, "QuickSearch")
-
-    def focus_quicksearch_entry(event):
-        c.frame.log.selectTab('Nav')
-        wdg.ui.lineEdit.selectAll()
-        wdg.ui.lineEdit.setFocus()
-
-    def focus_to_nav(event):
-        c.frame.log.selectTab('Nav')
-        wdg.ui.listWidget.setFocus()
-
-    def find_selected(event):
-        text = c.frame.body.wrapper.getSelectedText()
-        if text.strip():
-            wdg.ui.lineEdit.setText(text)
-            wdg.returnPressed()
-            focus_to_nav(event)
-
-        else:
-            focus_quicksearch_entry(event)
-
-    def nodehistory(event):
-        c.frame.log.selectTab('Nav')
-        wdg.scon.doNodeHistory()
-
-    def show_dirty(event):
-        c.frame.log.selectTab('Nav')
-        wdg.scon.doChanged()
-
-    def timeline(event):
-        c.frame.log.selectTab('Nav')
-        wdg.scon.doTimeline()
-
-    c.k.registerCommand('find-quick', focus_quicksearch_entry)
-    c.k.registerCommand('find-quick-selected', find_selected)
-        ### , shortcut='Ctrl-Shift-f')
-    c.k.registerCommand('focus-to-nav', focus_to_nav)
-    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
-    c.k.registerCommand('find-quick-timeline', timeline)
-    c.k.registerCommand('find-quick-changed', show_dirty)
-    c.k.registerCommand('history', nodehistory)
-
-    @g.command('marked-list')
-    def showmarks(event):
-        """ List marked nodes in nav tab """
-        #c.frame.log.selectTab('Nav')
-        wdg.scon.doShowMarked()
-
-    @g.command('go-anywhere')
-    def find_popout_f(event):
-        c = event['c']
-        w = LeoQuickSearchWidget(c, mode="popout", parent = c.frame.top)
-        topgeo = c.frame.top.geometry()
-        wid = topgeo.width()
-        w.setGeometry(wid/2,0, wid/2, 500)
-        #w.setParent(c.frame.top)
-        #w.setWindowFlags(QtConst.FramelessWindowHint)
-        w.show()
-        w.setFocus(QtConst.OtherFocusReason)
-        #w.setGeometry(100,0,800,500)
-        c._popout = w
-
-    c.frame.nav = wdg
-
-    # make activating this tab activate the input box
-    def activate_input(idx, c=c):
-        wdg = c.frame.nav
-        tab_widget = wdg.parent().parent()
-        if (tab_widget and
-            hasattr(tab_widget, 'currentWidget') and
-            tab_widget.currentWidget() == wdg
-        ):
-            wdg.ui.lineEdit.selectAll()
-            wdg.ui.lineEdit.setFocus()
-
-    # Careful: we may be unit testing.
-    if wdg and wdg.parent():
-        tab_widget = wdg.parent().parent()
-        tab_widget.currentChanged.connect(activate_input)
-#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict
+#@+node:jlunz.20151027094647.1: ** class OrderedDefaultDict (OrderedDict)
 class OrderedDefaultDict(OrderedDict):
     '''
     Credit:  http://stackoverflow.com/questions/4126348/
@@ -249,29 +257,24 @@ class OrderedDefaultDict(OrderedDict):
     def __reduce__(self):  # optional, for pickle support
         args = (self.default_factory,) if self.default_factory else ()
         return self.__class__, args, None, None, self.items()
-#@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter
+#@+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
 class QuickSearchEventFilter(QtCore.QObject):
 
     #@+others
-    #@+node:ekr.20111015194452.15718: *3*  ctor (leoQtEventFilter)
+    #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
     def __init__(self,c,w, lineedit):
 
-        # Init the base class.
-        QtCore.QObject.__init__(self)
-
+        super().__init__()
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit
-    #@+node:ekr.20111015194452.15719: *3* eventFilter
+    #@+node:ekr.20111015194452.15719: *3* quick_ev.eventFilter
     def eventFilter(self,obj,event):
 
-        # g.trace()
         eventType = event.type()
         ev = QtCore.QEvent
         # QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
-        # kinds = [ev.KeyPress,ev.KeyRelease]
         if eventType == ev.KeyRelease:
-            #print "key event"
             lw = self.listWidget
             k = event.key()
             moved = False
@@ -284,127 +287,81 @@ class QuickSearchEventFilter(QtCore.QObject):
             if k == QtConst.Key_Return:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-
             if moved:
                 self.lineEdit.setFocus(True)
                 self.lineEdit.deselect()
-            #self.w.onKeyPress(event)
-
         return False
     #@-others
-#@+node:ville.20121223213319.3670: ** dumpfocus (quicksearch.py)
-def dumpfocus():
-    f = QtWidgets.QApplication.instance().focusWidget()
-    g.es("Focus: " + f)
-    print("Focus: " + f)
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
 class LeoQuickSearchWidget(QtWidgets.QWidget):
 
     """ 'Find in files'/grep style search widget """
 
     #@+others
-    #@+node:ekr.20111015194452.15695: *3*  ctor
+    #@+node:ekr.20111015194452.15695: *3* quick_w.ctor
     def __init__(self,c, mode = "nav", parent=None):
 
-        QtWidgets.QWidget.__init__(self, parent)
-
+        super().__init__(parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
-
-        # set to True after return is pressed in nav mode, to disable live updates until field is cleaned again
-        self.frozen = False
+        self.frozen = False # True: disable live updates.
         w = self.ui.listWidget
         u = self.ui
         cc = QuickSearchController(c,w,u)
         self.scon = cc
-
         if mode == "popout":
             self.setWindowTitle("Go anywhere")
-            if 1:
-                self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
-            # else:
-                # self.connect(self.ui.lineEdit,
-                    # QtCore.SIGNAL("returnPressed()"),
-                    # self.selectAndDismiss)
+            self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
             threadutil.later(self.ui.lineEdit.setFocus)
         else:
-            if 1:
-                self.ui.lineEdit.returnPressed.connect(self.returnPressed)
-            # else:
-                # self.connect(self.ui.lineEdit,
-                    # QtCore.SIGNAL("returnPressed()"),
-                    # self.returnPressed)
-        if 1:
-            self.ui.lineEdit.textChanged.connect(self.liveUpdate)
-        # else:
-            # self.connect(self.ui.lineEdit,
-                # QtCore.SIGNAL("textChanged(QString)"),
-                # self.liveUpdate)
-
+            self.ui.lineEdit.returnPressed.connect(self.returnPressed)
+        self.ui.lineEdit.textChanged.connect(self.liveUpdate)
         self.ev_filter = QuickSearchEventFilter(c,w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
         self.c = c
-    #@+node:ekr.20111015194452.15696: *3* returnPressed
+    #@+node:ekr.20111015194452.15696: *3* quick_w.returnPressed
     def returnPressed(self):
-
+        w = self.ui.listWidget
         self.scon.freeze()
-        t = g.u(self.ui.lineEdit.text())
+        t = self.ui.lineEdit.text()
         if not t.strip():
             return
-
-        if t == g.u('m'):
+        # Handle Easter eggs.
+        if t == 'm':
             self.scon.doShowMarked()
-        elif t == g.u('h'):
+        elif t == 'h':
             self.scon.doSearchHistory()
         else:
             self.scon.doSearch(t)
-
         if self.scon.its:
-            self.ui.listWidget.blockSignals(True) # don't jump to first hit
-            self.ui.listWidget.setFocus()
-            self.ui.listWidget.blockSignals(False) # ok, respond if user moves
-
-    def selectAndDismiss(self):
-        self.hide()
-
-    #@+node:ville.20121118193144.3622: *3* liveUpdate
+            w.blockSignals(True)
+                # don't jump to first hit
+            w.setFocus()
+            w.blockSignals(False)
+                # ok, respond if user moves
+    #@+node:ville.20121118193144.3622: *3* quick_w.liveUpdate
     def liveUpdate(self):
 
-        t = g.u(self.ui.lineEdit.text())
+        t = self.ui.lineEdit.text()
         if not t.strip():
             if self.scon.frozen:
                 self.scon.freeze(False)
                 self.scon.clear()
             return
-
         if len(t) < 3:
             return
-
         if self.scon.frozen:
             return
-
-        if t == g.u('m'):
+        if t == 'm':
             self.scon.doShowMarked()
             return
-
         self.scon.worker.set_input(t)
-
-
-
-
+    #@+node:ekr.20190210152123.1: *3* quick_w.selectAndDismiss
+    def selectAndDismiss(self):
+        self.hide()
     #@-others
-#@+node:ekr.20111014074810.15659: ** matchLines
-def matchlines(b, miter):
-
-    res = []
-    for m in miter:
-        st, en = g.getLine(b, m.start())
-        li = b[st:en].strip()
-        res.append((li, (m.start(), m.end() )))
-    return res
-
-#@+node:ville.20090314215508.12: ** class QuickSearchController
-class QuickSearchController(object):
+#@+node:ville.20090314215508.12: ** class QuickSearchController (Object)
+class QuickSearchController:
 
     #@+others
     #@+node:ekr.20111015194452.15685: *3* __init__
@@ -420,10 +377,11 @@ class QuickSearchController(object):
 
         self.frozen = False
         self._search_patterns = []
+
         def searcher(inp):
             #print("searcher", inp)
             if self.frozen:
-                return
+                return None
             exp = inp.replace(" ", "*")
             res =  self.bgSearch(exp)
             return res
@@ -498,7 +456,7 @@ class QuickSearchController(object):
     def addParentMatches(self, parent_list):
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
-            if g.isString(parent_key):
+            if isinstance(parent_key, str):
                 v = self.c.fileCommands.gnxDict.get(parent_key)
                 h = v.h if v else parent_key
                 it = QtWidgets.QListWidgetItem(h, self.lw)
@@ -584,6 +542,7 @@ class QuickSearchController(object):
         self.addHeadlineMatches(changed)
     #@+node:ekr.20111015194452.15692: *3* doSearch
     def doSearch(self, pat):
+
         hitBase = False
         self.clear()
         self.pushSearchHistory(pat)
@@ -679,8 +638,7 @@ class QuickSearchController(object):
         #self.clear()
 
         if self.frozen:
-            return
-
+            return None
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
             # bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
@@ -734,10 +692,7 @@ class QuickSearchController(object):
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
             try:
-                if g.isPython3:
-                    t1.__next__()
-                else:
-                    t1.next()
+                t1.__next__()
             except StopIteration:
                 continue
             pc = p.copy()

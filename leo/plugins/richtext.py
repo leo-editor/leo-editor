@@ -61,18 +61,19 @@ To make a button to toggle the editor on and off, use::
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
-real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
-import time
-# pylint: disable=no-name-in-module
-if g.isPython3:
-    from urllib.parse import unquote
+if QtWebKit:
+    real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
 else:
-    from urllib import unquote
+    real_webkit = False
+import time
+from urllib.parse import unquote
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    if not QtWebKit:
+        return False
     name = g.app.gui.guiName()
     ok = name == 'qt'
     if ok:
@@ -92,7 +93,7 @@ if QtWidgets:
 
             self.c = kwargs['c']
             del kwargs['c']
-            QtWidgets.QWidget.__init__(self, *args, **kwargs)
+            super().__init__(*args, **kwargs)
             # were we opened by an @ rich node? Calling code will set
             self.at_rich = False
             # are we being closed by leaving an @ rich node? Calling code will set
@@ -125,7 +126,7 @@ if QtWidgets:
             c.registerReloadSettings(self)
             # read autosave preference
             if not hasattr(self.c, '_ckeeditor_autosave'):
-                auto = self.c.config.getBool("richtext_cke_autosave") or False
+                auto = self.c.config.getBool("richtext-cke-autosave") or False
                 self.c._ckeeditor_autosave = auto
                 if auto:
                     g.es("NOTE: automatic saving of rich text edits")
@@ -179,14 +180,13 @@ if QtWidgets:
 
             c = kwargs['c']
             if c != self.c:
-                return
-
+                return None
             # read initial content and request and wait for final content
             frame = self.webview.page().mainFrame()
             ele = frame.findFirstElement("#initial")
             text = str(ele.toPlainText()).strip()
             if text == '[empty]':
-                return  # no edit
+                return None # no edit
             frame.evaluateJavaScript('save_final();')
             ele = frame.findFirstElement("#final")
             for attempt in range(10):  # wait for up to 1 second
@@ -197,13 +197,10 @@ if QtWidgets:
                 break
             if new_text == '[empty]':
                 print("Didn't get new text")
-                return
-
+                return None
             text = unquote(str(text))
             new_text = unquote(str(new_text))
-
             if new_text != text:
-
                 if self.c._ckeeditor_autosave:
                     ans = 'yes'
                 else:
@@ -222,6 +219,7 @@ if QtWidgets:
                     return 'STOP'
                 else:
                     pass  # discard edits
+            return None
         #@+node:tbrown.20130813134319.7229: *3* close
         def close(self):
             if self.c and not self.at_rich_close:
@@ -233,8 +231,9 @@ if QtWidgets:
             return QtWidgets.QWidget.close(self)
         #@-others
 #@+node:tbrown.20130813134319.5694: ** class CKEPaneProvider
-class CKEPaneProvider(object):
+class CKEPaneProvider:
     ns_id = '_add_cke_pane'
+
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -242,12 +241,16 @@ class CKEPaneProvider(object):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
+
     def ns_provides(self):
         return[('Rich text CKE editor', self.ns_id)]
+
     def ns_provide(self, id_):
         if id_ == self.ns_id:
             w = CKEEditor(c=self.c)
             return w
+        return None
+
     def ns_provider_id(self):
         # used by register_provider() to unregister previously registered
         # providers of the same service
@@ -280,7 +283,6 @@ def at_rich_check(tag, key):
 @g.command('cke-text-open')
 def cmd_OpenEditor(event, at_rich=False):
     '''Open the rich text editor, hide the regular editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -297,7 +299,6 @@ def cmd_OpenEditor(event, at_rich=False):
 @g.command('cke-text-close')
 def cmd_CloseEditor(event, at_rich=False):
     '''Close the rich text editor, unhide the regular editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     if not splitter:
@@ -318,7 +319,6 @@ def cmd_CloseEditor(event, at_rich=False):
 @g.command('cke-text-switch')
 def cmd_SwitchEditor(event):
     '''Switch between regular and rich text editor.'''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
@@ -336,7 +336,6 @@ def cmd_ToggleAutosave(event):
     text unintentionally.  As long as you make no edits, the original
     text will not be changed.
     '''
-    ### c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     c = event.get('c')
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " +

@@ -8,7 +8,7 @@ import weakref
 
 from . import wgmultiline    as multiline
 from . import wgtextbox      as textbox
-from npyscreen.compatibility_code import npysNPSTree as NPSTree
+from . compatibility_code import npysNPSTree as NPSTree
 from .npysTree import TreeData
 
 import leo.core.leoGlobals as g
@@ -274,7 +274,8 @@ class MLTree(multiline.MultiLine):
 
     #@+node:ekr.20170428084208.192: *3* MLTree._get_tree_as_list
     def _get_tree_as_list(self, vl):
-        g.trace('MLTree:', vl)
+
+        # g.trace('MLTree:', vl)
         try:
             return vl.get_tree_as_list()
         except AttributeError:
@@ -386,11 +387,11 @@ class MLTree(multiline.MultiLine):
         return self._cached_tree_as_list
     #@+node:ekr.20170428084208.194: *4* MLTree._setMyValues
     def _setMyValues(self, tree):
+
         if tree == [] or tree == None:
             self._myFullValues = TreeData() #NPSTree.NPSTreeData()
         elif not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
             tree = self.convertToTree(tree)
-            # g.trace(tree)
             self._myFullValues = tree
             if not (isinstance(tree, TreeData) or isinstance(tree, NPSTree.NPSTreeData)):
                 raise TypeError(
