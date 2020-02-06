@@ -3534,6 +3534,12 @@ class KeyHandlerClass:
         stroke = event.stroke
         if not g.assert_is(stroke, g.KeyStroke):
             return
+        # #1448: Very late special case for getArg state.
+        #        This is not needed for other states.
+        if stroke.isNumPadKey() and k.state.kind == 'getArg':
+            stroke.removeNumPadModifier()
+            k.getArg(event, stroke=stroke)
+            return
         #
         # Ignore all unbound characters in command mode.
         if k.unboundKeyAction == 'command':

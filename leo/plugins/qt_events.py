@@ -300,6 +300,7 @@ class LeoQtEventFilter(QtCore.QObject):
             ch = chr(keynum)
         except ValueError:
             ch = ''
+        # g.trace(keynum, ch)
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
@@ -312,6 +313,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.MetaModifier, 'Meta'),
             (qt.ShiftModifier, 'Shift'),
             (qt.KeypadModifier, 'KeyPad'),
+                # #1448: Replacing this by 'Key' would make separate keypad bindings impossible.
         )
         mods = [b for a, b in mod_table if (modifiers & a)]
         #

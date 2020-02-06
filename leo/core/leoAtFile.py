@@ -12,6 +12,7 @@ import os
 import re
 import sys
 import time
+import unittest
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -1204,7 +1205,7 @@ class AtFile:
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
-    
+
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''
@@ -1288,17 +1289,25 @@ class AtFile:
     def writeAsisNode(self, p):
         '''Write the p's node to an @asis file.'''
         at = self
+        
+        def put(s):
+            """Append s to self.output_list."""
+            # #1480: Avoid calling at.os().
+            s = g.toUnicode(s, at.encoding, reportErrors=True)
+            at.outputList.append(s)
+
         # Write the headline only if it starts with '@@'.
         s = p.h
         if g.match(s, 0, "@@"):
             s = s[2:]
             if s:
-                at.outputFile.write(s)
+                put('\n') # Experimental.
+                put(s)
+                put('\n')
         # Write the body.
         s = p.b
         if s:
-            s = g.toEncodedString(s, at.encoding, reportErrors=True)
-            at.outputStringWithLineEndings(s)
+            put(s)
     #@+node:ekr.20041005105605.144: *6* at.write
     def write(self, root, sentinels=True):
         """Write a 4.x derived file.
@@ -1449,7 +1458,7 @@ class AtFile:
         """A factory returning a writer function for the given kind of @auto directive."""
         at = self
         d = g.app.atAutoWritersDict
-        for key in d.keys():
+        for key in d:
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
@@ -2447,7 +2456,6 @@ class AtFile:
         at.outputList = []
         return contents
     #@+node:ekr.20041005105605.201: *5* at.os and allies
-    # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *6* at.oblank, oblanks & otabs
     def oblank(self):
         self.os(' ')
@@ -2469,7 +2477,7 @@ class AtFile:
     #@+node:ekr.20041005105605.204: *6* at.os
     def os(self, s):
         """
-        Write a string to the output file or stream.
+        Append a string to at.outputList.
 
         All output produced by leoAtFile module goes here.
         """
@@ -3070,7 +3078,8 @@ class AtFile:
             # Fix bug #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
-                if os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                # Fix bug # #1469: make sure k still exists.
+                if os.path.exists(k) and os.path.samefile(k, fn) and p.h in d.get(k, set()):
                     d[fn] = d[k]
                     if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
@@ -3679,7 +3688,69 @@ class FastAtRead:
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
+#@+node:ekr.20200204092455.1: ** class TestAtFile
+class TestAtFile (unittest.TestCase):
+
+    #@+others
+    #@+node:ekr.20200204104247.1: *3* Helpers
+    #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
+    def bridge(self):
+        """Return an instance of Leo's bridge."""
+        import leo.core.leoBridge as leoBridge
+        return leoBridge.controller(gui='nullGui',
+            loadPlugins=False,
+            readSettings=False,
+            silent=True,
+            verbose=False,
+        )
+    #@+node:ekr.20200204112501.1: *4* TestAtFile.temp_dir
+    def temp_dir(self):
+        """Create a temp file with the given name."""
+        import warnings
+        warnings.simplefilter("ignore")
+        import tempfile
+        return tempfile.TemporaryDirectory()
+    #@+node:ekr.20200204103744.1: *4* TestAtFile.temp_file
+    def temp_file(self):
+        """Create a temp file with the given name."""
+        import warnings
+        warnings.simplefilter("ignore")
+        import tempfile
+        return tempfile.NamedTemporaryFile(mode='w')
+    #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
+    def test_save_after_external_file_rename(self):
+        """Test #1469."""
+        import os
+        # Create a new outline with @file node and save it
+        bridge = self.bridge()
+        temp_dir = self.temp_dir()
+        filename = f"{temp_dir.name}{os.sep}test_file.leo"
+        c = bridge.openLeoFile(filename)
+        p = c.rootPosition()
+        p.h = '@file 1'
+        p.b = 'b1'
+        c.save()
+        # Rename the @file node and save
+        p1 = c.rootPosition()
+        p1.h = "@file 1_renamed"
+        c.save()
+        # Remove the original "@file 1" from the disk
+        external_filename = f"{temp_dir.name}{os.sep}1"
+        assert os.path.exists(external_filename)
+        os.remove(external_filename)
+        assert not os.path.exists(external_filename)
+        # Change the @file contents, save and reopen the outline
+        p1.b = "b_1_changed"
+        c.save()
+        c.close()
+        c = bridge.openLeoFile(c.fileName())
+        p1 = c.rootPosition()
+        assert p1.h == "@file 1_renamed", repr(p1.h)
+        assert p1.b == "b_1_changed\n", repr(p1.b)
+    #@-others
 #@-others
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60

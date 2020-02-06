@@ -3053,6 +3053,415 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
+#@+node:ekr.20191028161708.1: **  Old test runners
+#@+node:ekr.20191101150059.1: *3* function: check_roundtrip 
+import unittest
+# from tokenize import tokenize, untokenize
+
+def check_roundtrip(f, expect_failure=False):
+    """
+    Called from unit tests in unitTest.leo.
+    
+    Test python's token.untokenize method and Leo's Untokenize class.
+    """
+    check_python_roundtrip(f, expect_failure)
+    check_leo_roundtrip(f)
+
+def check_leo_roundtrip(code, trace=False):
+    """Check Leo's Untokenize class"""
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+    assert isinstance(code, str), repr(code)
+    tokens = tokenize.tokenize(io.BytesIO(code.encode('utf-8')).readline)
+    u = leoBeautify.InputTokenizer()
+    u.trace=False and not g.unitTesting
+    result_tokens = u.create_input_tokens(code, tokens)
+    result = ''.join([z.to_string() for z in result_tokens])
+    unittest.TestCase().assertEqual(code, result)
+
+def check_python_roundtrip(f, expect_failure):
+    """
+    This is tokenize.TestRoundtrip.check_roundtrip, without the wretched fudges.
+    """
+    if isinstance(f, str):
+        code = f.encode('utf-8')
+    else:
+        code = f.read()
+        f.close()
+    readline = iter(code.splitlines(keepends=True)).__next__
+    tokens = list(tokenize.tokenize(readline))
+    bytes = tokenize.untokenize(tokens)
+    readline5 = iter(bytes.splitlines(keepends=True)).__next__
+    result_tokens = list(tokenize.tokenize(readline5))
+    if expect_failure:
+        unittest.TestCase().assertNotEqual(result_tokens, tokens)
+    else:
+        unittest.TestCase().assertEqual(result_tokens, tokens)
+#@+node:ekr.20191102062105.1: *3* @@command show tokens @key=Ctrl-1
+g.cls()
+import io
+import tokenize
+import imp
+import leo.core.leoBeautify as leoBeautify
+imp.reload(leoBeautify)
+
+contents = r'''
+print('hi')
+'''
+print("Ctrl-1: Round trip tests...\n")
+leoBeautify.show(contents, 'Contents', dump=False)
+contents = contents.strip() + '\n'
+tokens = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+# Untokenize the tokens.
+x = leoBeautify.InputTokenizer()
+result_tokens = list(x.create_input_tokens(contents, tokens))
+result = ''.join([z.to_string() for z in result_tokens])
+if result == contents:
+     print("\nPASS Ctrl-1: Round trip tests")
+else:
+    g.printObj(result)
+    print(result)
+    print('FAIL')
+    print("FAIL Ctrl-1: Round trip tests")
+#@+node:ekr.20191107160414.1: *4* Old tests
+a = "b\
+c\
+d"
+print ( 'aa \
+bb')
+print('xx \
+yy')
+#@+node:ekr.20191028095948.1: *3* @@command test FstringifyTokens @key=Ctrl-2
+g.cls()
+import imp
+import leo.core.leoBeautify as leoBeautify
+imp.reload(leoBeautify)
+
+contents = r'''
+return ''.join(['\n  %s' % z for z in result])
+'''
+
+print("Ctrl-2: Test of FStringifyTokens...\n")
+contents = contents.strip() + '\n'
+leoBeautify.test_FstringifyTokens(c, contents,
+    dump=False,
+    dump_input_tokens=False,
+    dump_output_tokens=False)
+print("\nEnd Ctrl-2: Test of FStringifyTokens")
+#@+node:ekr.20191106073220.1: *4* Former fails that pass
+g.es('%s blah blah' % (
+    g.angleBrackets('*')))
+    
+mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+
+args = '(%s)' % self.get_args(frame1) if self.show_args else ''
+print(f"{path}{dots}{leadin}{full_name}{args}")
+
+return '[%s]' % ' '.join(result).strip()
+
+ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
+#@+node:ekr.20191106074238.1: *4* Test that pass
+#@+node:ekr.20191029072408.1: *5* fstringify tests
+contents = r'''
+print(
+    'scanned %s node%s,' % (total, g.plural(total)),
+    'changed %s node%s,' % (changed, g.plural(changed)),
+    'in %4.2f sec.' % (t2-t1),
+)
+'''
+#@+node:ekr.20191106024827.1: *5* fstringify tests 2
+# These all pass
+print('%2s' % a)
+print('%2r' % b)
+'%2.4f'%0.1
+'%2.5f' % 0.2
+'%s+' % z.capitalize()
+''.join(['%s+' % z.capitalize() for z in self.mods])
+#@+node:ekr.20191104221335.1: *5* fstring indentation tests
+if 1:
+  # Input:
+    mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+  # Results should be:
+  # mods = ''.join([f'{z.capitalize()}+' for z in self.mods])
+    mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+
+# Single-line comment 2.
+print('hi')
+print(
+    'thing 1',
+    'thing 2',
+)
+print(
+    'thing 3\
+    thing4'
+)
+print \
+    ('done')
+#@+node:ekr.20191106064649.1: *5* fstring bs-nl tests
+# backslash test.
+a = "b\
+c\
+d"
+print\
+(
+    'thing 3\
+    thing4'
+)
+#@+node:ekr.20191106142223.1: *4* To do (small problems)
+g.es('%s blah blah' % (g.angleBrackets('*')))
+
+ret = '[%s]' % ','.join([self.show(z) for z in arg])
+
+return ''.join(['\n  %s' % z for z in result])
+
+g.trace('done: %5s page: %3s found: %s label: %s' % (
+    done, page, n, label))
+    
+result = ['g.Bunch(%s)' % (tag or '')]
+#@+node:ekr.20191106064850.1: *4* FAIL: missing ws
+ret = '[%s]' % ','.join([self.show(z) for z in arg])
+
+return ''.join(['\n  %s' % z for z in result])
+
+g.trace('done: %5s page: %3s found: %s label: %s' % (
+    done, page, n, label))
+    
+result = ['g.Bunch(%s)' % (tag or '')]
+#@+node:ekr.20191026103522.1: *3* @@command test NullTokenBeautifier @key=Ctrl-3
+"""Test NullTokenBeautifier on the given contents."""
+g.cls()
+import imp
+import leo.core.leoBeautify as leoBeautify
+imp.reload(leoBeautify)
+# Between-token whitespace, w/o bs-nl
+contents = r'''
+# Backslash-newline
+a = "b\
+c\
+d"
+print(
+    'thing 3\
+    thing4'
+)
+# String concatenation, w/ trailing ws
+'a' 'b' 
+# String concatenation, w/ trailing ws at eof
+'c', 'd' 
+'''
+print("Ctrl-3: Test of NullTokenBeautifier...\n")
+contents = contents.strip() + '\n'
+ok = leoBeautify.test_NullTokenBeautifier(c, contents,
+    dump=False, dump_input_tokens=True, dump_output_tokens=False)
+status = 'PASS' if ok else 'FAIL'
+print(f"{status} End Ctrl-3: Test of NullTokenBeautifier")
+#@+node:ekr.20191102055312.1: *4* << define contents >>
+#@+node:ekr.20191029072313.1: *4* old test 1 (long)
+if 1:
+    # Single-line comment.
+    print ( "hello" )
+    if 0:
+        print("bs-nl\
+            continued\
+            again")
+    print(
+        f"scanned {total} node{g.plural(total)}, "
+        f"changed {changed} node{g.plural(changed)}, "
+                # f"{errors} error{g.plural(errors)} "
+        f"in {t2-t1:4.2f} sec."
+    )
+    print(
+        'scanned %s node%s,' % (total, g.plural(total)),
+        'changed %s node%s,' % (changed, g.plural(changed)),
+        'in %4.2f sec.' % (t2-t1),
+    )
+print(a[1 : 2])
+#@+node:ekr.20191030164855.1: *4* old test 2 (short)
+if 1:
+    # Single-line comment.
+    print ( "hello" )
+print('done')
+#@+node:ekr.20191031091233.1: *4* old test 3
+if 1:
+    # Single-line comment.
+    print ( "hello" )
+    if 0:
+        print("bs-nl\
+            continued \
+            again")
+        print\
+            ('next')
+    print(
+        f"scanned {total} node{g.plural(total)}, "
+        f"changed {changed} node{g.plural(changed)}, "
+                # f"{errors} error{g.plural(errors)} "
+        f"in {t2-t1:4.2f} sec."
+    )
+    print(
+        'scanned %s node%s,' % (total, g.plural(total)),
+        'changed %s node%s,' % (changed, g.plural(changed)),
+        'in %4.2f sec.' % (t2-t1),
+    )
+print(a[1 : 2])
+#@+node:ekr.20191102055214.1: *4* old test: python bug
+# Python bug: space after 'print' not round-tripped properly.
+a = "b\
+    c\
+    d"
+    
+print\
+    (\
+    a,\
+    b\
+#@+node:ekr.20191029184302.1: *3* @@command test PythonTokenBeautifier @key=Ctrl-4
+g.cls()
+import imp
+import leo.core.leoBeautify as leoBeautify
+imp.reload(leoBeautify)
+
+table = (
+# New fail 1 from leoAst.py
+r'''
+def get_fields(self, node):
+    return (
+        (a, b) for a, b in ast.iter_fields(node)
+            if a not in self.disabled_fields and b not in (None, [])
+    )
+''',
+# Fail 1 from leoAst.py
+r'''
+raise AstNotEqual(
+    f"node1.__class__.__name__: {node1.__class__.__name__}\n"
+    f"node2.__class__.__name__: {node2.__class__.__name_}"
+)
+''',
+# Fail 2 from leoAst.py
+r'''
+remove = [
+    'Interactive', 'Suite',  # Not necessary.
+    'PyCF_ONLY_AST',  # A constant,
+    'AST',  # The base class,
+]
+''',
+# Fail 3 from leoAst.py.
+'''
+table = (
+    AstFullTraverser,
+    AstFormatter,
+    AstPatternFormatter,
+    HTMLReportTraverser,
+)
+''',
+# Basic indentation test.
+r'''
+def foo(a, b):
+    foo()
+    bar()
+''',
+# Backslash-newline tests.
+# There must be a single blank before the bs-nl
+# because *regularizes* whitespace before bs-nl.
+r'''
+print \
+    ( \
+    a, \
+    b \
+)
+a = "b \
+c \
+d"
+print \
+    ('done')
+''',
+# Indentation test.
+# Note: ptb retains the exact spelling of all strings.
+r'''
+print('hi')
+print(
+    'thing 1',
+    'thing 2',
+)
+print(
+    'thing 3\
+    thing 4 \
+    thing5'
+)
+''',
+)
+print("Ctrl-4: Test of PythonTokenBeautifier...\n")
+ok = True
+for test in table:
+    contents = test.strip() + '\n'
+    same = leoBeautify.test_PythonTokenBeautifier(c, contents,
+        dump=False, # Use g.printObj to show results.
+        dump_input_tokens=False,
+        dump_output_tokens=False,
+    )
+    if not same:
+        ok = False
+        if 0: # Possible.
+            g.cls()
+            leoBeautify.test_PythonTokenBeautifier(c, contents,
+                dump=True, # Use g.printObj to show results.
+                dump_input_tokens=True,
+                dump_output_tokens=True,
+            )
+        break #
+print(
+    f"{'PASS' if ok else 'FAIL'} "
+    f"Ctrl-4: Test of PythonTokenBeautifier")
+#@+node:ekr.20191029184302.2: *4* fstring test
+contents = r'''
+print('abc\
+   xyz')
+print("hello %s" % 'world')
+print(
+    f"scanned {total} node{g.plural(total)}, "
+    f"changed {changed} node{g.plural(changed)}, "
+            # f"{errors} error{g.plural(errors)} "
+    f"in {t2-t1:4.2f} sec."
+)
+print(
+    'scanned %s node%s,' % (total, g.plural(total)),
+    'changed %s node%s,' % (changed, g.plural(changed)),
+    'in %4.2f sec.' % (t2-t1),
+)
+'''
+#@+node:ekr.20191030195606.1: *4* comment indent test
+verbatim = False
+# Single-line comment.
+if self.test: # not single-line comment.
+    pass
+    # This comment ruins the indentation!
+else:
+    pass # not a single-line comment.
+# Single-line comment.
+# Single-line comment 2
+#@+node:ekr.20191031170857.1: *4* backslash test
+if 1:
+    pass
+while(a or \
+    b or \
+    c):
+    pass
+print \
+    ('hi')
+print(
+    "abc"
+    "xyz"
+)
+#@+node:ekr.20191105090751.1: *4* full test
+@language python
+@
+This is a doc part.
+@c
+
+def spam():
+    if 1:
+        # Regular comment.
+        print('-----')
+            # Indented comment.
+    else:
+        pass
 #@+node:ekr.20191224054725.1: **  Retired plugins
 #@+node:ekr.20191224054733.1: *3* Retired plugin: scripts_menu.py
 """Creates a Scripts menu for LeoPy.leo."""

@@ -148,7 +148,7 @@ class OpmlController:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
+        # self.opml_read_derived_files = c.config.getBool('opml-read-derived-files')
         self.opml_write_derived_files = c.config.getBool('opml-write-derived-files')
 
     #@+node:ekr.20060914163456: *3* oc.createVnodes & helpers
@@ -404,7 +404,7 @@ class PutToOPML:
         self.opml_write_leo_details = True
         self.opml_write_leo_globals_attributes = True
         self.opml_write_body_text = True
-        self.opml_write_ua_attributes = True
+        self.opml_write_uAs = True
         self.opml_expand_ua_dictionary = True
         self.opml_skip_ua_dictionary_blanks = True
         for ivar in (
@@ -413,11 +413,14 @@ class PutToOPML:
             'opml_write_leo_details',
             'opml_write_leo_globals_attributes',
             'opml_write_body_text',
-            'opml_write_ua_attributes',
+            'opml_write_uAs',
             'opml_expand_ua_dictionary',
             'opml_skip_ua_dictionary_blanks',
         ):
-            setattr(self, ivar, c.config.getBool(ivar))
+            val = c.config.getBool(ivar)
+            if val in (True, False):
+                g.trace(ivar, val)
+                setattr(self, ivar, val)
     #@+node:ekr.20141020112451.18337: *3* putAll
     def putAll(self):
         '''
@@ -436,18 +439,48 @@ class PutToOPML:
         ver = self.c.config.getString('opml-version') or '2.0'
         self.put('<opml version="%s" xmlns:leo="%s">' % (ver, s))
     #@+node:ekr.20060919172012.4: *3* putOPMLHeader
+    # The <head> element may include any of these optional elements:
+    # title, dateCreated, dateModified, ownerName, ownerEmail, expansionState,
+    # vertScrollState, windowTop, windowLeft, windowBottom, windowRight.
+
+    # Each element is a simple text element.
+
+    # dateCreated and dateModified contents conform to the date-time format
+    # specified in RFC 822.
+
+    # expansionState contains a comma-separated list of line numbers that should
+    # be expanded on display.
+
+
+
     def putOPMLHeader(self):
-        '''Put the OPML header, including attributes for globals, prefs and  find settings.'''
-        c = self.c; indent = ' ' * 4
-        if self.opml_write_leo_globals_attributes:
-            self.put('\n<head leo:body_outline_ratio="%s">' % str(c.frame.ratio))
-            width, height, left, top = c.frame.get_window_info()
-            self.put('\n%s<leo:global_window_position' % indent)
-            self.put(' top="%s" left="%s" height="%s" width="%s"/>' % (
-                str(top), str(left), str(height), str(width)))
-            self.put('\n</head>')
-        else:
-            self.put('\n<head/>')
+        '''
+        Put the OPML header, including attributes for globals, prefs and  find settings.
+        
+        An OPML processor may ignore all the head sub-elements.
+        
+        The windowXXX elements define the position and size of the display
+        window.
+        
+        If the outline is opened inside another outline then the processor must
+        ignore the window elements.
+        '''
+        if not self.opml_write_leo_globals_attributes:
+            self.put('<head />')
+            return
+        c = self.c
+        indent = ' '*4
+        width, height, left, top = c.frame.get_window_info()
+        bottom = str(top + height)
+        right = str(left + width)
+        left, top = str(left), str(top)
+        self.put('\n<head>')
+        self.put(f'\n{indent}<windowTop>{top}</windowTop>')
+        self.put(f'\n{indent}<windowLeft>{left}</windowLeft>')
+        self.put(f'\n{indent}<windowBottom>{bottom}</windowBottom>')
+        self.put(f'\n{indent}<windowRight>{right}</windowRight>')
+        self.put('\n</head>')
+
     #@+node:ekr.20060919172012.5: *3* putOPMLNodes
     def putOPMLNodes(self):
         c = self.c; root = c.rootPosition()
@@ -458,41 +491,45 @@ class PutToOPML:
     #@+node:ekr.20060919172012.6: *3* putOPMLNode
     def putOPMLNode(self, p):
 
-        indent = ' ' * (4 * p.level()) # Always use 4-space indents.
+        indent = ''
         body = p.bodyString() or ''; head = p.headString() or ''
-        attrFormat = ' %s="%s"'
-        self.put('\n%s<outline' % indent)
-        if self.opml_write_leo_details: # Put leo-specific attributes.
+        self.put(f'\n{indent}<outline')
+        head_s = self.attributeEscape(head)
+        self.put(f' text="{head_s}"')
+        if self.opml_write_leo_details:
+            # Put leo-specific attributes.
             for name, val in (
                 ('leo:v', p.v.fileIndex),
                 ('leo:a', self.aAttributes(p)),
-                # ('leo:tnodeList',self.tnodeListAttributes(p)),
             ):
-                if val: self.put(attrFormat % (name, val))
+                if val:
+                    self.put(f' {name}="{val}"')
             data = self.uAAttributes(p)
             if data:
-                # for name,val in data.iteritems():
+                # g.printObj(data, tag=f'uAs for {p.h}')
                 for name in list(data.keys()):
                     val = data.get(name)
-                    self.put(attrFormat % (name, val))
-        self.put(attrFormat % ('text', self.attributeEscape(head)))
+                    self.put(f' {name}="{val}"')
         closed = False
         if body and self.opml_write_body_text:
             if self.opml_use_outline_elements:
-                self.put('>'); closed = True
-                self.put('<leo:body>%s</leo:body>' % xml.sax.saxutils.escape(body))
+                self.put('>')
+                body_s = xml.sax.saxutils.escape(body)
+                self.put(f'\n{indent}<leo:body>{body_s}</leo:body>')
+                closed = True
             else:
-                self.put(attrFormat % ('leo:body', self.attributeEscape(body)))
+                body_s = self.attributeEscape(body)
+                self.put(f' leo:body="{body_s}"')
         if p.hasChildren():
             if not closed:
-                self.put('>'); closed = True
+                self.put('>')
             for p2 in p.children_iter():
                 self.putOPMLNode(p2)
+                closed = True
         if closed:
             self.put('\n%s</outline>' % indent)
-            # self.put('</outline>\n')
         else:
-            self.put('/>')
+            self.put(' />')
     #@+node:ekr.20060919172012.7: *4* attributeEscape
     def attributeEscape(self, s):
         # Unlike xml.sax.saxutils.escape, replace " by &quot; and replace newlines by character reference.
@@ -534,13 +571,12 @@ class PutToOPML:
     def uAAttributes(self, p):
         """write unknownAttributes with various levels of expansion"""
         data = {}
-        if self.opml_write_ua_attributes and hasattr(p.v, 'unknownAttributes'):
-            # for uak, uav in p.v.unknownAttributes.iteritems():
+        # g.trace(self.opml_write_uAs, getattr(p.v, 'unknownAttributes', None))
+        if self.opml_write_uAs and hasattr(p.v, 'unknownAttributes'):
             d = p.u
             for uak in list(d.keys()):
                 uav = d.get(uak)
                 if self.opml_expand_ua_dictionary and isinstance(uav, dict):
-                    # for uakc, uavc in uav.iteritems():
                     for uakc in list(uav.keys()):
                         uavc = uav.get(uakc)
                         if str(uavc) != '' or not self.opml_skip_ua_dictionary_blanks:

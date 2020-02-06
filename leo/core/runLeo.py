@@ -5,12 +5,10 @@
 """Entry point for Leo in Python."""
 #@+<< imports and inits >>
 #@+node:ekr.20080921091311.1: ** << imports and inits >> (runLeo.py)
-# import pdb ; pdb = pdb.set_trace
 import os
 import sys
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
-# pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
 if sys.executable.endswith("pythonw.exe"):
     sys.stdout = open(os.devnull, "w");
     sys.stderr = open(
@@ -21,14 +19,10 @@ path = os.getcwd()
 if path not in sys.path:
     # print('appending %s to sys.path' % path)
     sys.path.append(path)
-# Import leoGlobals, but do NOT set g.
-import leo.core.leoGlobals as leoGlobals
-# Create g.app.
+# #1472: bind to g immediately.
+import leo.core.leoGlobals as g
 import leo.core.leoApp as leoApp
-leoGlobals.app = leoApp.LeoApp()
-# **Now** we can set g.
-g = leoGlobals
-assert(g.app)
+g.app = leoApp.LeoApp()
 #@-<< imports and inits >>
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
