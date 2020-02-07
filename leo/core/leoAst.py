@@ -1704,7 +1704,7 @@ class TestOrange (BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20200116102345.1: *4* test_backslash_newline
+    #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
         This test is necessarily different from black, because orange doesn't
@@ -1721,7 +1721,7 @@ class TestOrange (BaseTest):
         # expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116100603.1: *4* test_decorator
+    #@+node:ekr.20200116100603.1: *4* TestOrange.test_decorator
     def test_decorator(self):
 
         contents = """\
@@ -1733,7 +1733,114 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200108075541.1: *4* test_leo_sentinels (don't blacken)
+    #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
+    def test_function_defs(self):
+        tag = 'test_function_defs'
+        contents = """\
+    def f1(a=2 + 5):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents, tag)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116112855.1: *4* TestOrange.test_function_defs_2
+    def test_function_defs_2(self):
+        contents = """\
+    def f1(*args, **kwargs):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200116113143.1: *4* TestOrange.test_function_defs_3
+    def test_function_defs_3(self):
+
+        # Coverage test for spaces
+        contents = """\
+    def f1( *args, **kwargs ):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200121093134.1: *4* TestOrange.test_join_lines
+    def test_join_lines(self):
+
+        verbose_pass = False
+        verbose_fail = True
+        # Except where noted, all entries are expected values....
+        line_length = 40 # For testing.
+        table = (
+              #1234567890x1234567890x1234567890x1234567890x
+            (
+                """print('4444',\n    '5555')""",
+                """print('4444', '5555')\n""",
+            ),
+        )
+        fails = 0
+        for contents, expected in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 0: # verbose_fail:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"test_join_lines..."
+                f"  contents: {contents}\n"
+                f"     black: {expected.rstrip()!r}\n"
+                f"    orange: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                if verbose_fail:
+                    print(f"Fail: {fails}\n{message}")
+            elif verbose_pass:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert fails == 0, fails
+    #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
+    def test_join_too_long_lines(self):
+
+        verbose_pass = False
+        verbose_fail = True
+        # Except where noted, all entries are expected values....
+        line_length = 40 # For testing.
+        table = (
+              #1234567890x1234567890x1234567890x1234567890x
+            (
+                """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')""",
+                """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')\n""",
+            ),
+        )
+        fails = 0
+        for contents, expected in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 0: # verbose_fail:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"test_join_lines..."
+                f"  contents: {contents}\n"
+                f"  expected: {expected.rstrip()!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                if verbose_fail:
+                    print(f"Fail: {fails}\n{message}")
+            elif verbose_pass:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert fails == 0, fails
+    #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels(self):
 
         # Careful: don't put a sentinel into the file directly.
@@ -1748,7 +1855,7 @@ class TestOrange (BaseTest):
         expected = contents.rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200108082833.1: *4* test_lines_before_class
+    #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
     def test_lines_before_class(self):
 
         contents = """\
@@ -1760,40 +1867,7 @@ class TestOrange (BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116110652.1: *4* test_function_defs
-    def test_function_defs(self):
-        tag = 'test_function_defs'
-        contents = """\
-    def f1(a=2 + 5):
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents, tag)
-        expected = self.blacken(contents).rstrip() + '\n\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116112855.1: *4* test_function_defs_2
-    def test_function_defs_2(self):
-        contents = """\
-    def f1(*args, **kwargs):
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116113143.1: *4* test_function_defs_3
-    def test_function_defs_3(self):
-
-        # Coverage test for spaces
-        contents = """\
-    def f1( *args, **kwargs ):
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.86: *4* test_multi_line_pet_peeves
+    #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
 
         contents = """\
@@ -1813,7 +1887,7 @@ class TestOrange (BaseTest):
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200110014220.95: *4* test_one_line_pet_peeves
+    #@+node:ekr.20200110014220.95: *4* TestOrange.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
         tag = 'test_one_line_pet_peeves'
@@ -1906,22 +1980,7 @@ class TestOrange (BaseTest):
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
-    #@+node:ekr.20200116104031.1: *4* test_start_of_line_whitespace (don't blacken)
-    def test_start_of_line_whitespace(self):
-
-        contents = """\
-    if (
-        a == b or
-        c == d
-    ):
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        # expected = self.blacken(contents).rstrip() + '\n\n'
-        expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200107174742.1: *4* test_single_quoted_string
+    #@+node:ekr.20200107174742.1: *4* TestOrange.test_single_quoted_string
     def test_single_quoted_string(self):
 
         contents = """print('hi')"""
@@ -1930,7 +1989,7 @@ class TestOrange (BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200117180956.1: *4* test_split_lines
+    #@+node:ekr.20200117180956.1: *4* TestOrange.test_split_lines
     def test_split_lines(self):
 
         verbose_pass = False
@@ -1964,42 +2023,25 @@ class TestOrange (BaseTest):
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
-    #@+node:ekr.20200121093134.1: *4* test_join_lines
-    def test_join_lines(self):
+    #@+node:ekr.20200116104031.1: *4* TestOrange.test_start_of_line_whitespace
+    def test_start_of_line_whitespace(self):
 
-        verbose_pass = False
-        verbose_fail = False
-        # Except where noted, all entries are expected values....
-        line_length = 40 # For testing.
-        table = (
-              #1234567890x1234567890x1234567890x1234567890x
-            """print('4444',\n    '5555')""",
-        )
-        fails = 0
-        for contents in table:
-            contents, tokens, tree = self.make_data(contents)
-            if 0: # verbose_fail:  # pragma: no cover
-                dump_contents(contents)
-                dump_tokens(tokens)
-                dump_tree(tokens, tree)
-            expected = self.blacken(contents, line_length=line_length)
-            results = self.beautify(contents, tokens, tree,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"test_join_lines..."
-                f"  contents: {contents}\n"
-                f"     black: {expected.rstrip()}\n"
-                f"    orange: {results}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                if verbose_fail:
-                    print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:  # pragma: no cover
-                print(f"Ok:\n{message}")
-        assert fails == 1, fails
-    #@+node:ekr.20200119155207.1: *4* test_sync_tokens
+        contents = """\
+    if (
+        a == b or
+        c == d
+    ):
+        pass
+    """
+        expected = """\
+    if ( a == b or c == d ):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = g.adjustTripleString(expected)
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
 
         contents = """if x == 4: pass"""
@@ -4343,34 +4385,6 @@ class Orange:
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20200107165250.50: *4* orange.find_delims (not used yet)
-    def find_delims(self, tokens):  # pragma: no cover
-        ### Not used yet.
-        """
-        Compute the net number of each kind of delim in the given range of tokens.
-        
-        Return (curlies, parens, squares)
-        """
-        parens, curlies, squares = 0, 0, 0
-        for token in tokens:
-            value = token.value
-            if token.kind == 'lt':
-                assert value in '([{', f"Bad lt value: {token.kind} {value}"
-                if value == '{':
-                    curlies += 1
-                elif value == '(':
-                    parens += 1
-                elif value == '[':
-                    squares += 1
-            elif token.kind == 'rt':
-                assert value in ')]}', f"Bad rt value: {token.kind} {value}"
-                if value == ')':
-                    parens -= 1
-                elif value == ']':
-                    squares -= 1
-                elif value == '}':
-                    curlies += 1
-        return curlies, parens, squares
     #@+node:ekr.20200107165250.51: *4* orange.push_state
     def push_state(self, kind, value=None):
         """Append a state to the state stack."""
@@ -4397,6 +4411,7 @@ class Orange:
         self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.last_line_end_index = 1 ###
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
@@ -4635,14 +4650,19 @@ class Orange:
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
+        ###
+            # # # This marker is for the use of the split/join logic.
+            # # # It should never be cleaned away.
+            # # self.add_token('line-marker', '')
         tok = self.add_token('line-end', '\n')
+        ###self.last_line_end_index = len(self.code_list)
         return tok
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value=''):
         """Add an output token to the code list."""
         tok = Token(kind, value)
         self.code_list.append(tok)
-        self.prev_output_token = self.code_list[-1]
+        ### self.prev_output_token = self.code_list[-1]
         return tok
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
@@ -4722,9 +4742,10 @@ class Orange:
         # Create the 'line-end' output token.
         tok = self.add_line_end()
         # Copy the prev_line_token data from the input token to the output token.
-        prev_line_token = getattr(token, 'prev_line_token', None)
-        if prev_line_token:
-            tok.prev_line_token = prev_line_token
+        if 0: ###
+            prev_line_token = getattr(token, 'prev_line_token', None)
+            if prev_line_token:
+                tok.prev_line_token = prev_line_token
         # Attempt to split the line.
         was_split = self.split_line(node, token)
         # Attempt to join the line only if it has not just been split.
@@ -5002,10 +5023,53 @@ class Orange:
         """
         assert self.max_join_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
-        ### dump_tree(self.tokens, token.node)
-        # To do...
-        #   Scan back, looking for the first line with all balanced delims.
-        #   Do nothing if it is this line.
+        if token.kind == 'nl':
+            return
+        # Scan back, looking for the previous 'newline' or 'encoding' token.
+        i = i1 = token.index - 1
+        nls = 0
+        while i >= 0:
+            kind = self.tokens[i].kind
+            if kind == 'nl':
+                nls += 1
+                # Make sure we would not join to a comment line.
+                if i > 0 and self.tokens[i-1].kind == 'comment':
+                    return
+            if kind in ('encoding', 'newline'):
+                break
+            i -= 1
+        # Return if there were no 'nl' tokens.
+        if not nls:
+            return
+        # Calculate the joined line.
+        prev_tokens = self.tokens[i + 1 : i1 + 1]
+        prev_line = tokens_to_string(prev_tokens)
+        prev_line = re.sub(r'\n\s*', ' ', prev_line)
+        # Don't join the lines if they would be too long.
+        if len(prev_line) > self.max_join_line_length:
+            return
+        # Scan backward in the *code* list, to find the corresponding 'line-end' token.
+        nls += 1
+        i = len(self.code_list) - 1
+        assert self.code_list[i].kind == 'line-end'
+        i -= 1
+        while i >= 0 and nls > 0:
+            kind = self.code_list[i].kind
+            i -= 1
+            if kind == 'line-end':
+                nls -= 1
+        if i <= 0:
+            # Retain at the file-start token.
+            i = 1
+            nls -= 1
+        if nls != 0:  # pragma: no cover
+            g.trace('Scan error')
+            return
+        # Cut back the *code* list to the last 'line-end' token.
+        self.code_list = self.code_list[:i]
+        # Add the new tokens.
+        self.add_token('string', prev_line)
+        self.add_token('newline', '\n')
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
