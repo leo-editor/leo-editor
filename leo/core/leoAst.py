@@ -5602,20 +5602,10 @@ class Token:
         # Let block.
         node_id = self.node.node_index if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
-        # parent = getattr(self.node, 'parent', None)
-        # parent_class = parent.__class__.__name__ if parent else ''
-        # parent_id = parent.node_index if parent else ''
-        ###
-            # prev_line_token = getattr(self, 'prev_line_token', None)
-            # next_line_token = getattr(self, 'next_line_token', None)
-            # prev_line_index = prev_line_token.index if prev_line_token else ''
-            # next_line_index = next_line_token.index if next_line_token else ''
         return (
             f"{self.line_number:4} "
             f"{node_id:5} {node_cn:16} "
-            ### f"{prev_line_index:>4}.{next_line_index:<4} "
             f"{self.index:>5} {self.kind:>11} {self.show_val(100)}")
-            # f"{parent_id:>4} {parent_class}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
     def dump_header(self):  # pragma: no cover
         """Print the header for token.dump"""
@@ -5668,13 +5658,6 @@ class Tokenizer:
         tok = Token(kind, value)
         tok.five_tuple = five_tuple
         tok.index = self.token_index
-        ###
-            # # New: inject prev/next_line_token fields.
-            # if tok.kind in ('newline', 'nl'):
-                # tok.prev_line_token = self.prev_line_token
-                # if self.prev_line_token:
-                    # self.prev_line_token.next_line_token = tok
-                # self.prev_line_token = tok
         # Bump the token index.
         self.token_index += 1
         tok.line = line
