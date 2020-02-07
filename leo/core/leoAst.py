@@ -1769,8 +1769,6 @@ class TestOrange (BaseTest):
     #@+node:ekr.20200121093134.1: *4* TestOrange.test_join_lines
     def test_join_lines(self):
 
-        verbose_pass = False
-        verbose_fail = True
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -1783,7 +1781,7 @@ class TestOrange (BaseTest):
         fails = 0
         for contents, expected in table:
             contents, tokens, tree = self.make_data(contents)
-            if 0: # verbose_fail:  # pragma: no cover
+            if 0: # # pragma: no cover
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
@@ -1798,9 +1796,8 @@ class TestOrange (BaseTest):
                 f"    orange: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
-                if verbose_fail:
-                    print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:  # pragma: no cover
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
@@ -2900,34 +2897,6 @@ class TestTokens (BaseTest):
                         f"children: {children_s}")
             # Print the resulting tokens.
             g.printObj(tokens, tag='Tokens')
-    #@+node:ekr.20200118084859.1: *4* TT.test_line_links
-    def test_line_links(self):
-
-        contents = """\
-    print('line 1')
-    print('line 2')
-    print('line 3')
-    """
-        dump = False
-        fails = 0
-        contents, tokens, tree = self.make_data(contents)
-        for token in tokens:
-            # Only 'newline' and 'nl' tokens have non-empty links.
-            prev = getattr(token, 'prev_line_token', None)
-            next = getattr(token, 'next_line_token', None)
-            if prev and prev.kind not in ('newline', 'nl'):
-                fails += 1  # pragma: no cover
-            if next and next.kind not in ('newline', 'nl'):
-                fails += 1  # pragma: no cover
-        if dump or fails:  # pragma: no cover
-            for token in tokens:
-                if token.kind in ('newline', 'nl'):
-                    prev = token.prev_line_token
-                    next = token.next_line_token
-                    prev_s = f"{prev.index:<2}" if prev else ''
-                    next_s = f"{next.index:<2}" if next else ''
-                    print(f"{token.kind:>12}.{token.index:<2} prev: {prev_s:2} next: {next_s}")
-        assert fails == 0, fails
     #@+node:ekr.20200110015014.6: *4* TT.test_bs_nl_tokens
     def test_bs_nl_tokens(self):
         # Test https://bugs.python.org/issue38663.
@@ -4411,7 +4380,6 @@ class Orange:
         self.curly_brackets_level = 0 # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
-        self.last_line_end_index = 1 ###
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
@@ -4421,6 +4389,7 @@ class Orange:
         #
         # Init output list and state...
         self.code_list = []  # The list of output tokens.
+        self.code_list_index = 0  # The token's index.
         self.tokens = tokens  # The list of input tokens.
         self.tree = tree
         self.add_token('file-start')
@@ -4650,19 +4619,15 @@ class Orange:
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
-        ###
-            # # # This marker is for the use of the split/join logic.
-            # # # It should never be cleaned away.
-            # # self.add_token('line-marker', '')
         tok = self.add_token('line-end', '\n')
-        ###self.last_line_end_index = len(self.code_list)
         return tok
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value=''):
         """Add an output token to the code list."""
         tok = Token(kind, value)
+        tok.index = self.code_list_index  # For debugging only.
+        self.code_list_index += 1
         self.code_list.append(tok)
-        ### self.prev_output_token = self.code_list[-1]
         return tok
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
@@ -4740,12 +4705,7 @@ class Orange:
         node, token = self.token.statement_node, self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         # Create the 'line-end' output token.
-        tok = self.add_line_end()
-        # Copy the prev_line_token data from the input token to the output token.
-        if 0: ###
-            prev_line_token = getattr(token, 'prev_line_token', None)
-            if prev_line_token:
-                tok.prev_line_token = prev_line_token
+        self.add_line_end()
         # Attempt to split the line.
         was_split = self.split_line(node, token)
         # Attempt to join the line only if it has not just been split.
@@ -5645,14 +5605,15 @@ class Token:
         # parent = getattr(self.node, 'parent', None)
         # parent_class = parent.__class__.__name__ if parent else ''
         # parent_id = parent.node_index if parent else ''
-        prev_line_token = getattr(self, 'prev_line_token', None)
-        next_line_token = getattr(self, 'next_line_token', None)
-        prev_line_index = prev_line_token.index if prev_line_token else ''
-        next_line_index = next_line_token.index if next_line_token else ''
+        ###
+            # prev_line_token = getattr(self, 'prev_line_token', None)
+            # next_line_token = getattr(self, 'next_line_token', None)
+            # prev_line_index = prev_line_token.index if prev_line_token else ''
+            # next_line_index = next_line_token.index if next_line_token else ''
         return (
             f"{self.line_number:4} "
             f"{node_id:5} {node_cn:16} "
-            f"{prev_line_index:>4}.{next_line_index:<4} "
+            ### f"{prev_line_index:>4}.{next_line_index:<4} "
             f"{self.index:>5} {self.kind:>11} {self.show_val(100)}")
             # f"{parent_id:>4} {parent_class}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
@@ -5660,9 +5621,10 @@ class Token:
         """Print the header for token.dump"""
         print(
             f"\n"
-            f"     node  node  {'':10} newlines  token\n"
-            f"line index class {'':10} prev.next index  token kind token value\n"
-            f"==== ===== ===== {'':10} ========= =====  ========== ===========\n")
+            f"         node    {'':10} token          token\n"
+            f"line index class {'':10} index        kind value\n"
+            f"==== ===== ===== {'':10} =====        ==== =====\n")
+
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self):  # pragma: no cover
         """Dump a token or result node for error message."""
@@ -5706,12 +5668,13 @@ class Tokenizer:
         tok = Token(kind, value)
         tok.five_tuple = five_tuple
         tok.index = self.token_index
-        # New: inject prev/next_line_token fields.
-        if tok.kind in ('newline', 'nl'):
-            tok.prev_line_token = self.prev_line_token
-            if self.prev_line_token:
-                self.prev_line_token.next_line_token = tok
-            self.prev_line_token = tok
+        ###
+            # # New: inject prev/next_line_token fields.
+            # if tok.kind in ('newline', 'nl'):
+                # tok.prev_line_token = self.prev_line_token
+                # if self.prev_line_token:
+                    # self.prev_line_token.next_line_token = tok
+                # self.prev_line_token = tok
         # Bump the token index.
         self.token_index += 1
         tok.line = line
