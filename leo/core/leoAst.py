@@ -1803,8 +1803,6 @@ class TestOrange (BaseTest):
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
     def test_join_too_long_lines(self):
 
-        verbose_pass = False
-        verbose_fail = True
         # Except where noted, all entries are expected values....
         line_length = 40 # For testing.
         table = (
@@ -1832,11 +1830,48 @@ class TestOrange (BaseTest):
                 f"       got: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
-                if verbose_fail:
-                    print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:  # pragma: no cover
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
-        assert fails == 0, fails
+        assert not fails, fails
+    #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace
+    def test_join_leading_whitespace(self):
+
+        line_length = 40 # For testing.
+        table = (
+              #1234567890x1234567890x1234567890x1234567890x
+            (
+    """\
+    if 1:
+        print('4444',\n    '5555')""",
+    """\
+    if 1:
+        print('4444', '5555')\n\n""",
+            ),
+        )
+        
+        fails = 0
+        for contents, expected in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 1:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected.rstrip()!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert not fails, fails
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels(self):
 
@@ -4407,20 +4442,21 @@ class Orange:
         
         Return True if the file was changed.
         """
-        tag = 'orange-file'
+        tag = 'beautify-file'
         self.filename = filename
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
-            print(f"{tag}: Can not fstringify: {filename}")
+            print(f"{tag}: Can not beautify: {filename}")
             return False
         # Beautify.
         results = self.beautify(contents, filename, tokens, tree)
         if contents == results:
             print(f"{tag}: Unchanged: {filename}")
             return False
-        # Show the diffs.
-        show_diffs(contents, results, filename=filename)
+        if 0: # This obscures more import error messages.
+            # Show the diffs.
+            show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results, encoding=encoding)
@@ -4432,11 +4468,12 @@ class Orange:
         
         Return True if the file would be changed.
         """
-        tag = 'diff-orange-file'
+        tag = 'diff-beautify-file'
         self.filename = filename
         tog = TokenOrderGenerator()
         contents, encoding, tokens, tree = tog.init_from_file(filename)
         if not contents or not tokens or not tree:
+            print(f"{tag}: Can not beautify: {filename}")
             return False
         # fstringify.
         results = self.beautify(contents, filename, tokens, tree)
@@ -4983,9 +5020,10 @@ class Orange:
         """
         assert self.max_join_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
+        return ### It looks like we must scan *forward*.
         if token.kind == 'nl':
             return
-        # Scan back, looking for the previous 'newline' or 'encoding' token.
+        # Scan back, looking for the previous 'newline' or 'encoding' *input* token.
         i = i1 = token.index - 1
         nls = 0
         while i >= 0:
@@ -5009,27 +5047,34 @@ class Orange:
         if len(prev_line) > self.max_join_line_length:
             return
         # Scan backward in the *code* list, to find the corresponding 'line-end' token.
+        g.printObj(self.code_list)
         nls += 1
         i = len(self.code_list) - 1
         assert self.code_list[i].kind == 'line-end'
         i -= 1
+        last_indent = ''
         while i >= 0 and nls > 0:
             kind = self.code_list[i].kind
+            val = self.code_list[i].value
             i -= 1
             if kind == 'line-end':
                 nls -= 1
+            if kind == 'line-indent':
+                last_indent = val
         if i <= 0:
             # Retain at the file-start token.
             i = 1
             nls -= 1
+            last_indent = ''
         if nls != 0:  # pragma: no cover
             g.trace('Scan error')
             return
         # Cut back the *code* list to the last 'line-end' token.
         self.code_list = self.code_list[:i]
-        # Add the new tokens.
+        # Add the new output tokens.
+        self.add_token('line-indent', last_indent)
         self.add_token('string', prev_line)
-        self.add_token('newline', '\n')
+        self.add_token('line-end', '\n')
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
