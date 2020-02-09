@@ -124,7 +124,7 @@ class LeoGlobals:  # pragma: no cover
         if not lws:
             return s
         return ''.join(
-            (z[n:]if z.startswith(lws)else z) for z in lines)
+            (z[n:] if z.startswith(lws) else z) for z in lines)
     #@+node:ekr.20191226175903.1: *3* LeoGlobals.callerName
     def callerName(self, n):
         """Get the function name from the call stack."""
@@ -2152,7 +2152,7 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200209161226.1: *4* TestOrange.test_ternary
     def test_ternary(self):
-        
+
         contents = """self.blank_lines(2 if name == 'class' else 1)"""
         contents, tokens, tree = self.make_data(contents)
         expected = contents
@@ -4973,10 +4973,8 @@ class Orange:
         self.add_token('line-end', '\n')
         self.add_token('line-indent', self.lws + ' ' * 4)
         open_delim = Token(kind='lt', value=prefix[-1].value)
-        close_delim = Token(
-            kind='rt',
-            value=open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}'),
-        )
+        value = open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}')
+        close_delim = Token(kind='rt', value=value)
         delim_count = 1
         lws = self.lws + ' ' * 4
         for i, t in enumerate(tail):
