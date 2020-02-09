@@ -2142,16 +2142,15 @@ class TestOrange(BaseTest):
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200117180956.1: *4* TestOrange.test_split_lines
-
     def test_split_lines(self):
 
-        verbose_pass = False
-        verbose_fail = False
-        # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
         table = (
                             #1234567890x1234567890x1234567890x1234567890x
-            """print('1111111111', '2222222222', '3333333333')""",
+            """\
+    if 1:
+        print('1111111111', '2222222222', '3333333333')
+    """,
         )
         fails = 0
         for contents in table:
@@ -2164,16 +2163,16 @@ class TestOrange(BaseTest):
                 max_join_line_length=line_length,
                 max_split_line_length=line_length,
             )
+            results = results.rstrip()
             message = (
                 f"test_split_lines..."
                 f"  contents: {contents}\n"
-                f"     black: {expected.rstrip()}\n"
-                f"    orange: {results}")
+                f"     black: {expected.rstrip()!r}\n"
+                f"    orange: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
-                if verbose_fail:
-                    print(f"Fail: {fails}\n{message}")
-            elif verbose_pass:  # pragma: no cover
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_start_of_line_whitespace
@@ -5257,7 +5256,7 @@ class Orange:
         assert self.max_split_line_length > 0
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
-        if 1:
+        if 0:
             return False  ### Not safe to use.
         if not is_long_statement(node):
             if trace: g.trace('===== not long statement', node)
@@ -5265,7 +5264,7 @@ class Orange:
         # Return if splitting is disabled:
         if trace:
             dump_tree(self.tokens, node, tag='split_line')
-        # Find the tokens of the previous lines.
+        # Find the *output* tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
         # Do nothing for short lines.
