@@ -4969,7 +4969,6 @@ class Orange:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)
     #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
-
     def split_line(self, node, token):
         """
         Split token's line, if possible and enabled.
