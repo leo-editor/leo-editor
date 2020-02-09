@@ -1878,6 +1878,41 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert not fails, fails
+    #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
+    def test_indented_comment(self): ### Not ready.
+
+        line_length = 40  # For testing.
+        table = (
+    """\
+    if 1:
+        pass
+            # An indented comment.
+    """,
+        )
+
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents)
+            expected = contents
+            if 0:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+            elif 1:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert not fails, fails
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels(self):
 
