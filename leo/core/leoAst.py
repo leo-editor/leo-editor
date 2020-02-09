@@ -4561,7 +4561,7 @@ class Orange:
                 self.add_line_end()  # Don't attempt to split/join lines.
                 self.state_stack.pop()
             else:
-                self.blank_lines(2if name == 'class' else 1)
+                self.blank_lines(2 if name == 'class' else 1)
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
