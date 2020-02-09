@@ -4451,7 +4451,31 @@ class Orange:
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
+        # Post-pass: Ensure exactly one newline before #@+node sentinels.
+        self.clean_leo_nodes()
         return tokens_to_string(self.code_list)
+    #@+node:ekr.20200209135643.1: *6* orange.clean_leo_nodes
+    def clean_leo_nodes(self):
+        """
+        A post pass.
+        Remove all blank lines following Leo @+node sentinels.
+        """
+        i = 0
+        while i < len(self.code_list):
+            token = self.code_list[i]
+            i += 1
+            if token.kind == 'comment' and token.value.startswith('#@+node:'):
+                n = 0
+                while i < len(self.code_list):
+                    token = self.code_list[i]
+                    i += 1
+                    if token.kind == 'line-end':
+                        if n > 0:
+                            token.kind = 'killed'
+                            token.value = ''
+                        n += 1
+                    else:
+                        break
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
         """
@@ -4713,8 +4737,8 @@ class Orange:
             self.add_token('blank-lines', n)
             return
         # Special case for Leo comments that start a node.
-        if prev.kind == 'comment' and prev.value.startswith('#@+node:'):
-            n = 0
+        ### if prev.kind == 'comment' and prev.value.startswith('#@+node:'):
+        ###     n = 0
         for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
