@@ -4451,39 +4451,9 @@ class Orange:
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
-        # Post-pass: Ensure exactly one newline before #@+node sentinels.
+        ### Post-pass: Ensure exactly one newline before #@+node sentinels.
         ### self.clean_leo_nodes()
         return tokens_to_string(self.code_list)
-    #@+node:ekr.20200209135643.1: *6* orange.clean_leo_nodes
-    def clean_leo_nodes(self):
-        """
-        A post pass.
-        Remove all blank lines following Leo @+node sentinels.
-        """
-        ### g.printObj(self.code_list[:200])
-        i = 0
-        while i < len(self.code_list):
-            token = self.code_list[i]
-            i += 1
-            if token.kind == 'comment' and token.value.strip().startswith('#@+node:'):
-                ### g.trace(token.value)
-                n = 0
-                while i < len(self.code_list):
-                    token = self.code_list[i]
-                    i += 1
-                    if token.kind == 'line-end':
-                        if n > 0:
-                            token.kind = 'killed'
-                            token.value = ''
-                        n += 1
-                    elif token.kind == 'blank-lines':
-                        token.kind = 'killed'
-                        token.value = ''
-                        break
-                    else:
-                        break
-        ###  g.printObj(self.code_list)
-        ### g.trace(tokens_to_string(self.code_list))
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
         """
