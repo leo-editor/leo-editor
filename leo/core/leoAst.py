@@ -4673,16 +4673,9 @@ class Orange:
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
+        tok = self.add_token('line-end', '\n')
         # Help the join logic distinguish lines.
-        if 1:
-            tok = self.add_token('line-end', '\n')
-        else: ### Experimental 
-            if self.token.kind == 'newline':
-                tok = self.add_token('line-end', '\n')
-            elif self.token.kind == 'nl':
-                tok = self.add_token('line-end-nl', '\n')
-            else:
-                tok = self.add_token('line-end-name', '\n')
+        tok.newline_kind = self.token.kind ###
         return tok
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value=''):
@@ -5051,40 +5044,46 @@ class Orange:
         assert token.kind in ('newline', 'nl'), repr(token)
         if token.kind == 'nl':
             return
-        if 1:
-            return ###
-        ###
-       
-      
-            # # Scan backward in the *code* list, to find the corresponding 'line-end' token.
-            # g.printObj(self.code_list)
-            # nls += 1
-            # i = len(self.code_list) - 1
-            # assert self.code_list[i].kind == 'line-end'
-            # i -= 1
-            # last_indent = ''
-            # while i >= 0 and nls > 0:
-                # kind = self.code_list[i].kind
-                # val = self.code_list[i].value
-                # i -= 1
-                # if kind == 'line-end':
-                    # nls -= 1
-                # if kind == 'line-indent':
-                    # last_indent = val
-            # if i <= 0:
-                # # Retain at the file-start token.
-                # i = 1
-                # nls -= 1
-                # last_indent = ''
-            # if nls != 0:  # pragma: no cover
-                # g.trace('Scan error')
-                # return
-            # # Cut back the *code* list to the last 'line-end' token.
-            # self.code_list = self.code_list[:i]
-            # # Add the new output tokens.
-            # self.add_token('line-indent', last_indent)
-            # self.add_token('string', prev_line)
-            # self.add_token('line-end', '\n')
+        # Scan backward in the *code* list, looking for 'line-end' tokens with tok.newline_kind == 'nl'
+        nls = 0
+        i = len(self.code_list) - 1
+        t = self.code_list[i]
+        assert t.kind == 'line-end'
+        assert t.newline_kind == 'newline'
+        i -= 1
+        last_indent = ''
+        while i >= 0:
+            t = self.code_list[i]
+            i -= 1
+            if t.kind == 'line-end':
+                if getattr(t, 'newline_kind', None) == 'nl':
+                    nls += 1
+                else:
+                    break
+            if t.kind == 'line-indent':
+                last_indent = t.value
+        if nls == 0:
+            return
+        if i <= 0:
+            # Retain at the file-start token.
+            i = 1
+            last_indent = ''
+        # Calculate the joined line.
+        tail = self.tokens[i:]
+        ### g.printObj(tail, tag='tail')
+        tail_s = tokens_to_string(tail)
+        tail_s = re.sub(r'\n\s*', ' ', tail_s).rstrip()
+        # Don't join the lines if they would be too long.
+        if len(tail) > self.max_join_line_length:
+            return
+        # Cut back the code list.
+        self.code_list = self.code_list[:i]
+        # Add the new output tokens.
+        self.add_token('line-indent', last_indent)
+        self.add_token('string', tail_s)
+        t = self.add_token('line-end', '\n')
+        t.newline_kind = 'newline'
+        ### g.printObj(self.code_list, tag='result')
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
