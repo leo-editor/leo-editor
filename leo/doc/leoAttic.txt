@@ -3053,8 +3053,51 @@ def writeWaitingLog (self,c):
     lm.logWaiting = []
     # Essential when opening multiple files...
     lm.setLog(None)
-#@+node:ekr.20191028161708.1: **  Old test runners
-#@+node:ekr.20191101150059.1: *3* function: check_roundtrip 
+#@+node:ekr.20200209055601.1: **  Archived test stuff
+#@+node:ekr.20200209055610.1: *3* @@button test
+g.cls()
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+if 0: # Run all tests
+    commands = f"python -m unittest leo.core.leoAst"
+    g.execute_shell_commands(commands, trace=False)
+else:
+    file_ = '.leoAst'
+    class_, test = '', ''
+    class_, test = '.TestOrange', '.test_join_leading_whitespace'
+    # class_, test = '.TestOrange', '.test_leo_sentinels'
+    # class_, test = '.TestOrange', '.test_start_of_line_whitespace'
+    # class_, test = '.TestOrange', '.test_join_lines'
+    #
+    # Older
+    #
+    # file_ = '.leoAst'
+    # class_, test = '.TestTOG', ''
+    # class_, test = '.TestFiles', '.compare_tog_vs_asttokens'
+    # class_, test = '.TestFiles', '.optional_file_tests'
+    # class_, test = '.TestTokens', '.show_asttokens_script'
+    # class_, test = '.TestFstringify', '.test_call_with_comments'
+        # # 'test_call_in_rhs' # '.test_braces'
+    # class_, test = '.TestOrange','.test_join_lines'
+        # # 'test_sync_tokens' # '.test_multi_line_pet_peeves'
+    # class_, test = '.TestTokens', '.show_example_dump'
+        # # 'test_line_links'
+    # class_, test = '.TestTopLevelFunctions', '.test_get_encoding_directive'
+    # class_, test = '.TestReassignTokens', ''
+    # class_, test = '.TestTOT', ''
+    commands = f"python -m unittest leo.core{file_}{class_}{test}"
+    g.execute_shell_commands(commands, trace=False)
+#@+node:ekr.20200209055640.1: *3* @@button pt
+# Run pytest coverage tests.
+g.cls()
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+commands = "pytest --cov-report html --cov-report term-missing --cov leo.core.leoAst leo/core/leoAst.py"
+g.execute_shell_commands(commands, trace=False)
+#@+node:ekr.20191028161708.1: *3*  Old test runners
+#@+node:ekr.20191101150059.1: *4* function: check_roundtrip 
 import unittest
 # from tokenize import tokenize, untokenize
 
@@ -3097,7 +3140,7 @@ def check_python_roundtrip(f, expect_failure):
         unittest.TestCase().assertNotEqual(result_tokens, tokens)
     else:
         unittest.TestCase().assertEqual(result_tokens, tokens)
-#@+node:ekr.20191102062105.1: *3* @@command show tokens @key=Ctrl-1
+#@+node:ekr.20191102062105.1: *4* @@command show tokens @key=Ctrl-1
 g.cls()
 import io
 import tokenize
@@ -3123,7 +3166,7 @@ else:
     print(result)
     print('FAIL')
     print("FAIL Ctrl-1: Round trip tests")
-#@+node:ekr.20191107160414.1: *4* Old tests
+#@+node:ekr.20191107160414.1: *5* Old tests
 a = "b\
 c\
 d"
@@ -3131,7 +3174,7 @@ print ( 'aa \
 bb')
 print('xx \
 yy')
-#@+node:ekr.20191028095948.1: *3* @@command test FstringifyTokens @key=Ctrl-2
+#@+node:ekr.20191028095948.1: *4* @@command test FstringifyTokens @key=Ctrl-2
 g.cls()
 import imp
 import leo.core.leoBeautify as leoBeautify
@@ -3148,7 +3191,7 @@ leoBeautify.test_FstringifyTokens(c, contents,
     dump_input_tokens=False,
     dump_output_tokens=False)
 print("\nEnd Ctrl-2: Test of FStringifyTokens")
-#@+node:ekr.20191106073220.1: *4* Former fails that pass
+#@+node:ekr.20191106073220.1: *5* Former fails that pass
 g.es('%s blah blah' % (
     g.angleBrackets('*')))
     
@@ -3160,8 +3203,8 @@ print(f"{path}{dots}{leadin}{full_name}{args}")
 return '[%s]' % ' '.join(result).strip()
 
 ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
-#@+node:ekr.20191106074238.1: *4* Test that pass
-#@+node:ekr.20191029072408.1: *5* fstringify tests
+#@+node:ekr.20191106074238.1: *5* Test that pass
+#@+node:ekr.20191029072408.1: *6* fstringify tests
 contents = r'''
 print(
     'scanned %s node%s,' % (total, g.plural(total)),
@@ -3169,7 +3212,7 @@ print(
     'in %4.2f sec.' % (t2-t1),
 )
 '''
-#@+node:ekr.20191106024827.1: *5* fstringify tests 2
+#@+node:ekr.20191106024827.1: *6* fstringify tests 2
 # These all pass
 print('%2s' % a)
 print('%2r' % b)
@@ -3177,7 +3220,7 @@ print('%2r' % b)
 '%2.5f' % 0.2
 '%s+' % z.capitalize()
 ''.join(['%s+' % z.capitalize() for z in self.mods])
-#@+node:ekr.20191104221335.1: *5* fstring indentation tests
+#@+node:ekr.20191104221335.1: *6* fstring indentation tests
 if 1:
   # Input:
     mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
@@ -3197,7 +3240,7 @@ print(
 )
 print \
     ('done')
-#@+node:ekr.20191106064649.1: *5* fstring bs-nl tests
+#@+node:ekr.20191106064649.1: *6* fstring bs-nl tests
 # backslash test.
 a = "b\
 c\
@@ -3207,7 +3250,7 @@ print\
     'thing 3\
     thing4'
 )
-#@+node:ekr.20191106142223.1: *4* To do (small problems)
+#@+node:ekr.20191106142223.1: *5* To do (small problems)
 g.es('%s blah blah' % (g.angleBrackets('*')))
 
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
@@ -3218,7 +3261,7 @@ g.trace('done: %5s page: %3s found: %s label: %s' % (
     done, page, n, label))
     
 result = ['g.Bunch(%s)' % (tag or '')]
-#@+node:ekr.20191106064850.1: *4* FAIL: missing ws
+#@+node:ekr.20191106064850.1: *5* FAIL: missing ws
 ret = '[%s]' % ','.join([self.show(z) for z in arg])
 
 return ''.join(['\n  %s' % z for z in result])
@@ -3227,7 +3270,7 @@ g.trace('done: %5s page: %3s found: %s label: %s' % (
     done, page, n, label))
     
 result = ['g.Bunch(%s)' % (tag or '')]
-#@+node:ekr.20191026103522.1: *3* @@command test NullTokenBeautifier @key=Ctrl-3
+#@+node:ekr.20191026103522.1: *4* @@command test NullTokenBeautifier @key=Ctrl-3
 """Test NullTokenBeautifier on the given contents."""
 g.cls()
 import imp
@@ -3254,8 +3297,8 @@ ok = leoBeautify.test_NullTokenBeautifier(c, contents,
     dump=False, dump_input_tokens=True, dump_output_tokens=False)
 status = 'PASS' if ok else 'FAIL'
 print(f"{status} End Ctrl-3: Test of NullTokenBeautifier")
-#@+node:ekr.20191102055312.1: *4* << define contents >>
-#@+node:ekr.20191029072313.1: *4* old test 1 (long)
+#@+node:ekr.20191102055312.1: *5* << define contents >>
+#@+node:ekr.20191029072313.1: *5* old test 1 (long)
 if 1:
     # Single-line comment.
     print ( "hello" )
@@ -3275,12 +3318,12 @@ if 1:
         'in %4.2f sec.' % (t2-t1),
     )
 print(a[1 : 2])
-#@+node:ekr.20191030164855.1: *4* old test 2 (short)
+#@+node:ekr.20191030164855.1: *5* old test 2 (short)
 if 1:
     # Single-line comment.
     print ( "hello" )
 print('done')
-#@+node:ekr.20191031091233.1: *4* old test 3
+#@+node:ekr.20191031091233.1: *5* old test 3
 if 1:
     # Single-line comment.
     print ( "hello" )
@@ -3302,7 +3345,7 @@ if 1:
         'in %4.2f sec.' % (t2-t1),
     )
 print(a[1 : 2])
-#@+node:ekr.20191102055214.1: *4* old test: python bug
+#@+node:ekr.20191102055214.1: *5* old test: python bug
 # Python bug: space after 'print' not round-tripped properly.
 a = "b\
     c\
@@ -3312,7 +3355,7 @@ print\
     (\
     a,\
     b\
-#@+node:ekr.20191029184302.1: *3* @@command test PythonTokenBeautifier @key=Ctrl-4
+#@+node:ekr.20191029184302.1: *4* @@command test PythonTokenBeautifier @key=Ctrl-4
 g.cls()
 import imp
 import leo.core.leoBeautify as leoBeautify
@@ -3409,7 +3452,7 @@ for test in table:
 print(
     f"{'PASS' if ok else 'FAIL'} "
     f"Ctrl-4: Test of PythonTokenBeautifier")
-#@+node:ekr.20191029184302.2: *4* fstring test
+#@+node:ekr.20191029184302.2: *5* fstring test
 contents = r'''
 print('abc\
    xyz')
@@ -3426,7 +3469,7 @@ print(
     'in %4.2f sec.' % (t2-t1),
 )
 '''
-#@+node:ekr.20191030195606.1: *4* comment indent test
+#@+node:ekr.20191030195606.1: *5* comment indent test
 verbatim = False
 # Single-line comment.
 if self.test: # not single-line comment.
@@ -3436,7 +3479,7 @@ else:
     pass # not a single-line comment.
 # Single-line comment.
 # Single-line comment 2
-#@+node:ekr.20191031170857.1: *4* backslash test
+#@+node:ekr.20191031170857.1: *5* backslash test
 if 1:
     pass
 while(a or \
@@ -3449,7 +3492,7 @@ print(
     "abc"
     "xyz"
 )
-#@+node:ekr.20191105090751.1: *4* full test
+#@+node:ekr.20191105090751.1: *5* full test
 @language python
 @
 This is a doc part.
