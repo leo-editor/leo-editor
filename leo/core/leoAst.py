@@ -4629,7 +4629,7 @@ class Orange:
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
             self.word(name)
-        elif name in ('and', 'in', 'not', 'not in', 'or', 'for'):
+        elif name in ('and', 'else', 'for', 'if', 'in', 'not', 'not in', 'or'):
             self.word_op(name)
         else:
             self.word(name)
