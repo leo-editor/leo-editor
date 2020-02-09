@@ -4460,12 +4460,12 @@ class Orange:
         A post pass.
         Remove all blank lines following Leo @+node sentinels.
         """
-        g.printObj(self.code_list[:200])
+        ### g.printObj(self.code_list[:200])
         i = 0
         while i < len(self.code_list):
             token = self.code_list[i]
             i += 1
-            if token.kind == 'comment' and token.value.startswith('#@+node:'):
+            if token.kind == 'comment' and token.value.strip().startswith('#@+node:'):
                 ### g.trace(token.value)
                 n = 0
                 while i < len(self.code_list):
