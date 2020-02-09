@@ -4460,11 +4460,13 @@ class Orange:
         A post pass.
         Remove all blank lines following Leo @+node sentinels.
         """
+        ### g.printObj(self.code_list)
         i = 0
         while i < len(self.code_list):
             token = self.code_list[i]
             i += 1
             if token.kind == 'comment' and token.value.startswith('#@+node:'):
+                ### g.trace(token.value)
                 n = 0
                 while i < len(self.code_list):
                     token = self.code_list[i]
@@ -4474,8 +4476,13 @@ class Orange:
                             token.kind = 'killed'
                             token.value = ''
                         n += 1
+                    elif token.kind == 'blank-lines':
+                        token.kind = 'killed'
+                        token.value = ''
+                        break
                     else:
                         break
+        ### g.printObj(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
         """
