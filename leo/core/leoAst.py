@@ -4444,7 +4444,7 @@ class Orange:
         self.code_list_index = 0  # The token's index.
         self.tokens = tokens  # The list of input tokens.
         self.tree = tree
-        self.add_token('file-start')
+        self.add_token('file-start', '')
         self.push_state('file-start')
         for i, token in enumerate(tokens):
             self.token = token
@@ -4673,12 +4673,12 @@ class Orange:
         if self.delete_blank_lines:
             self.clean_blank_lines()
         self.clean('line-indent')
-        tok = self.add_token('line-end', '\n')
-        # Help the join logic distinguish lines.
-        tok.newline_kind = self.token.kind ###
-        return tok
+        t = self.add_token('line-end', '\n')
+        # Distinguish between kinds of 'line-end' tokens.
+        t.newline_kind = self.token.kind
+        return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind, value=''):
+    def add_token(self, kind, value):
         """Add an output token to the code list."""
         tok = Token(kind, value)
         tok.index = self.code_list_index  # For debugging only.
@@ -4696,8 +4696,6 @@ class Orange:
             'hard-blank',  # Unique to orange.
             'line-end',
             'line-indent',
-            'line-indent-name',  # Unique to orange.
-            'line-indent-nl',  # Unique to orange.
             'lt',
             'op-no-blanks',
             'unary-op',
@@ -4895,7 +4893,6 @@ class Orange:
         self.blank()
     #@+node:ekr.20200118120049.1: *4* orange: Split/join
     #@+node:ekr.20200107165250.35: *5* orange.append_tail
-
     def append_tail(self, prefix, tail):
         """Append the tail tokens, splitting the line further as necessary."""
         tail_s = ''.join([z.to_string() for z in tail])
@@ -4989,9 +4986,6 @@ class Orange:
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
-        ### Do include initial line_indent!
-            # if prefix[0].kind == 'line-indent':
-                # prefix = prefix[1:]
         # Cut back the token list: subtract 1 for the trailing line-end.
         self.code_list = self.code_list[: len(self.code_list) - len(line_tokens) - 1]
         # Append the tail, splitting it further, as needed.
@@ -5081,8 +5075,7 @@ class Orange:
         # Add the new output tokens.
         self.add_token('line-indent', last_indent)
         self.add_token('string', tail_s)
-        t = self.add_token('line-end', '\n')
-        t.newline_kind = 'newline'
+        self.add_token('line-end', '\n')
         ### g.printObj(self.code_list, tag='result')
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
