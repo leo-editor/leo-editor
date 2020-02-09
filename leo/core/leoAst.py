@@ -1834,7 +1834,7 @@ class TestOrange(BaseTest):
             message = (
                 f"test_join_lines..."
                 f"  contents: {contents}\n"
-                f"  expected: {expected.rstrip()!r}\n"
+                f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
