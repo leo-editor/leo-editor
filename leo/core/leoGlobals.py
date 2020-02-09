@@ -7203,9 +7203,22 @@ def execute_shell_commands(commands, trace=False):
         commands = [commands]
     for command in commands:
         wait = not command.startswith('&')
-        if command.startswith('&'): command = command[1:].strip()
+        if trace: g.trace(command)
+        if command.startswith('&'):
+            command = command[1:].strip()
         proc = subprocess.Popen(command, shell=True)
-        if wait: proc.communicate()
+        if wait:
+            proc.communicate()
+        else:
+            # #1489: call proc.poll at idle time.
+            def proc_poller(timer, proc=proc):
+                val = proc.poll()
+                # This trace can be disruptive.
+                # if trace: print('\nproc_poller:', val, proc, timer, '\n')
+                if val is None:
+                    timer.stop()
+
+            g.IdleTime(proc_poller,delay=0).start()
 #@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
     base_dir=None,
