@@ -1832,8 +1832,7 @@ class TestOrange(BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
-                f"test_join_lines..."
-                f"  contents: {contents}\n"
+                f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
             if results != expected:  # pragma: no cover
@@ -1888,6 +1887,11 @@ class TestOrange(BaseTest):
         pass
             # An indented comment.
     """,
+    """\
+    table = (
+        # Indented comment.
+    )
+    """
         )
 
         fails = 0
@@ -1910,7 +1914,7 @@ class TestOrange(BaseTest):
             if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
-            elif 1:  # pragma: no cover
+            elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
@@ -4544,6 +4548,7 @@ class Orange:
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
+            self.clean('hard-blank')
             self.clean('line-indent')
             val = self.line.rstrip()
         else:
@@ -5086,6 +5091,9 @@ class Orange:
         while i >= 0:
             t = self.code_list[i]
             i -= 1
+            if t.kind == 'comment':
+                # Can't join.
+                return
             if t.kind == 'line-end':
                 if getattr(t, 'newline_kind', None) == 'nl':
                     nls += 1
@@ -5101,11 +5109,10 @@ class Orange:
             last_indent = ''
         # Calculate the joined line.
         tail = self.tokens[i:]
-        ### g.printObj(tail, tag='tail')
         tail_s = tokens_to_string(tail)
         tail_s = re.sub(r'\n\s*', ' ', tail_s).rstrip()
         # Don't join the lines if they would be too long.
-        if len(tail) > self.max_join_line_length:
+        if len(tail_s) > self.max_join_line_length:
             return
         # Cut back the code list.
         self.code_list = self.code_list[:i]
@@ -5113,7 +5120,6 @@ class Orange:
         self.add_token('line-indent', last_indent)
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
-        ### g.printObj(self.code_list, tag='result')
     #@-others
 #@+node:ekr.20200107170847.1: *3* class OrangeSettings
 class OrangeSettings:
