@@ -1776,6 +1776,102 @@ class TestOrange(BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
+    def test_indented_comment(self):  ### Not ready.
+
+        line_length = 40  # For testing.
+        table = (
+    """\
+    if 1:
+        pass
+            # An indented comment.
+    """,
+    """\
+    table = (
+        # Indented comment.
+    )
+    """
+        )
+
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents)
+            expected = contents
+            if 0:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert not fails, fails
+    #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition (not ready)
+    def xxx_test_join_and_strip_condition(self):
+
+        line_length = 40  # For testing.
+        contents = """\
+    if (
+        a == b or
+        c == d
+    ):
+        pass
+    """
+        expected = """\
+    if ( a == b or c == d ):
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        ### expected = g.adjustTripleString(expected)
+        expected = self.blacken(contents, line_length=line_length)
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace (not ready)
+    def xxx_test_join_leading_whitespace(self):  ### Not ready.
+
+        line_length = 40  # For testing.
+        table = (
+                            #1234567890x1234567890x1234567890x1234567890x
+    """\
+    if 1:
+        print('4444',\n    '5555')""",
+    """\
+    if 1:
+        print('4444', '5555')\n\n""",
+        )
+        fails = 0
+        for contents in table:
+            contents, tokens, tree = self.make_data(contents)
+            if 0:  # pragma: no cover
+                dump_contents(contents)
+                dump_tokens(tokens)
+                # dump_tree(tokens, tree)
+            expected = self.blacken(contents, line_length=line_length)
+            results = self.beautify(contents, tokens, tree,
+                max_join_line_length=line_length,
+                max_split_line_length=line_length,
+            )
+            message = (
+                f"\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
+                f"       got: {results!r}")
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print(f"Fail: {fails}\n{message}")
+            elif 0:  # pragma: no cover
+                print(f"Ok:\n{message}")
+        assert not fails, fails
     #@+node:ekr.20200121093134.1: *4* TestOrange.test_join_lines
     def test_join_lines(self):
 
@@ -1834,82 +1930,6 @@ class TestOrange(BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
-                print(f"Ok:\n{message}")
-        assert not fails, fails
-    #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace (not ready)
-    def xxx_test_join_leading_whitespace(self):  ### Not ready.
-
-        line_length = 40  # For testing.
-        table = (
-                            #1234567890x1234567890x1234567890x1234567890x
-    """\
-    if 1:
-        print('4444',\n    '5555')""",
-    """\
-    if 1:
-        print('4444', '5555')\n\n""",
-        )
-        fails = 0
-        for contents in table:
-            contents, tokens, tree = self.make_data(contents)
-            if 0:  # pragma: no cover
-                dump_contents(contents)
-                dump_tokens(tokens)
-                # dump_tree(tokens, tree)
-            expected = self.blacken(contents, line_length=line_length)
-            results = self.beautify(contents, tokens, tree,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-            elif 0:  # pragma: no cover
-                print(f"Ok:\n{message}")
-        assert not fails, fails
-    #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
-    def test_indented_comment(self):  ### Not ready.
-
-        line_length = 40  # For testing.
-        table = (
-    """\
-    if 1:
-        pass
-            # An indented comment.
-    """,
-    """\
-    table = (
-        # Indented comment.
-    )
-    """
-        )
-
-        fails = 0
-        for contents in table:
-            contents, tokens, tree = self.make_data(contents)
-            expected = contents
-            if 0:  # pragma: no cover
-                dump_contents(contents)
-                dump_tokens(tokens)
-                # dump_tree(tokens, tree)
-            results = self.beautify(contents, tokens, tree,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
@@ -2120,26 +2140,6 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
-    #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition (not ready)
-    def xxx_test_join_and_strip_condition(self):
-
-        line_length = 40  # For testing.
-        contents = """\
-    if (
-        a == b or
-        c == d
-    ):
-        pass
-    """
-        expected = """\
-    if ( a == b or c == d ):
-        pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        ### expected = g.adjustTripleString(expected)
-        expected = self.blacken(contents, line_length=line_length)
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
 
@@ -2148,6 +2148,14 @@ class TestOrange(BaseTest):
         expected = """if x == 4: pass"""
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200209161226.1: *4* TestOrange.test_ternary
+    def test_ternary(self):
+        
+        contents = """self.blank_lines(2 if name == 'class' else 1)"""
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
@@ -4719,7 +4727,7 @@ class Orange:
             self.clean('line-indent')
             self.add_token('hard-blank', val)
     #@+node:ekr.20200107165250.26: *4* orange: Output token generators
-    #@+node:ekr.20200118145044.1: *5* orange.add_line_end (changed)
+    #@+node:ekr.20200118145044.1: *5* orange.add_line_end
     def add_line_end(self):
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
