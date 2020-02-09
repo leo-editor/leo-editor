@@ -573,7 +573,8 @@ if 1:  # pragma: no cover
         fields1 = getattr(node1, "_fields", [])
         fields2 = getattr(node2, "_fields", [])
         if fields1 != fields2:
-            raise AstNotEqual(f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
+            raise AstNotEqual(
+                f"node1._fields: {fields1}\n" f"node2._fields: {fields2}")
         # Recursively compare each field.
         for field in fields1:
             if field not in ('lineno', 'col_offset', 'ctx'):
@@ -724,7 +725,8 @@ if 1:  # pragma: no cover
             return ok
 
         try:
-            five_tuples = tokenize.tokenize(io.BytesIO(contents.encode('utf-8')).readline)
+            five_tuples = tokenize.tokenize(
+                io.BytesIO(contents.encode('utf-8')).readline)
         except Exception:
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
@@ -1183,7 +1185,8 @@ class AstDumper:  # pragma: no cover
         parent_id = getattr(parent, 'node_index', '??')
         parent_s = f"{parent_id:>3}.{parent.__class__.__name__} " if parent else ''
         class_name = node.__class__.__name__
-        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(class_name, node, 30)
+        descriptor_s = f"{node_id}.{class_name}: " + self.show_fields(
+            class_name, node, 30)
         tokens_s = self.show_tokens(node, 70, 100)
         lines = self.show_line_range(node)
         full_s1 = f"{parent_s:<16} {lines:<10} {indent}{descriptor_s} "
@@ -1317,7 +1320,8 @@ class AstDumper:  # pragma: no cover
         """
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
-            fields = [(a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
+            fields = [(
+                a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
                 fields.extend([(a, self.dump_ast(getattr(node, a), level + 1))
                     for a in node._attributes])
@@ -1372,8 +1376,6 @@ class TestFiles(BaseTest):  # pragma: no cover
         # Define Token class and helper functions.
         #@+others
         #@+node:ekr.20200124024159.2: *5* class Token
-
-
         class Token:
             """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
 
@@ -1842,7 +1844,7 @@ class TestOrange(BaseTest):
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace (not ready)
-    def xxx_test_join_leading_whitespace(self): ### Not ready.
+    def xxx_test_join_leading_whitespace(self):  ### Not ready.
 
         line_length = 40  # For testing.
         table = (
@@ -1878,7 +1880,7 @@ class TestOrange(BaseTest):
                 print(f"Ok:\n{message}")
         assert not fails, fails
     #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
-    def test_indented_comment(self): ### Not ready.
+    def test_indented_comment(self):  ### Not ready.
 
         line_length = 40  # For testing.
         table = (
@@ -1917,8 +1919,8 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert not fails, fails
-    #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
-    def test_leo_sentinels(self):
+    #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels_1
+    def test_leo_sentinels_1(self):
 
         # Careful: don't put a sentinel into the file directly.
         # That would corrupt leoAst.py.
@@ -1926,6 +1928,21 @@ class TestOrange(BaseTest):
         contents = f"""\
     {sentinel}
     def spam():
+        pass
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200209155457.1: *4* TestOrange.test_leo_sentinels_2
+    def test_leo_sentinels_2(self):
+
+        # Careful: don't put a sentinel into the file directly.
+        # That would corrupt leoAst.py.
+        sentinel = '#@+node:ekr.20200105143308.54: ** test'
+        contents = f"""\
+    {sentinel}
+    class TestClass:
         pass
     """
         contents, tokens, tree = self.make_data(contents)
@@ -2885,7 +2902,7 @@ class TestTokens(BaseTest):
         dump_tokens(tokens)
         dump_tree(tokens, tree)
     #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
-    def show_asttokens_script(self):  # pragma: no cover: Will only be run automatically.
+    def show_asttokens_script(self):  # pragma: no cover
         """
         A script showing how asttokens can *easily* do the following:
         - Inject parent/child links into ast nodes. 
@@ -2897,8 +2914,6 @@ class TestTokens(BaseTest):
         # Define Token class and helper functions.
         #@+others
         #@+node:ekr.20200122170101.3: *5* class Token
-
-
         class Token:
             """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
 
@@ -3227,7 +3242,7 @@ class TokenOrderGenerator:
         """Leave a visitor."""
         # begin_visitor and end_visitor must be paired.
         entry_name = self.begin_end_stack.pop()
-        assert entry_name == node.__class__.__name__, (repr(entry_name), node.__class__.__name__)
+        assert entry_name == node.__class__.__name__, f"{entry_name!r} {node.__class__.__name__}"
         assert self.node == node, (repr(self.node), repr(node))
         # Restore self.node.
         self.node = self.node_stack.pop()
@@ -4490,8 +4505,6 @@ class Orange:
             self.kind, self.val, self.line = token.kind, token.value, token.line
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
-        ### Post-pass: Ensure exactly one newline before #@+node sentinels.
-        ### self.clean_leo_nodes()
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
@@ -4710,7 +4723,7 @@ class Orange:
     def add_line_end(self):
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
-        assert self.token.kind in ('name', 'newline', 'nl'), (self.token.kind, g.callers())
+        assert self.token.kind in ('name', 'newline', 'nl'), self.token.kind
         self.clean('blank')  # Important!
         if self.delete_blank_lines:
             self.clean_blank_lines()
