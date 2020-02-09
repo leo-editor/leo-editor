@@ -4452,7 +4452,7 @@ class Orange:
             func = getattr(self, f"do_{token.kind}", self.oops)
             func()
         # Post-pass: Ensure exactly one newline before #@+node sentinels.
-        self.clean_leo_nodes()
+        ### self.clean_leo_nodes()
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200209135643.1: *6* orange.clean_leo_nodes
     def clean_leo_nodes(self):
@@ -4745,8 +4745,8 @@ class Orange:
             self.add_token('blank-lines', n)
             return
         # Special case for Leo comments that start a node.
-        ### if prev.kind == 'comment' and prev.value.startswith('#@+node:'):
-        ###     n = 0
+        if prev.kind == 'comment' and prev.value.strip().startswith('#@+node:'):
+            n = 0
         for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
