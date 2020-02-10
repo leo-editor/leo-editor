@@ -2892,25 +2892,28 @@ class Orange:
         Also add all lt tokens directly following the first lt token.
         """
         result = []
+        ### g.printObj(token_list, tag=''.join(g.callers(2)))
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                for t in token_list[i + 1 :]:
-                    if t.kind == 'blank' or self.is_any_lt(t):
-                    # if t.kind in ('lt', 'blank'):
-                        result.append(t)
-                    else:
-                        break
-                break
+                break ###
+                # for t in token_list[i + 1 :]:
+                    # if t.kind == 'blank' or self.is_any_lt(t):
+                    # # if t.kind in ('lt', 'blank'):
+                        # result.append(t)
+                    # else:
+                        # break
+                # break
         return result
-    #@+node:ekr.20200107165250.38: *6* orange.is_any_lt
-    def is_any_lt(self, output_token):
-        """Return True if the given token is any lt token"""
-        return (
-            output_token == 'lt'
-            or output_token.kind == 'op-no-blanks'
-            and output_token.value in "{[("
-        )
+    #@+node:ekr.20200107165250.38: *6* orange.is_any_lt (no longer used)
+    ###
+    # def is_any_lt(self, output_token):
+        # """Return True if the given token is any lt token"""
+        # return (
+            # output_token == 'lt'
+            # or output_token.kind == 'op-no-blanks'
+            # and output_token.value in "{[("
+        # )
     #@+node:ekr.20200107165250.39: *5* orange.join_lines
     def join_lines(self, node, token):
         """
@@ -2946,21 +2949,21 @@ class Orange:
         # Retain at the file-start token.
         if i <= 0:
             i = 1
-        if nls <= 0:
+        if nls <= 0:  # pragma: no cover (rare)
             return
         # Retain line-end and and any following line-indent.
         # Required, so that the regex below won't eat too much.
         while True:
             t = self.code_list[i]
             if t.kind == 'line-end':
-                if getattr(t, 'newline_kind', None) == 'nl':
+                if getattr(t, 'newline_kind', None) == 'nl':  # pragma: no cover (rare)
                     nls -= 1
                 i += 1
             elif self.code_list[i].kind == 'line-indent':
                 i += 1
             else:
                 break
-        if nls <= 0:
+        if nls <= 0:  # pragma: no cover (defensive)
             return
         # Calculate the joined line.
         tail = self.code_list[i:]
@@ -3450,7 +3453,7 @@ class TestFiles(BaseTest):  # pragma: no cover
             self.skipTest('requires asttokens')
         # Define Token class and helper functions.
         #@+others
-        #@+node:ekr.20200124024159.2: *5* class Token
+        #@+node:ekr.20200124024159.2: *5* class Token (internal)
         class Token:
             """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
 
@@ -3461,7 +3464,7 @@ class TestFiles(BaseTest):  # pragma: no cover
 
             def __str__(self):
                 tokens_s = ', '.join([z.__class__.__name__ for z in self.node_list])
-                return f"{self.kind:12} {self.value:20} {tokens_s!s}"
+                return f"{self.kind:14} {self.value:20} {tokens_s!s}"
 
             __repr__ = __str__
         #@+node:ekr.20200124024159.3: *5* function: atok_name
@@ -3820,7 +3823,7 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
-        
+
         # The newline after a = 1 generates an 'nl' token!
         contents = """\
     class T:
@@ -4221,6 +4224,7 @@ class TestOrange(BaseTest):
         print('1111111111', '2222222222', '3333333333')
     """,
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
+    """print( 'aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc' )""",
         )
         fails = 0
         for contents in table:
@@ -4233,9 +4237,6 @@ class TestOrange(BaseTest):
                 max_join_line_length=line_length,
                 max_split_line_length=line_length,
             )
-            if 0:
-                expected = expected.rstrip()
-                results = results.rstrip()
             message = (
                 f"test_split_lines..."
                 f"  contents: {contents}\n"
@@ -5026,10 +5027,10 @@ class TestTokens(BaseTest):
         import ast
         import asttokens
         import token as token_module
-        # Define Token class and helper functions.
+        # Define TestToken class and helper functions.
         #@+others
-        #@+node:ekr.20200122170101.3: *5* class Token
-        class Token:
+        #@+node:ekr.20200122170101.3: *5* class TestToken
+        class TestToken:
             """A patchable representation of the 5-tuples created by tokenize and used by asttokens."""
 
             def __init__(self, kind, value):
@@ -5090,7 +5091,7 @@ class TestTokens(BaseTest):
             print(f"Source...\n\n{source}")
             atok = asttokens.ASTTokens(source, parse=True)
             # Create a patchable list of Token objects.
-            tokens = [Token(atok_name(z), atok_value(z)) for z in atok.tokens]
+            tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]
             # Inject parent/child links into nodes.
             asttokens.util.visit_tree(atok.tree, previsit, postvisit)
             # Create token.token_list for each token.
@@ -5742,7 +5743,7 @@ class Token:
     def __repr__(self):
         nl_kind = getattr(self, 'newline_kind', '')
         s = f"{self.kind:}.{self.index:<3}"
-        return f"{s:>15}:{nl_kind:7} {self.show_val(80)}"
+        return f"{s:>18}:{nl_kind:7} {self.show_val(80)}"
 
     def __str__(self):
         nl_kind = getattr(self, 'newline_kind', '')
