@@ -236,6 +236,7 @@ def fstringify_files_silent(event):
 #@+node:ekr.20200108045048.1: *4* orange_settings
 def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
+    allow_joined_strings = c.config.getBool('beautify-allow-joined-strings', default=False)
     keep_blank_lines = c.config.getBool('beautify-keep-blank-lines', default=True)
     n_max_join = c.config.getInt('beautify-max-join-line-length')
     max_join_line_length = 88 if n_max_join is None else n_max_join
@@ -245,6 +246,7 @@ def orange_settings(c):
     if max_join_line_length > max_split_line_length:
         max_join_line_length = max_split_line_length
     return {
+        'allow_joined_strings': allow_joined_strings,
         'delete_blank_lines': not keep_blank_lines,
         'max_join_line_length': max_join_line_length,
         'max_split_line_length': max_split_line_length,

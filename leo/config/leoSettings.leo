@@ -522,6 +522,7 @@
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
+<v t="ekr.20200210045434.1"><vh>@bool beautify-allow-joined-strings = False</vh></v>
 <v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
 <v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 80</vh></v>
@@ -11788,8 +11789,9 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20190915192705.1"></t>
 <t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
-<t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length</t>
-<t tx="ekr.20190926105638.1"></t>
+<t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length.
+Zero suppresses all line joining.</t>
+<t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
 <t tx="ekr.20191023140453.1"></t>
@@ -11807,6 +11809,8 @@ sphinx-build {input_dir} {output_dir} {i_path}</t>
 The output_dir directory specified in the command:
 
 sphinx-build {input_dir} {output_dir} {i_path}</t>
+<t tx="ekr.20200210045434.1">True:  allow joined lines to contain strings.
+False: (Recommended by EKR): Retain alignment of strings.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

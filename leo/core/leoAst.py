@@ -4451,6 +4451,7 @@ class Orange:
         if settings is None:
             settings = {}
         valid_keys = (
+            'allow_joined_strings',
             'delete_blank_lines',
             'max_join_line_length',
             'max_split_line_length',
@@ -4458,6 +4459,7 @@ class Orange:
             'tab_width',
         )
         # Default settings...
+        self.allow_joined_strings = False  # EKR's preference.
         self.delete_blank_lines = True
         self.max_join_line_length = 88
         self.max_split_line_length = 88
@@ -5112,7 +5114,7 @@ class Orange:
             if t.kind == 'comment':
                 # Can't join.
                 return
-            if t.kind == 'string':
+            if t.kind == 'string' and not self.allow_joined_strings:
                 # An EKR preference: don't join strings, no matter what black does.
                 # This allows "short" f-strings to be aligned.
                 return
