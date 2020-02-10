@@ -1846,9 +1846,9 @@ class TestOrange(BaseTest):
         print('4444',
             '5555')
     """,
-    # """\
-    # if 1:
-        # print('4444', '5555')\n\n""",
+    """\
+    if 1:
+        print('4444', '5555')\n\n""",
         )
         fails = 0
         for contents in table:
@@ -1857,7 +1857,8 @@ class TestOrange(BaseTest):
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
-            expected = self.blacken(contents, line_length=line_length)
+            expected = contents
+            # expected = self.blacken(contents, line_length=line_length)
             results = self.beautify(contents, tokens, tree,
                 max_join_line_length=line_length,
                 max_split_line_length=line_length,
@@ -1879,27 +1880,26 @@ class TestOrange(BaseTest):
         # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
         table = (
-                            #1234567890x1234567890x1234567890x1234567890x
-            (
-                """print('4444',\n    '5555')""",
-                """print('4444', '5555')\n""",
-            ),
+            #1234567890x1234567890x1234567890x1234567890x
+            """print('4444',\n    '5555')""",
+            """print('4444', '5555')\n""",
         )
         fails = 0
-        for contents, expected in table:
+        for contents in table:
             contents, tokens, tree = self.make_data(contents)
             if 0:  # # pragma: no cover
                 dump_contents(contents)
                 dump_tokens(tokens)
                 # dump_tree(tokens, tree)
+            expected = contents
             results = self.beautify(contents, tokens, tree,
                 max_join_line_length=line_length,
                 max_split_line_length=line_length,
             )
             message = (
                 f"test_join_lines..."
-                f"  contents: {contents}\n"
-                f"     black: {expected.rstrip()!r}\n"
+                f"  contents: {contents!r}\n"
+                f"  expected: {expected!r}\n"
                 f"    orange: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
@@ -5112,8 +5112,9 @@ class Orange:
             if t.kind == 'comment':
                 # Can't join.
                 return
-            if False: ### t.kind == 'string':
-                # Don't join strings.
+            if t.kind == 'string':
+                # An EKR preference: don't join strings, no matter what black does.
+                # This allows "short" f-strings to be aligned.
                 return
             if t.kind == 'line-end':
                 if getattr(t, 'newline_kind', None) == 'nl':
