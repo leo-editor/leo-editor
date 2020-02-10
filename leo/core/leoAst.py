@@ -4432,7 +4432,8 @@ class TokenOrderTraverser:
     def visit(self, node):
 
         self.last_node_index += 1
-        assert self.last_node_index == node.node_index, (self.last_node_index, node.node_index)
+        assert self.last_node_index == node.node_index, (
+            self.last_node_index, node.node_index)
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
