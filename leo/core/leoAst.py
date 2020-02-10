@@ -1816,10 +1816,9 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert not fails, fails
-    #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition (not ready)
-    def xxx_test_join_and_strip_condition(self):
+    #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
+    def test_join_and_strip_condition(self):
 
-        line_length = 40  # For testing.
         contents = """\
     if (
         a == b or
@@ -1828,16 +1827,16 @@ class TestOrange(BaseTest):
         pass
     """
         expected = """\
-    if ( a == b or c == d ):
+    if (a == b or c == d):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        ### expected = g.adjustTripleString(expected)
-        expected = self.blacken(contents, line_length=line_length)
+        expected = g.adjustTripleString(expected)
+        ### expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace (not ready)
-    def xxx_test_join_leading_whitespace(self):  ### Not ready.
+    #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace
+    def test_join_leading_whitespace(self):
 
         line_length = 40  # For testing.
         table = (
@@ -5106,10 +5105,8 @@ class Orange:
         assert t.kind == 'line-end'
         assert t.newline_kind == 'newline'
         i -= 1
-        last_indent = ''
         while i >= 0:
             t = self.code_list[i]
-            i -= 1
             if t.kind == 'comment':
                 # Can't join.
                 return
@@ -5118,25 +5115,29 @@ class Orange:
                     nls += 1
                 else:
                     break
-            if t.kind == 'line-indent':
-                last_indent = t.value
+            i -= 1
         if nls == 0:
             return
+        # Retain at the file-start token.
         if i <= 0:
-            # Retain at the file-start token.
             i = 1
-            last_indent = ''
+        # Retain the line-end and and any following line-indent.
+        if self.code_list[i].kind == 'line-end':
+            i += 1
+        if self.code_list[i].kind == 'line-indent':
+            i += 1
         # Calculate the joined line.
-        tail = self.tokens[i:]
+        tail = self.code_list[i:]
         tail_s = tokens_to_string(tail)
-        tail_s = re.sub(r'\n\s*', ' ', tail_s).rstrip()
+        tail_s = re.sub(r'\n\s*', ' ', tail_s)
+        tail_s = tail_s.replace('( ', '(').replace(' )', ')')
+        tail_s = tail_s.rstrip()
         # Don't join the lines if they would be too long.
         if len(tail_s) > self.max_join_line_length:
             return
         # Cut back the code list.
         self.code_list = self.code_list[:i]
         # Add the new output tokens.
-        self.add_token('line-indent', last_indent)
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
     #@-others
