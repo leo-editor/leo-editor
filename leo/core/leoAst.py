@@ -1320,8 +1320,7 @@ class AstDumper:  # pragma: no cover
         """
         sep1 = f'\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
-            fields = [(
-                a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
+            fields = [(a, self.dump_ast(b, level + 1)) for a, b in self.get_fields(node)]
             if self.include_attributes and node._attributes:
                 fields.extend([(a, self.dump_ast(getattr(node, a), level + 1))
                     for a in node._attributes])
@@ -4433,8 +4432,7 @@ class TokenOrderTraverser:
     def visit(self, node):
 
         self.last_node_index += 1
-        assert self.last_node_index == node.node_index, (
-            self.last_node_index, node.node_index)
+        assert self.last_node_index == node.node_index, (self.last_node_index, node.node_index)
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
