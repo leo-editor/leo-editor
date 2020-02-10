@@ -7210,12 +7210,13 @@ def execute_shell_commands(commands, trace=False):
         if wait:
             proc.communicate()
         else:
+            if trace: print('Start:', proc)
             # #1489: call proc.poll at idle time.
             def proc_poller(timer, proc=proc):
                 val = proc.poll()
-                # This trace can be disruptive.
-                # if trace: print('\nproc_poller:', val, proc, timer, '\n')
-                if val is None:
+                if val is not None:
+                    # This trace can be disruptive.
+                    if trace: print('  End:', proc, val)
                     timer.stop()
 
             g.IdleTime(proc_poller,delay=0).start()
