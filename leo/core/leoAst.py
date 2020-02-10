@@ -2817,8 +2817,7 @@ class Orange:
     def append_tail(self, prefix, tail):
         """Append the tail tokens, splitting the line further as necessary."""
         tail_s = ''.join([z.to_string() for z in tail])
-        if False and len(tail_s) < self.max_split_line_length:
-            g.trace(len(tail_s), tail_s)
+        if len(tail_s) < self.max_split_line_length:
             # Add the prefix.
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
@@ -4209,11 +4208,6 @@ class TestOrange(BaseTest):
         print('1111111111', '2222222222', '3333333333')
     """,
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
-    """\
-    if not any([z.kind == 'lt' for z in line_tokens]):
-        return False
-    """,
-
         )
         fails = 0
         for contents in table:
@@ -4236,6 +4230,39 @@ class TestOrange(BaseTest):
                 print(f"Fail: {fails}\n{message}")
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
+        assert fails == 0, fails
+    #@+node:ekr.20200210073227.1: *4* TestOrange.test_split_lines_2
+    def test_split_lines_2(self):
+
+        line_length = 40  # For testing.
+        # Different from how black handles things.
+        contents = """\
+    if not any([z.kind == 'lt' for z in line_tokens]):
+        return False
+    """
+        expected = """\
+    if not any(
+        [z.kind == 'lt' for z in line_tokens]):
+        return False
+    """
+        fails = 0
+        contents, tokens, tree = self.make_data(contents)
+        # expected = self.blacken(contents, line_length=line_length)
+        expected = g.adjustTripleString(expected)
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        message = (
+            f"test_split_lines..."
+            f"  contents: {contents!r}\n"
+            f"  expected: {expected!r}\n"
+            f"       got: {results!r}")
+        if results != expected:  # pragma: no cover
+            fails += 1
+            print(f"Fail: {fails}\n{message}")
+        elif 0:  # pragma: no cover
+            print(f"Ok:\n{message}")
         assert fails == 0, fails
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
