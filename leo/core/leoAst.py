@@ -2892,28 +2892,11 @@ class Orange:
         Also add all lt tokens directly following the first lt token.
         """
         result = []
-        ### g.printObj(token_list, tag=''.join(g.callers(2)))
         for i, t in enumerate(token_list):
             result.append(t)
             if t.kind == 'lt':
-                break ###
-                # for t in token_list[i + 1 :]:
-                    # if t.kind == 'blank' or self.is_any_lt(t):
-                    # # if t.kind in ('lt', 'blank'):
-                        # result.append(t)
-                    # else:
-                        # break
-                # break
+                break
         return result
-    #@+node:ekr.20200107165250.38: *6* orange.is_any_lt (no longer used)
-    ###
-    # def is_any_lt(self, output_token):
-        # """Return True if the given token is any lt token"""
-        # return (
-            # output_token == 'lt'
-            # or output_token.kind == 'op-no-blanks'
-            # and output_token.value in "{[("
-        # )
     #@+node:ekr.20200107165250.39: *5* orange.join_lines
     def join_lines(self, node, token):
         """
