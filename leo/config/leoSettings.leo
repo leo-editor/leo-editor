@@ -524,7 +524,7 @@
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
-<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
+<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 80</vh></v>
 <v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
 </v>
 <v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
@@ -11788,8 +11788,8 @@ The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20190915192705.1"></t>
 <t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
-<t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
-<t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
+<t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length</t>
+<t tx="ekr.20190926105638.1"></t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
 <t tx="ekr.20191023140453.1"></t>
