@@ -2558,7 +2558,6 @@ class Orange:
         t = self.add_token('line-end', '\n')
         # Distinguish between kinds of 'line-end' tokens.
         t.newline_kind = 'newline' if cleaned_newline else self.token.kind
-        ### g.trace(cleaned_newline, self.token, g.callers())
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value):
@@ -2867,7 +2866,6 @@ class Orange:
         # Return if the previous line has no opening delim: (, [ or {.
         if not any([z.kind == 'lt' for z in line_tokens]):
             return False
-        ### g.printObj(line_tokens, tag='line_tokens') ###
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
@@ -2929,10 +2927,6 @@ class Orange:
         t = self.code_list[i]
         assert t.kind == 'line-end'
         assert t.newline_kind == 'newline'
-        ###
-            # g.trace(i)
-            # g.printObj(self.tokens, tag='tokens')
-            # g.printObj(self.code_list)
         i -= 1
         while i >= 0:
             t = self.code_list[i]
@@ -2945,7 +2939,6 @@ class Orange:
                 return
             if t.kind == 'line-end':
                 if getattr(t, 'newline_kind', None) == 'nl':
-                    ### g.trace('nl', i)
                     nls += 1
                 else:
                     break
@@ -2955,7 +2948,6 @@ class Orange:
             i = 1
         if nls <= 0:
             return
-        ### g.printObj(self.code_list[i:])
         # Retain line-end and and any following line-indent.
         # Required, so that the regex below won't eat too much.
         while True:
@@ -2970,7 +2962,6 @@ class Orange:
                 break
         if nls <= 0:
             return
-        ### g.printObj(self.code_list[i:])
         # Calculate the joined line.
         tail = self.code_list[i:]
         tail_s = tokens_to_string(tail)
@@ -3883,7 +3874,7 @@ class TestOrange(BaseTest):
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
-    def test_indented_comment(self):  ### Not ready.
+    def test_indented_comment(self):
 
         line_length = 40  # For testing.
         table = (
