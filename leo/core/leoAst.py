@@ -5120,16 +5120,19 @@ class Orange:
                 else:
                     break
             i -= 1
-        if nls == 0:
-            return
         # Retain at the file-start token.
         if i <= 0:
             i = 1
         # Retain the line-end and and any following line-indent.
-        if self.code_list[i].kind == 'line-end':
+        t = self.code_list[i]
+        if t.kind == 'line-end':
+            if getattr(t, 'newline_kind', None) == 'nl':
+                nls -= 1
             i += 1
         if self.code_list[i].kind == 'line-indent':
             i += 1
+        if nls == 0:
+            return
         # Calculate the joined line.
         tail = self.code_list[i:]
         g.printObj(tail)
