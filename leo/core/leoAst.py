@@ -4208,6 +4208,7 @@ class TestOrange(BaseTest):
         print('1111111111', '2222222222', '3333333333')
     """,
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
+    """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc', 'ddddddddddddddddd')""",
         )
         fails = 0
         for contents in table:
