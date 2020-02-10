@@ -2318,6 +2318,7 @@ class Orange:
         self.square_brackets_stack = []  # A stack of bools, for self.word().
         self.state_stack = []  # Stack of ParseState objects.
         self.val = None  # The input token's value (a string).
+        self.verbatim = False  # True: don't beautify.
         #
         # Init output list and state...
         self.code_list = []  # The list of output tokens.
@@ -2329,8 +2330,11 @@ class Orange:
         for i, token in enumerate(tokens):
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
-            func = getattr(self, f"do_{token.kind}", self.oops)
-            func()
+            if self.verbatim:
+                self.do_verbatim()
+            else:
+                func = getattr(self, f"do_{token.kind}", self.oops)
+                func()
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
@@ -2382,8 +2386,13 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
+    nobeautify_pat = re.compile(r'#\s*pragma:\s*no\s*beautify\b|#@@nobeautify')
+
     def do_comment(self):
         """Handle a comment token."""
+        if self.nobeautify_pat.match(self.val):
+            g.trace(self.val)
+            self.verbatim = True
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
@@ -2526,6 +2535,19 @@ class Orange:
         """Handle a 'string' token."""
         self.add_token('string', self.val)
         self.blank()
+    #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
+    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#@+node|#@[+-]others')
+
+    def do_verbatim(self):
+        """
+        Handle verbatim mode.
+        Copy each input token to the code list.
+        End verbatim mode when the appropriate comment is seen.
+        """
+        self.code_list.add_token('verbatim', self.val)
+        if self.kind == 'comment' and self.beautify_pat.match(self.val):
+            g.trace(self.val)
+            self.verbatim = False
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
