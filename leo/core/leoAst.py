@@ -2095,6 +2095,14 @@ class TestOrange(BaseTest):
             elif verbose_pass:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
+    #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
+    def test_return(self):
+        
+        contents = """return []"""
+        expected = self.blacken(contents)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200107174742.1: *4* TestOrange.test_single_quoted_string
     def test_single_quoted_string(self):
 
