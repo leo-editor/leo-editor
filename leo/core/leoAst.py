@@ -5131,7 +5131,7 @@ class Orange:
             i += 1
         if self.code_list[i].kind == 'line-indent':
             i += 1
-        if nls == 0:
+        if nls <= 0:
             return
         # Calculate the joined line.
         tail = self.code_list[i:]
