@@ -1832,7 +1832,8 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = g.adjustTripleString(expected)
-        ### expected = self.blacken(contents, line_length=40)
+        # Black also removes parens, which is beyond our scope at present.
+            # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace
