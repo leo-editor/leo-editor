@@ -2864,7 +2864,7 @@ class Orange:
         if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
             return False
         # Return if the previous line has no opening delim: (, [ or {.
-        if not any([z.kind == 'lt' for z in line_tokens]):
+        if not any([z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
