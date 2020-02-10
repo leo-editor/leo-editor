@@ -5125,7 +5125,8 @@ class Orange:
             i = 1
         if nls <= 0:
             return
-        # Retain the line-end and and any following line-indent.
+        # Retain line-end and and any following line-indent.
+        # Required, so that the regex below won't eat too much.
         while True:
             t = self.code_list[i]
             if t.kind == 'line-end':
@@ -5140,7 +5141,6 @@ class Orange:
             return
         # Calculate the joined line.
         tail = self.code_list[i:]
-        g.printObj(tail)
         tail_s = tokens_to_string(tail)
         tail_s = re.sub(r'\n\s*', ' ', tail_s)
         tail_s = tail_s.replace('( ', '(').replace(' )', ')')
