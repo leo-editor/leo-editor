@@ -5111,6 +5111,9 @@ class Orange:
             if t.kind == 'comment':
                 # Can't join.
                 return
+            if t.kind == 'string':
+                # Don't join strings.
+                return
             if t.kind == 'line-end':
                 if getattr(t, 'newline_kind', None) == 'nl':
                     nls += 1
@@ -5129,6 +5132,7 @@ class Orange:
             i += 1
         # Calculate the joined line.
         tail = self.code_list[i:]
+        g.printObj(tail)
         tail_s = tokens_to_string(tail)
         tail_s = re.sub(r'\n\s*', ' ', tail_s)
         tail_s = tail_s.replace('( ', '(').replace(' )', ')')
