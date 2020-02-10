@@ -1843,10 +1843,12 @@ class TestOrange(BaseTest):
                             #1234567890x1234567890x1234567890x1234567890x
     """\
     if 1:
-        print('4444',\n    '5555')""",
-    """\
-    if 1:
-        print('4444', '5555')\n\n""",
+        print('4444',
+            '5555')
+    """,
+    # """\
+    # if 1:
+        # print('4444', '5555')\n\n""",
         )
         fails = 0
         for contents in table:
@@ -5110,7 +5112,7 @@ class Orange:
             if t.kind == 'comment':
                 # Can't join.
                 return
-            if t.kind == 'string':
+            if False: ### t.kind == 'string':
                 # Don't join strings.
                 return
             if t.kind == 'line-end':
@@ -5126,6 +5128,7 @@ class Orange:
             return
         # Retain line-end and and any following line-indent.
         # Required, so that the regex below won't eat too much.
+        ### g.printObj(self.code_list[i:])
         while True:
             t = self.code_list[i]
             if t.kind == 'line-end':
@@ -5140,6 +5143,7 @@ class Orange:
             return
         # Calculate the joined line.
         tail = self.code_list[i:]
+        ### g.printObj(tail)
         tail_s = tokens_to_string(tail)
         tail_s = re.sub(r'\n\s*', ' ', tail_s)
         tail_s = tail_s.replace('( ', '(').replace(' )', ')')
