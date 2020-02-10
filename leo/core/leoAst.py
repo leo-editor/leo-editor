@@ -2439,7 +2439,7 @@ class Orange:
             state = self.state_stack[-1]
             if state.kind == 'decorator':
                 self.clean_blank_lines()
-                ### self.add_line_end()  # Don't attempt to split/join lines.
+                # Suppress split/join.
                 self.add_token('hard-newline', '\n')
                 self.add_token('line-indent', self.lws)
                 self.state_stack.pop()
@@ -2448,7 +2448,6 @@ class Orange:
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
-            ###g.trace(self.level)
             self.word(name)
         elif name in ('and', 'else', 'for', 'if', 'in', 'not', 'not in', 'or'):
             self.word_op(name)
@@ -2552,7 +2551,6 @@ class Orange:
     def add_line_end(self):
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
-        ### assert self.token.kind in ('name', 'newline', 'nl'), self.token.kind
         assert self.token.kind in ('newline', 'nl'), self.token.kind
         self.clean('blank')  # Important!
         cleaned_newline = False
@@ -2562,7 +2560,6 @@ class Orange:
         t = self.add_token('line-end', '\n')
         # Distinguish between kinds of 'line-end' tokens.
         t.newline_kind = 'newline' if cleaned_newline else self.token.kind
-        ### self.add_token('line-indent', self.lws) ###
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value):
@@ -2670,7 +2667,6 @@ class Orange:
         """Add a line-indent token."""
         self.clean('line-indent')
             # Defensive. Should never happen.
-        ### g.trace(len(self.lws), g.callers(4))
         self.add_token('line-indent', self.lws)
     #@+node:ekr.20200107165250.41: *5* orange.lt & rt
     #@+node:ekr.20200107165250.42: *6* orange.lt
@@ -2918,10 +2914,6 @@ class Orange:
         nls = 0
         i = len(self.code_list) - 1
         t = self.code_list[i]
-        ###
-            # if t.kind == 'line-indent': ###
-                # i -= 1
-                # t = self.code_list[i]
         assert t.kind == 'line-end', repr(t)
         assert t.newline_kind == 'newline'
         i -= 1
@@ -3825,7 +3817,6 @@ class TestOrange(BaseTest):
             pass
     """
         contents, tokens, tree = self.make_data(contents)
-        ### dump_tokens(tokens)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -3880,6 +3871,18 @@ class TestOrange(BaseTest):
     def f1( *args, **kwargs ):
         pass
     """
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200210165015.1: *4* TestOrange.test_function_defs_4
+    def test_function_defs_4(self):
+
+        contents ='''\
+    def should_kill_beautify(p):
+        """Return True if p.b contains @killbeautify"""
+        return 'killbeautify' in g.get_directives_dict(p)
+    '''
         contents, tokens, tree = self.make_data(contents)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
