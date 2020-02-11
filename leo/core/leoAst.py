@@ -2550,33 +2550,38 @@ class Orange:
             if self.beautify_pat.match(val):
                 g.trace(self.val)
                 self.verbatim = False
-            self.add_token('verbatim', val)
+            self.add_token(kind, val)
         elif kind == 'dedent':
-            self.level -= 1
-            self.lws = self.level * self.tab_width * ' '
-            ### self.line_indent()
-            self.add_token('line-indent', self.lws)
-            state = self.state_stack[-1]
-            if state.kind == 'indent' and state.value == self.level:
-                self.state_stack.pop()
-                state = self.state_stack[-1]
-                if state.kind in ('class', 'def'):
-                    self.state_stack.pop()
+            self.do_dedent()
+            ###
+                # self.level -= 1
+                # self.lws = self.level * self.tab_width * ' '
+                # ### self.line_indent()
+                # self.add_token('line-indent', self.lws)
+                # state = self.state_stack[-1]
+                # if state.kind == 'indent' and state.value == self.level:
+                    # self.state_stack.pop()
+                    # state = self.state_stack[-1]
+                    # if state.kind in ('class', 'def'):
+                        # self.state_stack.pop()
         elif kind == 'indent':
-            new_indent = self.val
-            old_indent = self.level * self.tab_width * ' '
-            if new_indent > old_indent:
-                self.level += 1
-            elif new_indent < old_indent:  # pragma: no cover
-                g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
-            self.lws = new_indent
-            ### self.line_indent()
-            self.add_token('line-indent', self.lws)
+            self.do_indent()
+            ###
+                # new_indent = self.val
+                # old_indent = self.level * self.tab_width * ' '
+                # if new_indent > old_indent:
+                    # self.level += 1
+                # self.lws = new_indent
+                # ### self.line_indent()
+                # self.add_token('line-indent', self.lws)
         elif kind in ('newline', 'nl'):
-            ### self.line_indent()
-            self.add_token('line-indent', self.lws)
+            ### self.line_end()
+            ### self.add_line_end()
+            # self.clean('blank')  # Important!
+            self.clean('line-indent')
+            self.add_token('line-end', '\n')
         elif kind in ('name', 'number', 'op', 'string', 'ws'):
-            self.add_token('verbatim', val)
+            self.add_token(kind, val)
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
