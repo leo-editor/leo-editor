@@ -2256,6 +2256,8 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
+    
+    allow_verbatim = False
 
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
@@ -2331,7 +2333,7 @@ class Orange:
         for i, token in enumerate(tokens):
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
-            if self.verbatim:
+            if self.allow_verbatim and self.verbatim:
                 self.do_verbatim()
             else:
                 func = getattr(self, f"do_{token.kind}", self.oops)
@@ -2387,15 +2389,11 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
-    ###
-        # beautify_pat = re.compile(
-            # r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
-        
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     def do_comment(self):
         """Handle a comment token."""
-        if 0: ### Not ready yet.
+        if self.allow_verbatim:
             if self.beautify_pat.match(self.val):
                 self.verbatim = False
             elif self.nobeautify_pat.match(self.val):
@@ -2553,6 +2551,7 @@ class Orange:
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
+        assert self.allow_verbatim, g.callers()
         kind, val = self.kind, self.val
         # if kind == 'comment': g.trace(f"{kind} {val!r}")
         if kind == 'comment' and self.beautify_pat.match(val):
@@ -2568,10 +2567,6 @@ class Orange:
         Put the whitespace only if if ends with backslash-newline.
         """
         val = self.val
-        ###
-            # if self.verbatim:
-                # self.add_token('verbatim', val)
-                # return
         # Handle backslash-newline.
         if '\\\n' in val:
             self.clean('blank')
@@ -2610,9 +2605,6 @@ class Orange:
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
         """Add a blank request to the code list."""
-        ###
-            # if self.verbatim:
-                # return
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
@@ -2846,9 +2838,7 @@ class Orange:
         if not any(
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
-        ### g.printObj(self.code_list, tag='code_list')
         prefix = self.find_line_prefix(line_tokens)
-        ### g.printObj(line_tokens, tag='line_tokens')
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
         # Cut back the token list: subtract 1 for the trailing line-end.
