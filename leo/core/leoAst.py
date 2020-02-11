@@ -2290,7 +2290,7 @@ class Orange:
         state = ParseState(kind, value)
         self.state_stack.append(state)
     #@+node:ekr.20200107165250.8: *4* orange: Entries
-    #@+node:ekr.20200107173542.1: *5* orange.beautify
+    #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
     def oops(self):
         g.trace(f"Unknown kind: {self.kind}")
 
@@ -2387,12 +2387,19 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
+    ###
+        # beautify_pat = re.compile(
+            # r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
+        
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     def do_comment(self):
         """Handle a comment token."""
-        if False: ### self.nobeautify_pat.match(self.val):
-            self.verbatim = True
+        if 0: ### Not ready yet.
+            if self.beautify_pat.match(self.val):
+                self.verbatim = False
+            elif self.nobeautify_pat.match(self.val):
+                self.verbatim = True
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
@@ -2550,8 +2557,9 @@ class Orange:
         # if kind == 'comment': g.trace(f"{kind} {val!r}")
         if kind == 'comment' and self.beautify_pat.match(val):
             self.verbatim = False
-        self.add_token('verbatim', val)
-
+            self.add_token('comment', val)
+        else:
+            self.add_token('verbatim', val)
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
@@ -2560,6 +2568,10 @@ class Orange:
         Put the whitespace only if if ends with backslash-newline.
         """
         val = self.val
+        ###
+            # if self.verbatim:
+                # self.add_token('verbatim', val)
+                # return
         # Handle backslash-newline.
         if '\\\n' in val:
             self.clean('blank')
@@ -2598,6 +2610,9 @@ class Orange:
     #@+node:ekr.20200107165250.27: *5* orange.blank
     def blank(self):
         """Add a blank request to the code list."""
+        ###
+            # if self.verbatim:
+                # return
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
@@ -3189,12 +3204,14 @@ class BaseTest(unittest.TestCase):
             return ''
         if not filename:
             filename = g.callers(2).split(',')[0]
-        result_s = Orange().beautify(contents, filename, tokens, tree,
+        orange = Orange()
+        result_s = orange.beautify(contents, filename, tokens, tree,
             delete_blank_lines=delete_blank_lines,
             max_join_line_length=max_join_line_length,
             max_split_line_length=max_split_line_length)
         t2 = get_time()
         self.update_times('22: beautify', t2 - t1)
+        self.code_list = orange.code_list
         return result_s
     #@+node:ekr.20191228095945.1: *4* BaseTest: stats...
     # Actions should fail by throwing an exception.
@@ -4411,7 +4428,9 @@ class TestOrange(BaseTest):
         )
         if 1:
             if results != expected:
-                g.printObj(results, tag='results')
+                # g.printObj(contents, tag='contents')
+                # g.printObj(results, tag='results')
+                g.printObj(self.code_list, tag='orange.code_list')
                 assert False
             return
         message = (
@@ -4465,7 +4484,7 @@ class TestOrange(BaseTest):
         )
         if 1:
             if results != expected:
-                g.printObj(results, tag='results')
+                ### g.printObj(results, tag='results')
                 assert False
             return
         message = (
