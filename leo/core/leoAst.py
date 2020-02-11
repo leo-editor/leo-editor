@@ -2391,7 +2391,7 @@ class Orange:
 
     def do_comment(self):
         """Handle a comment token."""
-        if self.nobeautify_pat.match(self.val):
+        if False: ### self.nobeautify_pat.match(self.val):
             self.verbatim = True
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
