@@ -2447,16 +2447,15 @@ class Orange:
             self.decorator_seen = False
             state = self.state_stack[-1]
             if state.kind == 'decorator':
-                if self.delete_blank_lines:
-                    self.clean_blank_lines()
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.clean_blank_lines()
                 # Suppress split/join.
                 self.add_token('hard-newline', '\n')
                 self.add_token('line-indent', self.lws)
                 self.state_stack.pop()
-            elif self.delete_blank_lines:
-                self.blank_lines(2 if name == 'class' else 1)
             else:
-                pass
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.blank_lines(2 if name == 'class' else 1)
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
@@ -3854,10 +3853,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
         contents = """\
-
-
     class Test:
-
 
         def test_func():
 
