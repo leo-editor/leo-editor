@@ -2391,7 +2391,6 @@ class Orange:
     def do_comment(self):
         """Handle a comment token."""
         if self.nobeautify_pat.match(self.val):
-            g.trace(self.val)
             self.verbatim = True
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
@@ -2546,20 +2545,9 @@ class Orange:
         kind, val = self.kind, self.val
         # if kind == 'comment': g.trace(f"{kind} {val!r}")
         if kind == 'comment' and self.beautify_pat.match(val):
-            g.trace(val)
             self.verbatim = False
         self.add_token('verbatim', val)
-        # if kind == 'comment':
-            # if self.beautify_pat.match(val):
-                # g.trace(self.val)
-                # self.verbatim = False
-            # self.add_token(kind, val)
-        # elif kind in ('dedent', 'indent', 'name', 'newline',  'nl', 'ws'):
-            # func = getattr(self, f"do_{kind}", self.oops)
-            # func()
-        # elif val:
-            # # Don't munge spaces around strings and ops.
-            # self.add_token(kind, val)
+        
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
