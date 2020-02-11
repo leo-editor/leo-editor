@@ -2530,7 +2530,7 @@ class Orange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20200107165250.24: *5* orange.do_string (sets backslash_seen)
+    #@+node:ekr.20200107165250.24: *5* orange.do_string
     def do_string(self):
         """Handle a 'string' token."""
         self.add_token('string', self.val)
@@ -2540,47 +2540,20 @@ class Orange:
 
     def do_verbatim(self):
         """
-        Handle verbatim mode.
+        Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
         kind, val = self.kind, self.val
-        #
-        # We can't just copy tokens.
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 g.trace(self.val)
                 self.verbatim = False
             self.add_token(kind, val)
-        elif kind == 'dedent':
-            self.do_dedent()
-            ###
-                # self.level -= 1
-                # self.lws = self.level * self.tab_width * ' '
-                # ### self.line_indent()
-                # self.add_token('line-indent', self.lws)
-                # state = self.state_stack[-1]
-                # if state.kind == 'indent' and state.value == self.level:
-                    # self.state_stack.pop()
-                    # state = self.state_stack[-1]
-                    # if state.kind in ('class', 'def'):
-                        # self.state_stack.pop()
-        elif kind == 'indent':
-            self.do_indent()
-            ###
-                # new_indent = self.val
-                # old_indent = self.level * self.tab_width * ' '
-                # if new_indent > old_indent:
-                    # self.level += 1
-                # self.lws = new_indent
-                # ### self.line_indent()
-                # self.add_token('line-indent', self.lws)
-        elif kind in ('newline', 'nl'):
-            ### self.line_end()
-            ### self.add_line_end()
-            # self.clean('blank')  # Important!
-            self.clean('line-indent')
-            self.add_token('line-end', '\n')
-        elif kind in ('name', 'number', 'op', 'string', 'ws'):
+        elif kind in ('dedent', 'indent', 'name', 'newline',  'nl', 'ws'):
+            func = getattr(self, f"do_{kind}", self.oops)
+            func()
+        elif val:
+            # Don't munge spaces around strings and ops.
             self.add_token(kind, val)
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
