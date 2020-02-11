@@ -2540,7 +2540,7 @@ class Orange:
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
     beautify_pat = re.compile(
-        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others')
+        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
 
     def do_verbatim(self):
         """
@@ -4413,11 +4413,16 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
+        if 1:
+            if results != expected:
+                g.printObj(results, tag='results')
+                assert False
+            return
         message = (
             f"\n"
-            f"  contents: {contents}\n"
-            f"     black: {expected!r}\n"
-            f"    orange: {results!r}")
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
         assert results == expected, message
     #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
@@ -4462,11 +4467,16 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
+        if 1:
+            if results != expected:
+                g.printObj(results, tag='results')
+                assert False
+            return
         message = (
             f"\n"
-            f"  contents: {contents}\n"
-            f"     black: {expected!r}\n"
-            f"    orange: {results!r}")
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
         assert results == expected, message
     #@-others
 
