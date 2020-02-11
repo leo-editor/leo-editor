@@ -2297,6 +2297,7 @@ class Orange:
         g.trace(f"Unknown kind: {self.kind}")
 
     def beautify(self, contents, filename, tokens, tree,
+        delete_blank_lines=None,
         max_join_line_length=None,
         max_split_line_length=None,
     ):
@@ -2304,6 +2305,8 @@ class Orange:
         The main line. Create output tokens and return the result as a string.
         """
         # Config overrides
+        if delete_blank_lines is not None:
+            self.delete_blank_lines = delete_blank_lines
         if max_join_line_length is not None:
             self.max_join_line_length = max_join_line_length
         if max_split_line_length is not None:
@@ -2446,13 +2449,16 @@ class Orange:
             self.decorator_seen = False
             state = self.state_stack[-1]
             if state.kind == 'decorator':
-                self.clean_blank_lines()
+                if self.delete_blank_lines:
+                    self.clean_blank_lines()
                 # Suppress split/join.
                 self.add_token('hard-newline', '\n')
                 self.add_token('line-indent', self.lws)
                 self.state_stack.pop()
-            else:
+            elif self.delete_blank_lines:
                 self.blank_lines(2 if name == 'class' else 1)
+            else:
+                pass
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
@@ -3172,6 +3178,7 @@ class BaseTest(unittest.TestCase):
         return result_s
     #@+node:ekr.20200107175223.1: *5* 2.2: BaseTest.beautify
     def beautify(self, contents, tokens, tree,
+        delete_blank_lines=None,
         filename=None,
         max_join_line_length=None,
         max_split_line_length=None,
@@ -3185,6 +3192,7 @@ class BaseTest(unittest.TestCase):
         if not filename:
             filename = g.callers(2).split(',')[0]
         result_s = Orange().beautify(contents, filename, tokens, tree,
+            delete_blank_lines=delete_blank_lines,
             max_join_line_length=max_join_line_length,
             max_split_line_length=max_split_line_length)
         t2 = get_time()
@@ -3842,6 +3850,35 @@ class TestOrange(BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
+    def test_dont_delete_blank_lines(self):
+
+        line_length = 40  # For testing.
+        contents = """\
+
+
+    class Test:
+
+
+        def test_func():
+
+            pass
+
+        a = 2
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents + '\n'
+        results = self.beautify(contents, tokens, tree,
+            delete_blank_lines=False,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        message = (
+            f"\n"
+            f"  contents: {contents}\n"
+            f"     black: {expected!r}\n"
+            f"    orange: {results!r}")
+        assert results == expected, message
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
 
@@ -4031,7 +4068,7 @@ class TestOrange(BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
-                f"test_join_lines..."
+                f"\n"
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"    orange: {results!r}")
@@ -4065,6 +4102,7 @@ class TestOrange(BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
+                f"\n"
                 f"  contents: {contents!r}\n"
                 f"  expected: {expected!r}\n"
                 f"       got: {results!r}")
@@ -4219,6 +4257,7 @@ class TestOrange(BaseTest):
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, tree, filename=description)
             message = (
+                f"\n"
                 f"  contents: {contents}\n"
                 f"     black: {expected.rstrip()}\n"
                 f"    orange: {results}")
@@ -4271,7 +4310,7 @@ class TestOrange(BaseTest):
                 max_split_line_length=line_length,
             )
             message = (
-                f"test_split_lines..."
+                f"\n"
                 f"  contents: {contents}\n"
                 f"     black: {expected!r}\n"
                 f"    orange: {results!r}")
@@ -4304,7 +4343,7 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         message = (
-            f"test_split_lines..."
+            f"\n"
             f"  contents: {contents!r}\n"
             f"  expected: {expected!r}\n"
             f"       got: {results!r}")
@@ -4376,7 +4415,7 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         message = (
-            f"test_split_lines..."
+            f"\n"
             f"  contents: {contents}\n"
             f"     black: {expected!r}\n"
             f"    orange: {results!r}")
@@ -4425,7 +4464,7 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         message = (
-            f"test_split_lines..."
+            f"\n"
             f"  contents: {contents}\n"
             f"     black: {expected!r}\n"
             f"    orange: {results!r}")
