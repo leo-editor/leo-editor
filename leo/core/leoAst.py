@@ -2846,7 +2846,9 @@ class Orange:
         if not any(
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
+        ### g.printObj(self.code_list, tag='code_list')
         prefix = self.find_line_prefix(line_tokens)
+        ### g.printObj(line_tokens, tag='line_tokens')
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
         # Cut back the token list: subtract 1 for the trailing line-end.
@@ -2925,7 +2927,7 @@ class Orange:
         """Return the previous line, as a list of tokens."""
         line = []
         for t in reversed(self.code_list[: -1]):
-            if t.kind == 'line-end':
+            if t.kind in ('hard-newline', 'line-end'):
                 break
             line.append(t)
         return list(reversed(line))
@@ -3876,9 +3878,11 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
+        if 0:
+            dump_tokens(tokens)
         if 1:
             if results != expected:
-                g.printObj(results, tag='results')
+                # g.printObj(results, tag='results')
                 assert False
             return
         assert results == expected, expected_got(repr(expected), repr(results))
