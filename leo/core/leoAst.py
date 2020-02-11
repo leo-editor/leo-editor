@@ -927,10 +927,8 @@ if 1:  # pragma: no cover
 class AssignLinksError(Exception):
     """Assigning links to ast nodes failed."""
 
-
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
-
 
 class FailFast(Exception):
     """Abort tests in TestRunner class."""
@@ -2541,7 +2539,8 @@ class Orange:
         self.add_token('string', self.val)
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
-    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others')
+    beautify_pat = re.compile(
+        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others')
 
     def do_verbatim(self):
         """
@@ -2553,7 +2552,7 @@ class Orange:
         if kind == 'comment' and self.beautify_pat.match(val):
             self.verbatim = False
         self.add_token('verbatim', val)
-        
+
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
@@ -3937,7 +3936,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200210165015.1: *4* TestOrange.test_function_defs_4
     def test_function_defs_4(self):
 
-        contents ='''\
+        contents = '''\
     def should_kill_beautify(p):
         """Return True if p.b contains @killbeautify"""
         return 'killbeautify' in g.get_directives_dict(p)
