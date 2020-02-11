@@ -3865,6 +3865,23 @@ class TestOrange(BaseTest):
         expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200211142856.1: *4* TestOrange.test_decorator_3
+    def test_decorator_3(self):
+
+        contents = '''\
+    @g.commander_command('promote')
+    def promote(self, event=None, undoFlag=True, redrawFlag=True):
+        """Make all children of the selected nodes siblings of the selected node."""
+    '''
+        contents, tokens, tree = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n\n'
+        results = self.beautify(contents, tokens, tree)
+        if 1:
+            if results != expected:
+                g.printObj(results, tag='results')
+                assert False
+            return
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
@@ -4419,7 +4436,6 @@ class TestOrange(BaseTest):
             
     #@@beautify
     """
-
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree,
@@ -4430,7 +4446,7 @@ class TestOrange(BaseTest):
             if results != expected:
                 # g.printObj(contents, tag='contents')
                 # g.printObj(results, tag='results')
-                g.printObj(self.code_list, tag='orange.code_list')
+                # g.printObj(self.code_list, tag='orange.code_list')
                 assert False
             return
         message = (
@@ -4475,7 +4491,6 @@ class TestOrange(BaseTest):
             
     # pragma: beautify
     """
-
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree,
