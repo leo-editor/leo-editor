@@ -2550,13 +2550,33 @@ class Orange:
             if self.beautify_pat.match(val):
                 g.trace(self.val)
                 self.verbatim = False
-        elif kind in ('dedent', 'indent', 'newline', 'nl'):
-            # These must be handled as usual.
-            func = getattr(self, f"do_{kind}", self.oops)
-            func()
+            self.add_token('verbatim', val)
+        elif kind == 'dedent':
+            self.level -= 1
+            self.lws = self.level * self.tab_width * ' '
+            ### self.line_indent()
+            self.add_token('line-indent', self.lws)
+            state = self.state_stack[-1]
+            if state.kind == 'indent' and state.value == self.level:
+                self.state_stack.pop()
+                state = self.state_stack[-1]
+                if state.kind in ('class', 'def'):
+                    self.state_stack.pop()
+        elif kind == 'indent':
+            new_indent = self.val
+            old_indent = self.level * self.tab_width * ' '
+            if new_indent > old_indent:
+                self.level += 1
+            elif new_indent < old_indent:  # pragma: no cover
+                g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+            self.lws = new_indent
+            ### self.line_indent()
+            self.add_token('line-indent', self.lws)
+        elif kind in ('newline', 'nl'):
+            ### self.line_indent()
+            self.add_token('line-indent', self.lws)
         elif kind in ('name', 'number', 'op', 'string', 'ws'):
             self.add_token('verbatim', val)
-
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
