@@ -2386,7 +2386,7 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
-    nobeautify_pat = re.compile(r'#\s*pragma:\s*no\s*beautify\b|#@@nobeautify')
+    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#@@nobeautify')
 
     def do_comment(self):
         """Handle a comment token."""
@@ -2536,7 +2536,7 @@ class Orange:
         self.add_token('string', self.val)
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
-    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#@+node|#@[+-]others')
+    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#@\+node|#@[+-]others')
 
     def do_verbatim(self):
         """
@@ -2544,17 +2544,22 @@ class Orange:
         End verbatim mode when the appropriate comment is seen.
         """
         kind, val = self.kind, self.val
-        if kind == 'comment':
-            if self.beautify_pat.match(val):
-                g.trace(self.val)
-                self.verbatim = False
-            self.add_token(kind, val)
-        elif kind in ('dedent', 'indent', 'name', 'newline',  'nl', 'ws'):
-            func = getattr(self, f"do_{kind}", self.oops)
-            func()
-        elif val:
-            # Don't munge spaces around strings and ops.
-            self.add_token(kind, val)
+        # if kind == 'comment': g.trace(f"{kind} {val!r}")
+        if kind == 'comment' and self.beautify_pat.match(val):
+            g.trace(val)
+            self.verbatim = False
+        self.add_token('verbatim', val)
+        # if kind == 'comment':
+            # if self.beautify_pat.match(val):
+                # g.trace(self.val)
+                # self.verbatim = False
+            # self.add_token(kind, val)
+        # elif kind in ('dedent', 'indent', 'name', 'newline',  'nl', 'ws'):
+            # func = getattr(self, f"do_{kind}", self.oops)
+            # func()
+        # elif val:
+            # # Don't munge spaces around strings and ops.
+            # self.add_token(kind, val)
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
