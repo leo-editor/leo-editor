@@ -2386,7 +2386,7 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
-    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#@@nobeautify')
+    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     def do_comment(self):
         """Handle a comment token."""
@@ -2535,7 +2535,7 @@ class Orange:
         self.add_token('string', self.val)
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
-    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#@\+node|#@[+-]others')
+    beautify_pat = re.compile(r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others')
 
     def do_verbatim(self):
         """
@@ -4332,6 +4332,55 @@ class TestOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200211093359.1: *4* TestOrange.test_verbatim
+    def test_verbatim(self):
+
+        line_length = 40  # For testing.
+        contents = """\
+    #@@nobeautify
+        
+    def addOptionsToParser(self, parser, trace_m):
+        
+        add = parser.add_option
+        
+        def add_bool(option, help, dest=None):
+            add(option, action='store_true', dest=dest, help=help)
+
+        add_bool('--diff',          'use Leo as an external git diff')
+        # add_bool('--dock',          'use a Qt dock')
+        add_bool('--fullscreen',    'start fullscreen')
+        add_bool('--init-docks',    'put docks in default positions')
+        add_bool('--ipython',       'enable ipython support')
+        add_bool('--fail-fast',     'stop unit tests after the first failure')
+        add_bool('--global-docks',  'use global docks')
+        add_other('--gui',          'gui to use (qt/console/null)')
+        add_bool('--listen-to-log', 'start log_listener.py on startup')
+        add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
+        add_other('--theme',        'use the named theme file', m='NAME')
+        add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
+        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
+        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
+        add_other('--window-size',  'initial window size (height x width)', m='SIZE')
+        add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
+        # Multiple bool values.
+        add('-v', '--version', action='store_true',
+            help='print version number and exit')
+            
+    #@@beautify
+    """
+
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        message = (
+            f"test_split_lines..."
+            f"  contents: {contents}\n"
+            f"     black: {expected!r}\n"
+            f"    orange: {results!r}")
+        assert results == expected, message
     #@-others
 
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
