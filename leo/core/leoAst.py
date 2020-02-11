@@ -2541,13 +2541,22 @@ class Orange:
     def do_verbatim(self):
         """
         Handle verbatim mode.
-        Copy each input token to the code list.
         End verbatim mode when the appropriate comment is seen.
         """
-        self.code_list.add_token('verbatim', self.val)
-        if self.kind == 'comment' and self.beautify_pat.match(self.val):
-            g.trace(self.val)
-            self.verbatim = False
+        kind, val = self.kind, self.val
+        #
+        # We can't just copy tokens.
+        if kind == 'comment':
+            if self.beautify_pat.match(val):
+                g.trace(self.val)
+                self.verbatim = False
+        elif kind in ('dedent', 'indent', 'newline', 'nl'):
+            # These must be handled as usual.
+            func = getattr(self, f"do_{kind}", self.oops)
+            func()
+        elif kind in ('name', 'number', 'op', 'string', 'ws'):
+            self.add_token('verbatim', val)
+
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
