@@ -2257,7 +2257,7 @@ class Orange:
     Orange is the new black.
     """
     
-    allow_verbatim = False
+    allow_verbatim = True
 
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
