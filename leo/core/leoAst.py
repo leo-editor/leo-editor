@@ -4515,29 +4515,29 @@ class TestOrange(BaseTest):
         # The else: line in __init__ is underindented.
         # With @nobeautify the preceding line-indent is ''.
         contents = '''\
-    #@verbatim
-    #@+node:ekr.20090128083459.82: ADDED.
-    #@verbatim
-    #@@nobeautify
+    SENTverbatim
+    SENT+node:ekr.20090128083459.82: ADDED.
+    SENTverbatim
+    SENT@nobeautify
 
     def run(self):
         if index2 is None: ### <--- Essential
             g.es("No matching bracket.")  # #1447.
             return
-    #@verbatim
-    #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
+    SENTverbatim
+    SENT+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
     class PosList(list):
-    #@verbatim
-        #@+others
-    #@verbatim
-        #@+node:ekr.20140531104908.17611: *4* PosList.ctor
+    SENTverbatim
+        SENT+others
+    SENTverbatim
+        SENT+node:ekr.20140531104908.17611: *4* PosList.ctor
         def __init__(self, c, aList=None):
             if aList is None:
                 for p in c.all_positions():
                     self.append(p.copy())
             else:  ### <-------
                 pass
-    '''
+    '''.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents + '\n'
         results = self.beautify(contents, tokens, tree,
