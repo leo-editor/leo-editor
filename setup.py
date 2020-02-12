@@ -65,8 +65,8 @@ def clean_git_tag(tag):
             v5.3           -->	5.3
             Fixed-bug-149  -->  Fixed-bug-149
     """
-    if tag.lower().startswith('leo-'): tag = tag[4 :]
-    if tag.lower().startswith('v'): tag = tag[1 :]
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
     return tag
 #@+node:maphew.20180224170149.1: *3* get_semver
 def get_semver(tag):
@@ -78,9 +78,11 @@ def get_semver(tag):
             # 5.6b2 --> 5.6-b2
     except(ImportError, ValueError) as err:
         print('\n', err)
-        print('''*** Failed to parse Semantic Version from git tag '{0}'.
+        print(
+            '''*** Failed to parse Semantic Version from git tag '{0}'.
         Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-        This version can't be uploaded to PyPi.org.'''.format(tag))
+        This version can't be uploaded to PyPi.org.'''.format(tag),
+        )
         version = tag
     return version
 #@+node:maphew.20171006124415.1: ** Get description
@@ -108,7 +110,7 @@ setup_requires = []
 user_requires = [
     'PyQt5 >= 5.12, < 5.13',  # v5.12+ to close #1217
     'PyQtWebEngine < 5.13',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
-    'asttokens', # abstract syntax tree text parsing
+    'asttokens',  # abstract syntax tree text parsing
     'docutils',  # used by Sphinx, rST plugin
     'flexx',  # for LeoWapp browser gui
     'meta',  # for livecode.py plugin, which is enabled by default
