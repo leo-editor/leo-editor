@@ -2256,8 +2256,6 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
-    
-    allow_verbatim = True
 
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
@@ -2333,7 +2331,7 @@ class Orange:
         for i, token in enumerate(tokens):
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
-            if self.allow_verbatim and self.verbatim:
+            if self.verbatim:
                 self.do_verbatim()
             else:
                 func = getattr(self, f"do_{token.kind}", self.oops)
@@ -2393,11 +2391,10 @@ class Orange:
 
     def do_comment(self):
         """Handle a comment token."""
-        if self.allow_verbatim:
-            if self.beautify_pat.match(self.val):
-                self.verbatim = False
-            elif self.nobeautify_pat.match(self.val):
-                self.verbatim = True
+        if self.beautify_pat.match(self.val):
+            self.verbatim = False
+        elif self.nobeautify_pat.match(self.val):
+            self.verbatim = True
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
@@ -2551,7 +2548,6 @@ class Orange:
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
-        assert self.allow_verbatim, g.callers()
         kind, val = self.kind, self.val
         # if kind == 'comment': g.trace(f"{kind} {val!r}")
         if kind == 'comment' and self.beautify_pat.match(val):
