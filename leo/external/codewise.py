@@ -95,9 +95,9 @@ import sys
 # pylint: disable=unidiomatic-typecheck
 isPython3 = sys.version_info >= (3, 0, 0)
 try:
-    import builtins # Python 3
+    import builtins  # Python 3
 except ImportError:
-    import __builtin__ as builtins # Python 2.
+    import __builtin__ as builtins  # Python 2.
 import os
 import sqlite3
 from sqlite3 import ProgrammingError
@@ -169,7 +169,7 @@ def cmd_functions(args):
         funcs = cw.get_functions()
     lines = list(set(el[0] + "\t" + el[1] for el in funcs))
     lines.sort()
-    return lines # EKR
+    return lines  # EKR
 #@+node:ekr.20110310091639.14285: *4* cmd_init
 def cmd_init(args):
     print("Initializing CodeWise db at: %s" % DEFAULT_DB)
@@ -185,7 +185,7 @@ def cmd_members(args):
     else:
         lines = cw.classcache.keys()
     lines.sort()
-    return lines # EKR
+    return lines  # EKR
 #@+node:ekr.20110310091639.14283: *4* cmd_parse
 def cmd_parse(args):
     assert args
@@ -204,7 +204,7 @@ def cmd_scintilla(args):
         f.close()
 #@+node:ekr.20110310091639.14286: *4* cmd_setup
 def cmd_setup(args):
-    
+
     ctagsfile = os.path.normpath(os.path.expanduser("~/.ctags"))
     if os.path.isfile(ctagsfile):
         print("Using template file: %s" % ctagsfile)
@@ -239,24 +239,24 @@ def callers(n=4, count=0, excludeCaller=True, files=False):
         if not s or len(result) >= n: break
         i += 1
     result.reverse()
-    if count > 0: result = result[: count]
+    if count > 0: result = result[:count]
     sep = '\n' if files else ','
     return sep.join(result)
 #@+node:ekr.20110310093050.14297: *6* _callerName
 def _callerName(n=1, files=False):
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(n) # The stack frame, n levels up.
-        code1 = f1.f_code # The code object
+    try:  # get the function name from the call stack.
+        f1 = sys._getframe(n)  # The stack frame, n levels up.
+        code1 = f1.f_code  # The code object
         name = code1.co_name
         if name == '__init__':
             name = '__init__(%s,line %s)' % (
                 shortFileName(code1.co_filename), code1.co_firstlineno)
         return '%s:%s' % (shortFileName(code1.co_filename), name) if files else name
     except ValueError:
-        return '' # The stack is not deep enough.
+        return ''  # The stack is not deep enough.
     except Exception:
         es_exception()
-        return '' # "<no caller name>"
+        return ''  # "<no caller name>"
 #@+node:ekr.20110310093050.14253: *5* doKeywordArgs (codewise)
 def doKeywordArgs(keys, d=None):
     '''Return a result dict that is a copy of the keys dict
@@ -302,7 +302,7 @@ def getLastTracebackFileAndLineNumber():
     # Tupls have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
-        item = data[-1] # Get the item at the top of the stack.
+        item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
     #
@@ -311,13 +311,14 @@ def getLastTracebackFileAndLineNumber():
 #@+node:ekr.20110310093050.14293: *5* pdb (codewise)
 def pdb(message=''):
     """Fall into pdb."""
-    import pdb # Required: we have just defined pdb as a function!
+    import pdb  # Required: we have just defined pdb as a function!
     if message:
         print(message)
     pdb.set_trace()
 #@+node:ekr.20110310093050.14263: *5* pr (codewise)
 # see: http://www.diveintopython.org/xml_processing/unicode.html
-def pr(*args, **keys): # (codewise!)
+
+def pr(*args, **keys):  # (codewise!)
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
@@ -349,7 +350,7 @@ def shortFileName(fileName, n=None):
         return ''
     if n is None or n < 1:
         return os.path.basename(fileName)
-    return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
+    return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
@@ -361,10 +362,10 @@ def trace(*args, **keys):
     align = d.get('align')
     if align is None: align = 0
     # Compute the caller name.
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(1) # The stack frame, one level up.
-        code1 = f1.f_code # The code object
-        name = code1.co_name # The code name
+    try:  # get the function name from the call stack.
+        f1 = sys._getframe(1)  # The stack frame, one level up.
+        code1 = f1.f_code  # The code object
+        name = code1.co_name  # The code name
     except Exception:
         name = ''
     if name == "?":
@@ -442,9 +443,9 @@ def isValidEncoding(encoding):
     try:
         codecs.lookup(encoding)
         return True
-    except LookupError: # Windows.
+    except LookupError:  # Windows.
         return False
-    except AttributeError: # Linux.
+    except AttributeError:  # Linux.
         return False
 #@+node:ekr.20110310093050.14286: *5* toEncodedString (codewise)
 def toEncodedString(s, encoding='utf-8', reportErrors=False):
@@ -520,7 +521,7 @@ def printlines(lines):
     for l in lines:
         try:
             print(l)
-        except Exception: # EKR: UnicodeEncodeError:
+        except Exception:  # EKR: UnicodeEncodeError:
             pass
 #@+node:ekr.20110310091639.14280: *3* run_ctags
 def run_ctags(paths):
@@ -782,6 +783,7 @@ class ContextSniffer:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 if __name__ == "__main__":
     main()
 #@-leo
