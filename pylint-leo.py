@@ -40,7 +40,7 @@ def main(files, verbose):
     for fn in files:
         run(fn, verbose)
         if not verbose and sys.platform.startswith('win'):
-            print('.',sep='', end='')
+            print('.', sep='', end='')
     t2 = time.time()
     print(f'{n} file{g.plural(n)}, time: {t2-t1:5.2f} sec.')
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
@@ -117,16 +117,16 @@ def scanOptions():
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
     add = parser.add_option
-    add('-a', action='store_true',  help='all')
-    add('-c', action='store_true',  help='core')
-    add('-e', action='store_true',  help='external')
-    add('-f', dest='filename',      help='filename, relative to leo folder')
-    add('-g', action='store_true',  help='gui plugins')
-    add('-m', action='store_true',  help='modes')
-    add('-p', action='store_true',  help='plugins')
-    add('-u', action='store_true',  help='user commands')
-    add('-v', action='store_true',  help='report pylint version')
-    add('--verbose', action='store_true',  help='verbose output')
+    add('-a', action='store_true', help='all')
+    add('-c', action='store_true', help='core')
+    add('-e', action='store_true', help='external')
+    add('-f', dest='filename', help='filename, relative to leo folder')
+    add('-g', action='store_true', help='gui plugins')
+    add('-m', action='store_true', help='modes')
+    add('-p', action='store_true', help='plugins')
+    add('-u', action='store_true', help='user commands')
+    add('-v', action='store_true', help='report pylint version')
+    add('--verbose', action='store_true', help='verbose output')
     # Parse the options.
     options, args = parser.parse_args()
     if options.v:
@@ -162,3 +162,4 @@ else:
     main(files, verbose)
 #@@beautify
 #@-leo
+
