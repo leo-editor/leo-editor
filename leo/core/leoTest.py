@@ -418,8 +418,7 @@ class LinterTable():
     def get_files_for_scope(self, scope, fn):
         """Return a list of absolute filenames for external linters."""
         d = {
-            'all': [
-            self.core, self.commands, self.external, self.plugins],  #  self.modes
+            'all': [self.core, self.commands, self.external, self.plugins],
             'commands': [self.commands],
             'core': [self.core, self.commands, self.external, self.gui_plugins],
             'external': [self.external],
@@ -1045,8 +1044,10 @@ class TestManager:
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (
-            repr(s2), repr(s1))
+        assert s1 == s2, (
+            f'mismatch in body\n'
+            f'expected: {s2!r}\n'
+            f'     got: {s1!r}')
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1238,8 +1239,10 @@ class TestManager:
         vc.exec_(command, n1, n2, motion)
         # Check the result.
         s1 = work.b; s2 = after.b
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (
-            repr(s2), repr(s1))
+        assert s1 == s2, (
+            f'mismatch in body\n'
+            f'expected: {s2!r}\n'
+            f'     got: {s1!r}')
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1315,7 +1318,10 @@ class TestManager:
             else:
                 n1 = g.skip_ws(line1, 0)
                 n2 = g.skip_ws(line2, 0)
-                if (not g.match(line1, n1, delim1) or not g.match(line2, n2, delim1)):
+                if (
+                    not g.match(line1, n1, delim1)
+                    or not g.match(line2, n2, delim1)
+                ):
                     if verbose: g.trace("Mismatched non-sentinel lines")
                     return False
                 n1 += len(delim1)
@@ -1431,10 +1437,11 @@ class TestManager:
                     if g.match_word(p.h, 0, '@ignore'):
                         # Support @ignore here.
                         p.moveToNodeAfterTree()
-                    elif(tm.isTestNode(p) or  # @test
-                          tm.isSuiteNode(p) or  # @suite
-                          tm.isTestClassNode(p) or  # @testclass
-                          tm.isTestSetupNode(p)  # @testsetup
+                    elif (
+                        tm.isTestNode(p) or  # @test
+                        tm.isSuiteNode(p) or  # @suite
+                        tm.isTestClassNode(p) or  # @testclass
+                        tm.isTestSetupNode(p)  # @testsetup
                     ):
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
@@ -1744,7 +1751,9 @@ def makeObjectList(message):
     lastObjectsDict = {}
     for o in objects:
         lastObjectsDict[id(o)] = o
-    g.pr(f"{message:25}: {len(newObjects):d} new, {len(objects):d} total objects")
+    g.pr(
+        f"{message:25}: {len(newObjects):d} new, "
+        f"{len(objects):d} total objects")
 #@+node:ekr.20051104075904.20: *4* printGc
 def printGc(message=None):
     """Called from unit tests."""
@@ -1774,7 +1783,7 @@ def printGc(message=None):
         n2 = typesDict.get(key, 0)
         delta2 = n2 - n1
         if delta2 != 0:
-            g.pr(f"{delta2:+6d} ={n2:7d} {key}")
+            g.pr(f"{delta2:+6d} = {n2:7d} {key}")
     lastTypesDict = typesDict
     typesDict = {}
     #@-<< print number of each type of object >>
@@ -1817,5 +1826,6 @@ def printGcRefs(verbose=True):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@last
 #@-leo
 
