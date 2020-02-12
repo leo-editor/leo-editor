@@ -4502,6 +4502,56 @@ class TestOrange(BaseTest):
             f"expected: {expected!r}\n"
             f"  orange: {results!r}")
         assert results == expected, message
+    #@+node:ekr.20200211190650.1: *4* TestOrange.test_verbatim_fail
+    def test_verbatim_fail(self):
+
+        line_length = 40  # For testing.
+        # The else: line in __init__ is underindented.
+        contents = '''\
+    #@verbatim
+    #@+node:ekr.20090128083459.82: ADDED.
+    #@verbatim
+    #@@nobeautify
+
+    def run(self):
+        if index2 is None: ### <--- Essential
+            g.es("No matching bracket.")  # #1447.
+            return
+    #@verbatim
+    #@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
+    class PosList(list):
+    #@verbatim
+        #@+others
+    #@verbatim
+        #@+node:ekr.20140531104908.17611: *4* PosList.ctor
+        def __init__(self, c, aList=None):
+            if aList is None:
+                for p in c.all_positions():
+                    self.append(p.copy())
+            else: ### <-------
+                for p in aList:
+                    self.append(p.copy())
+    '''
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        results = results.replace('#@verbatim\n', '')
+            # Necessary.
+        if 1:
+            if results != expected:
+                g.printObj(results, tag='results')
+                g.printObj(self.code_list, tag='code_list')
+                assert False
+            return
+        message = (
+            f"\n"
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
+        assert results == expected, message
     #@-others
 
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
