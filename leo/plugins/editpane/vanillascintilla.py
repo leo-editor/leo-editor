@@ -10,7 +10,7 @@ Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 #@+node:tbrown.20171028115501.1: ** << vanillascintilla.py imports >>
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtGui, QtWidgets, Qsci # QtCore, QtConst
+from leo.core.leoQt import QtGui, QtWidgets, Qsci  # QtCore, QtConst
 
 if Qsci is None:  # leo.core.leoQt eats ImportErrors
     raise ImportError
@@ -52,14 +52,14 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
 
     #@+node:tbrown.20171028115501.5: *3* focusInEvent
-    def focusInEvent (self, event):
+    def focusInEvent(self, event):
         Qsci.QsciScintilla.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
         #X self.update_position(self.lep.get_position())
 
     #@+node:tbrown.20171028115501.6: *3* focusOutEvent
-    def focusOutEvent (self, event):
+    def focusOutEvent(self, event):
         Qsci.QsciScintilla.focusOutEvent(self, event)
         DBG("focusout()")
         #X text = self.lep.get_position()
@@ -101,3 +101,4 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

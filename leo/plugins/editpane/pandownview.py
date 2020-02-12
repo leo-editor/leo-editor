@@ -43,6 +43,7 @@ def to_html(text, from_='markdown'):
     return out
 
 # see if Pandoc's installed
+
 try:
     to_html("test")
 except:
@@ -132,3 +133,4 @@ class LEP_PanRstHtmlView(LEP_PanDownHtmlView):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

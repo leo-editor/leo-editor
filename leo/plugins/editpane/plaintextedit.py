@@ -35,14 +35,14 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         self.textChanged.connect(self.text_changed)
 
     #@+node:tbrown.20171028115504.5: *3* focusInEvent
-    def focusInEvent (self, event):
+    def focusInEvent(self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
         #X self.update_position(self.lep.get_position())
 
     #@+node:tbrown.20171028115504.6: *3* focusOutEvent
-    def focusOutEvent (self, event):
+    def focusOutEvent(self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
     #@+node:tbrown.20171028115504.7: *3* new_text
@@ -98,7 +98,7 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
             while index:
                 start = index.start()
                 length = index.end() - start
-                self.setFormat(offset+start, length, self.fmt)
+                self.setFormat(offset + start, length, self.fmt)
                 offset += start + length
                 index = self.regex.search(text[offset:])
 
@@ -114,3 +114,4 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

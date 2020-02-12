@@ -4,7 +4,7 @@
 #@+node:tbrown.20171028115502.1: ** << plaintextview.py declarations >>
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets # QtCore, QtGui, QtConst
+from leo.core.leoQt import QtWidgets  # QtCore, QtGui, QtConst
 #@-<< plaintextview.py declarations >>
 #@+others
 #@+node:tbrown.20171028115502.2: ** class LEP_PlainTextView
@@ -63,3 +63,4 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

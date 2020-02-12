@@ -28,7 +28,7 @@ def _path_from_pos(c, p):
     def atfile(p):
         word0 = p.h.split()[0]
         return (
-            word0 in g.app.atFileNames|set(['@auto']) or
+            word0 in g.app.atFileNames | set(['@auto']) or
             word0.startswith('@auto-')
         )
 
@@ -100,3 +100,4 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

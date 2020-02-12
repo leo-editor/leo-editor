@@ -98,7 +98,7 @@ class FreeLayoutController:
         if c != keys.get('c'):
             return
         # Careful: we could be unit testing.
-        splitter = self.get_top_splitter() # A NestedSplitter.
+        splitter = self.get_top_splitter()  # A NestedSplitter.
         if not splitter:
             return
         # by default NestedSplitter's context menus are disabled, needed
@@ -209,7 +209,7 @@ class FreeLayoutController:
         """
         c = self.c
         if not (g.app and g.app.db):
-            return # Can happen when running from the Leo bridge.
+            return  # Can happen when running from the Leo bridge.
         d = g.app.db.get('ns_layouts') or {}
         if c != keys.get('c'):
             return
@@ -342,7 +342,7 @@ class FreeLayoutController:
             id_ = id_.split(':', 1)[1]
             w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
             if w:
-                w.setHidden(False) # may be from Tab holder
+                w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20, 20)
             return w
         return None
@@ -354,7 +354,7 @@ class FreeLayoutController:
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))
             if text in ('Body', 'Tree'):
-                continue # handled below
+                continue  # handled below
             if text == 'Log':
                 # if Leo can't find Log in tab pane, it creates another
                 continue
@@ -471,3 +471,4 @@ def register_provider(c, provider_instance):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

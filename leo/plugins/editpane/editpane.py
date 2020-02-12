@@ -8,12 +8,12 @@ import leo.core.signal_manager as sig
 try:
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
-    assert GL # To keep pyflakes happy.
+    assert GL  # To keep pyflakes happy.
 except Exception:
     # but not need to stop if it doesn't work
     pass
 from collections import defaultdict
-from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
+from leo.core.leoQt import QtCore, QtWidgets, QtConst  # QtGui
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
 from importlib import import_module
@@ -39,14 +39,18 @@ def edit_pane_test_open(event):
     if not hasattr(c, '__edit_pane_test'):
         c.__edit_pane_test = True
 
+
         class MinimalDemoProvider:
+
             def ns_provides(self):
                 return [("Demo editor", "__demo_provider_minimal_slider")]
+
             def ns_provide(self, id_):
                 if id_ == "__demo_provider_minimal_slider":
                     w = LeoEditPane(c=c, mode='split')
                     return w
                 return None
+
             def ns_provider_id(self):
                 return "__demo_provider_minimal"
 
@@ -96,7 +100,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.modules = []  # modules we collect widgets from
         self.widget_classes = []  # collected widgets
-        self.widget_for = defaultdict(lambda:[])  # widget by class.lep_type
+        self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
 
         self.c = c
         p = p or self.c.p
@@ -113,10 +117,10 @@ class LeoEditPane(QtWidgets.QWidget):
             recurse=recurse,
         )
 
-        self.track   = self.cb_track.isChecked()
-        self.update  = self.cb_update.isChecked()
+        self.track = self.cb_track.isChecked()
+        self.update = self.cb_update.isChecked()
         self.recurse = self.cb_recurse.isChecked()
-        self.goto    = self.cb_goto.isChecked()
+        self.goto = self.cb_goto.isChecked()
 
         for type_ in lep_type:
             self.set_widget(lep_type=type_)
@@ -149,8 +153,10 @@ class LeoEditPane(QtWidgets.QWidget):
         if button_label:
             btn = QtWidgets.QPushButton(text, self)
             self.control.layout().addWidget(btn)
+
             def cb(checked, cbox=cbox, state_changed=state_changed):
                 state_changed(cbox.isChecked(), one_shot=True)
+
             btn.clicked.connect(cb)
             btn.setToolTip(tooltip)
         cbox.setChecked(checked)
@@ -278,13 +284,13 @@ class LeoEditPane(QtWidgets.QWidget):
         # checkboxes
         txt = ",\ncheck to do this always"
         self.cb_track = self._add_checkbox("Track", self.change_track,
-            "Track the node selected in the tree"+txt)
+            "Track the node selected in the tree" + txt)
         self.cb_goto = self._add_checkbox("Goto", self.change_goto,
-            "Make the tree go to this node"+txt)
+            "Make the tree go to this node" + txt)
         self.cb_update = self._add_checkbox("Update", self.change_update,
-            "Update view to match changed node"+txt)
+            "Update view to match changed node" + txt)
         self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
-            "Recursive view"+txt, checked=recurse)
+            "Recursive view" + txt, checked=recurse)
         # mode menu
         btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
         self.control.layout().addWidget(btn)
@@ -412,7 +418,7 @@ class LeoEditPane(QtWidgets.QWidget):
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
-                modules.append(import_module('leo.plugins.editpane.'+name))
+                modules.append(import_module('leo.plugins.editpane.' + name))
                 DBG("Loaded module: %s" % name)
             except ImportError as e:
                 DBG(f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
@@ -438,8 +444,10 @@ class LeoEditPane(QtWidgets.QWidget):
         for name, is_one, current in name_test_current:
             # list Editor widgets, then Viewer widgets
             for widget_class in [i for i in self.widget_classes if is_one(i)]:
+
                 def cb(checked, widget_class=widget_class):
                     self.set_widget(widget_class=widget_class)
+
                 act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
                 act.setCheckable(True)
                 act.setChecked(widget_class == current)
@@ -454,8 +462,10 @@ class LeoEditPane(QtWidgets.QWidget):
 
         for mode in 'edit', 'view', 'split':
             act = QtWidgets.QAction(mode.title(), self)
+
             def cb(checked, self=self, mode=mode):
                 self.set_mode(mode)
+
             act.triggered.connect(cb)
             act.setCheckable(True)
             act.setChecked(mode == self.mode)
@@ -633,3 +643,4 @@ class LeoEditPane(QtWidgets.QWidget):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

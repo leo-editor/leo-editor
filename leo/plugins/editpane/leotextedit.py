@@ -5,8 +5,8 @@
 # import re
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets #  QtConst, QtCore, QtGui
-from leo.core.leoColorizer import JEditColorizer # LeoHighlighter
+from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
+from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
 import leo.plugins.qt_text as qt_text
 
 # import time  # temporary for debugging
@@ -44,14 +44,14 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         # g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
 
     #@+node:tbrown.20171028115508.5: *3* focusInEvent
-    def focusInEvent (self, event):
+    def focusInEvent(self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
         #X self.update_position(self.lep.get_position())
 
     #@+node:tbrown.20171028115508.6: *3* focusOutEvent
-    def focusOutEvent (self, event):
+    def focusOutEvent(self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
 
@@ -91,3 +91,4 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
 #@@language python
 #@@tabwidth -4
 #@-leo
+
