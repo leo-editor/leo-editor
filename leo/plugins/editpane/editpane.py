@@ -260,7 +260,8 @@ class LeoEditPane(QtWidgets.QWidget):
         sig.connect(self.c, 'body_changed', self._after_body_key)
 
     #@+node:tbrown.20171028115438.13: *3* _build_layout
-    def _build_layout(self, show_head=True, show_control=True, update=True, recurse=False):
+    def _build_layout(
+        self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
         DBG("build layout")
@@ -330,7 +331,8 @@ class LeoEditPane(QtWidgets.QWidget):
         self.line_edit.setText("test")
 
         # toggle control visibility
-        self.toggle_ctrl.clicked.connect(lambda checked: self.control.setVisible(not self.control.isVisible()))
+        self.toggle_ctrl.clicked.connect(
+            lambda checked: self.control.setVisible(not self.control.isVisible()))
     #@+node:tbrown.20171028115438.14: *3* header_visible
     @property
     def header_visible(self):
@@ -421,7 +423,8 @@ class LeoEditPane(QtWidgets.QWidget):
                 modules.append(import_module('leo.plugins.editpane.' + name))
                 DBG("Loaded module: %s" % name)
             except ImportError as e:
-                DBG(f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
+                DBG(
+                    f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)
@@ -589,7 +592,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
         if widget_class is None:
             widget_class = [i for i in self.widget_classes if i.lep_type == lep_type][0]
-        if hasattr(widget_class, 'lep_type') and widget_class.lep_type.startswith('EDITOR'):
+        if hasattr(
+            widget_class, 'lep_type') and widget_class.lep_type.startswith('EDITOR'):
             frame = self.edit_frame
             attr = 'edit_widget'
             update = self.new_position_edit

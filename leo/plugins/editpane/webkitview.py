@@ -6,7 +6,8 @@ import os
 import leo.core.leoGlobals as g
 assert g
 from leo.core.leoQt import QtWebKit, QtWebKitWidgets
-if not QtWebKitWidgets or 'engine' in g.os_path_basename(QtWebKitWidgets.__file__).lower():
+if not QtWebKitWidgets or 'engine' in g.os_path_basename(
+    QtWebKitWidgets.__file__).lower():
     # not loading webkit view, webengine masquerading as webkit
     raise ImportError
 #@-<< webkitview.py imports >>

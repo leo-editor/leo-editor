@@ -121,7 +121,8 @@ class FreeLayoutController:
         logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
         logWidget._is_permanent = True
         # tag core Leo components (see ns_provides)
-        splitter.findChild(QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+        splitter.findChild(
+            QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
         splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
@@ -147,7 +148,8 @@ class FreeLayoutController:
         nd.b = json.dumps(layout, indent=4)
         nd = nd.parent()
         if not nd or nd.h != "@settings":
-            g.es("WARNING: @data free-layout-layout node is not " "under an active @settings node")
+            g.es(
+                "WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter & helper
     def get_main_splitter(self, w=None):
@@ -239,7 +241,8 @@ class FreeLayoutController:
                     else:
                         g.trace('no layout', name)
 
-                commandName = 'free-layout-load-%s' % name.strip().lower().replace(' ', '-')
+                commandName = 'free-layout-load-%s' % name.strip(
+                    ).lower().replace(' ', '-')
                 c.k.registerCommand(commandName, func)
         # Careful: we could be unit testing or in the Leo bridge.
         if layout:
@@ -328,7 +331,8 @@ class FreeLayoutController:
     def ns_provide(self, id_):
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
-            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+            logTabWidget = self.get_top_splitter(
+                ).find_child(QtWidgets.QWidget, "logTabWidget")
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
                     w = logTabWidget.widget(n)
@@ -350,7 +354,8 @@ class FreeLayoutController:
     def ns_provides(self):
         ans = []
         # list of things in tab widget
-        logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+        logTabWidget = self.get_top_splitter(
+            ).find_child(QtWidgets.QWidget, "logTabWidget")
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))
             if text in ('Body', 'Tree'):
