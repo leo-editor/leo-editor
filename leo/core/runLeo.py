@@ -13,7 +13,7 @@ if sys.executable.endswith("pythonw.exe"):
     sys.stdout = open(os.devnull, "w");
     sys.stderr = open(
         os.path.join(os.getenv("TEMP"),
-        "stderr-"+os.path.basename(sys.argv[0])),
+        "stderr-" + os.path.basename(sys.argv[0])),
         "w")
 path = os.getcwd()
 if path not in sys.path:
@@ -75,6 +75,7 @@ def run_console(*args, **keywords):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 if __name__ == "__main__":
     run()
 #@-leo

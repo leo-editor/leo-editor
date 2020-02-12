@@ -12,7 +12,7 @@ from collections import defaultdict
 #@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
-    
+
     def __init__(self):
         self.listeners = defaultdict(list)
         self.emitters = []
@@ -110,9 +110,11 @@ def main():
 
     # simple use
 
+
     class Emitter(SignalManager):
+
         def some_emission(self):
-            self.emit('the_emission', 12, [1,2,3])
+            self.emit('the_emission', 12, [1, 2, 3])
 
     def hear_emit(n, l):
         print(f"Got {n} {l}")
@@ -123,17 +125,22 @@ def main():
 
     # use with proxy and locking
 
+
     class Tester:
+
         def __init__(self, name, relay):
             self.name = name
             self.relay = relay
             connect(self.relay, 'work_done', self.check_work)
+
         def do_work(self):
             emit(self.relay, 'work_done', 4.2, animal='otters', _sig_lock=self)
+
         def check_work(self, num, animal='eels'):
             if is_locked(self):
                 return
             print(f"{self.name} heard about {num} {animal}")
+
 
     class SomeProxy:
         """Like a public notice board"""
@@ -147,6 +154,7 @@ def main():
     b.do_work()
 
 #@-others
+
 if __name__ == '__main__':
     main()
 
