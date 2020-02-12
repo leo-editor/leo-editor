@@ -942,7 +942,6 @@ class LeoImportCommands:
         return None
     #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
     #@+at This method returns the proper headline text.
-    #
     # 1. If s contains a section def, return the section ref.
     # 2. cweb only: if s contains @c, return the function name following the @c.
     # 3. cweb only: if s contains @d name, returns @d name.
@@ -1071,8 +1070,10 @@ class LeoImportCommands:
                     while i < len(s):
                         progress = i
                         i = g.skip_ws_and_nl(s, i)
-                        if g.match(
-                            s, i, "@d") or g.match(s, i, "@f"): i = g.skip_line(s, i)
+                        if (
+                            g.match(s, i, "@d") or
+                            g.match(s, i, "@f")
+                        ): i = g.skip_line(s, i)
                         else: break
                         assert(i > progress)
                     i = g.skip_ws_and_nl(s, i)
@@ -2407,4 +2408,3 @@ def parse_body_command(event):
 #@@pagewidth 70
 #@@encoding utf-8
 #@-leo
-
