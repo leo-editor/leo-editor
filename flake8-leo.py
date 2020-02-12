@@ -44,7 +44,7 @@ def get_home():
         # environment vars, then gives up.
     if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
         # Get the indirect reference to the true home.
-        home = os.getenv(home[1:-1], default=None)
+        home = os.getenv(home[1 : -1], default=None)
     if home:
         # Important: This returns the _working_ directory if home is None!
         # This was the source of the 4.3 .leoID.txt problems.
@@ -133,6 +133,7 @@ def scanOptions():
         scope = 'all'
     return scope
 #@-others
+
 g_option_fn = None
 scope = scanOptions()
 if scope == 'version':
