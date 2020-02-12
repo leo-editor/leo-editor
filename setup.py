@@ -81,8 +81,7 @@ def get_semver(tag):
         print(
             '''*** Failed to parse Semantic Version from git tag '{0}'.
         Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-        This version can't be uploaded to PyPi.org.'''.format(tag),
-        )
+        This version can't be uploaded to PyPi.org.'''.format(tag))
         version = tag
     return version
 #@+node:maphew.20171006124415.1: ** Get description
