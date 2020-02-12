@@ -20,12 +20,12 @@ def cmd(name):
 #@+node:ekr.20180504180247.2: *3* find_next_trace
 if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
     # Will not find in comments, which is fine.
-    
+
 skip_pat = re.compile(r'=.*in g.app.debug')
 
 def find_next_trace(ins, p):
     while p:
-        ins = max(0, ins-1) # Back up over newline.
+        ins = max(0, ins - 1)  # Back up over newline.
         s = p.b[ins:]
         m = re.search(skip_pat, s)
         if m:
@@ -34,7 +34,7 @@ def find_next_trace(ins, p):
         else:
             m = re.search(if_pat, s)
             if m:
-                i = m.start()+1
+                i = m.start() + 1
                 j = m.end()
                 k = find_trace_block(i, j, s)
                 i += ins
@@ -49,7 +49,7 @@ def find_trace_block(i, j, s):
     assert s[i] != '\n'
     s = s[i:]
     lws = len(s) - len(s.lstrip())
-    n = 1 # Number of lines to skip.
+    n = 1  # Number of lines to skip.
     lines = g.splitLines(s)
     for line in lines[1:]:
         lws2 = len(line) - len(line.lstrip())
@@ -98,7 +98,7 @@ def delete_trace_statements(event=None):
         if p.h not in seen:
             seen.append(p.h)
             g.es_print('Changed:', p.h)
-        ins = 0 # Rescanning is essential.
+        ins = 0  # Rescanning is essential.
         p.b = s[:i] + s[k:]
 #@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
 @g.command('mark-first-parents')
@@ -153,13 +153,13 @@ def promoteBodies(event):
     if not c:
         return
     p = c.p
-    result = [p.b.rstrip()+'\n'] if p.b.strip() else []
+    result = [p.b.rstrip() + '\n'] if p.b.strip() else []
     b = c.undoer.beforeChangeNodeContents(p)
     for child in p.subtree():
         h = child.h.strip()
         if child.b:
             body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
-            s = '- %s\n%s' % (h,body)
+            s = '- %s\n%s' % (h, body)
         else:
             s = '- %s' % h
         if s.strip():
@@ -167,7 +167,7 @@ def promoteBodies(event):
     if result:
         result.append('')
     p.b = '\n'.join(result)
-    c.undoer.afterChangeNodeContents(p,'promote-bodies',b)
+    c.undoer.afterChangeNodeContents(p, 'promote-bodies', b)
 #@+node:ekr.20190323085410.1: ** @g.command('promote-headlines')
 @g.command('promote-headlines')
 def promoteHeadlines(event):
@@ -180,7 +180,7 @@ def promoteHeadlines(event):
     result = '\n'.join([p.h.rstrip() for p in p.subtree()])
     if result:
         p.b = p.b.lstrip() + '\n' + result
-        c.undoer.afterChangeNodeContents(p,'promote-headlines',b)
+        c.undoer.afterChangeNodeContents(p, 'promote-headlines', b)
 #@+node:ekr.20180504180647.1: ** @g.command('select-next-trace-statement')
 @g.command('select-next-trace-statement')
 def select_next_trace_statement(event=None):
@@ -210,9 +210,9 @@ def show_clone_ancestors(event=None):
     for clone in c.all_positions():
         if clone.v == p.v:
             unl = clone.get_UNL(with_file=False, with_index=False)
-            runl = " <- ".join(unl.split("-->")[::-1][1:])
+            runl = " <- ".join(unl.split("-->")[:: -1][1:])
                 # reverse and drop first
-            g.es("  ", newline = False)
+            g.es("  ", newline=False)
             g.es_clickable_link(c, clone, 1, runl + "\n")
 #@+node:ekr.20191007034723.1: ** @g.command('show-clone-parents')
 @g.command('show-clone-parents')
@@ -255,21 +255,21 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.ccolumn = '0' # For comment column functions.
+        self.ccolumn = '0'  # For comment column functions.
         self.cursorStack = []
             # Values are tuples, (i, j, ins)
-        self.extendMode = False # True: all cursor move commands extend the selection.
-        self.fillPrefix = '' # For fill prefix functions.
-        self.fillColumn = 0 # For line centering.
+        self.extendMode = False  # True: all cursor move commands extend the selection.
+        self.fillPrefix = ''  # For fill prefix functions.
+        self.fillColumn = 0  # For line centering.
             # Set by the set-fill-column command.
             # If zero, @pagewidth value is used.
-        self.moveSpotNode = None # A VNode.
-        self.moveSpot = None # For retaining preferred column when moving up or down.
-        self.moveCol = None # For retaining preferred column when moving up or down.
-        self.sampleWidget = None # Created later.
+        self.moveSpotNode = None  # A VNode.
+        self.moveSpot = None  # For retaining preferred column when moving up or down.
+        self.moveCol = None  # For retaining preferred column when moving up or down.
+        self.sampleWidget = None  # Created later.
         self.swapSpots = []
-        self._useRegex = False # For replace-string
-        self.w = None # For use by state handlers.
+        self._useRegex = False  # For replace-string
+        self.w = None  # For use by state handlers.
         # Settings...
         cf = c.config
         self.autocompleteBrackets = cf.getBool('autocomplete-brackets')
@@ -293,7 +293,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Clear all of Leo's file caches."""
         g.app.global_cacher.clear()
         g.app.commander_cacher.clear()
-        
+
     @cmd('dump-caches')
     def dumpCaches(self, event=None):
         """Dump, all of Leo's file caches."""
@@ -327,9 +327,10 @@ class EditCommandsClass(BaseEditCommandsClass):
                     c.frame.body.onBodyChanged(undoType='Typing')
 
             # see if the widget already contains the start of a path
+
             start_text = w.getSelectedText()
             if not start_text:  # look at text preceeding insert point
-                start_text = w.getAllText()[:w.getInsertPoint()]
+                start_text = w.getAllText()[: w.getInsertPoint()]
                 if start_text:
                     # make non-path characters whitespace
                     start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
@@ -340,7 +341,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         start_text = start_text.rsplit(None, 1)[-1]
                         # set selection range so w.deleteTextSelection() works in the callback
                         w.setSelectionRange(
-                            w.getInsertPoint()-len(start_text), w.getInsertPoint())
+                            w.getInsertPoint() - len(start_text), w.getInsertPoint())
 
             c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
             c.k.getFileName(event, callback=callback)
@@ -392,7 +393,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             """return True if p is an @<file> node *of any kind*"""
             word0 = p.h.split()[0]
             return (
-                word0 in g.app.atFileNames|set(['@auto']) or
+                word0 in g.app.atFileNames | set(['@auto']) or
                 word0.startswith('@auto-')
             )
 
@@ -429,7 +430,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, end = w.getSelectionRange()
         txt = w.getSelectedText()
         if which == 'tabify':
-            pattern = re.compile(r' {4,4}') # Huh?
+            pattern = re.compile(r' {4,4}')  # Huh?
             ntxt = pattern.sub('\t', txt)
         else:
             pattern = re.compile(r'\t')
@@ -463,7 +464,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getWord(s, ins)
-        word = s[i: j]
+        word = s[i:j]
         if not word.strip():
             return
         self.beginCommand(w, undoType=undoType)
@@ -603,7 +604,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        line = s[i: j]
+        line = s[i:j]
         c1 = int(self.ccolumn)
         line2 = ' ' * c1 + line.lstrip()
         if line2 != line:
@@ -613,22 +614,22 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
     #@+at
-    # 
+    #
     # These methods are currently just used in tandem to center the line or
     # region within the fill column. for example, dependent upon the fill column, this text:
-    # 
+    #
     # cats
     # raaaaaaaaaaaats
     # mats
     # zaaaaaaaaap
-    # 
+    #
     # may look like
-    # 
+    #
     #                                  cats
     #                            raaaaaaaaaaaats
     #                                  mats
     #                              zaaaaaaaaap
-    # 
+    #
     # after an center-region command via Alt-x.
     #@+node:ekr.20150514063305.215: *4* ec.centerLine
     @cmd('center-line')
@@ -644,7 +645,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             fillColumn = d.get("pagewidth")
         s = w.getAllText()
         i, j = g.getLine(s, w.getInsertPoint())
-        line = s[i: j].strip()
+        line = s[i:j].strip()
         if not line or len(line) >= fillColumn:
             return
         self.beginCommand(w, undoType='center-line')
@@ -696,7 +697,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         while ind < end:
             s = w.getAllText()
             i, j = g.getLine(s, ind)
-            line = s[i: j].strip()
+            line = s[i:j].strip()
             if len(line) >= fillColumn:
                 ind = j
             else:
@@ -716,7 +717,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if w:
             s = w.getAllText()
             i, j = w.getSelectionRange()
-            self.fillPrefix = s[i: j]
+            self.fillPrefix = s[i:j]
     #@+node:ekr.20150514063305.219: *4* ec._addPrefix
     def _addPrefix(self, ntxt):
         ntxt = ntxt.split('.')
@@ -753,7 +754,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         self.event = event
         self.backward = backward
-        self.extend = extend or self.extendMode # Bug fix: 2010/01/19
+        self.extend = extend or self.extendMode  # Bug fix: 2010/01/19
         self.insert = self.w.getInsertPoint()
         s = '%s character%s: ' % (
             'Backward find' if backward else 'Find',
@@ -770,14 +771,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         ch = k.arg
         s = w.getAllText()
         ins = w.toPythonIndex(self.insert)
-        i = ins + -1 if backward else + 1 # skip the present character.
+        i = ins + -1 if backward else +1  # skip the present character.
         if backward:
             start = 0
-            j = s.rfind(ch, start, max(start, i)) # Skip the character at the cursor.
+            j = s.rfind(ch, start, max(start, i))  # Skip the character at the cursor.
             if j > -1: self.moveToHelper(event, j, extend)
         else:
             end = len(s)
-            j = s.find(ch, min(i, end), end) # Skip the character at the cursor.
+            j = s.find(ch, min(i, end), end)  # Skip the character at the cursor.
             if j > -1: self.moveToHelper(event, j, extend)
         k.resetLabel()
         k.clearState()
@@ -810,10 +811,10 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             end = len(s)
             if self.oneLineFlag:
-                end = s.find('\n', i) # Limit searches to this line.
+                end = s.find('\n', i)  # Limit searches to this line.
                 if end == -1: end = len(s)
             while i < end:
-                i = s.find(ch, i + 1, end) # Ensure progress and i > 0.
+                i = s.find(ch, i + 1, end)  # Ensure progress and i > 0.
                 if i == -1:
                     break
                 elif not g.isWordChar(s[i - 1]):
@@ -905,7 +906,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if n.isdigit():
             n = int(n)
             s = w.getAllText()
-            i = g.convertRowColToPythonIndex(s, n-1, 0)
+            i = g.convertRowColToPythonIndex(s, n - 1, 0)
             w.setInsertPoint(i)
             w.seeInsertPoint()
         k.resetLabel()
@@ -913,9 +914,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.229: *3* ec: icons
     #@+at
-    # 
+    #
     # To do:
-    # 
+    #
     # - Define standard icons in a subfolder of Icons folder?
     # - Tree control recomputes height of each line.
     #@+node:ekr.20150514063305.230: *4* ec. Helpers
@@ -932,17 +933,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         if image_height is None:
             yoffset = 0
         else:
-            yoffset = 0 # (c.frame.tree.line_height-image_height)/2
+            yoffset = 0  # (c.frame.tree.line_height-image_height)/2
             # TNB: I suspect this is being done again in the drawing code
         newEntry = {
             'type': 'file',
             'file': path,
             'relPath': relPath,
             'where': 'beforeHeadline',
-            'yoffset': yoffset, 'xoffset': xoffset, 'xpad': 1, # -2,
+            'yoffset': yoffset, 'xoffset': xoffset, 'xpad': 1,  # -2,
             'on': 'VNode',
         }
-        newEntry.update(kargs) # may switch 'on' to 'VNode'
+        newEntry.update(kargs)  # may switch 'on' to 'VNode'
         aList.append(newEntry)
         xoffset += 2
         return xoffset
@@ -962,7 +963,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setIconList(self, p, l, setDirty=True):
         """Set list of icons for position p to l"""
         current = self.getIconList(p)
-        if not l and not current: return # nothing to do
+        if not l and not current: return  # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
         cHash = ''.join([self.dHash(i) for i in current])
         if lHash == cHash:
@@ -977,7 +978,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         subl - list of icons for the v or t node
         uaLoc - the v or t node
         """
-        if subl: # Update the uA.
+        if subl:  # Update the uA.
             if not hasattr(uaLoc, 'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
             uaLoc.unknownAttributes['icons'] = list(subl)
@@ -985,7 +986,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             uaLoc._p_changed = 1
             if setDirty:
                 p.setDirty()
-        else: # delete the uA.
+        else:  # delete the uA.
             if hasattr(uaLoc, 'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
                     del uaLoc.unknownAttributes['icons']
@@ -1003,19 +1004,19 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t, name, relPath): # t not used.
+    def deleteIconByName(self, t, name, relPath):  # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
         aList = self.getIconList(p)
         if not aList:
             return
-        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons") # #1341.
-        absRelPath = g.os_path_finalize_join(basePath, relPath) # #1341
-        name = g.os_path_finalize(name) # #1341
+        basePath = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")  # #1341.
+        absRelPath = g.os_path_finalize_join(basePath, relPath)  # #1341
+        name = g.os_path_finalize(name)  # #1341
         newList = []
         for d in aList:
             name2 = d.get('file')
-            name2 = g.os_path_finalize(name2) # #1341
+            name2 = g.os_path_finalize(name2)  # #1341
             name2rel = d.get('relPath')
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
                 newList.append(d)
@@ -1093,8 +1094,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        line = s[i: j]
-        line2 = s[i: j].lstrip()
+        line = s[i:j]
+        line2 = s[i:j].lstrip()
         delta = len(line) - len(line2)
         if delta:
             self.beginCommand(w, undoType='delete-indentation')
@@ -1132,15 +1133,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         while 1:
             if i <= 0: return
             i, j = g.getLine(s, i - 1)
-            line = s[i: j]
+            line = s[i:j]
             if line.strip(): break
         self.beginCommand(w, undoType=undoType)
         try:
             k = g.skip_ws(s, i)
-            ws = s[i: k]
+            ws = s[i:k]
             i2, j2 = g.getLine(s, ins)
             k = g.skip_ws(s, i2)
-            line = ws + s[k: j2]
+            line = ws + s[k:j2]
             w.delete(i2, j2)
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
@@ -1226,7 +1227,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if add:
             result = [ch + line for line in lines]
         else:
-            result = [line[len(ch):] if line.startswith(ch) else line for line in lines]
+            result = [line[len(ch) :] if line.startswith(ch) else line for line in lines]
         result = ''.join(result)
         if w.hasSelection():
             i, j = w.getSelectionRange()
@@ -1267,7 +1268,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     s = prev = w.getAllText()
                     ins = w.getInsertPoint()
                     i, j = g.getLine(s, ins)
-                    s = prev = s[i: ins]
+                    s = prev = s[i:ins]
                     n = len(prev)
                     abs_width = abs(tab_width)
                     # Delete up to this many spaces.
@@ -1451,11 +1452,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         w2 = ins
         while w2 <= j and s[w2].isspace():
             w2 += 1
-        spaces = s[w1: w2]
+        spaces = s[w1:w2]
         if spaces:
             self.beginCommand(w, undoType=undoType)
-            if insertspace: s = s[: w1] + ' ' + s[w2:]
-            else: s = s[: w1] + s[w2:]
+            if insertspace: s = s[:w1] + ' ' + s[w2:]
+            else: s = s[:w1] + s[w2:]
             w.setAllText(s)
             w.setInsertPoint(w1)
             self.endCommand(changed=True, setLabel=True)
@@ -1607,6 +1608,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.268: *4* ec.selfInsertCommand, helpers
     # @cmd('self-insert-command')
+
     def selfInsertCommand(self, event, action='insert'):
         """
         Insert a character in the body pane.
@@ -1623,7 +1625,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         stroke = event.stroke if event else None
         ch = event.char if event else ''
         if ch == 'Return':
-            ch = '\n' # This fixes the MacOS return bug.
+            ch = '\n'  # This fixes the MacOS return bug.
         if ch == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
@@ -1684,16 +1686,16 @@ class EditCommandsClass(BaseEditCommandsClass):
                     # Find the start of the word.
                     n = 0
                     ins -= 1
-                    while ins-1 > 0 and g.isWordChar(s[ins-1]):
+                    while ins - 1 > 0 and g.isWordChar(s[ins - 1]):
                         n += 1
                         ins -= 1
                     sins = ins  # start of insert, to collect trailing whitespace
-                    while sins > 0 and s[sins-1] in (' \t'):
+                    while sins > 0 and s[sins - 1] in (' \t'):
                         sins -= 1
                     oldSel = (sins, ins)
                     self.insertNewlineHelper(w, oldSel, undoType=None)
                     ins = w.getInsertPoint()
-                    ins += (n+1)
+                    ins += (n + 1)
             w.insert(ins, ch)
             w.setInsertPoint(ins + 1)
         else:
@@ -1704,7 +1706,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def doPlainTab(self, s, i, tab_width, w):
         """Insert spaces equivalent to one tab."""
         start, end = g.getLine(s, i)
-        s2 = s[start: i]
+        s2 = s[start:i]
         width = g.computeWidth(s2, tab_width)
         if tab_width > 0:
             w.insert(i, '\t')
@@ -1728,8 +1730,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         # Pick the correct curly quote.
         s = w.getAllText() or ""
-        i2 = g.skip_to_start_of_line(s, max(0,ins-1))
-        open_curly = ins == i2 or ins > i2 and s[ins-1] in ' \t'
+        i2 = g.skip_to_start_of_line(s, max(0, ins - 1))
+        open_curly = ins == i2 or ins > i2 and s[ins - 1] in ' \t'
             # not s[ins-1].isalnum()
         if open_curly:
             ch = '‘' if ch == "'" else "“"
@@ -1760,7 +1762,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         # A partial fix for bug 127: Bracket matching is buggy.
         language = g.getLanguageAtPosition(c, p)
-        if language ==  'perl':
+        if language == 'perl':
             return
         j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
         if j is not None:
@@ -1803,7 +1805,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i = g.skip_to_start_of_line(s, ins)
         i, j = g.getLine(s, i - 1)
-        s = s[i: j - 1]
+        s = s[i : j - 1]
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
         if s and s[-1] == ':':
@@ -1870,7 +1872,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Get the preceeding characters.
             s = w.getAllText()
             start, end = g.getLine(s, i)
-            after = s[i: end]
+            after = s[i:end]
             if after.endswith('\n'): after = after[: -1]
             # Only do smart tab at the start of a blank line.
             doSmartTab = (smartTab and c.smart_tab and i == start)
@@ -1963,7 +1965,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.beginCommand(w, undoType='split-line')
             s = w.getAllText()
             ins = w.getInsertPoint()
-            w.setAllText(s[: ins] + '\n' + s[ins:])
+            w.setAllText(s[:ins] + '\n' + s[ins:])
             w.setInsertPoint(ins + 1)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.285: *3* ec: move cursor
@@ -1983,12 +1985,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
-            self.setMoveCol(w, ins if extend else spot) # sets self.moveSpot.
+            self.setMoveCol(w, ins if extend else spot)  # sets self.moveSpot.
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
             if i == j:
-                self.setMoveCol(w, ins) # sets self.moveSpot.
+                self.setMoveCol(w, ins)  # sets self.moveSpot.
             elif self.moveSpot in (i, j) and self.moveSpot != ins:
                 # The bug fix, part 1.
                 pass
@@ -1998,20 +2000,20 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if ins == i: k = j
                 elif ins == j: k = i
                 else: k = ins
-                self.setMoveCol(w, k) # sets self.moveSpot.
+                self.setMoveCol(w, k)  # sets self.moveSpot.
         else:
             if upOrDown:
                 s = w.getAllText()
                 i2, j2 = g.getLine(s, spot)
-                line = s[i2: j2]
+                line = s[i2:j2]
                 row, col = g.convertPythonIndexToRowCol(s, spot)
-                if True: # was j2 < len(s)-1:
+                if True:  # was j2 < len(s)-1:
                     n = min(self.moveCol, max(0, len(line) - 1))
                 else:
-                    n = min(self.moveCol, max(0, len(line))) # A tricky boundary.
+                    n = min(self.moveCol, max(0, len(line)))  # A tricky boundary.
                 spot = g.convertRowColToPythonIndex(s, row, n)
-            else: # Plain move forward or back.
-                self.setMoveCol(w, spot) # sets self.moveSpot.
+            else:  # Plain move forward or back.
+                self.setMoveCol(w, spot)  # sets self.moveSpot.
         if extend:
             if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
@@ -2053,7 +2055,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             ins = w.getInsertPoint()
             i, j = g.getLine(s, ins)
             line = s[i:j]
-            if spot == 'begin-line': # was 'start-line'
+            if spot == 'begin-line':  # was 'start-line'
                 self.moveToHelper(event, i, extend=extend)
             elif spot == 'end-line':
                 # Bug fix: 2011/11/13: Significant in external tests.
@@ -2065,7 +2067,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     while j >= 0 and s[j].isspace():
                         j -= 1
                 self.moveToHelper(event, j, extend=extend)
-            elif spot == 'start-line': # new
+            elif spot == 'start-line':  # new
                 if not line.isspace():
                     while i < j and s[i].isspace():
                         i += 1
@@ -2129,6 +2131,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         def seek_special_start(i):
             return seek_until_changed(i, is_special, -1)
         #@-others
+
         if smart:
             if forward:
                 if 0 <= i < n:
@@ -2141,9 +2144,9 @@ class EditCommandsClass(BaseEditCommandsClass):
                         i = seek_special_end(i)
                         i = seek_simple_whitespace_end(i)
                     else:
-                        i += 1 # e.g. for newlines
+                        i += 1  # e.g. for newlines
             else:
-                i -= 1 # Shift cursor temporarily by -1 to get easy read access to the prev. char
+                i -= 1  # Shift cursor temporarily by -1 to get easy read access to the prev. char
                 if 0 <= i < n:
                     if is_alphanumeric(s[i]):
                         i = seek_word_start(i)
@@ -2154,7 +2157,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         i = seek_special_start(i)
                         # Do not seek further whitespace here
                     else:
-                        i -= 1 # e.g. for newlines
+                        i -= 1  # e.g. for newlines
                 i += 1
         else:
             if forward:
@@ -2175,7 +2178,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     i -= 1
                 while 0 <= i < n and g.isWordChar(s[i]):
                     i -= 1
-                i += 1 # 2015/04/30
+                i += 1  # 2015/04/30
         self.moveToHelper(event, i, extend)
     #@+node:ekr.20150514063305.289: *5* ec.setMoveCol
     def setMoveCol(self, w, spot):
@@ -2298,7 +2301,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 i2, j2 = g.getLine(s, i - 1)
             # The spot is the start of the line plus the column index.
-            n = max(0, j2 - i2 - 1) # The length of the new line.
+            n = max(0, j2 - i2 - 1)  # The length of the new line.
             col2 = min(col, n)
             spot = i2 + col2
             self.extendHelper(w, extend, spot, upOrDown=True)
@@ -2510,12 +2513,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveWithinLineHelper(event, 'finish-line', extend=True)
     #@+node:ekr.20170707160947.1: *4* ec.forward*/ExtendSelection
     @cmd('forward-end-word')
-    def forwardEndWord(self, event): # New in Leo 4.4.2
+    def forwardEndWord(self, event):  # New in Leo 4.4.2
         """Move the cursor to the next word."""
         self.moveWordHelper(event, extend=False, forward=True, end=True)
 
     @cmd('forward-end-word-extend-selection')
-    def forwardEndWordExtendSelection(self, event): # New in Leo 4.4.2
+    def forwardEndWordExtendSelection(self, event):  # New in Leo 4.4.2
         """Extend the selection by moving the cursor to the next word."""
         self.moveWordHelper(event, extend=True, forward=True, end=True)
 
@@ -2604,12 +2607,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor forward one page."""
         self.movePageHelper(event, kind='forward', extend=True)
     #@+node:ekr.20150514063305.307: *5* ec.movePageHelper
-    def movePageHelper(self, event, kind, extend): # kind in back/forward.
+    def movePageHelper(self, event, kind, extend):  # kind in back/forward.
         """Move the cursor up/down one page, possibly extending the selection."""
         w = self.editWidget(event)
         if not w:
             return
-        linesPerPage = 15 # To do.
+        linesPerPage = 15  # To do.
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(
@@ -2658,17 +2661,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.app.unitTesting:
             w.setInsertPoint(j)
         i, j = g.getLine(s, j)
-        line = s[i: j]
+        line = s[i:j]
         if line.strip():
             # Find the start of the present paragraph.
             while i > 0:
                 i, j = g.getLine(s, i - 1)
-                line = s[i: j]
+                line = s[i:j]
                 if not line.strip(): break
         # Find the end of the previous paragraph.
         while i > 0:
             i, j = g.getLine(s, i - 1)
-            line = s[i: j]
+            line = s[i:j]
             if line.strip():
                 i = j - 1
                 break
@@ -2680,8 +2683,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        line = s[i: j]
-        if line.strip(): # Skip past the present paragraph.
+        line = s[i:j]
+        if line.strip():  # Skip past the present paragraph.
             self.selectParagraphHelper(w, i)
             i, j = w.getSelectionRange()
             j += 1
@@ -2689,9 +2692,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         i = j
         while j < len(s):
             i, j = g.getLine(s, j)
-            line = s[i: j]
+            line = s[i:j]
             if line.strip(): break
-        w.setInsertPoint(ins) # Restore the original insert point.
+        w.setInsertPoint(ins)  # Restore the original insert point.
         self.moveToHelper(event, i, extend)
     #@+node:ekr.20170707093335.1: *4* ec.pushCursor and popCursor
     @cmd('pop-cursor')
@@ -2766,7 +2769,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         # Find the starting point of the scan.
         i = ins
-        i -= 1 # Ensure some progress.
+        i -= 1  # Ensure some progress.
         if i < 0:
             return
         # Tricky.
@@ -2805,12 +2808,12 @@ class EditCommandsClass(BaseEditCommandsClass):
                     if s[j] == '\n':
                         # Don't include first newline.
                         end = True
-                        break # found blank line.
+                        break  # found blank line.
                     elif s[j] == ' ':
                         j -= 1
                     else:
                         i -= 1
-                        break # no blank line found.
+                        break  # no blank line found.
                 else:
                     # No blank line found.
                     i -= 1
@@ -2858,19 +2861,19 @@ class EditCommandsClass(BaseEditCommandsClass):
                     i += 1
                 else:
                     i += 1
-                    break # Include the paragraph.
+                    break  # Include the paragraph.
             elif s[i] == '\n':
                 j = i + 1
                 while j < len(s):
                     if s[j] == '\n':
                         # Don't include first newline.
                         end = True
-                        break # found blank line.
+                        break  # found blank line.
                     elif s[j] == ' ':
                         j += 1
                     else:
                         i += 1
-                        break # no blank line found.
+                        break  # no blank line found.
                 else:
                     # No blank line found.
                     i += 1
@@ -2908,7 +2911,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, j = w.getSelectionRange()
             if i > 0: i = min(i + 1, j)
             c.killBufferCommands.kill(event, i, j,
-                                      force=True, # Use i, j without change.
+                                      force=True,  # Use i, j without change.
                                       undoType=None)
             w.setSelectionRange(i, i, insert=i)
         finally:
@@ -2963,7 +2966,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.extendToParagraph(event)
             i, j = w.getSelectionRange()
             c.killBufferCommands.kill(event, i, j,
-                                      force=True, # Use i, j without change.
+                                      force=True,  # Use i, j without change.
                                       undoType=None)
             w.setSelectionRange(i, i, insert=i)
         finally:
@@ -2977,18 +2980,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        line = s[i: j]
+        line = s[i:j]
         # Find the start of the paragraph.
-        if line.strip(): # Search backward.
+        if line.strip():  # Search backward.
             while i > 0:
                 i2, j2 = g.getLine(s, i - 1)
-                line = s[i2: j2]
+                line = s[i2:j2]
                 if line.strip(): i = i2
-                else: break # Use the previous line.
-        else: # Search forward.
+                else: break  # Use the previous line.
+        else:  # Search forward.
             while j < len(s):
                 i, j = g.getLine(s, j)
-                line = s[i: j]
+                line = s[i:j]
                 if line.strip(): break
             else: return
         # Select from i to the end of the paragraph.
@@ -3000,7 +3003,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i1, j = g.getLine(s, start)
         while j < len(s):
             i, j2 = g.getLine(s, j)
-            line = s[i: j2]
+            line = s[i:j2]
             if line.strip(): j = j2
             else: break
         j = max(start, j - 1)
@@ -3018,10 +3021,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
         junk, j = g.getLine(s, j1)
-        lines = g.splitlines(s[i: j])
+        lines = g.splitlines(s[i:j])
         n = len(lines)
         lines = g.joinLines(['\t' + line for line in lines])
-        s = s[: i] + lines + s[j:]
+        s = s[:i] + lines + s[j:]
         w.setAllText(s)
         # Retain original row/col selection.
         w.setSelectionRange(i1, j1 + n, insert=j1 + n)
@@ -3058,13 +3061,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         insert_pt = w.getInsertPoint()
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
-        lines = s[i: j]
+        lines = s[i:j]
         # Select from start of the first line to the *start* of the last line.
         # This prevents selection creep.
         self.beginCommand(w, undoType='move-lines-down')
         try:
-            next_i, next_j = g.getLine(s, j) # 2011/04/01: was j+1
-            next_line = s[next_i: next_j]
+            next_i, next_j = g.getLine(s, j)  # 2011/04/01: was j+1
+            next_line = s[next_i:next_j]
             n2 = next_j - next_i
             if j < len(s):
                 w.delete(i, next_j)
@@ -3099,14 +3102,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
-        insert_pt = w.getInsertPoint() # 2011/04/01
+        insert_pt = w.getInsertPoint()  # 2011/04/01
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
-        lines = s[i: j]
+        lines = s[i:j]
         self.beginCommand(w, undoType='move-lines-up')
         try:
             prev_i, prev_j = g.getLine(s, i - 1)
-            prev_line = s[prev_i: prev_j]
+            prev_line = s[prev_i:prev_j]
             n2 = prev_j - prev_i
             if i > 0:
                 w.delete(prev_i, j)
@@ -3139,11 +3142,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         i1, j1 = w.getSelectionRange()
         i, junk = g.getLine(s, i1)
         junk, j = g.getLine(s, j1)
-        txt = s[i: j]
+        txt = s[i:j]
         aList = txt.split('\n')
         aList.reverse()
         txt = '\n'.join(aList) + '\n'
-        w.setAllText(s[: i1] + txt + s[j1:])
+        w.setAllText(s[:i1] + txt + s[j1:])
         ins = i1 + len(txt) - 1
         w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand(changed=True, setLabel=True)
@@ -3171,7 +3174,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        s2 = s[i: j]
+        s2 = s[i:j]
         if way == 'low':
             sel = s2.lower()
         elif way == 'up':
@@ -3179,7 +3182,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             assert way == 'toggle'
             sel = s2.swapcase()
-        s2 = s[: i] + sel + s[j:]
+        s2 = s[:i] + sel + s[j:]
         changed = s2 != s
         if changed:
             w.setAllText(s2)
@@ -3295,91 +3298,91 @@ class EditCommandsClass(BaseEditCommandsClass):
     # numerical order.  In alphabetical sorting, all upper-case letters `A'
     # through `Z' come before lower-case `a', in accordance with the ASCII
     # character sequence.
-    # 
+    #
     #    The sort commands differ in how they divide the text into sort
     # records and in which part of each record they use as the sort key.
     # Most of the commands make each line a separate sort record, but some
     # commands use paragraphs or pages as sort records.  Most of the sort
     # commands use each entire sort record as its own sort key, but some use
     # only a portion of the record as the sort key.
-    # 
+    #
     # `M-x sort-lines'
     #      Divide the region into lines and sort by comparing the entire text
     #      of a line.  A prefix argument means sort in descending order.
-    # 
+    #
     # `M-x sort-paragraphs'
     #      Divide the region into paragraphs and sort by comparing the entire
     #      text of a paragraph (except for leading blank lines).  A prefix
     #      argument means sort in descending order.
-    # 
+    #
     # `M-x sort-pages'
     #      Divide the region into pages and sort by comparing the entire text
     #      of a page (except for leading blank lines).  A prefix argument
     #      means sort in descending order.
-    # 
+    #
     # `M-x sort-fields'
     #      Divide the region into lines and sort by comparing the contents of
     #      one field in each line.  Fields are defined as separated by
     #      whitespace, so the first run of consecutive non-whitespace
     #      characters in a line constitutes field 1, the second such run
     #      constitutes field 2, etc.
-    # 
+    #
     #      You specify which field to sort by with a numeric argument: 1 to
     #      sort by field 1, etc.  A negative argument means sort in descending
     #      order.  Thus, minus 2 means sort by field 2 in reverse-alphabetical
     #      order.
-    # 
+    #
     # `M-x sort-numeric-fields'
     #      Like `M-x sort-fields', except the specified field is converted to
     #      a number for each line and the numbers are compared.  `10' comes
     #      before `2' when considered as text, but after it when considered
     #      as a number.
-    # 
+    #
     # `M-x sort-columns'
     #      Like `M-x sort-fields', except that the text within each line used
     #      for comparison comes from a fixed range of columns.  An explanation
     #      is given below.
-    # 
+    #
     #    For example, if the buffer contains:
-    # 
+    #
     #      On systems where clash detection (locking of files being edited) is
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      whether the file has changed on disk since it was last visited or
     #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
-    # 
+    #
     # then if you apply `M-x sort-lines' to the entire buffer you get:
-    # 
+    #
     #      On systems where clash detection (locking of files being edited) is
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
     #      whether the file has changed on disk since it was last visited or
-    # 
+    #
     # where the upper case `O' comes before all lower case letters.  If you
     # apply instead `C-u 2 M-x sort-fields' you get:
-    # 
+    #
     #      saved.  If it has, you are asked to confirm that you want to change
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      the buffer.
     #      On systems where clash detection (locking of files being edited) is
     #      whether the file has changed on disk since it was last visited or
-    # 
+    #
     # where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.
-    # 
+    #
     #    `M-x sort-columns' requires more explanation.  You specify the
     # columns by putting point at one of the columns and the mark at the other
     # column.  Because this means you cannot put point or the mark at the
     # beginning of the first line to sort, this command uses an unusual
     # definition of `region': all of the line point is in is considered part
     # of the region, and so is all of the line the mark is in.
-    # 
+    #
     #    For example, to sort a table by information found in columns 10 to
     # 15, you could put the mark on column 10 in the first line of the table,
     # and point on column 15 in the last line of the table, and then use this
     # command.  Or you could put the mark on column 15 in the first line and
     # point on column 10 in the last line.
-    # 
+    #
     #    This can be thought of as sorting the rectangle specified by point
     # and the mark, except that the text on each line to the left or right of
     # the rectangle moves along with the text inside the rectangle.  *Note
@@ -3414,7 +3417,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             ins = w.getInsertPoint()
             i, junk = g.getLine(s, sel1)
             junk, j = g.getLine(s, sel2)
-            s2 = s[i: j]
+            s2 = s[i:j]
             if not s2.endswith('\n'): s2 = s2 + '\n'
             aList = g.splitLines(s2)
 
@@ -3451,7 +3454,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             sint3 += 1
             i, junk = g.getLine(s, sel_1)
             junk, j = g.getLine(s, sel_2)
-            txt = s[i: j]
+            txt = s[i:j]
             columns = [w.get('%s.%s' % (z, sint2), '%s.%s' % (z, sint4))
                 for z in range(sint1, sint3 + 1)]
             aList = g.splitLines(txt)
@@ -3486,7 +3489,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         i, junk = g.getLine(s, r1)
         junk, j = g.getLine(s, r4)
-        txt = s[i: j] # bug reported by pychecker.
+        txt = s[i:j]  # bug reported by pychecker.
         txt = txt.split('\n')
         fields = []
         fn = r'\w+'
@@ -3521,17 +3524,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not s.strip():
             return
         i, j = g.getLine(s, ins)
-        line1 = s[i: j]
+        line1 = s[i:j]
         self.beginCommand(w, undoType='transpose-lines')
-        if i == 0: # Transpose the next line.
+        if i == 0:  # Transpose the next line.
             i2, j2 = g.getLine(s, j + 1)
-            line2 = s[i2: j2]
+            line2 = s[i2:j2]
             w.delete(0, j2)
             w.insert(0, line2 + line1)
             w.setInsertPoint(j2 - 1)
-        else: # Transpose the previous line.
+        else:  # Transpose the previous line.
             i2, j2 = g.getLine(s, i - 1)
-            line2 = s[i2: j2]
+            line2 = s[i2:j2]
             w.delete(i2, j)
             w.insert(i2, line1 + line2)
             w.setInsertPoint(j - 1)
@@ -3549,7 +3552,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.beginCommand(w, undoType='transpose-words')
         s = w.getAllText()
         i1, j1 = self.extendToWord(event, select=False)
-        s1 = s[i1: j1]
+        s1 = s[i1:j1]
         if i1 > j1: i1, j1 = j1, i1
         # Search for the next word.
         k = j1 + 1
@@ -3557,11 +3560,11 @@ class EditCommandsClass(BaseEditCommandsClass):
             k += 1
         changed = k < len(s)
         if changed:
-            ws = s[j1: k]
+            ws = s[j1:k]
             w.setInsertPoint(k + 1)
             i2, j2 = self.extendToWord(event, select=False)
-            s2 = s[i2: j2]
-            s3 = s[: i1] + s2 + ws + s1 + s[j2:]
+            s2 = s[i2:j2]
+            s3 = s[:i1] + s2 + ws + s1 + s[j2:]
             w.setAllText(s3)
             w.setSelectionRange(j1, j1, insert=j1)
         self.endCommand(changed=changed, setLabel=True)
@@ -3576,7 +3579,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         i = w.getInsertPoint()
         if 0 < i < len(s):
-            w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1:])
+            w.setAllText(s[: i - 1] + s[i] + s[i - 1] + s[i + 1 :])
             w.setSelectionRange(i, i, insert=i)
         self.endCommand(changed=True, setLabel=True)
 
@@ -3594,7 +3597,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged()
             c.redraw()
-            
+
     @cmd('clear-all-uas')
     def clearAllUas(self, event=None):
         """Clear all uAs in the entire outline."""
@@ -3657,3 +3660,4 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
+

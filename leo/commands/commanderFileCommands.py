@@ -121,7 +121,7 @@ def importAnyFile(self, event=None):
             ic.importFilesCommand(
                 files=[fn],
                 parent=parent,
-                treeType='@auto', # was '@clean'
+                treeType='@auto',  # was '@clean'
                     # Experimental: attempt to use permissive section ref logic.
             )
     c.raise_error_dialogs(kind='read')
@@ -135,6 +135,7 @@ def importAnyFile(self, event=None):
     # importMOREFiles = importAnyFile
     # importNowebFiles = importAnyFile
     # importTabFiles = importAnyFile
+
 g.command_alias('importAtFile', importAnyFile)
 g.command_alias('importAtRoot', importAnyFile)
 g.command_alias('importCWEBFiles', importAnyFile)
@@ -165,7 +166,7 @@ def new(self, event=None, gui=None):
         previousSettings=leoApp.PreviousSettings(
             settingsDict=lm.globalSettingsDict,
             shortcutsDict=lm.globalBindingsDict,
-        ))    
+        ))
     frame = c.frame
     g.app.unlockLog()
     if not old_c:
@@ -183,10 +184,10 @@ def new(self, event=None, gui=None):
     g.app.writeWaitingLog(c)
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
-    c.clearChanged() # Fix #387: Clear all dirty bits.
+    c.clearChanged()  # Fix #387: Clear all dirty bits.
     g.app.disable_redraw = False
     c.redraw()
-    return c # For unit tests and scripts.
+    return c  # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open_outline & callback
 @g.commander_command('open-outline')
 def open_outline(self, event=None):
@@ -225,6 +226,7 @@ def open_outline(self, event=None):
         # Defines open_completer function.
     #
     # Close the window if this command completes successfully?
+
     closeFlag = (
         c.frame.startupWindow and
             # The window was open on startup
@@ -242,7 +244,7 @@ def open_outline(self, event=None):
     if fileName:
         c.open_completer(c, closeFlag, fileName)
         return
-    if False: # This seems not to be worth the trouble.
+    if False:  # This seems not to be worth the trouble.
         g.app.gui.runOpenFileDialog(c,
             callback=open_completer,
             defaultextension=g.defaultLeoFileExtension(c),
@@ -276,7 +278,7 @@ def refreshFromDisk(self, event=None):
     c.recreateGnxDict()
         # Fix bug 1090950 refresh from disk: cut node ressurection.
     i = g.skip_id(p.h, 0, chars='@')
-    word = p.h[0: i]
+    word = p.h[0:i]
     if word == '@auto':
         # This includes @auto-*
         if shouldDelete: p.v._deleteAllChildren()
@@ -362,7 +364,7 @@ def save(self, event=None, fileName=None):
             fileName = None
             # Write the @edit node if needed.
             if root.isDirty():
-                c.atFileCommands.writeOneAtEditNode(root) 
+                c.atFileCommands.writeOneAtEditNode(root)
             c.clearChanged()  # Clears all dirty bits.
         else:
             fileName = ''.join(c.k.givenArgs)
@@ -400,13 +402,13 @@ def save(self, event=None, fileName=None):
 def saveAll(self, event=None):
     """Save all open tabs windows/tabs."""
     c = self
-    c.save() # Force a write of the present window.
+    c.save()  # Force a write of the present window.
     for f in g.app.windowList:
         c2 = f.c
         if c2 != c and c2.isChanged():
             c2.save()
     # Restore the present tab.
-    dw = c.frame.top # A DynamicWindow
+    dw = c.frame.top  # A DynamicWindow
     dw.select(c)
 #@+node:ekr.20031218072017.2835: *3* c_file.saveAs
 @g.commander_command('save-as')
@@ -535,6 +537,7 @@ def saveAsUnzipped(self, event=None):
     saveAsZippedHelper(c, False)
 
 g.commander_command('file-save-as-zipped')
+
 @g.commander_command('save-file-as-zipped')
 def saveAsZipped(self, event=None):
     """
@@ -543,7 +546,6 @@ def saveAsZipped(self, event=None):
     """
     c = self
     saveAsZippedHelper(c, True)
-
 def saveAsZippedHelper(c, isZipped):
     oldZipped = c.isZipped
     c.isZipped = isZipped
@@ -599,9 +601,9 @@ def flattenOutlineToNode(self, event=None):
         return
     language = g.getLanguageAtPosition(c, root)
     if language:
-        single,start,end = g.set_delims_from_language(language)
+        single, start, end = g.set_delims_from_language(language)
     else:
-        single,start,end = '#', None, None
+        single, start, end = '#', None, None
     bunch = u.beforeChangeNodeContents(root)
     aList = []
     for p in root.subtree():
@@ -781,7 +783,7 @@ def readOutlineOnly(self, event=None):
         frame = c.frame
         frame.deiconify()
         frame.lift()
-        c.fileCommands.readOutlineOnly(theFile, fileName) # closes file.
+        c.fileCommands.readOutlineOnly(theFile, fileName)  # closes file.
     except Exception:
         g.es("can not open:", fileName)
 #@+node:ekr.20070915142635: *3* c_file.writeFileFromNode
@@ -797,7 +799,7 @@ def writeFileFromNode(self, event=None):
     s = p.b
     tag = '@read-file-into-node'
     if h.startswith(tag):
-        fileName = h[len(tag):].strip()
+        fileName = h[len(tag) :].strip()
     else:
         fileName = None
     if not fileName:
@@ -812,13 +814,13 @@ def writeFileFromNode(self, event=None):
             with open(fileName, 'w') as f:
                 g.chdir(fileName)
                 if s.startswith('@nocolor\n'):
-                    s = s[len('@nocolor\n'):]
+                    s = s[len('@nocolor\n') :]
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
         except IOError:
             g.error('can not write %s', fileName)
-        
+
 #@+node:ekr.20031218072017.2079: ** Recent Files
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
@@ -996,8 +998,8 @@ def open_theme_file(self, event):
         return
     leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    
-    #--/start: Opening a theme file locks the initiating Leo session #1425 
+
+    #--/start: Opening a theme file locks the initiating Leo session #1425
     #command = f'python launchLeo.py "{fn}"'
     #os.system(command)
 
@@ -1052,3 +1054,4 @@ def untangle(self, event=None):
     c.undoer.clearUndoState()
 #@-others
 #@-leo
+

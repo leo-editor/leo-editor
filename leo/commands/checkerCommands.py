@@ -10,7 +10,7 @@ try:
     # pylint: disable=import-error
         # We can't assume the user has this.
     import flake8
-except Exception: # May not be ImportError.
+except Exception:  # May not be ImportError.
     flake8 = None
 try:
     import pyflakes
@@ -45,6 +45,7 @@ def find_long_lines(event):
                 return True
         return False
     #@-others
+
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
@@ -83,7 +84,7 @@ def find_missing_docstrings(event):
         return
 
     #@+others # Define functions
-    #@+node:ekr.20190615181104.1: *4* function: has_docstring 
+    #@+node:ekr.20190615181104.1: *4* function: has_docstring
     def has_docstring(lines, n):
         """
         Returns True if function/method/class whose definition
@@ -97,7 +98,7 @@ def find_missing_docstrings(event):
             if s.startswith(('"""', "'''")):
                 return True
         return False
-    #@+node:ekr.20190615181104.2: *4* function: is_a_definition 
+    #@+node:ekr.20190615181104.2: *4* function: is_a_definition
     def is_a_definition(line):
         """Return True if line is a definition line."""
         # By Виталије Милошевић.
@@ -116,7 +117,7 @@ def find_missing_docstrings(event):
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-    #@+node:ekr.20190615180900.1: *4* function: clickable_link 
+    #@+node:ekr.20190615180900.1: *4* function: clickable_link
     def clickable_link(p, i):
         """Return a clickable link to line i of p.b."""
         link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
@@ -198,7 +199,7 @@ class Flake8Command:
         """ctor for Flake8Command class."""
         self.c = c
         self.quiet = quiet
-        self.seen = [] # List of checked paths.
+        self.seen = []  # List of checked paths.
 
     #@+others
     #@+node:ekr.20160517133049.2: *3* flake8.check_all
@@ -297,7 +298,7 @@ class PyflakesCommand:
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen = [] # List of checked paths.
+        self.seen = []  # List of checked paths.
 
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
@@ -331,8 +332,8 @@ class PyflakesCommand:
         """Run pyflakes on all files in paths."""
         try:
             from pyflakes import api, reporter
-        except Exception: # ModuleNotFoundError
-            return True # Pretend all is fine.
+        except Exception:  # ModuleNotFoundError
+            return True  # Pretend all is fine.
         total_errors = 0
         for i, root in enumerate(roots):
             fn = self.finalize(root)
@@ -358,8 +359,8 @@ class PyflakesCommand:
         """Call pyflakes to check the given script."""
         try:
             from pyflakes import api, reporter
-        except Exception: # ModuleNotFoundError
-            return True # Pretend all is fine.
+        except Exception:  # ModuleNotFoundError
+            return True  # Pretend all is fine.
         # #1306: nopyflakes
         lines = g.splitLines(p.b)
         for line in lines:
@@ -377,9 +378,9 @@ class PyflakesCommand:
         c = self.c
         aList = g.get_directives_dict_list(p)
         path = self.c.scanAtPathDirectives(aList)
-        path = c.expand_path_expression(path) # #1341.
+        path = c.expand_path_expression(path)  # #1341.
         fn = p.anyAtFileNodeName()
-        fn = c.expand_path_expression(fn) # #1341.
+        fn = c.expand_path_expression(fn)  # #1341.
         return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20160516072613.3: *3* pyflakes.find (no longer used)
     def find(self, p):
@@ -434,8 +435,8 @@ class PylintCommand:
 
     def __init__(self, c):
         self.c = c
-        self.data = None # Data for the *running* process.
-        self.rc_fn = None # Name of the rc file.
+        self.data = None  # Data for the *running* process.
+        self.rc_fn = None  # Name of the rc file.
 
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
@@ -548,3 +549,4 @@ class PylintCommand:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

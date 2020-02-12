@@ -12,7 +12,6 @@ import re
 import string
 #@-<< imports >>
 
-
 def cmd(name):
     """Command decorator for the abbrevCommands class."""
     return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
@@ -32,20 +31,20 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         # Set local ivars.
-        self.abbrevs = {} # Keys are names, values are (abbrev,tag).
+        self.abbrevs = {}  # Keys are names, values are (abbrev,tag).
         self.daRanges = []
-        self.dynaregex = re.compile(# For dynamic abbreviations
+        self.dynaregex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
-        self.n_regex = re.compile(r'(?<!\\)\\n') # to replace \\n but not \\\\n
-        self.expanding = False # True: expanding abbreviations.
+        self.n_regex = re.compile(r'(?<!\\)\\n')  # to replace \\n but not \\\\n
+        self.expanding = False  # True: expanding abbreviations.
         self.event = None
-        self.last_hit = None # Distinguish between text and tree abbreviations.
-        self.root = None # The root of tree abbreviations.
-        self.save_ins = None # Saved insert point.
-        self.save_sel = None # Saved selection range.
-        self.store = {'rlist': [], 'stext': ''} # For dynamic expansion.
-        self.tree_abbrevs_d = {} # Keys are names, values are (tree,tag).
+        self.last_hit = None  # Distinguish between text and tree abbreviations.
+        self.root = None  # The root of tree abbreviations.
+        self.save_ins = None  # Saved insert point.
+        self.save_sel = None  # Saved selection range.
+        self.store = {'rlist': [], 'stext': ''}  # For dynamic expansion.
+        self.tree_abbrevs_d = {}  # Keys are names, values are (tree,tag).
         self.w = None
     #@+node:ekr.20150514043850.5: *4* abbrev.finishCreate & helpers
     def finishCreate(self):
@@ -247,7 +246,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     if val == '__NEXT_PLACEHOLDER':
                         i = w.getInsertPoint()
                         if i > 0:
-                            w.delete(i-1)
+                            w.delete(i - 1)
                             p.h = w.getAllText()
                     # Do not call c.endEditing here.
                 break
@@ -255,7 +254,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if trace: g.trace(f"No prefix in {s!r}")
             return False
         # 448: Add abbreviations for commands.
-        if 0: # Not worth documenting.
+        if 0:  # Not worth documenting.
             val, tag = self.abbrevs.get(word, (None, None))
             if val and c.k.commandExists(val):
                 # Execute the command directly,
@@ -352,7 +351,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.selectPosition(p)
             c.promote(undoFlag=False)
             p.doDelete()
-            c.redraw(old_p) # 2017/02/27: required.
+            c.redraw(old_p)  # 2017/02/27: required.
         else:
             g.trace('paste failed')
     #@+node:ekr.20150514043850.14: *4* abbrev.find_place_holder
@@ -491,7 +490,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     pass
                 else:
                     i -= 1
-                    word, val = None, None # 2017/03/19.
+                    word, val = None, None  # 2017/03/19.
         else:
             i -= 1
             word, val = None, None
@@ -505,7 +504,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         if c.abbrev_place_start is None or c.abbrev_place_end is None:
-            return s, None, None # #1345.
+            return s, None, None  # #1345.
         new_pos = s.find(c.abbrev_place_start, offset)
         new_end = s.find(c.abbrev_place_end, offset)
         if (new_pos < 0 or new_end < 0) and offset:
@@ -516,10 +515,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if new_pos < 0 or new_end < 0:
             return s, None, None
         start = new_pos
-        place_holder_delim = s[new_pos: new_end + len(c.abbrev_place_end)]
+        place_holder_delim = s[new_pos : new_end + len(c.abbrev_place_end)]
         place_holder = place_holder_delim[
-            len(c.abbrev_place_start): -len(c.abbrev_place_end)]
-        s2 = s[: start] + place_holder + s[start + len(place_holder_delim):]
+            len(c.abbrev_place_start) : -len(c.abbrev_place_end)]
+        s2 = s[:start] + place_holder + s[start + len(place_holder_delim) :]
         end = start + len(place_holder)
         return s2, start, end
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
@@ -547,7 +546,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if s is not None:
             w.insert(i, s)
         if w_name.startswith('head'):
-            pass # Don't set p.h here!
+            pass  # Don't set p.h here!
         else:
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
@@ -592,7 +591,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         j = w.getInsertPoint()
         i, prefixes = j - 1, []
         while len(s) > i >= 0 and s[i] not in ' \t\n':
-            prefixes.append(s[i: j])
+            prefixes.append(s[i:j])
             i -= 1
         prefixes = list(reversed(prefixes))
         if '' not in prefixes:
@@ -624,7 +623,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         if prefix.strip():
             ypos = w.getYScrollPosition()
             b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
-            s = s[: i] + prefix + s[j:]
+            s = s[:i] + prefix + s[j:]
             w.setAllText(s)
             w.setInsertPoint(i + len(prefix))
             w.setYScrollPosition(ypos)
@@ -688,7 +687,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
             i, j = g.getWord(s, ins1)
             # word = s[i: j]
-            s = s[: i] + k.arg + s[j:]
+            s = s[:i] + k.arg + s[j:]
             w.setAllText(s)
             w.setInsertPoint(i + len(k.arg))
             w.setYScrollPosition(ypos)
@@ -763,3 +762,4 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
+

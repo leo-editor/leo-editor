@@ -15,7 +15,8 @@ import sys
 def cmd(name):
     """Command decorator for the DebugCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'debugCommands',])
-    
+
+
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.103: ** debug.collectGarbage
@@ -105,8 +106,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
         debuggers = (
             # #1431: only expand path expression in @string debugger-path.
             c.expand_path_expression(c.config.getString('debugger-path')),
-            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'), # winpdb 1.1.2 or newer
-            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'), # oder version.
+            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),  # winpdb 1.1.2 or newer
+            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),  # oder version.
         )
         for debugger in debuggers:
             if debugger:
@@ -251,3 +252,4 @@ class DebugCommandsClass(BaseEditCommandsClass):
 #@@language python
 #@@tabwidth -4
 #@-leo
+

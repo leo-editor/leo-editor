@@ -375,7 +375,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 s2 = f"{commandName} ({bindings})" if bindings else commandName
                 underline = '+' * len(s2)
                 title = '%s\n%s\n\n' % (s2, underline)
-                if 1: # 2015/03/24
+                if 1:  # 2015/03/24
                     s = title + g.adjustTripleString(s, c.tab_width)
                 else:
                     # Fixes bug 618570:
@@ -417,7 +417,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
                 '''
                 #@-<< set s to about help-for-command >>
-            c.putHelpFor(s) # calls g.adjustTripleString.
+            c.putHelpFor(s)  # calls g.adjustTripleString.
     #@+node:ekr.20150514063305.385: *4* replaceBindingPatterns
     def replaceBindingPatterns(self, s):
         """
@@ -436,7 +436,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                     key = c.k.prettyPrintKey(bi.stroke.s)
                     break
             else: key = '<Alt-X>%s<Return>' % name
-            s = s[: m.start()] + key + s[m.end():]
+            s = s[: m.start()] + key + s[m.end() :]
         return s
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles
     @cmd('help-for-creating-external-files')
@@ -769,7 +769,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             d = k.bindingsDict
             k.clearState()
             result = []
-            for bi in d.get(event.stroke, []): # a list of BindingInfo objects.
+            for bi in d.get(event.stroke, []):  # a list of BindingInfo objects.
                 pane, cmd = bi.pane, bi.commandName
                 result.append(cmd if pane == 'all' else f"{pane}: {cmd}")
             s = f"{event.stroke.s}: {','.join(result)}"
@@ -1159,7 +1159,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
-        
+
         self.c.config.createActivesSettingsOutline()
     #@+node:ekr.20150514063305.403: *3* pythonHelp
     @cmd('help-for-python')
@@ -1190,3 +1190,4 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
+

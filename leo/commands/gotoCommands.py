@@ -94,10 +94,10 @@ class GoToCommands:
         gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
         stack = []
         for s in g.splitLines(file_s):
-            n += 1 # All lines contribute to the file's line count.
+            n += 1  # All lines contribute to the file's line count.
             # g.trace('%4s %4r %40r %s' % (n, node_offset, h, s.rstrip()))
             if self.is_sentinel(delim1, delim2, s):
-                s2 = s.strip()[len(delim1):]
+                s2 = s.strip()[len(delim1) :]
                 # Common code for the visible sentinels.
                 if s2.startswith(('@+others', '@+<<', '@@'),):
                     if target_offset == node_offset and gnx == target_gnx:
@@ -143,7 +143,7 @@ class GoToCommands:
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
             if is_sentinel:
-                s2 = s.strip()[len(delim1):]
+                s2 = s.strip()[len(delim1) :]
                 if s2.startswith('@+node'):
                     # Invisible, but resets the offset.
                     offset = 0
@@ -188,7 +188,7 @@ class GoToCommands:
         stack = [(gnx, h, offset),]
         for i, s in enumerate(lines):
             if self.is_sentinel(delim1, delim2, s):
-                s2 = s.strip()[len(delim1):]
+                s2 = s.strip()[len(delim1) :]
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
@@ -202,7 +202,7 @@ class GoToCommands:
                     offset += 1
             else:
                 offset += 1
-            if i+1 == n: # Bug fix 2017/04/01: n is one based.
+            if i + 1 == n:  # Bug fix 2017/04/01: n is one based.
                 break
         else:
             gnx, h, offset = None, None, -1
@@ -298,11 +298,11 @@ class GoToCommands:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
             return s
-        return g.composeScript( # Fix # 429.
-            c = c,
-            p = root,
-            s = root.b,
-            forcePythonSentinels=False, # See #247.
+        return g.composeScript(  # Fix # 429.
+            c=c,
+            p=root,
+            s=root.b,
+            forcePythonSentinels=False,  # See #247.
             useSentinels=True)
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
     def get_script_node_info(self, s, delim2):
@@ -312,8 +312,8 @@ class GoToCommands:
         if i == -1 or j == -1:
             g.error("bad @+node sentinel", s)
             return None, None
-        gnx = s[i + 1: j]
-        h = s[j + 1:]
+        gnx = s[i + 1 : j]
+        h = s[j + 1 :]
         h = self.remove_level_stars(h).strip()
         if delim2:
             h = h.rstrip(delim2)
@@ -325,8 +325,8 @@ class GoToCommands:
         i = s.find(delim1 + '@')
         if delim2:
             j = s.find(delim2)
-            return -1 < i < j
-        return -1 < i
+            return - 1 < i < j
+        return - 1 < i
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s):
         i = g.skip_ws(s, 0)
@@ -376,8 +376,9 @@ def show_file_line(event):
     i = w.getInsertPoint()
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
-    g.es_print(1+n0+row)
-    
-       
+    g.es_print(1 + n0 + row)
+
+
 #@-others
 #@-leo
+

@@ -144,7 +144,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """
         k = self.c.k
         if g.app.unitTesting:
-            k.arg = 's...s' # This string is known to the unit test.
+            k.arg = 's...s'  # This string is known to the unit test.
             self.w = self.editWidget(event)
             self.stringRect = self.getRectanglePoints(self.w)
             self.stringRectangle1(event)
@@ -168,7 +168,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         for r in range(r1, r3 + 1):
             i = g.convertRowColToPythonIndex(s, r - 1, r2)
             j = g.convertRowColToPythonIndex(s, r - 1, r4)
-            s = s[: i] + k.arg + s[j:]
+            s = s[:i] + k.arg + s[j:]
         w.setAllText(s)
         i = g.convertRowColToPythonIndex(s, r1 - 1, r2)
         j = g.convertRowColToPythonIndex(s, r3 - 1, r2 + len(k.arg))
@@ -208,3 +208,4 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
+
