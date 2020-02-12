@@ -24,38 +24,38 @@ assert time
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
 #@@nocolor-node
 #@+at
-#
+# 
 # The big pictures of key bindings:
-#
+# 
 # 1. Code in leoKeys.py and in leoConfig.py converts user key settings to
 #    various Python **binding dictionaries** defined in leoKeys.py.
-#
+# 
 # 2. An instance of LeoQtEventFilter should be attached to all visible panes
 #    in Leo's main window. g.app.gui.setFilter does this.
-#
+# 
 # 3. LeoQtEventFilter.eventFilter calls k.masterKeyhandler for every
 #    keystroke. eventFilter passes only just the event argument to
 #    k.masterKeyHandler. The event arg gives both the widget in which the
 #    event occurs and the keystroke.
-#
+# 
 # 4. k.masterKeyHandler and its helpers use the event argument and the
 #    binding dictionaries to execute the Leo command (if any) associated with
 #    the incoming keystroke.
-#
+# 
 # Important details:
-#
+# 
 # 1. g.app.gui.setFilter allows various traces and assertions to be made
 #    uniformly. The obj argument to setFilter is a QWidget object; the w
 #    argument to setFilter can be either the same as obj, or a Leo
 #    wrapper class. **Important**: the types of obj and w are not
 #    actually all that important, as discussed next.
-#
+# 
 # 2. The logic in k.masterKeyHandler and its helpers is long and involved:
-#
+# 
 # A. k.getPaneBinding associates a command with the incoming keystroke based
 #    on a) the widget's name and b) whether the widget is a text widget
 #    (which depends on the type of the widget).
-#
+# 
 #    To do this, k.getPaneBinding uses a **binding priority table**. This
 #    table is defined within k.getPaneBinding itself. The table indicates
 #    which of several possible bindings should have priority. For instance,
@@ -65,12 +65,12 @@ assert time
 #    details encapsulated in the table. The exactly details of the binding
 #    priority table are open to debate, but in practice the resulting
 #    bindings are as expeced.
-#
+# 
 # B. If k.getPaneBinding finds a command associated with the incoming
 #    keystroke, k.masterKeyHandler calls k.masterCommand to execute the
 #    command. k.masterCommand handles many complex. See the source code for
 #    details.
-#
+# 
 # C. If k.getPaneBinding fails to bind the incoming keystroke to a command,
 #    k.masterKeyHandler calls k.handleUnboundKeys to handle the keystroke.
 #    Depending on the widget, and settings, and the keystroke,
@@ -81,25 +81,25 @@ assert time
 #@+node:ekr.20061031131434.2: ** << about 'internal' bindings >>
 #@@nocolor
 #@+at
-#
+# 
 # Here are the rules for translating key bindings (in leoSettings.leo)
 # into keys for k.bindingsDict:
-#
+# 
 # 1. The case of plain letters is significant: a is not A.
-#
+# 
 # 2. The Shift- prefix can be applied *only* to letters. Leo will ignore
 #    (with a warning) the shift prefix applied to any other binding,
 #    e.g., Ctrl-Shift-(
-#
+# 
 # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is
 #    *not* significant. Thus, the Shift- prefix is required if you want
 #    an upper-case letter (with the exception of 'bare' uppercase
 #    letters.)
-#
+# 
 # The following table illustrates these rules. In each row, the first
 # entry is the key (for k.bindingsDict) and the other entries are
 # equivalents that the user may specify in leoSettings.leo:
-#
+# 
 # a, Key-a, Key-A
 # A, Shift-A
 # Alt-a, Alt-A
@@ -107,7 +107,7 @@ assert time
 # Ctrl-a, Ctrl-A
 # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
 # , Key-!,Key-exclam,exclam
-#
+# 
 # This table is consistent with how Leo already works (because it is
 # consistent with Tk's key-event specifiers). It is also, I think, the
 # least confusing set of rules.
@@ -116,7 +116,7 @@ assert time
 #@+node:ekr.20061031131434.3: ** << about key dicts >>
 #@@nocolor
 #@+at
-#
+# 
 # ivar                    Keys                Values
 # ----                    ----                ------
 # c.commandsDict          command names (1)   functions
@@ -125,12 +125,12 @@ assert time
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
 # inverseBindingDict (5)  command names       lists of tuples (pane,key)
 # modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
-#
+# 
 # New in Leo 4.7:
 # k.killedBindings is a list of command names for which bindings have been killed in local files.
-#
+# 
 # Notes:
-#
+# 
 # (1) Command names are minibuffer names (strings)
 # (2) Scope names are 'all','text',etc.
 # (3) Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
@@ -937,7 +937,9 @@ class AutoCompleterClass:
     #@+node:ekr.20110513104728.14453: *5* ac.clean_completion_list
     def clean_completion_list(self, header, tabList):
         """Return aList with header removed from the start of each list item."""
-        return [ z[len(header) + 1 :] if z.startswith(header) else z for z in tabList]
+        return [
+            z[len(header) + 1 :] if z.startswith(header) else z
+                for z in tabList]
     #@+node:ekr.20110513104728.14454: *5* ac.get_summary_list
     def get_summary_list(self, header, tabList):
         """Show the possible starting letters,
@@ -1326,7 +1328,7 @@ class GetArg:
             # Leave the minibuffer as it is.
             self.show_tab_list(tabList)
         # #323.
-        elif(
+        elif (
             self.cycling_prefix and
             s.startswith(self.cycling_prefix) and
             sorted(self.cycling_tabList) == sorted(tabList)  # Bug fix: 2016/10/14
@@ -1353,7 +1355,6 @@ class GetArg:
         self.cycling_tabList = []
     #@+node:ekr.20140816165728.18958: *3* ga.extend/get/set_label
     # Not useful because k.entendLabel doesn't handle selected text.
-
     if 0:
 
         def extend_label(self, s):
@@ -1649,8 +1650,8 @@ class KeyHandlerClass:
         # These are true globals
         self.getArgEscapes = []
         self.getArgEscapeFlag = False  # A signal that the user escaped getArg in an unusual way.
-        self.givenArgs = [
-            ]  # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+        self.givenArgs = []
+             # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
@@ -2102,7 +2103,6 @@ class KeyHandlerClass:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
-
         commandName = 'open-with-%s' % name.lower()
         k.registerCommand(
             allowBinding=True,
@@ -2254,8 +2254,11 @@ class KeyHandlerClass:
             widgets = [w]
         else:
             # New in Leo 4.5: we *must* make the binding in the binding widget.
-            bindingWidget = f.tree and hasattr(
-                f.tree, 'bindingWidget') and f.tree.bindingWidget or None
+            bindingWidget = (
+                f.tree
+                and hasattr(f.tree, 'bindingWidget')
+                and f.tree.bindingWidget
+                or None)
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
             widgets = (c.miniBufferWidget, wrapper, canvas, bindingWidget)
@@ -2337,7 +2340,13 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     @cmd('full-command')
     def fullCommand(
-        self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
+        self,
+        event,
+        specialStroke=None,
+        specialFunc=None,
+        help=False,
+        helpHandler=None,
+    ):
         """Handle 'full-command' (alt-x) mode."""
         try:
             k = self; c = k.c
@@ -3213,7 +3222,8 @@ class KeyHandlerClass:
             k.handleInputShortcut(event, stroke)
             return True
         if state in (
-            'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
+            'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'
+        ):
             if k.handleMiniBindings(event, state, stroke):
                 return True
         #
@@ -4347,24 +4357,24 @@ class KeyHandlerClass:
         # characters. With these commands, no argument is equivalent to an argument of
         # one. Negative arguments are allowed. Often they tell a command to move or act
         # backwards.
-        #
+        # 
         # If your keyboard has a META key, the easiest way to specify a numeric argument
         # is to type digits and/or a minus sign while holding down the the META key. For
         # example,
-        #
+        # 
         # M-5 C-n
-        #
+        # 
         # moves down five lines. The characters Meta-1, Meta-2, and so on, as well as
         # Meta--, do this because they are keys bound to commands (digit-argument and
         # negative-argument) that are defined to contribute to an argument for the next
         # command.
-        #
+        # 
         # Another way of specifying an argument is to use the C-u (universal-argument)
         # command followed by the digits of the argument. With C-u, you can type the
         # argument digits without holding down shift keys. To type a negative argument,
         # start with a minus sign. Just a minus sign normally means -1. C-u works on all
         # terminals.
-        #
+        # 
         # C-u followed by a character which is neither a digit nor a minus sign has the
         # special meaning of "multiply by four". It multiplies the argument for the next
         # command by four. C-u twice multiplies it by sixteen. Thus, C-u C-u C-f moves
@@ -4372,13 +4382,13 @@ class KeyHandlerClass:
         # moves about 1/5 of a line in the usual size screen. Other useful combinations
         # are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), C-u C-u C-o
         # (make "a lot" of blank lines), and C-u C-k (kill four lines).
-        #
+        # 
         # Some commands care only about whether there is an argument and not about its
         # value. For example, the command M-q (fill-paragraph) with no argument fills
         # text; with an argument, it justifies the text as well. (See section Filling
         # Text, for more information on M-q.) Just C-u is a handy way of providing an
         # argument for such commands.
-        #
+        # 
         # Some commands use the value of the argument as a repeat count, but do something
         # peculiar when there is no argument. For example, the command C-k (kill-line)
         # with argument n kills n lines, including their terminating newlines. But C-k
@@ -4387,7 +4397,7 @@ class KeyHandlerClass:
         # C-k commands with no arguments can kill a non-blank line, just like C-k with an
         # argument of one. (See section Deletion and Killing, for more information on
         # C-k.)
-        #
+        # 
         # A few commands treat a plain C-u differently from an ordinary argument. A few
         # others may treat an argument of just a minus sign differently from an argument
         # of -1. These unusual cases will be described when they come up; they are always
@@ -4442,7 +4452,12 @@ class KeyHandlerClass:
             if bi:
                 for z in range(n):
                     event = g.app.gui.create_key_event(c, event=event, w=w)
-                    k.masterCommand(commandName=None, event=event, func=bi.func, stroke=stroke)
+                    k.masterCommand(
+                        commandName=None,
+                        event=event,
+                        func=bi.func,
+                        stroke=stroke,
+                    )
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)
@@ -4590,4 +4605,3 @@ class ModeInfo:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-
