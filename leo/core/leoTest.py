@@ -202,7 +202,7 @@ class GeneralTestCase(unittest.TestCase):
         if trace_time:
             t2 = time.process_time()
             if t2 - t1 > 3.0:
-                g.trace('\nEXCESSIVE TIME: %5.2f sec. in %s' % (t2 - t1, self.p.h))
+                g.trace(f'\nEXCESSIVE TIME: {t2 - t1:5.2f} sec. in {self.p.h}')
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
@@ -807,19 +807,17 @@ class TestManager:
             testclass = g.app.scriptDict.get('testclass')
             suite = g.app.scriptDict.get('suite')
             if suite and testclass:
-                print("\n%s: both 'suite' and 'testclass defined in %s" % (
-                    fname, p.h))
+                print(f"\n{fname}: both 'suite' and 'testclass defined in {p.h}")
             elif testclass:
                 suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
                 return suite
             elif suite:
                 return suite
             else:
-                print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
-                    fname, p.h))
+                print(f"\n{fname}: neither 'suite' nor 'testclass' defined in {p.h}")
                 return None
         except Exception:
-            print('\n%s: exception creating test class in %s' % (fname, p.h))
+            print(f'\n{fname}: exception creating test class in {p.h}')
             g.es_print_exception()
             return None
         return None
@@ -848,10 +846,10 @@ class TestManager:
                 exec(script + '\n', d)
             suite = g.app.scriptDict.get("suite")
             if not suite:
-                print("\n%s: %s script did not set suite var" % (fname, p.h))
+                print(f"\n{fname}: {p.h} script did not set suite var")
             return suite
         except Exception:
-            print('\n%s: exception creating test cases for %s' % (fname, p.h))
+            print(f'\n{fname}: exception creating test cases for {p.h}')
             g.es_print_exception()
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
@@ -904,7 +902,7 @@ class TestManager:
             if count is None:
                 count = 1000000
             result = t.timeit(count)
-            ratio = "%f" % (float(result) / float(count))
+            ratio = f"{float(result) / float(count):f}"
             g.es_print("count:", count, "time/count:", ratio, '', p.h)
         except Exception:
             t.print_exc()
@@ -924,7 +922,7 @@ class TestManager:
                     suite.addTest(test)
                     created = True
                     if verbose:
-                        g.pr("found %2d doctests for %s" % (n, module.__name__))
+                        g.pr(f"found {n:2d} doctests for {module.__name__}")
             except ValueError:
                 g.pr(f"no doctests in {module.__name__}")
         return suite if created else None
@@ -1006,11 +1004,11 @@ class TestManager:
             print('\n', '-' * 20)
             print("result...")
             for line in g.splitLines(result):
-                print("%3d" % len(line), repr(line))
+                print(f"{len(line):3d}", repr(line))
             print('-' * 20)
             print("expected...")
             for line in g.splitLines(expected):
-                print("%3d" % len(line), repr(line))
+                print(f"{len(line):3d}", repr(line))
             print('-' * 20)
             #@-<< dump result and expected >>
             raise
@@ -1056,8 +1054,7 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (
-            sel2_orig, sel2, sel3)
+        assert sel2 == sel3, f'mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}'
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1250,8 +1247,7 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (
-            sel2_orig, sel2, sel3)
+        assert sel2 == sel3, f'mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}'
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1362,8 +1358,8 @@ class TestManager:
             g.pr('\ncompareOutlines failed: tag:', (tag or ''))
             g.pr('p1.h:', p1 and p1.h or '<no p1>')
             g.pr('p2.h:', p2 and p2.h or '<no p2>')
-            g.pr('p1.numberOfChildren(): %s' % p1.numberOfChildren())
-            g.pr('p2.numberOfChildren(): %s' % p2.numberOfChildren())
+            g.pr(f'p1.numberOfChildren(): {p1.numberOfChildren()}')
+            g.pr(f'p2.numberOfChildren(): {p2.numberOfChildren()}')
             if b1 != b2:
                 self.showTwoBodies(p1.h, p1.b, p2.b)
             if p1.isCloned() != p2.isCloned():
@@ -1609,7 +1605,7 @@ class TestManager:
                 g.unitTesting = False  # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
-                    fullName = 'leo.core.%s' % (moduleName)
+                    fullName = f'leo.core.{moduleName}'
                     __import__(fullName)
                     return sys.modules.get(fullName)
                 finally:
@@ -1626,11 +1622,11 @@ class TestManager:
         print('\n', '-' * 20)
         print(f"expected for {t}...")
         for line in g.splitLines(b1):
-            print("%3d" % len(line), repr(line))
+            print(f"{len(line):3d}", repr(line))
         print('-' * 20)
         print(f"result for {t}...")
         for line in g.splitLines(b2):
-            print("%3d" % len(line), repr(line))
+            print(f"{len(line):3d}", repr(line))
         print('-' * 20)
     #@+node:ekr.20051104075904.95: *4* TM.throwAssertionError
     def throwAssertionError(self):
@@ -1748,7 +1744,7 @@ def makeObjectList(message):
     lastObjectsDict = {}
     for o in objects:
         lastObjectsDict[id(o)] = o
-    g.pr("%25s: %d new, %d total objects" % (message, len(newObjects), len(objects)))
+    g.pr(f"{message:25}: {len(newObjects):d} new, {len(objects):d} total objects")
 #@+node:ekr.20051104075904.20: *4* printGc
 def printGc(message=None):
     """Called from unit tests."""
@@ -1778,7 +1774,7 @@ def printGc(message=None):
         n2 = typesDict.get(key, 0)
         delta2 = n2 - n1
         if delta2 != 0:
-            g.pr("%+6d =%7d %s" % (delta2, n2, key))
+            g.pr(f"{delta2:+6d} ={n2:7d} {key}")
     lastTypesDict = typesDict
     typesDict = {}
     #@-<< print number of each type of object >>
@@ -1816,7 +1812,7 @@ def printGcRefs(verbose=True):
         for ref in refs:
             g.pr(type(ref))
     else:
-        g.pr("%d referrers" % len(refs))
+        g.pr(f"{len(refs):d} referrers")
 #@-others
 #@@language python
 #@@tabwidth -4
