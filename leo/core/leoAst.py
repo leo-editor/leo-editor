@@ -4512,8 +4512,10 @@ class TestOrange(BaseTest):
     def test_verbatim_fail(self):
 
         line_length = 40  # For testing.
-        # The else: line in __init__ is underindented.
-        # With @nobeautify the preceding line-indent is ''.
+        #
+        # Warning: Do not put bare sentinel lines here!
+        #          Doing so destroys leoAst.py!
+        #
         contents = '''\
     SENTverbatim
     SENT+node:ekr.20090128083459.82: ADDED.
