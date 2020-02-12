@@ -2464,7 +2464,7 @@ class Orange:
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
             self.word(name)
-        elif name in ('and', 'else', 'for', 'if', 'in', 'not', 'not in', 'or'):
+        elif name in ('and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or'):
             self.word_op(name)
         else:
             self.word(name)
@@ -4569,6 +4569,7 @@ class TestOrange(BaseTest):
             else:  ### <-------
                 pass
     '''.replace(
+            
             'SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents + '\n'
