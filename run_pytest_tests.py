@@ -7,7 +7,7 @@ args = [
     '--quiet',
     # '--setup-plan',
     # '-x', # Exit on first error.
-    path, # File or directory
+    path,  # File or directory
 ]
 ignore_paths = [
 ]
