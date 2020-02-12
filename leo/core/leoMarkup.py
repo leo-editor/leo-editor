@@ -251,8 +251,7 @@ class MarkupCommands:
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
                 i_path = g.os_path_finalize(i_path)
-                with open(
-                    i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
+                with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
             except IOError:
@@ -494,4 +493,3 @@ class MarkupCommands:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-
