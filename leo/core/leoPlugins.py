@@ -482,8 +482,7 @@ class LeoPluginsController:
                     report(f"{moduleName}.init() did not return a bool")
                 if init_result:
                     self.loadedModules[moduleName] = result
-                    self.loadedModulesFilesDict[
-                        moduleName] = g.app.config.enabledPluginsFileName
+                    self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
                 else:
                     report(f"{moduleName}.init() returned False")
                     result = None
@@ -666,4 +665,3 @@ class LeoPluginsController:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-
