@@ -499,8 +499,7 @@ for python files:
     %s
     %s
 
-""" % (
-    g.angleBrackets('imports'), '@others')),
+""" % (g.angleBrackets('imports'), '@others')),
 
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
 UserTip(
