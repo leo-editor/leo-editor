@@ -682,7 +682,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 headString = ''.join(head[k:kk])
                 # C keywords that might be followed by '{'
                 # print "headString:", headString
-                if headString in ["class", "do", "for", "if", "struct", "switch", "while"]:
+                if headString in [
+                    "class", "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(aList, i)
             args = aList[open_paren : close + 1]
             k = 1 + self.skip_to_matching_bracket(aList, i)
@@ -933,10 +934,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     c.config.getString('stub-output-directory') or '.')
                 self.output_fn = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
-                self.trace_matches = c.config.getBool('stub-trace-matches', default=False)
-                self.trace_patterns = c.config.getBool('stub-trace-patterns', default=False)
+                self.trace_matches = c.config.getBool(
+                    'stub-trace-matches', default=False)
+                self.trace_patterns = c.config.getBool(
+                    'stub-trace-patterns', default=False)
                 self.trace_reduce = c.config.getBool('stub-trace-reduce', default=False)
-                self.trace_visitors = c.config.getBool('stub-trace-visitors', default=False)
+                self.trace_visitors = c.config.getBool(
+                    'stub-trace-visitors', default=False)
                 self.update_flag = c.config.getBool('stub-update', default=False)
                 self.verbose = c.config.getBool('stub-verbose', default=False)
                 self.warn = c.config.getBool('stub-warn', default=False)
@@ -960,9 +964,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def scan(self, kind):
                 """Return a list of *all* lines from an @data node, including comments."""
                 c = self.c
-                aList = c.config.getData(kind,
-                    strip_comments=False,
-                    strip_data=False)
+                aList = c.config.getData(kind, strip_comments=False, strip_data=False)
                 if not aList:
                     g.trace(f"warning: no @data {kind} node")
                 return aList
@@ -1164,7 +1166,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 This may be dubious because it destroys outline structure.
                 """
                 delims = ['#', None, None]
-                return ''.join([z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
+                return ''.join(
+                    [z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
             #@-others
         #@-others
 
@@ -1401,7 +1404,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = i + 1
                         prevSemi = j
                     elif self.match(aList, i, "{"):
-                        j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
+                        j = self.handlePossibleFunctionHeader(
+                            aList, i, prevSemi, firstOpen)
                         prevSemi = j
                         firstOpen = None  # restart the scan
                     else:

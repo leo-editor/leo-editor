@@ -343,7 +343,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                         w.setSelectionRange(
                             w.getInsertPoint() - len(start_text), w.getInsertPoint())
 
-            c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
+            c.k.functionTail = g.os_path_finalize_join(
+                self.path_for_p(c, c.p), start_text or '')
             c.k.getFileName(event, callback=callback)
     #@+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
     @cmd('insert-headline-time')
@@ -761,7 +762,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             ' & extend' if extend else '')
         k.setLabelBlue(s)
         # Get the arg without touching the focus.
-        k.getArg(event, handler=self.findCharacter1, oneCharacter=True, useMinibuffer=False)
+        k.getArg(
+            event, handler=self.findCharacter1, oneCharacter=True, useMinibuffer=False)
 
     def findCharacter1(self, event):
         k = self.c.k
@@ -1057,9 +1059,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         os.chdir(iconDir)
         paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',
-            filetypes=[('All files', '*'), ('Gif', '*.gif'), ('Bitmap', '*.bmp'), ('Icon', '*.ico'),],
-            defaultextension=None,
-            multiple=True)
+            filetypes=[('All files', '*'), (
+            'Gif', '*.gif'), ('Bitmap', '*.bmp'), ('Icon', '*.ico'),],
+            defaultextension=None, multiple=True)
         if not paths: return
         aList = []
         xoffset = 2
@@ -1202,7 +1204,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('remove-space-from-lines')
     def removeSpaceFromLines(self, event):
         """Remove a space from start of all lines, or all selected lines."""
-        self.addRemoveHelper(event, ch=' ', add=False, undoType='remove-space-from-lines')
+        self.addRemoveHelper(
+            event, ch=' ', add=False, undoType='remove-space-from-lines')
 
     @cmd('remove-tab-from-lines')
     def removeTabFromLines(self, event):
@@ -1567,7 +1570,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         expandSelection = not w.hasSelection()
-        head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=expandSelection)
+        head, lines, tail, oldSel, oldYview = c.getBodyLines(
+            expandSelection=expandSelection)
         changed, result = False, []
         for line in lines:
             if line.strip():
@@ -2626,7 +2630,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             lines = g.splitLines(s)
             row, col = g.convertPythonIndexToRowCol(s, ins)
-            row2 = max(0, row - linesPerPage) if kind == 'back' else min(row + linesPerPage, len(lines) - 1)
+            row2 = max(
+                0, row - linesPerPage) if kind == 'back' else min(row + linesPerPage, len(lines) - 1)
             if row == row2: return
             spot = g.convertRowColToPythonIndex(s, row2, col, lines=lines)
             self.extendHelper(w, extend, spot, upOrDown=True)

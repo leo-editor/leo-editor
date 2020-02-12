@@ -213,10 +213,7 @@ class Flake8Command:
             return
         config_file = self.get_flake8_config()
         if config_file:
-            style = engine.get_style_guide(
-                parse_argv=False,
-                config_file=config_file,
-            )
+            style = engine.get_style_guide(parse_argv=False, config_file=config_file,)
             report = style.check_files(paths=paths)
             # Set statistics here, instead of from the command line.
             options = style.options
@@ -415,7 +412,8 @@ class PyflakesCommand:
             if total_errors > 0:
                 g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
             elif force:
-                g.es(f"OK: pyflakes: {len(roots)} file{g.plural(roots)} in {g.timeSince(t1)}")
+                g.es(
+                    f"OK: pyflakes: {len(roots)} file{g.plural(roots)} in {g.timeSince(t1)}")
             elif not pyflakes_errors_only:
                 g.es('OK: pyflakes')
             ok = total_errors == 0
@@ -524,7 +522,8 @@ class PylintCommand:
         args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
         if is_win:
             args = args.replace('\\', '\\\\')
-        command = (f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
+        command = (
+            f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)
         g.trace(command)

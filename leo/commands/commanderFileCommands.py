@@ -521,7 +521,8 @@ def revert(self, event=None):
     if not g.os_path_exists(fn):
         g.es(f"Can not revert unsaved file: {fn}")
         return
-    reply = g.app.gui.runAskYesNoDialog(c, 'Revert', f"Revert to previous version of {fn}?")
+    reply = g.app.gui.runAskYesNoDialog(
+        c, 'Revert', f"Revert to previous version of {fn}?")
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
@@ -803,7 +804,8 @@ def writeFileFromNode(self, event=None):
     else:
         fileName = None
     if not fileName:
-        filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
+        filetypes = [
+            ("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
         fileName = g.app.gui.runSaveFileDialog(c,
             initialfile=None,
             title='Write File From Node',

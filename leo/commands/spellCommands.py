@@ -315,7 +315,8 @@ class DefaultWrapper(BaseSpellWrapper):
                 ('user', self.user_fn),
             )
         for kind, fn in table:
-            g.es_print(f"{kind} dictionary: {(g.os_path_normpath(fn) if fn else 'None')}")
+            g.es_print(
+                f"{kind} dictionary: {(g.os_path_normpath(fn) if fn else 'None')}")
     #@-others
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
@@ -743,7 +744,8 @@ class SpellTabHandler:
         selection = self.tab.getSuggestion()
         if selection:
             # Use getattr to keep pylint happy.
-            if hasattr(self.tab, 'change_i') and getattr(self.tab, 'change_i') is not None:
+            if hasattr(
+                self.tab, 'change_i') and getattr(self.tab, 'change_i') is not None:
                 start = getattr(self.tab, 'change_i')
                 end = getattr(self.tab, 'change_j')
                 oldSel = start, end

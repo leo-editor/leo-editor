@@ -52,13 +52,15 @@ def addComments(self, event=None):
         if line.strip():
             i = g.skip_ws(line, 0)
             if indent:
-                result.append(line[0:i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
+                result.append(
+                    line[0:i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
             else:
                 result.append(openDelim + line.replace('\n', '') + closeDelim + '\n')
         else:
             result.append(line)
     result = ''.join(result)
-    c.updateBodyPane(head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
+    c.updateBodyPane(
+        head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
 #@+node:ekr.20171123135625.3: ** c_ec.colorPanel
 @g.commander_command('set-colors')
 def colorPanel(self, event=None):
@@ -92,7 +94,8 @@ def convertAllBlanks(self, event=None):
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:]  # use positive width.
+                s = g.computeLeadingWhitespace(
+                    w, abs(tabWidth)) + line[i:]  # use positive width.
                 if s != line: changed = True
                 result.append(s)
             if changed:
@@ -132,7 +135,8 @@ def convertAllTabs(self, event=None):
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]  # use negative width.
+                s = g.computeLeadingWhitespace(
+                    w, -abs(tabWidth)) + line[i:]  # use negative width.
                 if s != line: changed = True
                 result.append(s)
             if changed:
@@ -274,7 +278,8 @@ def deleteComments(self, event=None):
             else:
                 result.append(s)
     result = ''.join(result)
-    c.updateBodyPane(head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
+    c.updateBodyPane(
+        head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline
 @g.commander_command('edit-headline')
 def editHeadline(self, event=None):
@@ -365,14 +370,16 @@ def createLastChildNode(c, parent, headline, body):
     return p
 #@+node:ekr.20171123135625.24: *3* def extractDef
 extractDef_patterns = (
-    re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'),  # clojure definition
+    re.compile(
+    r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'),  # clojure definition
     re.compile(r'^\s*(?:def|class)\s+(\w+)'),  # python definitions
     re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'),  # js function
     re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('),  # js function
     re.compile(r'\b(\w+)\s*:\s*function\s'),  # js function
     re.compile(r'\.(\w+)\s*=\s*function\b'),  # js function
     re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'),  # coffeescript function
-    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
+    re.compile(
+    r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
     re.compile(r'\b(\w+)\s*:\s(?:=>|->)'),  # coffeescript function
     re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
 )

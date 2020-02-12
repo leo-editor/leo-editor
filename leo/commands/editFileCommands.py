@@ -197,7 +197,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c2 = leoCommands.Commands(fn, gui=g.app.nullGui)
         theFile = lm.openLeoOrZipFile(fn)
         if theFile:
-            c2.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
+            c2.fileCommands.openLeoFile(
+                theFile, fn, readAtFileNodesFlag=True, silent=True)
             return c2
         return None
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
@@ -524,12 +525,7 @@ class GitDiffController:
         s2 = self.get_file_from_branch(branch2, fn)
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
-        diff_list = list(difflib.unified_diff(
-            lines1,
-            lines2,
-            branch1,
-            branch2,
-        ))
+        diff_list = list(difflib.unified_diff(lines1, lines2, branch1, branch2,))
         diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
