@@ -2557,8 +2557,14 @@ class Orange:
         if kind == 'comment' and self.beautify_pat.match(val):
             self.verbatim = False
             self.add_token('comment', val)
-        else:
-            self.add_token('verbatim', val)
+            return
+        if kind == 'indent':
+            self.level += 1
+            self.lws = self.level * self.tab_width * ' '
+        if kind == 'dedent':
+            self.level -= 1
+            self.lws = self.level * self.tab_width * ' '
+        self.add_token('verbatim', val)
     #@+node:ekr.20200107165250.25: *5* orange.do_ws
     def do_ws(self):
         """
@@ -4507,6 +4513,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
         # The else: line in __init__ is underindented.
+        # With @nobeautify the preceding line-indent is ''.
         contents = '''\
     #@verbatim
     #@+node:ekr.20090128083459.82: ADDED.
@@ -4528,22 +4535,24 @@ class TestOrange(BaseTest):
             if aList is None:
                 for p in c.all_positions():
                     self.append(p.copy())
-            else: ### <-------
-                for p in aList:
-                    self.append(p.copy())
+            else:  ### <-------
+                pass
     '''
         contents, tokens, tree = self.make_data(contents)
-        expected = contents
+        expected = contents + '\n'
         results = self.beautify(contents, tokens, tree,
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
+        # Necessary.
+        expected = expected.replace('#@verbatim\n', '')
         results = results.replace('#@verbatim\n', '')
-            # Necessary.
         if 1:
             if results != expected:
+                g.printObj(expected, tag='expected')
                 g.printObj(results, tag='results')
-                g.printObj(self.code_list, tag='code_list')
+                # g.printObj(self.code_list, tag='code_list')
+                # g.printObj(tokens, tag='tokens')
                 assert False
             return
         message = (
