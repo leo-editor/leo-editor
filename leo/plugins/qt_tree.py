@@ -108,7 +108,8 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         self.auto_edit = c.config.getBool('single-click-auto-edits-headline', False)
         self.enable_drag_messages = c.config.getBool("enable-drag-messages")
-        self.select_all_text_when_editing_headlines = c.config.getBool('select_all_text_when_editing_headlines')
+        self.select_all_text_when_editing_headlines = c.config.getBool(
+            'select_all_text_when_editing_headlines')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
@@ -819,7 +820,8 @@ class LeoQtTree(leoFrame.LeoTree):
                     # & QtConst.MetaModifier.
                     if isCtrl:
                         if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
-                            c.frame.tree.OnIconCtrlClick(p)  # Call the base class method.
+                            c.frame.tree.OnIconCtrlClick(
+                                p)  # Call the base class method.
                         g.doHook("iconctrlclick2", c=c, p=p, event=event)
                     else:
                         # 2014/02/21: generate headclick1/2 instead of iconclick1/2

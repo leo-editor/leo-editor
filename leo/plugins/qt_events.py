@@ -582,11 +582,13 @@ class LeoQtEventFilter(QtCore.QObject):
         if isinstance(w, QtWidgets.QLineEdit):
             if et not in line_edit_ignore_d:
                 t = focus_d.get(et) or et
-                tag = w.objectName() if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
+                tag = w.objectName(
+                    ) if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
                 g.trace('%20s %s' % (t, tag))
             return
         t = focus_d.get(et) or et
-        tag = w.objectName() if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
+        tag = w.objectName(
+            ) if hasattr(w, 'objectName') else f"id: {id(w)}, {w.__class__.__name__}"
         g.trace('%20s %s' % (t, tag))
     #@-others
 #@-others

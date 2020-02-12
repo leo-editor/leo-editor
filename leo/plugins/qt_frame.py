@@ -986,7 +986,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_findbox is None
-        ftm.find_findbox = w = dw.createLineEdit(parent, 'findPattern', disabled=fc.expert_mode)
+        ftm.find_findbox = w = dw.createLineEdit(
+            parent, 'findPattern', disabled=fc.expert_mode)
         lab2 = self.createLabel(parent, 'findLabel', 'Find:')
         grid.addWidget(lab2, row, 0)
         grid.addWidget(w, row, 1, 1, 2)
@@ -999,7 +1000,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_replacebox is None
-        ftm.find_replacebox = w = dw.createLineEdit(parent, 'findChange', disabled=fc.expert_mode)
+        ftm.find_replacebox = w = dw.createLineEdit(
+            parent, 'findChange', disabled=fc.expert_mode)
         lab3 = dw.createLabel(parent, 'changeLabel', 'Replace:')  # Leo 4.11.1.
         grid.addWidget(lab3, row, 0)
         grid.addWidget(w, row, 1, 1, 2)
@@ -1205,8 +1207,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@-others
         #@-others
 
-        EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
-        EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
+        EventWrapper(
+            c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
+        EventWrapper(
+            c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
 
         if 0:  # #1342: These are no longer needed, because there are no buttons.
             table = (
@@ -1243,8 +1247,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            widget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
     #@+node:ekr.20110605121601.18171: *5* dw.tr
     def tr(self, s):
@@ -1711,7 +1714,8 @@ class LeoQtBody(leoFrame.LeoBody):
                 # A Qsci.QsciSintilla object.
                 # dw.createText sets self.scintilla_widget
             self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
-            self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget, self.wrapper)
+            self.colorizer = leoColorizer.QScintillaColorizer(
+                c, self.widget, self.wrapper)
         else:
             self.widget = top.richTextEdit  # A LeoQTextBrowser
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
@@ -1775,7 +1779,8 @@ class LeoQtBody(leoFrame.LeoBody):
             old_w = old_wrapper.widget
             self.injectIvars(f, old_name, p, old_wrapper)
             self.updateInjectedIvars(old_w, p)
-            self.selectLabel(old_wrapper)  # Immediately create the label in the old editor.
+            self.selectLabel(
+                old_wrapper)  # Immediately create the label in the old editor.
         # Switch editors.
         c.frame.body.wrapper = wrapper
         self.selectLabel(wrapper)
@@ -2744,7 +2749,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
         # qtFrame.QtIconBarClass.setCommandForButton
 
-        def setCommandForButton(self, button, command, command_p, controller, gnx, script):
+        def setCommandForButton(
+            self, button, command, command_p, controller, gnx, script):
             """
             Set the "Goto Script" rlick item of an @button button.
             Called from mod_scripting.py plugin.
@@ -2812,8 +2818,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if top_level and rclicks:
                 act = QtWidgets.QAction('---', action_container)
                 act.setSeparator(True)
-                action_container.insertAction(
-                    action_container.actions()[top_offset], act)
+                action_container.insertAction(action_container.actions()[top_offset], act)
                 action_container.setText(
                     action_container.text() +
                     (c.config.getString('mod-scripting-subtext') or '')
@@ -2833,10 +2838,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         try:
             if verticalFlag:
                 # Panes arranged vertically; horizontal splitter bar
-                bar.configure(relief=relief, height=w, bg=color, cursor="sb_v_double_arrow")
+                bar.configure(
+                    relief=relief, height=w, bg=color, cursor="sb_v_double_arrow")
             else:
                 # Panes arranged horizontally; vertical splitter bar
-                bar.configure(relief=relief, width=w, bg=color, cursor="sb_h_double_arrow")
+                bar.configure(
+                    relief=relief, width=w, bg=color, cursor="sb_h_double_arrow")
         except Exception:
             # Could be a user error. Use all defaults
             g.es("exception in user configuration for splitbar")
@@ -3168,7 +3175,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def deiconify(self):
         """Undo --minimized"""
         if 'size' in g.app.debug:
-            g.trace('top:', bool(self.top), 'isMinimized:', self.top and self.top.isMinimized())
+            g.trace(
+                'top:', bool(self.top), 'isMinimized:', self.top and self.top.isMinimized())
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
 
@@ -3454,7 +3462,8 @@ class LeoQtLog(leoFrame.LeoLog):
             url = nodeLink
             for scheme in 'file', 'unl':
                 # QUrl requires paths start with '/'
-                if url.startswith(scheme + '://') and not url.startswith(scheme + ':///'):
+                if url.startswith(
+                    scheme + '://') and not url.startswith(scheme + ':///'):
                     url = url.replace('://', ':///', 1)
             s = f'<a href="{url}" title="{nodeLink}">{s}</a>'
         w.insertHtml(s)
@@ -3854,8 +3863,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu('openwith')
         if not menu:
             menu = self.new_menu(parent, tearoff=False, label=label)
-            menu.insert_cascade(parent, index,
-                label, menu, underline=amp_index)
+            menu.insert_cascade(parent, index, label, menu, underline=amp_index)
         return menu
     #@+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
     def disableMenu(self, menu, name):
@@ -4061,8 +4069,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 src_c.redraw()
             else:
                 g.es("Can't move last node out of outline")
-        undoData = u.beforeInsertNode(p,
-            pasteAsClone=False, copiedBunchList=[])
+        undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
@@ -4182,7 +4189,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = g.toUnicode(s)
                 f.close()
                 return self.doFileUrlHelper(fn, p, s)
-        g.es_print(f"not found: {fn}", nodeLink=p.get_UNL(with_proto=True, with_count=True))
+        g.es_print(
+            f"not found: {fn}", nodeLink=p.get_UNL(with_proto=True, with_count=True))
         return False
     #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper
     def doFileUrlHelper(self, fn, p, s):

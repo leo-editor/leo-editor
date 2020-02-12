@@ -69,7 +69,8 @@ class LeoQtGui(leoGui.LeoGui):
         # Define various classes key stokes.
         #@+<< define FKeys >>
         #@+node:ekr.20180419110303.1: *4* << define FKeys >>
-        self.FKeys = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12']
+        self.FKeys = [
+            'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12']
             # These do not generate keystrokes on MacOs.
         #@-<< define FKeys >>
         #@+<< define ignoreChars >>
@@ -391,7 +392,8 @@ class LeoQtGui(leoGui.LeoGui):
         s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
         return s
     #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog
-    def runAskOkCancelNumberDialog(self, c, title, message, cancelButtonText=None, okButtonText=None):
+    def runAskOkCancelNumberDialog(
+        self, c, title, message, cancelButtonText=None, okButtonText=None):
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting: return None
         # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
@@ -567,12 +569,7 @@ class LeoQtGui(leoGui.LeoGui):
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
         c.in_qt_dialog = True
         try:
-            val = func(
-                parent=None,
-                caption=title,
-                directory=startpath,
-                filter=filter_,
-            )
+            val = func(parent=None, caption=title, directory=startpath, filter=filter_,)
         finally:
             c.in_qt_dialog = False
         if isQt5:  # this is a *Py*Qt change rather than a Qt change
@@ -689,7 +686,8 @@ class LeoQtGui(leoGui.LeoGui):
         result = 'Cancel'
         return result, data
     #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
-    def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
+    def runSaveFileDialog(
+        self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
         if filetypes is None:
             filetypes = []
@@ -748,7 +746,8 @@ class LeoQtGui(leoGui.LeoGui):
             pc = g.app.pluginsController
             # 2011/10/20: load viewrendered (and call vr.onCreate)
             # *only* if not already loaded.
-            if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered2.py'):
+            if not pc.isLoaded(
+                'viewrendered.py') and not pc.isLoaded('viewrendered2.py'):
                 vr = pc.loadOnePlugin('viewrendered.py')
                 if vr:
                     g.blue('viewrendered plugin loaded.')
@@ -1028,7 +1027,8 @@ class LeoQtGui(leoGui.LeoGui):
             return font
         except Exception:
             g.es("exception setting font", g.callers(4))
-            g.es("", "family,size,slant,weight:", "", family, "", size, "", slant, "", weight)
+            g.es(
+                "", "family,size,slant,weight:", "", family, "", size, "", slant, "", weight)
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
@@ -1382,7 +1382,8 @@ class LeoQtGui(leoGui.LeoGui):
                 layout.addWidget(cb, 4, 0, -1, -1)
                 if 0:  # Does not work well.
                     sizePolicy = QtWidgets.QSizePolicy
-                    vSpacer = QtWidgets.QSpacerItem(200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
+                    vSpacer = QtWidgets.QSpacerItem(
+                        200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
                     layout.addItem(vSpacer)
 
     def show_tips(self, force=False):
@@ -1443,8 +1444,7 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    splash = QtWidgets.QSplashScreen(pm,
-                        qt.WindowStaysOnTopHint)
+                    splash = QtWidgets.QSplashScreen(pm, qt.WindowStaysOnTopHint)
                     splash.show()
                     # This sleep is required to do the repaint.
                     QtCore.QThread.msleep(10)
@@ -1472,7 +1472,8 @@ class LeoQtGui(leoGui.LeoGui):
 
     def isTextWrapper(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and hasattr(w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
+        return w and hasattr(
+            w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
         # First try the widget's getName method.
@@ -1604,8 +1605,7 @@ class LeoQtGui(leoGui.LeoGui):
         sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            widget.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
