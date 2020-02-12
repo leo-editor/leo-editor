@@ -2840,6 +2840,10 @@ class Orange:
         if not any(
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
+        # Return if the split would involve strings.
+        if not self.allow_joined_strings:
+            if any([z.kind == 'string' for z in line_tokens]):
+                return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
@@ -3834,6 +3838,29 @@ class TestOrange(BaseTest):
         # expected = self.blacken(contents).rstrip() + '\n\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200212072951.1: *4* TestOrange.test_bad_break
+    def test_bad_break(self):
+        
+        # From setup.py.
+        # The total length of the ''' string should not affect line length.
+        contents = r"""\
+    def get_semver(tag):
+        if 1:
+            print(
+                '''*** Failed to parse Semantic Version from git tag '{0}'.
+            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+            This version can't be uploaded to PyPi.org.'''.format(tag))
+        return version
+    """
+        contents, tokens, tree = self.make_data(contents)
+        # expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = contents + '\n'
+        results = self.beautify(contents, tokens, tree)
+        if results != expected:
+            g.printObj(tokens)
+            g.printObj(expected, tag='expected')
+            g.printObj(results, tag='results')
+            assert False
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
 
