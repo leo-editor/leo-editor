@@ -304,7 +304,8 @@ class RstCommands:
     #@+node:ekr.20100813041139.5920: *3* rst.Entry points
     #@+node:ekr.20100812082517.5945: *4* rst.code_to_rst_command & helpers
     @cmd('code-to-rst')
-    def code_to_rst_command(self, event=None, p=None, scriptSettingsDict=None, toString=False):
+    def code_to_rst_command(
+        self, event=None, p=None, scriptSettingsDict=None, toString=False):
         """
         Format the presently selected node as computer code.
         Settings from scriptSettingsDict override normal settings.
@@ -539,13 +540,15 @@ class RstCommands:
             h = p.h.strip()
             if g.match_word(h, 0, '@rst-ignore-tree'):
                 p.moveToNodeAfterTree()
-            elif g.match_word(h, 0, '@rst-ignore') or g.match_word(h, 0, '@rst-ignore-node'):
+            elif g.match_word(
+                h, 0, '@rst-ignore') or g.match_word(h, 0, '@rst-ignore-node'):
                 p.moveToThreadNext()
             elif g.match_word(h, 0, "@rst"):
                 self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
-                    self.write_rst_tree(p, ext, fn, toString=toString, justOneFile=justOneFile)
+                    self.write_rst_tree(
+                        p, ext, fn, toString=toString, justOneFile=justOneFile)
                     if toString:
                         return p.copy(), self.stringOutput
                     p.moveToNodeAfterTree()
@@ -803,14 +806,15 @@ class RstCommands:
             elif self.getOption(p, 'show_doc_parts_in_rst_mode'):
                 # use value as class for content
                 lines = self.handleSpecialDocParts(lines, None,
-                    retainContents=True, asClass=self.getOption(p, 'show_doc_parts_in_rst_mode'))
+                    retainContents=True, asClass=self.getOption(
+                    p, 'show_doc_parts_in_rst_mode'))
             else:  # option evaluates to false, cut them out
-                lines = self.handleSpecialDocParts(lines, None,
-                    retainContents=False)
+                lines = self.handleSpecialDocParts(lines, None, retainContents=False)
             lines = self.removeLeoDirectives(lines)
             if self.getOption(p, 'expand_noweb_references'):
                 lines = self.expandSectionRefs(lines, p, seen=[])
-            if self.getOption(p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
+            if self.getOption(
+                p, 'generate_rst') and self.getOption(p, 'use_alternate_code_block'):
                 lines = self.replaceCodeBlockDirectives(lines)
         # Write the lines.
         s = ''.join(lines)
@@ -1652,7 +1656,8 @@ class RstCommands:
         force = False
         if force:
             # See http://docutils.sourceforge.net/docs/user/config.html#documentclass
-            return {'documentclass': 'report', 'documentoptions': 'english,12pt,lettersize'}
+            return {
+                'documentclass': 'report', 'documentoptions': 'english,12pt,lettersize'}
         if not s:
             s = self.getOption(p, 'publish_argv_for_missing_stylesheets')
         if not s:
@@ -1760,14 +1765,16 @@ class RstCommands:
                 g.trace('can not happen: no u')
                 ch = '#'
             # Write longer underlines for non-ascii characters.
-            n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
+            n = max(
+                4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch * n, p.h, ch * n)
             return '%s\n%s\n\n' % (p.h, ch * n)
         # The user is responsible for top-level overlining.
         u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.topLevel)
-        level = min(level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
+        level = min(
+            level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
         return '%s\n%s\n\n' % (s.strip(), ch * n)
@@ -1918,7 +1925,8 @@ class HtmlParserClass(LinkAnchorParserClass):
             self.last_position = self.rst.http_map[is_node_marker]
             if is_node_marker != self.last_marker:
                 # if bwm_file: print >> bwm_file, "Handle endtag:", is_node_marker, self.stack
-                mod_http.set_http_attribute(self.rst.http_map[is_node_marker], self.stack)
+                mod_http.set_http_attribute(
+                    self.rst.http_map[is_node_marker], self.stack)
                 self.last_marker = is_node_marker
                 # bwm: last_marker is not needed?
         self.stack = self.stack[2]
@@ -2008,7 +2016,8 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
                         href_file, href_node = self.anchor_map[href_a]
                         http_node_ref = mod_http.node_reference(href_node)
                         line, column = self.getpos()
-                        self.replacements.append((line, column, href, href_file, http_node_ref))
+                        self.replacements.append(
+                            (line, column, href, href_file, http_node_ref))
     #@+node:ekr.20120219194520.10462: *4* get_replacements
     def get_replacements(self):
         return self.replacements

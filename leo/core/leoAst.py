@@ -2826,7 +2826,7 @@ class Orange:
         """
         trace = False
         if self.max_split_line_length <= 0:
-            return
+            return False
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
         if not is_long_statement(node):
@@ -2844,9 +2844,11 @@ class Orange:
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
         # Return if the split would involve strings.
-        if not self.allow_joined_strings:
-            if any([z.kind == 'string' for z in line_tokens]):
-                return False
+        if 0:
+            # A bad idea. This would prevent far too many splits.
+            if not self.allow_joined_strings:
+                if any([z.kind == 'string' for z in line_tokens]):
+                    return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
@@ -4566,7 +4568,8 @@ class TestOrange(BaseTest):
                     self.append(p.copy())
             else:  ### <-------
                 pass
-    '''.replace('SENT', '#@')
+    '''.replace(
+            'SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents + '\n'
         results = self.beautify(contents, tokens, tree,

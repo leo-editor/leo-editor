@@ -62,9 +62,12 @@ class AtFile:
     def reloadSettings(self):
         """AtFile.reloadSettings"""
         c = self.c
-        self.checkPythonCodeOnWrite = c.config.getBool('check-python-code-on-write', default=True)
-        self.runPyFlakesOnWrite = c.config.getBool('run-pyflakes-on-write', default=False)
-        self.underindentEscapeString = c.config.getString('underindent-escape-string') or '\\-'
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write', default=True)
+        self.runPyFlakesOnWrite = c.config.getBool(
+            'run-pyflakes-on-write', default=False)
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
     #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
     def cmd(name):
         """Command decorator for the AtFileCommands class."""
@@ -190,7 +193,8 @@ class AtFile:
             at.output_newline = '\n'
         #
         # Set other ivars.
-        at.force_newlines_in_at_nosent_bodies = c.config.getBool('force-newlines-in-at-nosent-bodies')
+        at.force_newlines_in_at_nosent_bodies = c.config.getBool(
+            'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
         at.outputList = []
             # For stream output.
@@ -311,8 +315,7 @@ class AtFile:
         x = at.c.shadowController
         # readOneAtShadowNode should already have checked these.
         shadow_fn = x.shadowPathName(fn)
-        shadow_exists = (g.os_path_exists(shadow_fn) and
-            g.os_path_isfile(shadow_fn))
+        shadow_exists = (g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn))
         if not shadow_exists:
             g.trace('can not happen: no private file',
                 shadow_fn, g.callers())
@@ -788,7 +791,8 @@ class AtFile:
         readVersion, readVersion5 = None, None
         new_df, start, end, isThin = False, '', '', False
         # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
-        pattern = re.compile(r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
+        pattern = re.compile(
+            r'(.+)@\+leo(-ver=([0123456789]+))?(-thin)?(-encoding=(.*)(\.))?(.*)')
             # The old code weirdly allowed '.' in version numbers.
             # group 1: opening delim
             # group 2: -ver=
@@ -1154,7 +1158,8 @@ class AtFile:
         '''Save the outline if only persistence data nodes are dirty.'''
         c = self.c
         changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
-        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node()
+        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node(
+            )
         if at_persistence:
             changed_positions = [p for p in changed_positions
                 if not at_persistence.isAncestorOf(p)]
@@ -1314,7 +1319,8 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            fileName = at.initWriteIvars(root, root.anyAtFileNodeName(), sentinels=sentinels)
+            fileName = at.initWriteIvars(
+                root, root.anyAtFileNodeName(), sentinels=sentinels)
             if not fileName or not at.precheck(fileName, root):
                 if sentinels:
                     # Raise dialog warning of data loss.
@@ -1346,14 +1352,12 @@ class AtFile:
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:  # Don't use iterator.
-            if (
-                p.isAtAsisFileNode()
-                or (p.isAnyAtFileNode() and not p.isAtIgnoreNode())
-            ):
+            if (p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode())):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     fileName = c.expand_path_expression(fileName)  # #1341
-                    fileName = g.os_path_finalize_join(at.default_directory, fileName)  # #1341
+                    fileName = g.os_path_finalize_join(
+                        at.default_directory, fileName)  # #1341
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
                         writtenFiles = True
@@ -1574,18 +1578,15 @@ class AtFile:
             at.warnAboutOrphandAndIgnoredNodes()
             if g.app.unitTesting:
                 exceptions = ('public_s', 'private_s', 'sentinels', 'outputList')
-                assert g.checkUnchangedIvars(at, ivars_dict, exceptions), 'writeOneAtShadowNode'
+                assert g.checkUnchangedIvars(
+                    at, ivars_dict, exceptions), 'writeOneAtShadowNode'
             if not at.errors:
                 # Write the public and private files.
                 x.makeShadowDirectory(full_path)
                     # makeShadowDirectory takes a *public* file name.
                 x.replaceFileWithString(at.encoding, private_fn, at.private_s)
                 x.replaceFileWithString(at.encoding, full_path, at.public_s)
-            at.checkPythonCode(
-                contents=at.private_s,
-                fileName=full_path,
-                root=root,
-            )
+            at.checkPythonCode(contents=at.private_s, fileName=full_path, root=root,)
             if at.errors:
                 g.error("not written:", full_path)
                 at.addToOrphanList(root)
@@ -1651,7 +1652,8 @@ class AtFile:
                 g.error('@edit nodes must not have children')
                 g.es('To save your work, convert @edit to @auto, @file or @clean')
                 return False
-            fileName = at.initWriteIvars(root, root.atEditNodeName(), atEdit=True, sentinels=False)
+            fileName = at.initWriteIvars(
+                root, root.atEditNodeName(), atEdit=True, sentinels=False)
             # #1450.
             if not fileName:
                 at.addToOrphanList(root)
@@ -2169,7 +2171,8 @@ class AtFile:
         k = g.skip_ws(s, i)
         if j == k:
             # Only whitespace before the @others or ref.
-            at.leadingWs = s[i:j]  # Remember the leading whitespace, including its spelling.
+            at.leadingWs = s[
+                i:j]  # Remember the leading whitespace, including its spelling.
         else:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
@@ -2244,7 +2247,8 @@ class AtFile:
     def checkPythonCode(self, contents, fileName, root, pyflakes_errors_only=False):
         """Perform python-related checks on root."""
         at = self
-        if contents and fileName and fileName.endswith('.py') and at.checkPythonCodeOnWrite:
+        if contents and fileName and fileName.endswith(
+            '.py') and at.checkPythonCodeOnWrite:
             # It's too slow to check each node separately.
             if pyflakes_errors_only:
                 ok = True
@@ -2713,10 +2717,12 @@ class AtFile:
             encoding=at.encoding, silent=True)
         unchanged = (
             contents == old_contents or
-            (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents)) or
+            (not at.explicitLineEnding and at.compareIgnoringLineEndings(
+            old_contents, contents)) or
             ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
         if unchanged:
-            if not g.unitTesting and c.config.getBool('report-unchanged-files', default=True):
+            if not g.unitTesting and c.config.getBool(
+                'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")
             # Leo 5.6: Check unchanged files.
             at.checkPythonCode(contents, fileName, root, pyflakes_errors_only=True)
@@ -2726,7 +2732,8 @@ class AtFile:
         if at.explicitLineEnding:
             ok = (
                 at.compareIgnoringLineEndings(old_contents, contents) or
-                ignoreBlankLines and at.compareIgnoringLineEndings(old_contents, contents))
+                ignoreBlankLines and at.compareIgnoringLineEndings(
+                old_contents, contents))
             if not ok:
                 g.warning("correcting line endings in:", fileName)
         #
@@ -3078,7 +3085,8 @@ class AtFile:
             d = p.v.at_read
             for k in d:
                 # Fix bug # #1469: make sure k still exists.
-                if os.path.exists(k) and os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                if os.path.exists(
+                    k) and os.path.samefile(k, fn) and p.h in d.get(k, set()):
                     d[fn] = d[k]
                     if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
@@ -3178,12 +3186,15 @@ class FastAtRead:
                 assert v, (key, v)
                 v._bodyString = g.toUnicode(''.join(body))
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
-    header_pattern = re.compile(r'''
+    header_pattern = re.compile(
+        r'''
         ^(.+)@\+leo
         (-ver=(\d+))?
         (-thin)?
         (-encoding=(.*)(\.))?
-        (.*)$''', re.VERBOSE)
+        (.*)$''',
+        re.VERBOSE,
+    )
 
     def scan_header(self, lines):
         '''
@@ -3280,7 +3291,8 @@ class FastAtRead:
             # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
-        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(delims)
+        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(
+            delims)
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
@@ -3679,8 +3691,7 @@ class FastAtRead:
         # Previously, this had been done in readOpenFile.
         root.v._deleteAllChildren()
         delims, first_lines, start_i = data
-        self.scan_lines(
-            delims, first_lines, lines, path, start_i)
+        self.scan_lines(delims, first_lines, lines, path, start_i)
         if trace:
             t2 = time.process_time()
             g.trace(f"{t2 - t1:5.2f} sec. {path}")

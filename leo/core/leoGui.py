@@ -93,7 +93,8 @@ class LeoGui:
         """Create and run an askOK dialog ."""
         self.oops()
 
-    def runAskOkCancelNumberDialog(self, c, title, message, cancelButtonText=None, okButtonText=None):
+    def runAskOkCancelNumberDialog(
+        self, c, title, message, cancelButtonText=None, okButtonText=None):
         """Create and run askOkCancelNumber dialog ."""
         self.oops()
 
@@ -113,11 +114,13 @@ class LeoGui:
         """Create and run an askYesNoCancel dialog ."""
         self.oops()
 
-    def runPropertiesDialog(self, title='Properties', data=None, callback=None, buttons=None):
+    def runPropertiesDialog(
+        self, title='Properties', data=None, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
     #@+node:ekr.20031218072017.3731: *4* LeoGui.file dialogs
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+    def runOpenFileDialog(
+        self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
         """Create and run an open file dialog ."""
         self.oops()
 
@@ -172,7 +175,8 @@ class LeoGui:
         """Center a dialog."""
         self.oops()
 
-    def create_labeled_frame(self, parent, caption=None, relief="groove", bd=2, padx=0, pady=0):
+    def create_labeled_frame(
+        self, parent, caption=None, relief="groove", bd=2, padx=0, pady=0):
         """Create a labeled frame."""
         self.oops()
 

@@ -325,7 +325,8 @@ class BindingInfo:
     # so it is convenient to define it in leoGlobals.py.
     #@+others
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
-    def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
+    def __init__(
+        self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
 
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
@@ -1674,7 +1675,8 @@ class SherlockTracer:
     """
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
-    def __init__(self, patterns, dots=True, show_args=True, show_return=True, verbose=True):
+    def __init__(
+        self, patterns, dots=True, show_args=True, show_return=True, verbose=True):
         """SherlockTracer ctor."""
         self.bad_patterns = []  # List of bad patterns.
         self.dots = dots  # True: print level dots.
@@ -1770,7 +1772,8 @@ class SherlockTracer:
                 if arg:
                     if isinstance(arg, (list, tuple)):
                         # Clearer w/o f-string
-                        val = f'[%s]' % ','.join([self.show(z) for z in arg if self.show(z)])
+                        val = f'[%s]' % ','.join(
+                            [self.show(z) for z in arg if self.show(z)])
                     else:
                         val = self.show(arg)
                     if val:
@@ -1915,7 +1918,8 @@ class SherlockTracer:
             if self.fn_is_enabled(fn, patterns):
                 result = sorted(d.keys())
             else:
-                result = [key for key in sorted(d.keys()) if self.is_enabled(fn, key, patterns)]
+                result = [
+                    key for key in sorted(d.keys()) if self.is_enabled(fn, key, patterns)]
             if result:
                 print('')
                 fn = fn.replace('\\', '/')
@@ -2935,7 +2939,8 @@ def printGcObjects(tag=''):
                     funcDict[key] = None
                     if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
-                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(obj)
+                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(
+                            obj)
                         g.pr("args", args)
                         if varargs: g.pr("varargs", varargs)
                         if varkw: g.pr("varkw", varkw)
@@ -3793,9 +3798,11 @@ def guessExternalEditor(c=None):
         return "notepad"
     if platform.startswith('linux'):
         return 'gedit'
-    g.es('''No editor set.
+    g.es(
+        '''No editor set.
 Please set LEO_EDITOR or EDITOR environment variable,
-or do g.app.db['LEO_EDITOR'] = "gvim"''')
+or do g.app.db['LEO_EDITOR'] = "gvim"''',
+    )
     return None
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
 def init_dialog_folder(c, p, use_at_path=True):
@@ -4454,7 +4461,8 @@ def skip_braces(s, i):
         elif g.match(s, i, '//'): i = g.skip_to_end_of_line(s, i)
         elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
         # 7/29/02: be more careful handling conditional code.
-        elif g.match_word(s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
+        elif g.match_word(
+            s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
             i, delta = g.skip_pp_if(s, i)
             level += delta
         else: i += 1
@@ -4610,7 +4618,8 @@ def skip_pp_part(s, i):
     delta = 0
     while i < len(s):
         c = s[i]
-        if g.match_word(s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
+        if g.match_word(
+            s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
             i, delta1 = g.skip_pp_if(s, i)
             delta += delta1
         elif g.match_word(s, i, "#else") or g.match_word(s, i, "#endif"):
@@ -4823,7 +4832,8 @@ def skip_to_start_of_line(s, i):
         return len(s)
     if i <= 0:
         return 0
-    i = s.rfind('\n', 0, i)  # Don't find s[i], so it doesn't matter if s[i] is a newline.
+    i = s.rfind(
+        '\n', 0, i)  # Don't find s[i], so it doesn't matter if s[i] is a newline.
     if i == -1:
         return 0
     return i + 1
@@ -5445,7 +5455,8 @@ def getLine(s, i):
     """
     if i > len(s): i = len(s) - 1  # Bug fix: 10/6/07 (was if i >= len(s))
     if i < 0: i = 0
-    j = s.rfind('\n', 0, i)  # A newline *ends* the line, so look to the left of a newline.
+    j = s.rfind(
+        '\n', 0, i)  # A newline *ends* the line, so look to the left of a newline.
     if j == -1: j = 0
     else: j += 1
     k = s.find('\n', i)
@@ -5965,7 +5976,8 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
                     if line:
                         # Add the word, preceeded by a blank.
-                        line = space.join((line, word))  # DTHEIN 18-JAN-2004: better syntax
+                        line = space.join(
+                            (line, word))  # DTHEIN 18-JAN-2004: better syntax
                     else:
                         # Just add the word to the start of the line.
                         line = word
@@ -6620,7 +6632,8 @@ def CheckVersion(s1, s2, condition=">=", stringCompare=None, delimiter='.', trac
         if condition == cond:
             result = val; break
     else:
-        raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
+        raise EnvironmentError(
+            "condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
     return result
 #@+node:ekr.20070120123930: *4* g.CheckVersionToInt
 def CheckVersionToInt(s):
@@ -7016,7 +7029,8 @@ def os_startfile(fname):
         while True:
             emsg = ree.read().decode('utf-8')
             if emsg:
-                g.es_print_error('xdg-open {fn} caused output to stderr:\n{em}'.format(fn=fname, em=emsg))
+                g.es_print_error(
+                    'xdg-open {fn} caused output to stderr:\n{em}'.format(fn=fname, em=emsg))
             else:
                 break
     #@+node:bob.20170516112304.1: *4* itPoll()
@@ -7040,7 +7054,8 @@ def os_startfile(fname):
             ito.stop()
             ito.destroy_self()
             if rc != 0:
-                g.es_print('xdg-open {fn} failed with exit code {ec}'.format(fn=fname, ec=rc))
+                g.es_print(
+                    'xdg-open {fn} failed with exit code {ec}'.format(fn=fname, ec=rc))
             stderr2log(g, ree, fname)
             ree.close()
 
@@ -7081,7 +7096,8 @@ def os_startfile(fname):
             g.es_print(f'error opening {fname!r}')
             g.es_exception()
         try:
-            itoPoll = g.IdleTime((lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
+            itoPoll = g.IdleTime(
+                (lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.

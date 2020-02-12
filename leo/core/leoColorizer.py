@@ -185,7 +185,8 @@ class BaseJEditColorizer(BaseColorizer):
         if self.importedRulesets.get(rulesetName):
             return
         self.importedRulesets[rulesetName] = True
-        names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
+        names = mode.importDict.get(
+            rulesetName, []) if hasattr(mode, 'importDict') else []
         for name in names:
             savedBunch = self.modeBunch
             ok = self.init_mode(name)
@@ -359,7 +360,8 @@ class BaseJEditColorizer(BaseColorizer):
                 else:
                     # It's a good idea to set size explicitly.
                     old_size = size or default_size
-                    if trace: g.trace("STARTING SIZE", old_size, repr(size), default_size)
+                    if trace: g.trace(
+                        "STARTING SIZE", old_size, repr(size), default_size)
                 if isinstance(old_size, str):
                     # All settings should be in units of points.
                     try:
@@ -407,7 +409,8 @@ class BaseJEditColorizer(BaseColorizer):
             if self.showInvisibles:
                 color = c.config.getColor(option_name) if option_name else default_color
             else:
-                option_name, default_color = self.default_colors_dict.get(name, (None, None),)
+                option_name, default_color = self.default_colors_dict.get(
+                    name, (None, None),)
                 color = c.config.getColor(option_name) if option_name else ''
             try:
                 wrapper.tag_configure(name, background=color)
@@ -1034,7 +1037,8 @@ class BaseJEditColorizer(BaseColorizer):
         #
         # New in Leo 5.8.1: allow symbolic color names here.
         # This now works because all keys in leo_color_database are normalized.
-        colorName = colorName.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
+        colorName = colorName.replace(
+            ' ', '').replace('-', '').replace('_', '').lower().strip()
         colorName = leo_color_database.get(colorName, colorName)
         # This is weird, so I'll leave it here.
             # if colorName[-1].isdigit() and colorName[0] != '#':
@@ -1562,11 +1566,13 @@ class JEditColorizer(BaseJEditColorizer):
             return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
             return 0
-        if at_word_start and i + len(seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
+        if at_word_start and i + len(
+            seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
             return 0
         if g.match(s, i, seq):
             j = len(s)
-            self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return j  # (was j-1) With a delegate, this could clear state.
@@ -1584,7 +1590,8 @@ class JEditColorizer(BaseJEditColorizer):
         n = self.match_regexp_helper(s, i, regexp)
         if n > 0:
             j = len(s)
-            self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(
+                s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return j - i
@@ -1622,7 +1629,8 @@ class JEditColorizer(BaseJEditColorizer):
             j -= 1
             word = word[: -1]
         if not word:
-            g.trace('can not happen', repr(s[i : max(j, i + 1)]), repr(s[i : i + 10]), g.callers())
+            g.trace(
+                'can not happen', repr(s[i : max(j, i + 1)]), repr(s[i : i + 10]), g.callers())
             return 0
         if self.ignore_case: word = word.lower()
         kind = self.keywordsDict.get(word)
@@ -1665,7 +1673,8 @@ class JEditColorizer(BaseJEditColorizer):
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0  # 7/5/2008
-        if at_word_start and i + len(pattern) + 1 < len(s) and s[i + len(pattern)] in self.word_chars:
+        if at_word_start and i + len(
+            pattern) + 1 < len(s) and s[i + len(pattern)] in self.word_chars:
             return 0
         if g.match(s, i, pattern):
             j = i + len(pattern)
@@ -1751,7 +1760,8 @@ class JEditColorizer(BaseJEditColorizer):
             j = i
         elif at_word_start and i > 0 and s[i - 1] in self.word_chars:  # 7/5/2008
             j = i
-        if at_word_start and i + len(seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
+        if at_word_start and i + len(
+            seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
             j = i  # 7/5/2008
         elif g.match(s, i, seq):
             j = i + len(seq)
@@ -1795,7 +1805,8 @@ class JEditColorizer(BaseJEditColorizer):
             j = i
         elif at_word_start and i > 0 and s[i - 1] in self.word_chars:
             j = i
-        elif at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
+        elif at_word_start and i + len(
+            begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
             j = i
         elif not g.match(s, i, begin):
             j = i
@@ -1808,18 +1819,23 @@ class JEditColorizer(BaseJEditColorizer):
             else:
                 # A hack to handle continued strings. Should work for most languages.
                 # Prepend "dots" to the kind, as a flag to setTag.
-                dots = j > len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+                dots = j > len(
+                    s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
                 dots = dots and self.language not in ('lisp', 'elisp', 'rust')
                 if dots:
                     kind = 'dots' + kind
                 # A match
                 i2 = i + len(begin); j2 = j + len(end)
                 if delegate:
-                    self.colorRangeWithTag(s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                    self.colorRangeWithTag(s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                    self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
+                    self.colorRangeWithTag(
+                        s, i, i2, kind, delegate=None, exclude_match=exclude_match)
+                    self.colorRangeWithTag(
+                        s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
+                    self.colorRangeWithTag(
+                        s, j, j2, kind, delegate=None, exclude_match=exclude_match)
                 else:
-                    self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+                    self.colorRangeWithTag(
+                        s, i, j2, kind, delegate=None, exclude_match=exclude_match)
                 j = j2
                 self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
@@ -1930,7 +1946,8 @@ class JEditColorizer(BaseJEditColorizer):
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0  # 7/5/2008
-        if at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
+        if at_word_start and i + len(
+            begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
             return 0  # 7/5/2008
         n = self.match_regexp_helper(s, i, begin)
         # We may have to allow $n here, in which case we must use a regex object?
@@ -1949,11 +1966,15 @@ class JEditColorizer(BaseJEditColorizer):
                     return 0
             i2 = j2 - len(end)
             if delegate:
-                self.colorRangeWithTag(s, i, j, kind, delegate=None, exclude_match=exclude_match)
-                self.colorRangeWithTag(s, j, i2, kind, delegate=delegate, exclude_match=False)
-                self.colorRangeWithTag(s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(
+                    s, i, j, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(
+                    s, j, i2, kind, delegate=delegate, exclude_match=False)
+                self.colorRangeWithTag(
+                    s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
             else:  # avoid having to merge ranges in addTagsToList.
-                self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(
+                    s, i, j2, kind, delegate=None, exclude_match=exclude_match)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j2)
             return j2 - i
@@ -2002,7 +2023,8 @@ class JEditColorizer(BaseJEditColorizer):
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
-        if at_word_start and i + len(word) + 1 < len(s) and s[i + len(word)] in self.word_chars:
+        if at_word_start and i + len(
+            word) + 1 < len(s) and s[i + len(word)] in self.word_chars:
             j = i
         if not g.match(s, i, word):
             return 0
@@ -2450,8 +2472,7 @@ if QtGui:
                     elif key == 'italic':
                         result.setFontItalic(True)
                     elif key == 'underline':
-                        result.setUnderlineStyle(
-                            QtGui.QTextCharFormat.SingleUnderline)
+                        result.setUnderlineStyle(QtGui.QTextCharFormat.SingleUnderline)
                     elif key == 'sans':
                         result.setFontStyleHint(QtGui.QFont.SansSerif)
                     elif key == 'roman':

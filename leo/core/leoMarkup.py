@@ -251,7 +251,8 @@ class MarkupCommands:
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
                 i_path = g.os_path_finalize(i_path)
-                with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
+                with open(
+                    i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
             except IOError:
@@ -464,7 +465,8 @@ class MarkupCommands:
     def adoc_command(self, event=None, preview=False, verbose=True):
         global asciidoctor_exec, asciidoc3_exec
         if asciidoctor_exec or asciidoc3_exec:
-            return self.command_helper(event, kind='adoc', preview=preview, verbose=verbose)
+            return self.command_helper(
+                event, kind='adoc', preview=preview, verbose=verbose)
         name = 'adoc-with-preview' if preview else 'adoc'
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
@@ -472,7 +474,8 @@ class MarkupCommands:
     def pandoc_command(self, event=None, preview=False, verbose=True):
         global pandoc_exec
         if pandoc_exec:
-            return self.command_helper(event, kind='pandoc', preview=preview, verbose=verbose)
+            return self.command_helper(
+                event, kind='pandoc', preview=preview, verbose=verbose)
         name = 'pandoc-with-preview' if preview else 'pandoc'
         g.es_print(f"{name} requires pandoc")
         return []
@@ -480,7 +483,8 @@ class MarkupCommands:
     def sphinx_command(self, event=None, preview=False, verbose=True):
         global sphinx_build
         if sphinx_build:
-            return self.command_helper(event, kind='sphinx', preview=preview, verbose=verbose)
+            return self.command_helper(
+                event, kind='sphinx', preview=preview, verbose=verbose)
         name = 'sphinx-with-preview' if preview else 'sphinx'
         g.es_print(f"{name} requires sphinx")
         return []

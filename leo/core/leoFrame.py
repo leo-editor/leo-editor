@@ -287,7 +287,8 @@ class LeoBody:
             if len(keys) == 1:
                 w_old = d.get(keys[0])
                 self.updateInjectedIvars(w_old, p)
-                self.selectLabel(w_old)  # Immediately create the label in the old editor.
+                self.selectLabel(
+                    w_old)  # Immediately create the label in the old editor.
             else:
                 g.trace('can not happen: unexpected editorWidgets', d)
         name = f"{self.totalNumberOfEditors}"
@@ -1289,7 +1290,8 @@ class LeoTree:
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):  # e used in qt_tree.py.
+    def onHeadChanged(
+        self, p, undoType='Typing', s=None, e=None):  # e used in qt_tree.py.
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -1541,7 +1543,8 @@ class LeoTree:
         c = self.c
         call_event_handlers = p != old_p
         if call_event_handlers:
-            unselect = not g.doHook("unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+            unselect = not g.doHook(
+                "unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         else:
             unselect = True
 

@@ -262,7 +262,8 @@ class Undoer:
             else:
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
-            frame.menu.setMenuLabel(menu, u.realRedoMenuLabel, realLabel, underline=underline)
+            frame.menu.setMenuLabel(
+                menu, u.realRedoMenuLabel, realLabel, underline=underline)
             u.redoMenuLabel = name
             u.realRedoMenuLabel = realLabel
     #@+node:ekr.20091221145433.6381: *4* u.setUndoType
@@ -283,7 +284,8 @@ class Undoer:
             else:
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
-            frame.menu.setMenuLabel(menu, u.realUndoMenuLabel, realLabel, underline=underline)
+            frame.menu.setMenuLabel(
+                menu, u.realUndoMenuLabel, realLabel, underline=underline)
             u.undoType = theType
             u.undoMenuLabel = name
             u.realUndoMenuLabel = realLabel
@@ -385,12 +387,7 @@ class Undoer:
     #@+node:ekr.20050415170812.1: *5* u.createTnodeUndoInfo
     def createTnodeUndoInfo(self, v):
         """Create a bunch containing all info needed to recreate a VNode."""
-        bunch = g.Bunch(
-            v=v,
-            headString=v.h,
-            bodyString=v.b,
-            statusBits=v.statusBits,
-        )
+        bunch = g.Bunch(v=v, headString=v.h, bodyString=v.b, statusBits=v.statusBits,)
         if hasattr(v, 'unknownAttributes'):
             bunch.unknownAttributes = v.unknownAttributes
         return bunch
@@ -644,8 +641,7 @@ class Undoer:
             afterTree = []
             for bunch2 in beforeTree:
                 v = bunch2.v
-                afterTree.append(
-                    g.Bunch(v=v, head=v.h[:], body=v.b[:]))
+                afterTree.append(g.Bunch(v=v, head=v.h[:], body=v.b[:]))
             bunch.afterTree = afterTree
         u.pushBead(bunch)
     #@+node:ekr.20050526124257: *5* u.afterMark
@@ -1018,9 +1014,12 @@ class Undoer:
                         newBead = True
                     else:
                         # 2011/04/01: Patch by Sam Hartsfield
-                        old_row, old_col = g.convertPythonIndexToRowCol(oldText, old_start)
-                        new_row, new_col = g.convertPythonIndexToRowCol(newText, new_start)
-                        prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, prev_start)
+                        old_row, old_col = g.convertPythonIndexToRowCol(
+                            oldText, old_start)
+                        new_row, new_col = g.convertPythonIndexToRowCol(
+                            newText, new_start)
+                        prev_row, prev_col = g.convertPythonIndexToRowCol(
+                            oldText, prev_start)
                         old_lines = g.splitLines(oldText)
                         new_lines = g.splitLines(newText)
                         # Recognize backspace, del, etc. as contiguous.

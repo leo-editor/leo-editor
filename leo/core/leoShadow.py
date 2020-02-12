@@ -166,7 +166,8 @@ class ShadowController:
         # 2011/01/26: bogomil: redirect shadow dir
         if self.shadow_in_home_dir:
             # Each .leo file has a separate shadow_cache in base dir
-            fname = "_".join([os.path.splitext(os.path.basename(c.mFileName))[0], "shadow_cache"])
+            fname = "_".join(
+                [os.path.splitext(os.path.basename(c.mFileName))[0], "shadow_cache"])
             # On Windows incorporate the drive letter to the private file path
             if os.name == "nt":
                 fileDir = fileDir.replace(':', '%')
@@ -212,7 +213,8 @@ class ShadowController:
                 lines2_message="new sentinels")
         return ok
     #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm) & helpers
-    def propagate_changed_lines(self, new_public_lines, old_private_lines, marker, p=None):
+    def propagate_changed_lines(
+        self, new_public_lines, old_private_lines, marker, p=None):
         #@+<< docstring >>
         #@+node:ekr.20150207044400.9: *5*  << docstring >>
         """
@@ -707,7 +709,8 @@ class ShadowController:
             if self.delim1 and s.startswith(self.delim1):
                 return s.startswith(self.delim1 + '@' + suffix)
             if self.delim2:
-                return s.startswith(self.delim2 + '@' + suffix) and s.endswith(self.delim3)
+                return s.startswith(
+                    self.delim2 + '@' + suffix) and s.endswith(self.delim3)
             return False
         #@+node:ekr.20090529061522.6260: *4* isVerbatimSentinel
         def isVerbatimSentinel(self, s):

@@ -1071,7 +1071,8 @@ class LeoImportCommands:
                     while i < len(s):
                         progress = i
                         i = g.skip_ws_and_nl(s, i)
-                        if g.match(s, i, "@d") or g.match(s, i, "@f"): i = g.skip_line(s, i)
+                        if g.match(
+                            s, i, "@d") or g.match(s, i, "@f"): i = g.skip_line(s, i)
                         else: break
                         assert(i > progress)
                     i = g.skip_ws_and_nl(s, i)
@@ -1206,72 +1207,94 @@ class LeoImportCommands:
         return body_parser_for_class if aClass else None
     #@+node:ekr.20070713075450: *3* ic.Unit tests
     def cUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.c')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.c')
 
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
 
     def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
 
     def ctextUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
 
     def dartUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.dart')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.dart')
 
     def elispUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.el')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.el')
 
     def htmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.htm')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.htm')
 
     def iniUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.ini')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.ini')
 
     def javaUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.java')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.java')
 
     def javaScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.js')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.js')
 
     def markdownUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.md')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.md')
 
     def orgUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.org')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.org')
 
     def otlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.otl')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.otl')
 
     def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.pas')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.pas')
 
     def perlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.pl')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.pl')
 
     def phpUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.php')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.php')
 
     def pythonUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.py')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.py')
 
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
         if docutils:
-            return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
+            return self.scannerUnitTest(
+                p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
         return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.txt')
 
     def typeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.ts')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.ts')
 
     def xmlUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.xml')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.xml')
 
     def defaultImporterUnitTest(self, p, fileName=None, s=None, showTree=False):
-        return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.xxx')
     #@+node:ekr.20070713082220: *4* ic.scannerUnitTest (uses GeneralTestCase)
     def scannerUnitTest(self, p, ext=None, fileName=None, s=None, showTree=False):
         """
@@ -1300,12 +1323,7 @@ class LeoImportCommands:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
-        self.createOutline(
-            ext=ext,
-            fileName=title.strip(),
-            parent=parent.copy(),
-            s=s,
-        )
+        self.createOutline(ext=ext, fileName=title.strip(), parent=parent.copy(), s=s,)
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
@@ -2006,8 +2024,7 @@ class RecursiveImportController:
     def remove_empty_nodes(self, p):
         """Remove empty nodes. Not called for @auto or @edit trees."""
         c = self.c
-        aList = [p2 for p2 in p.self_and_subtree()
-            if not p2.b and not p2.hasChildren()]
+        aList = [p2 for p2 in p.self_and_subtree() if not p2.b and not p2.hasChildren()]
         if aList:
             c.deletePositionsInList(aList, redraw=False)
     #@-others
@@ -2254,7 +2271,8 @@ class ZimImportController:
                 child = p.getFirstChild()
                 table = (
                     "@rst-no-head %s declarations" % p.h.replace(' ', '_'),
-                    "@rst-no-head %s declarations" % p.h.replace(rstType, '').strip().replace(' ', '_'),
+                    "@rst-no-head %s declarations" % p.h.replace(
+                    rstType, '').strip().replace(' ', '_'),
                 )
                 # Replace content with @rest-no-head first child (without title head) and delete it
                 if child.h in table:
@@ -2271,7 +2289,8 @@ class ZimImportController:
                         child.doDelete()
                     else:
                         child.h = 'Introduction'
-            elif p.hasFirstChild() and p.h.startswith("@rst-no-head") and not p.b.strip():
+            elif p.hasFirstChild(
+                ) and p.h.startswith("@rst-no-head") and not p.b.strip():
                 child = p.getFirstChild()
                 p_no_head = p.h.replace("@rst-no-head", "").strip()
                 # Replace empty @rst-no-head by its same named chidren
@@ -2304,7 +2323,8 @@ class ZimImportController:
             for level, name, rst in files:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
-                rstNodes[str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                rstNodes[
+                    str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)

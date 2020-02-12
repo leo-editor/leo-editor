@@ -509,10 +509,7 @@ class Commands:
         trace = 'focus' in g.app.debug
         trace_known = False
         c = self
-        table = (
-            QtWidgets.QWidget,
-            qt_frame.LeoQTreeWidget,
-        )
+        table = (QtWidgets.QWidget, qt_frame.LeoQTreeWidget,)
         count = c.idle_focus_count
         if w:
             w_class = w and w.__class__.__name__
@@ -548,8 +545,10 @@ class Commands:
         c.contractVisitedNodes = getBool('contractVisitedNodes')
         c.fixedWindowPositionData = getData('fixedWindowPosition')
         c.focus_border_color = getColor('focus-border-color') or 'red'
-        c.focus_border_command_state_color = getColor('focus-border-command-state-color') or 'blue'
-        c.focus_border_overwrite_state_color = getColor('focus-border-overwrite-state-color') or 'green'
+        c.focus_border_command_state_color = getColor(
+            'focus-border-command-state-color') or 'blue'
+        c.focus_border_overwrite_state_color = getColor(
+            'focus-border-overwrite-state-color') or 'green'
         c.focus_border_width = getInt('focus-border-width') or 1  # pixels
         c.forceExecuteEntireBody = getBool('force-execute-entire-body', default=False)
         c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
@@ -1496,7 +1495,8 @@ class Commands:
                 color='red'
             )
         elif c.verbose_check_outline and not g.unitTesting:
-            print('check-outline OK: %4.2f sec. %s %s nodes' % (t2 - t1, c.shortFileName(), count))
+            print(
+                'check-outline OK: %4.2f sec. %s %s nodes' % (t2 - t1, c.shortFileName(), count))
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self):
@@ -1876,11 +1876,7 @@ class Commands:
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
-        d = {
-            1: c.interactive1,
-            2: c.interactive2,
-            3: c.interactive3,
-        }
+        d = { 1: c.interactive1, 2: c.interactive2, 3: c.interactive3, }
         f = d.get(len(prompts))
         if f:
             f(callback, event, prompts)
@@ -2022,7 +2018,8 @@ class Commands:
         callers = g.callers(2)
         if callers not in self.deprecated_messages:
             self.deprecated_messages.append(callers)
-            g.es_print(f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
+            g.es_print(
+                f"\nc.os_path_finalize{' '*5} is deprecated. called from: {callers}")
         return g.os_path_finalize(path, **keys)
 
     def os_path_finalize_join(self, *args, **keys):
@@ -2033,7 +2030,8 @@ class Commands:
         callers = g.callers(2)
         if callers not in self.deprecated_messages:
             self.deprecated_messages.append(callers)
-            g.es_print(f"\nc.os_path_finalize_join is deprecated. called from: {callers}")
+            g.es_print(
+                f"\nc.os_path_finalize_join is deprecated. called from: {callers}")
         return g.os_path_finalize_join(*args, **keys)
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
@@ -2442,10 +2440,7 @@ class Commands:
             backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
             path = join(backup_dir, fn)
             if g.os_path_exists(backup_dir):
-                written_fn = c.backup(path,
-                    prefix=git_branch,
-                    silent=True,
-                    useTimeStamp=True)
+                written_fn = c.backup(path, prefix=git_branch, silent=True, useTimeStamp=True)
                 g.es_print(f"wrote: {written_fn}")
             else:
                 g.es_print('backup_dir not found: %r' % backup_dir)
@@ -2714,7 +2709,8 @@ class Commands:
     def syntaxErrorDialog(self):
         """Warn about syntax errors in files."""
         c = self
-        if g.app.syntax_error_files and c.config.getBool('syntax-error-popup', default=False):
+        if g.app.syntax_error_files and c.config.getBool(
+            'syntax-error-popup', default=False):
             aList = sorted(set(g.app.syntax_error_files))
             g.app.syntax_error_files = []
             message = 'Python errors in:\n\n%s' % '\n'.join(aList)
@@ -2783,7 +2779,8 @@ class Commands:
         c = self; u = c.undoer; undoType = 'Clone Drag'
         current = c.p
         clone = p.clone()  # Creates clone.  Does not set undo.
-        if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
+        if c.checkDrag(
+            p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
             c.endEditing()
             undoData = u.beforeInsertNode(current)
             clone.setDirty()
@@ -2857,7 +2854,8 @@ class Commands:
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if 'focus' in g.app.debug and not g.unitTesting:
-                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                name = w.objectName(
+                    ) if hasattr(w, 'objectName') else w.__class__.__name__
                 g.trace('DELAYED FOCUS', name)
             c.set_focus(w)
             c.requestedFocusWidget = None
@@ -3149,7 +3147,8 @@ class Commands:
         if w and g.app.gui:
             if 'focus' in g.app.debug:
                 # g.trace('\n(c)', repr(w))
-                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                name = w.objectName(
+                    ) if hasattr(w, 'objectName') else w.__class__.__name__
                 g.trace('(c)', name)
             c.requestedFocusWidget = w
 
@@ -3158,7 +3157,8 @@ class Commands:
         c = self
         if w and g.app.gui:
             if trace:
-                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                name = w.objectName(
+                    ) if hasattr(w, 'objectName') else w.__class__.__name__
                 g.trace('(c)', name)
             g.app.gui.set_focus(c, w)
         else:
@@ -3613,7 +3613,8 @@ class Commands:
         c.treeFocusHelper()
             # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
-    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
+    def updateBodyPane(
+        self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         """Handle changed text in the body pane."""
         c, p = self, self.p
         body = c.frame.body

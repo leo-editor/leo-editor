@@ -39,7 +39,8 @@ def profile_leo():
         import pstats
     except ImportError:
         g.es_print('can not import pstats: this is a Python distro bug')
-        g.es_print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+        g.es_print(
+            'https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
         g.es_print('try installing pstats yourself')
         return
     import cProfile as profile

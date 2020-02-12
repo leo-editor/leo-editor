@@ -1144,11 +1144,7 @@ class LeoApp:
         self.leoID = None
         assert self == g.app
         verbose = verbose and not g.unitTesting and not self.silentMode
-        table = (
-            self.setIDFromSys,
-            self.setIDFromFile,
-            self.setIDFromEnv,
-        )
+        table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv,)
         for func in table:
             func(verbose)
             if self.leoID:
@@ -1312,7 +1308,8 @@ class LeoApp:
             for msg in app.logWaiting:
                 s, color, newline = msg[:3]
                 kwargs = {} if len(msg) < 4 else msg[3]
-                kwargs = {k: v for k, v in kwargs.items() if k not in ('color', 'newline')}
+                kwargs = {
+                    k: v for k, v in kwargs.items() if k not in ('color', 'newline')}
                 g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
@@ -1494,7 +1491,8 @@ class LeoApp:
         if not d or not fn:
             # #69.
             return
-        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
+        if not force and (
+            d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
             return
         aList = d.get(tag) or []
         if fn in aList:
@@ -1950,11 +1948,7 @@ class LoadManager:
             theDir = g.os_path_join(g.app.loadDir, "..", "config")
         if theDir:
             theDir = g.os_path_finalize(theDir)
-        if (
-            not theDir or
-            not g.os_path_exists(theDir) or
-            not g.os_path_isdir(theDir)
-        ):
+        if (not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir)):
             theDir = None
         return theDir
     #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
@@ -1970,10 +1964,7 @@ class LoadManager:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
             home = g.os_path_finalize(home)
-            if (
-                not g.os_path_exists(home) or
-                not g.os_path_isdir(home)
-            ):
+            if (not g.os_path_exists(home) or not g.os_path_isdir(home)):
                 home = None
         return home
     #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
@@ -2313,7 +2304,8 @@ class LoadManager:
                             pane = f" in {bi.pane} panes"
                         else:
                             pane = ''
-                        g.es_print(f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}")
+                        g.es_print(
+                            f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}")
                     print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
@@ -2343,7 +2335,8 @@ class LoadManager:
                         panes.append(bi.pane)
             if duplicates:
                 bindings = list(set([z.stroke.s for z in duplicates]))
-                kind = 'duplicate, (not conflicting)' if len(bindings) == 1 else 'conflicting'
+                kind = 'duplicate, (not conflicting)' if len(
+                    bindings) == 1 else 'conflicting'
                 g.es_print(f"{kind} key bindings in {c.shortFileName()}")
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
@@ -2819,7 +2812,8 @@ class LoadManager:
                 for s in at_auto:
                     aClass = d.get(s)
                     if aClass and aClass != scanner_class:
-                        g.trace(f"{sfn}: duplicate {s} class {aClass.__name__} in {m.__file__}:")
+                        g.trace(
+                            f"{sfn}: duplicate {s} class {aClass.__name__} in {m.__file__}:")
                     else:
                         d[s] = scanner_class
                         g.app.atAutoNames.add(s)
@@ -3446,7 +3440,8 @@ class LoadManager:
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
-        return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
+        return fn and (
+            zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
 
     def isZippedFile(self, fn):
         return fn and zipfile.is_zipfile(fn)
@@ -3531,7 +3526,8 @@ class PreviousSettings:
 
     def __init__(self, settingsDict, shortcutsDict):
         assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)  # was TypedDictOfLists.
+        assert isinstance(
+            shortcutsDict, g.TypedDict), repr(shortcutsDict)  # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
@@ -3719,11 +3715,7 @@ class RecentFilesManager:
         rf = self
         seen = []
         localConfigPath = g.os_path_dirname(localConfigFile)
-        for path in (
-            g.app.homeLeoDir,
-            g.app.globalConfigDir,
-            localConfigPath,
-        ):
+        for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath,):
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:
@@ -3816,9 +3808,7 @@ class RecentFilesManager:
             for frame in g.app.windowList:
                 # Remove all versions of the file name.
                 for name in rf.recentFiles:
-                    if (munge(fileName) == munge(name) or
-                        munge2(fileName) == munge2(name)
-                    ):
+                    if (munge(fileName) == munge(name) or munge2(fileName) == munge2(name)):
                         rf.recentFiles.remove(name)
                 rf.recentFiles.insert(0, fileName)
                 # Recreate the Recent Files menu.

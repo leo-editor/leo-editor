@@ -155,7 +155,8 @@ class ParserBaseClass:
         if aList:
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-            g.app.config.buttonsFileName = c.shortFileName() if c else '<no settings file>'
+            g.app.config.buttonsFileName = c.shortFileName(
+                ) if c else '<no settings file>'
         d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
         aList = d.get(key, [])
         aList.append(c.shortFileName())
@@ -252,7 +253,8 @@ class ParserBaseClass:
         s = ''.join(aList)
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
-        g.app.config.enabledPluginsFileName = c.shortFileName() if c else '<no settings file>'
+        g.app.config.enabledPluginsFileName = c.shortFileName(
+            ) if c else '<no settings file>'
     #@+node:ekr.20041120094940.6: *4* pbc.doFloat
     def doFloat(self, p, kind, name, val):
         try:
@@ -423,7 +425,8 @@ class ParserBaseClass:
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
-                g.es_print('%s %s (%s) [%s]' % ('    ' * (level + 0), val, val2, path + '/' + name))
+                g.es_print(
+                    '%s %s (%s) [%s]' % ('    ' * (level + 0), val, val2, path + '/' + name))
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 g.es_print('%s %s... [%s]' % ('    ' * (level), kind, path + '/' + name))
@@ -840,11 +843,7 @@ class ParserBaseClass:
         if not val:
             return name, None
         stroke = g.KeyStroke(binding=val) if val else None
-        bi = g.BindingInfo(
-            kind=kind,
-            nextMode=nextMode,
-            pane=pane,
-            stroke=stroke)
+        bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         return name, bi
     #@+node:ekr.20041120094940.9: *3* pbc.set
     def set(self, p, kind, name, val):
@@ -1468,7 +1467,8 @@ class GlobalConfigManager:
             # Important: this is not a complete test of conflicting settings:
             # The warning is given only if the code tries to access the setting.
             if warn:
-                g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
+                g.error(
+                    'warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
         if isNone:
@@ -1689,12 +1689,14 @@ class LocalConfigManager:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)  # was TypedDictOfLists.
+            assert isinstance(
+                self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)  # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
-            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2)  # was TypedDictOfLists.
+            assert d2 is None or isinstance(
+                d2, g.TypedDict), repr(d2)  # was TypedDictOfLists.
         # Define these explicitly to eliminate a pylint warning.
         if 0:
             # No longer needed now that c.config.initIvar always sets
@@ -1766,7 +1768,8 @@ class LocalConfigManager:
         for tag in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(tag.lower()):
                 if setting.kind == 'color':
-                    if trace: g.trace('FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
+                    if trace: g.trace(
+                        'FOUND:', tag.rstrip('.leo'), setting.kind, setting.ivar, val)
                 return tag.rstrip('.leo')
         theme_path = g.app.loadManager.theme_path
         if theme_path and g.shortFileName(theme_path.lower()) in path:
@@ -1855,7 +1858,8 @@ class LocalConfigManager:
             # Important: this is not a complete test of conflicting settings:
             # The warning is given only if the code tries to access the setting.
             if warn:
-                g.error('warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
+                g.error(
+                    'warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
                 g.error('there may be conflicting settings!')
             return None, False
         if isNone:
@@ -2165,7 +2169,8 @@ class LocalConfigManager:
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
-            if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):  # #1341.
+            if warn and g.os_path_finalize(
+                c.mFileName) != g.os_path_finalize(path):  # #1341.
                 g.es("over-riding setting:", name, "from", path)
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
@@ -2267,7 +2272,8 @@ def parseFont(b):
                 size = 12
         elif name.endswith('_slant'):
             slant = line[i + 1 :].strip()
-        if settings_name is None and name.endswith(('_family', '_slant', '_weight', '_size')):
+        if settings_name is None and name.endswith(
+            ('_family', '_slant', '_weight', '_size')):
             settings_name = name.rsplit('_', 1)[0]
     return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-others

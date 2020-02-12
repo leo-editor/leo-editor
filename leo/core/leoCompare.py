@@ -226,12 +226,14 @@ class BaseLeoCompare:
             if s1:
                 if self.ignoreBlankLines and s1.isspace():
                     s1 = None; continue
-                if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(s1, sentinelComment1):
+                if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(
+                    s1, sentinelComment1):
                     s1 = None; continue
             if s2:
                 if self.ignoreBlankLines and s2.isspace():
                     s2 = None; continue
-                if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(s2, sentinelComment2):
+                if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(
+                    s2, sentinelComment2):
                     s2 = None; continue
             #@-<< ignore blank lines and/or sentinels >>
             n1 = len(s1); n2 = len(s2)

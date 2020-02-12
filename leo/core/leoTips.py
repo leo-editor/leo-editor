@@ -98,13 +98,7 @@ def make_tips(c):
             else:
                 tags = []
                 text = body.strip()
-            tips.append(
-                UserTip(
-                    n=n,
-                    tags=tags,
-                    text=text.strip(),
-                    title=title.strip(),
-                ))
+            tips.append(UserTip(n=n, tags=tags, text=text.strip(), title=title.strip(),))
         return tips
 
     g.cls()
@@ -505,7 +499,8 @@ for python files:
     %s
     %s
 
-""" % (g.angleBrackets('imports'), '@others')),
+""" % (
+    g.angleBrackets('imports'), '@others')),
 
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
 UserTip(
@@ -521,6 +516,7 @@ Nodes can have at most one @others directive. You can work around this restricti
     %(start)s organizer %(end)s
 
 where the body of the %(start)s organizer %(end)s node contains just @others.""" % {
+    
     'at': "@",
     'end': ">>",
     'start': "<<",

@@ -729,7 +729,8 @@ class Position:
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self, with_file=True, with_proto=False, with_index=True, with_count=False):
+    def get_UNL(
+        self, with_file=True, with_proto=False, with_index=True, with_count=False):
         """
         with_file=True - include path to Leo file
         with_proto=False - include 'file://'
@@ -1087,7 +1088,8 @@ class Position:
             g.trace('** callers:', g.callers())
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
         else:
-            g.trace(f"**can not happen: bad child index: {n}, len(children): {len(parent_v.children)}")
+            g.trace(
+                f"**can not happen: bad child index: {n}, len(children): {len(parent_v.children)}")
             g.trace('parent_v.children...\n',
                 g.listToString(parent_v.children))
             g.trace('parent_v', parent_v, 'child', child)

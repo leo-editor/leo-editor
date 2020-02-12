@@ -274,7 +274,8 @@ class LeoPluginsController:
         self.reloadSettings()
 
     def reloadSettings(self):
-        self.warn_on_failure = g.app.config.getBool('warn_when_plugins_fail_to_load', default=True)
+        self.warn_on_failure = g.app.config.getBool(
+            'warn_when_plugins_fail_to_load', default=True)
     #@+node:ekr.20100909065501.5952: *3* plugins.Event handlers
     #@+node:ekr.20161029060545.1: *4* plugins.on_idle
     def on_idle(self):
@@ -481,7 +482,8 @@ class LeoPluginsController:
                     report(f"{moduleName}.init() did not return a bool")
                 if init_result:
                     self.loadedModules[moduleName] = result
-                    self.loadedModulesFilesDict[moduleName] = g.app.config.enabledPluginsFileName
+                    self.loadedModulesFilesDict[
+                        moduleName] = g.app.config.enabledPluginsFileName
                 else:
                     report(f"{moduleName}.init() returned False")
                     result = None

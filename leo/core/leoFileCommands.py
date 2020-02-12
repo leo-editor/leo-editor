@@ -84,7 +84,8 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    translate_table = b''.join([g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
+    translate_table = b''.join(
+        [g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
         # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
 
     def readWithElementTree(self, path, s):
@@ -173,8 +174,7 @@ class FastRead:
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytesToUnicode(i) if type(i) in (list, tuple, dict) else i
-                for i in l]
+            l = [self.bytesToUnicode(i) if type(i) in (list, tuple, dict) else i for i in l]
             ro = tuple(l) if t is tuple else l
         elif t is dict:
             byte_keys = [i for i in ob if type(i) is bytes]
@@ -762,14 +762,7 @@ class FileCommands:
         def restore_priv(prdata, topgnxes):
             vnodes = []
             for row in prdata:
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
+                (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
                 v._bodyString = b
@@ -964,14 +957,7 @@ class FileCommands:
         vnodes = []
         try:
             for row in conn.execute(sql):
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
+                (gnx, h, b, children, parents, iconVal, statusBits, ua) = row
                 try:
                     ua = pickle.loads(g.toEncodedString(ua))
                 except ValueError:
@@ -1029,8 +1015,10 @@ class FileCommands:
                   'ratio', 'secondary_ratio',
                   'current_position')
         try:
-            d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
+            d = dict(
+                conn.execute('''select * from extra_infos 
+                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall(),
+            )
             geom = (d.get(*x) for x in zip(keys, geom))
         except sqlite3.OperationalError:
             pass
@@ -1096,7 +1084,8 @@ class FileCommands:
                     ref_fname = p.b.split('\n', 1)[0].strip()
                     break
                 # New in Leo 4.4.2 b2 An optimization:
-                fc.putVnode(p, isIgnore=p.isAtIgnoreNode())  # Write the next top-level node.
+                fc.putVnode(
+                    p, isIgnore=p.isAtIgnoreNode())  # Write the next top-level node.
             fc.put("</vnodes>\n")
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
@@ -1587,8 +1576,7 @@ class FileCommands:
                     self.deleteFileWithMessage(backupName, 'backup')
             return True
         except Exception:
-            self.handleWriteLeoFileException(
-                fileName, backupName, theActualFile)
+            self.handleWriteLeoFileException(fileName, backupName, theActualFile)
             return False
     #@+node:ekr.20100119145629.6106: *6* fc.createActualFile
     def createActualFile(self, fileName, toOPML, toZip):
@@ -1739,7 +1727,8 @@ class FileCommands:
     #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
     def prepareDbTables(self, conn):
         conn.execute('''drop table if exists vnodes;''')
-        conn.execute('''
+        conn.execute(
+            '''
             create table if not exists vnodes(
                 gnx primary key,
                 head,
@@ -1748,14 +1737,19 @@ class FileCommands:
                 parents,
                 iconVal,
                 statusBits,
-                ua);''')
-        conn.execute('''create table if not exists extra_infos(name primary key, value)''')
+                ua);''',
+        )
+        conn.execute(
+            '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn, rows):
-        conn.executemany('''insert into vnodes
+        conn.executemany(
+            '''insert into vnodes
             (gnx, head, body, children, parents,
                 iconVal, statusBits, ua)
-            values(?,?,?,?,?,?,?,?);''', rows)
+            values(?,?,?,?,?,?,?,?);''',
+            rows,
+        )
     #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
     def exportGeomToSqlite(self, conn):
         c = self.c
@@ -1775,7 +1769,8 @@ class FileCommands:
 
     #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
     def exportDbVersion(self, conn):
-        conn.execute("replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
+        conn.execute(
+            "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c

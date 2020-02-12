@@ -374,7 +374,8 @@ class LeoFind:
                 find.find_text = find_pattern
                 ftm.setFindText(find_pattern)
                 if use_cff:
-                    count = find.findAll(clone_find_all=True, clone_find_all_flattened=True)
+                    count = find.findAll(
+                        clone_find_all=True, clone_find_all_flattened=True)
                     found = count > 0
                 else:
                     found = find.findNext(initFlag=False)
@@ -748,7 +749,8 @@ class LeoFind:
         else:
             g.es(f"not found: {pattern}")
             if not again:
-                event = g.app.gui.create_key_event(c, binding='BackSpace', char='\b', w=w)
+                event = g.app.gui.create_key_event(
+                    c, binding='BackSpace', char='\b', w=w)
                 k.updateLabel(event)
     #@+node:ekr.20131117164142.16950: *4* find.iSearchStateHandler
     def iSearchStateHandler(self, event):
@@ -791,9 +793,7 @@ class LeoFind:
         if in_headline:
             # Like self.showSuccess.
             selection = i, j, i
-            c.redrawAndEdit(p, selectAll=False,
-                selection=selection,
-                keepMinibuffer=True)
+            c.redrawAndEdit(p, selectAll=False, selection=selection, keepMinibuffer=True)
         else:
             c.selectPosition(p)
             w = c.frame.body.wrapper
@@ -824,8 +824,7 @@ class LeoFind:
             if not w:
                 # Selecting the minibuffer can kill the edit widget.
                 selection = 0, 0, 0
-                c.redrawAndEdit(p, selectAll=False,
-                    selection=selection, keepMinibuffer=True)
+                c.redrawAndEdit(p, selectAll=False, selection=selection, keepMinibuffer=True)
                 w = c.edit_widget(p)
             if not w:  # Should never happen.
                 g.trace('**** no edit widget!')
@@ -1131,9 +1130,7 @@ class LeoFind:
         """A state handler to get the replacement string."""
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         prefix = f"{prompt}: "
-        self.stateZeroHelper(event,
-            prefix=prefix,
-            handler=self.setReplaceString1)
+        self.stateZeroHelper(event, prefix=prefix, handler=self.setReplaceString1)
 
     def setReplaceString1(self, event):
         k = self.k
@@ -2573,7 +2570,8 @@ class LeoFind:
             else:
                 start, end = None, None
         editing = e is not None
-        expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
+        expanded = set(
+            gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
         # TODO: this is naive solution that treat all clones the same way if one is expanded
         #       then every other clone is expanded too. A proper way would be to remember
         #       each clone separately
@@ -2593,9 +2591,7 @@ class LeoFind:
         if self.in_headline:
             c.endEditing()
             selection = pos, newpos, insert
-            c.redrawAndEdit(p,
-                selection=selection,
-                keepMinibuffer=True)
+            c.redrawAndEdit(p, selection=selection, keepMinibuffer=True)
             w = c.edit_widget(p)
             self.was_in_headline = True  # 2015/03/25
         else:

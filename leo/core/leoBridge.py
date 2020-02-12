@@ -183,7 +183,8 @@ class BridgeController:
         """Adjust sys.path to enable imports as usual with Leo."""
         import sys
         g = self.g
-        leoDirs = ('config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test')  # 2008/7/30
+        leoDirs = (
+            'config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test')  # 2008/7/30
         for theDir in leoDirs:
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
             if path not in sys.path:
@@ -224,7 +225,8 @@ class BridgeController:
             print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
             return 0
         except Exception:
-            print("isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
+            print(
+                "isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
             import traceback; traceback.print_exc()
             return 0
         try:
@@ -232,7 +234,8 @@ class BridgeController:
             ok = g.CheckVersion(version, '2.2.1')
             if not ok:
                 print(message)
-                g.app.gui.runAskOkDialog(None, "Python version error", message=message, text="Exit")
+                g.app.gui.runAskOkDialog(
+                    None, "Python version error", message=message, text="Exit")
             return ok
         except Exception:
             print("isValidPython: unexpected exception: g.CheckVersion")

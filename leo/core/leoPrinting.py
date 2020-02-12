@@ -20,7 +20,8 @@ class PrintingController:
     def reload_settings(self):
         c = self.c
         self.font_size = c.config.getString('printing-font-size') or '12'
-        self.font_family = c.config.getString('printing-font-family') or 'DejaVu Sans Mono'
+        self.font_family = c.config.getString(
+            'printing-font-family') or 'DejaVu Sans Mono'
         self.stylesheet = self.construct_stylesheet()
 
     reloadSettings = reload_settings

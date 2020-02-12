@@ -69,7 +69,8 @@ class EditBodyTestCase(unittest.TestCase):
         command()
         try:
             # Don't call the Undoer if we expect no change.
-            if not tm.compareOutlines(self.before, self.after, compareHeadlines=False, report=False):
+            if not tm.compareOutlines(
+                self.before, self.after, compareHeadlines=False, report=False):
                 assert tm.compareOutlines(
                     self.tempNode,
                     self.after,
@@ -417,7 +418,8 @@ class LinterTable():
     def get_files_for_scope(self, scope, fn):
         """Return a list of absolute filenames for external linters."""
         d = {
-            'all': [self.core, self.commands, self.external, self.plugins],  #  self.modes
+            'all': [
+            self.core, self.commands, self.external, self.plugins],  #  self.modes
             'commands': [self.commands],
             'core': [self.core, self.commands, self.external, self.gui_plugins],
             'external': [self.external],
@@ -870,7 +872,8 @@ class TestManager:
             import pstats
         except ImportError:
             g.es_print('can not import pstats: this is a Python distro bug')
-            g.es_print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+            g.es_print(
+                'https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
             g.es_print('try installing pstats yourself')
             return
         s = p.b.rstrip() + '\n'
@@ -1044,7 +1047,8 @@ class TestManager:
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2), repr(s1))
+        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (
+            repr(s2), repr(s1))
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1052,7 +1056,8 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig, sel2, sel3)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (
+            sel2_orig, sel2, sel3)
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1182,7 +1187,8 @@ class TestManager:
                     untangleInputP.h, untangleInputP.b))
         c.tangleCommands.untangle(event=None, p=rootTestToChangeP)
         try:
-            assert tm.compareOutlines(rootTestToChangeP, rootResultP), "Expected outline not created"
+            assert tm.compareOutlines(
+                rootTestToChangeP, rootResultP), "Expected outline not created"
             c.tangleCommands.tangle(event=None, p=rootTestToChangeP)
             inputSetList = sorted(inputSet)
             resultList = sorted(c.tangleCommands.tangle_output)
@@ -1235,7 +1241,8 @@ class TestManager:
         vc.exec_(command, n1, n2, motion)
         # Check the result.
         s1 = work.b; s2 = after.b
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2), repr(s1))
+        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (
+            repr(s2), repr(s1))
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1243,7 +1250,8 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig, sel2, sel3)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (
+            sel2_orig, sel2, sel3)
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1311,10 +1319,7 @@ class TestManager:
             else:
                 n1 = g.skip_ws(line1, 0)
                 n2 = g.skip_ws(line2, 0)
-                if (
-                    not g.match(line1, n1, delim1) or
-                    not g.match(line2, n2, delim1)
-                ):
+                if (not g.match(line1, n1, delim1) or not g.match(line2, n2, delim1)):
                     if verbose: g.trace("Mismatched non-sentinel lines")
                     return False
                 n1 += len(delim1)

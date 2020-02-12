@@ -426,7 +426,8 @@ class LeoMenu:
                 amp_index = index_label.find("&")
                 index_label = index_label.replace("&", "")
                 index = parent.index(index_label)
-                self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
+                self.insert_cascade(
+                    parent, index=index, label=label, menu=menu, underline=amp_index)
             else:
                 self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
             return menu
@@ -543,7 +544,8 @@ class LeoMenu:
             event = g.app.gui.create_key_event(c)
             # The first parameter must be event, and it must default to None.
 
-            def minibufferMenuCallback(event=event, self=self, command=command, label=name):
+            def minibufferMenuCallback(
+                event=event, self=self, command=command, label=name):
                 c = self.c
                 return c.doCommand(command, label, event)
 
@@ -636,7 +638,8 @@ class LeoMenu:
     def destroy(self, menu):
         self.oops()
 
-    def insert(self, menuName, position, label, command, underline=None):  # New in Leo 4.4.3 a1
+    def insert(
+        self, menuName, position, label, command, underline=None):  # New in Leo 4.4.3 a1
         self.oops()
 
     def insert_cascade(self, parent, index, label, menu, underline):

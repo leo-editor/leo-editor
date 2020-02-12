@@ -937,9 +937,7 @@ class AutoCompleterClass:
     #@+node:ekr.20110513104728.14453: *5* ac.clean_completion_list
     def clean_completion_list(self, header, tabList):
         """Return aList with header removed from the start of each list item."""
-        return [
-            z[len(header) + 1 :] if z.startswith(header) else z
-                for z in tabList]
+        return [ z[len(header) + 1 :] if z.startswith(header) else z for z in tabList]
     #@+node:ekr.20110513104728.14454: *5* ac.get_summary_list
     def get_summary_list(self, header, tabList):
         """Show the possible starting letters,
@@ -1651,7 +1649,8 @@ class KeyHandlerClass:
         # These are true globals
         self.getArgEscapes = []
         self.getArgEscapeFlag = False  # A signal that the user escaped getArg in an unusual way.
-        self.givenArgs = []  # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
+        self.givenArgs = [
+            ]  # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
@@ -1926,9 +1925,12 @@ class KeyHandlerClass:
         self.enable_autocompleter = getBool('enable-autocompleter-initially')
         self.enable_calltips = getBool('enable-calltips-initially')
         self.ignore_unbound_non_ascii_keys = getBool('ignore-unbound-non-ascii-keys')
-        self.minibuffer_background_color = getColor('minibuffer-background-color') or 'lightblue'
-        self.minibuffer_foreground_color = getColor('minibuffer-foreground-color') or 'black'
-        self.minibuffer_warning_color = getColor('minibuffer-warning-color') or 'lightgrey'
+        self.minibuffer_background_color = getColor(
+            'minibuffer-background-color') or 'lightblue'
+        self.minibuffer_foreground_color = getColor(
+            'minibuffer-foreground-color') or 'black'
+        self.minibuffer_warning_color = getColor(
+            'minibuffer-warning-color') or 'lightgrey'
         self.minibuffer_error_color = getColor('minibuffer-error-color') or 'red'
         self.replace_meta_with_alt = getBool('replace-meta-with-alt')
         self.warn_about_redefined_shortcuts = getBool('warn-about-redefined-shortcuts')
@@ -2008,8 +2010,7 @@ class KeyHandlerClass:
                 k.bindKeyToDict(pane, shortcut, bi)
                     # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
-                aList = k.remove_conflicting_definitions(
-                    aList, commandName, pane, shortcut)
+                aList = k.remove_conflicting_definitions(aList, commandName, pane, shortcut)
                 # 2013/03/02: a real bug fix.
             aList.append(bi)
             if shortcut:
@@ -2253,7 +2254,8 @@ class KeyHandlerClass:
             widgets = [w]
         else:
             # New in Leo 4.5: we *must* make the binding in the binding widget.
-            bindingWidget = f.tree and hasattr(f.tree, 'bindingWidget') and f.tree.bindingWidget or None
+            bindingWidget = f.tree and hasattr(
+                f.tree, 'bindingWidget') and f.tree.bindingWidget or None
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
             widgets = (c.miniBufferWidget, wrapper, canvas, bindingWidget)
@@ -2334,7 +2336,8 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     @cmd('full-command')
-    def fullCommand(self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
+    def fullCommand(
+        self, event, specialStroke=None, specialFunc=None, help=False, helpHandler=None):
         """Handle 'full-command' (alt-x) mode."""
         try:
             k = self; c = k.c
@@ -3209,7 +3212,8 @@ class KeyHandlerClass:
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
             return True
-        if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
+        if state in (
+            'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
         #
@@ -4155,7 +4159,8 @@ class KeyHandlerClass:
             for bi in aList:
                 shortcutList = k.bindingsDict.get(bi.commandName, [])
                     # Bug fix: 2017/03/26.
-                bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
+                bi_list = k.bindingsDict.get(
+                    stroke, g.BindingInfo(kind='dummy', pane='all'))
                     # Important: only bi.pane is required below.
                 for bi in bi_list:
                     pane = f"{bi.pane}:"
@@ -4437,11 +4442,7 @@ class KeyHandlerClass:
             if bi:
                 for z in range(n):
                     event = g.app.gui.create_key_event(c, event=event, w=w)
-                    k.masterCommand(
-                        commandName=None,
-                        event=event,
-                        func=bi.func,
-                        stroke=stroke)
+                    k.masterCommand(commandName=None, event=event, func=bi.func, stroke=stroke)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)
