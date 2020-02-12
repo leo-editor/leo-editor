@@ -76,8 +76,7 @@ class LeoNode:
         """
 
         pos = node.parent.children.index(node)
-        count = len([i for i in node.parent.children[:pos]
-                     if i.h == node.h])
+        count = len([i for i in node.parent.children[:pos] if i.h == node.h])
         return node.h, pos, count
 
     def UNL(self):

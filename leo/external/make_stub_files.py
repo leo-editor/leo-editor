@@ -2491,8 +2491,7 @@ class StubTraverser(ast.NodeVisitor):
         for line in g.splitLines(s):
             m = pat.match(line)
             if m:
-                indent, kind, name, rest = (
-                    len(m.group(1)), m.group(2), m.group(3), m.group(4))
+                indent, kind, name, rest = (len(m.group(1)), m.group(2), m.group(3), m.group(4))
                 old_indent = indent_stack[-1]
                 # Terminate any previous lines.
                 old_stub = stub_stack[-1]
@@ -2828,16 +2827,12 @@ class StubTraverser(ast.NodeVisitor):
             results = ''.join([lws + self.indent(z) for z in aList])
             # Put the return lines in their proper places.
             if known:
-                s = reduce_types(reduced_returns,
-                                 name=name,
-                                 trace=self.trace_reduce)
+                s = reduce_types(reduced_returns, name=name, trace=self.trace_reduce)
                 return s + ': ...' + results
             else:
                 return 'Any: ...' + results
         else:
-            s = reduce_types(reduced_returns,
-                             name=name,
-                             trace=self.trace_reduce)
+            s = reduce_types(reduced_returns, name=name, trace=self.trace_reduce)
             return s + ': ...'
     #@+node:ekr.20160317054700.185: *5* st.get_def_name
     def get_def_name(self, node):

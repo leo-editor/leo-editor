@@ -456,8 +456,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         breaklist = self.get_file_breaks(filename)
         try:
             lines = linecache.getlines(filename, self.curframe.f_globals)
-            self._print_lines(lines[first - 1 : last], first, breaklist,
-                              self.curframe)
+            self._print_lines(lines[first - 1 : last], first, breaklist, self.curframe)
             self.lineno = min(last, len(lines))
             if len(lines) < last:
                 self.message('[EOF]')
@@ -654,8 +653,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         exc_type, exc_value, exc_traceback = exc_info
         frame.f_locals['__exception__'] = exc_type, exc_value
-        self.message(traceback.format_exception_only(
-            exc_type, exc_value)[-1].strip())
+        self.message(traceback.format_exception_only(exc_type, exc_value)[-1].strip())
 
         self.interaction(frame, exc_traceback)
 
@@ -830,9 +828,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 lineno = int(arg)
             except ValueError:
                 try:
-                    func = eval(arg,
-                                self.curframe.f_globals,
-                                self.curframe_locals)
+                    func = eval(arg, self.curframe.f_globals, self.curframe_locals)
                 except Exception:
                     func = arg
                 try:
@@ -1047,7 +1043,8 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         Continue execution, only stop when a breakpoint is encountered.
         """
         if not self.nosigint:
-            self._previous_sigint_handler = signal.signal(signal.SIGINT, self.sigint_handler)
+            self._previous_sigint_handler = signal.signal(
+                signal.SIGINT, self.sigint_handler)
         self.set_continue()
         return 1
 
