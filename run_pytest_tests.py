@@ -9,8 +9,7 @@ args = [
     # '-x', # Exit on first error.
     path,  # File or directory
 ]
-ignore_paths = [
-]
+ignore_paths = [ ]
 for ignore_path in ignore_paths:
     args.append(ignore_path)
 result = pytest.main(args)
