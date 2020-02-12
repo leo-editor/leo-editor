@@ -5,7 +5,7 @@
 """Leo's Qt idle-time code."""
 import leo.core.leoGlobals as g
 import time
-from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
+from leo.core.leoQt import QtCore  # ,QtGui,QtWidgets
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
 class IdleTime:
@@ -138,3 +138,4 @@ class IdleTime:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

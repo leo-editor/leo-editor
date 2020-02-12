@@ -3,7 +3,7 @@
 #@+node:ekr.20140907123524.18777: * @file ../plugins/qt_quickheadlines.py
 #@@first
 """qt_quickheadlines plugin."""
-__qh = None # For quick headlines.
+__qh = None  # For quick headlines.
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 #@+others
@@ -43,3 +43,4 @@ class QuickHeadlines:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

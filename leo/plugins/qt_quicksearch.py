@@ -6,8 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui,
+from leo.core.leoQt import isQt5, QtCore, QtWidgets  # QtGui,
 QtGui = QtWidgets
+
+
 class Ui_LeoQuickSearchWidget:
 
     def setupUi(self, LeoQuickSearchWidget):
@@ -39,3 +41,4 @@ class Ui_LeoQuickSearchWidget:
             LeoQuickSearchWidget.setWindowTitle(
                 QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
                 None, QtGui.QApplication.UnicodeUTF8))
+
