@@ -63,7 +63,7 @@ class PersistenceDataController:
         tag = '@data:'
         for child in at_persistence.children():
             if child.h.startswith(tag):
-                name = child.h[len(tag):].strip()
+                name = child.h[len(tag) :].strip()
                 if name not in foreign_list:
                     delete_list.append(child.copy())
         if delete_list:
@@ -114,7 +114,7 @@ class PersistenceDataController:
         if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.
             g.es_print('updated: @data:%s ' % (root.h))
-        return at_data # For at-file-to-at-auto command.
+        return at_data  # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(self, at_data, root):
         """Delete all children of the @data node"""
@@ -222,7 +222,7 @@ class PersistenceDataController:
                         p.v.u = ua
                     else:
                         g.trace('Can not unpickle uA in',
-                            p.h, repr(unl), type(ua), ua[: 40])
+                            p.h, repr(unl), type(ua), ua[:40])
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
     # Note: the unl of p relative to p is simply p.h,
@@ -317,7 +317,7 @@ class PersistenceDataController:
         tail = unl_list[-1]
         matches = []
         for p in root.self_and_subtree(copy=False):
-            if p.h == tail: # A match
+            if p.h == tail:  # A match
                 # Compute the partial unl.
                 parents = 0
                 for parent2 in p.parents():
@@ -395,7 +395,7 @@ class PersistenceDataController:
         """Return the file name for p, a foreign file node."""
         for tag in ('@auto', '@org-mode', '@vim-outline'):
             if g.match_word(p.h, 0, tag):
-                return p.h[len(tag):].strip()
+                return p.h[len(tag) :].strip()
         return None
     #@+node:ekr.20140711111623.17864: *4* pd.has...
     # The has commands return None if the node does not exist.
@@ -496,7 +496,7 @@ class PersistenceDataController:
     def drop_unl_parent(self, unl):
         """Drop the penultimate part of the unl."""
         aList = unl.split('-->')
-        return '-->'.join(aList[: -2] + aList[-1:])
+        return '-->'.join(aList[: -2] + aList[-1 :])
 
     def drop_unl_tail(self, unl):
         """Drop the last part of the unl."""
@@ -526,3 +526,4 @@ class PersistenceDataController:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

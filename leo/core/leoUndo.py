@@ -5,37 +5,37 @@
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
 #@+at Think of the actions that may be Undone or Redone as a string of beads
 # (g.Bunches) containing all information needed to undo _and_ redo an operation.
-# 
+#
 # A bead pointer points to the present bead. Undoing an operation moves the bead
 # pointer backwards; redoing an operation moves the bead pointer forwards. The
 # bead pointer points in front of the first bead when Undo is disabled. The bead
 # pointer points at the last bead when Redo is disabled.
-# 
+#
 # The Undo command uses the present bead to undo the action, then moves the bead
 # pointer backwards. The Redo command uses the bead after the present bead to redo
 # the action, then moves the bead pointer forwards. The list of beads does not
 # branch; all undoable operations (except the Undo and Redo commands themselves)
 # delete any beads following the newly created bead.
-# 
+#
 # New in Leo 4.3: User (client) code should call u.beforeX and u.afterX methods to
 # create a bead describing the operation that is being performed. (By convention,
 # the code sets u = c.undoer for undoable operations.) Most u.beforeX methods
 # return 'undoData' that the client code merely passes to the corresponding
 # u.afterX method. This data contains the 'before' snapshot. The u.afterX methods
 # then create a bead containing both the 'before' and 'after' snapshots.
-# 
+#
 # New in Leo 4.3: u.beforeChangeGroup and u.afterChangeGroup allow multiple calls
 # to u.beforeX and u.afterX methods to be treated as a single undoable entry. See
 # the code for the Replace All, Sort, Promote and Demote commands for examples.
 # u.before/afterChangeGroup substantially reduce the number of u.before/afterX
 # methods needed.
-# 
+#
 # New in Leo 4.3: It would be possible for plugins or other code to define their
 # own u.before/afterX methods. Indeed, u.afterX merely needs to set the
 # bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo
 # the operation. See the code for the various u.before/afterX methods for
 # guidance.
-# 
+#
 # I first saw this model of unlimited undo in the documentation for Apple's Yellow Box classes.
 #@-<< How Leo implements unlimited undo >>
 import leo.core.leoGlobals as g
@@ -52,20 +52,20 @@ class Undoer:
     #@+node:ekr.20031218072017.3606: *4* u.__init__
     def __init__(self, c):
         self.c = c
-        self.granularity = None # Set in reloadSettings.
+        self.granularity = None  # Set in reloadSettings.
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
         # State ivars...
-        self.beads = [] # List of undo nodes.
-        self.bead = -1 # Index of the present bead: -1:len(beads)
+        self.beads = []  # List of undo nodes.
+        self.bead = -1  # Index of the present bead: -1:len(beads)
         self.undoType = "Can't Undo"
         # These must be set here, _not_ in clearUndoState.
         self.redoMenuLabel = "Can't Redo"
         self.undoMenuLabel = "Can't Undo"
         self.realRedoMenuLabel = "Can't Redo"
         self.realUndoMenuLabel = "Can't Undo"
-        self.undoing = False # True if executing an Undo command.
-        self.redoing = False # True if executing a Redo command.
-        self.per_node_undo = False # True: v may contain undo_info ivar.
+        self.undoing = False  # True if executing an Undo command.
+        self.redoing = False  # True if executing a Redo command.
+        self.per_node_undo = False  # True: v may contain undo_info ivar.
         # New in 4.2...
         self.optionalIvars = []
         # Set the following ivars to keep pylint happy.
@@ -119,12 +119,12 @@ class Undoer:
     def cmd(name):
         """Command decorator for the Undoer class."""
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'undoer', ])
+        return g.new_cmd_decorator(name, ['c', 'undoer',])
     #@+node:ekr.20050416092908.1: *3* u.Internal helpers
     #@+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
     def clearOptionalIvars(self):
         u = self
-        u.p = None # The position/node being operated upon for undo and redo.
+        u.p = None  # The position/node being operated upon for undo and redo.
         for ivar in u.optionalIvars:
             setattr(u, ivar, None)
     #@+node:ekr.20060127052111.1: *4* u.cutStack
@@ -140,7 +140,7 @@ class Undoer:
                 i -= 1
             # This work regardless of how many items appear after bead n.
                 # g.trace('Cutting undo stack to %d entries' % (n))
-            u.beads = u.beads[-n:]
+            u.beads = u.beads[-n :]
             u.bead = n - 1
     #@+node:ekr.20080623083646.10: *4* u.dumpBead
     def dumpBead(self, n):
@@ -231,7 +231,7 @@ class Undoer:
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
-        if 0: # Debugging.
+        if 0:  # Debugging.
             g.pr('-' * 40)
             for key in sorted(bunch):
                 g.trace(key, bunch.get(key))
@@ -345,17 +345,17 @@ class Undoer:
         # not handle clones properly, especially when some clones were in the
         # "undo" tree and some were not. Moreover, it required complex
         # adjustments to t.vnodeLists.
-        # 
+        #
         # Instead of creating new nodes, the new code creates all information
         # needed to properly restore the vnodes and tnodes. It creates a list of
         # tuples, on tuple for each VNode in the tree. Each tuple has the form,
-        # 
+        #
         # (vnodeInfo, tnodeInfo)
-        # 
+        #
         # where vnodeInfo and tnodeInfo are dicts contain all info needed to
         # recreate the nodes. The v.createUndoInfoDict and t.createUndoInfoDict
         # methods correspond to the old v.copy and t.copy methods.
-        # 
+        #
         # Aside: Prior to 4.2 Leo used a scheme that was equivalent to the
         # createUndoInfoDict info, but quite a bit uglier.
         #@-<< about u.saveTree >>
@@ -464,7 +464,7 @@ class Undoer:
         bunch.undoType = command
         bunch.undoHelper = u.undoNodeContents
         bunch.redoHelper = u.redoNodeContents
-        bunch.inHead = inHead # 2013/08/26
+        bunch.inHead = inHead  # 2013/08/26
         bunch.newBody = p.b
         bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
@@ -549,8 +549,8 @@ class Undoer:
         # Set helpers
         bunch.undoHelper = u.undoCloneNode
         bunch.redoHelper = u.redoCloneNode
-        bunch.newBack = p.back() # 6/15/05
-        bunch.newParent = p.parent() # 6/15/05
+        bunch.newBack = p.back()  # 6/15/05
+        bunch.newParent = p.parent()  # 6/15/05
         bunch.newP = p.copy()
         bunch.newMarked = p.isMarked()
         u.pushBead(bunch)
@@ -791,7 +791,7 @@ class Undoer:
         bunch.redoHelper = u.redoSort
         bunch.oldChildren = oldChildren
         bunch.newChildren = newChildren
-        bunch.sortChildren = sortChildren # A bool
+        bunch.sortChildren = sortChildren  # A bool
         # Push the bunch.
         u.bead += 1
         u.beads[u.bead:] = [bunch]
@@ -822,11 +822,11 @@ class Undoer:
 
         All non-undoable commands should call this method."""
         u = self
-        u.clearOptionalIvars() # Do this first.
+        u.clearOptionalIvars()  # Do this first.
         u.setRedoType("Can't Redo")
         u.setUndoType("Can't Undo")
-        u.beads = [] # List of undo nodes.
-        u.bead = -1 # Index of the present bead: -1:len(beads)
+        u.beads = []  # List of undo nodes.
+        u.bead = -1  # Index of the present bead: -1:len(beads)
     #@+node:ekr.20031218072017.3611: *4* u.enableMenuItems
     def enableMenuItems(self):
         u = self; frame = u.c.frame
@@ -881,10 +881,10 @@ class Undoer:
             return None
         if undo_type == "Can't Undo":
             u.clearUndoState()
-            u.setUndoTypes() # Must still recalculate the menu labels.
+            u.setUndoTypes()  # Must still recalculate the menu labels.
             return None
         if oldText == newText:
-            u.setUndoTypes() # Must still recalculate the menu labels.
+            u.setUndoTypes()  # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
         #@+<< init the undo params >>
@@ -930,8 +930,8 @@ class Undoer:
             old_middle_lines = old_lines[leading:]
             new_middle_lines = new_lines[leading:]
         else:
-            old_middle_lines = old_lines[leading: -trailing]
-            new_middle_lines = new_lines[leading: -trailing]
+            old_middle_lines = old_lines[leading : -trailing]
+            new_middle_lines = new_lines[leading : -trailing]
         # Remember how many trailing newlines in the old and new text.
         i = len(oldText) - 1; old_newlines = 0
         while i >= 0 and oldText[i] == '\n':
@@ -968,7 +968,7 @@ class Undoer:
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
         #@+at New in Leo 4.3. Instead of creating a new bead on every character, we
         # may adjust the top bead:
-        # 
+        #
         # word granularity: adjust the top bead if the typing would continue the word.
         # line granularity: adjust the top bead if the typing is on the same line.
         # node granularity: adjust the top bead if the typing is anywhere on the same node.
@@ -989,11 +989,11 @@ class Undoer:
             old_d.get('undoType') != 'Typing' or
             undo_type != 'Typing'
         ):
-            newBead = True # We can't share the previous node.
+            newBead = True  # We can't share the previous node.
         elif granularity == 'char':
-            newBead = True # This was the old way.
+            newBead = True  # This was the old way.
         elif granularity == 'node':
-            newBead = False # Always replace previous bead.
+            newBead = False  # Always replace previous bead.
         else:
             assert granularity in ('line', 'word')
             # Replace the previous bead if only the middle lines have changed.
@@ -1032,7 +1032,7 @@ class Undoer:
                             # W0511:1362: TODO
                             # TODO this is not true, we might as well just have entered a
                             # char at the beginning of an existing line
-                            pass # We have just inserted a line.
+                            pass  # We have just inserted a line.
                         else:
                             # 2011/04/01: Patch by Sam Hartsfield
                             old_s = old_lines[old_row]
@@ -1082,7 +1082,7 @@ class Undoer:
         #@-<< adjust the undo stack, clearing all forward entries >>
         if u.per_node_undo:
             u.putIvarsToVnode(p)
-        return bunch # Never used.
+        return bunch  # Never used.
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event=None):
@@ -1183,7 +1183,7 @@ class Undoer:
         newSel = u.newSel
         p = u.p.copy()
         u.groupCount += 1
-        bunch = u.beads[u.bead+1]; count = 0
+        bunch = u.beads[u.bead + 1]; count = 0
         if not hasattr(bunch, 'items'):
             g.trace(f"oops: expecting bunch.items. got bunch.kind = {bunch.kind}")
             g.trace(bunch)
@@ -1195,7 +1195,7 @@ class Undoer:
                 else:
                     g.trace(f"oops: no redo helper for {u.undoType} {p.h}")
         u.groupCount -= 1
-        u.updateMarks('new') # Bug fix: Leo 4.4.6.
+        u.updateMarks('new')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("redo", count, "instances")
         p.setDirty()
@@ -1274,7 +1274,7 @@ class Undoer:
         c, u = self.c, self
         w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p: # #1333.
+        if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
         # Restore the body.
@@ -1284,7 +1284,7 @@ class Undoer:
         # Restore the headline.
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
-        c.frame.tree.setHeadline(u.p, u.newHead) # New in 4.4b2.
+        c.frame.tree.setHeadline(u.p, u.newHead)  # New in 4.4b2.
         if u.groupCount == 0 and u.newSel:
             i, j = u.newSel
             w.setSelectionRange(i, j)
@@ -1299,7 +1299,7 @@ class Undoer:
         # Add the children to parent_v's children.
         n = u.p.childIndex() + 1
         old_children = parent_v.children[:]
-        parent_v.children = old_children[: n]
+        parent_v.children = old_children[:n]
             # Add children up to the promoted nodes.
         parent_v.children.extend(u.children)
             # Add the promoted nodes.
@@ -1329,7 +1329,7 @@ class Undoer:
         u = self; c = u.c
         u.p = self.undoRedoTree(u.p, u.oldTree, u.newTree)
         u.p.setDirty()
-        c.selectPosition(u.p) # Does full recolor.
+        c.selectPosition(u.p)  # Does full recolor.
         if u.newSel:
             i, j = u.newSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1364,7 +1364,7 @@ class Undoer:
             return
         # End editing *before* getting state.
         c.endEditing()
-        if u.per_node_undo: # 2011/05/19
+        if u.per_node_undo:  # 2011/05/19
             u.setIvarsFromVnode(c.p)
         if not u.canUndo():
             return
@@ -1493,7 +1493,7 @@ class Undoer:
                 else:
                     g.trace(f"oops: no undo helper for {u.undoType} {p.v}")
         u.groupCount -= 1
-        u.updateMarks('old') # Bug fix: Leo 4.4.6.
+        u.updateMarks('old')  # Bug fix: Leo 4.4.6.
         if not g.unitTesting and u.verboseUndoGroup:
             g.es("undo", count, "instances")
         p.setDirty()
@@ -1568,7 +1568,7 @@ class Undoer:
         c, u = self.c, self
         w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p: # #1333.
+        if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
         u.p.b = u.oldBody
@@ -1586,14 +1586,14 @@ class Undoer:
     #@+node:ekr.20080425060424.14: *4* u.undoPromote
     def undoPromote(self):
         u = self; c = u.c
-        parent_v = u.p._parentVnode() # The parent of the all the *promoted* nodes.
+        parent_v = u.p._parentVnode()  # The parent of the all the *promoted* nodes.
         # Remove the promoted nodes from parent_v's children.
         n = u.p.childIndex() + 1
         # Adjust the old parents children
         old_children = parent_v.children
-        parent_v.children = old_children[: n]
+        parent_v.children = old_children[:n]
             # Add the nodes before the promoted nodes.
-        parent_v.children.extend(old_children[n + len(u.children):])
+        parent_v.children.extend(old_children[n + len(u.children) :])
             # Add the nodes after the promoted nodes.
         # Add the demoted nodes to v's children.
         u.p.v.children = u.children[:]
@@ -1607,10 +1607,10 @@ class Undoer:
         c.setCurrentPosition(u.p)
     #@+node:ekr.20031218072017.1493: *4* u.undoRedoText
     def undoRedoText(self, p,
-        leading, trailing, # Number of matching leading & trailing lines.
-        oldMidLines, newMidLines, # Lists of unmatched lines.
-        oldNewlines, newNewlines, # Number of trailing newlines.
-        tag="undo", # "undo" or "redo"
+        leading, trailing,  # Number of matching leading & trailing lines.
+        oldMidLines, newMidLines,  # Lists of unmatched lines.
+        oldNewlines, newNewlines,  # Number of trailing newlines.
+        tag="undo",  # "undo" or "redo"
         undoType=None
     ):
         """Handle text undo and redo: converts _new_ text into _old_ text."""
@@ -1625,11 +1625,11 @@ class Undoer:
         body_lines = body.split('\n')
         s = []
         if leading > 0:
-            s.extend(body_lines[: leading])
+            s.extend(body_lines[:leading])
         if oldMidLines:
             s.extend(oldMidLines)
         if trailing > 0:
-            s.extend(body_lines[-trailing:])
+            s.extend(body_lines[-trailing :])
         s = '\n'.join(s)
         # Remove trailing newlines in s.
         while s and s[-1] == '\n':
@@ -1647,7 +1647,7 @@ class Undoer:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)
         c.frame.body.recolor(p)
-        w.seeInsertPoint() # 2009/12/21
+        w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
     def undoRedoTree(self, p, new_data, old_data):
         """Replace p and its subtree using old_data during undo."""
@@ -1662,7 +1662,7 @@ class Undoer:
         # Replace data in tree with old data.
         u.restoreTree(old_data)
         c.setBodyString(p, p.b)
-        return p # Nothing really changes.
+        return p  # Nothing really changes.
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self):
         u = self; c = u.c
@@ -1678,7 +1678,7 @@ class Undoer:
         u = self; c = u.c
         u.p = self.undoRedoTree(u.p, u.newTree, u.oldTree)
         u.p.setAllAncestorAtFileNodesDirty()
-        c.selectPosition(u.p) # Does full recolor.
+        c.selectPosition(u.p)  # Does full recolor.
         if u.oldSel:
             i, j = u.oldSel
             c.frame.body.wrapper.setSelectionRange(i, j)
@@ -1711,10 +1711,10 @@ class Undoer:
         c, u = self.c, self
         w = c.frame.body.wrapper
         # Redraw and recolor.
-        c.frame.body.updateEditors() # New in Leo 4.4.8.
+        c.frame.body.updateEditors()  # New in Leo 4.4.8.
         #
         # Set the new position.
-        if 0: # Don't do this: it interferes with selection ranges.
+        if 0:  # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
             c.selectPosition(c.p)
         else:
@@ -1739,3 +1739,4 @@ class Undoer:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

@@ -36,10 +36,10 @@ class VimEvent:
     def __init__(self, c, char, stroke, w):
         """ctor for the VimEvent class."""
         self.c = c
-        self.char = char # For Leo's core.
+        self.char = char  # For Leo's core.
         self.stroke = stroke
         self.w = w
-        self.widget = w # For Leo's core.
+        self.widget = w  # For Leo's core.
 
     def __repr__(self):
         """Return the representation of the stroke."""
@@ -222,7 +222,7 @@ class VimCommands:
         '?': self.vim_question,
         '"': None,
         '`': None,
-        '\n':self.vim_return,
+        '\n': self.vim_return,
         ';': None,
         '/': self.vim_slash,
         '_': None,
@@ -253,7 +253,7 @@ class VimCommands:
         'M': None,
         'N': self.vim_N,
         'O': self.vim_O,
-        'P': self.vim_P, # Paste *outline*
+        'P': self.vim_P,  # Paste *outline*
         'R': None,
         'S': None,
         'T': self.vim_T,
@@ -464,7 +464,7 @@ class VimCommands:
     def cmd(name):
         """Command decorator for the VimCommands class."""
         # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'vimCommands', ])
+        return g.new_cmd_decorator(name, ['c', 'vimCommands',])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All acceptance methods must set the return_value ivar.
     # All key handlers must end with a call to an acceptance method.
@@ -623,7 +623,7 @@ class VimCommands:
         i1 = self.command_i
         i2 = w.getInsertPoint()
         if i1 > i2: i1, i2 = i2, i1
-        s2 = s[i1: i2]
+        s2 = s[i1:i2]
         if self.n1 > 1:
             s3 = s2 * (self.n1 - 1)
             w.insert(i2, s3)
@@ -718,7 +718,7 @@ class VimCommands:
         Use the n or N commands to repeat searches,
         """
         self.command_list = []
-        if 0: # Don't do anything else!
+        if 0:  # Don't do anything else!
 
             # Don't use add_to_dot(): it updates self.command_list.
 
@@ -857,7 +857,7 @@ class VimCommands:
     def vim_colon(self):
         """Enter the minibuffer."""
         k = self.k
-        self.colon_w = self.w # A scratch ivar, for :gt & gT commands.
+        self.colon_w = self.w  # A scratch ivar, for :gt & gT commands.
         self.quit()
         event = VimEvent(c=self.c, char=':', stroke='colon', w=self.w)
         k.fullCommand(event=event)
@@ -911,13 +911,13 @@ class VimCommands:
                     # This is exactly how vim works.
                     if self.n1 * self.n == 1 and i == j == len(s):
                         i = max(0, i - 1)
-                    g.app.gui.replaceClipboardWith(s[i: j])
+                    g.app.gui.replaceClipboardWith(s[i:j])
                     w.delete(i, j)
                 self.done()
             elif self.stroke == 'i':
                 self.accept(handler=self.vim_di)
             else:
-                self.d_stroke = self.stroke # A scratch var.
+                self.d_stroke = self.stroke  # A scratch var.
                 self.begin_motion(self.vim_d3)
         else:
             self.quit()
@@ -938,14 +938,14 @@ class VimCommands:
                         i2 = self.to_eol(s, i2)
                         if i2 < len(s) and s[i2] == '\n':
                             i2 += 1
-                g.app.gui.replaceClipboardWith(s[i1: i2])
+                g.app.gui.replaceClipboardWith(s[i1:i2])
                 w.delete(i1, i2)
-            else: # i1 > i2
+            else:  # i1 > i2
                 i1, i2 = i2, i1
                 for z in range(self.n1 * self.n):
                     if extend_to_line:
                         i1 = self.to_bol(s, i1)
-                g.app.gui.replaceClipboardWith(s[i1: i2])
+                g.app.gui.replaceClipboardWith(s[i1:i2])
                 w.delete(i1, i2)
             self.done()
         else:
@@ -1035,7 +1035,7 @@ class VimCommands:
             self.vis_v()
         else:
             # self.done()
-            self.quit() # It's helpful to clear everything.
+            self.quit()  # It's helpful to clear everything.
     #@+node:ekr.20140222064735.16687: *5* vc.vim_F
     def vim_F(self):
         """Back to the Nth occurrence of <char>."""
@@ -1052,7 +1052,7 @@ class VimCommands:
             if s:
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
-                i -= 1 # Ensure progress
+                i -= 1  # Ensure progress
                 while i >= 0:
                     if s[i] == self.ch:
                         match_i, n = i, n - 1
@@ -1184,7 +1184,7 @@ class VimCommands:
                     if i > 0 and s[i - 1] != '\n':
                         i -= 1
                     if i == 0 or (i > 0 and s[i - 1] == '\n'):
-                        break # Don't go past present line.
+                        break  # Don't go past present line.
                 if self.state == 'visual':
                     w.setSelectionRange(self.vis_mode_i, i, insert=i)
                 else:
@@ -1252,7 +1252,7 @@ class VimCommands:
                     if i < len(s) and s[i] != '\n':
                         i += 1
                     if i >= len(s) or s[i] == '\n':
-                        break # Don't go past present line.
+                        break  # Don't go past present line.
                 if self.state == 'visual':
                     w.setSelectionRange(self.vis_mode_i, i, insert=i)
                 else:
@@ -1662,7 +1662,7 @@ class VimCommands:
                 w.setInsertPoint(i1)
                 self.done()
             else:
-                self.y_stroke = self.stroke # A scratch var.
+                self.y_stroke = self.stroke  # A scratch var.
                 self.begin_motion(self.vim_y3)
         else:
             self.quit()
@@ -1684,7 +1684,7 @@ class VimCommands:
                     i2 = self.to_eol(s, i2)
                     if i2 < len(s) and s[i2] == '\n':
                         i2 += 1
-            else: # i1 > i2
+            else:  # i1 > i2
                 i1, i2 = i2, i1
                 if extend_to_line:
                     i1 = self.to_bol(s, i1)
@@ -1717,7 +1717,7 @@ class VimCommands:
     #@@nocolor-node
     #@+at
     # Not yet:
-    # 
+    #
     # N   B               (motion) N blank-separated WORDS backward
     # N   E               (motion) forward to the end of the Nth blank-separated WORD
     # N   G               (motion) goto line N (default: last line), on the first non-blank character
@@ -1884,7 +1884,7 @@ class VimCommands:
                 # It looks like no acceptance method has been called.
                 self.oops('bad return_value: %s %s %s' % (
                     repr(self.return_value), self.state, self.next_func))
-                self.done() # Sets self.return_value to True.
+                self.done()  # Sets self.return_value to True.
         except Exception:
             g.es_exception()
             self.quit()
@@ -1909,11 +1909,11 @@ class VimCommands:
         assert event
         self.event = event
         stroke = event.stroke
-        self.ch = event.char # Required for f,F,t,T.
+        self.ch = event.char  # Required for f,F,t,T.
         self.stroke = stroke.s if g.isStroke(stroke) else stroke
         self.w = event and event.w
         if not self.in_command:
-            self.in_command = True # May be cleared later.
+            self.in_command = True  # May be cleared later.
             if self.is_text_wrapper(self.w):
                 self.old_sel = self.w.getSelectionRange()
     #@+node:ekr.20140815160132.18821: *3* vc.external commands
@@ -2068,7 +2068,7 @@ class VimCommands:
             g.es_print('dot repeat count:', self.n1)
         i, n = 0, 0
         while i < len(aList):
-            g.es_print(f"dot[{n}]:", ''.join(aList[i: i + 10]))
+            g.es_print(f"dot[{n}]:", ''.join(aList[i : i + 10]))
             i += 10
             n += 1
     #@+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
@@ -2158,7 +2158,7 @@ class VimCommands:
         self.c.save()
 
     @cmd(':xa')
-    def xa_command(self, event=None): # same as :xa
+    def xa_command(self, event=None):  # same as :xa
         """Save all open files and keep working."""
         for c in g.app.commanders():
             if c.isChanged():
@@ -2184,7 +2184,7 @@ class VimCommands:
                 func()
                 if self.motion_func:
                     self.motion_func()
-                    self.in_motion = False # Required.
+                    self.in_motion = False  # Required.
                     self.done()
             elif self.is_plain_key(self.stroke):
                 self.ignore()
@@ -2299,7 +2299,7 @@ class VimCommands:
             self.c.k.simulateCommand(o, event=event)
     #@+node:ekr.20180424055522.1: *4* vc.do_trace
     def do_trace(self, blank_line=False):
-        
+
         if self.stroke and self.trace_flag and not g.unitTesting:
             if blank_line:
                 print('')
@@ -2358,7 +2358,7 @@ class VimCommands:
         if i2 < 0: i2 = 0
         if i2 >= len(s): i2 = len(s) - 1
         if s[i2] == '\n': i2 = max(0, i2 - 1)
-        return s[i1: i2].count('\n') == 0
+        return s[i1:i2].count('\n') == 0
     #@+node:ekr.20140802225657.18022: *4* vc.oops
     def oops(self, message):
         """Report an internal error"""
@@ -2439,7 +2439,7 @@ class VimCommands:
 
     def show_dot(self):
         """Show the dot."""
-        s = ''.join([repr(z) for z in self.dot_list[: 10]])
+        s = ''.join([repr(z) for z in self.dot_list[:10]])
         if len(self.dot_list) > 10:
             s = s + '...'
         return s
@@ -2461,7 +2461,7 @@ class VimCommands:
             command_s = self.show_command()
             dot_s = self.show_dot()
             # if self.in_motion: state_s = state_s + '(in_motion)'
-            if 1: # Don't show the dot:
+            if 1:  # Don't show the dot:
                 s = '%8s: %s' % (state_s, command_s)
             else:
                 s = '%8s: %-5s dot: %s' % (state_s, command_s, dot_s)
@@ -2520,3 +2520,4 @@ class VimCommands:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

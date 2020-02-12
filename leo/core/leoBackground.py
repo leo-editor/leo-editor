@@ -100,10 +100,10 @@ class BackgroundProcessManager:
             if self.pid.poll() is None:
                 pass
             else:
-                self.end() # End this process.
-                self.start_next() # Start the next process.
+                self.end()  # End this process.
+                self.start_next()  # Start the next process.
         elif self.process_queue:
-            self.start_next() # Start the next process.
+            self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
         """End the present process."""
@@ -216,6 +216,7 @@ class BackgroundProcessManager:
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
+
             data.callback = callback
             self.process_queue.append(data)
         else:
@@ -238,3 +239,4 @@ class BackgroundProcessManager:
 #@@pagewidth 60
 
 #@-leo
+

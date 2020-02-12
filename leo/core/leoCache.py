@@ -66,7 +66,7 @@ class CommanderCacher:
         return CommanderWrapper(c, fn=fn)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
-        
+
         # pylint: disable=no-member
         if g.app.gui.guiName() == 'nullGui':
             # Null gui's don't normally set the g.app.gui.db.
@@ -83,7 +83,7 @@ class CommanderCacher:
         db['hello'] = 15
         db['aku ankka'] = [1, 2, 313]
         db['paths/nest/ok/keyname'] = [1, (5, 46)]
-        db.uncache() # frees memory, causes re-reads later
+        db.uncache()  # frees memory, causes re-reads later
         if 0: print(db.keys())
         db.clear()
         return True
@@ -113,29 +113,29 @@ class CommanderWrapper:
     def get(self, key, default=None):
         value = self.db.get(f"{self.key}:::{key}")
         return default if value is None else value
-    
+
     def keys(self):
         return sorted(list(self.user_keys))
-        
-    def __contains__ (self, key):
+
+    def __contains__(self, key):
         return f"{self.key}:::{key}" in self.db
-    
-    def __delitem__ (self, key):
+
+    def __delitem__(self, key):
         if key in self.user_keys:
             self.user_keys.remove(key)
         del self.db[f"{self.key}:::{key}"]
-    
+
     def __getitem__(self, key):
         return self.db[f"{self.key}:::{key}"]
             # May (properly) raise KeyError
-    
-    def __setitem__ (self, key, value):
+
+    def __setitem__(self, key, value):
         self.user_keys.add(key)
         self.db[f"{self.key}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher:
     """A singleton global cacher, g.app.db"""
-    
+
     def __init__(self):
         """Ctor for the GlobalCacher class."""
         trace = 'cache' in g.app.debug
@@ -149,7 +149,7 @@ class GlobalCacher:
         except Exception:
             if trace:
                 g.es_exception()
-            self.db = {} # Use a plain dict as a dummy.
+            self.db = {}  # Use a plain dict as a dummy.
 
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
@@ -185,6 +185,7 @@ class GlobalCacher:
     #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
+
 
 class PickleShareDB:
     """ The main 'connection' object for PickleShare database """
@@ -230,7 +231,7 @@ class PickleShareDB:
     #@+node:ekr.20100208223942.5970: *4* __contains__(PickleShareDB)
     def __contains__(self, key):
 
-        return self.has_key(key) # NOQA
+        return self.has_key(key)  # NOQA
     #@+node:ekr.20100208223942.5971: *4* __delitem__
     def __delitem__(self, key):
         """ del db["key"] """
@@ -454,6 +455,7 @@ class PickleShareDB:
 #@+node:vitalije.20170716201700.1: ** class SqlitePickleShare
 _sentinel = object()
 
+
 class SqlitePickleShare:
     """ The main 'connection' object for SqlitePickleShare database """
     #@+others
@@ -481,7 +483,7 @@ class SqlitePickleShare:
             if data:
                 try:
                     val = pickle.loads(zlib.decompress(data))
-                except (ValueError, TypeError):
+                except(ValueError, TypeError):
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None
                 return val
@@ -502,7 +504,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
     def __contains__(self, key):
 
-        return self.has_key(key) # NOQA
+        return self.has_key(key)  # NOQA
     #@+node:vitalije.20170716201700.5: *4* __delitem__
     def __delitem__(self, key):
         """ del db["key"] """
@@ -568,7 +570,7 @@ class SqlitePickleShare:
         mydir.walkfiles('*.tmp') yields only files with the .tmp
         extension.
         """
-        
+
     #@+node:vitalije.20170716201700.13: *4* _listdir
     def _listdir(self, s, pattern=None):
         """ D.listdir() -> List of items in this directory.
@@ -617,7 +619,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.18: *3* items
     def items(self):
         sql = 'select key,data from cachevalues;'
-        for key,data in self.conn.execute(sql):
+        for key, data in self.conn.execute(sql):
             yield key, data
     #@+node:vitalije.20170716201700.19: *3* keys
     # Called by clear, and during unit testing.
@@ -701,7 +703,7 @@ def dump_cache(db, tag):
     if d.get('None'):
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
-        
+
 def dump_list(heading, aList):
     if heading:
         print('\n%s...\n' % heading)
@@ -717,9 +719,9 @@ def dump_list(heading, aList):
                 else:
                     print('%30s: []' % key)
             else:
-                print('%30s: %s' % (key, val))   
+                print('%30s: %s' % (key, val))
         elif isinstance(val, (int, float)):
-            print('%30s: %s' % (key, val))    
+            print('%30s: %s' % (key, val))
         else:
             print('%30s:' % key)
             g.printObj(val)
@@ -728,3 +730,4 @@ def dump_list(heading, aList):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

@@ -45,10 +45,10 @@ def main():
     bridge = leoBridge.controller(
         gui=options.gui,
         loadPlugins=options.load_plugins,
-        readSettings=options.read_settings, # adds ~0.3 sec. Useful!
+        readSettings=options.read_settings,  # adds ~0.3 sec. Useful!
         silent=options.silent,
         tracePlugins=options.trace_plugins,
-        verbose=options.verbose, # True: prints log messages.
+        verbose=options.verbose,  # True: prints log messages.
     )
     if g_trace and trace_time:
         t2 = time.time()
@@ -100,6 +100,7 @@ def scanOptions():
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 if __name__ == '__main__':
     if g_trace and trace_time:
         t1 = time.time()

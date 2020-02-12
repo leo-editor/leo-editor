@@ -262,7 +262,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack = []
             # The stack of module names.
             # The top is the module being loaded.
-        self.signonModule = None # A hack for plugin_signon.
+        self.signonModule = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
         assert(g)
@@ -274,8 +274,7 @@ class LeoPluginsController:
         self.reloadSettings()
 
     def reloadSettings(self):
-        self.warn_on_failure = \
-            g.app.config.getBool('warn_when_plugins_fail_to_load', default=True)
+        self.warn_on_failure = g.app.config.getBool('warn_when_plugins_fail_to_load', default=True)
     #@+node:ekr.20100909065501.5952: *3* plugins.Event handlers
     #@+node:ekr.20161029060545.1: *4* plugins.on_idle
     def on_idle(self):
@@ -385,7 +384,7 @@ class LeoPluginsController:
                 for tag in tags:
                     n = max(n, len(tag))
                     data.append((tag, key),)
-        lines = ['%*s %s\n' % (-n, s1, s2) for(s1, s2) in data]
+        lines = ['%*s %s\n' % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100908125007.6026: *4* plugins.printPlugins
     def printPlugins(self, c):
@@ -414,7 +413,7 @@ class LeoPluginsController:
             fileName = d.get(moduleName)
             n = max(n, len(moduleName))
             data.append((moduleName, fileName),)
-        lines = ['%*s %s\n' % (-n, s1, s2) for(s1, s2) in data]
+        lines = ['%*s %s\n' % (-n, s1, s2) for (s1, s2) in data]
         g.es('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20100909065501.5949: *4* plugins.regularizeName
     def regularizeName(self, fn):
@@ -468,7 +467,7 @@ class LeoPluginsController:
         def report(message):
             if trace and not g.unitTesting:
                 g.es_print(f"loadOnePlugin: {message}")
-                
+
         # Define local helper functions.
         #@+others
         #@+node:ekr.20180528160855.1: *5* function:callInitFunction
@@ -495,7 +494,7 @@ class LeoPluginsController:
         def finishImport(result):
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
-                return result # Keep the result, but do no more.
+                return result  # Keep the result, but do no more.
             if hasattr(result, 'init'):
                 return callInitFunction(result)
             #
@@ -575,7 +574,7 @@ class LeoPluginsController:
             self.loadingModuleNameStack.pop()
         if result:
             report(f"loaded: {moduleName}")
-        self.signonModule = result # for self.plugin_signon.
+        self.signonModule = result  # for self.plugin_signon.
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
     def plugin_signon(self, module_name, verbose=False):
@@ -586,7 +585,7 @@ class LeoPluginsController:
         if verbose:
             g.es(f"...{m.__name__}.py v{m.__version__}: {g.plugin_date(m)}")
             g.pr(m.__name__, m.__version__)
-        self.signonModule = None # Prevent double signons.
+        self.signonModule = None  # Prevent double signons.
     #@+node:ekr.20100908125007.6030: *4* plugins.unloadOnePlugin
     def unloadOnePlugin(self, moduleOrFileName, verbose=False):
         moduleName = self.regularizeName(moduleOrFileName)
@@ -622,7 +621,7 @@ class LeoPluginsController:
             g.es(f"*** Two exclusive handlers for '{tag}'")
         else:
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
-            self.handlers[tag] = [bunch] # Vitalije
+            self.handlers[tag] = [bunch]  # Vitalije
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags, fn):
         """ Register one or more handlers"""
@@ -643,7 +642,7 @@ class LeoPluginsController:
             g.pr('%6s %15s %25s %s' % (g.app.unitTesting, moduleName, tag, fn.__name__))
         items = self.handlers.get(tag, [])
         functions = [z.fn for z in items]
-        if fn not in functions: # Vitalije
+        if fn not in functions:  # Vitalije
             bunch = g.Bunch(fn=fn, moduleName=moduleName, tag='handler')
             items.append(bunch)
         self.handlers[tag] = items
@@ -665,3 +664,4 @@ class LeoPluginsController:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

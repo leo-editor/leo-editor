@@ -10,11 +10,13 @@ assert g
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 #@@beautify
+
+
 class TipManager:
     """A class to manage user tips."""
-    
+
     key = 'shown-tips'
-    
+
     #@+others
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
     def get_next_tip(self):
@@ -24,33 +26,36 @@ class TipManager:
         seen = db.get(self.key, [])
         unseen = [i for i in range(len(tips)) if i not in seen]
         if not unseen:
-            db [self.key] = []
+            db[self.key] = []
             unseen = list(range(len(tips)))
             seen = []
         # Choose a tip at random from the unseen tips.
         i = random.choice(unseen)
         assert i not in seen, (i, seen)
         seen.append(i)
-        db [self.key] = seen
+        db[self.key] = seen
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
 #@@beautify
+
+
 class UserTip:
     """A User Tip."""
-    
+
     def __init__(self, n=0, tags=None, text='', title=''):
-        self.n = n # Not used.
-        self.tags = tags or [] # Not used.
+        self.n = n  # Not used.
+        self.tags = tags or []  # Not used.
         self.title = title.strip()
         self.text = text.strip()
-        
+
     def __repr__(self):
         return '%s\n\n%s\n' % (self.title, self.text)
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
 #@@beautify
+
 def make_tips(c):
     """
     A script to make entries in the global tips array.
@@ -72,7 +77,7 @@ def make_tips(c):
     """
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
-    
+
     def get_tips(data):
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
@@ -84,10 +89,10 @@ def make_tips(c):
             lines = g.splitLines(body)
             for i, s in enumerate(lines):
                 if s.strip().lower().startswith('tags:'):
-                    lines = lines[:i] + lines[i+1:]
+                    lines = lines[:i] + lines[i + 1 :]
                     text = ''.join(lines).strip()
                     s = s.strip().rstrip('.').strip()
-                    s = s[len('tags:'):].strip()
+                    s = s[len('tags:') :].strip()
                     tags = [z.strip() for z in s.split(',')]
                     break
             else:
@@ -101,7 +106,7 @@ def make_tips(c):
                     title=title.strip(),
                 ))
         return tips
-    
+
     g.cls()
     template = '''\
 UserTip(
@@ -115,14 +120,15 @@ UserTip(
 """),
 '''
     template = g.adjustTripleString(template, c.tab_width)
-    for kind in ('open',): # 'closed':
-        data = requests.get(url+kind).json()
+    for kind in ('open',):  # 'closed':
+        data = requests.get(url + kind).json()
         for tip in get_tips(data):
             tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
 #@@beautify
+
 def make_tip_nodes(c):
     """Create a list of all tips as the last top-level node."""
     global tips
@@ -141,6 +147,7 @@ def make_tip_nodes(c):
     c.redraw()
 #@-others
 # The global tips array.
+
 tips = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>

@@ -70,7 +70,7 @@ def ipython_exec(event):
     if not script.strip():
         g.es_print('no script')
         return
-    g.app.ipk.run_script(file_name=c.p.h,script=script)
+    g.app.ipk.run_script(file_name=c.p.h, script=script)
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
 class InternalIPKernel:
     """
@@ -122,7 +122,7 @@ class InternalIPKernel:
         
         Called from qt_gui.runWithIpythonKernel.
         """
-        trace = True # 'ipython' in g.app.debug
+        trace = True  # 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()
@@ -178,7 +178,7 @@ class InternalIPKernel:
     #@+node:ekr.20160331084025.1: *3* ileo.put_stdout
     def put_stdout(self, s):
         """Put s to sys.__stdout__."""
-        sys.__stdout__.write(s.rstrip()+'\n')
+        sys.__stdout__.write(s.rstrip() + '\n')
         sys.__stdout__.flush()
     #@+node:ekr.20160308101536.1: *3* ileo.put_warning
     def put_warning(self, s, raw=False):
@@ -249,10 +249,10 @@ class InternalIPKernel:
             g.es_exception()
     #@+node:ekr.20171115090205.1: *3* ileo.test
     def test(self):
-        
+
         from ipykernel.connect import connect_qtconsole
         from ipykernel.kernelapp import IPKernelApp
-        
+
         kernelApp = IPKernelApp.instance()
         args = ['python', '--pylab=qt', '--log-level=20']
         kernelApp.initialize(args)
@@ -331,3 +331,4 @@ class LeoNameSpace:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

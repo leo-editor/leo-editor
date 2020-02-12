@@ -81,7 +81,7 @@ def adoc_command(event=None, verbose=True):
     if not c:
         return None
     return c.markupCommands.adoc_command(event, preview=False, verbose=verbose)
-    
+
 @g.command('adoc-with-preview')
 def adoc_with_preview_command(event=None, verbose=True):
     """Run the adoc command, then show the result in the browser."""
@@ -210,14 +210,14 @@ def sphinx_with_preview_command(event=None, verbose=True):
 #@+node:ekr.20191006154236.1: ** class MarkupCommands
 class MarkupCommands:
     """A class to write AsiiDoctor or docutils markup in Leo outlines."""
-    
+
     def __init__(self, c):
         self.c = c
-        self.kind = None # 'adoc' or 'pandoc'
+        self.kind = None  # 'adoc' or 'pandoc'
         self.level_offset = 0
         self.root_level = 0
         self.reload_settings()
-        
+
     def reload_settings(self):
         c = self.c
         getString = c.config.getString
@@ -234,6 +234,7 @@ class MarkupCommands:
             return self.filename(p)
 
         # Find all roots.
+
         t1 = time.time()
         c = self.c
         self.kind = kind
@@ -298,12 +299,12 @@ class MarkupCommands:
             m = self.adoc_pattern.match(h)
             if m:
                 prefix = m.group(1)
-                return h[1+len(prefix):].strip()
+                return h[1 + len(prefix) :].strip()
             return None
         if kind in ('pandoc', 'sphinx'):
             prefix = f"@{kind}"
             if g.match_word(h, 0, prefix):
-                return h[len(prefix):].strip()
+                return h[len(prefix) :].strip()
             return None
         g.trace('BAD KIND', kind)
         return None
@@ -389,7 +390,7 @@ class MarkupCommands:
         # Write all nodes of the tree, except ignored nodes.
         self.level_offset = self.compute_level_offset(root)
         self.root_level = root.level()
-        p = root.threadNext() # Returns a copy.
+        p = root.threadNext()  # Returns a copy.
         after = root.nodeAfterTree()
         while p and p != after:
             h = p.h.rstrip()
@@ -454,7 +455,7 @@ class MarkupCommands:
         for s in lines:
             if s.startswith('@'):
                 i = g.skip_id(s, 1)
-                word = s[1: i]
+                word = s[1:i]
                 if word in g.globalDirectiveList:
                     continue
             result.append(s)
@@ -467,7 +468,7 @@ class MarkupCommands:
         name = 'adoc-with-preview' if preview else 'adoc'
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
-        
+
     def pandoc_command(self, event=None, preview=False, verbose=True):
         global pandoc_exec
         if pandoc_exec:
@@ -489,3 +490,4 @@ class MarkupCommands:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

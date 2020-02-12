@@ -60,12 +60,12 @@ class ShadowController:
         self.shadow_subdir = None
         # Error handling...
         self.errors = 0
-        self.last_error = '' # The last error message, regardless of whether it was actually shown.
+        self.last_error = ''  # The last error message, regardless of whether it was actually shown.
         self.trace = False
         # Support for goto-line.
         self.line_mapping = []
         self.reloadSettings()
-        
+
     def reloadSettings(self):
         """ShadowController.reloadSettings."""
         c = self.c
@@ -79,7 +79,7 @@ class ShadowController:
         c = self.c
         filename = c.fileName()
         if filename:
-            return g.os_path_dirname(g.os_path_finalize(filename)) # 1341
+            return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
     #@+node:ekr.20080711063656.4: *4* x.dirName and pathName (changed)
@@ -92,7 +92,7 @@ class ShadowController:
         """Return the full path name of filename."""
         x = self
         theDir = x.baseDirName()
-        return theDir and g.os_path_finalize_join(theDir, filename) # 1341
+        return theDir and g.os_path_finalize_join(theDir, filename)  # 1341
     #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile(self, fn):
         """
@@ -174,7 +174,7 @@ class ShadowController:
             fileDir = "/".join([baseDir, fname, fileDir])
         return baseDir and g.os_path_finalize_join(  # 1341
                 baseDir,
-                fileDir, # Bug fix: honor any directories specified in filename.
+                fileDir,  # Bug fix: honor any directories specified in filename.
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
     #@+node:ekr.20080711063656.3: *4* x.unlink
@@ -321,7 +321,7 @@ class ShadowController:
     def op_equal(self, tag, ai, aj, bi, bj):
         """Handle the 'equal' opcode."""
         x = self
-        assert aj - ai == bj - bi and x.a[ai: aj] == x.b[bi: bj]
+        assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
         for i in range(ai, aj):
             x.put_sentinels(i)
             x.put_plain_line(x.a[i])
@@ -340,7 +340,7 @@ class ShadowController:
         x = self
         if 1:
             # Intersperse sentinels and lines.
-            b_lines = x.b[bi: bj]
+            b_lines = x.b[bi:bj]
             for i in range(ai, aj):
                 x.put_sentinels(i)
                 if b_lines:
@@ -533,7 +533,7 @@ class ShadowController:
     def show_error_lines(self, lines, fileName):
         for i, line in enumerate(lines):
             g.es_print('%3s %s' % (i, repr(line)))
-        if False: # Only for major debugging.
+        if False:  # Only for major debugging.
             try:
                 f1 = open(fileName, "w")
                 for s in lines:
@@ -680,9 +680,9 @@ class ShadowController:
         def __init__(self, delims):
             """Ctor for Marker class."""
             delim1, delim2, delim3 = delims
-            self.delim1 = delim1 # Single-line comment delim.
-            self.delim2 = delim2 # Block comment starting delim.
-            self.delim3 = delim3 # Block comment ending delim.
+            self.delim1 = delim1  # Single-line comment delim.
+            self.delim2 = delim2  # Block comment starting delim.
+            self.delim3 = delim3  # Block comment ending delim.
             if not delim1 and not delim2:
                 # if g.unitTesting:
                 #    assert False,repr(delims)
@@ -720,3 +720,4 @@ class ShadowController:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

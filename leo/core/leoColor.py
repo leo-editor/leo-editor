@@ -40,17 +40,17 @@ assert g
 #@+at
 # All names added to this database should be in normalized form,
 # otherwise the accessor functions won't work.
-# 
+#
 # Adding names here will make them availiable to all gui's and
 # dhtml that use this service.
-# 
+#
 # Names are normalized by removing spaces and capitalization.
 #@@c
 leo_color_database = {
     # leo colors
-    "leoblue": "#F0F8FF", #alice blue
+    "leoblue": "#F0F8FF",  #alice blue
     "leoyellow": "#ffffec",
-    "leopink": "#FFE4E1", # misty rose
+    "leopink": "#FFE4E1",  # misty rose
     # Solarized colors
     'altsolarizedgreen': '#84c805',
     'darkbase0': '#fdffdd',
@@ -64,7 +64,7 @@ leo_color_database = {
     'darkbase1': '#93a1a1',
     'darkbase2': '#eee8d5',
     'darkbase3': '#fdf6e3',
-    'solarizedblack': '#000005', # Unofficial.
+    'solarizedblack': '#000005',  # Unofficial.
     'solarizedblue': '#268bd2',
     'solarizedcyan': '#2aa198',
     'solarizedgreen': '#859900',
@@ -770,7 +770,7 @@ def getColorRGB(name, default=None):
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
-        color = int(s[1: 3], 16), int(s[3: 5], 16), int(s[5: 7], 16)
+        color = int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
     except Exception:
         color = None
     return color

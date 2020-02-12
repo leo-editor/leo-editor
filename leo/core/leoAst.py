@@ -927,8 +927,10 @@ if 1:  # pragma: no cover
 class AssignLinksError(Exception):
     """Assigning links to ast nodes failed."""
 
+
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
+
 
 class FailFast(Exception):
     """Abort tests in TestRunner class."""
@@ -3842,7 +3844,7 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200212072951.1: *4* TestOrange.test_bad_break
     def test_bad_break(self):
-        
+
         # From setup.py.
         # The total length of the ''' string should not affect line length.
         contents = r"""\

@@ -7,7 +7,7 @@ Run the unit tests in test.leo using the Execute Script command.
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui # For UnitTestGui.
+import leo.core.leoGui as leoGui  # For UnitTestGui.
 import cProfile as profile
 import doctest
 import gc
@@ -22,11 +22,11 @@ import timeit
 import tokenize
 import unittest
 try:
-    import tabnanny # Does not exist in jython.
+    import tabnanny  # Does not exist in jython.
 except ImportError:
     tabnanny = None
 #@-<< imports >>
-if g.app: # Make sure we can import this module stand-alone.
+if g.app:  # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
 else:
     newAtFile = False
@@ -63,7 +63,7 @@ class EditBodyTestCase(unittest.TestCase):
         commandName = self.parent.h
         i = commandName.find(' ')
         if i > -1:
-            commandName = commandName[: i]
+            commandName = commandName[:i]
         # Compute the result in tempNode.b
         command = getattr(c, commandName)
         command()
@@ -108,15 +108,15 @@ class EditBodyTestCase(unittest.TestCase):
         c.selectPosition(self.tempNode)
         w = c.frame.body.wrapper
         if self.sel:
-            s = str(self.sel.b) # Can't be unicode.
+            s = str(self.sel.b)  # Can't be unicode.
             lines = s.split('\n')
             w.setSelectionRange(lines[0], lines[1])
         if self.ins:
-            s = str(self.ins.b) # Can't be unicode.
+            s = str(self.ins.b)  # Can't be unicode.
             lines = s.split('\n')
             g.trace(lines)
             w.setInsertPoint(lines[0])
-        if not self.sel and not self.ins: # self.sel is a **tk** index.
+        if not self.sel and not self.ins:  # self.sel is a **tk** index.
             w.setInsertPoint(0)
             w.setSelectionRange(0, 0)
     #@+node:ekr.20110117113521.6107: *3* shortDescription
@@ -168,7 +168,7 @@ class GeneralTestCase(unittest.TestCase):
         c.selectPosition(self.p.copy())
         if not oldChanged:
             c.clearChanged()
-            
+
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         """Run a Leo GeneralTestCase test."""
@@ -201,7 +201,7 @@ class GeneralTestCase(unittest.TestCase):
         if trace_time:
             t2 = time.process_time()
             if t2 - t1 > 3.0:
-                g.trace('\nEXCESSIVE TIME: %5.2f sec. in %s' % (t2-t1, self.p.h))
+                g.trace('\nEXCESSIVE TIME: %5.2f sec. in %s' % (t2 - t1, self.p.h))
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
@@ -235,7 +235,7 @@ class ImportExportTestCase(unittest.TestCase):
         c = self.c; p = self.p
         g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
         commandName = p.h
-        command = getattr(c, commandName) # Will fail if command does not exist.
+        command = getattr(c, commandName)  # Will fail if command does not exist.
         command(event=None)
         failedMethod = g.app.unitTestDict.get("fail")
         self.assertFalse(failedMethod, failedMethod)
@@ -291,7 +291,7 @@ class ImportExportTestCase(unittest.TestCase):
             self.gui = None
         temp_p.setBodyString("")
         temp_p.clearDirty()
-        if 1: # Delete all children of temp node.
+        if 1:  # Delete all children of temp node.
             while temp_p.firstChild():
                 temp_p.firstChild().doDelete()
         g.app.gui = self.oldGui
@@ -300,6 +300,7 @@ class ImportExportTestCase(unittest.TestCase):
 #@+node:ekr.20160518074224.1: ** class LinterTable
 class LinterTable():
     """A class to encapsulate lists of leo modules under test."""
+
     def __init__(self):
         """Ctor for LinterTable class."""
         # Define self. relative to leo.core.leoGlobals
@@ -338,7 +339,7 @@ class LinterTable():
         # These are not included, because they don't start with 'qt_':
         add = ['free_layout.py', 'nested_splitter.py',]
         remove = [
-            'qt_main.py', # auto-generated file.
+            'qt_main.py',  # auto-generated file.
         ]
         for fn in add:
             aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
@@ -369,7 +370,7 @@ class LinterTable():
             'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
             'qt_main', 'qt_quicksearch', 'qt_commands',
             'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
-            'run_nodes', # Changed thread.allocate_lock to threading.lock().acquire()
+            'run_nodes',  # Changed thread.allocate_lock to threading.lock().acquire()
             'rst3',
             # 'scrolledmessage', # No longer exists.
             'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
@@ -396,11 +397,11 @@ class LinterTable():
             # This allows the -a option not to doubly-include gui-related plugins.
                 # 'free_layout.py', # Gui-related.
                 # 'nested_splitter.py', # Gui-related.
-            'gtkDialogs.py', # Many errors, not important.
-            'leofts.py', # Not (yet) in leoPlugins.leo.
-            'qtGui.py', # Dummy file
-            'qt_main.py', # Created automatically.
-            'rst3.py', # Obsolete
+            'gtkDialogs.py',  # Many errors, not important.
+            'leofts.py',  # Not (yet) in leoPlugins.leo.
+            'qtGui.py',  # Dummy file
+            'qt_main.py',  # Created automatically.
+            'rst3.py',  # Obsolete
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
@@ -416,14 +417,14 @@ class LinterTable():
     def get_files_for_scope(self, scope, fn):
         """Return a list of absolute filenames for external linters."""
         d = {
-            'all':      [self.core, self.commands, self.external, self.plugins], #  self.modes
+            'all': [self.core, self.commands, self.external, self.plugins],  #  self.modes
             'commands': [self.commands],
-            'core':     [self.core, self.commands, self.external, self.gui_plugins],
+            'core': [self.core, self.commands, self.external, self.gui_plugins],
             'external': [self.external],
-            'file':     [fn],
-            'gui':      [self.gui_plugins],
-            'modes':    [self.modes],
-            'plugins':  [self.plugins],
+            'file': [fn],
+            'gui': [self.gui_plugins],
+            'modes': [self.modes],
+            'plugins': [self.plugins],
         }
         functions = d.get(scope)
         paths = []
@@ -452,10 +453,10 @@ class RunTestExternallyHelperClass:
         """Ctor for RunTextExternallyHelperClass class."""
         self.c = c
         self.all = all
-        self.copyRoot = None # The root of copied tree.
+        self.copyRoot = None  # The root of copied tree.
         self.fileName = 'dynamicUnitTest.leo'
         self.marked = marked
-        self.root = None # The root of the tree to copy when self.all is False.
+        self.root = None  # The root of the tree to copy when self.all is False.
         self.tags = ('@test', '@suite', '@unittests', '@unit-tests')
     #@+node:ekr.20070627140344.2: *3* runTests & helpers
     def runTests(self):
@@ -490,7 +491,7 @@ class RunTestExternallyHelperClass:
         c2.selectPosition(c2.rootPosition())
         c2.mFileName = path
         c2.fileCommands.save(path, silent=True)
-        c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
+        c2.close(new_c=self.c)  # Bug fix: 2013/01/11: Retain previously-selected tab.
     #@+node:ekr.20070627135336.9: *4* createOutline & helpers (RunTestExternallyHelperClass)
     def createOutline(self, c2):
         """
@@ -500,7 +501,7 @@ class RunTestExternallyHelperClass:
         """
         c = self.c
         self.copyRoot = root = c2.rootPosition()
-        c2.suppressHeadChanged = True # Suppress all onHeadChanged logic.
+        c2.suppressHeadChanged = True  # Suppress all onHeadChanged logic.
         root.expand()
         root.initHeadString('%s unit tests' % ('All' if self.all else 'Selected'))
         if self.all:
@@ -537,10 +538,10 @@ class RunTestExternallyHelperClass:
         # Except for the path arg, these are the arguments to the leoBridge.
         gui='qt',
         path='unitTest.leo',
-        loadPlugins=False, # Plugins probably should not be enable by default.
+        loadPlugins=False,  # Plugins probably should not be enable by default.
         readSettings=True,
         silent=True,
-        tracePlugins=False, # This is a bit too much.
+        tracePlugins=False,  # This is a bit too much.
         verbose=True,
     ):
         """Run all unit tests in path (a .leo file) in a pristine environment."""
@@ -590,7 +591,7 @@ class TestManager:
         # Don't auto-save unitTest.leo.
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
-                c.save() # Eliminate the need for ctrl-s.
+                c.save()  # Eliminate the need for ctrl-s.
         try:
             g.unitTesting = g.app.unitTesting = True
             g.app.runningAllUnitTests = all and not marked
@@ -614,7 +615,7 @@ class TestManager:
 
         def write(self, s):
             """Called from pr and also unittest.addSuccess/addFailure."""
-            if 0: # Write everything on a new line.
+            if 0:  # Write everything on a new line.
                 if not s.isspace():
                     self.logger.info(s.rstrip())
             else:
@@ -626,6 +627,7 @@ class TestManager:
                         self.logger.info(''.join(self.aList))
                         self.aList = []
                     self.logger.info(s.rstrip())
+
         def flush(self):
             pass
 
@@ -670,7 +672,7 @@ class TestManager:
             logger, handler, stream = self.create_logging_stream()
             runner = unittest.TextTestRunner(
                 failfast=g.app.failFast,
-                stream=stream, # Implies we are running Python 3.
+                stream=stream,  # Implies we are running Python 3.
                 verbosity=verbosity,
             )
         else:
@@ -707,14 +709,14 @@ class TestManager:
             if stream.aList:
                 # pylint: disable=logging-not-lazy
                     # This may be a pylint issue.
-                logger.info('\n'+''.join(stream.aList))
+                logger.info('\n' + ''.join(stream.aList))
             logger.removeHandler(handler)
         #
         # 4. Support for the quicksearch plugin.
         if gui_name not in ('browser', 'curses'):
             key = 'unittest/cur/fail'
-            archive = [(t.p.gnx, trace2) for(t, trace2) in result.errors]
-            c.db [key] = archive
+            archive = [(t.p.gnx, trace2) for (t, trace2) in result.errors]
+            c.db[key] = archive
     #@+node:ekr.20120912094259.10549: *5* tm.get_suite_script
     def get_suite_script(self):
         s = '''
@@ -757,10 +759,10 @@ class TestManager:
                 test = None
             elif tm.isTestNode(p):
                 test = tm.makeTestCase(p, setup_script)
-            elif tm.isSuiteNode(p): # @suite
+            elif tm.isSuiteNode(p):  # @suite
                 test = tm.makeTestSuite(p, setup_script)
             elif tm.isTestClassNode(p):
-                test = tm.makeTestClass(p) # A suite of tests.
+                test = tm.makeTestClass(p)  # A suite of tests.
             else:
                 test = None
             if test:
@@ -773,7 +775,7 @@ class TestManager:
                 suite.addTest(test)
                 found = True
         return suite if found else None
-        
+
     #@+node:ekr.20051104075904.13: *5* tm.makeTestCase
     def makeTestCase(self, p, setup_script):
         c = self.c
@@ -855,7 +857,7 @@ class TestManager:
         """Run any kind of external unit test."""
         c = self.c
         if c.isChanged():
-            c.save() # Eliminate the need for ctrl-s.
+            c.save()  # Eliminate the need for ctrl-s.
         runner = RunTestExternallyHelperClass(c, all, marked)
         runner.runTests()
         c.bodyWantsFocusNow()
@@ -908,7 +910,7 @@ class TestManager:
     # It would be better, perhaps, to use @common nodes in unitTest.leo.
     #@+node:ekr.20051104075904.99: *4* TM.createUnitTestsFromDoctests
     def createUnitTestsFromDoctests(self, modules, verbose=True):
-        created = False # True if suite is non-empty.
+        created = False  # True if suite is non-empty.
         suite = unittest.makeSuite(unittest.TestCase)
         for module in list(modules):
             # New in Python 4.2: n may be zero.
@@ -936,7 +938,7 @@ class TestManager:
         # Create the suite and add all test cases.
         suite = unittest.makeSuite(unittest.TestCase)
         for p in data_p.children():
-            if p.h == "tempNode": continue # TempNode now in data tree.
+            if p.h == "tempNode": continue  # TempNode now in data tree.
             before = tm.findNodeInTree(p, "before", startswith=True)
             after = tm.findNodeInTree(p, "after", startswith=True)
             sel = tm.findNodeInTree(p, "selection")
@@ -981,7 +983,7 @@ class TestManager:
         expected = child2.b
         # Compute the type from child1's headline.
         j = g.skip_c_id(h1, 2)
-        theType = h1[1: j]
+        theType = h1[1:j]
         kinds = ('@auto', '@clean', '@edit', '@file', '@thin', '@nosent', '@asis')
         assert theType in kinds, f"bad type: {theType}"
         if theType == "@asis":
@@ -1020,7 +1022,7 @@ class TestManager:
         commandName = h[6:].strip()
         # Ignore everything after the actual command name.
         i = g.skip_id(commandName, 0, chars='-')
-        commandName = commandName[: i]
+        commandName = commandName[:i]
         assert commandName, 'empty command name'
         command = c.commandsDict.get(commandName)
         assert command, f"no command: {commandName}"
@@ -1032,7 +1034,7 @@ class TestManager:
             assert h2.startswith(h), f"expected head: {h}, got: {h2}"
         sels = []
         for node, h in ((before, before_h), (after, after_h)):
-            sel = node.h[len(h):].strip()
+            sel = node.h[len(h) :].strip()
             aList = [str(z) for z in sel.split(',')]
             sels.append(tuple(aList))
         # pylint: disable=unbalanced-tuple-unpacking
@@ -1072,7 +1074,7 @@ class TestManager:
             if c2 and c2 != c:
                 c2.clearChanged()  # Clears all dirty bits.
                 g.app.closeLeoWindow(c2.frame)
-            c.frame.update() # Restored in Leo 4.4.8.
+            c.frame.update()  # Restored in Leo 4.4.8.
     #@+node:sps.20100531175334.10307: *4* TM.runRootFileTangleTest
     def runRootFileTangleTest(self, p):
         """Code for testing tangle of @root.  The first child is the top node of the
@@ -1208,7 +1210,7 @@ class TestManager:
         i = 0
         while i < len(s) and s[i] not in ' \t\n':
             i += 1
-        command = s[: i]
+        command = s[:i]
         assert command, 'empty vim command'
         assert command, f"no command: {command}"
         work, before, after = tm.findChildrenOf(atTest)
@@ -1219,7 +1221,7 @@ class TestManager:
             assert h2.startswith(h), f"expected head: {h}, got: {h2}"
         sels = []
         for node, h in ((before, before_h), (after, after_h)):
-            sel = node.h[len(h):].strip()
+            sel = node.h[len(h) :].strip()
             aList = [str(z) for z in sel.split(',')]
             sels.append(tuple(aList))
         # pylint: disable=unbalanced-tuple-unpacking
@@ -1398,16 +1400,16 @@ class TestManager:
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h, 0, '@ignore'):
                 p.moveToNodeAfterTree()
-            elif tm.isTestSetupNode(p): # @testsetup
+            elif tm.isTestSetupNode(p):  # @testsetup
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
-            elif add and tm.isTestNode(p): # @test
+            elif add and tm.isTestNode(p):  # @test
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
-            elif add and tm.isSuiteNode(p): # @suite
+            elif add and tm.isSuiteNode(p):  # @suite
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
-            elif add and tm.isTestClassNode(p): # @testclass
+            elif add and tm.isTestClassNode(p):  # @testclass
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif not marked or not p.isMarked() or not p.hasChildren():
@@ -1428,10 +1430,10 @@ class TestManager:
                     if g.match_word(p.h, 0, '@ignore'):
                         # Support @ignore here.
                         p.moveToNodeAfterTree()
-                    elif(tm.isTestNode(p) or # @test
-                          tm.isSuiteNode(p) or # @suite
-                          tm.isTestClassNode(p) or # @testclass
-                          tm.isTestSetupNode(p) # @testsetup
+                    elif(tm.isTestNode(p) or  # @test
+                          tm.isSuiteNode(p) or  # @suite
+                          tm.isTestClassNode(p) or  # @testclass
+                          tm.isTestSetupNode(p)  # @testsetup
                     ):
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
@@ -1497,7 +1499,7 @@ class TestManager:
             h = headline.strip().lower()
             if p.h.strip().lower() == h:
                 return p.copy()
-        if False and breakOnError: # useful for debugging.
+        if False and breakOnError:  # useful for debugging.
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
         return None
@@ -1599,7 +1601,7 @@ class TestManager:
         oldUnitTesting = g.unitTesting
         if ext == ".py":
             try:
-                g.unitTesting = False # Disable @test nodes!
+                g.unitTesting = False  # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
                     fullName = 'leo.core.%s' % (moduleName)
@@ -1690,7 +1692,7 @@ def factorial(n):
         raise ValueError("n must be >= 0")
     if math.floor(n) != n:
         raise ValueError("n must be exact integer")
-    if n + 1 == n: # catch a value like 1e300
+    if n + 1 == n:  # catch a value like 1e300
         raise OverflowError("n too large")
     result = 1
     factor = 2
@@ -1725,7 +1727,7 @@ runGC = runGc
 #@+node:ekr.20051104075904.18: *4* enableGc
 def set_debugGc():
     gc.set_debug(
-        gc.DEBUG_STATS # prints statistics.
+        gc.DEBUG_STATS  # prints statistics.
         # gc.DEBUG_LEAK | # Same as all below.
         # gc.DEBUG_COLLECTABLE
         # gc.DEBUG_UNCOLLECTABLE
@@ -1784,7 +1786,7 @@ def printGc(message=None):
         funcDict = {}
         for obj in gc.get_objects():
             if isinstance(obj, types.FunctionType):
-                key = repr(obj) # Don't create a pointer to the object!
+                key = repr(obj)  # Don't create a pointer to the object!
                 funcDict[key] = None
                 if key not in lastFunctionsDict:
                     g.pr('\n', obj)
@@ -1815,3 +1817,4 @@ def printGcRefs(verbose=True):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

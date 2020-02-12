@@ -15,12 +15,14 @@ import json
 # class LeoNodeNotFoundException(Exception):
     # pass
 
+
 class LeoSessionException(Exception):
     pass
 #@-<< exception classes>>
 #@+others
 #@+node:ekr.20120420054855.14349: ** class SessionManager
 # These were top-level nodes of leotools.py
+
 
 class SessionManager:
     #@+others
@@ -68,7 +70,7 @@ class SessionManager:
         for unl in unls:
             i = unl.find("#")
             if i > -1:
-                fn, unl = unl[: i], unl[i:]
+                fn, unl = unl[:i], unl[i:]
             else:
                 fn, unl = unl, ''
             fn = fn.strip()
@@ -81,7 +83,7 @@ class SessionManager:
                 g.trace('loading:', fn)
             g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
                 # This selects the proper position.
-           
+
     #@+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
     def load_snapshot(self):
         """
@@ -184,3 +186,4 @@ def session_snapshot_save_command(event):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

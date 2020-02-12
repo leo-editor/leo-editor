@@ -341,7 +341,7 @@ class CPrettyPrinter:
             # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree (new)
     def pretty_print_tree(self, p):
-        
+
         c = self.c
         if should_kill_beautify(p):
             return
@@ -394,37 +394,37 @@ class CPrettyPrinter:
             token = s[i]
             progress = i
             if token in ('if', 'for', 'while'):
-                j = self.skip_ws_and_comments(s, i+1)
+                j = self.skip_ws_and_comments(s, i + 1)
                 if self.match(s, j, '('):
                     j = self.skip_parens(s, j)
                     if self.match(s, j, ')'):
                         old_j = j + 1
-                        j = self.skip_ws_and_comments(s, j+1)
+                        j = self.skip_ws_and_comments(s, j + 1)
                         if self.match(s, j, ';'):
                             # Example: while (*++prefix);
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                         elif self.match(s, j, '{'):
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                         else:
                             oops("insert '{'", i, j)
                             # Back up, and don't go past a newline or comment.
                             j = self.skip_ws(s, old_j)
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                             result.append(' ')
                             result.append('{')
                             result.append('\n')
                             i = j
                             j = self.skip_statement(s, i)
-                            result.extend(s[i : j])
+                            result.extend(s[i:j])
                             result.append('\n')
                             result.append('}')
                             oops("insert '}'", i, j)
                     else:
                         oops("missing ')'", i, j)
-                        result.extend(s[i : j])
+                        result.extend(s[i:j])
                 else:
                     oops("missing '('", i, j)
-                    result.extend(s[i : j])
+                    result.extend(s[i:j])
                 i = j
             else:
                 result.append(token)
@@ -539,12 +539,12 @@ class CPrettyPrinter:
             s = self.result[-1]
             if s.isspace():
                 self.result.pop()
-                s = s.replace('\t', ' '*w)
+                s = s.replace('\t', ' ' * w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n'+s2[:-w])
+                    self.result.append('\n' + s2[: -w])
                 else:
-                    self.result.append(s[:-w])
+                    self.result.append(s[: -w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s, i, pat):
         return i < len(s) and s[i] == pat
@@ -573,7 +573,7 @@ class CPrettyPrinter:
             else:
                 j += 1
             assert j > i
-            result.append(''.join(s[i : j]))
+            result.append(''.join(s[i:j]))
             i = j  # Advance.
         return result
 

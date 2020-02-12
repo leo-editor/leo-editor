@@ -36,7 +36,7 @@ class NodeIndices:
         if gnx == 'hidden-root-vnode-gnx':
             # No longer an error.
             # fast.readWithElementTree always generates a nominal hidden vnode.
-            return 
+            return
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
             g.internalError(
@@ -118,7 +118,7 @@ class NodeIndices:
     def setTimestamp(self):
         """Set the timestamp string to be used by getNewIndex until further notice"""
         self.timeString = time.strftime(
-            "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
+            "%Y%m%d%H%M%S",  # Help comparisons; avoid y2k problems.
             time.localtime())
 
     setTimeStamp = setTimestamp
@@ -153,7 +153,7 @@ class NodeIndices:
         # pylint: disable=literal-comparison
             # Don't you dare touch this code to keep pylint happy.
         if not id_ or (n != 0 and not n):
-            return # the gnx is not well formed or n in ('',None)
+            return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
             try:
                 n = int(n)
@@ -168,19 +168,20 @@ class NodeIndices:
 #@+node:ekr.20031218072017.890: *3* << about the position class >>
 #@@killcolor
 #@+at
-# 
+#
 # A position marks the spot in a tree traversal. A position p consists of a VNode
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
 # each ancestor **at the spot in tree traversal. Positions p has a unique set of
 # parents.
-# 
+#
 # The p.moveToX methods may return a null (invalid) position p with p.v = None.
-# 
+#
 # The tests "if p" or "if not p" are the _only_ correct way to test whether a
 # position p is valid. In particular, tests like "if p is None" or "if p is not
 # None" will not work properly.
 #@-<< about the position class >>
 # Positions should *never* be saved by the ZOBD.
+
 
 class Position:
     #@+others
@@ -194,7 +195,7 @@ class Position:
         self.v = v
         # New in Leo 4.5: stack entries are tuples (v,childIndex).
         if stack:
-            self.stack = stack[:] # Creating a copy here is safest and best.
+            self.stack = stack[:]  # Creating a copy here is safest and best.
         else:
             self.stack = []
         g.app.positions += 1
@@ -214,7 +215,7 @@ class Position:
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
-        return not self.__eq__(p2) # For possible use in Python 2.x.
+        return not self.__eq__(p2)  # For possible use in Python 2.x.
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__(self, other):
         return self.__eq__(other) or self.__gt__(other)
@@ -297,7 +298,7 @@ class Position:
     def dump(self, label=""):
         p = self
         if p.v:
-            p.v.dump() # Don't print a label
+            p.v.dump()  # Don't print a label
     #@+node:ekr.20080416161551.191: *4* p.key & p.sort_key & __hash__
     def key(self):
         p = self
@@ -312,11 +313,11 @@ class Position:
 
     def sort_key(self, p):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
-        
+
     # Positions should *not* be hashable.
     #
     # From https://docs.python.org/3/reference/datamodel.html#object.__hash__
-    # 
+    #
     # If a class defines mutable objects and implements an __eq__() method, it
     # should not implement __hash__(), since the implementation of hashable
     # collections requires that a key’s hash value is immutable (if the object’s
@@ -367,7 +368,7 @@ class Position:
         for s in lines:
             i = g.skip_ws(s, 0)
             if i < len(s) and s[i] in ('+', '-', '\\'):
-                s = s[: i] + '\\' + s[i:]
+                s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
     #@+node:ekr.20091001141621.6060: *3* p.generators
@@ -381,6 +382,7 @@ class Position:
             p.moveToNext()
 
     # Compatibility with old code...
+
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
     def following_siblings(self, copy=True):
@@ -392,6 +394,7 @@ class Position:
             p.moveToNext()
 
     # Compatibility with old code...
+
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
     def nearest_roots(self, copy=True, predicate=None):
@@ -409,10 +412,12 @@ class Position:
         if predicate is None:
 
             # pylint: disable=function-redefined
+
             def predicate(p):
                 return p.isAnyAtFileNode()
 
         # First, look up the tree.
+
         p1 = self
         for p in p1.self_and_parents(copy=False):
             if predicate(p):
@@ -445,10 +450,12 @@ class Position:
         if predicate is None:
 
             # pylint: disable=function-redefined
+
             def predicate(p):
                 return p.isAnyAtFileNode()
 
         # First, look up the tree.
+
         p1 = self
         for p in p1.self_and_parents(copy=False):
             if predicate(p):
@@ -474,7 +481,7 @@ class Position:
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
-        while p and p != after: # bug fix: 2013/10/12
+        while p and p != after:  # bug fix: 2013/10/12
             yield p.v
             p.moveToThreadNext()
     # Compatibility with old code.
@@ -491,6 +498,7 @@ class Position:
             p.moveToParent()
 
     # Compatibility with old code...
+
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
     def self_and_parents(self, copy=True):
@@ -502,6 +510,7 @@ class Position:
             p.moveToParent()
 
     # Compatibility with old code...
+
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self, copy=True):
@@ -515,6 +524,7 @@ class Position:
             p.moveToNext()
 
     # Compatibility with old code...
+
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self, copy=True):
@@ -527,6 +537,7 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
+
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self, copy=True):
@@ -540,6 +551,7 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
+
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes(self):
@@ -566,6 +578,7 @@ class Position:
                 yield p.copy() if copy else p
 
     # Compatibility with old code...
+
     subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
@@ -907,7 +920,7 @@ class Position:
             h = p.h.strip()
             i = h.find('<<')
             j = h.find('>>')
-            target = h[i: j + 2] if -1 < i < j else '@others'
+            target = h[i : j + 2] if -1 < i < j else '@others'
             for s in parent.b.split('\n'):
                 if s.find(target) > -1:
                     offset += g.skip_ws(s, 0)
@@ -941,14 +954,14 @@ class Position:
         stack = []; changed = False; i = 0
         while i < len(p.stack):
             v, childIndex = p.stack[i]
-            p3 = Position(v=v, childIndex=childIndex, stack=stack[: i])
+            p3 = Position(v=v, childIndex=childIndex, stack=stack[:i])
             while p3:
                 if p2 == p3:
                     # 2011/02/25: compare full positions, not just vnodes.
                     # A match with the to-be-moved node.
                     stack.append((v, childIndex - 1),)
                     changed = True
-                    break # terminate only the inner loop.
+                    break  # terminate only the inner loop.
                 p3.moveToBack()
             else:
                 stack.append((v, childIndex),)
@@ -985,7 +998,7 @@ class Position:
         p._childIndex = n
         child = p.v
         child._addLink(n, parent_v)
-        
+
     #@+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
     def _linkCopiedAsNthChild(self, parent, n):
         """Link a copied self as the n'th child of the parent."""
@@ -1063,7 +1076,7 @@ class Position:
             self.badUnlink(parent_v, n, child)
     #@+node:ekr.20090706171333.6226: *5* p.badUnlink
     def badUnlink(self, parent_v, n, child):
-        
+
         if 0 <= n < len(parent_v.children):
             g.trace(f"**can not happen: children[{n}] != p.v")
             g.trace('parent_v.children...\n',
@@ -1079,15 +1092,15 @@ class Position:
                 g.listToString(parent_v.children))
             g.trace('parent_v', parent_v, 'child', child)
             g.trace('** callers:', g.callers())
-            if g.app.unitTesting:assert False, f"bad child index: {n}"
+            if g.app.unitTesting: assert False, f"bad child index: {n}"
     #@+node:ekr.20080416161551.199: *3* p.moveToX
     #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
-    # 
+    #
     # When moving to a nonexistent position, these routines simply set p.v = None,
     # leaving the p.stack unchanged. This allows the caller to "undo" the effect of
     # the invalid move by simply restoring the previous value of p.v.
-    # 
+    #
     # These routines all return self on exit so the following kind of code will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@+node:ekr.20080416161551.200: *4* p.moveToBack
@@ -1203,7 +1216,7 @@ class Position:
                 while p:
                     if p.hasNext():
                         p.moveToNext()
-                        break #found
+                        break  #found
                     p.moveToParent()
                 # not found.
         return p
@@ -1220,12 +1233,12 @@ class Position:
             elif back:
                 p.moveToBack()
             else:
-                p.moveToParent() # Same as p.moveToThreadBack()
+                p.moveToParent()  # Same as p.moveToThreadBack()
             if p:
                 if limit:
                     done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
                     if done:
-                        return val # A position or None
+                        return val  # A position or None
                 if p.isVisible(c):
                     return p
         return p
@@ -1257,7 +1270,7 @@ class Position:
             else:
                 p.moveToThreadNext()
             if p:
-                if limit and self.checkVisNextLimit(limit,p):
+                if limit and self.checkVisNextLimit(limit, p):
                     return None
                 if p.isVisible(c):
                     return p
@@ -1307,7 +1320,7 @@ class Position:
                 while p:
                     if p.hasNext():
                         p.moveToNext()
-                        break # found
+                        break  # found
                     p.moveToParent()
                 # not found.
         return p
@@ -1319,8 +1332,8 @@ class Position:
 
         Returns the newly created position."""
         p = self
-        p2 = p.copy() # Do *not* copy the VNode!
-        p2._linkAfter(p) # This should "just work"
+        p2 = p.copy()  # Do *not* copy the VNode!
+        p2._linkAfter(p)  # This should "just work"
         return p2
     #@+node:ekr.20040117171654: *4* p.copy
     def copy(self):
@@ -1341,8 +1354,8 @@ class Position:
 
     def copyTreeFromSelfTo(self, p2, copyGnxs=False):
         p = self
-        p2.v._headString = g.toUnicode(p.h, reportErrors=True) # 2017/01/24
-        p2.v._bodyString = g.toUnicode(p.b, reportErrors=True) # 2017/01/24
+        p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
+        p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
         # Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
         # 2017/08/20: Add support for copyGnx's keyword arg.
@@ -1384,7 +1397,7 @@ class Position:
         Delete all children of the receiver and set p.dirty().
         """
         p = self
-        p.setDirty() # Mark @file nodes dirty!
+        p.setDirty()  # Mark @file nodes dirty!
         while p.hasChildren():
             p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
@@ -1397,7 +1410,7 @@ class Position:
         Because of the undo command we never actually delete vnodes.
         """
         p = self
-        p.setDirty() # Mark @file nodes dirty!
+        p.setDirty()  # Mark @file nodes dirty!
         sib = p.copy()
         while sib.hasNext():
             sib.moveToNext()
@@ -1470,7 +1483,7 @@ class Position:
     #@+node:ekr.20040303175026.10: *4* p.moveAfter
     def moveAfter(self, a):
         """Move a position after position a."""
-        p = self # Do NOT copy the position!
+        p = self  # Do NOT copy the position!
         a._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAfter(a)
@@ -1478,20 +1491,20 @@ class Position:
     #@+node:ekr.20040306060312: *4* p.moveToFirst/LastChildOf
     def moveToFirstChildOf(self, parent):
         """Move a position to the first child of parent."""
-        p = self # Do NOT copy the position!
-        return p.moveToNthChildOf(parent, 0) # Major bug fix: 2011/12/04
+        p = self  # Do NOT copy the position!
+        return p.moveToNthChildOf(parent, 0)  # Major bug fix: 2011/12/04
 
     def moveToLastChildOf(self, parent):
         """Move a position to the last child of parent."""
-        p = self # Do NOT copy the position!
+        p = self  # Do NOT copy the position!
         n = parent.numberOfChildren()
         if p.parent() == parent:
-            n -= 1 # 2011/12/10: Another bug fix.
-        return p.moveToNthChildOf(parent, n) # Major bug fix: 2011/12/04
+            n -= 1  # 2011/12/10: Another bug fix.
+        return p.moveToNthChildOf(parent, n)  # Major bug fix: 2011/12/04
     #@+node:ekr.20040303175026.11: *4* p.moveToNthChildOf
     def moveToNthChildOf(self, parent, n):
         """Move a position to the nth child of parent."""
-        p = self # Do NOT copy the position!
+        p = self  # Do NOT copy the position!
         parent._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAsNthChild(parent, n)
@@ -1503,7 +1516,7 @@ class Position:
 
         Important: oldRoot must the previous root position if it exists.
         """
-        p = self # Do NOT copy the position!
+        p = self  # Do NOT copy the position!
         if oldRoot:
             oldRoot._adjustPositionBeforeUnlink(p)
         p._unlink()
@@ -1512,13 +1525,13 @@ class Position:
     #@+node:ekr.20180123062833.1: *4* p.promote
     def promote(self):
         """A low-level promote helper."""
-        p = self # Do NOT copy the position.
+        p = self  # Do NOT copy the position.
         parent_v = p._parentVnode()
         children = p.v.children
         # Add the children to parent_v's children.
         n = p.childIndex() + 1
         z = parent_v.children[:]
-        parent_v.children = z[: n]
+        parent_v.children = z[:n]
         parent_v.children.extend(children)
         parent_v.children.extend(z[n:])
         # Remove v's children.
@@ -1533,7 +1546,7 @@ class Position:
 
     def validateOutlineWithParent(self, pv):
         p = self
-        result = True # optimists get only unpleasant surprises.
+        result = True  # optimists get only unpleasant surprises.
         parent = p.getParent()
         childIndex = p._childIndex
         #@+<< validate parent ivar >>
@@ -1625,18 +1638,18 @@ class Position:
         return p.v.fileIndex
 
     gnx = property(
-        __get_gnx, # __set_gnx,
+        __get_gnx,  # __set_gnx,
         doc="position gnx property")
     #@+node:ekr.20140203082618.15486: *4* p.script property
     def __get_script(self):
         p = self
         return g.getScript(p.v.context, p,
-            useSelectedText=False, # Always return the entire expansion.
+            useSelectedText=False,  # Always return the entire expansion.
             forcePythonSentinels=True,
             useSentinels=False)
 
     script = property(
-        __get_script, # __set_script,
+        __get_script,  # __set_script,
         doc="position property returning the script formed by p and its descendants")
     #@+node:ekr.20140218040104.16761: *4* p.nosentinels property
     def __get_nosentinels(self):
@@ -1644,7 +1657,7 @@ class Position:
         return ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
 
     nosentinels = property(
-        __get_nosentinels, # __set_nosentinels
+        __get_nosentinels,  # __set_nosentinels
         doc="position property returning the body text without sentinels")
     #@+node:ekr.20160129073222.1: *4* p.u Property
     def __get_u(self):
@@ -1712,7 +1725,7 @@ class Position:
         return self.v.computeIcon()
 
     def setIcon(self):
-        pass # Compatibility routine for old scripts
+        pass  # Compatibility routine for old scripts
     #@+node:ekr.20040306220634.29: *5* p.setSelection
     def setSelection(self, start, length):
         return self.v.setSelection(start, length)
@@ -1813,7 +1826,7 @@ class Position:
         return False
     #@-others
 
-position = Position # compatibility.
+position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
     #@+others
@@ -1863,7 +1876,7 @@ class PosList(list):
         return res
     #@-others
 
-Poslist = PosList # compatibility.
+Poslist = PosList  # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
 
@@ -1872,19 +1885,19 @@ class VNode:
     #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
     # Archived...
-    clonedBit = 0x01 # True: VNode has clone mark.
+    clonedBit = 0x01  # True: VNode has clone mark.
     # unused      0x02
-    expandedBit = 0x04 # True: VNode is expanded.
-    markedBit = 0x08 # True: VNode is marked
+    expandedBit = 0x04  # True: VNode is expanded.
+    markedBit = 0x08  # True: VNode is marked
     # unused    = 0x10 # (was orphanBit)
-    selectedBit = 0x20 # True: VNode is current VNode.
-    topBit = 0x40 # True: VNode was top VNode when saved.
+    selectedBit = 0x20  # True: VNode is current VNode.
+    topBit = 0x40  # True: VNode was top VNode when saved.
     # Not archived...
-    richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
+    richTextBit = 0x080  # Determines whether we use <bt> or <btr> tags.
     visitedBit = 0x100
     dirtyBit = 0x200
     writeBit = 0x400
-    orphanBit = 0x800 # True: error in @<file> tree prevented it from being written.
+    orphanBit = 0x800  # True: error in @<file> tree prevented it from being written.
     #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
@@ -1911,7 +1924,7 @@ class VNode:
         self.statusBits = 0
             # status bits
         # Information that is never written to any file...
-        self.context = context # The context containing context.hiddenRootNode.
+        self.context = context  # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
         self.expandedPositions = []
@@ -1952,14 +1965,14 @@ class VNode:
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names, h=''):
-        """Return the name following one of the names in nameList or """""
+        """Return the name following one of the names in nameList or """ ""
         # Allow h argument for unit testing.
         if not h:
             h = self.headString()
         if not g.match(h, 0, '@'):
             return ""
         i = g.skip_id(h, 1, '-')
-        word = h[: i]
+        word = h[:i]
         if word in names and g.match_word(h, 0, word):
             name = h[i:].strip()
             return name
@@ -2054,7 +2067,7 @@ class VNode:
     def isAtNoSentinelsFileNode(self):
         return bool(self.atNoSentinelsFileNodeName())
 
-    def isAtSilentFileNode(self): # @file-asis
+    def isAtSilentFileNode(self):  # @file-asis
         return bool(self.atSilentFileNodeName())
 
     def isAtShadowFileNode(self):
@@ -2093,7 +2106,7 @@ class VNode:
         v = self
         h = g.toUnicode(v.headString())
         h = h.lower().replace(' ', '').replace('\t', '')
-        h = h.lstrip('.') # 2013/04/05. Allow leading period before section names.
+        h = h.lstrip('.')  # 2013/04/05. Allow leading period before section names.
         pattern = g.toUnicode(pattern)
         pattern = pattern.lower().replace(' ', '').replace('\t', '')
         return h.startswith(pattern)
@@ -2113,8 +2126,8 @@ class VNode:
         assert v2.gnx
         assert v.gnx != v2.gnx
         # Copy vnode fields. Do **not** set v2.parents.
-        v2._headString = g.toUnicode(v._headString, reportErrors=True) # 2017/01/24
-        v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True) # 2017/01/24
+        v2._headString = g.toUnicode(v._headString, reportErrors=True)  # 2017/01/24
+        v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True)  # 2017/01/24
         v2.u = copy.deepcopy(v.u)
         if copyMarked and v.isMarked():
             v2.setMarked()
@@ -2315,7 +2328,7 @@ class VNode:
         return val
 
     def setIcon(self):
-        pass # Compatibility routine for old scripts
+        pass  # Compatibility routine for old scripts
     #@+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self):
         g.contentModifiedSet.add(self)
@@ -2381,10 +2394,10 @@ class VNode:
         # API allows headlines to contain newlines.
         v = self
         if g.isUnicode(s):
-            v._headString = s.replace('\n','')
+            v._headString = s.replace('\n', '')
             return
         s = g.toUnicode(s, reportErrors=True)
-        v._headString = s.replace('\n','')
+        v._headString = s.replace('\n', '')
 
     initBodyString = setBodyString
     initHeadString = setHeadString
@@ -2410,8 +2423,9 @@ class VNode:
                 yield v
                 for parent_v in v.parents:
                     yield from v_and_parents(parent_v)
-                    
+
         # There is no harm in calling v2.setDirty redundantly.
+
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
                 v2.setDirty()
@@ -2529,7 +2543,7 @@ class VNode:
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
     def _linkAsNthChild(self, parent_v, n):
         """Links self as the n'th child of VNode pv"""
-        v = self # The child node.
+        v = self  # The child node.
         v._addLink(n, parent_v)
     #@+node:ekr.20090130065000.1: *3* v.Properties
     #@+node:ekr.20090130114732.5: *4* v.b Property
@@ -2584,11 +2598,11 @@ class VNode:
         return v.fileIndex
 
     gnx = property(
-        __get_gnx, # __set_gnx,
+        __get_gnx,  # __set_gnx,
         doc="VNode gnx property")
     #@-others
 
-vnode = VNode # compatibility.
+vnode = VNode  # compatibility.
 
 #@@beautify
 #@-others

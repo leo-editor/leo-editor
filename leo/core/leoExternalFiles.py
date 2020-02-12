@@ -157,7 +157,7 @@ class ExternalFilesController:
                 self.unchecked_files = [z for z in self.files if z.exists()]
         else:
             # First, check all existing open-with files.
-            for ef in self.files: # A list of ExternalFile instances.
+            for ef in self.files:  # A list of ExternalFile instances.
                 if ef.exists():
                     self.idle_check_open_with_file(ef)
             # Next, check all commanders for which
@@ -204,7 +204,7 @@ class ExternalFilesController:
         if ef.path and os.path.exists(ef.path):
             time = self.get_mtime(ef.path)
             if time and time != ef.time:
-                ef.time = time # inhibit endless dialog loop.
+                ef.time = time  # inhibit endless dialog loop.
                 self.update_open_with_node(ef)
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
     def update_open_with_node(self, ef):
@@ -244,8 +244,8 @@ class ExternalFilesController:
                 if root:
                     # Open the external file itself.
                     directory = g.setDefaultDirectory(c, root)
-                    fn = c.expand_path_expression(root.anyAtFileNodeName()) # 1341
-                    path = g.os_path_finalize_join(directory, fn) # 1341
+                    fn = c.expand_path_expression(root.anyAtFileNodeName())  # 1341
+                    path = g.os_path_finalize_join(directory, fn)  # 1341
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.
@@ -300,7 +300,7 @@ class ExternalFilesController:
         for p2 in p.self_and_parents(copy=False):
             h = p2.anyAtFileNodeName()
             if not h:
-                h = p2.h # Not an @file node: use the entire header
+                h = p2.h  # Not an @file node: use the entire header
             elif use_extentions and not found:
                 # Found the nearest ancestor @<file> node.
                 found = True
@@ -390,7 +390,7 @@ class ExternalFilesController:
             # could exist in @open-with nodes.
             command = '<no command>'
             if kind in ('os.system', 'os.startfile'):
-                # New in Leo 5.7: 
+                # New in Leo 5.7:
                 # Use subProcess.Popen(..., shell=True)
                 c_arg = self.join(arg, fn)
                 if not testing:
@@ -414,7 +414,7 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  #???
             elif kind == 'subprocess.Popen':
                 c_arg = self.join(arg, fn)
                 command = f"subprocess.Popen({c_arg})"
@@ -433,7 +433,7 @@ class ExternalFilesController:
             else:
                 command = 'bad command:' + str(kind)
                 if not testing: g.trace(command)
-            return command # for unit testing.
+            return command  # for unit testing.
         except Exception:
             g.es('exception executing open-with command:', command)
             g.es_exception()
@@ -622,3 +622,4 @@ class ExternalFilesController:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

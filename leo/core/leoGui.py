@@ -24,8 +24,8 @@ class LeoGui:
     #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName):
         """Ctor for the LeoGui class."""
-        self.active = None # Used only by qt_gui.
-        self.consoleOnly = True # True if g.es goes to console.
+        self.active = None  # Used only by qt_gui.
+        self.consoleOnly = True  # True if g.es goes to console.
         self.globalFindTabManager = None
         self.globalFindTab = None
         self.idleTimeClass = None
@@ -150,10 +150,10 @@ class LeoGui:
         self.oops()
     #@+node:ekr.20031218072017.3733: *4* LeoGui.utils
     #@+at Subclasses are expected to subclass all of the following methods.
-    # 
+    #
     # These are all do-nothing methods: callers are expected to check for
     # None returns.
-    # 
+    #
     # The type of commander passed to methods depends on the type of frame
     # or dialog being created. The commander may be a Commands instance or
     # one of its subcommanders.
@@ -211,7 +211,7 @@ class LeoGui:
     #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
     #@+node:ekr.20110613103140.16423: *4* LeoGui.dismiss_spash_screen
     def dismiss_splash_screen(self):
-        pass # May be overridden in subclasses.
+        pass  # May be overridden in subclasses.
     #@+node:tbrown.20110618095626.22068: *4* LeoGui.ensure_commander_visible
     def ensure_commander_visible(self, c):
         """E.g. if commanders are in tabs, make sure c's tab is visible"""
@@ -265,7 +265,7 @@ class LeoKeyEvent:
             print(f"LeoKeyEvent: binding: {binding}, stroke: {stroke}, char: {char!r}")
         self.c = c
         self.char = char or ''
-        self.event = event # New in Leo 4.11.
+        self.event = event  # New in Leo 4.11.
         self.stroke = stroke
         self.w = self.widget = w
         # Optional ivars
@@ -276,7 +276,7 @@ class LeoKeyEvent:
         self.y_root = y_root
     #@+node:ekr.20140907103315.18774: *3* LeoKeyEvent.__repr__
     def __repr__(self):
-        
+
         d = {'c': self.c.shortFileName()}
         for ivar in ('char', 'event', 'stroke', 'w'):
             d[ivar] = getattr(self, ivar)
@@ -378,21 +378,32 @@ class NullGui(LeoGui):
         self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
     def alert(self, c, message): pass
+
     def attachLeoIcon(self, window): pass
+
     def destroySelf(self): pass
+
     def finishCreate(self): pass
+
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return g.app.config.defaultFont
+
     def getIconImage(self, name): return None
+
     def getImageImage(self, name): return None
+
     def getTreeImage(self, c, path): return None
+
     def get_window_info(self, window): return 600, 500, 20, 20
+
     def onActivateEvent(self, *args, **keys): pass
+
     def onDeactivateEvent(self, *args, **keys): pass
+
     def set_top_geometry(self, w, h, x, y): pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
-        return True # Must be True for unit tests.
+        return True  # Must be True for unit tests.
 
     def isTextWrapper(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
@@ -407,7 +418,7 @@ class NullGui(LeoGui):
 
     def createFindTab(self, c, parentFrame):
         """Create a find tab in the indicated frame."""
-        pass # Now always done during startup.
+        pass  # Now always done during startup.
 
     def createLeoFrame(self, c, title):
         """Create a null Leo Frame."""
@@ -440,21 +451,21 @@ class NullScriptingControllerClass:
 #@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
 class StringCheckBox:
     """Simulate a QCheckBox."""
-    
+
     def __init__(self, name, label):
         self.label = label
         self.name = name
         self.value = True
-        
+
     def checkState(self):
         return self.value
-        
+
     def objectName(self):
         return self.name
 
     def setCheckState(self, value):
         self.value = value
-    
+
     def toggle(self):
         self.value = not self.value
 #@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
@@ -474,15 +485,15 @@ class StringGui(LeoGui):
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
 class StringLineEdit:
-    
+
     """Simulate a QLineEdit."""
-        
+
     def __init__(self, name, disabled):
         self.disabled = disabled
         self.name = name
         self.pos = 0
         self.s = ''
-        
+
     def clear(self):
         self.pos = 0
         self.s = ''
@@ -492,32 +503,32 @@ class StringLineEdit:
             i = self.pos
             self.s = self.s[:i] + s + self.s[i:]
             self.pos += len(s)
-        
+
     def objectName(self):
         return self.name
-        
+
     def text(self):
         return self.s
 #@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
 class StringRadioButton:
-    
+
     """Simulate QRadioButton."""
-    
+
     def __init__(self, name, label):
         self.label = label
         self.name = name
         self.value = True
-        
+
     def isChecked(self):
         return self.value
-        
+
     def objectName(self):
         return self.name
-    
+
     def toggle(self):
         self.value = not self.value
 
-   
+
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
     """A gui class for use by unit tests."""
@@ -535,9 +546,9 @@ class UnitTestGui(NullGui):
         g.app.gui = self.oldGui
     #@+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
     def createSpellTab(self, c, spellHandler, tabName):
-        pass # This method keeps pylint happy.
+        pass  # This method keeps pylint happy.
     #@+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
-    if 1: # Huh?
+    if 1:  # Huh?
 
         def runAtIdle(self, aFunc):
             """Run aFunc immediately for a unit test.
@@ -551,3 +562,4 @@ class UnitTestGui(NullGui):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

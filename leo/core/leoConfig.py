@@ -87,7 +87,7 @@ class ParserBaseClass:
     def computeModeName(self, name):
         s = name.strip().lower()
         j = s.find(' ')
-        if j > -1: s = s[: j]
+        if j > -1: s = s[:j]
         if s.endswith('mode'):
             s = s[: -4].strip()
         if s.endswith('-'):
@@ -96,7 +96,7 @@ class ParserBaseClass:
         if i > -1:
             # The actual mode name is everything up to the "::"
             # The prompt is everything after the prompt.
-            s = s[: i]
+            s = s[:i]
         modeName = s + '-mode'
         return modeName
     #@+node:ekr.20060102103625: *3* pbc.createModeCommand
@@ -105,7 +105,7 @@ class ParserBaseClass:
         i = name.find('::')
         if i > -1:
             # The prompt is everything after the '::'
-            prompt = name[i + 2:].strip()
+            prompt = name[i + 2 :].strip()
             modeDict['*command-prompt*'] = g.BindingInfo(kind=prompt)
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict
@@ -247,7 +247,7 @@ class ParserBaseClass:
         aList, lines = [], g.splitLines(s)
         for s in lines:
             i = s.find('#')
-            if i > -1: s = s[: i] + '\n' # 2011/09/29: must add newline back in.
+            if i > -1: s = s[:i] + '\n'  # 2011/09/29: must add newline back in.
             if s.strip(): aList.append(s.lstrip())
         s = ''.join(aList)
         # Set the global config ivars.
@@ -334,13 +334,13 @@ class ParserBaseClass:
         @ints [val1,val2,...]aName=val
         @ints aName[val1,val2,...]=val
         """
-        name = name.strip() # The name indicates the valid values.
+        name = name.strip()  # The name indicates the valid values.
         i = name.find('[')
         j = name.find(']')
         if -1 < i < j:
-            items = name[i + 1: j]
+            items = name[i + 1 : j]
             items = items.split(',')
-            name = name[: i] + name[j + 1:].strip()
+            name = name[:i] + name[j + 1 :].strip()
             try:
                 items = [int(item.strip()) for item in items]
             except ValueError:
@@ -380,7 +380,7 @@ class ParserBaseClass:
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
                     if source != 'clipboard':
-                        use = patch # [0][1]
+                        use = patch  # [0][1]
                     else:
                         if isinstance(self.clipBoard, list):
                             use = self.clipBoard
@@ -402,12 +402,12 @@ class ParserBaseClass:
                     del list_[idx]
                 elif mode == 'copy':
                     self.clipBoard = list_[idx]
-                else: # append
+                else:  # append
                     list_.extend(use)
             else:
                 g.es_print("ERROR: didn't find menu path " + targetPath)
         elif g.app.inBridge:
-            pass # #48: Not an error.
+            pass  # #48: Not an error.
         else:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
     #@+node:tbrown.20080514180046.9: *5* pbc.getName
@@ -458,7 +458,7 @@ class ParserBaseClass:
             self.debug_count += 1
             h = p.h
             if g.match_word(h, 0, '@menu'):
-                name = h[len('@menu'):].strip()
+                name = h[len('@menu') :].strip()
                 if name:
                     for z in aList:
                         name2, junk, junk = z
@@ -480,7 +480,7 @@ class ParserBaseClass:
             g.app.config.menusList = aList
             name = c.shortFileName() if c else '<no settings file>'
             g.app.config.menusFileName = name
-       
+
     #@+node:ekr.20070926141716: *5* pbc.doItems
     def doItems(self, p, aList):
 
@@ -492,7 +492,7 @@ class ParserBaseClass:
             h = p.h
             for tag in ('@menu', '@item', '@ifplatform'):
                 if g.match_word(h, 0, tag):
-                    itemName = h[len(tag):].strip()
+                    itemName = h[len(tag) :].strip()
                     if itemName:
                         lines = [z for z in g.splitLines(p.b) if
                             z.strip() and not z.strip().startswith('#')]
@@ -549,7 +549,7 @@ class ParserBaseClass:
                     if aList3:
                         aList.extend(aList3)
                     aList.append(bi)
-                    d [name] = aList
+                    d[name] = aList
             # Restore the global shortcutsDict.
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName, name1, d)
@@ -583,7 +583,7 @@ class ParserBaseClass:
             h = p.h
             for tag in ('@menu', '@item'):
                 if g.match_word(h, 0, tag):
-                    itemName = h[len(tag):].strip()
+                    itemName = h[len(tag) :].strip()
                     if itemName:
                         if tag == '@menu':
                             aList2 = []
@@ -622,7 +622,7 @@ class ParserBaseClass:
             line = line.strip()
             if line and not g.match(line, 0, '#'):
                 commandName, bi = self.parseShortcutLine(fn, line)
-                if bi is None: # Fix #718.
+                if bi is None:  # Fix #718.
                     print('\nWarning: bad shortcut specifier: %r\n' % line)
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):
@@ -653,10 +653,10 @@ class ParserBaseClass:
         i = name.find('[')
         j = name.find(']')
         if -1 < i < j:
-            items = name[i + 1: j]
+            items = name[i + 1 : j]
             items = items.split(',')
             items = [item.strip() for item in items]
-            name = name[: i] + name[j + 1:].strip()
+            name = name[:i] + name[j + 1 :].strip()
             kind = "strings[%s]" % (','.join(items))
             # At present no checking is done.
             self.set(p, kind, name, val)
@@ -705,12 +705,12 @@ class ParserBaseClass:
             name = s
             val = None
         else:
-            name = s[: i].strip()
-            val = s[i + 1:].strip().strip('"').strip("'")
+            name = s[:i].strip()
+            val = s[i + 1 :].strip().strip('"').strip("'")
         for tag in ('_family', '_size', '_slant', '_weight'):
             if name.endswith(tag):
                 kind = tag[1:]
-                d[kind] = name, val # Used only by doFont.
+                d[kind] = name, val  # Used only by doFont.
                 return
     #@+node:ekr.20041119205148: *4* pbc.parseHeadline
     def parseHeadline(self, s):
@@ -723,7 +723,7 @@ class ParserBaseClass:
         if g.match(s, 0, '@'):
             i = g.skip_id(s, 1, chars='-')
             i = g.skip_ws(s, i)
-            kind = s[1: i].strip()
+            kind = s[1:i].strip()
             if kind:
                 # name is everything up to '='
                 if kind == 'data':
@@ -732,15 +732,15 @@ class ParserBaseClass:
                     if j == -1:
                         name = s[i:].strip()
                     else:
-                        name = s[i: j].strip()
+                        name = s[i:j].strip()
                 else:
                     j = s.find('=', i)
                     if j == -1:
                         name = s[i:].strip()
                     else:
-                        name = s[i: j].strip()
+                        name = s[i:j].strip()
                         # val is everything after the '='
-                        val = s[j + 1:].strip()
+                        val = s[j + 1 :].strip()
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* pbc.parseOpenWith & helper
     def parseOpenWith(self, p):
@@ -761,9 +761,9 @@ class ParserBaseClass:
             # s = str(s)
         # except UnicodeError:
             # pass
-        if 1: # new code
+        if 1:  # new code
             j = g.skip_c_id(s, i)
-            tag = s[i: j].strip()
+            tag = s[i:j].strip()
             if not tag:
                 g.es_print(f"@openwith lines must start with a tag: {s}")
                 return
@@ -799,32 +799,32 @@ class ParserBaseClass:
             # Can happen on MacOS. Very weird.
         name = val = nextMode = None; nextMode = 'none'
         i = g.skip_ws(s, 0)
-        if g.match(s, i, '-->'): # New in 4.4.1 b1: allow mode-entry commands.
+        if g.match(s, i, '-->'):  # New in 4.4.1 b1: allow mode-entry commands.
             j = g.skip_ws(s, i + 3)
             i = g.skip_id(s, j, '-')
-            entryCommandName = s[j: i]
+            entryCommandName = s[j:i]
             return None, g.BindingInfo('*entry-command*', commandName=entryCommandName)
         j = i
-        i = g.skip_id(s, j, '-@') # #718.
-        name = s[j: i]
+        i = g.skip_id(s, j, '-@')  # #718.
+        name = s[j:i]
         # #718: Allow @button- and @command- prefixes.
         for tag in ('@button-', '@command-'):
             if name.startswith(tag):
-                name = name[len(tag):]
+                name = name[len(tag) :]
                 break
         if not name:
             return None, None
         # New in Leo 4.4b2.
         i = g.skip_ws(s, i)
-        if g.match(s, i, '->'): # New in 4.4: allow pane-specific shortcuts.
+        if g.match(s, i, '->'):  # New in 4.4: allow pane-specific shortcuts.
             j = g.skip_ws(s, i + 2)
             i = g.skip_id(s, j)
-            nextMode = s[j: i]
+            nextMode = s[j:i]
         i = g.skip_ws(s, i)
-        if g.match(s, i, '!'): # New in 4.4: allow pane-specific shortcuts.
+        if g.match(s, i, '!'):  # New in 4.4: allow pane-specific shortcuts.
             j = g.skip_ws(s, i + 1)
             i = g.skip_id(s, j)
-            pane = s[j: i]
+            pane = s[j:i]
             if not pane.strip(): pane = 'all'
         else: pane = 'all'
         i = g.skip_ws(s, i)
@@ -836,7 +836,7 @@ class ParserBaseClass:
         if val:
             i = val.find('#')
             if i > 0 and val[i - 1] in (' ', '\t'):
-                val = val[: i].strip()
+                val = val[:i].strip()
         if not val:
             return name, None
         stroke = g.KeyStroke(binding=val) if val else None
@@ -865,7 +865,7 @@ class ParserBaseClass:
             assert isinstance(gs, g.GeneralSetting), gs
             path = gs.path
             if g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):
-                g.es("over-riding setting:", name, "from", path) # 1341
+                g.es("over-riding setting:", name, "from", path)  # 1341
         # Important: we can't use c here: it may be destroyed!
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
             unl=(p and p.get_UNL(with_proto=True)))
@@ -877,7 +877,7 @@ class ParserBaseClass:
             name='settingsDict for %s' % (c.shortFileName()),
             keyType=type('settingName'),
             valType=g.GeneralSetting)
-        self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
+        self.shortcutsDict = g.TypedDict(  # was TypedDictOfLists.
             name='shortcutsDict for %s' % (c.shortFileName()),
             keyType=str,
             valType=g.BindingInfo)
@@ -909,7 +909,7 @@ class ParserBaseClass:
 #@+others
 #@+node:ekr.20190905091614.1: ** class ActiveSettingsOutline
 class ActiveSettingsOutline:
-    
+
     def __init__(self, c):
 
         self.c = c
@@ -939,12 +939,12 @@ class ActiveSettingsOutline:
         self.commander.config.shortcutsDict = shortcuts_copy
     #@+node:ekr.20190905091614.3: *4* aso.create_commanders_list
     def create_commanders_list(self):
-        
+
         """Create the commanders list. Order matters."""
         lm = g.app.loadManager
         # The first element of each tuple must match the return values of c.config.getSource.
         # "local_file", "theme_file", "myLeoSettings", "leoSettings"
-        
+
         self.commanders = [
             ('leoSettings', lm.leo_settings_c),
             ('myLeoSettings', lm.my_settings_c),
@@ -995,7 +995,7 @@ class ActiveSettingsOutline:
         lm.finishOpen(c)
         g.app.writeWaitingLog(c)
         c.setLog()
-        c.clearChanged() # Clears all dirty bits.
+        c.clearChanged()  # Clears all dirty bits.
         g.app.disable_redraw = False
         return c
     #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper
@@ -1085,7 +1085,7 @@ class ActiveSettingsOutline:
             #@-<< continue if we should ignore p >>
             m = settings_pat.match(p.h)
             if not m:
-                self.add(p, h='ORG:'+p.h)
+                self.add(p, h='ORG:' + p.h)
                 continue
             if m.group(2) and m.group(1) in valid_list:
                 #@+<< handle a real setting >>
@@ -1122,7 +1122,7 @@ class ActiveSettingsOutline:
         Instead, the org flag tells whether the "ORG:" prefix.
         """
         if 0:
-            pad = ' '*p.level()
+            pad = ' ' * p.level()
             print(pad, p.h)
         p_level = p.level()
         if p_level > self.level + 1:
@@ -1144,7 +1144,7 @@ class ActiveSettingsOutline:
         Remove the "ORG:" prefix from remaining nodes.
         """
         self.clean_node(root)
-        
+
     def clean_node(self, p):
         """Remove p if it contains no children after cleaning its children."""
         tag = 'ORG:'
@@ -1166,7 +1166,7 @@ class ActiveSettingsOutline:
         assert target_kind in valid_kinds, repr(target_kind)
         d = c.config.settingsDict
         result = {}
-        for key in d.keys(): 
+        for key in d.keys():
             gs = d.get(key)
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             if not gs.kind:
@@ -1192,10 +1192,10 @@ class GlobalConfigManager:
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
-    defaultBodyFontSize = 12 # 9 if sys.platform == "win32" else 12
-    defaultLogFontSize =  12 # 8 if sys.platform == "win32" else 12
-    defaultMenuFontSize = 12 # 9 if sys.platform == "win32" else 12
-    defaultTreeFontSize = 12 # 9 if sys.platform == "win32" else 12
+    defaultBodyFontSize = 12  # 9 if sys.platform == "win32" else 12
+    defaultLogFontSize = 12  # 8 if sys.platform == "win32" else 12
+    defaultMenuFontSize = 12  # 9 if sys.platform == "win32" else 12
+    defaultTreeFontSize = 12  # 9 if sys.platform == "win32" else 12
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
         keyType=str,
@@ -1212,7 +1212,7 @@ class GlobalConfigManager:
         ("whole_word", "bool", True),
         # Prefs panel.
         # ("default_target_language","language","python"),
-        ("target_language", "language", "python"), # Bug fix: 6/20,2005.
+        ("target_language", "language", "python"),  # Bug fix: 6/20,2005.
         ("tab_width", "int", -4),
         ("page_width", "int", 132),
         ("output_doc_chunks", "bool", True),
@@ -1240,7 +1240,7 @@ class GlobalConfigManager:
         ("initial_window_width", "int", 800),
         ("initial_window_left", "int", 10),
         ("initial_window_top", "int", 10),
-        ("initial_split_orientation", "string", "vertical"), # was initial_splitter_orientation.
+        ("initial_split_orientation", "string", "vertical"),  # was initial_splitter_orientation.
         ("initial_vertical_ratio", "ratio", 0.5),
         ("initial_horizontal_ratio", "ratio", 0.3),
         ("initial_horizontal_secondary_ratio", "ratio", 0.5),
@@ -1311,23 +1311,23 @@ class GlobalConfigManager:
     def __init__(self):
         #
         # Set later.  To keep pylint happy.
-        if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
+        if 0:  # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
             self.at_root_bodies_start_in_doc_mode = True
             self.default_derived_file_encoding = 'utf-8'
             self.output_newline = 'nl'
             self.redirect_execute_script_output_to_log_pane = True
             self.relative_path_base_directory = '!'
-        self.use_plugins = False # Required to keep pylint happy.
-        self.create_nonexistent_directories = False # Required to keep pylint happy.
-        self.atCommonButtonsList = [] # List of info for common @buttons nodes.
-        self.atCommonCommandsList = [] # List of info for common @commands nodes.
-        self.atLocalButtonsList = [] # List of positions of @button nodes.
-        self.atLocalCommandsList = [] # List of positions of @command nodes.
+        self.use_plugins = False  # Required to keep pylint happy.
+        self.create_nonexistent_directories = False  # Required to keep pylint happy.
+        self.atCommonButtonsList = []  # List of info for common @buttons nodes.
+        self.atCommonCommandsList = []  # List of info for common @commands nodes.
+        self.atLocalButtonsList = []  # List of positions of @button nodes.
+        self.atLocalCommandsList = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
-        self.configsExist = False # True when we successfully open a setting file.
-        self.unitTestDict = {} # For unit testing: *not* the same as g.app.unitTestDict.
-        self.defaultFont = None # Set in gui.getDefaultConfigFont.
-        self.defaultFontFamily = None # Set in gui.getDefaultConfigFont.
+        self.configsExist = False  # True when we successfully open a setting file.
+        self.unitTestDict = {}  # For unit testing: *not* the same as g.app.unitTestDict.
+        self.defaultFont = None  # Set in gui.getDefaultConfigFont.
+        self.defaultFontFamily = None  # Set in gui.getDefaultConfigFont.
         self.enabledPluginsFileName = None
         self.enabledPluginsString = ''
         self.inited = False
@@ -1336,7 +1336,7 @@ class GlobalConfigManager:
         self.modeCommandsDict = g.TypedDict(
             name='modeCommandsDict',
             keyType=str,
-            valType=g.TypedDict) # was TypedDictOfLists.
+            valType=g.TypedDict)  # was TypedDictOfLists.
         # Inited later...
         self.panes = None
         self.sc = None
@@ -1407,15 +1407,15 @@ class GlobalConfigManager:
             gs = d.get(key)
             if gs:
                 assert isinstance(gs, g.GeneralSetting)
-                ivar = gs.ivar # The actual name of the ivar.
+                ivar = gs.ivar  # The actual name of the ivar.
                 kind = gs.kind
                 if c:
                     val = c.config.get(key, kind)
                 else:
-                    val = self.get(key, kind) # Don't use bunch.val!
+                    val = self.get(key, kind)  # Don't use bunch.val!
                 if c:
                     setattr(c, ivar, val)
-                if True: # Always set the global ivars.
+                if True:  # Always set the global ivars.
                     setattr(self, ivar, val)
     #@+node:ekr.20041117081009: *3* gcm.Getters...
     #@+node:ekr.20041123070429: *4* gcm.canonicalizeSettingName (munge)
@@ -1636,7 +1636,7 @@ class GlobalConfigManager:
         d = c.config.settingsDict if c else lm.globalSettingsDict
         limit = c.config.getInt('print-settings-at-data-limit')
         if limit is None:
-            limit = 20 # A resonable default.
+            limit = 20  # A resonable default.
         # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
@@ -1646,7 +1646,7 @@ class GlobalConfigManager:
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments
-                    aList = [' '*8 + z.rstrip() for z in val
+                    aList = [' ' * 8 + z.rstrip() for z in val
                         if z.strip() and not z.strip().startswith('#')]
                     if not aList:
                         val = '[]'
@@ -1689,19 +1689,18 @@ class LocalConfigManager:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            assert isinstance(self.shortcutsDict,g.TypedDict), repr(self.shortcutsDict) # was TypedDictOfLists.
+            assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)  # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or isinstance(d1, g.TypedDict), repr(d1)
-            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2) # was TypedDictOfLists.
+            assert d2 is None or isinstance(d2, g.TypedDict), repr(d2)  # was TypedDictOfLists.
         # Define these explicitly to eliminate a pylint warning.
         if 0:
             # No longer needed now that c.config.initIvar always sets
             # both c and c.config ivars.
             self.default_derived_file_encoding = g.app.config.default_derived_file_encoding
-            self.redirect_execute_script_output_to_log_pane = \
-                g.app.config.redirect_execute_script_output_to_log_pane
+            self.redirect_execute_script_output_to_log_pane = g.app.config.redirect_execute_script_output_to_log_pane
         self.defaultBodyFontSize = g.app.config.defaultBodyFontSize
         self.defaultLogFontSize = g.app.config.defaultLogFontSize
         self.defaultMenuFontSize = g.app.config.defaultMenuFontSize
@@ -1811,7 +1810,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
     #@+at Only the following need to be defined.
-    # 
+    #
     #     get (self,setting,theType)
     #     getAbbrevDict (self)
     #     getBool (self,setting,default=None)
@@ -2053,11 +2052,11 @@ class LocalConfigManager:
                 g.trace(f"no menu: {c.shortFileName()}:{commandName}")
             return None, []
         if d:
-            assert isinstance(d, g.TypedDict), repr(d) # was TypedDictOfLists.
+            assert isinstance(d, g.TypedDict), repr(d)  # was TypedDictOfLists.
             key = c.frame.menu.canonicalizeMenuName(commandName)
-            key = key.replace('&', '') # Allow '&' in names.
+            key = key.replace('&', '')  # Allow '&' in names.
             aList = d.get(commandName, [])
-            if aList: # A list of g.BindingIndo objects.
+            if aList:  # A list of g.BindingIndo objects.
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']
@@ -2073,19 +2072,19 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
     def getButtons(self):
         """Return a list of tuples (x,y) for common @button nodes."""
-        return g.app.config.atCommonButtonsList # unusual.
+        return g.app.config.atCommonButtonsList  # unusual.
 
     def getCommands(self):
         """Return the list of tuples (headline,script) for common @command nodes."""
-        return g.app.config.atCommonCommandsList # unusual.
+        return g.app.config.atCommonCommandsList  # unusual.
 
     def getEnabledPlugins(self):
         """Return the body text of the @enabled-plugins node."""
-        return g.app.config.enabledPluginsString # unusual.
+        return g.app.config.enabledPluginsString  # unusual.
 
     def getRecentFiles(self):
         """Return the list of recently opened files."""
-        return g.app.config.getRecentFiles() # unusual
+        return g.app.config.getRecentFiles()  # unusual
     #@+node:ekr.20140114145953.16691: *4* c.config.isLocalSetting
     def isLocalSetting(self, setting, kind):
         """Return True if the indicated setting comes from a local .leo file."""
@@ -2151,7 +2150,7 @@ class LocalConfigManager:
         # Use a single g.es statement.
         result.append('\n' + legend)
         if g.unitTesting:
-            pass # print(''.join(result))
+            pass  # print(''.join(result))
         else:
             g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
@@ -2166,9 +2165,9 @@ class LocalConfigManager:
         if gs:
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
-            if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path): # #1341.
+            if warn and g.os_path_finalize(c.mFileName) != g.os_path_finalize(path):  # #1341.
                 g.es("over-riding setting:", name, "from", path)
-        d [key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
+        d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
     #@+node:ekr.20190905082644.1: *3* c.config.settingIsActiveInPath
     def settingIsActiveInPath(self, gs, target_path):
         """Return True if settings file given by path actually defines the setting, gs."""
@@ -2202,14 +2201,14 @@ class LocalConfigManager:
         c.setChanged(redrawFlag=False)
         p.setDirty()
         c.redraw_later()
-       
+
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):
     """A class that inits settings found in an @settings tree.
 
     Used by read settings logic."""
-    
+
     # def __init__(self, c, localFlag=True):
         # super().__init__(c, localFlag)
 
@@ -2225,7 +2224,7 @@ class SettingsTreeParser(ParserBaseClass):
         kind, name, val = self.parseHeadline(p.h)
         kind = munge(kind)
         isNone = val in ('None', 'none', '', None)
-        if kind is None: # Not an @x node. (New in Leo 4.4.4)
+        if kind is None:  # Not an @x node. (New in Leo 4.4.4)
             pass
         elif kind == "settings":
             pass
@@ -2257,18 +2256,18 @@ def parseFont(b):
         if i < 0: continue
         name = line[:i].strip()
         if name.endswith('_family'):
-            family = line[i+1:].strip()
+            family = line[i + 1 :].strip()
         elif name.endswith('_weight'):
-            weight = line[i+1:].strip()
+            weight = line[i + 1 :].strip()
         elif name.endswith('_size'):
-            size = line[i+1:].strip()
+            size = line[i + 1 :].strip()
             try:
                 size = float(size)
             except ValueError:
                 size = 12
         elif name.endswith('_slant'):
-            slant = line[i+1:].strip()
-        if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
+            slant = line[i + 1 :].strip()
+        if settings_name is None and name.endswith(('_family', '_slant', '_weight', '_size')):
             settings_name = name.rsplit('_', 1)[0]
     return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-others
@@ -2276,3 +2275,4 @@ def parseFont(b):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+

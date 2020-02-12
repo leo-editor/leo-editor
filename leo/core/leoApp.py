@@ -52,7 +52,7 @@ class IdleTimeManager:
         if not g.app.pluginsController:
             g.trace('No g.app.pluginsController', g.callers())
             timer.stop()
-            return # For debugger.
+            return  # For debugger.
         self.on_idle_count += 1
         # Handle the registered callbacks.
         for callback in self.callback_list:
@@ -1053,9 +1053,9 @@ class LeoApp:
         app = self
         argName = app.guiArgName
         if g.in_bridge:
-            return # The bridge will create the gui later.
+            return  # The bridge will create the gui later.
         if app.gui:
-            return # This method can be called twice if we had to get .leoID.txt.
+            return  # This method can be called twice if we had to get .leoID.txt.
         assert argName != 'qttabs'
             # For compatibility with g.assertUi('qt')
         if argName == 'qt':
@@ -1163,7 +1163,7 @@ class LeoApp:
         """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
         old_id = id_ if isinstance(id_, str) else repr(id_)
         try:
-            id_ = id_.replace('.', '').replace(',','').replace('"','').replace("'", '')
+            id_ = id_.replace('.', '').replace(',', '').replace('"', '').replace("'", '')
             # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
             id_ = ''.join(id_.split())
         except Exception:
@@ -1171,8 +1171,8 @@ class LeoApp:
             id_ = ''
         if len(id_) < 3:
             g.EmergencyDialog(
-                title = f"Invalid Leo ID: {tag}",
-                message = (
+                title=f"Invalid Leo ID: {tag}",
+                message=(
                     f"Invalid Leo ID: {old_id!r}\n\n"
                     "Your id should contain only letters and numbers\n"
                     "and must be at least 3 characters in length."))
@@ -1199,7 +1199,7 @@ class LeoApp:
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if not theDir:
-                continue # Do not use the current directory!
+                continue  # Do not use the current directory!
             fn = g.os_path_join(theDir, tag)
             try:
                 with open(fn, 'r') as f:
@@ -1292,7 +1292,7 @@ class LeoApp:
             return
         if g.unitTesting:
             app.logWaiting = []
-            g.app.setLog(None) # Prepare to requeue for other commanders.
+            g.app.setLog(None)  # Prepare to requeue for other commanders.
             return
         # Write the signon to the log: similar to self.computeSignon().
         table = [
@@ -1302,7 +1302,7 @@ class LeoApp:
         ]
         table.reverse()
         c.setLog()
-        app.logInited = True # Prevent recursive call.
+        app.logInited = True  # Prevent recursive call.
         if not app.silentMode:
             # Write the signon.
             for s, color in table:
@@ -1310,7 +1310,7 @@ class LeoApp:
                     app.logWaiting.insert(0, (s, color, True),)
             # Write all the queued log entries.
             for msg in app.logWaiting:
-                s, color, newline = msg[: 3]
+                s, color, newline = msg[:3]
                 kwargs = {} if len(msg) < 4 else msg[3]
                 kwargs = {k: v for k, v in kwargs.items() if k not in ('color', 'newline')}
                 g.es('', s, color=color, newline=newline, **kwargs)
@@ -1339,7 +1339,7 @@ class LeoApp:
         c = frame.c
         if 'shutdown' in g.app.debug:
             g.trace(f"changed: {c.changed} {c.shortFileName()}")
-        c.endEditing() # Commit any open edits.
+        c.endEditing()  # Commit any open edits.
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False
@@ -1350,7 +1350,7 @@ class LeoApp:
             veto = frame.promptForSave()
             c.promptingForClose = False
             if veto: return False
-        g.app.setLog(None) # no log until we reactive a window.
+        g.app.setLog(None)  # no log until we reactive a window.
         g.doHook("close-frame", c=c)
         #
         # Save the window state for *all* open files.
@@ -1369,7 +1369,7 @@ class LeoApp:
             g.app.selectLeoWindow(c2)
         elif finish_quit and not g.app.unitTesting:
             g.app.finishQuit()
-        return True # The window has been closed.
+        return True  # The window has been closed.
     #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles(self):
         """Remove temp files created with the Open With command."""
@@ -1432,8 +1432,8 @@ class LeoApp:
         if trace: g.pr('forceShutdown: before end1')
         g.doHook("end1")
         if trace: g.pr('forceShutdown: after end1')
-        self.log = None # Disable writeWaitingLog
-        self.killed = True # Disable all further hooks.
+        self.log = None  # Disable writeWaitingLog
+        self.killed = True  # Disable all further hooks.
         for w in self.windowList[:]:
             if trace: g.pr(f"forceShutdown: {w}")
             self.destroyWindow(w)
@@ -1454,7 +1454,7 @@ class LeoApp:
             if not g.app.closeLeoWindow(w):
                 break
         if g.app.windowList:
-            g.app.quitting = False # If we get here the quit has been disabled.
+            g.app.quitting = False  # If we get here the quit has been disabled.
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1796,9 +1796,9 @@ class LeoApp:
         val = main_window.saveState()
             # Method is a QMainWindow method.
         try:
-            val = bytes(val) # PyQt4
+            val = bytes(val)  # PyQt4
         except Exception:
-            val = bytes().join(val) # PySide
+            val = bytes().join(val)  # PySide
         if trace: g.trace(f"set key: {key}")
         g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
@@ -1829,9 +1829,9 @@ class LeoApp:
             val = method()
                 # Method is a QMainWindow method.
             try:
-                val = bytes(val) # PyQt4
+                val = bytes(val)  # PyQt4
             except Exception:
-                val = bytes().join(val) # PySide
+                val = bytes().join(val)  # PySide
             if trace: g.trace(f"{c.shortFileName()} set key: {key}")
             g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@-others
@@ -1965,7 +1965,7 @@ class LoadManager:
             # environment vars, then gives up.
         if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
             # Get the indirect reference to the true home.
-            home = os.getenv(home[1: -1], default=None)
+            home = os.getenv(home[1 : -1], default=None)
         if home:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
@@ -1983,7 +1983,7 @@ class LoadManager:
         if g.os_path_exists(homeLeoDir):
             return homeLeoDir
         ok = g.makeAllNonExistentDirectories(homeLeoDir)
-        return homeLeoDir if ok else '' # #1450
+        return homeLeoDir if ok else ''  # #1450
     #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
     def computeLeoDir(self):
         # lm = self
@@ -1998,7 +1998,7 @@ class LoadManager:
             # Fix a hangnail: on Windows the drive letter returned by
             # __file__ is randomly upper or lower case!
             # The made for an ugly recent files list.
-            path = g.__file__ # was leo.__file__
+            path = g.__file__  # was leo.__file__
             if path:
                 # Possible fix for bug 735938:
                 # Do the following only if path exists.
@@ -2148,7 +2148,7 @@ class LoadManager:
     def reportDirectories(self, verbose):
         """Report directories."""
         if not verbose: return
-        if 1: # old
+        if 1:  # old
             for kind, theDir in (
                 ('current', g.os_path_abspath(os.curdir)),
                 ("load", g.app.loadDir),
@@ -2215,7 +2215,7 @@ class LoadManager:
         settings_d = g.app.config.defaultsDict
         assert isinstance(settings_d, g.TypedDict), settings_d
         settings_d.setName('lm.globalSettingsDict')
-        bindings_d = g.TypedDict( # was TypedDictOfLists.
+        bindings_d = g.TypedDict(  # was TypedDictOfLists.
             name='lm.globalBindingsDict',
             keyType=type('s'),
             valType=g.BindingInfo,
@@ -2307,7 +2307,7 @@ class LoadManager:
                 if bi_list:
                     print('')
                     for bi in bi_list:
-                        fn = bi.kind.split(' ')[-1] # bi.kind #
+                        fn = bi.kind.split(' ')[-1]  # bi.kind #
                         stroke2 = c.k.prettyPrintKey(stroke)
                         if bi.pane and bi.pane != 'all':
                             pane = f" in {bi.pane} panes"
@@ -2317,7 +2317,7 @@ class LoadManager:
                     print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
-        inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+        inverted_old_d.update(inverted_new_d)  # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
         return result
     #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
@@ -2353,15 +2353,15 @@ class LoadManager:
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         """
-        result = g.TypedDict( # was TypedDictOfLists.
+        result = g.TypedDict(  # was TypedDictOfLists.
             name=f"inverted {d.name()}",
             keyType=g.KeyStroke,
             valType=g.BindingInfo,
         )
         for commandName in d.keys():
             for bi in d.get(commandName, []):
-                stroke = bi.stroke # This is canonicalized.
-                bi.commandName = commandName # Add info.
+                stroke = bi.stroke  # This is canonicalized.
+                bi.commandName = commandName  # Add info.
                 assert stroke
                 result.add_to_list(stroke, bi)
         return result
@@ -2372,7 +2372,7 @@ class LoadManager:
         returning a dict whose keys are command names.
         """
         assert d.keyType == g.KeyStroke, d.keyType
-        result = g.TypedDict( # was TypedDictOfLists.
+        result = g.TypedDict(  # was TypedDictOfLists.
             name=f"uninverted {d.name()}",
             keyType=type('commandName'),
             valType=g.BindingInfo,
@@ -2395,7 +2395,7 @@ class LoadManager:
             return None
         theFile = lm.openLeoOrZipFile(fn)
         if not theFile:
-            return None # Fix #843.
+            return None  # Fix #843.
         if not any([g.app.unitTesting, g.app.silentMode, g.app.batchMode]):
             # This occurs early in startup, so use the following.
             s = f"reading settings in {fn}"
@@ -2508,7 +2508,7 @@ class LoadManager:
         t1 = time.process_time()
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
-        print('') # Give some separation for the coming traces.
+        print('')  # Give some separation for the coming traces.
         if not lm.isValidPython():
             return
         lm.doPrePluginsInit(fileName, pymacs)
@@ -2540,7 +2540,7 @@ class LoadManager:
         if not ok:
             return
         g.app.restoreGlobalWindowState()
-        g.es('') # Clears horizontal scrolling in the log pane.
+        g.es('')  # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
@@ -2553,7 +2553,7 @@ class LoadManager:
     def doDiff(self):
         """Support --diff option after loading Leo."""
         if len(self.old_argv[2:]) == 2:
-            pass # c.editFileCommands.compareAnyTwoFiles gives a message.
+            pass  # c.editFileCommands.compareAnyTwoFiles gives a message.
         else:
             # This is an unusual situation.
             g.es('--diff mode. sys.argv[2:]...', color='red')
@@ -2568,16 +2568,16 @@ class LoadManager:
         """Create a Leo window for each file in the lm.files list."""
         # Clear g.app.initing _before_ creating commanders.
         lm = self
-        g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+        g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         # Create the main frame.Show it and all queued messages.
         c = c1 = fn = None
         if lm.files:
-            try: # #1403.
+            try:  # #1403.
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
                     c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                         # Returns None if the file is open in another instance of Leo.
-                    if c and not c1: # #1416:
+                    if c and not c1:  # #1416:
                         c1 = c
             except Exception:
                 g.es_print(f"Unexpected exception reading {fn!r}")
@@ -2586,7 +2586,7 @@ class LoadManager:
         # Load (and save later) a session *only* if the command line contains no files.
         g.app.loaded_session = not lm.files
         if g.app.sessionManager and g.app.loaded_session:
-            try: # #1403.
+            try:  # #1403.
                 aList = g.app.sessionManager.load_snapshot()
                 if aList:
                     g.app.sessionManager.load_session(c1, aList)
@@ -2601,7 +2601,7 @@ class LoadManager:
         # Enable redraws.
         g.app.disable_redraw = False
         if not c1:
-            try: # #1403.
+            try:  # #1403.
                 c1 = lm.openEmptyWorkBook()
                     # Calls LM.loadLocalFile.
             except Exception:
@@ -2629,7 +2629,7 @@ class LoadManager:
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
-            return False # Force an immediate exit.
+            return False  # Force an immediate exit.
         return True
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
@@ -2644,10 +2644,10 @@ class LoadManager:
         # Create an empty frame.
         fn = lm.computeWorkbookFileName()
         if not fn:
-            return None # #1415
+            return None  # #1415
         c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
         if not c:
-            return None # #1201: AttributeError below.
+            return None  # #1201: AttributeError below.
         # Open the cheatsheet, but not in batch mode.
         if not g.app.batchMode and not g.os_path_exists(fn):
             # #933: Save clipboard.
@@ -2656,12 +2656,12 @@ class LoadManager:
             c2 = c.openCheatSheet(redraw=False)
             if c2:
                 for p2 in c2.rootPosition().self_and_siblings():
-                    c2.setCurrentPosition(p2) # 1380
+                    c2.setCurrentPosition(p2)  # 1380
                     c2.copyOutline()
                     p = c.pasteOutline()
                     # #1380 & #1381: Add guard & use vnode methods to prevent redraw.
                     if p:
-                        c.setCurrentPosition(p) # 1380
+                        c.setCurrentPosition(p)  # 1380
                         p.v.contract()
                         p.v.clearDirty()
                 c2.close(new_c=c)
@@ -2671,7 +2671,7 @@ class LoadManager:
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
                 c.clearChanged()
-                c.redraw(c.rootPosition()) # # 1380: Select the root.
+                c.redraw(c.rootPosition())  # # 1380: Select the root.
             # #933: Restore clipboard
             g.app.gui.replaceClipboardWith(old_clipboard)
         return c
@@ -2705,7 +2705,7 @@ class LoadManager:
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
-        g.app.computeSignon() # Set app.signon/signon1 for commanders.
+        g.app.computeSignon()  # Set app.signon/signon1 for commanders.
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers
     def createAllImporetersData(self):
         """
@@ -2842,7 +2842,7 @@ class LoadManager:
         script = lm.options.get('script')
         if g.app.gui:
             if g.app.gui == g.app.nullGui:
-                g.app.gui = None # Enable g.app.createDefaultGui
+                g.app.gui = None  # Enable g.app.createDefaultGui
                 g.app.createDefaultGui(__file__)
             else:
                 pass
@@ -2909,7 +2909,7 @@ class LoadManager:
         if g.app.useIpython:
             import leo.core.leoIPython as leoIPython
                 # This launches the IPython Qt Console.  It *is* required.
-            assert leoIPython # suppress pyflakes/flake8 warning.
+            assert leoIPython  # suppress pyflakes/flake8 warning.
         # Make sure we call the new leoPlugins.init top-level function.
         leoPlugins.init()
         # Force the user to set g.app.leoID.
@@ -3041,7 +3041,7 @@ class LoadManager:
             gui = gui.lower()
             # #1171: retire non-tabbed qt gui.
             if gui in ('qt', 'qttabs'):
-                gui = 'qt' # For compatibilty with g.UiTypeException
+                gui = 'qt'  # For compatibilty with g.UiTypeException
             elif gui.startswith('browser'):
                 pass
             elif gui in ('console', 'curses', 'text', 'null'):
@@ -3052,7 +3052,7 @@ class LoadManager:
         else:
             gui = 'qt'
         assert gui
-        assert gui != 'qttabs' # For compatibilty with g.UiTypeException
+        assert gui != 'qttabs'  # For compatibilty with g.UiTypeException
         g.app.qt_use_tabs = gui == 'qt'
         g.app.guiArgName = gui
         return gui
@@ -3153,7 +3153,7 @@ class LoadManager:
             except ValueError:
                 print('scanOptions: bad --window-spot:', spot)
                 spot = None
-        
+
         return spot
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
@@ -3370,7 +3370,7 @@ class LoadManager:
                 c.setLog()
                 # Selecting the new tab ensures focus is set.
                 master = getattr(frame.top, 'leo_master', None)
-                if master: # master is a TabbedTopLevel.
+                if master:  # master is a TabbedTopLevel.
                     master.select(frame.c)
                 c.outerUpdate()
                 return c
@@ -3416,7 +3416,7 @@ class LoadManager:
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.
             p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
-                paths=[fn], command=None) # Not undoable.
+                paths=[fn], command=None)  # Not undoable.
             if p and p.hasBack():
                 p.back().doDelete()
                 p = c.rootPosition()
@@ -3503,7 +3503,7 @@ class LoadManager:
                 # closes file.
         if ok:
             if not c.openDirectory:
-                theDir = g.os_path_finalize(g.os_path_dirname(fn)) # 1341
+                theDir = g.os_path_finalize(g.os_path_dirname(fn))  # 1341
                 c.openDirectory = c.frame.openDirectory = theDir
         else:
             g.app.closeLeoWindow(c.frame, finish_quit=False)
@@ -3531,7 +3531,7 @@ class PreviousSettings:
 
     def __init__(self, settingsDict, shortcutsDict):
         assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict) # was TypedDictOfLists.
+        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)  # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
@@ -3637,24 +3637,24 @@ class RecentFilesManager:
         table = rf.getRecentFilesTable()
         menu.createMenuEntries(recentFilesMenu, table)
         # Create all the other entries (a maximum of 36).
-        accel_ch = string.digits + string.ascii_uppercase # Not a unicode problem.
+        accel_ch = string.digits + string.ascii_uppercase  # Not a unicode problem.
         i = 0
         n = len(accel_ch)
         # see if we're grouping when files occur in more than one place
         rf_group = c.config.getBool("recent-files-group")
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
-        if groupedEntries: # if so, make dict of groups
+        if groupedEntries:  # if so, make dict of groups
             dirCount = {}
-            for fileName in rf.getRecentFiles()[: n]:
+            for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:
                     dirCount[baseName] = {'dirs': [], 'entry': None}
                 dirCount[baseName]['dirs'].append(dirName)
-        for name in rf.getRecentFiles()[: n]:
+        for name in rf.getRecentFiles()[:n]:
             # pylint: disable=cell-var-from-loop
             if name.strip() == "":
-                continue # happens with empty list/new file
+                continue  # happens with empty list/new file
 
             def recentFilesCallback(event=None, c=c, name=name):
                 c.openRecentFile(fn=name)
@@ -3662,21 +3662,21 @@ class RecentFilesManager:
             if groupedEntries:
                 dirName, baseName = g.os_path_split(name)
                 entry = dirCount[baseName]
-                if len(entry['dirs']) > 1 or rf_always: # sub menus
+                if len(entry['dirs']) > 1 or rf_always:  # sub menus
                     if entry['entry'] is None:
                         entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
                         # acts as a flag for the need to create the menu
                     c.add_command(menu.getMenu(baseName), label=dirName,
                         command=recentFilesCallback, underline=0)
-                else: # single occurence, no submenu
+                else:  # single occurence, no submenu
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
-            else: # original behavior
+            else:  # original behavior
                 label = f"{accel_ch[i]} {g.computeWindowTitle(name)}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1
-        if groupedEntries: # store so we can delete them later
+        if groupedEntries:  # store so we can delete them later
             rf.groupedMenus = [z for z in dirCount
                 if dirCount[z]['entry'] is not None]
     #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
@@ -3755,7 +3755,7 @@ class RecentFilesManager:
             return False
         try:
             with io.open(fileName, encoding='utf-8', mode='r') as f:
-                try: # Fix #471.
+                try:  # Fix #471.
                     lines = f.readlines()
                 except Exception:
                     lines = None
@@ -3987,3 +3987,4 @@ def openUrlUnderCursor(event=None):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
+
