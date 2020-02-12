@@ -95,6 +95,7 @@ def scanOptions():
         scope = 'all'
     return scope
 #@-others
+
 g_option_fn = None
 scope = scanOptions()
 if scope == 'version':
