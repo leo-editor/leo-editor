@@ -2823,7 +2823,8 @@ class Orange:
         Return True if the line was broken into two or more lines.
         """
         trace = False
-        assert self.max_split_line_length > 0
+        if self.max_split_line_length <= 0:
+            return
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
         if not is_long_statement(node):
@@ -2945,7 +2946,8 @@ class Orange:
         Join preceding lines, if possible and enabled.
         token is a line_end token. node is the corresponding ast node.
         """
-        assert self.max_join_line_length > 0
+        if self.max_join_line_length <= 0:
+            return
         assert token.kind in ('newline', 'nl'), repr(token)
         if token.kind == 'nl':
             return
