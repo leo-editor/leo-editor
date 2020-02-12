@@ -168,14 +168,13 @@ class NodeIndices:
 #@+node:ekr.20031218072017.890: *3* << about the position class >>
 #@@killcolor
 #@+at
-#
 # A position marks the spot in a tree traversal. A position p consists of a VNode
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
 # each ancestor **at the spot in tree traversal. Positions p has a unique set of
 # parents.
-#
+# 
 # The p.moveToX methods may return a null (invalid) position p with p.v = None.
-#
+# 
 # The tests "if p" or "if not p" are the _only_ correct way to test whether a
 # position p is valid. In particular, tests like "if p is None" or "if p is not
 # None" will not work properly.
@@ -412,12 +411,10 @@ class Position:
         if predicate is None:
 
             # pylint: disable=function-redefined
-
             def predicate(p):
                 return p.isAnyAtFileNode()
 
         # First, look up the tree.
-
         p1 = self
         for p in p1.self_and_parents(copy=False):
             if predicate(p):
@@ -484,8 +481,8 @@ class Position:
         while p and p != after:  # bug fix: 2013/10/12
             yield p.v
             p.moveToThreadNext()
-    # Compatibility with old code.
 
+    # Compatibility with old code.
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
@@ -510,7 +507,6 @@ class Position:
             p.moveToParent()
 
     # Compatibility with old code...
-
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self, copy=True):
@@ -524,7 +520,6 @@ class Position:
             p.moveToNext()
 
     # Compatibility with old code...
-
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self, copy=True):
@@ -537,7 +532,6 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
-
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self, copy=True):
@@ -551,7 +545,6 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
-
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes(self):
@@ -578,7 +571,6 @@ class Position:
                 yield p.copy() if copy else p
 
     # Compatibility with old code...
-
     subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
@@ -730,7 +722,12 @@ class Position:
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
     def get_UNL(
-        self, with_file=True, with_proto=False, with_index=True, with_count=False):
+        self,
+        with_file=True,
+        with_proto=False,
+        with_index=True,
+        with_count=False,
+    ):
         """
         with_file=True - include path to Leo file
         with_proto=False - include 'file://'
@@ -1089,20 +1086,22 @@ class Position:
             if g.app.unitTesting: assert False, 'children[%s] != p.v'
         else:
             g.trace(
-                f"**can not happen: bad child index: {n}, len(children): {len(parent_v.children)}")
+                f"**can not happen: bad child index: {n}, "
+                f"len(children): {len(parent_v.children)}")
             g.trace('parent_v.children...\n',
                 g.listToString(parent_v.children))
             g.trace('parent_v', parent_v, 'child', child)
             g.trace('** callers:', g.callers())
-            if g.app.unitTesting: assert False, f"bad child index: {n}"
+            if g.app.unitTesting:
+                assert False, f"bad child index: {n}"
     #@+node:ekr.20080416161551.199: *3* p.moveToX
     #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
-    #
+    # 
     # When moving to a nonexistent position, these routines simply set p.v = None,
     # leaving the p.stack unchanged. This allows the caller to "undo" the effect of
     # the invalid move by simply restoring the previous value of p.v.
-    #
+    # 
     # These routines all return self on exit so the following kind of code will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@+node:ekr.20080416161551.200: *4* p.moveToBack
@@ -2427,7 +2426,6 @@ class VNode:
                     yield from v_and_parents(parent_v)
 
         # There is no harm in calling v2.setDirty redundantly.
-
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
                 v2.setDirty()
