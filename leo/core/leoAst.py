@@ -4329,9 +4329,9 @@ class TestOrange(BaseTest):
             results = self.beautify(contents, tokens, tree, filename=description)
             message = (
                 f"\n"
-                f"  contents: {contents}\n"
+                f"  contents: {contents.rstrip()}\n"
                 f"     black: {expected.rstrip()}\n"
-                f"    orange: {results}")
+                f"    orange: {results.rstrip()}")
             if results != expected:  # pragma: no cover
                 fails += 1
                 if verbose_fail:
