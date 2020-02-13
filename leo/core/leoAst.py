@@ -2395,15 +2395,7 @@ class Orange:
     start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
 
     # Doc parts end with @c or a node sentinel
-    ### end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+-]others\b)|([+-]\<.*\>))\s*$")
-
     end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
-
-        # r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$', # @node
-
-        # r'^\s*#@@c(ode)?$'  # @c and @code
-        # r'^(\s*)#@(\+|-)others\b(.*)$', # @others
-        # r'^(\s*)#@(\+|-){ref}\s*$'      # section ref
 
     in_doc_part = False
 
@@ -2424,12 +2416,10 @@ class Orange:
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
-            ### g.trace(self.in_doc_part, repr(self.line))
             self.clean('hard-blank')
             self.clean('line-indent')
-            ### self.line = self.line.replace('\r', '')
             if self.in_doc_part:
-                val = self.line.replace('\n', '')
+                val = self.line.replace('\n', '').replace('\r', '')
             else:
                 val = self.line.rstrip()
         else:
