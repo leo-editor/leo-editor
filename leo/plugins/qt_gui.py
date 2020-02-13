@@ -758,8 +758,7 @@ class LeoQtGui(leoGui.LeoGui):
             #@+<< no dialog error >>
             #@+node:ekr.20110605121601.18506: *5* << no dialog error >>
             g.es_print_error(
-                'No handler for the "scrolledMessage" hook.\n\t%s' % (
-                    g.callers()))
+                f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
             #@-<< no dialog error >>
         #@+<< emergency fallback >>
         #@+node:ekr.20110605121601.18507: *5* << emergency fallback >>
@@ -1096,7 +1095,7 @@ class LeoQtGui(leoGui.LeoGui):
         getString = g.app.config.getString
 
         def dump(var, val):
-            print('%20s: %s' % (var, val))
+            print(f'{var:20}: {val}')
 
         join = g.os_path_join
         #
@@ -1139,7 +1138,7 @@ class LeoQtGui(leoGui.LeoGui):
         for base_dir in table:
             path = join(base_dir, name)
             if exists(path):
-                if trace: g.trace('%s is  in %s\n' % (name, base_dir))
+                if trace: g.trace(f'{name} is  in {base_dir}\n')
                 return path
             if trace:
                 g.trace(name, 'not in', base_dir)
@@ -2131,7 +2130,7 @@ class StyleSheetManager:
             for directory in directories:
                 path = join(directory, url)
                 if g.os_path_exists(path):
-                    if trace: g.trace('%35s ==> %s' % (url, path))
+                    if trace: g.trace(f'{url:35} ==> {path}')
                     old = mo.group(0)
                     new = f"url({path})"
                     replacements.append((old, new),)

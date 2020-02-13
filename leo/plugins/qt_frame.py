@@ -1911,8 +1911,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert g.isTextWidget(w), w
 
         def report(s):
-            g.trace('*** %9s wrapper %s w %s %s' % (
-                s, id(wrapper), id(w), c.p.h))
+            g.trace(f'*** {s:9} wrapper {id(wrapper)} w {id(w)} {c.p.h}')
 
         if wrapper and wrapper == c.frame.body.wrapper:
             self.deactivateEditors(wrapper)
@@ -2373,14 +2372,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Return if the style does not exist.
         styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
         if stylename.lower() not in styles:
-            g.es_print('ignoring unknown Qt style name: %r' % stylename)
+            g.es_print(f'ignoring unknown Qt style name: {stylename!r}')
             return
         #
         # Change the style and palette.
         QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
         qstyle = QtWidgets.qApp.setStyle(stylename)
         if not qstyle:
-            g.es_print('failed to set Qt style name: %r' % stylename)
+            g.es_print(f'failed to set Qt style name: {stylename!r}')
             return
         g.app.gui.qtApp.setPalette(QtWidgets.qApp.nativePalette)
         # g.es_print('set qt style: %r' % stylename)
@@ -2507,7 +2506,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             fg = fg or c.config.getColor('status-fg') or 'black'
             if True:
                 # Work around #804. w is a QLineEdit.
-                w.setStyleSheet('background: %s; color: %s;' % (bg, fg))
+                w.setStyleSheet(f'background: {bg}; color: {fg};')
             else:
                 # Rather than put(msg, explicit_color, explicit_color) we should use
                 # put(msg, status) where status is None, 'info', or 'fail'.
@@ -2590,13 +2589,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if 1:
                 fcol_part = '' if fcol is None else f" fcol: {fcol}"
                 # For now, it seems to0 difficult to get alignment *exactly* right.
-                self.put1("line: %d col: %d %s words: %s" % (row, col, fcol_part, words))
+                self.put1(f"line: {row:d} col: {col:d} {fcol_part} words: {words}")
             else:
                 # #283 is not ready yet, and probably will never be.
                 fline = self.file_line()
                 fline = '' if fline is None else fline + row
                 self.put1(
-                    "fline: %2s line: %2d col: %2s fcol: %2s" % (fline, row, col, fcol))
+                    f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
         #@-others
     #@+node:ekr.20110605121601.18262: *3* qtFrame.class QtIconBarClass
     class QtIconBarClass:
@@ -3457,7 +3456,7 @@ class LeoQtLog(leoFrame.LeoLog):
             s = s.replace(' ', '&nbsp;')
         s = s.replace('\n', '<br>')
             # The caller is responsible for newlines!
-        s = '<font color="%s">%s</font>' % (color, s)
+        s = f'<font color="{color}">{s}</font>'
         if nodeLink:
             url = nodeLink
             for scheme in 'file', 'unl':
@@ -3665,7 +3664,7 @@ class LeoQtLog(leoFrame.LeoLog):
             # Raise the proper dock.
             dw = c.frame.top
             tabName2 = 'tabs' if tabName in ('Completion', 'Log') else tabName
-            ivar = '%s_dock' % tabName2.lower()
+            ivar = f'{tabName2.lower()}_dock'
             dock = getattr(dw, ivar, None)
             if dock:
                 dock.raise_()
@@ -3948,7 +3947,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         self.was_control_drag = False
 
     def __repr__(self):
-        return 'LeoQTreeWidget: %s' % id(self)
+        return f'LeoQTreeWidget: {id(self)}'
 
     __str__ = __repr__
     # This is called during drags.
@@ -4290,7 +4289,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def createLeoFileTree(self, fn, p):
         """Copy all nodes from fn, a .leo file, to the children of p."""
         c = self.c
-        p.h = 'From %s' % g.shortFileName(fn)
+        p.h = f'From {g.shortFileName(fn)}'
         c.selectPosition(p)
         # Create a dummy first child of p.
         dummy_p = p.insertAsNthChild(0)

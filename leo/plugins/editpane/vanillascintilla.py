@@ -23,7 +23,7 @@ def DBG(text):
     Args:
         text (str): text to print
     """
-    print("LEP: %s" % text)
+    print(f"LEP: {text}")
 
 #@+node:tbrown.20171028115501.3: ** class LEP_VanillaScintilla
 class LEP_VanillaScintilla(Qsci.QsciScintilla):

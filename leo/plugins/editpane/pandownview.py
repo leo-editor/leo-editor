@@ -36,7 +36,7 @@ def to_html(text, from_='markdown'):
         str: html
     """
 
-    cmd = "pandoc --smart --standalone --mathjax --from %s --to html" % from_
+    cmd = f"pandoc --smart --standalone --mathjax --from {from_} --to html"
     cmd = cmd.split()
     proc = Popen(cmd, stdin=PIPE, stdout=PIPE)
     out, err = proc.communicate(text)

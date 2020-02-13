@@ -310,7 +310,7 @@ class FreeLayoutController:
             name = id_.split(':', 1)[1]
             if ('yes' == g.app.gui.runAskYesNoCancelDialog(self.c,
                 "Really delete Layout?",
-                "Really permanently delete the layout '%s'?" % name)
+                f"Really permanently delete the layout '{name}'?")
             ):
                 d = g.app.db.get('ns_layouts', {})
                 del d[name]

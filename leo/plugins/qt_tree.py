@@ -131,7 +131,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def traceItem(self, item):
         if item:
             # A QTreeWidgetItem.
-            return 'item %s: %s' % (id(item), self.getItemText(item))
+            return f'item {id(item)}: {self.getItemText(item)}'
         return '<no item>'
 
     def traceCallers(self):
@@ -205,7 +205,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Useful, for now.
         t2 = time.process_time()
         if t2 - t1 > 0.1:
-            g.trace('%s nodes, %5.2f sec' % (n, t2 - t1))
+            g.trace(f'{n} nodes, {t2 - t1:5.2f} sec')
     #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible (not used)
     def yieldVisible(self, first_p, target_p=None):
         """
@@ -518,7 +518,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 p.moveToNext()
         if trace:
             t2 = time.process_time()
-            g.trace('%5.2f sec.' % (t2 - t1), g.callers(5))
+            g.trace(f'{t2 - t1:5.2f} sec.', g.callers(5))
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):
         if g.app.gui.isNullGui:
@@ -1002,7 +1002,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return icon
         images = [g.app.gui.getImageImage(i['file']) for i in userIcons
                  if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage("box%02d.png" % val))
+        images.append(g.app.gui.getImageImage(f"box{val:02d}.png"))
         images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
                       if i['where'] == 'beforeHeadline'])
         images = [z for z in images if z]  # 2013/12/23: Remove missing images.
@@ -1037,7 +1037,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getStatusIconImage(self, p):
         val = p.v.computeIcon()
         r = g.app.gui.getIconImage(
-            "box%02d.png" % val)
+            f"box{val:02d}.png")
         return r
     #@+node:ekr.20110605121601.17949: *4* qtree.getVnodeIcon
     def getVnodeIcon(self, p):

@@ -26,7 +26,7 @@ def DBG(text):
 
     :param str text: text to print
     """
-    print("LEP: %s" % text)
+    print(f"LEP: {text}")
 
 #@+node:tbrown.20171028115438.3: ** edit_pane_test_open
 def edit_pane_test_open(event):
@@ -421,7 +421,7 @@ class LeoEditPane(QtWidgets.QWidget):
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
                 modules.append(import_module('leo.plugins.editpane.' + name))
-                DBG("Loaded module: %s" % name)
+                DBG(f"Loaded module: {name}")
             except ImportError as e:
                 DBG(
                     f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
@@ -451,7 +451,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 def cb(checked, widget_class=widget_class):
                     self.set_widget(widget_class=widget_class)
 
-                act = QtWidgets.QAction("%s: %s" % (name, widget_class.lep_name), self)
+                act = QtWidgets.QAction(f"{name}: {widget_class.lep_name}", self)
                 act.setCheckable(True)
                 act.setChecked(widget_class == current)
                 act.triggered.connect(cb)
@@ -617,7 +617,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         """
         self.mode = mode
-        self.btn_mode.setText("%s\u25BE" % mode.title())
+        self.btn_mode.setText(f"{mode.title()}\u25BE")
         self.state_changed()
 
     #@+node:tbrown.20171028115438.39: *3* state_changed

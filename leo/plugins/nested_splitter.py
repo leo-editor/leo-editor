@@ -37,14 +37,14 @@ if QtWidgets:
             text = QtWidgets.QTextEdit()
             self.layout().addWidget(text)
             DemoWidget.count += 1
-            text.setPlainText("#%d" % DemoWidget.count)
+            text.setPlainText(f"#{DemoWidget.count:d}")
             button_layout = QtWidgets.QHBoxLayout()
             button_layout.setContentsMargins(QtCore.QMargins(5, 5, 5, 5))
             self.layout().addLayout(button_layout)
             button_layout.addWidget(QtWidgets.QPushButton("Go"))
             button_layout.addWidget(QtWidgets.QPushButton("Stop"))
             if color:
-                self.setStyleSheet("background-color: %s;" % color)
+                self.setStyleSheet(f"background-color: {color};")
         #@-others
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
 if QtWidgets:
@@ -144,7 +144,7 @@ if QtWidgets:
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
         def __repr__(self):
-            return '(NestedSplitterHandle) at: %s' % (id(self))
+            return f'(NestedSplitterHandle) at: {id(self)}'
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17964: *3* nsh.add_item
@@ -195,7 +195,7 @@ if QtWidgets:
             sheet = []
             for i in 0, 1:
                 sheet.append(widget[i].styleSheet())
-                widget[i].setStyleSheet(sheet[-1] + "\nborder: 2px solid %s;" % color[i])
+                widget[i].setStyleSheet(sheet[-1] + f"\nborder: 2px solid {color[i]};")
             menu = QtWidgets.QMenu()
             menu.hovered.connect(self.show_tip)
 
@@ -238,19 +238,17 @@ if QtWidgets:
                         splitter.remove(index, i)
 
                     self.add_item(remove_callback, menu,
-                        'Remove %d %s' % (count[i], lr[i]),
-                        "Remove the %s pane%s %s here" %
-                        (count[i], pl(count[i]), di(lr[i])))
+                        f'Remove {count[i]:d} {lr[i]}',
+                        f"Remove the {count[i]} pane{pl(count[i])} {di(lr[i])} here")
             # Swap.
 
             def swap_callback(index=index):
                 splitter.swap(index)
 
             self.add_item(swap_callback, menu,
-                "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]),
-                "Swap the %d pane%s %s here with the %d pane%s %s here" %
-                (count[0], pl(count[0]), di(lr[0]),
-                 count[1], pl(count[1]), di(lr[1]))
+                f"Swap {count[0]:d} {lr[0]} {count[1]:d} {lr[1]}",
+                f"Swap the {count[0]:d} pane{pl(count[0])} {di(lr[0])} here "
+                f"with the {count[1]:d} pane{pl(count[1])} {di(lr[1])} here"
                 )
             # Split: only if not already split.
             for i in 0, 1:
@@ -260,13 +258,13 @@ if QtWidgets:
                         splitter.split(index, i)
 
                     self.add_item(
-                        split_callback, menu, 'Split %s %s' % (lr[i], split_dir))
+                        split_callback, menu, f'Split {lr[i]} {split_dir}')
             for i in 0, 1:
 
                 def mark_callback(i=i, index=index):
                     splitter.mark(index, i)
 
-                self.add_item(mark_callback, menu, 'Mark %d %s' % (count[i], lr[i]))
+                self.add_item(mark_callback, menu, f'Mark {count[i]:d} {lr[i]}')
             # Swap With Marked.
             if splitter.root.marked:
                 for i in 0, 1:
@@ -276,7 +274,7 @@ if QtWidgets:
                             splitter.swap_with_marked(index, i)
 
                         self.add_item(swap_mark_callback, menu,
-                            'Swap %d %s With Marked' % (count[i], lr[i]))
+                            f'Swap {count[i]:d} {lr[i]} With Marked')
             # Add.
             for i in 0, 1:
                 if (not isinstance(splitter.parent(), NestedSplitter) or
@@ -287,7 +285,7 @@ if QtWidgets:
                     def add_callback(i=i, splitter=splitter):
                         splitter.add(i)
 
-                    self.add_item(add_callback, menu, 'Add %s' % (ab[i]))
+                    self.add_item(add_callback, menu, f'Add {ab[i]}')
             # Rotate All.
             self.add_item(splitter.rotate, menu, 'Toggle split direction')
 
@@ -338,8 +336,7 @@ if QtWidgets:
             act = QtWidgets.QAction("Print splitter layout", self)
 
             def cb(checked, splitter=splitter):  # pylint: disable=function-redefined
-                print("\n%s\n" %
-                    splitter.layout_to_text(splitter.top().get_layout()))
+                print(f"\n{splitter.layout_to_text(splitter.top().get_layout())}\n")
 
             act.triggered.connect(cb)
             submenu.addAction(act)
@@ -449,7 +446,7 @@ if QtWidgets:  # NOQA
             # parent = self.parent()
             # name = parent and parent.objectName() or '<no parent>'
             name = self.objectName() or '<no name>'
-            return '(NestedSplitter) %s at %s' % (name, id(self))
+            return f'(NestedSplitter) {name} at {id(self)}'
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17969: *3* ns.overrides of QSplitter methods
@@ -1048,7 +1045,7 @@ if QtWidgets:  # NOQA
                         provided._in_layout = True
                         found += 1
                     else:
-                        print('NO %s' % i)
+                        print(f'NO {i}')
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()
@@ -1133,23 +1130,13 @@ if QtWidgets:  # NOQA
             orientation = 'vertical'
             if layout['orientation'] == QtCore.Qt.Horizontal:
                 orientation = 'horizontal'
-            _ans.append("%s%s (%s) - %s" % (
-                '   ' * _depth,
-                layout['splitter'].__class__.__name__,
-                layout['splitter'].objectName(),
-                orientation,
-            ))
+            _ans.append(f"{'   ' * _depth}{layout['splitter'].__class__.__name__} ({layout['splitter'].objectName()}) - {orientation}")
             _depth += 1
             for n, i in enumerate(layout['content']):
                 if isinstance(i, dict):
                     self.layout_to_text(i, _depth, _ans)
                 else:
-                    _ans.append("%s%s (%s) from %s" % (
-                       '   ' * _depth,
-                       i.__class__.__name__,
-                       str(i.objectName()),
-                       getattr(i, '_ns_id', 'UNKNOWN')
-                    ))
+                    _ans.append(f"{'   ' * _depth}{i.__class__.__name__} ({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}")
             if _depth == 1:
                 return '\n'.join(_ans)
             return None

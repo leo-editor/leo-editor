@@ -478,7 +478,7 @@ if QtWidgets:
             self.leo_model = None
         #@+node:ekr.20110605121601.18007: *3* lqtb. __repr__ & __str__
         def __repr__(self):
-            return '(LeoQTextBrowser) %s' % id(self)
+            return f'(LeoQTextBrowser) {id(self)}'
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.18008: *3* lqtb.Auto completion
@@ -679,7 +679,7 @@ if QtWidgets:
                 if button == val:
                     kind = s; break
             else:
-                kind = 'unknown: %s' % repr(button)
+                kind = f'unknown: {repr(button)}'
             return kind
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
@@ -913,7 +913,7 @@ class QHeadlineWrapper(QLineEditWrapper):
         g.app.gui.setFilter(c, self.widget, self, tag=name)
 
     def __repr__(self):
-        return 'QHeadlineWrapper: %s' % id(self)
+        return f'QHeadlineWrapper: {id(self)}'
     #@+node:ekr.20110605121601.18119: *3* qhw.check
     def check(self):
         """Return True if the tree item exists and it's edit widget exists."""
