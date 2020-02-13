@@ -709,6 +709,7 @@
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
 <v t="ekr.20050830115714.115"><vh>Error messages from the rst3 plugin aren't helpful. What can I do?</vh></v>
+<v t="ekr.20200213034654.1"><vh>How can I move Leo's window back on screen?</vh></v>
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
@@ -31283,6 +31284,21 @@ The TOT uses no variable-length data whatever.
    
 This innovation looks obvious only in retrospect. It took a long time to realize that the parse tree needs help from the token list, not the other way around!
 </t>
+<t tx="ekr.20200213034654.1">Leo is starting on one of the external monitors and I have no way to
+move it back to my laptop screen.
+
+This has happened to me on Windows for as long as I can remember, mid
+1990s and Windows 3. It's rare, but I don't think a year has gone by
+where it hasn't occurred to me. At any rate, the most reliable and
+portable solution I've come across is:
+
+- Press [Alt]-[Tab] until the invisible program has focus.
+- Press [Alt]-[spacebar] to bring up window controls (Move, Size, Min, Max, Close).
+- Press [M] to activate Move.
+  A dotted or thin gray outline of window shape should appear.
+- Press arrow cursor keys to move the outline centrally on active screen.
+  (usually right- and down-arrow)
+- Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
