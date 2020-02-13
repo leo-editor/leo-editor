@@ -610,7 +610,7 @@ class AutoCompleterClass:
             # Display oriented: no good for completion list.
             fn = h[1].strip()
             if fn.startswith('/'):
-                sig = fn[2 : -4].strip()
+                sig = fn[2:-4].strip()
             else:
                 sig = fn
             aList.append(f"{s}: {sig}")
@@ -735,7 +735,7 @@ class AutoCompleterClass:
         """A hack to match the callers expectations."""
         if prefix.find('.') > -1:
             aList = prefix.split('.')
-            prefix = '.'.join(aList[: -1]) + '.'
+            prefix = '.'.join(aList[:-1]) + '.'
         return s if s.startswith(prefix) else prefix + s
     #@+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix):
@@ -917,7 +917,7 @@ class AutoCompleterClass:
     def show_completion_list(self, common_prefix, prefix, tabList):
         c = self.c
         aList = common_prefix.split('.')
-        header = '.'.join(aList[: -1])
+        header = '.'.join(aList[:-1])
         # "!" toggles self.verbose.
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header, tabList,)
@@ -1052,7 +1052,7 @@ class FileNameChooser:
                 tabList = [path]
         else:
             if path and path.endswith(sep):
-                path = path[: -1]
+                path = path[:-1]
             aList = g.glob_glob(path + '*')
             tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
         if self.filterExt:
@@ -1073,7 +1073,7 @@ class FileNameChooser:
         else:
             s = self.get_label()
             if s:
-                s = s[: -1]
+                s = s[:-1]
             self.set_label(s)
         if s:
             common_prefix, tabList = self.compute_tab_list()
@@ -1109,7 +1109,7 @@ class FileNameChooser:
                 self.set_label(common_prefix)
         else:
             # Restore everything.
-            self.set_label(self.get_label()[: -1])
+            self.set_label(self.get_label()[:-1])
             self.extend_label(char)
     #@+node:ekr.20140813052702.18199: *3* fnc.do_tab
     def do_tab(self):
@@ -1355,6 +1355,7 @@ class GetArg:
         self.cycling_tabList = []
     #@+node:ekr.20140816165728.18958: *3* ga.extend/get/set_label
     # Not useful because k.entendLabel doesn't handle selected text.
+
     if 0:
 
         def extend_label(self, s):
@@ -2011,7 +2012,8 @@ class KeyHandlerClass:
                 k.bindKeyToDict(pane, shortcut, bi)
                     # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
-                aList = k.remove_conflicting_definitions(aList, commandName, pane, shortcut)
+                aList = k.remove_conflicting_definitions(
+                    aList, commandName, pane, shortcut)
                 # 2013/03/02: a real bug fix.
             aList.append(bi)
             if shortcut:
@@ -2103,6 +2105,7 @@ class KeyHandlerClass:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
+
         commandName = f'open-with-{name.lower()}'
         k.registerCommand(
             allowBinding=True,
@@ -3702,7 +3705,11 @@ class KeyHandlerClass:
             char = event.char
             state = k.state.kind
             stroke = event.stroke
-            g.trace(f'stroke: {stroke!r}, char: {char!r}, state: {state}, state2: {k.unboundKeyAction}')
+            g.trace(
+                f'stroke: {stroke!r}, '
+                f'char: {char!r}, '
+                f'state: {state}, '
+                f'state2: {k.unboundKeyAction}')
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         """Search all visible nodes for a headline starting with stroke."""
@@ -3904,7 +3911,7 @@ class KeyHandlerClass:
     def badMode(self, modeName):
         k = self
         k.clearState()
-        if modeName.endswith('-mode'): modeName = modeName[: -5]
+        if modeName.endswith('-mode'): modeName = modeName[:-5]
         k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
     #@+node:ekr.20061031131434.158: *4* k.createModeBindings
     def createModeBindings(self, modeName, d, w):
@@ -4000,7 +4007,7 @@ class KeyHandlerClass:
         data.sort()
         modeName = k.inputModeName.replace('-', ' ')
         if modeName.endswith('mode'):
-            modeName = modeName[: -4].strip()
+            modeName = modeName[:-4].strip()
         prompt = d.get('*command-prompt*')
         if prompt:
             g.es('', f'{prompt.kind.strip()}\n\n', tabName=tabName)
@@ -4324,7 +4331,7 @@ class KeyHandlerClass:
             else:
                 mode = mode.strip()
                 if mode.endswith('-mode'):
-                    mode = mode[: -5]
+                    mode = mode[:-5]
                 s = f'{mode.capitalize()} Mode'
         elif c.vim_mode and c.vimCommands:
             c.vimCommands.show_status()
@@ -4495,9 +4502,9 @@ class ModeInfo:
         j = s.find(' ')
         if j > -1: s = s[:j]
         if s.endswith('mode'):
-            s = s[: -4].strip()
+            s = s[:-4].strip()
         if s.endswith('-'):
-            s = s[: -1]
+            s = s[:-1]
         i = s.find('::')
         if i > -1:
             # The actual mode name is everything up to the "::"

@@ -988,7 +988,7 @@ class LeoFrame:
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
             while s and s[-1] in ('\n', '\r'):
-                s = s[: -1]
+                s = s[:-1]
         # Save the horizontal scroll position.
         if hasattr(w, 'getXScrollPosition'):
             x_pos = w.getXScrollPosition()
@@ -1009,7 +1009,7 @@ class LeoFrame:
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
-                s = s[: -1]
+                s = s[:-1]
             # 2011/11/14: headline width methods do nothing at present.
             # if wname.startswith('head'):
                 # The headline is not officially changed yet.
@@ -1290,8 +1290,8 @@ class LeoTree:
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None): 
-        # e used in qt_tree.py. 
+    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
+        # e used in qt_tree.py.
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -1308,7 +1308,7 @@ class LeoTree:
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
         while s and s[-1] == '\n':
-            s = s[: -1]
+            s = s[:-1]
         # Warn if there are multiple lines.
         i = s.find('\n')
         if i > -1:
@@ -1446,7 +1446,7 @@ class LeoTree:
             w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
         s = w.getAllText()
         if s.endswith('\n'):
-            s = s[: -1]
+            s = s[:-1]
         # 2011/11/14: Not used at present.
             # w.setWidth(self.headWidth(s=s))
         if ch in ('\n', '\r'):
@@ -2076,7 +2076,7 @@ class NullTree(LeoTree):
         if w:
             w.delete(0, 'end')
             if s.endswith('\n') or s.endswith('\r'):
-                s = s[: -1]
+                s = s[:-1]
             w.insert(0, s)
             self.revertHeadline = s
         else:
