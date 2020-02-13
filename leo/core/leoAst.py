@@ -2676,6 +2676,7 @@ class Orange:
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
+        ### Unary operators acting on numbers are a special case. ###
         expressions = (ast.BinOp, ast.Call, ast.IfExp, ast.UnaryOp)
         if any(isinstance(z, expressions) for z in (lower, upper, step)):
             prev = self.code_list[-1]
@@ -2749,9 +2750,12 @@ class Orange:
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s):
         """Add a unary or binary op to the token list."""
+        node = self.token.node
+        ###g.trace(node.__class__.__name__)
+        ### prev = self.code_list[-1]
+        ### if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
         self.clean('blank')
-        prev = self.code_list[-1]
-        if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
+        if isinstance(node, ast.UnaryOp):
             self.unary_op(s)
         else:
             self.blank()
@@ -3843,32 +3847,9 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        # expected = self.blacken(contents).rstrip() + '\n\n'
+        # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200212072951.1: *4* TestOrange.test_bad_break
-    def test_bad_break(self):
-
-        # From setup.py.
-        # The total length of the ''' string should not affect line length.
-        contents = r"""\
-    def get_semver(tag):
-        if 1:
-            print(
-                '''*** Failed to parse Semantic Version from git tag '{0}'.
-            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-            This version can't be uploaded to PyPi.org.'''.format(tag))
-        return version
-    """
-        contents, tokens, tree = self.make_data(contents)
-        # expected = self.blacken(contents).rstrip() + '\n\n'
-        expected = contents + '\n'
-        results = self.beautify(contents, tokens, tree)
-        if results != expected:
-            g.printObj(tokens)
-            g.printObj(expected, tag='expected')
-            g.printObj(results, tag='results')
-            assert False
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
 
@@ -3878,7 +3859,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116100603.1: *4* TestOrange.test_decorator_2
@@ -3891,7 +3872,7 @@ class TestOrange(BaseTest):
             pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200211142856.1: *4* TestOrange.test_decorator_3
@@ -3903,7 +3884,7 @@ class TestOrange(BaseTest):
         """Make all children of the selected nodes siblings of the selected node."""
     '''
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         if 0:
             dump_tokens(tokens)
@@ -3927,7 +3908,7 @@ class TestOrange(BaseTest):
         a = 2
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents + '\n'
+        expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
             delete_blank_lines=False,
             max_join_line_length=line_length,
@@ -3957,8 +3938,8 @@ class TestOrange(BaseTest):
         print(a)
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected) + '\n'
-        # expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = g.adjustTripleString(expected).rstrip() + '\n'
+        # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
@@ -3969,7 +3950,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents, tag)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116112855.1: *4* TestOrange.test_function_defs_2
@@ -3979,7 +3960,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116113143.1: *4* TestOrange.test_function_defs_3
@@ -3991,7 +3972,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210165015.1: *4* TestOrange.test_function_defs_4
@@ -4003,7 +3984,7 @@ class TestOrange(BaseTest):
         return 'killbeautify' in g.get_directives_dict(p)
     '''
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
@@ -4079,7 +4060,7 @@ class TestOrange(BaseTest):
     """,
     """\
     if 1:
-        print('4444', '5555')\n\n""",
+        print('4444', '5555')\n""",
         )
         fails = 0
         for contents in table:
@@ -4184,7 +4165,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents.rstrip() + '\n\n'
+        expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200209155457.1: *4* TestOrange.test_leo_sentinels_2
@@ -4199,7 +4180,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents.rstrip() + '\n\n'
+        expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
@@ -4211,7 +4192,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n\n'
+        expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
@@ -4590,7 +4571,7 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         # Necessary.
-        expected = expected.replace('#@verbatim\n', '')
+        expected = expected.replace('#@verbatim\n', '').rstrip() + '\n'
         results = results.replace('#@verbatim\n', '')
         if 1:
             if results != expected:
