@@ -110,13 +110,14 @@ def blacken_files(event):
         g.es_print(f"{tag} can not import black")
         return
     for root in g.findRootsWithPredicate(c, c.p):
-        filename = root.anyAtFileNodeName()
-        if os.path.exists(filename):
-            g.es_print(f"{tag}: {filename}")
-            ### To do.
+        ### filename = root.anyAtFileNodeName()
+        path = g.fullPath(c, root)
+        if path and os.path.exists(path):
+            g.es_print(f"{tag}: {path}")
+            g.execute_shell_commands(f"&black {path}")
         else:
-            print(f"{tag}: file not found:{filename}")
-            g.es(f"{tag}: file not found:\n{filename}")
+            print(f"{tag}: file not found:{path}")
+            g.es(f"{tag}: file not found:\n{path}")
 
 #@+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
