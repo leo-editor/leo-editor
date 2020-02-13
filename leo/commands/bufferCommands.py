@@ -248,5 +248,5 @@ class BufferCommandsClass(BaseEditCommandsClass):
         finisher(k.arg)
     #@-others
 #@-others
-#@-leo
 
+#@-leo

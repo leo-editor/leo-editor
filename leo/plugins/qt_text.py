@@ -1639,4 +1639,3 @@ class QTextEditWrapper(QTextMixin):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-

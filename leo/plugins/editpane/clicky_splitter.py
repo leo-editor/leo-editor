@@ -50,4 +50,3 @@ class ClickySplitter(QtWidgets.QSplitter):
             )
             self._click_state = 'flip'
 #@-leo
-

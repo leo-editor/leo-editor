@@ -346,4 +346,3 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
-

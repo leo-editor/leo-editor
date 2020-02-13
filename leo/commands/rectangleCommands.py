@@ -208,4 +208,3 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@-others
 #@-others
 #@-leo
-

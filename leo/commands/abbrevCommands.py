@@ -761,5 +761,5 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
     #@-others
 #@-others
-#@-leo
 
+#@-leo

@@ -1465,4 +1465,3 @@ def count_children(event=None):
         g.es_print('%s children' % c.p.numberOfChildren())
 #@-others
 #@-leo
-

@@ -101,4 +101,3 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

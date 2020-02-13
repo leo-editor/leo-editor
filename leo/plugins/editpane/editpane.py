@@ -647,4 +647,3 @@ class LeoEditPane(QtWidgets.QWidget):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

@@ -332,4 +332,3 @@ def selectAtSettingsNode(self, event=None):
         g.es('no local @settings tree.')
 #@-others
 #@-leo
-

@@ -1055,5 +1055,5 @@ def untangle(self, event=None):
     c.tangleCommands.untangle()
     c.undoer.clearUndoState()
 #@-others
-#@-leo
 
+#@-leo

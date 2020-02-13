@@ -101,4 +101,3 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

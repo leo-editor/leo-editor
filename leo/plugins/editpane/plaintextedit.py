@@ -114,4 +114,3 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

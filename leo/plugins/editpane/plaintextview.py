@@ -63,4 +63,3 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

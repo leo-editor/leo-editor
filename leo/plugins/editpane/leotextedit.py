@@ -91,4 +91,3 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
 #@@language python
 #@@tabwidth -4
 #@-leo
-

@@ -99,4 +99,3 @@ def cloneFindMarkedHelper(c, flatten):
     found.b = '# Found %s marked nodes' % found.numberOfChildren()
 #@-others
 #@-leo
-

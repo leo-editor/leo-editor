@@ -162,4 +162,3 @@ else:
     main(files, verbose)
 #@@beautify
 #@-leo
-
