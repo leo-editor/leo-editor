@@ -1070,11 +1070,10 @@ class LeoImportCommands:
                     while i < len(s):
                         progress = i
                         i = g.skip_ws_and_nl(s, i)
-                        if (
-                            g.match(s, i, "@d") or
-                            g.match(s, i, "@f")
-                        ): i = g.skip_line(s, i)
-                        else: break
+                        if g.match(s, i, "@d") or g.match(s, i, "@f"):
+                            i = g.skip_line(s, i)
+                        else:
+                            break
                         assert(i > progress)
                     i = g.skip_ws_and_nl(s, i)
                 while i < len(s) and not self.isModuleStart(s, i):
@@ -1324,7 +1323,12 @@ class LeoImportCommands:
             parent = c.lastTopLevel().insertAfter()
         kind = self.compute_unit_test_kind(ext, fileName)
         parent.h = f"{kind} {fileName}"
-        self.createOutline(ext=ext, fileName=title.strip(), parent=parent.copy(), s=s,)
+        self.createOutline(
+            ext=ext,
+            fileName=title.strip(),
+            parent=parent.copy(),
+            s=s,
+        )
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
@@ -1591,7 +1595,7 @@ class MindMapImporter:
             if row[count]:
                 return count + 1
             count = count + 1
-        return - 1
+        return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
         """Return the string for the given csv row."""
@@ -2025,7 +2029,9 @@ class RecursiveImportController:
     def remove_empty_nodes(self, p):
         """Remove empty nodes. Not called for @auto or @edit trees."""
         c = self.c
-        aList = [p2 for p2 in p.self_and_subtree() if not p2.b and not p2.hasChildren()]
+        aList = [
+            p2 for p2 in p.self_and_subtree()
+                if not p2.b and not p2.hasChildren()]
         if aList:
             c.deletePositionsInList(aList, redraw=False)
     #@-others
@@ -2270,10 +2276,10 @@ class ZimImportController:
             # looking for useless bodies
             if p.hasFirstChild() and warning in p.b:
                 child = p.getFirstChild()
+                fmt = "@rst-no-head %s declarations"
                 table = (
-                    "@rst-no-head %s declarations" % p.h.replace(' ', '_'),
-                    "@rst-no-head %s declarations" % p.h.replace(
-                    rstType, '').strip().replace(' ', '_'),
+                    fmt % p.h.replace(' ', '_'),
+                    fmt % p.h.replace(rstType, '').strip().replace(' ', '_'),
                 )
                 # Replace content with @rest-no-head first child (without title head) and delete it
                 if child.h in table:
