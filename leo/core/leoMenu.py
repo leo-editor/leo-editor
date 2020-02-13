@@ -693,4 +693,3 @@ class NullMenu(LeoMenu):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-
