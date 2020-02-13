@@ -744,10 +744,10 @@ class SpellTabHandler:
         selection = self.tab.getSuggestion()
         if selection:
             # Use getattr to keep pylint happy.
-            if hasattr(
-                self.tab, 'change_i') and getattr(self.tab, 'change_i') is not None:
-                start = getattr(self.tab, 'change_i')
-                end = getattr(self.tab, 'change_j')
+            i = getattr(self.tab, 'change_i', None)
+            j = getattr(self.tab, 'change_j', None)
+            if i is not None:
+                start, end = i, j
                 oldSel = start, end
             else:
                 start, end = oldSel = w.getSelectionRange()

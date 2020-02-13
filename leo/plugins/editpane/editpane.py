@@ -424,7 +424,8 @@ class LeoEditPane(QtWidgets.QWidget):
                 DBG(f"Loaded module: {name}")
             except ImportError as e:
                 DBG(
-                    f"{e.__class__.__name__}: Module not loaded (unmet dependencies?): {name}")
+                    f"{e.__class__.__name__}: "
+                    f"Module not loaded (unmet dependencies?): {name}")
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)

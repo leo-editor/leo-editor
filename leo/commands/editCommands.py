@@ -1052,8 +1052,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         os.chdir(iconDir)
         paths = g.app.gui.runOpenFileDialog(c,
             title='Get Icons',
-            filetypes=[('All files', '*'), (
-            'Gif', '*.gif'), ('Bitmap', '*.bmp'), ('Icon', '*.ico'),],
+            filetypes=[
+                ('All files', '*'),
+                ('Gif', '*.gif'),
+                ('Bitmap', '*.bmp'),
+                ('Icon', '*.ico'),
+            ],
             defaultextension=None, multiple=True)
         if not paths: return
         aList = []
@@ -2623,10 +2627,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             lines = g.splitLines(s)
             row, col = g.convertPythonIndexToRowCol(s, ins)
-            ###
-                # row2 = max(
-                    # 0, row - linesPerPage) if kind == 'back' else min(
-                    # row + linesPerPage, len(lines) - 1)
             if kind == 'back':
                 row2 = max(0, row - linesPerPage)
             else:
