@@ -326,8 +326,14 @@ class BindingInfo:
     #@+others
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(
-        self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
-
+        self,
+        kind,
+        commandName='',
+        func=None,
+        nextMode=None,
+        pane=None,
+        stroke=None,
+    ):
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
         self.kind = kind
@@ -371,11 +377,11 @@ def isBindingInfo(obj):
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 #@+at
 # From The Python Cookbook:
-#
+# 
 # Create a Bunch whenever you want to group a few variables:
-#
+# 
 #     point = Bunch(datum=y, squared=y*y, coord=x)
-#
+# 
 # You can read/write the named attributes you just created, add others,
 # del some of them, etc:
 #     if point.squared > threshold:
@@ -1154,7 +1160,7 @@ class MatchBrackets:
         expanded = False
         orig_left = left
         orig_right = right
-        while(
+        while (
             (s[left] not in self.brackets or expand and not expanded)
             and (s[right] not in self.brackets or expand and not expanded)
             and (left > 0 or right < max_right)
@@ -1676,7 +1682,13 @@ class SherlockTracer:
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(
-        self, patterns, dots=True, show_args=True, show_return=True, verbose=True):
+        self,
+        patterns,
+        dots=True,
+        show_args=True,
+        show_return=True,
+        verbose=True,
+    ):
         """SherlockTracer ctor."""
         self.bad_patterns = []  # List of bad patterns.
         self.dots = dots  # True: print level dots.
@@ -1918,8 +1930,8 @@ class SherlockTracer:
             if self.fn_is_enabled(fn, patterns):
                 result = sorted(d.keys())
             else:
-                result = [
-                    key for key in sorted(d.keys()) if self.is_enabled(fn, key, patterns)]
+                result = [key for key in sorted(d.keys())
+                    if self.is_enabled(fn, key, patterns)]
             if result:
                 print('')
                 fn = fn.replace('\\', '/')
@@ -2939,8 +2951,7 @@ def printGcObjects(tag=''):
                     funcDict[key] = None
                     if n < 50 and key not in lastFunctionsDict:
                         g.pr(obj)
-                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(
-                            obj)
+                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = getspec(obj)
                         g.pr("args", args)
                         if varargs: g.pr("varargs", varargs)
                         if varkw: g.pr("varkw", varkw)
@@ -3995,7 +4006,7 @@ def readFileIntoUnicodeString(fn, encoding=None, silent=False):
     return None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
-#
+# 
 # The Unix readline() routine delivers "\r\n" line end strings verbatim,
 # while the windows versions force the string to use the Unix convention
 # of using only "\n". This routine causes the Unix readline to do the
@@ -4421,7 +4432,7 @@ joinlines = joinLines
 # will call g.es if they find an error. g.scanError() also bumps
 # c.tangleCommands.errors, which is harmless if we aren't tangling, and
 # useful if we are.
-#
+# 
 # These routines are called by the Import routines and the Tangle routines.
 #@+node:ekr.20031218072017.3159: *4* skip_block_comment
 # Scans past a block comment (an old_style C comment).
@@ -4461,8 +4472,11 @@ def skip_braces(s, i):
         elif g.match(s, i, '//'): i = g.skip_to_end_of_line(s, i)
         elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
         # 7/29/02: be more careful handling conditional code.
-        elif g.match_word(
-            s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
+        elif (
+            g.match_word(s, i, "#if") or
+            g.match_word(s, i, "#ifdef") or
+            g.match_word(s, i, "#ifndef")
+        ):
             i, delta = g.skip_pp_if(s, i)
             level += delta
         else: i += 1
@@ -4544,16 +4558,15 @@ def skip_pascal_string(s, i):
 #@+node:ekr.20031218072017.3166: *4* skip_heredoc_string : called by php import (Dave Hein)
 #@+at 08-SEP-2002 DTHEIN:  added function skip_heredoc_string
 # A heredoc string in PHP looks like:
-#
+# 
 #   <<<EOS
 #   This is my string.
 #   It is mine. I own it.
 #   No one else has it.
 #   EOS
-#
+# 
 # It begins with <<< plus a token (naming same as PHP variable names).
 # It ends with the token on a line by itself (must start in first position.
-#
 #@@c
 
 def skip_heredoc_string(s, i):
@@ -4618,8 +4631,11 @@ def skip_pp_part(s, i):
     delta = 0
     while i < len(s):
         c = s[i]
-        if g.match_word(
-            s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
+        if (
+            g.match_word(s, i, "#if") or
+            g.match_word(s, i, "#ifdef") or
+            g.match_word(s, i, "#ifndef")
+        ):
             i, delta1 = g.skip_pp_if(s, i)
             delta += delta1
         elif g.match_word(s, i, "#else") or g.match_word(s, i, "#endif"):
@@ -4832,8 +4848,8 @@ def skip_to_start_of_line(s, i):
         return len(s)
     if i <= 0:
         return 0
-    i = s.rfind(
-        '\n', 0, i)  # Don't find s[i], so it doesn't matter if s[i] is a newline.
+    # Don't find s[i], so it doesn't matter if s[i] is a newline.
+    i = s.rfind('\n', 0, i)  
     if i == -1:
         return 0
     return i + 1
@@ -5453,10 +5469,10 @@ def getLine(s, i):
     s[i] is a newline only if the line is empty.
     s[j] is a newline unless there is no trailing newline.
     """
-    if i > len(s): i = len(s) - 1  # Bug fix: 10/6/07 (was if i >= len(s))
+    if i > len(s): i = len(s) - 1
     if i < 0: i = 0
-    j = s.rfind(
-        '\n', 0, i)  # A newline *ends* the line, so look to the left of a newline.
+    # A newline *ends* the line, so look to the left of a newline.
+    j = s.rfind('\n', 0, i)  
     if j == -1: j = 0
     else: j += 1
     k = s.find('\n', i)
@@ -5933,7 +5949,7 @@ def removeExtraLws(s, tab_width):
 # Instead, the caller should simply reduce pageWidth by the width of
 # leading whitespace wanted, then add that whitespace to the lines
 # returned here.
-#
+# 
 # The key to this code is the invarient that line never ends in whitespace.
 #@@c
 
@@ -5976,8 +5992,7 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
                     if line:
                         # Add the word, preceeded by a blank.
-                        line = space.join(
-                            (line, word))  # DTHEIN 18-JAN-2004: better syntax
+                        line = space.join((line, word))  
                     else:
                         # Just add the word to the start of the line.
                         line = word
@@ -6018,7 +6033,7 @@ def optimizeLeadingWhitespace(line, tab_width):
 #@+node:ekr.20040723093558: *4* g.regularizeTrailingNewlines
 #@+at The caller should call g.stripBlankLines before calling this routine
 # if desired.
-#
+# 
 # This routine does _not_ simply call rstrip(): that would delete all
 # trailing whitespace-only lines, and in some cases that would change
 # the meaning of program or data.
@@ -7029,8 +7044,7 @@ def os_startfile(fname):
         while True:
             emsg = ree.read().decode('utf-8')
             if emsg:
-                g.es_print_error(
-                    'xdg-open {fn} caused output to stderr:\n{em}'.format(fn=fname, em=emsg))
+                g.es_print_error(f'xdg-open {fname} caused output to stderr:\n{emsg}')
             else:
                 break
     #@+node:bob.20170516112304.1: *4* itPoll()
@@ -7054,8 +7068,7 @@ def os_startfile(fname):
             ito.stop()
             ito.destroy_self()
             if rc != 0:
-                g.es_print(
-                    'xdg-open {fn} failed with exit code {ec}'.format(fn=fname, ec=rc))
+                g.es_print(f'xdg-open {fname} failed with exit code {rc}')
             stderr2log(g, ree, fname)
             ree.close()
 
@@ -7097,7 +7110,9 @@ def os_startfile(fname):
             g.es_exception()
         try:
             itoPoll = g.IdleTime(
-                (lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
+                (lambda ito: itPoll(fname, ree, subPopen, g, ito)),
+                delay=1000,
+            )
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
