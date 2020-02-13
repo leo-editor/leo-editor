@@ -2392,8 +2392,8 @@ class Orange:
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     # Patterns from FastAtRead class, specialize for python delims.
-    start_doc_pat = fr'^\s*#@\+(at|doc)?(\s.*?)?\n'  # @doc or @
-    end_doc_pat = fr'^\s*#@@c(ode)?$'  # @c and @code
+    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?\n')  # @doc or @
+    end_doc_pat = re.compile(r'^\s*#@@c(ode)?$')  # @c and @code
 
     in_doc_part = False
 
