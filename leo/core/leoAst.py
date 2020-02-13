@@ -2424,10 +2424,14 @@ class Orange:
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
-            g.trace(self.in_doc_part, repr(self.line))
+            ### g.trace(self.in_doc_part, repr(self.line))
             self.clean('hard-blank')
             self.clean('line-indent')
-            val = self.line if self.in_doc_part else self.line.rstrip()
+            ### self.line = self.line.replace('\r', '')
+            if self.in_doc_part:
+                val = self.line.replace('\n', '')
+            else:
+                val = self.line.rstrip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
