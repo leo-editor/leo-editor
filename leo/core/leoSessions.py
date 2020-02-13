@@ -185,5 +185,4 @@ def session_snapshot_save_command(event):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo

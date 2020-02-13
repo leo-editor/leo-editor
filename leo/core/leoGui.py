@@ -153,10 +153,8 @@ class LeoGui:
         self.oops()
     #@+node:ekr.20031218072017.3733: *4* LeoGui.utils
     #@+at Subclasses are expected to subclass all of the following methods.
-    #
     # These are all do-nothing methods: callers are expected to check for
     # None returns.
-    #
     # The type of commander passed to methods depends on the type of frame
     # or dialog being created. The commander may be a Commands instance or
     # one of its subcommanders.
@@ -566,4 +564,3 @@ class UnitTestGui(NullGui):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-

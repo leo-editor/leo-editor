@@ -509,7 +509,7 @@ class AtFile:
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
                 p.moveToNodeAfterTree()
-            elif(
+            elif (
                 p.isAtThinFileNode() or
                 p.isAtAutoNode() or
                 p.isAtEditNode() or
@@ -1158,8 +1158,10 @@ class AtFile:
         '''Save the outline if only persistence data nodes are dirty.'''
         c = self.c
         changed_positions = [p for p in c.all_unique_positions() if p.v.isDirty()]
-        at_persistence = c.persistenceController and c.persistenceController.has_at_persistence_node(
-            )
+        at_persistence = (
+            c.persistenceController and
+            c.persistenceController.has_at_persistence_node()
+        )
         if at_persistence:
             changed_positions = [p for p in changed_positions
                 if not at_persistence.isAncestorOf(p)]
@@ -1352,7 +1354,9 @@ class AtFile:
         p = p.copy()
         after = p.nodeAfterTree()
         while p and p != after:  # Don't use iterator.
-            if (p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode())):
+            if (
+                p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode())
+            ):
                 fileName = p.anyAtFileNodeName()
                 if fileName:
                     fileName = c.expand_path_expression(fileName)  # #1341
@@ -3291,8 +3295,9 @@ class FastAtRead:
             # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
-        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = self.get_patterns(
-            delims)
+        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat,\
+            end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = \
+            self.get_patterns(delims)
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>

@@ -174,7 +174,9 @@ class FastRead:
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [self.bytesToUnicode(i) if type(i) in (list, tuple, dict) else i for i in l]
+            l = [self.bytesToUnicode(i)
+                    if type(i) in (list, tuple, dict) else i
+                        for i in l]
             ro = tuple(l) if t is tuple else l
         elif t is dict:
             byte_keys = [i for i in ob if type(i) is bytes]
@@ -1010,13 +1012,15 @@ class FileCommands:
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn):
-        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
-        keys = (  'width', 'height', 'left', 'top',
+        geom = (600, 400, 50, 50, 0.5, 0.5, '')
+        keys = ('width', 'height', 'left', 'top',
                   'ratio', 'secondary_ratio',
                   'current_position')
         try:
-            d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
+            d = dict(
+                conn.execute('''select * from extra_infos 
+                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall(),
+            )
             geom = (d.get(*x) for x in zip(keys, geom))
         except sqlite3.OperationalError:
             pass
@@ -1082,7 +1086,7 @@ class FileCommands:
                     ref_fname = p.b.split('\n', 1)[0].strip()
                     break
                 # An optimization: Write the next top-level node.
-                fc.putVnode(p, isIgnore=p.isAtIgnoreNode())  
+                fc.putVnode(p, isIgnore=p.isAtIgnoreNode())
             fc.put("</vnodes>\n")
             return ref_fname
         #@+node:vitalije.20170831135447.1: *6* getPublicLeoFile
@@ -1724,7 +1728,8 @@ class FileCommands:
     #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
     def prepareDbTables(self, conn):
         conn.execute('''drop table if exists vnodes;''')
-        conn.execute('''
+        conn.execute(
+            '''
             create table if not exists vnodes(
                 gnx primary key,
                 head,
@@ -1733,14 +1738,19 @@ class FileCommands:
                 parents,
                 iconVal,
                 statusBits,
-                ua);''')
-        conn.execute('''create table if not exists extra_infos(name primary key, value)''')
+                ua);''',
+        )
+        conn.execute(
+            '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn, rows):
-        conn.executemany('''insert into vnodes
+        conn.executemany(
+            '''insert into vnodes
             (gnx, head, body, children, parents,
                 iconVal, statusBits, ua)
-            values(?,?,?,?,?,?,?,?);''', rows)
+            values(?,?,?,?,?,?,?,?);''',
+            rows,
+        )
     #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
     def exportGeomToSqlite(self, conn):
         c = self.c
@@ -2040,5 +2050,4 @@ def dump_clone_parents(event):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo

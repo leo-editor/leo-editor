@@ -7,23 +7,17 @@
 #@+node:ekr.20110605121601.18538: ** << about internal bindings >>
 #@@nocolor-node
 #@+at
-#
 # Here are the rules for translating key bindings (in leoSettings.leo) into keys
 # for k.bindingsDict:
-#
 # 1.  The case of plain letters is significant:  a is not A.
-#
 # 2. The Shift- prefix can be applied *only* to letters. Leo will ignore (with a
 # warning) the shift prefix applied to any other binding, e.g., Ctrl-Shift-(
-#
 # 3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
 # significant. Thus, the Shift- prefix is required if you want an upper-case
 # letter (with the exception of 'bare' uppercase letters.)
-#
 # The following table illustrates these rules. In each row, the first entry is the
 # key (for k.bindingsDict) and the other entries are equivalents that the user may
 # specify in leoSettings.leo:
-#
 # a, Key-a, Key-A
 # A, Shift-A
 # Alt-a, Alt-A
@@ -31,7 +25,6 @@
 # Ctrl-a, Ctrl-A
 # Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
 # , Key-!,Key-exclam,exclam
-#
 # This table is consistent with how Leo already works (because it is consistent
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
@@ -596,4 +589,3 @@ class LeoQtEventFilter(QtCore.QObject):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-

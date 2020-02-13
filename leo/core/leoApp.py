@@ -3808,7 +3808,10 @@ class RecentFilesManager:
             for frame in g.app.windowList:
                 # Remove all versions of the file name.
                 for name in rf.recentFiles:
-                    if (munge(fileName) == munge(name) or munge2(fileName) == munge2(name)):
+                    if (
+                        munge(fileName) == munge(name) or 
+                        munge2(fileName) == munge2(name)
+                    ):
                         rf.recentFiles.remove(name)
                 rf.recentFiles.insert(0, fileName)
                 # Recreate the Recent Files menu.
@@ -3976,5 +3979,4 @@ def openUrlUnderCursor(event=None):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo

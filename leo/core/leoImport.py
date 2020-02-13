@@ -360,7 +360,7 @@ class LeoImportCommands:
             if self.isDocStart(s, i) or g.match_word(s, i, "@doc"):
                 i, result = self.convertDocPartToWeb(s, i, result)
                 docSeen = True
-            elif(
+            elif (
                 g.match_word(s, i, "@code") or
                 g.match_word(s, i, "@root") or
                 g.match_word(s, i, "@c") or
@@ -1595,7 +1595,7 @@ class MindMapImporter:
             if row[count]:
                 return count + 1
             count = count + 1
-        return -1
+        return - 1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
         """Return the string for the given csv row."""
@@ -2333,7 +2333,8 @@ class ZimImportController:
                 if level == self.rstLevel:
                     name = f"{self.rstType} {name}"
                 rstNodes[
-                    str(level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
+                    str(
+                    level + 1)] = self.rstToLastChild(rstNodes[str(level)], name, rst)
             # Clean nodes
             g.es('Start cleaning process. Please wait...', color='blue')
             self.clean(zimNode, self.rstType)

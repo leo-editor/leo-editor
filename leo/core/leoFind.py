@@ -10,11 +10,9 @@ import sys
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
 #@+at
 #@@language rest
-#
 # LeoFind.py contains the gui-independant part of all of Leo's
 # find/change code. Such code is tricky, which is why it should be
 # gui-independent code! Here are the governing principles:
-#
 # 1. Find and Change commands initialize themselves using only the state
 #    of the present Leo window. In particular, the Find class must not
 #    save internal state information from one invocation to the next.
@@ -22,39 +20,33 @@ import sys
 #    text in headline or body text, those changes will affect the next
 #    invocation of any Find or Change command. Failure to follow this
 #    principle caused all kinds of problems earlier versions.
-#
 #    This principle simplifies the code because most ivars do not
 #    persist. However, each command must ensure that the Leo window is
 #    left in a state suitable for restarting the incremental
 #    (interactive) Find and Change commands. Details of initialization
 #    are discussed below.
-#
 # 2. The Find and Change commands must not change the state of the
 #    outline or body pane during execution. That would cause severe
 #    flashing and slow down the commands a great deal. In particular,
 #    c.selectPosition and c.editPosition must not be called while
 #    looking for matches.
-#
 # 3. When incremental Find or Change commands succeed they must leave
 #    the Leo window in the proper state to execute another incremental
 #    command. We restore the Leo window as it was on entry whenever an
 #    incremental search fails and after any Find All and Replace All
 #    command. Initialization involves setting the self.c, self.v,
 #    self.in_headline, self.wrapping and self.s_text ivars.
-#
 # Setting self.in_headline is tricky; we must be sure to retain the
 # state of the outline pane until initialization is complete.
 # Initializing the Find All and Replace All commands is much easier
 # because such initialization does not depend on the state of the Leo
 # window. Using the same kind of text widget for both headlines and body
 # text results in a huge simplification of the code.
-#
 # The searching code does not know whether it is searching headline or
 # body text. The search code knows only that self.s_text is a text
 # widget that contains the text to be searched or changed and the insert
 # and sel attributes of self.search_text indicate the range of text to
 # be searched.
-#
 # Searching headline and body text simultaneously is complicated. The
 # findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
@@ -2657,4 +2649,3 @@ class LeoFind:
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-

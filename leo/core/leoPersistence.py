@@ -525,5 +525,4 @@ class PersistenceDataController:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo

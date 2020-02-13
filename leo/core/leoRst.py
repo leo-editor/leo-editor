@@ -477,7 +477,7 @@ class RstCommands:
             p.moveToNodeAfterTree()
         elif self.getOption(p, 'ignore_this_node'):
             p.moveToThreadNext()
-        elif(
+        elif (
             g.match_word(h, 0, '@rst-options') and
             not self.getOption(p, 'show_options_nodes')
         ):
@@ -1038,7 +1038,7 @@ class RstCommands:
             p.moveToNodeAfterTree()
         elif self.getOption(p, 'ignore_this_node'):
             p.moveToThreadNext()
-        elif(
+        elif (
             g.match_word(h, 0, '@rst-options') and
             not self.getOption(p, 'show_options_nodes')
         ):

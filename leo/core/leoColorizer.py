@@ -1625,7 +1625,11 @@ class JEditColorizer(BaseJEditColorizer):
             word = word[: -1]
         if not word:
             g.trace(
-                'can not happen', repr(s[i : max(j, i + 1)]), repr(s[i : i + 10]), g.callers())
+                'can not happen',
+                repr(s[i : max(j, i + 1)]),
+                repr(s[i : i + 10]),
+                g.callers(),
+            )
             return 0
         if self.ignore_case: word = word.lower()
         kind = self.keywordsDict.get(word)
@@ -2186,7 +2190,9 @@ class JEditColorizer(BaseJEditColorizer):
                 else:
                     s2 = repr(s[i : i + 17 - 2] + '...')
                 kind_s = f"{delegate}.{tag}"
-                print(f'--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}')
+                print(
+                    f'--trace-coloring: {kind_s:25} {i:3} {j:3} '
+                    f'{s2:>20} {g.callers(2)}')
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):

@@ -1878,7 +1878,7 @@ class Commands:
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
-        d = { 1: c.interactive1, 2: c.interactive2, 3: c.interactive3, }
+        d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3,}
         f = d.get(len(prompts))
         if f:
             f(callback, event, prompts)
@@ -2441,7 +2441,12 @@ class Commands:
             backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
             path = join(backup_dir, fn)
             if g.os_path_exists(backup_dir):
-                written_fn = c.backup(path, prefix=git_branch, silent=True, useTimeStamp=True)
+                written_fn = c.backup(
+                    path,
+                    prefix=git_branch,
+                    silent=True,
+                    useTimeStamp=True,
+                )
                 g.es_print(f"wrote: {written_fn}")
             else:
                 g.es_print(f'backup_dir not found: {backup_dir!r}')
@@ -4109,5 +4114,4 @@ class Commands:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@-leo

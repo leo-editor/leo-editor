@@ -599,5 +599,4 @@ class CPrettyPrinter:
 #@-others
 #@@language python
 #@@tabwidth -4
-
 #@-leo

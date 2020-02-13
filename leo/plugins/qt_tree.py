@@ -939,7 +939,6 @@ class LeoQtTree(leoFrame.LeoTree):
     # explicitly unpost. In order to process the <FocusOut> event, we need to be able
     # to find the reference to the popup window again, so this needs to be an
     # attribute of the tree object; hence, "self.popupMenu".
-    #
     # Aside: though Qt tries to be muli-platform, the interaction with different
     # window managers does cause small differences that will need to be compensated by
     # system specific application code. :-(
@@ -1474,4 +1473,3 @@ class LeoQtTree(leoFrame.LeoTree):
 #@@tabwidth -4
 #@@pagewidth 80
 #@-leo
-

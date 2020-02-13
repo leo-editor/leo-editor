@@ -4568,9 +4568,8 @@ class TestOrange(BaseTest):
                     self.append(p.copy())
             else:  ### <-------
                 pass
-    '''.replace(
-            
-            'SENT', '#@')
+    '''
+        contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents + '\n'
         results = self.beautify(contents, tokens, tree,
