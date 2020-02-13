@@ -2512,11 +2512,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 # put(msg, status) where status is None, 'info', or 'fail'.
                 # Just as a quick hack to avoid dealing with propagating those changes
                 # back upstream, infer status like this:
-                if (fg == c.config.getColor('find-found-fg') and
+                if (
+                    fg == c.config.getColor('find-found-fg') and
                     bg == c.config.getColor('find-found-bg')
                 ):
                     status = 'info'
-                elif(fg == c.config.getColor('find-not-found-fg') and
+                elif (
+                    fg == c.config.getColor('find-not-found-fg') and
                     bg == c.config.getColor('find-not-found-bg')
                 ):
                     status = 'fail'
@@ -2817,7 +2819,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
             if top_level and rclicks:
                 act = QtWidgets.QAction('---', action_container)
                 act.setSeparator(True)
-                action_container.insertAction(action_container.actions()[top_offset], act)
+                action_container.insertAction(
+                    action_container.actions()[top_offset], act)
                 action_container.setText(
                     action_container.text() +
                     (c.config.getString('mod-scripting-subtext') or '')
@@ -3175,7 +3178,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Undo --minimized"""
         if 'size' in g.app.debug:
             g.trace(
-                'top:', bool(self.top), 'isMinimized:', self.top and self.top.isMinimized())
+                'top:', bool(self.top),
+                'isMinimized:', self.top and self.top.isMinimized())
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
 

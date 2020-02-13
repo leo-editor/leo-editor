@@ -41,4 +41,3 @@ class Ui_LeoQuickSearchWidget:
             LeoQuickSearchWidget.setWindowTitle(
                 QtGui.QApplication.translate("LeoQuickSearchWidget", "Form",
                 None, QtGui.QApplication.UnicodeUTF8))
-

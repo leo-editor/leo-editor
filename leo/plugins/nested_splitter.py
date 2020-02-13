@@ -668,7 +668,7 @@ if QtWidgets:  # NOQA
             count
               the pair of nested counts of widgets / spliters around the handle
             """
-            widget = [ self.widget(index - 1), self.widget(index), ]
+            widget = [self.widget(index - 1), self.widget(index)]
             neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
             count = []
             for i in 0, 1:
@@ -1130,13 +1130,19 @@ if QtWidgets:  # NOQA
             orientation = 'vertical'
             if layout['orientation'] == QtCore.Qt.Horizontal:
                 orientation = 'horizontal'
-            _ans.append(f"{'   ' * _depth}{layout['splitter'].__class__.__name__} ({layout['splitter'].objectName()}) - {orientation}")
+            _ans.append(
+                f"{'   ' * _depth}{layout['splitter'].__class__.__name__} "
+                f"({layout['splitter'].objectName()}) - {orientation}",
+            )
             _depth += 1
             for n, i in enumerate(layout['content']):
                 if isinstance(i, dict):
                     self.layout_to_text(i, _depth, _ans)
                 else:
-                    _ans.append(f"{'   ' * _depth}{i.__class__.__name__} ({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}")
+                    _ans.append(
+                        f"{'   ' * _depth}{i.__class__.__name__} "
+                        f"({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}",
+                    )
             if _depth == 1:
                 return '\n'.join(_ans)
             return None

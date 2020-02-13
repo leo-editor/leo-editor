@@ -994,12 +994,12 @@ class LeoQtGui(leoGui.LeoGui):
         """Required to handle syntax coloring."""
         if isinstance(size, str):
             if size.endswith('pt'):
-                size = size[: -2].strip()
+                size = size[:-2].strip()
             elif size.endswith('px'):
                 if size not in self.size_warnings:
                     self.size_warnings.append(size)
                     g.es(f"px ignored in font setting: {size}")
-                size = size[: -2].strip()
+                size = size[:-2].strip()
         try:
             size = int(size)
         except Exception:

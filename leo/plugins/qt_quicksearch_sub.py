@@ -75,4 +75,3 @@ class Ui_LeoQuickSearchWidget:
                     "Show Parents",
                     None,
                     QtGui.QApplication.UnicodeUTF8))
-

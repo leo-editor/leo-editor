@@ -576,7 +576,7 @@ if QtWidgets:
                     return
                 i = j = w.getInsertPoint()
                 s = w.getAllText()
-                while(0 <= i < len(s) and s[i] != '.'):
+                while (0 <= i < len(s) and s[i] != '.'):
                     i -= 1
                 i += 1
                 if j > i:
@@ -1066,8 +1066,8 @@ class QScintillaWrapper(QTextMixin):
             #@-others
             # Numbered color names don't work in Ubuntu 8.10, so...
 
-            if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[: -1]
-            if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[: -1]
+            if bg and bg[-1].isdigit() and bg[0] != '#': bg = bg[:-1]
+            if fg and fg[-1].isdigit() and fg[0] != '#': fg = fg[:-1]
             # w = self.widget # A QsciScintilla widget.
             self.flashCount = flashes
             self.flashIndex1 = self.getInsertPoint()
@@ -1304,9 +1304,9 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         # numbered color names don't work in Ubuntu 8.10, so...
         if bg[-1].isdigit() and bg[0] != '#':
-            bg = bg[: -1]
+            bg = bg[:-1]
         if fg[-1].isdigit() and fg[0] != '#':
-            fg = fg[: -1]
+            fg = fg[:-1]
         # This might causes problems during unit tests.
         # The selection point isn't restored in time.
         if g.app.unitTesting:

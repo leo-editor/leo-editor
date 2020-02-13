@@ -762,7 +762,7 @@ class LeoQtTree(leoFrame.LeoTree):
             #@+node:ekr.20120409185504.10028: *5* << truncate s if it has multiple lines >>
             # Remove trailing newlines before warning of truncation.
             while s and s[-1] == '\n':
-                s = s[: -1]
+                s = s[:-1]
             # Warn if there are multiple lines.
             i = s.find('\n')
             if i > -1:
