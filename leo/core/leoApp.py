@@ -3596,7 +3596,7 @@ class RecentFilesManager:
             if text.startswith('WITH:') and replace is not None:
                 with_ = text[5:].strip()
                 changes.append((replace, with_))
-                g.es('%s -> %s' % changes[-1])
+                g.es(f"{replace} -> {with_}")
         orig = [z for z in self.recentFiles if z.startswith("/")]
         self.recentFiles = []
         for i in orig:
