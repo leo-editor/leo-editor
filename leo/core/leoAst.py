@@ -2466,7 +2466,7 @@ class Orange:
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
             self.word(name)
-        elif name in ('and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or'):
+        elif name in ('and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'):
             self.word_op(name)
         else:
             self.word(name)
@@ -4222,6 +4222,10 @@ class TestOrange(BaseTest):
     if x == 4 : pass
     print (x, y); x, y = y, x
     print (x , y) ; x , y = y , x
+    if(1):
+        pass
+    while(1):
+        pass
     """
         # At present Orange doesn't split lines...
         expected = """\
@@ -4229,6 +4233,10 @@ class TestOrange(BaseTest):
     if x == 4: pass
     print(x, y); x, y = y, x
     print(x, y); x, y = y, x
+    if (1):
+        pass
+    while (1):
+        pass
     """
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
@@ -4296,19 +4304,22 @@ class TestOrange(BaseTest):
                 """f({key: 1})""",
                 """t = (0,)""",
                 """x, y = y, x""",
-                                # Dicts...
+                # Dicts...
                 """d = {key: 1}""",
                 """d['key'] = a[i]""",
-                                # Trailing comments: expect two spaces.
+                # Trailing comments: expect two spaces.
                 """whatever # comment""",
                 """whatever  # comment""",
                 """whatever   # comment""",
-                                # Word ops...
+                # Word ops...
                 """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
                 """print(v7 for v8 in v9)""",
-                                # Unary ops...
+                # Unary ops...
                 """v = -1 if a < b else -2""",
+                # New...
                 """print(-1)""",
+                """return -1""",
+                """a[:-1]""",
             )
         fails = 0
         for i, contents in enumerate(table):
