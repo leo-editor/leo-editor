@@ -370,7 +370,7 @@ class ParserBaseClass:
                 items = []
                 self.valueError(p, 'ints[]', name, val)
                 return
-            kind = "ints[%s]" % (','.join([str(item) for item in items]))
+            kind = f"ints[{','.join([str(item) for item in items])}]"
             try:
                 val = int(val)
             except ValueError:
@@ -647,7 +647,7 @@ class ParserBaseClass:
             if line and not g.match(line, 0, '#'):
                 commandName, bi = self.parseShortcutLine(fn, line)
                 if bi is None:  # Fix #718.
-                    print('\nWarning: bad shortcut specifier: %r\n' % line)
+                    print(f'\nWarning: bad shortcut specifier: {line!r}\n')
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):
                         self.doOneShortcut(bi, commandName, p)
@@ -681,7 +681,7 @@ class ParserBaseClass:
             items = items.split(',')
             items = [item.strip() for item in items]
             name = name[:i] + name[j + 1 :].strip()
-            kind = "strings[%s]" % (','.join(items))
+            kind = f"strings[{','.join(items)}]"
             # At present no checking is done.
             self.set(p, kind, name, val)
     #@+node:ekr.20041124063257: *3* pbc.munge
@@ -894,11 +894,11 @@ class ParserBaseClass:
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(
-            name='settingsDict for %s' % (c.shortFileName()),
+            name=f'settingsDict for {c.shortFileName()}',
             keyType=type('settingName'),
             valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDict(  # was TypedDictOfLists.
-            name='shortcutsDict for %s' % (c.shortFileName()),
+            name=f'shortcutsDict for {c.shortFileName()}',
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
@@ -1676,10 +1676,10 @@ class GlobalConfigManager:
                         # The following doesn't work well.
                         # val = g.objToString(aList, indent=' '*4)
                     else:
-                        val = '<%s non-comment lines>' % len(aList)
+                        val = f'<{len(aList)} non-comment lines>'
                 elif isinstance(val, str) and val.startswith('<?xml'):
                     val = '<xml>'
-                key2 = '@%-6s %s' % (gs.kind, key)
+                key2 = f'@{gs.kind:>6} {key}'
                 yield key2, val, c, letter
     #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName):
@@ -2170,7 +2170,7 @@ class LocalConfigManager:
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"
-            result.append('%s %s = %s\n' % (kind, name, val))
+            result.append(f'{kind} {name} = {val}\n')
         # Use a single g.es statement.
         result.append('\n' + legend)
         if g.unitTesting:
