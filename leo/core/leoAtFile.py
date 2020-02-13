@@ -3295,10 +3295,9 @@ class FastAtRead:
             # Body is the list of lines presently being accumulated.
         #
         # get the patterns.
-        data =  self.get_patterns(delims)
-        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat,\
-        end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = data
-           
+        data = self.get_patterns(delims)
+        after_pat, all_pat, code_pat, comment_pat, delims_pat, doc_pat, end_raw_pat, first_pat, last_pat, node_start_pat, others_pat, raw_pat, ref_pat = data
+
         #@-<< init scan_lines >>
         #@+<< define dump_v >>
         #@+node:ekr.20180613061743.1: *4* << define dump_v >>
