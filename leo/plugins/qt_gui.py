@@ -569,7 +569,7 @@ class LeoQtGui(leoGui.LeoGui):
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
         c.in_qt_dialog = True
         try:
-            val = func(parent=None, caption=title, directory=startpath, filter=filter_,)
+            val = func(parent=None, caption=title, directory=startpath, filter=filter_)
         finally:
             c.in_qt_dialog = False
         if isQt5:  # this is a *Py*Qt change rather than a Qt change
@@ -1027,7 +1027,10 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             g.es("exception setting font", g.callers(4))
             g.es(
-                "", "family,size,slant,weight:", "", family, "", size, "", slant, "", weight)
+                f"family: {family}\n"
+                f"  size: {size}\n"
+                f" slant: {slant}\n"
+                f"weight: {weight}")
             # g.es_exception() # This just confuses people.
             return g.app.config.defaultFont
     #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion

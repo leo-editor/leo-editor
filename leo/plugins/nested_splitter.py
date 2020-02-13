@@ -277,9 +277,10 @@ if QtWidgets:
                             f'Swap {count[i]:d} {lr[i]} With Marked')
             # Add.
             for i in 0, 1:
-                if (not isinstance(splitter.parent(), NestedSplitter) or
-                    splitter.parent(
-                    ).indexOf(splitter) == [0, splitter.parent().count() - 1][i]
+                if (
+                    not isinstance(splitter.parent(), NestedSplitter) or
+                    splitter.parent().indexOf(splitter) ==
+                        [0, splitter.parent().count() - 1][i]
                 ):
 
                     def add_callback(i=i, splitter=splitter):
@@ -305,7 +306,8 @@ if QtWidgets:
                 splitter.zoom_toggle()
 
             self.add_item(
-                zoom, menu,
+                zoom,
+                menu,
                 ('Un' if splitter.root.zoomed else '') + 'Zoom pane'
             )
             # open window

@@ -820,8 +820,8 @@ class LeoQtTree(leoFrame.LeoTree):
                     # & QtConst.MetaModifier.
                     if isCtrl:
                         if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
-                            c.frame.tree.OnIconCtrlClick(
-                                p)  # Call the base class method.
+                            c.frame.tree.OnIconCtrlClick(p)
+                                # Call the base class method.
                         g.doHook("iconctrlclick2", c=c, p=p, event=event)
                     else:
                         # 2014/02/21: generate headclick1/2 instead of iconclick1/2

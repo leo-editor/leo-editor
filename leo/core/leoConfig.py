@@ -1592,11 +1592,14 @@ class GlobalConfigManager:
         if family in (None, ""):
             family = self.defaultFontFamily
         size = self.get(size, "size")
-        if size in (None, 0): size = defaultSize
+        if size in (None, 0):
+            size = defaultSize
         slant = self.get(slant, "slant")
-        if slant in (None, ""): slant = "roman"
+        if slant in (None, ""):
+            slant = "roman"
         weight = self.get(weight, "weight")
-        if weight in (None, ""): weight = "normal"
+        if weight in (None, ""):
+            weight = "normal"
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20041117081513: *4* gcm.getInt
     def getInt(self, setting):
