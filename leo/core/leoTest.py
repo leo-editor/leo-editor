@@ -1348,9 +1348,9 @@ class TestManager:
             b1 = p1.b
             b2 = p2.b
             if p1.h.endswith('@nonl') and b1.endswith('\n'):
-                b1 = b1[: -1]
+                b1 = b1[:-1]
             if p2.h.endswith('@nonl') and b2.endswith('\n'):
-                b2 = b2[: -1]
+                b2 = b2[:-1]
             ok = (
                 p1 and p2 and
                 p1.numberOfChildren() == p2.numberOfChildren() and
