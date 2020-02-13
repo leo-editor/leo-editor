@@ -110,11 +110,10 @@ def blacken_files(event):
         g.es_print(f"{tag} can not import black")
         return
     for root in g.findRootsWithPredicate(c, c.p):
-        ### filename = root.anyAtFileNodeName()
         path = g.fullPath(c, root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f"&black {path}")
+            g.execute_shell_commands(f"&black --skip-string-normalization {path}")
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
@@ -133,18 +132,14 @@ def blacken_files_diff(event):
     if not black:
         g.es_print(f"{tag} can not import black")
         return
-    for root in g.findsRootWithPredicate(c, c.p):
-        filename = root.anyAtFileNodeName()
-        g.trace(filename)
-        if os.path.exists(filename):
-            g.es_print(f"{tag}: {filename}")
-            ### To do.
-                # print('=====', p.h)
-                # print(black.diff(
-                    # body, result, "old", "new")[16:].rstrip()+'\n')
+    for root in g.findRootsWithPredicate(c, c.p):
+        path = g.fullPath(c, root)
+        if path and os.path.exists(path):
+            g.es_print(f"{tag}: {path}")
+            g.execute_shell_commands(f"&black --skip-string-normalization --diff {path}")
         else:
-            print(f"{tag}: file not found:{filename}")
-            g.es(f"{tag}: file not found:\n{filename}")
+            print(f"{tag}: file not found:{path}")
+            g.es(f"{tag}: file not found:\n{path}")
 
 #@+node:ekr.20191025072511.1: *4* fstringify-files
 @g.command('fstringify-files')
