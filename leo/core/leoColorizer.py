@@ -1084,8 +1084,7 @@ class BaseJEditColorizer(BaseColorizer):
             else:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             kind_s = f"{self.language}.{tag}"
-            print('--trace-coloring: %25s %3s %3s %-20s %s' % (
-                kind_s, i, j, s2, g.callers(2)))
+            print(f'--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}')
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -2187,8 +2186,7 @@ class JEditColorizer(BaseJEditColorizer):
                 else:
                     s2 = repr(s[i : i + 17 - 2] + '...')
                 kind_s = f"{delegate}.{tag}"
-                print('--trace-coloring: %25s %3s %3s %-20s %s' % (
-                    kind_s, i, j, s2, g.callers(2)))
+                print(f'--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}')
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
