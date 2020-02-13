@@ -446,8 +446,8 @@ class ParserBaseClass:
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
-                g.es_print(
-                    '%s %s (%s) [%s]' % ('    ' * (level + 0), val, val2, path + '/' + name))
+                g.es_print('%s %s (%s) [%s]' % (
+                    '    ' * (level + 0), val, val2, path + '/' + name))
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 g.es_print('%s %s... [%s]' % ('    ' * (level), kind, path + '/' + name))
@@ -1710,8 +1710,8 @@ class LocalConfigManager:
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert isinstance(self.settingsDict, g.TypedDict), repr(self.settingsDict)
-            assert isinstance(
-                self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)  # was TypedDictOfLists.
+            assert isinstance(self.shortcutsDict, g.TypedDict), repr(self.shortcutsDict)
+                # was TypedDictOfLists.
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalBindingsDict
@@ -2300,4 +2300,6 @@ def parseFont(b):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@last
 #@-leo
+
