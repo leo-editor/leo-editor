@@ -2393,7 +2393,17 @@ class Orange:
 
     # Patterns from FastAtRead class, specialize for python delims.
     start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
-    end_doc_pat = re.compile(r'^\s*#@@c(ode)?$')  # @c and @code
+
+    # Doc parts end with @c or a node sentinel
+    ### end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+-]others\b)|([+-]\<.*\>))\s*$")
+
+    end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
+
+        # r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$', # @node
+
+        # r'^\s*#@@c(ode)?$'  # @c and @code
+        # r'^(\s*)#@(\+|-)others\b(.*)$', # @others
+        # r'^(\s*)#@(\+|-){ref}\s*$'      # section ref
 
     in_doc_part = False
 
