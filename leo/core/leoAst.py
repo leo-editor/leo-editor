@@ -2666,6 +2666,13 @@ class Orange:
     #@+node:ekr.20200107165250.32: *5* orange.colon
     def colon(self, val):
         """Handle a colon."""
+        
+        def is_expr(node):
+            """True if node is any expression other than += number."""
+            if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
+                return True
+            return isinstance(node, ast.UnaryOp) and not isinstance(node.operand, ast.Num)
+            
         node = self.token.node
         self.clean('blank')
         if not isinstance(node, ast.Slice):
@@ -2676,9 +2683,7 @@ class Orange:
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
         step = getattr(node, 'step', None)
-        ### Unary operators acting on numbers are a special case. ###
-        expressions = (ast.BinOp, ast.Call, ast.IfExp, ast.UnaryOp)
-        if any(isinstance(z, expressions) for z in (lower, upper, step)):
+        if any(is_expr(z) for z in (lower, upper, step)):
             prev = self.code_list[-1]
             if prev.value not in '[:':
                 self.blank()
@@ -2751,9 +2756,6 @@ class Orange:
     def possible_unary_op(self, s):
         """Add a unary or binary op to the token list."""
         node = self.token.node
-        ###g.trace(node.__class__.__name__)
-        ### prev = self.code_list[-1]
-        ### if prev.kind in ('lt', 'op', 'op-no-blanks', 'word-op'):
         self.clean('blank')
         if isinstance(node, ast.UnaryOp):
             self.unary_op(s)
@@ -4233,12 +4235,14 @@ class TestOrange(BaseTest):
         if 0:
             # Test fails or recents...
             table = (
-                """a[: 1 if True else 2 :]""",
+                # """a[: 1 if True else 2 :]""",
+                """a[:-1]""",
             )
         else:
             table = (
-                                # Assignments...
-                                # Slices (colons)...
+                # Assignments...
+                # Slices (colons)...
+                """a[:-1]""",
                 """a[: 1 if True else 2 :]""",
                 """a[1 : 1 + 2]""",
                 """a[lower:]""",
@@ -4265,7 +4269,7 @@ class TestOrange(BaseTest):
                 """a[1:2:]""",
                 """a[:2:3]""",
                 """a[1:2:3]""",
-                                # * and **, inside and outside function calls.
+                # * and **, inside and outside function calls.
                 """a = b * c""",
                 """a = b ** c""",
                 """f(*args)""",
@@ -4273,7 +4277,8 @@ class TestOrange(BaseTest):
                 """f(*args, **kwargs)""",
                 """f(a, *args)""",
                 """f(a=2, *args)""",
-                                # Calls...
+                # Calls...
+                """f(-1)""",
                 """f(-1 < 2)""",
                 """f(1)""",
                 """f(2 * 3)""",
@@ -4297,10 +4302,8 @@ class TestOrange(BaseTest):
                 """print(v7 for v8 in v9)""",
                 # Unary ops...
                 """v = -1 if a < b else -2""",
-                # New...
-                """print(-1)""",
+                # Returns...
                 """return -1""",
-                """a[:-1]""",
             )
         fails = 0
         for i, contents in enumerate(table):
