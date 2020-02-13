@@ -325,8 +325,8 @@ class GoToCommands:
         i = s.find(delim1 + '@')
         if delim2:
             j = s.find(delim2)
-            return - 1 < i < j
-        return - 1 < i
+            return -1 < i < j
+        return -1 < i
     #@+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
     def remove_level_stars(self, s):
         i = g.skip_ws(s, 0)

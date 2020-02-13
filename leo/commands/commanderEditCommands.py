@@ -52,10 +52,11 @@ def addComments(self, event=None):
         if line.strip():
             i = g.skip_ws(line, 0)
             if indent:
-                result.append(
-                    line[0:i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
+                s = line[i:].replace('\n', '')
+                result.append(line[0:i] + openDelim + s + closeDelim + '\n')
             else:
-                result.append(openDelim + line.replace('\n', '') + closeDelim + '\n')
+                s = line.replace('\n', '')
+                result.append(openDelim + s + closeDelim + '\n')
         else:
             result.append(line)
     result = ''.join(result)
@@ -775,7 +776,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
     trailingNL = lines and lines[-1].endswith('\n')
-    lines = [z[: -1] if z.endswith('\n') else z for z in lines]
+    lines = [z[:-1] if z.endswith('\n') else z for z in lines]
     if lines:  # Bug fix: 2013/12/22.
         s = lines[0]
         if startsParagraph(s):
@@ -880,9 +881,9 @@ def toggleAngleBrackets(self, event=None):
     # 2019/09/12: Guard against black.
     lt = "<<"
     rt = ">>"
-    if s[0:2] == lt or s[-2 :] == rt:
+    if s[0:2] == lt or s[-2:] == rt:
         if s[0:2] == "<<": s = s[2:]
-        if s[-2 :] == ">>": s = s[: -2]
+        if s[-2:] == ">>": s = s[:-2]
         s = s.strip()
     else:
         s = g.angleBrackets(' ' + s + ' ')

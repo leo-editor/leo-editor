@@ -210,7 +210,7 @@ def show_clone_ancestors(event=None):
     for clone in c.all_positions():
         if clone.v == p.v:
             unl = clone.get_UNL(with_file=False, with_index=False)
-            runl = " <- ".join(unl.split("-->")[:: -1][1:])
+            runl = " <- ".join(unl.split("-->")[::-1][1:])
                 # reverse and drop first
             g.es("  ", newline=False)
             g.es_clickable_link(c, clone, 1, runl + "\n")
@@ -1028,7 +1028,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         aList = self.getIconList(c.p)
         if aList:
-            self.setIconList(c.p, aList[: -1])
+            self.setIconList(c.p, aList[:-1])
             c.setChanged()
             c.redraw_after_icons_changed()
     #@+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
@@ -1870,7 +1870,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             start, end = g.getLine(s, i)
             after = s[i:end]
-            if after.endswith('\n'): after = after[: -1]
+            if after.endswith('\n'): after = after[:-1]
             # Only do smart tab at the start of a blank line.
             doSmartTab = (smartTab and c.smart_tab and i == start)
                 # Truly at the start of the line.
@@ -2623,8 +2623,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             lines = g.splitLines(s)
             row, col = g.convertPythonIndexToRowCol(s, ins)
-            row2 = max(
-                0, row - linesPerPage) if kind == 'back' else min(row + linesPerPage, len(lines) - 1)
+            ###
+                # row2 = max(
+                    # 0, row - linesPerPage) if kind == 'back' else min(
+                    # row + linesPerPage, len(lines) - 1)
+            if kind == 'back':
+                row2 = max(0, row - linesPerPage)
+            else:
+                row2 = min(row + linesPerPage, len(lines) - 1)
             if row == row2: return
             spot = g.convertRowColToPythonIndex(s, row2, col, lines=lines)
             self.extendHelper(w, extend, spot, upOrDown=True)
@@ -3075,7 +3081,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 else:
                     # Last line of the body to be moved up doesn't end in a newline
                     # while we have to remove the newline from the line above moving down.
-                    new_lines = next_line + '\n' + lines[: -1]
+                    new_lines = next_line + '\n' + lines[:-1]
                     n2 += 1
                 w.insert(i, new_lines)
                 w.setSelectionRange(sel_1 + n2, sel_2 + n2, insert=insert_pt + n2)
@@ -3117,7 +3123,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 else:
                     # Lines to be moved up don't end in a newline while the
                     # previous line going down needs its newline taken off.
-                    new_lines = lines + '\n' + prev_line[: -1]
+                    new_lines = lines + '\n' + prev_line[:-1]
                 w.insert(prev_i, new_lines)
                 w.setSelectionRange(sel_1 - n2, sel_2 - n2, insert=insert_pt - n2)
             else:

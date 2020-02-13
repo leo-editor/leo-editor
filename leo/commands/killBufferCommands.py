@@ -44,7 +44,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         the text contains something other than whitespace.
         """
         if self.addWsToKillRing or text.strip():
-            g.app.globalKillBuffer = [ z for z in g.app.globalKillBuffer if z != text]
+            g.app.globalKillBuffer = [z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
     #@+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')

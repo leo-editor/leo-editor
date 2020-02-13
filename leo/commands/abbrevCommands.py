@@ -719,7 +719,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Do *not* strip ws so the user can specify ws.
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
-            if val.endswith('\n'): val = val[: -1]
+            if val.endswith('\n'): val = val[:-1]
             val = self.n_regex.sub('\n', val).replace('\\\\n', '\\n')
             old, tag = d.get(name, (None, None),)
             if old and old != val and not g.unitTesting:

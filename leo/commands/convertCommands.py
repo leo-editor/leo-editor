@@ -123,7 +123,7 @@ class To_Python:
     def is_section_ref(self, s):
         n1 = s.find("<<", 0)
         n2 = s.find(">>", 0)
-        return - 1 < n1 < n2 and s[n1 + 2 : n2].strip()
+        return -1 < n1 < n2 and s[n1 + 2 : n2].strip()
     #@+node:ekr.20150514063305.135: *5* is_string_or_comment
     def is_string_or_comment(self, s, i):
         # Does range checking.
@@ -491,7 +491,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             aList = [z.strip() for z in aList if z.strip()]
             for s in aList:
                 if s.endswith(':'):
-                    key = s[: -1].strip()
+                    key = s[:-1].strip()
                 elif key:
                     ivars = [z.strip() for z in s.split(',') if z.strip()]
                     aList = d.get(key, [])
@@ -572,7 +572,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             while i < len(aList):
                 if self.is_string_or_comment(aList, i):
                     i = self.skip_string_or_comment(aList, i)
-                elif(
+                elif (
                     self.match_word(aList, i, "if") or
                     self.match_word(aList, i, "while") or
                     self.match_word(aList, i, "for") or
@@ -1018,7 +1018,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     g.es_print('not found', self.output_directory)
                     return
-                out_fn = out_fn[: -3] + '.pyi'
+                out_fn = out_fn[:-3] + '.pyi'
                 out_fn = g.os_path_normpath(out_fn)
                 self.output_fn = out_fn
                     # compatibility with stand-alone script
@@ -1121,7 +1121,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     g.es_print('not found', self.output_directory)
                     return
-                out_fn = out_fn[: -3] + '.coffee'
+                out_fn = out_fn[:-3] + '.coffee'
                 out_fn = g.os_path_normpath(out_fn)
                 s = open(abs_fn).read()
                 # s = self.strip_sentinels(s)
