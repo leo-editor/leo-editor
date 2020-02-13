@@ -425,9 +425,9 @@ class LeoPluginsController:
         # Allow .leo/plugins
         path = g.os_path_finalize_join('~', '.leo', 'plugins', fn)
         if g.os_path_exists(path):
-            return fn[: -3]
+            return fn[:-3]
         # Return the default module for leo plugins.
-        return "leo.plugins." + fn[: -3]
+        return "leo.plugins." + fn[:-3]
     #@+node:ekr.20100909104341.5979: *4* plugins.setLoaded
     def setLoaded(self, fn, m):
         self.loadedModules[self.regularizeName(fn)] = m

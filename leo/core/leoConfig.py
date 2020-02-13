@@ -107,9 +107,9 @@ class ParserBaseClass:
         j = s.find(' ')
         if j > -1: s = s[:j]
         if s.endswith('mode'):
-            s = s[: -4].strip()
+            s = s[:-4].strip()
         if s.endswith('-'):
-            s = s[: -1]
+            s = s[:-1]
         i = s.find('::')
         if i > -1:
             # The actual mode name is everything up to the "::"

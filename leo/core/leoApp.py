@@ -1959,7 +1959,7 @@ class LoadManager:
             # environment vars, then gives up.
         if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
             # Get the indirect reference to the true home.
-            home = os.getenv(home[1 : -1], default=None)
+            home = os.getenv(home[1:-1], default=None)
         if home:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
@@ -1996,7 +1996,7 @@ class LoadManager:
                 #@+<< resolve symlinks >>
                 #@+node:ekr.20120209051836.10257: *6* << resolve symlinks >>
                 if path.endswith('pyc'):
-                    srcfile = path[: -1]
+                    srcfile = path[:-1]
                     if os.path.islink(srcfile):
                         path = os.path.realpath(srcfile)
                 #@-<< resolve symlinks >>
@@ -2725,7 +2725,7 @@ class LoadManager:
                 sfn = g.shortFileName(fn)
                 if sfn != '__init__.py':
                     try:
-                        module_name = sfn[: -3]
+                        module_name = sfn[:-3]
                         # Important: use importlib to give imported modules
                         # their fully qualified names.
                         m = importlib.import_module(
@@ -3809,7 +3809,7 @@ class RecentFilesManager:
                 # Remove all versions of the file name.
                 for name in rf.recentFiles:
                     if (
-                        munge(fileName) == munge(name) or 
+                        munge(fileName) == munge(name) or
                         munge2(fileName) == munge2(name)
                     ):
                         rf.recentFiles.remove(name)

@@ -649,7 +649,7 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191119085222.1: *4* function: obj_id
     def obj_id(obj):
         """Return the last four digits of id(obj), for dumps & traces."""
-        return str(id(obj))[-4 :]
+        return str(id(obj))[-4:]
     #@+node:ekr.20191231060700.1: *4* function: op_name
     #@@nobeautify
 
@@ -2485,7 +2485,9 @@ class Orange:
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
             self.word(name)
-        elif name in ('and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'):
+        elif name in (
+            'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
+        ):
             self.word_op(name)
         else:
             self.word(name)
@@ -2685,13 +2687,14 @@ class Orange:
     #@+node:ekr.20200107165250.32: *5* orange.colon
     def colon(self, val):
         """Handle a colon."""
-        
+
         def is_expr(node):
             """True if node is any expression other than += number."""
             if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
                 return True
-            return isinstance(node, ast.UnaryOp) and not isinstance(node.operand, ast.Num)
-            
+            return isinstance(
+                node, ast.UnaryOp) and not isinstance(node.operand, ast.Num)
+
         node = self.token.node
         self.clean('blank')
         if not isinstance(node, ast.Slice):
@@ -2941,7 +2944,7 @@ class Orange:
                     self.add_token('line-indent', self.lws)
                     self.code_list.extend(tail[i:])
                     return
-                lws = lws[: -4]
+                lws = lws[:-4]
                 self.code_list.append(t)
             elif t.kind == open_delim.kind and t.value == open_delim.value:
                 delim_count += 1
@@ -2954,7 +2957,7 @@ class Orange:
     def find_prev_line(self):
         """Return the previous line, as a list of tokens."""
         line = []
-        for t in reversed(self.code_list[: -1]):
+        for t in reversed(self.code_list[:-1]):
             if t.kind in ('hard-newline', 'line-end'):
                 break
             line.append(t)
@@ -5880,7 +5883,7 @@ class Fstringify(TokenOrderTraverser):
                 g.printObj(aList, tag='aList')
             return False
         # Return False if any inner token contains the delim or a backslash.
-        for z in aList[2 : -1]:
+        for z in aList[2:-1]:
             if delim in z.value or '\\' in z.value:
                 return False
         return True
@@ -5901,10 +5904,10 @@ class Fstringify(TokenOrderTraverser):
             tail.append('>')
             spec = spec[1:]
         if spec.endswith('s'):
-            spec = spec[: -1]
+            spec = spec[:-1]
         if spec.endswith('r'):
             head.append('r')
-            spec = spec[: -1]
+            spec = spec[:-1]
         tail = ''.join(tail) + spec
         head = ''.join(head)
         return head, tail

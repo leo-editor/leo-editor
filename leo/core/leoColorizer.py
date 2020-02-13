@@ -366,7 +366,7 @@ class BaseJEditColorizer(BaseColorizer):
                     # All settings should be in units of points.
                     try:
                         if old_size.endswith(('pt', 'px'),):
-                            old_size = int(old_size[: -2])
+                            old_size = int(old_size[:-2])
                         else:
                             old_size = int(old_size)
                     except ValueError:
@@ -1210,13 +1210,13 @@ class JEditColorizer(BaseJEditColorizer):
         if g.match_word(s, 0, '@killcolor'):
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
             self.setRestart(self.restartKillColor)
-            return - len(s)  # Continue to suppress coloring.
+            return -len(s)  # Continue to suppress coloring.
         if g.match_word(s, 0, '@nocolor-node'):
             self.setRestart(self.restartNoColorNode)
-            return - len(s)  # Continue to suppress coloring.
+            return -len(s)  # Continue to suppress coloring.
         if g.match_word(s, 0, '@nocolor'):
             self.setRestart(self.restartNoColor)
-            return - len(s)  # Continue to suppress coloring.
+            return -len(s)  # Continue to suppress coloring.
         n = self.setRestart(self.restartColor)
         self.setState(n)  # Enables coloring of *this* line.
         return 0  # Allow colorizing!
@@ -1622,7 +1622,7 @@ class JEditColorizer(BaseJEditColorizer):
         # Fix part of #585: A kludge for css.
         if self.language == 'css' and word.endswith(':'):
             j -= 1
-            word = word[: -1]
+            word = word[:-1]
         if not word:
             g.trace(
                 'can not happen',
@@ -1639,7 +1639,7 @@ class JEditColorizer(BaseJEditColorizer):
             result = j - i
             self.trace_match(kind, s, i, j)
             return result
-        return - len(word)  # An important new optimization.
+        return -len(word)  # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
     def match_line(self, s, i, kind=None, delegate='', exclude_match=False):
         """Match the rest of the line."""
@@ -1870,12 +1870,12 @@ class JEditColorizer(BaseJEditColorizer):
             if j == -1:
                 # Match to end of text if not found and no_line_break is False
                 if no_line_break:
-                    return - 1
+                    return -1
                 return len(s) + 1
             if no_word_break and j > 0 and s[j - 1] in self.word_chars:
-                return - 1  # New in Leo 4.5.
+                return -1  # New in Leo 4.5.
             if no_line_break and '\n' in s[i:j]:
-                return - 1
+                return -1
             if esc and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0; k = 1
@@ -1889,7 +1889,7 @@ class JEditColorizer(BaseJEditColorizer):
             else:
                 return j
         # For pylint.
-        return - 1
+        return -1
     #@+node:ekr.20110605121601.18624: *5* jedit.restart_match_span
     def restart_match_span(self, s,
         delegate, end, exclude_match, kind,

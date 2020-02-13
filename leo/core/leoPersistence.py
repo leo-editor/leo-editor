@@ -496,11 +496,11 @@ class PersistenceDataController:
     def drop_unl_parent(self, unl):
         """Drop the penultimate part of the unl."""
         aList = unl.split('-->')
-        return '-->'.join(aList[: -2] + aList[-1 :])
+        return '-->'.join(aList[:-2] + aList[-1:])
 
     def drop_unl_tail(self, unl):
         """Drop the last part of the unl."""
-        return '-->'.join(unl.split('-->')[: -1])
+        return '-->'.join(unl.split('-->')[:-1])
     #@+node:ekr.20140711111623.17883: *5* pd.relative_unl
     def relative_unl(self, p, root):
         """Return the unl of p relative to the root position."""
@@ -519,7 +519,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17885: *5* pd.unl_tail
     def unl_tail(self, unl):
         """Return the last part of a unl."""
-        return unl.split('-->')[: -1][0]
+        return unl.split('-->')[:-1][0]
     #@-others
 #@-others
 #@@language python

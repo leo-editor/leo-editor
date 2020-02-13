@@ -1018,8 +1018,11 @@ class FileCommands:
                   'current_position')
         try:
             d = dict(
-                conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall(),
+                conn.execute(
+                '''select * from extra_infos 
+                where name in (?, ?, ?, ?, ?, ?, ?)''',
+                keys,
+            ).fetchall(),
             )
             geom = (d.get(*x) for x in zip(keys, geom))
         except sqlite3.OperationalError:
@@ -1715,7 +1718,7 @@ class FileCommands:
         stack = [x.split(comma) for x in s.split(sep)]
         stack = [(fc.gnxDict[x], int(y)) for x, y in stack]
         v, ci = stack[-1]
-        p = leoNodes.Position(v, ci, stack[: -1])
+        p = leoNodes.Position(v, ci, stack[:-1])
         return p
     #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
     def encodePosition(self, p):

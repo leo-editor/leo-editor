@@ -303,7 +303,7 @@ class BaseLeoCompare:
     #@+node:ekr.20031218072017.3647: *4* compare.dump
     def dump(self, tag, s):
         compare = self; out = tag
-        for ch in s[: -1]:  # don't print the newline
+        for ch in s[:-1]:  # don't print the newline
             if compare.makeWhitespaceVisible:
                 if ch == '\t':
                     out += "["; out += "t"; out += "]"

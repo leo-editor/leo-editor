@@ -824,7 +824,7 @@ class AtFile:
             encoding = m.group(6)
             if encoding and encoding.endswith(','):
                 # Leo 4.2 or after.
-                encoding = encoding[: -1]
+                encoding = encoding[:-1]
             if not g.isValidEncoding(encoding):
                 g.es_print("bad encoding in derived file:", encoding)
                 valid = False
@@ -1959,8 +1959,8 @@ class AtFile:
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
             if not at.raw:
                 at.putIndent(at.indent, line)
-            if line[-1 :] == '\n':
-                at.os(line[: -1])
+            if line[-1:] == '\n':
+                at.os(line[:-1])
                 at.onl()
             else:
                 at.os(line)
@@ -2352,7 +2352,7 @@ class AtFile:
             message = nag.get_msg()
             g.error("indentation error in", p.h, "line", badline)
             g.es(message)
-            line2 = repr(str(line))[1 : -1]
+            line2 = repr(str(line))[1:-1]
             g.es("offending line:\n", line2)
         except Exception:
             g.trace("unexpected exception")
@@ -3662,7 +3662,8 @@ class FastAtRead:
             assert strip_line.startswith(sentinel), (repr(sentinel), repr(line))
             #
             # This trace is less important, but interesting.
-            g.trace(f"{g.shortFileName(self.path)}: ignoring unexpected line: {line.strip()!r}")
+            g.trace(
+                f"{g.shortFileName(self.path)}: ignoring unexpected line: {line.strip()!r}")
             # body.append(line)
             #@-<< Last 3. handle remaining @ lines >>
         else:

@@ -844,7 +844,7 @@ class Commands:
         def stack2pos(stack):
             """Convert the stack to a position."""
             v, i = stack[-1]
-            return leoNodes.Position(v, i, stack[: -1])
+            return leoNodes.Position(v, i, stack[:-1])
 
         for v2 in set(v.parents):
             for i in allinds(v2, v):
@@ -1788,7 +1788,7 @@ class Commands:
                 message = nag.get_msg()
                 g.warning("indentation error in", headline, "line", badline)
                 g.es(message)
-                line2 = repr(str(line))[1 : -1]
+                line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n", line2)
             if unittest: raise
         except Exception:
@@ -2396,7 +2396,7 @@ class Commands:
         theDir, base = g.os_path_split(fn)
         if useTimeStamp:
             if base.endswith('.leo'):
-                base = base[: -4]
+                base = base[:-4]
             stamp = time.strftime("%Y%m%d-%H%M%S")
             branch = prefix + '-' if prefix else ''
             fn = f"{branch}{base}-{stamp}.leo"
@@ -3350,7 +3350,7 @@ class Commands:
         j1 = line.find(">>")
         i2 = line.find("@<")
         j2 = line.find("@>")
-        return - 1 < i1 < j1 or -1 < i2 < j2
+        return -1 < i1 < j1 or -1 < i2 < j2
     #@+node:ekr.20031218072017.2965: *6* c.canFindMatchingBracket
     #@@nobeautify
 

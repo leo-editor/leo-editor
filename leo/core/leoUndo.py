@@ -1621,7 +1621,7 @@ class Undoer:
         s = '\n'.join(s)
         # Remove trailing newlines in s.
         while s and s[-1] == '\n':
-            s = s[: -1]
+            s = s[:-1]
         # Add oldNewlines newlines.
         if oldNewlines > 0:
             s = s + '\n' * oldNewlines

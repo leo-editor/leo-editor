@@ -166,7 +166,7 @@ class JSON_Import_Helper:
         p = c.lastTopLevel().insertAfter()
         fn = g.shortFileName(path).strip()
         if fn.endswith('.json'):
-            fn = fn[: -5]
+            fn = fn[:-5]
         p.h = fn
         self.scan(path, p)
         c.undoer.afterInsertNode(p, 'Import', undoData)
@@ -1145,7 +1145,7 @@ class LeoImportCommands:
         target = target.strip()
         if not target.endswith("..."): return target
         # Canonicalize the target name, and remove the trailing "..."
-        ctarget = target[: -3]
+        ctarget = target[:-3]
         ctarget = self.cstCanonicalize(ctarget).strip()
         found = False; result = target
         for s in self.web_st:
@@ -1511,7 +1511,7 @@ class MindMapImporter:
         p = c.lastTopLevel().insertAfter()
         fn = g.shortFileName(path).strip()
         if fn.endswith('.csv'):
-            fn = fn[: -4]
+            fn = fn[:-4]
         p.h = fn
         try:
             self.scan(path, p)
@@ -1595,7 +1595,7 @@ class MindMapImporter:
             if row[count]:
                 return count + 1
             count = count + 1
-        return - 1
+        return -1
     #@+node:ekr.20160503130810.5: *4* mindmap.csv_string
     def csv_string(self, row):
         """Return the string for the given csv row."""
@@ -1769,7 +1769,7 @@ class MORE_Importer:
         plusFlag = g.match(s, i, "+")
         if g.match(s, i, "+ ") or g.match(s, i, "- "):
             return level, plusFlag
-        return - 1, plusFlag
+        return -1, plusFlag
     #@+node:ekr.20031218072017.3223: *3* MORE.check & check_lines
     def check(self, s):
         s = s.replace("\r", "")

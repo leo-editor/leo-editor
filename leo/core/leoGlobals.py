@@ -989,7 +989,7 @@ class KeyStroke:
             return '<None>'
         d = {' ': 'Space', '\t': 'Tab', '\n': 'Return', '\r': 'LineFeed'}
         ch = s[-1]
-        return s[: -1] + d.get(ch, ch)
+        return s[:-1] + d.get(ch, ch)
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
     def strip_mods(self, s):
         """Remove all modifiers from s, without changing the case of s."""
@@ -1936,7 +1936,7 @@ class SherlockTracer:
                 print('')
                 fn = fn.replace('\\', '/')
                 parts = fn.split('/')
-                print('/'.join(parts[-2 :]))
+                print('/'.join(parts[-2:]))
                 for key in result:
                     print(f'{d.get(key):4} {key}')
     #@+node:ekr.20121128031949.12614: *4* run
@@ -2256,7 +2256,7 @@ def null_object_print_attr(id_, attr):
 
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
-    callers = ','.join(callers[: -1])
+    callers = ','.join(callers[:-1])
     in_callers = any([z in callers for z in suppress_callers])
     s = f"{tag}.{attr}"
     if suppress:
@@ -2273,7 +2273,7 @@ def null_object_print_attr(id_, attr):
 def null_object_print(id_, kind, *args):
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
-    callers = ','.join(callers[: -1])
+    callers = ','.join(callers[:-1])
     s = f"{kind}.{tag}"
     signature = f"{s}:{callers}"
     if 1:
@@ -3011,7 +3011,7 @@ def printTimes(times):
     
     times: an array of times (calls to time.process_time()).
     """
-    for n, junk in enumerate(times[: -1]):
+    for n, junk in enumerate(times[:-1]):
         t = times[n + 1] - times[n]
         if t > 0.1:
             g.trace(f'*** {n} {t:5.4f} sec.')
@@ -3631,7 +3631,7 @@ def stripPathCruft(path):
         (path[0] == '"' and path[-1] == '"') or
         (path[0] == "'" and path[-1] == "'")
     ):
-        path = path[1 : -1].strip()
+        path = path[1:-1].strip()
     # We want a *relative* path, not an absolute path.
     return path
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
@@ -4020,7 +4020,7 @@ def readlineForceUnixNewline(f, fileName=None):
         g.trace(f"UnicodeDecodeError: {fileName}", f, g.callers())
         s = ''
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
-        s = s[0 : -2] + "\n"
+        s = s[0:-2] + "\n"
     return s
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s):
@@ -4147,7 +4147,7 @@ def find_word(s, word, i=0):
         progress = i
         i = s.find(word, i)
         if i == -1:
-            return - 1
+            return -1
         # Make sure we are at the start of a word.
         if i > 0:
             ch = s[i - 1]
@@ -4158,7 +4158,7 @@ def find_word(s, word, i=0):
             return i
         i += len(word)
         assert progress < i
-    return - 1
+    return -1
 #@+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
 def findRootsWithPredicate(c, root, predicate=None):
     """
@@ -4849,7 +4849,7 @@ def skip_to_start_of_line(s, i):
     if i <= 0:
         return 0
     # Don't find s[i], so it doesn't matter if s[i] is a newline.
-    i = s.rfind('\n', 0, i)  
+    i = s.rfind('\n', 0, i)
     if i == -1:
         return 0
     return i + 1
@@ -5472,7 +5472,7 @@ def getLine(s, i):
     if i > len(s): i = len(s) - 1
     if i < 0: i = 0
     # A newline *ends* the line, so look to the left of a newline.
-    j = s.rfind('\n', 0, i)  
+    j = s.rfind('\n', 0, i)
     if j == -1: j = 0
     else: j += 1
     k = s.find('\n', i)
@@ -5641,7 +5641,7 @@ def stripBrackets(s):
     if s.startswith('<'):
         s = s[1:]
     if s.endswith('>'):
-        s = s[: -1]
+        s = s[:-1]
     return s
 #@+node:ekr.20170317101100.1: *4* g.unCamel
 def unCamel(s):
@@ -5992,7 +5992,7 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                     #@+node:ekr.20110727091744.15084: *5* << place blank and word on the present line >>
                     if line:
                         # Add the word, preceeded by a blank.
-                        line = space.join((line, word))  
+                        line = space.join((line, word))
                     else:
                         # Just add the word to the start of the line.
                         line = word
@@ -6255,7 +6255,7 @@ def es_debug(*args, **keys):
     if name == '<module>':
         name = g.shortFileName(__file__)
     if name.endswith('.pyc'):
-        name = name[: -1]
+        name = name[:-1]
     g.pr(name, *args, **keys)
     if not g.app.unitTesting:
         g.es(name, *args, **keys)
@@ -6388,7 +6388,7 @@ def internalError(*args):
     caller = callers[-1]
     g.error('\nInternal Leo error in', caller)
     g.es_print(*args)
-    g.es_print('Called from', ', '.join(callers[: -1]))
+    g.es_print('Called from', ', '.join(callers[:-1]))
     g.es_print('Please report this error to Leo\'s developers', color='red')
 #@+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s, fn=None):
@@ -6455,7 +6455,7 @@ def prettyPrintType(obj):
     # Fall back to a hack.
     t = str(type(obj))
     if t.startswith("<type '"): t = t[7:]
-    if t.endswith("'>"): t = t[: -2]
+    if t.endswith("'>"): t = t[:-2]
     return t
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name, window):
@@ -6522,7 +6522,7 @@ def trace(*args, **keys):
         if name == '<module>':
             name = g.shortFileName(__file__)
         if name.endswith('.pyc'):
-            name = name[: -1]
+            name = name[:-1]
     # Pad the caller name.
     if align != 0 and len(name) < abs(align):
         pad = ' ' * (abs(align) - len(name))
@@ -6578,7 +6578,7 @@ def translateArgs(args, d):
         # Now translate.
         if not isString(arg):
             arg = repr(arg)
-        elif(n % 2) == 1:
+        elif (n % 2) == 1:
             arg = translateString(arg)
         else:
             pass  # The arg is an untranslated string.
@@ -7700,8 +7700,8 @@ def handleUrlHelper(url, c, p):
         # "readme.txt" gets parsed into .netloc...
     else:
         leo_path = parsed.path
-    if leo_path.endswith('\\'): leo_path = leo_path[: -1]
-    if leo_path.endswith('/'): leo_path = leo_path[: -1]
+    if leo_path.endswith('\\'): leo_path = leo_path[:-1]
+    if leo_path.endswith('/'): leo_path = leo_path[:-1]
     if parsed.scheme == 'file' and leo_path.endswith('.leo'):
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):

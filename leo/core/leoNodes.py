@@ -411,10 +411,12 @@ class Position:
         if predicate is None:
 
             # pylint: disable=function-redefined
+
             def predicate(p):
                 return p.isAnyAtFileNode()
 
         # First, look up the tree.
+
         p1 = self
         for p in p1.self_and_parents(copy=False):
             if predicate(p):
@@ -483,6 +485,7 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code.
+
     tnodes_iter = nodes
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
@@ -507,6 +510,7 @@ class Position:
             p.moveToParent()
 
     # Compatibility with old code...
+
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self, copy=True):
@@ -520,6 +524,7 @@ class Position:
             p.moveToNext()
 
     # Compatibility with old code...
+
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self, copy=True):
@@ -532,6 +537,7 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
+
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self, copy=True):
@@ -545,6 +551,7 @@ class Position:
             p.moveToThreadNext()
 
     # Compatibility with old code...
+
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes(self):
@@ -571,6 +578,7 @@ class Position:
                 yield p.copy() if copy else p
 
     # Compatibility with old code...
+
     subtree_with_unique_tnodes_iter = unique_subtree
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
@@ -2427,6 +2435,7 @@ class VNode:
                     yield from v_and_parents(parent_v)
 
         # There is no harm in calling v2.setDirty redundantly.
+
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
                 v2.setDirty()

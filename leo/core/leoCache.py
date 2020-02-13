@@ -509,7 +509,8 @@ class SqlitePickleShare:
     def __delitem__(self, key):
         """ del db["key"] """
         try:
-            self.conn.execute('''delete from cachevalues
+            self.conn.execute(
+                '''delete from cachevalues
                 where key=?''', (key,))
         except sqlite3.OperationalError:
             pass
@@ -519,7 +520,8 @@ class SqlitePickleShare:
         """ db['key'] reading """
         try:
             obj = None
-            for row in self.conn.execute('''select data from cachevalues
+            for row in self.conn.execute(
+                '''select data from cachevalues
                 where key=?''', (key,)):
                 obj = self.loader(row[0])
                 break
@@ -541,7 +543,8 @@ class SqlitePickleShare:
         """ db['key'] = 5 """
         try:
             data = self.dumper(value)
-            self.conn.execute('''replace into cachevalues(key, data)
+            self.conn.execute(
+                '''replace into cachevalues(key, data)
                 values(?,?);''', (key, data))
         except sqlite3.OperationalError as e:
             g.es_exception(e)
