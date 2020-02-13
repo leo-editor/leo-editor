@@ -4207,7 +4207,9 @@ class TestOrange(BaseTest):
     print (x , y) ; x , y = y , x
     if(1):
         pass
-    while(1):
+    elif(2):
+        pass
+    while(3):
         pass
     """
         # At present Orange doesn't split lines...
@@ -4218,7 +4220,9 @@ class TestOrange(BaseTest):
     print(x, y); x, y = y, x
     if (1):
         pass
-    while (1):
+    elif (2):
+        pass
+    while (3):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
