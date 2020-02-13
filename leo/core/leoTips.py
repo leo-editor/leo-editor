@@ -515,6 +515,7 @@ Nodes can have at most one @others directive. You can work around this restricti
     %(start)s organizer %(end)s
 
 where the body of the %(start)s organizer %(end)s node contains just @others.""" % {
+    
     'at': "@",
     'end': ">>",
     'start': "<<",

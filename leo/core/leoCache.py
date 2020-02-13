@@ -544,8 +544,8 @@ class SqlitePickleShare:
         try:
             data = self.dumper(value)
             self.conn.execute(
-                '''replace into cachevalues(key, data)
-                values(?,?);''', (key, data))
+                '''replace into cachevalues(key, data) values(?,?);''',
+                (key, data))
         except sqlite3.OperationalError as e:
             g.es_exception(e)
 
