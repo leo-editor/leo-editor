@@ -724,7 +724,7 @@ class LeoImportCommands:
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
-            if language: body += '@language %s\n' % language
+            if language: body += f'@language {language}\n'
         self.setBodyString(p, body + self.rootLine + s)
         for p in p.self_and_subtree():
             p.clearDirty()
@@ -1860,8 +1860,10 @@ class RecursiveImportController:
             c.redraw(parent)
         t2 = time.time()
         n = len(list(parent.self_and_subtree()))
-        g.es_print('imported %s node%s in %s file%s in %2.2f seconds' % (
-            n, g.plural(n), self.n_files, g.plural(self.n_files), t2 - t1))
+        g.es_print(
+            f'imported {n} node{g.plural(n)} '
+            f'in {self.n_files} file{g.plural(self.n_files)} '
+            f'in {t2 - t1:2.2f} seconds')
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         """Import selected files from dir_, a directory."""
@@ -2014,7 +2016,7 @@ class RecursiveImportController:
             # p.h is a path.
             path = p.h
             stripped = self.strip_prefix(path, prefix)
-            p.h = '@path %s' % (stripped or path)
+            p.h = f'@path {stripped or path}'
             for p in p.children():
                 self.minimize_headlines(p, prefix + stripped)
 
@@ -2070,7 +2072,7 @@ class TabImporter:
         g.trace('==========')
         for i, data in enumerate(self.stack):
             level, p = data
-            print('%2s %s %r' % (i, level, p.h))
+            print(f'{i:2} {level} {p.h!r}')
     #@+node:ekr.20161006073129.1: *3* tabbed.import_files
     def import_files(self, files):
         """Import a list of tab-delimited files."""
@@ -2201,7 +2203,7 @@ class TabImporter:
             lws = ch * level
             for s in lines:
                 if not s.startswith(lws):
-                    g.trace('bad indentation: %r' % s)
+                    g.trace(f'bad indentation: {s!r}')
                     return s
             return ''.join([z[len(lws) :] for z in lines])
         return ''
@@ -2286,7 +2288,7 @@ class ZimImportController:
                     p.b = '\n'.join(child.b.split('\n')[3:])
                     child.doDelete()
                     # Replace content of empty body parent node with first child with same name
-                elif p.h == child.h or ("%s %s" % (rstType, child.h) == p.h):
+                elif p.h == child.h or (f"{rstType} {child.h}" == p.h):
                     if not child.hasFirstChild():
                         p.b = child.b
                         child.doDelete()

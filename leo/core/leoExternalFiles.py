@@ -23,7 +23,7 @@ class ExternalFile:
         self.time = time
 
     def __repr__(self):
-        return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
+        return f'<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>'
 
     __str__ = __repr__
 
@@ -428,7 +428,7 @@ class ExternalFilesController:
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
-                command = '%s(%s)' % (kind, fn)
+                command = f'{kind}({fn})'
                 if not testing: kind(fn)
             else:
                 command = 'bad command:' + str(kind)
@@ -609,9 +609,9 @@ class ExternalFilesController:
         g.app.gui.runAskOkDialog(
             c=c,
             message='\n'.join([
-                '%s has changed outside Leo.\n' % g.splitLongFileName(path),
+                f'{g.splitLongFileName(path)} has changed outside Leo.\n',
                 'Leo can not update this file automatically.\n',
-                'This file was created from %s.\n' % p.h,
+                f'This file was created from {p.h}.\n',
                 'Warning: refresh-from-disk will destroy all children.'
             ]),
             title='External file changed',
@@ -621,5 +621,5 @@ class ExternalFilesController:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@-leo
 
+#@-leo

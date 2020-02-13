@@ -75,7 +75,7 @@ def test(c):
     g.cls()
     t1 = time.time()
     RopeController(c).run()
-    print('done: %s sec.' % g.timeSince(t1))
+    print(f'done: {g.timeSince(t1)} sec.')
 #@-others
 #@@language python
 #@@tabwidth -4

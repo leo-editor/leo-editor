@@ -27,14 +27,14 @@ class FastRedraw:
 
         for tag, i1, i2, j1, j2 in op_codes:
             if tag == 'equal':
-                print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f'{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}')
             elif tag == 'insert':
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f'{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}')
             elif tag == 'delete':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                print(f'{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}')
             elif tag == 'replace':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f'{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}')
+                print(f'{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}')
             else:
                 print('unknown tag')
     #@+node:ekr.20181202060924.5: ** LeoGui.dump_opcodes
@@ -63,13 +63,12 @@ class FastRedraw:
             self.extend_flattened_outline(aList, p)
         if trace:
             t2 = time.process_time()
-            print('app.flatten_outline: %s entries %6.4f sec.' % (
-                len(aList), (t2 - t1)))
+            print(f'app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.')
         return aList
 
     def extend_flattened_outline(self, aList, p):
         """Add p and all p's visible descendants to aList."""
-        aList.append('%s:%s:%s\n' % (p.level(), p.gnx, p.h))
+        aList.append(f'{p.level()}:{p.gnx}:{p.h}\n')
             # Padding the fields causes problems later.
         if p.isExpanded():
             for child in p.children():
@@ -144,5 +143,5 @@ class FastRedraw:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@-leo
 
+#@-leo

@@ -40,10 +40,8 @@ assert g
 #@+at
 # All names added to this database should be in normalized form,
 # otherwise the accessor functions won't work.
-#
 # Adding names here will make them availiable to all gui's and
 # dhtml that use this service.
-#
 # Names are normalized by removing spaces and capitalization.
 #@@c
 leo_color_database = {
@@ -738,7 +736,7 @@ leo_color_database = {
 # This is essential for Leo's jEdit-based colorizers.
 for key in leo_color_database:
     if not key.isalnum():
-        print('\nleoColor.py: non-normalized key: %s\n' % repr(key))
+        print(f'\nleoColor.py: non-normalized key: {key!r}\n')
 #@+others
 #@+node:bob.20080115070511.3: ** color database functions
 #@+node:bob.20071231111744.2: *3* get / getColor

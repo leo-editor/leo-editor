@@ -134,7 +134,7 @@ def make_tip_nodes(c):
         p.h = tip.title
         p.b = tip.text
     if root.hasChildren():
-        root.h = '%s User Tips' % root.numberOfChildren()
+        root.h = f'{root.numberOfChildren()} User Tips'
         c.sortSiblings(p=root.firstChild())
     root.expand()
     c.selectPosition(root)
@@ -489,17 +489,17 @@ UserTip(
     n=626,
     tags=[],
     title="Use section references sparingly",
-    text="""
+    text=f"""
 
 Within scripts, use section references only when code must
 be placed exactly. Here is a common pattern for @file nodes
 for python files:
 
     @first # -*- coding: utf-8 -*-
-    %s
-    %s
+    {g.angleBrackets('imports')}
+    {'@others'}
 
-""" % (g.angleBrackets('imports'), '@others')),
+"""),
 
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
 UserTip(

@@ -208,7 +208,7 @@ class BackgroundProcessManager:
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                self.put_log('%s: %s\n' % (kind, g.shortFileName(data.fn)))
+                self.put_log(f'{kind}: {g.shortFileName(data.fn)}\n')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -224,7 +224,7 @@ class BackgroundProcessManager:
             self.data = data
             # g.trace('\nSTART', link_root.h)
             self.kind = kind
-            self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
+            self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,
@@ -239,4 +239,3 @@ class BackgroundProcessManager:
 #@@pagewidth 60
 
 #@-leo
-

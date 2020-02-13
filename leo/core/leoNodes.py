@@ -82,7 +82,7 @@ class NodeIndices:
         fc = c.fileCommands
         t_s = self.update()
             # Updates self.lastTime and self.lastIndex.
-        gnx = g.toUnicode("%s.%s.%d" % (self.userId, t_s, self.lastIndex))
+        gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
         v.fileIndex = gnx
         self.check_gnx(c, gnx, v)
         fc.gnxDict[gnx] = v
@@ -755,7 +755,7 @@ class Position:
         UNL = '-->'.join(reversed(aList))
         if with_proto:
             # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
-            s = "unl:" + "//%s#%s" % (self.v.context.fileName(), UNL)
+            s = "unl:" + f"//{self.v.context.fileName()}#{UNL}"
             return s.replace(' ', '%20')
         if with_file:
             return f"{self.v.context.fileName()}#{UNL}"
@@ -1305,8 +1305,9 @@ class Position:
                         break
                     elif child_v.fileIndex == parent.v.fileIndex:
                         g.app.structure_errors += 1
-                        g.error('duplicate gnx: %r v: %s parent: %s' % (
-                            child_v.fileIndex, child_v, parent.v))
+                        g.error(
+                            f'duplicate gnx: {child_v.fileIndex!r} '
+                            f'v: {child_v} parent: {parent.v}')
                         child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
                         assert child_v.gnx != parent.v.gnx
                         # Should be ok to continue.
@@ -1959,10 +1960,10 @@ class VNode:
         v = self
         print('%s %s %s' % ('-' * 10, label, v))
         # print('gnx: %s' % v.gnx)
-        print('len(parents): %s' % len(v.parents))
-        print('len(children): %s' % len(v.children))
-        print('parents: %s' % g.listToString(v.parents))
-        print('children: %s' % g.listToString(v.children))
+        print(f'len(parents): {len(v.parents)}')
+        print(f'len(children): {len(v.children)}')
+        print(f'parents: {g.listToString(v.parents)}')
+        print(f'children: {g.listToString(v.children)}')
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names, h=''):
@@ -2353,7 +2354,7 @@ class VNode:
             w.setInsertPoint(ins)
         if traceTime:
             delta_t = time.time() - t1
-            if delta_t > 0.1: g.trace('%2.3f sec' % (delta_t))
+            if delta_t > 0.1: g.trace(f'{delta_t:2.3f} sec')
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:

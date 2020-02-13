@@ -677,7 +677,7 @@ class SqlitePickleShare:
 #@+node:ekr.20180627050237.1: ** function: dump_cache
 def dump_cache(db, tag):
     """Dump the given cache."""
-    print('\n===== %s =====\n' % tag)
+    print(f'\n===== {tag} =====\n')
     if db is None:
         print('db is None!')
         return
@@ -706,7 +706,7 @@ def dump_cache(db, tag):
 
 def dump_list(heading, aList):
     if heading:
-        print('\n%s...\n' % heading)
+        print(f'\n{heading}...\n')
     for aTuple in aList:
         key, val = aTuple
         if isinstance(val, str):
@@ -714,20 +714,20 @@ def dump_list(heading, aList):
                 print(key)
             elif key.endswith(('leo_expanded', 'leo_marked')):
                 if val:
-                    print('%30s:' % key)
+                    print(f'{key:30}:')
                     g.printObj(val.split(','))
                 else:
-                    print('%30s: []' % key)
+                    print(f'{key:30}: []')
             else:
-                print('%30s: %s' % (key, val))
+                print(f'{key:30}: {val}')
         elif isinstance(val, (int, float)):
-            print('%30s: %s' % (key, val))
+            print(f'{key:30}: {val}')
         else:
-            print('%30s:' % key)
+            print(f'{key:30}:')
             g.printObj(val)
 #@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@-leo
 
+#@-leo

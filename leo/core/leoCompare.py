@@ -507,7 +507,7 @@ class CompareLeoOutlines:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@language patch\n')
-                    body.append('@language %s\n' % (c2.target_language))
+                    body.append(f'@language {c2.target_language}\n')
                 else:
                     body = ['Only headline has changed']
                 organizer.b = ''.join(body)
@@ -646,7 +646,7 @@ def diffMarkedNodes(event):
                 g.splitLines(p2.b.rstrip() + '\n'))
             p = root.insertAsLastChild()
             # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.h = 'diff %s' % n
+            p.h = f'diff {n}'
             p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
             for p3 in (p1, p2):
                 clone = p3.clone()
@@ -711,5 +711,5 @@ def go():
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@-leo
 
+#@-leo

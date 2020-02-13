@@ -97,7 +97,7 @@ class FastRead:
             xroot = ElementTree.fromstring(contents)
         except Exception as e:
             if path:
-                message = 'bad .leo file: %s' % g.shortFileName(path)
+                message = f'bad .leo file: {g.shortFileName(path)}'
             else:
                 message = 'The clipboard is not a vaild .leo file'
             g.es_print('\n' + message, color='red')
@@ -593,7 +593,7 @@ class FileCommands:
             fc.propegateDirtyNodes()
         fc.initReadIvars()
         t2 = time.time()
-        g.es('read outline in %2.2f seconds' % (t2 - t1))
+        g.es(f'read outline in {t2 - t1:2.2f} seconds')
         return v, c.frame.ratio
     #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
     def handleNodeConflicts(self):
@@ -602,7 +602,7 @@ class FileCommands:
         if not c.nodeConflictList:
             return None
         if not c.make_node_conflicts_node:
-            s = 'suppressed %s node conflicts' % len(c.nodeConflictList)
+            s = f'suppressed {len(c.nodeConflictList)} node conflicts'
             g.es(s, color='red')
             g.pr('\n' + s + '\n')
             return None
@@ -631,7 +631,7 @@ class FileCommands:
                 ]
                 child.setBodyString('\n'.join(lines))
             else:
-                line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
+                line1 = f'{tag} gnx: {gnx} root: {root_v and root.v!r}\nDiff...\n'
                 d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
                     # 2017/06/19: reverse comparison order.
                 diffLines = [z for z in d]
@@ -1238,7 +1238,7 @@ class FileCommands:
         w, h, l, t = c.frame.get_window_info()
         c.db['window_position'] = str(t), str(l), str(h), str(w)
         if trace:
-            g.trace('\nset c.db for %s' % c.shortFileName())
+            g.trace(f'\nset c.db for {c.shortFileName()}')
             print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self):
@@ -1270,7 +1270,7 @@ class FileCommands:
         self.put_nl()
         self.putStyleSheetLine()
         # Put the namespace
-        self.put('<leo_file xmlns:leo="%s" >' % tag)
+        self.put(f'<leo_file xmlns:leo="{tag}" >')
         self.put_nl()
     #@+node:ekr.20031218072017.1248: *5* fc.putStyleSheetLine
     def putStyleSheetLine(self):
@@ -1299,7 +1299,7 @@ class FileCommands:
         ua = hasattr(v, 'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
-        self.put('<t tx="%s"%s>%s</t>\n' % (gnx, ua, body))
+        self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.putTnodes
     def putTnodes(self):
         """Puts all tnodes as required for copy or save commands"""
@@ -1332,7 +1332,7 @@ class FileCommands:
             else:
                 g.trace('can not happen: no VNode for', repr(index))
                 # This prevents the file from being written.
-                raise BadLeoFile('no VNode for %s' % repr(index))
+                raise BadLeoFile(f'no VNode for {repr(index)}')
     #@+node:ekr.20031218072017.1863: *5* fc.putVnode & helper
     def putVnode(self, p, isIgnore=False):
         """Write a <v> element corresponding to a VNode."""
@@ -1363,7 +1363,7 @@ class FileCommands:
         attrs = fc.compute_attribute_bits(forceWrite, p)
         #
         # Write the node.
-        v_head = '<v t="%s"%s>' % (gnx, attrs)
+        v_head = f'<v t="{gnx}"{attrs}>'
         if gnx in fc.vnodesDict:
             fc.put(v_head + '</v>\n')
         else:
@@ -1372,7 +1372,7 @@ class FileCommands:
             # New in 4.2: don't write child nodes of @file-thin trees
             # (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
-                fc.put('%s\n' % v_head)
+                fc.put(f'{v_head}\n')
                 # This optimization eliminates all "recursive" copies.
                 p.moveToFirstChild()
                 while 1:
@@ -1382,7 +1382,7 @@ class FileCommands:
                 p.moveToParent()  # Restore p in the caller.
                 fc.put('</v>\n')
             else:
-                fc.put('%s</v>\n' % v_head)  # Call put only once.
+                fc.put(f'{v_head}</v>\n')  # Call put only once.
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
     def compute_attribute_bits(self, forceWrite, p):
         """Return the initial values of v's attributes."""
@@ -1433,7 +1433,7 @@ class FileCommands:
         c.db['marked'] = ','.join(marked)
         c.db['current_position'] = ','.join(current)
         if trace:
-            g.trace('\nset c.db for %s' % c.shortFileName())
+            g.trace(f'\nset c.db for {c.shortFileName()}')
             print('expanded:', expanded)
             print('marked:', marked)
             print('current_position:', current)
@@ -1442,10 +1442,10 @@ class FileCommands:
     def putXMLLine(self):
         """Put the **properly encoded** <?xml> element."""
         # Use self.leo_file_encoding encoding.
-        self.put('%s"%s"%s\n' % (
-            g.app.prolog_prefix_string,
-            self.leo_file_encoding,
-            g.app.prolog_postfix_string))
+        self.put(
+            f'{g.app.prolog_prefix_string}'
+            f'"{self.leo_file_encoding}"'
+            f'{g.app.prolog_postfix_string}\n')
     #@+node:ekr.20031218072017.1573: *4* fc.putLeoOutline (to clipboard)
     def putLeoOutline(self, p=None):
         """
@@ -2040,6 +2040,5 @@ def dump_clone_parents(event):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@@last
-#@-leo
 
+#@-leo

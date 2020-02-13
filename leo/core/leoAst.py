@@ -5608,8 +5608,9 @@ class Fstringify(TokenOrderTraverser):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
-        if not self.silent:  # pragma: no cover
-            show_diffs(contents, results, filename=filename)
+        if 0:
+            if not self.silent:  # pragma: no cover
+                show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"{tag}: Wrote {filename}")
         write_file(filename, results, encoding=encoding)

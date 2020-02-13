@@ -78,7 +78,7 @@ class ChapterController:
                     cc.selectChapterLockout = False
             else:
                 # Possible, but not likely.
-                cc.note('no such chapter: %s' % name)
+                cc.note(f'no such chapter: {name}')
 
         # Always bind the command without a shortcut.
         # This will create the command bound to any existing settings.
@@ -479,5 +479,5 @@ class Chapter:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@-leo
 
+#@-leo

@@ -146,7 +146,7 @@ class ShadowController:
                 # Fix #1053.  This is an *ancient* bug.
             if not g.unitTesting:
                 kind = 'wrote' if exists else 'created'
-                g.es('%-6s: %s' % (kind, fileName))
+                g.es(f'{kind:>6}: {fileName}')
             return True
         except IOError:
             x.error(f"unexpected exception writing file: {fileName}")
@@ -256,9 +256,9 @@ class ShadowController:
     #@+node:ekr.20150207111757.178: *5* x.dump_lines
     def dump_lines(self, lines, title):
         """Dump the given lines."""
-        print('\n%s...\n' % title)
+        print(f'\n{title}...\n')
         for i, line in enumerate(lines):
-            g.pr('%4s %s' % (i, repr(line)))
+            g.pr(f'{i:4} {line!r}')
     #@+node:ekr.20150209044257.6: *5* x.init_data
     def init_data(self):
         """
@@ -304,7 +304,7 @@ class ShadowController:
         x.marker = marker
         x.old_sent_lines = old_private_lines
         x.results = []
-        x.verbatim_line = '%s@verbatim%s\n' % (x.delim1, x.delim2)
+        x.verbatim_line = f'{x.delim1}@verbatim{x.delim2}\n'
         old_public_lines = x.init_data()
         x.b = x.preprocess(new_public_lines)
         x.a = x.preprocess(old_public_lines)
@@ -312,7 +312,7 @@ class ShadowController:
     def op_bad(self, tag, ai, aj, bi, bj):
         """Report an unexpected opcode."""
         x = self
-        x.error('unknown SequenceMatcher opcode: %s' % repr(tag))
+        x.error(f'unknown SequenceMatcher opcode: {tag!r}')
     #@+node:ekr.20150207044400.12: *5* x.op_delete
     def op_delete(self, tag, ai, aj, bi, bj):
         """Handle the 'delete' opcode."""
@@ -374,16 +374,16 @@ class ShadowController:
         x = self
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
-            if x.trace: print('put %s' % repr(x.verbatim_line))
+            if x.trace: print(f'put {repr(x.verbatim_line)}')
         x.results.append(line)
-        if x.trace: print('put %s' % repr(line))
+        if x.trace: print(f'put {line!r}')
     #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self, i):
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
-            if x.trace: g.trace('%3s %s' % (i, sentinels))
+            if x.trace: g.trace(f'{i:3} {sentinels}')
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file, old_private_file):
@@ -403,10 +403,10 @@ class ShadowController:
             at.encoding = self.encoding
         old_public_lines = g.splitLines(s)
         if 0:
-            g.trace('\nprivate lines...%s' % old_private_file)
+            g.trace(f'\nprivate lines...{old_private_file}')
             for s in old_private_lines:
                 g.trace(type(s), g.isUnicode(s), repr(s))
-            g.trace('\npublic lines...%s' % old_public_file)
+            g.trace(f'\npublic lines...{old_public_file}')
             for s in old_public_lines:
                 g.trace(type(s), g.isUnicode(s), repr(s))
         marker = x.markerFromFileLines(old_private_lines, old_private_file)
@@ -534,7 +534,7 @@ class ShadowController:
     #@+node:ekr.20080822065427.4: *5* x.show_error_lines
     def show_error_lines(self, lines, fileName):
         for i, line in enumerate(lines):
-            g.es_print('%3s %s' % (i, repr(line)))
+            g.es_print(f'{i:3} {line!r}')
         if False:  # Only for major debugging.
             try:
                 f1 = open(fileName, "w")
@@ -664,7 +664,7 @@ class ShadowController:
                 ):
                     g.pr(f"{tag}...")
                     for i, line in enumerate(aList):
-                        g.pr('%3s %s' % (i, repr(line)))
+                        g.pr(f'{i:3} {line!r}')
                     g.pr('-' * 40)
                 assert results == self.expected_private_lines
             assert self.ok
@@ -695,7 +695,7 @@ class ShadowController:
                 delims = self.delim1
             else:
                 delims = f"{self.delim2} {self.delim3}"
-            return '<Marker: delims: %s>' % repr(delims)
+            return f'<Marker: delims: {delims!r}>'
         #@+node:ekr.20090529061522.6258: *4* getDelims
         def getDelims(self):
             """Return the pair of delims to be used in sentinel lines."""
@@ -722,5 +722,6 @@ class ShadowController:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@last
 #@-leo
 
