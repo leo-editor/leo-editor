@@ -21,7 +21,7 @@ result_kinds = [
     'pytest command line usage error',
     'No tests were collected',
 ]
-message = '%s: %s:%s' % (path, result, result_kinds[result])
+message = f'{path}: {result}:{result_kinds[result]}'
 if result == 5:
     sys.stdout.write(message)
     sys.stdout.flush()
