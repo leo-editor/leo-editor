@@ -20,19 +20,36 @@ class ParserBaseClass:
     # Case is ignored, as are '_' and '-' characters.
     basic_types = [
         # Headlines have the form @kind name = var
-        'bool', 'color', 'directory', 'int', 'ints',
-        'float', 'path', 'ratio', 'string', 'strings']
+        'bool',
+        'color',
+        'directory',
+        'int',
+        'ints',
+        'float',
+        'path',
+        'ratio',
+        'string',
+        'strings',
+    ]
     control_types = [
         'buttons',
-        'commands', 'data',
-        'enabledplugins', 'font',
-        'ifenv', 'ifhostname', 'ifplatform',
+        'commands',
+        'data',
+        'enabledplugins',
+        'font',
+        'ifenv',
+        'ifhostname',
+        'ifplatform',
         'ignore',
-        'menus', 'mode', 'menuat',
-        'openwith', 'outlinedata',
+        'menus',
+        'mode',
+        'menuat',
+        'openwith',
+        'outlinedata',
         'popup',
-        'settings', 'shortcuts',
-        ]
+        'settings',
+        'shortcuts',
+    ]
     # Keys are settings names, values are (type,value) tuples.
     settingsDict = {}
     #@-<< ParserBaseClass data >>
@@ -50,7 +67,8 @@ class ParserBaseClass:
         self.shortcutsDict = g.TypedDict( # was TypedDictOfLists.
             name='parser.shortcutsDict',
             keyType=type('shortcutName'),
-            valType=g.BindingInfo)
+            valType=g.BindingInfo,
+        )
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
@@ -141,12 +159,14 @@ class ParserBaseClass:
                 seen.append(p.v)
                 if g.match_word(p.h, 0, tag):
                     # We can not assume that p will be valid when it is used.
-                    script = g.getScript(c, p,
+                    script = g.getScript(
+                        c,
+                        p,
                         useSelectedText=False,
                         forcePythonSentinels=True,
                         useSentinels=True)
                     command_p = p.copy()
-                    aList.append((command_p, script),)
+                    aList.append((command_p, script))
                     rclicks = build_rclick_tree(command_p, top_level=True)
                     command_p.rclicks = rclicks
                 p.moveToThreadNext()
@@ -155,8 +175,9 @@ class ParserBaseClass:
         if aList:
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-            g.app.config.buttonsFileName = c.shortFileName(
-                ) if c else '<no settings file>'
+            g.app.config.buttonsFileName = (
+                c.shortFileName() if c else '<no settings file>'
+            )
         d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
         aList = d.get(key, [])
         aList.append(c.shortFileName())
@@ -1813,7 +1834,6 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
     #@+at Only the following need to be defined.
-    #
     #     get (self,setting,theType)
     #     getAbbrevDict (self)
     #     getBool (self,setting,default=None)
@@ -2281,4 +2301,3 @@ def parseFont(b):
 #@@tabwidth -4
 #@@pagewidth 70
 #@-leo
-
