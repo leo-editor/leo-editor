@@ -435,7 +435,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)
                     break
-            else: key = '<Alt-X>%s<Return>' % name
+            else: key = f'<Alt-X>{name}<Return>'
             s = s[: m.start()] + key + s[m.end() :]
         return s
     #@+node:ekr.20150514063305.386: *3* helpForCreatingExternalFiles

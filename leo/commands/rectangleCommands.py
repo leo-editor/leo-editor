@@ -56,7 +56,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         for r in range(r1, r3 + 1):
             w.delete(f"{r}.{r2}", f'{r}.{r4}')
             w.insert(f"{r}.{r2}", fill)
-        w.setSelectionRange(f"{r1}.{r2}", '%s.%s' % (r3, r2 + len(fill)))
+        w.setSelectionRange(f"{r1}.{r2}", f'{r3}.{r2 + len(fill)}')
         self.endCommand()
     #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
@@ -132,7 +132,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         for r in range(r1, r3 + 1):
             w.insert(f"{r}.{r2}", fill)
         i = f"{r1}.{r2}"
-        j = '%s.%s' % (r3, r2 + len(fill))
+        j = f'{r3}.{r2 + len(fill)}'
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@+node:ekr.20150514063305.459: *4* stringRectangle
@@ -202,7 +202,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             w.insert(f"{r}.{r2}", killRect[n])
             n += 1
         i = f"{r1}.{r2}"
-        j = '%s.%s' % (r3, r2 + len(killRect[n - 1]))
+        j = f'{r3}.{r2 + len(killRect[n - 1])}'
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
     #@-others

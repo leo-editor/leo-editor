@@ -96,6 +96,6 @@ def cloneFindMarkedHelper(c, flatten):
             v.clearMarked()
     found = c.lastTopLevel()
     c.selectPosition(found)
-    found.b = '# Found %s marked nodes' % found.numberOfChildren()
+    found.b = f'# Found {found.numberOfChildren()} marked nodes'
 #@-others
 #@-leo

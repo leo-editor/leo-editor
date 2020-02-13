@@ -46,7 +46,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             g.es_exception()
         k.keyboardQuit()
             # Inits vim mode too.
-        g.es('Done: %s' % command)
+        g.es(f'Done: {command}')
     #@+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('show-plugin-handlers')
     def printPluginHandlers(self, event=None):

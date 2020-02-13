@@ -465,7 +465,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
                 x = c.abbrev_subst_env.get('x')
                 if x:
-                    p.h = "%s%s%s" % (m.group(1), x, m.group(3))
+                    p.h = f"{m.group(1)}{x}{m.group(3)}"
                     changed = True
             except Exception:
                 # Leave p.h alone.
