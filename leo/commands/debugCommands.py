@@ -106,7 +106,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         debuggers = (
             # #1431: only expand path expression in @string debugger-path.
             c.expand_path_expression(c.config.getString('debugger-path')),
-            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'), 
+            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),
                 # winpdb 1.1.2 or newer.
             g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),
                 # Older version.
