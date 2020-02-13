@@ -373,7 +373,7 @@ class LeoMenu:
                     self.add_separator(menu)
                     done = True  # That's all.
             else:
-                g.trace('bad data in menu table: %s' % repr(data))
+                g.trace(f'bad data in menu table: {repr(data)}')
                 done = True  # Ignore bad data
         return label, command, done
     #@+node:ekr.20111028060955.16563: *5* LeoMenu.traceMenuTable

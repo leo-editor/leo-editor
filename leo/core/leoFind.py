@@ -63,7 +63,7 @@ class SearchWidget:
         self.sel = 0, 0  # The selection range
 
     def __repr__(self):
-        return 'SearchWidget id: %s' % (id(self))
+        return f'SearchWidget id: {id(self)}'
     #@+others
     #@+node:ekr.20070105093138: *3* getters (LeoFind)
     def getAllText(self): return self.s
@@ -1450,8 +1450,7 @@ class LeoFind:
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
-        g.es_print('changed %s instances%s in %4.2f sec.' % (
-            count, g.plural(count), (t2 - t1)))
+        g.es_print(f'changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.')
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -2127,8 +2126,7 @@ class LeoFind:
         if 0:
             # This doesn't work because index is always zero.
             # Make *sure* we move past the headline.
-            g.trace('CHECK: index: %r in_head: %s search_head: %s' % (
-                index, self.in_headline, self.search_headline))
+            g.trace(f'CHECK: index: {index!r} in_head: {self.in_headline} search_head: {self.search_headline}')
             if (
                 self.in_headline and self.search_headline and
                 index is not None and index in (pos, newpos)
