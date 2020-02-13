@@ -24,24 +24,24 @@ assert time
 # to the VNode corresponding to presently selected outline, and vice
 # versa. For example, when the user selects a new headline in the
 # outline pane, we must ensure that:
-#
+# 
 # 1) All vnodes have up-to-date information and
-#
+# 
 # 2) the body pane is loaded with the correct data.
-#
+# 
 # Early versions of Leo attempted to satisfy these conditions when the user
 # switched outline nodes. Such attempts never worked well; there were too many
 # special cases. Later versions of Leo use a much more direct approach: every
 # keystroke in the body pane updates the presently selected VNode immediately.
-#
+# 
 # The LeoTree class contains all the event handlers for the tree pane, and the
 # LeoBody class contains the event handlers for the body pane. The following
 # convenience methods exists:
-#
+# 
 # - body.updateBody & tree.updateBody:
 #     Called by k.masterCommand after any keystroke not handled by k.masterCommand.
 #     These are suprising complex.
-#
+# 
 # - body.bodyChanged & tree.headChanged:
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
@@ -285,10 +285,10 @@ class LeoBody:
             d = self.editorWidgets
             keys = list(d.keys())
             if len(keys) == 1:
+                # Immediately create the label in the old editor.
                 w_old = d.get(keys[0])
                 self.updateInjectedIvars(w_old, p)
-                self.selectLabel(
-                    w_old)  # Immediately create the label in the old editor.
+                self.selectLabel(w_old)
             else:
                 g.trace('can not happen: unexpected editorWidgets', d)
         name = f"{self.totalNumberOfEditors}"
@@ -1290,8 +1290,8 @@ class LeoTree:
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
-    def onHeadChanged(
-        self, p, undoType='Typing', s=None, e=None):  # e used in qt_tree.py.
+    def onHeadChanged(self, p, undoType='Typing', s=None, e=None): 
+        # e used in qt_tree.py. 
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -2250,5 +2250,6 @@ class StringTextWrapper:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@last
 #@-leo
 
