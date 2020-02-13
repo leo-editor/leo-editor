@@ -280,6 +280,7 @@ import io
 from io import StringIO
 import site
 import shutil
+from enum import Enum, auto
 
 import webbrowser
 from distutils.sysconfig import get_python_lib
@@ -312,7 +313,7 @@ MD_STYLESHEET_APPEND = '''pre {
 }
 body, th, td {
   font-family: Verdana,Arial,"Bitstream Vera Sans", sans-serif;
-  background-color: white !important;
+  background-color: white;
   font-size: 85%;
 }
 '''
@@ -327,6 +328,7 @@ RST_CODE_PREFIX = '    '
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
+MD_CODE_FENCE = '```'
 
 #@-<< declarations >>
 
@@ -766,6 +768,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.code_only = False
         self.show_whole_tree = False
         self.execute_flag = False
+        self.code_only = False
         self.lock_to_tree = False
         self.current_tree_root = None
         self.freeze = False
@@ -881,20 +884,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         if self.md_math_output:
-            self.md_header = r'''
+            self.md_header = fr'''
     <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="{}">
-    <script type="text/javascript" src="{}"></script>
+    <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
+    <script type="text/javascript" src="{self.md_mathjax_url}"></script>
     </head>
-    '''.format(self.md_stylesheet, self.md_mathjax_url)
+    '''
         else:
-            self.md_header = r'''
+            self.md_header = fr'''
     <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <link rel="stylesheet" type="text/css" href="{}">
+    <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     </head>
-    '''.format(self.md_stylesheet)
+    '''
 
     #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
     def reloadSettings(self):
@@ -1263,13 +1266,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             root = _root.copy()
             _tree = [root]
-            if kind in (RST, REST) and self.show_whole_tree:
+            if kind in (MD, RST, REST) and self.show_whole_tree:
                 _tree.extend(root.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace('no handler for kind: %s' % kind)
                 f = pc.update_rst
-            if kind in (RST, REST, PYTHON):
+            if kind in (MD, RST, REST, PYTHON):
                 f(_tree, keywords)
             else:
                 f(s, keywords)
@@ -1621,59 +1624,361 @@ class ViewRenderedController3(QtWidgets.QWidget):
         template = latex_template % (html_s)
         template = g.adjustTripleString(template, c.tab_width).strip()
         return template
-    #@+node:TomP.20191215195433.65: *4* vr3.update_md & helper
-    def update_md(self, s, keywords):
-        '''Update markdown text in the vr3 pane.'''
-        pc = self; c = pc.c; p = c.p
-        s = s.strip().strip('"""').strip("'''").strip()
-        isHtml = s.startswith('<') and not s.startswith('<<')
+    #@+node:TomP.20191215195433.65: *4* vr3.update_md & helpers
+    def update_md(self, node_list, keyword):
+        """Update markdown text in the vr3 pane.
+        
+            ARGUMENTS
+            node_list -- a list of outline nodes to be processed.
+            keywords -- a dictionary of keywords
+            
+            RETURNS
+            nothing
+        """
+
         # Do this regardless of whether we show the widget or not.
-        #w = pc.ensure_text_widget()
-        w = pc.ensure_web_widget()
-        #w.page().setZoomFactor(1.0)
-        assert pc.w
-        if s:
-            pc.show()
+        self.ensure_web_widget()
+        assert self.w
+        w = self.w
+
+        if node_list:
+            self.show()
 
         if got_markdown:
-            force = keywords.get('force')
-            colorizer = c.frame.body.colorizer
-            language = colorizer.scanLanguageDirectives(p)
-            if force or language in ('rst', 'rest', 'markdown', 'md'):
-                if not isHtml:
-                    s = self.convert_to_markdown(s)
-                    if type(s) != type(''):
-                        s = g.toUnicode(s)
+            if not node_list: return
+            s = node_list[0].b
+            s = self.remove_directives(s)
+            isHtml = s and s[0] == '<'
+            self.rst_html = ''
+            if s and isHtml:
+                h = s
+            else:
+                h = self.convert_markdown_to_html(node_list)
+            if h:
+                if type(h) != type(''):
+                    h = g.toUnicode(s)
+                self.set_html(h, w)
+                self.rst_html = h
+        else:
+            s = node_list[0].b
+            w.setPlainText(s)
 
-        # Handles both HTML and plain text if necesssary:
-        self.set_html(s,w)
-    #@+node:TomP.20191215195433.66: *5* convert_to_markdown
-    def convert_to_markdown(self, s):
-        '''Convert s to html using the markdown processor.'''
+    #@+node:TomP.20191215195433.66: *5* convert_markdown_to_html
+    def convert_markdown_to_html(self, node_list):
+        """Convert node_list to html using the markdown processor.
+        
+        RETURNS
+        the HTML returned by markdown.
+        """
+
+        #@+others
+        #@+node:TomP.20200208211132.1: *6* setup
         pc = self
         c, p = pc.c, pc.c.p
+        if g.app.gui.guiName() != 'qt':
+            return
+
+        vr3 = controllers.get(c.hash())
+        if not vr3:
+            vr3 = viewrendered(event)
+
+        # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
 
-        # Add node's text as a headline
-        if p.h:
-            s = '##{}\n{}'.format(p.h, s)
+        #@+node:TomP.20200208211347.1: *6* process nodes
+        result = ''
+        codelist = []
+        for node in node_list:
+            # Add node's text as a headline
+            s = node.b
+            s = self.remove_directives(s)
+            headline_str = '#' + node.h if node.h else ''
+            s = headline_str + '\n' + s
+
+            # Process node's entire body text to handle @language directives
+            sproc, codelines = self.process_md_node(s)
+            result += sproc
+            if codelines:
+                codelist.extend(codelines)
+
+        # Execute code blocks; capture and insert execution results.
+        # This means anything written to stdout or stderr.
+        if self.execute_flag and codelist:
+            code = '\n'.join(codelist)
+            c = self.c
+            environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+            execution_result, err_result = self.exec_code(code, environment)
+            execution_result, err_result = execution_result.strip(), err_result.strip()
+            self.execute_flag = False
+
+            if execution_result or err_result:
+                result += '\n```\n'
+                if execution_result:
+                    result += f'\n```text\n{execution_result}\n'
+                if err_result.strip():
+                    result += f'{indented_err_result}\n'
+                result += '```\n'
+
+        #@+node:TomP.20200209115750.1: *6* generate HTML
 
         ext = ['fenced_code', 'codehilite']
 
         try:
-            s = markdown(s, extensions=ext) # s will be an encoded byte attay
+            s = markdown(result, extensions=ext) # s will be an encoded byte attay
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
+                return _html
 
         _html = self.md_header + s
-        self.rst_html = _html
         return _html
+        #@-others
+    #@+node:TomP.20200211142337.1: *5* process_md_node
+    def process_md_node(self, s):
+        """Process the string of a md node, honoring "@language" code blocks
+            
+           Any sections delineated by "@language xxx" /"@language yyy" directives
+           are marked as code blocks in md, where "xxx" is a code name
+           (e.g., "python"), and "yyy" is a non-code name (e.g., "rst").
+           There can be several changes from code to non-code and back 
+           within the node.
+           
+           Lines that contain only "@" cause all succeeding lines
+           to be skipped until the next line that contains only "@c".
+           
+           ARGUMENT
+           s -- the node's contents as a string
+           
+           RETURNS
+           a string having the code parts formatted as rst code blocks.
+        """
+
+
+        lines = s.split('\n')
+        # Break up text into chunks
+        results = None
+        chunks = []
+        _structure = MD
+        _lang = MD
+        _tag = TEXT
+        _skipthis = False
+
+        c = self.c
+        environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+
+        state = State.BASE
+        tag = TEXT
+
+        _chunk = Chunk(_tag, _structure, _lang)
+        for i, line in enumerate(lines):
+            do_state(state, line)
+
+        for ch in chunks:
+            ch.format_code()
+        if self.code_only:
+            results = [ch.formatted for ch in chunks if ch.tag == CODE]
+        else:
+            results = [ch.formatted for ch in chunks]
+
+        final_text = '\n'.join(results)
+        codelines = []
+        if self.execute_flag:
+            codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
+
+        return final_text, codelines
+    #@+node:TomP.20200208212643.1: *5* xprocess_md_node
+    #@@language python
+    def xprocess_md_node(self, s):
+        """Process the string of a md node, honoring "@language" code blocks
+            
+           Any sections delineated by "@language xxx" /"@language yyy" directives
+           are marked as code blocks in md, where "xxx" is a code name
+           (e.g., "python"), and "yyy" is a non-code name (e.g., "rst").
+           There can be several changes from code to non-code and back 
+           within the node.
+           
+           Lines that contain only "@" cause all succeeding lines
+           to be skipped until the next line that contains only "@c".
+           
+           ARGUMENT
+           s -- the node's contents as a string
+           
+           RETURNS
+           a string having the code parts formatted as rst code blocks.
+        """
+        #@+<< md special line helpers >>
+        #@+node:TomP.20200208213249.1: *6* << md special line helpers >>
+        def get_md_code_language(line):
+            """Return the language and tag for a line beginning with "```".
+            
+            A fenced line that has no language, or "text" for the language,
+            does not start a code block.
+            """
+
+            _lang = MD
+            #_fields = line.split(MD_CODE_FENCE)
+            if PYTHON in line:
+                _lang = PYTHON
+            elif MD in line:
+                _lang = MD
+            elif TEXT in line:
+                _lang = TEXT
+            _tag = CODE if _lang in (PYTHON,) else TEXT
+
+            return _lang, _tag
+        #@-<< md special line helpers >>
+        #@+<< Loop Over Lines >>
+        #@+node:TomP.20200208213305.1: *6* << Loop Over Lines >>
+
+        lines = s.split('\n')
+        # Break up text into chunks
+        results = None
+        chunks = []
+        _structure = MD
+        _lang = MD
+        _tag = TEXT
+        _skipthis = False
+
+        _got_language = False
+        _in_md_block = False
+        _in_code_block = False
+        _in_quotes = False
+        _quotes_type = None
+        _got_language_by_md_block = False
+
+        _got_fence = False
+
+        c = self.c
+        environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+
+        for i, line in enumerate(lines):
+            #@+<< handle_ats >>
+            #@+node:TomP.20200208213926.1: *7* << handle_ats >>
+
+            # Honor "@", "@c": skip all lines after "@" until next "@c".
+            # However, ignore these markers if we are in a code block and
+            # and also within a quoted section.
+            if not (_in_code_block and _in_quotes):
+                if line.rstrip() == '@':
+                    _skipthis = True
+                    continue
+                elif line.rstrip() == '@c':
+                    _skipthis = False
+                    continue
+                if _skipthis:
+                    continue
+            #@-<< handle_ats >>
+            #@+<< identify_code_blocks >>
+            #@+node:TomP.20200208214254.1: *7* << identify_code_blocks >>
+            # Identify code blocks
+            # Can start with "@language" or "```python"
+            _got_fence = line.startswith(MD_CODE_FENCE) and not _in_quotes
+            if _got_fence:
+                print(f'---- line: {i}, _in_code_block: {_in_code_block} _got_language_by_md_block: {_got_language_by_md_block}') 
+                _lang, _tag = get_md_code_language(line)
+                if _in_code_block:
+                    _in_code_block = False
+                    _got_language_by_md_block = False
+                else:
+                    _got_language_by_md_block = True
+                _tag = _tag or TEXT
+
+            if _got_language_by_md_block:
+                _got_language = True
+                _in_md_block = True
+                _in_code_block = True
+                _tag, _lang = get_md_code_language(line)
+
+            elif line.find('@language') == 0 and not _in_quotes:
+                fields = line.split('@language', 1)
+                if len(fields) > 1:
+                    _lang = fields[1]
+                    _got_language = True
+                    _in_md_block = False
+                    _in_code_block = _lang in (PYTHON,)
+                    _tag = CODE if _lang in (PYTHON,) else TEXT
+                else:
+                    # this is an error. Assume we're supposed to end the block.
+                    _got_language = False
+                    _in_md_block = False
+                    _in_code_block = False
+                    _lang = MD
+                    _tag = TEXT
+            if line.startswith(MD_CODE_FENCE):
+                print(f'=== line: {i} _got_language: {_got_language} _in_md_block: {_in_md_block} _lang: {_lang} _tag: {_tag} line: "{line}"')
+            #@-<< identify_code_blocks >>
+            #@+<< fill_chunks >>
+            #@+node:TomP.20200208214819.1: *7* << fill_chunks >>
+
+            _cleanline = line.strip()
+            _starts_with_at = not _got_language and line and \
+                              line[0] == '@' and\
+                              not _cleanline == '@' and\
+                              not _cleanline == '@c'
+
+            if i == 0:
+                # Set up the first chunk (unless the first line changes the language)
+                _chunk = Chunk(_tag, _structure, _lang)
+                if not _got_language:
+                    _chunk.add_line(line)
+            elif _starts_with_at:
+                # Keep Python decorators in code blocks
+                if _chunk.tag == CODE:
+                    _chunk.add_line(line)
+            elif _got_language:
+                # This is a line that marks the start of a code block
+                if not _got_language_by_md_block:
+                    # We are starting a code block delineated by "@language"
+                    chunks.append(_chunk)
+                    fields = line.split()
+                    _lang = fields[1] if len(fields) > 1 else MD
+                    _tag = CODE if _lang in (PYTHON,) else TEXT
+                    _chunk = Chunk(_tag, _structure, _lang)
+                else:
+                    # We are starting a code block delineated by "```"
+                    chunks.append(_chunk)
+                    _lang = PYTHON if PYTHON in line else TEXT
+                    _tag = CODE if _lang in (PYTHON,) else TEXT
+                    _chunk = Chunk(_tag, _structure, _lang)
+                _got_language = False
+            else:
+                if _in_md_block:
+                    # We are in a code block started by '```'
+                    if line.startswith(MD_CODE_FENCE):
+                        # this line ends the code block
+                        in_md_block = False
+                        _tag = TEXT
+                        _lang = MD
+                        chunks.append(_chunk)
+                        _chunk = Chunk(_tag, _structure, _lang)
+                else:
+                    _chunk.add_line(line)
+            #@-<< fill_chunks >>
+        #@-<< Loop Over Lines >>
+        #@+<< Finalize Node >>
+        #@+node:TomP.20200208213314.1: *6* << Finalize Node >>
+
+        chunks.append(_chunk)
+
+        for ch in chunks:
+            ch.format_code()
+        if self.code_only:
+            results = [ch.formatted for ch in chunks if ch.tag == CODE]
+        else:
+            results = [ch.formatted for ch in chunks]
+
+        final_text = '\n'.join(results)
+        codelines = []
+        if self.execute_flag:
+            codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
+
+        return final_text, codelines
+        #@-<< Finalize Node >>
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
     movie_warning = False
 
@@ -1844,7 +2149,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.73: *4* vr3.update_rst & helpers
     def update_rst(self, node_list, keywords):
-        '''Update rst in the vr3 pane.
+        """Update rst in the vr3 pane.
         
             ARGUMENTS
             node_list -- a list of outline nodes to be processed.
@@ -1852,7 +2157,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             
             RETURNS
             nothing
-        '''
+        """
 
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
@@ -1885,11 +2190,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setPlainText(s)
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
     def convert_to_html(self, node_list):
-        '''Convert node_list to html using docutils.
+        """Convert node_list to html using docutils.
         
         RETURNS
         the html returned by docutils.
-        '''
+        """
 
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
@@ -1950,7 +2255,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         args = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = '{}'.format(self.rst_stylesheet)
-            args['embed_stylesheet'] = False
+            args['embed_stylesheet'] = True
 
         if self.math_output:
             args['math_output'] = self.math_output
@@ -2018,68 +2323,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
            RETURNS
            a string having the code parts formatted as rst code blocks.
         """
-        #@+<< indentation helpers >>
-        #@+node:TomP.20200118225334.1: *6* << indentation helpers >>
-        def deindent(line, indent):
-            """Remove leading indentation string.
-            
-            ARGUMENTS
-            line -- the line to be de-indented.
-            indent -- the indentation string to be removed.
-            
-            RETURNS
-            the de-indented string.
-            
-            RAISES
-            ValueError if there is no leading indent.
-            """
-
-            fields = line.split(indent, 1)
-            if length(fields) == 1:
-                raise(ValueError('No Leading Indentation'))
-            else:
-                return fields[1]
-
-        def get_indentation(line):
-            """ Return the leading indentation of a line, if any.
-            
-            ARGUMENT
-            line -- the line to find the indentation of.
-            
-            RETURNS
-            the indentation string, or None if there is no indentation.
-            """
-            indentation = []
-            for ch in line:
-                if ch in (' ', '\t'):
-                    indentation.append(ch)
-                else:
-                    break
-            return ''.join(indentation) if indentation else None
-        #@-<< indentation helpers >>
-        #@+<< get first nonblank line >>
-        #@+node:TomP.20200119223108.1: *6* << get first nonblank line >>
-        def get_first_non_blank(lines, index=0):
-            """Find the first non-blank line in a sequence of lines.
-            
-            ARGUMENT
-            lines -- a list of lines.
-            index -- the starting index to use.
-            
-            RETURNS
-            a tuple (j, line), where j is the index of the first non-blank line, 
-            and line is that line.  If no such line, return (-1, None)
-            """
-
-            last_line = None
-            for i, line in enumerate(lines[index:]):
-                if not line[0].strip(): continue
-                last_line = line
-                break
-            if not last_line:
-                i = -1
-            return (i, last_line)
-        #@-<< get first nonblank line >>
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
@@ -2204,6 +2447,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@-<< identify_code_blocks >>
             #@+<< fill_chunks >>
             #@+node:TomP.20200112103729.5: *7* << fill_chunks >>
+
             _cleanline = line.strip()
             _starts_with_at = not _got_language and line and \
                               line[0] == '@' and\
@@ -2561,13 +2805,109 @@ class ViewRenderedController3(QtWidgets.QWidget):
         
         return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@-others
+#@+node:TomP.20200211142437.1: ** State Table
+#@@language python
+
+global _chunk, chunks
+
+class State(Enum):
+    BASE = auto()
+    AT_LANG_CODE = auto()
+    FENCED_CODE = auto()
+    TO_BE_COMPUTED = auto()
+
+class Marker(Enum):
+    AT_LANGUAGE_MARKER = auto()
+    MD_FENCE_LANG_MARKER = auto() # fence with language; e.g. ```python
+    MD_FENCE_MARKER = auto() # fence with no language
+    MARKER_NONE = auto() # Not a special line.
+
+class Action:
+    @staticmethod
+    def new_chunk(line, tag):
+        chunks.append(_chunk)
+        _lang = get_lang(line)
+        _chunk = Chunk(tag, structure, _lang)
+
+    @staticmethod
+    def add_line(line, tag=None):
+        _chunk.add_line(line)
+
+def do_state(state, line):
+    marker, tag, language = get_marker(line)
+    action, next = State_table[(state, marker)]
+    if next == State.TO_BE_COMPUTED:
+        # Need to know if this line specified a language.
+        # Only known case is if we are in an @language code block 
+        # And encounter another @language block.
+        if tag == CODE:
+            next = State.AT_LANG_CODE
+            _lang = language
+        else:
+            next = State.BASE
+            _lang = MD
+    action(line, tag)
+    state = next
+
+State_table = { # (state, marker): (action, next_state)
+    # State == State.TO_BE_COMPUTED means that the next state should be computed.
+
+    # Markdown states
+    (State.BASE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
+    (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
+    (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
+
+    (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
+    # when we encounter a new @language line, the next state might be either 
+    # State.BASE or State.AT_LANG_CODE, so we have to compute it.
+    (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
+
+    (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
+    (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE)
+}
+#@+node:TomP.20200212085651.1: *3* get_marker
+def get_marker(line):
+    """Return classification information about a line.
+    
+    Used by the state table machinery.
+    
+    ARGUMENT
+    line -- the line of text to be classified.
+    
+    RETURNS
+    a tuple (marker, tag, lang), where 
+        marker is one of AT_LANGUAGE_MARKER, MD_FENCE_LANG_MARKER, MD_FENCE_MARKER, MARKER_NONE;
+        tag is one of CODE, TEXT;
+        lang is the language (e.g., MD, RST, PYTHON) specified by the line, else None.
+    """
+
+    marker = Marker.MARKER_NONE
+    tag = TEXT
+    lang = None
+
+    # A marker line may start with "@language" or a Markdown code fence.
+    if line.startswith("@language"):
+        marker = Marker.AT_LANGUAGE_MARKER
+        lang = PYTHON if PYTHON in line else MD
+    elif line.startswith(MD_CODE_FENCE):
+        if PYTHON in line:
+            marker = Marker.MD_FENCE_LANG_MARKER
+            lang = PYTHON
+        else:
+            marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
+            lang = MD
+
+    if lang in (PYTHON,):
+        tag = CODE
+
+    return (marker, tag, lang)
 #@+node:TomP.20191231172446.1: ** class Chunk
 class Chunk:
     """Holds a block of text, with various metadata about it."""
 
     def __init__(self, tag='', structure=RST, language=''):
         self.text_lines = [''] # The text as a sequence of lines, free of directives
-        self.tag = tag  # A descriptive value for the kind of chunk, such as CODE, TEXT, RESPONSE.
+        self.tag = tag  # A descriptive value for the kind of chunk, such as CODE, TEXT.
         self.structure = structure # The type of structure (rst, md, etc.).
         self.language = language # The programming language, if any, for this chunk.
         self.formatted = '' # The formatted text.
@@ -2578,21 +2918,28 @@ class Chunk:
     def format_code(self):
         """Format the text of a chunk. Include special formatting for CODE chunks. 
         
-        Currently only reformats RsT/Python.
+        Currently only reformats RsT/Python and MD/Python.
         """
 
-        if self.tag != CODE or self.structure not in ('rst', 'rest'):
+        if self.tag != CODE or self.structure not in (RST, REST, MD):
             self.formatted = '\n'.join(self.text_lines)
             return
 
-        _formatted = ['.. code:: %s\n' % (self.language)]
-        for line in self.text_lines:
-            if not line.strip():
+        if self.tag == CODE:
+            if self.structure in (RST, REST):
+                _formatted = ['.. code:: %s\n' % (self.language)]
+                for line in self.text_lines:
+                    if not line.strip():
+                        _formatted.append('')
+                    else:
+                        _formatted.append(RST_CODE_PREFIX + line)
                 _formatted.append('')
-            else:
-                _formatted.append(RST_CODE_PREFIX + line)
-        _formatted.append('')
-        self.formatted = '\n'.join(_formatted)
+                self.formatted = '\n'.join(_formatted)
+            elif self.structure == MD:
+                _formatted = [f'{MD_CODE_FENCE}{self.language}\n']
+                _formatted.append('\n'.join(self.text_lines))
+                _formatted.append(f'{MD_CODE_FENCE}\n')
+                self.formatted = '\n'.join(_formatted)
 #@-others
 #@@language python
 #@@tabwidth -4
