@@ -2416,7 +2416,9 @@ class Orange:
     #@+node:ekr.20200107165250.16: *5* orange.do_endmarker
     def do_endmarker(self):
         """Handle an endmarker token."""
-        pass
+        # Ensure exactly one blank at the end of the file.
+        self.clean_blank_lines()
+        self.add_token('line-end', '\n')
     #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent
     def do_dedent(self):
         """Handle dedent token."""
