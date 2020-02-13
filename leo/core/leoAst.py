@@ -2391,18 +2391,32 @@ class Orange:
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
+    # Patterns from FastAtRead class, specialize for python delims.
+    start_doc_pat = fr'^\s*#@\+(at|doc)?(\s.*?)?\n'  # @doc or @
+    end_doc_pat = fr'^\s*#@@c(ode)?$'  # @c and @code
+
+    in_doc_part = False
+
     def do_comment(self):
         """Handle a comment token."""
-        if self.beautify_pat.match(self.val):
+        val = self.val
+        # Keep track of verbatim mode.
+        if self.beautify_pat.match(val):
             self.verbatim = False
-        elif self.nobeautify_pat.match(self.val):
+        elif self.nobeautify_pat.match(val):
             self.verbatim = True
+        # Keep trace of @doc parts, to honor the convention for splitting lines.
+        if self.start_doc_pat.match(val):
+            self.in_doc_part = True
+        if self.end_doc_pat.match(val):
+            self.in_doc_part = False
+        # Generate the code.
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
             self.clean('hard-blank')
             self.clean('line-indent')
-            val = self.line.rstrip()
+            val = self.line if self.in_doc_part else self.line.rstrip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
