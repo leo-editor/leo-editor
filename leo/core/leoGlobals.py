@@ -3226,8 +3226,7 @@ def compute_directives_re():
     global globalDirectiveList
     # Use a pattern that guarantees word matches.
     aList = [
-        r'\b%s\b' % (z) for z in globalDirectiveList
-            if z != 'others'
+        fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
     ]
     # Clearer w/o f-strings.
     return f"^@(%s)" % "|".join(aList)
