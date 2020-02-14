@@ -465,11 +465,10 @@ class CompareLeoOutlines:
         c2 = self.open_outline(fn2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2)
-            # It *should* be possible to fstringify this.
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-            # self.file_node.b = (
-                # f"{self.file_node.b.rstrip()}\n"
-                # f"@language {c2.target_language}\n")
+            self.file_node.b = (
+                f"{self.file_node.b.rstrip()}\n"
+                f"@language {c2.target_language}\n")
+           
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
