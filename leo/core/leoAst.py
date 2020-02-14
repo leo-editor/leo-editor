@@ -3649,6 +3649,18 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200214155156.1: *4* TestFstringity.show_message
+    def show_message(self):
+        """Separate test of fs.message."""
+        fs = Fstringify()
+        fs.filename = 'test_file.py'
+        fs.line_number = 42
+        fs.line = 'The test line\n'
+        fs.silent = False
+        fs.message(
+            f"Test:\n"
+            f"Long second line\n"
+            f"Last line")
     #@+node:ekr.20191230150653.1: *4* TestFstringity.test_call_in_rhs
     def test_call_in_rhs(self):
 
