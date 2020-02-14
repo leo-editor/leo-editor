@@ -2718,11 +2718,13 @@ class Commands:
             'syntax-error-popup', default=False):
             aList = sorted(set(g.app.syntax_error_files))
             g.app.syntax_error_files = []
-            message = 'Python errors in:\n\n%s' % '\n'.join(aList)
-            g.app.gui.runAskOkDialog(c,
+            list_s = '\n'.join(aList)
+            g.app.gui.runAskOkDialog(
+                c,
                 title='Python Errors',
-                message=message,
-                text="Ok")
+                message=f"Python errors in:\n\n{list_s}" ,
+                text="Ok",
+            )
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
     #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
     def dragToNthChildOf(self, p, parent, n):
