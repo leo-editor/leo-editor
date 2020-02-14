@@ -159,7 +159,7 @@ def promoteBodies(event):
         h = child.h.strip()
         if child.b:
             body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
-            s = '- %s\n%s' % (h, body)
+            s = f'- {h}\n{body}'
         else:
             s = f'- {h}'
         if s.strip():

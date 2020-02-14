@@ -540,8 +540,7 @@ class GitDiffController:
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn)
-            self.file_node.b = '%s\n@language %s\n' % (
-                self.file_node.b.rstrip(), c2.target_language)
+            self.file_node.b = f'{self.file_node.b.rstrip()}\n@language {c2.target_language}\n'
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
@@ -629,8 +628,7 @@ class GitDiffController:
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = '%s\n@language %s\n' % (
-                self.file_node.b.rstrip(), c2.target_language)
+            self.file_node.b = f'{self.file_node.b.rstrip()}\n@language {c2.target_language}\n'
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
         """Create nodes describing the changes."""
@@ -815,10 +813,9 @@ class GitDiffController:
         p.h = f"git diff {r1} {r2}"
         p.b = '@ignore\n@nosearch\n'
         if r1 and r2:
-            p.b += '%s=%s\n%s=%s' % (
-                r1, self.get_revno(r1),
-                r2, self.get_revno(r2),
-            )
+            p.b += (
+                f"{r1}={self.get_revno(r1)}\n"
+                f"{r2}={self.get_revno(r2)}")
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
         return p
