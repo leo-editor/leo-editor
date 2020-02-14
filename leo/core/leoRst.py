@@ -74,7 +74,8 @@ def code_block(name, arguments, options,
             generator().generate_html(io, '\n'.join(content))
             html = f'<div class="code-block">\n{io.getvalue()}\n</div>\n'
         else:
-            html = '<div class="code-block">\n%s\n</div>\n' % '<br>\n'.join(content)
+            br_s = '<br>\n'.join(content)
+            html = f'<div class="code-block">\n{br_s}\n</div>\n'
         raw = docutils.nodes.raw('', html, format='html')
         return [raw]
     except Exception:  # Return html as shown.  Lines are separated by <br> elements.
