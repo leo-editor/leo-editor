@@ -287,8 +287,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setText('%s\n%s\n%s\n%s' % (
-            version, theCopyright, url, email))
+        d.setText(f'{version}\n{theCopyright}\n{url}\n{email}')
         d.setIcon(b.Information)
         yes = d.addButton('Ok', b.YesRole)
         d.setDefaultButton(yes)
@@ -1873,7 +1872,7 @@ class StyleSheetManager:
         """Show the top-level style sheet."""
         w = self.get_master_widget()
         sheet = w.styleSheet()
-        print('style sheet for: %s...\n\n%s' % (w, sheet))
+        print(f'style sheet for: {w}...\n\n{sheet}')
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         """Set the master style sheet for all widgets using config settings."""
