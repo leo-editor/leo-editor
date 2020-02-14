@@ -502,6 +502,8 @@ for python files:
 """),
 
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
+#@@nobeautify
+
 UserTip(
     n=0,
     tags=['Scripting',],

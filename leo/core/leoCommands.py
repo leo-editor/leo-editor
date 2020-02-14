@@ -2722,7 +2722,7 @@ class Commands:
             g.app.gui.runAskOkDialog(
                 c,
                 title='Python Errors',
-                message=f"Python errors in:\n\n{list_s}" ,
+                message=f"Python errors in:\n\n{list_s}",
                 text="Ok",
             )
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
