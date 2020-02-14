@@ -5757,7 +5757,7 @@ class Fstringify(TokenOrderTraverser):
         if trace:
             for i, z in enumerate(values):
                 dump_tokens(z, tag=f"RHS value {i}")
-        # Compute rt_s, line and line_number for later messages.
+        # Compute rt_s, self.line and self.line_number for later messages.
         token0 = lt_token_list[0]
         self.line_number = token0.line_number
         self.line = token0.line.strip()
@@ -5765,27 +5765,15 @@ class Fstringify(TokenOrderTraverser):
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):  # pragma: no cover
-            ### self.line_number = token0.line_number
-            ### self.line = token0.line
-            ### n_specs, n_values = len(specs), len(values)
+            # if not self.silent:
             self.message(
                 f"f-string mismatch: "
                 f"{len(values)} value{g.plural(len(values))}, "
                 f"{len(specs)} spec{g.plural(len(specs))}")
-            ###
-            # if not self.silent:  # pragma: no cover
-                # print(
-                    # f"\n"
-                    # f"f-string mismatch: "
-                    # f"{n_values} value{g.plural(n_values)}, "
-                    # f"{n_specs} spec{g.plural(n_specs)}\n"
-                    # f"             file: {self.filename}\n"
-                    # f"      line number: {self.line_number}\n"
-                    # f"             line: {self.line.strip()!r}")
             return
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
-        result = self.compute_result(lt_s, results) ### line, line_number, 
+        result = self.compute_result(lt_s, results)
         if not result:
             return
         # Remove whitespace before ! and :.
@@ -5798,14 +5786,6 @@ class Fstringify(TokenOrderTraverser):
                 f"trace:\n"
                 f" from: {before!s}\n"
                 f"   to: {after!s}")
-            ###
-            # print(
-                # f"\n"
-                # f"       file: {self.filename}\n"
-                # f"line number: {self.line_number}\n"
-                # f"       line: {self.line!r}\n"
-                # f"       from: {before!s}\n"
-                # f"         to: {after!s}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
@@ -5817,7 +5797,7 @@ class Fstringify(TokenOrderTraverser):
         return s
 
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, lt_s, tokens): ### line, line_number, 
+    def compute_result(self, lt_s, tokens): 
         """
         Create the final result, with various kinds of munges.
 
@@ -5825,34 +5805,9 @@ class Fstringify(TokenOrderTraverser):
         """
         # Fail if there is a backslash within { and }.
         if not self.check_newlines(lt_s, tokens):  # pragma: no cover
-            # self.message(
-                # f"can't create f-fstring: {lt_s!r}\n"
-                # f"string contains a backslash")
-            
-            # if not self.silent:
-                # print(
-                    # f"\n"
-                    # f"can't create f-fstring: {lt_s!r}\n"
-                    # f"string contains a backslash\n"
-                    # f"                  file: {self.filename}\n"
-                    # f"           line number: {line_number}\n"
-                    # f"                  line: {line.strip()!r}")
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(lt_s, tokens):  # pragma: no cover
-            ###
-            # self.message(
-                # f"can't create f-fstring: {lt_s!r}\n"
-                # f"can't escape string delims")
-            ###
-            # if not self.silent:
-                # print(
-                    # f"\n"
-                    # f"can't create f-fstring: {lt_s!r}\n"
-                    # f"can't escape string delims\n"
-                    # f"                  file: {self.filename}\n"
-                    # f"           line number: {line_number}\n"
-                    # f"                  line: {line.strip()!r}")
             return None
         return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
@@ -5905,7 +5860,6 @@ class Fstringify(TokenOrderTraverser):
             return True
         if not lt_s:  # pragma: no cover
             self.message(f"can't create f-fstring: no lt_s!")
-            ### g.trace('no lt_s!')
             return False
         if trace:
             g.trace(f"lt_s: {lt_s!s}")
@@ -5924,10 +5878,6 @@ class Fstringify(TokenOrderTraverser):
                 self.message(
                     f"unexpected token: {token.kind} {token.value}\n"
                     f"            lt_s: {lt_s!r}")
-                # g.trace(
-                    # f"unexpected token: {token.kind} {token.value}\n"
-                    # f"            lt_s: {lt_s!r}\n"
-                    # f"            line: {token0.line!r}")
                 g.printObj(aList, tag='aList')
                 return False
         # These checks are important...
