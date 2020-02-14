@@ -5890,7 +5890,9 @@ class Fstringify(TokenOrderTraverser):
                     count += 1
                 elif z.value == '}':
                     count -= 1
-            if (count % 2) > 1 and (delim in z.value or '\\' in z.value):
+            if delim in z.value:
+                return False
+            if (count % 2) > 1 and '\\' in z.value:
                 return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
