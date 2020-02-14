@@ -97,7 +97,7 @@ class PersistenceDataController:
         # Create the @gnxs node
         at_gnxs = self.find_at_gnxs_node(root)
         at_gnxs.b = ''.join(
-            ['gnx: %s\nunl: %s\n' % (p.v.gnx, self.relative_unl(p, root))
+            [f'gnx: {p.v.gnx}\nunl: {self.relative_unl(p, root)}\n'
                 for p in aList])
         # Create the @uas tree.
         uas = [p for p in aList if p.v.u]
@@ -108,8 +108,7 @@ class PersistenceDataController:
             for p in uas:
                 p2 = at_uas.insertAsLastChild()
                 p2.h = '@ua:' + p.v.gnx
-                p2.b = 'unl:%s\nua:%s' % (
-                    self.relative_unl(p, root), self.pickle(p))
+                p2.b = f'unl:{self.relative_unl(p, root)}\nua:{self.pickle(p)}'
         # This is no longer necessary because of at.saveOutlineIfPossible.
         if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.

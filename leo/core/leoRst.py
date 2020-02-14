@@ -465,7 +465,7 @@ class RstCommands:
         elif self.getOption(p, 'show_sections'):
             self.write(self.underline(h, p))
         else:
-            self.write('\n**%s**\n\n' % h.replace('*', ''))
+            self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20100812082517.5968: *5* rst.write_code_node
     def write_code_node(self, p):
         """
@@ -630,7 +630,7 @@ class RstCommands:
             title = f"{title} ({n} of {n_tot})"
         width = max(4, len(g.toEncodedString(title,
             encoding=self.encoding, reportErrors=False)))
-        self.write('%s\n%s \n\n' % (title, ('#' * width)))
+        self.write(f"{title}\n{'#' * width} \n\n")
     #@+node:ekr.20090502071837.58: *5* rst.write methods
     #@+node:ekr.20090502071837.68: *6* rst.getDocPart
     def getDocPart(self, lines, n):
@@ -753,7 +753,7 @@ class RstCommands:
                         if 1:  # Create a literal block to hold the code.
                             result.append('::\n')
                         else:  # This 'annotated' literal block is confusing.
-                            result.append('%s code::\n' % s[i + len('code-block') :])
+                            result.append(f"{s[i + len('code-block') :]} code::\n")
                     else:
                         result.append(s)
                 else:
@@ -1024,7 +1024,7 @@ class RstCommands:
             else:
                 self.write(f'\n{h}\n\n')
         else:
-            self.write('\n**%s**\n\n' % h.replace('*', ''))
+            self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
     def writeNode(self, p):
         """Format a node according to the options presently in effect."""
@@ -1767,8 +1767,8 @@ class RstCommands:
             n = max(
                 4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
             if level == 0 and self.underlines2:
-                return '%s\n%s\n%s\n\n' % (ch * n, p.h, ch * n)
-            return '%s\n%s\n\n' % (p.h, ch * n)
+                return f'{ch * n}\n{p.h}\n{ch * n}\n\n'
+            return f'{p.h}\n{ch * n}\n\n'
         # The user is responsible for top-level overlining.
         u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.topLevel)
@@ -1776,7 +1776,7 @@ class RstCommands:
             level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
-        return '%s\n%s\n\n' % (s.strip(), ch * n)
+        return f'{s.strip()}\n{ch * n}\n\n'
             # Fixes bug 618570:
     #@-others
 #@+node:ekr.20120219194520.10444: ** html parser classes

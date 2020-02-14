@@ -50,7 +50,7 @@ class UserTip:
         self.text = text.strip()
 
     def __repr__(self):
-        return '%s\n\n%s\n' % (self.title, self.text)
+        return f'{self.title}\n\n{self.text}\n'
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)

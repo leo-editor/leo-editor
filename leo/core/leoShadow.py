@@ -523,11 +523,9 @@ class ShadowController:
         x = self
         banner1 = '=' * 30
         banner2 = '-' * 30
-        g.es_print('%s\n%s\n%s\n%s\n%s' % (
-            banner1, message, banner1, lines1_message, banner2))
+        g.es_print(f'{banner1}\n{message}\n{banner1}\n{lines1_message}\n{banner2}')
         x.show_error_lines(lines1, 'shadow_errors.tmp1')
-        g.es_print('\n%s\n%s\n%s' % (
-            banner1, lines2_message, banner1))
+        g.es_print(f'\n{banner1}\n{lines2_message}\n{banner1}')
         x.show_error_lines(lines2, 'shadow_errors.tmp2')
         g.es_print('\n@shadow did not pick up the external changes correctly')
         # g.es_print('Please check shadow.tmp1 and shadow.tmp2 for differences')

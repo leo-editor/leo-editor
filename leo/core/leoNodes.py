@@ -40,7 +40,9 @@ class NodeIndices:
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
             g.internalError(
-                'getNewIndex: gnx clash %s\n v: %s\nv2: %s' % (gnx, v, v2))
+                f'getNewIndex: gnx clash {gnx}\n'
+                f'          v: {v}\n'
+                f'         v2: {v2}')
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         """Scan the entire leo outline to compute ni.last_index."""
@@ -346,7 +348,8 @@ class Position:
         p = self
         level = self.level() - firstLevel
         plusMinus = "+" if p.hasChildren() else "-"
-        return "%s%s %s" % ('\t' * level, plusMinus, p.h)
+        pad = '\t' * level
+        return f"{pad}{plusMinus} {p.h}"
     #@+node:ekr.20040315023430.3: *4* p.moreBody
     #@+at
     #     + test line
@@ -1489,7 +1492,7 @@ class Position:
             node = p.parent()
         else:
             node = p
-        p.v.context.alert("invalid outline: %s\n%s" % (message, node))
+        p.v.context.alert(f"invalid outline: {message}\n{node}")
     #@+node:ekr.20040303175026.10: *4* p.moveAfter
     def moveAfter(self, a):
         """Move a position after position a."""
@@ -1966,7 +1969,8 @@ class VNode:
 
     def dump(self, label=""):
         v = self
-        print('%s %s %s' % ('-' * 10, label, v))
+        s = '-' * 10
+        print(f'{s} {label} {v}')
         # print('gnx: %s' % v.gnx)
         print(f'len(parents): {len(v.parents)}')
         print(f'len(children): {len(v.children)}')

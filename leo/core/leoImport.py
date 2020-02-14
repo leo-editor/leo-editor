@@ -1194,7 +1194,7 @@ class LeoImportCommands:
                 g.es_exception()
                 p.b = s
         else:
-            g.es_print('parse-body: no parser for @language %s' % (language or 'None'))
+            g.es_print(f"parse-body: no parser for @language {language or 'None'}")
     #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
     def body_parser_for_ext(self, ext):
         """A factory returning a body parser function for the given file extension."""
@@ -2011,7 +2011,7 @@ class RecursiveImportController:
             # Put the *full* @path directive in the body.
             if self.add_path and prefix:
                 tail = g.os_path_dirname(stripped).rstrip('/')
-                p.b = '@path %s%s\n%s' % (prefix, tail, p.b)
+                p.b = f'@path {prefix}{tail}\n{p.b}'
         else:
             # p.h is a path.
             path = p.h

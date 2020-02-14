@@ -439,8 +439,7 @@ class Commands:
         print('Commands...')
         for key in sorted(c.commandsDict):
             command = c.commandsDict.get(key)
-            print('%30s = %s' % (
-                key, command.__name__ if command else '<None>'))
+            print(f"{key:30} = {command.__name__ if command else '<None>'}")
         print('')
     #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
@@ -1593,13 +1592,13 @@ class Commands:
         next = p.next()
         if back:
             if not g._assert(p == back.next()):
-                g.trace('p!=p.back().next(),  back: %s\nback.next: %s' % (
-                    back, back.next()))
+                g.trace(f'p!=p.back().next(),  back: {back}\nback.next: {back.next()}')
                 return False
         if next:
             if not g._assert(p == next.back()):
-                g.trace('p!=p.next().back, next: %s\nnext.back: %s' % (
-                    next, next.back()))
+                g.trace(
+                    f'p!=p.next().back, next: {next}\n'
+                    f'next.back: {next.back()}')
                 return False
         return True
     #@+node:ekr.20040314035615: *5* c.checkThreadLinks

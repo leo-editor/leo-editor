@@ -1375,7 +1375,7 @@ class FileCommands:
             fc.put(v_head + '</v>\n')
         else:
             fc.vnodesDict[gnx] = True
-            v_head += '<vh>%s</vh>' % (xml.sax.saxutils.escape(p.v.headString() or ''))
+            v_head += f"<vh>{xml.sax.saxutils.escape(p.v.headString() or '')}</vh>"
             # New in 4.2: don't write child nodes of @file-thin trees
             # (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):

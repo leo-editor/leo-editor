@@ -444,13 +444,13 @@ class ParserBaseClass:
     def dumpMenuTree(self, aList, level=0, path=''):
         for z in aList:
             kind, val, val2 = z
+            pad = '    ' * level
             if kind == '@item':
                 name = self.getName(val, val2)
-                g.es_print('%s %s (%s) [%s]' % (
-                    '    ' * (level + 0), val, val2, path + '/' + name))
+                g.es_print(f"{pad} {val} ({val2}) [{path + '/' + name}]")
             else:
                 name = self.getName(kind.replace('@menu ', ''))
-                g.es_print('%s %s... [%s]' % ('    ' * (level), kind, path + '/' + name))
+                g.es_print(f"{pad} {kind}... [{path + '/' + name}]")
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):

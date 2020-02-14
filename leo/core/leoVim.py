@@ -2123,9 +2123,8 @@ class VimCommands:
         """toggle vim-mode."""
         c = self.c
         c.vim_mode = not c.vim_mode
-        g.es('vim-mode: %s' % (
-            'on' if c.vim_mode else 'off'),
-            color='red')
+        val = 'on' if c.vim_mode else 'off'
+        g.es(f"vim-mode: {val}", color='red')
         if c.vim_mode:
             self.quit()
         else:
@@ -2142,15 +2141,15 @@ class VimCommands:
     def toggle_vim_trace(self, event=None):
         """toggle vim tracing."""
         self.trace_flag = not self.trace_flag
-        g.es_print('vim tracing: %s' % ('On' if self.trace_flag else 'Off'))
+        val = 'On' if self.trace_flag else 'Off'
+        g.es_print(f"vim tracing: {val}")
     #@+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
     def toggle_vim_trainer_mode(self, event=None):
         """toggle vim-trainer mode."""
         self.trainer = not self.trainer
-        g.es('vim-trainer-mode: %s' % (
-            'on' if self.trainer else 'off'),
-            color='red')
+        val = 'on' if self.trainer else 'off'
+        g.es(f"vim-trainer-mode: {val}", color='red')
     #@+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
     @cmd(':w')
     def w_command(self, event=None):

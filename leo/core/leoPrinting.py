@@ -61,7 +61,7 @@ class PrintingController:
         text = self.sanitize_html(text)
         if head:
             head = self.sanitize_html(head)
-            contents = "<h1>%s</h1>\n<pre>%s</pre>" % (head, text)
+            contents = f"<h1>{head}</h1>\n<pre>{text}</pre>"
         else:
             contents = f"<pre>{text}<pre>"
         doc.setHtml(contents)
