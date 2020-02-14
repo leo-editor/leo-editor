@@ -468,7 +468,7 @@ class CompareLeoOutlines:
             self.file_node.b = (
                 f"{self.file_node.b.rstrip()}\n"
                 f"@language {c2.target_language}\n")
-           
+
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):

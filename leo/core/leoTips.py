@@ -147,6 +147,7 @@ def make_tip_nodes(c):
 #@-others
 
 # The global tips array.
+
 tips = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
