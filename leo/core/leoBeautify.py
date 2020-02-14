@@ -152,6 +152,7 @@ def fstringify_files(event):
     tag = 'fstringify-files'
     g.es(f"{tag}...")
     roots = g.findRootsWithPredicate(c, c.p)
+    n_changed = 0
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
@@ -159,6 +160,7 @@ def fstringify_files(event):
             print(g.shortFileName(filename))
             changed = leoAst.Fstringify().fstringify_file(filename)
             changed_s = 'changed' if changed else 'unchanged'
+            if changed: n_changed += 1
             g.es_print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
             print('')
@@ -166,7 +168,10 @@ def fstringify_files(event):
             g.es(f"File not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    g.es_print(
+        f"total files: {len(roots)}, "
+        f"changed files: {n_changed}, "
+        f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
