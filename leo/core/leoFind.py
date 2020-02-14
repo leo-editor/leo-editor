@@ -1765,7 +1765,7 @@ class LeoFind:
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
-        found.b = '@nosearch\n\n# %s%s\n\n# found %s nodes' % (flat, status, len(clones))
+        found.b = f'@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes'
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
