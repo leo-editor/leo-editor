@@ -3619,7 +3619,7 @@ class TestFstringify(BaseTest):
 
     #@+others
     #@+node:ekr.20200111043311.1: *4* Bugs...
-    #@+node:ekr.20200111043311.2: *5* test_fs.test_crash_1
+    #@+node:ekr.20200111043311.2: *5* TestFstringity.test_crash_1
     def test_crash_1(self):
         # leoCheck.py.
         contents = """return ('error', 'no member %s' % ivar)"""
@@ -3627,7 +3627,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200111075114.1: *5* test_fs.test_crash_2
+    #@+node:ekr.20200111075114.1: *5* TestFstringity.test_crash_2
     def test_crash_2(self):
         # leoCheck.py, line 1704.
         # format =
@@ -3640,7 +3640,7 @@ class TestFstringify(BaseTest):
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
 
-    #@+node:ekr.20200106163535.1: *4* test_braces
+    #@+node:ekr.20200106163535.1: *4* TestFstringity.test_braces
     def test_braces(self):
 
         # From pr.construct_stylesheet in leoPrinting.py
@@ -3649,7 +3649,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20191230150653.1: *4* test_call_in_rhs
+    #@+node:ekr.20191230150653.1: *4* TestFstringity.test_call_in_rhs
     def test_call_in_rhs(self):
 
         contents = """'%s' % d()"""
@@ -3657,7 +3657,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200104045907.1: *4* test_call_in_rhs_2
+    #@+node:ekr.20200104045907.1: *4* TestFstringity.test_call_in_rhs_2
     def test_call_in_rhs_2(self):
 
         # From LM.traceSettingsDict
@@ -3666,7 +3666,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200105073155.1: *4* test_call_with_attribute
+    #@+node:ekr.20200105073155.1: *4* TestFstringity.test_call_with_attribute
     def test_call_with_attribute(self):
 
         contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
@@ -3674,7 +3674,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200122035055.1: *4* test_call_with_comments
+    #@+node:ekr.20200122035055.1: *4* TestFstringity.test_call_with_comments
     def test_call_with_comments(self):
 
         if 0:
@@ -3696,7 +3696,7 @@ class TestFstringify(BaseTest):
         expected = g.adjustTripleString(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173126.1: *4* test_cant_convert_1
+    #@+node:ekr.20200206173126.1: *4* TestFstringity.test_cant_convert_1
     def test_cant_convert_1(self):
 
         contents = """ret = '[%s]' % ','.join([show(z) for z in arg])"""
@@ -3704,7 +3704,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173628.1: *4* test_cant_convert_2
+    #@+node:ekr.20200206173628.1: *4* TestFstringity.test_cant_convert_2
     def test_cant_convert_2(self):
 
         contents = """print('Test %s' % 'one')"""
@@ -3712,7 +3712,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173725.1: *4* test_cant_convert_3
+    #@+node:ekr.20200206173725.1: *4* TestFstringity.test_cant_convert_3
     def test_cant_convert_3(self):
 
         contents = """
@@ -3723,7 +3723,7 @@ class TestFstringify(BaseTest):
         expected = contents
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200101060616.1: *4* test_complex_rhs
+    #@+node:ekr.20200101060616.1: *4* TestFstringity.test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
         contents = (
@@ -3735,7 +3735,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206174208.1: *4* test_function_call
+    #@+node:ekr.20200206174208.1: *4* TestFstringity.test_function_call
     def test_function_call(self):
 
         contents = """mods = ''.join(['%s+' % z.capitalize() for z in self.mods])"""
@@ -3743,7 +3743,7 @@ class TestFstringify(BaseTest):
         expected = """mods = ''.join([f'{z.capitalize()}+' for z in self.mods])\n"""
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200106085608.1: *4* test_ImportFrom
+    #@+node:ekr.20200106085608.1: *4* TestFstringity.test_ImportFrom
     def test_ImportFrom(self):
 
         table = (
@@ -3755,7 +3755,7 @@ class TestFstringify(BaseTest):
             contents, tokens, tree = self.make_data(contents)
             results = self.fstringify(contents, tokens, tree)
             assert results == contents, expected_got(contents, results)
-    #@+node:ekr.20200106042452.1: *4* test_ListComp
+    #@+node:ekr.20200106042452.1: *4* TestFstringity.test_ListComp
     def test_ListComp(self):
 
         table = (
@@ -3768,7 +3768,7 @@ class TestFstringify(BaseTest):
             results = self.fstringify(contents, tokens, tree)
             expected = contents
             assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200112163031.1: *4* test_munge_spec
+    #@+node:ekr.20200112163031.1: *4* TestFstringity.test_munge_spec
     def test_munge_spec(self):
 
         # !head:tail or :tail
@@ -3788,7 +3788,7 @@ class TestFstringify(BaseTest):
                 f"     got head: {head}\n"
                 f"expected tail: {e_tail}\n"
                 f"     got tail: {tail}\n")
-    #@+node:ekr.20200104042705.1: *4* test_newlines
+    #@+node:ekr.20200104042705.1: *4* TestFstringity.test_newlines
     def test_newlines(self):
 
         contents = r"""\
@@ -3801,7 +3801,7 @@ class TestFstringify(BaseTest):
         expected = contents
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20191230183652.1: *4* test_parens_in_rhs
+    #@+node:ekr.20191230183652.1: *4* TestFstringity.test_parens_in_rhs
     def test_parens_in_rhs(self):
 
         contents = """print('%20s' % (ivar), val)"""
@@ -3809,7 +3809,7 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200106091740.1: *4* test_single_quotes
+    #@+node:ekr.20200106091740.1: *4* TestFstringity.test_single_quotes
     def test_single_quotes(self):
 
         table = (
@@ -3828,7 +3828,31 @@ class TestFstringify(BaseTest):
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
             if results != expected:  # pragma: no cover
-                expected_got(expected, results)
+                g.trace(expected_got(expected, results))
+                fails.append(description)
+        assert not fails, fails
+    #@+node:ekr.20200214094938.1: *4* TestFstringity.test_switch_quotes
+    def test_switch_quotes(self):
+
+        table = (
+            (
+                """print('%r' % 'style_name')""",
+                """print(f"{'style_name'!r}""",
+            ),
+            ### Not yet.
+            # (
+                # """[r"\b%s\b" % (z) for z in globalDirectiveList if z != 'others'""",
+                # """r"\b{z}\b" for z in globalDirectiveList if z != 'others'"""
+            # ),
+        )
+        fails = []
+        for i, data in enumerate(table):
+            contents, expected = data
+            description = f"test_single_quotes: {i}"
+            contents, tokens, tree = self.make_data(contents, description)
+            results = self.fstringify(contents, tokens, tree, filename=description)
+            if results != expected:  # pragma: no cover
+                g.trace(expected_got(expected, results))
                 fails.append(description)
         assert not fails, fails
     #@-others
@@ -5723,28 +5747,33 @@ class Fstringify(TokenOrderTraverser):
                 dump_tokens(z, tag=f"RHS value {i}")
         # Compute rt_s, line and line_number for later messages.
         token0 = lt_token_list[0]
-        line_number = token0.line_number
-        line = token0.line.strip()
+        self.line_number = token0.line_number
+        self.line = token0.line.strip()
         rt_s = ''.join(tokens_to_string(z) for z in values)
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):  # pragma: no cover
-            line_number = token0.line_number
-            line = token0.line
-            n_specs, n_values = len(specs), len(values)
-            if not self.silent:  # pragma: no cover
-                print(
-                    f"\n"
-                    f"f-string mismatch: "
-                    f"{n_values} value{g.plural(n_values)}, "
-                    f"{n_specs} spec{g.plural(n_specs)}\n"
-                    f"             file: {self.filename}\n"
-                    f"      line number: {line_number}\n"
-                    f"             line: {line.strip()!r}")
+            ### self.line_number = token0.line_number
+            ### self.line = token0.line
+            ### n_specs, n_values = len(specs), len(values)
+            self.message(
+                f"f-string mismatch: "
+                f"{len(values)} value{g.plural(len(values))}, "
+                f"{len(specs)} spec{g.plural(len(specs))}")
+            ###
+            # if not self.silent:  # pragma: no cover
+                # print(
+                    # f"\n"
+                    # f"f-string mismatch: "
+                    # f"{n_values} value{g.plural(n_values)}, "
+                    # f"{n_specs} spec{g.plural(n_specs)}\n"
+                    # f"             file: {self.filename}\n"
+                    # f"      line number: {self.line_number}\n"
+                    # f"             line: {self.line.strip()!r}")
             return
         # Replace specs with values.
         results = self.substitute_values(lt_s, specs, values)
-        result = self.compute_result(line, line_number, lt_s, results)
+        result = self.compute_result(lt_s, results) ### line, line_number, 
         if not result:
             return
         # Remove whitespace before ! and :.
@@ -5753,13 +5782,18 @@ class Fstringify(TokenOrderTraverser):
         if trace or not self.silent:  # pragma: no cover
             before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
             after = result.replace('\n', '<NL>')
-            print(
-                f"\n"
-                f"       file: {self.filename}\n"
-                f"line number: {line_number}\n"
-                f"       line: {line!r}\n"
-                f"       from: {before!s}\n"
-                f"         to: {after!s}")
+            self.message(
+                f"trace:\n"
+                f" from: {before!s}\n"
+                f"   to: {after!s}")
+            ###
+            # print(
+                # f"\n"
+                # f"       file: {self.filename}\n"
+                # f"line number: {self.line_number}\n"
+                # f"       line: {self.line!r}\n"
+                # f"       from: {before!s}\n"
+                # f"         to: {after!s}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
@@ -5771,37 +5805,46 @@ class Fstringify(TokenOrderTraverser):
         return s
 
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, line, line_number, lt_s, tokens):
+    def compute_result(self, lt_s, tokens): ### line, line_number, 
         """
         Create the final result, with various kinds of munges.
 
         Return the result string, or None if there are errors.
         """
         # Fail if there is a backslash within { and }.
-        if not self.check_newlines(tokens):  # pragma: no cover
-            if not self.silent:
-                print(
-                    f"\n"
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f"string contains a backslash\n"
-                    f"                  file: {self.filename}\n"
-                    f"           line number: {line_number}\n"
-                    f"                  line: {line.strip()!r}")
+        if not self.check_newlines(lt_s, tokens):  # pragma: no cover
+            # self.message(
+                # f"can't create f-fstring: {lt_s!r}\n"
+                # f"string contains a backslash")
+            
+            # if not self.silent:
+                # print(
+                    # f"\n"
+                    # f"can't create f-fstring: {lt_s!r}\n"
+                    # f"string contains a backslash\n"
+                    # f"                  file: {self.filename}\n"
+                    # f"           line number: {line_number}\n"
+                    # f"                  line: {line.strip()!r}")
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(lt_s, tokens):  # pragma: no cover
-            if not self.silent:
-                print(
-                    f"\n"
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f"can't escape string delims\n"
-                    f"                  file: {self.filename}\n"
-                    f"           line number: {line_number}\n"
-                    f"                  line: {line.strip()!r}")
+            ###
+            # self.message(
+                # f"can't create f-fstring: {lt_s!r}\n"
+                # f"can't escape string delims")
+            ###
+            # if not self.silent:
+                # print(
+                    # f"\n"
+                    # f"can't create f-fstring: {lt_s!r}\n"
+                    # f"can't escape string delims\n"
+                    # f"                  file: {self.filename}\n"
+                    # f"           line number: {line_number}\n"
+                    # f"                  line: {line.strip()!r}")
             return None
         return tokens_to_string(tokens)
     #@+node:ekr.20191222102831.2: *6* fs.check_newlines
-    def check_newlines(self, tokens):
+    def check_newlines(self, lt_s, tokens):
         """
         Check to ensure that no newlines appear within { and }.
         
@@ -5816,13 +5859,19 @@ class Fstringify(TokenOrderTraverser):
                 elif val == '}':
                     level -= 1
                     if level < 0:  # pragma: no cover
-                        if not self.silent:
-                            print('curly bracket underflow')
+                        self.message(
+                            f"can't create f-fstring: {lt_s!r}\n"
+                            f"curly bracket underflow")
                         return False
             if '\\n' in val and level > 0:  # pragma: no cover
+                self.message(
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"string contains a backslash")
                 return False
         if level > 0:  # pragma: no cover
-            print('unclosed curly bracket')
+            self.message(
+                f"can't create f-fstring: {lt_s!r}\n"
+                f"unclosed curly bracket")
             return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
@@ -5843,7 +5892,8 @@ class Fstringify(TokenOrderTraverser):
         if len(aList) < 4:  # pragma: no cover
             return True
         if not lt_s:  # pragma: no cover
-            g.trace('no lt_s!')
+            self.message(f"can't create f-fstring: no lt_s!")
+            ### g.trace('no lt_s!')
             return False
         if trace:
             g.trace(f"lt_s: {lt_s!s}")
@@ -5859,10 +5909,13 @@ class Fstringify(TokenOrderTraverser):
                 token.kind == 'string' or
                 token.kind == 'op' and token.value in '{}')
             if not ok:  # pragma: no cover
-                g.trace(
+                self.message(
                     f"unexpected token: {token.kind} {token.value}\n"
-                    f"            lt_s: {lt_s!r}\n"
-                    f"            line: {token0.line!r}")
+                    f"            lt_s: {lt_s!r}")
+                # g.trace(
+                    # f"unexpected token: {token.kind} {token.value}\n"
+                    # f"            lt_s: {lt_s!r}\n"
+                    # f"            line: {token0.line!r}")
                 g.printObj(aList, tag='aList')
                 return False
         # These checks are important...
@@ -5882,7 +5935,7 @@ class Fstringify(TokenOrderTraverser):
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag='aList')
             return False
-        # Return False if any brace expression contains the delim or a backslash.
+        # Return False if any brace expression contains a backslash.
         count = 0
         for z in aList[2:-1]:
             if z.kind == 'op':
@@ -5891,8 +5944,14 @@ class Fstringify(TokenOrderTraverser):
                 elif z.value == '}':
                     count -= 1
             if delim in z.value:
+                self.message(
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f"     conflicting delim: {delim!r}")
                 return False
             if (count % 2) > 1 and '\\' in z.value:
+                self.message(
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f" backslash in {{expr}}: {delim!r}")
                 return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
@@ -5994,6 +6053,29 @@ class Fstringify(TokenOrderTraverser):
             results.append(Token('string', tail))
         if trace: g.printObj(results, tag='Results')
         return results
+    #@+node:ekr.20200214142019.1: *4* fs.message
+    def message(self, message):
+        """
+        Print one or more message lines aligned on the first colon of the message.
+        """
+        # Print a leading blank line.
+        print('')
+        # Calculate the padding.
+        pad = max(message.find(':'), len('line number'))
+        # Print the first message line, aligned.
+        lines = g.splitLines(message)
+        print(f"{lines[0].rstrip():>{pad+1}}")
+        # Print the remaining message lines, aligned after the first colon.
+        for z in lines[1:]:
+            print(f"{' ':>{pad+2}}{z.strip()}")
+        # Print the standard message lines.
+        file_s = f"{'file':>{pad}}"
+        ln_n_s = f"{'line number':>{pad}}"
+        line_s = f"{'line':>{pad}}"
+        print(
+            f"{file_s}: {self.filename}\n"
+            f"{ln_n_s}: {self.line_number}\n"
+            f"{line_s}: {self.line!r}")
     #@+node:ekr.20191225054848.1: *4* fs.replace
     def replace(self, node, s, values):
         """
