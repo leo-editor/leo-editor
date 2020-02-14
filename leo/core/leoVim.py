@@ -1949,7 +1949,7 @@ class VimCommands:
                 w.insert(i, s)
                 vc.save_body()
             else:
-                g.es('does not exist:' % fn)
+                g.es('does not exist:', fn)
         #@+node:ekr.20140820034724.18318: *5* :r.tab_callback
         def tab_callback(self):
             """Called when the user types :r<tab>"""
