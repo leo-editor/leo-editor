@@ -1728,24 +1728,24 @@ class LeoApp:
         sfn = c.shortFileName()
         table = (
             # First, try the per-outline state.
-            (f'windowState:{c.fileName()}', dw.restoreState),
+            (f"windowState:{c.fileName()}", dw.restoreState),
             # Restore the actual window state.
             ('windowState:', dw.restoreState),
         )
         for key, method in table:
             val = self.db.get(key)
             if val:
-                if trace: g.trace(f'{sfn} found key: {key}')
+                if trace: g.trace(f"{sfn} found key: {key}")
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
                     method(val)
                     return
                 except Exception as err:
-                    g.trace(f'{sfn} bad value: {key} {err}')
+                    g.trace(f"{sfn} bad value: {key} {err}")
             # This is not an error.
             elif trace:
-                g.trace(f'{sfn} missing key: {key}')
+                g.trace(f"{sfn} missing key: {key}")
         #
         # #1190 (bad initial layout)
         # Use a pre-defined layout (magic number).
@@ -2934,7 +2934,7 @@ class LoadManager:
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print(f'\nIgnoring the deprecated {bad_option} option\n')
+                print(f"Ignoring the deprecated {bad_option} option")
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -3041,7 +3041,7 @@ class LoadManager:
             elif gui in ('console', 'curses', 'text', 'null'):
                 pass
             else:
-                print(f'scanOptions: unknown gui: {gui}.  Using qt gui')
+                print(f"scanOptions: unknown gui: {gui}.  Using qt gui")
                 gui = 'qt'
         else:
             gui = 'qt'
@@ -3074,7 +3074,7 @@ class LoadManager:
             fn = g.os_path_finalize_join(os.getcwd(), script)
             script, e = g.readFileIntoString(fn, kind='script:', verbose=False)
             if not script:
-                print(f'script not found: {fn}')
+                print(f"script not found: {fn}")
                 sys.exit(1)
         else:
             script = None
@@ -3090,7 +3090,7 @@ class LoadManager:
         g.app.diff = options.diff
          # --global-docks
         g.app.use_global_docks = bool(options.global_docks)
-        print(f'--global-docks: {g.app.use_global_docks}\n')
+        print(f"--global-docks: {g.app.use_global_docks}")
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3124,7 +3124,7 @@ class LoadManager:
                     # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
-                    g.es_print(f'unknown --trace value: {val}')
+                    g.es_print(f"unknown --trace value: {val}")
         # g.trace('g.app.debug', repr(g.app.debug))
         #
         # These are not bool options.
