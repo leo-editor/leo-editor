@@ -980,9 +980,9 @@ class BaseJEditColorizer(BaseColorizer):
         elif use_pygments == self.prev_use_pygments:
             show('@bool use-pygments', use_pygments)
         else:
-            g.es_print('%35s: %s' % (
-                    'Can not change @bool use-pygments',
-                    self.prev_use_pygments),
+            g.es_print(
+                f"{'Can not change @bool use-pygments':35}: "
+                f"{self.prev_use_pygments}",
                 color='red')
         #
         # Report everything if we are tracing.

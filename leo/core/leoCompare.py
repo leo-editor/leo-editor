@@ -465,9 +465,11 @@ class CompareLeoOutlines:
         c2 = self.open_outline(fn2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2)
-            self.file_node.b = '%s\n@language %s\n' % (
-                self.file_node.b.rstrip(),
-                c2.target_language)
+            # It *should* be possible to fstringify this.
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+            # self.file_node.b = (
+                # f"{self.file_node.b.rstrip()}\n"
+                # f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
@@ -647,7 +649,7 @@ def diffMarkedNodes(event):
             p = root.insertAsLastChild()
             # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
             p.h = f'diff {n}'
-            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
+            p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
             for p3 in (p1, p2):
                 clone = p3.clone()
                 clone.moveToLastChildOf(p)

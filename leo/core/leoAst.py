@@ -5882,9 +5882,15 @@ class Fstringify(TokenOrderTraverser):
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag='aList')
             return False
-        # Return False if any inner token contains the delim or a backslash.
+        # Return False if any brace expression contains the delim or a backslash.
+        count = 0
         for z in aList[2:-1]:
-            if delim in z.value or '\\' in z.value:
+            if z.kind == 'op':
+                if z.value == '{':
+                    count += 1
+                elif z.value == '}':
+                    count -= 1
+            if (count % 2) > 1 and (delim in z.value or '\\' in z.value):
                 return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
