@@ -83,12 +83,15 @@ def orange_files(event):
     g.es(f"{tag}...")
     settings = orange_settings(c)
     roots = g.findRootsWithPredicate(c, c.p)
+    n_changed = 0
     for root in roots:
         filename = g.fullPath(c, root)
         if os.path.exists(filename):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
             changed = leoAst.Orange(settings=settings).beautify_file(filename)
+            if changed:
+                n_changed += 1
             changed_s = 'changed' if changed else 'unchanged'
             g.es(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -97,7 +100,10 @@ def orange_files(event):
             g.es(f"{tag}: file not found:\n{filename}")
     t2 = time.process_time()
     print('')
-    g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
+    g.es_print(
+        f"total files: {len(roots)}, "
+        f"changed files: {n_changed}, "
+        f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055814.1: *4* blacken-files
 @g.command('blacken-files')
 def blacken_files(event):
