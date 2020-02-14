@@ -1181,8 +1181,9 @@ class TestManager:
             untangleInputP.moveToNext()
             inputSet[untangleInputP.h] = untangleInputP.b
             if trace_test:
-                g.es("test file name: %s\ntest file contents: %s" % (
-                    untangleInputP.h, untangleInputP.b))
+                g.es(
+                    f"    test file name: {untangleInputP.h}\n"
+                    f"test file contents: {untangleInputP.b}")
         c.tangleCommands.untangle(event=None, p=rootTestToChangeP)
         try:
             assert tm.compareOutlines(
