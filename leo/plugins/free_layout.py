@@ -331,7 +331,8 @@ class FreeLayoutController:
     def ns_provide(self, id_):
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
-            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
+            top = self.get_top_splitter()
+            logTabWidget = top.find_child(QtWidgets.QWidget, "logTabWidget")
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
                     w = logTabWidget.widget(n)
