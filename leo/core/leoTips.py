@@ -2,11 +2,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
 #@@first
-#@@nobeautify # black chokes on a section reference within a list.
 """Save and show tips to the user."""
 import random
 import leo.core.leoGlobals as g
 assert g
+
+# Define constant strings for use in f-strings.
+at_s = "@"
+ref1_s = ">>"
+ref2_s = "<<"
+
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 #@@beautify
@@ -140,8 +145,8 @@ def make_tip_nodes(c):
     c.selectPosition(root)
     c.redraw()
 #@-others
-# The global tips array.
 
+# The global tips array.
 tips = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
@@ -502,27 +507,21 @@ for python files:
 """),
 
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
-#@@nobeautify
-
 UserTip(
     n=0,
     tags=['Scripting',],
     title='Use section refs to avoid one @others per node rule',
-    text="""
+    text=f"""
 
-Nodes can have at most one @others directive. You can work around this restriction as follows:
+Nodes can have at most one {at_s}others directive. You can work around this restriction as follows:
 
-    %(at)sfile myFile.py
-    %(at)sothers
-    %(start)s organizer %(end)s
+    {at_s}file myFile.py
+    {at_s}others
+    {ref1_s} organizer {ref2_s}
 
-where the body of the %(start)s organizer %(end)s node contains just @others.""" % {
-    
-    'at': "@",
-    'end': ">>",
-    'start': "<<",
-}),
+where the body of the {ref1_s} organizer {ref2_s} node contains just {at_s}others.
 
+"""),
 #@+node:ekr.20180324073458.1: *3* Tips re Work flow
 #@+node:ekr.20180324065153.4: *4* Abbreviations
 UserTip(
