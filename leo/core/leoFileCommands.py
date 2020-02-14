@@ -143,7 +143,7 @@ class FastRead:
             # Python 3.x throws binascii.Error
             # Assume that Leo 4.1 or above wrote the attribute.
             if g.unitTesting:
-                assert kind == 'raw', 'unit test failed: kind=' % repr(kind)
+                assert kind == 'raw', f"unit test failed: kind={kind}"
             else:
                 g.trace(f"can not unhexlify {attr}={val}")
             return val
