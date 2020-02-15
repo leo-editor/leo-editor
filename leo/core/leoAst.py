@@ -3648,12 +3648,44 @@ class TestFstringify(BaseTest):
         fs.line_number = 42
         fs.line = 'The test line\n'
         fs.silent = False
+        # Test message.
         fs.message(
             f"Test:\n"
             f"<  Left align\n"
             f":Colon: align\n"
             f">  Right align\n"
             f"   Default align")
+        #
+        # change_quotes...
+        fs.message(f"can't create f-fstring: no lt_s!")
+        lt_s = "lt_s"
+        delim = 'Delim'
+        token = Token('Kind', 'Value')
+        fs.message(
+            f"unexpected token: {token.kind} {token.value}\n"
+            f"            lt_s: {lt_s!r}")
+        fs.message(
+            f"can't create f-fstring: {lt_s!r}\n"
+            f":    conflicting delim: {delim!r}")
+        fs.message(
+            f"can't create f-fstring: {lt_s!r}\n"
+            f":backslash in {{expr}}: {delim!r}")
+        # Check newlines...
+        fs.message(
+            f"  can't create f-fstring: {lt_s!r}\n"
+            f":curly bracket underflow:")
+        fs.message(
+            f"      can't create f-fstring: {lt_s!r}\n"
+            f":string contains a backslash:")
+        fs.message(
+            f" can't create f-fstring: {lt_s!r}\n"
+            f":unclosed curly bracket:")
+        # Make fstring
+        before, after = 'Before', 'After'
+        fs.message(
+            f"trace:\n"
+            f":from: {before!s}\n"
+            f":  to: {after!s}")
     #@+node:ekr.20200106163535.1: *4* TestFstringity.test_braces
     def test_braces(self):
 
@@ -5786,8 +5818,8 @@ class Fstringify(TokenOrderTraverser):
             after = result.replace('\n', '<NL>')
             self.message(
                 f"trace:\n"
-                f" from: {before!s}\n"
-                f"   to: {after!s}")
+                f":from: {before!s}\n"
+                f":  to: {after!s}")
         # Adjust the tree and the token list.
         self.replace(node, result, values)
     #@+node:ekr.20191222102831.3: *5* fs.clean_ws
@@ -5829,18 +5861,18 @@ class Fstringify(TokenOrderTraverser):
                     level -= 1
                     if level < 0:  # pragma: no cover
                         self.message(
-                            f"can't create f-fstring: {lt_s!r}\n"
-                            f"curly bracket underflow")
+                            f"  can't create f-fstring: {lt_s!r}\n"
+                            f":curly bracket underflow:")
                         return False
             if '\\n' in val and level > 0:  # pragma: no cover
                 self.message(
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f"string contains a backslash")
+                    f"      can't create f-fstring: {lt_s!r}\n"
+                    f":string contains a backslash:")
                 return False
         if level > 0:  # pragma: no cover
             self.message(
-                f"can't create f-fstring: {lt_s!r}\n"
-                f"unclosed curly bracket")
+                f" can't create f-fstring: {lt_s!r}\n"
+                f":unclosed curly bracket:")
             return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
@@ -5879,7 +5911,7 @@ class Fstringify(TokenOrderTraverser):
             if not ok:  # pragma: no cover
                 self.message(
                     f"unexpected token: {token.kind} {token.value}\n"
-                    f"            lt_s: {lt_s!r}")
+                    f":           lt_s: {lt_s!r}")
                 g.printObj(aList, tag='aList')
                 return False
         # These checks are important...
@@ -5910,12 +5942,12 @@ class Fstringify(TokenOrderTraverser):
             if delim in z.value:
                 self.message(
                     f"can't create f-fstring: {lt_s!r}\n"
-                    f"     conflicting delim: {delim!r}")
+                    f":    conflicting delim: {delim!r}")
                 return False
             if (count % 2) > 1 and '\\' in z.value:
                 self.message(
                     f"can't create f-fstring: {lt_s!r}\n"
-                    f" backslash in {{expr}}: {delim!r}")
+                    f":backslash in {{expr}}: {delim!r}")
                 return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
