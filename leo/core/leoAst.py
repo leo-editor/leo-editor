@@ -3623,7 +3623,7 @@ class TestFstringify(BaseTest):
     def test_crash_1(self):
         # leoCheck.py.
         contents = """return ('error', 'no member %s' % ivar)"""
-        expected = """return ('error', f'no member {ivar}')\n"""
+        expected = """return ('error', f"no member {ivar}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3691,7 +3691,7 @@ class TestFstringify(BaseTest):
 
         # From pr.construct_stylesheet in leoPrinting.py
         contents = """'h1 {font-family: %s}' % (family)"""
-        expected = """f'h1 {{font-family: {family}}}'\n"""
+        expected = """f"h1 {{font-family: {family}}}"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3699,16 +3699,16 @@ class TestFstringify(BaseTest):
     def test_call_in_rhs(self):
 
         contents = """'%s' % d()"""
-        expected = """f'{d()}'\n"""
+        expected = """f"{d()}"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200104045907.1: *4* TestFstringity.test_call_in_rhs_2
     def test_call_in_rhs_2(self):
 
         # From LM.traceSettingsDict
         contents = """print('%s' % (len(d.keys())))"""
-        expected = """print(f'{len(d.keys())}')\n"""
+        expected = """print(f"{len(d.keys())}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
@@ -3716,7 +3716,7 @@ class TestFstringify(BaseTest):
     def test_call_with_attribute(self):
 
         contents = """g.blue('wrote %s' % p.atShadowFileNodeName())"""
-        expected = """g.blue(f'wrote {p.atShadowFileNodeName()}')\n"""
+        expected = """g.blue(f"wrote {p.atShadowFileNodeName()}")\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3751,25 +3751,6 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173628.1: *4* TestFstringity.test_cant_convert_2
-    def test_cant_convert_2(self):
-
-        contents = """print('Test %s' % 'one')"""
-        expected = contents + '\n'
-        contents, tokens, tree = self.make_data(contents)
-        results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173725.1: *4* TestFstringity.test_cant_convert_3
-    def test_cant_convert_3(self):
-
-        contents = """
-    g.es('%s blah blah' % (
-        g.angleBrackets('*')))
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents
-        results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200101060616.1: *4* TestFstringity.test_complex_rhs
     def test_complex_rhs(self):
         # From LM.mergeShortcutsDicts.
@@ -3777,8 +3758,8 @@ class TestFstringify(BaseTest):
             """g.trace('--trace-binding: %20s binds %s to %s' % ("""
             """   c.shortFileName(), binding, d.get(binding) or []))""")
         expected = (
-            """g.trace(f'--trace-binding: {c.shortFileName():20} """
-            """binds {binding} to {d.get(binding) or []}')\n""")
+            """g.trace(f"--trace-binding: {c.shortFileName():20} """
+            """binds {binding} to {d.get(binding) or []}")\n""")
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3786,8 +3767,8 @@ class TestFstringify(BaseTest):
     def test_function_call(self):
 
         contents = """mods = ''.join(['%s+' % z.capitalize() for z in self.mods])"""
+        expected = """mods = ''.join([f"{z.capitalize()}+" for z in self.mods])\n"""
         contents, tokens, tree = self.make_data(contents)
-        expected = """mods = ''.join([f'{z.capitalize()}+' for z in self.mods])\n"""
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200106085608.1: *4* TestFstringity.test_ImportFrom
@@ -3852,7 +3833,7 @@ class TestFstringify(BaseTest):
     def test_parens_in_rhs(self):
 
         contents = """print('%20s' % (ivar), val)"""
-        expected = """print(f'{ivar:20}', val)\n"""
+        expected = """print(f"{ivar:20}", val)\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3860,13 +3841,15 @@ class TestFstringify(BaseTest):
     def test_single_quotes(self):
 
         table = (
+            # Case 0.
             ("""print('%r "default"' % style_name)""",
              """print(f'{style_name!r} "default"')\n"""),
+            # Case 1.
             ("""print('%r' % "val")""",
              """print(f'{"val"!r}')\n"""),
-                        # f-strings can't contain backslashes.
+            # Case 2.
             ("""print("%r" % "val")""",
-             """print("%r" % "val")\n"""),
+             """print(f'{"val"!r}')\n"""),
         )
         fails = []
         for i, data in enumerate(table):
@@ -3875,7 +3858,7 @@ class TestFstringify(BaseTest):
             contents, tokens, tree = self.make_data(contents, description)
             results = self.fstringify(contents, tokens, tree, filename=description)
             if results != expected:  # pragma: no cover
-                g.trace(expected_got(expected, results))
+                g.trace(expected_got(repr(expected), repr(results)))
                 fails.append(description)
         assert not fails, fails
     #@+node:ekr.20200214094938.1: *4* TestFstringity.test_switch_quotes
@@ -3884,7 +3867,7 @@ class TestFstringify(BaseTest):
         table = (
             (
                 """print('%r' % 'style_name')""",
-                """print(f"{'style_name'!r}""",
+                """print(f"{'style_name'!r}")\n""",
             ),
             ### Not yet.
             # (
@@ -3902,6 +3885,25 @@ class TestFstringify(BaseTest):
                 g.trace(expected_got(expected, results))
                 fails.append(description)
         assert not fails, fails
+    #@+node:ekr.20200206173725.1: *4* TestFstringity.test_switch_quotes_2
+    def test_switch_quotes_2(self):
+
+        contents = """
+    g.es('%s blah blah' % (
+        g.angleBrackets('*')))
+    """
+        expected = """g.es(f"{g.angleBrackets(\'*\')} blah blah")\n"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200206173628.1: *4* TestFstringity.test_switch_quotes_3
+    def test_switch_quotes_3(self):
+
+        contents = """print('Test %s' % 'one')"""
+        expected = """print(f"Test {'one'}")\n"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange(BaseTest):
