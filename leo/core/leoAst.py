@@ -3742,11 +3742,12 @@ class TestFstringify(BaseTest):
         expected = g.adjustTripleString(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200206173126.1: *4* TestFstringity.test_cant_convert_1
-    def test_cant_convert_1(self):
+    #@+node:ekr.20200206173126.1: *4* TestFstringity.test_change_quotes
+    def test_change_quotes(self):
 
         contents = """ret = '[%s]' % ','.join([show(z) for z in arg])"""
-        expected = contents + '\n'
+        expected = """ret = f"[{','.join([show(z) for z in arg])}]"\n"""
+        ### expected = contents + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -5875,8 +5876,8 @@ class Fstringify(TokenOrderTraverser):
         We expect the following "outer" tokens.
             
         aList[0]:  ('string', 'f')
-        aList[1]:  ('string', a string starting with a quote)
-        aList[-1]: ('string', a string ending with a quote that matches aList[1])
+        aList[1]:  ('string',  a single or double quote.
+        aList[-1]: ('string', a single or double quote matching aList[1])
         """
         trace = False
         # Sanity checks.
@@ -5885,9 +5886,9 @@ class Fstringify(TokenOrderTraverser):
         if not lt_s:  # pragma: no cover
             self.message(f"can't create f-fstring: no lt_s!")
             return False
-        if trace:
+        if trace: ###
             g.trace(f"lt_s: {lt_s!s}")
-            g.printObj(aList, tag='aList')
+            g.printObj(aList, tag='change_quotes: aList')
         delim = lt_s[0]
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
@@ -5902,34 +5903,28 @@ class Fstringify(TokenOrderTraverser):
                 self.message(
                     f"unexpected token: {token.kind} {token.value}\n"
                     f":           lt_s: {lt_s!r}")
-                g.printObj(aList, tag='aList')
                 return False
         # These checks are important...
         if token0.value != 'f':  # pragma: no cover
             if trace:
                 g.trace('token[0]  error:', repr(token0))
             return False
-        val1 = token1.value and token1.value[0]
+        val1 = token1.value ### and token1.value[0]
         if delim != val1:  # pragma: no cover
             if trace:
                 g.trace('token[1]  error:', delim, val1, repr(token1))
-                g.printObj(aList, tag='aList')
             return False
-        val_last = token_last.value and token_last.value[-1]
+        val_last = token_last.value ### and token_last.value[-1]
         if delim != val_last:  # pragma: no cover
             if trace:
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
-                g.printObj(aList, tag='aList')
             return False
-        # At last we can check for conflicting delims.
-        # Prefer f"
+        # Check for conflicting delims, preferring f"..." to f'...'.
+        if trace: g.printObj(aList, tag='change_quotes') ###
         for delim in ('"', "'"):
-            token0.value = token_last.value = delim
+            aList[1] = aList[-1] = Token('string', delim)
             for z in aList[2:-1]:
                 if delim in z.value:
-                    # self.message(
-                        # f"can't create f-fstring: {lt_s!r}\n"
-                        # f":    conflicting delim: {delim!r}")
                     break
             else:
                 return True
@@ -6012,11 +6007,14 @@ class Fstringify(TokenOrderTraverser):
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = tokens_to_string(values[spec_i])
-            if trace: g.trace(i, repr(value))
+            if trace: ###
+                g.trace(m)
+                g.printObj(values[spec_i], tag=f"substitute_values: value {spec_i}")
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
-                results.append(Token('string', val))
+                results.append(Token('string', val[0]))
+                results.append(Token('string', val[1:]))
             head, tail = self.munge_spec(spec)
             results.append(Token('op', '{'))
             results.append(Token('string', value))
@@ -6031,10 +6029,11 @@ class Fstringify(TokenOrderTraverser):
         # Add the tail.
         tail = lt_s[i:]
         if tail:
-            if trace: g.trace('TAIL', repr(tail))
+            if trace: g.trace('TAIL', tail)
             tail = tail.replace('{', '{{').replace('}', '}}')
-            results.append(Token('string', tail))
-        if trace: g.printObj(results, tag='Results')
+            results.append(Token('string', tail[:-1]))
+            results.append(Token('string', tail[-1]))
+        if trace: g.printObj(results, tag='substitute_values: results') ###
         return results
     #@+node:ekr.20200214142019.1: *4* fs.message
     def message(self, message):
