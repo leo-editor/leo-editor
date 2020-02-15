@@ -5838,42 +5838,31 @@ class Fstringify(TokenOrderTraverser):
         Return the result string, or None if there are errors.
         """
         # Fail if there is a backslash within { and }.
-        if not self.check_newlines(lt_s, tokens):  # pragma: no cover
+        if not self.check_back_slashes(lt_s, tokens):  # pragma: no cover
             return None
         # Ensure consistent quotes.
         if not self.change_quotes(lt_s, tokens):  # pragma: no cover
             return None
         return tokens_to_string(tokens)
-    #@+node:ekr.20191222102831.2: *6* fs.check_newlines
-    def check_newlines(self, lt_s, tokens):
+    #@+node:ekr.20200215074309.1: *6* fs.check_back_slashes
+    def check_back_slashes(self, lt_s, tokens):
         """
-        Check to ensure that no newlines appear within { and }.
+        Return False if any backslash appears with an {} expression.
         
-        Return False if there is an error
+        Tokens is a list of lokens on the RHS.
         """
-        level = 0
-        for token in tokens:
-            kind, val = token.kind, token.value
-            if kind == 'op':
-                if val == '{':
-                    level += 1
-                elif val == '}':
-                    level -= 1
-                    if level < 0:  # pragma: no cover
-                        self.message(
-                            f"  can't create f-fstring: {lt_s!r}\n"
-                            f":curly bracket underflow:")
-                        return False
-            if '\\n' in val and level > 0:  # pragma: no cover
+        count = 0
+        for z in tokens:
+            if z.kind == 'op':
+                if z.value == '{':
+                    count += 1
+                elif z.value == '}':
+                    count -= 1
+            if (count % 2) > 1 and '\\' in z.value:
                 self.message(
-                    f"      can't create f-fstring: {lt_s!r}\n"
-                    f":string contains a backslash:")
+                    f"can't create f-fstring: {lt_s!r}\n"
+                    f":backslash in {{expr}}:")
                 return False
-        if level > 0:  # pragma: no cover
-            self.message(
-                f" can't create f-fstring: {lt_s!r}\n"
-                f":unclosed curly bracket:")
-            return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
     def change_quotes(self, lt_s, aList):
@@ -5931,23 +5920,12 @@ class Fstringify(TokenOrderTraverser):
                 g.trace('token[-1] error:', delim, val_last, repr(token_last))
                 g.printObj(aList, tag='aList')
             return False
-        # Return False if any brace expression contains a backslash.
-        count = 0
+        # At last we can check for conflicting delims.
         for z in aList[2:-1]:
-            if z.kind == 'op':
-                if z.value == '{':
-                    count += 1
-                elif z.value == '}':
-                    count -= 1
             if delim in z.value:
                 self.message(
                     f"can't create f-fstring: {lt_s!r}\n"
                     f":    conflicting delim: {delim!r}")
-                return False
-            if (count % 2) > 1 and '\\' in z.value:
-                self.message(
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f":backslash in {{expr}}: {delim!r}")
                 return False
         return True
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
