@@ -3640,15 +3640,6 @@ class TestFstringify(BaseTest):
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
 
-    #@+node:ekr.20200106163535.1: *4* TestFstringity.test_braces
-    def test_braces(self):
-
-        # From pr.construct_stylesheet in leoPrinting.py
-        contents = """'h1 {font-family: %s}' % (family)"""
-        expected = """f'h1 {{font-family: {family}}}'\n"""
-        contents, tokens, tree = self.make_data(contents)
-        results = self.fstringify(contents, tokens, tree)
-        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200214155156.1: *4* TestFstringity.show_message
     def show_message(self):
         """Separate test of fs.message."""
@@ -3659,8 +3650,19 @@ class TestFstringify(BaseTest):
         fs.silent = False
         fs.message(
             f"Test:\n"
-            f"Long second line\n"
-            f"Last line")
+            f"<  Left align\n"
+            f":Colon: align\n"
+            f">  Right align\n"
+            f"   Default align")
+    #@+node:ekr.20200106163535.1: *4* TestFstringity.test_braces
+    def test_braces(self):
+
+        # From pr.construct_stylesheet in leoPrinting.py
+        contents = """'h1 {font-family: %s}' % (family)"""
+        expected = """f'h1 {{font-family: {family}}}'\n"""
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230150653.1: *4* TestFstringity.test_call_in_rhs
     def test_call_in_rhs(self):
 
@@ -5779,7 +5781,7 @@ class Fstringify(TokenOrderTraverser):
         # Remove whitespace before ! and :.
         result = self.clean_ws(result)
         # Show the results
-        if trace or not self.silent:  # pragma: no cover
+        if trace:  # pragma: no cover
             before = (lt_s + ' % ' + rt_s).replace('\n', '<NL>')
             after = result.replace('\n', '<NL>')
             self.message(
@@ -6023,13 +6025,25 @@ class Fstringify(TokenOrderTraverser):
         # Print a leading blank line.
         print('')
         # Calculate the padding.
-        pad = max(message.find(':'), len('line number'))
-        # Print the first message line, aligned.
         lines = g.splitLines(message)
+        pad = max(lines[0].find(':'), len('line number'))
+        # Print the first line.
         print(f"{lines[0].rstrip():>{pad+1}}")
-        # Print the remaining message lines, aligned after the first colon.
+        # Print the message lines.
         for z in lines[1:]:
-            print(f"{' ':>{pad+2}}{z.strip()}")
+            if z.startswith('<'):
+                # Print left aligned.
+                print(z[1:].strip())
+            elif z.startswith(':') and -1 < z[1:].find(':') <= pad:
+                # Align with the first line.
+                i = z[1:].find(':')
+                print(f"{z[1:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
+            elif z.startswith('>'):
+                # Align after the aligning colon.
+                print(f"{' ':>{pad+2}}{z[1:].strip()}")
+            else:
+                # Default: Put the entire line after the aligning colon.
+                print(f"{' ':>{pad+2}}{z.strip()}")
         # Print the standard message lines.
         file_s = f"{'file':>{pad}}"
         ln_n_s = f"{'line number':>{pad}}"
