@@ -5801,7 +5801,8 @@ class Fstringify(TokenOrderTraverser):
         if len(values) != len(specs):  # pragma: no cover
             # if not self.silent:
             self.message(
-                f"f-string mismatch: "
+                f"can't create f-fstring: {lt_s!r}\n"
+                f":f-string mismatch: "
                 f"{len(values)} value{g.plural(len(values))}, "
                 f"{len(specs)} spec{g.plural(len(specs))}")
             return
