@@ -647,7 +647,7 @@ class ParserBaseClass:
             if line and not g.match(line, 0, '#'):
                 commandName, bi = self.parseShortcutLine(fn, line)
                 if bi is None:  # Fix #718.
-                    print(f'\nWarning: bad shortcut specifier: {line!r}\n')
+                    print(f"\nWarning: bad shortcut specifier: {line!r}\n")
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):
                         self.doOneShortcut(bi, commandName, p)
@@ -894,11 +894,11 @@ class ParserBaseClass:
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(
-            name=f'settingsDict for {c.shortFileName()}',
+            name=f"settingsDict for {c.shortFileName()}",
             keyType=type('settingName'),
             valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDict(  # was TypedDictOfLists.
-            name=f'shortcutsDict for {c.shortFileName()}',
+            name=f"shortcutsDict for {c.shortFileName()}",
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
@@ -1000,7 +1000,7 @@ class ActiveSettingsOutline:
         g.app.setLog(None)
         g.app.lockLog()
         # Switch to the new commander. Do *not* use previous settings.
-        fileName = f'{old_c.fileName()}-active-settings'
+        fileName = f"{old_c.fileName()}-active-settings"
         g.es(fileName, color='red')
         c = g.app.newCommander(fileName=fileName)
         # Restore the layout of docks, if we have ever saved this file.
@@ -1025,7 +1025,7 @@ class ActiveSettingsOutline:
         #
         # Create the root node, with the legend in the body text.
         root = c.rootPosition()
-        root.h = f'Legend for {self.c.shortFileName()}'
+        root.h = f"Legend for {self.c.shortFileName()}"
         root.b = self.legend()
         #
         # Create all the inner settings outlines.
@@ -1057,7 +1057,7 @@ class ActiveSettingsOutline:
             [M] myLeoSettings.leo
             '''
         if lm.theme_path:
-            legend = legend + f'[T] theme file: {g.shortFileName(lm.theme_path)}\n'
+            legend = legend + f"[T] theme file: {g.shortFileName(lm.theme_path)}\n"
         return g.adjustTripleString(legend, c.tab_width)
     #@+node:ekr.20190905091614.8: *3* aso.create_inner_outline
     def create_inner_outline(self, c, kind, root):
@@ -1120,8 +1120,8 @@ class ActiveSettingsOutline:
                     if isinstance(val, g.GeneralSetting):
                         # Use self.c, not self.commander.
                         letter = lm.computeBindingLetter(self.c, val.path)
-                        p.h = f'[{letter}] INACTIVE: {p.h}'
-                        p.h = f'UNUSED: {p.h}'
+                        p.h = f"[{letter}] INACTIVE: {p.h}"
+                        p.h = f"UNUSED: {p.h}"
                     self.add(p)
                 #@-<< handle a real setting >>
                 continue
@@ -1679,10 +1679,10 @@ class GlobalConfigManager:
                         # The following doesn't work well.
                         # val = g.objToString(aList, indent=' '*4)
                     else:
-                        val = f'<{len(aList)} non-comment lines>'
+                        val = f"<{len(aList)} non-comment lines>"
                 elif isinstance(val, str) and val.startswith('<?xml'):
                     val = '<xml>'
-                key2 = f'@{gs.kind:>6} {key}'
+                key2 = f"@{gs.kind:>6} {key}"
                 yield key2, val, c, letter
     #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName):
@@ -2173,7 +2173,7 @@ class LocalConfigManager:
         result = []
         for name, val, c, letter in g.app.config.config_iter(c):
             kind = '   ' if letter == ' ' else f"[{letter}]"
-            result.append(f'{kind} {name} = {val}\n')
+            result.append(f"{kind} {name} = {val}\n")
         # Use a single g.es statement.
         result.append('\n' + legend)
         if g.unitTesting:

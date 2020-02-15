@@ -23,7 +23,7 @@ class ExternalFile:
         self.time = time
 
     def __repr__(self):
-        return f'<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>'
+        return f"<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>"
 
     __str__ = __repr__
 
@@ -428,7 +428,7 @@ class ExternalFilesController:
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
-                command = f'{kind}({fn})'
+                command = f"{kind}({fn})"
                 if not testing: kind(fn)
             else:
                 command = 'bad command:' + str(kind)
@@ -487,12 +487,12 @@ class ExternalFilesController:
         _is_leo = path.endswith(('.leo', '.db'))
         if _is_leo:
             s = '\n'.join([
-                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"{g.splitLongFileName(path)} has changed outside Leo.",
                 'Overwrite it?'
             ])
         else:
             s = '\n'.join([
-                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"{g.splitLongFileName(path)} has changed outside Leo.",
                 f"Reload {where} in Leo?",
             ])
         result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
@@ -609,9 +609,9 @@ class ExternalFilesController:
         g.app.gui.runAskOkDialog(
             c=c,
             message='\n'.join([
-                f'{g.splitLongFileName(path)} has changed outside Leo.\n',
+                f"{g.splitLongFileName(path)} has changed outside Leo.\n",
                 'Leo can not update this file automatically.\n',
-                f'This file was created from {p.h}.\n',
+                f"This file was created from {p.h}.\n",
                 'Warning: refresh-from-disk will destroy all children.'
             ]),
             title='External file changed',

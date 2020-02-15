@@ -696,7 +696,7 @@ class AutoCompleterClass:
             completions = None
             jedi_line, indent1, indent2 = None, None, None
             g.printObj(source_lines[n0 - 1 : n0 + 30])
-            print(f'can not happen: not found: {line!r}')
+            print(f"can not happen: not found: {line!r}")
         #
         # Get the jedi completions.
         if jedi_line is not None:
@@ -2106,7 +2106,7 @@ class KeyHandlerClass:
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
-        commandName = f'open-with-{name.lower()}'
+        commandName = f"open-with-{name.lower()}"
         k.registerCommand(
             allowBinding=True,
             commandName=commandName,
@@ -2159,7 +2159,7 @@ class KeyHandlerClass:
             d2 = d.get(key)
             for key2 in sorted(d2):
                 bi = d2.get(key2)
-                g.pr(f'{key2:20} {bi.commandName}')
+                g.pr(f"{key2:20} {bi.commandName}")
     #@+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
     def initAbbrev(self):
         k = self; c = k.c; d = c.config.getAbbrevDict()
@@ -2534,7 +2534,7 @@ class KeyHandlerClass:
                 s1, s2, s3, s4 = item
                 if s2.startswith(prefix):
                     data2.append(item)
-            result.append(f'***** {prefix}...\n')
+            result.append(f"***** {prefix}...\n")
             self.printBindingsHelper(result, data2, prefix=prefix)
             # Remove all the items in data2 from data.
             # This must be done outside the iterator on data.
@@ -3635,7 +3635,7 @@ class KeyHandlerClass:
         if commandName and not func:
             func = c.commandsDict.get(commandName.replace('&', ''))
             if not func:
-                g.es_print(f'no command for @item {commandName!r}', color='red')
+                g.es_print(f"no command for @item {commandName!r}", color='red')
                 return
         commandName = commandName or func and func.__name__ or '<no function>'
         if 'keys' in g.app.debug:
@@ -3706,10 +3706,10 @@ class KeyHandlerClass:
             state = k.state.kind
             stroke = event.stroke
             g.trace(
-                f'stroke: {stroke!r}, '
-                f'char: {char!r}, '
-                f'state: {state}, '
-                f'state2: {k.unboundKeyAction}')
+                f"stroke: {stroke!r}, "
+                f"char: {char!r}, "
+                f"state: {state}, "
+                f"state2: {k.unboundKeyAction}")
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         """Search all visible nodes for a headline starting with stroke."""
@@ -3814,7 +3814,7 @@ class KeyHandlerClass:
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.show_status()
             else:
-                k.setLabelBlue(label=f'{state.capitalize()} State')
+                k.setLabelBlue(label=f"{state.capitalize()} State")
     #@+node:ekr.20080408060320.790: *4* k.selectAll
     def selectAll(self):
         """Select all the user-editable text of the minibuffer."""
@@ -4010,9 +4010,9 @@ class KeyHandlerClass:
             modeName = modeName[:-4].strip()
         prompt = d.get('*command-prompt*')
         if prompt:
-            g.es('', f'{prompt.kind.strip()}\n\n', tabName=tabName)
+            g.es('', f"{prompt.kind.strip()}\n\n", tabName=tabName)
         else:
-            g.es('', f'{modeName} mode\n\n', tabName=tabName)
+            g.es('', f"{modeName} mode\n\n", tabName=tabName)
         # This isn't perfect in variable-width fonts.
         for s1, s2 in data:
             g.es('', '%*s %s' % (n, s1, s2), tabName=tabName)
@@ -4332,12 +4332,12 @@ class KeyHandlerClass:
                 mode = mode.strip()
                 if mode.endswith('-mode'):
                     mode = mode[:-5]
-                s = f'{mode.capitalize()} Mode'
+                s = f"{mode.capitalize()} Mode"
         elif c.vim_mode and c.vimCommands:
             c.vimCommands.show_status()
             return
         else:
-            s = f'{state.capitalize()} State'
+            s = f"{state.capitalize()} State"
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
         if s:
@@ -4471,7 +4471,7 @@ class KeyHandlerClass:
     def doControlU(self, event, stroke):
         k = self
         ch = event.char if event else ''
-        k.setLabelBlue(f'Control-u {g.stripBrackets(stroke)}')
+        k.setLabelBlue(f"Control-u {g.stripBrackets(stroke)}")
         if ch == '(':
             k.clearState()
             k.resetLabel()

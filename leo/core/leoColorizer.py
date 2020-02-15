@@ -318,7 +318,7 @@ class BaseJEditColorizer(BaseColorizer):
             option_name = self.default_font_dict[key]
             # Find language specific setting before general setting.
             table = (
-                f'{self.language}_{option_name}',
+                f"{self.language}_{option_name}",
                 option_name,
             )
             for name in table:
@@ -416,7 +416,7 @@ class BaseJEditColorizer(BaseColorizer):
                 wrapper.tag_configure(name, background=color)
             except Exception:  # A user error.
                 wrapper.tag_configure(name, background=default_color)
-                g.es_print(f'invalid setting: {name!r} = {default_color!r}')
+                g.es_print(f"invalid setting: {name!r} = {default_color!r}")
         # Special case:
         if not self.showInvisibles:
             wrapper.tag_configure("elide", elide="1")
@@ -968,7 +968,7 @@ class BaseJEditColorizer(BaseColorizer):
 
         def show(setting, val):
             if trace:
-                g.es_print(f'{setting:35}: {val}')
+                g.es_print(f"{setting:35}: {val}")
         #
         # Set self.use_pygments only once: it can't be changed later.
         # There is no easy way to re-instantiate classes created by make_colorizer.
@@ -1084,7 +1084,7 @@ class BaseJEditColorizer(BaseColorizer):
             else:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             kind_s = f"{self.language}.{tag}"
-            print(f'--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}')
+            print(f"--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}")
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -1370,8 +1370,8 @@ class JEditColorizer(BaseJEditColorizer):
             doc = self.highlighter.document()
             block_n = self.currentBlockNumber()
             text_block = doc.findBlockByNumber(block_n)
-            g.trace(f'block_n: {block_n:2} {s!r}')
-            g.trace(f'block text: {repr(text_block.text())}')
+            g.trace(f"block_n: {block_n:2} {s!r}")
+            g.trace(f"block text: {repr(text_block.text())}")
                 # How to get the cursor of the colorized line.
                     # body = self.c.frame.body
                     # s = body.wrapper.getAllText()
@@ -2145,7 +2145,7 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20110605121601.18635: *4* jedit.show...
     def showState(self, n):
         state = self.stateDict.get(n, 'no-state')
-        return f'{n:2}:{state}'
+        return f"{n:2}:{state}"
 
     def showCurrentState(self):
         n = self.currentState()
@@ -2191,8 +2191,8 @@ class JEditColorizer(BaseJEditColorizer):
                     s2 = repr(s[i : i + 17 - 2] + '...')
                 kind_s = f"{delegate}.{tag}"
                 print(
-                    f'--trace-coloring: {kind_s:25} {i:3} {j:3} '
-                    f'{s2:>20} {g.callers(2)}')
+                    f"--trace-coloring: {kind_s:25} {i:3} {j:3} "
+                    f"{s2:>20} {g.callers(2)}")
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -2708,7 +2708,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         # New code by EKR:
         # - Fixes a bug so multiline tokens work.
         # - State supports Leo's color directives.
-        state_s = f'{self.language}; {self.color_enabled}: {stack!r}'
+        state_s = f"{self.language}; {self.color_enabled}: {stack!r}"
         state_n = self.state_s_dict.get(state_s)
         if state_n is None:
             state_n = self.state_index
@@ -2750,10 +2750,10 @@ class PygmentsColorizer(BaseJEditColorizer):
             # pylint: disable=no-member
                 # One of the lexer's will not exist.
             if trace:
-                g.trace(f'--trace-coloring: no lexer for {language!r}')
+                g.trace(f"--trace-coloring: no lexer for {language!r}")
             lexer = lexers.Python3Lexer()
             if trace and 'python' not in self.lexers_dict:
-                g.trace(f'--trace-coloring: default lexer for python: {lexer!r}')
+                g.trace(f"--trace-coloring: default lexer for python: {lexer!r}")
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
@@ -2784,7 +2784,7 @@ class PygmentsColorizer(BaseJEditColorizer):
         try:
             return PatchedLexer()
         except Exception:
-            g.trace(f'can not patch {language!r}')
+            g.trace(f"can not patch {language!r}")
             g.es_exception()
             return lexer
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
@@ -2918,7 +2918,7 @@ class QScintillaColorizer(BaseColorizer):
                 if len(z) == 2:
                     color, style = z
                     table.append((color.strip(), style.strip()),)
-                else: g.trace(f'entry: {z}')
+                else: g.trace(f"entry: {z}")
         if not table:
             black = '#000000'
             firebrick3 = '#CD2626'
@@ -3091,7 +3091,7 @@ if pygments:
             def __repr__(self):
                 attrs = ['syntax_stack']
                 kwds = ', '.join([
-                    f'{attr}={getattr(self, attr)!r}'
+                    f"{attr}={getattr(self, attr)!r}"
                         for attr in attrs
                 ])
                 return f"PygmentsBlockUserData({kwds})"

@@ -1911,7 +1911,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert g.isTextWidget(w), w
 
         def report(s):
-            g.trace(f'*** {s:9} wrapper {id(wrapper)} w {id(w)} {c.p.h}')
+            g.trace(f"*** {s:9} wrapper {id(wrapper)} w {id(w)} {c.p.h}")
 
         if wrapper and wrapper == c.frame.body.wrapper:
             self.deactivateEditors(wrapper)
@@ -2372,14 +2372,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # Return if the style does not exist.
         styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
         if stylename.lower() not in styles:
-            g.es_print(f'ignoring unknown Qt style name: {stylename!r}')
+            g.es_print(f"ignoring unknown Qt style name: {stylename!r}")
             return
         #
         # Change the style and palette.
         QtWidgets.qApp.nativePalette = QtWidgets.qApp.palette()
         qstyle = QtWidgets.qApp.setStyle(stylename)
         if not qstyle:
-            g.es_print(f'failed to set Qt style name: {stylename!r}')
+            g.es_print(f"failed to set Qt style name: {stylename!r}")
             return
         g.app.gui.qtApp.setPalette(QtWidgets.qApp.nativePalette)
         # g.es_print('set qt style: %r' % stylename)
@@ -2506,7 +2506,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             fg = fg or c.config.getColor('status-fg') or 'black'
             if True:
                 # Work around #804. w is a QLineEdit.
-                w.setStyleSheet(f'background: {bg}; color: {fg};')
+                w.setStyleSheet(f"background: {bg}; color: {fg};")
             else:
                 # Rather than put(msg, explicit_color, explicit_color) we should use
                 # put(msg, status) where status is None, 'info', or 'fail'.
@@ -3668,7 +3668,7 @@ class LeoQtLog(leoFrame.LeoLog):
             # Raise the proper dock.
             dw = c.frame.top
             tabName2 = 'tabs' if tabName in ('Completion', 'Log') else tabName
-            ivar = f'{tabName2.lower()}_dock'
+            ivar = f"{tabName2.lower()}_dock"
             dock = getattr(dw, ivar, None)
             if dock:
                 dock.raise_()
@@ -3762,7 +3762,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if -1 < n < len(label):
             label = label[:n] + '&' + label[n:]
         if accel:
-            label = f'{label}\t{accel}'
+            label = f"{label}\t{accel}"
         action = menu.addAction(label)
         # 2012/01/20: Inject the command name into the action
         # so that it can be enabled/disabled dynamically.
@@ -3951,7 +3951,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         self.was_control_drag = False
 
     def __repr__(self):
-        return f'LeoQTreeWidget: {id(self)}'
+        return f"LeoQTreeWidget: {id(self)}"
 
     __str__ = __repr__
     # This is called during drags.
@@ -4293,7 +4293,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def createLeoFileTree(self, fn, p):
         """Copy all nodes from fn, a .leo file, to the children of p."""
         c = self.c
-        p.h = f'From {g.shortFileName(fn)}'
+        p.h = f"From {g.shortFileName(fn)}"
         c.selectPosition(p)
         # Create a dummy first child of p.
         dummy_p = p.insertAsNthChild(0)

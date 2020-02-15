@@ -287,7 +287,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
         b = QtWidgets.QMessageBox
         d = b(c.frame.top)
-        d.setText(f'{version}\n{theCopyright}\n{url}\n{email}')
+        d.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         d.setIcon(b.Information)
         yes = d.addButton('Ok', b.YesRole)
         d.setDefaultButton(yes)
@@ -787,7 +787,7 @@ class LeoQtGui(leoGui.LeoGui):
             features |= dock.DockWidgetClosable
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
-        dock.setObjectName(f'dock.{name.lower()}')
+        dock.setObjectName(f"dock.{name.lower()}")
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
             # g.app.use_global_docks:
@@ -1097,7 +1097,7 @@ class LeoQtGui(leoGui.LeoGui):
         getString = g.app.config.getString
 
         def dump(var, val):
-            print(f'{var:20}: {val}')
+            print(f"{var:20}: {val}")
 
         join = g.os_path_join
         #
@@ -1140,7 +1140,7 @@ class LeoQtGui(leoGui.LeoGui):
         for base_dir in table:
             path = join(base_dir, name)
             if exists(path):
-                if trace: g.trace(f'{name} is  in {base_dir}\n')
+                if trace: g.trace(f"{name} is  in {base_dir}\n")
                 return path
             if trace:
                 g.trace(name, 'not in', base_dir)
@@ -1872,7 +1872,7 @@ class StyleSheetManager:
         """Show the top-level style sheet."""
         w = self.get_master_widget()
         sheet = w.styleSheet()
-        print(f'style sheet for: {w}...\n\n{sheet}')
+        print(f"style sheet for: {w}...\n\n{sheet}")
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         """Set the master style sheet for all widgets using config settings."""
@@ -2132,7 +2132,7 @@ class StyleSheetManager:
             for directory in directories:
                 path = join(directory, url)
                 if g.os_path_exists(path):
-                    if trace: g.trace(f'{url:35} ==> {path}')
+                    if trace: g.trace(f"{url:35} ==> {path}")
                     old = mo.group(0)
                     new = f"url({path})"
                     replacements.append((old, new),)

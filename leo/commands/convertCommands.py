@@ -61,7 +61,7 @@ class To_Python:
         if changed:
             u.afterChangeGroup(c.p, undoType, reportFlag=False)
         t2 = time.time()
-        g.es_print(f'done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec')
+        g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, aList):
         """The main search/replace method."""
@@ -1292,7 +1292,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Scan to the next newline:
                 i3 = self.skip_line(aList, i)
                 # Optional: move the word to a trailing comment.
-                comment = list(f' # {word}') if False else []
+                comment = list(f" # {word}") if False else []
                 # Change the list in place.
                 aList[i1:i3] = aList[i2:i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
@@ -1366,7 +1366,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     elif self.match_word(aList, i, 'class'):
                         i1 = i
                         i = self.skip_line(aList, i)
-                        aList[i - 1 : i] = list(f'{aList[i - 1]}:')
+                        aList[i - 1 : i] = list(f"{aList[i - 1]}:")
                         s = ''.join(aList[i1:i])
                         k = s.find(' extends ')
                         if k > -1:
@@ -1376,11 +1376,11 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             if k < len(s) and g.is_c_id(s[k]):
                                 k2 = g.skip_id(s, k)
                                 word = s[k:k2]
-                                aList[i1:i] = list(f'{s[:k1]} ({word})')
+                                aList[i1:i] = list(f"{s[:k1]} ({word})")
                     elif self.match_word(aList, i, 'interface'):
                         aList[i : i + len('interface')] = list('class')
                         i = self.skip_line(aList, i)
-                        aList[i - 1 : i] = list(f'{aList[i - 1]}: # interface')
+                        aList[i - 1 : i] = list(f"{aList[i - 1]}: # interface")
                         i = self.skip_line(aList, i)  # Essential.
                     else:
                         i += 1

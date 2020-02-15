@@ -31,8 +31,8 @@ class PrintingController:
         family, size = self.font_family, self.font_size
         table = (
             # Clearer w/o f-strings.
-            f'h1 {{font-family: {family}}}',
-            f'pre {{font-family: {family}; font-size: {size}px}}',
+            f"h1 {{font-family: {family}}}",
+            f"pre {{font-family: {family}; font-size: {size}px}}",
         )
         return '\n'.join(table)
     #@+node:ekr.20150509035503.1: *3* pr.cmd (decorator)
@@ -49,8 +49,8 @@ class PrintingController:
         contents = ''
         for n in nodes:
             if heads:
-                contents += f'<h1>{self.sanitize_html(n.h)}</h1>\n'
-            contents += f'<pre>{self.sanitize_html(n.b)}</pre>\n'
+                contents += f"<h1>{self.sanitize_html(n.h)}</h1>\n"
+            contents += f"<pre>{self.sanitize_html(n.b)}</pre>\n"
         doc.setHtml(contents)
         return doc
     #@+node:ekr.20150419124739.9: *4* pr.document

@@ -47,7 +47,7 @@ try:
     try:
         result = runner.run(suite)
         if result.errors or result.failures:
-            print(f'errors: {len(result.errors)}, failures: {len(result.failures)}')
+            print(f"errors: {len(result.errors)}, failures: {len(result.failures)}")
             sys.exit(1)
         else:
             print('Travis unit tests all passed.')

@@ -164,7 +164,7 @@ class InternalIPKernel:
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.items():
             if k not in self._init_keys and not k.startswith('_'):
-                print(f'{k} -> {v!r}')
+                print(f"{k} -> {v!r}")
         sys.stdout.flush()
     #@+node:ekr.20160308090432.1: *3* ileo.put_log
     def put_log(self, s, raw=False):

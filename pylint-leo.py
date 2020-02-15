@@ -29,7 +29,7 @@ import time
 def main(files, verbose):
     """Call run on all tables in tables_table."""
     n = len(files)
-    print(f'pylint: {n} file{g.plural(n)}')
+    print(f"pylint: {n} file{g.plural(n)}")
     try:
         from pylint import lint
         assert lint
@@ -42,7 +42,7 @@ def main(files, verbose):
         if not verbose and sys.platform.startswith('win'):
             print('.', sep='', end='')
     t2 = time.time()
-    print(f'{n} file{g.plural(n)}, time: {t2-t1:5.2f} sec.')
+    print(f"{n} file{g.plural(n)}, time: {t2-t1:5.2f} sec.")
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 #@@nobeautify
 
@@ -72,7 +72,7 @@ def run(fn, verbose):
         path = g.os_path_dirname(fn)
         dirs = path.split(os.sep)
         theDir = dirs and dirs[-1] or ''
-        print(f'pylint-leo.py: {theDir}{os.sep}{g.shortFileName(fn)}')
+        print(f"pylint-leo.py: {theDir}{os.sep}{g.shortFileName(fn)}")
     # Call pylint in a subprocess so Pylint doesn't abort *this* process.
     if 1: # Invoke pylint directly.
         # Escaping args is harder here because we are creating an args array.

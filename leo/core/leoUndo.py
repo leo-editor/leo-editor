@@ -243,7 +243,7 @@ class Undoer:
 
         u = self; frame = u.c.frame
         if not isinstance(theType, str):
-            g.trace(f'oops: expected string for command, got {theType!r}')
+            g.trace(f"oops: expected string for command, got {theType!r}")
             g.trace(g.callers())
             theType = '<unknown>'
         menu = frame.menu.getMenu("Edit")
@@ -265,7 +265,7 @@ class Undoer:
 
         u = self; frame = u.c.frame
         if not isinstance(theType, str):
-            g.trace(f'oops: expected string for command, got {repr(theType)}')
+            g.trace(f"oops: expected string for command, got {repr(theType)}")
             g.trace(g.callers())
             theType = '<unknown>'
         menu = frame.menu.getMenu("Edit")

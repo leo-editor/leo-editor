@@ -52,7 +52,7 @@ def main():
     )
     if g_trace and trace_time:
         t2 = time.time()
-        print(f'{tag} open bridge:  {t2 - t1:0.2f} sec')
+        print(f"{tag} open bridge:  {t2 - t1:0.2f} sec")
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = options.silent
@@ -61,7 +61,7 @@ def main():
         c = bridge.openLeoFile(path)
         if g_trace:
             t3 = time.time()
-            print(f'{tag} open file:    {t3 - t2:0.2f} sec')
+            print(f"{tag} open file:    {t3 - t2:0.2f} sec")
         runUnitTests(c, g)
 #@+node:ekr.20080730161153.7: *3* runUnitTests
 def runUnitTests(c, g):
@@ -107,9 +107,9 @@ if __name__ == '__main__':
     if g_trace and trace_argv:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]:
-            print(f'  {z!r}')
+            print(f"  {z!r}")
     main()
     if g_trace and trace_time:
         t2 = time.time()
-        print(f'leoDynamicUnittest.py: {t2 - t1:0.2f} sec')
+        print(f"leoDynamicUnittest.py: {t2 - t1:0.2f} sec")
 #@-leo

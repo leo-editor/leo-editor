@@ -202,7 +202,7 @@ class GeneralTestCase(unittest.TestCase):
         if trace_time:
             t2 = time.process_time()
             if t2 - t1 > 3.0:
-                g.trace(f'\nEXCESSIVE TIME: {t2 - t1:5.2f} sec. in {self.p.h}')
+                g.trace(f"\nEXCESSIVE TIME: {t2 - t1:5.2f} sec. in {self.p.h}")
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
@@ -816,7 +816,7 @@ class TestManager:
                 print(f"\n{fname}: neither 'suite' nor 'testclass' defined in {p.h}")
                 return None
         except Exception:
-            print(f'\n{fname}: exception creating test class in {p.h}')
+            print(f"\n{fname}: exception creating test class in {p.h}")
             g.es_print_exception()
             return None
         return None
@@ -848,7 +848,7 @@ class TestManager:
                 print(f"\n{fname}: {p.h} script did not set suite var")
             return suite
         except Exception:
-            print(f'\n{fname}: exception creating test cases for {p.h}')
+            print(f"\n{fname}: exception creating test cases for {p.h}")
             g.es_print_exception()
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
@@ -1045,9 +1045,9 @@ class TestManager:
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
         assert s1 == s2, (
-            f'mismatch in body\n'
-            f'expected: {s2!r}\n'
-            f'     got: {s1!r}')
+            f"mismatch in body\n"
+            f"expected: {s2!r}\n"
+            f"     got: {s1!r}")
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1055,7 +1055,7 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, f'mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}'
+        assert sel2 == sel3, f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1241,9 +1241,9 @@ class TestManager:
         # Check the result.
         s1 = work.b; s2 = after.b
         assert s1 == s2, (
-            f'mismatch in body\n'
-            f'expected: {s2!r}\n'
-            f'     got: {s1!r}')
+            f"mismatch in body\n"
+            f"expected: {s2!r}\n"
+            f"     got: {s1!r}")
         sel3 = w.getSelectionRange()
         # Convert both selection ranges to gui indices.
         sel2_orig = sel2
@@ -1251,7 +1251,7 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, f'mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}'
+        assert sel2 == sel3, f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1365,8 +1365,8 @@ class TestManager:
             g.pr('\ncompareOutlines failed: tag:', (tag or ''))
             g.pr('p1.h:', p1 and p1.h or '<no p1>')
             g.pr('p2.h:', p2 and p2.h or '<no p2>')
-            g.pr(f'p1.numberOfChildren(): {p1.numberOfChildren()}')
-            g.pr(f'p2.numberOfChildren(): {p2.numberOfChildren()}')
+            g.pr(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
+            g.pr(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
             if b1 != b2:
                 self.showTwoBodies(p1.h, p1.b, p2.b)
             if p1.isCloned() != p2.isCloned():
@@ -1613,7 +1613,7 @@ class TestManager:
                 g.unitTesting = False  # Disable @test nodes!
                 g.app.unitTesting = False
                 try:
-                    fullName = f'leo.core.{moduleName}'
+                    fullName = f"leo.core.{moduleName}"
                     __import__(fullName)
                     return sys.modules.get(fullName)
                 finally:

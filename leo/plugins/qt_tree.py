@@ -131,7 +131,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def traceItem(self, item):
         if item:
             # A QTreeWidgetItem.
-            return f'item {id(item)}: {self.getItemText(item)}'
+            return f"item {id(item)}: {self.getItemText(item)}"
         return '<no item>'
 
     def traceCallers(self):
@@ -205,7 +205,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Useful, for now.
         t2 = time.process_time()
         if t2 - t1 > 0.1:
-            g.trace(f'{n} nodes, {t2 - t1:5.2f} sec')
+            g.trace(f"{n} nodes, {t2 - t1:5.2f} sec")
     #@+node:ekr.20180810052056.2: *5* qtree.yieldVisible (not used)
     def yieldVisible(self, first_p, target_p=None):
         """
@@ -518,7 +518,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 p.moveToNext()
         if trace:
             t2 = time.process_time()
-            g.trace(f'{t2 - t1:5.2f} sec.', g.callers(5))
+            g.trace(f"{t2 - t1:5.2f} sec.", g.callers(5))
     #@+node:ekr.20110605121601.17877: *5* qtree.drawTree
     def drawTree(self, p, parent_item=None):
         if g.app.gui.isNullGui:

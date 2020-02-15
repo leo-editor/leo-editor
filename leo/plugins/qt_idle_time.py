@@ -81,8 +81,8 @@ class IdleTime:
         """IdleTime repr."""
         tag = self.tag
         if tag:
-            return f'<IdleTime: {tag if isinstance(tag, str) else repr(tag)}>'
-        return f'<IdleTime: id: {id(self)}>'
+            return f"<IdleTime: {tag if isinstance(tag, str) else repr(tag)}>"
+        return f"<IdleTime: id: {id(self)}>"
 
     __str__ = __repr__
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time

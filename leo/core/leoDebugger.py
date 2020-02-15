@@ -504,7 +504,7 @@ def xdb_breakpoint(event):
     row, col = g.convertPythonIndexToRowCol(s, i)
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
-        xdb.qc.put(f'b {path}:{n + 1}')
+        xdb.qc.put(f"b {path}:{n + 1}")
 #@+node:ekr.20180702074705.1: *3* db-c/h/l/n/q/r/s/w
 @g.command('db-c')
 def xdb_c(event):

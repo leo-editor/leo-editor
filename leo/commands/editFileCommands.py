@@ -161,9 +161,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
         fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
         for d, kind in (
-            (deleted, f'not in {fn2}'),
-            (inserted, f'not in {fn1}'),
-            (changed, f'changed: as in {fn2}'),
+            (deleted, f"not in {fn2}"),
+            (inserted, f"not in {fn1}"),
+            (changed, f"changed: as in {fn2}"),
         ):
             self.createCompareClones(d, kind, parent)
         c.selectPosition(parent)
@@ -218,7 +218,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.pr('\n', kind)
             for key in d:
                 p = d.get(key)
-                g.pr(f'{key:>32} {p.h}')
+                g.pr(f"{key:>32} {p.h}")
     #@+node:ekr.20170806094319.3: *3* efc.compareTrees
     def compareTrees(self, p1, p2, tag):
 
@@ -242,14 +242,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     elif p1.b.strip():
                         # Only in p1 tree, and not an organizer node.
                         p = root.insertAsLastChild()
-                        p.h = h + f'({p1.h} only)'
+                        p.h = h + f"({p1.h} only)"
                         p1.clone().moveToLastChildOf(p)
                 for h in sorted(d2.keys()):
                     p2 = d2.get(h)
                     if h not in d1 and p2.b.strip():
                         # Only in p2 tree, and not an organizer node.
                         p = root.insertAsLastChild()
-                        p.h = h + f'({p2.h} only)'
+                        p.h = h + f"({p2.h} only)"
                         p2.clone().moveToLastChildOf(p)
                 return root
             #@+node:ekr.20170806094318.19: *4* ct.run
@@ -540,7 +540,7 @@ class GitDiffController:
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn)
-            self.file_node.b = f'{self.file_node.b.rstrip()}\n@language {c2.target_language}\n'
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
@@ -553,7 +553,7 @@ class GitDiffController:
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
-        g.es_print(f'diffing {len(files)} files. This may take awhile')
+        g.es_print(f"diffing {len(files)} files. This may take awhile")
         # Create the root node.
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = f"git diff revs: {rev1} {rev2}"
@@ -577,8 +577,8 @@ class GitDiffController:
         while n1 <= 5:
             ok = self.diff_revs(
                 # Clearer w/o f-strings.
-                rev1=f'HEAD@{{{n1}}}',
-                rev2=f'HEAD@{{{n2}}}')
+                rev1=f"HEAD@{{{n1}}}",
+                rev2=f"HEAD@{{{n2}}}")
             if ok: return
             n1, n2 = n1 + 1, n2 + 1
         if not ok:
@@ -628,7 +628,7 @@ class GitDiffController:
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = f'{self.file_node.b.rstrip()}\n@language {c2.target_language}\n'
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
         """Create nodes describing the changes."""
@@ -650,7 +650,7 @@ class GitDiffController:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    body.append(f'@language {c2.target_language}\n')
+                    body.append(f"@language {c2.target_language}\n")
                 else:
                     body = ['Only headline has changed']
                 organizer.b = ''.join(body)
@@ -732,10 +732,10 @@ class GitDiffController:
         if 0:
             g.trace('c1...')
             for p in c1.all_positions():
-                print(f'{len(p.b):4} {p.h}')
+                print(f"{len(p.b):4} {p.h}")
             g.trace('c2...')
             for p in c2.all_positions():
-                print(f'{len(p.b):4} {p.h}')
+                print(f"{len(p.b):4} {p.h}")
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
         added = {key: d2.get(key) for key in d2 if not d1.get(key)}
@@ -840,7 +840,7 @@ class GitDiffController:
     def get_file_from_branch(self, branch, fn):
         """Get the file from the hed of the given branch."""
         # Get the file using git.
-        command = f'git show {branch}:{fn}'
+        command = f"git show {branch}:{fn}"
         directory = self.repo_dir
         lines = g.execGitCommand(command, directory)
         s = ''.join(lines)
@@ -850,7 +850,7 @@ class GitDiffController:
         """Get the file from the given rev, or the working directory if None."""
         if rev:
             # Get the file using git.
-            command = f'git show {rev}:{fn}'
+            command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, self.repo_dir)
             s = ''.join(lines)
         else:
@@ -901,7 +901,7 @@ class GitDiffController:
         if self.repo_dir:
             os.chdir(directory)
         else:
-            g.es_print(f'no .git directory found in {directory!r}')
+            g.es_print(f"no .git directory found in {directory!r}")
         return self.repo_dir
     #@+node:ekr.20170806094321.3: *5* gdc.find_git_working_directory
     def find_git_working_directory(self, directory):

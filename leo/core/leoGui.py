@@ -282,7 +282,7 @@ class LeoKeyEvent:
         d = {'c': self.c.shortFileName()}
         for ivar in ('char', 'event', 'stroke', 'w'):
             d[ivar] = getattr(self, ivar)
-        return f'LeoKeyEvent:\n{g.objToString(d)}'
+        return f"LeoKeyEvent:\n{g.objToString(d)}"
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
     def get(self, attr):
         """Compatibility with g.bunch: return an attr."""

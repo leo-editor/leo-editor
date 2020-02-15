@@ -1005,7 +1005,7 @@ def deleteMarked(self, event=None):
     if undo_data:
         u.afterDeleteMarkedNodes(undo_data, p1)
         if not g.unitTesting:
-            g.blue(f'deleted {len(undo_data)} nodes')
+            g.blue(f"deleted {len(undo_data)} nodes")
         c.setChanged()
     # Don't even *think* about restoring the old position.
     c.contractAllHeadlines()
@@ -1068,7 +1068,7 @@ def moveMarked(self, event=None):
         parent.moveAfter(p2)
         # u.afterMoveMarkedNodes(moved, p1)
         if not g.unitTesting:
-            g.blue(f'moved {len(moved)} nodes')
+            g.blue(f"moved {len(moved)} nodes")
         c.setChanged()
     # c.contractAllHeadlines()
         # Causes problems when in a chapter.
@@ -1469,6 +1469,6 @@ def cantMoveMessage(c):
 def count_children(event=None):
     c = event and event.get('c')
     if c:
-        g.es_print(f'{c.p.numberOfChildren()} children')
+        g.es_print(f"{c.p.numberOfChildren()} children")
 #@-others
 #@-leo

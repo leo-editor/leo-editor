@@ -40,9 +40,9 @@ class NodeIndices:
         v2 = fc.gnxDict.get(gnx)
         if v2 and v2 != v:
             g.internalError(
-                f'getNewIndex: gnx clash {gnx}\n'
-                f'          v: {v}\n'
-                f'         v2: {v2}')
+                f"getNewIndex: gnx clash {gnx}\n"
+                f"          v: {v}\n"
+                f"         v2: {v2}")
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         """Scan the entire leo outline to compute ni.last_index."""
@@ -1317,8 +1317,8 @@ class Position:
                     elif child_v.fileIndex == parent.v.fileIndex:
                         g.app.structure_errors += 1
                         g.error(
-                            f'duplicate gnx: {child_v.fileIndex!r} '
-                            f'v: {child_v} parent: {parent.v}')
+                            f"duplicate gnx: {child_v.fileIndex!r} "
+                            f"v: {child_v} parent: {parent.v}")
                         child_v.fileIndex = g.app.nodeIndices.getNewIndex(v=child_v)
                         assert child_v.gnx != parent.v.gnx
                         # Should be ok to continue.
@@ -1970,12 +1970,12 @@ class VNode:
     def dump(self, label=""):
         v = self
         s = '-' * 10
-        print(f'{s} {label} {v}')
+        print(f"{s} {label} {v}")
         # print('gnx: %s' % v.gnx)
-        print(f'len(parents): {len(v.parents)}')
-        print(f'len(children): {len(v.children)}')
-        print(f'parents: {g.listToString(v.parents)}')
-        print(f'children: {g.listToString(v.children)}')
+        print(f"len(parents): {len(v.parents)}")
+        print(f"len(children): {len(v.children)}")
+        print(f"parents: {g.listToString(v.parents)}")
+        print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names, h=''):
@@ -2366,7 +2366,7 @@ class VNode:
             w.setInsertPoint(ins)
         if traceTime:
             delta_t = time.time() - t1
-            if delta_t > 0.1: g.trace(f'{delta_t:2.3f} sec')
+            if delta_t > 0.1: g.trace(f"{delta_t:2.3f} sec")
         # Override any changes to the scrollbar setting that might
         # have been done above by w.setSelectionRange or w.setInsertPoint.
         if spot is not None:

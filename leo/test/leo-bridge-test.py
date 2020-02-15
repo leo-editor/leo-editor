@@ -24,7 +24,7 @@ verbose = True  # True: verbose output.
 # Import stuff...
 dir_ = os.path.abspath('.')
 if dir_ not in sys.path:
-    if trace_sys_path: print(f'appending {dir_} to sys.path')
+    if trace_sys_path: print(f"appending {dir_} to sys.path")
     sys.path.append(dir_)
 if trace_sys_path:
     print('sys.path:...\n%s' % '\n'.join(sorted(sys.path)))
@@ -59,12 +59,12 @@ for path in files:
             for p in c.all_positions():
                 n += 1
             if not silent:
-                print(f'{c.shortFileName()} has {n} nodes')
+                print(f"{c.shortFileName()} has {n} nodes")
         else:
             assert False, path  # For unit testing
     elif not silent:
         if path.endswith('xyzzy.xxx'):
-            print(f'file not found: {path}')
+            print(f"file not found: {path}")
         else:
             assert False, path  # For unit testing
 #@-leo

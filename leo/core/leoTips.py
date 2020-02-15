@@ -55,7 +55,7 @@ class UserTip:
         self.text = text.strip()
 
     def __repr__(self):
-        return f'{self.title}\n\n{self.text}\n'
+        return f"{self.title}\n\n{self.text}\n"
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
@@ -139,7 +139,7 @@ def make_tip_nodes(c):
         p.h = tip.title
         p.b = tip.text
     if root.hasChildren():
-        root.h = f'{root.numberOfChildren()} User Tips'
+        root.h = f"{root.numberOfChildren()} User Tips"
         c.sortSiblings(p=root.firstChild())
     root.expand()
     c.selectPosition(root)

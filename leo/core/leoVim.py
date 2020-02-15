@@ -1882,8 +1882,8 @@ class VimCommands:
             if self.return_value not in (True, False):
                 # It looks like no acceptance method has been called.
                 self.oops(
-                    f'bad return_value: {repr(self.return_value)} '
-                    f'{self.state} {self.next_func}')
+                    f"bad return_value: {repr(self.return_value)} "
+                    f"{self.state} {self.next_func}")
                 self.done()  # Sets self.return_value to True.
         except Exception:
             g.es_exception()
@@ -2302,7 +2302,7 @@ class VimCommands:
         if self.stroke and self.trace_flag and not g.unitTesting:
             if blank_line:
                 print('')
-            g.es_print(f'{g.caller():20}: {self.stroke!r}')
+            g.es_print(f"{g.caller():20}: {self.stroke!r}")
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(self, w):
         """Return True if we are in a headline edit widget."""
@@ -2461,9 +2461,9 @@ class VimCommands:
             dot_s = self.show_dot()
             # if self.in_motion: state_s = state_s + '(in_motion)'
             if 1:  # Don't show the dot:
-                s = f'{state_s:8}: {command_s}'
+                s = f"{state_s:8}: {command_s}"
             else:
-                s = f'{state_s:8}: {command_s:>5} dot: {dot_s}'
+                s = f"{state_s:8}: {command_s:>5} dot: {dot_s}"
             k.setLabelBlue(s)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s, i):

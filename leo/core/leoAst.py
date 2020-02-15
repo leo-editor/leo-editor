@@ -261,7 +261,7 @@ class LeoGlobals:  # pragma: no cover
         """Return s truncated to n characters."""
         if len(s) <= n:
             return s
-        s2 = s[: n - 3] + f'...({len(s)})'
+        s2 = s[: n - 3] + f"...({len(s)})"
         return s2 + '\n' if s.endswith('\n') else s2
     #@-others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level

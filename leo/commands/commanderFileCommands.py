@@ -270,7 +270,7 @@ def refreshFromDisk(self, event=None):
     fn = p.anyAtFileNodeName()
     shouldDelete = c.sqlite_connection is None
     if not fn:
-        g.warning(f'not an @<file> node:\n{p.h!r}')
+        g.warning(f"not an @<file> node:\n{p.h!r}")
         return
     b = u.beforeChangeTree(p)
     redraw_flag = True
@@ -305,7 +305,7 @@ def refreshFromDisk(self, event=None):
         at.readOneAtAsisNode(fn, p)
             # Always deletes children.
     else:
-        g.es_print(f'can not refresh from disk\n{p.h!r}')
+        g.es_print(f"can not refresh from disk\n{p.h!r}")
         redraw_flag = False
     if redraw_flag:
         # Fix #451: refresh-from-disk selects wrong node.
@@ -609,9 +609,9 @@ def flattenOutlineToNode(self, event=None):
     aList = []
     for p in root.subtree():
         if single:
-            aList.append(f'\n\n===== {single} {p.h}\n\n')
+            aList.append(f"\n\n===== {single} {p.h}\n\n")
         else:
-            aList.append(f'\n\n===== {start} {p.h} {end}\n\n')
+            aList.append(f"\n\n===== {start} {p.h} {end}\n\n")
         if p.b.strip():
             lines = g.splitLines(p.b)
             aList.extend(lines)

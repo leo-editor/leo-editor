@@ -144,7 +144,7 @@ if QtWidgets:
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
         def __repr__(self):
-            return f'(NestedSplitterHandle) at: {id(self)}'
+            return f"(NestedSplitterHandle) at: {id(self)}"
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17964: *3* nsh.add_item
@@ -238,7 +238,7 @@ if QtWidgets:
                         splitter.remove(index, i)
 
                     self.add_item(remove_callback, menu,
-                        f'Remove {count[i]:d} {lr[i]}',
+                        f"Remove {count[i]:d} {lr[i]}",
                         f"Remove the {count[i]} pane{pl(count[i])} {di(lr[i])} here")
             # Swap.
 
@@ -258,13 +258,13 @@ if QtWidgets:
                         splitter.split(index, i)
 
                     self.add_item(
-                        split_callback, menu, f'Split {lr[i]} {split_dir}')
+                        split_callback, menu, f"Split {lr[i]} {split_dir}")
             for i in 0, 1:
 
                 def mark_callback(i=i, index=index):
                     splitter.mark(index, i)
 
-                self.add_item(mark_callback, menu, f'Mark {count[i]:d} {lr[i]}')
+                self.add_item(mark_callback, menu, f"Mark {count[i]:d} {lr[i]}")
             # Swap With Marked.
             if splitter.root.marked:
                 for i in 0, 1:
@@ -274,7 +274,7 @@ if QtWidgets:
                             splitter.swap_with_marked(index, i)
 
                         self.add_item(swap_mark_callback, menu,
-                            f'Swap {count[i]:d} {lr[i]} With Marked')
+                            f"Swap {count[i]:d} {lr[i]} With Marked")
             # Add.
             for i in 0, 1:
                 if (
@@ -286,7 +286,7 @@ if QtWidgets:
                     def add_callback(i=i, splitter=splitter):
                         splitter.add(i)
 
-                    self.add_item(add_callback, menu, f'Add {ab[i]}')
+                    self.add_item(add_callback, menu, f"Add {ab[i]}")
             # Rotate All.
             self.add_item(splitter.rotate, menu, 'Toggle split direction')
 
@@ -448,7 +448,7 @@ if QtWidgets:  # NOQA
             # parent = self.parent()
             # name = parent and parent.objectName() or '<no parent>'
             name = self.objectName() or '<no name>'
-            return f'(NestedSplitter) {name} at {id(self)}'
+            return f"(NestedSplitter) {name} at {id(self)}"
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17969: *3* ns.overrides of QSplitter methods
@@ -1047,7 +1047,7 @@ if QtWidgets:  # NOQA
                         provided._in_layout = True
                         found += 1
                     else:
-                        print(f'NO {i}')
+                        print(f"NO {i}")
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()

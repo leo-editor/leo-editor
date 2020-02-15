@@ -70,7 +70,7 @@ class SearchWidget:
         self.sel = 0, 0  # The selection range
 
     def __repr__(self):
-        return f'SearchWidget id: {id(self)}'
+        return f"SearchWidget id: {id(self)}"
     #@+others
     #@+node:ekr.20070105093138: *3* getters (LeoFind)
     def getAllText(self): return self.s
@@ -1458,7 +1458,7 @@ class LeoFind:
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
-        g.es_print(f'changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.')
+        g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -1629,7 +1629,7 @@ class LeoFind:
                 if gn < len(groups):
                     result.append(groups[gn])  # Append groups[i-1]
                 else:
-                    result.append(f'\\{ch}')
+                    result.append(f"\\{ch}")
         result.append(s[i:])
         return ''.join(result)
     #@+node:ekr.20031218072017.3071: *4* find.changeThenFind
@@ -1765,7 +1765,7 @@ class LeoFind:
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
-        found.b = f'@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes'
+        found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
@@ -2135,8 +2135,8 @@ class LeoFind:
             # This doesn't work because index is always zero.
             # Make *sure* we move past the headline.
             g.trace(
-                f'CHECK: index: {index!r} in_head: {self.in_headline} '
-                f'search_head: {self.search_headline}')
+                f"CHECK: index: {index!r} in_head: {self.in_headline} "
+                f"search_head: {self.search_headline}")
             if (
                 self.in_headline and self.search_headline and
                 index is not None and index in (pos, newpos)

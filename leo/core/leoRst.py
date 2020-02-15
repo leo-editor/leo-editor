@@ -492,7 +492,7 @@ class RstCommands:
     def write_code_tree(self, p, fn):
         """Write p's tree as code to self.outputFile."""
         if self.getOption(p, 'generate_rst_header_comment'):
-            self.write(f'.. rst3: filename: {fn}\n\n')
+            self.write(f".. rst3: filename: {fn}\n\n")
         # We can't use an iterator because we may skip parts of the tree.
         p = p.copy()
         self.topNode = p.copy()
@@ -508,7 +508,7 @@ class RstCommands:
         self.n_written = 0
         self.processTopTree(self.c.p)
         t2 = time.time()
-        g.es_print(f'rst3: {self.n_written} files in {t2 - t1:4.2f} sec.')
+        g.es_print(f"rst3: {self.n_written} files in {t2 - t1:4.2f} sec.")
         return self.rst_nodes  # A list of positions.
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p, justOneFile=False):
@@ -612,7 +612,7 @@ class RstCommands:
             self.init_write(p)  # sets self.path and self.encoding.
             # Compute the slide's file name.
             fn2, ext = g.os_path_splitext(fn)
-            fn2 = f'{fn2}-{n:03d}{ext}'  # Use leading zeros for :glob:.
+            fn2 = f"{fn2}-{n:03d}{ext}"  # Use leading zeros for :glob:.
             n += 1
             # Write the rst sources to self.source.
             self.outputFile = StringIO()
@@ -913,14 +913,14 @@ class RstCommands:
             elif z.endswith('\n\n'):
                 result2.append(z)  # Leave alone.
             else:
-                result2.append(f'{z.rstrip()}\n')
+                result2.append(f"{z.rstrip()}\n")
         return result2
     #@+node:ekr.20090502071837.73: *8* rst.formatCodeModeLine
     def formatCodeModeLine(self, s, n, numberOption):
         if not s.strip(): s = ''
         if numberOption:
-            return f'\t{n}: {s}'
-        return f'\t{s}'
+            return f"	{n}: {s}"
+        return f"\t{s}"
     #@+node:ekr.20090502071837.74: *8* rst.rstripList
     def rstripList(self, theList):
         """Removed trailing blank lines from theList."""
@@ -1023,7 +1023,7 @@ class RstCommands:
             if self.getOption(p, 'generate_rst'):
                 self.write(self.underline(h, p))  # Used by @auto-rst.
             else:
-                self.write(f'\n{h}\n\n')
+                self.write(f"\n{h}\n\n")
         else:
             self.write(f"\n**{h.replace('*', '')}**\n\n")
     #@+node:ekr.20090502071837.85: *6* rst.writeNode
@@ -1063,7 +1063,7 @@ class RstCommands:
         lines.insert(0, '::\n')
         s = '\n'.join(lines)
         if s.strip():
-            self.write(f'{s}\n\n')
+            self.write(f"{s}\n\n")
     #@+node:ekr.20090502071837.87: *6* rst.writeTree
     def writeTree(self, p, fn):
         """Write p's tree to self.outputFile."""
@@ -1071,7 +1071,7 @@ class RstCommands:
             self.getOption(p, 'generate_rst') and
             self.getOption(p, 'generate_rst_header_comment')
         ):
-            self.write(self.rstComment(f'rst3: filename: {fn}\n\n'))
+            self.write(self.rstComment(f"rst3: filename: {fn}\n\n"))
         # We can't use an iterator because we may skip parts of the tree.
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1206,7 +1206,7 @@ class RstCommands:
         if s:
             self.code_block_string = s.replace('\\n', '\n')
         elif syntax and language in ('python', 'ruby', 'perl', 'c'):
-            self.code_block_string = f'**code**:\n\n.. code-block:: {language.title()}\n\n'
+            self.code_block_string = f"**code**:\n\n.. code-block:: {language.title()}\n\n"
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
     #@+node:ekr.20150319125851.8: *4* rst.initSettings
@@ -1522,7 +1522,7 @@ class RstCommands:
             m = re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
         if m:
             s = s.replace('<title></title>',
-                f'<title>{m.group(1)}</title>')
+                f"<title>{m.group(1)}</title>")
         return s
     #@+node:ekr.20100813041139.5914: *5* rst.createDirectoryForFile
     def createDirectoryForFile(self, fn):
@@ -1725,7 +1725,7 @@ class RstCommands:
         """Dump the given settings dict."""
         g.pr(tag + '...')
         for key in sorted(d):
-            g.pr(f'  {key:20} {d.get(key)}')
+            g.pr(f"  {key:20} {d.get(key)}")
     #@+node:ekr.20090502071837.90: *4* rst.encode
     def encode(self, s):
         """return s converted to an encoded string."""
@@ -1768,8 +1768,8 @@ class RstCommands:
             n = max(
                 4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
             if level == 0 and self.underlines2:
-                return f'{ch * n}\n{p.h}\n{ch * n}\n\n'
-            return f'{p.h}\n{ch * n}\n\n'
+                return f"{ch * n}\n{p.h}\n{ch * n}\n\n"
+            return f"{p.h}\n{ch * n}\n\n"
         # The user is responsible for top-level overlining.
         u = self.getOption(p, 'underline_characters')  #  '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.topLevel)
@@ -1777,7 +1777,7 @@ class RstCommands:
             level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
         n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
-        return f'{s.strip()}\n{ch * n}\n\n'
+        return f"{s.strip()}\n{ch * n}\n\n"
             # Fixes bug 618570:
     #@-others
 #@+node:ekr.20120219194520.10444: ** html parser classes

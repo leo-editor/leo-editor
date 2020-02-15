@@ -618,7 +618,7 @@ class LeoPluginsController:
             moduleName = '<no module>'
         if 0:
             if g.app.unitTesting: g.pr('')
-            g.pr(f'{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}')
+            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
         if g.app.unitTesting: return
         if tag in self.handlers:
             g.es(f"*** Two exclusive handlers for '{tag}'")
@@ -642,7 +642,7 @@ class LeoPluginsController:
             moduleName = '<no module>'
         if 0:
             if g.app.unitTesting: g.pr('')
-            g.pr(f'{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}')
+            g.pr(f"{g.app.unitTesting:6} {moduleName:15} {tag:25} {fn.__name__}")
         items = self.handlers.get(tag, [])
         functions = [z.fn for z in items]
         if fn not in functions:  # Vitalije

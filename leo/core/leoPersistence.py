@@ -97,7 +97,7 @@ class PersistenceDataController:
         # Create the @gnxs node
         at_gnxs = self.find_at_gnxs_node(root)
         at_gnxs.b = ''.join(
-            [f'gnx: {p.v.gnx}\nunl: {self.relative_unl(p, root)}\n'
+            [f"gnx: {p.v.gnx}\nunl: {self.relative_unl(p, root)}\n"
                 for p in aList])
         # Create the @uas tree.
         uas = [p for p in aList if p.v.u]
@@ -108,11 +108,11 @@ class PersistenceDataController:
             for p in uas:
                 p2 = at_uas.insertAsLastChild()
                 p2.h = '@ua:' + p.v.gnx
-                p2.b = f'unl:{self.relative_unl(p, root)}\nua:{self.pickle(p)}'
+                p2.b = f"unl:{self.relative_unl(p, root)}\nua:{self.pickle(p)}"
         # This is no longer necessary because of at.saveOutlineIfPossible.
         if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.
-            g.es_print(f'updated: @data:{root.h} ')
+            g.es_print(f"updated: @data:{root.h} ")
         return at_data  # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(self, at_data, root):
@@ -229,7 +229,7 @@ class PersistenceDataController:
 
     def at_data_body(self, p):
         """Return the body text for p's @data node."""
-        return f'gnx: {p.v.gnx}\n'
+        return f"gnx: {p.v.gnx}\n"
     #@+node:ekr.20140712105644.16744: *4* pd.expected_headline
     def expected_headline(self, p):
         """Return the expected imported headline for p."""

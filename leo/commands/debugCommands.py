@@ -198,7 +198,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 print('Warning: @bool dockable-log-tabs is True')
             central_widget = g.app.get_central_widget(c)
             if central_widget != 'outline':
-                print(f'Warning: @string central-dock-widget is {central_widget!r}')
+                print(f"Warning: @string central-dock-widget is {central_widget!r}")
         else:
             print('no c')
     #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands

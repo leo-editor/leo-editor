@@ -962,7 +962,7 @@ def insertMarkdownTOC(self, event=None):
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
-    undoType = f'Insert {kind.capitalize()} TOC'
+    undoType = f"Insert {kind.capitalize()} TOC"
     w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)

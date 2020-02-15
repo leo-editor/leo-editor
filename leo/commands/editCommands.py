@@ -159,9 +159,9 @@ def promoteBodies(event):
         h = child.h.strip()
         if child.b:
             body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
-            s = f'- {h}\n{body}'
+            s = f"- {h}\n{body}"
         else:
-            s = f'- {h}'
+            s = f"- {h}"
         if s.strip():
             result.append(s.strip())
     if result:
@@ -472,7 +472,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if which == 'cap': word2 = word.capitalize()
         elif which == 'low': word2 = word.lower()
         elif which == 'up': word2 = word.upper()
-        else: g.trace(f'can not happen: which = {s(which)}')
+        else: g.trace(f"can not happen: which = {s(which)}")
         changed = word != word2
         if changed:
             w.delete(i, j)
@@ -667,8 +667,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         try:
             # Bug fix: 2011/05/23: set the fillColumn ivar!
             self.fillColumn = n = int(k.arg)
-            k.setLabelGrey(f'fill column is: {n:d}')
-            k.commandName = f'set-fill-column {n:d}'
+            k.setLabelGrey(f"fill column is: {n:d}")
+            k.commandName = f"set-fill-column {n:d}"
         except ValueError:
             k.resetLabel()
         c.widgetWantsFocus(w)
@@ -945,7 +945,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.232: *5* ec.dHash
     def dHash(self, d):
         """Hash a dictionary"""
-        return ''.join([f'{str(k)}{str(d[k])}' for k in sorted(d)])
+        return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
@@ -1329,7 +1329,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 u.afterChangeNodeContents(p, tag, bunch)
         u.afterChangeGroup(c.p, tag)
         c.redraw_after_icons_changed()
-        g.es(f'cleaned {n} nodes')
+        g.es(f"cleaned {n} nodes")
     #@+node:ekr.20150514063305.256: *4* ec.cleanLines
     @cmd('clean-lines')
     def cleanLines(self, event):
@@ -1906,7 +1906,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'flush')
-        k.commandName = f'flush-lines {k.arg}'
+        k.commandName = f"flush-lines {k.arg}"
     #@+node:ekr.20150514063305.282: *4* ec.keepLines (doesn't work)
     @cmd('keep-lines')
     def keepLines(self, event):
@@ -1926,7 +1926,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'keep')
-        k.commandName = f'keep-lines {k.arg}'
+        k.commandName = f"keep-lines {k.arg}"
     #@+node:ekr.20150514063305.283: *4* ec.linesHelper
     def linesHelper(self, event, pattern, which):
         w = self.editWidget(event)
@@ -2074,7 +2074,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         i += 1
                 self.moveToHelper(event, i, extend=extend)
             else:
-                g.trace(f'can not happen: bad spot: {spot}')
+                g.trace(f"can not happen: bad spot: {spot}")
     #@+node:ekr.20150514063305.317: *5* ec.moveWordHelper
     def moveWordHelper(self, event, extend, forward, end=False, smart=False):
         """
@@ -2379,7 +2379,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 i = min(i + 1, len(w.getAllText()))
                 self.moveToHelper(event, i, extend=extend)
             else:
-                g.trace(f'can not happen: bad spot: {spot}')
+                g.trace(f"can not happen: bad spot: {spot}")
     #@+node:ekr.20150514063305.298: *4* ec.clear/set/ToggleExtendMode
     @cmd('clear-extend-mode')
     def clearExtendMode(self, event):
@@ -3441,7 +3441,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             i, junk = g.getLine(s, sel_1)
             junk, j = g.getLine(s, sel_2)
             txt = s[i:j]
-            columns = [w.get(f'{z}.{sint2}', f'{z}.{sint4}')
+            columns = [w.get(f"{z}.{sint2}", f"{z}.{sint4}")
                 for z in range(sint1, sint3 + 1)]
             aList = g.splitLines(txt)
             zlist = list(zip(columns, aList))
@@ -3493,7 +3493,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.delete(i, j)
         int1 = i
         for z in nz:
-            w.insert(f'{int1}.0', f'{z[1]}\n')
+            w.insert(f"{int1}.0", f"{z[1]}\n")
             int1 = int1 + 1
         w.setInsertPoint(ins)
         self.endCommand(changed=True, setLabel=True)
@@ -3630,7 +3630,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setUa1(self, event):
         k = self.c.k
         self.uaName = k.arg
-        s = f'Set uA: {self.uaName} To: '
+        s = f"Set uA: {self.uaName} To: "
         k.setLabelBlue(s)
         k.getNextArg(self.setUa2)
 

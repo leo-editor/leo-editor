@@ -525,7 +525,7 @@ class Commands:
                     g.trace(f"{count} unknown focus: {w_class}")
         else:
             if trace:
-                g.trace(f'{count:3} no focus')
+                g.trace(f"{count:3} no focus")
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
         """Provide an offical hook for late inits of the commander."""
@@ -1472,12 +1472,12 @@ class Commands:
             else:
                 gnx_errors += 1
                 new_gnx(v)
-                g.es_print(f'empty v.fileIndex: {v} new: {p.v.gnx!r}', color='red')
+                g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
                 print('\nc.checkGnxs...')
-                g.es_print(f'multiple vnodes with gnx: {gnx!r}', color='red')
+                g.es_print(f"multiple vnodes with gnx: {gnx!r}", color='red')
                 for v in aList:
                     gnx_errors += 1
                     g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
@@ -1495,8 +1495,8 @@ class Commands:
             )
         elif c.verbose_check_outline and not g.unitTesting:
             print(
-                f'check-outline OK: {t2 - t1:4.2f} sec. '
-                f'{c.shortFileName()} {count} nodes')
+                f"check-outline OK: {t2 - t1:4.2f} sec. "
+                f"{c.shortFileName()} {count} nodes")
         return g.app.structure_errors
     #@+node:ekr.20150318131947.7: *4* c.checkLinks & helpers
     def checkLinks(self):
@@ -1522,8 +1522,8 @@ class Commands:
                 # g.error("test failed at position %s\n%s" % (repr(p), value))
         t2 = time.time()
         g.es_print(
-            f'check-links: {t2 - t1:4.2f} sec. '
-            f'{c.shortFileName()} {count} nodes', color='blue')
+            f"check-links: {t2 - t1:4.2f} sec. "
+            f"{c.shortFileName()} {count} nodes", color='blue')
         return errors
     #@+node:ekr.20040314035615.2: *5* c.checkParentAndChildren
     def checkParentAndChildren(self, p):
@@ -1592,13 +1592,17 @@ class Commands:
         next = p.next()
         if back:
             if not g._assert(p == back.next()):
-                g.trace(f'p!=p.back().next(),  back: {back}\nback.next: {back.next()}')
+                g.trace(
+                    f"p!=p.back().next()\n"
+                    f"     back: {back}\n"
+                    f"back.next: {back.next()}")
                 return False
         if next:
             if not g._assert(p == next.back()):
                 g.trace(
-                    f'p!=p.next().back, next: {next}\n'
-                    f'next.back: {next.back()}')
+                    f"p!=p.next().back\n"
+                    f"     next: {next}\n"
+                    f"next.back: {next.back()}")
                 return False
         return True
     #@+node:ekr.20040314035615: *5* c.checkThreadLinks
@@ -2162,7 +2166,7 @@ class Commands:
                         s2 = c.replace_path_expression(exp)
                         aList.append(s2)
                     except Exception:
-                        g.es(f'Exception evaluating {{{{{exp}}}}} in {s.strip()}')
+                        g.es(f"Exception evaluating {{{{{exp}}}}} in {s.strip()}")
                         g.es_exception(full=True, c=c)
                 # Prepare to search again after the last '}}'
                 previ = j + 2
@@ -2219,9 +2223,9 @@ class Commands:
                 # if there is no binding for Ctrl-s.
         if not isinstance(event, leoGui.LeoKeyEvent):
             if g.app.gui.guiName() not in ('console', 'curses'):
-                g.trace(f'not leo event: {event!r}, callers: {g.callers()}')
+                g.trace(f"not leo event: {event!r}, callers: {g.callers()}")
         if expected != got:
-            g.trace(f'stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}')
+            g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
     command_count = 0
 
@@ -2448,9 +2452,9 @@ class Commands:
                 )
                 g.es_print(f"wrote: {written_fn}")
             else:
-                g.es_print(f'backup_dir not found: {backup_dir!r}')
+                g.es_print(f"backup_dir not found: {backup_dir!r}")
         else:
-            g.es_print(f'base_dir not found: {base_dir!r}')
+            g.es_print(f"base_dir not found: {base_dir!r}")
         os.chdir(old_cwd)
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
@@ -2475,7 +2479,7 @@ class Commands:
         if ext.startswith('.'): ext = ext[1:]
         language = g.app.extension_dict.get(ext)
         if language:
-            prefix = f'@color\n@language {language}\n\n'
+            prefix = f"@color\n@language {language}\n\n"
         else:
             prefix = '@killcolor\n\n'
         # pylint: disable=no-member
@@ -3131,7 +3135,7 @@ class Commands:
         # It's always useful to announce the level.
         # c.k.setLabelBlue('level: %s' % (max_level+1))
         # g.es('level', max_level + 1)
-        c.frame.putStatusLine(f'level: {max_level + 1}')
+        c.frame.putStatusLine(f"level: {max_level + 1}")
             # bg='red', fg='red')
     #@+node:ekr.20141028061518.23: *4* c.Focus
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
@@ -3182,7 +3186,7 @@ class Commands:
         c = self
         if 'focus' in g.app.debug:
             c.trace_focus_count += 1
-            g.pr(f'{c.trace_focus_count:4d}', c.widget_name(w), g.callers(8))
+            g.pr(f"{c.trace_focus_count:4d}", c.widget_name(w), g.callers(8))
     #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper
     def treeFocusHelper(self):
         c = self

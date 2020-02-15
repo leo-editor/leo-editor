@@ -717,16 +717,16 @@ def dump_list(heading, aList):
                 print(key)
             elif key.endswith(('leo_expanded', 'leo_marked')):
                 if val:
-                    print(f'{key:30}:')
+                    print(f"{key:30}:")
                     g.printObj(val.split(','))
                 else:
-                    print(f'{key:30}: []')
+                    print(f"{key:30}: []")
             else:
-                print(f'{key:30}: {val}')
+                print(f"{key:30}: {val}")
         elif isinstance(val, (int, float)):
-            print(f'{key:30}: {val}')
+            print(f"{key:30}: {val}")
         else:
-            print(f'{key:30}:')
+            print(f"{key:30}:")
             g.printObj(val)
 #@-others
 #@@language python

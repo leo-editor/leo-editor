@@ -171,7 +171,7 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Use *ch* in the binding.
         # Clearer w/o f-strings.
-        binding = '%s%s' % (''.join([f'{z}+' for z in mods]), ch)
+        binding = '%s%s' % (''.join([f"{z}+" for z in mods]), ch)
         #
         # Return the tweaked *actual* char.
         binding, actual_ch = self.doLateTweaks(binding, actual_ch)
@@ -564,7 +564,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 if t: break
             else:
                 t = et
-            g.trace(f'{t:20} {w.__class__}')
+            g.trace(f"{t:20} {w.__class__}")
             return
         if w is None:
             if et not in none_ignore_d:
@@ -579,14 +579,14 @@ class LeoQtEventFilter(QtCore.QObject):
                     tag = w.objectName()
                 else:
                     tag = f"id: {id(w)}, {w.__class__.__name__}"
-                g.trace(f'{t:20} {tag}')
+                g.trace(f"{t:20} {tag}")
             return
         t = focus_d.get(et) or et
         if hasattr(w, 'objectName'):
             tag = w.objectName()
         else:
             tag = f"id: {id(w)}, {w.__class__.__name__}"
-        g.trace(f'{t:20} {tag}')
+        g.trace(f"{t:20} {tag}")
     #@-others
 #@-others
 #@@language python

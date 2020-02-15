@@ -140,9 +140,9 @@ def find_missing_docstrings(event):
                     break
     g.es_print('')
     g.es_print(
-        f'found {count} missing docstring{g.plural(count)} '
-        f'in {len(found)} file{g.plural(len(found))} '
-        f'in {time.process_time() - t1:5.2f} sec.')
+        f"found {count} missing docstring{g.plural(count)} "
+        f"in {len(found)} file{g.plural(len(found))} "
+        f"in {time.process_time() - t1:5.2f} sec.")
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -504,14 +504,14 @@ class PylintCommand:
         """
         c = self.c
         if not p.isAnyAtFileNode():
-            g.trace(f'not an @<file> node: {p.h!r}')
+            g.trace(f"not an @<file> node: {p.h!r}")
             return None
         # #67.
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         fn = p.anyAtFileNodeName()
         if not fn.endswith('.py'):
-            g.trace(f'not a python file: {p.h!r}')
+            g.trace(f"not a python file: {p.h!r}")
             return None
         return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint

@@ -1482,7 +1482,7 @@ class LeoTree:
             # if trace: print('%30s: LOCKOUT' % (tag))
             return
         if trace:  # and c.p != p:
-            print(f'{tag:30}: {len(p.b):4} {p.gnx} {p.h}')
+            print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
                 # Format matches traces in leoflexx.py
         try:
             self.tree_select_lockout = True
@@ -1519,7 +1519,7 @@ class LeoTree:
             return  # Defensive.
         if p.v.context != c:
             # Selecting a foreign position will not be pretty.
-            g.trace(f'Wrong context: {p.v.context!r} != {c!r}')
+            g.trace(f"Wrong context: {p.v.context!r} != {c!r}")
             return
         old_p = c.p
         call_event_handlers = p != old_p
@@ -2021,7 +2021,7 @@ class NullTree(LeoTree):
         if not w:
             d[p.v] = w = StringTextWrapper(
                 c=self.c,
-                name=f'head-{1 + len(list(d.keys())):d}')
+                name=f"head-{1 + len(list(d.keys())):d}")
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel

@@ -724,7 +724,7 @@ class LeoImportCommands:
         elif ext in ('.txt', '.text'): body += '@nocolor\n'
         else:
             language = self.languageForExtension(ext)
-            if language: body += f'@language {language}\n'
+            if language: body += f"@language {language}\n"
         self.setBodyString(p, body + self.rootLine + s)
         for p in p.self_and_subtree():
             p.clearDirty()
@@ -1861,9 +1861,9 @@ class RecursiveImportController:
         t2 = time.time()
         n = len(list(parent.self_and_subtree()))
         g.es_print(
-            f'imported {n} node{g.plural(n)} '
-            f'in {self.n_files} file{g.plural(self.n_files)} '
-            f'in {t2 - t1:2.2f} seconds')
+            f"imported {n} node{g.plural(n)} "
+            f"in {self.n_files} file{g.plural(self.n_files)} "
+            f"in {t2 - t1:2.2f} seconds")
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         """Import selected files from dir_, a directory."""
@@ -2011,12 +2011,12 @@ class RecursiveImportController:
             # Put the *full* @path directive in the body.
             if self.add_path and prefix:
                 tail = g.os_path_dirname(stripped).rstrip('/')
-                p.b = f'@path {prefix}{tail}\n{p.b}'
+                p.b = f"@path {prefix}{tail}\n{p.b}"
         else:
             # p.h is a path.
             path = p.h
             stripped = self.strip_prefix(path, prefix)
-            p.h = f'@path {stripped or path}'
+            p.h = f"@path {stripped or path}"
             for p in p.children():
                 self.minimize_headlines(p, prefix + stripped)
 
@@ -2072,7 +2072,7 @@ class TabImporter:
         g.trace('==========')
         for i, data in enumerate(self.stack):
             level, p = data
-            print(f'{i:2} {level} {p.h!r}')
+            print(f"{i:2} {level} {p.h!r}")
     #@+node:ekr.20161006073129.1: *3* tabbed.import_files
     def import_files(self, files):
         """Import a list of tab-delimited files."""
@@ -2203,7 +2203,7 @@ class TabImporter:
             lws = ch * level
             for s in lines:
                 if not s.startswith(lws):
-                    g.trace(f'bad indentation: {s!r}')
+                    g.trace(f"bad indentation: {s!r}")
                     return s
             return ''.join([z[len(lws) :] for z in lines])
         return ''
