@@ -3747,7 +3747,6 @@ class TestFstringify(BaseTest):
 
         contents = """ret = '[%s]' % ','.join([show(z) for z in arg])"""
         expected = """ret = f"[{','.join([show(z) for z in arg])}]"\n"""
-        ### expected = contents + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
@@ -3869,11 +3868,6 @@ class TestFstringify(BaseTest):
                 """print('%r' % 'style_name')""",
                 """print(f"{'style_name'!r}")\n""",
             ),
-            ### Not yet.
-            # (
-                # """[r"\b%s\b" % (z) for z in globalDirectiveList if z != 'others'""",
-                # """r"\b{z}\b" for z in globalDirectiveList if z != 'others'"""
-            # ),
         )
         fails = []
         for i, data in enumerate(table):
@@ -5881,16 +5875,12 @@ class Fstringify(TokenOrderTraverser):
         aList[1]:  ('string',  a single or double quote.
         aList[-1]: ('string', a single or double quote matching aList[1])
         """
-        trace = False
         # Sanity checks.
         if len(aList) < 4:  # pragma: no cover
             return True
         if not lt_s:  # pragma: no cover
             self.message(f"can't create f-fstring: no lt_s!")
             return False
-        if trace: ###
-            g.trace(f"lt_s: {lt_s!s}")
-            g.printObj(aList, tag='change_quotes: aList')
         delim = lt_s[0]
         # Check tokens 0, 1 and -1.
         token0 = aList[0]
@@ -5908,21 +5898,14 @@ class Fstringify(TokenOrderTraverser):
                 return False
         # These checks are important...
         if token0.value != 'f':  # pragma: no cover
-            if trace:
-                g.trace('token[0]  error:', repr(token0))
             return False
-        val1 = token1.value ### and token1.value[0]
+        val1 = token1.value
         if delim != val1:  # pragma: no cover
-            if trace:
-                g.trace('token[1]  error:', delim, val1, repr(token1))
             return False
-        val_last = token_last.value ### and token_last.value[-1]
+        val_last = token_last.value
         if delim != val_last:  # pragma: no cover
-            if trace:
-                g.trace('token[-1] error:', delim, val_last, repr(token_last))
             return False
         # Check for conflicting delims, preferring f"..." to f'...'.
-        if trace: g.printObj(aList, tag='change_quotes') ###
         for delim in ('"', "'"):
             aList[1] = aList[-1] = Token('string', delim)
             for z in aList[2:-1]:
@@ -6005,13 +5988,9 @@ class Fstringify(TokenOrderTraverser):
         
         Double { and } as needed.
         """
-        trace = False
         i, results = 0, [Token('string', 'f')]
         for spec_i, m in enumerate(specs):
             value = tokens_to_string(values[spec_i])
-            if trace: ###
-                g.trace(m)
-                g.printObj(values[spec_i], tag=f"substitute_values: value {spec_i}")
             start, end, spec = m.start(0), m.end(0), m.group(1)
             if start > i:
                 val = lt_s[i:start].replace('{', '{{').replace('}', '}}')
@@ -6031,11 +6010,9 @@ class Fstringify(TokenOrderTraverser):
         # Add the tail.
         tail = lt_s[i:]
         if tail:
-            if trace: g.trace('TAIL', tail)
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail[:-1]))
             results.append(Token('string', tail[-1]))
-        if trace: g.printObj(results, tag='substitute_values: results') ###
         return results
     #@+node:ekr.20200214142019.1: *4* fs.message
     def message(self, message):
