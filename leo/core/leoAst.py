@@ -5922,13 +5922,21 @@ class Fstringify(TokenOrderTraverser):
                 g.printObj(aList, tag='aList')
             return False
         # At last we can check for conflicting delims.
-        for z in aList[2:-1]:
-            if delim in z.value:
-                self.message(
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f":    conflicting delim: {delim!r}")
-                return False
-        return True
+        # Prefer f"
+        for delim in ('"', "'"):
+            token0.value = token_last.value = delim
+            for z in aList[2:-1]:
+                if delim in z.value:
+                    # self.message(
+                        # f"can't create f-fstring: {lt_s!r}\n"
+                        # f":    conflicting delim: {delim!r}")
+                    break
+            else:
+                return True
+        self.message(
+            f"can't create f-fstring: {lt_s!r}\n"
+            f":   conflicting delims:")
+        return False
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
     def munge_spec(self, spec):
         """
