@@ -6062,7 +6062,10 @@ class Fstringify(TokenOrderTraverser):
         # Print the first line.
         z = lines[0]
         i = z.find(':')
-        print(f"{z[:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
+        if i == -1:
+            print(z.rstrip())
+        else:
+            print(f"{z[:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
         # Print the remaining message lines.
         for z in lines[1:]:
             if z.startswith('<'):
