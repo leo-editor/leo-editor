@@ -6058,10 +6058,12 @@ class Fstringify(TokenOrderTraverser):
         print('')
         # Calculate the padding.
         lines = g.splitLines(message)
-        pad = max(lines[0].find(':'), len('line number'))
+        pad = max(lines[0].find(':'), 30)
         # Print the first line.
-        print(f"{lines[0].rstrip():>{pad+1}}")
-        # Print the message lines.
+        z = lines[0]
+        i = z.find(':')
+        print(f"{z[:i+2].strip():>{pad+1}} {z[i+2:].strip()}")
+        # Print the remaining message lines.
         for z in lines[1:]:
             if z.startswith('<'):
                 # Print left aligned.
