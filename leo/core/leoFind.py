@@ -4,8 +4,9 @@
 import leo.core.leoGlobals as g
 import keyword
 import re
-import time
 import sys
+import time
+import unittest
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
 #@+at
@@ -1616,30 +1617,36 @@ class LeoFind:
         c.frame.tree.drawIcon(p) # redraw only the icon.
         return True
     #@+node:ekr.20060526201951: *5* makeRegexSubs
-    def makeRegexSubs(self, s, groups):
-        r"""
-        Carefully substitute group[i-1] for \i strings in s.
-        The group strings may contain \i strings: they are *not* substituted.
+    def makeRegexSubs(self, change_text, groups):
         """
-        digits = '123456789'
-        result = []; n = len(s)
-        i = j = 0 # s[i:j] is the text between \i markers.
-        while j < n:
-            k = s.find('\\', j)
-            if k == -1 or k + 1 >= n:
-                break
-            j = k + 1; ch = s[j]
-            if ch in digits:
-                j += 1
-                result.append(s[i: k]) # Append up to \i
-                i = j
-                gn = int(ch) - 1
-                if gn < len(groups):
-                    result.append(groups[gn]) # Append groups[i-1]
-                else:
-                    result.append(f'\\{ch}')
-        result.append(s[i:])
-        return ''.join(result)
+        Substitute group[i-1] for \i strings in change_text.
+        """
+        
+        def repl(match_object):
+            # # 1494...
+            n = int(match_object.group(1)) - 1
+            if 0 <= n < len(groups):
+                return (
+                    groups[n].
+                        replace(r'\b', r'\\b').
+                        replace(r'\f', r'\\f').
+                        replace(r'\n', r'\\n').
+                        replace(r'\r', r'\\r').
+                        replace(r'\t', r'\\t').
+                        replace(r'\v', r'\\v'))
+            # No replacement.
+            return match_object.group(0)
+            
+        result = re.sub(r'\\([0-9])', repl, change_text)
+        # print(
+            # f"makeRegexSubs:\n"
+            # f"change_text: {change_text!s}\n"
+            # f"     groups: {groups!s}\n"
+            # f"     result: {result!s}")
+        return result
+            
+        
+       
     #@+node:ekr.20031218072017.3071: *4* find.changeThenFind
     def changeThenFind(self):
         if not self.checkArgs():
@@ -2659,6 +2666,20 @@ class LeoFind:
         if s and s[-1] in ('\r', '\n'):
             s = s[: -1]
         self.change_text = s
+    #@-others
+#@+node:ekr.20200216063538.1: ** class TestFind
+class TestFind(unittest.TestCase):
+    """Test cases for leoFind.py"""
+    #@+others
+    #@+node:ekr.20200216063929.1: *3* test_regex_replace
+    def test_regex_replace(self):
+        # #1494.
+        x = LeoFind(c=g.NullObject(tag='c'))
+        groups = (r"f'", r"line\n")
+        change_text = r"""\1 AA \2 BB \3'"""
+        expected = r"""f' AA line\\n BB \3'"""
+        result = x.makeRegexSubs(change_text, groups)
+        assert result == expected, (expected, result)
     #@-others
 #@-others
 #@@language python
