@@ -1619,7 +1619,7 @@ class LeoFind:
     #@+node:ekr.20060526201951: *5* makeRegexSubs
     def makeRegexSubs(self, change_text, groups):
         """
-        Substitute group[i-1] for \i strings in change_text.
+        Substitute group[i-1] for \\i strings in change_text.
         """
         
         def repl(match_object):
