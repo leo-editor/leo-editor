@@ -2078,31 +2078,34 @@ class AtFile:
         at = self
         if not at.endSentinelComment:
             at.putIndent(at.indent)
-            at.os(at.startSentinelComment); at.oblank()
+            at.os(at.startSentinelComment)
+            # #1496: Retire the @doc convention.
+            #        Remove the blank.
+            # at.oblank()
         at.onl()
     #@+node:ekr.20041005105605.183: *6* at.putDocLine
     def putDocLine(self, s, i):
-        """
-        Handle one line of a doc part.
-
-        Output complete lines and split long lines.
-        Precede Inserted newlines by whitespace.
-        """
+        """Handle one line of a doc part."""
         at = self
         j = g.skip_line(s, i)
         s = s[i:j]
-        if not s or s[0] == '\n':
+        #
+        # #1496: Retire the @doc convention:
+        #        Strip all trailing ws here.
+        if not s.strip():
             # A blank line.
             at.putBlankDocLine()
-        else:
-            # Write the line as it is.
-            at.putIndent(at.indent)
-            if not at.endSentinelComment:
-                at.os(at.startSentinelComment)
-                at.oblank()
-            at.os(s)
-            if not s.endswith('\n'):
-                at.onl()
+            return
+        # Write the line as it is.
+        at.putIndent(at.indent)
+        if not at.endSentinelComment:
+            at.os(at.startSentinelComment)
+            # #1496: Retire the @doc convention.
+            #        Leave this blank. The line is not blank.
+            at.oblank()
+        at.os(s)
+        if not s.endswith('\n'):
+            at.onl()
     #@+node:ekr.20041005105605.185: *6* at.putEndDocLine
     def putEndDocLine(self):
         """Write the conclusion of a doc part."""
@@ -3476,7 +3479,10 @@ class FastAtRead:
                 # - begins with the opening delim, alonw on its own line
                 # - ends with the closing delim, alone on its own line.
                 # Both of these lines should be skipped
-                if line in doc_skip:
+                #
+                # #1496: Retire the @doc convention.
+                #        An empty line is no longer a sentinel.
+                if delim_end and line in doc_skip:
                     # doc_skip is (delim_start + '\n', delim_end + '\n')
                     continue
                 #
@@ -3648,9 +3654,14 @@ class FastAtRead:
                 if delim_end:
                     # doc lines are unchanged.
                     body.append(line)
+                    continue
+                # Doc lines start with start_delim + one blank.
+                # #1496: Retire the @doc convention:
+                tail = line[len(delim_start)+1:]
+                if tail.strip():
+                    body.append(tail)
                 else:
-                    # Doc lines start with start_delim + one blank.
-                    body.append(line[len(delim_start) + 1 :])
+                    body.append('\n')
                 continue
             #@-<< Last 2. handle remaining @doc lines >>
             #@+<< Last 3. handle remaining @ lines >>
