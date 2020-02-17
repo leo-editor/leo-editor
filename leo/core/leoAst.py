@@ -3212,14 +3212,17 @@ class BaseTest(unittest.TestCase):
             g.es_exception()
             raise
     #@+node:ekr.20191228095945.10: *5* 2.1: BaseTest.fstringify
-    def fstringify(self, contents, tokens, tree, filename=None):
+    def fstringify(self, contents, tokens, tree, filename=None, silent=False):
         """
         BaseTest.fstringify.
         """
         t1 = get_time()
         if not filename:
             filename = g.callers(1)
-        result_s = Fstringify().fstringify(contents, filename, tokens, tree)
+        fs = Fstringify()
+        if silent:
+            fs.silent = True
+        result_s = fs.fstringify(contents, filename, tokens, tree)
         t2 = get_time()
         self.update_times('21: fstringify', t2 - t1)
         return result_s
@@ -3694,6 +3697,14 @@ class TestFstringify(BaseTest):
         expected = """f"h1 {{font-family: {family}}}"\n"""
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(expected, results)
+    #@+node:ekr.20200217171334.1: *4* TestFstringify.test_backslash_in_expr
+    def test_backslash_in_expr(self):
+        # From get_flake8_config.
+        contents = r"""print('aaa\n%s' % ('\n'.join(dir_table)))"""
+        expected = contents.rstrip() + '\n'
+        contents, tokens, tree = self.make_data(contents)
+        results = self.fstringify(contents, tokens, tree, silent=True)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20191230150653.1: *4* TestFstringity.test_call_in_rhs
     def test_call_in_rhs(self):
@@ -5796,7 +5807,6 @@ class Fstringify(TokenOrderTraverser):
         # Get the % specs in the LHS string.
         specs = self.scan_format_string(lt_s)
         if len(values) != len(specs):  # pragma: no cover
-            # if not self.silent:
             self.message(
                 f"can't create f-fstring: {lt_s!r}\n"
                 f":f-string mismatch: "
@@ -5856,10 +5866,11 @@ class Fstringify(TokenOrderTraverser):
                     count += 1
                 elif z.value == '}':
                     count -= 1
-            if (count % 2) > 1 and '\\' in z.value:
-                self.message(
-                    f"can't create f-fstring: {lt_s!r}\n"
-                    f":backslash in {{expr}}:")
+            if (count % 2) == 1 and '\\' in z.value:
+                if not self.silent:  # For unit testing.
+                    self.message(
+                        f"can't create f-fstring: {lt_s!r}\n"
+                        f":backslash in {{expr}}:")
                 return False
         return True
     #@+node:ekr.20191222102831.7: *6* fs.change_quotes
