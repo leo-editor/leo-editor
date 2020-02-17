@@ -14,7 +14,7 @@ import unittest
 # LeoFind.py contains the gui-independant part of all of Leo's
 # find/change code. Such code is tricky, which is why it should be
 # gui-independent code! Here are the governing principles:
-# 
+#
 # 1. Find and Change commands initialize themselves using only the state
 #    of the present Leo window. In particular, the Find class must not
 #    save internal state information from one invocation to the next.
@@ -22,39 +22,39 @@ import unittest
 #    text in headline or body text, those changes will affect the next
 #    invocation of any Find or Change command. Failure to follow this
 #    principle caused all kinds of problems earlier versions.
-# 
+#
 #    This principle simplifies the code because most ivars do not
 #    persist. However, each command must ensure that the Leo window is
 #    left in a state suitable for restarting the incremental
 #    (interactive) Find and Change commands. Details of initialization
 #    are discussed below.
-# 
+#
 # 2. The Find and Change commands must not change the state of the
 #    outline or body pane during execution. That would cause severe
 #    flashing and slow down the commands a great deal. In particular,
 #    c.selectPosition and c.editPosition must not be called while
 #    looking for matches.
-# 
+#
 # 3. When incremental Find or Change commands succeed they must leave
 #    the Leo window in the proper state to execute another incremental
 #    command. We restore the Leo window as it was on entry whenever an
 #    incremental search fails and after any Find All and Replace All
 #    command. Initialization involves setting the self.c, self.v,
 #    self.in_headline, self.wrapping and self.s_text ivars.
-# 
+#
 # Setting self.in_headline is tricky; we must be sure to retain the
 # state of the outline pane until initialization is complete.
 # Initializing the Find All and Replace All commands is much easier
 # because such initialization does not depend on the state of the Leo
 # window. Using the same kind of text widget for both headlines and body
 # text results in a huge simplification of the code.
-# 
+#
 # The searching code does not know whether it is searching headline or
 # body text. The search code knows only that self.s_text is a text
 # widget that contains the text to be searched or changed and the insert
 # and sel attributes of self.search_text indicate the range of text to
 # be searched.
-# 
+#
 # Searching headline and body text simultaneously is complicated. The
 # findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
@@ -71,7 +71,7 @@ class SearchWidget:
         self.sel = 0, 0  # The selection range
 
     def __repr__(self):
-        return 'SearchWidget id: %s' % (id(self))
+        return f"SearchWidget id: {id(self)}"
     #@+others
     #@+node:ekr.20070105093138: *3* getters (LeoFind)
     def getAllText(self): return self.s
@@ -1463,8 +1463,7 @@ class LeoFind:
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
-        g.es_print('changed %s instances%s in %4.2f sec.' % (
-            count, g.plural(count), (t2 - t1)))
+        g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -1777,7 +1776,7 @@ class LeoFind:
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
-        found.b = '@nosearch\n\n# %s%s\n\n# found %s nodes' % (flat, status, len(clones))
+        found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
@@ -1859,7 +1858,7 @@ class LeoFind:
         found.h = f"Found All:{self.find_text}"
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
-        found.b = '# %s\n%s' % (status, ''.join(result))
+        found.b = f"# {status}\n{''.join(result)}"
         return found
     #@+node:ekr.20171226143621.1: *6* find.createFindUniqueNode
     def createFindUniqueNode(self):
@@ -1934,7 +1933,7 @@ class LeoFind:
                 status.append('[outline-only]')
             elif self.node_only:
                 status.append('[node-only]')
-        return ' (%s)' % ', '.join(status) if status else ''
+        return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         """Resume the search where it left off."""
@@ -2146,8 +2145,9 @@ class LeoFind:
         if 0:
             # This doesn't work because index is always zero.
             # Make *sure* we move past the headline.
-            g.trace('CHECK: index: %r in_head: %s search_head: %s' % (
-                index, self.in_headline, self.search_headline))
+            g.trace(
+                f"CHECK: index: {index!r} in_head: {self.in_headline} "
+                f"search_head: {self.search_headline}")
             if (
                 self.in_headline and self.search_headline and
                 index is not None and index in (pos, newpos)
@@ -2358,7 +2358,7 @@ class LeoFind:
             if ivar.isChecked():
                 result.append(f"[{option}]")
                 break
-        return 'Find: %s' % ' '.join(result)
+        return f"Find: {' '.join(result)}"
     #@+node:ekr.20150619070602.1: *4* find.showStatus
     def showStatus(self, found):
         """Show the find status the Find dialog, if present, and the status line."""
