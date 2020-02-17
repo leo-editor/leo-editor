@@ -168,7 +168,7 @@ class NodeIndices:
 #@+node:ekr.20031218072017.889: ** class Position
 #@+<< about the position class >>
 #@+node:ekr.20031218072017.890: *3* << about the position class >>
-#@@killcolor
+#@@language rest
 #@+at
 # A position marks the spot in a tree traversal. A position p consists of a VNode
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for

@@ -3,6 +3,7 @@
 """Leo's undo/redo manager."""
 #@+<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
+#@@language rest
 #@+at
 # 
 # Think of the actions that may be Undone or Redone as a string of beads
@@ -344,8 +345,8 @@ class Undoer:
         # WARNING: read this before doing anything "clever"
         #@+<< about u.saveTree >>
         #@+node:EKR.20040530114124: *5* << about u.saveTree >>
+        #@@language rest
         #@+at
-        # 
         # The old code made a free-standing copy of the tree using v.copy and
         # t.copy. This looks "elegant" and is WRONG. The problem is that it can
         # not handle clones properly, especially when some clones were in the

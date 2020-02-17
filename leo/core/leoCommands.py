@@ -3856,7 +3856,6 @@ class Commands:
         #@+node:ekr.20150312080344.8: *5* << theory of operation >> (deletePositionsInList)
         #@+at
         #@@language rest
-        #@@wrap
         # The Aha: the positions passed to p.deletePositionsInList only
         # *specify* the desired changes; the only way to *make* those changes is
         # to operate on vnodes!
@@ -4034,7 +4033,7 @@ class Commands:
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
     #@+<< PosList doc >>
     #@+node:bob.20101215134608.5898: *5* << PosList doc >>
-    #@@nocolor-node
+    #@@language rest
     #@+at
     # List of positions
     # 

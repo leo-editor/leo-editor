@@ -22,7 +22,7 @@ assert time
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
-#@@nocolor-node
+#@@language rest
 #@+at
 # 
 # The big pictures of key bindings:
@@ -114,7 +114,7 @@ assert time
 #@-<< about 'internal' bindings >>
 #@+<< about key dicts >>
 #@+node:ekr.20061031131434.3: ** << about key dicts >>
-#@@nocolor
+#@@language rest
 #@+at
 # 
 # ivar                    Keys                Values

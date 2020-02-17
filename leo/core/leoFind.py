@@ -9,9 +9,8 @@ import time
 import unittest
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
-#@+at
 #@@language rest
-# 
+#@+at
 # LeoFind.py contains the gui-independant part of all of Leo's
 # find/change code. Such code is tricky, which is why it should be
 # gui-independent code! Here are the governing principles:
@@ -2681,6 +2680,9 @@ class TestFind(unittest.TestCase):
         assert result == expected, (expected, result)
     #@-others
 #@-others
+
+if __name__ == '__main__':
+    unittest.main() 
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
