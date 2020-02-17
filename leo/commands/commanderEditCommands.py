@@ -1001,7 +1001,7 @@ def make_toc(c, kind, root):
             url = clean_headline(p.h.replace(' ', '-'))
             if kind == 'markdown':
                 url = url.lower()
-            line = '%s- [%s](#%s)\n' % (' ' * 4 * (level - 1), title, url)
+            line = f"{' ' * 4 * (level - 1)}- [{title}](#{url})\n"
             result.append(line)
     if result:
         result.append('\n')

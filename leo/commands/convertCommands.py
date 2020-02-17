@@ -287,12 +287,12 @@ class To_Python:
         s = comment_lines[0]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         if n == 1:
-            return ['%s# %s' % ((' ' * (w - 1)), s.strip())]
+            return [f"{' ' * (w - 1)}# {s.strip()}"]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         result = []
         for i, s in enumerate(comment_lines):
             if s.strip():
-                result.append('%s# %s' % ((' ' * w), s.strip()))
+                result.append(f"{' ' * w}# {s.strip()}")
             elif i == n - 1:
                 pass  # Omit the line entirely.
             else:

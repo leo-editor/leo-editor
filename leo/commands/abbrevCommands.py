@@ -100,8 +100,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         # fake the next placeholder abbreviation
         if c.config.getString("abbreviations-next-placeholder"):
-            self.addAbbrevHelper("%s=__NEXT_PLACEHOLDER" %
-                c.config.getString("abbreviations-next-placeholder"), 'global')
+            self.addAbbrevHelper(
+                f'{c.config.getString("abbreviations-next-placeholder")}'
+                f'=__NEXT_PLACEHOLDER',
+                'global')
     #@+node:ekr.20150514043850.7: *6* abbrev.init_env
     def init_env(self):
         """
