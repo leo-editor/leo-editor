@@ -2682,7 +2682,7 @@ class TestFind(unittest.TestCase):
 #@-others
 
 if __name__ == '__main__':
-    unittest.main() 
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
