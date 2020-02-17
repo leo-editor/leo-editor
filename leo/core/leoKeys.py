@@ -277,8 +277,7 @@ class AutoCompleterClass:
         """Show the autocompleter status."""
         k = self.k
         if not g.unitTesting:
-            s = 'autocompleter %s' % (
-                'On' if k.enable_autocompleter else 'Off')
+            s = f"autocompleter {'On' if k.enable_autocompleter else 'Off'}"
             g.red(s)
 
     def showCalltipsStatus(self):
@@ -2553,7 +2552,7 @@ class KeyHandlerClass:
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
             letter = lm.computeBindingLetter(c, kind)
-            pane = '%4s: ' % (pane if pane else 'all')
+            pane = f"{pane if pane else 'all':4}: "
             left = pane + key  # pane and shortcut fields
             n = max(n, len(left))
             data2.append((letter, left, commandName),)
