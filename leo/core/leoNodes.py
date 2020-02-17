@@ -174,9 +174,9 @@ class NodeIndices:
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
 # each ancestor **at the spot in tree traversal. Positions p has a unique set of
 # parents.
-# 
+#
 # The p.moveToX methods may return a null (invalid) position p with p.v = None.
-# 
+#
 # The tests "if p" or "if not p" are the _only_ correct way to test whether a
 # position p is valid. In particular, tests like "if p is None" or "if p is not
 # None" will not work properly.
@@ -351,6 +351,7 @@ class Position:
         pad = '\t' * level
         return f"{pad}{plusMinus} {p.h}"
     #@+node:ekr.20040315023430.3: *4* p.moreBody
+    #@@language rest
     #@+at
     #     + test line
     #     - test line
@@ -360,6 +361,7 @@ class Position:
     #     test line \
     #     More lines...
     #@@c
+    #@@language python
 
     def moreBody(self):
         """Returns the body string in MORE format.
@@ -1108,11 +1110,11 @@ class Position:
     #@+node:ekr.20080416161551.199: *3* p.moveToX
     #@+at These routines change self to a new position "in place".
     # That is, these methods must _never_ call p.copy().
-    # 
+    #
     # When moving to a nonexistent position, these routines simply set p.v = None,
     # leaving the p.stack unchanged. This allows the caller to "undo" the effect of
     # the invalid move by simply restoring the previous value of p.v.
-    # 
+    #
     # These routines all return self on exit so the following kind of code will work:
     #     after = p.copy().moveToNodeAfterTree()
     #@+node:ekr.20080416161551.200: *4* p.moveToBack

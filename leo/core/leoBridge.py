@@ -9,39 +9,38 @@
 #@+node:ekr.20070227091955.2: ** << about the leoBridge module >>
 #@@language rest
 #@+at
-# 
 # A **host** program is a Python program separate from Leo. Host programs may
 # be created by Leo, but at the time they are run host programs must not be
 # part of Leo in any way. So if they are run from Leo, they must be run in a
 # separate process.
-# 
+#
 # The leoBridge module gives host programs access to all aspects of Leo,
 # including all of Leo's source code, the contents of any .leo file, all
 # configuration settings in .leo files, etc.
-# 
+#
 # Host programs will use the leoBridge module like this::
-# 
+#
 #     import leo.core.leoBridge as leoBridge
 #     bridge = leoBridge.controller(gui='nullGui',verbose=False)
 #     if bridge.isOpen():
 #         g = bridge.globals()
 #         c = bridge.openLeoFile(path)
-# 
+#
 # Notes:
-# 
+#
 # - The leoBridge module imports no modules at the top level.
-# 
+#
 # - leoBridge.controller creates a singleton *bridge controller* that grants
 #   access to Leo's objects, including fully initialized g and c objects. In
 #   particular, the g.app and g.app.gui vars are fully initialized.
-# 
+#
 # - By default, leoBridge.controller creates a null gui so that no Leo
 #   windows appear on the screen.
-# 
+#
 # - As shown above, the host program should gain access to Leo's leoGlobals
 #   module using bridge.globals(). The host program should not import
 #   leo.core.leoGlobals as leoGlobals directly.
-# 
+#
 # - bridge.openLeoFile(path) returns a completely standard Leo commander.
 #   Host programs can use these commanders as described in Leo's scripting
 #   chapter.

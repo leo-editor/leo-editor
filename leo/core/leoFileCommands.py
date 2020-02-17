@@ -709,11 +709,13 @@ class FileCommands:
         c = self.c
         #@+<< Set the default directory >>
         #@+node:ekr.20071211134300: *6* << Set the default directory >> (fc.readOutlineOnly)
+        #@@language rest
         #@+at
         # The most natural default directory is the directory containing the .leo file
         # that we are about to open. If the user has specified the "Default Directory"
         # preference that will over-ride what we are about to set.
         #@@c
+        #@@language python
 
         theDir = g.os_path_dirname(fileName)
         if theDir:

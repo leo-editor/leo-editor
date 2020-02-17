@@ -86,18 +86,20 @@ globalDirectiveList = [
 #@+<< define global decorator dicts >>
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
 #@@nobeautify
+#@@language rest
 #@+at
 # The cmd_instance_dict supports the @cmd decorators in various files. For
 # example, the following appears in leo.commands.
-# 
+#
 #     def cmd(name):
 #         """Command decorator for the abbrevCommands class."""
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
-# 
+#
 # **Important**: All *new* commands should be defined using @g.command, but
 # this dict will remain forever so as not to break existing code.  See this
 # discussion https://github.com/leo-editor/leo-editor/issues/325
 #@@c
+#@@language python
 
 global_commands_dict = {}
 
@@ -374,20 +376,21 @@ class BindingInfo:
 def isBindingInfo(obj):
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
+#@@language rest
 #@+at
 # From The Python Cookbook:
-# 
+#
 # Create a Bunch whenever you want to group a few variables:
-# 
+#
 #     point = Bunch(datum=y, squared=y*y, coord=x)
-# 
+#
 # You can read/write the named attributes you just created, add others,
 # del some of them, etc::
-# 
+#
 #     if point.squared > threshold:
 #         point.isok = True
 #@@c
-
+#@@language python
 
 class Bunch:
     """A class that represents a colection of things.
@@ -4006,7 +4009,7 @@ def readFileIntoUnicodeString(fn, encoding=None, silent=False):
     return None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
-# 
+#
 # The Unix readline() routine delivers "\r\n" line end strings verbatim,
 # while the windows versions force the string to use the Unix convention
 # of using only "\n". This routine causes the Unix readline to do the
@@ -4432,7 +4435,7 @@ joinlines = joinLines
 # will call g.es if they find an error. g.scanError() also bumps
 # c.tangleCommands.errors, which is harmless if we aren't tangling, and
 # useful if we are.
-# 
+#
 # These routines are called by the Import routines and the Tangle routines.
 #@+node:ekr.20031218072017.3159: *4* skip_block_comment
 # Scans past a block comment (an old_style C comment).
@@ -4558,13 +4561,13 @@ def skip_pascal_string(s, i):
 #@+node:ekr.20031218072017.3166: *4* skip_heredoc_string : called by php import (Dave Hein)
 #@+at 08-SEP-2002 DTHEIN:  added function skip_heredoc_string
 # A heredoc string in PHP looks like:
-# 
+#
 #   <<<EOS
 #   This is my string.
 #   It is mine. I own it.
 #   No one else has it.
 #   EOS
-# 
+#
 # It begins with <<< plus a token (naming same as PHP variable names).
 # It ends with the token on a line by itself (must start in first position.
 #@@c
@@ -5944,15 +5947,17 @@ def removeExtraLws(s, tab_width):
     result = ''.join(result)
     return result
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
+#@@language rest
 #@+at
 # Important note: this routine need not deal with leading whitespace.
-# 
+#
 # Instead, the caller should simply reduce pageWidth by the width of
 # leading whitespace wanted, then add that whitespace to the lines
 # returned here.
-# 
+#
 # The key to this code is the invarient that line never ends in whitespace.
 #@@c
+#@@language python
 
 def wrap_lines(lines, pageWidth, firstLineWidth=None):
     """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
@@ -6034,7 +6039,7 @@ def optimizeLeadingWhitespace(line, tab_width):
 #@+node:ekr.20040723093558: *4* g.regularizeTrailingNewlines
 #@+at The caller should call g.stripBlankLines before calling this routine
 # if desired.
-# 
+#
 # This routine does _not_ simply call rstrip(): that would delete all
 # trailing whitespace-only lines, and in some cases that would change
 # the meaning of program or data.

@@ -614,22 +614,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setInsertPoint(i + c1)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
+    #@@language rest
     #@+at
     # These methods are currently just used in tandem to center the line or
     # region within the fill column. for example, dependent upon the fill column, this text:
-    # 
+    #
     #     cats
     #     raaaaaaaaaaaats
     #     mats
     #     zaaaaaaaaap
-    # 
+    #
     # may look like:
-    #     
+    #
     #                                  cats
     #                            raaaaaaaaaaaats
     #                                  mats
     #                              zaaaaaaaaap
-    # 
+    #
     # after an center-region command via Alt-x.
     #@+node:ekr.20150514063305.215: *4* ec.centerLine
     @cmd('center-line')
@@ -3307,91 +3308,91 @@ class EditCommandsClass(BaseEditCommandsClass):
     # numerical order.  In alphabetical sorting, all upper-case letters `A'
     # through `Z' come before lower-case `a', in accordance with the ASCII
     # character sequence.
-    # 
+    #
     #    The sort commands differ in how they divide the text into sort
     # records and in which part of each record they use as the sort key.
     # Most of the commands make each line a separate sort record, but some
     # commands use paragraphs or pages as sort records.  Most of the sort
     # commands use each entire sort record as its own sort key, but some use
     # only a portion of the record as the sort key.
-    # 
+    #
     # `M-x sort-lines'
     #      Divide the region into lines and sort by comparing the entire text
     #      of a line.  A prefix argument means sort in descending order.
-    # 
+    #
     # `M-x sort-paragraphs'
     #      Divide the region into paragraphs and sort by comparing the entire
     #      text of a paragraph (except for leading blank lines).  A prefix
     #      argument means sort in descending order.
-    # 
+    #
     # `M-x sort-pages'
     #      Divide the region into pages and sort by comparing the entire text
     #      of a page (except for leading blank lines).  A prefix argument
     #      means sort in descending order.
-    # 
+    #
     # `M-x sort-fields'
     #      Divide the region into lines and sort by comparing the contents of
     #      one field in each line.  Fields are defined as separated by
     #      whitespace, so the first run of consecutive non-whitespace
     #      characters in a line constitutes field 1, the second such run
     #      constitutes field 2, etc.
-    # 
+    #
     #      You specify which field to sort by with a numeric argument: 1 to
     #      sort by field 1, etc.  A negative argument means sort in descending
     #      order.  Thus, minus 2 means sort by field 2 in reverse-alphabetical
     #      order.
-    # 
+    #
     # `M-x sort-numeric-fields'
     #      Like `M-x sort-fields', except the specified field is converted to
     #      a number for each line and the numbers are compared.  `10' comes
     #      before `2' when considered as text, but after it when considered
     #      as a number.
-    # 
+    #
     # `M-x sort-columns'
     #      Like `M-x sort-fields', except that the text within each line used
     #      for comparison comes from a fixed range of columns.  An explanation
     #      is given below.
-    # 
+    #
     #    For example, if the buffer contains:
-    # 
+    #
     #      On systems where clash detection (locking of files being edited) is
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      whether the file has changed on disk since it was last visited or
     #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
-    # 
+    #
     # then if you apply `M-x sort-lines' to the entire buffer you get:
-    # 
+    #
     #      On systems where clash detection (locking of files being edited) is
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      saved.  If it has, you are asked to confirm that you want to change
     #      the buffer.
     #      whether the file has changed on disk since it was last visited or
-    # 
+    #
     # where the upper case `O' comes before all lower case letters.  If you
     # apply instead `C-u 2 M-x sort-fields' you get:
-    # 
+    #
     #      saved.  If it has, you are asked to confirm that you want to change
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      the buffer.
     #      On systems where clash detection (locking of files being edited) is
     #      whether the file has changed on disk since it was last visited or
-    # 
+    #
     # where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.
-    # 
+    #
     #    `M-x sort-columns' requires more explanation.  You specify the
     # columns by putting point at one of the columns and the mark at the other
     # column.  Because this means you cannot put point or the mark at the
     # beginning of the first line to sort, this command uses an unusual
     # definition of `region': all of the line point is in is considered part
     # of the region, and so is all of the line the mark is in.
-    # 
+    #
     #    For example, to sort a table by information found in columns 10 to
     # 15, you could put the mark on column 10 in the first line of the table,
     # and point on column 15 in the last line of the table, and then use this
     # command.  Or you could put the mark on column 15 in the first line and
     # point on column 10 in the last line.
-    # 
+    #
     #    This can be thought of as sorting the rectangle specified by point
     # and the mark, except that the text on each line to the left or right of
     # the rectangle moves along with the text inside the rectangle.  *Note

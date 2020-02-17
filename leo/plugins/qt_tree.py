@@ -933,17 +933,20 @@ class LeoQtTree(leoFrame.LeoTree):
                 self.showPopupMenu(event)
         return "break"
     #@+node:ekr.20110605121601.17901: *5* qtree.OnPopupFocusLost
+    #@@language rest
     #@+at
     # On Linux we must do something special to make the popup menu "unpost" if the
     # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
     # explicitly unpost. In order to process the <FocusOut> event, we need to be able
     # to find the reference to the popup window again, so this needs to be an
     # attribute of the tree object; hence, "self.popupMenu".
-    # 
+    #
     # Aside: though Qt tries to be muli-platform, the interaction with different
     # window managers does cause small differences that will need to be compensated by
     # system specific application code. :-(
     #@@c
+    #@@language python
+
     # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
 
     def OnPopupFocusLost(self, event=None):
