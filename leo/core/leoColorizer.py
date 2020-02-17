@@ -1169,10 +1169,13 @@ class JEditColorizer(BaseJEditColorizer):
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@nocolor-node
     #@+at
+    # 
     # The following jEdit matcher methods return the length of the matched text if the
     # match succeeds, and zero otherwise. In most cases, these methods colorize all
     # the matched text.
+    # 
     # The following arguments affect matching:
+    # 
     # - at_line_start         True: sequence must start the line.
     # - at_whitespace_end     True: sequence must be first non-whitespace text of the line.
     # - at_word_start         True: sequence must start a word.
@@ -1181,7 +1184,9 @@ class JEditColorizer(BaseJEditColorizer):
     #                         the ruleset's escape character.
     # - no_line_break         True: the match will not succeed across line breaks.
     # - no_word_break:        True: the match will not cross word breaks.
+    # 
     # The following arguments affect coloring when a match succeeds:
+    # 
     # - delegate              A ruleset name. The matched text will be colored recursively
     #                         by the indicated ruleset.
     # - exclude_match         If True, the actual text that matched will not be colored.

@@ -2305,7 +2305,8 @@ class LoadManager:
                         else:
                             pane = ''
                         g.es_print(
-                            f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}")
+                            f"--trace-binding: {fn:20} binds {stroke2} "
+                            f"to {bi.commandName:>20}{pane}")
                     print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
@@ -2335,8 +2336,10 @@ class LoadManager:
                         panes.append(bi.pane)
             if duplicates:
                 bindings = list(set([z.stroke.s for z in duplicates]))
-                kind = 'duplicate, (not conflicting)' if len(
-                    bindings) == 1 else 'conflicting'
+                if len(bindings) == 1:
+                    kind = 'duplicate, (not conflicting)'
+                else:
+                    kind = 'conflicting'
                 g.es_print(f"{kind} key bindings in {c.shortFileName()}")
                 for bi in aList2:
                     g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
@@ -2813,7 +2816,8 @@ class LoadManager:
                     aClass = d.get(s)
                     if aClass and aClass != scanner_class:
                         g.trace(
-                            f"{sfn}: duplicate {s} class {aClass.__name__} in {m.__file__}:")
+                            f"{sfn}: duplicate {s} class {aClass.__name__} "
+                            f"in {m.__file__}:")
                     else:
                         d[s] = scanner_class
                         g.app.atAutoNames.add(s)
@@ -3526,8 +3530,8 @@ class PreviousSettings:
 
     def __init__(self, settingsDict, shortcutsDict):
         assert isinstance(settingsDict, g.TypedDict), repr(settingsDict)
-        assert isinstance(
-            shortcutsDict, g.TypedDict), repr(shortcutsDict)  # was TypedDictOfLists.
+        assert isinstance(shortcutsDict, g.TypedDict), repr(shortcutsDict)
+            # was TypedDictOfLists.
         self.settingsDict = settingsDict
         self.shortcutsDict = shortcutsDict
 
@@ -3715,7 +3719,7 @@ class RecentFilesManager:
         rf = self
         seen = []
         localConfigPath = g.os_path_dirname(localConfigFile)
-        for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath,):
+        for path in (g.app.homeLeoDir, g.app.globalConfigDir, localConfigPath):
             if path:
                 path = g.os_path_realpath(g.os_path_finalize(path))
             if path and path not in seen:

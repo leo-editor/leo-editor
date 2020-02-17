@@ -40,8 +40,10 @@ assert g
 #@+at
 # All names added to this database should be in normalized form,
 # otherwise the accessor functions won't work.
+# 
 # Adding names here will make them availiable to all gui's and
 # dhtml that use this service.
+# 
 # Names are normalized by removing spaces and capitalization.
 #@@c
 leo_color_database = {
