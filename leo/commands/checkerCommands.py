@@ -251,8 +251,8 @@ class Flake8Command:
                 if g.os_path_exists(fn):
                     return fn
         if not g.unitTesting:
-            g.es_print('no flake8 configuration file found in\n%s' % (
-                '\n'.join(dir_table)))
+            table_s = '\n'.join(dir_table)
+            g.es_print(f"no flake8 configuration file found in\n{table_s}")
         return None
     #@+node:ekr.20160517133049.5: *3* flake8.run
     def run(self, p=None):
@@ -493,8 +493,8 @@ class PylintCommand:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
                 return fn
-        g.es_print('no pylint configuration file found in\n%s' % (
-            '\n'.join(table)))
+        table_s = '\n'.join(table)
+        g.es_print(f"no pylint configuration file found in\n{table_s}")
         return None
     #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
     def get_fn(self, p):
