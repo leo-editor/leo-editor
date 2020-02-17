@@ -4033,7 +4033,7 @@ class Commands:
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
     #@+<< PosList doc >>
     #@+node:bob.20101215134608.5898: *5* << PosList doc >>
-    #@@nocolor
+    #@@language rest
     #@+at
     # List of positions
     # 
