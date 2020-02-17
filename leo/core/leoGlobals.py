@@ -392,6 +392,7 @@ def isBindingInfo(obj):
 #@@c
 #@@language python
 
+
 class Bunch:
     """A class that represents a colection of things.
 

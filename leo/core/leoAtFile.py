@@ -3657,7 +3657,7 @@ class FastAtRead:
                     continue
                 # Doc lines start with start_delim + one blank.
                 # #1496: Retire the @doc convention:
-                tail = line[len(delim_start)+1:]
+                tail = line[len(delim_start) + 1 :]
                 if tail.strip():
                     body.append(tail)
                 else:
