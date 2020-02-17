@@ -86,7 +86,6 @@ globalDirectiveList = [
 #@+<< define global decorator dicts >>
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
 #@@nobeautify
-
 #@+at
 # The cmd_instance_dict supports the @cmd decorators in various files. For
 # example, the following appears in leo.commands.
@@ -383,7 +382,8 @@ def isBindingInfo(obj):
 #     point = Bunch(datum=y, squared=y*y, coord=x)
 # 
 # You can read/write the named attributes you just created, add others,
-# del some of them, etc:
+# del some of them, etc::
+# 
 #     if point.squared > threshold:
 #         point.isok = True
 #@@c
@@ -5946,6 +5946,7 @@ def removeExtraLws(s, tab_width):
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@+at
 # Important note: this routine need not deal with leading whitespace.
+# 
 # Instead, the caller should simply reduce pageWidth by the width of
 # leading whitespace wanted, then add that whitespace to the lines
 # returned here.

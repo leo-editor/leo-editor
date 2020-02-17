@@ -5,7 +5,7 @@
 """Leo's Qt event handling code."""
 #@+<< about internal bindings >>
 #@+node:ekr.20110605121601.18538: ** << about internal bindings >>
-#@@nocolor-node
+#@@language rest
 #@+at
 # 
 # Here are the rules for translating key bindings (in leoSettings.leo) into keys

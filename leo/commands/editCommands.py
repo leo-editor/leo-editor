@@ -617,15 +617,19 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+at
     # These methods are currently just used in tandem to center the line or
     # region within the fill column. for example, dependent upon the fill column, this text:
-    # cats
-    # raaaaaaaaaaaats
-    # mats
-    # zaaaaaaaaap
-    # may look like
+    # 
+    #     cats
+    #     raaaaaaaaaaaats
+    #     mats
+    #     zaaaaaaaaap
+    # 
+    # may look like:
+    #     
     #                                  cats
     #                            raaaaaaaaaaaats
     #                                  mats
     #                              zaaaaaaaaap
+    # 
     # after an center-region command via Alt-x.
     #@+node:ekr.20150514063305.215: *4* ec.centerLine
     @cmd('center-line')
@@ -3292,6 +3296,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif hasattr(tree.canvas, 'xview_scroll'):
             tree.canvas.xview_scroll(-1, "unit")
     #@+node:ekr.20150514063305.339: *3* ec: sort
+    #@@language rest
     #@+at
     # XEmacs provides several commands for sorting text in a buffer.  All
     # operate on the contents of the region (the text between point and the
@@ -3302,12 +3307,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     # numerical order.  In alphabetical sorting, all upper-case letters `A'
     # through `Z' come before lower-case `a', in accordance with the ASCII
     # character sequence.
+    # 
     #    The sort commands differ in how they divide the text into sort
     # records and in which part of each record they use as the sort key.
     # Most of the commands make each line a separate sort record, but some
     # commands use paragraphs or pages as sort records.  Most of the sort
     # commands use each entire sort record as its own sort key, but some use
     # only a portion of the record as the sort key.
+    # 
     # `M-x sort-lines'
     #      Divide the region into lines and sort by comparing the entire text
     #      of a line.  A prefix argument means sort in descending order.
@@ -3355,6 +3362,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     #      saved.  If it has, you are asked to confirm that you want to change
     #      implemented, XEmacs also checks the first time you modify a buffer
     #      the buffer.
+    # 
     #      On systems where clash detection (locking of files being edited) is
     #      whether the file has changed on disk since it was last visited or
     # where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.

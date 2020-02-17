@@ -7,9 +7,8 @@
 #@@tabwidth -4
 #@+<< about the leoBridge module >>
 #@+node:ekr.20070227091955.2: ** << about the leoBridge module >>
-#@+at
 #@@language rest
-#@@wrap
+#@+at
 # 
 # A **host** program is a Python program separate from Leo. Host programs may
 # be created by Leo, but at the time they are run host programs must not be

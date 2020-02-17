@@ -1714,25 +1714,25 @@ class VimCommands:
         self.done()
     #@+node:ekr.20140222064735.16658: *4* vc.vis_...(motions) (just notes)
     #@+node:ekr.20140801121720.18071: *5*  Notes
-    #@@nocolor-node
+    #@@language rest
     #@+at
     # Not yet:
-    # N   B               (motion) N blank-separated WORDS backward
-    # N   E               (motion) forward to the end of the Nth blank-separated WORD
-    # N   G               (motion) goto line N (default: last line), on the first non-blank character
-    # N   N               (motion) repeat last search, in opposite direction
-    # N   W               (motion) N blank-separated WORDS forward
-    # N   g#              (motion) like "#", but also find partial matches
-    # N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
-    # N   g*              (motion) like "*", but also find partial matches
-    # N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
-    #     gD              (motion) goto global declaration of identifier under the cursor
-    # N   gE              (motion) backward to the end of the Nth blank-separated WORD
-    #     gd              (motion) goto local declaration of identifier under the cursor
-    # N   ge              (motion) backward to the end of the Nth word
-    # N   gg              (motion) goto line N (default: first line), on the first non-blank character
-    # N   gj              (motion) down N screen lines (differs from "j" when line wraps)
-    # N   gk              (motion) up N screen lines (differs from "k" when line wraps)
+    # N   B       (motion) N blank-separated WORDS backward
+    # N   E       (motion) forward to the end of the Nth blank-separated WORD
+    # N   G       (motion) goto line N (default: last line), on the first non-blank character
+    # N   N       (motion) repeat last search, in opposite direction
+    # N   W       (motion) N blank-separated WORDS forward
+    # N   g#      (motion) like "#", but also find partial matches
+    # N   g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+    # N   g*      (motion) like "*", but also find partial matches
+    # N   g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+    #     gD      (motion) goto global declaration of identifier under the cursor
+    # N   gE      (motion) backward to the end of the Nth blank-separated WORD
+    #     gd      (motion) goto local declaration of identifier under the cursor
+    # N   ge      (motion) backward to the end of the Nth word
+    # N   gg      (motion) goto line N (default: first line), on the first non-blank character
+    # N   gj      (motion) down N screen lines (differs from "j" when line wraps)
+    # N   gk      (motion) up N screen lines (differs from "k" when line wraps)
     #@+node:ekr.20140222064735.16635: *5* motion non-letters (to do)
     #@@nobeautify
     #@@nocolor-node

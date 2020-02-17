@@ -1167,7 +1167,7 @@ class JEditColorizer(BaseJEditColorizer):
 
     #@+node:ekr.20110605121601.18589: *3*  jedit.Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
-    #@@nocolor-node
+    #@@language rest
     #@+at
     # 
     # The following jEdit matcher methods return the length of the matched text if the
