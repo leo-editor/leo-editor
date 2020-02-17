@@ -5829,7 +5829,7 @@ class Fstringify(TokenOrderTraverser):
         return s
 
     #@+node:ekr.20191222102831.4: *5* fs.compute_result & helpers
-    def compute_result(self, lt_s, tokens): 
+    def compute_result(self, lt_s, tokens):
         """
         Create the final result, with various kinds of munges.
 
