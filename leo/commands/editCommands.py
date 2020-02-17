@@ -757,9 +757,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.backward = backward
         self.extend = extend or self.extendMode  # Bug fix: 2010/01/19
         self.insert = self.w.getInsertPoint()
-        s = '%s character%s: ' % (
-            'Backward find' if backward else 'Find',
-            ' & extend' if extend else '')
+        s = (
+            f"{'Backward find' if backward else 'Find'} "
+            f"character{' & extend' if extend else ''}: ")
         k.setLabelBlue(s)
         # Get the arg without touching the focus.
         k.getArg(
@@ -800,8 +800,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.w = self.editWidget(event)
         if self.w:
             self.oneLineFlag = oneLine
-            k.setLabelBlue('Find word %sstarting with: ' % (
-                'in line ' if oneLine else ''))
+            k.setLabelBlue(
+                f"Find word {'in line ' if oneLine else ''}starting with: ")
             k.get1Arg(event, handler=self.findWord1, oneCharacter=True)
 
     def findWord1(self, event):
@@ -3052,8 +3052,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         for z in txt:
             if z == '\n': lines += 1
             else: chars += 1
-        k.setLabelGrey('Region has %s lines, %s character%s' % (
-            lines, chars, '' if chars == 1 else 's'))
+        k.setLabelGrey(
+            f"Region has {lines} lines, "
+            f"{chars} character{g.plural(chars)}")
     #@+node:ekr.20150514063305.330: *4* ec.moveLinesDown
     @cmd('move-lines-down')
     def moveLinesDown(self, event):
