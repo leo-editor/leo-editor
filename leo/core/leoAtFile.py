@@ -2131,7 +2131,8 @@ class AtFile:
         # Put the opening comment if we are using block comments.
         if at.endSentinelComment:
             at.putIndent(at.indent)
-            at.os(at.startSentinelComment); at.onl()
+            at.os(at.startSentinelComment)
+            at.onl()
     #@+node:ekr.20041005105605.187: *4* Writing sentinels...
     #@+node:ekr.20041005105605.188: *5* at.nodeSentinelText & helper
     def nodeSentinelText(self, p):
