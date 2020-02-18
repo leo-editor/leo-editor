@@ -1737,9 +1737,9 @@ class VimCommands:
     #@@nobeautify
     #@@nocolor-node
     #@+at
-    # 
+    #
     # First:
-    # 
+    #
     #     0               (motion) to first character in the line (also: <Home> key)
     # N   $               (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
     #     ^               (motion) go to first non-blank character in the line
@@ -1749,17 +1749,17 @@ class VimCommands:
     # N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
     # N   ?<CR>                       (motion) repeat last search, in the backward direction
     # N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
-    # 
+    #
     # Later or never:
-    # 
+    #
     # N   CTRL-I          (motion) go to Nth newer position in jump list
     # N   CTRL-O          (motion) go to Nth older position in jump list
     # N   CTRL-T          (motion) Jump back from Nth older tag in tag list
-    # 
+    #
     # N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
     # N   _               (motion) down N-1 lines, on the first non-blank character
     # N   -               (motion) up N lines, on the first non-blank character
-    # 
+    #
     # N   (               (motion) N sentences backward
     # N   )               (motion) N sentences forward
     # N   {               (motion) N paragraphs backward
@@ -1775,15 +1775,15 @@ class VimCommands:
     #     `[              (motion) go to the start of the previously operated or put text
     #     `]              (motion) go to the end of the previously operated or put text
     #     ``              (motion) go to the position before the last jump
-    # 
+    #
     # N   %       (motion) goto line N percentage down in the file.
     #             N must be given, otherwise it is the % command.
     #     %       (motion) find the next brace, bracket, comment,
     #             or "#if"/ "#else"/"#endif" in this line and go to its match
-    # 
+    #
     # N   #       (motion) search backward for the identifier under the cursor
     # N   *       (motion) search forward for the identifier under the cursor
-    # 
+    #
     # N   [#      (motion) N times back to unclosed "#if" or "#else"
     # N   [(      (motion) N times back to unclosed '('
     # N   [*      (motion) N times back to start of comment "/*"
