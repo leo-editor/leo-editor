@@ -504,7 +504,7 @@ class RunTestExternallyHelperClass:
         self.copyRoot = root = c2.rootPosition()
         c2.suppressHeadChanged = True  # Suppress all onHeadChanged logic.
         root.expand()
-        root.initHeadString('%s unit tests' % ('All' if self.all else 'Selected'))
+        root.initHeadString(f"{'All' if self.all else 'Selected'} unit tests")
         if self.all:
             last = root
             for p in c.rootPosition().self_and_siblings():
@@ -1766,7 +1766,7 @@ def printGc(message=None):
     delta = n2 - lastObjectCount
     g.pr('-' * 30)
     g.pr(f"garbage: {n}")
-    g.pr("%6d =%7d %s" % (delta, n2, "totals"))
+    g.pr(f"{delta:6d} = {n2:7d} totals")
     #@+<< print number of each type of object >>
     #@+node:ekr.20051104075904.21: *5* << print number of each type of object >>
     global lastTypesDict
