@@ -3644,7 +3644,7 @@ class TestFstringify(BaseTest):
         assert results == expected, expected_got(expected, results)
 
     #@+node:ekr.20200214155156.1: *4* TestFstringity.show_message
-    def show_message(self):
+    def show_message(self):  # pragma: no cover.
         """Separate test of fs.message."""
         fs = Fstringify()
         fs.filename = 'test_file.py'
@@ -3988,13 +3988,6 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
-        if 0:
-            dump_tokens(tokens)
-        if 1:
-            if results != expected:
-                # g.printObj(results, tag='results')
-                assert False
-            return
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
@@ -4572,13 +4565,6 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        if 1:
-            if results != expected:
-                # g.printObj(contents, tag='contents')
-                # g.printObj(results, tag='results')
-                # g.printObj(self.code_list, tag='orange.code_list')
-                assert False
-            return
         message = (
             f"\n"
             f"contents: {contents}\n"
@@ -4627,11 +4613,6 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        if 1:
-            if results != expected:
-                ### g.printObj(results, tag='results')
-                assert False
-            return
         message = (
             f"\n"
             f"contents: {contents}\n"
@@ -4680,14 +4661,14 @@ class TestOrange(BaseTest):
         # Necessary.
         expected = expected.replace('#@verbatim\n', '').rstrip() + '\n'
         results = results.replace('#@verbatim\n', '')
-        if 1:
-            if results != expected:
-                g.printObj(expected, tag='expected')
-                g.printObj(results, tag='results')
-                # g.printObj(self.code_list, tag='code_list')
-                # g.printObj(tokens, tag='tokens')
-                assert False
-            return
+        # if 1:
+            # if results != expected:
+                # g.printObj(expected, tag='expected')
+                # g.printObj(results, tag='results')
+                # # g.printObj(self.code_list, tag='code_list')
+                # # g.printObj(tokens, tag='tokens')
+                # assert False
+            # return
         message = (
             f"\n"
             f"contents: {contents}\n"
@@ -6026,7 +6007,7 @@ class Fstringify(TokenOrderTraverser):
             results.append(Token('string', tail[-1]))
         return results
     #@+node:ekr.20200214142019.1: *4* fs.message
-    def message(self, message):
+    def message(self, message):  # pragma: no cover.
         """
         Print one or more message lines aligned on the first colon of the message.
         """
