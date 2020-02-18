@@ -3159,8 +3159,11 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
         """Return (contents, tokens, tree) corresponding to the contents of the given file."""
+        # For EKR only.
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = os.path.join(directory, filename)
+        if not os.path.exists(filename):
+            self.skipTest('file does not exist')
         contents = read_file(filename)
         contents, tokens, tree = self.make_data(contents, filename)
         return contents, tokens, tree
