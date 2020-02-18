@@ -268,6 +268,10 @@ class LeoGlobals:  # pragma: no cover
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
+    #@+node:ekr.20200218071822.1: *4* function: regularize_nls
+    def regularize_nls(s):
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
         # This is the pattern in PEP 263.
@@ -2360,7 +2364,7 @@ class Orange:
         # Beautify.
         results = self.beautify(contents, filename, tokens, tree)
         # Something besides newlines must change.
-        if contents.replace('\r', '') == results.replace('\r', ''):
+        if regularize_nls(contents) == regularize_nls(results):
             print(f"{tag}: Unchanged: {filename}")
             return False
         if 0:  # This obscures more import error messages.
@@ -2387,7 +2391,7 @@ class Orange:
         # fstringify.
         results = self.beautify(contents, filename, tokens, tree)
         # Something besides newlines must change.
-        if contents.replace('\r', '') == results.replace('\r', ''):
+        if regularize_nls(contents) == regularize_nls(results):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
@@ -2567,7 +2571,7 @@ class Orange:
     def do_string(self):
         """Handle a 'string' token."""
         # Careful: continued strings may contain '\r'
-        val = self.val.replace('\r\n', '\n').replace('\r', '\n')
+        val = regularize_nls(self.val)
         self.add_token('string', val)
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
@@ -2579,10 +2583,10 @@ class Orange:
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
-        kind, val = self.kind, self.val
+        kind = self.kind
         #
         # Careful: tokens may contain '\r'
-        val = val.replace('\r\n', '\n').replace('\r', '\n')
+        val = regularize_nls(self.val)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
