@@ -2151,7 +2151,7 @@ class NullObject:
     def __setitem__(self, key, val): pass
     def __iter__(self): return self
     def __len__(self): return 0
-    # Iteration methods: 
+    # Iteration methods:
     def __next__(self): raise StopIteration
     
 

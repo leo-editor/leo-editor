@@ -2359,7 +2359,8 @@ class Orange:
             return False
         # Beautify.
         results = self.beautify(contents, filename, tokens, tree)
-        if contents == results:
+        # Something besides newlines must change.
+        if contents.replace('\r', '') == results.replace('\r', ''):
             print(f"{tag}: Unchanged: {filename}")
             return False
         if 0:  # This obscures more import error messages.
@@ -2385,7 +2386,8 @@ class Orange:
             return False
         # fstringify.
         results = self.beautify(contents, filename, tokens, tree)
-        if contents == results:
+        # Something besides newlines must change.
+        if contents.replace('\r', '') == results.replace('\r', ''):
             print(f"{tag}: Unchanged: {filename}")
             return False
         # Show the diffs.
@@ -2424,11 +2426,6 @@ class Orange:
             self.clean('line-indent')
             # #1496: No further munging needed.
             val = self.line.rstrip()
-            ### No longer needed.
-                # if self.in_doc_part:
-                    # val = self.line.replace('\n', '').replace('\r', '')
-                # else:
-                    # val = self.line.rstrip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
@@ -2572,7 +2569,6 @@ class Orange:
         # Careful: continued strings may contain '\r'
         val = self.val.replace('\r\n', '\n').replace('\r', '\n')
         self.add_token('string', val)
-        g.trace(repr(val))
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
     beautify_pat = re.compile(
@@ -2587,7 +2583,6 @@ class Orange:
         #
         # Careful: tokens may contain '\r'
         val = val.replace('\r\n', '\n').replace('\r', '\n')
-        g.trace(f"{kind:16} {val!r}")
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
