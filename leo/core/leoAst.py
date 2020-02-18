@@ -374,6 +374,9 @@ if 1:  # pragma: no cover
         Write the string s to the file whose name is given.
         
         Handle all exeptions.
+        
+        Before calling this function, the caller should ensure
+        that the file actually has been changed.
         """
         try:
             # Write the file with platform-dependent newlines.
