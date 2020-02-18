@@ -240,6 +240,7 @@ class FreeLayoutController:
                         c.free_layout.get_top_splitter().load_layout(layout)
                     else:
                         g.trace('no layout', name)
+
                 name_s = name.strip().lower().replace(' ', '-')
                 commandName = f"free-layout-load-{name_s}"
                 c.k.registerCommand(commandName, func)
