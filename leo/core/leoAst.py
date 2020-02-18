@@ -5599,6 +5599,8 @@ class TestTopLevelFunctions(BaseTest):
     #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
     def test_get_encoding_directive(self):
 
+        # This method doesn't have access to g.app.loadDir.
+        # So just use EKR's path, on Windows.
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = os.path.join(directory, 'leoAst.py')
         if not os.path.exists(filename):
@@ -5610,9 +5612,12 @@ class TestTopLevelFunctions(BaseTest):
     #@+node:ekr.20200107150857.1: *4* test_strip_BOM
     def test_strip_BOM(self):
 
+        # This method doesn't have access to g.app.loadDir.
+        # So just use EKR's path, on Windows.
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = os.path.join(directory, 'leoAst.py')
-        assert os.path.exists(filename), filename
+        if not os.path.exists(filename):
+            self.skipTest(f"not found: {filename}")
         with open(filename, 'rb') as f:
             bb = f.read()
         assert bb, filename
