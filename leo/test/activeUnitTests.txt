@@ -27906,6 +27906,19 @@ s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 with open(name,'w',encoding='utf-8') as f:
     f.write(s)
 assert g.os_path_exists(name)
+#@+node:ekr.20200218101259.1: ** @test z run per-file unit tests
+#1498: Run per-file unit tests from unitTest.leo.
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+table = (
+    'leo.core.leoAst',
+    'leo.core.leoFind',
+)
+print('')
+for file_ in table:
+    g.execute_shell_commands(f"python -m unittest {file_}")
+    print(f"end of python -m unittest {file_}")
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
 g.pr('\nall unit tests done',color='blue')
