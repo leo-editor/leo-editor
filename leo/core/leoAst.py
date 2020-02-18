@@ -376,8 +376,8 @@ if 1:  # pragma: no cover
         Handle all exeptions.
         """
         try:
-            # newline='' suppresses newline munging.
-            with open(filename, 'w', encoding=encoding, newline='') as f:
+            # Write the file with platform-dependent newlines.
+            with open(filename, 'w', encoding=encoding) as f:
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
