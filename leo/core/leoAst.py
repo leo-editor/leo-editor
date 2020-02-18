@@ -99,8 +99,11 @@ import traceback
 import unittest
 #@-<< imports >>
 v1, v2, junk, junk, junk = sys.version_info
-isPy38 = (v1, v2) >= (3, 8)
-# print('isPy38', isPy38)
+#
+# https://docs.python.org/3/library/token.html
+# Async tokens exist in Python 3.5+, but *not* Python 3.7.
+use_async_tokens = (v1, v2) >= (3,) and not (v1, v2) == (3, 7)
+
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -1340,7 +1343,7 @@ class TokenOrderGenerator:
                 yield from self.gen(z)
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        async_token_type = 'async' if isPy38 else 'name'
+        async_token_type = 'async' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('def')
         yield from self.gen_name(node.name)  # A string
@@ -1811,7 +1814,7 @@ class TokenOrderGenerator:
 
         # The def line...
         # Py 3.8 changes the kind of token.
-        async_token_type = 'async' if isPy38 else 'name'
+        async_token_type = 'async' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.gen_name('for')
         yield from self.gen(node.target)
@@ -1830,7 +1833,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node):
 
-        async_token_type = 'async' if isPy38 else 'name'
+        async_token_type = 'async' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'async')
         yield from self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
@@ -1849,7 +1852,7 @@ class TokenOrderGenerator:
     def do_Await(self, node):
 
         #'await %s\n'
-        async_token_type = 'await' if isPy38 else 'name'
+        async_token_type = 'await' if use_async_tokens else 'name'
         yield from self.gen_token(async_token_type, 'await')
         yield from self.gen(node.value)
     #@+node:ekr.20191113063144.68: *6* tog.Break
