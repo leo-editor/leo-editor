@@ -300,16 +300,17 @@ if 1:  # pragma: no cover
                 pass
         return 'UTF-8'
     #@+node:ekr.20200103113417.1: *4* function: read_file
-    def read_file(filename):
+    def read_file(filename, encoding='utf-8'):
         """
         Return the contents of the file with the given name.
         Print an error message and return None on error.
         """
         tag = 'read_file'
         try:
-            with open(filename, 'rb') as f:
+            # Translate all newlines to '\n'.
+            with open(filename, 'r', encoding=encoding) as f:
                 s = f.read()
-            return g.toUnicode(s)
+            return s
         except Exception:
             print(f"{tag}: can not read {filename}")
             return None
@@ -2421,10 +2422,13 @@ class Orange:
         if entire_line:
             self.clean('hard-blank')
             self.clean('line-indent')
-            if self.in_doc_part:
-                val = self.line.replace('\n', '').replace('\r', '')
-            else:
-                val = self.line.rstrip()
+            # #1496: No further munging needed.
+            val = self.line.rstrip()
+            ### No longer needed.
+                # if self.in_doc_part:
+                    # val = self.line.replace('\n', '').replace('\r', '')
+                # else:
+                    # val = self.line.rstrip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
@@ -2565,7 +2569,10 @@ class Orange:
     #@+node:ekr.20200107165250.24: *5* orange.do_string
     def do_string(self):
         """Handle a 'string' token."""
-        self.add_token('string', self.val)
+        # Careful: continued strings may contain '\r'
+        val = self.val.replace('\r\n', '\n').replace('\r', '\n')
+        self.add_token('string', val)
+        g.trace(repr(val))
         self.blank()
     #@+node:ekr.20200210175117.1: *5* orange.do_verbatim
     beautify_pat = re.compile(
@@ -2577,9 +2584,14 @@ class Orange:
         End verbatim mode when the appropriate comment is seen.
         """
         kind, val = self.kind, self.val
-        # if kind == 'comment': g.trace(f"{kind} {val!r}")
-        if kind == 'comment' and self.beautify_pat.match(val):
-            self.verbatim = False
+        #
+        # Careful: tokens may contain '\r'
+        val = val.replace('\r\n', '\n').replace('\r', '\n')
+        g.trace(f"{kind:16} {val!r}")
+        if kind == 'comment':
+            if self.beautify_pat.match(val):
+                self.verbatim = False
+            val = val.rstrip()
             self.add_token('comment', val)
             return
         if kind == 'indent':
@@ -4544,21 +4556,14 @@ class TestOrange(BaseTest):
         # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--init-docks',    'put docks in default positions')
-        add_bool('--ipython',       'enable ipython support')
-        add_bool('--fail-fast',     'stop unit tests after the first failure')
-        add_bool('--global-docks',  'use global docks')
-        add_other('--gui',          'gui to use (qt/console/null)')
-        add_bool('--listen-to-log', 'start log_listener.py on startup')
-        add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
-        add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
-        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        add_other('--window-size',  'initial window size (height x width)', m='SIZE')
-        add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
             help='print version number and exit')
+            
+    # From leoAtFile.py
+    noDirective     =  1 # not an at-directive.
+    allDirective    =  2 # at-all (4.2)
+    docDirective    =  3 # @doc.
             
     #@@beautify
     """
@@ -4568,6 +4573,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
+        # g.printObj(g.splitLines(results))
         message = (
             f"\n"
             f"contents: {contents}\n"
