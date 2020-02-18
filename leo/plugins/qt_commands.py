@@ -160,8 +160,8 @@ def showFonts(self, event=None):
         defs = [
             '\n' if comments else '',
             f"{name}_family = {font.family()}\n",
-            '%s_weight = %s\n' % (name, 'bold' if font.bold() else 'normal'),
-            '%s_slant = %s\n' % (name, 'italic' if font.italic() else 'roman'),
+            f"{name}_weight = {'bold' if font.bold() else 'normal'}\n",
+            f"{name}_slant = {'italic' if font.italic() else 'roman'}\n",
             f"{name}_size = {font.pointSizeF()}\n"
         ]
         p.b = ''.join(comments + defs)

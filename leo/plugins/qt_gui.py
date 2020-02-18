@@ -1261,7 +1261,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@+<< create press-buttonText-button command >>
         #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >> qt_gui.makeScriptButton
         # #1121. Like sc.cleanButtonText
-        buttonCommandName = 'press-%s-button' % buttonText.replace(' ', '-').strip('-')
+        buttonCommandName = f"press-{buttonText.replace(' ', '-').strip('-')}-button"
         #
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
@@ -1725,7 +1725,7 @@ class StyleClassManager:
     #@+node:tbrown.20150724090431.9: *3* set_sclasses
     def set_sclasses(self, w, classes):
         """Set style classes for QWidget w to list in classes"""
-        w.setProperty(self.style_sclass_property, ' %s ' % ' '.join(set(classes)))
+        w.setProperty(self.style_sclass_property, f" {' '.join(set(classes))} ")
     #@+node:tbrown.20150724090431.10: *3* toggle_sclass
     def toggle_sclass(self, w, prop):
         """Toggle style class or list of classes prop on QWidget w"""
@@ -2138,7 +2138,7 @@ class StyleSheetManager:
                     replacements.append((old, new),)
                     break
             else:
-                g.trace('%35s ==> %s' % (url, 'NOT FOUND'))
+                g.trace(f"{url:35} ==> NOT FOUND")
                 if not paths_traced:
                     paths_traced = True
                     g.trace('Search paths...')

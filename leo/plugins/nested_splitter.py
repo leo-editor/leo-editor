@@ -1062,8 +1062,10 @@ if QtWidgets:  # NOQA
             if self.count() == len(layout['sizes']):
                 self.setSizes(layout['sizes'])
             else:
-                print('Wrong pane count at level %d, count:%d, sizes:%d' % (
-                    level, self.count(), len(layout['sizes'])))
+                print(
+                    f"Wrong pane count at level {level:d}, "
+                    f"count:{self.count():d}, "
+                    f"sizes:{len(layout['sizes']):d}")
                 self.equalize_sizes()
         #@+node:tbrown.20110628083641.21156: *3* ns.prune_empty
         def prune_empty(self):

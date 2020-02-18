@@ -240,9 +240,8 @@ class FreeLayoutController:
                         c.free_layout.get_top_splitter().load_layout(layout)
                     else:
                         g.trace('no layout', name)
-
-                commandName = 'free-layout-load-%s' % name.strip(
-                    ).lower().replace(' ', '-')
+                name_s = name.strip().lower().replace(' ', '-')
+                commandName = f"free-layout-load-{name_s}"
                 c.k.registerCommand(commandName, func)
         # Careful: we could be unit testing or in the Leo bridge.
         if layout:
