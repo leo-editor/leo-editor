@@ -56,6 +56,7 @@ import tempfile
 import time
 import traceback
 import types
+import unittest
 import urllib
 import urllib.parse as urlparse
 #@-<< imports >>
@@ -2428,6 +2429,38 @@ def isTextWidget(w):
 
 def isTextWrapper(w):
     return w and g.app.gui.isTextWrapper(w)
+#@+node:ekr.20200219071828.1: *3* class TestLeoGlobals
+class TestLeoGlobals(unittest.TestCase):
+    """Tests for leoGlobals.py."""
+    #@+others
+    #@+node:ekr.20200219071958.1: *4* test_comment_delims_from_extension
+    def test_comment_delims_from_extension(self):
+        
+        import leo.core.leoGlobals as g
+        import leo.core.leoApp as leoApp
+        g.app = leoApp.LeoApp()
+        assert g.comment_delims_from_extension(".py") == ('#', '', '')
+        assert g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
+        assert g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
+    #@+node:ekr.20200219072957.1: *4* test_is_sentinel
+    def test_is_sentinel(self):
+        
+        import leo.core.leoGlobals as g
+        # import leo.core.leoApp as leoApp
+        # g.app = leoApp.LeoApp()
+        # Python.
+        py_delims = g.comment_delims_from_extension('.py')
+        assert g.is_sentinel("#@+node",py_delims)
+        assert not g.is_sentinel("#comment",py_delims)
+        # C.
+        c_delims = g.comment_delims_from_extension('.c')
+        assert g.is_sentinel("//@+node",c_delims)
+        assert not g.is_sentinel("//comment",c_delims)
+        # Html.
+        html_delims = g.comment_delims_from_extension('.html')
+        assert g.is_sentinel("<!--@+node-->",html_delims)
+        assert not g.is_sentinel("<!--comment-->",html_delims)
+    #@-others
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
@@ -3089,17 +3122,6 @@ def timeSince(start):
 def comment_delims_from_extension(filename):
     """
     Return the comment delims corresponding to the filename's extension.
-
-    >>> import leo.core.leoGlobals as g
-    >>> g.comment_delims_from_extension(".py")
-    ('#', '', '')
-
-    >>> g.comment_delims_from_extension(".c")
-    ('//', '/*', '*/')
-
-    >>> g.comment_delims_from_extension(".html")
-    ('', '<!--', '-->')
-
     """
     if filename.startswith('.'):
         # Python 2.6 changes how splitext works.
@@ -3859,33 +3881,7 @@ def is_binary_string(s):
     return bool(s.translate(None, aList))
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel(line, delims):
-    #@+<< is_sentinel doc tests >>
-    #@+node:ekr.20040719161756: *4* << is_sentinel doc tests >>
-    """
-
-    Return True if line starts with a sentinel comment.
-
-    >>> import leo.core.leoGlobals as g
-    >>> py_delims = g.comment_delims_from_extension('.py')
-    >>> g.is_sentinel("#@+node",py_delims)
-    True
-    >>> g.is_sentinel("#comment",py_delims)
-    False
-
-    >>> c_delims = g.comment_delims_from_extension('.c')
-    >>> g.is_sentinel("//@+node",c_delims)
-    True
-    >>> g.is_sentinel("//comment",c_delims)
-    False
-
-    >>> html_delims = g.comment_delims_from_extension('.html')
-    >>> g.is_sentinel("<!--@+node-->",html_delims)
-    True
-    >>> g.is_sentinel("<!--comment-->",html_delims)
-    False
-
-    """
-    #@-<< is_sentinel doc tests >>
+    """Return True if line starts with a sentinel comment."""
     delim1, delim2, delim3 = delims
     line = line.lstrip()
     if delim1:
@@ -7908,6 +7904,9 @@ def openUrlHelper(event, url=None):
 
 g = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
+
+if __name__ == '__main__':
+    unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

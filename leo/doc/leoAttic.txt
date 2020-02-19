@@ -3505,6 +3505,13 @@ def spam():
             # Indented comment.
     else:
         pass
+#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
+tm = c.testManager
+path = g.os_path_join(g.app.loadDir,"..","core")
+exclude = ['leoIPython.py',]
+    # leoIPython.py will give an annoying error if IPython can't be imported.
+modules = tm.importAllModulesInPath(path,exclude=exclude)
+suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20191224054725.1: **  Retired plugins
 #@+node:ekr.20191224054733.1: *3* Retired plugin: scripts_menu.py
 """Creates a Scripts menu for LeoPy.leo."""
@@ -10590,6 +10597,56 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20200219073706.1: ** From leoTest.py
+#@+node:ekr.20120220070422.10420: *3* Top-level functions (leoTest)
+#@+node:ekr.20051104075904.97: *4* leoTest.py: factorial (a test of doctests)
+# Some of these will fail now for Python 2.x.
+
+def factorial(n):
+    """Return the factorial of n, an exact integer >= 0.
+
+    If the result is small enough to fit in an int, return an int.
+    Else return a long.
+
+    >>> [factorial(n) for n in range(6)]
+    [1, 1, 2, 6, 24, 120]
+    >>> factorial(30)
+    265252859812191058636308480000000
+    >>> factorial(-1)
+    Traceback (most recent call last):
+        ...
+    ValueError: n must be >= 0
+
+    Factorials of floats are OK, but the float must be an exact integer:
+    >>> factorial(30.1)
+    Traceback (most recent call last):
+        ...
+    ValueError: n must be exact integer
+    >>> factorial(30.0)
+    265252859812191058636308480000000
+
+    It must also not be ridiculously large:
+    >>> factorial(1e100)
+    Traceback (most recent call last):
+        ...
+    OverflowError: n too large
+    """
+    import math
+    if not n >= 0:
+        raise ValueError("n must be >= 0")
+    if math.floor(n) != n:
+        raise ValueError("n must be exact integer")
+    if n + 1 == n:  # catch a value like 1e300
+        raise OverflowError("n too large")
+    result = 1
+    factor = 2
+    while factor <= n:
+        try:
+            result *= factor
+        except OverflowError:
+            result = int(factor)
+        factor += 1
+    return result
 #@-all
 #@@nosearch
 #@-leo

@@ -31,6 +31,118 @@ if g.app:  # Make sure we can import this module stand-alone.
 else:
     newAtFile = False
 #@+others
+#@+node:ekr.20200219074036.1: ** Top-level functions
+#@+node:ekr.20051104075904.17: *3* function: runGC & helpers
+lastObjectCount = 0
+lastObjectsDict = {}
+lastTypesDict = {}
+lastFunctionsDict = {}
+# Adapted from similar code in leoGlobals.g.
+
+def runGc(disable=False):
+    message = "runGC"
+    if gc is None:
+        g.pr("@gc: can not import gc")
+        return
+    gc.enable()
+    set_debugGc()
+    gc.collect()
+    printGc(message=message)
+    if disable:
+        gc.disable()
+    # makeObjectList(message)
+
+runGC = runGc
+#@+node:ekr.20051104075904.18: *4* enableGc
+def set_debugGc():
+    gc.set_debug(
+        gc.DEBUG_STATS  # prints statistics.
+        # gc.DEBUG_LEAK | # Same as all below.
+        # gc.DEBUG_COLLECTABLE
+        # gc.DEBUG_UNCOLLECTABLE
+        # gc.DEBUG_SAVEALL
+    )
+#@+node:ekr.20051104075904.19: *4* makeObjectList
+def makeObjectList(message):
+    # WARNING: this id trick is not proper:
+    # newly allocated objects can have the same address as old objects.
+    global lastObjectsDict
+    objects = gc.get_objects()
+    newObjects = [o for o in objects if not id(o) in lastObjectsDict]
+    lastObjectsDict = {}
+    for o in objects:
+        lastObjectsDict[id(o)] = o
+    g.pr(
+        f"{message:25}: {len(newObjects):d} new, "
+        f"{len(objects):d} total objects")
+#@+node:ekr.20051104075904.20: *4* printGc
+def printGc(message=None):
+    """Called from unit tests."""
+    if not message:
+        message = g.callers(2)
+    global lastObjectCount
+    n = len(gc.garbage)
+    n2 = len(gc.get_objects())
+    delta = n2 - lastObjectCount
+    g.pr('-' * 30)
+    g.pr(f"garbage: {n}")
+    g.pr(f"{delta:6d} = {n2:7d} totals")
+    #@+<< print number of each type of object >>
+    #@+node:ekr.20051104075904.21: *5* << print number of each type of object >>
+    global lastTypesDict
+    typesDict = {}
+    for obj in gc.get_objects():
+        n = typesDict.get(type(obj), 0)
+        typesDict[type(obj)] = n + 1
+    # Create the union of all the keys.
+    keys = {}
+    for key in lastTypesDict:
+        if key not in typesDict:
+            keys[key] = None
+    for key in sorted(keys):
+        n1 = lastTypesDict.get(key, 0)
+        n2 = typesDict.get(key, 0)
+        delta2 = n2 - n1
+        if delta2 != 0:
+            g.pr(f"{delta2:+6d} = {n2:7d} {key}")
+    lastTypesDict = typesDict
+    typesDict = {}
+    #@-<< print number of each type of object >>
+    if 0:
+        #@+<< print added functions >>
+        #@+node:ekr.20051104075904.22: *5* << print added functions >>
+        import types
+        import inspect
+        global lastFunctionsDict
+        funcDict = {}
+        for obj in gc.get_objects():
+            if isinstance(obj, types.FunctionType):
+                key = repr(obj)  # Don't create a pointer to the object!
+                funcDict[key] = None
+                if key not in lastFunctionsDict:
+                    g.pr('\n', obj)
+                    args, varargs, varkw, defaults = inspect.signature(obj)
+                    g.pr("args", args)
+                    if varargs: g.pr("varargs", varargs)
+                    if varkw: g.pr("varkw", varkw)
+                    if defaults:
+                        g.pr("defaults...")
+                        for s in defaults: g.pr(s)
+        lastFunctionsDict = funcDict
+        funcDict = {}
+        #@-<< print added functions >>
+    lastObjectCount = n2
+    return delta
+#@+node:ekr.20051104075904.23: *4* printGcRefs
+def printGcRefs(verbose=True):
+    refs = gc.get_referrers(g.app.windowList[0])
+    g.pr('-' * 30)
+    if verbose:
+        g.pr("refs of", g.app.windowList[0])
+        for ref in refs:
+            g.pr(type(ref))
+    else:
+        g.pr(f"{len(refs):d} referrers")
 #@+node:ekr.20051104075904.70: ** class EditBodyTestCase
 class EditBodyTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
@@ -1663,166 +1775,6 @@ class TestManager:
         # Write the file to a string.
         return at.atFileToString(p, sentinels=sentinels)
     #@-others
-#@+node:ekr.20120220070422.10420: ** Top-level functions (leoTest)
-#@+node:ekr.20051104075904.97: *3* leoTest.py: factorial (a test of doctests)
-# Some of these will fail now for Python 2.x.
-
-def factorial(n):
-    """Return the factorial of n, an exact integer >= 0.
-
-    If the result is small enough to fit in an int, return an int.
-    Else return a long.
-
-    >>> [factorial(n) for n in range(6)]
-    [1, 1, 2, 6, 24, 120]
-    >>> factorial(30)
-    265252859812191058636308480000000
-    >>> factorial(-1)
-    Traceback (most recent call last):
-        ...
-    ValueError: n must be >= 0
-
-    Factorials of floats are OK, but the float must be an exact integer:
-    >>> factorial(30.1)
-    Traceback (most recent call last):
-        ...
-    ValueError: n must be exact integer
-    >>> factorial(30.0)
-    265252859812191058636308480000000
-
-    It must also not be ridiculously large:
-    >>> factorial(1e100)
-    Traceback (most recent call last):
-        ...
-    OverflowError: n too large
-    """
-    import math
-    if not n >= 0:
-        raise ValueError("n must be >= 0")
-    if math.floor(n) != n:
-        raise ValueError("n must be exact integer")
-    if n + 1 == n:  # catch a value like 1e300
-        raise OverflowError("n too large")
-    result = 1
-    factor = 2
-    while factor <= n:
-        try:
-            result *= factor
-        except OverflowError:
-            result = int(factor)
-        factor += 1
-    return result
-#@+node:ekr.20051104075904.17: *3* leoTest.py:runGC & helpers (apparently not used)
-lastObjectCount = 0
-lastObjectsDict = {}
-lastTypesDict = {}
-lastFunctionsDict = {}
-# Adapted from similar code in leoGlobals.g.
-
-def runGc(disable=False):
-    message = "runGC"
-    if gc is None:
-        g.pr("@gc: can not import gc")
-        return
-    gc.enable()
-    set_debugGc()
-    gc.collect()
-    printGc(message=message)
-    if disable:
-        gc.disable()
-    # makeObjectList(message)
-
-runGC = runGc
-#@+node:ekr.20051104075904.18: *4* enableGc
-def set_debugGc():
-    gc.set_debug(
-        gc.DEBUG_STATS  # prints statistics.
-        # gc.DEBUG_LEAK | # Same as all below.
-        # gc.DEBUG_COLLECTABLE
-        # gc.DEBUG_UNCOLLECTABLE
-        # gc.DEBUG_SAVEALL
-    )
-#@+node:ekr.20051104075904.19: *4* makeObjectList
-def makeObjectList(message):
-    # WARNING: this id trick is not proper:
-    # newly allocated objects can have the same address as old objects.
-    global lastObjectsDict
-    objects = gc.get_objects()
-    newObjects = [o for o in objects if not id(o) in lastObjectsDict]
-    lastObjectsDict = {}
-    for o in objects:
-        lastObjectsDict[id(o)] = o
-    g.pr(
-        f"{message:25}: {len(newObjects):d} new, "
-        f"{len(objects):d} total objects")
-#@+node:ekr.20051104075904.20: *4* printGc
-def printGc(message=None):
-    """Called from unit tests."""
-    if not message:
-        message = g.callers(2)
-    global lastObjectCount
-    n = len(gc.garbage)
-    n2 = len(gc.get_objects())
-    delta = n2 - lastObjectCount
-    g.pr('-' * 30)
-    g.pr(f"garbage: {n}")
-    g.pr(f"{delta:6d} = {n2:7d} totals")
-    #@+<< print number of each type of object >>
-    #@+node:ekr.20051104075904.21: *5* << print number of each type of object >>
-    global lastTypesDict
-    typesDict = {}
-    for obj in gc.get_objects():
-        n = typesDict.get(type(obj), 0)
-        typesDict[type(obj)] = n + 1
-    # Create the union of all the keys.
-    keys = {}
-    for key in lastTypesDict:
-        if key not in typesDict:
-            keys[key] = None
-    for key in sorted(keys):
-        n1 = lastTypesDict.get(key, 0)
-        n2 = typesDict.get(key, 0)
-        delta2 = n2 - n1
-        if delta2 != 0:
-            g.pr(f"{delta2:+6d} = {n2:7d} {key}")
-    lastTypesDict = typesDict
-    typesDict = {}
-    #@-<< print number of each type of object >>
-    if 0:
-        #@+<< print added functions >>
-        #@+node:ekr.20051104075904.22: *5* << print added functions >>
-        import types
-        import inspect
-        global lastFunctionsDict
-        funcDict = {}
-        for obj in gc.get_objects():
-            if isinstance(obj, types.FunctionType):
-                key = repr(obj)  # Don't create a pointer to the object!
-                funcDict[key] = None
-                if key not in lastFunctionsDict:
-                    g.pr('\n', obj)
-                    args, varargs, varkw, defaults = inspect.signature(obj)
-                    g.pr("args", args)
-                    if varargs: g.pr("varargs", varargs)
-                    if varkw: g.pr("varkw", varkw)
-                    if defaults:
-                        g.pr("defaults...")
-                        for s in defaults: g.pr(s)
-        lastFunctionsDict = funcDict
-        funcDict = {}
-        #@-<< print added functions >>
-    lastObjectCount = n2
-    return delta
-#@+node:ekr.20051104075904.23: *4* printGcRefs
-def printGcRefs(verbose=True):
-    refs = gc.get_referrers(g.app.windowList[0])
-    g.pr('-' * 30)
-    if verbose:
-        g.pr("refs of", g.app.windowList[0])
-        for ref in refs:
-            g.pr(type(ref))
-    else:
-        g.pr(f"{len(refs):d} referrers")
 #@-others
 #@@language python
 #@@tabwidth -4

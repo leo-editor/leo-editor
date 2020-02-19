@@ -361,13 +361,6 @@ def set_got (self,expected,got):
         got_html = got.insertAsNthChild(1)
         got_html.h = 'html'
     return got_html,got_rst
-#@+node:ekr.20090703080553.5000: ** @suite run all doctests
-tm = c.testManager
-path = g.os_path_join(g.app.loadDir,"..","core")
-exclude = ['leoIPython.py',]
-    # leoIPython.py will give an annoying error if IPython can't be imported.
-modules = tm.importAllModulesInPath(path,exclude=exclude)
-suite   = tm.createUnitTestsFromDoctests(modules)
 #@+node:ekr.20100131171342.5471: ** General
 #@+node:ekr.20100131171342.5485: *3* @test all commands have an event arg
 import inspect
@@ -12476,6 +12469,15 @@ for i in range(3):
     val = s2 + ('\n' * i)
     assert result == val, 'expected %s, got %s' % (
         repr(val),repr(result))
+#@+node:ekr.20140702101937.4245: *4* @test g.find_word
+table = (
+    ('abc a bc x','bc',0,6),
+    ('abc a bc x','bc',1,6),
+    ('abc a x','bc',0,-1),
+)
+for s,word,i,expected in table:
+    actual = g.find_word(s,word,i)
+    assert actual == expected
 #@+node:ekr.20180128105733.1: *4* @test g.findNode*
 trace = False
 skipped = 0
@@ -12515,15 +12517,6 @@ else:
     skipped += 1
 if trace and skipped:
     print('%s: skipped %s sub-tests' % (p0.h, skipped))
-#@+node:ekr.20140702101937.4245: *4* @test g.find_word
-table = (
-    ('abc a bc x','bc',0,6),
-    ('abc a bc x','bc',1,6),
-    ('abc a x','bc',0,-1),
-)
-for s,word,i,expected in table:
-    actual = g.find_word(s,word,i)
-    assert actual == expected
 #@+node:ekr.20100131180007.5455: *4* @test g.fullPath
 p2 = p.firstChild().firstChild()
 path = g.fullPath(c,p2,simulate=True)
@@ -13065,6 +13058,15 @@ else:
 #@+node:ekr.20050208135429: *4* @test pre-definition of g in scripts
 for ivar in ('c','g','p'):
     assert ivar in dir()
+#@+node:ekr.20200219072300.1: *4* @test python -m leo.core.leoGlobals
+#1498: Run per-file unit tests from unitTest.leo.
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+command = 'python -m unittest leo.core.leoGlobals'
+print('')
+print(command)
+g.execute_shell_commands(command)
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
