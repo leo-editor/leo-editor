@@ -758,6 +758,15 @@ s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tok
 assert s
 controller = msf.StandAloneMakeStubFile()
 msf.StubTraverser(controller).visit(node)
+#@+node:ekr.20200219070034.1: *4* @test python -m leo.core.leoAst
+#1498: Run per-file unit tests from unitTest.leo.
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+command = 'python -m unittest leo.core.leoAst'
+print('')
+print(command)
+g.execute_shell_commands(command)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
@@ -11968,6 +11977,15 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
+#@+node:ekr.20200219070324.1: *4* @test python -m leo.core.leoFind
+#1498: Run per-file unit tests from unitTest.leo.
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+command = 'python -m unittest leo.core.leoFind'
+print('')
+print(command)
+g.execute_shell_commands(command)
 #@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
 fc = c.findCommands
 
@@ -27906,19 +27924,6 @@ s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 with open(name,'w',encoding='utf-8') as f:
     f.write(s)
 assert g.os_path_exists(name)
-#@+node:ekr.20200218101259.1: ** @test z run per-file unit tests
-#1498: Run per-file unit tests from unitTest.leo.
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-table = (
-    'leo.core.leoAst',
-    'leo.core.leoFind',
-)
-print('')
-for file_ in table:
-    g.execute_shell_commands(f"python -m unittest {file_}")
-    print(f"end of python -m unittest {file_}")
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
 # Print does not work: it is redirected.
 g.pr('\nall unit tests done',color='blue')

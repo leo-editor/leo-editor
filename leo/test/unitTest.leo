@@ -192,7 +192,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e342e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e342e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20200218101259.1"><vh>@test z run per-file unit tests</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1074,7 +1073,8 @@ assert result.strip().lower()=='f1', repr(result)
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.
-</t>
+
+# Search for `@test python -m` to find all new-style tests.</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
@@ -1592,19 +1592,6 @@ nodeB
     pass</t>
 <t tx="ekr.20200205065723.3">def eggs():
     pass
-</t>
-<t tx="ekr.20200218101259.1">#1498: Run per-file unit tests from unitTest.leo.
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-table = (
-    'leo.core.leoAst',
-    'leo.core.leoFind',
-)
-print('')
-for file_ in table:
-    g.execute_shell_commands(f"python -m unittest {file_}")
-    print(f"end of python -m unittest {file_}")
 </t>
 </tnodes>
 </leo_file>
