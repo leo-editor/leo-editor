@@ -2874,7 +2874,7 @@ class Orange:
         Return True if the line was broken into two or more lines.
         """
         trace = False
-        if self.max_split_line_length <= 0:
+        if self.max_split_line_length <= 0:  # pragma: no cover (user option)
             return False
         assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
@@ -2893,11 +2893,11 @@ class Orange:
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
         # Return if the split would involve strings.
-        if 0:
-            # A bad idea. This would prevent far too many splits.
-            if not self.allow_joined_strings:
-                if any([z.kind == 'string' for z in line_tokens]):
-                    return False
+        ###
+            # # A bad idea. This would prevent far too many splits.
+            # if not self.allow_joined_strings:
+                # if any([z.kind == 'string' for z in line_tokens]):
+                    # return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
@@ -2930,8 +2930,9 @@ class Orange:
         close_delim = Token(kind='rt', value=value)
         delim_count = 1
         lws = self.lws + ' ' * 4
+        ### g.trace(delim_count)
+        ### g.printObj(tail, tag='tail')
         for i, t in enumerate(tail):
-            # g.trace(delim_count, str(t))
             if t.kind == 'op' and t.value == ',':
                 if delim_count == 1:
                     # Start a new line.
@@ -2999,7 +3000,7 @@ class Orange:
         Join preceding lines, if possible and enabled.
         token is a line_end token. node is the corresponding ast node.
         """
-        if self.max_join_line_length <= 0:
+        if self.max_join_line_length <= 0:  # pragma: no cover (user option)
             return
         assert token.kind in ('newline', 'nl'), repr(token)
         if token.kind == 'nl':
@@ -3926,6 +3927,14 @@ class TestFstringify(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.fstringify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200219125956.1: *4* TestFstringity.test_switch_quotes_fail
+    def test_switch_quotes_fail(self):
+
+        contents = """print('Test %s %s' % ('one', "two"))"""
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.fstringify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@-others
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange(BaseTest):
@@ -4475,6 +4484,7 @@ class TestOrange(BaseTest):
     """,
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc', 'ddddddddddddddddd')""",
+    """print('eee', ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'), 'jjjjjjj', 'kkkkkk')""",
         )
         fails = 0
         for contents in table:
@@ -4489,9 +4499,9 @@ class TestOrange(BaseTest):
             )
             message = (
                 f"\n"
-                f"  contents: {contents}\n"
-                f"     black: {expected!r}\n"
-                f"    orange: {results!r}")
+                f"  contents: {contents!s}\n"
+                f"     black: {expected!s}\n"
+                f"    orange: {results!s}")
             if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
@@ -4670,7 +4680,7 @@ class TestOrange(BaseTest):
         # Necessary.
         expected = expected.replace('#@verbatim\n', '').rstrip() + '\n'
         results = results.replace('#@verbatim\n', '')
-        # if 1:
+        ### if 1:
             # if results != expected:
                 # g.printObj(expected, tag='expected')
                 # g.printObj(results, tag='results')
@@ -5841,11 +5851,11 @@ class Fstringify(TokenOrderTraverser):
         Return the result string, or None if there are errors.
         """
         # Fail if there is a backslash within { and }.
-        if not self.check_back_slashes(lt_s, tokens):  # pragma: no cover
-            return None
+        if not self.check_back_slashes(lt_s, tokens):  
+            return None  # pragma: no cover
         # Ensure consistent quotes.
-        if not self.change_quotes(lt_s, tokens):  # pragma: no cover
-            return None
+        if not self.change_quotes(lt_s, tokens):
+            return None  # pragma: no cover
         return tokens_to_string(tokens)
     #@+node:ekr.20200215074309.1: *6* fs.check_back_slashes
     def check_back_slashes(self, lt_s, tokens):
@@ -5862,8 +5872,8 @@ class Fstringify(TokenOrderTraverser):
                 elif z.value == '}':
                     count -= 1
             if (count % 2) == 1 and '\\' in z.value:
-                if not self.silent:  # For unit testing.
-                    self.message(
+                if not self.silent:  
+                    self.message(  # pragma: no cover (silent during unit tests)
                         f"can't create f-fstring: {lt_s!r}\n"
                         f":backslash in {{expr}}:")
                 return False
@@ -5882,9 +5892,9 @@ class Fstringify(TokenOrderTraverser):
         aList[-1]: ('string', a single or double quote matching aList[1])
         """
         # Sanity checks.
-        if len(aList) < 4:  # pragma: no cover
-            return True
-        if not lt_s:  # pragma: no cover
+        if len(aList) < 4:
+            return True  # pragma: no cover (defensive)
+        if not lt_s:  # pragma: no cover (defensive)
             self.message(f"can't create f-fstring: no lt_s!")
             return False
         delim = lt_s[0]
@@ -5897,20 +5907,21 @@ class Fstringify(TokenOrderTraverser):
             ok = (
                 token.kind == 'string' or
                 token.kind == 'op' and token.value in '{}')
-            if not ok:  # pragma: no cover
+            if not ok:  # pragma: no cover (defensive)
                 self.message(
                     f"unexpected token: {token.kind} {token.value}\n"
                     f":           lt_s: {lt_s!r}")
                 return False
         # These checks are important...
-        if token0.value != 'f':  # pragma: no cover
-            return False
+        if token0.value != 'f':
+            return False  # pragma: no cover (defensive)
         val1 = token1.value
-        if delim != val1:  # pragma: no cover
-            return False
+        if delim != val1:
+            return False  # pragma: no cover (defensive)
         val_last = token_last.value
-        if delim != val_last:  # pragma: no cover
-            return False
+        if delim != val_last:
+            return False  # pragma: no cover (defensive)
+        #
         # Check for conflicting delims, preferring f"..." to f'...'.
         for delim in ('"', "'"):
             aList[1] = aList[-1] = Token('string', delim)
