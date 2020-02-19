@@ -3976,41 +3976,34 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
-
-        contents = """\
+        
+        table = (
+        # Case 0.
+        """\
     @my_decorator(1)
     def func():
         pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116100603.1: *4* TestOrange.test_decorator_2
-    def test_decorator_2(self):
-
-        contents = """\
+    """,
+        # Case 1.
+        """\
     if 1:
         @my_decorator
         def func():
             pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200211142856.1: *4* TestOrange.test_decorator_3
-    def test_decorator_3(self):
-
-        contents = '''\
+    """,
+        # Case 2.
+        '''\
     @g.commander_command('promote')
     def promote(self, event=None, undoFlag=True, redrawFlag=True):
         """Make all children of the selected nodes siblings of the selected node."""
-    '''
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+    ''',
+        )
+        for i, contents in enumerate(table):
+            contents, tokens, tree = self.make_data(contents)
+            expected = self.blacken(contents).rstrip() + '\n'
+            results = self.beautify(contents, tokens, tree)
+            assert results == expected, (
+                i, expected_got(repr(expected), repr(results)))
     #@+node:ekr.20200211094614.1: *4* TestOrange.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
@@ -4061,49 +4054,36 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
     def test_function_defs(self):
-        tag = 'test_function_defs'
-        contents = """\
+      
+        table = (
+        # Case 0.
+        """\
     def f1(a=2 + 5):
         pass
-    """
-        contents, tokens, tree = self.make_data(contents, tag)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116112855.1: *4* TestOrange.test_function_defs_2
-    def test_function_defs_2(self):
-        contents = """\
+    """,
+        # Case 2
+         """\
     def f1(*args, **kwargs):
         pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200116113143.1: *4* TestOrange.test_function_defs_3
-    def test_function_defs_3(self):
-
-        # Coverage test for spaces
-        contents = """\
+    """,
+        # Case 3.
+        """\
     def f1( *args, **kwargs ):
         pass
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
-    #@+node:ekr.20200210165015.1: *4* TestOrange.test_function_defs_4
-    def test_function_defs_4(self):
-
-        contents = '''\
+    """,
+        # Case 4.
+        '''\
     def should_kill_beautify(p):
         """Return True if p.b contains @killbeautify"""
         return 'killbeautify' in g.get_directives_dict(p)
-    '''
-        contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+    ''',
+        )
+        for i, contents in enumerate(table):
+            contents, tokens, tree = self.make_data(contents)
+            expected = self.blacken(contents).rstrip() + '\n'
+            results = self.beautify(contents, tokens, tree)
+            assert results == expected, (
+                i, expected_got(repr(expected), repr(results)))
     #@+node:ekr.20200209152745.1: *4* TestOrange.test_indented_comment
     def test_indented_comment(self):
 
@@ -4270,7 +4250,7 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert not fails, fails
-    #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels_1
+    #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
         # Careful: don't put a sentinel into the file directly.
@@ -4604,17 +4584,6 @@ class TestOrange(BaseTest):
         add_bool('--diff',          'use Leo as an external git diff')
         # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
-        add_bool('--init-docks',    'put docks in default positions')
-        add_bool('--ipython',       'enable ipython support')
-        add_bool('--fail-fast',     'stop unit tests after the first failure')
-        add_bool('--global-docks',  'use global docks')
-        add_other('--gui',          'gui to use (qt/console/null)')
-        add_bool('--listen-to-log', 'start log_listener.py on startup')
-        add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
-        add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
-        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
-        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
         # Multiple bool values.
