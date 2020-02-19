@@ -3952,6 +3952,35 @@ class TestOrange(BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
+    def test_at_doc_part(self):
+        
+        line_length = 40  # For testing.
+        #
+        # Warning: Do not put bare sentinel lines here!
+        #          Doing so destroys leoAst.py!
+        #
+        contents = f"""\
+    SENT+at Line 1
+    # Line 2
+    SENTc
+
+    print('hi')
+    """
+        contents = contents.replace('SENT', '#@')
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tokens, tree,
+            delete_blank_lines=False,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        message = (
+            f"\n"
+            f"  contents: {contents}\n"
+            f"     black: {expected!r}\n"
+            f"    orange: {results!r}")
+        assert results == expected, message
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
