@@ -522,53 +522,6 @@ class EmergencyDialog:
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
-#@+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
-class TkIDDialog(EmergencyDialog):
-    """A class that creates an tkinter dialog to get the Leo ID."""
-
-    message = (
-        "leoID.txt not found\n\n"
-        "Please enter an id that identifies you uniquely.\n"
-        "Your git/cvs/bzr login name is a good choice.\n\n"
-        "Leo uses this id to uniquely identify nodes.\n\n"
-        "Your id should contain only letters and numbers\n"
-        "and must be at least 3 characters in length.")
-
-    title = 'Enter Leo id'
-
-    def __init__(self):
-        super().__init__(self.title, self.message)
-        self.val = ''
-
-    #@+others
-    #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event):
-        """Handle Key events in askOk dialogs."""
-        if event.char in '\n\r':
-            self.okButton()
-    #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
-    def createTopFrame(self):
-        """Create the Tk.Toplevel widget for a leoTkinterDialog."""
-        import tkinter as Tk
-        self.root = Tk.Tk()
-        self.top = Tk.Toplevel(self.root)
-        self.top.title(self.title)
-        self.root.withdraw()
-        self.frame = Tk.Frame(self.top)
-        self.frame.pack(side="top", expand=1, fill="both")
-        label = Tk.Label(self.frame, text=self.message, bg='white')
-        label.pack(pady=10)
-        self.entry = Tk.Entry(self.frame)
-        self.entry.pack()
-        self.entry.focus_set()
-    #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
-    def okButton(self):
-        """Do default click action in ok button."""
-        self.val = self.entry.get()
-            # Return is not possible.
-        self.top.destroy()
-        self.top = None
-    #@-others
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
@@ -1997,6 +1950,53 @@ class SherlockTracer:
         import sys
         sys.settrace(None)
     #@-others
+#@+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
+class TkIDDialog(EmergencyDialog):
+    """A class that creates an tkinter dialog to get the Leo ID."""
+
+    message = (
+        "leoID.txt not found\n\n"
+        "Please enter an id that identifies you uniquely.\n"
+        "Your git/cvs/bzr login name is a good choice.\n\n"
+        "Leo uses this id to uniquely identify nodes.\n\n"
+        "Your id should contain only letters and numbers\n"
+        "and must be at least 3 characters in length.")
+
+    title = 'Enter Leo id'
+
+    def __init__(self):
+        super().__init__(self.title, self.message)
+        self.val = ''
+
+    #@+others
+    #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
+    def onKey(self, event):
+        """Handle Key events in askOk dialogs."""
+        if event.char in '\n\r':
+            self.okButton()
+    #@+node:ekr.20191013145757.1: *4* leo_id_dialog.createTopFrame
+    def createTopFrame(self):
+        """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+        import tkinter as Tk
+        self.root = Tk.Tk()
+        self.top = Tk.Toplevel(self.root)
+        self.top.title(self.title)
+        self.root.withdraw()
+        self.frame = Tk.Frame(self.top)
+        self.frame.pack(side="top", expand=1, fill="both")
+        label = Tk.Label(self.frame, text=self.message, bg='white')
+        label.pack(pady=10)
+        self.entry = Tk.Entry(self.frame)
+        self.entry.pack()
+        self.entry.focus_set()
+    #@+node:ekr.20191013150158.1: *4* leo_id_dialog.okButton
+    def okButton(self):
+        """Do default click action in ok button."""
+        self.val = self.entry.get()
+            # Return is not possible.
+        self.top.destroy()
+        self.top = None
+    #@-others
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
 class Tracer:
     """A "debugger" that computes a call graph.
@@ -2423,12 +2423,6 @@ class UiTypeException(Exception):
 def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
-#@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
-def isTextWidget(w):
-    return w and g.app.gui.isTextWidget(w)
-
-def isTextWrapper(w):
-    return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20200219071828.1: *3* class TestLeoGlobals
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
@@ -2436,31 +2430,37 @@ class TestLeoGlobals(unittest.TestCase):
     #@+node:ekr.20200219071958.1: *4* test_comment_delims_from_extension
     def test_comment_delims_from_extension(self):
         
-        import leo.core.leoGlobals as g
+        # pylint: disable=import-self
+        import leo.core.leoGlobals as leo_g
         import leo.core.leoApp as leoApp
-        g.app = leoApp.LeoApp()
-        assert g.comment_delims_from_extension(".py") == ('#', '', '')
-        assert g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
-        assert g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
+        leo_g.app = leoApp.LeoApp()
+        assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
+        assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
+        assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
     #@+node:ekr.20200219072957.1: *4* test_is_sentinel
     def test_is_sentinel(self):
         
-        import leo.core.leoGlobals as g
-        # import leo.core.leoApp as leoApp
-        # g.app = leoApp.LeoApp()
+        # pylint: disable=import-self
+        import leo.core.leoGlobals as leo_g
         # Python.
-        py_delims = g.comment_delims_from_extension('.py')
-        assert g.is_sentinel("#@+node",py_delims)
-        assert not g.is_sentinel("#comment",py_delims)
+        py_delims = leo_g.comment_delims_from_extension('.py')
+        assert leo_g.is_sentinel("#@+node",py_delims)
+        assert not leo_g.is_sentinel("#comment",py_delims)
         # C.
-        c_delims = g.comment_delims_from_extension('.c')
-        assert g.is_sentinel("//@+node",c_delims)
+        c_delims = leo_g.comment_delims_from_extension('.c')
+        assert leo_g.is_sentinel("//@+node",c_delims)
         assert not g.is_sentinel("//comment",c_delims)
         # Html.
-        html_delims = g.comment_delims_from_extension('.html')
-        assert g.is_sentinel("<!--@+node-->",html_delims)
-        assert not g.is_sentinel("<!--comment-->",html_delims)
+        html_delims = leo_g.comment_delims_from_extension('.html')
+        assert leo_g.is_sentinel("<!--@+node-->",html_delims)
+        assert not leo_g.is_sentinel("<!--comment-->",html_delims)
     #@-others
+#@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
+def isTextWidget(w):
+    return w and g.app.gui.isTextWidget(w)
+
+def isTextWrapper(w):
+    return w and g.app.gui.isTextWrapper(w)
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)
@@ -3115,9 +3115,9 @@ def printDiffTime(message, start):
 def timeSince(start):
     return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
-# New in Leo 4.6:
-# g.findAtTabWidthDirectives, g.findLanguageDirectives and
-# g.get_directives_dict use re module for faster searching.
+# Weird pylint bug, activated by TestLeoGlobals class.
+# Disabling this will be safe, because pyflakes will still warn about true redefinitions 
+# pylint: disable=function-redefined
 #@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
     """
