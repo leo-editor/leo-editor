@@ -3990,6 +3990,23 @@ class TestOrange(BaseTest):
         # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
+    def test_blank_lines_after_function(self):
+      
+        contents = """\
+    def spam():
+        pass
+
+    # comment line
+    a = 2
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree)
+        g.printObj(contents, tag='contents')
+        g.printObj(expected, tag='expected')
+        g.printObj(results, tag='results')
+        assert results == expected ### , expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
         
@@ -4046,28 +4063,6 @@ class TestOrange(BaseTest):
             f"     black: {expected!r}\n"
             f"    orange: {results!r}")
         assert results == expected, message
-    #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
-    def test_join_suppression(self):
-
-        # The newline after a = 1 generates an 'nl' token!
-        contents = """\
-    class T:
-        a = 1
-
-        print(
-           a
-        )
-    """
-        expected = """\
-    class T:
-        a = 1
-        print(a)
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected).rstrip() + '\n'
-        # expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
     def test_function_defs(self):
       
@@ -4232,6 +4227,28 @@ class TestOrange(BaseTest):
             elif 0:  # pragma: no cover
                 print(f"Ok:\n{message}")
         assert fails == 0, fails
+    #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
+    def test_join_suppression(self):
+
+        # The newline after a = 1 generates an 'nl' token!
+        contents = """\
+    class T:
+        a = 1
+
+        print(
+           a
+        )
+    """
+        expected = """\
+    class T:
+        a = 1
+        print(a)
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = g.adjustTripleString(expected).rstrip() + '\n'
+        # expected = self.blacken(contents).rstrip() + '\n'
+        results = self.beautify(contents, tokens, tree)
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
     def test_join_too_long_lines(self):
 
@@ -4617,43 +4634,6 @@ class TestOrange(BaseTest):
             f"expected: {expected!r}\n"
             f"  orange: {results!r}")
         assert results == expected, message
-    #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
-    def test_verbatim_with_pragma(self):
-
-        line_length = 40  # For testing.
-        contents = """\
-    #pragma: no beautify
-        
-    def addOptionsToParser(self, parser, trace_m):
-        
-        add = parser.add_option
-        
-        def add_bool(option, help, dest=None):
-            add(option, action='store_true', dest=dest, help=help)
-
-        add_bool('--diff',          'use Leo as an external git diff')
-        # add_bool('--dock',          'use a Qt dock')
-        add_bool('--fullscreen',    'start fullscreen')
-        add_other('--window-size',  'initial window size (height x width)', m='SIZE')
-        add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
-        # Multiple bool values.
-        add('-v', '--version', action='store_true',
-            help='print version number and exit')
-            
-    # pragma: beautify
-    """
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents
-        results = self.beautify(contents, tokens, tree,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
-        message = (
-            f"\n"
-            f"contents: {contents}\n"
-            f"expected: {expected!r}\n"
-            f"  orange: {results!r}")
-        assert results == expected, message
     #@+node:ekr.20200211190650.1: *4* TestOrange.test_verbatim_fail
     def test_verbatim_fail(self):
 
@@ -4704,6 +4684,43 @@ class TestOrange(BaseTest):
                 # # g.printObj(tokens, tag='tokens')
                 # assert False
             # return
+        message = (
+            f"\n"
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
+        assert results == expected, message
+    #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
+    def test_verbatim_with_pragma(self):
+
+        line_length = 40  # For testing.
+        contents = """\
+    #pragma: no beautify
+        
+    def addOptionsToParser(self, parser, trace_m):
+        
+        add = parser.add_option
+        
+        def add_bool(option, help, dest=None):
+            add(option, action='store_true', dest=dest, help=help)
+
+        add_bool('--diff',          'use Leo as an external git diff')
+        # add_bool('--dock',          'use a Qt dock')
+        add_bool('--fullscreen',    'start fullscreen')
+        add_other('--window-size',  'initial window size (height x width)', m='SIZE')
+        add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
+        # Multiple bool values.
+        add('-v', '--version', action='store_true',
+            help='print version number and exit')
+            
+    # pragma: beautify
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
         message = (
             f"\n"
             f"contents: {contents}\n"
