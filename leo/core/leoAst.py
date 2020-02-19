@@ -3756,19 +3756,15 @@ class TestFstringify(BaseTest):
     #@+node:ekr.20200122035055.1: *4* TestFstringity.test_call_with_comments
     def test_call_with_comments(self):
 
-        if 0:
-            contents = """print('%s in %5.2f sec' % ("done", 2.9))"""
-            expected = """print(f'{"done"} in {2.9:5.2f} sec')\n"""
-        else:
 
-            contents = """\
+        contents = """\
     print('%s in %5.2f sec' % (
         "done", # message
         2.9, # time
     )) # trailing comment"""
 
-            ### What about internal comments?
-            expected = """\
+        ### What about internal comments?
+        expected = """\
     print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
     """
         contents, tokens, tree = self.make_data(contents)
@@ -3832,7 +3828,6 @@ class TestFstringify(BaseTest):
     def test_munge_spec(self):
 
         # !head:tail or :tail
-        # tag = 'test_munge_spec'
         table = (
             ('+1s', '', '+1'),
             ('-2s', '', '>2'),
