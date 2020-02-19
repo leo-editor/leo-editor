@@ -317,7 +317,7 @@ if 1:  # pragma: no cover
             # Translate all newlines to '\n'.
             with open(filename, 'r', encoding=encoding) as f:
                 s = f.read()
-            return s
+            return regularize_nls(s)
         except Exception:
             print(f"{tag}: can not read {filename}")
             return None
@@ -349,7 +349,9 @@ if 1:  # pragma: no cover
         if not e:
             # Python's encoding comments override everything else.
             e = get_encoding_directive(bb)
-        return e, g.toUnicode(bb, encoding=e)
+        s = g.toUnicode(bb, encoding=e)
+        s = regularize_nls(s)
+        return e, s
     #@+node:ekr.20200106174158.1: *4* function: strip_BOM
     def strip_BOM(bb):
         """
@@ -5704,17 +5706,13 @@ class Fstringify(TokenOrderTraverser):
         except Exception as e:
             print(e)
             return False
-        if contents == results:
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        if 0:
-            if not self.silent:  # pragma: no cover
-                show_diffs(contents, results, filename=filename)
-        # Write the results
-        print(f"{tag}: Wrote {filename}")
-        write_file(filename, results, encoding=encoding)
-        return True
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        status = 'Wrote' if changed else 'Unchanged'
+        print(f"{tag}: {status:>9}: {filename}")
+        if changed:
+            write_file(filename, results, encoding=encoding)
+        return changed
     #@+node:ekr.20200103065728.1: *4* fs.fstringify_file_diff (entry)
     def fstringify_file_diff(self, filename):  # pragma: no cover
         """
@@ -5738,12 +5736,13 @@ class Fstringify(TokenOrderTraverser):
         except Exception as e:
             print(e)
             return False
-        if contents == results:
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        if changed:
+            show_diffs(contents, results, filename=filename)
+        else:
             print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        show_diffs(contents, results, filename=filename)
-        return True
+        return changed
     #@+node:ekr.20200112060218.1: *4* fs.fstringify_file_silent (entry)
     def fstringify_file_silent(self, filename):  # pragma: no cover
         """
@@ -5766,11 +5765,14 @@ class Fstringify(TokenOrderTraverser):
         except Exception as e:
             print(e)
             return False
-        # Write the results
-        status = 'Unchanged' if contents == results else 'Wrote'
+        # Something besides newlines must change.
+        changed = regularize_nls(contents) != regularize_nls(results)
+        status = 'Wrote' if changed else 'Unchanged'
+        # Write the results.
         print(f"{status:>9}: {filename}")
-        write_file(filename, results, encoding=encoding)
-        return contents == results
+        if changed:
+            write_file(filename, results, encoding=encoding)
+        return changed
     #@+node:ekr.20191222095754.1: *4* fs.make_fstring & helpers
     def make_fstring(self, node):
         """
