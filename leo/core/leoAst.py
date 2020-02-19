@@ -2463,7 +2463,7 @@ class Orange:
             state = self.state_stack[-1]
             if state.kind in ('class', 'def'):
                 self.state_stack.pop()
-                self.blank_lines(1)
+                self.blank_lines(1, end_class_or_def=True)
                     # Most Leo nodes aren't at the top level of the file.
                     # self.blank_lines(2 if self.level == 0 else 1)
 
@@ -2473,7 +2473,7 @@ class Orange:
         old_indent = self.level * self.tab_width * ' '
         if new_indent > old_indent:
             self.level += 1
-        elif new_indent < old_indent:  # pragma: no cover
+        elif new_indent < old_indent:  # pragma: no cover (defensive)
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
@@ -2665,7 +2665,7 @@ class Orange:
         ):
             self.add_token('blank', ' ')
     #@+node:ekr.20200107165250.29: *5* orange.blank_lines
-    def blank_lines(self, n):
+    def blank_lines(self, n, end_class_or_def=False):
         """
         Add a request for n blank lines to the code list.
         Multiple blank-lines request yield at least the maximum of all requests.
@@ -2675,9 +2675,22 @@ class Orange:
         if prev.kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        # Special case for Leo comments that start a node.
-        if prev.kind == 'comment' and prev.value.strip().startswith('#@+node:'):
-            n = 0
+        if prev.kind == 'comment':
+            if prev.value.strip().startswith('#@+node:'):
+                # Special case for Leo comments that start a node.
+                n = 0
+            elif end_class_or_def:
+                # Special case for end of 'class' or 'def'...
+                prev = self.code_list.pop()
+                # Put the newlines *before* the comments.
+                for i in range(0, n):
+                    self.add_token('line-end', '\n')
+                self.code_list.append(prev)
+                self.add_token('line-end', '\n')
+                # Retain the token (intention) for debugging.
+                self.add_token('blank-lines', n)
+                self.line_indent()
+                return
         for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
@@ -4003,10 +4016,10 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        g.printObj(contents, tag='contents')
-        g.printObj(expected, tag='expected')
-        g.printObj(results, tag='results')
-        assert results == expected ### , expected_got(repr(expected), repr(results))
+        ### g.printObj(contents, tag='contents')
+        # g.printObj(expected, tag='expected')
+        # g.printObj(results, tag='results')
+        assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
         
