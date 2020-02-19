@@ -2873,31 +2873,23 @@ class Orange:
         
         Return True if the line was broken into two or more lines.
         """
-        trace = False
+        assert token.kind in ('newline', 'nl'), repr(token)
+        # Return if splitting is disabled:
         if self.max_split_line_length <= 0:  # pragma: no cover (user option)
             return False
-        assert token.kind in ('newline', 'nl'), repr(token)
         # Return if the node can't be split.
         if not is_long_statement(node):
-            if trace: g.trace('===== not long statement', node)
             return False
-        # Return if splitting is disabled:
         # Find the *output* tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
         # Do nothing for short lines.
-        if self.max_split_line_length == 0 or len(line_s) < self.max_split_line_length:
+        if len(line_s) < self.max_split_line_length:
             return False
         # Return if the previous line has no opening delim: (, [ or {.
         if not any(
             [z.kind == 'lt' for z in line_tokens]):  # pragma: no cover (defensive)
             return False
-        # Return if the split would involve strings.
-        ###
-            # # A bad idea. This would prevent far too many splits.
-            # if not self.allow_joined_strings:
-                # if any([z.kind == 'string' for z in line_tokens]):
-                    # return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
         tail = line_tokens[len(prefix) :]
@@ -2930,8 +2922,6 @@ class Orange:
         close_delim = Token(kind='rt', value=value)
         delim_count = 1
         lws = self.lws + ' ' * 4
-        ### g.trace(delim_count)
-        ### g.printObj(tail, tag='tail')
         for i, t in enumerate(tail):
             if t.kind == 'op' and t.value == ',':
                 if delim_count == 1:
@@ -2951,13 +2941,6 @@ class Orange:
                 # Done if the delims match.
                 delim_count -= 1
                 if delim_count == 0:
-                    if 0:
-                        # Create an error, on purpose.
-                        # This test passes: proper dumps are created,
-                        # and the body is not updated.
-                        self.add_token('line-end', '\n')
-                        self.add_token('op', ',')
-                        self.add_token('number', '666')
                     # Start a new line
                     self.add_token('op-no-blanks', ',')
                     self.add_token('line-end', '\n')
@@ -4484,7 +4467,6 @@ class TestOrange(BaseTest):
     """,
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
     """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc', 'ddddddddddddddddd')""",
-    """print('eee', ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'), 'jjjjjjj', 'kkkkkk')""",
         )
         fails = 0
         for contents in table:
@@ -4521,6 +4503,40 @@ class TestOrange(BaseTest):
     if not any(
         [z.kind == 'lt' for z in line_tokens]):
         return False
+    """
+        fails = 0
+        contents, tokens, tree = self.make_data(contents)
+        # expected = self.blacken(contents, line_length=line_length)
+        expected = g.adjustTripleString(expected)
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=line_length,
+            max_split_line_length=line_length,
+        )
+        message = (
+            f"\n"
+            f"  contents: {contents!r}\n"
+            f"  expected: {expected!r}\n"
+            f"       got: {results!r}")
+        if results != expected:  # pragma: no cover
+            fails += 1
+            print(f"Fail: {fails}\n{message}")
+        elif 0:  # pragma: no cover
+            print(f"Ok:\n{message}")
+        assert fails == 0, fails
+    #@+node:ekr.20200219144837.1: *4* TestOrange.test_split_lines_3
+    def test_split_lines_3(self):
+
+        line_length = 40  # For testing.
+        # Different from how black handles things.
+        contents = """print('eee', ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'), 'jjjjjjj', 'kkkkkk')"""
+        # This is a bit different from black, but it's good enough for now.
+        expected = """\
+    print(
+        'eee',
+        ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'),
+        'jjjjjjj',
+        'kkkkkk',
+    )
     """
         fails = 0
         contents, tokens, tree = self.make_data(contents)
@@ -5930,9 +5946,10 @@ class Fstringify(TokenOrderTraverser):
                     break
             else:
                 return True
-        self.message(
-            f"can't create f-fstring: {lt_s!r}\n"
-            f":   conflicting delims:")
+        if not self.silent:  # pragma: no cover (silent unit test)
+            self.message(
+                f"can't create f-fstring: {lt_s!r}\n"
+                f":   conflicting delims:")
         return False
     #@+node:ekr.20191222102831.6: *5* fs.munge_spec
     def munge_spec(self, spec):
