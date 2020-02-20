@@ -2434,6 +2434,9 @@ class Orange:
                 # self.paren_level = 0
                 # self.square_brackets_stack = []
                 # self.state_stack = []
+            #
+            # Ensure exactly one newline before the comment.
+            self.blank_lines(1) ###
         else:
             # Keep track of verbatim mode.
             if self.beautify_pat.match(val):
@@ -4769,6 +4772,7 @@ class TestOrange(BaseTest):
     class PosList(list):
     SENTverbatim
         SENT+others
+
     SENTverbatim
         SENT+node:ekr.20140531104908.17611: *4* PosList.ctor
         def __init__(self, c, aList=None):
