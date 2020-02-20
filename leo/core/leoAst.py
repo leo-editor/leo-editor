@@ -4074,6 +4074,27 @@ class TestOrange(BaseTest):
         g.printObj(expected, tag='expected')
         g.printObj(results, tag='results')
         assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
+    def test_blank_lines_after_function_3(self):
+      
+        contents = r"""\
+    def writeAsisNode(self, p):
+        print('1')
+
+        def put(s):
+            print('2')
+
+        # Write the headline only if it starts with '@@'.
+
+        s = p.h
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree)
+        # g.printObj(contents, tag='contents')
+        g.printObj(expected, tag='expected')
+        g.printObj(results, tag='results')
+        assert results == expected ###, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
         
