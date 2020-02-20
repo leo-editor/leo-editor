@@ -2406,7 +2406,8 @@ class Orange:
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
-    # Patterns from FastAtRead class, specialize for python delims.
+    # Patterns from FastAtRead class, specialized for python delims.
+    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$') # @node
     start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
 
     # Doc parts end with @c or a node sentinel
@@ -2417,16 +2418,34 @@ class Orange:
     def do_comment(self):
         """Handle a comment token."""
         val = self.val
-        # Keep track of verbatim mode.
-        if self.beautify_pat.match(val):
-            self.verbatim = False
-        elif self.nobeautify_pat.match(val):
-            self.verbatim = True
-        # Keep trace of @doc parts, to honor the convention for splitting lines.
-        if self.start_doc_pat.match(val):
-            self.in_doc_part = True
-        if self.end_doc_pat.match(val):
+        #
+        # Leo-specific code...
+        if self.node_pat.match(val):
+            # Clear per-node state.
             self.in_doc_part = False
+            self.verbatim = False
+            self.decorator_seen = False
+            # Do *not clear other state, which may persist across @others.
+                # self.curly_brackets_level = 0 
+                # self.in_arg_list = 0 
+                # self.level = 0
+                # self.lws = ''
+                # self.paren_level = 0
+                # self.square_brackets_stack = []
+                # self.state_stack = []
+        else:
+            # Keep track of verbatim mode.
+            if self.beautify_pat.match(val):
+                self.verbatim = False
+            elif self.nobeautify_pat.match(val):
+                self.verbatim = True
+            # Keep trace of @doc parts, to honor the convention for splitting lines.
+            if self.start_doc_pat.match(val):
+                self.in_doc_part = True
+            if self.end_doc_pat.match(val):
+                self.in_doc_part = False
+        #
+        # General code...
         # Generate the code.
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
@@ -2484,6 +2503,7 @@ class Orange:
         if name in ('class', 'def'):
             self.decorator_seen = False
             state = self.state_stack[-1]
+            ### g.trace(self.state_stack) ###
             if state.kind == 'decorator':
                 # Always do this, regardless of @bool clean-blank-lines.
                 self.clean_blank_lines()
@@ -4016,9 +4036,43 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        ### g.printObj(contents, tag='contents')
-        # g.printObj(expected, tag='expected')
-        # g.printObj(results, tag='results')
+        assert results == expected, expected_got(repr(expected), repr(results))
+    #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
+    def test_blank_lines_after_function_2(self):
+      
+        #
+        # Warning: Do not put bare sentinel lines here!
+        #          Doing so destroys leoAst.py!
+        #
+        contents = """\
+    SENT+node:ekr.20160514120655.1: ** class AtFile
+    # Leading comment line 1.
+    # Leading comment lines 2.
+    def spam():
+        pass
+
+    # Trailing comment line.
+    a = 2
+    """
+        expected = """\
+    SENT+node:ekr.20160514120655.1: ** class AtFile
+    # Leading comment line 1.
+    # Leading comment lines 2.
+
+    def spam():
+        pass
+
+    # Trailing comment line.
+    a = 2
+    """
+        contents = contents.replace('SENT', '#@')
+        expected = expected.replace('SENT', '#@')
+        expected = g.adjustTripleString(expected)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        # g.printObj(contents, tag='contents')
+        g.printObj(expected, tag='expected')
+        g.printObj(results, tag='results')
         assert results == expected, expected_got(repr(expected), repr(results))
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
