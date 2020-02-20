@@ -172,6 +172,28 @@ class LeoGlobals:  # pragma: no cover
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
+    #@+node:ekr.20200220065737.1: *3* LeoGlobals.objToString
+    def objToString(self, obj, tag=None):
+        """Simplified version of g.printObj."""
+        result = []
+        if tag:
+            result.append(f"{tag}...")
+        if isinstance(obj, str):
+            obj = g.splitLines(obj)
+        if isinstance(obj, list):
+            result.append('[')
+            for z in obj:
+                result.append(f"  {z!r}")
+            result.append(']')
+        elif isinstance(obj, tuple):
+            result.append('(')
+            for z in obj:
+                result.append(f"  {z!r}")
+            result.append(')')
+        else:
+            result.append(repr(obj))
+        result.append('')
+        return '\n'.join(result)
     #@+node:ekr.20191231153754.1: *3* LeoGlobals.pdb
     def pdb(self):
         """Fall into pdb."""
@@ -192,25 +214,9 @@ class LeoGlobals:  # pragma: no cover
             n = obj
         return '' if n == 1 else 's'
     #@+node:ekr.20191226175441.1: *3* LeoGlobals.printObj
-    def printObj(self, obj, indent='', tag=None):
+    def printObj(self, obj, tag=None):
         """Simplified version of g.printObj."""
-        if tag:
-            print(f"{tag}...")
-        if isinstance(obj, str):
-            obj = g.splitLines(obj)
-        if isinstance(obj, list):
-            print('[')
-            for z in obj:
-                print(f"  {z!r}")
-            print(']')
-        elif isinstance(obj, tuple):
-            print('(')
-            for z in obj:
-                print(f"  {z!r}")
-            print(')')
-        else:
-            print(repr(obj))
-        print('')
+        print(self.objToString(obj, tag))
     #@+node:ekr.20191226190131.1: *3* LeoGlobals.splitLines
     def splitLines(self, s):
         """Split s into lines, preserving the number of lines and
@@ -642,18 +648,13 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200106094631.1: *4* function: expected_got
     def expected_got(expected, got):
         """Return a message, mostly for unit tests."""
-        if expected.rstrip() == got.rstrip():
-            # Make the difference more visible.
-            return (
-                f"\n"
-                f"expected: {expected!r}\n"
-                f"     got: {got!r}"
-        )
-        return (
-            f"\n"
-            f"expected: {expected!s}\n"
-            f"     got: {got!s}"
-        )
+        result = ['\n']
+        result.append('Expected:\n')
+        result.extend(g.objToString(expected))
+        result.append('Got:\n')
+        result.extend(g.objToString(got))
+        return ''.join(result)
+       
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20191226071135.1: *4* function: get_time
@@ -2470,7 +2471,7 @@ class Orange:
         # Ensure exactly one blank at the end of the file.
         self.clean_blank_lines()
         self.add_token('line-end', '\n')
-    #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent
+    #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
     def do_dedent(self):
         """Handle dedent token."""
         self.level -= 1
@@ -2482,9 +2483,7 @@ class Orange:
             state = self.state_stack[-1]
             if state.kind in ('class', 'def'):
                 self.state_stack.pop()
-                self.blank_lines(1, end_class_or_def=True)
-                    # Most Leo nodes aren't at the top level of the file.
-                    # self.blank_lines(2 if self.level == 0 else 1)
+                self.handle_dedent_after_class_or_def(state.kind)
 
     def do_indent(self):
         """Handle indent token."""
@@ -2496,6 +2495,55 @@ class Orange:
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
+    #@+node:ekr.20200220054928.1: *6* orange.handle_dedent_after_class_or_def
+    def handle_dedent_after_class_or_def(self, kind):
+        """
+        Insert blank lines after a class or def as the result of a 'dedent' token.
+
+        A complication: comment lines may precede the 'dedent'.
+        Insert the blank lines *before* such comment lines.
+        """
+        #
+        # Compute the tail.
+        i, tail = len(self.code_list) - 1, []
+        while i > 0:
+            t = self.code_list.pop()
+            i -= 1
+            if t.kind == 'line-indent':
+                pass
+            elif t.kind == 'line-end':
+                tail.insert(0, t)
+            elif t.kind == 'comment':
+                tail.insert(0, t)
+            else:
+                self.code_list.append(t)
+                break
+        #
+        # Remove leading 'line-end' tokens from the tail.
+        while tail and tail[0].kind == 'line-end':
+            tail = tail[1:]
+        if self.delete_blank_lines:
+            # Delete consecutive 'line-end' tokens if delete_blank_lines.
+            i = 1
+            while tail and i < len(tail):
+                if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
+                    tail = tail[i:]
+                i += 1
+                
+        g.printObj(tail, tag=f"tail:{kind}")
+        #
+        # Put the newlines *before* the tail.
+        n = 2 if kind == 'class' else 1
+        # Retain the token (intention) for debugging.
+        self.add_token('blank-lines', n)
+        for i in range(0, n):
+            self.add_token('line-end', '\n')
+        if tail:
+            self.code_list.extend(tail)
+        else:
+            self.add_token('line-end', '\n')
+        self.line_indent()
+        ### g.printObj(self.code_list, tag=f"code_list:{kind}")
     #@+node:ekr.20200107165250.20: *5* orange.do_name
     def do_name(self):
         """Handle a name token."""
@@ -2503,7 +2551,6 @@ class Orange:
         if name in ('class', 'def'):
             self.decorator_seen = False
             state = self.state_stack[-1]
-            ### g.trace(self.state_stack) ###
             if state.kind == 'decorator':
                 # Always do this, regardless of @bool clean-blank-lines.
                 self.clean_blank_lines()
@@ -2699,18 +2746,6 @@ class Orange:
             if prev.value.strip().startswith('#@+node:'):
                 # Special case for Leo comments that start a node.
                 n = 0
-            elif end_class_or_def:
-                # Special case for end of 'class' or 'def'...
-                prev = self.code_list.pop()
-                # Put the newlines *before* the comments.
-                for i in range(0, n):
-                    self.add_token('line-end', '\n')
-                self.code_list.append(prev)
-                self.add_token('line-end', '\n')
-                # Retain the token (intention) for debugging.
-                self.add_token('blank-lines', n)
-                self.line_indent()
-                return
         for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
@@ -4036,7 +4071,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        assert results == expected, expected_got(repr(expected), repr(results))
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
       
@@ -4077,6 +4112,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
     def test_blank_lines_after_function_3(self):
       
+        # From leoAtFile.py.
         contents = r"""\
     def writeAsisNode(self, p):
         print('1')
@@ -4084,17 +4120,14 @@ class TestOrange(BaseTest):
         def put(s):
             print('2')
 
-        # Write the headline only if it starts with '@@'.
-
-        s = p.h
+        # Trailing comment 1.
+        # Trailing comment 2.
+        print('3')
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
-        # g.printObj(contents, tag='contents')
-        g.printObj(expected, tag='expected')
-        g.printObj(results, tag='results')
-        assert results == expected ###, expected_got(repr(expected), repr(results))
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
     def test_decorator(self):
         
@@ -4145,12 +4178,7 @@ class TestOrange(BaseTest):
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        message = (
-            f"\n"
-            f"  contents: {contents}\n"
-            f"     black: {expected!r}\n"
-            f"    orange: {results!r}")
-        assert results == expected, message
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200116110652.1: *4* TestOrange.test_function_defs
     def test_function_defs(self):
       
