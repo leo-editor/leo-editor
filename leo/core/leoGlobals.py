@@ -7559,6 +7559,40 @@ def getTestVars():
     # This is an indirect test that some unit test has run.
     d['getTestVars'] = True
     return c, p and p.copy()
+#@+node:ekr.20200221050038.1: *3* g.run_unit_test_in_separate_process
+def run_unit_test_in_separate_process(command):
+    """
+    A script to be run from unitTest.leo.
+    
+    Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
+    
+    Fail (in leoTest.leo) if that fails.
+    """
+    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    command = 'python -m unittest leo.core.leoAst'
+    p = subprocess.Popen(
+        shlex.split(command),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=sys.platform.startswith('win'),
+    )
+    out, err = p.communicate()
+    err = g.toUnicode(err)
+    out = g.toUnicode(out)
+    if out.strip():
+        print('traces...')
+        print(out)
+    # print(err)
+    assert err.strip().endswith('OK'), err
+    # if err.strip().endswith('OK'):
+        # print('pass!')
+    # if err.strip():
+        # print('err...')
+        # print(err)
+    # if out.strip():
+        # print('traces...')
+        # print(out)
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""

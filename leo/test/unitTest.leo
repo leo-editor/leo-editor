@@ -192,6 +192,11 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20200221052510.1"><vh>Found:python -m</vh>
+<v t="ekr.20200219070034.1"><vh>@test python -m leo.core.leoAst</vh></v>
+<v t="ekr.20200219070324.1"><vh>@test python -m leo.core.leoFind</vh></v>
+<v t="ekr.20200219072300.1"><vh>@test python -m leo.core.leoGlobals</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1593,5 +1598,22 @@ nodeB
 <t tx="ekr.20200205065723.3">def eggs():
     pass
 </t>
+<t tx="ekr.20200219070034.1">#1498: Run per-file unit tests from unitTest.leo.
+command = 'python -m unittest leo.core.leoAst'
+g.run_unit_test_in_separate_process(command)
+</t>
+<t tx="ekr.20200219070324.1">#1498: Run per-file unit tests from unitTest.leo.
+command = 'python -m unittest leo.core.leoFind'
+g.run_unit_test_in_separate_process(command)
+</t>
+<t tx="ekr.20200219072300.1">#1498: Run per-file unit tests from unitTest.leo.
+command = 'python -m unittest leo.core.leoGlobals'
+g.run_unit_test_in_separate_process(command)
+</t>
+<t tx="ekr.20200221052510.1">@nosearch
+
+# flattened, ignore-case, head, body
+
+# found 4 nodes</t>
 </tnodes>
 </leo_file>

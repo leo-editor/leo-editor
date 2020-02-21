@@ -2434,7 +2434,7 @@ class Orange:
                 # self.paren_level = 0
                 # self.square_brackets_stack = []
                 # self.state_stack = []
-            g.trace(val)
+            ### g.trace(val)
             ### None of this works...
                 # self.clean_blank_lines()
                 # # Make sure any previous comment is terminated properly.
@@ -2538,7 +2538,7 @@ class Orange:
                 if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
                     tail = tail[i:]
                 i += 1
-        g.printObj(tail, tag=f"tail:{kind:5}")
+        ### g.printObj(tail, tag=f"tail:{kind:5}")
         #
         # Put the newlines *before* the tail.
         n = 2 if kind == 'class' else 1
