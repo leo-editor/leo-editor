@@ -2283,7 +2283,6 @@ class Orange:
         def clean_before(i):
             """Replace blank lines before self.code_list[i] with a single newline."""
             i -= 1
-            # End the @+node comment with a newline.
             cleaned = 0
             while i > 0:
                 t = self.code_list[i]
@@ -2481,14 +2480,6 @@ class Orange:
                 # self.paren_level = 0
                 # self.square_brackets_stack = []
                 # self.state_stack = []
-            ### g.trace(val)
-            ### None of this works...
-                # self.clean_blank_lines()
-                # # Make sure any previous comment is terminated properly.
-                # t = self.code_list[-1]
-                # if t.kind == 'comment':
-                    # g.trace(t.value, val)
-                    # self.add_token('line-end', '\n')
         else:
             # Keep track of verbatim mode.
             if self.beautify_pat.match(val):
@@ -2568,7 +2559,12 @@ class Orange:
             elif t.kind == 'line-end':
                 tail.insert(0, t)
             elif t.kind == 'comment':
-                tail.insert(0, t)
+                #  Only single-line comments are allowed in the tail.
+                if self.code_list[i].kind in ('line-end', 'line-indent'):
+                    # A single-line comment.
+                    tail.insert(0, t)
+                else:
+                    break
             else:
                 self.code_list.append(t)
                 break
