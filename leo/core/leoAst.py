@@ -2559,8 +2559,12 @@ class Orange:
             elif t.kind == 'line-end':
                 tail.insert(0, t)
             elif t.kind == 'comment':
-                #  Only single-line comments are allowed in the tail.
-                if self.code_list[i].kind in ('line-end', 'line-indent'):
+                # Only underindented single-line comments belong in the tail.
+                # @+node comments must never be in the tail.
+                single_line = self.code_list[i].kind in ('line-end', 'line-indent')
+                lws = len(t.value) - len(t.value.lstrip())
+                underindent = lws <= len(self.lws)
+                if underindent and single_line and not self.node_pat.match(t.value):
                     # A single-line comment.
                     tail.insert(0, t)
                 else:
@@ -2583,7 +2587,8 @@ class Orange:
         ### g.printObj(tail, tag=f"tail:{kind:5}")
         #
         # Put the newlines *before* the tail.
-        n = 2 if kind == 'class' else 1
+        ### n = 2 if kind == 'class' else 1
+        n = 1
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
         for i in range(0, n+1):

@@ -3112,7 +3112,6 @@ class AtFile:
         if read_only:
             g.error("read only:", fn)
 
-
     #@-others
 
 atFile = AtFile  # compatibility
@@ -3772,7 +3771,9 @@ class TestAtFile(unittest.TestCase):
         p1 = c.rootPosition()
         assert p1.h == "@file 1_renamed", repr(p1.h)
         assert p1.b == "b_1_changed\n", repr(p1.b)
+
     #@-others
+
 #@-others
 
 if __name__ == '__main__':
