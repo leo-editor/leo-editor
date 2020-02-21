@@ -18,10 +18,7 @@ import logging
 import logging.handlers
 import pickle
 import select
-try:
-    import SocketServer  # Python 2
-except ImportError:
-    import socketserver as SocketServer  # Python 3
+import socketserver as SocketServer
 import struct
 #@-<< log_listener imports >>
 #@+others
