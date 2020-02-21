@@ -7570,7 +7570,6 @@ def run_unit_test_in_separate_process(command):
     """
     leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
     os.chdir(leo_editor_dir)
-    command = 'python -m unittest leo.core.leoAst'
     p = subprocess.Popen(
         shlex.split(command),
         stdout=subprocess.PIPE,
@@ -7580,19 +7579,13 @@ def run_unit_test_in_separate_process(command):
     out, err = p.communicate()
     err = g.toUnicode(err)
     out = g.toUnicode(out)
+    print('')
+    print(command)
     if out.strip():
         print('traces...')
-        print(out)
-    # print(err)
-    assert err.strip().endswith('OK'), err
-    # if err.strip().endswith('OK'):
-        # print('pass!')
-    # if err.strip():
-        # print('err...')
-        # print(err)
-    # if out.strip():
-        # print('traces...')
-        # print(out)
+        print(out.rstrip())
+    print(err.rstrip())
+    assert err.strip().endswith('OK')
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""
