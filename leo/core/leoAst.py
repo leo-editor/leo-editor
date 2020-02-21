@@ -2564,6 +2564,7 @@ class Orange:
                     # A single-line comment.
                     tail.insert(0, t)
                 else:
+                    self.code_list.append(t)
                     break
             else:
                 self.code_list.append(t)
