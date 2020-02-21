@@ -2274,7 +2274,7 @@ class Orange:
     """
 
     #@+others
-    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes (new, test)
+    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes
     def clean_leo_nodes(self):
         """
         A post pass.
@@ -2282,27 +2282,34 @@ class Orange:
         """
         def clean_before(i):
             """Replace blank lines before self.code_list[i] with a single newline."""
-            self.code_list[i].value += '\n'
             i -= 1
             # End the @+node comment with a newline.
+            cleaned = 0
             while i > 0:
                 t = self.code_list[i]
                 i -= 1
                 if t.kind == 'blank-lines':
                     t.kind, t.value = 'killed', ''
-                elif t.kind == 'line-end' and self.code_list[i].kind != 'comment':
-                    t.kind, t.value = 'killed', ''
+                elif t.kind == 'line-end':
+                    if cleaned > 0:
+                        t.kind, t.value = 'killed', ''
+                    cleaned += 1
                 else:
                     break
-                    
+
         def clean_after(i):
-            """Remove blank lines after self.code_list[i]"""
+            """Replace blank lines after self.code_list[i] with a single newline."""
             i += 1
+            cleaned = 0
             while i < len(self.code_list):
                 t = self.code_list[i]
                 i += 1
-                if t.kind in ('line-end', 'blank-lines'):
+                if t.kind == 'blank-lines':
                     t.kind, t.value = 'killed', ''
+                elif t.kind == 'line-end':
+                    if cleaned > 0:
+                        t.kind, t.value = 'killed', ''
+                    cleaned += 1
                 else:
                     break
 
