@@ -4,7 +4,6 @@
 #@@first
 """Leo's goto commands."""
 import leo.core.leoGlobals as g
-# import os
 import re
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands
@@ -377,6 +376,5 @@ def show_file_line(event):
     s = w.getAllText()
     row, col = g.convertPythonIndexToRowCol(s, i)
     g.es_print(1 + n0 + row)
-
 #@-others
 #@-leo

@@ -7,7 +7,6 @@ from __future__ import print_function
 import leo.core.leoGlobals as g
 import binascii
 import pickle
-# import time
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 @g.command('at-file-to-at-auto')

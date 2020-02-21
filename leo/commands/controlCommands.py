@@ -23,7 +23,6 @@ class ControlCommandsClass(BaseEditCommandsClass):
         """Ctor for ControlCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
-
     #@+others
     #@+node:ekr.20150514063305.91: *3* executeSubprocess
     def executeSubprocess(self, event, command):
@@ -148,8 +147,6 @@ class ControlCommandsClass(BaseEditCommandsClass):
     def iconifyFrame(self, event):
         """Minimize the present Leo window."""
         self.suspend(event)
-
     #@-others
-
 #@-others
 #@-leo

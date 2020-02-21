@@ -330,6 +330,5 @@ def selectAtSettingsNode(self, event=None):
         c.redraw()
     else:
         g.es('no local @settings tree.')
-
 #@-others
 #@-leo

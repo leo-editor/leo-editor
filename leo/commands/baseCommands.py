@@ -4,7 +4,6 @@
 #@@first
 """The base class for all of Leo's user commands."""
 import leo.core.leoGlobals as g
-
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:
@@ -106,9 +105,6 @@ class BaseEditCommandsClass:
     def keyboardQuit(self, event=None):
         """Clear the state and the minibuffer label."""
         return self.c.k.keyboardQuit()
-
     #@-others
-
 #@-others
-
 #@-leo

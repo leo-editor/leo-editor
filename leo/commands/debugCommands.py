@@ -16,7 +16,6 @@ def cmd(name):
     """Command decorator for the DebugCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'debugCommands',])
 
-
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.103: ** debug.collectGarbage
@@ -249,7 +248,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.
         """
         self.c.testManager.runTestsExternally(all=False, marked=False)
-
     #@-others
 
 #@@language python

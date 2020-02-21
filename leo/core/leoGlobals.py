@@ -305,7 +305,6 @@ def new_cmd_decorator(name, ivars):
     return _decorator
 #@-others
 #@-<< define g.decorators >>
-
 tree_popup_handlers = []  # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -7918,7 +7917,6 @@ def openUrlHelper(event, url=None):
     return None
 #@-others
 # set g when the import is about to complete.
-
 g = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
 

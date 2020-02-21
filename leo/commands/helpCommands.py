@@ -1187,8 +1187,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
             # Send it to the vr pane as a <pre> block
             s2 = '<pre>' + s2 + '</pre>'
             c.putHelpFor(s2)
-
     #@-others
-
 #@-others
 #@-leo

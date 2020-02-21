@@ -4,7 +4,6 @@
 #@@first
 """Clone Find commands that used to be defined in leoCommands.py"""
 import leo.core.leoGlobals as g
-
 #@+others
 #@+node:ekr.20160224175312.1: ** c.cffm & c.cfam
 @g.commander_command('clone-find-all-marked')
@@ -97,6 +96,5 @@ def cloneFindMarkedHelper(c, flatten):
     found = c.lastTopLevel()
     c.selectPosition(found)
     found.b = f"# Found {found.numberOfChildren()} marked nodes"
-
 #@-others
 #@-leo

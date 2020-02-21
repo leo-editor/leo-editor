@@ -3,7 +3,6 @@
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
 """Handling background processes"""
-
 import leo.core.leoGlobals as g
 import re
 import subprocess

@@ -2134,9 +2134,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         def seek_special_start(i):
             return seek_until_changed(i, is_special, -1)
-
         #@-others
-
         if smart:
             if forward:
                 if 0 <= i < n:
@@ -3666,8 +3664,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-
     #@-others
-
 #@-others
 #@-leo

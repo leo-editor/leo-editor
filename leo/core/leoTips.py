@@ -11,6 +11,7 @@ assert g
 at_s = "@"
 ref1_s = ">>"
 ref2_s = "<<"
+
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 #@@beautify
@@ -143,8 +144,8 @@ def make_tip_nodes(c):
     c.selectPosition(root)
     c.redraw()
 #@-others
-# The global tips array.
 
+# The global tips array.
 tips = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>

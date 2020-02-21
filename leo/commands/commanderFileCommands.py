@@ -5,7 +5,6 @@
 """File commands that used to be defined in leoCommands.py"""
 import leo.core.leoGlobals as g
 import os
-# import time
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
@@ -1053,7 +1052,5 @@ def untangle(self, event=None):
     c = self
     c.tangleCommands.untangle()
     c.undoer.clearUndoState()
-
 #@-others
-
 #@-leo

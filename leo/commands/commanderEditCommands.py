@@ -1005,7 +1005,5 @@ def make_toc(c, kind, root):
     if result:
         result.append('\n')
     return ''.join(result)
-
 #@-others
-
 #@-leo

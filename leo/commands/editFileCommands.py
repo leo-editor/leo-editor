@@ -283,9 +283,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     else:
                         d[h] = p.copy()
                 return d
-
             #@-others
-
         CompareTreesController().run(self.c, p1, p2, tag)
     #@+node:ekr.20170806094318.1: *3* efc.deleteFile
     @cmd('file-delete')
@@ -511,7 +509,6 @@ class GitDiffController:
         self.old_dir = g.os_path_abspath('.')
         self.repo_dir = repo_dir
         self.root = None
-
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
@@ -913,8 +910,6 @@ class GitDiffController:
                 break
             directory = path2
         return None
-
     #@-others
-
 #@-others
 #@-leo

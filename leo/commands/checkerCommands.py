@@ -44,9 +44,7 @@ def find_long_lines(event):
             if '@nopylint' in parent.h:
                 return True
         return False
-
     #@-others
-
     max_line = c.config.getInt('max-find-long-lines-length') or 110
     count, files, ignore = 0, [], []
     for p in c.all_unique_positions():
@@ -83,7 +81,6 @@ def find_missing_docstrings(event):
     c = event.get('c')
     if not c:
         return
-
     #@+others # Define functions
     #@+node:ekr.20190615181104.1: *4* function: has_docstring
     def has_docstring(lines, n):
@@ -123,9 +120,7 @@ def find_missing_docstrings(event):
         """Return a clickable link to line i of p.b."""
         link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
         return f"{link},{i}"
-
     #@-others
-
     count, found, t1 = 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         for p in root.self_and_subtree():
@@ -202,7 +197,6 @@ class Flake8Command:
         self.c = c
         self.quiet = quiet
         self.seen = []  # List of checked paths.
-
     #@+others
     #@+node:ekr.20160517133049.2: *3* flake8.check_all
     def check_all(self, paths):
@@ -298,7 +292,6 @@ class PyflakesCommand:
         """ctor for PyflakesCommand class."""
         self.c = c
         self.seen = []  # List of checked paths.
-
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
     class LogStream:
@@ -439,7 +432,6 @@ class PylintCommand:
         self.c = c
         self.data = None  # Data for the *running* process.
         self.rc_fn = None  # Name of the rc file.
-
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
     def run(self):
@@ -545,9 +537,7 @@ class PylintCommand:
             # # When shell is True, it's recommended to pass a string, not a sequence.
             # command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
                 # sys.executable, ','.join(args))
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

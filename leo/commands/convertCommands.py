@@ -437,6 +437,7 @@ class To_Python:
         return i
     #@-others
 #@-<< class To_Python >>
+
 #@+others
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
@@ -446,7 +447,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
-
     #@+others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
@@ -1057,11 +1057,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             break
                     else:
                         g.es('no files found in tree:', p.h)
-
             #@-others
-
         #@-others
-
         MakeStubFileAdapter(self.c).run(self.c.p)
     #@+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
@@ -1170,11 +1167,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 delims = ['#', None, None]
                 return ''.join(
                     [z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
-
             #@-others
-
         #@-others
-
         c = self.c
         Python_To_Coffeescript_Adapter(c).main()
         c.bodyWantsFocus()
@@ -1595,11 +1589,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     assert i < j
                     i = j
                 return body
-
             #@-others
-
         #@-others
-
         c = self.c
         TS_To_Python(c).go()
         c.bodyWantsFocus()
@@ -1632,8 +1623,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c
         Export_IPYNB(c).export_outline(c.p)
-
     #@-others
-
 #@-others
 #@-leo

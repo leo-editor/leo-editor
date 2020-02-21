@@ -3,7 +3,6 @@
 #@+node:ekr.20150514040239.1: * @file ../commands/spellCommands.py
 #@@first
 """Leo's spell-checking commands."""
-
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
 import re
@@ -20,13 +19,13 @@ except Exception:  # May throw WinError(!)
 def cmd(name):
     """Command decorator for the SpellCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'spellCommands',])
+
 #@+others
 #@+node:ekr.20180207071908.1: ** class BaseSpellWrapper
 class BaseSpellWrapper:
     """Code common to EnchantWrapper and DefaultWrapper"""
     # pylint: disable=no-member
     # Subclasses set self.c and self.d
-
     #@+others
     #@+node:ekr.20180207071114.3: *3* spell.add
     def add(self, word):
@@ -129,7 +128,6 @@ class DefaultDict:
         self.added_words = set()
         self.ignored_words = set()
         self.words = set() if words is None else set(words)
-
     #@+others
     #@+node:ekr.20180207075740.1: *3* dict.add
     def add(self, word):
@@ -440,7 +438,6 @@ class EnchantWrapper(BaseSpellWrapper):
             g.es_print(f"main dictionaries: {', '.join(aList2)}")
         except Exception:
             g.es_exception()
-
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
 class SpellCommandsClass(BaseEditCommandsClass):
@@ -877,7 +874,6 @@ def clean_user_spell_dict(event):
     c = event and event.get('c')
     if c:
         DefaultWrapper(c).save_user_dict(trace=True)
-
 #@-others
 #@@language python
 #@@tabwidth -4

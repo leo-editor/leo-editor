@@ -141,7 +141,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
         __next__ = next
         #@-others
-
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* kill (helper)
@@ -343,8 +342,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
             self.endCommand(changed=True, setLabel=True)
-
     #@-others
-
 #@-others
 #@-leo
