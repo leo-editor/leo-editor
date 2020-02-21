@@ -920,8 +920,7 @@ class AtFile:
             s = at.read_lines[at.read_i]
             at.read_i += 1
             return s
-        return ''
-            # Not an error.
+        return ''  # Not an error.
     #@+node:ekr.20041005105605.129: *5* at.scanHeader
     def scanHeader(self, fileName, giveErrors=True):
         """
@@ -1208,7 +1207,6 @@ class AtFile:
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
             p2.v.clearDirty()
-
     #@+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p):
         '''
@@ -1237,7 +1235,6 @@ class AtFile:
         if not ok:
             raise IOError
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
-
     #@+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
     def writeAtAutoContents(self, fileName, root):
         '''Common helper for atAutoToString and writeOneAtAutoNode.'''
@@ -3104,8 +3101,7 @@ class AtFile:
             return p.h not in aSet
         if trace:
             g.trace('Return True: never read:', sfn)
-        return True
-            # The file was never read.
+        return True  # The file was never read.
     #@+node:ekr.20041005105605.20: *4* at.warnOnReadOnlyFile
     def warnOnReadOnlyFile(self, fn):
         # os.access() may not exist on all platforms.
@@ -3115,6 +3111,8 @@ class AtFile:
             read_only = False
         if read_only:
             g.error("read only:", fn)
+
+
     #@-others
 
 atFile = AtFile  # compatibility
@@ -3317,6 +3315,7 @@ class FastAtRead:
             g.printObj([v3.h for v3 in parent_v.children])
             print('PARENTS...')
             g.printObj([v4.h for v4 in v.parents])
+
         #@-<< define dump_v >>
 
         i = 0  # To keep pylint happy.
