@@ -206,6 +206,7 @@ class PickleShareDB:
 
         def loadz(fileobj):
             if fileobj:
+                # Retain this code for maximum compatibility.
                 try:
                     val = pickle.loads(
                         zlib.decompress(fileobj.read()))
@@ -218,10 +219,10 @@ class PickleShareDB:
         def dumpz(val, fileobj):
             if fileobj:
                 try:
-                    # use Python 2's highest protocol, 2, if possible
+                    # Use Python 2's highest protocol, 2, if possible
                     data = pickle.dumps(val, 2)
                 except Exception:
-                    # but use best available if that doesn't work (unlikely)
+                    # Use best available if that doesn't work (unlikely)
                     data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
                 compressed = zlib.compress(data)
                 fileobj.write(compressed)
@@ -481,6 +482,7 @@ class SqlitePickleShare:
 
         def loadz(data):
             if data:
+                # Retain this code for maximum compatibility.
                 try:
                     val = pickle.loads(zlib.decompress(data))
                 except(ValueError, TypeError):
@@ -491,10 +493,10 @@ class SqlitePickleShare:
 
         def dumpz(val):
             try:
-                # use Python 2's highest protocol, 2, if possible
+                # Use Python 2's highest protocol, 2, if possible
                 data = pickle.dumps(val, protocol=2)
             except Exception:
-                # but use best available if that doesn't work (unlikely)
+                # Use best available if that doesn't work (unlikely)
                 data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
             return sqlite3.Binary(zlib.compress(data))
 
