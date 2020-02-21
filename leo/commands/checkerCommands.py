@@ -44,6 +44,7 @@ def find_long_lines(event):
             if '@nopylint' in parent.h:
                 return True
         return False
+
     #@-others
 
     max_line = c.config.getInt('max-find-long-lines-length') or 110
@@ -122,6 +123,7 @@ def find_missing_docstrings(event):
         """Return a clickable link to line i of p.b."""
         link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
         return f"{link},{i}"
+
     #@-others
 
     count, found, t1 = 0, [], time.process_time()
@@ -543,7 +545,9 @@ class PylintCommand:
             # # When shell is True, it's recommended to pass a string, not a sequence.
             # command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
                 # sys.executable, ','.join(args))
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

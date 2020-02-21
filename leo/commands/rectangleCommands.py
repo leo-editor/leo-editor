@@ -205,6 +205,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         j = f"{r3}.{r2 + len(killRect[n - 1])}"
         w.setSelectionRange(i, j, insert=j)
         self.endCommand()
+
     #@-others
+
 #@-others
 #@-leo

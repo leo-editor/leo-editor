@@ -1470,5 +1470,6 @@ def count_children(event=None):
     c = event and event.get('c')
     if c:
         g.es_print(f"{c.p.numberOfChildren()} children")
+
 #@-others
 #@-leo

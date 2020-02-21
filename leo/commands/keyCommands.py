@@ -17,6 +17,8 @@ class KeyHandlerCommandsClass(BaseEditCommandsClass):
         This will never be called.
         A placeholder for the show-bindings command.
         """
+
     #@-others
+
 #@-others
 #@-leo

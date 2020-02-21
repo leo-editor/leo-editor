@@ -343,6 +343,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
             self.endCommand(changed=True, setLabel=True)
+
     #@-others
+
 #@-others
 #@-leo

@@ -761,7 +761,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.keyboardQuit()
         if not g.unitTesting and not g.app.batchMode:
             g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
+
     #@-others
+
 #@-others
 
 #@-leo

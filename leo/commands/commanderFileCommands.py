@@ -224,6 +224,7 @@ def open_outline(self, event=None):
             c.initialFocusHelper()
     #@-others
         # Defines open_completer function.
+
     #
     # Close the window if this command completes successfully?
 
@@ -508,7 +509,6 @@ def saveTo(self, event=None, fileName=None, silent=False):
     else:
         c.treeWantsFocus()
     c.outerUpdate()
-
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self, event=None):
@@ -822,7 +822,6 @@ def writeFileFromNode(self, event=None):
                 g.blue('wrote:', fileName)
         except IOError:
             g.error('can not write %s', fileName)
-
 #@+node:ekr.20031218072017.2079: ** Recent Files
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
@@ -1054,6 +1053,7 @@ def untangle(self, event=None):
     c = self
     c.tangleCommands.untangle()
     c.undoer.clearUndoState()
+
 #@-others
 
 #@-leo

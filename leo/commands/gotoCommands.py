@@ -378,6 +378,5 @@ def show_file_line(event):
     row, col = g.convertPythonIndexToRowCol(s, i)
     g.es_print(1 + n0 + row)
 
-
 #@-others
 #@-leo

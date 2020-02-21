@@ -133,7 +133,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('killed log listener.')
         else:
             g.es_print('log listener not active.')
-
     #@+node:ekr.20150514063305.109: ** debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):
@@ -224,6 +223,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in the outline's process, so tests *can* change the outline.
         """
         self.c.testManager.doTests(all=False, marked=False)
+
     # Externally run tests...
 
     @cmd('run-all-unit-tests-externally')
@@ -249,6 +249,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.
         """
         self.c.testManager.runTestsExternally(all=False, marked=False)
+
     #@-others
 
 #@@language python

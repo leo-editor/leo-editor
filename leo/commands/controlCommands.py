@@ -148,6 +148,8 @@ class ControlCommandsClass(BaseEditCommandsClass):
     def iconifyFrame(self, event):
         """Minimize the present Leo window."""
         self.suspend(event)
+
     #@-others
+
 #@-others
 #@-leo

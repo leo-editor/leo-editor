@@ -106,7 +106,9 @@ class BaseEditCommandsClass:
     def keyboardQuit(self, event=None):
         """Clear the state and the minibuffer label."""
         return self.c.k.keyboardQuit()
+
     #@-others
+
 #@-others
 
 #@-leo

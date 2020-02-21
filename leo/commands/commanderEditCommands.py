@@ -958,7 +958,6 @@ def insertMarkdownTOC(self, event=None):
     replacing any selected text.
     """
     insert_toc(c=self, kind='markdown')
-
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
@@ -1006,6 +1005,7 @@ def make_toc(c, kind, root):
     if result:
         result.append('\n')
     return ''.join(result)
+
 #@-others
 
 #@-leo

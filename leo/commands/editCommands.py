@@ -124,21 +124,18 @@ def mark_first_parents(event):
 @g.command('next-or-end-of-line')
 def nextOrEndOfLine(event):
     lineScrollHelper(event['c'], 'next-', 'end-', '')
-
 #@+node:ekr.20190926103246.2: ** @g.command('next-or-end-of-line-extend-selection')
 # by Brian Theado.
 
 @g.command('next-or-end-of-line-extend-selection')
 def nextOrEndOfLineExtendSelection(event):
     lineScrollHelper(event['c'], 'next-', 'end-', '-extend-selection')
-
 #@+node:ekr.20190926103246.1: ** @g.command('previous-or-beginning-of-line')
 # by Brian Theado.
 
 @g.command('previous-or-beginning-of-line')
 def previousOrBeginningOfLine(event):
     lineScrollHelper(event['c'], 'previous-', 'beginning-', '')
-
 #@+node:ekr.20190926103246.3: ** @g.command('previous-or-beginning-of-line-extend-selection')
 # by Brian Theado.
 
@@ -1389,6 +1386,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardDeleteWord(self, event=None):
         """Delete the word in front of the cursor."""
         self.deleteWordHelper(event, forward=False)
+
     # Patch by NH2.
 
     @cmd('delete-word-smart')
@@ -2136,6 +2134,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         def seek_special_start(i):
             return seek_until_changed(i, is_special, -1)
+
         #@-others
 
         if smart:
@@ -2252,7 +2251,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Extend the selection by moving the cursor to the beginning of the current
         or the end of the previous word."""
         self.moveWordHelper(event, extend=True, forward=False, smart=True)
-
     #@+node:ekr.20170707072347.1: *4* ec.beginningOfLine/ExtendSelection
     @cmd('beginning-of-line')
     def beginningOfLine(self, event):
@@ -3668,6 +3666,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
+
     #@-others
+
 #@-others
 #@-leo

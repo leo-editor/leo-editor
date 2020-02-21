@@ -271,7 +271,6 @@ class DefaultWrapper(BaseSpellWrapper):
         if 's' in flags and not s.endswith('s'):
             words.add(s + 's')
             words.add(s.lower() + 's')
-
     #@+node:ekr.20180207110718.1: *3* default.save_dict
     def save_dict(self, kind, fn, trace=False):
         """
@@ -878,6 +877,7 @@ def clean_user_spell_dict(event):
     c = event and event.get('c')
     if c:
         DefaultWrapper(c).save_user_dict(trace=True)
+
 #@-others
 #@@language python
 #@@tabwidth -4

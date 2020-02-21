@@ -283,6 +283,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     else:
                         d[h] = p.copy()
                 return d
+
             #@-others
 
         CompareTreesController().run(self.c, p1, p2, tag)
@@ -593,7 +594,6 @@ class GitDiffController:
                 self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
             self.finish()
         return bool(files)
-
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file & helpers
     def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
         """
@@ -712,7 +712,6 @@ class GitDiffController:
             root=root,
         )
         return hidden_c
-
     #@+node:ekr.20170806125535.1: *5* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
         """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
@@ -914,6 +913,8 @@ class GitDiffController:
                 break
             directory = path2
         return None
+
     #@-others
+
 #@-others
 #@-leo

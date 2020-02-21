@@ -246,7 +246,9 @@ class BufferCommandsClass(BaseEditCommandsClass):
         finisher = self.getBufferNameFinisher
         self.getBufferNameFinisher = None
         finisher(k.arg)
+
     #@-others
+
 #@-others
 
 #@-leo

@@ -1057,7 +1057,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             break
                     else:
                         g.es('no files found in tree:', p.h)
+
             #@-others
+
         #@-others
 
         MakeStubFileAdapter(self.c).run(self.c.p)
@@ -1168,7 +1170,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 delims = ['#', None, None]
                 return ''.join(
                     [z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
+
             #@-others
+
         #@-others
 
         c = self.c
@@ -1591,7 +1595,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     assert i < j
                     i = j
                 return body
+
             #@-others
+
         #@-others
 
         c = self.c
@@ -1626,6 +1632,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         from leo.plugins.writers.ipynb import Export_IPYNB
         c = self.c
         Export_IPYNB(c).export_outline(c.p)
+
     #@-others
+
 #@-others
 #@-leo
