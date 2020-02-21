@@ -2288,10 +2288,10 @@ class Orange:
                 t = self.code_list[i]
                 i -= 1
                 if t.kind == 'blank-lines':
-                    t.kind, t.value = 'killed', ''
+                    t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
                 elif t.kind == 'line-end':
                     if cleaned > 0:
-                        t.kind, t.value = 'killed', ''
+                        t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
                     cleaned += 1
                 else:
                     break
@@ -2304,20 +2304,18 @@ class Orange:
                 t = self.code_list[i]
                 i += 1
                 if t.kind == 'blank-lines':
-                    t.kind, t.value = 'killed', ''
+                    t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
                 elif t.kind == 'line-end':
                     if cleaned > 0:
-                        t.kind, t.value = 'killed', ''
+                        t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
                     cleaned += 1
                 else:
                     break
 
-        ### g.printObj(self.code_list)
         for i, t in enumerate(self.code_list):
             if t.kind == 'comment' and self.node_pat.match(t.value):
                 clean_before(i)
                 clean_after(i)
-        ### g.printObj(self.code_list)
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
         """Ctor for Orange class."""
@@ -2577,14 +2575,13 @@ class Orange:
         # Remove leading 'line-end' tokens from the tail.
         while tail and tail[0].kind == 'line-end':
             tail = tail[1:]
-        if self.delete_blank_lines:
-            # Delete consecutive 'line-end' tokens if delete_blank_lines.
-            i = 1
-            while tail and i < len(tail):
-                if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
-                    tail = tail[i:]
-                i += 1
-        ### g.printObj(tail, tag=f"tail:{kind:5}")
+        # if self.delete_blank_lines:
+            # # Delete consecutive 'line-end' tokens if delete_blank_lines.
+            # i = 1
+            # while tail and i < len(tail):
+                # if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
+                    # tail = tail[i:]
+                # i += 1
         #
         # Put the newlines *before* the tail.
         ### n = 2 if kind == 'class' else 1
@@ -2595,10 +2592,7 @@ class Orange:
             self.add_token('line-end', '\n')
         if tail:
             self.code_list.extend(tail)
-        ###
-            # else: self.add_token('line-end', '\n')
         self.line_indent()
-        ### g.printObj(self.code_list, tag=f"code_list:{kind}")
     #@+node:ekr.20200107165250.20: *5* orange.do_name
     def do_name(self):
         """Handle a name token."""
@@ -4117,14 +4111,33 @@ class TestOrange(BaseTest):
     def test_blank_lines_after_function(self):
       
         contents = """\
+    # Comment line 1.
+    # Comment line 2.
+
+
     def spam():
         pass
+        # Properly indented comment.
 
-    # comment line
+
+    # Comment line3.
+    # Comment line4.
     a = 2
     """
+        expected = """\
+    # Comment line 1.
+    # Comment line 2.
+
+    def spam():
+        pass
+        # Properly indented comment.
+
+    # Comment line3.
+    # Comment line4.
+    a = 2
+    """
+        expected = g.adjustTripleString(expected)
         contents, tokens, tree = self.make_data(contents)
-        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
