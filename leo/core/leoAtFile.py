@@ -3114,6 +3114,7 @@ class AtFile:
 
     #@-others
 
+
 atFile = AtFile  # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead:
@@ -3773,6 +3774,7 @@ class TestAtFile(unittest.TestCase):
         assert p1.b == "b_1_changed\n", repr(p1.b)
 
     #@-others
+
 
 #@-others
 if __name__ == '__main__':

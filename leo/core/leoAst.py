@@ -2575,18 +2575,10 @@ class Orange:
         # Remove leading 'line-end' tokens from the tail.
         while tail and tail[0].kind == 'line-end':
             tail = tail[1:]
-        ###
-            # if self.delete_blank_lines:
-                # # Delete consecutive 'line-end' tokens if delete_blank_lines.
-                # i = 1
-                # while tail and i < len(tail):
-                    # if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
-                        # tail = tail[i:]
-                    # i += 1
         #
         # Put the newlines *before* the tail.
-        ### n = 2 if kind == 'class' else 1
-        n = 1
+        # For Leo, always use 1 blank lines.
+        n = 1 # n = 2 if kind == 'class' else 1
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
         for i in range(0, n+1):
@@ -3858,14 +3850,12 @@ class TestFstringify(BaseTest):
     #@+node:ekr.20200122035055.1: *4* TestFstringity.test_call_with_comments
     def test_call_with_comments(self):
 
-
         contents = """\
     print('%s in %5.2f sec' % (
         "done", # message
         2.9, # time
     )) # trailing comment"""
 
-        ### What about internal comments?
         expected = """\
     print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
     """
