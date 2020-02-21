@@ -14,8 +14,6 @@ import gc
 import logging
 import logging.handlers
 import os
-# import pstats # A Python distro bug: can fail on Ubuntu.
-# import re
 import sys
 import time
 import timeit
@@ -281,7 +279,6 @@ class GeneralTestCase(unittest.TestCase):
         c.selectPosition(self.p.copy())
         if not oldChanged:
             c.clearChanged()
-
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         """Run a Leo GeneralTestCase test."""
@@ -413,7 +410,6 @@ class LinterTable():
         """Ctor for LinterTable class."""
         # Define self. relative to leo.core.leoGlobals
         self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-
     #@+others
     #@+node:ekr.20160518074545.2: *3* commands
     def commands(self):
@@ -738,7 +734,6 @@ class TestManager:
 
         def flush(self):
             pass
-
     #@+node:ekr.20170504130408.1: *5* tm.create_logging_stream
     def create_logging_stream(self):
 
@@ -882,7 +877,6 @@ class TestManager:
                 suite.addTest(test)
                 found = True
         return suite if found else None
-
     #@+node:ekr.20051104075904.13: *5* tm.makeTestCase
     def makeTestCase(self, p, setup_script):
         c = self.c

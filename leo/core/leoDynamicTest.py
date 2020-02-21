@@ -97,10 +97,6 @@ def scanOptions():
         options.gui = 'nullGui'
     return options
 #@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
-
 if __name__ == '__main__':
     if g_trace and trace_time:
         t1 = time.time()
@@ -112,4 +108,7 @@ if __name__ == '__main__':
     if g_trace and trace_time:
         t2 = time.time()
         print(f"leoDynamicUnittest.py: {t2 - t1:0.2f} sec")
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

@@ -18,7 +18,6 @@ import leo.core.leoTest as leoTest
 import optparse
 import os
 import time
-
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
@@ -133,7 +132,6 @@ def scanOptions():
         scope = 'all'
     return scope
 #@-others
-
 g_option_fn = None
 scope = scanOptions()
 if scope == 'version':

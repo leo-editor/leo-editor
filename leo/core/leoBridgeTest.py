@@ -72,11 +72,11 @@ def scanOptions():
         options.gui = None
     return options
 #@-others
+if __name__ == '__main__':
+    print(f"leoBridgeTest.py: argv: {sys.argv!r}")
+    main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 
-if __name__ == '__main__':
-    print(f"leoBridgeTest.py: argv: {sys.argv!r}")
-    main()
 #@-leo

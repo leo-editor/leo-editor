@@ -109,7 +109,6 @@ def report_version():
             pass
     g.trace('no rc file found in')
     g.printList(table)
-
 #@+node:ekr.20120307142211.9886: ** scanOptions (pylint-leo.py)
 def scanOptions():
     """Handle all options, remove them from sys.argv."""
@@ -161,4 +160,5 @@ else:
     files = leoTest.LinterTable().get_files_for_scope(scope, fn=g_option_fn)
     main(files, verbose)
 #@@beautify
+
 #@-leo

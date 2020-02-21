@@ -17,11 +17,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest as leoTest
 from pyflakes import api, reporter
 import optparse
-
-# import os
 import sys
 import time
-
 #@+others
 #@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
@@ -95,7 +92,6 @@ def scanOptions():
         scope = 'all'
     return scope
 #@-others
-
 g_option_fn = None
 scope = scanOptions()
 if scope == 'version':
