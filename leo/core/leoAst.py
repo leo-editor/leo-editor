@@ -102,7 +102,7 @@ v1, v2, junk, junk, junk = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* Python 3.7.
-use_async_tokens = (v1, v2) >= (3,) and not (v1, v2) == (3, 7)
+use_async_tokens = (v1, v2) >= (3,) and (v1, v2) != (3, 7)
 
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals

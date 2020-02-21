@@ -563,9 +563,9 @@ class PutToOPML:
                 theId, time, n = p.v.fileIndex
             except Exception:
                 g.trace("assigning gnx for ", p.v)
-                gnx = g.app.nodeIndices.getNewIndex()
+                gnx = g.app.nodeIndices.getNewIndex(p.v)
                 p.v.setFileIndex(gnx) # Don't convert to string until the actual write.
-        s = ','.join([g.app.nodeIndices.toString(v.fileIndex) for v in p.v.tnodeList])
+        s = ','.join([g.app.nodeIndices.tupleToString(v.fileIndex) for v in p.v.tnodeList])
         return s
     #@+node:tbrown.20061004094757: *4* uAAttributes
     def uAAttributes(self, p):

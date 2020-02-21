@@ -4341,7 +4341,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         # elif ext in ('.bmp','gif','ico',):
             # val = True
         else:
-            keys = (z.lower() for z in g.app.extension_dict.keys())
+            keys = (z.lower() for z in g.app.extension_dict)
             val = ext not in keys
         return val
     #@+node:ekr.20141007223054.18003: *9* LeoQTreeWidget.isLeoFile
