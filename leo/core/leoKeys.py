@@ -5,7 +5,6 @@
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
 # pylint: disable=deprecated-method
-    # The new methods may not exist in Python 2.
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
