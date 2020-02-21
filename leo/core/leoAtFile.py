@@ -3775,7 +3775,6 @@ class TestAtFile(unittest.TestCase):
     #@-others
 
 #@-others
-
 if __name__ == '__main__':
     unittest.main()
 #@@language python

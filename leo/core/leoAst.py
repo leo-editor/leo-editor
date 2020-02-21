@@ -2575,13 +2575,14 @@ class Orange:
         # Remove leading 'line-end' tokens from the tail.
         while tail and tail[0].kind == 'line-end':
             tail = tail[1:]
-        # if self.delete_blank_lines:
-            # # Delete consecutive 'line-end' tokens if delete_blank_lines.
-            # i = 1
-            # while tail and i < len(tail):
-                # if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
-                    # tail = tail[i:]
-                # i += 1
+        ###
+            # if self.delete_blank_lines:
+                # # Delete consecutive 'line-end' tokens if delete_blank_lines.
+                # i = 1
+                # while tail and i < len(tail):
+                    # if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
+                        # tail = tail[i:]
+                    # i += 1
         #
         # Put the newlines *before* the tail.
         ### n = 2 if kind == 'class' else 1
