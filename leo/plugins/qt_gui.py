@@ -14,7 +14,6 @@ import leo.plugins.qt_frame as qt_frame
 import leo.plugins.qt_idle_time as qt_idle_time
 import leo.plugins.qt_text as qt_text
 import datetime
-# import os
 import re
 import sys
 if 1:
@@ -155,8 +154,6 @@ class LeoQtGui(leoGui.LeoGui):
             g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
-
-
     #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         """Replace the clipboard with the string s."""
@@ -279,7 +276,6 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(self, c, spellHandler, tabName):
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
-
     #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run a qt About Leo dialog."""
@@ -588,7 +584,6 @@ class LeoQtGui(leoGui.LeoGui):
 
         file_browser = None
             # A module.
-
         #@+others
         #@+node:ekr.20190518102720.1: *6* pfd.init & helpers
         def init(self):
@@ -670,7 +665,6 @@ class LeoQtGui(leoGui.LeoGui):
             #
             # Show it!
             w.show()
-
         #@-others
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,
@@ -958,8 +952,6 @@ class LeoQtGui(leoGui.LeoGui):
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         return w
-
-
     #@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
     def raise_dock(self, widget):
         """Raise the nearest parent QDockWidget, if any."""
@@ -1244,6 +1236,7 @@ class LeoQtGui(leoGui.LeoGui):
                     g.es('removing', f"'{buttonText}'", 'button at its request')
                     b.pack_forget()
             # Do not assume the script will want to remain in this commander.
+
         #@-<< define the callbacks for b >>
 
         b.configure(command=executeScriptCallback)
@@ -1533,6 +1526,7 @@ class LeoQtGui(leoGui.LeoGui):
                     print(msg, args)
 
                 return call
+
             # Monkey-patch.
 
             QtCore.QObject.connect = self._wrapConnect(connectCall)

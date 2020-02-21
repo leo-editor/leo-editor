@@ -209,6 +209,7 @@ if QtWidgets:
                     'Left': 'left of',
                     'Right': 'right of',
                 }[s]
+
             # Insert.
 
             def insert_callback(index=index):
@@ -413,7 +414,6 @@ if QtWidgets:  # NOQA
             bool,
             bool
         )
-
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
@@ -547,6 +547,7 @@ if QtWidgets:  # NOQA
                         if x:
                             return x
                 return None
+
             # find the layout containing widget_id
 
             l = hunter(layout, widget_id)
@@ -1232,10 +1233,9 @@ def main():
     holder.show()
     app.exec_()
 #@-others
+if __name__ == "__main__":
+    main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
-if __name__ == "__main__":
-    main()
 #@-leo

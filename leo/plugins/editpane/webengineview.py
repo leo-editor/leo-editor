@@ -24,7 +24,6 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         super(LEP_WebEngineView, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
-
     #@+node:tbrown.20171028115459.4: *3* new_text
     def new_text(self, text):
         """new_text - update for new text
@@ -36,7 +35,6 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         self.setEnabled(False)
         self.setHtml(text)
         self.setEnabled(True)
-
     #@+node:tbrown.20171028115459.5: *3* update_text
     def update_text(self, text):
         """update_text - update for current text
@@ -48,11 +46,7 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         self.new_text(text)
         # self.horizontalScrollBar().setValue(h)
         # self.verticalScrollBar().setValue(v)
-
-
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

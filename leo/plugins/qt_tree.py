@@ -65,10 +65,12 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 def dropMimeData(self, data, action, row, col, parent):
                     g.trace()
+
                 # w.dropMimeData = dropMimeData
 
                 def mimeData(self, indexes):
                     g.trace()
+
         # Early inits...
 
         try:
@@ -113,7 +115,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
-
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
     def wrapQLineEdit(self, w):
         """A wretched kludge for MacOs k.masterMenuHandler."""
@@ -409,7 +410,6 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, s.strip())
             return True
         return False
-
     #@+node:ekr.20171122055719.1: *6* qtree.declutter_style
     def declutter_style(self, arg, c, cmd, item, new_icons):
         """Handle style options."""
@@ -859,7 +859,6 @@ class LeoQtTree(leoFrame.LeoTree):
             c.redraw_after_contract(p)
         self.select(p)
         c.outerUpdate()
-
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
     def onItemDoubleClicked(self, item, col):
         """Handle a double click in a BaseNativeTree widget item."""

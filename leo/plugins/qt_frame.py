@@ -32,7 +32,6 @@ except ImportError:
 #@-<< imports >>
 floatable_docks = True
     # True: allow QDockWidgets to float.
-
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
@@ -1019,6 +1018,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             kind = 'check_box_' if kind == 'box' else 'radio_button_'
             name = label.replace(' ', '_').replace('&', '').lower()
             return f"{kind}{name}"
+
         # Rows for check boxes, radio buttons & execution buttons...
 
         d = {
@@ -1132,7 +1132,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.func = func
                 self.oldEvent = w.event
                 w.event = self.wrapper
-
             #@+others
             #@+node:ekr.20131120054058.16281: *8* create_d
             def create_d(self):
@@ -1206,7 +1205,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 return self.oldEvent(event)
             #@-others
         #@-others
-
         EventWrapper(
             c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
         EventWrapper(
@@ -1376,7 +1374,6 @@ class FindTabManager:
         if w != c.frame.body.wrapper.widget:
             w = c.frame.tree.treeWidget
         self.entry_focus = w
-
     #@+node:ekr.20150619082825.1: *3* ftm.set_ignore_case
     def set_ignore_case(self, aBool):
         """Set the ignore-case checkbox to the given value."""
@@ -2351,7 +2348,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return
         self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
         self.resizePanesToRatio(ratio, secondary_ratio)
-
     #@+node:ekr.20190412044556.1: *5* qtFrame.setQtStyle
     def setQtStyle(self):
         """
@@ -2387,7 +2383,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def initCompleteHint(self):
         """A kludge: called to enable text changed events."""
         self.initComplete = True
-
     #@+node:ekr.20110605121601.18253: *4* Destroying the qtFrame
     #@+node:ekr.20110605121601.18254: *5* qtFrame.destroyAllObjects (not used)
     def destroyAllObjects(self):
@@ -3172,7 +3167,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if 'size' in g.app.debug:
             g.trace()
         self.lift()
-
     #@+node:ekr.20190611053431.2: *4* qtFrame.deiconify
     def deiconify(self):
         """Undo --minimized"""
@@ -3182,7 +3176,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 'isMinimized:', self.top and self.top.isMinimized())
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
-
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info (changed)
     def get_window_info(self):
         """Return the geometry of the top window."""
@@ -3202,20 +3195,17 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20190611053431.3: *4* qtFrame.getFocus
     def getFocus(self):
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30.
-
     #@+node:ekr.20190611053431.7: *4* qtFrame.getTitle
     def getTitle(self):
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master if g.app.qt_use_tabs else self.top
         return w.windowTitle()
-
     #@+node:ekr.20190611053431.5: *4* qtFrame.iconify
     def iconify(self):
         if 'size' in g.app.debug:
             g.trace(bool(self.top))
         if self.top: self.top.showMinimized()
-
     #@+node:ekr.20190611053431.6: *4* qtFrame.lift
     def lift(self):
         if 'size' in g.app.debug:
@@ -3226,7 +3216,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.top.showNormal()
         self.top.activateWindow()
         self.top.raise_()
-
     #@+node:ekr.20190611053431.8: *4* qtFrame.setTitle
     def setTitle(self, s):
         # pylint: disable=arguments-differ
@@ -3235,7 +3224,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
             w = self.top.leo_master if g.app.qt_use_tabs else self.top
             w.setWindowTitle(s)
-
     #@+node:ekr.20190611053431.9: *4* qtFrame.setTopGeometry
     def setTopGeometry(self, w, h, x, y):
         # self.top is a DynamicWindow.
@@ -3296,7 +3284,6 @@ class LeoQtLog(leoFrame.LeoLog):
     def reloadSettings(self):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         """Finish creating the LeoQtLog class."""
@@ -4554,7 +4541,6 @@ class LeoQtTreeTab:
         self.w = None  # The QComboBox
         # self.reloadSettings()
         self.createControl()
-
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
     def createControl(self):
 
@@ -4586,6 +4572,7 @@ class LeoQtTreeTab:
                 pass
             if s and not tt.cc.selectChapterLockout:
                 tt.selectTab(s)
+
         # A change: the argument could now be an int instead of a string.
 
         w.currentIndexChanged.connect(onIndexChanged)
@@ -4759,7 +4746,6 @@ class TabbedFrameFactory:
             # Keys are DynamicWindows, values are frames.
         self.masterFrame = None
         self.createTabCommands()
-
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame (changed, makes dw)
     def createFrame(self, leoFrame):
 
@@ -4834,6 +4820,7 @@ class TabbedFrameFactory:
             tabwidget = g.app.gui.frameFactory.masterFrame
             tabwidget.detach(tabwidget.indexOf(f.top))
             f.top.setWindowTitle(f.title + ' [D]')
+
         # this is actually not tab-specific, move elsewhere?
 
         @g.command('close-others')

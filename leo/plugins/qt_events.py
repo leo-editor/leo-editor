@@ -38,12 +38,9 @@
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
-# import string
-# import sys
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
-
     #@+others
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
@@ -192,6 +189,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 if mod in mods:
                     mods.remove(mod)
             return mods
+
         #
         # Remove Alt, Ctrl for AltGr keys.
         # See https://en.wikipedia.org/wiki/AltGr_key
@@ -222,7 +220,6 @@ class LeoQtEventFilter(QtCore.QObject):
             if ch != binding:
                 binding = ch
         return binding, ch
-
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         """Replace MacOS Alt characters."""

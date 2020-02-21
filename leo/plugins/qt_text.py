@@ -17,7 +17,6 @@ def zoom_in(event=None, delta=1):
     @font-size-body must be present in the stylesheet
     """
     zoom_helper(event, delta=1)
-
 #@+node:ekr.20191001084646.1: *3* @g.command("zoom-out")
 @g.command("zoom-out")
 def zoom_out(event=None):
@@ -27,7 +26,6 @@ def zoom_out(event=None):
     """
     # zoom_in(event=event, delta=-1)
     zoom_helper(event=event, delta=-1)
-
 #@+node:ekr.20191001084612.1: *3* zoom_helper
 def zoom_helper(event, delta):
     """
@@ -952,6 +950,7 @@ class QMinibufferWrapper(QLineEditWrapper):
                 event2 = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
                 k.fullCommand(event2)
                 # c.outerUpdate() # Doesn't work.
+
         #@-<< define mouseReleaseEvent >>
 
         w.mouseReleaseEvent = mouseReleaseEvent
@@ -1267,7 +1266,6 @@ class QTextEditWrapper(QTextMixin):
                     # Do *not* change the focus! This would rip focus away from tab panes.
                     c.k.keyboardQuit(setFocus=False)
             #@-others
-
             self.widget.mouseReleaseEvent = mouseReleaseEvent
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
     # These are all widget-dependent

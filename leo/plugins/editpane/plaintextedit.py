@@ -18,7 +18,6 @@ def DBG(text):
         text (str): text to print
     """
     print(f"LEP: {text}")
-
 #@+node:tbrown.20171028115504.3: ** class LEP_PlainTextEdit
 class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
@@ -33,14 +32,12 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
-
     #@+node:tbrown.20171028115504.5: *3* focusInEvent
     def focusInEvent(self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
         #X self.update_position(self.lep.get_position())
-
     #@+node:tbrown.20171028115504.6: *3* focusOutEvent
     def focusOutEvent(self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
@@ -53,7 +50,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
             text (str): new text
         """
         self.setPlainText(text)
-
     #@+node:tbrown.20171028115504.8: *3* text_changed
     def text_changed(self):
         """text_changed - text editor text changed"""
@@ -62,7 +58,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
             self.lep.text_changed(self.toPlainText())
         else:
             DBG("text changed, NOT focused")
-
     #@+node:tbrown.20171028115504.9: *3* update_text
     def update_text(self, text):
         """update_text - update for current text
@@ -72,8 +67,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         """
         DBG("update editor text")
         self.setPlainText(text)
-
-
     #@-others
 #@+node:tbrown.20171028115504.10: ** class LEP_PlainTextEditB
 class LEP_PlainTextEditB(LEP_PlainTextEdit):
@@ -89,7 +82,6 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
         fmt.setForeground(QtCore.Qt.darkMagenta)
         pattern = "\\bMy[A-Za-z]*\\b"
         regex = re.compile(pattern)
-
         #@+others
         #@+node:tbrown.20171028115504.12: *4* highlightBlock
         def highlightBlock(self, text):
@@ -101,7 +93,6 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
                 self.setFormat(offset + start, length, self.fmt)
                 offset += start + length
                 index = self.regex.search(text[offset:])
-
         #@-others
     #@+node:tbrown.20171028115504.13: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
