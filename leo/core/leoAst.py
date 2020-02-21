@@ -2434,9 +2434,14 @@ class Orange:
                 # self.paren_level = 0
                 # self.square_brackets_stack = []
                 # self.state_stack = []
-            #
-            # Ensure exactly one newline before the comment.
-            self.blank_lines(1) ###
+            g.trace(val)
+            ### None of this works...
+                # self.clean_blank_lines()
+                # # Make sure any previous comment is terminated properly.
+                # t = self.code_list[-1]
+                # if t.kind == 'comment':
+                    # g.trace(t.value, val)
+                    # self.add_token('line-end', '\n')
         else:
             # Keep track of verbatim mode.
             if self.beautify_pat.match(val):
@@ -2449,8 +2454,7 @@ class Orange:
             if self.end_doc_pat.match(val):
                 self.in_doc_part = False
         #
-        # General code...
-        # Generate the code.
+        # General code: Generate the comment.
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
         if entire_line:
@@ -2503,8 +2507,10 @@ class Orange:
         """
         Insert blank lines after a class or def as the result of a 'dedent' token.
 
-        A complication: comment lines may precede the 'dedent'.
-        Insert the blank lines *before* such comment lines.
+        Complication 1: Normal comment lines may precede the 'dedent'.
+                        Insert the blank lines *before* such comment lines.
+        
+        Complication 2: Never insert blank lines before or after Leo @+node sentinel comments.
         """
         #
         # Compute the tail.
@@ -2532,8 +2538,7 @@ class Orange:
                 if tail[i-1].kind == 'line-end' and tail[i].kind == 'line-end':
                     tail = tail[i:]
                 i += 1
-                
-        # g.printObj(tail, tag=f"tail:{kind:5}")
+        g.printObj(tail, tag=f"tail:{kind:5}")
         #
         # Put the newlines *before* the tail.
         n = 2 if kind == 'class' else 1
@@ -4772,7 +4777,6 @@ class TestOrange(BaseTest):
     class PosList(list):
     SENTverbatim
         SENT+others
-
     SENTverbatim
         SENT+node:ekr.20140531104908.17611: *4* PosList.ctor
         def __init__(self, c, aList=None):
