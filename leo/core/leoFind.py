@@ -604,7 +604,6 @@ class LeoFind:
         if not data: return
         self.restore(data)
         self.restoreAllExpansionStates(data[-1], redraw=True)
-
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
     @cmd('isearch-forward')
@@ -1397,7 +1396,6 @@ class LeoFind:
             if val: z.append(s)
         part2 = ' '.join(z)
         return part1, part2
-
     #@+node:ekr.20131117164142.16990: *4* LeoFind.setupChangePattern
     def setupChangePattern(self, pattern):
         self.ftm.setChangeText(pattern)
@@ -1566,7 +1564,6 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-
     #@+node:ekr.20031218072017.3070: *4* find.changeSelection
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
@@ -1640,9 +1637,6 @@ class LeoFind:
             # f"     groups: {groups!s}\n"
             # f"     result: {result!s}")
         return result
-
-
-
     #@+node:ekr.20031218072017.3071: *4* find.changeThenFind
     def changeThenFind(self):
         if not self.checkArgs():
@@ -2680,7 +2674,6 @@ class TestFind(unittest.TestCase):
         assert result == expected, (expected, result)
     #@-others
 #@-others
-
 if __name__ == '__main__':
     unittest.main()
 #@@language python

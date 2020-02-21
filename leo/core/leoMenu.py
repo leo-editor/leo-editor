@@ -2,7 +2,6 @@
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
 import leo.core.leoGlobals as g
-# import sys
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu:
@@ -626,6 +625,7 @@ class LeoMenu:
 
     def add_separator(self, menu):
         self.oops()
+
     # def bind (self,bind_shortcut,callback):
     #     self.oops()
 

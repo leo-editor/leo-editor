@@ -10,7 +10,6 @@
 import leo.core.leoGlobals as g
 import leo.commands.gotoCommands as gotoCommands
 import leo.external.codewise as codewise
-# import glob
 import inspect
 import os
 import re
@@ -324,6 +323,7 @@ class AutoCompleterClass:
         i = s.rfind('.', 0, -1)
         if i > -1:
             self.setTabName(s[0:i])
+
     # Underscores are not valid in Pmw tab names!
 
     def setTabName(self, s):
@@ -2277,7 +2277,6 @@ class KeyHandlerClass:
             h.remove(commandName)
         h.append(commandName)
         k.commandIndex = None
-
     #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryFwd(self):
         """
@@ -3048,7 +3047,6 @@ class KeyHandlerClass:
         if event:
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
                 # A continuous unit test, better than "@test k.isPlainKey".
-
     #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
         """
@@ -3674,7 +3672,6 @@ class KeyHandlerClass:
         k.handleDefaultChar(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
-
     #@+node:ekr.20180418034305.1: *5* k.setEventWidget
     def setEventWidget(self, event):
         """

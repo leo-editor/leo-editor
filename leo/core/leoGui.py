@@ -236,7 +236,6 @@ class LeoGui:
     #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
     def put_help(self, c, s, short_title):
         pass
-
     #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
     def widget_name(self, w):
         # First try the widget's getName method.
@@ -310,7 +309,6 @@ class NullGui(LeoGui):
             # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass = g.NullObject
-
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.simulateDialog("aboutLeoDialog", None)
@@ -529,8 +527,6 @@ class StringRadioButton:
 
     def toggle(self):
         self.value = not self.value
-
-
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
     """A gui class for use by unit tests."""
