@@ -325,9 +325,7 @@ class LeoNameSpace:
     def update(self):
         """Update the list of available commanders."""
         self.commanders_list = [frame.c for frame in g.app.windowList]
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

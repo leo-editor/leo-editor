@@ -314,7 +314,6 @@ class BlackCommand:
         self.c = c
         self.wrapper = c.frame.body.wrapper
         self.reloadSettings()
-
     #@+others
     #@+node:ekr.20190926105124.1: *3* black.reloadSettings
     #@@nobeautify
@@ -604,9 +603,7 @@ class CPrettyPrinter:
         if j == -1:
             return len(s)
         return j + 2
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

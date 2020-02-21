@@ -31,7 +31,6 @@ class CommanderCacher:
             self.db = SqlitePickleShare(path)
         except Exception:
             self.db = {}
-
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
@@ -150,7 +149,6 @@ class GlobalCacher:
             if trace:
                 g.es_exception()
             self.db = {}  # Use a plain dict as a dummy.
-
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
@@ -655,9 +653,7 @@ class SqlitePickleShare:
                 self.conn.commit()
                 return itms[-1][1]
             return None
-
         #@-others
-
         self.conn.isolation_level = 'DEFERRED'
 
         sql0 = '''select key, data from cachevalues order by key limit 50'''
@@ -728,7 +724,6 @@ def dump_list(heading, aList):
         else:
             print(f"{key:30}:")
             g.printObj(val)
-
 #@-others
 #@@language python
 #@@tabwidth -4

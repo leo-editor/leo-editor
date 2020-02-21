@@ -518,9 +518,7 @@ class PersistenceDataController:
     def unl_tail(self, unl):
         """Return the last part of a unl."""
         return unl.split('-->')[:-1][0]
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

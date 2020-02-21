@@ -303,7 +303,6 @@ def new_cmd_decorator(name, ivars):
             # The decorator must return the func itself.
 
     return _decorator
-
 #@-others
 #@-<< define g.decorators >>
 
@@ -373,9 +372,7 @@ class BindingInfo:
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
-
     #@-others
-
 def isBindingInfo(obj):
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
@@ -575,9 +572,7 @@ class FileLikeObject:
             if isinstance(s, bytes):
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
-
     #@-others
-
 fileLikeObject = FileLikeObject
     # For compatibility.
 #@+node:ekr.20120123143207.10223: *3* class g.GeneralSetting
@@ -999,9 +994,7 @@ class KeyStroke:
         if s in d:
             return d.get(s)
         return s if len(s) == 1 else ''
-
     #@-others
-
 def isStroke(obj):
     return isinstance(obj, KeyStroke)
 
@@ -1563,7 +1556,6 @@ class RedirectClass:
         else:
             # Can happen when g.batchMode is True.
             g.pr(s)
-
     #@-others
     #@-<< RedirectClass methods >>
 
@@ -1973,7 +1965,6 @@ class TkIDDialog(EmergencyDialog):
     def __init__(self):
         super().__init__(self.title, self.message)
         self.val = ''
-
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
     def onKey(self, event):
@@ -2116,9 +2107,7 @@ class Tracer:
         self.callDict[caller] = d
         # Update the total counts.
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
-
     #@-others
-
 def startTracer(limit=0, trace=False, verbose=False):
     import sys
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
@@ -2326,7 +2315,6 @@ class TypedDict:
         self._name = name  # For __repr__ only.
         self.keyType = keyType
         self.valType = valType
-
     #@+others
     #@+node:ekr.20120205022040.17770: *4* td.__repr__ & __str__
     def __str__(self):
@@ -7080,9 +7068,7 @@ def os_startfile(fname):
                 g.es_print(f"xdg-open {fname} failed with exit code {rc}")
             stderr2log(g, ree, fname)
             ree.close()
-
     #@-others
-
     if fname.find('"') > -1:
         quoted_fname = f"'{fname}'"
     else:
@@ -7930,7 +7916,6 @@ def openUrlHelper(event, url=None):
     if word:
         c.findCommands.findDef(event)
     return None
-
 #@-others
 # set g when the import is about to complete.
 

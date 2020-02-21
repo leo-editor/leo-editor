@@ -23,7 +23,6 @@ except ImportError:
 def cmd(name):
     """Command decorator for the Commands class."""
     return g.new_cmd_decorator(name, ['c',])
-
 #@+others
 #@+node:ekr.20160514120615.1: ** class Commands (object)
 class Commands:
@@ -4140,9 +4139,7 @@ class Commands:
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

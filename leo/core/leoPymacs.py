@@ -121,7 +121,6 @@ def run_script(c, script, p=None):
         silent=True,  # Don't write to the log.
     )
     return g.app.scriptResult
-
 #@-others
 #@@language python
 #@@tabwidth -4

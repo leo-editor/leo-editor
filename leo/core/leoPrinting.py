@@ -276,9 +276,7 @@ class PrintingController:
         dialog.setSizeGripEnabled(True)
         dialog.paintRequested.connect(doc.print_)
         dialog.exec_()
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

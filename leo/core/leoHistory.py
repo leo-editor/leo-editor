@@ -93,9 +93,7 @@ class NodeHistory:
         else:
             self.beadPointer = found
         self.beadList = aList
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -1728,9 +1728,7 @@ class Undoer:
             c.bodyWantsFocus()
             w.setSelectionRange(i, j, insert=ins)
             w.seeInsertPoint()
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

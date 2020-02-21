@@ -11,7 +11,6 @@ assert g
 at_s = "@"
 ref1_s = ">>"
 ref2_s = "<<"
-
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 #@@beautify
@@ -21,7 +20,6 @@ class TipManager:
     """A class to manage user tips."""
 
     key = 'shown-tips'
-
     #@+others
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
     def get_next_tip(self):
@@ -144,9 +142,7 @@ def make_tip_nodes(c):
     root.expand()
     c.selectPosition(root)
     c.redraw()
-
 #@-others
-
 # The global tips array.
 
 tips = [

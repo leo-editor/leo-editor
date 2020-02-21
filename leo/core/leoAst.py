@@ -103,7 +103,6 @@ v1, v2, junk, junk, junk = sys.version_info
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* Python 3.7.
 use_async_tokens = (v1, v2) >= (3,) and (v1, v2) != (3, 7)
-
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -113,7 +112,6 @@ class LeoGlobals:  # pragma: no cover
     """
     Simplified version of functions in leoGlobals.py.
     """
-
     #@+others
     #@+node:ekr.20191227114503.1: *3* LeoGlobals.adjustTripleString
     def adjustTripleString(self, s):
@@ -952,7 +950,6 @@ class TokenOrderGenerator:
     """A class that traverses ast (parse) trees in token order."""
 
     n_nodes = 0  # The number of nodes that have been visited.
-
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
     #@+node:ekr.20191228184647.1: *5* tog.balance_tokens
@@ -2269,7 +2266,7 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
-    
+
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     # Patterns from FastAtRead class, specialized for python delims.
@@ -2279,7 +2276,6 @@ class Orange:
 
     # Doc parts end with @c or a node sentinel
     end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
-
     #@+others
     #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes
     def clean_leo_nodes(self):
@@ -2461,7 +2457,6 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
-
     in_doc_part = False
 
     def do_comment(self):
@@ -3202,7 +3197,6 @@ class BaseTest(unittest.TestCase):
 
     # Statistics.
     counts, times = {}, {}
-
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):
@@ -3409,7 +3403,6 @@ class BaseTest(unittest.TestCase):
 #@+node:ekr.20141012064706.18390: *3* class AstDumper
 class AstDumper:  # pragma: no cover
     """A class supporting various kinds of dumps of ast nodes."""
-
     #@+others
     #@+node:ekr.20191112033445.1: *4* dumper.dump_tree & helper
     def dump_tree(self, tokens, tree):
@@ -3616,7 +3609,6 @@ class TestFiles(BaseTest):  # pragma: no cover
     
     These tests do not start with 'test_', so they are not run by default.
     """
-
     #@+others
     #@+node:ekr.20200123050742.1: *4* TestFiles.optional_file_tests
     def optional_file_tests(self):
@@ -3686,9 +3678,7 @@ class TestFiles(BaseTest):  # pragma: no cover
                 node.children = []
             stack.append(node)
             return par_value, []
-
         #@-others
-
         directory = r'c:\leo.repo\leo-editor\leo\core'
         filename = 'leoAst.py'
         filename = os.path.join(directory, filename)
@@ -3734,7 +3724,6 @@ class TestFiles(BaseTest):  # pragma: no cover
 #@+node:ekr.20191229083512.1: *3* class TestFstringify (BaseTest)
 class TestFstringify(BaseTest):
     """Tests for the TokenOrderGenerator class."""
-
     #@+others
     #@+node:ekr.20200111043311.1: *4* Bugs...
     #@+node:ekr.20200111043311.2: *5* TestFstringity.test_crash_1
@@ -4028,7 +4017,6 @@ class TestFstringify(BaseTest):
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange(BaseTest):
     """Tests for the Orange class."""
-
     #@+others
     #@+node:ekr.20200115201823.1: *4* TestOrange.blacken
     def blacken(self, contents, line_length=None):
@@ -4887,7 +4875,6 @@ class TestOrange(BaseTest):
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)
 class TestReassignTokens(BaseTest):
     """Test cases for the ReassignTokens class."""
-
     #@+others
     #@+node:ekr.20191231130320.1: *4* test_reassign_tokens (to do)
     def test_reassign_tokens(self):
@@ -4897,7 +4884,6 @@ class TestReassignTokens(BaseTest):
 
         contents = """name='uninverted %s' % d.name()"""
         self.make_data(contents)
-
     #@-others
 #@+node:ekr.20191227051737.1: *3* class TestTOG (BaseTest)
 class TestTOG(BaseTest):
@@ -4909,7 +4895,6 @@ class TestTOG(BaseTest):
     
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
-
     #@+others
     #@+node:ekr.20200111042805.1: *4* Bugs...
     #@+node:ekr.20191227052446.10: *4* Contexts...
@@ -5611,7 +5596,6 @@ class TestTOG(BaseTest):
 #@+node:ekr.20200110093802.1: *3* class TestTokens (BaseTest)
 class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
-
     #@+others
     #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
     def show_example_dump(self):  # pragma: no cover
@@ -5686,9 +5670,7 @@ class TestTokens(BaseTest):
                 node.children = []
             stack.append(node)
             return par_value, []
-
         #@-others
-
         table = (
                         # """print('%s in %5.2f sec' % ("done", 2.9))\n""",
             """print(a[1:2:3])\n""",
@@ -5781,7 +5763,6 @@ class TestTokens(BaseTest):
 #@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
 class TestTopLevelFunctions(BaseTest):
     """Tests for the top-level functions in leoAst.py."""
-
     #@+others
     #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
     def test_get_encoding_directive(self):
@@ -5810,7 +5791,6 @@ class TestTopLevelFunctions(BaseTest):
         assert bb, filename
         e, s = strip_BOM(bb)
         assert e is None or e.lower() == 'utf-8', repr(e)
-
     #@-others
 #@+node:ekr.20191227152538.1: *3* class TestTOT (BaseTest)
 class TestTOT(BaseTest):
@@ -5842,7 +5822,6 @@ class Fstringify(TokenOrderTraverser):
     """A class to fstringify files."""
 
     silent = True  # for pytest. Defined in all entries.
-
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, contents, filename, tokens, tree):
@@ -6289,7 +6268,6 @@ class Fstringify(TokenOrderTraverser):
 #@+node:ekr.20191231084514.1: *3* class ReassignTokens (TOT)
 class ReassignTokens(TokenOrderTraverser):
     """A class that reassigns tokens to more appropriate ast nodes."""
-
     #@+others
     #@+node:ekr.20191231084640.1: *4* reassign.reassign
     def reassign(self, filename, tokens, tree):
@@ -6364,7 +6342,6 @@ class Token:
     def to_string(self):
         """Return the contribution of the token to the source file."""
         return self.value if isinstance(self.value, str) else ''
-
     #@+others
     #@+node:ekr.20191231114927.1: *4* token.brief_dump
     def brief_dump(self):  # pragma: no cover
@@ -6421,7 +6398,6 @@ class Token:
 class Tokenizer:
 
     """Create a list of Tokens from contents."""
-
     #@+others
     #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
     token_index = 0
@@ -6505,11 +6481,8 @@ class Tokenizer:
         self.add_token(kind, five_tuple, line, s_row, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
-
     #@-others
-
 #@-others
-
 g = LeoGlobals()
 if __name__ == '__main__':
     unittest.main()

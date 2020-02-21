@@ -36,7 +36,6 @@ class IdleTimeManager:
         """Ctor for IdleTimeManager class."""
         self.callback_list = []
         self.timer = None
-
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback):
@@ -3191,7 +3190,6 @@ class LoadManager:
 
             def flush(self, *args, **keys):
                 pass
-
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args, **keys):
@@ -3230,11 +3228,8 @@ class LoadManager:
                     log.put(s, color=color, tabName=tabName, from_redirect=True)
                 else:
                     app.logWaiting.append((s, color, newline),)
-
             #@-others
-
         #@-others
-
         if not sys.stdout:
             sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
         if not sys.stderr:
@@ -3983,7 +3978,6 @@ def openUrl(event=None):
 def openUrlUnderCursor(event=None):
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
-
 #@-others
 #@@language python
 #@@tabwidth -4

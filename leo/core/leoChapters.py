@@ -474,9 +474,7 @@ class Chapter:
         else:
             p = root or c.p
             c.setCurrentPosition(p)
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

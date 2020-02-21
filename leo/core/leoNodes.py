@@ -1836,9 +1836,7 @@ class Position:
             if g.match_word(p.h, 0, '@ignore'):
                 return True
         return False
-
     #@-others
-
 position = Position  # compatibility.
 #@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
 class PosList(list):
@@ -1887,9 +1885,7 @@ class PosList(list):
             except StopIteration:
                 pass
         return res
-
     #@-others
-
 Poslist = PosList  # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 #@@nobeautify
@@ -2619,7 +2615,6 @@ class VNode:
         __get_gnx,  # __set_gnx,
         doc="VNode gnx property")
     #@-others
-
 vnode = VNode  # compatibility.
 
 #@@beautify

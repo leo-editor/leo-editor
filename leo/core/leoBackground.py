@@ -7,7 +7,6 @@
 import leo.core.leoGlobals as g
 import re
 import subprocess
-
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
@@ -232,9 +231,7 @@ class BackgroundProcessManager:
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

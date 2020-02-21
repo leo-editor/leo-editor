@@ -2021,9 +2021,7 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10462: *4* get_replacements
     def get_replacements(self):
         return self.replacements
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

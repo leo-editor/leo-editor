@@ -326,8 +326,6 @@ class BridgeController:
             g.app.db = g.app.global_cacher.db
             g.app.commander_cacher = leoCache.CommanderCacher()
             g.app.commander_db = g.app.commander_cacher.db
-
     #@-others
-
 #@-others
 #@-leo

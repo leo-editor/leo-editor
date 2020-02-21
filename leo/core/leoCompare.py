@@ -409,10 +409,7 @@ class BaseLeoCompare:
         self.show("printMatches:" + str(self.printMatches))
         self.show("printMismatches:" + str(self.printMismatches))
         self.show("printTrailingMismatches:" + str(self.printTrailingMismatches))
-
     #@-others
-
-
 class LeoCompare(BaseLeoCompare):
     """
     A class containing Leo's compare code.
@@ -434,7 +431,6 @@ class CompareLeoOutlines:
         self.root = None
         self.path1 = None
         self.path2 = None
-
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
     def diff_list_of_files(self, aList, visible=True):
@@ -707,7 +703,6 @@ def go():
         name1 = "c:\\prog\\test\\compare1.txt"
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1, name2)
-
 #@-others
 #@@language python
 #@@tabwidth -4

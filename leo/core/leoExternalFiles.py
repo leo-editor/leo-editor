@@ -26,7 +26,6 @@ class ExternalFile:
         return f"<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>"
 
     __str__ = __repr__
-
     #@+others
     #@+node:ekr.20161011174757.1: *3* ef.shortFileName
     def shortFileName(self):
@@ -616,9 +615,7 @@ class ExternalFilesController:
             ]),
             title='External file changed',
         )
-
     #@-others
-
 #@-others
 #@@language python
 #@@tabwidth -4

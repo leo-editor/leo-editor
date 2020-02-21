@@ -934,7 +934,6 @@ class ActiveSettingsOutline:
         self.c = c
         self.start()
         self.create_outline()
-
     #@+others
     #@+node:ekr.20190905091614.2: *3* aso.start & helpers
     def start(self):
@@ -2227,7 +2226,6 @@ class LocalConfigManager:
         c.setChanged(redrawFlag=False)
         p.setDirty()
         c.redraw_later()
-
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):
@@ -2237,7 +2235,6 @@ class SettingsTreeParser(ParserBaseClass):
 
     # def __init__(self, c, localFlag=True):
         # super().__init__(c, localFlag)
-
     #@+others
     #@+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
@@ -2297,7 +2294,6 @@ def parseFont(b):
             ('_family', '_slant', '_weight', '_size')):
             settings_name = name.rsplit('_', 1)[0]
     return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
-
 #@-others
 #@@language python
 #@@tabwidth -4

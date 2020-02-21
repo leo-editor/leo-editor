@@ -51,7 +51,6 @@ class FastRead:
     def __init__(self, c, gnx2vnode):
         self.c = c
         self.gnx2vnode = gnx2vnode
-
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
     def readFile(self, path):
@@ -802,9 +801,7 @@ class FileCommands:
                 c.sqlite_connection.close()
             c.mFileName = oldname
             c.sqlite_connection = conn
-
         #@-others
-
         pubgnxes = set(pub_gnxes())
         privgnxes = set(priv_gnxes())
         privnodes = priv_data(privgnxes - pubgnxes)
@@ -1101,9 +1098,7 @@ class FileCommands:
             fc.putTnodes()
             fc.putPostlog()
             return fname, fc.outputFile.getvalue()
-
         #@-others
-
         c.endEditing()
         for v in c.hiddenRootNode.children:
             if v.h == PRIVAREA:
@@ -2046,7 +2041,6 @@ def dump_clone_parents(event):
         if len(v.parents) > 1:
             print(v.h)
             g.printObj(v.parents)
-
 #@-others
 #@@language python
 #@@tabwidth -4

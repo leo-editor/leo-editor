@@ -3111,9 +3111,7 @@ class AtFile:
             read_only = False
         if read_only:
             g.error("read only:", fn)
-
     #@-others
-
 atFile = AtFile  # compatibility
 #@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead:
@@ -3131,7 +3129,6 @@ class FastAtRead:
         self.root = None
         self.VNode = TestVNode if test else leoNodes.VNode
         self.test = test
-
     #@+others
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
@@ -3714,7 +3711,6 @@ class FastAtRead:
     #@-others
 #@+node:ekr.20200204092455.1: ** class TestAtFile
 class TestAtFile(unittest.TestCase):
-
     #@+others
     #@+node:ekr.20200204104247.1: *3* Helpers
     #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
@@ -3771,9 +3767,7 @@ class TestAtFile(unittest.TestCase):
         p1 = c.rootPosition()
         assert p1.h == "@file 1_renamed", repr(p1.h)
         assert p1.b == "b_1_changed\n", repr(p1.b)
-
     #@-others
-
 #@-others
 if __name__ == '__main__':
     unittest.main()

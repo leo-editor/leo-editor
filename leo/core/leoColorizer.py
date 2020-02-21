@@ -37,7 +37,6 @@ def make_colorizer(c, widget, wrapper):
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
 class BaseColorizer:
     """The base class for all Leo colorizers."""
-
     #@+others
     #@+node:ekr.20190324044744.1: *3* bc.__init__
     def __init__(self, c, widget=None, wrapper=None):
@@ -2361,7 +2360,6 @@ if QtGui:
         Used by both the JeditColorizer and PYgmentsColorizer classes.
         """
         # This is c.frame.body.colorizer.highlighter
-
         #@+others
         #@+node:ekr.20110605121601.18566: *3* leo_h.ctor (sets style)
         def __init__(self, c, colorizer, document):
@@ -2418,7 +2416,6 @@ if QtGui:
         #
         # Copyright (c) Jupyter Development Team.
         # Distributed under the terms of the Modified BSD License.
-
         #@+others
         #@+node:ekr.20190320153605.1: *4* leo_h._get_format & helpers
         def _get_format(self, token):
@@ -2550,7 +2547,6 @@ class PygmentsColorizer(BaseJEditColorizer):
     This class adapts pygments tokens to QSyntaxHighlighter.
     """
     # This is c.frame.body.colorizer
-
     #@+others
     #@+node:ekr.20190319151826.3: *3* pyg_c.__init__ & helpers
     def __init__(self, c, widget, wrapper):
@@ -3091,7 +3087,6 @@ if pygments:
     else:
         # For TravisCi.
         PygmentsBlockUserData = g.NullObject
-
     #@-others
 #@-others
 #@@language python

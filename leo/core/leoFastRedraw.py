@@ -86,10 +86,8 @@ class FastRedraw:
         def gnxs(aList):
             """Return the gnx list. Do not try to remove this!"""
             return [z.strip() for z in aList]
-
         #@+others # Define local helpers
         #@-others
-
         d = difflib.SequenceMatcher(None, a, b)
         op_codes = list(d.get_opcodes())
         # dump_diff_op_codes(a, b, op_codes)
@@ -138,9 +136,7 @@ class FastRedraw:
             result.append(op0)
             i += 1
         return result
-
     #@-others
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

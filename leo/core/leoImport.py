@@ -37,7 +37,6 @@ class FreeMindImporter:
         self.c = c
         self.count = 0
         self.d = {}
-
     #@+others
     #@+node:ekr.20170222084048.1: *3* freemind.add_children
     def add_children(self, parent, element):
@@ -132,7 +131,6 @@ class JSON_Import_Helper:
         """ctor for the JSON_Import_Helper class."""
         self.c = c
         self.vnodes_dict = {}
-
     #@+others
     #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
     def create_nodes(self, parent, parent_d):
@@ -1500,7 +1498,6 @@ class MindMapImporter:
     def __init__(self, c):
         """ctor for MindMapImporter class."""
         self.c = c
-
     #@+others
     #@+node:ekr.20160503130209.1: *3* mindmap.create_outline
     def create_outline(self, path):
@@ -1613,7 +1610,6 @@ class MORE_Importer:
     def __init__(self, c):
         """ctor for MORE_Importer class."""
         self.c = c
-
     #@+others
     #@+node:ekr.20161006101111.1: *3* MORE.prompt_for_files
     def prompt_for_files(self):
@@ -2049,7 +2045,6 @@ class TabImporter:
         self.root = None
         self.separate = separate
         self.stack = []
-
     #@+others
     #@+node:ekr.20161006071801.2: *3* tabbed.check
     def check(self, lines, warn=True):
@@ -2406,7 +2401,6 @@ def parse_body_command(event):
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)
-
 #@-others
 #@@language python
 #@@tabwidth -4

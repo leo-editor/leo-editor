@@ -180,7 +180,6 @@ def session_snapshot_save_command(event):
     m = g.app.sessionManager
     if c and m:
         m.save_snapshot(c=c)
-
 #@-others
 #@@language python
 #@@tabwidth -4
