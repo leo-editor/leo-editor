@@ -2269,13 +2269,24 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
+    
+    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
+
+    # Patterns from FastAtRead class, specialized for python delims.
+    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
+    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
+    at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
+
+    # Doc parts end with @c or a node sentinel
+    end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
 
     #@+others
     #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes
     def clean_leo_nodes(self):
         """
-        A post pass.
-        Remove all blank lines before and after Leo @+node sentinels.
+        Remove all blank lines before and after Leo @+node and @+others sentinels.
+        
+        This is a post pass, for last-minute cleanups.
         """
 
         def clean_before(i):
@@ -2311,7 +2322,10 @@ class Orange:
                     break
 
         for i, t in enumerate(self.code_list):
-            if t.kind == 'comment' and self.node_pat.match(t.value):
+            if t.kind == 'comment' and (
+                self.node_pat.match(t.value) or
+                self.at_others_pat.match(t.value)
+            ):
                 clean_before(i)
                 clean_after(i)
     #@+node:ekr.20200107165250.2: *4* orange.ctor
@@ -2447,14 +2461,6 @@ class Orange:
         return True
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
-    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
-
-    # Patterns from FastAtRead class, specialized for python delims.
-    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
-    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
-
-    # Doc parts end with @c or a node sentinel
-    end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
 
     in_doc_part = False
 
