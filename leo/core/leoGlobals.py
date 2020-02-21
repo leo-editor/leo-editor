@@ -3894,7 +3894,7 @@ def is_sentinel(line, delims):
 #@+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
 def makeAllNonExistentDirectories(theDir):
     """
-    A wrapper from os.makedirs (new in Python 3.2).
+    A wrapper from os.makedirs.
     Attempt to make all non-existent directories.
 
     Return True if the directory exists or was created successfully.

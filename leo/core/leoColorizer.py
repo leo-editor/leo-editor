@@ -206,7 +206,6 @@ class BaseJEditColorizer(BaseColorizer):
     def addLeoRules(self, theDict):
         """Put Leo-specific rules to theList."""
         # pylint: disable=no-member
-        # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
         table = [
             # Rules added at front are added in **reverse** order.
             ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
