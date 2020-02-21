@@ -616,7 +616,9 @@ class ExternalFilesController:
             ]),
             title='External file changed',
         )
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

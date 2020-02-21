@@ -325,7 +325,6 @@ class Position:
     # hash value changes, it will be in the wrong hash bucket).
 
     __hash__ = None
-
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().
@@ -436,7 +435,6 @@ class Position:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
     def nearest_unique_roots(self, copy=True, predicate=None):
         """
@@ -567,6 +565,7 @@ class Position:
             if p.v not in seen:
                 seen.add(p.v)
                 yield p.v
+
     # Compatibility with old code.
 
     unique_tnodes_iter = unique_nodes
@@ -1009,7 +1008,6 @@ class Position:
         p._childIndex = n
         child = p.v
         child._addLink(n, parent_v)
-
     #@+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
     def _linkCopiedAsNthChild(self, parent, n):
         """Link a copied self as the n'th child of the parent."""
@@ -1267,7 +1265,6 @@ class Position:
         if limit.isAncestorOf(p):
             return False, None
         return True, None
-
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
@@ -1839,6 +1836,7 @@ class Position:
             if g.match_word(p.h, 0, '@ignore'):
                 return True
         return False
+
     #@-others
 
 position = Position  # compatibility.
@@ -1889,6 +1887,7 @@ class PosList(list):
             except StopIteration:
                 pass
         return res
+
     #@-others
 
 Poslist = PosList  # compatibility.
@@ -2005,6 +2004,7 @@ class VNode:
 
     def atAutoNodeName(self, h=None):
         return self.findAtFileName(g.app.atAutoNames, h=h)
+
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no
     # importer or writer for reStructuredText exists.
@@ -2045,6 +2045,7 @@ class VNode:
     def atThinFileNodeName(self):
         names = ("@thin", "@file-thin",)
         return self.findAtFileName(names)
+
     # New names, less confusing
 
     atNoSentFileNodeName = atNoSentinelsFileNodeName
@@ -2091,6 +2092,7 @@ class VNode:
 
     def isAtThinFileNode(self):
         return bool(self.atThinFileNodeName())
+
     # New names, less confusing:
 
     isAtNoSentFileNode = isAtNoSentinelsFileNode

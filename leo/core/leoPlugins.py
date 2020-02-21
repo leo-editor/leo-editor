@@ -539,6 +539,7 @@ class LeoPluginsController:
                 moduleName not in optional_modules
             ):
                 report(f"can not load enabled plugin: {moduleName}")
+
         #@-others
 
         if not g.app.enablePlugins:
@@ -659,7 +660,9 @@ class LeoPluginsController:
         bunches = self.handlers.get(tag)
         bunches = [bunch for bunch in bunches if bunch and bunch.fn != fn]
         self.handlers[tag] = bunches
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

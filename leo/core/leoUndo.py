@@ -700,7 +700,6 @@ class Undoer:
             return
         # Recalculate the menu labels.
         u.setUndoTypes()
-
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
@@ -1247,7 +1246,6 @@ class Undoer:
         if u.groupCount == 0:
             u.p.setDirty()
             c.selectPosition(u.p)
-
     #@+node:ekr.20050411111847: *4* u.redoMove
     def redoMove(self):
         u = self; c = u.c; cc = c.chapterController
@@ -1324,7 +1322,6 @@ class Undoer:
         p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-
     #@+node:ekr.20050318085432.8: *4* u.redoTree
     def redoTree(self):
         """Redo replacement of an entire tree."""
@@ -1416,7 +1413,6 @@ class Undoer:
         next.doDelete()
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
-
     #@+node:ekr.20050412083057.1: *4* u.undoCloneNode
     def undoCloneNode(self):
         u = self; c = u.c; cc = c.chapterController
@@ -1453,7 +1449,6 @@ class Undoer:
             u.p._linkAsRoot(oldRoot)
         u.p.setDirty()
         c.selectPosition(u.p)
-
     #@+node:ekr.20080425060424.10: *4* u.undoDemote
     def undoDemote(self):
         u = self; c = u.c
@@ -1541,7 +1536,6 @@ class Undoer:
         if u.groupCount == 0:
             u.p.setDirty()
             c.selectPosition(u.p)
-
     #@+node:ekr.20050411112033: *4* u.undoMove
     def undoMove(self):
 
@@ -1673,7 +1667,6 @@ class Undoer:
         p = c.setPositionAfterSort(u.sortChildren)
         p.setAllAncestorAtFileNodesDirty()
         c.setCurrentPosition(p)
-
     #@+node:ekr.20050318085713.2: *4* u.undoTree
     def undoTree(self):
         """Redo replacement of an entire tree."""
@@ -1735,7 +1728,9 @@ class Undoer:
             c.bodyWantsFocus()
             w.setSelectionRange(i, j, insert=ins)
             w.seeInsertPoint()
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

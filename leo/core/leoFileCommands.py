@@ -345,6 +345,7 @@ class FastRead:
                     #@-<< handle all other v attributes >>
                     # Handle all inner elements.
                     v_element_visitor(e, v)
+
         #@-<< define v_element_visitor >>
         #
         # Create the hidden root vnode.
@@ -735,7 +736,6 @@ class FileCommands:
                 if v.h == PRIVAREA:
                     break
                 yield v
-
         #@+node:vitalije.20170831144827.5: *6* priv_vnodes
         def priv_vnodes():
             pub = True
@@ -802,6 +802,7 @@ class FileCommands:
                 c.sqlite_connection.close()
             c.mFileName = oldname
             c.sqlite_connection = conn
+
         #@-others
 
         pubgnxes = set(pub_gnxes())
@@ -1100,6 +1101,7 @@ class FileCommands:
             fc.putTnodes()
             fc.putPostlog()
             return fname, fc.outputFile.getvalue()
+
         #@-others
 
         c.endEditing()
@@ -1766,7 +1768,6 @@ class FileCommands:
             )
         )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
-
     #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
     def exportDbVersion(self, conn):
         conn.execute(
@@ -1798,7 +1799,6 @@ class FileCommands:
         conn.executemany(
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x: (x[1], md5(x[0])), files))
-
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event=None):
@@ -1863,6 +1863,7 @@ class FileCommands:
     def assignFileIndices(self):
         """Assign a file index to all tnodes"""
         pass  # No longer needed: we assign indices as needed.
+
     # Indices are now immutable, so there is no longer any difference between these two routines.
 
     compactFileIndices = assignFileIndices
@@ -2045,6 +2046,7 @@ def dump_clone_parents(event):
         if len(v.parents) > 1:
             print(v.h)
             g.printObj(v.parents)
+
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -2513,7 +2513,9 @@ class VimCommands:
     #@+node:ekr.20140805064952.18152: *4* vc.widget_name
     def widget_name(self, w):
         return self.c.widget_name(w)
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

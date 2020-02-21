@@ -303,6 +303,7 @@ def new_cmd_decorator(name, ivars):
             # The decorator must return the func itself.
 
     return _decorator
+
 #@-others
 #@-<< define g.decorators >>
 
@@ -372,6 +373,7 @@ class BindingInfo:
     #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
+
     #@-others
 
 def isBindingInfo(obj):
@@ -421,6 +423,7 @@ class Bunch:
         result = [f'g.Bunch({tag or ""})']
         result.extend(entries)
         return '\n    '.join(result) + '\n'
+
     # Used by new undo code.
 
     def __setitem__(self, key, value):
@@ -572,6 +575,7 @@ class FileLikeObject:
             if isinstance(s, bytes):
                 s = g.toUnicode(s, self.encoding)
             self.list.append(s)
+
     #@-others
 
 fileLikeObject = FileLikeObject
@@ -901,7 +905,6 @@ class KeyStroke:
     #@+node:ekr.20120203053243.10121: *4* ks.isFKey
     def isFKey(self):
         return self.s in g.app.gui.FKeys
-
     #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
     def isPlainKey(self):
         """
@@ -996,6 +999,7 @@ class KeyStroke:
         if s in d:
             return d.get(s)
         return s if len(s) == 1 else ''
+
     #@-others
 
 def isStroke(obj):
@@ -1559,8 +1563,10 @@ class RedirectClass:
         else:
             # Can happen when g.batchMode is True.
             g.pr(s)
+
     #@-others
     #@-<< RedirectClass methods >>
+
 # Create two redirection objects, one for each stream.
 
 redirectStdErrObj = RedirectClass()
@@ -2110,6 +2116,7 @@ class Tracer:
         self.callDict[caller] = d
         # Update the total counts.
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
+
     #@-others
 
 def startTracer(limit=0, trace=False, verbose=False):
@@ -2429,7 +2436,7 @@ class TestLeoGlobals(unittest.TestCase):
     #@+others
     #@+node:ekr.20200219071958.1: *4* test_comment_delims_from_extension
     def test_comment_delims_from_extension(self):
-        
+
         # pylint: disable=import-self
         import leo.core.leoGlobals as leo_g
         import leo.core.leoApp as leoApp
@@ -2439,21 +2446,21 @@ class TestLeoGlobals(unittest.TestCase):
         assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
     #@+node:ekr.20200219072957.1: *4* test_is_sentinel
     def test_is_sentinel(self):
-        
+
         # pylint: disable=import-self
         import leo.core.leoGlobals as leo_g
         # Python.
         py_delims = leo_g.comment_delims_from_extension('.py')
-        assert leo_g.is_sentinel("#@+node",py_delims)
-        assert not leo_g.is_sentinel("#comment",py_delims)
+        assert leo_g.is_sentinel("#@+node", py_delims)
+        assert not leo_g.is_sentinel("#comment", py_delims)
         # C.
         c_delims = leo_g.comment_delims_from_extension('.c')
-        assert leo_g.is_sentinel("//@+node",c_delims)
-        assert not g.is_sentinel("//comment",c_delims)
+        assert leo_g.is_sentinel("//@+node", c_delims)
+        assert not g.is_sentinel("//comment", c_delims)
         # Html.
         html_delims = leo_g.comment_delims_from_extension('.html')
-        assert leo_g.is_sentinel("<!--@+node-->",html_delims)
-        assert not leo_g.is_sentinel("<!--comment-->",html_delims)
+        assert leo_g.is_sentinel("<!--@+node-->", html_delims)
+        assert not leo_g.is_sentinel("<!--comment-->", html_delims)
     #@-others
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
 def isTextWidget(w):
@@ -2619,6 +2626,7 @@ def get_line(s, i):
     j = g.find_line_start(s, i)
     k = g.skip_to_end_of_line(s, i)
     return nl + s[j:k]
+
 # Important: getLine is a completely different function.
 # getLine = get_line
 
@@ -3116,7 +3124,7 @@ def timeSince(start):
     return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # Weird pylint bug, activated by TestLeoGlobals class.
-# Disabling this will be safe, because pyflakes will still warn about true redefinitions 
+# Disabling this will be safe, because pyflakes will still warn about true redefinitions
 # pylint: disable=function-redefined
 #@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
@@ -3335,7 +3343,6 @@ def isDirective(s):
             return False
         return bool(m.group(1) in g.globalDirectiveList)
     return False
-
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     """
@@ -5236,6 +5243,7 @@ def gitInfo(path=None):
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c, p, event):
     pass
+
 # This dummy definition keeps pylint happy.
 # Plugins can change this.
 
@@ -7922,6 +7930,7 @@ def openUrlHelper(event, url=None):
     if word:
         c.findCommands.findDef(event)
     return None
+
 #@-others
 # set g when the import is about to complete.
 

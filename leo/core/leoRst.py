@@ -82,6 +82,7 @@ def code_block(name, arguments, options,
         g.es_trace('exception in rst3:code_block()')
         g.es_exception()
         return [None]
+
 # See http://docutils.sourceforge.net/spec/howto/rst-directives.html
 
 code_block.arguments = (
@@ -188,7 +189,6 @@ class RstCommands:
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         self.debug = self.c.config.getBool('rst3-debug', default=False)
-
     #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
     def cmd(name):
         """Command decorator for the RstCommands class."""
@@ -2021,7 +2021,9 @@ class LinkHtmlparserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10462: *4* get_replacements
     def get_replacements(self):
         return self.replacements
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

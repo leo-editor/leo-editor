@@ -47,7 +47,6 @@ class PersistenceDataController:
         self.c = c
         self.at_persistence = None
             # The position of the @position node.
-
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140718153519.17731: *4* pd.clean
     def clean(self):
@@ -519,7 +518,9 @@ class PersistenceDataController:
     def unl_tail(self, unl):
         """Return the last part of a unl."""
         return unl.split('-->')[:-1][0]
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -2019,14 +2019,12 @@ class RecursiveImportController:
             p.h = f"@path {stripped or path}"
             for p in p.children():
                 self.minimize_headlines(p, prefix + stripped)
-
     #@+node:ekr.20170404134052.1: *6* ric.strip_prefix
     def strip_prefix(self, path, prefix):
         """Strip the prefix from the path and return the result."""
         if path.startswith(prefix):
             return path[len(prefix) :]
         return ''  # A signal.
-
     #@+node:ekr.20130823083943.12612: *5* ric.remove_empty_nodes
     def remove_empty_nodes(self, p):
         """Remove empty nodes. Not called for @auto or @edit trees."""
@@ -2105,8 +2103,6 @@ class TabImporter:
             if ch not in ' \t':
                 return s[:i]
         return s
-
-
     #@+node:ekr.20161006072958.1: *3* tabbed.prompt_for_files
     def prompt_for_files(self):
         """Prompt for a list of FreeMind (.mm.html) files and import them."""
@@ -2364,7 +2360,6 @@ else:
         This command is disabled.  Please install lxml:
         https://lxml.de/installation.html
         """
-
 #@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event):
@@ -2411,6 +2406,7 @@ def parse_body_command(event):
     c = event.get('c')
     if c and c.p:
         c.importCommands.parse_body(c.p)
+
 #@-others
 #@@language python
 #@@tabwidth -4

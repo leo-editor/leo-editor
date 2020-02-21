@@ -3230,7 +3230,9 @@ class LoadManager:
                     log.put(s, color=color, tabName=tabName, from_redirect=True)
                 else:
                     app.logWaiting.append((s, color, newline),)
+
             #@-others
+
         #@-others
 
         if not sys.stdout:
@@ -3807,6 +3809,7 @@ class RecentFilesManager:
 
         def munge2(name):
             return g.os_path_finalize_join(g.app.loadDir, name or '')
+
         # Update the recent files list in all windows.
 
         if fileName:
@@ -3980,6 +3983,7 @@ def openUrl(event=None):
 def openUrlUnderCursor(event=None):
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
+
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -714,8 +714,11 @@ class ShadowController:
         def isVerbatimSentinel(self, s):
             """Return True if s is an @verbatim sentinel."""
             return self.isSentinel(s, suffix='verbatim')
+
         #@-others
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

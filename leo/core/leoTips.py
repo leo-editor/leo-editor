@@ -144,6 +144,7 @@ def make_tip_nodes(c):
     root.expand()
     c.selectPosition(root)
     c.redraw()
+
 #@-others
 
 # The global tips array.
@@ -187,7 +188,6 @@ This allows you to work on nodes scattered throughout an
 outline without altering the structure of @file nodes.
 
 """),
-
 #@+node:ekr.20180324065653.3: *4* myLeoSettings.leo
 UserTip(
     n=616,
@@ -202,7 +202,6 @@ Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 
 """),
-
 #@+node:ekr.20180324065152.3: *4* Re @button make-md-toc
 UserTip(
     n=625,
@@ -217,7 +216,6 @@ You can then copy the text from the console to your document.
 The selected outline node should be an `@auto-md` node.
 
 """),
-
 #@+node:ekr.20180324073053.1: *3* Tips re Commands
 #@+node:ekr.20180324072156.1: *4* cff command
 UserTip(
@@ -233,7 +231,6 @@ the children of a new last top-level node.
 This is a great way to study code.
 
 """),
-
 #@+node:ekr.20180324065153.1: *4* beautify command & @nobeautify
 UserTip(
     n=623,
@@ -258,7 +255,6 @@ last top-level node.
 Use this to gather nodes throughout an outline.
 
 """),
-
 #@+node:ekr.20180324072541.1: *4* find-quick-selected command
 UserTip(
     n=607,
@@ -269,7 +265,6 @@ UserTip(
 The find-quick-selected (Ctrl-Shift-F) command finds all nodes containing the selected text.
 
 """),
-
 #@+node:ekr.20180324072904.1: *4* goto-next-clone command
 UserTip(
     n=0,
@@ -282,7 +277,6 @@ Use Alt-N to cycle through the clones of the present cloned node.
 This is a fast way of finding the clone whose ancestor is an @<file> node.
     
 """),
-
 #@+node:ekr.20180527052858.1: *4* help-*
 UserTip(
     n=0,
@@ -323,7 +317,6 @@ UserTip(
 The parse-body command parses p.b (the body text of the selected node) into separate nodes.
 
 """),
-
 #@+node:ekr.20180324065153.2: *4* pylint command
 UserTip(
     n=622,
@@ -353,7 +346,6 @@ For example, instead of pressing an @button button, execute its command from the
 Now you can re-execute the button using Ctrl-P.
 
 """),
-
 #@+node:ekr.20180324065153.3: *4* rst3 command
 UserTip(
     n=621,
@@ -365,7 +357,6 @@ UserTip(
 <p>See <a href="http://leoeditor.com/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
 
 </html>"""),
-
 #@+node:ekr.20180324072625.1: *4* sort-siblings command
 UserTip(
     n=605,
@@ -376,7 +367,6 @@ UserTip(
 The sort-siblings (Alt-A) command sorts all the child nodes of their parent, or all top-level nodes.
 
 """),
-
 #@+node:ekr.20180324073210.1: *3* Tips re Scripting
 #@+node:ekr.20180324065152.1: *4* Clearing the log window
 UserTip(
@@ -411,7 +401,6 @@ For example:</p>
 run Leo from a console</a> for this to work.</p>
  
 </html>"""),
-
 #@+node:ekr.20180324072527.1: *4* g.pdb
 UserTip(
     n=608,
@@ -427,7 +416,6 @@ adapted for Leo.</p>
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072513.1: *4* g.trace
 UserTip(
     n=609,
@@ -474,7 +462,6 @@ Within `@button` scripts, c.p is the presently selected outline node.
 As a result, @button nodes bring scripts to data.
 
 """),
-
 #@+node:ekr.20180324065153.5: *4* Re @test
 UserTip(
     n=619,
@@ -506,7 +493,6 @@ for python files:
     {'@others'}
 
 """),
-
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
 UserTip(
     n=0,
@@ -541,7 +527,6 @@ can correct spelling mistakes, expand to multiple lines or even trees of nodes.
 can prompt for values to be substituted within the abbreviation.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072110.1: *4* Clones
 UserTip(
     n=615,
@@ -555,7 +540,6 @@ are "live" copies of the node itself and all its descendants.</p>
 <p>Clones are a unique feature of Leo.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072128.1: *4* Don't remember command names
 UserTip(
     n=614,
@@ -568,7 +552,6 @@ To execute a command, type `Alt-X` followed by the first few characters of comma
 The list of commands matching what you have typed appears.
 
 """),
-
 #@+node:ekr.20180324065145.1: *4* How to assign shortcuts to scripts
 UserTip(
     n=629,
@@ -595,7 +578,6 @@ UserTip(
 Just search LeoDocs.leo.
 
 """),
-
 #@+node:ekr.20180324072812.1: *4* How to find settings
 UserTip(
     n=0,
@@ -608,7 +590,6 @@ Just search leoSettings.leo.
 leoSettings.leo contains the defaults for all of Leo's settings, with documentation for each.
 
 """),
-
 #@+node:ekr.20180312101254.1: *4* How to find your @command nodes
 UserTip(
     n=0,

@@ -30,7 +30,6 @@ class RopeController:
             self.proj = project.Project(g.app.loadDir)
         else:
             self.proj = None
-
     #@+node:ekr.20140525065558.15806: *3* modules (RopeController)
     def modules(self):
         """Return full path names of all Leo modules."""
@@ -76,6 +75,7 @@ def test(c):
     t1 = time.time()
     RopeController(c).run()
     print(f"done: {g.timeSince(t1)} sec.")
+
 #@-others
 #@@language python
 #@@tabwidth -4

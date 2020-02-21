@@ -114,7 +114,6 @@ class BaseColorizer:
         if not language and use_default:
             language = c.target_language
         return language
-
     #@+node:ekr.20170201150505.1: *5* bjc.findAllValidLanguageDirectives
     def findAllValidLanguageDirectives(self, p):
         """Return list of all valid @language directives in p.b"""
@@ -132,7 +131,6 @@ class BaseColorizer:
             if self.isValidLanguage(language):
                 return language
         return None
-
     #@+node:ekr.20170127142001.6: *5* bjc.isValidLanguage
     def isValidLanguage(self, language):
         """True if language exists in leo/modes."""
@@ -295,7 +293,6 @@ class BaseJEditColorizer(BaseColorizer):
             except Exception:  # Recover after a user settings error.
                 g.es_exception()
                 wrapper.tag_configure(key, foreground=default_color)
-
     #@+node:ekr.20190324172242.1: *4* bjc.configure_fonts & helper
     def configure_fonts(self):
         """Configure all fonts in the default fonts dict."""
@@ -968,6 +965,7 @@ class BaseJEditColorizer(BaseColorizer):
         def show(setting, val):
             if trace:
                 g.es_print(f"{setting:35}: {val}")
+
         #
         # Set self.use_pygments only once: it can't be changed later.
         # There is no easy way to re-instantiate classes created by make_colorizer.
@@ -1163,7 +1161,6 @@ class JEditColorizer(BaseJEditColorizer):
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
         self.init()
-
     #@+node:ekr.20110605121601.18589: *3*  jedit.Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -2137,14 +2134,11 @@ class JEditColorizer(BaseJEditColorizer):
             not state.endswith('@nocolor-node') and
             not state.endswith('@killcolor'))
         return enabled
-
-
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
         self.setState(n)
         return n
-
     #@+node:ekr.20110605121601.18635: *4* jedit.show...
     def showState(self, n):
         state = self.stateDict.get(n, 'no-state')
@@ -2886,7 +2880,6 @@ class QScintillaColorizer(BaseColorizer):
         w = wrapper.widget  # A Qsci.QsciSintilla object.
         self.lexer = self.lexersDict.get(language, self.nullLexer)
         w.setLexer(self.lexer)
-
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):
         """The main Scintilla colorizer entry point."""

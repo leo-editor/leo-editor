@@ -516,7 +516,6 @@ class SqlitePickleShare:
                 where key=?''', (key,))
         except sqlite3.OperationalError:
             pass
-
     #@+node:vitalije.20170716201700.6: *4* __getitem__
     def __getitem__(self, key):
         """ db['key'] reading """
@@ -550,7 +549,6 @@ class SqlitePickleShare:
                 (key, data))
         except sqlite3.OperationalError as e:
             g.es_exception(e)
-
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
 
@@ -575,7 +573,6 @@ class SqlitePickleShare:
         mydir.walkfiles('*.tmp') yields only files with the .tmp
         extension.
         """
-
     #@+node:vitalije.20170716201700.13: *4* _listdir
     def _listdir(self, s, pattern=None):
         """ D.listdir() -> List of items in this directory.
@@ -658,6 +655,7 @@ class SqlitePickleShare:
                 self.conn.commit()
                 return itms[-1][1]
             return None
+
         #@-others
 
         self.conn.isolation_level = 'DEFERRED'
@@ -730,6 +728,7 @@ def dump_list(heading, aList):
         else:
             print(f"{key:30}:")
             g.printObj(val)
+
 #@-others
 #@@language python
 #@@tabwidth -4

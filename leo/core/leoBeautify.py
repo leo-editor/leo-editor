@@ -123,7 +123,6 @@ def blacken_files(event):
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
-
 #@+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
 def blacken_files_diff(event):
@@ -146,7 +145,6 @@ def blacken_files_diff(event):
         else:
             print(f"{tag}: file not found:{path}")
             g.es(f"{tag}: file not found:\n{path}")
-
 #@+node:ekr.20191025072511.1: *4* fstringify-files
 @g.command('fstringify-files')
 def fstringify_files(event):
@@ -606,7 +604,9 @@ class CPrettyPrinter:
         if j == -1:
             return len(s)
         return j + 2
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

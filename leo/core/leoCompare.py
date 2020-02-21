@@ -409,6 +409,7 @@ class BaseLeoCompare:
         self.show("printMatches:" + str(self.printMatches))
         self.show("printMismatches:" + str(self.printMismatches))
         self.show("printTrailingMismatches:" + str(self.printTrailingMismatches))
+
     #@-others
 
 
@@ -468,7 +469,6 @@ class CompareLeoOutlines:
             self.file_node.b = (
                 f"{self.file_node.b.rstrip()}\n"
                 f"@language {c2.target_language}\n")
-
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
@@ -658,7 +658,6 @@ def diffMarkedNodes(event):
         c.redraw()
     else:
         g.es_print('Please mark at least 2 nodes')
-
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event, title, visible):
     """Prompt for a list of .leo files to open."""
@@ -708,6 +707,7 @@ def go():
         name1 = "c:\\prog\\test\\compare1.txt"
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1, name2)
+
 #@-others
 #@@language python
 #@@tabwidth -4

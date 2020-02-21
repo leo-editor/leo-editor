@@ -869,7 +869,6 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
     def all_unique_positions(self, copy=True):
         """
@@ -1842,8 +1841,6 @@ class Commands:
     def updateSyntaxColorer(self, v):
         self.frame.body.updateSyntaxColorer(v)
     #@+node:ekr.20180503110307.1: *4* c.interactive*
-
-
     #@+node:ekr.20180504075937.1: *5* c.interactive
     def interactive(self, callback, event, prompts):
         #@+<< c.interactive docstring >>
@@ -1878,7 +1875,6 @@ class Commands:
             f(callback, event, prompts)
         else:
             g.trace('At most 3 arguments are supported.')
-
     #@+node:ekr.20180503111213.1: *5* c.interactive1
     def interactive1(self, callback, event, prompts):
 
@@ -1971,6 +1967,7 @@ class Commands:
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         return path
+
     # Not used in Leo's core.
 
     def getNodeFileName(self, p):
@@ -2342,6 +2339,7 @@ class Commands:
         minibufferCallback.source_c = source_c
             # For GetArgs.command_source
         return minibufferCallback
+
     #fix bobjack's spelling error
 
     universallCallback = universalCallback
@@ -4142,7 +4140,9 @@ class Commands:
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
+
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

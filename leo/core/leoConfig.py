@@ -504,7 +504,6 @@ class ParserBaseClass:
             g.app.config.menusList = aList
             name = c.shortFileName() if c else '<no settings file>'
             g.app.config.menusFileName = name
-
     #@+node:ekr.20070926141716: *5* pbc.doItems
     def doItems(self, p, aList):
 
@@ -1040,7 +1039,6 @@ class ActiveSettingsOutline:
             v.clearDirty()
         c.setChanged()
         c.redraw()
-
     #@+node:ekr.20190905091614.7: *4* aso.legend
     def legend(self):
         """Compute legend for self.c"""
@@ -2299,6 +2297,7 @@ def parseFont(b):
             ('_family', '_slant', '_weight', '_size')):
             settings_name = name.rsplit('_', 1)[0]
     return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
+
 #@-others
 #@@language python
 #@@tabwidth -4

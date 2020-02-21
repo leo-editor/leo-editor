@@ -83,7 +83,6 @@ class SessionManager:
                 g.trace('loading:', fn)
             g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
                 # This selects the proper position.
-
     #@+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
     def load_snapshot(self):
         """
@@ -181,6 +180,7 @@ def session_snapshot_save_command(event):
     m = g.app.sessionManager
     if c and m:
         m.save_snapshot(c=c)
+
 #@-others
 #@@language python
 #@@tabwidth -4

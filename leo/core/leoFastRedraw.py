@@ -138,6 +138,7 @@ class FastRedraw:
             result.append(op0)
             i += 1
         return result
+
     #@-others
 
 #@@language python
