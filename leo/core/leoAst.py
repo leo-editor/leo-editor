@@ -2274,6 +2274,44 @@ class Orange:
     """
 
     #@+others
+    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes (new, test)
+    def clean_leo_nodes(self):
+        """
+        A post pass.
+        Remove all blank lines before and after Leo @+node sentinels.
+        """
+        def clean_before(i):
+            """Replace blank lines before self.code_list[i] with a single newline."""
+            self.code_list[i].value += '\n'
+            i -= 1
+            # End the @+node comment with a newline.
+            while i > 0:
+                t = self.code_list[i]
+                i -= 1
+                if t.kind == 'blank-lines':
+                    t.kind, t.value = 'killed', ''
+                elif t.kind == 'line-end' and self.code_list[i].kind != 'comment':
+                    t.kind, t.value = 'killed', ''
+                else:
+                    break
+                    
+        def clean_after(i):
+            """Remove blank lines after self.code_list[i]"""
+            i += 1
+            while i < len(self.code_list):
+                t = self.code_list[i]
+                i += 1
+                if t.kind in ('line-end', 'blank-lines'):
+                    t.kind, t.value = 'killed', ''
+                else:
+                    break
+
+        ### g.printObj(self.code_list)
+        for i, t in enumerate(self.code_list):
+            if t.kind == 'comment' and self.node_pat.match(t.value):
+                clean_before(i)
+                clean_after(i)
+        ### g.printObj(self.code_list)
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
         """Ctor for Orange class."""
@@ -2352,6 +2390,8 @@ class Orange:
             else:
                 func = getattr(self, f"do_{token.kind}", self.oops)
                 func()
+        # The post pass.
+        self.clean_leo_nodes()
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
@@ -2507,10 +2547,8 @@ class Orange:
         """
         Insert blank lines after a class or def as the result of a 'dedent' token.
 
-        Complication 1: Normal comment lines may precede the 'dedent'.
-                        Insert the blank lines *before* such comment lines.
-        
-        Complication 2: Never insert blank lines before or after Leo @+node sentinel comments.
+        Normal comment lines may precede the 'dedent'.
+        Insert the blank lines *before* such comment lines.
         """
         #
         # Compute the tail.
