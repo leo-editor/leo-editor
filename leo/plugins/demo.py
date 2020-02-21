@@ -710,15 +710,6 @@ class Demo:
         w.move(200, 200) # Arbitrary.
     #@-others
 #@+node:ekr.20170208045907.1: ** Graphics classes & helpers
-# When using reload, the correct code is *usually*:
-#
-#   super(self.__class__, self).__init__(...)
-#
-# This code works with both Python 2 and 3.
-#
-# http://stackoverflow.com/questions/9722343/python-super-behavior-not-dependable
-#
-# However, super doesn't work AT ALL in the Label class.
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
 class Label (QtWidgets.QLabel):
     '''A class for user-defined callouts in demo.py.'''

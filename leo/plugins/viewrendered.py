@@ -192,7 +192,7 @@ Jacob Peck added markdown support to this plugin.
 #@+node:ekr.20140924060835.19485: ** << to do >> (vr)
 #@+at
 # To do:
-# 
+#
 # - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
 # - Add dict to allow customize must_update.
 # - Lock movies automatically until they are finished?
@@ -247,13 +247,7 @@ try:
 except ImportError:
     nbformat = None
 import json
-try:
-    from urllib.request import urlopen
-except ImportError:
-    try:
-        from urllib import urlopen  # for Python 2.7
-    except ImportError:
-        urllib = None
+from urllib.request import urlopen
 #@-<< imports >>
 asciidoctor_exec = find_executable('asciidoctor')
 asciidoc3_exec = find_executable('asciidoc3')
@@ -321,7 +315,7 @@ def init():
         if (
             not g.unitTesting and
             not g.app.batchMode and
-            not g.app.gui.guiName() in ('browser', 'curses')
+            g.app.gui.guiName() not in ('browser', 'curses')
         ):
             g.es_print('viewrendered requires Qt')
         return False
