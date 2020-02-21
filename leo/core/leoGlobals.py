@@ -3124,7 +3124,6 @@ def comment_delims_from_extension(filename):
     Return the comment delims corresponding to the filename's extension.
     """
     if filename.startswith('.'):
-        # Python 2.6 changes how splitext works.
         root, ext = None, filename
     else:
         root, ext = os.path.splitext(filename)
@@ -6354,7 +6353,6 @@ def getLastTracebackFileAndLineNumber():
     typ, val, tb = sys.exc_info()
     if typ == SyntaxError:
         # IndentationError is a subclass of SyntaxError.
-        # Much easier in Python 2.6 and 3.x.
         return val.filename, val.lineno
     #
     # Data is a list of tuples, one per stack entry.
@@ -7096,8 +7094,6 @@ def os_startfile(fname):
         except ImportError:
             os.system(f"open {quoted_fname}")
     else:
-        # Linux
-        # The buffering argument to NamedTempFile does not exist on Python 2.
         try:
             ree = None
             wre = tempfile.NamedTemporaryFile()

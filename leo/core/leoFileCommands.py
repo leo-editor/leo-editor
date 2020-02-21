@@ -139,8 +139,6 @@ class FastRead:
             binString = binascii.unhexlify(val)
                 # Throws a TypeError if val is not a hex string.
         except Exception:
-            # Python 2.x throws TypeError
-            # Python 3.x throws binascii.Error
             # Assume that Leo 4.1 or above wrote the attribute.
             if g.unitTesting:
                 assert kind == 'raw', f"unit test failed: kind={kind}"
@@ -153,8 +151,6 @@ class FastRead:
             return val2
         except Exception:
             try:
-                # for python 2.7 and python 3.4
-                # pylint: disable=unexpected-keyword-arg
                 val2 = pickle.loads(binString, encoding='bytes')
                 val2 = self.bytesToUnicode(val2)
                 return val2
@@ -169,8 +165,8 @@ class FastRead:
         http://stackoverflow.com/questions/22840092
         Needed for reading Python 2.7 pickles in Python 3.4.
         """
-        # pylint: disable=unidiomatic-typecheck
         # This is simpler than using isinstance.
+        # pylint: disable=unidiomatic-typecheck
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
@@ -394,9 +390,6 @@ class FileCommands:
         self.mFileName = ""
         self.fileDate = -1
         self.leo_file_encoding = c.config.new_leo_file_encoding
-            # The bin param doesn't exist in Python 2.3;
-            # the protocol param doesn't exist in earlier versions of Python.
-            # version = '.'.join([str(sys.version_info[i]) for i in (0,1)])
         # For reading...
         self.checking = False  # True: checking only: do *not* alter the outline.
         self.descendentExpandedList = []

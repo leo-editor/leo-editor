@@ -375,12 +375,7 @@ class ImportExportTestCase(unittest.TestCase):
         name = lines[0]
         fileName = lines[1]
         # Replace '\\' by os.path.sep in fileName
-        try:
-            # os.path.sep does not exist in Python 2.2.x.
-            sep = os.path.sep
-            fileName = fileName.replace('\\', sep)
-        except AttributeError:
-            fileName = g.os_path_normpath(fileName)
+        fileName = fileName.replace('\\', os.path.sep)
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir, "..", fileName)
         # Set the dict for UnitTestGui, a subclass of NullGui.
         # NullGui.simulateDialog uses this dict to return values for dialogs.
@@ -785,14 +780,13 @@ class TestManager:
             logger, handler, stream = self.create_logging_stream()
             runner = unittest.TextTestRunner(
                 failfast=g.app.failFast,
-                stream=stream,  # Implies we are running Python 3.
+                stream=stream,
                 verbosity=verbosity,
             )
         else:
             logger, handler, stream = None, None, None
             runner = unittest.TextTestRunner(
                 failfast=g.app.failFast,
-                # Careful: stream is not valid in Python 2.
                 verbosity=verbosity,
             )
         #

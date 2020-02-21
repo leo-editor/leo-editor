@@ -216,7 +216,7 @@ class Position:
 
     def __ne__(self, p2):
         """Return True if two postions are not equivalent."""
-        return not self.__eq__(p2)  # For possible use in Python 2.x.
+        return not self.__eq__(p2)
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__(self, other):
         return self.__eq__(other) or self.__gt__(other)
