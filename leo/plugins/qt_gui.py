@@ -1372,8 +1372,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.setDefaultButton(self.Ok)
             c.styleSheetManager.set_style_sheets(w=self)
             if isQt5:
-                # Workaround #693: show-next-tip display overlapped in
-                # Python 2.7.12, PyQt version 4.8.7
+                # Workaround #693.
                 layout = self.layout()
                 cb = QtWidgets.QCheckBox()
                 cb.setObjectName('TipCheckbox')

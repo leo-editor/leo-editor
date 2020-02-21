@@ -11,7 +11,7 @@
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import re
 import string
-import sys
+# import sys
 import time
 assert time
 import leo.core.leoGlobals as g
@@ -206,7 +206,6 @@ class BaseJEditColorizer(BaseColorizer):
     def addLeoRules(self, theDict):
         """Put Leo-specific rules to theList."""
         # pylint: disable=no-member
-        # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
         table = [
             # Rules added at front are added in **reverse** order.
             ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
@@ -2768,11 +2767,7 @@ class PygmentsColorizer(BaseJEditColorizer):
 
         class PatchedLexer(lexer.__class__):
 
-            wimpy_regex = sys.version_info < (3, 6, 0)
-
-            leo_sec_ref_pat = r'\<\<(.*?)\>\>' if wimpy_regex else r'(?-m:\<\<(.*?)\>\>)'
-                # Multiline for Python 2, and less than 3.6, but that can't be helped.
-
+            leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)'
             tokens = {
                 'root': [
                     (r'^@(color|nocolor|killcolor)\b', self.at_color_callback),

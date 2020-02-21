@@ -1404,6 +1404,7 @@ class LeoApp:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
         if hasattr(g.app, 'pyzo_close_handler'):
+            # pylint: disable=no-member
             g.app.pyzo_close_handler()
         g.app.killed = True
             # Disable all further hooks and events.
@@ -1546,7 +1547,7 @@ class LeoApp:
     def scanner_for_at_auto(self, c, p, **kwargs):
         """A factory returning a scanner function for p, an @auto node."""
         d = g.app.atAutoDict
-        for key in d.keys():
+        for key in d:
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
             if aClass and g.match_word(p.h, 0, key):

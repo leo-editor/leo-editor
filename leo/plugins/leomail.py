@@ -57,7 +57,6 @@ class MLStripper(HTMLParser):
 
     def __init__(self):
         super().__init__()
-            # Can't use plain super in Python 2.
         self.reset()
         self.fed = []
 

@@ -592,8 +592,6 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
 
         pass glue object and let it key nodeItems to leo nodes
         """
-        # pylint: disable=keyword-arg-before-vararg
-            # putting *args first is invalid in Python 2.x.
         self.glue = glue
         super().__init__()
         self.line = QtWidgets.QGraphicsLineItem(*args)

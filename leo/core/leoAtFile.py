@@ -3187,7 +3187,6 @@ class FastAtRead:
         else:
             assert root_v.gnx in gnx2vnode, root_v
             assert root_v.gnx in gnx2body, root_v
-            # Don't use items(): it doesn't exist in Python 2.
             for key in gnx2body:
                 body = gnx2body.get(key)
                 v = gnx2vnode.get(key)

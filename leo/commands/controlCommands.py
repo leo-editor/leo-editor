@@ -35,8 +35,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             p = subprocess.Popen(
                 shlex.split(command),
                 stdout=subprocess.PIPE,
-                stderr=None if trace else subprocess.PIPE,
-                    # subprocess.DEVNULL is Python 3 only.
+                stderr=subprocess.DEVNULL if trace else subprocess.PIPE,
                 shell=sys.platform.startswith('win'),
             )
             out, err = p.communicate()

@@ -209,7 +209,7 @@ class BridgeController:
         if sys.platform == 'cli':
             return True
         message = """\
-    Leo requires Python 2.2.1 or higher.
+    Leo requires Python 3.6 or higher.
     You may download Python from http://python.org/download/
     """
         try:
