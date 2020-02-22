@@ -646,11 +646,30 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200106094631.1: *4* function: expected_got
     def expected_got(expected, got):
         """Return a message, mostly for unit tests."""
+        #
+        # Let block.
+        e_lines = g.splitLines(expected)
+        g_lines = g.splitLines(got)
+        #
+        # Print all the lines.
         result = ['\n']
         result.append('Expected:\n')
-        result.extend(g.objToString(expected))
+        for i, z in enumerate(e_lines):
+            result.extend(f"{i:3} {z!r}\n")
         result.append('Got:\n')
-        result.extend(g.objToString(got))
+        for i, z in enumerate(g_lines):
+            result.extend(f"{i:3} {z!r}\n")
+        #
+        # Report first mismatched line.
+        for i, data in enumerate(zip(e_lines, g_lines)):
+            e_line, g_line = data
+            if e_line != g_line:
+                result.append(f"\nFirst mismatch at line {i}\n")
+                result.append(f"expected: {i:3} {e_line!r}\n")
+                result.append(f"     got: {i:3} {g_line!r}\n")
+                break
+        else:
+            result.append('\nDifferent lengths\n')
         return ''.join(result)
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
