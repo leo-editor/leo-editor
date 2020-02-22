@@ -2770,6 +2770,7 @@ class Orange:
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value):
         """Add an output token to the code list."""
+        ### assert isinstance(value, str), g.callers()
         tok = Token(kind, value)
         tok.index = self.code_list_index  # For debugging only.
         self.code_list_index += 1
