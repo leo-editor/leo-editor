@@ -103,6 +103,12 @@ v1, v2, junk, junk, junk = sys.version_info
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* Python 3.7.
 use_async_tokens = (v1, v2) >= (3,) and (v1, v2) != (3, 7)
+#@+<< new switch >>
+#@+node:ekr.20200222054756.1: ** << new switch >>
+new = False
+if new:
+    print('===== new =====')
+#@-<< new switch >>
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -2615,8 +2621,12 @@ class Orange:
                 # Always do this, regardless of @bool clean-blank-lines.
                 self.clean_blank_lines()
                 # Suppress split/join.
-                self.add_token('hard-newline', '\n')
-                self.add_token('line-indent', self.lws)
+                if new:
+                    self.add_token('hard-newline', '\n' + self.lws)
+                else:
+                    self.add_token('hard-newline', '\n')
+                    self.add_token('line-indent', self.lws)
+                
                 self.state_stack.pop()
             else:
                 # Always do this, regardless of @bool clean-blank-lines.
@@ -2880,6 +2890,7 @@ class Orange:
     #@+node:ekr.20200107165250.40: *5* orange.line_indent
     def line_indent(self):
         """Add a line-indent token."""
+        assert not new, g.callers()
         self.clean('line-indent')
             # Defensive. Should never happen.
         self.add_token('line-indent', self.lws)
@@ -3037,15 +3048,21 @@ class Orange:
             # Add the prefix.
             self.code_list.extend(prefix)
             # Start a new line and increase the indentation.
-            self.add_token('line-end', '\n')
-            self.add_token('line-indent', self.lws + ' ' * 4)
+            if new:
+                self.add_token('hard-newline', '\n' + self.lws + ' ' * 4)
+            else:
+                self.add_token('line-end', '\n')
+                self.add_token('line-indent', self.lws + ' ' * 4)
             self.code_list.extend(tail)
             return
         # Still too long.  Split the line at commas.
         self.code_list.extend(prefix)
         # Start a new line and increase the indentation.
-        self.add_token('line-end', '\n')
-        self.add_token('line-indent', self.lws + ' ' * 4)
+        if new:
+            self.add_token('hard-blank', '\n' + self.lws + ' ' * 4)
+        else:
+            self.add_token('line-end', '\n')
+            self.add_token('line-indent', self.lws + ' ' * 4)
         open_delim = Token(kind='lt', value=prefix[-1].value)
         value = open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}')
         close_delim = Token(kind='rt', value=value)
@@ -3056,8 +3073,11 @@ class Orange:
                 if delim_count == 1:
                     # Start a new line.
                     self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', lws)
+                    if new:
+                        self.add_token('hard-blank', '\n' + lws)
+                    else:
+                        self.add_token('line-end', '\n')
+                        self.add_token('line-indent', lws)
                     # Kill a following blank.
                     if i + 1 < len(tail):
                         next_t = tail[i + 1]
@@ -3072,8 +3092,11 @@ class Orange:
                 if delim_count == 0:
                     # Start a new line
                     self.add_token('op-no-blanks', ',')
-                    self.add_token('line-end', '\n')
-                    self.add_token('line-indent', self.lws)
+                    if new:
+                        self.add_token('hard-blank', '\n' + self.lws)
+                    else:
+                        self.add_token('line-end', '\n')
+                        self.add_token('line-indent', self.lws)
                     self.code_list.extend(tail[i:])
                     return
                 lws = lws[:-4]
