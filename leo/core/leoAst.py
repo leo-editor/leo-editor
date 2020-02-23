@@ -2285,8 +2285,9 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
-    # This switch shows what code would change for stand-alone operation.
-    leo_flag = True
+    # This switch is really a comment. It will always be false.
+    # It marks the code that simulates the operation of the black tool.
+    black_mode = False
 
     # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
@@ -2488,7 +2489,7 @@ class Orange:
         self.level -= 1
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
-        if not self.leo_flag:  # pragma: no cover (black)
+        if self.black_mode:  # pragma: no cover (black)
             state = self.state_stack[-1]
             if state.kind == 'indent' and state.value == self.level:
                 self.state_stack.pop()
@@ -2559,26 +2560,29 @@ class Orange:
     def do_name(self):
         """Handle a name token."""
         name = self.val
+        if self.black_mode and name in ('class', 'def'):  # pragma: no cover (black)
+            # Handle newlines before and after 'class' or 'def'
+            self.decorator_seen = False
+            state = self.state_stack[-1]
+            if state.kind == 'decorator':
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.clean_blank_lines()
+                # Suppress split/join.
+                self.add_token('hard-newline', '\n')
+                self.add_token('line-indent', self.lws)
+                self.state_stack.pop()
+            else:
+                # Always do this, regardless of @bool clean-blank-lines.
+                self.blank_lines(2 if name == 'class' else 1)
+            self.push_state(name)
+            self.push_state('indent', self.level)
+                # For trailing lines after inner classes/defs.
+            self.word(name)
+            return
+        #
+        # Leo mode...
         if name in ('class', 'def'):
-            if self.leo_flag:
-                self.word(name)
-            else:  # pragma: no cover (black)
-                self.decorator_seen = False
-                state = self.state_stack[-1]
-                if state.kind == 'decorator':
-                    # Always do this, regardless of @bool clean-blank-lines.
-                    self.clean_blank_lines()
-                    # Suppress split/join.
-                    self.add_token('hard-newline', '\n')
-                    self.add_token('line-indent', self.lws)
-                    self.state_stack.pop()
-                else:
-                    # Always do this, regardless of @bool clean-blank-lines.
-                    self.blank_lines(2 if name == 'class' else 1)
-                self.push_state(name)
-                self.push_state('indent', self.level)
-                    # For trailing lines after inner classes/defs.
-                self.word(name)
+            self.word(name)
         elif name in (
             'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
         ):
@@ -2606,7 +2610,7 @@ class Orange:
             self.clean('blank')
             self.add_token('op-no-blanks', val)
         elif val == '@':
-            if not self.leo_flag:  # pragma: no cover (black)
+            if self.black_mode:  # pragma: no cover (black)
                 if not self.decorator_seen:
                     self.blank_lines(1)
                     self.decorator_seen = True
@@ -3982,7 +3986,13 @@ class TestFstringify(BaseTest):
     #@-others
 #@+node:ekr.20200107174645.1: *3* class TestOrange (BaseTest)
 class TestOrange(BaseTest):
-    """Tests for the Orange class."""
+    """
+    Tests for the Orange class.
+    
+    **Important**: All unit tests assume that black_mode is False.
+                   That is, unit tests assume that no blank lines
+                   are ever inserted or deleted.
+    """
     #@+others
     #@+node:ekr.20200115201823.1: *4* TestOrange.blacken
     def blacken(self, contents, line_length=None):
@@ -4047,7 +4057,6 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
 
-        # Assume leo_flag is True.
         contents = """\
     # Comment line 1.
     # Comment line 2.
@@ -4061,7 +4070,7 @@ class TestOrange(BaseTest):
     a = 2
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents  # Assume leo_flag is True.
+        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
@@ -4084,7 +4093,7 @@ class TestOrange(BaseTest):
     """
         contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
-        expected = contents  # Assume leo_flag is True.
+        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
@@ -4103,7 +4112,7 @@ class TestOrange(BaseTest):
         print('3')
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents  # Assume leo_flag is True.
+        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
@@ -4340,7 +4349,7 @@ class TestOrange(BaseTest):
         print(a)
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected)  # Assume leo_flag is True.
+        expected = g.adjustTripleString(expected)
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
