@@ -2285,7 +2285,10 @@ class Orange:
     A flexible and powerful beautifier for Python.
     Orange is the new black.
     """
+    # This switch shows what code would change for stand-alone operation.
+    leo_flag = True
 
+    # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
     # Patterns from FastAtRead class, specialized for python delims.
@@ -2293,57 +2296,9 @@ class Orange:
     start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
     at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
 
-    # Doc parts end with @c or a node sentinel
+    # Doc parts end with @c or a node sentinel. Specialized for python.
     end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
     #@+others
-    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes (disabled)
-    def clean_leo_nodes(self):
-        """
-        Remove all blank lines before and after Leo @+node and @+others sentinels.
-        
-        This is a post pass, for last-minute cleanups.
-        """
-        return ###
-
-        def clean_before(i):
-            """Replace blank lines before self.code_list[i] with a single newline."""
-            i -= 1
-            cleaned = 0
-            while i > 0:
-                t = self.code_list[i]
-                i -= 1
-                if t.kind == 'blank-lines':
-                    t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
-                elif t.kind == 'line-end':
-                    if cleaned > 0:
-                        t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
-                    cleaned += 1
-                else:
-                    break
-
-        def clean_after(i):
-            """Replace blank lines after self.code_list[i] with a single newline."""
-            i += 1
-            cleaned = 0
-            while i < len(self.code_list):
-                t = self.code_list[i]
-                i += 1
-                if t.kind == 'blank-lines':
-                    t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
-                elif t.kind == 'line-end':
-                    if cleaned > 0:
-                        t.kind, t.value = 'killed', ''  # pragma: no cover (defensive)
-                    cleaned += 1
-                else:
-                    break
-
-        for i, t in enumerate(self.code_list):
-            if t.kind == 'comment' and (
-                self.node_pat.match(t.value) or
-                self.at_others_pat.match(t.value)
-            ):
-                clean_before(i)
-                clean_after(i)
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
         """Ctor for Orange class."""
@@ -2422,8 +2377,7 @@ class Orange:
             else:
                 func = getattr(self, f"do_{token.kind}", self.oops)
                 func()
-        # The post pass.
-        self.clean_leo_nodes()
+        # Any post pass would go here.
         return tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename):  # pragma: no cover
@@ -2539,13 +2493,14 @@ class Orange:
         self.level -= 1
         self.lws = self.level * self.tab_width * ' '
         self.line_indent()
-        state = self.state_stack[-1]
-        if state.kind == 'indent' and state.value == self.level:
-            self.state_stack.pop()
+        if not self.leo_flag:  # pragma: no cover (black)
             state = self.state_stack[-1]
-            if state.kind in ('class', 'def'):
+            if state.kind == 'indent' and state.value == self.level:
                 self.state_stack.pop()
-                self.handle_dedent_after_class_or_def(state.kind)
+                state = self.state_stack[-1]
+                if state.kind in ('class', 'def'):
+                    self.state_stack.pop()
+                    self.handle_dedent_after_class_or_def(state.kind)
 
     def do_indent(self):
         """Handle indent token."""
@@ -2558,7 +2513,7 @@ class Orange:
         self.lws = new_indent
         self.line_indent()
     #@+node:ekr.20200220054928.1: *6* orange.handle_dedent_after_class_or_def
-    def handle_dedent_after_class_or_def(self, kind):
+    def handle_dedent_after_class_or_def(self, kind):  # pragma: no cover (black)
         """
         Insert blank lines after a class or def as the result of a 'dedent' token.
 
@@ -2610,23 +2565,25 @@ class Orange:
         """Handle a name token."""
         name = self.val
         if name in ('class', 'def'):
-            self.decorator_seen = False
-            state = self.state_stack[-1]
-            if state.kind == 'decorator':
-                # Always do this, regardless of @bool clean-blank-lines.
-                self.clean_blank_lines()
-                # Suppress split/join.
-                self.add_token('hard-newline', '\n')
-                self.add_token('line-indent', self.lws)
-                self.state_stack.pop()
-            else:
-                # Always do this, regardless of @bool clean-blank-lines.
-                if 0: ### Leave lines alone.
+            if self.leo_flag:
+                self.word(name)
+            else:  # pragma: no cover (black)
+                self.decorator_seen = False
+                state = self.state_stack[-1]
+                if state.kind == 'decorator':
+                    # Always do this, regardless of @bool clean-blank-lines.
+                    self.clean_blank_lines()
+                    # Suppress split/join.
+                    self.add_token('hard-newline', '\n')
+                    self.add_token('line-indent', self.lws)
+                    self.state_stack.pop()
+                else:
+                    # Always do this, regardless of @bool clean-blank-lines.
                     self.blank_lines(2 if name == 'class' else 1)
-            self.push_state(name)
-            self.push_state('indent', self.level)
-                # For trailing lines after inner classes/defs.
-            self.word(name)
+                self.push_state(name)
+                self.push_state('indent', self.level)
+                    # For trailing lines after inner classes/defs.
+                self.word(name)
         elif name in (
             'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
         ):
@@ -2654,9 +2611,10 @@ class Orange:
             self.clean('blank')
             self.add_token('op-no-blanks', val)
         elif val == '@':
-            if not self.decorator_seen:
-                self.blank_lines(1)
-                self.decorator_seen = True
+            if not self.leo_flag:  # pragma: no cover (black)
+                if not self.decorator_seen:  
+                    self.blank_lines(1)
+                    self.decorator_seen = True
             self.clean('blank')
             self.add_token('op-no-blanks', val)
             self.push_state('decorator')
@@ -2762,7 +2720,7 @@ class Orange:
         assert self.token.kind in ('newline', 'nl'), self.token.kind
         self.clean('blank')  # Important!
         cleaned_newline = False
-        if self.delete_blank_lines:
+        if self.delete_blank_lines:  # pragma: no cover (black)
             cleaned_newline = self.clean_blank_lines()
         self.clean('line-indent')
         t = self.add_token('line-end', '\n')
@@ -2772,7 +2730,6 @@ class Orange:
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value):
         """Add an output token to the code list."""
-        ### assert isinstance(value, str), g.callers()
         tok = Token(kind, value)
         tok.index = self.code_list_index  # For debugging only.
         self.code_list_index += 1
@@ -2794,8 +2751,8 @@ class Orange:
             'unary-op',
         ):
             self.add_token('blank', ' ')
-    #@+node:ekr.20200107165250.29: *5* orange.blank_lines (disabled)
-    def blank_lines(self, n, end_class_or_def=False):
+    #@+node:ekr.20200107165250.29: *5* orange.blank_lines (black only)
+    def blank_lines(self, n):  # pragma: no cover (black)
         """
         Add a request for n blank lines to the code list.
         Multiple blank-lines request yield at least the maximum of all requests.
@@ -2805,10 +2762,6 @@ class Orange:
         if prev.kind == 'file-start':
             self.add_token('blank-lines', n)
             return
-        if prev.kind == 'comment':
-            if prev.value.strip().startswith('#@+node:'):
-                # Special case for Leo comments that start a node.
-                n = 0
         for i in range(0, n + 1):
             self.add_token('line-end', '\n')
         # Retain the token (intention) for debugging.
@@ -3119,7 +3072,8 @@ class Orange:
         assert token.kind in ('newline', 'nl'), repr(token)
         if token.kind == 'nl':
             return
-        # Scan backward in the *code* list, looking for 'line-end' tokens with tok.newline_kind == 'nl'
+        # Scan backward in the *code* list,
+        # looking for 'line-end' tokens with tok.newline_kind == 'nl'
         nls = 0
         i = len(self.code_list) - 1
         t = self.code_list[i]
@@ -4109,9 +4063,8 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
         
-        if 1: ### Don't insert/delete blank  lines.
-        
-            contents = """\
+        # Assume leo_flag is True.
+        contents = """\
     # Comment line 1.
     # Comment line 2.
 
@@ -4123,39 +4076,9 @@ class TestOrange(BaseTest):
     # Comment line4.
     a = 2
     """
-        else:
-
-            contents = """\
-    # Comment line 1.
-    # Comment line 2.
-
-
-    def spam():
-        pass
-        # Properly indented comment.
-
-
-    # Comment line3.
-    # Comment line4.
-    a = 2
-    """
-        expected = """\
-    # Comment line 1.
-    # Comment line 2.
-
-    def spam():
-        pass
-        # Properly indented comment.
-
-    # Comment line3.
-    # Comment line4.
-    a = 2
-    """
-        expected = g.adjustTripleString(expected)
         contents, tokens, tree = self.make_data(contents)
-        ### dump_tokens(tokens) ###
+        expected = contents  # Assume leo_flag is True.
         results = self.beautify(contents, tokens, tree)
-        ### g.printObj(self.code_list, tag='code list') ###
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
@@ -4164,31 +4087,7 @@ class TestOrange(BaseTest):
         # Warning: Do not put bare sentinel lines here!
         #          Doing so destroys leoAst.py!
         #
-        if 1: ### Don't insert/delete blank  lines.
-            contents = """\
-    SENT+node:ekr.20160514120655.1: ** class AtFile
-    # Leading comment line 1.
-    # Leading comment lines 2.
-
-    def spam():
-        pass
-
-    # Trailing comment line.
-    a = 2
-    """
-        
-        else:
-            contents = """\
-    SENT+node:ekr.20160514120655.1: ** class AtFile
-    # Leading comment line 1.
-    # Leading comment lines 2.
-    def spam():
-        pass
-
-    # Trailing comment line.
-    a = 2
-    """
-        expected = """\
+        contents = """\
     SENT+node:ekr.20160514120655.1: ** class AtFile
     # Leading comment line 1.
     # Leading comment lines 2.
@@ -4200,9 +4099,8 @@ class TestOrange(BaseTest):
     a = 2
     """
         contents = contents.replace('SENT', '#@')
-        expected = expected.replace('SENT', '#@')
-        expected = g.adjustTripleString(expected)
         contents, tokens, tree = self.make_data(contents)
+        expected = contents  # Assume leo_flag is True.
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
@@ -4221,7 +4119,7 @@ class TestOrange(BaseTest):
         print('3')
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents
+        expected = contents  # Assume leo_flag is True.
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200210120455.1: *4* TestOrange.test_decorator
@@ -4250,7 +4148,8 @@ class TestOrange(BaseTest):
         )
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
-            expected = self.blacken(contents).rstrip() + '\n'
+            ### expected = self.blacken(contents).rstrip() + '\n'
+            expected = contents
             results = self.beautify(contents, tokens, tree)
             # dump_tokens(tokens)
             # g.printObj(self.code_list, tag='code list')
@@ -4548,8 +4447,7 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        ### expected = self.blacken(contents).rstrip() + '\n'
-        expected = contents ### Depends on settings.
+        expected = contents
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
@@ -4814,7 +4712,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200209161226.1: *4* TestOrange.test_ternary
     def test_ternary(self):
 
-        contents = """self.blank_lines(2 if name == 'class' else 1)"""
+        contents = """print(2 if name == 'class' else 1)"""
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
@@ -6396,9 +6294,6 @@ class Token:
         # Injected by Tokenizer.add_token.
         self.level = 0
         self.node = None
-        # These are injected only for 'newline' and 'nl' tokens.
-            # self.next_line_token = None
-            # self.prev_line_token = None
 
     def __repr__(self):
         nl_kind = getattr(self, 'newline_kind', '')
@@ -6419,18 +6314,16 @@ class Token:
         return (
             f"{self.index:>3} line: {self.line_number:<2} "
             f"{self.kind:>11} {self.show_val(100)}")
-    #@+node:ekr.20191113095410.1: *4* token.dump
+    #@+node:ekr.20200223022950.11: *4* token.dump
     def dump(self):  # pragma: no cover
         """Dump a token and related links."""
         # Let block.
         node_id = self.node.node_index if self.node else ''
         node_cn = self.node.__class__.__name__ if self.node else ''
-        # nl_kind = getattr(self, 'newline_kind', '')
         return (
             f"{self.line_number:4} "
             f"{node_id:5} {node_cn:16} "
             f"{self.index:>5} {self.kind:>11} "
-            # f"{nl_kind:7} "
             f"{self.show_val(100)}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
     def dump_header(self):  # pragma: no cover
