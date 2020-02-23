@@ -253,7 +253,6 @@ def orange_settings(c):
         max_join_line_length = max_split_line_length
     return {
         'allow_joined_strings': allow_joined_strings,
-        ### 'delete_blank_lines': not keep_blank_lines,
         'max_join_line_length': max_join_line_length,
         'max_split_line_length': max_split_line_length,
         'tab_width': abs(c.tab_width),
