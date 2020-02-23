@@ -2296,13 +2296,14 @@ class Orange:
     # Doc parts end with @c or a node sentinel
     end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
     #@+others
-    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes
+    #@+node:ekr.20200209135643.1: *4* orange.clean_leo_nodes (disabled)
     def clean_leo_nodes(self):
         """
         Remove all blank lines before and after Leo @+node and @+others sentinels.
         
         This is a post pass, for last-minute cleanups.
         """
+        return ###
 
         def clean_before(i):
             """Replace blank lines before self.code_list[i] with a single newline."""
@@ -2358,7 +2359,7 @@ class Orange:
         )
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
-        self.delete_blank_lines = True
+        self.delete_blank_lines = False ### Testing.
         self.max_join_line_length = 88
         self.max_split_line_length = 88
         self.tab_width = 4
@@ -2620,7 +2621,8 @@ class Orange:
                 self.state_stack.pop()
             else:
                 # Always do this, regardless of @bool clean-blank-lines.
-                self.blank_lines(2 if name == 'class' else 1)
+                if 0: ### Leave lines alone.
+                    self.blank_lines(2 if name == 'class' else 1)
             self.push_state(name)
             self.push_state('indent', self.level)
                 # For trailing lines after inner classes/defs.
@@ -2792,7 +2794,7 @@ class Orange:
             'unary-op',
         ):
             self.add_token('blank', ' ')
-    #@+node:ekr.20200107165250.29: *5* orange.blank_lines
+    #@+node:ekr.20200107165250.29: *5* orange.blank_lines (disabled)
     def blank_lines(self, n, end_class_or_def=False):
         """
         Add a request for n blank lines to the code list.
@@ -4106,8 +4108,24 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
+        
+        if 1: ### Don't insert/delete blank  lines.
+        
+            contents = """\
+    # Comment line 1.
+    # Comment line 2.
 
-        contents = """\
+    def spam():
+        pass
+        # Properly indented comment.
+
+    # Comment line3.
+    # Comment line4.
+    a = 2
+    """
+        else:
+
+            contents = """\
     # Comment line 1.
     # Comment line 2.
 
@@ -4135,7 +4153,9 @@ class TestOrange(BaseTest):
     """
         expected = g.adjustTripleString(expected)
         contents, tokens, tree = self.make_data(contents)
+        ### dump_tokens(tokens) ###
         results = self.beautify(contents, tokens, tree)
+        ### g.printObj(self.code_list, tag='code list') ###
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
@@ -4144,7 +4164,21 @@ class TestOrange(BaseTest):
         # Warning: Do not put bare sentinel lines here!
         #          Doing so destroys leoAst.py!
         #
-        contents = """\
+        if 1: ### Don't insert/delete blank  lines.
+            contents = """\
+    SENT+node:ekr.20160514120655.1: ** class AtFile
+    # Leading comment line 1.
+    # Leading comment lines 2.
+
+    def spam():
+        pass
+
+    # Trailing comment line.
+    a = 2
+    """
+        
+        else:
+            contents = """\
     SENT+node:ekr.20160514120655.1: ** class AtFile
     # Leading comment line 1.
     # Leading comment lines 2.
@@ -4410,9 +4444,20 @@ class TestOrange(BaseTest):
         assert fails == 0, fails
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
+        
+        if 1: # o.delete_blank_lines = False
+            # 
+            contents = """\
+    class T:
+        a = 1
+        print(
+           a
+        )
+    """
 
-        # The newline after a = 1 generates an 'nl' token!
-        contents = """\
+        else:
+            # The newline after a = 1 generates an 'nl' token!
+            contents = """\
     class T:
         a = 1
 
@@ -4494,7 +4539,7 @@ class TestOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
+    #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class (changed)
     def test_lines_before_class(self):
 
         contents = """\
@@ -4503,7 +4548,8 @@ class TestOrange(BaseTest):
         pass
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
+        ### expected = self.blacken(contents).rstrip() + '\n'
+        expected = contents ### Depends on settings.
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
