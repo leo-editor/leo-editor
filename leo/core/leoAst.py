@@ -2314,7 +2314,7 @@ class Orange:
         )
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
-        self.delete_blank_lines = False ### Testing.
+        self.delete_blank_lines = False  ### Testing.
         self.max_join_line_length = 88
         self.max_split_line_length = 88
         self.tab_width = 4
@@ -2612,7 +2612,7 @@ class Orange:
             self.add_token('op-no-blanks', val)
         elif val == '@':
             if not self.leo_flag:  # pragma: no cover (black)
-                if not self.decorator_seen:  
+                if not self.decorator_seen:
                     self.blank_lines(1)
                     self.decorator_seen = True
             self.clean('blank')
@@ -4062,7 +4062,7 @@ class TestOrange(BaseTest):
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
-        
+
         # Assume leo_flag is True.
         contents = """\
     # Comment line 1.
@@ -4343,9 +4343,9 @@ class TestOrange(BaseTest):
         assert fails == 0, fails
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
-        
-        if 1: # o.delete_blank_lines = False
-            # 
+
+        if 1:  # o.delete_blank_lines = False
+            #
             contents = """\
     class T:
         a = 1
