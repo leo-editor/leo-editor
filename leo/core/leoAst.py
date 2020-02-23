@@ -2306,7 +2306,7 @@ class Orange:
             settings = {}
         valid_keys = (
             'allow_joined_strings',
-            'delete_blank_lines',
+            ### 'delete_blank_lines',
             'max_join_line_length',
             'max_split_line_length',
             'orange',
@@ -2314,7 +2314,7 @@ class Orange:
         )
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
-        self.delete_blank_lines = False  ### Testing.
+        ### self.delete_blank_lines = False  ### Testing.
         self.max_join_line_length = 88
         self.max_split_line_length = 88
         self.tab_width = 4
@@ -2336,7 +2336,7 @@ class Orange:
         g.trace(f"Unknown kind: {self.kind}")
 
     def beautify(self, contents, filename, tokens, tree,
-        delete_blank_lines=None,
+        ### delete_blank_lines=None,
         max_join_line_length=None,
         max_split_line_length=None,
     ):
@@ -2344,8 +2344,9 @@ class Orange:
         The main line. Create output tokens and return the result as a string.
         """
         # Config overrides
-        if delete_blank_lines is not None:
-            self.delete_blank_lines = delete_blank_lines
+        ###
+            # if delete_blank_lines is not None:
+                # self.delete_blank_lines = delete_blank_lines
         if max_join_line_length is not None:
             self.max_join_line_length = max_join_line_length
         if max_split_line_length is not None:
@@ -2719,13 +2720,14 @@ class Orange:
         # This may be called from do_name as well as do_newline and do_nl.
         assert self.token.kind in ('newline', 'nl'), self.token.kind
         self.clean('blank')  # Important!
-        cleaned_newline = False
-        if self.delete_blank_lines:  # pragma: no cover (black)
-            cleaned_newline = self.clean_blank_lines()
+        ### cleaned_newline = False
+        ### if self.delete_blank_lines:  # pragma: no cover (black)
+        ###    cleaned_newline = self.clean_blank_lines()
         self.clean('line-indent')
         t = self.add_token('line-end', '\n')
         # Distinguish between kinds of 'line-end' tokens.
-        t.newline_kind = 'newline' if cleaned_newline else self.token.kind
+        ### t.newline_kind = 'newline' if cleaned_newline else self.token.kind
+        t.newline_kind = self.token.kind
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
     def add_token(self, kind, value):
@@ -3317,7 +3319,7 @@ class BaseTest(unittest.TestCase):
         return result_s
     #@+node:ekr.20200107175223.1: *5* 2.2: BaseTest.beautify
     def beautify(self, contents, tokens, tree,
-        delete_blank_lines=None,
+        ### delete_blank_lines=None,
         filename=None,
         max_join_line_length=None,
         max_split_line_length=None,
@@ -3332,7 +3334,7 @@ class BaseTest(unittest.TestCase):
             filename = g.callers(2).split(',')[0]
         orange = Orange()
         result_s = orange.beautify(contents, filename, tokens, tree,
-            delete_blank_lines=delete_blank_lines,
+            ### delete_blank_lines=delete_blank_lines,
             max_join_line_length=max_join_line_length,
             max_split_line_length=max_split_line_length)
         t2 = get_time()
@@ -4033,16 +4035,17 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
-            delete_blank_lines=False,
+            ### delete_blank_lines=False,
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
-        message = (
-            f"\n"
-            f"  contents: {contents}\n"
-            f"     black: {expected!r}\n"
-            f"    orange: {results!r}")
-        assert results == expected, message
+        ###
+            # message = (
+                # f"\n"
+                # f"  contents: {contents}\n"
+                # f"     black: {expected!r}\n"
+                # f"    orange: {results!r}")
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200116102345.1: *4* TestOrange.test_backslash_newline
     def test_backslash_newline(self):
         """
@@ -4172,7 +4175,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
-            delete_blank_lines=False,
+            ### delete_blank_lines=False,
             max_join_line_length=line_length,
             max_split_line_length=line_length,
         )
@@ -4344,22 +4347,9 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
 
-        if 1:  # o.delete_blank_lines = False
-            #
-            contents = """\
+        contents = """\
     class T:
         a = 1
-        print(
-           a
-        )
-    """
-
-        else:
-            # The newline after a = 1 generates an 'nl' token!
-            contents = """\
-    class T:
-        a = 1
-
         print(
            a
         )
@@ -4370,8 +4360,7 @@ class TestOrange(BaseTest):
         print(a)
     """
         contents, tokens, tree = self.make_data(contents)
-        expected = g.adjustTripleString(expected).rstrip() + '\n'
-        # expected = self.blacken(contents).rstrip() + '\n'
+        expected = g.adjustTripleString(expected)  # Assume leo_flag is True.
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines

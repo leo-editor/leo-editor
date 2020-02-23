@@ -243,7 +243,7 @@ def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)
-    keep_blank_lines = c.config.getBool('beautify-keep-blank-lines', default=True)
+    ### keep_blank_lines = c.config.getBool('beautify-keep-blank-lines', default=True)
     n_max_join = c.config.getInt('beautify-max-join-line-length')
     max_join_line_length = 88 if n_max_join is None else n_max_join
     n_max_split = c.config.getInt('beautify-max-split-line-length')
@@ -253,7 +253,7 @@ def orange_settings(c):
         max_join_line_length = max_split_line_length
     return {
         'allow_joined_strings': allow_joined_strings,
-        'delete_blank_lines': not keep_blank_lines,
+        ### 'delete_blank_lines': not keep_blank_lines,
         'max_join_line_length': max_join_line_length,
         'max_split_line_length': max_split_line_length,
         'tab_width': abs(c.tab_width),
