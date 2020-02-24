@@ -2702,8 +2702,8 @@ class LoadManager:
         lm.createGui(pymacs)
         # We can't print the signon until we know the gui.
         g.app.computeSignon()  # Set app.signon/signon1 for commanders.
-    #@+node:ekr.20170302093006.1: *5* LM.createAllImporetersData & helpers
-    def createAllImporetersData(self):
+    #@+node:ekr.20170302093006.1: *5* LM.createAllImporterData & helpers
+    def createAllImporterData(self):
         """
         New in Leo 5.5:
 
@@ -2894,7 +2894,7 @@ class LoadManager:
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose):
 
-        self.createAllImporetersData()
+        self.createAllImporterData()
             # Can be done early. Uses only g.app.loadDir
         assert g.app.loadManager
         import leo.core.leoBackground as leoBackground
