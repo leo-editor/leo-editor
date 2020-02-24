@@ -1083,13 +1083,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
                 # Connect to the external module.
                 self.py2cs = g.import_module('leo.external.py2cs')
-                ###
-                    # self.py2cs = g.importExtension(
-                        # 'py2cs',
-                        # pluginName=None,
-                        # verbose=False,
-                        # required=False,
-                    # )
             #@+node:ekr.20160316093019.1: *5* py2cs.main
             def main(self):
                 """Main line for Python_To_CoffeeScript class."""

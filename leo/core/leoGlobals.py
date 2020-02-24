@@ -240,9 +240,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
-
         commander_command_wrapper.__name__ = self.name
-            ### f"commander_command_wrapper: {self.name}"
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
         if app:
@@ -296,7 +294,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        new_cmd_wrapper.__name__ = name ### f"wrapper: {name}"
+        new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
             # Put the *wrapper* into the global dict.

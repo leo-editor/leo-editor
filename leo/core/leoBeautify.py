@@ -243,7 +243,6 @@ def orange_settings(c):
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)
-    ### keep_blank_lines = c.config.getBool('beautify-keep-blank-lines', default=True)
     n_max_join = c.config.getInt('beautify-max-join-line-length')
     max_join_line_length = 88 if n_max_join is None else n_max_join
     n_max_split = c.config.getInt('beautify-max-split-line-length')
@@ -300,32 +299,6 @@ def should_beautify(p):
 def should_kill_beautify(p):
     """Return True if p.b contains @killbeautify"""
     return 'killbeautify' in g.get_directives_dict(p)
-#@+node:ekr.20190725154916.1: ** class BlackCommand
-class BlackCommand:
-    """A class to run black on all Python @<file> nodes in c.p's tree."""
-
-    # tag1 must be executable, and can't be pass.
-    tag1 = "if 1: print('') # black-tag1:::"
-    tag2 = ":::black-tag2"
-    tag3 = "# black-tag3:::"
-
-    def __init__(self, c):
-        self.c = c
-        self.wrapper = c.frame.body.wrapper
-        self.reloadSettings()
-    #@+others
-    #@+node:ekr.20190926105124.1: *3* black.reloadSettings
-    #@@nobeautify
-
-    def reloadSettings(self):
-        c = self.c
-        ### keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
-        ### self.sanitizer = SyntaxSanitizer(c, keep_comments)
-        self.line_length = c.config.getInt("black-line-length") or 88
-        # This should be on a single line,
-        # so the check-settings script in leoSettings.leo will see them.
-        self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
-    #@-others
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
     #@+others

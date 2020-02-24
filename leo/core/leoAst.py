@@ -4141,11 +4141,8 @@ class TestOrange(BaseTest):
         )
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
-            ### expected = self.blacken(contents).rstrip() + '\n'
             expected = contents
             results = self.beautify(contents, tokens, tree)
-            # dump_tokens(tokens)
-            # g.printObj(self.code_list, tag='code list')
             if results != expected:
                 g.trace('Fail:', i)
             assert results == expected, expected_got(expected, results)

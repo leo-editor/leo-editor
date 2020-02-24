@@ -7459,6 +7459,31 @@ def get_semver(tag):
         g.printObj(results, tag='results')
         assert False
 #@+node:ekr.20200108180111.1: ** From leoBeautify.py
+#@+node:ekr.20190725154916.1: *3* class BlackCommand
+class BlackCommand:
+    """A class to run black on all Python @<file> nodes in c.p's tree."""
+
+    # tag1 must be executable, and can't be pass.
+    tag1 = "if 1: print('') # black-tag1:::"
+    tag2 = ":::black-tag2"
+    tag3 = "# black-tag3:::"
+
+    def __init__(self, c):
+        self.c = c
+        self.wrapper = c.frame.body.wrapper
+        self.reloadSettings()
+    @others
+#@+node:ekr.20190926105124.1: *4* black.reloadSettings
+@nobeautify
+
+def reloadSettings(self):
+    c = self.c
+    ### keep_comments = c.config.getBool('black-keep-comment-indentation', default=True)
+    ### self.sanitizer = SyntaxSanitizer(c, keep_comments)
+    self.line_length = c.config.getInt("black-line-length") or 88
+    # This should be on a single line,
+    # so the check-settings script in leoSettings.leo will see them.
+    self.normalize_strings = c.config.getBool("black-string-normalization", default=False)
 #@+node:ekr.20200103055140.1: *3* commands
 #@+node:ekr.20190725154916.7: *4* black.blacken_node
 def blacken_node(self, root, diff_flag, check_flag=False):
