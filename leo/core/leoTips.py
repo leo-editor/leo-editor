@@ -9,8 +9,8 @@ assert g
 
 # Define constant strings for use in f-strings.
 at_s = "@"
-ref1_s = ">>"
-ref2_s = "<<"
+ref1_s = "<<"
+ref2_s = ">>"
 
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
