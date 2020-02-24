@@ -2228,6 +2228,9 @@ class Commands:
         c, p = self, self.p
         c.setLog()
         self.command_count += 1
+        # New in Leo 6.2. Set command_function and command_name ivars.
+        self.command_function = command
+        self.command_name = getattr(command, '__name__', label or repr(command))
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
