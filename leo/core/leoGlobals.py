@@ -7573,7 +7573,9 @@ def run_unit_test_in_separate_process(command):
         print('traces...')
         print(out.rstrip())
     print(err.rstrip())
-    assert err.strip().endswith('OK')
+    # There may be skipped tests...
+    err_lines = g.splitLines(err.rstrip())
+    assert err_lines[-1].startswith('OK')
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""
