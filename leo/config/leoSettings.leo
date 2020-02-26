@@ -41,6 +41,7 @@
 <v t="ekr.20181018060340.1"><vh>filter_get_x</vh></v>
 <v t="ekr.20181018065113.1"><vh>filter_user_config</vh></v>
 </v>
+<v t="ekr.20200226105416.1"><vh>check_user_settings</vh></v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
 <v t="ekr.20111006212449.11855"><vh>get_configs &amp; helpers</vh>
@@ -101,6 +102,26 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
+<v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
+<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
+</v>
+<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+</v>
+<v t="ekr.20200226104131.1"><vh>Future settings</vh>
+<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
+</v>
+</v>
+<v t="ekr.20200226102108.1"><vh>New settings</vh>
+<v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -519,18 +540,11 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
-<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
 <v t="ekr.20200210045434.1"><vh>@bool beautify-allow-joined-strings = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
 <v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 80</vh></v>
 <v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
-</v>
-<v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
-<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
-<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching settings</vh>
 <v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
@@ -609,12 +623,6 @@
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
-<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
-<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
-<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
-<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
-</v>
 <v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
@@ -663,9 +671,10 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
+<v t="ekr.20200226102131.1"></v>
+<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
-<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
@@ -2299,6 +2308,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20111006212449.11852"></v>
+<v t="ekr.20200226105416.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5197,19 +5209,27 @@ gray90: #E5E5E5
 class Controller:
     @others
 
+g.cls()
 Controller(c).run()
 </t>
 <t tx="ekr.20111006212449.11851">def __init__(self, c):
     self.c = c
     self.errors = 0
     # Commanders...
-    self.core = None # leoPy.leo.
-    self.plugins = None # leoPlugins.leo.
-    self.settings = None # leoSettings.leo.
+    self.core = None  # leoPy.leo.
+    self.plugins = None  # leoPlugins.leo.
+    self.settings = None  # leoSettings.leo.
+    self.user_settings = None  # myLeoSettings.leo
 </t>
 <t tx="ekr.20111006212449.11852">def check(self, configs_d, settings_d):
     munge = self.munge
     table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    
+    def printList(aList):
+        if len(aList) &lt; 2:
+            print('  ', aList[0])
+        else:
+            g.printObj(aList)
     #
     # Print missing user settings...
     for kind in table:
@@ -5225,7 +5245,7 @@ Controller(c).run()
             print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
             for z in sorted(aList):
                 aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
-                g.printObj(aList2)
+                printList(aList2)
     #
     # Print missing calls to c.config.getX...
     for kind in table:
@@ -5241,8 +5261,7 @@ Controller(c).run()
             print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
             for z in sorted(aList):
                 aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
-                g.printObj(aList2)
-</t>
+                printList(aList2)</t>
 <t tx="ekr.20111006212449.11853">def error(self, s):
     print(s)
     self.errors += 1
@@ -5261,6 +5280,7 @@ Controller(c).run()
         # Opening LeoPyRef.leo would be slower.
     self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
     self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
+    self.user_settings = open_commander(g.app.loadManager.my_settings_path)
 </t>
 <t tx="ekr.20111006212449.11855">def get_configs(self):
     '''
@@ -5276,8 +5296,14 @@ Controller(c).run()
     '''
     Scan the outline for all calls to x.config.getX and add items to d.
     '''
-    for p in c.all_positions():
-        self.scan_for_configs(p, d)
+    p = c.rootPosition()
+    while p:
+        if '@nosearch' in p.b:  # #1511.
+            # print('ignore', p.h)
+            p.moveToNodeAfterTree()
+        else:
+            self.scan_for_configs(p, d)
+            p.moveToThreadNext()
     return d
 </t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs(self, p, d):
@@ -5288,8 +5314,8 @@ Controller(c).run()
     '''
     kinds = (
         'getBool', 'getColor', 'getInt', 'getFloat',
-        # '@font', # special case.
         'getPath', 'getRatio', 'getString',
+        # '@font', # special case.
     )
     i, s = 0, p.b
     while i &lt; len(s):
@@ -5314,7 +5340,7 @@ Controller(c).run()
                 # We have found a call to getBool, etc.
                 i = g.skip_ws(s, j)
                 if g.match(s, i, '('):
-                    i = g.skip_ws(s, i + 1)
+                    i = g.skip_ws_and_nl(s, i + 1)  # #1511.
                     if g.match(s, i, '"') or g.match(s, i, "'"):
                         j = g.skip_string(s, i)
                         name = s[i + 1: j - 1]
@@ -5330,12 +5356,13 @@ Controller(c).run()
         assert progress &lt; i
     return d
 </t>
-<t tx="ekr.20111006212449.11858">def get_settings(self):
+<t tx="ekr.20111006212449.11858">def get_settings(self, user):
     '''Return a dict containing a representation
-    of all settings in leoSettings.leo.
+    of all settings in leoSettings.leo or myLeoSettings.leo.
     '''
     trace = False
-    c, d = self.settings, {}
+    c = self.user_settings if user else self.settings  # #1511.
+    d = {}
     print('scanning: %s' % c.shortFileName())
     settings_node = g.findNodeAnywhere(c, '@settings')
     if not settings_node:
@@ -5388,12 +5415,13 @@ Controller(c).run()
     return g.toUnicode(s.replace('-', '').replace('_', '').lower())
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
-    g.cls()
     self.get_commanders()
     configs = self.get_configs()
-    settings = self.get_settings()
+    settings = self.get_settings(user=False)
+    user_settings = self.get_settings(user=True)
     if self.errors == 0:
         self.check(configs, settings)
+        self.check_user_settings(settings, user_settings)
     g.trace('done')
 </t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
@@ -11792,7 +11820,7 @@ Zero suppresses all line joining.</t>
 <t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
-<t tx="ekr.20191023140453.1"></t>
+<t tx="ekr.20191023140453.1"># Not ready yet.</t>
 <t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
 
 Otherwise, the sphinx command will cd to the directory containing the input file.</t>
@@ -11809,6 +11837,20 @@ The output_dir directory specified in the command:
 sphinx-build {input_dir} {output_dir} {i_path}</t>
 <t tx="ekr.20200210045434.1">True:  allow joined lines to contain strings.
 False: (Recommended by EKR): Retain alignment of strings.</t>
+<t tx="ekr.20200226102108.1"></t>
+<t tx="ekr.20200226102131.1">True: report unchanged files when saving a .leo file.</t>
+<t tx="ekr.20200226103829.1"></t>
+<t tx="ekr.20200226104131.1"></t>
+<t tx="ekr.20200226105416.1">def check_user_settings(self, settings_d, user_settings_d):
+    """Report settings in myLeoSettings.leo that are not in leoSettings.leo."""
+    for key in user_settings_d:
+        g.trace(key)
+        settings = settings_d.get(key, [])
+        user_settings = user_settings_d.get(key, [])
+        for user_setting in user_settings:
+            if user_setting not in settings:
+                g.trace('Unknown setting', user_setting)
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
