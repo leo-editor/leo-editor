@@ -2310,6 +2310,7 @@
 </v>
 <v t="ekr.20111006212449.11850"></v>
 <v t="ekr.20200226105416.1"></v>
+<v t="ekr.20111006212449.11857"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5204,6 +5205,7 @@ gray90: #E5E5E5
 </t>
 <t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
 # https://github.com/leo-editor/leo-editor/issues/993
+# https://github.com/leo-editor/leo-editor/issues/1511
 
 class Controller:
     @others
@@ -5343,6 +5345,7 @@ Controller(c).run()
                     if g.match(s, i, '"') or g.match(s, i, "'"):
                         j = g.skip_string(s, i)
                         name = s[i + 1: j - 1]
+                        # print(f"{kind:12} {name}")
                         aList = d.get(kind, [])
                         if name not in aList:
                             aList.append(name)
