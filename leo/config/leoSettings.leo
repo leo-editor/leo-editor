@@ -2309,7 +2309,6 @@
 </v>
 </v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20111006212449.11852"></v>
 <v t="ekr.20200226105416.1"></v>
 </vnodes>
 <tnodes>
@@ -11843,13 +11842,19 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
 <t tx="ekr.20200226104131.1"></t>
 <t tx="ekr.20200226105416.1">def check_user_settings(self, settings_d, user_settings_d):
     """Report settings in myLeoSettings.leo that are not in leoSettings.leo."""
+    unusual_settings = (
+        'auto-justify',   # To investigate.
+        'http-bookmark-unl',
+        'leovue-base',
+        'pagewidth',
+        'theme-name',  # Important!
+    )
     for key in user_settings_d:
-        g.trace(key)
         settings = settings_d.get(key, [])
         user_settings = user_settings_d.get(key, [])
         for user_setting in user_settings:
-            if user_setting not in settings:
-                g.trace('Unknown setting', user_setting)
+            if user_setting not in settings and user_setting not in unusual_settings:
+                print(f"Unknown setting in myLeoSettings.leo: {key} {user_setting}")
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
