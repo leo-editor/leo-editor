@@ -109,6 +109,7 @@
 <v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
 </v>
 <v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -120,7 +121,9 @@
 </v>
 </v>
 <v t="ekr.20200226102108.1"><vh>New settings</vh>
+<v t="ekr.20200226173056.1"><vh>@int auto-justify = 0</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20200226173425.1"><vh>@string http-bookmark-unl = None</vh></v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
@@ -512,7 +515,7 @@
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+<v t="ekr.20200226173056.1"></v>
 <v t="ekr.20110512085854.14461"><vh>@bool auto-tab-complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
@@ -1989,6 +1992,7 @@
 <v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
 <v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
 <v t="ekr.20181018113243.1"><vh>@string rst2-http-attributename = None</vh></v>
+<v t="ekr.20200226173425.1"></v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
 <v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
 </v>
@@ -2310,7 +2314,6 @@
 </v>
 <v t="ekr.20111006212449.11850"></v>
 <v t="ekr.20200226105416.1"></v>
-<v t="ekr.20111006212449.11857"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11846,11 +11849,8 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
 <t tx="ekr.20200226105416.1">def check_user_settings(self, settings_d, user_settings_d):
     """Report settings in myLeoSettings.leo that are not in leoSettings.leo."""
     unusual_settings = (
-        'auto-justify',   # To investigate.
-        'http-bookmark-unl',
-        'leovue-base',
-        'pagewidth',
-        'theme-name',  # Important!
+        'color-theme',  # Uses td.get_string_setting.
+        'theme-name',  # Uses td.get_string_setting.
     )
     for key in user_settings_d:
         settings = settings_d.get(key, [])
@@ -11858,6 +11858,14 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
         for user_setting in user_settings:
             if user_setting not in settings and user_setting not in unusual_settings:
                 print(f"Unknown setting in myLeoSettings.leo: {key} {user_setting}")
+</t>
+<t tx="ekr.20200226173056.1"></t>
+<t tx="ekr.20200226173425.1">@language rest
+@wrap
+
+Bookmarks are created as the first node in the outline which has been
+opened longest. You can this setting to specify an alternative location.
+For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
