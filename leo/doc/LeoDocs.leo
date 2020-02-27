@@ -2329,9 +2329,11 @@
 </v>
 </v>
 <v t="ekr.20191003051240.1"></v>
+<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
+<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+</v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
-<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
 <v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
 <v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
@@ -31299,6 +31301,7 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
+<t tx="ekr.20200225075435.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
