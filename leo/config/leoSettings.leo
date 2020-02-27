@@ -102,6 +102,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20200227064211.1"><vh>Notes</vh>
 <v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
 <v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
 <v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
@@ -124,6 +125,7 @@
 <v t="ekr.20200226173056.1"><vh>@int auto-justify = 0</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20200226173425.1"><vh>@string http-bookmark-unl = None</vh></v>
+</v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
@@ -2312,8 +2314,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20200226105416.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11873,6 +11873,7 @@ Bookmarks are created as the first node in the outline which has been
 opened longest. You can this setting to specify an alternative location.
 For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
+<t tx="ekr.20200227064211.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
