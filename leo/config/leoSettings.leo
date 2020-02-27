@@ -5427,6 +5427,8 @@ Controller(c).run()
     if self.errors == 0:
         self.check(configs, settings)
         self.check_user_settings(settings, user_settings)
+    # Select leoSettings.leo.
+    g.app.gui.frameFactory.setTabForCommander(self.settings)
     g.trace('done')
 </t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
@@ -11847,7 +11849,11 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
 <t tx="ekr.20200226103829.1"></t>
 <t tx="ekr.20200226104131.1"></t>
 <t tx="ekr.20200226105416.1">def check_user_settings(self, settings_d, user_settings_d):
-    """Report settings in myLeoSettings.leo that are not in leoSettings.leo."""
+    """
+    Report settings in myLeoSettings.leo that are not in leoSettings.leo.
+    
+    This method requires exact matches between settings: it does no munging.
+    """
     unusual_settings = (
         'color-theme',  # Uses td.get_string_setting.
         'theme-name',  # Uses td.get_string_setting.
