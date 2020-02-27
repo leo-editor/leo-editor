@@ -1165,7 +1165,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window (new)
+    #@+node:ekr.20190819072045.1: *3* qt_gui.make_main_window
     def make_main_window(self):
         """Make the *singleton* QMainWindow."""
         window = QtWidgets.QMainWindow()
@@ -1189,6 +1189,7 @@ class LeoQtGui(leoGui.LeoGui):
             c = commanders[0]
             ssm = c.styleSheetManager
             ssm.set_style_sheets(w=self.main_window)
+            self.main_window.setWindowTitle(c.frame.title)  # #1506.
         else:
             g.trace("No open commanders!")
     #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
