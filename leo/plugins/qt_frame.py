@@ -283,7 +283,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Scintilla only.
             body.recolorWidget(p, wrapper)
         return parent_frame, wrapper
-    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets (changed)
+    #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
         """Create all the dock widgets."""
         c = self.leo_c
@@ -465,6 +465,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
+        self.tabWidget.addTab(self.findScrollArea, 'Find')  # #1507.
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent):
         """Create the layout for Leo's main window."""
