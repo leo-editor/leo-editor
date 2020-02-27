@@ -13067,7 +13067,7 @@ if g.in_bridge:
     importlib.reload(leo.plugins.importers.linescanner)
     importlib.reload(leo.plugins.importers.c)
     importlib.reload(leoImport)
-    g.app.loadManager.createAllImporetersData()
+    g.app.loadManager.createAllImporterData()
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4
