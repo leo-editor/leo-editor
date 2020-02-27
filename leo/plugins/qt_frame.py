@@ -465,7 +465,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-        self.tabWidget.addTab(self.findScrollArea, 'Find')  # #1507.
+        ### Back out of 1507. It destroys tab completion in the minibuffer!
+        ### self.tabWidget.addTab(self.findScrollArea, 'Find')  # #1507.
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent):
         """Create the layout for Leo's main window."""
