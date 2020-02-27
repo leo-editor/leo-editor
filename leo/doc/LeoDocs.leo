@@ -2329,9 +2329,6 @@
 </v>
 </v>
 <v t="ekr.20191003051240.1"></v>
-<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
-<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
-</v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
 <v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
@@ -2353,6 +2350,10 @@
 <v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
+<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
+<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+</v>
+<v t="ekr.20200227061507.1"><vh>FAQ: how to customize window layout</vh></v>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
 <v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
 <v t="ekr.20200113232354.1"><vh>Other classes</vh></v>
@@ -31301,7 +31302,62 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
-<t tx="ekr.20200225075435.1"></t>
+<t tx="ekr.20200225075435.1">Leo 6.2, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.2**
+
+
+
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20200227061507.1">Q. How can I arrange Qt docks so that the outline tree will be on the left, body on the right, no log window, no render window.  I want to know the ropes so I can modify that as desired.  I'm sure it's in the docs somewhere but I haven't put my finger on it.  Thanks.
+
+Answer by Thomas Passin:
+
+I wrestled with this, too, and no, it's not really in the docs.
+
+Here's what I did.  I happen to want outline left, body right, and the tabs pane (the one with the log tab) on the left below the outline.  You should really not get rid of it, because you will want to use the search and Nav tabs at a minimum, and of you start to use the tags or backlinks plugins, they will create new tabs in that pane, too.
+
+First, add a node with this headline to the @settings tree in MyLeoSettings.leo -
+
+@string central-dock-widget = body
+
+The next step is to drag the panes by their title bars where you want them.  But this is tricky and a little non-intuitive.  There are certain areas you can drag to.  When a pane is over one of them, the space underneath will turn a translucent blue color (I *think* it's blue - my color vision isn't always the best).  Then you release the mouse button.
+
+One of these docking  areas is on the right.  The body pane should already be in it, if you put that @setting node in and restarted Leo.  There is another docking area on the left, and you drag the outline pane over there.  The tabs pane may end up tabbed in the same pane as the outline, or with the body pane.  Either way, drag it way down to the bottom under the outline pane on the left.  A new docking area should open up.  Drop the tabs pane there. 
+
+This docking area sometimes is very small, and if so it's easy to miss.  Look closely for a bluish line or tiny rectangle to show up - that will be the place.
+
+After the tabs pane is in place, you can drag its separator bar up or down to adjust its height.
+
+You may find that the next time you open Leo, the height of the tabs pane has changed.  Who know why this happens?  I have noticed that after you have saved the file several times, the height of the tabs pane tends to settle down somewhat.  But I still often have to readjust it after a restart.
+
+If you start Leo with the --global-docks option, then all the outlines will open with the same pane arrangement ( I *think*).
+
+When I was working my way through this, I got the panes into some arrangement that was unusable and I couldn't recover from.  The remedy is to delete Leo's "db" directory (thanks to @ekr for this).  This will let you start again.  On Windows, directory this is usually at
+
+%userprofile%\.leo
+
+Yes, you can type that directly into the address bar of Windows Explorer, or into a command window.  On Linux, it's usually at
+
+~/.leo
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
