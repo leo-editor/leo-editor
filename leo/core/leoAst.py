@@ -4014,6 +4014,30 @@ class TestOrange(BaseTest):
         except TypeError:
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
+    def test_bug_1429(self):
+        
+        contents = r'''\
+    def get_semver(tag):
+        """Return 'Semantic Version' from tag string"""
+        try:
+            import semantic_version
+            version = str(semantic_version.Version.coerce(tag, partial=True))
+                # tuple of major, minor, build, pre-release, patch
+                # 5.6b2 --> 5.6-b2
+        except(ImportError, ValueError) as err:
+            print('\n', err)
+            print("""*** Failed to parse Semantic Version from git tag '{0}'.
+            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+            This version can't be uploaded to PyPi.org.""".format(tag))
+            version = tag
+        return version
+    '''
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tokens, tree,
+            max_join_line_length=0, max_split_line_length=0)
+        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
     def test_at_doc_part(self):
 
