@@ -2316,7 +2316,6 @@
 </v>
 </v>
 <v t="ekr.20111006212449.11850"></v>
-<v t="ekr.20181018065113.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5265,7 +5264,7 @@ Controller(c).run()
         missing = set([z for z in m_settings if not z in m_configs])
         aList = [z for z in missing if self.filter_get_x(z)]
         if aList:
-            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            print(f"missing {len(aList)} config.{config_key} calls:")
             for z in sorted(aList):
                 aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
                 printList(aList2)</t>
