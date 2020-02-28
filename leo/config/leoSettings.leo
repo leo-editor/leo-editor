@@ -2308,7 +2308,7 @@
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
-<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = vertical</vh></v>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
 <v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
@@ -2364,7 +2364,8 @@ The following integer values are supported:
 <t tx="chris.20180324074923.1"></t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
-</t>
+
+# #1514: horizontal is now the default.</t>
 <t tx="edward.20150614045745.1">QWidget#body-text-renderer {
     color:              @render-fg;
     background-color:   @render-bg;
