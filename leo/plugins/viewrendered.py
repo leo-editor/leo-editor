@@ -769,7 +769,7 @@ if QtWidgets: # NOQA
                 # Create a stand-alone dockable area.
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-            else:
+            elif g.app.dock:
                 # Split the body dock.
                 dw.leo_docks.append(dock)
                 dock.setWidget(self)
