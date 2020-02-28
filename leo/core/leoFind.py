@@ -178,8 +178,6 @@ class LeoFind:
         self.p = None
             # The position being searched.
             # Never saved between searches!
-        self.previous_find_pattern = ''
-            # The previous find pattern, used to disable auto-setting ignore-case.
         self.unique_matches = set()
         self.was_in_headline = None
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
@@ -551,30 +549,23 @@ class LeoFind:
         """Preload the find pattern from the selected text of widget w."""
         c, ftm = self.c, self.ftm
         if not c.config.getBool('preload-find-pattern', default=False):
-            # 2016/02/24: Make *sure* we don't preload the find pattern if it is not wanted.
+            # Make *sure* we don't preload the find pattern if it is not wanted.
             return
-        # Enhancement #177: Use selected text as the find string.
-        if w:
-            if w.hasSelection():
-                s = self.previous_find_pattern
-                s2 = w.getSelectedText()
-                # Careful: Do nothing if the previous search string matches, ignoring case.
-                # This prevents an "ignore-case" search from changing the ignore-case switch.
-                if s.lower() != s2.lower():
-                    ftm.setFindText(s2)
-                    # This does not work.
-                    if False and c.config.getBool('auto-set-ignore-case', default=True):
-                        mixed = s2 not in (s.lower(), s.upper())
-                        self.ftm.set_ignore_case(not mixed)
-                ftm.init_focus()
-            else:
-                c.editCommands.extendToWord(event=None, select=True, w=w)
-                s2 = w.getSelectedText()
-                if s2:
-                    self.find_text = s2
-                    ftm.setFindText(s2)
-        s = self.ftm.getFindText()
-        self.previous_find_pattern = s
+        if not w:
+            return
+        #
+        # #1436: Don't create a selection if there isn't one.
+        #        Leave the search pattern alone!
+        #
+            # if not w.hasSelection():
+            #     c.editCommands.extendToWord(event=None, select=True, w=w)
+        #
+        # #177:  Use selected text as the find string.
+        # #1436: Make make sure there is a significant search pattern.
+        s = w.getSelectedText()
+        if s.strip():
+            ftm.setFindText(s)
+            ftm.init_focus()
     #@+node:ekr.20031218072017.3066: *4* find.setup_command
     # Initializes a search when a command is invoked from the menu.
 
@@ -2641,17 +2632,6 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
-        #
-        # Disable part of #177.
-        # Set ignore-case if the find text is mixed case.
-        # This does not work well in practice.
-        if False and c.config.getBool('auto-set-ignore-case', default=True):
-            # Careful: Alter the ignore-case option only if the
-            # search pattern has actually changed.
-            if self.previous_find_pattern != s:
-                # Only change the setting for mixed case.
-                mixed = s not in (s.lower(), s.upper())
-                ftm.set_ignore_case(not mixed)
         # Get replacement text.
         s = ftm.getReplaceText()
         s = g.checkUnicode(s)
