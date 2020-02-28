@@ -1221,14 +1221,8 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18076: *4* qtew.set_config
     def set_config(self):
         """Set configuration options for QTextEdit."""
-        c = self.c
         w = self.widget
         w.setWordWrapMode(QtGui.QTextOption.NoWrap)
-        if 0:  # This only works when there is no style sheet.
-            n = c.config.getInt('qt-rich-text-zoom-in')
-            if n not in (None, 0):
-                w.zoomIn(n)
-                w.updateMicroFocus()
         # tab stop in pixels - no config for this (yet)
         w.setTabStopWidth(24)
     #@+node:ekr.20140901062324.18566: *4* qtew.set_signals (should be distributed?)

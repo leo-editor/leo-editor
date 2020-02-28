@@ -537,6 +537,7 @@
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20200227181439.1"><vh>@bool find-def-creates-clones = False</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
@@ -2314,6 +2315,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20181018065113.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11586,9 +11589,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # The calls to config.get* are commented out in the code,
     # but get_configs isn't smart enough to know that.
     for ignore in (
-        'auto-set-ignore-case',
-        'find-def-creates-clones',
-        'qt-rich-text-zoom-in',
         'theme-name',
         'pytest-path', # In a (disabled) @button node
         'leo-to-html-%s', # Loads multiple settings from an .ini file.
@@ -11874,6 +11874,7 @@ opened longest. You can this setting to specify an alternative location.
 For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
 <t tx="ekr.20200227064211.1"></t>
+<t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
