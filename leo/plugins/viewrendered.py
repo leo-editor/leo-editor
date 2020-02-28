@@ -154,6 +154,13 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
+  
+Relative file names
+===================
+
+vr.convert_to_html resolves relative paths using whatever @path directive
+is in effect for a particular node. It also does `os.chdir(path)` for that
+path.
 
 Settings
 ========
@@ -178,11 +185,12 @@ Settings
 Acknowledgments
 ================
 
-Terry Brown created this initial version of this plugin,
-and the free_layout and NestedSplitter plugins used by viewrendered.
+Terry Brown created this initial version of this plugin, and the
+free_layout and NestedSplitter plugins used by viewrendered.
 
-Edward K. Ream generalized this plugin and added communication
-and coordination between the free_layout, NestedSplitter and viewrendered plugins.
+Edward K. Ream generalized this plugin and added communication and
+coordination between the free_layout, NestedSplitter and viewrendered
+plugins.
 
 Jacob Peck added markdown support to this plugin.
 
