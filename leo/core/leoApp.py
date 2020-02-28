@@ -95,7 +95,8 @@ class LeoApp:
             # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
-        self.dock = True
+        self.dock = False
+            # #1514: Leo's legacy operation is now the default.
             # True: use a QDockWidget.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
@@ -2930,6 +2931,7 @@ class LoadManager:
             '--dock',
             # '--no-dock', # #1171: retire legacy Qt guis.
             '--no-cache',
+            '--no-dock', # #1514: Replaced by --use-docks
             '--session-restore',
             '--session-save',
         )
@@ -2996,7 +2998,7 @@ class LoadManager:
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        add_bool('--no-dock',       'use legacy look & feel')
+        # add_bool('--no-dock',       'use legacy look & feel')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -3008,6 +3010,7 @@ class LoadManager:
         add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
+        add_bool('--use-docks',      'use qt dock widgets')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
         # Multiple bool values.
@@ -3094,7 +3097,8 @@ class LoadManager:
         g.app.diff = options.diff
          # --global-docks
         g.app.use_global_docks = bool(options.global_docks)
-        print(f"--global-docks: {g.app.use_global_docks}")
+        if options.global_docks:
+            print(f"--global-docks: {g.app.use_global_docks}")
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3105,10 +3109,12 @@ class LoadManager:
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-dock:
+        # --no-dock and --use-docks
         # #1171: retain --no-dock indefinitely.
-        if options.no_dock:
-            g.app.dock = False
+        # #1514: --no-dock is the default.
+        if options.use_docks or options.global_docks:
+            # --global-docks implies --use-docks.
+            g.app.dock = True
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
