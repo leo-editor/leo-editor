@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:TomP.20191215195433.1: * @file d:/Tom/devel/leo/plugins/viewrendered3.py
+#@@tabwidth -4
+#@@language python
 """
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -314,7 +316,7 @@ MD_STYLESHEET_APPEND = '''pre {
 body, th, td {
   font-family: Verdana,Arial,"Bitstream Vera Sans", sans-serif;
   background-color: white;
-  font-size: 85%;
+  font-size: 90%;
 }
 '''
 
@@ -820,7 +822,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'rst': pc.update_rst,
             'pyplot': pc.update_pyplot,
             'svg': pc.update_svg,
-            'url': pc.update_url,
+            #'url': pc.update_url,
         }
     #@@c
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
@@ -835,7 +837,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         
         The default location is assumed to be at site.getuserbase()
         
-        VARIABLES USED  See reloadSettings() for the settings' names.
+        VARIABLES USED  (see reloadSettings() for the settings' names)
         self.md_stylesheet -- The URL to the stylesheet.  Must include
                                the "file:///" if it is a local file.    
         """
@@ -1230,7 +1232,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
              self.show_toolbar()
         else:
             self.hide_toolbar()
-
         if self.locked:
             return
 
@@ -1264,10 +1265,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 w.show()
                 return
 
-            root = _root.copy()
-            _tree = [root]
+            rootcopy = _root.copy()
+            _tree = [rootcopy]
             if kind in (MD, RST, REST) and self.show_whole_tree:
-                _tree.extend(root.subtree())
+                _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace('no handler for kind: %s' % kind)
@@ -1692,22 +1693,34 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200208211347.1: *6* process nodes
         result = ''
         codelist = []
+        sm = StateMachine(self)
+
         for node in node_list:
             # Add node's text as a headline
             s = node.b
             s = self.remove_directives(s)
-            headline_str = '#' + node.h if node.h else ''
+            # Remove "@" directive from headline, if any
+            header = node.h or ''
+            if header.startswith('@'):
+                fields = header.split()
+                headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+            else:
+                headline = ''
+            headline_str = '#' + headline
             s = headline_str + '\n' + s
+            lines = s.split('\n')
 
-            # Process node's entire body text to handle @language directives
-            sproc, codelines = self.process_md_node(s)
+            # Process node's entire body text; handle @language directives
+            sproc, codelines = sm.runMachine(lines)
             result += sproc
             if codelines:
                 codelist.extend(codelines)
+            sm.reset()
 
         # Execute code blocks; capture and insert execution results.
         # This means anything written to stdout or stderr.
         if self.execute_flag and codelist:
+            execution_result, err_result = None, None
             code = '\n'.join(codelist)
             c = self.c
             environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
@@ -1716,11 +1729,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.execute_flag = False
 
             if execution_result or err_result:
-                result += '\n```\n'
+                result += '\n```text\n'
                 if execution_result:
-                    result += f'\n```text\n{execution_result}\n'
-                if err_result.strip():
-                    result += f'{indented_err_result}\n'
+                    result += f'\n{execution_result}\n'
+                if err_result:
+                    result += f'{err_result}\n'
                 result += '```\n'
 
         #@+node:TomP.20200209115750.1: *6* generate HTML
@@ -1738,247 +1751,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _html = self.md_header + s
         return _html
         #@-others
-    #@+node:TomP.20200211142337.1: *5* process_md_node
-    def process_md_node(self, s):
-        """Process the string of a md node, honoring "@language" code blocks
-            
-           Any sections delineated by "@language xxx" /"@language yyy" directives
-           are marked as code blocks in md, where "xxx" is a code name
-           (e.g., "python"), and "yyy" is a non-code name (e.g., "rst").
-           There can be several changes from code to non-code and back 
-           within the node.
-           
-           Lines that contain only "@" cause all succeeding lines
-           to be skipped until the next line that contains only "@c".
-           
-           ARGUMENT
-           s -- the node's contents as a string
-           
-           RETURNS
-           a string having the code parts formatted as rst code blocks.
-        """
-
-
-        lines = s.split('\n')
-        # Break up text into chunks
-        results = None
-        chunks = []
-        _structure = MD
-        _lang = MD
-        _tag = TEXT
-        _skipthis = False
-
-        c = self.c
-        environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
-
-        state = State.BASE
-        tag = TEXT
-
-        _chunk = Chunk(_tag, _structure, _lang)
-        for i, line in enumerate(lines):
-            do_state(state, line)
-
-        for ch in chunks:
-            ch.format_code()
-        if self.code_only:
-            results = [ch.formatted for ch in chunks if ch.tag == CODE]
-        else:
-            results = [ch.formatted for ch in chunks]
-
-        final_text = '\n'.join(results)
-        codelines = []
-        if self.execute_flag:
-            codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
-
-        return final_text, codelines
-    #@+node:TomP.20200208212643.1: *5* xprocess_md_node
-    #@@language python
-    def xprocess_md_node(self, s):
-        """Process the string of a md node, honoring "@language" code blocks
-            
-           Any sections delineated by "@language xxx" /"@language yyy" directives
-           are marked as code blocks in md, where "xxx" is a code name
-           (e.g., "python"), and "yyy" is a non-code name (e.g., "rst").
-           There can be several changes from code to non-code and back 
-           within the node.
-           
-           Lines that contain only "@" cause all succeeding lines
-           to be skipped until the next line that contains only "@c".
-           
-           ARGUMENT
-           s -- the node's contents as a string
-           
-           RETURNS
-           a string having the code parts formatted as rst code blocks.
-        """
-        #@+<< md special line helpers >>
-        #@+node:TomP.20200208213249.1: *6* << md special line helpers >>
-        def get_md_code_language(line):
-            """Return the language and tag for a line beginning with "```".
-            
-            A fenced line that has no language, or "text" for the language,
-            does not start a code block.
-            """
-
-            _lang = MD
-            #_fields = line.split(MD_CODE_FENCE)
-            if PYTHON in line:
-                _lang = PYTHON
-            elif MD in line:
-                _lang = MD
-            elif TEXT in line:
-                _lang = TEXT
-            _tag = CODE if _lang in (PYTHON,) else TEXT
-
-            return _lang, _tag
-        #@-<< md special line helpers >>
-        #@+<< Loop Over Lines >>
-        #@+node:TomP.20200208213305.1: *6* << Loop Over Lines >>
-
-        lines = s.split('\n')
-        # Break up text into chunks
-        results = None
-        chunks = []
-        _structure = MD
-        _lang = MD
-        _tag = TEXT
-        _skipthis = False
-
-        _got_language = False
-        _in_md_block = False
-        _in_code_block = False
-        _in_quotes = False
-        _quotes_type = None
-        _got_language_by_md_block = False
-
-        _got_fence = False
-
-        c = self.c
-        environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
-
-        for i, line in enumerate(lines):
-            #@+<< handle_ats >>
-            #@+node:TomP.20200208213926.1: *7* << handle_ats >>
-
-            # Honor "@", "@c": skip all lines after "@" until next "@c".
-            # However, ignore these markers if we are in a code block and
-            # and also within a quoted section.
-            if not (_in_code_block and _in_quotes):
-                if line.rstrip() == '@':
-                    _skipthis = True
-                    continue
-                elif line.rstrip() == '@c':
-                    _skipthis = False
-                    continue
-                if _skipthis:
-                    continue
-            #@-<< handle_ats >>
-            #@+<< identify_code_blocks >>
-            #@+node:TomP.20200208214254.1: *7* << identify_code_blocks >>
-            # Identify code blocks
-            # Can start with "@language" or "```python"
-            _got_fence = line.startswith(MD_CODE_FENCE) and not _in_quotes
-            if _got_fence:
-                print(f'---- line: {i}, _in_code_block: {_in_code_block} _got_language_by_md_block: {_got_language_by_md_block}') 
-                _lang, _tag = get_md_code_language(line)
-                if _in_code_block:
-                    _in_code_block = False
-                    _got_language_by_md_block = False
-                else:
-                    _got_language_by_md_block = True
-                _tag = _tag or TEXT
-
-            if _got_language_by_md_block:
-                _got_language = True
-                _in_md_block = True
-                _in_code_block = True
-                _tag, _lang = get_md_code_language(line)
-
-            elif line.find('@language') == 0 and not _in_quotes:
-                fields = line.split('@language', 1)
-                if len(fields) > 1:
-                    _lang = fields[1]
-                    _got_language = True
-                    _in_md_block = False
-                    _in_code_block = _lang in (PYTHON,)
-                    _tag = CODE if _lang in (PYTHON,) else TEXT
-                else:
-                    # this is an error. Assume we're supposed to end the block.
-                    _got_language = False
-                    _in_md_block = False
-                    _in_code_block = False
-                    _lang = MD
-                    _tag = TEXT
-            if line.startswith(MD_CODE_FENCE):
-                print(f'=== line: {i} _got_language: {_got_language} _in_md_block: {_in_md_block} _lang: {_lang} _tag: {_tag} line: "{line}"')
-            #@-<< identify_code_blocks >>
-            #@+<< fill_chunks >>
-            #@+node:TomP.20200208214819.1: *7* << fill_chunks >>
-
-            _cleanline = line.strip()
-            _starts_with_at = not _got_language and line and \
-                              line[0] == '@' and\
-                              not _cleanline == '@' and\
-                              not _cleanline == '@c'
-
-            if i == 0:
-                # Set up the first chunk (unless the first line changes the language)
-                _chunk = Chunk(_tag, _structure, _lang)
-                if not _got_language:
-                    _chunk.add_line(line)
-            elif _starts_with_at:
-                # Keep Python decorators in code blocks
-                if _chunk.tag == CODE:
-                    _chunk.add_line(line)
-            elif _got_language:
-                # This is a line that marks the start of a code block
-                if not _got_language_by_md_block:
-                    # We are starting a code block delineated by "@language"
-                    chunks.append(_chunk)
-                    fields = line.split()
-                    _lang = fields[1] if len(fields) > 1 else MD
-                    _tag = CODE if _lang in (PYTHON,) else TEXT
-                    _chunk = Chunk(_tag, _structure, _lang)
-                else:
-                    # We are starting a code block delineated by "```"
-                    chunks.append(_chunk)
-                    _lang = PYTHON if PYTHON in line else TEXT
-                    _tag = CODE if _lang in (PYTHON,) else TEXT
-                    _chunk = Chunk(_tag, _structure, _lang)
-                _got_language = False
-            else:
-                if _in_md_block:
-                    # We are in a code block started by '```'
-                    if line.startswith(MD_CODE_FENCE):
-                        # this line ends the code block
-                        in_md_block = False
-                        _tag = TEXT
-                        _lang = MD
-                        chunks.append(_chunk)
-                        _chunk = Chunk(_tag, _structure, _lang)
-                else:
-                    _chunk.add_line(line)
-            #@-<< fill_chunks >>
-        #@-<< Loop Over Lines >>
-        #@+<< Finalize Node >>
-        #@+node:TomP.20200208213314.1: *6* << Finalize Node >>
-
-        chunks.append(_chunk)
-
-        for ch in chunks:
-            ch.format_code()
-        if self.code_only:
-            results = [ch.formatted for ch in chunks if ch.tag == CODE]
-        else:
-            results = [ch.formatted for ch in chunks]
-
-        final_text = '\n'.join(results)
-        codelines = []
-        if self.execute_flag:
-            codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
-
-        return final_text, codelines
-        #@-<< Finalize Node >>
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
     movie_warning = False
 
@@ -2299,6 +2071,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = ' '.join(_headline)
             else:
                 _headline_str = p.h
+            _headline_str.replace('\\', '\\\\')
             _underline = '='*len(_headline_str)
         s = '{}\n{}\n\n{}'.format(_headline_str, _underline, s)
 
@@ -2677,7 +2450,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 fn = g.os_path_finalize(fn)
 
         ok = g.os_path_exists(fn)
-        # if not ok: g.trace('not found', fn)
         return ok, fn
 
     #@+node:TomP.20191215195433.83: *5* vr3.get_url
@@ -2805,102 +2577,48 @@ class ViewRenderedController3(QtWidgets.QWidget):
         
         return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@-others
-#@+node:TomP.20200211142437.1: ** State Table
-#@@language python
-
-global _chunk, chunks
-
+#@+node:TomP.20200213170204.1: ** class State
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
     FENCED_CODE = auto()
+    IN_SKIP = auto()
     TO_BE_COMPUTED = auto()
 
-class Marker(Enum):
-    AT_LANGUAGE_MARKER = auto()
-    MD_FENCE_LANG_MARKER = auto() # fence with language; e.g. ```python
-    MD_FENCE_MARKER = auto() # fence with no language
-    MARKER_NONE = auto() # Not a special line.
-
+#@+node:TomP.20200213170314.1: ** class Action
 class Action:
     @staticmethod
-    def new_chunk(line, tag):
-        chunks.append(_chunk)
-        _lang = get_lang(line)
-        _chunk = Chunk(tag, structure, _lang)
+    def new_chunk(sm, line, tag):
+        """ Add chunk to chunk list, create new chunk.
+        
+        ARGUMENTS
+        sm -- a StateMachine instance.
+        line -- the line of text to be processed.
+        tag -- the current tag for the chunk.
+        """
+
+        sm.chunk_list.append(sm.current_chunk)
+        marker, tag, _lang = StateMachine.get_marker(None, line)
+        sm.current_chunk = Chunk(tag, sm.structure, _lang)
 
     @staticmethod
-    def add_line(line, tag=None):
-        _chunk.add_line(line)
+    def add_line(sm, line, tag=None):
+        sm.current_chunk.add_line(line)
 
-def do_state(state, line):
-    marker, tag, language = get_marker(line)
-    action, next = State_table[(state, marker)]
-    if next == State.TO_BE_COMPUTED:
-        # Need to know if this line specified a language.
-        # Only known case is if we are in an @language code block 
-        # And encounter another @language block.
-        if tag == CODE:
-            next = State.AT_LANG_CODE
-            _lang = language
-        else:
-            next = State.BASE
-            _lang = MD
-    action(line, tag)
-    state = next
-
-State_table = { # (state, marker): (action, next_state)
-    # State == State.TO_BE_COMPUTED means that the next state should be computed.
-
-    # Markdown states
-    (State.BASE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
-    (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
-    (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
-
-    (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
-    # when we encounter a new @language line, the next state might be either 
-    # State.BASE or State.AT_LANG_CODE, so we have to compute it.
-    (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
-
-    (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
-    (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE)
-}
-#@+node:TomP.20200212085651.1: *3* get_marker
-def get_marker(line):
-    """Return classification information about a line.
-    
-    Used by the state table machinery.
-    
-    ARGUMENT
-    line -- the line of text to be classified.
-    
-    RETURNS
-    a tuple (marker, tag, lang), where 
-        marker is one of AT_LANGUAGE_MARKER, MD_FENCE_LANG_MARKER, MD_FENCE_MARKER, MARKER_NONE;
-        tag is one of CODE, TEXT;
-        lang is the language (e.g., MD, RST, PYTHON) specified by the line, else None.
+    @staticmethod
+    def no_action(sm, line, tag=None):
+        pass
+#@+node:TomP.20200213170250.1: ** class Marker
+class Marker(Enum):
     """
-
-    marker = Marker.MARKER_NONE
-    tag = TEXT
-    lang = None
-
-    # A marker line may start with "@language" or a Markdown code fence.
-    if line.startswith("@language"):
-        marker = Marker.AT_LANGUAGE_MARKER
-        lang = PYTHON if PYTHON in line else MD
-    elif line.startswith(MD_CODE_FENCE):
-        if PYTHON in line:
-            marker = Marker.MD_FENCE_LANG_MARKER
-            lang = PYTHON
-        else:
-            marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
-            lang = MD
-
-    if lang in (PYTHON,):
-        tag = CODE
-
-    return (marker, tag, lang)
+    For indicating markers in a text line that characterize their purpose, like "@language".
+    """
+    AT_LANGUAGE_MARKER = auto()
+    MD_FENCE_LANG_MARKER = auto() # fence token with language; e.g. ```python
+    MD_FENCE_MARKER = auto() # fence token with no language
+    MARKER_NONE = auto() # Not a special line.
+    START_SKIP = auto()
+    END_SKIP = auto()
 #@+node:TomP.20191231172446.1: ** class Chunk
 class Chunk:
     """Holds a block of text, with various metadata about it."""
@@ -2940,7 +2658,174 @@ class Chunk:
                 _formatted.append('\n'.join(self.text_lines))
                 _formatted.append(f'{MD_CODE_FENCE}\n')
                 self.formatted = '\n'.join(_formatted)
-#@-others
+#@+node:TomP.20200211142437.1: ** class StateMachine
 #@@language python
-#@@tabwidth -4
+
+class StateMachine:
+    def __init__(self, vr3, tag=TEXT, structure=MD, lang=MD):
+        self.vr3 = vr3
+        self.base_tag =  tag
+        self.structure = structure
+        self.base_lang = lang
+        self.state = State.BASE
+        self.last_state = State.BASE
+
+        self.chunk_list = []
+        self.current_chunk = Chunk(self.base_tag, structure, self.base_lang)
+        self.lang = lang
+
+        self.inskip = False
+
+    def reset(self, tag=TEXT, lang=MD):
+        self.state = State.BASE
+        self.last_state = State.BASE
+        self.chunk_list = []
+        self.current_chunk = Chunk(tag, self.structure, lang)
+        self.lang = lang
+        self.inskip = False
+
+    #@+<< runMachine >>
+    #@+node:TomP.20200215180012.1: *3* << runMachine >>
+    def runMachine(self, lines):
+        """Process a list of text lines and return final text and a list of lines of code.
+        
+        ARGUMENT
+        lines -- a list of lines of text.
+        
+        RETURNS
+        a tuple (final_text, code_lines).
+        """
+
+        for i, line in enumerate(lines):
+            self.i = i
+            self.do_state(self.state, line)
+        self.chunk_list.append(self.current_chunk) # have to pick up the last chunk
+
+        for ch in self.chunk_list:
+            ch.format_code()
+        if self.vr3.code_only:
+            results = [ch.formatted for ch in self.chunk_list if ch.tag == CODE]
+        else:
+            results = [ch.formatted for ch in self.chunk_list]
+
+        codelines = []
+        if self.vr3.execute_flag:
+            codelines = ['\n'.join(ch.text_lines) for ch in self.chunk_list if ch.tag == CODE]
+
+        final_text = '\n'.join(results)
+        return final_text, codelines
+    #@-<< runMachine >>
+    #@+<< do_state >>
+    #@+node:TomP.20200213170532.1: *3* << do_state >>
+
+    def do_state(self, state, line):
+        marker, tag, language = self.get_marker(line)
+        if marker == Marker.START_SKIP:
+            self.inskip = True
+            self.last_state = self.state
+            self.state = State.IN_SKIP
+            return
+
+        elif marker == Marker.END_SKIP:
+            self.inskip == False
+            self.state = self.last_state
+            return
+
+        elif self.state == State.IN_SKIP:
+            return
+
+        try:
+            action, next = StateMachine.State_table[(state, marker)]
+        except KeyError as e:
+            return
+        if next == State.TO_BE_COMPUTED:
+            # Need to know if this line specified a code or text language.
+            # Only known case is if we are in an @language code block 
+            # And encounter another @language block.
+            if tag == CODE:
+                next = State.AT_LANG_CODE
+                _lang = language
+            else:
+                next = State.BASE
+                _lang = self.base_lang
+
+        action(self, line, tag)
+        self.state = next
+    #@-<< do_state >>
+    #@+<< get_marker >>
+    #@+node:TomP.20200212085651.1: *3* << get_marker >>
+
+    def get_marker(self, line):
+        """Return classification information about a line.
+        
+        Used by the state table machinery.
+        
+        ARGUMENT
+        line -- the line of text to be classified.
+        
+        RETURNS
+        a tuple (marker, tag, lang), where 
+            marker is one of AT_LANGUAGE_MARKER, MD_FENCE_LANG_MARKER, MD_FENCE_MARKER, MARKER_NONE;
+            tag is one of CODE, TEXT;
+            lang is the language (e.g., MD, RST, PYTHON) specified by the line, else None.
+        """
+
+        marker = Marker.MARKER_NONE
+        tag = TEXT
+        lang = None
+
+        # For debugging
+        if line.startswith('#%%%%'):
+            print(self.state, self.current_chunk.language, self.current_chunk.tag)
+            return(None, None, None)
+
+        # Omit lines between @ and @c
+        if line.rstrip() == '@':
+            marker = Marker.START_SKIP
+        elif line.strip() == '@c':
+            marker = Marker.END_SKIP
+
+        # A marker line may start with "@language" or a Markdown code fence.
+        elif line.startswith("@language"):
+            marker = Marker.AT_LANGUAGE_MARKER
+            lang = PYTHON if PYTHON in line else MD
+        elif line.startswith(MD_CODE_FENCE):
+            if PYTHON in line:
+                marker = Marker.MD_FENCE_LANG_MARKER
+                lang = PYTHON
+            else:
+                marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
+                lang = MD
+
+        if lang in (PYTHON,):
+            tag = CODE
+
+
+        return (marker, tag, lang)
+    #@-<< get_marker >>
+    #@+<< State Table >>
+    #@+node:TomP.20200213171040.1: *3* << State Table >>
+    State_table = { # (state, marker): (action, next_state)
+
+        (State.BASE, Marker.AT_LANGUAGE_MARKER):  (Action.new_chunk, State.AT_LANG_CODE),
+        (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
+        (State.BASE, Marker.MARKER_NONE):         (Action.add_line, State.BASE),
+
+        # When we encounter a new @language line, the next state might be either 
+        # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
+        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
+
+        # ========= Markdown-specific states ==================
+        (State.BASE, Marker.MD_FENCE_LANG_MARKER):         (Action.new_chunk, State.FENCED_CODE),
+        (State.BASE, Marker.MD_FENCE_MARKER):              (Action.add_line, State.BASE),
+        (State.FENCED_CODE, Marker.MARKER_NONE):           (Action.add_line, State.FENCED_CODE),
+        (State.FENCED_CODE, Marker.MD_FENCE_MARKER):       (Action.new_chunk, State.BASE),
+        (State.AT_LANG_CODE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
+        (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):      (Action.add_line, State.BASE),
+    }
+    #@-<< State Table >>
+
+
+#@-others
+
 #@-leo
