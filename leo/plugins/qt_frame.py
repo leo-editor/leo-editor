@@ -418,6 +418,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers (legacy)
     def createLogPane(self, parent):
         """Create all parts of Leo's log pane."""
+        g.trace('===== create findTab')
         c = self.leo_c
         #
         # Create the log frame.
@@ -464,6 +465,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # self.findTab exists even if there is not Find tab in the Log pane.
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
+        if g.app.dock:
+            g.trace('-----')
+            c = self.leo_c
+            fc = c.findCommands
+            assert fc.ftm
+            return
         self.findScrollArea.setWidget(self.findTab)
         ### Back out of 1507. It destroys tab completion in the minibuffer!
         ### self.tabWidget.addTab(self.findScrollArea, 'Find')  # #1507.
@@ -939,6 +946,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
     def createFindTab(self, parent, tab_widget):
         """Create a Find Tab in the given parent."""
+        g.trace('-----', tab_widget)
         c, dw = self.leo_c, self
         fc = c.findCommands
         assert not fc.ftm
