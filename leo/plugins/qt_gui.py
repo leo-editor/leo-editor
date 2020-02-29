@@ -223,7 +223,6 @@ class LeoQtGui(leoGui.LeoGui):
             c.ftm = g.app.globalFindTabManager
             fn = c.shortFileName() or 'Untitled'
             d.setWindowTitle(f"Find in {fn}")
-            c.frame.top.find_status_edit.setText('')
         c.inCommand = False
         if d.isVisible():
             # The order is important, and tricky.
@@ -238,11 +237,8 @@ class LeoQtGui(leoGui.LeoGui):
     def createFindDialog(self, c):
         """Create and init a non-modal Find dialog."""
         g.app.globalFindTabManager = c.findCommands.ftm
-        top = c.frame.top
-            # top is the DynamicWindow class.
+        top = c.frame.top  # top is the DynamicWindow class.
         w = top.findTab
-        top.find_status_label.setText('Find Status:')
-
         d = QtWidgets.QDialog()
         # Fix #516: Hide the dialog. Never delete it.
 

@@ -418,7 +418,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers (legacy)
     def createLogPane(self, parent):
         """Create all parts of Leo's log pane."""
-        g.trace('===== create findTab')
         c = self.leo_c
         #
         # Create the log frame.
@@ -441,12 +440,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Find tab.
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
-        # Fix #516:
+        #
+        # #516 and #1507: Create a Find tab unless we are using a dialog.
+        #
+        # Careful: @bool minibuffer-ding-mode overrides @bool use-find-dialog.
         use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
         use_dialog = c.config.getBool('use-find-dialog', default=False)
-        if not use_minibuffer and not use_dialog:
+        if use_minibuffer or not use_dialog:
             tabWidget.addTab(findScrollArea, 'Find')
-        # Do this later, in LeoFind.finishCreate
+        # Complete the Find tab in LeoFind.finishCreate.
         self.findScrollArea = findScrollArea
         self.findTab = findTab
         #
@@ -462,18 +464,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         """It's useful to create this late, because c.config is now valid."""
-        # self.findTab exists even if there is not Find tab in the Log pane.
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
-        if g.app.dock:
-            g.trace('-----')
-            c = self.leo_c
-            fc = c.findCommands
-            assert fc.ftm
-            return
         self.findScrollArea.setWidget(self.findTab)
-        ### Back out of 1507. It destroys tab completion in the minibuffer!
-        ### self.tabWidget.addTab(self.findScrollArea, 'Find')  # #1507.
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent):
         """Create the layout for Leo's main window."""
@@ -946,7 +939,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
     def createFindTab(self, parent, tab_widget):
         """Create a Find Tab in the given parent."""
-        g.trace('-----', tab_widget)
         c, dw = self.leo_c, self
         fc = c.findCommands
         assert not fc.ftm

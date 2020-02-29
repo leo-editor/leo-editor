@@ -579,6 +579,9 @@ class LeoFind:
     @cmd('start-search')
     def startSearch(self, event):
         w = self.editWidget(event)
+        # This causes problems.
+            # if self.minibuffer_mode:
+                # self.c.frame.log.selectTab('Find')
         if w:
             self.preloadFindPattern(w)
         self.find_seen = set()
