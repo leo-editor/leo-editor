@@ -257,7 +257,7 @@ if docutils:
         got_docutils = False
         g.es_exception()
     except SyntaxError:
-        got_docutils = Fal
+        got_docutils = False
         g.es_exception()
 else:
     got_docutils = False
@@ -367,7 +367,7 @@ latex_template = '''\
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
     </script>
 </head>
 <body bgcolor="#fffbdc">
@@ -2426,8 +2426,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return colorizer.findFirstValidAtLanguageDirective(p.copy())
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag):
-        #return VrC.get_fn(self, s, tag)
-
         pc = self
         c = pc.c
         fn = s or c.p.h[len(tag):]
@@ -2500,7 +2498,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
             g.es('Viewrendered2 exception')
             g.es_exception()
-            import traceback
             except_err = f'{type(e).__name__}: {str(e)}\n'
         # Restore stdout, stderr
         finally:
@@ -2736,7 +2733,7 @@ class StateMachine:
 
         try:
             action, next = StateMachine.State_table[(state, marker)]
-        except KeyError as e:
+        except KeyError:
             return
         if next == State.TO_BE_COMPUTED:
             # Need to know if this line specified a code or text language.
