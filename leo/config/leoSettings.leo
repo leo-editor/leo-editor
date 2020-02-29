@@ -5894,7 +5894,7 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 
 *All modes*
 
-- Start the seach with Ctrl-F (start-search).
+- Start the search with Ctrl-F (start-search).
 - Enter the find pattern.
 - (Optional) Use &lt;Tab&gt; to enter the search pattern.
 - Use &lt;Enter&gt; to start the search.
@@ -10089,7 +10089,7 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 
 *All modes*
 
-- Start the seach with Ctrl-F (start-search).
+- Start the search with Ctrl-F (start-search).
 - Enter the find pattern.
 - (Optional) Use &lt;Tab&gt; to enter the search pattern.
 - Use &lt;Enter&gt; to start the search.
