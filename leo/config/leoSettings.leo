@@ -103,6 +103,9 @@
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20200227064211.1"><vh>Notes</vh>
+<v t="ekr.20200229053354.1"><vh>Changed settings</vh>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
+</v>
 <v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
 <v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
 <v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
@@ -2308,14 +2311,15 @@
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
-<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
+<v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20111006212449.11850"></v>
+<v t="ekr.20150618105435.1"></v>
+<v t="ekr.20131119143342.20107"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5877,8 +5881,32 @@ Advanced users may create an additional style sheet, called::
 
 in myLeoSettings.leo.  But most users will never need to do this.
 </t>
-<t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
-False: start-find commands puts focus in Find panel.</t>
+<t tx="ekr.20131119143342.20107">@language rest
+
+The @bool use-find-dialog and @bool minibuffer-find-mode settings comprise
+a tri-state setting, as shown in this table:
+    
+minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
+--------------------    ---------------     --------------------------
+    True                    Ignored         minibuffer
+    False                   True            dialog
+    False                   False           Find tab in the log pane
+
+*All modes*
+
+- Start the seach with Ctrl-F (start-search).
+- Enter the find pattern.
+- (Optional) Use &lt;Tab&gt; to enter the search pattern.
+- Use &lt;Enter&gt; to start the search.
+
+*dialog and find tab modes*
+
+- Non-functional "buttons" remind you of key bindings.
+
+*minibuffer mode*
+
+- Use Ctrl-G as always to leave the minibuffer.
+- The Find tab is not made visible, but the status area shows the settings.</t>
 <t tx="ekr.20131119143342.20108"></t>
 <t tx="ekr.20131213135427.21826"></t>
 <t tx="ekr.20131213135427.21827"></t>
@@ -10048,7 +10076,32 @@ except KeyError:
             return "self, "
     return ""
 </t>
-<t tx="ekr.20150618105435.1"></t>
+<t tx="ekr.20150618105435.1">@language rest
+
+The @bool use-find-dialog and @bool minibuffer-find-mode settings comprise
+a tri-state setting, as shown in this table:
+    
+minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
+--------------------    ---------------     --------------------------
+    True                    Ignored         minibuffer
+    False                   True            dialog
+    False                   False           Find tab in the log pane
+
+*All modes*
+
+- Start the seach with Ctrl-F (start-search).
+- Enter the find pattern.
+- (Optional) Use &lt;Tab&gt; to enter the search pattern.
+- Use &lt;Enter&gt; to start the search.
+
+*dialog and find tab modes*
+
+- Non-functional "buttons" remind you of key bindings.
+
+*minibuffer mode*
+
+- Use Ctrl-G as always to leave the minibuffer.
+- The Find tab is not made visible, but the status area shows the settings.</t>
 <t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
 
 /* alternative active pane highlighting */
@@ -11875,6 +11928,7 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
 <t tx="ekr.20200227064211.1"></t>
 <t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
+<t tx="ekr.20200229053354.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
