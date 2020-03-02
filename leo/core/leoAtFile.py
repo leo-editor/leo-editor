@@ -1219,9 +1219,9 @@ class AtFile:
             return
         oldPath = g.os_path_normcase(at.getPathUa(p))
         newPath = g.os_path_normcase(g.fullPath(c, p))
-        try:  # #1367: samefile can throw IOError!
+        try:  # #1367: samefile can throw an exception.
             changed = oldPath and not os.path.samefile(oldPath, newPath)
-        except IOError:
+        except Exception:
             changed = True
         if not changed:
             return
@@ -3090,8 +3090,10 @@ class AtFile:
             d = p.v.at_read
             for k in d:
                 # Fix bug # #1469: make sure k still exists.
-                if os.path.exists(
-                    k) and os.path.samefile(k, fn) and p.h in d.get(k, set()):
+                if (
+                    os.path.exists(k) and os.path.samefile(k, fn)
+                    and p.h in d.get(k, set())
+                ):
                     d[fn] = d[k]
                     if trace: g.trace('Return False: in p.v.at_read:', sfn)
                     return False
