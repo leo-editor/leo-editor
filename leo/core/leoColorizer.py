@@ -959,7 +959,7 @@ class BaseJEditColorizer(BaseColorizer):
         c = self.c
         trace = 'coloring' in g.app.debug and not g.unitTesting
         if trace:
-            g.es_print('\n--trace-coloring...')
+            g.es_print('\nreport changes...')
 
         def show(setting, val):
             if trace:
@@ -1080,7 +1080,7 @@ class BaseJEditColorizer(BaseColorizer):
             else:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             kind_s = f"{self.language}.{tag}"
-            print(f"--trace-coloring: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}")
+            print(f"set_tag: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}")
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -2187,7 +2187,7 @@ class JEditColorizer(BaseJEditColorizer):
                     s2 = repr(s[i : i + 17 - 2] + '...')
                 kind_s = f"{delegate}.{tag}"
                 print(
-                    f"--trace-coloring: {kind_s:25} {i:3} {j:3} "
+                    f"colorRangeWithTag: {kind_s:25} {i:3} {j:3} "
                     f"{s2:>20} {g.callers(2)}")
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
@@ -2734,19 +2734,20 @@ class PygmentsColorizer(BaseJEditColorizer):
     def get_lexer(self, language):
         """Return the lexer for self.language, creating it if necessary."""
         import pygments.lexers as lexers
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        tag = 'get_lexer'
+        trace = 'coloring' in g.app.debug
         try:
-            if language == 'python':
-                lexer_language = 'python3'
-            lexer = lexers.get_lexer_by_name(lexer_language)
+            # #1520: always define lexer_language.
+            lexer_name = 'python3' if language == 'python' else language
+            lexer = lexers.get_lexer_by_name(lexer_name)
         except Exception:
             # pylint: disable=no-member
                 # One of the lexer's will not exist.
             if trace:
-                g.trace(f"--trace-coloring: no lexer for {language!r}")
+                g.trace(f"{tag}: no lexer for {language!r}")
             lexer = lexers.Python3Lexer()
             if trace and 'python' not in self.lexers_dict:
-                g.trace(f"--trace-coloring: default lexer for python: {lexer!r}")
+                g.trace(f"{tag}: default lexer for python: {lexer!r}")
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language, lexer):
