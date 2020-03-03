@@ -34,6 +34,14 @@ floatable_docks = True
     # True: allow QDockWidgets to float.
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
+#@+node:ekr.20200303094809.1: *3*  function:dock_widget
+def dock_widget(w):
+    """Return the dock widget containing widget w."""
+    while w:
+        if isinstance(w, QtWidgets.QDockWidget):
+            return w
+        w = w.parent()
+    return None
 #@+node:ekr.20200303082511.2: *3*  'contract-pane'
 @g.command('contract-pane')
 def contractPane(event):
@@ -106,13 +114,18 @@ def hidePane(event):
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
 @g.command('contract-body-pane')
 @g.command('expand-outline-pane')
+@g.command('show-outline-pane')
 def contractBodyPane(event):
     '''Contract the body pane. Expand the outline/log splitter.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        # For now, just make the outline dock visible.
+        w = c.frame.tree.treeWidget
+        dock = dock_widget(w)
+        if dock:
+            dock.show()
         return
     f = c.frame
     r = min(1.0, f.ratio + 0.1)
@@ -121,13 +134,18 @@ def contractBodyPane(event):
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
+@g.command('show-log-pane')
 def contractLogPane(event):
     '''Contract the log pane. Expand the outline pane.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        # For now, just make the log dock visible.
+        w = c.frame.log.logWidget
+        dock = dock_widget(w)
+        if dock:
+            dock.show()
         return
     f = c.frame
     r = min(1.0, f.secondary_ratio + 0.1)
@@ -135,13 +153,18 @@ def contractLogPane(event):
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
 @g.command('expand-body-pane')
+@g.command('show-body-pane')
 def contractOutlinePane(event):
     '''Contract the outline pane. Expand the body pane.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        # For now, just make the body dock visible.
+        w = c.frame.body.widget
+        dock = dock_widget(w)
+        if dock:
+            dock.show()
         return
     f = c.frame
     r = max(0.0, f.ratio - 0.1)
@@ -156,7 +179,11 @@ def expandLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        # For now, just make the log dock visible.
+        w = c.frame.log.logWidget
+        dock = dock_widget(w)
+        if dock:
+            dock.show()
         return
     f = c.frame
     r = max(0.0, f.secondary_ratio - 0.1)
@@ -169,7 +196,10 @@ def hideBodyPane(event):
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        w = c.frame.body.widget
+        dock = dock_widget(w)
+        if dock:
+            dock.hide()
         return
     c.frame.divideLeoSplitter1(1.0)
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
@@ -180,7 +210,10 @@ def hideLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        w = c.frame.log.logWidget
+        dock = dock_widget(w)
+        if dock:
+            dock.hide()
         return
     c.frame.divideLeoSplitter2(1.0)
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
@@ -191,7 +224,10 @@ def hideOutlinePane(event):
     if not c:
         return
     if g.app.dock:
-        g.es_print('not ready yet')
+        w = c.frame.tree.treeWidget
+        dock = dock_widget(w)
+        if dock:
+            dock.hide()
         return
     c.frame.divideLeoSplitter1(0.0)
 
