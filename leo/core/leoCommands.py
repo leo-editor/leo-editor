@@ -2167,6 +2167,8 @@ class Commands:
             val = val.replace('\\', '/')
         return val
     #@+node:ekr.20190921130036.2: *4* c.replace_path_expression (new)
+    replace_errors = {}
+
     def replace_path_expression(self, expr):
         """ local function to replace a single path expression."""
         c = self
@@ -2185,7 +2187,10 @@ class Commands:
             val = eval(expr, d)
             return g.toUnicode(val, encoding='utf-8')
         except Exception as e:
-            g.trace(f"{c.shortFileName()}: {e.__class__.__name__} in {c.p.h}: {expr!r}")
+            message = f"{c.shortFileName()}: {c.p.h}\n{e!s}"
+            if message not in self.replace_errors:
+                self.replace_errors [message] = 1
+                g.trace(message)
             return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
