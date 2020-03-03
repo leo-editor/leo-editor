@@ -101,8 +101,7 @@ Rendering markdown
 Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
 for more information on markdown.
 
-Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
-specified by putting it in a ``@md`` node.
+Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be specified by putting it in a ``@md`` node.
 #@+node:TomP.20200115200704.1: *3* Special Renderings
 Special Renderings
 ===================
@@ -210,7 +209,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 #@+node:TomP.20191215195433.3: ** << to do >> (vr3)
 #@+at
 # To do:
-# 
+#
 # - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
 # - Add dict to allow customize must_update.
 # - Lock movies automatically until they are finished?
@@ -237,12 +236,12 @@ import leo.core.leoGlobals as g
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets, QString
+    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets#, QString
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
-    from PyQt5.QtCore import pyqtSignal
+    #from PyQt5.QtCore import pyqtSignal
 except Exception:
     QtWidgets = False
-from distutils.spawn import find_executable
+#from distutils.spawn import find_executable
 try:
     import docutils
     import docutils.core
@@ -285,9 +284,8 @@ import shutil
 from enum import Enum, auto
 
 import webbrowser
-from distutils.sysconfig import get_python_lib
+#from distutils.sysconfig import get_python_lib
 from contextlib import redirect_stdout
-import pygments
 from pygments import cmdline
 
 QWebView = QtWebKitWidgets.QWebView
@@ -851,6 +849,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             # If there is no stylesheet at the standard location, have Pygments 
             # generate a default stylesheet there.
+            # Note: "cmdline" is a function imported from pygments
             if not os.path.exists(stylepath):
                 args = [cmdline.__name__, '-S', 'default', '-f', 'html']
                 # pygments cmdline() writes to stdout; we have to redirect it to a file
@@ -1164,8 +1163,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.47: *3* vr3.set_html
     def set_html(self, s, w):
         '''Set text in w to s, preserving scroll position.'''
-        pc = self
-        p = pc.c.p
+        #pc = self
+        #p = pc.c.p
         c = self.c
 
         # Find path relative to this file.  Needed as the base of relative
@@ -1681,7 +1680,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         vr3 = controllers.get(c.hash())
         if not vr3:
-            vr3 = viewrendered(event)
+            vr3 = ViewRenderedController3(c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1977,7 +1976,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         vr3 = controllers.get(c.hash())
         if not vr3:
-            vr3 = viewrendered(event)
+            vr3 = ViewRenderedController3(c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -2128,8 +2127,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _in_quotes = False
         _quotes_type = None
 
-        c = self.c
-        environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        #c = self.c
+        #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
             #@+<< handle quotes >>
@@ -2378,7 +2377,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def ensure_web_widget(self):
         '''Swap a webengineview widget into the rendering pane if necessary.'''
 
-        c, pc = self.c, self
+        #c, pc = self.c, self
+        pc = self
         if pc.must_change_widget(QWebView):
             try:
                 w = self.qwev
@@ -2741,10 +2741,10 @@ class StateMachine:
             # And encounter another @language block.
             if tag == CODE:
                 next = State.AT_LANG_CODE
-                _lang = language
+                #_lang = language
             else:
                 next = State.BASE
-                _lang = self.base_lang
+                #_lang = self.base_lang
 
         action(self, line, tag)
         self.state = next
