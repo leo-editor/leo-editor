@@ -2131,7 +2131,7 @@ class Commands:
             if 'root' in d:
                 return 'doc' if start_in_doc else 'code'
         return None
-    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression (new)
+    #@+node:ekr.20190921130036.1: *3* c.expand_path_expression
     def expand_path_expression(self, s):
         """Expand all {{anExpression}} in c's context."""
         c = self
@@ -2166,8 +2166,8 @@ class Commands:
         if g.isWindows:
             val = val.replace('\\', '/')
         return val
-    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression (new)
-    replace_errors = {}
+    #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
+    replace_errors = []
 
     def replace_path_expression(self, expr):
         """ local function to replace a single path expression."""
@@ -2184,12 +2184,15 @@ class Commands:
         # #1338: Don't report errors when called by g.getUrlFromNode.
         try:
             # pylint: disable=eval-used
-            val = eval(expr, d)
-            return g.toUnicode(val, encoding='utf-8')
+            path = eval(expr, d)
+            return g.toUnicode(path, encoding='utf-8')
         except Exception as e:
-            message = f"{c.shortFileName()}: {c.p.h}\n{e!s}"
+            message = (
+                f"{c.shortFileName()}: {c.p.h}\n"
+                f"expression: {expr!s}\n"
+                f"     error: {e!s}")
             if message not in self.replace_errors:
-                self.replace_errors [message] = 1
+                self.replace_errors.append(message)
                 g.trace(message)
             return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts

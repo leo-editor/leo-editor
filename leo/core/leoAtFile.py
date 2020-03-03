@@ -604,9 +604,9 @@ class AtFile:
         at = self
         c = at.c
         ic = c.importCommands
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
-        fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
+        # #1521
+        fn = g.fullPath(c, p)
+        at.default_directory = g.os_path_dirname(fn)
         junk, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
