@@ -42,90 +42,54 @@ def dock_widget(w):
             return w
         w = w.parent()
     return None
-#@+node:ekr.20200303082511.2: *3*  'contract-pane'
-@g.command('contract-pane')
-def contractPane(event):
-    '''Contract the selected pane.'''
+#@+node:ekr.20200303104851.1: *3* 'hide-body-dock'
+@g.command('hide-body-dock')
+def hideBodyDock(event):
+    '''Hide the Body dock'''
     c = event.get('c')
     if not c:
         return
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
+    if not g.app.dock:
         return
-    if wname.startswith('body'):
-        contractBodyPane(event)
-        c.bodyWantsFocus()
-    elif wname.startswith('log'):
-        contractLogPane(event)
-        c.logWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                contractOutlinePane(event)
-                c.treeWantsFocus()
-                break
-#@+node:ekr.20200303082511.3: *3*  'expand-pane'
-@g.command('expand-pane')
-def expandPane(event):
-    '''Expand the selected pane.'''
+    w = c.frame.body.widget
+    dock = dock_widget(w)
+    if dock:
+        dock.hide()
+#@+node:ekr.20200303105224.1: *3* 'hide-outline-dock'
+@g.command('hide-outline-dock')
+def hideOutlineDock(event):
+    '''Hide the Outline dock.'''
     c = event.get('c')
     if not c:
         return
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
+    if not g.app.dock:
         return
-    if wname.startswith('body'):
-        expandBodyPane(event)
-        c.bodyWantsFocus()
-    elif wname.startswith('log'):
-        expandLogPane(event)
-        c.logWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                expandOutlinePane(event)
-                c.treeWantsFocus()
-                break
-#@+node:ekr.20200303082511.5: *3*  'hide-pane'
-@g.command('hide-pane')
-def hidePane(event):
-    '''Hide the selected pane.'''
+    w = c.frame.tree.treeWidget
+    dock = dock_widget(w)
+    if dock:
+        dock.hide()
+#@+node:ekr.20200303105106.1: *3* 'hide-tabs-dock'
+@g.command('hide-tabs-dock')
+def hideTabsDock(event):
+    '''Hide the Tabs dock.'''
     c = event.get('c')
     if not c:
         return
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
+    if not g.app.dock:
         return
-    if wname.startswith('body'):
-        hideBodyPane(event)
-        c.treeWantsFocus()
-    elif wname.startswith('log'):
-        hideLogPane(event)
-        c.bodyWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                hideOutlinePane(event)
-                c.bodyWantsFocus()
-                break
+    w = c.frame.log.logWidget
+    dock = dock_widget(w)
+    if dock:
+        dock.hide()
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
 @g.command('contract-body-pane')
 @g.command('expand-outline-pane')
-@g.command('show-outline-pane')
 def contractBodyPane(event):
     '''Contract the body pane. Expand the outline/log splitter.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        # For now, just make the outline dock visible.
-        w = c.frame.tree.treeWidget
-        dock = dock_widget(w)
-        if dock:
-            dock.show()
         return
     f = c.frame
     r = min(1.0, f.ratio + 0.1)
@@ -134,18 +98,12 @@ def contractBodyPane(event):
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
-@g.command('show-log-pane')
 def contractLogPane(event):
     '''Contract the log pane. Expand the outline pane.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        # For now, just make the log dock visible.
-        w = c.frame.log.logWidget
-        dock = dock_widget(w)
-        if dock:
-            dock.show()
         return
     f = c.frame
     r = min(1.0, f.secondary_ratio + 0.1)
@@ -153,18 +111,12 @@ def contractLogPane(event):
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
 @g.command('expand-body-pane')
-@g.command('show-body-pane')
 def contractOutlinePane(event):
     '''Contract the outline pane. Expand the body pane.'''
     c = event.get('c')
     if not c:
         return
     if g.app.dock:
-        # For now, just make the body dock visible.
-        w = c.frame.body.widget
-        dock = dock_widget(w)
-        if dock:
-            dock.show()
         return
     f = c.frame
     r = max(0.0, f.ratio - 0.1)
@@ -179,11 +131,6 @@ def expandLogPane(event):
     if not c:
         return
     if g.app.dock:
-        # For now, just make the log dock visible.
-        w = c.frame.log.logWidget
-        dock = dock_widget(w)
-        if dock:
-            dock.show()
         return
     f = c.frame
     r = max(0.0, f.secondary_ratio - 0.1)
@@ -196,10 +143,6 @@ def hideBodyPane(event):
     if not c:
         return
     if g.app.dock:
-        w = c.frame.body.widget
-        dock = dock_widget(w)
-        if dock:
-            dock.hide()
         return
     c.frame.divideLeoSplitter1(1.0)
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
@@ -210,10 +153,6 @@ def hideLogPane(event):
     if not c:
         return
     if g.app.dock:
-        w = c.frame.log.logWidget
-        dock = dock_widget(w)
-        if dock:
-            dock.hide()
         return
     c.frame.divideLeoSplitter2(1.0)
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
@@ -224,13 +163,48 @@ def hideOutlinePane(event):
     if not c:
         return
     if g.app.dock:
-        w = c.frame.tree.treeWidget
-        dock = dock_widget(w)
-        if dock:
-            dock.hide()
         return
     c.frame.divideLeoSplitter1(0.0)
 
+#@+node:ekr.20200303105513.1: *3* 'show-body-dock'
+@g.command('show-body-dock')
+def showBodyDock(event):
+    '''Show the Body dock'''
+    c = event.get('c')
+    if not c:
+        return
+    if not g.app.dock:
+        return
+    w = c.frame.body.widget
+    dock = dock_widget(w)
+    if dock:
+        dock.show()
+#@+node:ekr.20200303105712.1: *3* 'show-outline-dock'
+@g.command('show-outline-dock')
+def showOutlineDock(event):
+    '''Show the Outline dock.'''
+    c = event.get('c')
+    if not c:
+        return
+    if not g.app.dock:
+        return
+    w = c.frame.tree.treeWidget
+    dock = dock_widget(w)
+    if dock:
+        dock.show()
+#@+node:ekr.20200303105622.1: *3* 'show-tabs-dock'
+@g.command('show-tabs-dock')
+def showTabsDock(event):
+    '''Show the Tabs dock.'''
+    c = event.get('c')
+    if not c:
+        return
+    if not g.app.dock:
+        return
+    w = c.frame.log.logWidget
+    dock = dock_widget(w)
+    if dock:
+        dock.show()
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     """
