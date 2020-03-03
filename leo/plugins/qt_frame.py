@@ -34,11 +34,80 @@ floatable_docks = True
     # True: allow QDockWidgets to float.
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
+#@+node:ekr.20200303082511.2: *3*  'contract-pane'
+@g.command('contract-pane')
+def contractPane(event):
+    '''Contract the selected pane.'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w:
+        return
+    if wname.startswith('body'):
+        contractBodyPane(event)
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        contractLogPane(event)
+        c.logWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                contractOutlinePane(event)
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20200303082511.3: *3*  'expand-pane'
+@g.command('expand-pane')
+def expandPane(event):
+    '''Expand the selected pane.'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w:
+        return
+    if wname.startswith('body'):
+        expandBodyPane(event)
+        c.bodyWantsFocus()
+    elif wname.startswith('log'):
+        expandLogPane(event)
+        c.logWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                expandOutlinePane(event)
+                c.treeWantsFocus()
+                break
+#@+node:ekr.20200303082511.5: *3*  'hide-pane'
+@g.command('hide-pane')
+def hidePane(event):
+    '''Hide the selected pane.'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.get_requested_focus() or g.app.gui.get_focus(c)
+    wname = c.widget_name(w)
+    if not w:
+        return
+    if wname.startswith('body'):
+        hideBodyPane(event)
+        c.treeWantsFocus()
+    elif wname.startswith('log'):
+        hideLogPane(event)
+        c.bodyWantsFocus()
+    else:
+        for z in ('head', 'canvas', 'tree'):
+            if wname.startswith(z):
+                hideOutlinePane(event)
+                c.bodyWantsFocus()
+                break
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
 @g.command('contract-body-pane')
 @g.command('expand-outline-pane')
 def contractBodyPane(event):
-    '''Contract the body pane.'''
+    '''Contract the body pane. Expand the outline/log splitter.'''
     c = event.get('c')
     if not c:
         return
@@ -48,12 +117,12 @@ def contractBodyPane(event):
     f = c.frame
     r = min(1.0, f.ratio + 0.1)
     f.divideLeoSplitter1(r)
-
+    
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
 def contractLogPane(event):
-    '''Contract the log pane.'''
+    '''Contract the log pane. Expand the outline pane.'''
     c = event.get('c')
     if not c:
         return
@@ -67,7 +136,7 @@ def contractLogPane(event):
 @g.command('contract-outline-pane')
 @g.command('expand-body-pane')
 def contractOutlinePane(event):
-    '''Contract the outline pane.'''
+    '''Contract the outline pane. Expand the body pane.'''
     c = event.get('c')
     if not c:
         return
@@ -79,37 +148,10 @@ def contractOutlinePane(event):
     f.divideLeoSplitter1(r)
 
 expandBodyPane = contractOutlinePane
-
-#@+node:ekr.20200303082511.2: *3* 'contract-pane'
-@g.command('contract-pane')
-def contractPane(event):
-    '''Contract the selected pane.'''
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.dock:
-        g.es_print('not ready yet')
-        return
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
-        return
-    if wname.startswith('body'):
-        contractBodyPane(event)
-        c.bodyWantsFocus()
-    elif wname.startswith('log'):
-        c.frame.contractLogPane()
-        c.logWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                c.frame.contractOutlinePane()
-                c.treeWantsFocus()
-                break
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
 @g.command('expand-log-pane')
 def expandLogPane(event):
-    '''Expand the log pane.'''
+    '''Expand the log pane. Contract the outline pane.'''
     c = event.get('c')
     if not c:
         return
@@ -119,76 +161,10 @@ def expandLogPane(event):
     f = c.frame
     r = max(0.0, f.secondary_ratio - 0.1)
     f.divideLeoSplitter2(r)
-#@+node:ekr.20200303082511.3: *3* 'expand-pane'
-@g.command('expand-pane')
-def expandPane(event):
-    '''Expand the selected pane.'''
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.dock:
-        g.es_print('not ready yet')
-        return
-    f = c.frame
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
-        return
-    if wname.startswith('body'):
-        f.expandBodyPane()
-        c.bodyWantsFocus()
-    elif wname.startswith('log'):
-        f.expandLogPane()
-        c.logWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                f.expandOutlinePane()
-                c.treeWantsFocus()
-                break
-#@+node:ekr.20200303084619.1: *3* 'fully-expand-log-pane'
-@g.command('fully-expand-log-pane')
-def fullyExpandLogPane(event):
-    '''Fully expand the log pane.'''
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.dock:
-        g.es_print('not ready yet')
-        return
-    c.frame.divideLeoSplitter2(0.0)
-
-#@+node:ekr.20200303082511.4: *3* 'fully-expand-pane'
-@g.command('fully-expand-pane')
-def fullyExpandPane(event):
-    '''Fully expand the selected pane.'''
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.dock:
-        g.es_print('not ready yet')
-        return
-    f = c.frame
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w: return
-    if wname.startswith('body'):
-        f.fullyExpandBodyPane()
-        c.treeWantsFocus()
-    elif wname.startswith('log'):
-        f.fullyExpandLogPane()
-        c.bodyWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                f.fullyExpandOutlinePane()
-                c.bodyWantsFocus()
-                break
-#@+node:ekr.20200303084610.1: *3* 'hide-body-pane' & 'fully-expand-outline-pane'
-@g.command('fully-expand-outline-pane')
+#@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
-def fullyExpandOutlinePane(event):
-    '''Fully expand the outline pane.'''
+def hideBodyPane(event):
+    '''Hide the body pane. Fully expand the outline/log splitter.'''
     c = event.get('c')
     if not c:
         return
@@ -196,11 +172,10 @@ def fullyExpandOutlinePane(event):
         g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter1(1.0)
-
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
 @g.command('hide-log-pane')
 def hideLogPane(event):
-    '''Completely contract the log pane.'''
+    '''Hide the log pane. Fully expand the outline pane.'''
     c = event.get('c')
     if not c:
         return
@@ -208,11 +183,10 @@ def hideLogPane(event):
         g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter2(1.0)
-#@+node:ekr.20200303082511.7: *3* 'hide-outline-pane' & 'fully-expand-body-pane'
-@g.command('fully-expand-body-pane')
+#@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
 @g.command('hide-outline-pane')
-def fullyExpandBodyPane(event):
-    '''Fully expand the body pane.'''
+def hideOutlinePane(event):
+    '''Hide the outline/log splitter. Fully expand the body pane.'''
     c = event.get('c')
     if not c:
         return
@@ -221,33 +195,6 @@ def fullyExpandBodyPane(event):
         return
     c.frame.divideLeoSplitter1(0.0)
 
-#@+node:ekr.20200303082511.5: *3* 'hide-pane'
-@g.command('hide-pane')
-def hidePane(event):
-    '''Completely contract the selected pane.'''
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.dock:
-        g.es_print('not ready yet')
-        return
-    f = c.frame
-    w = c.get_requested_focus() or g.app.gui.get_focus(c)
-    wname = c.widget_name(w)
-    if not w:
-        return
-    if wname.startswith('body'):
-        f.hideBodyPane()
-        c.treeWantsFocus()
-    elif wname.startswith('log'):
-        f.hideLogPane()
-        c.bodyWantsFocus()
-    else:
-        for z in ('head', 'canvas', 'tree'):
-            if wname.startswith(z):
-                f.hideOutlinePane()
-                c.bodyWantsFocus()
-                break
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     """
