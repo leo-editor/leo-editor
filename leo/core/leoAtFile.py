@@ -559,9 +559,13 @@ class AtFile:
     def readOneAtAutoNode(self, fileName, p):
         '''Read an @auto file into p. Return the *new* position.'''
         at, c, ic = self, self.c, self.c.importCommands
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
-        fileName = g.os_path_finalize_join(at.default_directory, fileName)  # #1341.
+        # #1521
+        fileName = g.fullPath(c, p)
+        at.default_directory = g.os_path_dirname(fileName)
+        ###
+            # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+            # at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
+            # fileName = g.os_path_finalize_join(at.default_directory, fileName)  # #1341.
         if not g.os_path_exists(fileName):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL(with_proto=True))
             return p
@@ -633,9 +637,13 @@ class AtFile:
     def readOneAtAsisNode(self, fn, p):
         '''Read one @asis node. Used only by refresh-from-disk'''
         at, c = self, self.c
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
-        fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
+        # #1521
+        fn = g.fullPath(c, p)
+        at.default_directory = g.os_path_dirname(fn)
+        ###
+            # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+            # at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
+            # fn = g.os_path_finalize_join(at.default_directory, fn)  # #1341.
         junk, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
@@ -722,12 +730,17 @@ class AtFile:
                 f"can not happen: fn: {fn} != atShadowNodeName: "
                 f"{p.atShadowFileNodeName()}")
             return
+        # #1521
+        fn = g.fullPath(c, p)
+        at.default_directory = g.os_path_dirname(fn)
+        ###
+            # fn = c.expand_path_expression(fn)  # #1341.
+            # at.rememberReadPath(fn, p)
+            # at.default_directory = g.setDefaultDirectory(c, p, importing=True)
+            # at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
+            # fn = g.os_path_finalize_join(at.default_directory, fn)
         # Fix bug 889175: Remember the full fileName.
-        fn = c.expand_path_expression(fn)  # #1341.
         at.rememberReadPath(fn, p)
-        at.default_directory = g.setDefaultDirectory(c, p, importing=True)
-        at.default_directory = c.expand_path_expression(at.default_directory)  # #1341.
-        fn = g.os_path_finalize_join(at.default_directory, fn)
         shadow_fn = x.shadowPathName(fn)
         shadow_exists = g.os_path_exists(shadow_fn) and g.os_path_isfile(shadow_fn)
         # Delete all children.
