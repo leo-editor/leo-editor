@@ -286,7 +286,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             closeable=closeable,
             moveable=moveable,
             height=50,
-            name=f"body-{self.added_bodies}",
+            name=c.p.h,
         )
         self.leo_docks.append(dock)
         w = self.createBodyPane(parent=None)
@@ -433,7 +433,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             return parent_frame, wrapper
         #
         # Create the editor.
-        parent_frame = self.addEditorDock()
+        dock = self.addEditorDock()
         widget = qt_text.LeoQTextBrowser(None, c, self)
             # Splits the body dock.
         widget.setObjectName('richTextEdit')
@@ -454,7 +454,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             # Scintilla only.
             body.recolorWidget(p, wrapper)
-        return parent_frame, wrapper
+        return dock, wrapper
     #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
         """Create all the dock widgets."""
@@ -777,26 +777,33 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #
         # Reuse the grid layout in the body frame.
         grid = self.leo_body_frame.layout()
-        #
-        # Create the label.
-        label = QtWidgets.QLineEdit(None)
-        label.setObjectName('editorLabel')
-        label.setText(c.p.h)
-        #
-        # Pack the label and the text widget.
         if g.app.dock:
-            grid.addWidget(label, 0, 0)
-            grid.addWidget(w, 1, 0)
+            # Pack w within its parent dock.
+            grid.addWidget(w, 0, 0)
+            # Grow w both ways (within the dock).
+            grid.setColumnStretch(0, 1) 
+            grid.setRowStretch(0, 1)
+            # Set label to the enclosing dock, or None.
+            # This is for LeoQtBody.selectLabel.
+            label = w
+            while label:
+                if isinstance(label, QtWidgets.QDockWidget):
+                    break
+                label = label.parent()
         else:
+            # Pack the label and the text widget.
+            label = QtWidgets.QLineEdit(None)
+            label.setObjectName('editorLabel')
+            label.setText(c.p.h)
             if n is None:
                 n = c.frame.body.numberOfEditors
             n = max(0, n - 1)
             grid.addWidget(label, 0, n)
             grid.addWidget(w, 1, n)
-        grid.setColumnStretch(0, 1)  # Grow the label horizontally.
-        grid.setRowStretch(0, 0)  # Don't grow the label vertically.
-        grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
-        w.leo_label = label  # Inject the ivar.
+            grid.setRowStretch(0, 0)  # Don't grow the label vertically.
+            grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
+        # Inject the ivar.
+        w.leo_label = label
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self):
         """Set default options for Leo's main window."""
@@ -1918,7 +1925,6 @@ class LeoQtBody(leoFrame.LeoBody):
     @cmd('add-editor')
     def add_editor_command(self, event=None):
         """Add another editor to the body pane."""
-        g.trace()
         c, p = self.c, self.c.p
         dw = c.frame.top
         d = self.editorWidgets
@@ -1951,8 +1957,8 @@ class LeoQtBody(leoFrame.LeoBody):
             old_w = old_wrapper.widget
             self.injectIvars(f, old_name, p, old_wrapper)
             self.updateInjectedIvars(old_w, p)
-            self.selectLabel(
-                old_wrapper)  # Immediately create the label in the old editor.
+            self.selectLabel(old_wrapper)
+                 # Immediately create the label in the old editor.
         # Switch editors.
         c.frame.body.wrapper = wrapper
         self.selectLabel(wrapper)
@@ -2062,11 +2068,14 @@ class LeoQtBody(leoFrame.LeoBody):
         # pylint: disable=arguments-differ
         c = self.c
         w = wrapper.widget
-        lab = hasattr(w, 'leo_label') and w.leo_label
-        if lab:
-            lab.setEnabled(True)
-            lab.setText(c.p.h)
-            lab.setEnabled(False)
+        label = getattr(w, 'leo_label', None)
+        if isinstance(label, QtWidgets.QDockWidget):
+            # #1517.
+            label.setWindowTitle(c.p.h)
+        elif label:
+            label.setEnabled(True)
+            label.setText(c.p.h)
+            label.setEnabled(False)
     #@+node:ekr.20110605121601.18202: *5* LeoQtBody.selectEditor & helpers
     selectEditorLockout = False
 

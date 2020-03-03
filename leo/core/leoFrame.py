@@ -425,7 +425,8 @@ class LeoBody:
     def updateEditors(self):
         c = self.c; p = c.p
         d = self.editorWidgets
-        if len(list(d.keys())) < 2: return  # There is only the main widget.
+        if len(list(d.keys())) < 2:
+            return  # There is only the main widget.
         for key in d:
             wrapper = d.get(key)
             v = wrapper.leo_v
