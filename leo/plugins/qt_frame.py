@@ -43,7 +43,7 @@ def contractBodyPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     r = min(1.0, f.ratio + 0.1)
@@ -58,7 +58,7 @@ def contractLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     r = min(1.0, f.secondary_ratio + 0.1)
@@ -72,7 +72,7 @@ def contractOutlinePane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     r = max(0.0, f.ratio - 0.1)
@@ -88,7 +88,7 @@ def contractPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     w = c.get_requested_focus() or g.app.gui.get_focus(c)
     wname = c.widget_name(w)
@@ -114,7 +114,7 @@ def expandLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     r = max(0.0, f.secondary_ratio - 0.1)
@@ -127,7 +127,7 @@ def expandPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     w = c.get_requested_focus() or g.app.gui.get_focus(c)
@@ -154,7 +154,7 @@ def fullyExpandLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter2(0.0)
 
@@ -166,7 +166,7 @@ def fullyExpandPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     w = c.get_requested_focus() or g.app.gui.get_focus(c)
@@ -193,7 +193,7 @@ def fullyExpandOutlinePane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter1(1.0)
 
@@ -205,7 +205,7 @@ def hideLogPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter2(1.0)
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane' & 'fully-expand-body-pane'
@@ -217,7 +217,7 @@ def fullyExpandBodyPane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     c.frame.divideLeoSplitter1(0.0)
 
@@ -229,7 +229,7 @@ def hidePane(event):
     if not c:
         return
     if g.app.dock:
-        g.trace('not ready yet')
+        g.es_print('not ready yet')
         return
     f = c.frame
     w = c.get_requested_focus() or g.app.gui.get_focus(c)
