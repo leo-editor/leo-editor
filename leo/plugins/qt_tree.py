@@ -466,7 +466,7 @@ class LeoQtTree(leoFrame.LeoTree):
         """Draw the node p."""
         c = self.c
         v = p.v
-        # Allocate the item.
+        # Allocate the QTreeWidgetItem.
         item = self.createTreeItem(p, parent_item)
         #
         # Update the data structures.
@@ -483,6 +483,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.setItemText(item, p.h)
         if self.use_declutter:
             self.declutter_node(c, p, item)
+        # #1310: Add a tool tip.
+        item.setToolTip(0, p.h)
         # Draw the icon.
         if p:
             # Expand self.drawItemIcon(p, item).
@@ -777,6 +779,8 @@ class LeoQtTree(leoFrame.LeoTree):
             #@-<< truncate s if it has multiple lines >>
             p.initHeadString(s)
             item.setText(0, s)  # Required to avoid full redraw.
+            # #1310: update the tooltip.
+            item.setToolTip(0, p.h)
             undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
             if not c.changed: c.setChanged()
             # We must recolor the body because
