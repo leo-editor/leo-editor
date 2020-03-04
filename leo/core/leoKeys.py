@@ -2628,7 +2628,11 @@ class KeyHandlerClass:
             last = k.mb_history[0]
             k.resetLabel()
             k.clearState()  # Bug fix.
-            c.commandsDict[last](event)
+            if last.isdigit():
+                # Special case: for the number Easter Egg.
+                c.goToLineNumber(int(last))
+            else:
+                c.commandsDict[last](event)
         else:
             k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
