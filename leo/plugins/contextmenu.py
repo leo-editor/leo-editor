@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090701111504.5294: * @file contextmenu.py
 #@+<< docstring >>
-#@+node:ville.20090630210947.5460: ** << docstring >>
+#@+node:ville.20090630210947.5460: ** << docstring >> (contextmenu.py)
 ''' Defines various useful actions for context menus (Qt only).
 
 Examples are:
@@ -55,7 +55,26 @@ g.assertUi('qt')
 inited = False
 
 #@+others
-#@+node:ville.20090630210947.5463: **  init & helper
+#@+node:ekr.20200304124610.1: ** Commands
+#@+node:ville.20090701224704.9805: *3* 'cm-external-editor'
+# cm is 'contextmenu' prefix
+@g.command('cm-external-editor')
+def cm_external_editor(event):
+    """ Open node in external editor
+
+    Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
+    """
+    c = event['c']
+    editor = g.guessExternalEditor()
+    d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+    c.openWith(d=d)
+#@+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
+@g.command('context-menu-open')
+def context_menu_open(event):
+    """Provide a command for key binding to open the context menu"""
+    event.c.frame.tree.onContextMenu(QtCore.QPoint(0,0))
+#@+node:ekr.20200304124723.1: ** startup
+#@+node:ville.20090630210947.5463: *3*  init (contextmenu.py)
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     global inited
@@ -71,34 +90,12 @@ def init ():
 #@+node:ville.20090630210947.10189: *3* install_handlers (contextmenu.py)
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
-    hnd = [
+    handlers = [
         openwith_rclick, refresh_rclick, editnode_rclick,
         nextclone_rclick, marknodes_rclick,
         configuredcommands_rclick, deletenodes_rclick,
         openurl_rclick,pylint_rclick]
-    g.tree_popup_handlers.extend(hnd)
-    # just for kicks, the @commands
-    #@+<< Add commands >>
-    #@+node:ville.20090701224704.9805: *4* << Add commands >>
-    # cm is 'contextmenu' prefix
-    @g.command('cm-external-editor')
-    def cm_external_editor_f(event):
-        """ Open node in external editor
-
-        Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
-        """
-        c = event['c']
-        editor = g.guessExternalEditor()
-        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
-        c.openWith(d=d)
-    #@-<< Add commands >>
-
-#@+node:ekr.20140724211116.19257: ** Commands
-#@+node:tbrown.20121123075838.19937: *3* context_menu_open
-@g.command('context-menu-open')
-def context_menu_open(event):
-    """Provide a command for key binding to open the context menu"""
-    event.c.frame.tree.onContextMenu(QtCore.QPoint(0,0))
+    g.tree_popup_handlers.extend(handlers)
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
 def configuredcommands_rclick(c,p,menu):

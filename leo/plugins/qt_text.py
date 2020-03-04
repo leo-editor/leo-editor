@@ -467,6 +467,9 @@ if QtWidgets:
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
                 self.textChanged.connect(self.onTextChanged)
+            # #1286
+            self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+            self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
             self.leo_vsb = vsb = self.verticalScrollBar()
             vsb.valueChanged.connect(self.onSliderChanged)
@@ -663,22 +666,6 @@ if QtWidgets:
         def show_completions(self, aList):
             if hasattr(self, 'leo_qc'):
                 self.leo_qc.show_completions(aList)
-        #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
-        def leo_dumpButton(self, event, tag):
-
-            button = event.button()
-            table = (
-                (QtCore.Qt.NoButton, 'no button'),
-                (QtCore.Qt.LeftButton, 'left-button'),
-                (QtCore.Qt.RightButton, 'right-button'),
-                (QtCore.Qt.MidButton, 'middle-button'),
-            )
-            for val, s in table:
-                if button == val:
-                    kind = s; break
-            else:
-                kind = f"unknown: {repr(button)}"
-            return kind
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             """Get the horizontal scrollbar position."""
@@ -707,6 +694,28 @@ if QtWidgets:
             if pos is None: pos = 0
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
+        #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
+        def leo_dumpButton(self, event, tag):
+
+            button = event.button()
+            table = (
+                (QtCore.Qt.NoButton, 'no button'),
+                (QtCore.Qt.LeftButton, 'left-button'),
+                (QtCore.Qt.RightButton, 'right-button'),
+                (QtCore.Qt.MidButton, 'middle-button'),
+            )
+            for val, s in table:
+                if button == val:
+                    kind = s; break
+            else:
+                kind = f"unknown: {repr(button)}"
+            return kind
+        #@+node:ekr.20200304130514.1: *3* lqtb.onContextMenu
+        def onContextMenu(self, point):
+            """LeoQTextBrowser: Callback for customContextMenuRequested events."""
+            # #1286.
+            c, w = self.leo_c, self
+            g.app.gui.onContextMenu(c, w, point)
         #@+node:ekr.20120925061642.13506: *3* lqtb.onSliderChanged
         def onSliderChanged(self, arg):
             """Handle a Qt onSliderChanged event."""

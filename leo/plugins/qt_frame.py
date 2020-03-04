@@ -3533,6 +3533,8 @@ class LeoQtLog(leoFrame.LeoLog):
                 c.findCommands.startSearch(event=None)
 
         w.currentChanged.connect(tab_callback)
+        # #1286.
+        w.customContextMenuRequested.connect(self.onContextMenu)
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log'  # Required for proper pane bindings.
@@ -3620,6 +3622,12 @@ class LeoQtLog(leoFrame.LeoLog):
         # #1161: Don't change logs unless the wrapper is correct.
         if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
             self.logCtrl = wrapper
+    #@+node:ekr.20200304132424.1: *3* LeoQtLog.onContextMenu
+    def onContextMenu(self, point):
+        """LeoQtLog: Callback for customContextMenuRequested events."""
+        # #1286.
+        c, w = self.leo_c, self
+        g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):

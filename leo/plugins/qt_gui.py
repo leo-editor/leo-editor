@@ -1325,7 +1325,30 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
-    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry (new)
+    #@+node:ekr.20200304125716.1: *3* qt_gui.onContextMenu
+    def onContextMenu(self, c, w, point):
+        """LeoQtGui: Common context menu handling."""
+        # #1286.
+        handlers = g.tree_popup_handlers
+        menu = QtWidgets.QMenu()
+        menuPos = w.mapToGlobal(point)
+        if not handlers:
+            menu.addAction("No popup handlers")
+        p = c.p.copy()
+        done = set()
+        for handler in handlers:
+            # every handler has to add it's QActions by itself
+            if handler in done:
+                # do not run the same handler twice
+                continue
+            try:
+                handler(c, p, menu)
+            except Exception:
+                g.es_print('Exception executing right-click handler')
+                g.es_exception()
+        menu.popup(menuPos)
+        self._contextmenu = menu
+    #@+node:ekr.20190822174038.1: *3* qt_gui.set_top_geometry
     already_sized = False
 
     def set_top_geometry(self, w, h, x, y):
