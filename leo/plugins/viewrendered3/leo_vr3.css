@@ -355,7 +355,8 @@ a.reference.external{
 
 pre.literal-block { 
 	font-size: 90%; 
-	font-family: "Source Code Pro", consolas, monospace;  
+	font-family: "Source Code Pro", consolas, monospace;
+	background-color: lightcyan;
 	padding-left:1em; 
 	padding-right: 1em;
 	padding-top:1em;
@@ -366,18 +367,18 @@ pre.literal-block {
 
 .docutils.literal {font-size: 90%; font-family: "Source Code Pro", consolas, monospace;}  /* in-line literals (not code) */
 
-pre.code .ln { color: grey; } /* line numbers */
-pre.code, code { padding: 1em; font-size: 90%; font-family:"Source Code Pro", consolas, monospace }
-pre.code .comment, code .comment { color: green; font-style: italic }
-pre.code .keyword, code .keyword { color: blue; font-weight: normal }
-pre.code .name.function, code .name.function { color: red; font-weight: bold }
-pre.code .name.class, code .name.class { color: red; font-weight: bold }
-pre.code .literal.string, code .literal.string { color: #0C5404)); font-style: italic }
-pre.code .name.builtin, code .name.builtin { color: purple }
+pre.code .ln {background-color: #f3f3f3;} /* line numbers */
+pre.code, code {background-color: #f3f3f3; padding: 1em; font-size: 90%; font-family:"Source Code Pro", consolas, monospace }
+pre.code .comment, code .comment {background-color: #f3f3f3; color: green; font-style: italic }
+pre.code .keyword, code .keyword {background-color: #f3f3f3; color: blue; font-weight: normal }
+pre.code .name.function, code .name.function {background-color: #f3f3f3; color: red; font-weight: bold }
+pre.code .name.class, code .name.class {background-color: #f3f3f3; color: red; font-weight: bold }
+pre.code .literal.string, code .literal.string {background-color: #f3f3f3; color: #0C5404)); font-style: italic }
+pre.code .name.builtin, code .name.builtin {background-color: #f3f3f3; color: purple }
 pre.code .deleted, code .deleted { background-color: #DEB0A1}
 pre.code .inserted, code .inserted { background-color: #A3D289}
 
-pre.code .keyword.constant, code .keyword.constant { color: #007020; font-weight: bold } /* Keyword.Constant */
+pre.code .keyword.constant, code .keyword.constant {background-color: #f3f3f3; color: #007020; font-weight: bold } /* Keyword.Constant */
 
 div.math {
 	font-size:95%;

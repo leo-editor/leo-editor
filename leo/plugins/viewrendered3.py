@@ -209,7 +209,6 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 #@+node:TomP.20191215195433.3: ** << to do >> (vr3)
 #@+at
 # To do:
-#
 # - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
 # - Add dict to allow customize must_update.
 # - Lock movies automatically until they are finished?
@@ -844,7 +843,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-        self.rst_stylesheet = g.os_path_join('file:///', vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
+        self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
         print('===', self.rst_stylesheet)
     #@+node:TomP.20200103171535.1: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
