@@ -1994,18 +1994,8 @@ class LeoQtBody(leoFrame.LeoBody):
         # #1523: Equalize editor sizes.
         n = len(dw.leo_docks)
         if g.app.dock and n > 1:
-            
-            def equal_sized_editors_handler(timer):
-                equal_sized_editors(event)
-                timer.stop()
-
-            timer = g.IdleTime(
-                equal_sized_editors_handler,
-                delay=50,  # Necessary.
-                tag='equal-sized-editors',
-            )
-            timer.start()
-
+            g.app.gui.qtApp.processEvents()
+            equal_sized_editors(event)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
