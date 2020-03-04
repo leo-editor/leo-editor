@@ -3626,7 +3626,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def onContextMenu(self, point):
         """LeoQtLog: Callback for customContextMenuRequested events."""
         # #1286.
-        c, w = self.leo_c, self
+        c, w = self.c, self
         g.app.gui.onContextMenu(c, w, point)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
