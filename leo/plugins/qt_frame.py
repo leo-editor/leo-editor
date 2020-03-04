@@ -42,6 +42,30 @@ def dock_widget(w):
             return w
         w = w.parent()
     return None
+#@+node:ekr.20200304065045.1: *3* 'equal-sized-editors'
+@g.command('equal-sized-editors')
+def equal_sized_editors(event):
+    c = event.get('c')
+    if not c:
+        return
+    if not g.app.dock:
+        return
+    dw = c.frame.top
+    if not isinstance(dw, QtWidgets.QMainWindow):
+        return
+    n = len(dw.leo_docks)
+    if n < 2:
+        return
+    # Calculate the desired widths.
+    layout = dw.layout()
+    geom = layout.geometry()
+    left, right = geom.left(), geom.right()
+    width = right - left
+    w = int(width / n)
+    # g.trace('docks:', n, 'left:', left, 'width:', width, 'w', w)
+    # Set the desired geometries.
+    for dock in dw.leo_docks:
+        dock.setFixedWidth(w)
 #@+node:ekr.20200303104851.1: *3* 'hide-body-dock'
 @g.command('hide-body-dock')
 def hideBodyDock(event):
@@ -227,7 +251,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('DynamicWindow.__init__', c.shortFileName())
         super().__init__(parent)
         self.leo_c = c
-        self.leo_docks = []  # List of created QDockWidgets.
+        self.leo_docks = []  # List of created body docks (QDockWidgets).
         self.leo_master = None  # Set in construct.
         self.leo_menubar = None  # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
@@ -489,6 +513,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             dock.setWidget(w)
             # Remember the dock.
             setattr(self, f"{name}_dock", dock)
+            # #1523: remember *all* editor docks.
+            if name == 'body':
+                self.leo_docks.append(dock)
             if name == central_widget:
                 self.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
@@ -1964,6 +1991,21 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
+        # #1523: Equalize editor sizes.
+        n = len(dw.leo_docks)
+        if g.app.dock and n > 1:
+            
+            def equal_sized_editors_handler(timer):
+                equal_sized_editors(event)
+                timer.stop()
+
+            timer = g.IdleTime(
+                equal_sized_editors_handler,
+                delay=50,  # Necessary.
+                tag='equal-sized-editors',
+            )
+            timer.start()
+
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
@@ -1981,7 +2023,11 @@ class LeoQtBody(leoFrame.LeoBody):
     @cmd('delete-editor')
     @cmd('editor-delete')
     def delete_editor_command(self, event=None, dock=None):
-        """Delete the presently selected body text editor."""
+        """
+        Delete the presently selected body text editor.
+        
+        dock will be specified if called from a click handler.
+        """
         c, d = self.c, self.editorWidgets
         dw = c.frame.top
         wrapper = c.frame.body.wrapper

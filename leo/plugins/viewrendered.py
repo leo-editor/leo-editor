@@ -770,8 +770,8 @@ if QtWidgets: # NOQA
                 dock.setWidget(self)
                 dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
             elif g.app.dock:
-                # Split the body dock.
-                dw.leo_docks.append(dock)
+                # Split the body dock. Don't register the new dock as an editor doc.
+                ### dw.leo_docks.append(dock)
                 dock.setWidget(self)
                 dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
             if g.app.init_docks:

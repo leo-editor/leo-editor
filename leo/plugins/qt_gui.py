@@ -780,8 +780,6 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setObjectName(f"dock.{name.lower()}")
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
-            # g.app.use_global_docks:
-                # dock.show() # Essential!
         return dock
     #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock (new)
     def make_global_outlines_dock(self):
