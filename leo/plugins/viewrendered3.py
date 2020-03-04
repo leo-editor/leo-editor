@@ -844,7 +844,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
         self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
-        print('===', self.rst_stylesheet)
     #@+node:TomP.20200103171535.1: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1157,7 +1156,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.active: return
         pc.inited = True
         pc.active = True
-        g.registerHandler('select3', pc.update)
+        g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
     #@+node:TomP.20191215195433.45: *3* vr3.deactivate
     def deactivate(self):
