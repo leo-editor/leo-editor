@@ -4219,38 +4219,30 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         return True, maxdepth, maxp
 
     def moveToP(c, p, unlList):
-
-        def focus_callback(timer, c=c, p=p.copy(), unlList=unlList):
-            """Idle-time handler for g.recursiveUNLSearch"""
-            c.expandAllAncestors(p)
-            c.selectPosition(p)
-            nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[-1])
-            if nth_line_no:
-                if nth_line_no < 0:
-                    c.goToLineNumber(-nth_line_no)
-                    if nth_col_no:
-                        pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
-                        c.frame.body.wrapper.setInsertPoint(pos)
-                else:
-                    pos = sum(len(i) + 1 for i in p.b.split('\n')[: nth_line_no - 1])
-                    if nth_col_no:
-                        pos += nth_col_no
+        # Process events, to calculate new sizes.
+        g.app.gui.qtApp.processEvents()
+        c.expandAllAncestors(p)
+        c.selectPosition(p)
+        nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[-1])
+        if nth_line_no:
+            if nth_line_no < 0:
+                c.goToLineNumber(-nth_line_no)
+                if nth_col_no:
+                    pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
                     c.frame.body.wrapper.setInsertPoint(pos)
-            if p.hasChildren():
-                p.expand()
-                # n = min(3, p.numberOfChildren())
-            c.redraw()
-            c.frame.bringToFront()
-            c.bodyWantsFocusNow()
-            timer.stop()
-
-        timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
-        if timer: timer.start()
-
+            else:
+                pos = sum(len(i) + 1 for i in p.b.split('\n')[: nth_line_no - 1])
+                if nth_col_no:
+                    pos += nth_col_no
+                c.frame.body.wrapper.setInsertPoint(pos)
+        if p.hasChildren():
+            p.expand()
+        c.redraw()
+        c.frame.bringToFront()
+        c.bodyWantsFocusNow()
+    
     found, maxdepth, maxp = recursiveUNLFind(
-        unlList, c, depth, p, maxdepth, maxp,
-        soft_idx=soft_idx, hard_idx=hard_idx
-    )
+        unlList, c, depth, p, maxdepth, maxp, soft_idx=soft_idx, hard_idx=hard_idx)
     if maxp:
         moveToP(c, maxp, unlList)
     return found, maxdepth, maxp

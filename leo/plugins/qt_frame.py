@@ -56,6 +56,8 @@ def equal_sized_editors(event):
     n = len(dw.leo_docks)
     if n < 2:
         return
+    # Process events, to calculate new sizes.
+    g.app.gui.qtApp.processEvents()
     # Calculate the desired widths.
     layout = dw.layout()
     geom = layout.geometry()
@@ -1994,7 +1996,6 @@ class LeoQtBody(leoFrame.LeoBody):
         # #1523: Equalize editor sizes.
         n = len(dw.leo_docks)
         if g.app.dock and n > 1:
-            g.app.gui.qtApp.processEvents()
             equal_sized_editors(event)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
@@ -2951,15 +2952,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 if c == c2:
                     c2.selectPosition(p)
                 else:
-                    # Fix #367: complete the selection at idle time.
                     g.app.selectLeoWindow(c2)
-
-                    def handler(timer, c=c2, p=p):
-                        c2.selectPosition(p)
-                        timer.stop()
-
-                    timer = g.IdleTime(handler, delay=0, tag='goto-script-button')
-                    if timer: timer.start()
+                    # Fix #367: Process events before selecting.
+                    g.app.gui.qtApp.processEvents()
+                    c2.selectPosition(p)
             else:
                 g.trace('not found', gnx)
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
