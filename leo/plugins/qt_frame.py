@@ -302,7 +302,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock ***
+    #@+node:ekr.20190523115826.1: *3* dw.addEditorDock
     added_bodies = 0
 
     def addEditorDock(self, closeable=True, moveable=True):
@@ -318,8 +318,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             name=c.p.h,
         )
         self.leo_docks.append(dock)
-        ### w = self.createBodyPane(parent=None)
-        w = QtWidgets.QWidget(parent=None)
+        w = self.createBodyPane(parent=None)
+        ### w = QtWidgets.QWidget(parent=None)
         dock.setWidget(w)
         self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
         #
@@ -464,9 +464,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #
         # Create dock, splitting the body dock.
         dock = self.addEditorDock()
-        if 1: ##########
-            wrapper = g.TracingNullObject(tag='body wrapper')
-            return dock, wrapper
         #
         # Create the editor
         widget = qt_text.LeoQTextBrowser(None, c, self)
@@ -547,7 +544,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         """
-        Create the *pane* for the body, but does not create the actual QTextBrowser.
+        Create the *pane* for the body, not the actual QTextBrowser.
         parent is None when --dock is in effect.
         """
         c = self.leo_c
@@ -1955,7 +1952,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
-    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
+    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command ***
     # An override of leoFrame.addEditor.
 
     @cmd('editor-add')
@@ -1963,20 +1960,14 @@ class LeoQtBody(leoFrame.LeoBody):
     def add_editor_command(self, event=None):
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
+        d = self.editorWrappers
         dw = c.frame.top
-        d = self.editorWidgets
         wrapper = c.frame.body.wrapper  # A QTextEditWrapper
         widget = wrapper.widget
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
-        if 1: ###########
-            name = f"{self.totalNumberOfEditors}"
-            f, wrapper = dw.addNewEditor(name)
-            if self.totalNumberOfEditors == 2:
-                self.editorWidgets['1'] = wrapper
-            return ############
         if self.totalNumberOfEditors == 2:
-            self.editorWidgets['1'] = wrapper
+            d ['1'] = wrapper
             # Pack the original body editor.
             # Fix #1021: Pack differently depending on whether the gutter exists.
             if self.use_gutter:
@@ -1993,7 +1984,6 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # The name of the last editor need not be '1'
-            d = self.editorWidgets
             keys = list(d.keys())
             old_name = keys[0]
             old_wrapper = d.get(old_name)
@@ -2035,7 +2025,7 @@ class LeoQtBody(leoFrame.LeoBody):
         dock will be specified if called from a click handler.
         """
         g.trace('=====', g.callers())
-        c, d = self.c, self.editorWidgets
+        c, d = self.c, self.editorWrappers
         dw = c.frame.top
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
@@ -2095,7 +2085,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18200: *5* LeoQtBody.findEditorForChapter
     def findEditorForChapter(self, chapter, p):
         """Return an editor to be assigned to chapter."""
-        c = self.c; d = self.editorWidgets
+        c, d = self.c, self.editorWrappers
         values = list(d.values())
         # First, try to match both the chapter and position.
         if p:
@@ -2199,8 +2189,9 @@ class LeoQtBody(leoFrame.LeoBody):
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors(self):
-        c = self.c; p = c.p; body = p.b
-        d = self.editorWidgets
+        c, p = self.c, self.c.p;
+        body = p.b
+        d = self.editorWrappers
         if len(list(d.keys())) < 2: return  # There is only the main widget
         w0 = c.frame.body.wrapper
         i, j = w0.getSelectionRange()
@@ -2242,7 +2233,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18209: *5* LeoQtBody.deactivateEditors
     def deactivateEditors(self, wrapper):
         """Deactivate all editors except wrapper's editor."""
-        d = self.editorWidgets
+        d = self.editorWrappers
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
         for key in d:
             wrapper2 = d.get(key)
@@ -2376,7 +2367,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18218: *4* LeoQtBody.hideCanvasRenderer
     def hideCanvasRenderer(self, event=None):
         """Hide canvas pane."""
-        c = self.c; d = self.editorWidgets
+        c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
         name = w.leo_name
@@ -2412,7 +2403,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18219: *4* LeoQtBody.hideTextRenderer
     def hideCanvas(self, event=None):
         """Hide canvas pane."""
-        c = self.c; d = self.editorWidgets
+        c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
         name = w.leo_name

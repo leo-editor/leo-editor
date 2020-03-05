@@ -216,7 +216,7 @@ class LeoBody:
         c = frame.c
         frame.body = self
         self.c = c
-        self.editorWidgets = {}  # keys are pane names, values are text widgets
+        self.editorWrappers = {}  # keys are pane names, values are text widgets
         self.frame = frame
         self.parentFrame = parentFrame  # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -282,7 +282,7 @@ class LeoBody:
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
             # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
-            d = self.editorWidgets
+            d = self.editorWrappers
             keys = list(d.keys())
             if len(keys) == 1:
                 # Immediately create the label in the old editor.
@@ -290,7 +290,7 @@ class LeoBody:
                 self.updateInjectedIvars(w_old, p)
                 self.selectLabel(w_old)
             else:
-                g.trace('can not happen: unexpected editorWidgets', d)
+                g.trace('can not happen: unexpected editorWrappers', d)
         name = f"{self.totalNumberOfEditors}"
         pane = self.pb.add(name)
         panes = self.pb.panes()
@@ -303,7 +303,7 @@ class LeoBody:
         wrapper.see(0)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p, wrapper)
-        self.editorWidgets[name] = wrapper
+        self.editorWrappers[name] = wrapper
         for pane in panes:
             self.pb.configurepane(pane, size=minSize)
         self.pb.updatelayout()
@@ -326,7 +326,7 @@ class LeoBody:
         """Delete the presently selected body text editor."""
         c = self.c
         w = c.frame.body.wapper
-        d = self.editorWidgets
+        d = self.editorWrappers
         if len(list(d.keys())) == 1: return
         name = w.leo_name
         del d[name]
@@ -344,7 +344,7 @@ class LeoBody:
     def findEditorForChapter(self, chapter, p):
         """Return an editor to be assigned to chapter."""
         c = self.c
-        d = self.editorWidgets
+        d = self.editorWrappers
         values = list(d.values())
         # First, try to match both the chapter and position.
         if p:
@@ -424,7 +424,7 @@ class LeoBody:
 
     def updateEditors(self):
         c = self.c; p = c.p
-        d = self.editorWidgets
+        d = self.editorWrappers
         if len(list(d.keys())) < 2:
             return  # There is only the main widget.
         for key in d:
@@ -470,7 +470,7 @@ class LeoBody:
 
     def deactivateActiveEditor(self, w):
         """Inactivate the previously active editor."""
-        d = self.editorWidgets
+        d = self.editorWrappers
         # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
         for key in d:
             w2 = d.get(key)
@@ -1672,7 +1672,7 @@ class NullBody(LeoBody):
         self.s = ""  # The body text
         self.widget = None
         self.wrapper = wrapper = StringTextWrapper(c=self.c, name='body')
-        self.editorWidgets['1'] = wrapper
+        self.editorWrappers['1'] = wrapper
         self.colorizer = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...

@@ -1352,6 +1352,7 @@ class LeoApp:
         #
         # Save the window state for *all* open files.
         g.app.saveWindowState(c)
+        g.app.saveEditorDockState(c)
         g.app.commander_cacher.commit()
             # store cache, but don't close it.
         # This may remove frame from the window list.
@@ -1709,7 +1710,7 @@ class LeoApp:
     def restoreWindowState(self, c):
         """
         Restore the layout of dock widgets and toolbars, using the per-file
-        state of the first loaded .leo file, or the global state.
+        state of the *first* loaded .leo file, or the global state.
         
         Note: The window's position or size has already been restored.
         """
@@ -1776,6 +1777,16 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
+    #@+node:ekr.20200305061637.1: *4* app.saveEditorDockState (new)
+    def saveEditorDockState(self, c):
+        """
+        Save the name and current position of all additional editor docks.
+        
+        This is called for all closed windows.
+        """
+        current = [str(z) for z in c.p.archivedPosition()]
+        g.trace(current)
+        # c.db['current_position'] = ','.join(current)
     #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
     def saveGlobalWindowState(self):
         """
