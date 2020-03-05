@@ -56,9 +56,12 @@ def equal_sized_editors(event):
     dw = c.frame.top
     if not isinstance(dw, QtWidgets.QMainWindow):
         return
-    n = len(dw.leo_docks)
-    if n < 2:
+    n = len(dw.added_editor_docks)
+    if n < 1:
         return
+    ###
+    ### To do: include body dock.
+    ###
     # Process events, to calculate new sizes.
     g.app.gui.qtApp.processEvents()
     # Calculate the desired widths.
@@ -69,7 +72,7 @@ def equal_sized_editors(event):
     w = int(width / n)
     # g.trace('docks:', n, 'left:', left, 'width:', width, 'w', w)
     # Set the desired geometries.
-    for dock in dw.leo_docks:
+    for dock in dw.added_editor_docks:
         dock.setFixedWidth(w)
 #@+node:ekr.20200303104851.1: *3* 'hide-body-dock'
 @g.command('hide-body-dock')
@@ -256,7 +259,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('DynamicWindow.__init__', c.shortFileName())
         super().__init__(parent)
         self.leo_c = c
-        self.leo_docks = []  # List of created body docks (QDockWidgets).
+        self.added_editor_docks = []  # List of *added* body docks (QDockWidgets).
         self.leo_master = None  # Set in construct.
         self.leo_menubar = None  # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
@@ -309,19 +312,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Add an editor dock"""
         #
         # Create the new dock.
-        c = self.leo_c
-        self.added_bodies += 1
+        dw, c = self, self.leo_c
+        dw.added_bodies += 1
         dock = g.app.gui.create_dock_widget(
             closeable=closeable,
             moveable=moveable,
             height=50,
             name=c.p.h,
         )
-        self.leo_docks.append(dock)
-        w = self.createBodyPane(parent=None)
-        ### w = QtWidgets.QWidget(parent=None)
+        dw.added_editor_docks.append(dock)
+        w = dw.createBodyPane(parent=None)
         dock.setWidget(w)
-        self.splitDockWidget(self.body_dock, dock, QtCore.Qt.Horizontal)
+        dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         #
         # monkey-patch dock.closeEvent
 
@@ -427,7 +429,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
-    #@+node:ekr.20190118150859.10: *5* dw.addNewEditor ***
+    #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name):
         """Create a new body editor."""
         c, p = self.leo_c, self.leo_c.p
@@ -489,7 +491,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
         """Create all the dock widgets."""
-        c = self.leo_c
+        c, dw = self.leo_c, self
         #
         # Compute constants.
         Qt = QtCore.Qt
@@ -501,16 +503,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         central_widget = g.app.get_central_widget(c)
         dockable = c.config.getBool('dockable-log-tabs', default=False)
         table = [
-            (True, 50, lt, 'outline', self.createOutlineDock),  # was 100: #1339.
-            (True, 50, bottom, 'body', self.createBodyPane),  # was 100: #1339.
-            (True, 50, rt, 'tabs', self.createTabsDock),  # was 20: #1339.
-            (dockable, 20, rt, 'find', self.createFindDockOrTab),
-            (dockable, 20, rt, 'spell', self.createSpellDockOrTab),
+            (True, 50, lt, 'outline', dw.createOutlineDock),  # was 100: #1339.
+            (True, 50, bottom, 'body', dw.createBodyPane),  # was 100: #1339.
+            (True, 50, rt, 'tabs', dw.createTabsDock),  # was 20: #1339.
+            (dockable, 20, rt, 'find', dw.createFindDockOrTab),
+            (dockable, 20, rt, 'spell', dw.createSpellDockOrTab),
         ]
         for make_dock, height, area, name, creator in table:
             w = creator(parent=None)
             if not make_dock:
-                setattr(self, f"{name}_dock", None)
+                setattr(dw, f"{name}_dock", None)
                 continue
             dock = g.app.gui.create_dock_widget(
                 closeable=name != central_widget,
@@ -519,28 +521,29 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 name=name)
             dock.setWidget(w)
             # Remember the dock.
-            setattr(self, f"{name}_dock", dock)
-            # #1523: remember *all* editor docks.
-            if name == 'body':
-                self.leo_docks.append(dock)
+            setattr(dw, f"{name}_dock", dock)
+            ###
+                # #1523: remember *all* editor docks.
+                # if name == 'body':
+                #    dw.added_editor_docks.append(dock)
             if name == central_widget:
-                self.setCentralWidget(dock)
+                dw.setCentralWidget(dock)
                     # Important: the central widget should be a dock.
                 dock.show()  # #1327.
             else:
-                self.addDockWidget(area, dock)
+                dw.addDockWidget(area, dock)
         #
         # Create minibuffer.
-        bottom_toolbar = QtWidgets.QToolBar(self)
+        bottom_toolbar = QtWidgets.QToolBar(dw)
         bottom_toolbar.setObjectName('minibuffer-toolbar')
         bottom_toolbar.setWindowTitle('Minibuffer')
-        self.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
-        w = self.createMiniBuffer(bottom_toolbar)
+        dw.addToolBar(Qt.BottomToolBarArea, bottom_toolbar)
+        w = dw.createMiniBuffer(bottom_toolbar)
         bottom_toolbar.addWidget(w)
         #
         # Create other widgets...
-        self.createMenuBar()
-        self.createStatusBar(self)
+        dw.createMenuBar()
+        dw.createStatusBar(dw)
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         """
@@ -1952,7 +1955,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap)
     #@+node:ekr.20110605121601.18193: *3* LeoQtBody.Editors
     #@+node:ekr.20110605121601.18194: *4* LeoQtBody.entries
-    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command ***
+    #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
     # An override of leoFrame.addEditor.
 
     @cmd('editor-add')
@@ -1999,8 +2002,8 @@ class LeoQtBody(leoFrame.LeoBody):
         self.updateEditors()
         # #1523: Equalize editor sizes.
         if 0: ### Not ready yet.
-            n = len(dw.leo_docks)
-            if g.app.dock and n > 1:
+            n = len(dw.added_editor_docks)
+            if g.app.dock and n > 0:
                 equal_sized_editors(event)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
@@ -2024,7 +2027,6 @@ class LeoQtBody(leoFrame.LeoBody):
         
         dock will be specified if called from a click handler.
         """
-        g.trace('=====', g.callers())
         c, d = self.c, self.editorWrappers
         dw = c.frame.top
         wrapper = c.frame.body.wrapper
@@ -2071,9 +2073,9 @@ class LeoQtBody(leoFrame.LeoBody):
                 g.warning('can not delete main editor')
                 return
         #
-        # Actually delete the widget.
-        if dock in dw.leo_docks:
-            dw.leo_docks.remove(dock)
+        # Actually delete the dock.
+        if dock in dw.added_editor_docks:
+            dw.added_editor_docks.remove(dock)
         dw.removeDockWidget(dock)
             # A QMainWidget method.
         #
@@ -2192,7 +2194,8 @@ class LeoQtBody(leoFrame.LeoBody):
         c, p = self.c, self.c.p;
         body = p.b
         d = self.editorWrappers
-        if len(list(d.keys())) < 2: return  # There is only the main widget
+        if len(list(d.keys())) < 2:
+            return  # There is only the main widget
         w0 = c.frame.body.wrapper
         i, j = w0.getSelectionRange()
         ins = w0.getInsertPoint()

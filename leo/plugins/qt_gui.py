@@ -781,7 +781,7 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
         self.total_docks += 1
-        g.trace(dock.objectName(), name) ###
+        ### g.trace(dock.objectName(), name)
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
@@ -805,6 +805,13 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             area = QtCore.Qt.BottomDockWidgetArea
             main_window.addDockWidget(area, dock)
+        return dock
+    #@+node:ekr.20200305075130.1: *4* qt_gui.find_dock
+    def find_dock(self, w):
+        """return the QDockWidget containing w, or None"""
+        dock = w
+        while dock and not isinstance(dock, QtWidgets.QDockWidget):
+            dock = dock.parent()
         return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (new)

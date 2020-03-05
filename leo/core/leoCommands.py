@@ -2386,6 +2386,32 @@ class Commands:
             path = None
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
+    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
+    def archivedPositionToPosition(self, s):
+        """Convert an archived position (a string) to a position."""
+        c = self
+        s = g.toUnicode(s)
+        aList = s.split(',')
+        try:
+            aList = [int(z) for z in aList]
+        except Exception:
+            aList = None
+        if not aList:
+            return None
+        p = c.rootPosition()
+        level = 0
+        while level < len(aList):
+            i = aList[level]
+            while i > 0:
+                if p.hasNext():
+                    p.moveToNext()
+                    i -= 1
+                else:
+                    return None
+            level += 1
+            if level < len(aList):
+                p.moveToFirstChild()
+        return p
     #@+node:ekr.20150422080541.1: *4* c.backup
     def backup(self, fileName=None, prefix=None, silent=False, useTimeStamp=True):
         """

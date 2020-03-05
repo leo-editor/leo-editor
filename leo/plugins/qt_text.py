@@ -1227,6 +1227,14 @@ class QTextEditWrapper(QTextMixin):
             self.widget.setUndoRedoEnabled(False)
             self.set_config()
             self.set_signals()
+            
+    def __repr__(self):
+        return (
+            f"QTextEditWrapper: "
+            f"name: {self.name} "
+            f"widget.objectName(): {self.widget.objectName()}")
+        
+    __str__ = __repr__
     #@+node:ekr.20110605121601.18076: *4* qtew.set_config
     def set_config(self):
         """Set configuration options for QTextEdit."""

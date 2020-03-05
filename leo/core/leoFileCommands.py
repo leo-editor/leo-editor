@@ -1832,28 +1832,8 @@ class FileCommands:
     #@+node:ekr.20080805114146.2: *3* fc.Utils
     #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
-
-        c = self.c
-        s = g.toUnicode(s)
-        aList = s.split(',')
-        try:
-            aList = [int(z) for z in aList]
-        except Exception:
-            aList = None
-        if not aList: return None
-        p = c.rootPosition(); level = 0
-        while level < len(aList):
-            i = aList[level]
-            while i > 0:
-                if p.hasNext():
-                    p.moveToNext()
-                    i -= 1
-                else:
-                    return None
-            level += 1
-            if level < len(aList):
-                p.moveToFirstChild()
-        return p
+        """Convert an archived position (a string) to a position."""
+        return self.c.archivedPositionToPosition(s)
     #@+node:ekr.20031218072017.1570: *4* fc.assignFileIndices & compactFileIndices
     def assignFileIndices(self):
         """Assign a file index to all tnodes"""

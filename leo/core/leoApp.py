@@ -1662,7 +1662,39 @@ class LeoApp:
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
-    #@+node:ekr.20190613062357.1: *3* app.WindowState
+    #@+node:ekr.20190613062357.1: *3* app.WindowState...
+    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (new)
+    def restoreEditorDockState(self, c):
+        
+        g.trace(c.shortFileName())
+        dw = c.frame.top
+        if not dw:
+            return
+        aps_s= c.db.get('added_editor_aps', '')
+        dock_names_s = c.db.get('added_editor_docks', '')
+        if not aps_s or not dock_names_s:
+            return
+        aps = aps_s.split(';')
+        dock_names = dock_names_s.split(';')
+        if len(aps) != len(dock_names):
+            g.trace('oops')
+            return
+        body = c.frame.body
+        d = body.editorWrappers
+        for i, dock_name in enumerate(dock_names):
+            ap = aps[i]
+            f, wrapper = dw.addNewEditor(dock_name)
+            d[dock_name] = wrapper
+            p = c.archivedPositionToPosition(ap)
+            body.injectIvars(
+                parentFrame = f,
+                name = dock_name,
+                p = p,
+                wrapper = wrapper,
+            )
+            body.selectLabel(wrapper)
+            body.selectEditor(wrapper)
+            g.trace(i, dock_name, ap, p and p.h)
     #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
@@ -1723,6 +1755,8 @@ class LeoApp:
         if not dw or not hasattr(dw, 'restoreState'):
             if trace: g.trace('no dw.restoreState. dw:', repr(dw))
             return
+        # First, restore the editor state.
+        self.restoreEditorDockState(c)
         #
         # Support --init-docks.
         # #1196. Let Qt use it's own notion of a default layout.
@@ -1784,9 +1818,34 @@ class LeoApp:
         
         This is called for all closed windows.
         """
-        current = [str(z) for z in c.p.archivedPosition()]
-        g.trace(current)
-        # c.db['current_position'] = ','.join(current)
+        # Get the archived positions and docks from the editor wrappers.
+        dw = c.frame.top
+        d = c.frame.body.editorWrappers
+        dock_names, aps = [], []
+        for key in d:
+            if key == '1': # Ignore the Body dock.
+                continue
+            wrapper = d.get(key)
+            w = wrapper.widget
+            p = getattr(w, 'leo_p', None)
+            if not p:
+                continue
+            # Find the corresponding dock.
+            dock = g.app.gui.find_dock(w)
+            dock_name = dock and dock.objectName()
+            if not dock_name:
+                continue
+            # Careful: the dock may have been deleted.
+            if dock not in dw.added_editor_docks:
+                continue
+            ap = ','.join([str(z) for z in p.archivedPosition()])
+            dock_names.append(dock_name)
+            aps.append(ap)
+        c.db['added_editor_aps'] = ';'.join(aps)
+        c.db['added_editor_docks'] = ';'.join(dock_names)
+        if 0: ###
+            g.trace('added_editor_apps', c.db['added_editor_aps'])
+            g.trace('added_editor_docks', c.db['added_editor_docks'])
     #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
     def saveGlobalWindowState(self):
         """
