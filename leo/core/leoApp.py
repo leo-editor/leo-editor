@@ -1662,7 +1662,7 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (new)
+    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
         Restore the layout of global dock widgets and toolbars.
@@ -1704,6 +1704,8 @@ class LeoApp:
         # This is not an error.
         if trace: g.trace(f"missing key: {key}")
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
+    ekr_val = None
+
     def restoreWindowState(self, c):
         """
         Restore the layout of dock widgets and toolbars, using the per-file
@@ -1736,8 +1738,12 @@ class LeoApp:
         )
         for key, method in table:
             val = self.db.get(key)
+            if trace:
+                g.trace(f"{sfn} found key: {key}\n{str(val)}")
+                if key == 'windowState:C:/Users/edreamleo/ekr.leo':
+                    self.ekr_val = str(val)
+                    g.trace('SET: ekr.leo')
             if val:
-                if trace: g.trace(f"{sfn} found key: {key}")
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
@@ -1770,7 +1776,7 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (new)
+    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
     def saveGlobalWindowState(self):
         """
         Save the window geometry and layout of dock widgets and toolbars
@@ -1799,7 +1805,7 @@ class LeoApp:
             val = bytes(val)  # PyQt4
         except Exception:
             val = bytes().join(val)  # PySide
-        if trace: g.trace(f"set key: {key}")
+        if trace: g.trace(f"set key: {key}:")
         g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
@@ -1832,8 +1838,20 @@ class LeoApp:
                 val = bytes(val)  # PyQt4
             except Exception:
                 val = bytes().join(val)  # PySide
-            if trace: g.trace(f"{c.shortFileName()} set key: {key}")
-            g.app.db[key] = base64.encodebytes(val).decode('ascii')
+            val = base64.encodebytes(val).decode('ascii')
+            if trace:
+                g.trace(f"{c.shortFileName()} set key: {key}\n{str(val)}")
+                if key == 'windowState:C:/Users/edreamleo/ekr.leo':
+                    g.trace('ekr.leo: Match:', str(val) == self.ekr_val)
+                    g.trace(f"str(val)\n{str(val)}")
+                    g.trace(f"ekr_val\n{self.ekr_val}")
+                    i = 0
+                    while i < len(str(val)):
+                        if str(val)[i] != self.ekr_val[i]:
+                            g.trace('Mismatch at', i, str(val)[i], self.ekr_val[i])
+                        i += 1
+                            
+            g.app.db[key] = val
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
