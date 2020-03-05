@@ -780,8 +780,8 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
-        g.trace(dock.objectName(), name) ###
         self.total_docks += 1
+        g.trace(dock.objectName(), name) ###
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
@@ -1487,8 +1487,11 @@ class LeoQtGui(leoGui.LeoGui):
 
     def isTextWrapper(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and hasattr(
-            w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
+        if w is None:
+            return False
+        if isinstance(w, (g.NullObject, g.TracingNullObject)):
+            return True
+        return getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
     def widget_name(self, w):
         # First try the widget's getName method.
