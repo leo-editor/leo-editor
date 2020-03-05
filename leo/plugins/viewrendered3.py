@@ -7,6 +7,9 @@
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
 #@@wrap
+Creates a window for *live* rendering of reSTructuredText, markdown text,
+images, movies, sounds, rst, html, jupyter notebooks, etc.
+
 #@+others
 #@+node:TomP.20200115200249.1: *3* Dependencies
 Dependencies
@@ -192,10 +195,6 @@ Viewrendered2 was created by Peter Mills, based on the viewrendered.py plugin.  
 Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality under the new Python 3/QT5 docking layouts.  VR3 is mostly concerned with enhancements to ReStructured Text and Markdown rendering.  Other functionality is delegated to the viewrendered plugin.
 #@-others
 
-Creates a window for *live* rendering of reSTructuredText, markdown text,
-images, movies, sounds, rst, html, jupyter notebooks, etc.
-
-
 
 
 
@@ -324,11 +323,12 @@ VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
 
 # For code rendering
 LANGUAGES = ('python',)
-RST_CODE_PREFIX = '    '
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
+
+RST_INDENT = '    '
 
 #@-<< declarations >>
 
@@ -467,7 +467,7 @@ def split_last_sizes(sizes):
     return result
 #@+node:TomP.20191215195433.15: *3* vr3.getVr3
 def getVr3(event):
-    """Return the VR3 ViewRenderedController
+    """Return the VR3 ViewRenderedController3
     
     If the controller is not found, a new one
     is created.  Used in various commands.
@@ -477,7 +477,7 @@ def getVr3(event):
              is dispatched.
              
     RETURNS
-    The active ViewRenderedController or None.
+    The active ViewRenderedController3 or None.
     """
 
     global controllers
@@ -659,6 +659,7 @@ def update_rendering_pane(event):
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
+    """Execute code in a RsT or MS node or subtree."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -668,6 +669,7 @@ def execute_code(event):
 #@+node:TomP.20191215195433.29: *3* g.command('vr3-export-rst-html')
 @g.command('vr3-export-rst-html')
 def export_rst_html(event):
+    """Export rendering to system browser."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -692,6 +694,7 @@ def export_rst_html(event):
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
 @g.command('vr3-lock-unlock-tree')
 def lock_unlock_tree(event):
+    """Toggle between lock(), unlock()."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -785,7 +788,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20200104180310.1: *4* vr3 listen for keys
     def keyPressEvent(self, event):
-        """Take actions on keypresses when VR3 has focus and a key is pressed. 
+        """Take actions on keypresses when the VR3 render pane has focus and a key is pressed. 
         
         A method of this name receives keystrokes for most or all QObject-descended objects.
         Currently, check only for <CNTRL-=> and <CONTRL-MINUS> events for zooming or unzooming
@@ -967,7 +970,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
         else:
             # Split the body dock.
-            dw.leo_docks.append(dock)
+            # Removed per @ekr- see https://groups.google.com/forum/#!topic/leo-editor/AeHYnVqrQCU:
+            #dw.leo_docks.append(dock)
             dock.setWidget(self)
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         if g.app.init_docks:
@@ -1232,7 +1236,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w.setZoomFactor(_zf / ZOOM_FACTOR)
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
-    #@@language python
     def update(self, tag, keywords):
         '''Update the vr3 pane. Called at idle time.
         
@@ -1248,6 +1251,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _root = p
 
         if tag == 'show-scrolled-message':
+            # If we are called as a "scrolled message" - usually for display of
+            # docstrings.  keywords will contain the RsT to be displayed.
             _kind = keywords['flags']
             keywords['tag'] = tag
         else:
@@ -1291,10 +1296,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 return
 
             if tag == 'show-scrolled-message':
+                # This branch is for rendering docstrings, help-for-command messages, etc.
                 _tree = []
+                # In case Leo node elements get mixed into the message, remove them:
+                txt = keywords.get('s', '')
+                lines = txt.split('\n')
+                keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
             else:
-                rootcopy = _root.copy()
-                _tree = [rootcopy]
+                # This branch is for rendering nodes and subtrees.
+                try:
+                    rootcopy = _root.copy()
+                    _tree = [rootcopy]
+                except Exception as e:
+                    print('===', tag, e)
+                    _tree = []
+                    return
             if kind in (MD, RST, REST) and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
@@ -1975,7 +1991,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # colorizer = c.frame.body.colorizer
             # language = colorizer.scanLanguageDirectives(p)
             # force for language in ('rst', 'rest', 'markdown', 'md'):
-            if not node_list: 
+            if not node_list:
+                # We were called as a "scrolled message"
                 s = keywords.get('s', '')
             else:
                 s = node_list[0].b
@@ -1994,6 +2011,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
     def convert_to_html(self, node_list, s=''):
         """Convert node_list to html using docutils.
+        
+        PARAMETERS
+        node_list -- a list of Leo nodes to be rendered.  May be empty ([]).
+        s -- a string to be rendered if node_list is empty.
         
         RETURNS
         the html returned by docutils.
@@ -2046,8 +2067,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Format execution result
             ex = execution_result.split('\n') if execution_result.strip() else []
             err = err_result.split('\n') if err_result.strip() else []
-            ex_indented_lines = ['    ' + li for li in ex]
-            err_indented_lines = ['    ' + li for li in err]
+            ex_indented_lines = [RST_INDENT + li for li in ex]
+            err_indented_lines = [RST_INDENT + li for li in err]
             indented_execution_result = '\n'.join(ex_indented_lines)
             indented_err_result = '\n'.join(err_indented_lines)
             self.execute_flag = False
@@ -2590,6 +2611,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191226054120.1: *3* vr3.show_toolbar
     def show_toolbar(self):
         _toolbar = self.vr3_toolbar
+
         if _toolbar.isHidden():
             try:
                 #action = _toolbar.toggleViewAction()
@@ -2682,7 +2704,7 @@ class Chunk:
                     if not line.strip():
                         _formatted.append('')
                     else:
-                        _formatted.append(RST_CODE_PREFIX + line)
+                        _formatted.append(RST_INDENT + line)
                 _formatted.append('')
                 self.formatted = '\n'.join(_formatted)
             elif self.structure == MD:

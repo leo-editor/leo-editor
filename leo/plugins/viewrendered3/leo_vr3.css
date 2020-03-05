@@ -10,6 +10,7 @@ customize this style sheet.
 */
 
 /* html4css1.css */
+// Slightly adjusted by t. b. passin.
 
 /* used to remove borders from tables and images */
 .borderless, table.borderless td, table.borderless th {
@@ -212,7 +213,7 @@ ol.upperroman {
   list-style: upper-roman }
 
 p {
-	font-size: 115%;
+	font-size: 100%;
 }
   
 p.attribution {
@@ -332,7 +333,6 @@ h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
 
 ul.auto-toc {
   list-style-type: none }
-
 /* Added for Viewrendered3 by t.b. passin.
 Modified from leo_vr_css for better display of literal and code blocks.
 */
@@ -345,11 +345,12 @@ h1, h2, h3, h4, h5, h6, p.topic-title { font-family: sans-serif } */
 body, th, td {
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
   background-color: white;
-  font-size: 85%;
+  font-size: 90%;
 }
 
+p {font-size:90%;}
 
-a.reference.external{
+a.reference.external {
     color:red;
 }
 
@@ -383,3 +384,4 @@ pre.code .keyword.constant, code .keyword.constant {background-color: #f3f3f3; c
 div.math {
 	font-size:95%;
 }
+
