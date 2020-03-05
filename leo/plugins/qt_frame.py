@@ -46,6 +46,9 @@ def dock_widget(w):
 @g.command('equal-sized-editors')
 def equal_sized_editors(event):
     c = event.get('c')
+    if 1:
+        g.es_print('not ready yet', color='red')
+        return
     if not c:
         return
     if not g.app.dock:
@@ -1994,9 +1997,10 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectEditor(wrapper)
         self.updateEditors()
         # #1523: Equalize editor sizes.
-        n = len(dw.leo_docks)
-        if g.app.dock and n > 1:
-            equal_sized_editors(event)
+        if 0: ### Not ready yet.
+            n = len(dw.leo_docks)
+            if g.app.dock and n > 1:
+                equal_sized_editors(event)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
