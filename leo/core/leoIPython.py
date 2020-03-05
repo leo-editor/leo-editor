@@ -225,7 +225,7 @@ class InternalIPKernel:
         else:
             g.trace('IPKernelApp.instance failed!')
         return kernelApp
-    #@+node:ekr.20190927100624.1: *3* ileo.run (new)
+    #@+node:ekr.20190927100624.1: *3* ileo.run
     def run(self):
         """Start the IPython kernel.  This does not return."""
         self.new_qt_console(event=None)

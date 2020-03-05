@@ -600,7 +600,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             prefixes.append('')
         return s, i, j, prefixes
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
-    #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/ (changed)
+    #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
     def dynamicCompletion(self, event=None):
         """
@@ -659,7 +659,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prefix = functools.reduce(g.longestCommonPrefix, aList)
         prefix = prefix.strip()
         self.dynamicExpandHelper(event, prefix, aList, w)
-    #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper (changed)
+    #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(self, event, prefix=None, aList=None, w=None):
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k

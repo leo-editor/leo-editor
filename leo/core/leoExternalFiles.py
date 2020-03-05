@@ -501,7 +501,7 @@ class ExternalFilesController:
             self.yesno_all_answer = result.lower()
         return bool(result and 'yes' in result.lower())
             # Careful: may be unit testing.
-    #@+node:ekr.20150404052819.1: *4* efc.checksum (changed)
+    #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
         import hashlib

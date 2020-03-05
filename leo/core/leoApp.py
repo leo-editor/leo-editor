@@ -1154,7 +1154,7 @@ class LeoApp:
             if self.leoID:
                 self.setIDFile()
         return self.leoID
-    #@+node:ekr.20191017061451.1: *5* app.cleanLeoID (new)
+    #@+node:ekr.20191017061451.1: *5* app.cleanLeoID
     def cleanLeoID(self, id_, tag):
         """#1404: Make sure that the given Leo ID will not corrupt a .leo file."""
         old_id = id_ if isinstance(id_, str) else repr(id_)
@@ -1173,7 +1173,7 @@ class LeoApp:
                     "Your id should contain only letters and numbers\n"
                     "and must be at least 3 characters in length."))
         return id_
-    #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys (changed)
+    #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
     def setIDFromSys(self, verbose):
         """
         Attempt to set g.app.leoID from sys.leoID.
@@ -1189,7 +1189,7 @@ class LeoApp:
                 self.leoID = id_
                 if verbose:
                     g.red("leoID=", self.leoID, spaces=False)
-    #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile (changed)
+    #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
     def setIDFromFile(self, verbose):
         """Attempt to set g.app.leoID from leoID.txt."""
         tag = ".leoID.txt"
@@ -1213,7 +1213,7 @@ class LeoApp:
             except Exception:
                 g.error('unexpected exception in app.setLeoID')
                 g.es_exception()
-    #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv (changed)
+    #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv
     def setIDFromEnv(self, verbose):
         """Set leoID from environment vars."""
         try:
@@ -1228,7 +1228,7 @@ class LeoApp:
                     self.leoID = id_
         except Exception:
             pass
-    #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog (changed)
+    #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self):
         """Get leoID from a Tk dialog."""
         #
@@ -1388,7 +1388,7 @@ class LeoApp:
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
         frame.destroySelf()
-    #@+node:ekr.20031218072017.1732: *4* app.finishQuit (changed)
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         assert self == g.app, repr(g.app)
@@ -1662,7 +1662,7 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (new)
+    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
         Restore the layout of global dock widgets and toolbars.
@@ -1770,7 +1770,7 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (new)
+    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
     def saveGlobalWindowState(self):
         """
         Save the window geometry and layout of dock widgets and toolbars
@@ -2420,7 +2420,7 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return c if ok else None
-    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (changed)
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         """
         Read leoSettings.leo and myLeoSettings.leo using a null gui.
@@ -2499,7 +2499,7 @@ class LoadManager:
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers (changed)
+    #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         """Load the indicated file"""
         lm = self

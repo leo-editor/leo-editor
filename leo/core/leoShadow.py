@@ -74,7 +74,7 @@ class ShadowController:
         self.shadow_in_home_dir = c.config.getBool('shadow-in-home-dir', default=False)
         self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
     #@+node:ekr.20080711063656.1: *3* x.File utils
-    #@+node:ekr.20080711063656.7: *4* x.baseDirName (changed)
+    #@+node:ekr.20080711063656.7: *4* x.baseDirName
     def baseDirName(self):
         c = self.c
         filename = c.fileName()
@@ -82,7 +82,7 @@ class ShadowController:
             return g.os_path_dirname(g.os_path_finalize(filename))  # 1341
         self.error('Can not compute shadow path: .leo file has not been saved')
         return None
-    #@+node:ekr.20080711063656.4: *4* x.dirName and pathName (changed)
+    #@+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName(self, filename):
         """Return the directory for filename."""
         x = self

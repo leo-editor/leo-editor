@@ -682,7 +682,7 @@ class BaseJEditColorizer(BaseColorizer):
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
-    #@+node:btheado.20131124162237.16303: *4* bjc.init_mode_from_module (changed)
+    #@+node:btheado.20131124162237.16303: *4* bjc.init_mode_from_module
     def init_mode_from_module(self, name, mode):
         """
         Name may be a language name or a delegate name.
@@ -751,7 +751,7 @@ class BaseJEditColorizer(BaseColorizer):
         else:
             self.language = language  # 2017/01/31
         return True
-    #@+node:ekr.20110605121601.18582: *4* bjc.nameToRulesetName (changed)
+    #@+node:ekr.20110605121601.18582: *4* bjc.nameToRulesetName
     def nameToRulesetName(self, name):
         """
         Compute language and rulesetName from name, which is either a language

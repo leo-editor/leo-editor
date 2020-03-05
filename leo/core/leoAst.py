@@ -4437,7 +4437,7 @@ class TestOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree)
         assert results == expected, expected_got(expected, results)
-    #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class (changed)
+    #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
     def test_lines_before_class(self):
 
         contents = """\

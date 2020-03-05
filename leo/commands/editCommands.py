@@ -1303,7 +1303,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.delete(ins - 1)
                 ins = ins - 1
                 w.setSelectionRange(ins, ins, insert=ins)
-    #@+node:ekr.20150514063305.255: *4* ec.cleanAllLines (changed)
+    #@+node:ekr.20150514063305.255: *4* ec.cleanAllLines
     @cmd('clean-all-lines')
     def cleanAllLines(self, event):
         """Clean all lines in the selected tree."""
@@ -3592,7 +3592,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     swapCharacters = transposeCharacters
     #@+node:ekr.20150514063305.348: *3* ec: uA's
-    #@+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas (changed)
+    #@+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas
     @cmd('clear-node-uas')
     def clearNodeUas(self, event=None):
         """Clear the uA's in the selected VNode."""

@@ -1791,7 +1791,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged (changed)
+    #@+node:ekr.20131115120119.17395: *3* qt_base_tab.setChanged
     def setChanged(self, c, changed):
         """Set the changed indicator in c's tab."""
         # Find the tab corresponding to c.
@@ -1816,7 +1816,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         if i > -1:
             self.setTabText(i, g.shortFileName(fileName))
-    #@+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent (changed)
+    #@+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent
     def closeEvent(self, event):
         """Handle a close event."""
         g.app.gui.close_event(event)
@@ -2507,7 +2507,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Command decorator for the LeoQtFrame class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers (changed)
+    #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate(self):
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
@@ -3361,7 +3361,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 'isMinimized:', self.top and self.top.isMinimized())
         if self.top and self.top.isMinimized():  # Bug fix: 400739.
             self.lift()
-    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info (changed)
+    #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
     def get_window_info(self):
         """Return the geometry of the top window."""
         if g.app.use_global_docks:
@@ -4265,7 +4265,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.afterInsertNode(pasted, undoType, undoData)
         c.redraw(pasted)
         c.recolor()
-    #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop (changed)
+    #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         """Move p1 after (or as the first child of) p2."""
         as_child = self.was_alt_drag
@@ -4328,7 +4328,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 fn = s[:i]
                 s = s[i + 1 :]
         return fn, s
-    #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers (changed)
+    #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers
     def urlDrop(self, md, p):
         """Handle a drop when md.urls()."""
         c, u, undoType = self.c, self.c.undoer, 'Drag Urls'
@@ -4965,7 +4965,7 @@ class TabbedFrameFactory:
             dw.show()
             tabw.show()
         return dw
-    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster (changed)
+    #@+node:ekr.20110605121601.18468: *3* frameFactory.createMaster
     def createMaster(self):
 
         window = self.masterFrame = LeoTabbedTopLevel(factory=self)

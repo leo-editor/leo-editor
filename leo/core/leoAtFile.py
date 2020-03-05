@@ -98,7 +98,7 @@ class AtFile:
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
         at.writing_to_shadow_directory = False
-    #@+node:ekr.20041005105605.13: *4* at.initReadIvars (changed)
+    #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root, fileName,
         importFileName=None,
         perfectImportRoot=None,
@@ -324,7 +324,7 @@ class AtFile:
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
-    #@+node:ekr.20041005105605.21: *5* at.read & helpers (changed)
+    #@+node:ekr.20041005105605.21: *5* at.read & helpers
     def read(self, root, importFileName=None,
         fromString=None, atShadow=False, force=False
     ):
