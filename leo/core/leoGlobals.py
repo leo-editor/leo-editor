@@ -2458,10 +2458,10 @@ class TestLeoGlobals(unittest.TestCase):
     #@-others
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
 def isTextWidget(w):
-    return w and g.app.gui.isTextWidget(w)
+    return g.app.gui.isTextWidget(w)
 
 def isTextWrapper(w):
-    return w and g.app.gui.isTextWrapper(w)
+    return g.app.gui.isTextWrapper(w)
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20031218072017.3105: *4* g.alert (deprecated)

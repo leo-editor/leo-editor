@@ -462,31 +462,32 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@-<< legacy dw.addNewEditor >>
             return parent_frame, wrapper
         #
-        # Create the editor.
+        # Create dock, splitting the body dock.
         dock = self.addEditorDock()
-            # Splits the body dock.
-        if 1:
+        if 1: ##########
             wrapper = g.TracingNullObject(tag='body wrapper')
+            return dock, wrapper
+        #
+        # Create the editor
+        widget = qt_text.LeoQTextBrowser(None, c, self)
+        widget.setObjectName('richTextEdit')
+        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+        self.packLabel(widget)
+        #
+        # Inject ivars, set bindings, etc.
+        inner_frame = self.leo_body_inner_frame
+            # Inject ivars *here*, regardless of docking.
+        body.injectIvars(inner_frame, name, p, wrapper)
+        body.updateInjectedIvars(widget, p)
+        wrapper.setAllText(p.b)
+        wrapper.see(0)
+        c.k.completeAllBindingsForWidget(wrapper)
+        if isinstance(widget, QtWidgets.QTextEdit):
+            colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
+            colorizer.highlighter.setDocument(widget.document())
         else:
-            widget = qt_text.LeoQTextBrowser(None, c, self)
-            widget.setObjectName('richTextEdit')
-            wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
-            self.packLabel(widget)
-            #
-            # Inject ivars, set bindings, etc.
-            inner_frame = self.leo_body_inner_frame
-                # Inject ivars *here*, regardless of docking.
-            body.injectIvars(inner_frame, name, p, wrapper)
-            body.updateInjectedIvars(widget, p)
-            wrapper.setAllText(p.b)
-            wrapper.see(0)
-            c.k.completeAllBindingsForWidget(wrapper)
-            if isinstance(widget, QtWidgets.QTextEdit):
-                colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
-                colorizer.highlighter.setDocument(widget.document())
-            else:
-                # Scintilla only.
-                body.recolorWidget(p, wrapper)
+            # Scintilla only.
+            body.recolorWidget(p, wrapper)
         return dock, wrapper
     #@+node:ekr.20190522165123.1: *5* dw.createAllDockWidgets
     def createAllDockWidgets(self):
@@ -1968,6 +1969,12 @@ class LeoQtBody(leoFrame.LeoBody):
         widget = wrapper.widget
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
+        if 1: ###########
+            name = f"{self.totalNumberOfEditors}"
+            f, wrapper = dw.addNewEditor(name)
+            if self.totalNumberOfEditors == 2:
+                self.editorWidgets['1'] = wrapper
+            return ############
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
@@ -2027,6 +2034,7 @@ class LeoQtBody(leoFrame.LeoBody):
         
         dock will be specified if called from a click handler.
         """
+        g.trace('=====', g.callers())
         c, d = self.c, self.editorWidgets
         dw = c.frame.top
         wrapper = c.frame.body.wrapper
