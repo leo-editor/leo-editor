@@ -42,35 +42,6 @@ def dock_widget(w):
             return w
         w = w.parent()
     return None
-#@+node:ekr.20200304065045.1: *3* 'equal-sized-editors'
-@g.command('equal-sized-editors')
-def equal_sized_editors(event):
-    c = event.get('c')
-    if 1:
-        g.es_print('not ready yet', color='red')
-        return
-    if not c:
-        return
-    if not g.app.dock:
-        return
-    dw = c.frame.top
-    if not isinstance(dw, QtWidgets.QMainWindow):
-        return
-    n = len(dw.leo_docks)
-    if n < 2:
-        return
-    # Process events, to calculate new sizes.
-    g.app.gui.qtApp.processEvents()
-    # Calculate the desired widths.
-    layout = dw.layout()
-    geom = layout.geometry()
-    left, right = geom.left(), geom.right()
-    width = right - left
-    w = int(width / n)
-    # g.trace('docks:', n, 'left:', left, 'width:', width, 'w', w)
-    # Set the desired geometries.
-    for dock in dw.leo_docks:
-        dock.setFixedWidth(w)
 #@+node:ekr.20200303104851.1: *3* 'hide-body-dock'
 @g.command('hide-body-dock')
 def hideBodyDock(event):
@@ -1996,11 +1967,6 @@ class LeoQtBody(leoFrame.LeoBody):
         self.selectLabel(wrapper)
         self.selectEditor(wrapper)
         self.updateEditors()
-        # #1523: Equalize editor sizes.
-        if 0: ### Not ready yet.
-            n = len(dw.leo_docks)
-            if g.app.dock and n > 1:
-                equal_sized_editors(event)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18197: *5* LeoQtBody.assignPositionToEditor
     def assignPositionToEditor(self, p):
