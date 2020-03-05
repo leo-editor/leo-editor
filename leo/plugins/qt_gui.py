@@ -765,6 +765,8 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< emergency fallback >>
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
     #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
+    total_docks = 0
+
     def create_dock_widget(self, closeable, moveable, height, name):
         """Make a new dock widget in the main window"""
         dock = QtWidgets.QDockWidget(parent=self.main_window)
@@ -777,7 +779,9 @@ class LeoQtGui(leoGui.LeoGui):
             features |= dock.DockWidgetClosable
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
-        dock.setObjectName(f"dock.{name.lower()}")
+        dock.setObjectName(f"dock-{self.total_docks}")
+        g.trace(dock.objectName(), name) ###
+        self.total_docks += 1
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
