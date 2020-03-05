@@ -441,6 +441,7 @@ def onClose(tag, keys):
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
         return None # This just slows the unit tests.
+
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
     vr3 = viewrendered(event=kw)
@@ -1246,7 +1247,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _root = p
 
-        _kind = pc.get_kind(p) or self.default_kind
+        if tag == 'show-scrolled-message':
+            _kind = keywords['flags']
+            keywords['tag'] = tag
+        else:
+            _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
         if f == pc.update_rst or pc.update_md:
              self.show_toolbar()
@@ -1285,8 +1290,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 w.show()
                 return
 
-            rootcopy = _root.copy()
-            _tree = [rootcopy]
+            if tag == 'show-scrolled-message':
+                _tree = []
+            else:
+                rootcopy = _root.copy()
+                _tree = [rootcopy]
             if kind in (MD, RST, REST) and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
@@ -1685,7 +1693,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setPlainText(s)
 
     #@+node:TomP.20191215195433.66: *5* convert_markdown_to_html
-    def convert_markdown_to_html(self, node_list):
+    def convert_markdown_to_html(self, node_list, s=''):
         """Convert node_list to html using the markdown processor.
         
         RETURNS
@@ -1956,6 +1964,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         assert self.w
         w = self.w
 
+
         if node_list:
             self.show()
         if got_docutils:
@@ -1966,22 +1975,24 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # colorizer = c.frame.body.colorizer
             # language = colorizer.scanLanguageDirectives(p)
             # force for language in ('rst', 'rest', 'markdown', 'md'):
-            if not node_list: return
-            s = node_list[0].b
-            s = self.remove_directives(s)
+            if not node_list: 
+                s = keywords.get('s', '')
+            else:
+                s = node_list[0].b
+                s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
             self.rst_html = ''
             if s and isHtml:
                 h = s
             else:
-                h = self.convert_to_html(node_list)
+                h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
         else:
             s = node_list[0].b
             w.setPlainText(s)
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
-    def convert_to_html(self, node_list):
+    def convert_to_html(self, node_list, s=''):
         """Convert node_list to html using docutils.
         
         RETURNS
@@ -2009,17 +2020,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@@language python
         result = ''
         codelist = []
-        for node in node_list:
-            # Add node's text as a headline
-            s = node.b
-            s = self.remove_directives(s)
-            s, headline_str = self.make_rst_headline(node, s)
+        if not node_list:
+            result, codelines = self.process_rst_node(s)
+        else:
+            for node in node_list:
+                # Add node's text as a headline
+                s = node.b
+                s = self.remove_directives(s)
+                s, headline_str = self.make_rst_headline(node, s)
 
-            # Process node's entire body text to handle @language directives
-            sproc, codelines = self.process_rst_node(s)
-            result += sproc
-            if codelines:
-                codelist.extend(codelines)
+                # Process node's entire body text to handle @language directives
+                sproc, codelines = self.process_rst_node(s)
+                result += sproc
+                if codelines:
+                    codelist.extend(codelines)
 
         # Execute code blocks; capture and insert execution results.
         # This means anything written to stdout or stderr.
