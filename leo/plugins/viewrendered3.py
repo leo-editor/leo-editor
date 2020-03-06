@@ -2852,18 +2852,23 @@ class StateMachine:
         # A marker line may start with "@language" or a Markdown code fence.
         elif line.startswith("@language"):
             marker = Marker.AT_LANGUAGE_MARKER
-            lang = PYTHON if PYTHON in line else MD
+            lang = MD
+            for _lang in (PYTHON, JAVASCRIPT, JAVA):
+                if _lang in line:
+                    lang = _lang
+                    break
         elif line.startswith(MD_CODE_FENCE):
-            if PYTHON in line:
-                marker = Marker.MD_FENCE_LANG_MARKER
-                lang = PYTHON
-            else:
-                marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
-                lang = MD
+            lang = MD
+            for _lang in (PYTHON, JAVASCRIPT, JAVA):
+                if _lang in line:
+                    lang = _lang
+                    marker = Marker.MD_FENCE_LANG_MARKER
+                    break
+                else:
+                    marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
 
-        if lang in (PYTHON,):
+        if lang in (PYTHON, JAVASCRIPT, JAVA):
             tag = CODE
-
 
         return (marker, tag, lang)
     #@-<< get_marker >>
