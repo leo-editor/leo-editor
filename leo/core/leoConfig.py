@@ -1205,7 +1205,7 @@ class GlobalConfigManager:
     """A class to manage configuration settings."""
     # Class data...
     #@+<< gcm.defaultsDict >>
-    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >> (changed)
+    #@+node:ekr.20041117062717.1: *3* << gcm.defaultsDict >>
     #@+at This contains only the "interesting" defaults.
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
@@ -1768,7 +1768,7 @@ class LocalConfigManager:
         See #852: https://github.com/leo-editor/leo-editor/issues/852
         """
         ActiveSettingsOutline(self.c)
-    #@+node:ekr.20190901181116.1: *3* c.config.getSource (new)
+    #@+node:ekr.20190901181116.1: *3* c.config.getSource
     def getSource(self, setting):
         """
         Return a string representing the source file of the given setting,
@@ -2062,7 +2062,7 @@ class LocalConfigManager:
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         assert d is None
         return None
-    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut (changed)
+    #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
     no_menu_dict = {}
         # Keys are file names.
 

@@ -808,7 +808,6 @@ class LeoImportCommands:
         redrawFlag=True,
         shortFn=False,
         treeType=None,
-        # force_at_others=False, #tag:no-longer-used
     ):
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -829,7 +828,6 @@ class LeoImportCommands:
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(fn, parent=p)
-                    #  force_at_others=force_at_others) #tag:no-longer-used
                 if p:  # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -843,40 +841,6 @@ class LeoImportCommands:
         parent.expand()
         if redrawFlag:
             c.redraw(parent)
-    #@+node:ekr.20031218072017.3220: *4* ic.importFlattenedOutline & helpers
-    def importFlattenedOutline(self, files):  # Not a command, so no event arg.
-        c = self.c; u = c.undoer
-        if not c.p: return
-        if not files: return
-        self.setEncoding()
-        fileName = files[0]  # files contains at most one file.
-        g.setGlobalOpenDir(fileName)
-        s, e = g.readFileIntoString(fileName)
-        if s is None or not s.strip():
-            return
-        s = s.replace('\r', '')  # Fixes bug 626101.
-        array = s.split("\n")
-        # Convert the string to an outline and insert it after the current node.
-        undoData = u.beforeInsertNode(c.p)
-        # MORE files are more restrictive than tab-delimited outlines, so try them first.
-        p = None
-        c.endEditing()
-        importer = MORE_Importer(c)
-        if importer.check(s):
-            p = importer.import_lines(array, c.p)
-        if not p:
-            # Try to import a tab-delimited outline.
-            importer = TabImporter(c)
-            if importer.check(s, warn=False):
-                p = importer.scan(s, fn=fileName, root=c.p)
-        if p:
-            c.validateOutline()
-            p.setDirty()
-            c.setChanged()
-            u.afterInsertNode(p, 'Import', undoData)
-            c.redraw(p)
-        # elif not g.unitTesting:
-            # g.es_print("not a valid MORE file", fileName)
     #@+node:ekr.20160503125237.1: *4* ic.importFreeMind
     def importFreeMind(self, files):
         """

@@ -4,6 +4,7 @@
 #@@first
 """File commands that used to be defined in leoCommands.py"""
 import leo.core.leoGlobals as g
+import leo.core.leoImport as leoImport
 import os
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
@@ -50,7 +51,7 @@ def reloadSettingsHelper(c, all):
 def close(self, event=None, new_c=None):
     """Close the Leo window, prompting to save it if it has been changed."""
     g.app.closeLeoWindow(self.frame, new_c=new_c)
-#@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile
+#@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile & helper
 @g.commander_command('import-file')
 def importAnyFile(self, event=None):
     """Import one or more files."""
@@ -71,7 +72,7 @@ def importAnyFile(self, event=None):
         ("Lua files", "*.lua"),
         ("Pascal files", "*.pas"),
         ("Python files", "*.py"),
-        ("Tabbed files", "*.txt"),
+        ("Text files", "*.txt"),
     ]
     names = g.app.gui.runOpenFileDialog(c,
         title="Import File",
@@ -97,6 +98,7 @@ def importAnyFile(self, event=None):
         ic.importDerivedFiles(parent=c.p, paths=derived)
     for fn in others:
         junk, ext = g.os_path_splitext(fn)
+        ext = ext.lower()  # #1522
         if ext.startswith('.'):
             ext = ext[1:]
         if ext == 'csv':
@@ -110,8 +112,11 @@ def importAnyFile(self, event=None):
             ic.importFreeMind([fn])
         elif ext in ('nw', 'noweb'):
             ic.importWebCommand([fn], "noweb")
+        elif ext == 'more':
+            leoImport.MORE_Importer(c).import_file(fn)  # #1522.
         elif ext == 'txt':
-            ic.importFlattenedOutline([fn])
+            # #1522: Create an @edit node.
+            import_txt_file(c, fn)
         else:
             # Make *sure* that parent.b is empty.
             last = c.lastTopLevel()
@@ -125,16 +130,6 @@ def importAnyFile(self, event=None):
             )
     c.raise_error_dialogs(kind='read')
 
-# Compatibility: used by unit tests.
-    # importAtFile = importAnyFile
-    # importAtRoot = importAnyFile
-    # importCWEBFiles = importAnyFile
-    # importDerivedFile = importAnyFile
-    # importFlattenedOutline = importAnyFile
-    # importMOREFiles = importAnyFile
-    # importNowebFiles = importAnyFile
-    # importTabFiles = importAnyFile
-
 g.command_alias('importAtFile', importAnyFile)
 g.command_alias('importAtRoot', importAnyFile)
 g.command_alias('importCWEBFiles', importAnyFile)
@@ -143,6 +138,20 @@ g.command_alias('importFlattenedOutline', importAnyFile)
 g.command_alias('importMOREFiles', importAnyFile)
 g.command_alias('importNowebFiles', importAnyFile)
 g.command_alias('importTabFiles', importAnyFile)
+#@+node:ekr.20200306043104.1: *4* function: import_txt_file
+def import_txt_file(c, fn):
+    """Import the .txt file into a new node."""
+    u = c.undoer
+    g.setGlobalOpenDir(fn)
+    undoData = u.beforeInsertNode(c.p)
+    last = c.lastTopLevel()
+    p = last.insertAfter()
+    p.h = f"@edit {fn}"
+    s, e = g.readFileIntoString(fn, kind='@edit')
+    p.b = s
+    u.afterInsertNode(p, 'Import', undoData)
+    c.setChanged()
+    c.redraw(p)
 #@+node:ekr.20031218072017.1623: *3* c_file.new
 @g.commander_command('file-new')
 @g.commander_command('new')

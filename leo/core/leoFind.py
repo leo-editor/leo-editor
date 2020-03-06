@@ -1638,7 +1638,7 @@ class LeoFind:
         self.initInHeadline()
         if self.changeSelection():
             self.findNext(False)  # don't reinitialize
-    #@+node:ekr.20160920114454.1: *4* find.cloneFindTag & helpers (changed)
+    #@+node:ekr.20160920114454.1: *4* find.cloneFindTag & helpers
     def cloneFindTag(self, tag):
         """Handle the clone-find-tag command."""
         c, u = self.c, self.c.undoer
@@ -1724,7 +1724,7 @@ class LeoFind:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
         return count
-    #@+node:ekr.20160422072841.1: *5* find.doCloneFindAll & helpers (changed)
+    #@+node:ekr.20160422072841.1: *5* find.doCloneFindAll & helpers
     def doCloneFindAll(self, after, data, flatten, p, undoType):
         """Handle the clone-find-all command, from p to after."""
         c, u = self.c, self.c.undoer
@@ -1796,7 +1796,7 @@ class LeoFind:
         else:
             p.moveToThreadNext()
         return count
-    #@+node:ekr.20160422073500.1: *5* find.doFindAll & helpers (changed)
+    #@+node:ekr.20160422073500.1: *5* find.doFindAll & helpers
     def doFindAll(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
         c, u, w = self.c, self.c.undoer, self.s_ctrl

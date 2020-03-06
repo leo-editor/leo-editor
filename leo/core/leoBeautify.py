@@ -316,7 +316,7 @@ class CPrettyPrinter:
             # The list of tokens that form the final result.
         self.tab_width = 4
             # The number of spaces in each unit of leading indentation.
-    #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree (new)
+    #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p):
 
         c = self.c

@@ -70,7 +70,7 @@ def colorPanel(self, event=None):
     if not frame.colorPanel:
         frame.colorPanel = g.app.gui.createColorPanel(c)
     frame.colorPanel.bringToFront()
-#@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks (changed)
+#@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self, event=None):
     """Convert all blanks to tabs in the selected outline."""
@@ -111,7 +111,7 @@ def convertAllBlanks(self, event=None):
             # Must come before c.redraw().
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs (changed)
+#@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self, event=None):
     """Convert all tabs to blanks in the selected outline."""
@@ -151,7 +151,7 @@ def convertAllTabs(self, event=None):
         g.es("tabs converted to blanks in", count, "nodes")
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.18: ** c_ec.convertBlanks (changed)
+#@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
     """Convert all blanks to tabs in the selected node."""
@@ -174,7 +174,7 @@ def convertBlanks(self, event=None):
             c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
                 # Handles undo
     return changed
-#@+node:ekr.20171123135625.19: ** c_ec.convertTabs (changed)
+#@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""

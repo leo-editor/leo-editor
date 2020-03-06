@@ -127,7 +127,7 @@ class LeoQtEventFilter(QtCore.QObject):
             c.frame.body.onFocusOut(obj)
         return eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease)
             # Return True unless we have a key event.
-    #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent (changed)
+    #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
         """
         Return True if we should ignore the key event.
@@ -333,7 +333,7 @@ class LeoQtEventFilter(QtCore.QObject):
                     # mods.append('Meta')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
-    #@+node:ekr.20190922075339.1: *4* filter.traceKeys (new)
+    #@+node:ekr.20190922075339.1: *4* filter.traceKeys
     def traceKeys(self, obj, event):
         if g.unitTesting:
             return

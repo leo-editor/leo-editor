@@ -40,7 +40,7 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     """A class implementing Leo's Qt gui."""
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp) (changed)
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp)
     def __init__(self):
         """Ctor for LeoQtGui class."""
         super().__init__('qt')
@@ -785,7 +785,7 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock (new)
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock
     def make_global_outlines_dock(self):
         """
         Create the top-level Outlines (plural) dock,
@@ -814,7 +814,7 @@ class LeoQtGui(leoGui.LeoGui):
             dock = dock.parent()
         return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
-    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event (new)
+    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
     def close_event(self, event):
 
         noclose = False

@@ -190,7 +190,7 @@ class FastRead:
         else:
             ro = ob
         return ro
-    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper (changed)
+    #@+node:ekr.20180605062300.1: *5* fast.scanGlobals & helper
     def scanGlobals(self, g_element):
         """Get global data from the cache, with reasonable defaults."""
         c = self.c

@@ -145,7 +145,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2  # Show the node in the *other* file.
         return inserted, deleted, changed
-    #@+node:ekr.20170806094317.11: *4* efc.createAllCompareClones & helper (changed)
+    #@+node:ekr.20170806094317.11: *4* efc.createAllCompareClones & helper
     def createAllCompareClones(self, c1, c2, inserted, deleted, changed):
         """Create the comparison trees."""
         c = self.c  # Always use the visible commander
