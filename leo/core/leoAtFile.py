@@ -1980,18 +1980,28 @@ class AtFile:
         # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1, delta)
         self.putRefAt(name, ref, delta)
+        n_refs = 0
         while 1:
             progress = i
             i = n2
+            n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
+            g.trace(at.sentinels, n_refs, name)
             if name:
+                # #1232: allow only one section reference per line in @clean.
+                if not at.sentinels and n_refs > 1:
+                    # #1232.
+                    at.writeError(
+                        f"Too many section references on line\n{g.angleBrackets(name)}")
+                    break
                 ref = at.findReference(name, p)
                     # Issues error if not found.
                 if ref:
                     middle_s = s[i:n1]
                     self.putAfterMiddleRef(middle_s, delta)
                     self.putRefAt(name, ref, delta)
-            else: break
+            else:
+                break
             assert progress < i
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
@@ -3383,7 +3393,7 @@ class FastAtRead:
             #@afterref
  # clears in_doc
             #@+<< 4. handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
+            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >> (changed)
             m = ref_pat.match(line)
             if m:
                 in_doc = False
@@ -3392,11 +3402,15 @@ class FastAtRead:
                     body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
                     stack.append((gnx, indent, body))
                     indent += m.end(1)
-                else:
+                    continue
+                elif stack:
+                    # #1232: Only if the stack exists.
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                continue
+                    continue
+                else:
+                    g.trace('=====', repr(line))
             #@-<< 4. handle section refs >>
             #@afterref
  # clears in_doc.
