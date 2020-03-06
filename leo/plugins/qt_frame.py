@@ -490,10 +490,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             dock.setWidget(w)
             # Remember the dock.
             setattr(dw, f"{name}_dock", dock)
-            ###
-                # #1523: remember *all* editor docks.
-                # if name == 'body':
-                #    dw.added_editor_docks.append(dock)
             if name == central_widget:
                 dw.setCentralWidget(dock)
                     # Important: the central widget should be a dock.

@@ -781,7 +781,6 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
         self.total_docks += 1
-        ### g.trace(dock.objectName(), name)
         dock.setWindowTitle(name.capitalize())
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
