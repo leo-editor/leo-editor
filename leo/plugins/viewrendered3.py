@@ -277,7 +277,7 @@ import sys
 import os.path
 import io
 from io import StringIO
-import site
+
 import shutil
 from enum import Enum, auto
 
@@ -308,6 +308,7 @@ TEXT = 'text'
 
 VR3_TEMP_FILE = 'leo_rst_html.html'
 MD_STYLESHEET_APPEND = '''pre {
+   font-size: 110%;
    border: 1px solid gray; 
    border-radius: .7em; padding: 1em;
    background-color: #fff8f8
@@ -866,26 +867,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
                                the "file:///" if it is a local file.    
         """
 
-        basedir = site.getuserbase()
         # If no custom stylesheet specified, use standard one.
         if not self.md_stylesheet:
             # Look for the standard one
-            stylepath = os.path.join(basedir, MD_BASE_STYLESHEET_NAME)
-            style_url = 'file:///' + stylepath.replace(os.path.sep, '/')
+            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
+            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
 
             # If there is no stylesheet at the standard location, have Pygments 
             # generate a default stylesheet there.
             # Note: "cmdline" is a function imported from pygments
-            if not os.path.exists(stylepath):
+            if not os.path.exists(style_path):
                 args = [cmdline.__name__, '-S', 'default', '-f', 'html']
                 # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with io.open(stylepath, 'w') as out:
+                with io.open(style_path, 'w') as out:
                     with redirect_stdout(out):
                         cmdline.main(args)
                 # Add some fine-tuning css
-                with io.open(stylepath, 'a') as out:
+                with io.open(style_path, 'a') as out:
                     out.write(MD_STYLESHEET_APPEND)
-            self.md_stylesheet = style_url
+            self.md_stylesheet = 'file:///' + style_path
 
     #@+node:TomP.20200104001436.1: *4* vr3.create_md_header
     def create_md_header(self):
@@ -2622,7 +2622,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def show_toolbar(self):
         _toolbar = self.vr3_toolbar
 
-        if _toolbar.isHidden():
+        if _toolbar and _toolbar.isHidden():
             try:
                 #action = _toolbar.toggleViewAction()
                 _toolbar.setVisible(True)
@@ -2631,6 +2631,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191226055702.1: *3* vr3.hide_toolbar
     def hide_toolbar(self):
         _toolbar = self.vr3_toolbar
+        if not _toolbar: return
+
         try:
             _toolbar.setVisible(False)
         except Exception as e:
