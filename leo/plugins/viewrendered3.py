@@ -300,6 +300,9 @@ REST = 'rest'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
+JAVASCRIPT = 'javascript'
+JAVA = 'java'
+C = 'c'
 RESPONSE = 'response'
 TEXT = 'text'
 
@@ -2297,14 +2300,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         chunks.append(_chunk)
                     fields = line.split()
                     _lang = fields[1] if len(fields) > 1 else RST
-                    _tag = CODE if _lang in ('python',) else TEXT
+                    _tag = CODE if _lang in (PYTHON,JAVASCRIPT, JAVA) else TEXT
                     _chunk = Chunk(_tag, _structure, _lang)
                 else:
                     # We are starting a code block started by ".. code::"
                     if i > 0:
                         chunks.append(_chunk)
-                    _lang = PYTHON if PYTHON in line else TEXT
-                    _tag = CODE if _lang in (PYTHON,) else TEXT
+                    if PYTHON in line:
+                        _lang = PYTHON
+                    elif JAVASCRIPT in line:
+                        _lang = JAVASCRIPT
+                    elif JAVA in line:
+                        _lang = JAVA
+                    else:
+                        _lang = TEXT
+                    _tag = CODE if _lang in (PYTHON, JAVASCRIPT, JAVA) else TEXT
                     _chunk = Chunk(_tag, _structure, _lang)
                 _got_language = False
             else:
