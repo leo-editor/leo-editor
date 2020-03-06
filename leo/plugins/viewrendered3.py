@@ -1752,7 +1752,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 fields = header.split()
                 headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
             else:
-                headline = ''
+                headline = header
             headline_str = '#' + headline
             s = headline_str + '\n' + s
             lines = s.split('\n')
@@ -2052,7 +2052,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node.b
                 s = self.remove_directives(s)
                 s, headline_str = self.make_rst_headline(node, s)
-
+                print('---', headline_str)
                 # Process node's entire body text to handle @language directives
                 sproc, codelines = self.process_rst_node(s)
                 result += sproc
@@ -2131,7 +2131,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = p.h
             _headline_str.replace('\\', '\\\\')
             _underline = '='*len(_headline_str)
-        s = '{}\n{}\n\n{}'.format(_headline_str, _underline, s)
+        s = f'{_headline_str}\n{_underline}\n\n{s}'
 
         return s, _headline_str
     #@+node:TomP.20200112103934.1: *5* process_rst_node
