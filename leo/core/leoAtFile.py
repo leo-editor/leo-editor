@@ -1192,14 +1192,16 @@ class AtFile:
         elif p.isAtAutoNode():
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
-        elif p.isAtCleanNode() or p.isAtNoSentFileNode():
-            at.write(p, sentinels=False)
+        elif p.isAtCleanNode():
+            at.write('@clean', p, sentinels=False)
+        elif p.isAtNoSentFileNode():
+            at.write('@nosent', p, sentinels=False)
         elif p.isAtEditNode():
             at.writeOneAtEditNode(p)
         elif p.isAtShadowFileNode():
             at.writeOneAtShadowNode(p)
         elif p.isAtThinFileNode() or p.isAtFileNode():
-            at.write(p)
+            at.write('@file', p)
         #
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
@@ -1308,7 +1310,7 @@ class AtFile:
         if s:
             put(s)
     #@+node:ekr.20041005105605.144: *6* at.write
-    def write(self, root, sentinels=True):
+    def write(self, kind, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         sentinels will be False for @clean and @nosent nodes.
@@ -1380,9 +1382,9 @@ class AtFile:
         if p.isAtAsisFileNode():
             at.asisWrite(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, sentinels=False)
+            at.write('@nosent', p, sentinels=False)
         elif p.isAtFileNode():
-            at.write(p)
+            at.write('@file', p)
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
             g.es('Can not write missing @auto node', p.h, color='red')
         else:
@@ -1544,9 +1546,10 @@ class AtFile:
             at.initWriteIvars(root, None,
                 atShadow=True,
                 defaultDirectory=g.os_path_dirname(full_path),
-                forcePythonSentinels=True)
+                forcePythonSentinels=True,
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
+            )
             at.default_directory = g.os_path_dirname(full_path)
                 # Override.
             # Make sure we can compute the shadow directory.
@@ -1697,8 +1700,12 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, "<string-file>",
-                forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
+            at.initWriteIvars(
+                root,
+                targetFileName="<string-file>",
+                forcePythonSentinels=forcePythonSentinels,
+                sentinels=sentinels,
+            )
             at.openOutputStream()
             at.putFile(root, fromString=s, sentinels=sentinels)
             result = at.closeOutputStream()
