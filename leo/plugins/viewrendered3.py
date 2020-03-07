@@ -287,9 +287,6 @@ from contextlib import redirect_stdout
 from pygments import cmdline
 
 QWebView = QtWebKitWidgets.QWebView
-
-#from leo.plugins.viewrendered import ViewRenderedProvider as VrP
-#from leo.plugins.viewrendered import ViewRenderedController as VrC
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
@@ -837,17 +834,28 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def set_rst_stylesheet(self):
         """Set rst stylesheet to default if none specified.
         
-        The default location is in leo/plugins/viewrendered3.   
+        A file location must start with 'file:///';. If
+        a file does not exist for the path, use the default
+        stylesheet.
+        
+        The default location is in leo/plugins/viewrendered3.  
         """
 
         # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
         # If so, check if it exists.
+        print('---', self.rst_stylesheet)
         if self.rst_stylesheet:
-            if os.path.exists(self.rst_stylesheet):
-                return
-            else:
-                g.es('Specified VR3 stylesheet not found; using default')
+            if self.rst_stylesheet.startswith('file:///'):
+                pth = self.rst_stylesheet.split('file:///')[1]
+                if os.path.exists(pth):
+                    self.rst_stylesheet = g.os_path_finalize_join(pth)
+                    print('***', self.rst_stylesheet)
+                    return
+                else:
+                    g.es('Specified VR3 stylesheet not found; using default')
+            else: return
 
+        # Default location
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
@@ -860,7 +868,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         check if there is one at the standard location.  If not, create
         a default stylesheet and write it to a file at that place.
         
-        The default location is assumed to be at site.getuserbase()
+        The default location is assumed to be at leo/plugins/viewrendered3.
         
         VARIABLES USED  (see reloadSettings() for the settings' names)
         self.md_stylesheet -- The URL to the stylesheet.  Must include
@@ -910,12 +918,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.md_header -- where the header string gets stored.
         """
 
-        if self.md_math_output:
+        if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
     <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
-    <script type="text/javascript" src="{self.md_mathjax_url}"></script>
+    <script type="text/javascript" src="{self.mathjax_url}"></script>
     </head>
     '''
         else:
@@ -930,18 +938,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+        #self.auto_create = c.config.getBool('view-rendered-auto-create', False)
         #self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
-        self.math_output = c.config.getString('vr3-math-output') or ''
-        
+
+        self.math_output = c.config.getBool('vr3-math-output', default=False)
+        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
+        self.rst_math_output = 'mathjax ' + self.mathjax_url
+
         self.set_rst_stylesheet()
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
-        self.md_mathjax_url = c.config.getString('vr3-mathjax-url') or ''
 
         self.set_md_stylesheet()
         self.create_md_header()
@@ -2052,7 +2062,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node.b
                 s = self.remove_directives(s)
                 s, headline_str = self.make_rst_headline(node, s)
-                print('---', headline_str)
                 # Process node's entire body text to handle @language directives
                 sproc, codelines = self.process_rst_node(s)
                 result += sproc
@@ -2088,7 +2097,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             args['embed_stylesheet'] = True
 
         if self.math_output:
-            args['math_output'] = self.math_output
+            if self.mathjax_url:
+                args['math_output'] = self.rst_math_output
+            else:
+                g.es('VR3 - missing URL for MathJax')
 
         # Call docutils to get the string.
         html = None
