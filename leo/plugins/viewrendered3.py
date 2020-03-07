@@ -21,6 +21,7 @@ so installing docutils is highly recommended when using this plugin.
 This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this plugin.
 
+
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
@@ -99,13 +100,16 @@ will look something like:
 
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 #@+node:TomP.20200115200634.1: *3* Rendering markdown
-Rendering markdown
+
+Rendering Markdown
 ==================
+
 Please see the markdown syntax document at http://daringfireball.net/projects/markdown/syntax
 for more information on markdown.
 
 Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be specified by putting it in a ``@md`` node.
 #@+node:TomP.20200115200704.1: *3* Special Renderings
+
 Special Renderings
 ===================
 
@@ -204,16 +208,6 @@ Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality under
 
 #@-<< vr3 docstring >>
 """
-#@+<< to do >>
-#@+node:TomP.20191215195433.3: ** << to do >> (vr3)
-#@+at
-# To do:
-# - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
-# - Add dict to allow customize must_update.
-# - Lock movies automatically until they are finished?
-# - Render @url nodes as html?
-# - Support uA's that indicate the kind of rendering desired.
-#@-<< to do >>
 #pylint: disable=no-member
 trace = False
     # This global trace is convenient.
@@ -838,18 +832,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
         a file does not exist for the path, use the default
         stylesheet.
         
-        The default location is in leo/plugins/viewrendered3.  
+        The default location is in leo/plugins/viewrendered3.
+        
+        VARIABLE USED
+        self.rst_stylesheet -- The URL to the stylesheet.  Need not include
+                               the "file:///", and must be an absolute path 
+                               if it is a local file.  
+                               
+                               Set by @string vr3-rst-stylesheet.
         """
 
         # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
         # If so, check if it exists.
-        print('---', self.rst_stylesheet)
         if self.rst_stylesheet:
             if self.rst_stylesheet.startswith('file:///'):
                 pth = self.rst_stylesheet.split('file:///')[1]
                 if os.path.exists(pth):
+                    # Note that docutils must *not* have a leading 'file:///'
+                    # This method changes '\' to '/' in the path if needed.
                     self.rst_stylesheet = g.os_path_finalize_join(pth)
-                    print('***', self.rst_stylesheet)
                     return
                 else:
                     g.es('Specified VR3 stylesheet not found; using default')
@@ -870,9 +871,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         
         The default location is assumed to be at leo/plugins/viewrendered3.
         
-        VARIABLES USED  (see reloadSettings() for the settings' names)
-        self.md_stylesheet -- The URL to the stylesheet.  Must include
-                               the "file:///" if it is a local file.    
+        VARIABLE USED
+        self.md_stylesheet -- The URL to the stylesheet.  Need not include
+                               the "file:///", and must be an absolute path 
+                               if it is a local file.  
+                               
+                               Set by @string vr3-md-stylesheet.  
         """
 
         # If no custom stylesheet specified, use standard one.
