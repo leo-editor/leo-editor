@@ -166,6 +166,7 @@ class AtFile:
         atShadow=False,
         defaultDirectory=None,
         forcePythonSentinels=False,
+        kind=None,
         sentinels=True,
     ):
         """
@@ -179,6 +180,7 @@ class AtFile:
         assert at.underindentEscapeString is not None
         #
         # Copy args
+        at.kind = kind
         at.atEdit = atEdit
             # Used only by putBody.
         at.atShadow = atShadow
@@ -1319,7 +1321,7 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(
-                root, root.anyAtFileNodeName(), sentinels=sentinels)
+                root, root.anyAtFileNodeName(), kind=kind, sentinels=sentinels)
             if not fileName or not at.precheck(fileName, root):
                 if sentinels:
                     # Raise dialog warning of data loss.
@@ -1993,7 +1995,7 @@ class AtFile:
             i = n2
             n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
-            g.trace(at.sentinels, n_refs, name)
+            ### g.trace(repr(self.kind), at.sentinels, n_refs, name)
             if name:
                 # #1232: allow only one section reference per line in @clean.
                 if not at.sentinels and n_refs > 1:
