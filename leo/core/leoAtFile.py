@@ -1995,14 +1995,13 @@ class AtFile:
             i = n2
             n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
-            ### g.trace(repr(self.kind), at.sentinels, n_refs, name)
-            if name:
+            if self.kind == '@clean' and n_refs > 1:
                 # #1232: allow only one section reference per line in @clean.
-                if not at.sentinels and n_refs > 1:
-                    # #1232.
-                    at.writeError(
-                        f"Too many section references on line\n{g.angleBrackets(name)}")
-                    break
+                i1, i2 = g.getLine(s, i)
+                line = s[i1:i2].rstrip()
+                at.writeError(f"Too many section references:\n{line!s}")
+                break
+            if name:
                 ref = at.findReference(name, p)
                     # Issues error if not found.
                 if ref:
