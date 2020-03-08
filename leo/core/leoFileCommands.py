@@ -694,6 +694,9 @@ class FileCommands:
         theDir = g.os_path_dirname(fileName)
         if theDir:
             c.openDirectory = c.frame.openDirectory = theDir
+        # Fix #1437 when opening completely new outline
+        # there is no sense in keeping the old values in gnxDict
+        self.gnxDict = {}
         # Get the file.
         ok, ratio = self.getLeoFile(
             theFile, fileName,
