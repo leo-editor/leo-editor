@@ -58,6 +58,8 @@ class FastRead:
         with open(path, 'rb') as f:
             s = f.read()
         v, g_element = self.readWithElementTree(path, s)
+        if not v:  # #1510.
+            return None
         self.scanGlobals(g_element)
             # Fix #1047: only this method changes splitter sizes.
         #
@@ -75,6 +77,8 @@ class FastRead:
         Unlike readFile above, this does not affect splitter sizes.
         """
         v, g_element = self.readWithElementTree(path=None, s=s)
+        if not v:  # #1510.
+            return None
         #
         # Fix bug #1111: ensure that all outlines have at least one node.
         if not v.children:
@@ -83,18 +87,20 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:ekr.20180602062323.7: *4* fast.readWithElementTree & helpers
-    translate_table = b''.join([
-        g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
+    ### translate_table = b''.join([
+        ### g.toEncodedString(chr(z)) for z in range(20) if chr(z) not in '\t\r\n'])
+    translate_table = ''.join([chr(z) for z in range(20) if chr(z) not in '\t\r\n'])
         # See https://en.wikipedia.org/wiki/Valid_characters_in_XML.
 
     def readWithElementTree(self, path, s):
 
-        s = s.translate(None, self.translate_table)
-            # Fix #1036 and #1046.
         contents = g.toUnicode(s)
+        s = contents.translate(self.translate_table)
+            # Fix #1036 and #1046.
         try:
             xroot = ElementTree.fromstring(contents)
         except Exception as e:
+            # #970: Just report failure here.
             if path:
                 message = f"bad .leo file: {g.shortFileName(path)}"
             else:
@@ -102,8 +108,8 @@ class FastRead:
             g.es_print('\n' + message, color='red')
             g.es_print(g.toUnicode(e))
             print('')
-            # #970: Just report failure here.
-            return None
+            # #1510: Return a tuple.
+            return None, None
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
