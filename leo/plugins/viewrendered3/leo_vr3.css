@@ -9,6 +9,7 @@ See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
 customize this style sheet.
 */
 
+
 /* html4css1.css */
 // Slightly adjusted by t. b. passin.
 
@@ -333,6 +334,7 @@ h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
 
 ul.auto-toc {
   list-style-type: none }
+
 /* Added for Viewrendered3 by t.b. passin.
 Modified from leo_vr_css for better display of literal and code blocks.
 */
@@ -350,12 +352,20 @@ body, th, td {
 
 p {font-size:90%;}
 
+ul {
+	font-size:90%;
+}
+
+ol.arabic {
+  font-size:90%;
+}
+
 a.reference.external {
     color:red;
 }
 
-pre.literal-block { 
-	font-size: 90%; 
+pre.literal-block {
+	font-size: 90%;
 	font-family: "Source Code Pro", consolas, monospace;
 	background-color: lightcyan;
 	padding-left:1em; 

@@ -99,8 +99,7 @@ will look something like:
     `This` is **really** a line of text.
 
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
-#@+node:TomP.20200115200634.1: *3* Rendering markdown
-
+#@+node:TomP.20200115200634.1: *3* Rendering Markdown
 Rendering Markdown
 ==================
 
@@ -109,9 +108,8 @@ for more information on markdown.
 
 Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be specified by putting it in a ``@md`` node.
 #@+node:TomP.20200115200704.1: *3* Special Renderings
-
 Special Renderings
-===================
+==================
 
 As stated above, the rendering pane renders body text as reStructuredText
 by default, with all Leo directives removed. However, if the body text
@@ -188,15 +186,14 @@ Settings
 
 #@+node:TomP.20200115201807.1: *3* Known Limitations and Issues
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
-
 Acknowledgments
 ================
 
 The original Viewrendered plugin was created by Terry Brown, and enhanced by Edward K. Ream. Jacob Peck added markdown support.
 
-Viewrendered2 was created by Peter Mills, based on the viewrendered.py plugin.  It added the ability to render and entire RsT tree, and to execute Python code in a node and insert any printed output into the node.  Thomas B. Passin enhanced Viewrendered 2, adding the ability to display only the code blocks, and to change from RsT to Python within a node.
+Viewrendered2 was created by Peter Mills, based on the viewrendered.py plugin.  It added the ability to render and entire RsT tree, the ability to display only the code blocks, and to execute Python code in a node and insert any printed output into the node.  Thomas B. Passin enhanced Viewrendered2, adding the ability to change from RsT to Python and back within a node.
 
-Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality under the new Python 3/QT5 docking layouts.  VR3 is mostly concerned with enhancements to ReStructured Text and Markdown rendering.  Other functionality is delegated to the viewrendered plugin.
+Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality with Python 3/QT5 .  VR3 is mostly concerned with enhancements to ReStructured Text and Markdown rendering.  Other functionality is delegated to the viewrendered plugin.
 #@-others
 
 
@@ -291,9 +288,11 @@ REST = 'rest'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
+
 JAVASCRIPT = 'javascript'
 JAVA = 'java'
 C = 'c'
+CSS = 'css'
 RESPONSE = 'response'
 TEXT = 'text'
 
@@ -317,7 +316,7 @@ MD_BASE_STYLESHEET_NAME = 'hilite_styles.css'
 VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
 
 # For code rendering
-LANGUAGES = ('python',)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
@@ -2123,33 +2122,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@-others
 
 
-    #@+node:TomP.20200107232540.1: *5* vr3.make_rst_headline
-    def make_rst_headline(self, p, s):
-        """Turn node's title into a headline and add to front of test.
-        
-        ARGUMENTS
-        p -- the node being processed.
-        s -- a string
-        
-        RETURNS
-        a tuple (s, _headline), where the string _headline + s
-        """
-
-        _underline = ''
-        _headline_str = ''
-        if p.h:
-            if p.h.startswith('@'):
-                _headline = p.h.split()
-                if len(_headline) > 1:
-                    _headline = _headline[1:]
-                _headline_str = ' '.join(_headline)
-            else:
-                _headline_str = p.h
-            _headline_str.replace('\\', '\\\\')
-            _underline = '='*len(_headline_str)
-        s = f'{_headline_str}\n{_underline}\n\n{s}'
-
-        return s, _headline_str
     #@+node:TomP.20200112103934.1: *5* process_rst_node
     #@@language python
     def process_rst_node(self, s):
@@ -2316,21 +2288,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         chunks.append(_chunk)
                     fields = line.split()
                     _lang = fields[1] if len(fields) > 1 else RST
-                    _tag = CODE if _lang in (PYTHON,JAVASCRIPT, JAVA) else TEXT
+                    _tag = CODE if _lang in LANGUAGES else TEXT
                     _chunk = Chunk(_tag, _structure, _lang)
                 else:
                     # We are starting a code block started by ".. code::"
                     if i > 0:
                         chunks.append(_chunk)
-                    if PYTHON in line:
-                        _lang = PYTHON
-                    elif JAVASCRIPT in line:
-                        _lang = JAVASCRIPT
-                    elif JAVA in line:
-                        _lang = JAVA
-                    else:
-                        _lang = TEXT
-                    _tag = CODE if _lang in (PYTHON, JAVASCRIPT, JAVA) else TEXT
+                    _lang = TEXT
+                    for lan in LANGUAGES:
+                        if lan in line:
+                            _lang = lan
+
+                    _tag = CODE if _lang in LANGUAGES else TEXT
                     _chunk = Chunk(_tag, _structure, _lang)
                 _got_language = False
             else:
@@ -2372,6 +2341,41 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         return final_text, codelines
         #@-<< Finalize Node >>
+    #@+node:TomP.20200107232540.1: *5* vr3.make_rst_headline
+    #@@language python
+    def make_rst_headline(self, p, s):
+        """Turn node's title into a headline and add to front of text.
+        
+        ARGUMENTS
+        p -- the node being processed.
+        s -- a string
+        
+        RETURNS
+        a tuple (s, _headline), where the string _headline + s
+        """
+
+        _underline = ''
+        _headline_str = ''
+        if p.h:
+            if p.h.startswith('@'):
+                _headline = p.h.split()
+                if len(_headline) > 1:
+                    _headline = _headline[1:]
+                _headline_str = ' '.join(_headline)
+            else:
+                _headline_str = p.h
+            _headline_str.replace('\\', '\\\\')
+            _underline = '='*len(_headline_str)
+
+        # Don't duplicate node heading if the body already has it
+        # Assumes that 1st two lines are a heading if
+        # node headline == body's first line.
+        body_lines = p.b.split('\n', 1)
+        if _headline_str == body_lines[0].strip():
+            return s, _headline_str
+
+        s = f'{_headline_str}\n{_underline}\n\n{s}'
+        return s, _headline_str
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
@@ -2871,13 +2875,13 @@ class StateMachine:
         elif line.startswith("@language"):
             marker = Marker.AT_LANGUAGE_MARKER
             lang = MD
-            for _lang in (PYTHON, JAVASCRIPT, JAVA):
+            for _lang in LANGUAGES:
                 if _lang in line:
                     lang = _lang
                     break
         elif line.startswith(MD_CODE_FENCE):
             lang = MD
-            for _lang in (PYTHON, JAVASCRIPT, JAVA):
+            for _lang in LANGUAGES:
                 if _lang in line:
                     lang = _lang
                     marker = Marker.MD_FENCE_LANG_MARKER
@@ -2885,7 +2889,7 @@ class StateMachine:
                 else:
                     marker = Marker.MD_FENCE_MARKER # either a literal block or the end of a fenced code block.
 
-        if lang in (PYTHON, JAVASCRIPT, JAVA):
+        if lang in LANGUAGES:
             tag = CODE
 
         return (marker, tag, lang)
