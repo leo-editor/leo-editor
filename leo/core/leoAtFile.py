@@ -166,6 +166,7 @@ class AtFile:
         atShadow=False,
         defaultDirectory=None,
         forcePythonSentinels=False,
+        kind=None,
         sentinels=True,
     ):
         """
@@ -179,6 +180,7 @@ class AtFile:
         assert at.underindentEscapeString is not None
         #
         # Copy args
+        at.kind = kind
         at.atEdit = atEdit
             # Used only by putBody.
         at.atShadow = atShadow
@@ -1192,14 +1194,16 @@ class AtFile:
         elif p.isAtAutoNode():
             at.writeOneAtAutoNode(p)
             # Do *not* clear the dirty bits the entries in @persistence tree here!
-        elif p.isAtCleanNode() or p.isAtNoSentFileNode():
-            at.write(p, sentinels=False)
+        elif p.isAtCleanNode():
+            at.write('@clean', p, sentinels=False)
+        elif p.isAtNoSentFileNode():
+            at.write('@nosent', p, sentinels=False)
         elif p.isAtEditNode():
             at.writeOneAtEditNode(p)
         elif p.isAtShadowFileNode():
             at.writeOneAtShadowNode(p)
         elif p.isAtThinFileNode() or p.isAtFileNode():
-            at.write(p)
+            at.write('@file', p)
         #
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
@@ -1308,7 +1312,7 @@ class AtFile:
         if s:
             put(s)
     #@+node:ekr.20041005105605.144: *6* at.write
-    def write(self, root, sentinels=True):
+    def write(self, kind, root, sentinels=True):
         """Write a 4.x derived file.
         root is the position of an @<file> node.
         sentinels will be False for @clean and @nosent nodes.
@@ -1317,7 +1321,7 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(
-                root, root.anyAtFileNodeName(), sentinels=sentinels)
+                root, root.anyAtFileNodeName(), kind=kind, sentinels=sentinels)
             if not fileName or not at.precheck(fileName, root):
                 if sentinels:
                     # Raise dialog warning of data loss.
@@ -1380,9 +1384,9 @@ class AtFile:
         if p.isAtAsisFileNode():
             at.asisWrite(p)
         elif p.isAtNoSentFileNode():
-            at.write(p, sentinels=False)
+            at.write('@nosent', p, sentinels=False)
         elif p.isAtFileNode():
-            at.write(p)
+            at.write('@file', p)
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
             g.es('Can not write missing @auto node', p.h, color='red')
         else:
@@ -1544,9 +1548,10 @@ class AtFile:
             at.initWriteIvars(root, None,
                 atShadow=True,
                 defaultDirectory=g.os_path_dirname(full_path),
-                forcePythonSentinels=True)
+                forcePythonSentinels=True,
                     # Force python sentinels to suppress an error message.
                     # The actual sentinels will be set below.
+            )
             at.default_directory = g.os_path_dirname(full_path)
                 # Override.
             # Make sure we can compute the shadow directory.
@@ -1697,8 +1702,12 @@ class AtFile:
         at, c = self, self.c
         try:
             c.endEditing()
-            at.initWriteIvars(root, "<string-file>",
-                forcePythonSentinels=forcePythonSentinels, sentinels=sentinels)
+            at.initWriteIvars(
+                root,
+                targetFileName="<string-file>",
+                forcePythonSentinels=forcePythonSentinels,
+                sentinels=sentinels,
+            )
             at.openOutputStream()
             at.putFile(root, fromString=s, sentinels=sentinels)
             result = at.closeOutputStream()
@@ -1980,10 +1989,18 @@ class AtFile:
         # Write the lead-in sentinel only once.
         at.putLeadInSentinel(s, i, n1, delta)
         self.putRefAt(name, ref, delta)
+        n_refs = 0
         while 1:
             progress = i
             i = n2
+            n_refs += 1
             name, n1, n2 = at.findSectionName(s, i)
+            if self.kind == '@clean' and n_refs > 1:
+                # #1232: allow only one section reference per line in @clean.
+                i1, i2 = g.getLine(s, i)
+                line = s[i1:i2].rstrip()
+                at.writeError(f"Too many section references:\n{line!s}")
+                break
             if name:
                 ref = at.findReference(name, p)
                     # Issues error if not found.
@@ -1991,7 +2008,8 @@ class AtFile:
                     middle_s = s[i:n1]
                     self.putAfterMiddleRef(middle_s, delta)
                     self.putRefAt(name, ref, delta)
-            else: break
+            else:
+                break
             assert progress < i
         self.putAfterLastRef(s, i, delta)
     #@+node:ekr.20131224085853.16443: *7* at.findReference
@@ -3383,7 +3401,7 @@ class FastAtRead:
             #@afterref
  # clears in_doc
             #@+<< 4. handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
+            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >> (changed)
             m = ref_pat.match(line)
             if m:
                 in_doc = False
@@ -3392,11 +3410,15 @@ class FastAtRead:
                     body.append(m.group(1) + g.angleBrackets(m.group(3)) + '\n')
                     stack.append((gnx, indent, body))
                     indent += m.end(1)
-                else:
+                    continue
+                elif stack:
+                    # #1232: Only if the stack exists.
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
-                continue
+                    continue
+                else:
+                    g.trace('=====', repr(line))
             #@-<< 4. handle section refs >>
             #@afterref
  # clears in_doc.
