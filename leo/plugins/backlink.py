@@ -150,7 +150,7 @@ class backlinkController:
         for n,link in enumerate(links):
 
             on.setDirty()
-            self.c.setChanged(True)
+            self.c.setChanged()
 
             if type_ == link[0] and to == link[1]:
                 del links[n]
@@ -215,7 +215,7 @@ class backlinkController:
                     new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
                     new_c.backlinkController.updateTabInt()
                     new_p.setDirty()
-                    new_c.setChanged(True)
+                    new_c.setChanged()
                     g.es("NOTE: created back link automatically")
         else:
             g.handleUrl(url, c=self.c)
@@ -271,7 +271,7 @@ class backlinkController:
         self.vlink(from_.v, to.v, type_=type_)
         from_.setDirty()
         to.setDirty()
-        self.c.setChanged(True)
+        self.c.setChanged()
 
     #@+node:ekr.20090616105756.3950: *3* vlink
     def vlink(self, v0, v1, type_='directed'):
@@ -396,7 +396,7 @@ class backlinkController:
             return
         c.p.v.u['_bklnk']['urls'].append(url)
         c.p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
 
     #@+node:ekr.20090616105756.3957: *3* loadLinks
     def loadLinks(self, tag, keywords):
@@ -816,10 +816,7 @@ if g.app.gui.guiName() == "qt":
 #@+node:ekr.20140920145803.17994: ** class backlinkTkUI
 if g.app.gui.guiName() == "tkinter":
 
-    Tk = g.importExtension('Tkinter',
-        pluginName=__name__,
-        verbose=True,
-        required=True)
+    Tk = g.import_module('tkinter')
 
     class backlinkTkUI:
         # pylint: disable=no-member

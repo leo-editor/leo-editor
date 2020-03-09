@@ -637,7 +637,7 @@ def babelExec(event):
         ree.seek(0)
         posSE.b = ree.read().decode('utf-8')
 
-        undoer.afterInsertNode(posET, undoType, undoData, dirtyVnodeList=[])
+        undoer.afterInsertNode(posET, undoType, undoData)
 
         cmdrRes.bringToFront()
         cmdrRes.selectPosition(posET)

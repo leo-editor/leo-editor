@@ -5,11 +5,11 @@
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
 import leo.core.leoGlobals as g
 import fnmatch
-import pickle
 import os
+import pickle
+import sqlite3
 import stat
 import zlib
-import sqlite3
 #@-<< imports >>
 # Abbreviations used throughout.
 abspath = g.os_path_abspath
@@ -31,7 +31,6 @@ class CommanderCacher:
             self.db = SqlitePickleShare(path)
         except Exception:
             self.db = {}
-
     #@+others
     #@+node:ekr.20100209160132.5759: *3* cacher.clear
     def clear(self):
@@ -66,7 +65,7 @@ class CommanderCacher:
         return CommanderWrapper(c, fn=fn)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
-        
+
         # pylint: disable=no-member
         if g.app.gui.guiName() == 'nullGui':
             # Null gui's don't normally set the g.app.gui.db.
@@ -83,7 +82,7 @@ class CommanderCacher:
         db['hello'] = 15
         db['aku ankka'] = [1, 2, 313]
         db['paths/nest/ok/keyname'] = [1, (5, 46)]
-        db.uncache() # frees memory, causes re-reads later
+        db.uncache()  # frees memory, causes re-reads later
         if 0: print(db.keys())
         db.clear()
         return True
@@ -113,29 +112,29 @@ class CommanderWrapper:
     def get(self, key, default=None):
         value = self.db.get(f"{self.key}:::{key}")
         return default if value is None else value
-    
+
     def keys(self):
         return sorted(list(self.user_keys))
-        
-    def __contains__ (self, key):
+
+    def __contains__(self, key):
         return f"{self.key}:::{key}" in self.db
-    
-    def __delitem__ (self, key):
+
+    def __delitem__(self, key):
         if key in self.user_keys:
             self.user_keys.remove(key)
         del self.db[f"{self.key}:::{key}"]
-    
+
     def __getitem__(self, key):
         return self.db[f"{self.key}:::{key}"]
             # May (properly) raise KeyError
-    
-    def __setitem__ (self, key, value):
+
+    def __setitem__(self, key, value):
         self.user_keys.add(key)
         self.db[f"{self.key}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher
 class GlobalCacher:
     """A singleton global cacher, g.app.db"""
-    
+
     def __init__(self):
         """Ctor for the GlobalCacher class."""
         trace = 'cache' in g.app.debug
@@ -149,8 +148,7 @@ class GlobalCacher:
         except Exception:
             if trace:
                 g.es_exception()
-            self.db = {} # Use a plain dict as a dummy.
-
+            self.db = {}  # Use a plain dict as a dummy.
     #@+others
     #@+node:ekr.20180627045750.1: *3* g_cacher.clear
     def clear(self):
@@ -186,6 +184,7 @@ class GlobalCacher:
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
+
 class PickleShareDB:
     """ The main 'connection' object for PickleShare database """
     #@+others
@@ -205,6 +204,7 @@ class PickleShareDB:
 
         def loadz(fileobj):
             if fileobj:
+                # Retain this code for maximum compatibility.
                 try:
                     val = pickle.loads(
                         zlib.decompress(fileobj.read()))
@@ -217,10 +217,10 @@ class PickleShareDB:
         def dumpz(val, fileobj):
             if fileobj:
                 try:
-                    # use Python 2's highest protocol, 2, if possible
+                    # Use Python 2's highest protocol, 2, if possible
                     data = pickle.dumps(val, 2)
                 except Exception:
-                    # but use best available if that doesn't work (unlikely)
+                    # Use best available if that doesn't work (unlikely)
                     data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
                 compressed = zlib.compress(data)
                 fileobj.write(compressed)
@@ -230,7 +230,7 @@ class PickleShareDB:
     #@+node:ekr.20100208223942.5970: *4* __contains__(PickleShareDB)
     def __contains__(self, key):
 
-        return self.has_key(key) # NOQA
+        return self.has_key(key)  # NOQA
     #@+node:ekr.20100208223942.5971: *4* __delitem__
     def __delitem__(self, key):
         """ del db["key"] """
@@ -454,6 +454,7 @@ class PickleShareDB:
 #@+node:vitalije.20170716201700.1: ** class SqlitePickleShare
 _sentinel = object()
 
+
 class SqlitePickleShare:
     """ The main 'connection' object for SqlitePickleShare database """
     #@+others
@@ -479,9 +480,10 @@ class SqlitePickleShare:
 
         def loadz(data):
             if data:
+                # Retain this code for maximum compatibility.
                 try:
                     val = pickle.loads(zlib.decompress(data))
-                except (ValueError, TypeError):
+                except(ValueError, TypeError):
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None
                 return val
@@ -489,10 +491,10 @@ class SqlitePickleShare:
 
         def dumpz(val):
             try:
-                # use Python 2's highest protocol, 2, if possible
+                # Use Python 2's highest protocol, 2, if possible
                 data = pickle.dumps(val, protocol=2)
             except Exception:
-                # but use best available if that doesn't work (unlikely)
+                # Use best available if that doesn't work (unlikely)
                 data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
             return sqlite3.Binary(zlib.compress(data))
 
@@ -502,22 +504,23 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
     def __contains__(self, key):
 
-        return self.has_key(key) # NOQA
+        return self.has_key(key)  # NOQA
     #@+node:vitalije.20170716201700.5: *4* __delitem__
     def __delitem__(self, key):
         """ del db["key"] """
         try:
-            self.conn.execute('''delete from cachevalues
+            self.conn.execute(
+                '''delete from cachevalues
                 where key=?''', (key,))
         except sqlite3.OperationalError:
             pass
-
     #@+node:vitalije.20170716201700.6: *4* __getitem__
     def __getitem__(self, key):
         """ db['key'] reading """
         try:
             obj = None
-            for row in self.conn.execute('''select data from cachevalues
+            for row in self.conn.execute(
+                '''select data from cachevalues
                 where key=?''', (key,)):
                 obj = self.loader(row[0])
                 break
@@ -539,11 +542,11 @@ class SqlitePickleShare:
         """ db['key'] = 5 """
         try:
             data = self.dumper(value)
-            self.conn.execute('''replace into cachevalues(key, data)
-                values(?,?);''', (key, data))
+            self.conn.execute(
+                '''replace into cachevalues(key, data) values(?,?);''',
+                (key, data))
         except sqlite3.OperationalError as e:
             g.es_exception(e)
-
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
 
@@ -568,7 +571,6 @@ class SqlitePickleShare:
         mydir.walkfiles('*.tmp') yields only files with the .tmp
         extension.
         """
-        
     #@+node:vitalije.20170716201700.13: *4* _listdir
     def _listdir(self, s, pattern=None):
         """ D.listdir() -> List of items in this directory.
@@ -598,7 +600,7 @@ class SqlitePickleShare:
         # It would be more thorough to delete everything
         # below the root directory, but it's not necessary.
         self.conn.execute('delete from cachevalues;')
-    #@+node:vitalije.20170716201700.16: *3* get
+    #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key, default=None):
 
         if not self.has_key(key):
@@ -606,7 +608,7 @@ class SqlitePickleShare:
         try:
             val = self[key]
             return val
-        except KeyError:
+        except Exception:  # #1444: Was KeyError.
             return default
     #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
     def has_key(self, key):
@@ -617,7 +619,7 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.18: *3* items
     def items(self):
         sql = 'select key,data from cachevalues;'
-        for key,data in self.conn.execute(sql):
+        for key, data in self.conn.execute(sql):
             yield key, data
     #@+node:vitalije.20170716201700.19: *3* keys
     # Called by clear, and during unit testing.
@@ -652,7 +654,6 @@ class SqlitePickleShare:
                 return itms[-1][1]
             return None
         #@-others
-
         self.conn.isolation_level = 'DEFERRED'
 
         sql0 = '''select key, data from cachevalues order by key limit 50'''
@@ -675,7 +676,7 @@ class SqlitePickleShare:
 #@+node:ekr.20180627050237.1: ** function: dump_cache
 def dump_cache(db, tag):
     """Dump the given cache."""
-    print('\n===== %s =====\n' % tag)
+    print(f'\n===== {tag} =====\n')
     if db is None:
         print('db is None!')
         return
@@ -701,10 +702,10 @@ def dump_cache(db, tag):
     if d.get('None'):
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
-        
+
 def dump_list(heading, aList):
     if heading:
-        print('\n%s...\n' % heading)
+        print(f'\n{heading}...\n')
     for aTuple in aList:
         key, val = aTuple
         if isinstance(val, str):
@@ -712,19 +713,20 @@ def dump_list(heading, aList):
                 print(key)
             elif key.endswith(('leo_expanded', 'leo_marked')):
                 if val:
-                    print('%30s:' % key)
+                    print(f"{key:30}:")
                     g.printObj(val.split(','))
                 else:
-                    print('%30s: []' % key)
+                    print(f"{key:30}: []")
             else:
-                print('%30s: %s' % (key, val))   
+                print(f"{key:30}: {val}")
         elif isinstance(val, (int, float)):
-            print('%30s: %s' % (key, val))    
+            print(f"{key:30}: {val}")
         else:
-            print('%30s:' % key)
+            print(f"{key:30}:")
             g.printObj(val)
 #@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 #@-leo

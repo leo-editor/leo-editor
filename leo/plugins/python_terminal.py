@@ -119,7 +119,7 @@ if QtWidgets:
             # init ivars.
             self.indent = 0
             self.refreshMarker = False # to change back to >>> from ...
-            ### self.multiLine = False # code spans more than one line
+            # self.multiLine = False # code spans more than one line
             # self.command        = ''    # command to be ran
             self.printBanner() # print sys info
             self.insert_marker() # make the >>> or ... marker
@@ -150,7 +150,7 @@ if QtWidgets:
         #@+node:peckj.20150428142729.12: *3* PyInterp.insert_marker
         def insert_marker(self):
             
-            ### line = '... ' if self.multiLine else '>>> '
+            # line = '... ' if self.multiLine else '>>> '
             line = '... ' if self.indent > 0 else '>>> '
             self.insertPlainText(line + ' '*self.indent)
         #@+node:peckj.20150428142729.13: *3* PyInterp.initInterpreter
@@ -221,7 +221,7 @@ if QtWidgets:
                 self.clearCurrentBlock()
                 command = history[index]
                 if command[-1] == ':':
-                    ### self.multiLine = True
+                    # self.multiLine = True
                     self.indent += 4
                 self.write(command)
                 self.updateInterpreterLocals(backup)

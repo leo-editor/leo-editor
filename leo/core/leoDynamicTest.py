@@ -45,14 +45,14 @@ def main():
     bridge = leoBridge.controller(
         gui=options.gui,
         loadPlugins=options.load_plugins,
-        readSettings=options.read_settings, # adds ~0.3 sec. Useful!
+        readSettings=options.read_settings,  # adds ~0.3 sec. Useful!
         silent=options.silent,
         tracePlugins=options.trace_plugins,
-        verbose=options.verbose, # True: prints log messages.
+        verbose=options.verbose,  # True: prints log messages.
     )
     if g_trace and trace_time:
         t2 = time.time()
-        print('%s open bridge:  %0.2fsec' % (tag, t2 - t1))
+        print(f"{tag} open bridge:  {t2 - t1:0.2f} sec")
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = options.silent
@@ -61,7 +61,7 @@ def main():
         c = bridge.openLeoFile(path)
         if g_trace:
             t3 = time.time()
-            print('%s open file:    %0.2fsec' % (tag, t3 - t2))
+            print(f"{tag} open file:    {t3 - t2:0.2f} sec")
         runUnitTests(c, g)
 #@+node:ekr.20080730161153.7: *3* runUnitTests
 def runUnitTests(c, g):
@@ -97,18 +97,18 @@ def scanOptions():
         options.gui = 'nullGui'
     return options
 #@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 if __name__ == '__main__':
     if g_trace and trace_time:
         t1 = time.time()
     if g_trace and trace_argv:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]:
-            print('  %s' % repr(z))
+            print(f"  {z!r}")
     main()
     if g_trace and trace_time:
         t2 = time.time()
-        print('leoDynamicUnittest.py: %0.2fsec' % (t2 - t1))
+        print(f"leoDynamicUnittest.py: {t2 - t1:0.2f} sec")
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo

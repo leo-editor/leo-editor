@@ -460,7 +460,7 @@ class quickMove:
 
         if cnt:
             g.es('Made buttons permanent')
-            c.setChanged(True)
+            c.setChanged()
         else:
             g.es("Didn't find button")
     #@+node:tbrown.20091217114654.5374: *3* clearButton
@@ -473,7 +473,7 @@ class quickMove:
 
         if 'quickMove' in v.u:
             del v.u['quickMove']
-            c.setChanged(True)
+            c.setChanged()
             g.es('Removing buttons - reload to apply')
         else:
             g.es('Quickmove buttons not found')
@@ -691,12 +691,12 @@ class quickMove:
         if cut:
             self.c.selectPosition(p)
             self.c.deleteOutline()
-            self.c.setChanged(True)
+            self.c.setChanged()
 
         if nxt:
             self.c.selectPosition(self.c.vnode2position(nxt))
 
-        c2.setChanged(True)
+        c2.setChanged()
         c2.redraw()
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
@@ -894,7 +894,7 @@ class quickMoveButton:
             if self.type_ != 'jump':
                 p.setDirty()  # before move to dirty current parent
                 p2.setDirty()
-                c.setChanged(changedFlag=True)
+                c.setChanged()
 
             if self.type_ == 'clone':
                 p = p.clone()
@@ -972,7 +972,7 @@ class quickMoveButton:
 
         if needs_undo:
             c.undoer.afterMoveNode(p,'Quick Move', bunch)
-            c.setChanged(True)
+            c.setChanged()
 
         c.redraw()
     #@+node:ekr.20070123061606: *3* checkMove

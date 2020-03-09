@@ -1314,7 +1314,7 @@ class EvalController:
         i = w.getInsertPoint()
         w.insert(i, text+'\n')
         w.setInsertPoint(i+len(text)+1)
-        c.setChanged(True)
+        c.setChanged()
     #@+node:ekr.20180328085426.6: *4* eval-last-pretty
     @cmd("eval-last-pretty")
     def vs_last_pretty(self, event):

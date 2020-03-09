@@ -4,7 +4,6 @@
 #@@first
 """The base class for all of Leo's user commands."""
 import leo.core.leoGlobals as g
-
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:

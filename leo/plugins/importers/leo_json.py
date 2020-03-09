@@ -57,16 +57,19 @@ class JSON_Scanner:
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         c = self.c
-        changed = c.isChanged()
         ok = self.scan(s, parent)
         # g.app.unitTestDict['result'] = ok
         if ok:
             for p in parent.self_and_subtree():
                 p.clearDirty()
-            c.setChanged(changed)
+            # #1451: The caller should be responsible for this.
+                # if changed:
+                    # c.setChanged()
+                # else:
+                    # c.clearChanged()
         else:
             parent.setDirty() # setDescendentsDirty=False)
-            c.setChanged(True)
+            c.setChanged()
         return ok
     #@+node:ekr.20160504092347.2: *4* json.escapeFalseSectionReferences
     def escapeFalseSectionReferences(self, s):

@@ -12,7 +12,7 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 #@+node:ville.20091009234538.1373: ** << imports >>
 # todo remove dependency on Qt.
 import leo.core.leoGlobals as g
-from leo.core.leoQt import isQt5,QtCore
+from leo.core.leoQt import isQt5, QtCore
 if isQt5:
     from PyQt5 import QtNetwork
 else:
@@ -27,10 +27,10 @@ import struct
 #@-<< imports >>
 #@@killbeautify
 # EKR: use this by default.
-if hasattr(socket,'AF_UNIX'):
+if hasattr(socket, 'AF_UNIX'):
     standard_leo_socket_name = os.path.expanduser('~/.leo/leoserv_sockname')
 else:
-    standard_leo_socket_name = '(172.16.0.0:1)' # A hack.
+    standard_leo_socket_name = '(172.16.0.0:1)'  # A hack.
 
 #@+others
 #@+node:tbrown.20130319124904.18711: ** lprint
@@ -55,6 +55,7 @@ def mk_send_bytes(msg):
 
 #@+node:ville.20091010205847.1362: ** class LProtoBuf
 class LProtoBuf:
+
     def __init__(self):
 
         self.plen = -1
@@ -63,6 +64,7 @@ class LProtoBuf:
     def set_recv_cb(self, cb):
         """ set func to call with received messages """
         self.recv_cb = cb
+
     def get_rlen(self):
         # read pkg length
         if self.plen == -1:
@@ -93,7 +95,7 @@ class LProtoBuf:
             self.plen = -1
             return
 
-        lprint("in buf",self.buf)
+        lprint("in buf", self.buf)
 #@+node:ville.20091009234538.1374: ** class LProtoServer
 class LProtoServer:
 
@@ -110,16 +112,16 @@ class LProtoServer:
             QtCore.SIGNAL("newConnection()"),
             self.connected)
     #@+node:ekr.20111012070545.7255: *3* listen
-    def listen(self,name):
+    def listen(self, name):
 
         self.srv.listen(name)
-        lprint("lproto.py: listen on",self.srv.fullServerName())
+        lprint("lproto.py: listen on", self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received
-    def msg_received(self,msg,ses):
+    def msg_received(self, msg, ses):
 
         if self.receiver:
-            self.receiver(msg,ses)
+            self.receiver(msg, ses)
     #@+node:ekr.20111012070545.7257: *3* set_receiver
     def set_receiver(self, receiver):
 
@@ -133,14 +135,14 @@ class LProtoServer:
         lsock = self.srv.nextPendingConnection()
         lprint("conn", lsock)
 
-        buf =  LProtoBuf()
+        buf = LProtoBuf()
 
         self.ses[lsock] = ses_ent = {'_sock': lsock, '_buf': buf}
 
         def msg_recv_cb(msg):
             self.msg_received(msg, ses_ent)
 
-        buf.set_recv_cb( msg_recv_cb )
+        buf.set_recv_cb(msg_recv_cb)
 
         def readyread_cb():
             lprint("read ready")
@@ -158,13 +160,15 @@ class LProtoServer:
     #@-others
 #@+node:ville.20091010205847.1360: ** (ignore) class LProtoObsoleteClient
 if 0:
+
+
     class LProtoObsoleteClient:
         #@+others
         #@+node:ville.20091010205847.1361: *3* initialization (LProtoObsoleteClient)
         def __init__(self):
             self.cl = QtNetwork.QLocalSocket()
 
-        def connect(self,name):
+        def connect(self, name):
             self.cl.connectToServer(name)
             lprint("client connected")
         #@-others
@@ -173,7 +177,7 @@ class LProtoClient:
 
     #@+others
     #@+node:ekr.20111012070545.7210: *3* ctor (LProtoClient)
-    def __init__(self,fname=standard_leo_socket_name):
+    def __init__(self, fname=standard_leo_socket_name):
 
         self.socket_name = fname
 
@@ -184,34 +188,34 @@ class LProtoClient:
         else:
             self.recvbuf = None
     #@+node:ekr.20111012070545.7212: *3* connect
-    def connect (self,fname):
+    def connect(self, fname):
         '''Connect to the server.  Return True if the connection was established.'''
-        if hasattr(socket,'AF_UNIX'):
+        if hasattr(socket, 'AF_UNIX'):
             try:
                 # pylint: disable=no-member
                 # Module 'socket' has no 'AF_UNIX' member
-                self.socket = socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+                self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 self.socket.connect(fname)
                 return True
             except Exception:
-                g.es_print('lproto.py: failed to connect!',fname)
-                g.es_exception(full=False,c=None)
+                g.es_print('lproto.py: failed to connect!', fname)
+                g.es_exception(full=False, c=None)
                 return False
         else:
             try:
-                host = '172.16.0.0' # host is a local address.
+                host = '172.16.0.0'  # host is a local address.
                 port = 1
-                self.socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                self.socket.connect((host,port),)
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.connect((host, port),)
                 self.socket.connect(fname)
                 return True
             except Exception:
                 g.es_print('lproto.py: failed to connect! host: %s, port: %s' % (
-                    host,port))
-                g.es_exception(full=False,c=None)
+                    host, port))
+                g.es_exception(full=False, c=None)
                 return False
     #@+node:ekr.20111012070545.7211: *3* send
-    def send(self,msg):
+    def send(self, msg):
 
         byts = mk_send_bytes(msg)
         self.socket.sendall(byts)

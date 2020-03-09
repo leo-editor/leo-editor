@@ -29,12 +29,12 @@ except ImportError:
     isQt5 = False
     try:
         from PyQt4 import Qt
-        assert Qt # for pyflakes
+        assert Qt  # for pyflakes
     except ImportError:
         fail = True
         if strict:
             print('leoQt.py: can not import either PyQt4 or PyQt5.')
-            g.es_exception() # #339.
+            g.es_exception()  # #339.
             print('')
             raise
 # Complete the imports.
@@ -44,7 +44,7 @@ if fail:
     Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
     QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
     phonon = uic = None
-    QtMultimedia = None # Replacement for phonon.
+    QtMultimedia = None  # Replacement for phonon.
     qt_version = '<no version>'
     printsupport = Signal = None
 elif isQt5:
@@ -58,7 +58,7 @@ elif isQt5:
         printsupport = Qt
     except ImportError:
         print('leoQt.py: can not fully import PyQt5.')
-        g.es_exception() # PR #339.
+        g.es_exception()  # PR #339.
         print('')
 else:
     try:
@@ -66,14 +66,14 @@ else:
         from PyQt4 import QtGui
         from PyQt4.QtCore import QUrl
         from PyQt4.QtCore import pyqtSignal as Signal
-        assert QUrl # for pyflakes.
-        assert Signal # for pyflakes.
+        assert QUrl  # for pyflakes.
+        assert Signal  # for pyflakes.
         QtConst = QtCore.Qt
         QtWidgets = QtGui
         printsupport = QtWidgets
     except ImportError:
         print('leoQt.py: can not fully import PyQt4.')
-        g.es_exception() # PR #339.
+        g.es_exception()  # PR #339.
         print('')
 # Define qt_version
 if fail:
@@ -91,7 +91,7 @@ elif isQt5:
     try:
         QString = QtCore.QString
     except Exception:
-        QString = g.u # Use default
+        QString = g.u  # Use default
     try:
         import PyQt5.QtDeclarative as QtDeclarative
     except ImportError:
@@ -171,7 +171,7 @@ else:
     except ImportError:
         QtWebKit = None
     try:
-        import PyQt4.QtWebKit as QtWebKitWidgets # Name change.
+        import PyQt4.QtWebKit as QtWebKitWidgets  # Name change.
     except ImportError:
         QtWebKitWidgets = None
 #@-leo

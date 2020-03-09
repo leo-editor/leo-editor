@@ -10,6 +10,8 @@ __pycache__/
 *.db
 
 # Per user stuff
+.coverage
+htmlcov/
 .gitconfig
 .viminfo
 .leo

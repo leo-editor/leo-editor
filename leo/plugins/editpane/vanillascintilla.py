@@ -10,7 +10,7 @@ Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 #@+node:tbrown.20171028115501.1: ** << vanillascintilla.py imports >>
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtGui, QtWidgets, Qsci # QtCore, QtConst
+from leo.core.leoQt import QtGui, QtWidgets, Qsci  # QtCore, QtConst
 
 if Qsci is None:  # leo.core.leoQt eats ImportErrors
     raise ImportError
@@ -23,8 +23,7 @@ def DBG(text):
     Args:
         text (str): text to print
     """
-    print("LEP: %s" % text)
-
+    print(f"LEP: {text}")
 #@+node:tbrown.20171028115501.3: ** class LEP_VanillaScintilla
 class LEP_VanillaScintilla(Qsci.QsciScintilla):
     lep_type = "EDITOR"
@@ -50,22 +49,19 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
 
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QtGui.QColor("#ffe4e4"))
-
     #@+node:tbrown.20171028115501.5: *3* focusInEvent
-    def focusInEvent (self, event):
+    def focusInEvent(self, event):
         Qsci.QsciScintilla.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
         #X self.update_position(self.lep.get_position())
-
     #@+node:tbrown.20171028115501.6: *3* focusOutEvent
-    def focusOutEvent (self, event):
+    def focusOutEvent(self, event):
         Qsci.QsciScintilla.focusOutEvent(self, event)
         DBG("focusout()")
         #X text = self.lep.get_position()
         #X text = self.text()
         #X self.lep.c.redraw()
-
     #@+node:tbrown.20171028115501.7: *3* new_text
     def new_text(self, text):
         """new_text - update for new text
@@ -74,7 +70,6 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
             text (str): new text
         """
         self.setText(text)
-
     #@+node:tbrown.20171028115501.8: *3* text_changed
     def text_changed(self):
         """text_changed - text editor text changed"""
@@ -83,7 +78,6 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
             self.lep.text_changed(self.text())
         else:
             DBG("text changed, NOT focused")
-
     #@+node:tbrown.20171028115501.9: *3* update_text
     def update_text(self, text):
         """update_text - update for current text
@@ -93,9 +87,6 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         """
         DBG("update editor text")
         self.setText(text)
-
-
-
     #@-others
 #@-others
 #@@language python

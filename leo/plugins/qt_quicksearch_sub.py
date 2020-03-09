@@ -3,8 +3,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui,
+from leo.core.leoQt import isQt5, QtCore, QtWidgets  # QtGui,
 QtGui = QtWidgets
+
 
 class Ui_LeoQuickSearchWidget:
 
@@ -24,7 +25,8 @@ class Ui_LeoQuickSearchWidget:
         self.lineEdit.setObjectName("lineEditNav")
         self.verticalLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
         self.listWidget = QtGui.QListWidget(LeoQuickSearchWidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.listWidget.sizePolicy().hasHeightForWidth())

@@ -6,7 +6,7 @@
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
 import time
-import imp
+import importlib
 try:
     import rope.base.project as project
     import rope.base.simplify as simplify
@@ -15,9 +15,9 @@ try:
 except Exception:
     has_rope = False
 if has_rope:
-    imp.reload(project)
-    imp.reload(simplify)
-    imp.reload(refactor)
+    importlib.reload(project)
+    importlib.reload(simplify)
+    importlib.reload(refactor)
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController
@@ -30,7 +30,6 @@ class RopeController:
             self.proj = project.Project(g.app.loadDir)
         else:
             self.proj = None
-
     #@+node:ekr.20140525065558.15806: *3* modules (RopeController)
     def modules(self):
         """Return full path names of all Leo modules."""
@@ -75,7 +74,7 @@ def test(c):
     g.cls()
     t1 = time.time()
     RopeController(c).run()
-    print('done: %s sec.' % g.timeSince(t1))
+    print(f"done: {g.timeSince(t1)} sec.")
 #@-others
 #@@language python
 #@@tabwidth -4

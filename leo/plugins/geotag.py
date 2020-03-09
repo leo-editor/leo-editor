@@ -67,7 +67,7 @@ class geotag_Controller:
         nd = self.getAttr(p)
 
         nd.h = '@LatLng %(lat)f %(lng)f %(zoom)d %(maptype)s  %(description)s ' % data
-        c.setChanged(True)
+        c.setChanged()
         if hasattr(c, 'attribEditor'):
             c.attribEditor.updateEditorInt()
         c.redraw()

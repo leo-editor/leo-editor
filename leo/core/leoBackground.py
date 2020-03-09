@@ -3,11 +3,9 @@
 #@+node:ekr.20161026193447.1: * @file leoBackground.py
 #@@first
 """Handling background processes"""
-
 import leo.core.leoGlobals as g
 import re
 import subprocess
-
 #@+others
 #@+node:ekr.20161026193609.1: ** class BackgroundProcessManager
 class BackgroundProcessManager:
@@ -100,10 +98,10 @@ class BackgroundProcessManager:
             if self.pid.poll() is None:
                 pass
             else:
-                self.end() # End this process.
-                self.start_next() # Start the next process.
+                self.end()  # End this process.
+                self.start_next()  # Start the next process.
         elif self.process_queue:
-            self.start_next() # Start the next process.
+            self.start_next()  # Start the next process.
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
         """End the present process."""
@@ -177,7 +175,6 @@ class BackgroundProcessManager:
         try:
             m = link_pattern.match(s)
         except Exception:
-            # g.es_exception()
             m = None
         if not m:
             log.put(s + '\n')
@@ -209,7 +206,7 @@ class BackgroundProcessManager:
 
             def callback(data=data, kind=kind):
                 """This is called when a process ends."""
-                self.put_log('%s: %s\n' % (kind, g.shortFileName(data.fn)))
+                self.put_log(f'{kind}: {g.shortFileName(data.fn)}\n')
                 self.pid = subprocess.Popen(
                     command,
                     shell=shell,
@@ -217,6 +214,7 @@ class BackgroundProcessManager:
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
+
             data.callback = callback
             self.process_queue.append(data)
         else:
@@ -224,7 +222,7 @@ class BackgroundProcessManager:
             self.data = data
             # g.trace('\nSTART', link_root.h)
             self.kind = kind
-            self.put_log('%s: %s\n' % (kind, g.shortFileName(fn)))
+            self.put_log(f'{kind}: {g.shortFileName(fn)}\n')
             self.pid = subprocess.Popen(
                 command,
                 shell=shell,
@@ -237,5 +235,4 @@ class BackgroundProcessManager:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-
 #@-leo

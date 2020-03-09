@@ -19,8 +19,8 @@ This plugin also accumulates the effect of all \@path nodes.
 #@-<< docstring >>
 __version__ = "0.9"
 import leo.core.leoGlobals as g
-path           = g.importExtension('path',          pluginName=__name__,verbose=True)
-win32clipboard = g.importExtension('win32clipboard',pluginName=__name__,verbose=True)
+path           = g.import_module('path')
+win32clipboard = g.import_module('win32clipboard')
 
 #@+others
 #@+node:ekr.20111104210837.9693: ** init

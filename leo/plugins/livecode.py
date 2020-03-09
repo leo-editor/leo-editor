@@ -200,7 +200,7 @@ class LiveCodeDisplay:
                         # pylint: disable=eval-used
                         node_result.append("%s = %r" %
                             (code.strip(), eval(code, self.scope)))
-                    node_result = ''.join(node_result) ### was '\n'.join
+                    node_result = ''.join(node_result) # was '\n'.join
             assert node_result is None or isinstance(node_result, str)
             if node_result is None:
                 self.codeblocks.append(self.CodeBlock(block[n], None))

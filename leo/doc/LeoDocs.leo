@@ -8,7 +8,11 @@
 <vnodes>
 <v t="ekr.20050831195449"><vh>** Read me first **</vh></v>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="rkeeney.20190823135126.4"><vh>@persistence</vh></v>
+<v t="rkeeney.20190823135126.4"><vh>@persistence</vh>
+<v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
+<v t="ekr.20191216061528.2"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
 <v t="ekr.20150318043636.17"><vh>@bool check_outline_before_save = True</vh></v>
@@ -585,7 +589,7 @@
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's GitHub site?</vh></v>
+<v t="ekr.20170206073747.10"></v>
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -705,6 +709,7 @@
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
 <v t="ekr.20050830115714.115"><vh>Error messages from the rst3 plugin aren't helpful. What can I do?</vh></v>
+<v t="ekr.20200213034654.1"><vh>How can I move Leo's window back on screen?</vh></v>
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
@@ -936,7 +941,6 @@
 <v t="ekr.20170314092126.1"><vh>nodediff.py</vh></v>
 <v t="ekr.20101113063552.9425"><vh>outline_export.py</vh></v>
 <v t="ekr.20101113063552.9426"><vh>paste_as_headlines.py</vh></v>
-<v t="ekr.20101113063552.9427"><vh>pretty_print.py</vh></v>
 <v t="ekr.20101113063552.9428"><vh>quickMove.py</vh></v>
 <v t="ekr.20101113063552.9429"><vh>setHomeDirectory.py</vh></v>
 <v t="ekr.20170314092144.1"><vh>sftp.py</vh></v>
@@ -2327,7 +2331,6 @@
 <v t="ekr.20191003051240.1"></v>
 <v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
 <v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
-<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
 <v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
 <v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
 <v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
@@ -2345,6 +2348,38 @@
 <v t="ekr.20191003051510.14"><vh>#1263: --window-spot</vh></v>
 <v t="ekr.20191003051510.1274"><vh>#1289: --global-docks</vh></v>
 <v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
+</v>
+</v>
+<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
+<v t="ekr.20191006113015.1"><vh>#1281: Integrate Leo with Visual Studio Code</vh></v>
+</v>
+<v t="ekr.20200227061507.1"><vh>FAQ: how to customize window layout</vh></v>
+<v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
+<v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
+<v t="ekr.20200113232354.1"><vh>Other classes</vh></v>
+<v t="ekr.20200113234440.1"><vh>Significant vs insignificant tokens</vh></v>
+<v t="ekr.20191206063508.1"><vh>Helping TOG visitors</vh></v>
+<v t="ekr.20191206064645.1"><vh>Syncing tokens</vh></v>
+<v t="ekr.20200107105607.1"><vh>Figures of merit</vh>
+<v t="ekr.20200114003344.1"><vh>Simplicity</vh></v>
+<v t="ekr.20200114051050.1"><vh>Innovation</vh></v>
+<v t="ekr.20200114003349.2"><vh>Speed</vh></v>
+<v t="ekr.20200114003350.1"><vh>Memory usage</vh></v>
+</v>
+<v t="ekr.20191206062108.1"><vh>Summary</vh></v>
+</v>
+<v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
+<v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
+<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests</vh></v>
+<v t="ekr.20200107110111.1"><vh>Example</vh></v>
+<v t="ekr.20200107110057.1"><vh>Notable functions</vh>
+<v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
+<v t="ekr.20200107112200.1"><vh>Reading &amp; writing files</vh></v>
+<v t="ekr.20200107111656.1"><vh>Reports</vh></v>
+<v t="ekr.20200107112459.1"><vh>Updating tokens and parse trees</vh></v>
+</v>
+<v t="ekr.20200107113403.1"><vh>Notable methods</vh>
+<v t="ekr.20200107142833.1"><vh>TokenOrderGenerator.init_from_file</vh></v>
 </v>
 </v>
 </vnodes>
@@ -3723,8 +3758,6 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
 
 Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.
-
-p.setDirty and p.setAllAncestorAtFileNodesDirty now return a dirtyVnodeList that all vnodes that became dirty as the result of an operation. More than one list may be generated: client code is responsible for merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)
 
 See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
 </t>
@@ -7231,20 +7264,6 @@ And then I hit Control-B to execute the Profiling Experiment body. This let me m
 
 The great thing about this was that I just used the Leo @others construct to create a wrapper around the code and did not need to litter my code with debug or profiling statements.---Kayvan
 </t>
-<t tx="ekr.20080603124653.1">Many users will want to track the development version of Leo, in order to stay on top of the latest features and bug fixes. Running the development version is quite safe and easy, and it's also a requirement if you want to contribute to Leo.
-
-1. First, you need to get git from http://git-scm.com/.
-
-2. Get Leo from GitHub by doing::
-
-        git clone https://github.com/leo-editor/leo-editor (http access)
-    
-   or::
-   
-        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
-
-And that's it! You can run the launchLeo script (in the top-level branch directory) directly. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
-</t>
 <t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module. See http://docs.python.org/lib/module-timeit.html. The contents of @button timer is::
 
     import leo.core.leoTest as leoTest
@@ -7536,7 +7555,8 @@ The command name follows @item. If the body text of an @item node exists, this b
 - **machineDir**, the HOME/.leo/MACHINE directory. MACHINE is given by Python's HOSTNAME environment variable, or by Python's COMPUTERNAME environment variable if there is no HOSTNAME variable, or by the value returned by socket.gethostname() if neither environment variable exists.
 
 - **localDir**, the directory containing the .leo file being loaded.
-</t>
+
+Leo reports in the Log pane window on startup and when opening .leo files what HOME dir is used and which settings files are read.</t>
 <t tx="ekr.20090126063121.3">def createWxGui(self, fileName='', verbose=False):
     # Do NOT omit fileName param: it is used in plugin code.
     """A convenience routines for plugins to create the wx gui class."""
@@ -9901,9 +9921,7 @@ controller(c).run()
 ``paste_as_headlines.py``
     Creates new headlines from clipboard text.
 ``plugins_menu.py``
-    Creates a Plugins menu and adds all actives plugins to it.
-``pretty_print.py``
-    Customizes pretty printing.   
+    Creates a Plugins menu and adds all actives plugins to it.  
 ``projectwizard.py``
     Creates a wizard that creates @auto nodes.
 ``python_terminal.py``
@@ -10409,11 +10427,6 @@ Feedback on this plugin can be sent to::
 <t tx="ekr.20101113063552.9426">Creates new headlines from clipboard text.
 
 If the pasted text would be greater than 50 characters in length, the plugin truncates the headline to 50 characters and pastes the entire line into the body text of that node. Creates a "Paste as Headlines" option the Edit menu directly under the existing Paste option.
-
-</t>
-<t tx="ekr.20101113063552.9427">Customizes pretty printing.
-
-The plugin creates a do-nothing subclass of the default pretty printer. To customize, simply override in this file the methods of the base prettyPrinter class in leoCommands.py. You would typically want to override putNormalToken or its allies. Templates for these methods have been provided. You may, however, override any methods you like. You could even define your own class entirely, provided you implement the prettyPrintNode method.
 
 </t>
 <t tx="ekr.20101113063552.9428">Creates buttons to move nodes quickly to other nodes.
@@ -13731,7 +13744,7 @@ else:
     # because it requires a valid value for c.rootPosition().
     if c.config.getBool('use_chapters') and c.chapterController:
         c.chapterController.finishCreate()
-    frame.c.setChanged(False)
+    frame.c.clearChanged()
         # Mark the outline clean.
         # This makes it easy to open non-Leo files for quick study.
     return c
@@ -14923,7 +14936,7 @@ Leo uses outlines for just about *everything*, including configuring Leo:
 
 - **leo/config/leoSettings.leo** contains Leo's default **global settings**. Don't change this file unless you are one of Leo's developers.
    
-- **~/myLeoSettings.leo** contains your **personal settings**. Leo will not create this file automatically: you should create it yourself. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
+- **~/myLeoSettings.leo** contains your **personal settings**. Leo will create this file automatically if it doesn't exist when using *Settings &gt;&gt; Open myLeoSettings* menu item. Settings in myLeoSettings.leo override (or add to) the default settings in leoSettings.leo.
    
 - Any other .leo file may also contain **local settings**. Local settings apply only to that file and override all other settings.
 
@@ -17185,7 +17198,7 @@ myDocument.html.txt is the **input** file for sphinx.
                 # p.expand()
             c.target_language = 'rest'
                 # Settings not parsed the first time.
-            c.setChanged(False)
+            c.clearChanged()
             c.redraw()
     return c
 </t>
@@ -21921,7 +21934,7 @@ def markup(p, root):
     if p.b != s:
         g.es_print('changed: %s' % (p.h))
         p.setDirty()
-        c.setChanged(True)
+        c.setChanged()
         p.b = s
 </t>
 <t tx="ekr.20161204055040.1">'''Make a markdown table of contents for an @auto-md node.'''
@@ -22446,8 +22459,11 @@ Leo.
    
         git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
 
-And that's it! You can run launchLeo.py directly. When you want to refresh the
-code with latest modifications from GitHub, run git pull.
+3. Install dependencies and create leo script launcher::
+
+        pip install --editable path/to/leo-editor
+        
+And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
@@ -22716,7 +22732,7 @@ def teardown(self):
     ratio1, ratio2 = self.ratios
     self.set_ratios(ratio1, ratio2)
     c.contractAllHeadlines()
-    c.setChanged(False)
+    c.clearChanged()
     c.redraw()
 </t>
 <t tx="ekr.20170212105226.7">def teardown_script(self):
@@ -30988,6 +31004,359 @@ Much like the corresponding adoc commands, but uses pandoc markup, which is a va
 
 The pandoc tool must exist, because Leo uses it to convert @pandoc trees to html.</t>
 <t tx="ekr.20191026191805.1">https://github.com/leo-editor/leo-editor/issues/1388
+</t>
+<t tx="ekr.20191118115949.1">This is the Theory of Operation for the TokenOrderGenerator (TOG) class and related classes. These classes should be a substantial legacy to the python community.
+
+The notion of a **token order traversal** of a parse tree is the foundation of this project. This is the traversal order that generates tokens in the same order that they appear in the token list corresponding to the parse tree. This project proves that token order traversals exist, and that the notion of a token order traversal is well defined.
+</t>
+<t tx="ekr.20191206062108.1">The notion of token-order tree traversals got this project started.
+
+The project is a complete success:
+
+- The code is simple, fast, and makes no demands on the GC.
+- It is easy to debug and maintain.
+- It is robust: TOG.sync_token is an ever-present unit test.
+
+The code in leoAst.py is simpler, easier to understand, more robust and faster than the corresponding code in the asttokens, fstringify and black projects. These improved figures of merit are the results of months of innovation.
+
+The Fstringify class is already more capable and more solid than the official fstringify tool.
+</t>
+<t tx="ekr.20191206062224.1">The **TokenOrderGenerator** (TOG) class injects two-way links between all tokens and the corresponding ast nodes. The TOG class also injects parent/child links into all ast nodes.
+
+The TOG class defines generators that visit ast nodes in **token order**, the traversal order that corresponds to the order of the tokens produced by python's tokenizer module. The only way to ensure this correspondence is to use separate visitors for all ast nodes. All visitors are straightforward generators.
+
+TOG visitors `yield from` tog.gen* generators to visit subtrees. All such generators eventually call TOG.sync_token, which checks that that tokens are, in fact, visited in the correct order. TOG.sync_token is an ever-present unit test.
+
+The **TokenOrderTraversal** (TOT) class uses the parent/child links created by the TOG class. TOT.traverse contains a single for-loop that calls all nodes of the parse tree in token order. This loop is extremely fast. Using the TOT class, client code can easily modify the token list or parse tree as desired.
+</t>
+<t tx="ekr.20191206063508.1">The TOG.do_If visitor calls **TOG.find_next_significant_token** to determine whether TOG.do_If should generate an "if" or an "elif" token. This help is essential, because the following two source files generate identical parse trees!::
+
+  if 1:            if 1:
+      pass             pass
+  else:            elif 2:
+      if 2:            pass
+          pass
+
+Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call **TOG.get_concatenated_string_tokens** to handle one ore more concatenated string tokens.
+
+Finally, TOG.do_slice calls TOG.find_next_significant_token to determine whether a slice without a step contains an optional colon.
+
+TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are crucial inventions. TOG class would not be possible without them.
+</t>
+<t tx="ekr.20191206064645.1">**TOG.px** is an index into the token list. It is either -1, or it points at the previous significant token. *Note*: TOG.find_next_significant_token and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
+
+TOG.sync_token(self, kind, val) associates tokens with ast nodes as follows:
+
+1. If (kind, val) denote an *insignificant* token, TOG.sync_token does nothing.
+   
+2. Otherwise, (kind, val) denotes a *significant* token. TOG.sync_token associates that token, *plus* all previous *insignificant* tokens with self.node, the ast node presently being visited.
+   
+In addition, if (kind, val) denotes a *significant* token, TOG.sync_token checks that the next *significant* token in the token list has the expected kind and value. This is done as follows:
+
+- TOG.sync_token advances TOG.px to point at the next significant token, call it T.
+- TOG.raises AssignLinksError if (T.kind, T.value) != (kind, val)
+
+To summarize token syncing:
+
+- The TOG.px index tracks the last-seen *significant* token.
+- TOG.px advances monotonically through the token list.
+- TOG.find_next_significant_token and TOG.get_concatenated_string_tokens scan forward through the token list using a private copy of TOG.px. These methods never change TOG.px itself.
+- This token-syncing machinery is the *simplest* thing that could possibly work. It is also the *fastest* thing that could possibly work.
+</t>
+<t tx="ekr.20191216061528.1">gnx: ekr.20170130080532.1
+</t>
+<t tx="ekr.20191216061528.2">gnx: ekr.20191216061356.4
+unl: Leo's demo.py plugin
+gnx: ekr.20191216061356.5
+unl: Overview
+gnx: ekr.20191216061356.6
+unl: A simpler work flow
+gnx: ekr.20191216061356.7
+unl: Graphics classes &amp; helpers
+gnx: ekr.20191216061356.8
+unl: Using demo scripts
+gnx: ekr.20191216061356.9
+unl: Using demo scripts--&gt;Script trees and lists
+gnx: ekr.20191216061356.10
+unl: Using demo scripts--&gt;Predefined symbols
+gnx: ekr.20191216061356.11
+unl: Using demo scripts--&gt;Positioning graphics
+gnx: ekr.20191216061356.12
+unl: Using demo scripts--&gt;Deleting graphics
+gnx: ekr.20191216061356.13
+unl: Using demo scripts--&gt;Details
+gnx: ekr.20191216061356.14
+unl: Example scripts
+gnx: ekr.20191216061356.15
+unl: Example scripts--&gt;Top-level script
+gnx: ekr.20191216061356.16
+unl: Example scripts--&gt;Simulate typing
+gnx: ekr.20191216061356.17
+unl: Example scripts--&gt;Change the demo namespace
+gnx: ekr.20191216061356.18
+unl: Example scripts--&gt;Add graphics
+gnx: ekr.20191216061356.19
+unl: Example scripts--&gt;Switch focus
+gnx: ekr.20191216061356.20
+unl: Helper methods
+gnx: ekr.20191216061356.21
+unl: Helper methods--&gt;Ivars
+gnx: ekr.20191216061356.22
+unl: Helper methods--&gt;Menus
+gnx: ekr.20191216061356.23
+unl: Helper methods--&gt;Magnification and styling
+gnx: ekr.20191216061356.24
+unl: Helper methods--&gt;Simulated typing
+gnx: ekr.20191216061356.25
+unl: Helper methods--&gt;Startup, setup and teardown
+gnx: ekr.20191216061356.26
+unl: Helper methods--&gt;Window position and ratios
+gnx: ekr.20191216061356.27
+unl: Summary
+gnx: ekr.20191216061356.28
+unl: History and change log
+</t>
+<t tx="ekr.20200107061524.1">This is the How To documentation for leoAst.py.</t>
+<t tx="ekr.20200107105607.1">This project has been a complete success...
+
+</t>
+<t tx="ekr.20200107110057.1"></t>
+<t tx="ekr.20200107110111.1">The Fstringify.fstringify_file method implements Leo's fstringfy-file command. 
+Here it is, minus error handling code::
+
+    def fstringify_file(self, filename):
+    
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        results = self.fstringify(contents, filename, tokens, tree)
+        show_diffs(contents, results, filename=filename)
+        print(f"Wrote {filename}")
+        write_file(filename, results, encoding=encoding)</t>
+<t tx="ekr.20200107111656.1">The dump_* functions pretty-print tokens and parse trees in various
+formats.
+
+def show_diffs(s1, s2, filename=''):
+    """Print diffs between strings s1 and s2."""
+
+def tokens_to_string(tokens):
+    """Return the string represented by the list of tokens."""</t>
+<t tx="ekr.20200107112037.1">def make_tokens(contents):
+    """
+    Return a list (not a generator) of Token objects corresponding to the
+    list of 5-tuples generated by tokenize.tokenize.
+    """
+    
+def nearest_common_ancestor(node1, node2):
+    """
+    Return the nearest common ancestor nodes for the given nodes.
+    
+    The nodes must have parent links.
+    """
+
+def parse_ast(s):
+    """
+    Parse string s, catching &amp; reporting all exceptions.
+    Return the ast node, or None.
+    """
+    
+def tokens_for_node(node, tokens):
+    """Return the list of all tokens descending from node."""</t>
+<t tx="ekr.20200107112200.1">def read_file_with_encoding(filename):
+    """
+    Read the file, returning (e, s).
+
+    s is the string, converted to unicode, or None if there was an error.
+    
+    e is the encoding of s, computed in the following order:
+
+    - The BOM encoding if the file starts with a BOM mark.
+    - The encoding given in the # -*- coding: utf-8 -*- line.
+    - The encoding given by the 'encoding' keyword arg. - 'utf-8'.
+    """
+    
+def write_file(filename, s, encoding='utf-8'):
+    """Write the string s to the file whose name is given."""</t>
+<t tx="ekr.20200107112459.1">def add_token_to_token_list(token, node):
+    """Insert token in the proper location of node.token_list."""
+    
+def replace_node(new_node, old_node):
+    """Replace new_node by old_node in the parse tree."""
+    
+def replace_token(token, kind, value):
+    """Replace kind and value of the given token."""</t>
+<t tx="ekr.20200107113403.1"></t>
+<t tx="ekr.20200107142458.1">leoAst.py is completely self contained. It imports only standard library
+modules.
+
+To access the code, do one of the following::
+
+    import leoAst
+    import leo.core.leoAst as leoAst
+    
+You can then run the fstringify commands as follows:
+
+    changed = leoAst.Fstringify().fstringify_file(filename)
+    changed = leoAst.Fstringify().fstringify_diff_files(filename)</t>
+<t tx="ekr.20200107142833.1">This method creates the tokens list and the parse tree and adds all links
+between tokens and parse tree nodes.  Here it is:
+
+
+def init_from_file(self, filename):
+    """
+    Create the tokens and ast tree for the given file.
+    
+    Return (contents, encoding, tokens, tree).
+    """
+    self.level = 0
+    self.filename = filename
+    encoding, contents = read_file_with_encoding(filename)
+    if contents is None:
+        return None, None, None, None
+    self.tokens = tokens = make_tokens(contents)
+    self.tree = tree = parse_ast(contents)
+    list(self.create_links(tokens, tree))
+    self.reassign_tokens(tokens, tree)
+    return contents, encoding, tokens, tree
+</t>
+<t tx="ekr.20200107143607.1">The following runs all unit tests for leoAst.py::
+
+    python -m leo.core.leoAst
+    
+The following runs coverage tests::
+
+    pytest -x --cov-report html --cov-report term-missing --cov=leo.core.leoAst leo/core/leoAst.py
+</t>
+<t tx="ekr.20200113232354.1">The **Token** class represents one token, created by tokenize.tokenize.
+
+The **Fstringify** class is an re-implementation of the project using the TOG class.
+
+The **Orange** class is a re-implementation of the black project. The name "Orange" is a play on words: "Orange is the new black".
+
+The **AstDumper** class provides an extensive set of tools for examining token lists, parse trees, and the links between them.
+
+The **BaseTest** class provides common infrastructure for all other test classes.
+*Important*: BaseTest.make_data is, all by itself, a very strong unit test.
+</t>
+<t tx="ekr.20200113234440.1">@language rest
+
+The distinction between **significant** and **insignificant** tokens is a crucial invention of this project. Visitors call TOG.gen_token, TOG.gen_op, etc. *only* for significant tokens.
+
+The following functions declare that commas, semicolons, whitespace and parentheses are *insignificant* tokens. All other kinds of tokens are significant::
+
+@language python
+
+    def is_significant(kind, value):
+        """
+        Return True if (kind, value) represent a token that can be used for
+        syncing generated tokens with the token list.
+        """
+        # Making 'endmarker' significant ensures that all tokens are synced.
+        return (
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
+            kind == 'op' and value not in ',;()')
+    
+    def is_significant_token(token):
+        """Return True if the given token is a syncronizing token"""
+        return is_significant(token.kind, token.value)
+
+@language rest
+
+These definitions are anything but arbitrary. Visitors can't know, just by looking at the parse tree, whether the input contains *insignificant* tokens.  For example, the source tokens might contain non-essential parentheses, or optional trailing commas, or whether two statements are separated by a semicolon.
+</t>
+<t tx="ekr.20200114003344.1">The code (all of it) is the simplest thing that could possibly work. This is in stark contrast to the generators used in the asttokens, fstringify, and black projects.
+
+</t>
+<t tx="ekr.20200114003349.2">The TOG creates links between tokens and ast nodes in roughly the time taken by python's tokenize.tokenize and ast.parse library methods. The TOT class traverses trees annotated with parent/child links even more quickly.
+
+TOG class avoids both ast.fix_missing_locations and ast.get_source_segment, which are too slow to be useful.
+</t>
+<t tx="ekr.20200114003350.1">The TOG class makes no significant demand on python's resources:
+
+- Generators add nothing to python's call stack.
+- The *only* variable-length data created by the TOG is TOG.node_stack. This stack resides in python's heap, so its length is unimportant. In the worst case, it might contain a few thousand entries.
+  
+The TOT uses no variable-length data whatever.
+</t>
+<t tx="ekr.20200114051050.1">The simplicity of the present code is the result of months of invention. Several inventions and discoveries deserve special mention:
+
+1. The notion of a token-order traversals is the root of all the present simplicity.
+
+2. The distinction between significant and insignificant tokens makes token-order traversals possible. This distinction drastically simplifies TOG visitors. They never have to generate insignificant tokens!
+   
+3. TOG.find_next_significant_token and TOG.get_concatenated_string_tokens() use TOG.px to look ahead in the token list.
+   
+This innovation looks obvious only in retrospect. It took a long time to realize that the parse tree needs help from the token list, not the other way around!
+</t>
+<t tx="ekr.20200213034654.1">Leo is starting on one of the external monitors and I have no way to
+move it back to my laptop screen.
+
+This has happened to me on Windows for as long as I can remember, mid
+1990s and Windows 3. It's rare, but I don't think a year has gone by
+where it hasn't occurred to me. At any rate, the most reliable and
+portable solution I've come across is:
+
+- Press [Alt]-[Tab] until the invisible program has focus.
+- Press [Alt]-[spacebar] to bring up window controls (Move, Size, Min, Max, Close).
+- Press [M] to activate Move.
+  A dotted or thin gray outline of window shape should appear.
+- Press arrow cursor keys to move the outline centrally on active screen.
+  (usually right- and down-arrow)
+- Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
+<t tx="ekr.20200225075435.1">Leo 6.2, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.2**
+
+
+
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20200227061507.1">Q. How can I arrange Qt docks so that the outline tree will be on the left, body on the right, no log window, no render window.  I want to know the ropes so I can modify that as desired.  I'm sure it's in the docs somewhere but I haven't put my finger on it.  Thanks.
+
+Answer by Thomas Passin:
+
+I wrestled with this, too, and no, it's not really in the docs.
+
+Here's what I did.  I happen to want outline left, body right, and the tabs pane (the one with the log tab) on the left below the outline.  You should really not get rid of it, because you will want to use the search and Nav tabs at a minimum, and of you start to use the tags or backlinks plugins, they will create new tabs in that pane, too.
+
+First, add a node with this headline to the @settings tree in MyLeoSettings.leo -
+
+@string central-dock-widget = body
+
+The next step is to drag the panes by their title bars where you want them.  But this is tricky and a little non-intuitive.  There are certain areas you can drag to.  When a pane is over one of them, the space underneath will turn a translucent blue color (I *think* it's blue - my color vision isn't always the best).  Then you release the mouse button.
+
+One of these docking  areas is on the right.  The body pane should already be in it, if you put that @setting node in and restarted Leo.  There is another docking area on the left, and you drag the outline pane over there.  The tabs pane may end up tabbed in the same pane as the outline, or with the body pane.  Either way, drag it way down to the bottom under the outline pane on the left.  A new docking area should open up.  Drop the tabs pane there. 
+
+This docking area sometimes is very small, and if so it's easy to miss.  Look closely for a bluish line or tiny rectangle to show up - that will be the place.
+
+After the tabs pane is in place, you can drag its separator bar up or down to adjust its height.
+
+You may find that the next time you open Leo, the height of the tabs pane has changed.  Who know why this happens?  I have noticed that after you have saved the file several times, the height of the tabs pane tends to settle down somewhat.  But I still often have to readjust it after a restart.
+
+If you start Leo with the --global-docks option, then all the outlines will open with the same pane arrangement ( I *think*).
+
+When I was working my way through this, I got the panes into some arrangement that was unusable and I couldn't recover from.  The remedy is to delete Leo's "db" directory (thanks to @ekr for this).  This will let you start again.  On Windows, directory this is usually at
+
+%userprofile%\.leo
+
+Yes, you can type that directly into the address bar of Windows Explorer, or into a command window.  On Linux, it's usually at
+
+~/.leo
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 

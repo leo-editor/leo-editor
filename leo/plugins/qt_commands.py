@@ -83,9 +83,9 @@ def showColorNames(event=None):
         color_list = []
         box = QtWidgets.QComboBox()
 
-        def onActivated(n,*args,**keys):
+        def onActivated(n, *args, **keys):
             color = color_list[n]
-            sheet = template % (color,color)
+            sheet = template % (color, color)
             box.setStyleSheet(sheet)
             g.es("copied to clipboard:", color)
             QtWidgets.QApplication.clipboard().setText(color)
@@ -93,17 +93,17 @@ def showColorNames(event=None):
         box.activated.connect(onActivated)
         color_db = leoColor.leo_color_database
         for key in sorted(color_db):
-            if not key.startswith('grey'): # Use gray, not grey.
+            if not key.startswith('grey'):  # Use gray, not grey.
                 val = color_db.get(key)
                 color = QtGui.QColor(val)
                 color_list.append(val)
-                pixmap = QtGui.QPixmap(40,40)
+                pixmap = QtGui.QPixmap(40, 40)
                 pixmap.fill(color)
                 icon = QtGui.QIcon(pixmap)
-                box.addItem(icon,key)
+                box.addItem(icon, key)
 
         c.frame.iconBar.addWidget(box)
-        setattr(c,ivar,True)
+        setattr(c, ivar, True)
         g.es('created color picker in icon area')
             # Do this last, so errors don't prevent re-execution.
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
@@ -119,7 +119,7 @@ def showColorWheel(self, event=None):
             text = p.h.split('=', 1)[1].strip()
         color = QtGui.QColor(text)
         picker.setCurrentColor(color)
-    except (ValueError, IndexError) as e:
+    except(ValueError, IndexError) as e:
         g.trace('error caught', e)
     if not picker.exec_():
         g.es("No color selected")
@@ -159,10 +159,10 @@ def showFonts(self, event=None):
         comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
         defs = [
             '\n' if comments else '',
-            '%s_family = %s\n'%(name, font.family()),
-            '%s_weight = %s\n'%(name, 'bold' if font.bold() else 'normal'),
-            '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
-            '%s_size = %s\n'%(name, font.pointSizeF())
+            f"{name}_family = {font.family()}\n",
+            f"{name}_weight = {'bold' if font.bold() else 'normal'}\n",
+            f"{name}_slant = {'italic' if font.italic() else 'roman'}\n",
+            f"{name}_size = {font.pointSizeF()}\n"
         ]
         p.b = ''.join(comments + defs)
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)

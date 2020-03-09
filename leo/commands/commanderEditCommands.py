@@ -52,13 +52,16 @@ def addComments(self, event=None):
         if line.strip():
             i = g.skip_ws(line, 0)
             if indent:
-                result.append(line[0: i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
+                s = line[i:].replace('\n', '')
+                result.append(line[0:i] + openDelim + s + closeDelim + '\n')
             else:
-                result.append(openDelim + line.replace('\n', '') + closeDelim + '\n')
+                s = line.replace('\n', '')
+                result.append(openDelim + s + closeDelim + '\n')
         else:
             result.append(line)
     result = ''.join(result)
-    c.updateBodyPane(head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
+    c.updateBodyPane(
+        head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
 #@+node:ekr.20171123135625.3: ** c_ec.colorPanel
 @g.commander_command('set-colors')
 def colorPanel(self, event=None):
@@ -78,32 +81,31 @@ def convertAllBlanks(self, event=None):
         return
     d = c.scanAllDirectives()
     tabWidth = d.get("tabwidth")
-    count = 0; dirtyVnodeList = []
+    count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed, dirtyVnodeList2 = c.convertBlanks(event)
+            changed = c.convertBlanks(event)
             if changed:
                 count += 1
-                dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             changed = False; result = []
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, abs(tabWidth)) + line[i:] # use positive width.
+                s = g.computeLeadingWhitespace(
+                    w, abs(tabWidth)) + line[i:]  # use positive width.
                 if s != line: changed = True
                 result.append(s)
             if changed:
                 count += 1
-                dirtyVnodeList2 = p.setDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                p.setDirty()
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, innerUndoData)
-    u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.es("blanks converted to tabs in", count, "nodes")
             # Must come before c.redraw().
@@ -120,32 +122,31 @@ def convertAllTabs(self, event=None):
         return
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
-    count = 0; dirtyVnodeList = []
+    count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
         undoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed, dirtyVnodeList2 = self.convertTabs(event)
+            changed = self.convertTabs(event)
             if changed:
                 count += 1
-                dirtyVnodeList.extend(dirtyVnodeList2)
         else:
             result = []; changed = False
             text = p.v.b
             lines = text.split('\n')
             for line in lines:
                 i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-                s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:] # use negative width.
+                s = g.computeLeadingWhitespace(
+                    w, -abs(tabWidth)) + line[i:]  # use negative width.
                 if s != line: changed = True
                 result.append(s)
             if changed:
                 count += 1
-                dirtyVnodeList2 = p.setDirty()
-                dirtyVnodeList.extend(dirtyVnodeList2)
+                p.setDirty()
                 result = '\n'.join(result)
                 p.setBodyString(result)
                 u.afterChangeNodeContents(p, undoType, undoData)
-    u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
+    u.afterChangeGroup(current, undoType)
     if not g.unitTesting:
         g.es("tabs converted to blanks in", count, "nodes")
     if count > 0:
@@ -154,7 +155,7 @@ def convertAllTabs(self, event=None):
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
     """Convert all blanks to tabs in the selected node."""
-    c = self; changed = False; dirtyVnodeList = []
+    c = self; changed = False
     head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -162,20 +163,22 @@ def convertBlanks(self, event=None):
     if tabWidth:
         result = []
         for line in lines:
-            s = g.optimizeLeadingWhitespace(line, abs(tabWidth)) # Use positive width.
+            s = g.optimizeLeadingWhitespace(line, abs(tabWidth))
+                # Use positive width.
             if s != line: changed = True
             result.append(s)
         if changed:
             undoType = 'Convert Blanks'
             result = ''.join(result)
             oldSel = None
-            dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-    return changed, dirtyVnodeList
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+                # Handles undo
+    return changed
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""
-    c = self; changed = False; dirtyVnodeList = []
+    c = self; changed = False
     head, lines, tail, oldSel, oldYview = self.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
@@ -184,15 +187,17 @@ def convertTabs(self, event=None):
         result = []
         for line in lines:
             i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-            s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:] # use negative width.
+            s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]
+                # use negative width.
             if s != line: changed = True
             result.append(s)
         if changed:
             undoType = 'Convert Tabs'
             result = ''.join(result)
             oldSel = None
-            dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
-    return changed, dirtyVnodeList
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+                # Handles undo
+    return changed
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
@@ -254,9 +259,9 @@ def deleteComments(self, event=None):
         for s in lines:
             i = g.skip_ws(s, 0)
             if g.match(s, i, d1b):
-                result.append(s[: i] + s[i + n1b:])
+                result.append(s[:i] + s[i + n1b :])
             elif g.match(s, i, d1):
-                result.append(s[: i] + s[i + n1:])
+                result.append(s[:i] + s[i + n1 :])
             else:
                 result.append(s)
     else:
@@ -270,11 +275,12 @@ def deleteComments(self, event=None):
                 if g.match(s, first, ' '): first += 1
                 last = j
                 if g.match(s, last - 1, ' '): last -= 1
-                result.append(s[: i] + s[first: last] + s[j + n3:])
+                result.append(s[:i] + s[first:last] + s[j + n3 :])
             else:
                 result.append(s)
     result = ''.join(result)
-    c.updateBodyPane(head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
+    c.updateBodyPane(
+        head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline
 @g.commander_command('edit-headline')
 def editHeadline(self, event=None):
@@ -316,11 +322,11 @@ def extract(self, event=None):
        selected lines become the child's body text.
     """
     c = self
-    current = c.p # Unchanging.
+    current = c.p  # Unchanging.
     u, undoType = c.undoer, 'Extract'
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
-        return # Nothing selected.
+        return  # Nothing selected.
     # Remove leading whitespace.
     junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
@@ -343,10 +349,11 @@ def extract(self, event=None):
         undoType=undoType, oldSel=None, oldYview=oldYview)
     u.afterChangeGroup(current, undoType=undoType)
     p.parent().expand()
-    c.redraw(p.parent()) # A bit more convenient than p.
+    c.redraw(p.parent())  # A bit more convenient than p.
     c.bodyWantsFocus()
-    
+
 # Compatibility
+
 g.command_alias('extractSection', extract)
 g.command_alias('extractPythonMethod', extract)
 #@+node:ekr.20171123135625.20: *3* def createLastChildNode
@@ -364,17 +371,20 @@ def createLastChildNode(c, parent, headline, body):
     return p
 #@+node:ekr.20171123135625.24: *3* def extractDef
 extractDef_patterns = (
-    re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
-    re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
-    re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
-    re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
-    re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
-    re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
-    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
-    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-    re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
-    re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+    re.compile(
+    r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'),  # clojure definition
+    re.compile(r'^\s*(?:def|class)\s+(\w+)'),  # python definitions
+    re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'),  # js function
+    re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('),  # js function
+    re.compile(r'\b(\w+)\s*:\s*function\s'),  # js function
+    re.compile(r'\.(\w+)\s*=\s*function\b'),  # js function
+    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'),  # coffeescript function
+    re.compile(
+    r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
+    re.compile(r'\b(\w+)\s*:\s(?:=>|->)'),  # coffeescript function
+    re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'),  # coffeescript function
 )
+
 def extractDef(c, s):
     """
     Return the defined function/method/class name if s
@@ -461,7 +471,7 @@ def findSectionName(self, s):
     if head1 == -1 or head2 == -1 or head1 > head2:
         name = None
     else:
-        name = s[head1: head2 + 2]
+        name = s[head1 : head2 + 2]
     return name
 #@+node:ekr.20171123135625.15: ** c_ec.findMatchingBracket
 @g.commander_command('match-brackets')
@@ -581,7 +591,7 @@ def line_to_headline(self, event=None):
     w.setInsertPoint(i)
     u.setUndoTypingParams(p, undoType, oldText=oldText, newText=p.b)
     p2.setDirty()
-    c.setChanged(True)
+    c.setChanged()
     u.afterChangeGroup(p, undoType=undoType)
     c.redraw_after_icons_changed()
     p.expand()
@@ -663,7 +673,7 @@ def find_bound_paragraph(c):
     # If the present line doesn't start a paragraph,
     # scan backward, adding trailing lines of head to ins.
     if insert_lines and not startsParagraph(insert_lines[0]):
-        n = 0 # number of moved lines.
+        n = 0  # number of moved lines.
         for i, s in enumerate(reversed(head_lines)):
             if ends_paragraph(s) or single_line_paragraph(s):
                 break
@@ -672,7 +682,7 @@ def find_bound_paragraph(c):
                 break
             else: n += 1
         if n > 0:
-            para_lines = head_lines[-n:] + para_lines
+            para_lines = head_lines[-n :] + para_lines
             head_lines = head_lines[: -n]
     ended, started = False, False
     for i, s in enumerate(para_lines):
@@ -695,7 +705,7 @@ def find_bound_paragraph(c):
         head = g.joinLines(head_lines)
         tail_lines = para_lines[i:] if ended else []
         tail = g.joinLines(tail_lines)
-        return head, result, tail # string, list, string
+        return head, result, tail  # string, list, string
     return None, None, None
 #@+node:ekr.20171123135625.45: *3* def rp_get_args
 def rp_get_args(c):
@@ -745,10 +755,10 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     else:
         # Advance to the next paragraph.
         s = w.getAllText()
-        ins += 1 # Move past the selection.
+        ins += 1  # Move past the selection.
         while ins < len(s):
             i, j = g.getLine(s, ins)
-            line = s[i: j]
+            line = s[i:j]
             # 2010/11/16: it's annoying, imo, to treat @ lines differently.
             if line.isspace():
                 ins = j + 1
@@ -766,8 +776,8 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
     trailingNL = lines and lines[-1].endswith('\n')
-    lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-    if lines: # Bug fix: 2013/12/22.
+    lines = [z[:-1] if z.endswith('\n') else z for z in lines]
+    if lines:  # Bug fix: 2013/12/22.
         s = lines[0]
         if startsParagraph(s):
             # Adjust indents[1]
@@ -871,13 +881,15 @@ def toggleAngleBrackets(self, event=None):
     # 2019/09/12: Guard against black.
     lt = "<<"
     rt = ">>"
-    if s[0: 2] == lt or s[-2:] == rt:
-        if s[0: 2] == "<<": s = s[2:]
-        if s[-2:] == ">>": s = s[: -2]
+    if s[0:2] == lt or s[-2:] == rt:
+        if s[0:2] == "<<": s = s[2:]
+        if s[-2:] == ">>": s = s[:-2]
         s = s.strip()
     else:
         s = g.angleBrackets(' ' + s + ' ')
     p.setHeadString(s)
+    p.setDirty()  # #1449.
+    c.setChanged()  # #1449.
     c.redrawAndEdit(p, selectAll=True)
 #@+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
 @g.commander_command('unformat-paragraph')
@@ -914,10 +926,10 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
     # Advance to the next paragraph.
     s = w.getAllText()
-    ins += 1 # Move past the selection.
+    ins += 1  # Move past the selection.
     while ins < len(s):
         i, j = g.getLine(s, ins)
-        line = s[i: j]
+        line = s[i:j]
         if line.isspace():
             ins = j + 1
         else:
@@ -938,7 +950,7 @@ def insertJupyterTOC(self, event=None):
     replacing any selected text.
     """
     insert_toc(c=self, kind='jupyter')
-    
+
 @g.commander_command('insert-markdown-toc')
 def insertMarkdownTOC(self, event=None):
     """
@@ -946,11 +958,10 @@ def insertMarkdownTOC(self, event=None):
     replacing any selected text.
     """
     insert_toc(c=self, kind='markdown')
-
 #@+node:ekr.20180410074238.1: *3* insert_toc
 def insert_toc(c, kind):
     """Insert a table of contents at the cursor."""
-    undoType = 'Insert %s TOC' % kind.capitalize()
+    undoType = f"Insert {kind.capitalize()} TOC"
     w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
@@ -968,7 +979,7 @@ def make_toc(c, kind, root):
     def cell_type(p):
         language = g.getLanguageAtPosition(c, p)
         return 'markdown' if language in ('jupyter', 'markdown') else 'python'
-        
+
     def clean_headline(s):
         # Surprisingly tricky. This could remove too much, but better to be safe.
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
@@ -983,13 +994,13 @@ def make_toc(c, kind, root):
             else:
                 stack = stack[:level]
             n = stack[-1]
-            stack[-1] = n+1
+            stack[-1] = n + 1
             # Use bullets
             title = clean_headline(p.h)
-            url = clean_headline(p.h.replace(' ','-'))
+            url = clean_headline(p.h.replace(' ', '-'))
             if kind == 'markdown':
                 url = url.lower()
-            line = '%s- [%s](#%s)\n' % (' '*4*(level-1), title, url)
+            line = f"{' ' * 4 * (level - 1)}- [{title}](#{url})\n"
             result.append(line)
     if result:
         result.append('\n')

@@ -114,12 +114,13 @@ class Xdb(pdb.Pdb, threading.Thread):
         """
         A replacement for Python's stdin class containing only readline().
         """
+
         def __init__(self, qc):
             self.qc = qc
 
         def readline(self):
             """Return the next line from the qc channel."""
-            s = self.qc.get() # blocks
+            s = self.qc.get()  # blocks
             if 1:
                 # Just echo.
                 print(s.rstrip())
@@ -136,9 +137,10 @@ class Xdb(pdb.Pdb, threading.Thread):
         """
         A replacement for Python's stdout class containing only write().
         """
+
         def __init__(self, qr):
             self.qr = qr
-            
+
         def flush(self):
             pass
 
@@ -147,9 +149,9 @@ class Xdb(pdb.Pdb, threading.Thread):
             self.qr.put(['put-stdout', s])
     #@+node:ekr.20181006160108.1: *3* xdb.__init__
     def __init__(self, path=None):
-            
-        self.qc = queue.Queue() # The command queue.
-        self.qr = queue.Queue() # The request queue.
+
+        self.qc = queue.Queue()  # The command queue.
+        self.qr = queue.Queue()  # The request queue.
         stdin_q = self.QueueStdin(qc=self.qc)
         stdout_q = self.QueueStdout(qr=self.qr)
         # Start the singleton listener, in the main Leo thread.
@@ -232,7 +234,7 @@ class Xdb(pdb.Pdb, threading.Thread):
             # Make sure it works for "clear C:\foo\bar.py:12"
             i = arg.rfind(':')
             filename = arg[:i]
-            arg = arg[i+1:]
+            arg = arg[i + 1 :]
             try:
                 lineno = int(arg)
             except ValueError:
@@ -256,7 +258,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 self.clear_bpbynumber(i)
                 self.message(f"Deleted {bp}")
 
-    do_cl = do_clear # 'c' is already an abbreviation for 'continue'
+    do_cl = do_clear  # 'c' is already an abbreviation for 'continue'
 
     # complete_clear = self._complete_location
     # complete_cl = self._complete_location
@@ -312,7 +314,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         """The thread's run method: called via start."""
         # pylint: disable=arguments-differ
         from leo.core.leoQt import QtCore
-        QtCore.pyqtRemoveInputHook() # From g.pdb
+        QtCore.pyqtRemoveInputHook()  # From g.pdb
         if self.path:
             self.run_path(self.path)
         else:
@@ -363,7 +365,7 @@ def get_gnx_from_file(file_s, p, path):
         m = pat.match(line)
         if m:
             gnx, path2 = m.group(1), m.group(2)
-            path2 = path2.replace('\\','/')
+            path2 = path2.replace('\\', '/')
             p.v.fileIndex = gnx
             if path == path2:
                 return True
@@ -386,7 +388,7 @@ def listener(timer):
     xpd_pane = getattr(c, 'xpd_pane', None)
     kill = False
     while not xdb.qr.empty():
-        aList = xdb.qr.get() # blocks
+        aList = xdb.qr.get()  # blocks
         kind = aList[0]
         if kind == 'clear-stdout':
             if xpd_pane:
@@ -418,7 +420,7 @@ def make_at_file_node(line, path):
     c = g.app.log.c
     if not c:
         return None
-    path = g.os_path_finalize(path).replace('\\','/')
+    path = g.os_path_finalize(path).replace('\\', '/')
     if not g.os_path_exists(path):
         g.trace('Not found:', repr(path))
         return None
@@ -443,13 +445,13 @@ def show_line(line, fn):
     fn should be a full path to a file.
     """
     c = g.app.log.c
-    target = g.os_path_finalize(fn).replace('\\','/')
+    target = g.os_path_finalize(fn).replace('\\', '/')
     if not g.os_path_exists(fn):
         g.trace('===== Does not exist', fn)
         return
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            path = g.fullPath(c, p).replace('\\','/')
+            path = g.fullPath(c, p).replace('\\', '/')
             if target == path:
                 # Select the line.
                 junk_p, junk_offset, ok = c.gotoCommands.find_file_line(n=line, p=p)
@@ -502,43 +504,43 @@ def xdb_breakpoint(event):
     row, col = g.convertPythonIndexToRowCol(s, i)
     n = x.node_offset_to_file_line(row, p, root)
     if n is not None:
-        xdb.qc.put('b %s:%s' % (path, n+1))
+        xdb.qc.put(f"b {path}:{n + 1}")
 #@+node:ekr.20180702074705.1: *3* db-c/h/l/n/q/r/s/w
 @g.command('db-c')
 def xdb_c(event):
     """execute the pdb 'continue' command."""
     db_command(event, 'c')
-    
+
 @g.command('db-h')
 def xdb_h(event):
     """execute the pdb 'continue' command."""
     db_command(event, 'h')
-    
+
 @g.command('db-l')
 def xdb_l(event):
     """execute the pdb 'list' command."""
     db_command(event, 'l')
-    
+
 @g.command('db-n')
 def xdb_n(event):
     """execute the pdb 'next' command."""
     db_command(event, 'n')
-    
+
 @g.command('db-q')
 def xdb_q(event):
     """execute the pdb 'quit' command."""
     db_command(event, 'q')
-    
+
 @g.command('db-r')
 def xdb_r(event):
     """execute the pdb 'return' command."""
     db_command(event, 'r')
-    
+
 @g.command('db-s')
 def xdb_s(event):
     """execute the pdb 'step' command."""
     db_command(event, 's')
-    
+
 @g.command('db-w')
 def xdb_w(event):
     """execute the pdb 'where' command."""
@@ -555,7 +557,7 @@ def xdb_input(event):
     if not xdb:
         print('xdb not active')
         return
-        
+
     def callback(args, c, event):
         xdb = getattr(g.app, 'xdb', None)
         if xdb:

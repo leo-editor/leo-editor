@@ -23,10 +23,9 @@ class ExternalFile:
         self.time = time
 
     def __repr__(self):
-        return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
+        return f"<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>"
 
     __str__ = __repr__
-
     #@+others
     #@+node:ekr.20161011174757.1: *3* ef.shortFileName
     def shortFileName(self):
@@ -157,7 +156,7 @@ class ExternalFilesController:
                 self.unchecked_files = [z for z in self.files if z.exists()]
         else:
             # First, check all existing open-with files.
-            for ef in self.files: # A list of ExternalFile instances.
+            for ef in self.files:  # A list of ExternalFile instances.
                 if ef.exists():
                     self.idle_check_open_with_file(ef)
             # Next, check all commanders for which
@@ -204,7 +203,7 @@ class ExternalFilesController:
         if ef.path and os.path.exists(ef.path):
             time = self.get_mtime(ef.path)
             if time and time != ef.time:
-                ef.time = time # inhibit endless dialog loop.
+                ef.time = time  # inhibit endless dialog loop.
                 self.update_open_with_node(ef)
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
     def update_open_with_node(self, ef):
@@ -222,7 +221,7 @@ class ExternalFilesController:
                 c.save()
             else:
                 p.setDirty()
-                c.setChanged(True)
+                c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
     def open_with(self, c, d):
         '''
@@ -244,8 +243,8 @@ class ExternalFilesController:
                 if root:
                     # Open the external file itself.
                     directory = g.setDefaultDirectory(c, root)
-                    fn = c.expand_path_expression(root.anyAtFileNodeName()) # 1341
-                    path = g.os_path_finalize_join(directory, fn) # 1341
+                    fn = c.expand_path_expression(root.anyAtFileNodeName())  # 1341
+                    path = g.os_path_finalize_join(directory, fn)  # 1341
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.
@@ -300,7 +299,7 @@ class ExternalFilesController:
         for p2 in p.self_and_parents(copy=False):
             h = p2.anyAtFileNodeName()
             if not h:
-                h = p2.h # Not an @file node: use the entire header
+                h = p2.h  # Not an @file node: use the entire header
             elif use_extentions and not found:
                 # Found the nearest ancestor @<file> node.
                 found = True
@@ -390,7 +389,7 @@ class ExternalFilesController:
             # could exist in @open-with nodes.
             command = '<no command>'
             if kind in ('os.system', 'os.startfile'):
-                # New in Leo 5.7: 
+                # New in Leo 5.7:
                 # Use subProcess.Popen(..., shell=True)
                 c_arg = self.join(arg, fn)
                 if not testing:
@@ -414,7 +413,7 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple) #???
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  #???
             elif kind == 'subprocess.Popen':
                 c_arg = self.join(arg, fn)
                 command = f"subprocess.Popen({c_arg})"
@@ -428,12 +427,12 @@ class ExternalFilesController:
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
                 # func will be called with one arg, the filename
-                command = '%s(%s)' % (kind, fn)
+                command = f"{kind}({fn})"
                 if not testing: kind(fn)
             else:
                 command = 'bad command:' + str(kind)
                 if not testing: g.trace(command)
-            return command # for unit testing.
+            return command  # for unit testing.
         except Exception:
             g.es('exception executing open-with command:', command)
             g.es_exception()
@@ -487,12 +486,12 @@ class ExternalFilesController:
         _is_leo = path.endswith(('.leo', '.db'))
         if _is_leo:
             s = '\n'.join([
-                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"{g.splitLongFileName(path)} has changed outside Leo.",
                 'Overwrite it?'
             ])
         else:
             s = '\n'.join([
-                f'{g.splitLongFileName(path)} has changed outside Leo.',
+                f"{g.splitLongFileName(path)} has changed outside Leo.",
                 f"Reload {where} in Leo?",
             ])
         result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
@@ -506,7 +505,10 @@ class ExternalFilesController:
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
         import hashlib
-        return hashlib.md5(open(path, 'rb').read()).hexdigest()
+        # #1454: Explicitly close the file.
+        with open(path, 'rb') as f:
+            s = f.read()
+        return hashlib.md5(s).hexdigest()
     #@+node:ekr.20031218072017.2614: *4* efc.destroy_temp_file
     def destroy_temp_file(self, ef):
         '''Destroy the *temp* file corresponding to ef, an ExternalFile instance.'''
@@ -606,9 +608,9 @@ class ExternalFilesController:
         g.app.gui.runAskOkDialog(
             c=c,
             message='\n'.join([
-                '%s has changed outside Leo.\n' % g.splitLongFileName(path),
+                f"{g.splitLongFileName(path)} has changed outside Leo.\n",
                 'Leo can not update this file automatically.\n',
-                'This file was created from %s.\n' % p.h,
+                f"This file was created from {p.h}.\n",
                 'Warning: refresh-from-disk will destroy all children.'
             ]),
             title='External file changed',

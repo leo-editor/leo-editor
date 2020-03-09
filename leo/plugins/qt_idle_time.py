@@ -5,7 +5,7 @@
 """Leo's Qt idle-time code."""
 import leo.core.leoGlobals as g
 import time
-from leo.core.leoQt import QtCore # ,QtGui,QtWidgets
+from leo.core.leoQt import QtCore
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime
 class IdleTime:
@@ -81,8 +81,8 @@ class IdleTime:
         """IdleTime repr."""
         tag = self.tag
         if tag:
-            return '<IdleTime: %s>' % (tag if isinstance(tag, str) else repr(tag))
-        return '<IdleTime: id: %s>' % id(self)
+            return f"<IdleTime: {tag if isinstance(tag, str) else repr(tag)}>"
+        return f"<IdleTime: id: {id(self)}>"
 
     __str__ = __repr__
     #@+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time

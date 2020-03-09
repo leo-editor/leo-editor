@@ -10,7 +10,7 @@ try:
     # pylint: disable=import-error
         # We can't assume the user has this.
     import flake8
-except Exception: # May not be ImportError.
+except Exception:  # May not be ImportError.
     flake8 = None
 try:
     import pyflakes
@@ -22,18 +22,6 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
-#@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
-@g.command('check-conventions')
-@g.command('cc')
-def checkConventions(event):
-    """Experimental script to test Leo's convensions."""
-    c = event.get('c')
-    if c:
-        if c.changed: c.save()
-        import imp
-        import leo.core.leoCheck as leoCheck
-        imp.reload(leoCheck)
-        leoCheck.ConventionChecker(c).check()
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event):
@@ -93,9 +81,8 @@ def find_missing_docstrings(event):
     c = event.get('c')
     if not c:
         return
-
     #@+others # Define functions
-    #@+node:ekr.20190615181104.1: *4* function: has_docstring 
+    #@+node:ekr.20190615181104.1: *4* function: has_docstring
     def has_docstring(lines, n):
         """
         Returns True if function/method/class whose definition
@@ -109,7 +96,7 @@ def find_missing_docstrings(event):
             if s.startswith(('"""', "'''")):
                 return True
         return False
-    #@+node:ekr.20190615181104.2: *4* function: is_a_definition 
+    #@+node:ekr.20190615181104.2: *4* function: is_a_definition
     def is_a_definition(line):
         """Return True if line is a definition line."""
         # By Виталије Милошевић.
@@ -128,13 +115,12 @@ def find_missing_docstrings(event):
             if g.match_word(parent.h, 0, '@nopylint'):
                 return False
         return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-    #@+node:ekr.20190615180900.1: *4* function: clickable_link 
+    #@+node:ekr.20190615180900.1: *4* function: clickable_link
     def clickable_link(p, i):
         """Return a clickable link to line i of p.b."""
         link = p.get_UNL(with_proto=True, with_count=True, with_index=True)
         return f"{link},{i}"
     #@-others
-
     count, found, t1 = 0, [], time.process_time()
     for root in g.findRootsWithPredicate(c, c.p, predicate=is_root):
         for p in root.self_and_subtree():
@@ -150,10 +136,10 @@ def find_missing_docstrings(event):
                     g.es(line, nodeLink=clickable_link(p, i + 1))
                     break
     g.es_print('')
-    g.es_print('found %s missing docstring%s in %s file%s in %5.2f sec.' % (
-        count, g.plural(count),
-        len(found), g.plural(len(found)),
-        (time.process_time() - t1)))
+    g.es_print(
+        f"found {count} missing docstring{g.plural(count)} "
+        f"in {len(found)} file{g.plural(len(found))} "
+        f"in {time.process_time() - t1:5.2f} sec.")
 #@+node:ekr.20160517133001.1: *3* flake8 command
 @g.command('flake8')
 def flake8_command(event):
@@ -210,8 +196,7 @@ class Flake8Command:
         """ctor for Flake8Command class."""
         self.c = c
         self.quiet = quiet
-        self.seen = [] # List of checked paths.
-
+        self.seen = []  # List of checked paths.
     #@+others
     #@+node:ekr.20160517133049.2: *3* flake8.check_all
     def check_all(self, paths):
@@ -224,10 +209,7 @@ class Flake8Command:
             return
         config_file = self.get_flake8_config()
         if config_file:
-            style = engine.get_style_guide(
-                parse_argv=False,
-                config_file=config_file,
-            )
+            style = engine.get_style_guide(parse_argv=False, config_file=config_file)
             report = style.check_files(paths=paths)
             # Set statistics here, instead of from the command line.
             options = style.options
@@ -265,8 +247,8 @@ class Flake8Command:
                 if g.os_path_exists(fn):
                     return fn
         if not g.unitTesting:
-            g.es_print('no flake8 configuration file found in\n%s' % (
-                '\n'.join(dir_table)))
+            table_s = '\n'.join(dir_table)
+            g.es_print(f"no flake8 configuration file found in\n{table_s}")
         return None
     #@+node:ekr.20160517133049.5: *3* flake8.run
     def run(self, p=None):
@@ -309,8 +291,7 @@ class PyflakesCommand:
     def __init__(self, c):
         """ctor for PyflakesCommand class."""
         self.c = c
-        self.seen = [] # List of checked paths.
-
+        self.seen = []  # List of checked paths.
     #@+others
     #@+node:ekr.20171228013818.1: *3* class LogStream
     class LogStream:
@@ -343,8 +324,8 @@ class PyflakesCommand:
         """Run pyflakes on all files in paths."""
         try:
             from pyflakes import api, reporter
-        except Exception: # ModuleNotFoundError
-            return True # Pretend all is fine.
+        except Exception:  # ModuleNotFoundError
+            return True  # Pretend all is fine.
         total_errors = 0
         for i, root in enumerate(roots):
             fn = self.finalize(root)
@@ -370,8 +351,8 @@ class PyflakesCommand:
         """Call pyflakes to check the given script."""
         try:
             from pyflakes import api, reporter
-        except Exception: # ModuleNotFoundError
-            return True # Pretend all is fine.
+        except Exception:  # ModuleNotFoundError
+            return True  # Pretend all is fine.
         # #1306: nopyflakes
         lines = g.splitLines(p.b)
         for line in lines:
@@ -389,9 +370,9 @@ class PyflakesCommand:
         c = self.c
         aList = g.get_directives_dict_list(p)
         path = self.c.scanAtPathDirectives(aList)
-        path = c.expand_path_expression(path) # #1341.
+        path = c.expand_path_expression(path)  # #1341.
         fn = p.anyAtFileNodeName()
-        fn = c.expand_path_expression(fn) # #1341.
+        fn = c.expand_path_expression(fn)  # #1341.
         return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20160516072613.3: *3* pyflakes.find (no longer used)
     def find(self, p):
@@ -426,7 +407,10 @@ class PyflakesCommand:
             if total_errors > 0:
                 g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
             elif force:
-                g.es(f"OK: pyflakes: {len(roots)} file{g.plural(roots)} in {g.timeSince(t1)}")
+                g.es(
+                    f"OK: pyflakes: "
+                    f"{len(roots)} file{g.plural(roots)} "
+                    f"in {g.timeSince(t1)}")
             elif not pyflakes_errors_only:
                 g.es('OK: pyflakes')
             ok = total_errors == 0
@@ -438,7 +422,7 @@ class PyflakesCommand:
 class PylintCommand:
     """A class to run pylint on all Python @<file> nodes in c.p's tree."""
 
-    regex = r'^.*:([0-9]+):[0-9]+:.*?(\(.*\))\s*$'
+    link_pattern = r'^.*:\s*([0-9]+)[,:]\s*[0-9]+:.*?\((.*)\)\s*$'
         # m.group(1) is the line number.
         # m.group(2) is the (unused) test name.
 
@@ -446,9 +430,8 @@ class PylintCommand:
 
     def __init__(self, c):
         self.c = c
-        self.data = None # Data for the *running* process.
-        self.rc_fn = None # Name of the rc file.
-
+        self.data = None  # Data for the *running* process.
+        self.rc_fn = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
     def run(self):
@@ -504,8 +487,8 @@ class PylintCommand:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
                 return fn
-        g.es_print('no pylint configuration file found in\n%s' % (
-            '\n'.join(table)))
+        table_s = '\n'.join(table)
+        g.es_print(f"no pylint configuration file found in\n{table_s}")
         return None
     #@+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
     def get_fn(self, p):
@@ -515,14 +498,14 @@ class PylintCommand:
         """
         c = self.c
         if not p.isAnyAtFileNode():
-            g.trace('not an @<file> node: %r' % p.h)
+            g.trace(f"not an @<file> node: {p.h!r}")
             return None
         # #67.
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         fn = p.anyAtFileNodeName()
         if not fn.endswith('.py'):
-            g.trace('not a python file: %r' % p.h)
+            g.trace(f"not a python file: {p.h!r}")
             return None
         return g.os_path_finalize_join(path, fn)
     #@+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
@@ -535,7 +518,8 @@ class PylintCommand:
         args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
         if is_win:
             args = args.replace('\\', '\\\\')
-        command = (f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
+        command = (
+            f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)
         #
@@ -544,7 +528,7 @@ class PylintCommand:
         bpm.start_process(c, command,
             fn=fn,
             kind='pylint',
-            link_pattern=self.regex,
+            link_pattern=self.link_pattern,
             link_root=p,
         )
 
@@ -558,4 +542,5 @@ class PylintCommand:
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 #@-leo

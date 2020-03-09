@@ -23,6 +23,7 @@ def init():
 #@+node:ekr.20110605121601.17957: ** class DemoWidget
 if QtWidgets:
 
+
     class DemoWidget(QtWidgets.QWidget):
         count = 0
         #@+others
@@ -36,17 +37,18 @@ if QtWidgets:
             text = QtWidgets.QTextEdit()
             self.layout().addWidget(text)
             DemoWidget.count += 1
-            text.setPlainText("#%d" % DemoWidget.count)
+            text.setPlainText(f"#{DemoWidget.count:d}")
             button_layout = QtWidgets.QHBoxLayout()
             button_layout.setContentsMargins(QtCore.QMargins(5, 5, 5, 5))
             self.layout().addLayout(button_layout)
             button_layout.addWidget(QtWidgets.QPushButton("Go"))
             button_layout.addWidget(QtWidgets.QPushButton("Stop"))
             if color:
-                self.setStyleSheet("background-color: %s;" % color)
+                self.setStyleSheet(f"background-color: {color};")
         #@-others
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
 if QtWidgets:
+
 
     class NestedSplitterTopLevel(QtWidgets.QWidget):
         """A QWidget to wrap a NestedSplitter to allow it to live in a top
@@ -105,6 +107,7 @@ if QtWidgets:
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
 if QtWidgets:
 
+
     class NestedSplitterChoice(QtWidgets.QWidget):
         """When a new pane is opened in a nested splitter layout, this widget
         presents a button, labled 'Action', which provides a popup menu
@@ -115,17 +118,17 @@ if QtWidgets:
             """ctor for NestedSplitterChoice class."""
             super().__init__(parent)
             self.setLayout(QtWidgets.QVBoxLayout())
-            button = QtWidgets.QPushButton("Action", self) # EKR: 2011/03/15
+            button = QtWidgets.QPushButton("Action", self)  # EKR: 2011/03/15
             self.layout().addWidget(button)
             button.setContextMenuPolicy(QtConst.CustomContextMenu)
             button.customContextMenuRequested.connect(
                 lambda pnt: self.parent().choice_menu(self,
                     button.mapToParent(pnt)))
-            button.clicked.connect(
-                lambda: self.parent().choice_menu(self, button.pos()))
+            button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
         #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
 if QtWidgets:
+
 
     class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         """Show the context menu on a NestedSplitter splitter-handle to access
@@ -141,7 +144,7 @@ if QtWidgets:
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__
         def __repr__(self):
-            return '(NestedSplitterHandle) at: %s' % (id(self))
+            return f"(NestedSplitterHandle) at: {id(self)}"
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17964: *3* nsh.add_item
@@ -192,7 +195,7 @@ if QtWidgets:
             sheet = []
             for i in 0, 1:
                 sheet.append(widget[i].styleSheet())
-                widget[i].setStyleSheet(sheet[-1] + "\nborder: 2px solid %s;" % color[i])
+                widget[i].setStyleSheet(sheet[-1] + f"\nborder: 2px solid {color[i]};")
             menu = QtWidgets.QMenu()
             menu.hovered.connect(self.show_tip)
 
@@ -206,6 +209,7 @@ if QtWidgets:
                     'Left': 'left of',
                     'Right': 'right of',
                 }[s]
+
             # Insert.
 
             def insert_callback(index=index):
@@ -222,12 +226,12 @@ if QtWidgets:
                 max_parent_splits = max(max_parent_splits, up.count())
                 up = up.parent()
                 if max_parent_splits >= 2:
-                    break # two is enough
+                    break  # two is enough
             for i in 0, 1:
                 # keep = splitter.widget(index)
                 # cull = splitter.widget(index - 1)
-                if (max_parent_splits >= 2 or # more splits upstream
-                    splitter.count() > 2 or # 3+ splits here, or 2+ downstream
+                if (max_parent_splits >= 2 or  # more splits upstream
+                    splitter.count() > 2 or  # 3+ splits here, or 2+ downstream
                     neighbour[not i] and neighbour[not i].max_count() >= 2
                 ):
 
@@ -235,19 +239,17 @@ if QtWidgets:
                         splitter.remove(index, i)
 
                     self.add_item(remove_callback, menu,
-                        'Remove %d %s' % (count[i], lr[i]),
-                        "Remove the %s pane%s %s here" %
-                        (count[i], pl(count[i]), di(lr[i])))
+                        f"Remove {count[i]:d} {lr[i]}",
+                        f"Remove the {count[i]} pane{pl(count[i])} {di(lr[i])} here")
             # Swap.
 
             def swap_callback(index=index):
                 splitter.swap(index)
 
             self.add_item(swap_callback, menu,
-                "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]),
-                "Swap the %d pane%s %s here with the %d pane%s %s here" %
-                (count[0], pl(count[0]), di(lr[0]),
-                 count[1], pl(count[1]), di(lr[1]))
+                f"Swap {count[0]:d} {lr[0]} {count[1]:d} {lr[1]}",
+                f"Swap the {count[0]:d} pane{pl(count[0])} {di(lr[0])} here "
+                f"with the {count[1]:d} pane{pl(count[1])} {di(lr[1])} here"
                 )
             # Split: only if not already split.
             for i in 0, 1:
@@ -256,13 +258,14 @@ if QtWidgets:
                     def split_callback(i=i, index=index, splitter=splitter):
                         splitter.split(index, i)
 
-                    self.add_item(split_callback, menu, 'Split %s %s' % (lr[i], split_dir))
+                    self.add_item(
+                        split_callback, menu, f"Split {lr[i]} {split_dir}")
             for i in 0, 1:
 
                 def mark_callback(i=i, index=index):
                     splitter.mark(index, i)
 
-                self.add_item(mark_callback, menu, 'Mark %d %s' % (count[i], lr[i]))
+                self.add_item(mark_callback, menu, f"Mark {count[i]:d} {lr[i]}")
             # Swap With Marked.
             if splitter.root.marked:
                 for i in 0, 1:
@@ -272,21 +275,25 @@ if QtWidgets:
                             splitter.swap_with_marked(index, i)
 
                         self.add_item(swap_mark_callback, menu,
-                            'Swap %d %s With Marked' % (count[i], lr[i]))
+                            f"Swap {count[i]:d} {lr[i]} With Marked")
             # Add.
             for i in 0, 1:
-                if (not isinstance(splitter.parent(), NestedSplitter) or
-                    splitter.parent().indexOf(splitter) == [0, splitter.parent().count() - 1][i]
+                if (
+                    not isinstance(splitter.parent(), NestedSplitter) or
+                    splitter.parent().indexOf(splitter) ==
+                        [0, splitter.parent().count() - 1][i]
                 ):
 
                     def add_callback(i=i, splitter=splitter):
                         splitter.add(i)
 
-                    self.add_item(add_callback, menu, 'Add %s' % (ab[i]))
+                    self.add_item(add_callback, menu, f"Add {ab[i]}")
             # Rotate All.
             self.add_item(splitter.rotate, menu, 'Toggle split direction')
+
             def rotate_only_this(index=index):
                 splitter.rotateOne(index)
+
             self.add_item(rotate_only_this, menu, 'Toggle split/dir. just this')
             # equalize panes
 
@@ -300,7 +307,8 @@ if QtWidgets:
                 splitter.zoom_toggle()
 
             self.add_item(
-                zoom, menu,
+                zoom,
+                menu,
                 ('Un' if splitter.root.zoomed else '') + 'Zoom pane'
             )
             # open window
@@ -316,7 +324,8 @@ if QtWidgets:
                 if (splitter.root.marked and
                     splitter.top().max_count() > 1
                 ):
-                    self.add_item(lambda: splitter.open_window(action="_move_marked_there"),
+                    self.add_item(
+                        lambda: splitter.open_window(action="_move_marked_there"),
                         submenu, "Move marked there")
                 for provider in splitter.root.providers:
                     if hasattr(provider, 'ns_provides'):
@@ -329,9 +338,8 @@ if QtWidgets:
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
 
-            def cb(checked, splitter=splitter): # pylint: disable=function-redefined
-                print("\n%s\n" %
-                    splitter.layout_to_text(splitter.top().get_layout()))
+            def cb(checked, splitter=splitter):  # pylint: disable=function-redefined
+                print(f"\n{splitter.layout_to_text(splitter.top().get_layout())}\n")
 
             act.triggered.connect(cb)
             submenu.addAction(act)
@@ -364,8 +372,7 @@ if QtWidgets:
 
             :param QMouseEvent event: mouse event
             """
-            self.splitter()._splitter_clicked(
-                self, event, release=False, double=False)
+            self.splitter()._splitter_clicked(self, event, release=False, double=False)
 
         def mouseReleaseEvent(self, event):
             """mouse event - mouse pressed on splitter handle,
@@ -373,8 +380,7 @@ if QtWidgets:
 
             :param QMouseEvent event: mouse event
             """
-            self.splitter()._splitter_clicked(
-                self, event, release=True, double=False)
+            self.splitter()._splitter_clicked(self, event, release=True, double=False)
 
         def mouseDoubleClickEvent(self, event):
             """mouse event - mouse pressed on splitter handle,
@@ -382,11 +388,11 @@ if QtWidgets:
 
             :param QMouseEvent event: mouse event
             """
-            self.splitter()._splitter_clicked(
-                self, event, release=True, double=True)
+            self.splitter()._splitter_clicked(self, event, release=True, double=True)
         #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-if QtWidgets: # NOQA
+if QtWidgets:  # NOQA
+
 
     class NestedSplitter(QtWidgets.QSplitter):
         enabled = True
@@ -408,7 +414,6 @@ if QtWidgets: # NOQA
             bool,
             bool
         )
-
         #@+others
         #@+node:ekr.20110605121601.17967: *3* ns.__init__
         def __init__(self, parent=None, orientation=QtCore.Qt.Horizontal, root=None):
@@ -418,11 +423,11 @@ if QtWidgets: # NOQA
             if root is None:
                 root = self.top(local=True)
                 if root == self:
-                    root.marked = None # Tuple: self,index,side-1,widget
+                    root.marked = None  # Tuple: self,index,side-1,widget
                     root.providers = []
                     root.holders = {}
                     root.windows = []
-                    root._main = self.parent() # holder of the main splitter
+                    root._main = self.parent()  # holder of the main splitter
                     # list of top level NestedSplitter windows opened from 'Open Window'
                     # splitter handle context menu
                     root.zoomed = False
@@ -443,7 +448,7 @@ if QtWidgets: # NOQA
             # parent = self.parent()
             # name = parent and parent.objectName() or '<no parent>'
             name = self.objectName() or '<no name>'
-            return '(NestedSplitter) %s at %s' % (name, id(self))
+            return f"(NestedSplitter) {name} at {id(self)}"
 
         __str__ = __repr__
         #@+node:ekr.20110605121601.17969: *3* ns.overrides of QSplitter methods
@@ -464,8 +469,8 @@ if QtWidgets: # NOQA
             # if only non-placeholder pane in a top level window deletes
             # itself, delete the window
             if (isinstance(local_top.parent(), NestedSplitterTopLevel) and
-                local_top.count() == 1 and # one left, could be placeholder
-                isinstance(local_top.widget(0), NestedSplitterChoice) # is placeholder
+                local_top.count() == 1 and  # one left, could be placeholder
+                isinstance(local_top.widget(0), NestedSplitterChoice)  # is placeholder
                ):
                 local_top.parent().deleteLater()
                 return
@@ -475,7 +480,7 @@ if QtWidgets: # NOQA
                 self.deleteLater()
             parent = self.parentWidget()
             if parent:
-                layout = parent.layout() # QLayout, not a NestedSplitter
+                layout = parent.layout()  # QLayout, not a NestedSplitter
             else:
                 layout = None
             if self.count() == 1 and self.top(local=True) == self:
@@ -503,15 +508,13 @@ if QtWidgets: # NOQA
                 # only child of a previously more populated splitter
                 if w is None:
                     w = NestedSplitterChoice(self.parent())
-                self.parent().insertWidget(
-                    self.parent().indexOf(self) + side, w)
+                self.parent().insertWidget(self.parent().indexOf(self) + side, w)
                 # in this case, where the parent is a one child, no handle splitter,
                 # the (prior to this invisible) orientation may be wrong
                 # can't reproduce this now, but this guard is harmless
                 self.parent().setOrientation(orientation)
             elif layout:
-                new = NestedSplitter(None, orientation=orientation,
-                    root=self.root)
+                new = NestedSplitter(None, orientation=orientation, root=self.root)
                 # parent set by layout.insertWidget() below
                 old = self
                 pos = layout.indexOf(old)
@@ -544,6 +547,7 @@ if QtWidgets: # NOQA
                         if x:
                             return x
                 return None
+
             # find the layout containing widget_id
 
             l = hunter(layout, widget_id)
@@ -567,7 +571,7 @@ if QtWidgets: # NOQA
                 else:
                     ns = NestedSplitter(orientation=vertical, root=self.root)
                 old = layout['content'][pos]
-                if not isinstance(old, QtWidgets.QWidget): # see get_layout()
+                if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
                     old = layout['splitter']
                 # put new thing, what, in new splitter, no impact on anything else
                 ns.insert(0, what)
@@ -667,17 +671,13 @@ if QtWidgets: # NOQA
             count
               the pair of nested counts of widgets / spliters around the handle
             """
-            widget = [
-                self.widget(index - 1),
-                self.widget(index),
-            ]
-            neighbour = [(i if isinstance(i, NestedSplitter) else None)
-                for i in widget]
+            widget = [self.widget(index - 1), self.widget(index)]
+            neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
             count = []
             for i in 0, 1:
                 if neighbour[i]:
                     l = [ii.count() for ii in neighbour[i].self_and_descendants()]
-                    n = sum(l) - len(l) + 1 # count leaves, not splitters
+                    n = sum(l) - len(l) + 1  # count leaves, not splitters
                     count.append(n)
                 else:
                     count.append(1)
@@ -698,7 +698,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
-            if w is None: # do NOT use 'not w', fails in PyQt 4.8
+            if w is None:  # do NOT use 'not w', fails in PyQt 4.8
                 w = NestedSplitterChoice(self)
                 # A QWidget, with self as parent.
                 # This creates the menu.
@@ -715,8 +715,7 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17977: *3* ns.mark
         def mark(self, index, side):
             """mark a widget for later swapping"""
-            self.root.marked = (self, index, side - 1,
-                self.widget(index + side - 1))
+            self.root.marked = (self, index, side - 1, self.widget(index + side - 1))
         #@+node:ekr.20110605121601.17978: *3* ns.max_count
         def max_count(self):
             """find max widgets in this and child splitters"""
@@ -733,7 +732,8 @@ if QtWidgets: # NOQA
             """open a top-level window, a TopLevelFreeLayout instance, to hold a
             free-layout in addition to the one in the outline's main window"""
             ns = NestedSplitter(root=self.root)
-            window = NestedSplitterTopLevel(owner=self.root, window_title=ns.get_title(action))
+            window = NestedSplitterTopLevel(
+                owner=self.root, window_title=ns.get_title(action))
             hbox = QtWidgets.QHBoxLayout()
             window.setLayout(hbox)
             hbox.setContentsMargins(0, 0, 0, 0)
@@ -748,10 +748,10 @@ if QtWidgets: # NOQA
                 ns.replace_widget(button, ns.root.marked[3])
             elif action is not None:
                 ns.place_provided(action, 1)
-            ns.setSizes([0, 1]) # but hide one initially
+            ns.setSizes([0, 1])  # but hide one initially
             self.root.windows.append(window)
             # copy the main main window's stylesheet to new window
-            w = self.root # this is a Qt Widget, class NestedSplitter
+            w = self.root  # this is a Qt Widget, class NestedSplitter
             sheets = []
             while w:
                 s = w.styleSheet()
@@ -886,7 +886,7 @@ if QtWidgets: # NOQA
                 [a, b] = self.sizes()
                 s = sizes[i]
                 s1 = a * s / (a + b); s2 = b * s / (a + b)
-                sizes[i:i+1] = [s1, s2]
+                sizes[i : i + 1] = [s1, s2]
                 prev = self.widget(0)
                 next = self.widget(1)
                 psp.insertWidget(i, prev)
@@ -905,8 +905,8 @@ if QtWidgets: # NOQA
                 next = self.widget(index)
                 if None in (prev, next): return
                 sizes = self.sizes()
-                s1, s2 = sizes[index-1: index+1]
-                sizes[index-1: index+1] = [s1 + s2]
+                s1, s2 = sizes[index - 1 : index + 1]
+                sizes[index - 1 : index + 1] = [s1 + s2]
                 newsp = NestedSplitter(self, orientation=orientation, root=self.root)
                 newsp.addWidget(prev)
                 newsp.addWidget(next)
@@ -1048,7 +1048,7 @@ if QtWidgets: # NOQA
                         provided._in_layout = True
                         found += 1
                     else:
-                        print('NO %s' % i)
+                        print(f"NO {i}")
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()
@@ -1063,8 +1063,10 @@ if QtWidgets: # NOQA
             if self.count() == len(layout['sizes']):
                 self.setSizes(layout['sizes'])
             else:
-                print('Wrong pane count at level %d, count:%d, sizes:%d' % (
-                    level, self.count(), len(layout['sizes'])))
+                print(
+                    f"Wrong pane count at level {level:d}, "
+                    f"count:{self.count():d}, "
+                    f"sizes:{len(layout['sizes']):d}")
                 self.equalize_sizes()
         #@+node:tbrown.20110628083641.21156: *3* ns.prune_empty
         def prune_empty(self):
@@ -1133,23 +1135,19 @@ if QtWidgets: # NOQA
             orientation = 'vertical'
             if layout['orientation'] == QtCore.Qt.Horizontal:
                 orientation = 'horizontal'
-            _ans.append("%s%s (%s) - %s" % (
-                '   ' * _depth,
-                layout['splitter'].__class__.__name__,
-                layout['splitter'].objectName(),
-                orientation,
-            ))
+            _ans.append(
+                f"{'   ' * _depth}{layout['splitter'].__class__.__name__} "
+                f"({layout['splitter'].objectName()}) - {orientation}",
+            )
             _depth += 1
             for n, i in enumerate(layout['content']):
                 if isinstance(i, dict):
                     self.layout_to_text(i, _depth, _ans)
                 else:
-                    _ans.append("%s%s (%s) from %s" % (
-                       '   ' * _depth,
-                       i.__class__.__name__,
-                       str(i.objectName()),
-                       getattr(i, '_ns_id', 'UNKNOWN')
-                    ))
+                    _ans.append(
+                        f"{'   ' * _depth}{i.__class__.__name__} "
+                        f"({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}",
+                    )
             if _depth == 1:
                 return '\n'.join(_ans)
             return None
@@ -1216,6 +1214,7 @@ def main():
     splitter.addWidget(wdg)
     splitter.addWidget(wdg2)
 
+
     class DemoProvider:
 
         def ns_provides(self):
@@ -1234,9 +1233,9 @@ def main():
     holder.show()
     app.exec_()
 #@-others
+if __name__ == "__main__":
+    main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-if __name__ == "__main__":
-    main()
 #@-leo

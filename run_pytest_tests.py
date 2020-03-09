@@ -7,10 +7,9 @@ args = [
     '--quiet',
     # '--setup-plan',
     # '-x', # Exit on first error.
-    path, # File or directory
+    path,  # File or directory
 ]
-ignore_paths = [
-]
+ignore_paths = [ ]
 for ignore_path in ignore_paths:
     args.append(ignore_path)
 result = pytest.main(args)
@@ -22,7 +21,7 @@ result_kinds = [
     'pytest command line usage error',
     'No tests were collected',
 ]
-message = '%s: %s:%s' % (path, result, result_kinds[result])
+message = f"{path}: {result}:{result_kinds[result]}"
 if result == 5:
     sys.stdout.write(message)
     sys.stdout.flush()

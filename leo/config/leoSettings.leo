@@ -41,6 +41,7 @@
 <v t="ekr.20181018060340.1"><vh>filter_get_x</vh></v>
 <v t="ekr.20181018065113.1"><vh>filter_user_config</vh></v>
 </v>
+<v t="ekr.20200226105416.1"><vh>check_user_settings</vh></v>
 <v t="ekr.20111006212449.11853"><vh>error</vh></v>
 <v t="ekr.20111006212449.11854"><vh>get_commanders</vh></v>
 <v t="ekr.20111006212449.11855"><vh>get_configs &amp; helpers</vh>
@@ -101,6 +102,34 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20200227064211.1"><vh>Notes</vh>
+<v t="ekr.20200229053354.1"><vh>Changed settings</vh>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
+</v>
+<v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
+<v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
+<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
+</v>
+<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+</v>
+<v t="ekr.20200226104131.1"><vh>Future settings</vh>
+<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
+</v>
+</v>
+<v t="ekr.20200226102108.1"><vh>New settings</vh>
+<v t="ekr.20200226173056.1"><vh>@int auto-justify = 0</vh></v>
+<v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20200226173425.1"><vh>@string http-bookmark-unl = None</vh></v>
+</v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -491,7 +520,7 @@
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+<v t="ekr.20200226173056.1"></v>
 <v t="ekr.20110512085854.14461"><vh>@bool auto-tab-complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
@@ -511,6 +540,7 @@
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20200227181439.1"><vh>@bool find-def-creates-clones = False</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
@@ -519,19 +549,11 @@
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20190608085550.1"><vh>@int max-find-long-lines-length = 110</vh></v>
 <v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
-<v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove-sentinels-extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
-<v t="ekr.20190926110021.1"><vh>@bool beautify-autobeautify = False</vh></v>
-<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192624.1"><vh>@bool beautify-keep-blank-lines = True</vh></v>
-<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 88</vh></v>
+<v t="ekr.20200210045434.1"><vh>@bool beautify-allow-joined-strings = False</vh></v>
+<v t="ekr.20190926105603.1"><vh>@int beautify-max-join-line-length = 80</vh></v>
 <v t="ekr.20190926105638.1"><vh>@int beautify-max-split-line-length = 88</vh></v>
-</v>
-<v t="ekr.20190915192551.1"><vh>blacken command settings</vh>
-<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
-<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
 </v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching settings</vh>
 <v t="ekr.20060804095015.1"><vh>@string close-flash-brackets = )]}</vh></v>
@@ -610,12 +632,6 @@
 <v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
 </v>
 </v>
-<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
-<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
-<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
-<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
-<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
-</v>
 <v t="ekr.20110611092035.16477"><vh>Undo settings</vh>
 <v t="ekr.20041119041019.2"><vh>@bool save-clears-undo-buffer = False</vh></v>
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
@@ -664,10 +680,10 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
-<v t="ekr.20170706103545.1"><vh>@bool report-unchanged-files = True</vh></v>
+<v t="ekr.20200226102131.1"></v>
+<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
-<v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
 <v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
@@ -1982,6 +1998,7 @@
 <v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
 <v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
 <v t="ekr.20181018113243.1"><vh>@string rst2-http-attributename = None</vh></v>
+<v t="ekr.20200226173425.1"></v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
 <v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
 </v>
@@ -2294,13 +2311,15 @@
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
-<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = vertical</vh></v>
+<v t="edward.20081129091117.12"></v>
 <v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20150618105435.1"></v>
+<v t="ekr.20131119143342.20107"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2349,7 +2368,8 @@ The following integer values are supported:
 <t tx="chris.20180324074923.1"></t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
-</t>
+
+# #1514: horizontal is now the default.</t>
 <t tx="edward.20150614045745.1">QWidget#body-text-renderer {
     color:              @render-fg;
     background-color:   @render-bg;
@@ -5195,23 +5215,32 @@ gray90: #E5E5E5
 </t>
 <t tx="ekr.20111006212449.11850">'''Check the consistency of all settings.'''
 # https://github.com/leo-editor/leo-editor/issues/993
+# https://github.com/leo-editor/leo-editor/issues/1511
 
 class Controller:
     @others
 
+g.cls()
 Controller(c).run()
 </t>
 <t tx="ekr.20111006212449.11851">def __init__(self, c):
     self.c = c
     self.errors = 0
     # Commanders...
-    self.core = None # leoPy.leo.
-    self.plugins = None # leoPlugins.leo.
-    self.settings = None # leoSettings.leo.
+    self.core = None  # leoPy.leo.
+    self.plugins = None  # leoPlugins.leo.
+    self.settings = None  # leoSettings.leo.
+    self.user_settings = None  # myLeoSettings.leo
 </t>
 <t tx="ekr.20111006212449.11852">def check(self, configs_d, settings_d):
     munge = self.munge
     table = ('Bool', 'Int', 'Float', 'Ratio', 'Path', 'String',) # 'Color', 'Font',
+    
+    def printList(aList):
+        if len(aList) &lt; 2:
+            print('  ', aList[0])
+        else:
+            g.printObj(aList)
     #
     # Print missing user settings...
     for kind in table:
@@ -5227,7 +5256,7 @@ Controller(c).run()
             print('\nmissing %s %s settings...\n' % (len(aList), settings_key))
             for z in sorted(aList):
                 aList2 = [z2 for z2 in configs if munge(z2) == munge(z)]
-                g.printObj(aList2)
+                printList(aList2)
     #
     # Print missing calls to c.config.getX...
     for kind in table:
@@ -5240,11 +5269,10 @@ Controller(c).run()
         missing = set([z for z in m_settings if not z in m_configs])
         aList = [z for z in missing if self.filter_get_x(z)]
         if aList:
-            print('\nmissing %s config.%s calls...\n' % (len(aList), config_key))
+            print(f"missing {len(aList)} config.{config_key} calls:")
             for z in sorted(aList):
                 aList2 = [z2 for z2 in settings if munge(z2) == munge(z)]
-                g.printObj(aList2)
-</t>
+                printList(aList2)</t>
 <t tx="ekr.20111006212449.11853">def error(self, s):
     print(s)
     self.errors += 1
@@ -5263,6 +5291,7 @@ Controller(c).run()
         # Opening LeoPyRef.leo would be slower.
     self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
     self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
+    self.user_settings = open_commander(g.app.loadManager.my_settings_path)
 </t>
 <t tx="ekr.20111006212449.11855">def get_configs(self):
     '''
@@ -5278,8 +5307,14 @@ Controller(c).run()
     '''
     Scan the outline for all calls to x.config.getX and add items to d.
     '''
-    for p in c.all_positions():
-        self.scan_for_configs(p, d)
+    p = c.rootPosition()
+    while p:
+        if '@nosearch' in p.b:  # #1511.
+            # print('ignore', p.h)
+            p.moveToNodeAfterTree()
+        else:
+            self.scan_for_configs(p, d)
+            p.moveToThreadNext()
     return d
 </t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs(self, p, d):
@@ -5290,8 +5325,8 @@ Controller(c).run()
     '''
     kinds = (
         'getBool', 'getColor', 'getInt', 'getFloat',
-        # '@font', # special case.
         'getPath', 'getRatio', 'getString',
+        # '@font', # special case.
     )
     i, s = 0, p.b
     while i &lt; len(s):
@@ -5316,10 +5351,11 @@ Controller(c).run()
                 # We have found a call to getBool, etc.
                 i = g.skip_ws(s, j)
                 if g.match(s, i, '('):
-                    i = g.skip_ws(s, i + 1)
+                    i = g.skip_ws_and_nl(s, i + 1)  # #1511.
                     if g.match(s, i, '"') or g.match(s, i, "'"):
                         j = g.skip_string(s, i)
                         name = s[i + 1: j - 1]
+                        # print(f"{kind:12} {name}")
                         aList = d.get(kind, [])
                         if name not in aList:
                             aList.append(name)
@@ -5332,12 +5368,13 @@ Controller(c).run()
         assert progress &lt; i
     return d
 </t>
-<t tx="ekr.20111006212449.11858">def get_settings(self):
+<t tx="ekr.20111006212449.11858">def get_settings(self, user):
     '''Return a dict containing a representation
-    of all settings in leoSettings.leo.
+    of all settings in leoSettings.leo or myLeoSettings.leo.
     '''
     trace = False
-    c, d = self.settings, {}
+    c = self.user_settings if user else self.settings  # #1511.
+    d = {}
     print('scanning: %s' % c.shortFileName())
     settings_node = g.findNodeAnywhere(c, '@settings')
     if not settings_node:
@@ -5390,12 +5427,15 @@ Controller(c).run()
     return g.toUnicode(s.replace('-', '').replace('_', '').lower())
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
-    g.cls()
     self.get_commanders()
     configs = self.get_configs()
-    settings = self.get_settings()
+    settings = self.get_settings(user=False)
+    user_settings = self.get_settings(user=True)
     if self.errors == 0:
         self.check(configs, settings)
+        self.check_user_settings(settings, user_settings)
+    # Select leoSettings.leo.
+    g.app.gui.frameFactory.setTabForCommander(self.settings)
     g.trace('done')
 </t>
 <t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
@@ -5841,8 +5881,32 @@ Advanced users may create an additional style sheet, called::
 
 in myLeoSettings.leo.  But most users will never need to do this.
 </t>
-<t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
-False: start-find commands puts focus in Find panel.</t>
+<t tx="ekr.20131119143342.20107">@language rest
+
+The @bool use-find-dialog and @bool minibuffer-find-mode settings comprise
+a tri-state setting, as shown in this table:
+    
+minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
+--------------------    ---------------     --------------------------
+    True                    Ignored         minibuffer
+    False                   True            dialog
+    False                   False           Find tab in the log pane
+
+*All modes*
+
+- Start the search with Ctrl-F (start-search).
+- Enter the find pattern.
+- (Optional) Use &lt;Tab&gt; to enter the search pattern.
+- Use &lt;Enter&gt; to start the search.
+
+*dialog and find tab modes*
+
+- Non-functional "buttons" remind you of key bindings.
+
+*minibuffer mode*
+
+- Use Ctrl-G as always to leave the minibuffer.
+- The Find tab is not made visible, but the status area shows the settings.</t>
 <t tx="ekr.20131119143342.20108"></t>
 <t tx="ekr.20131213135427.21826"></t>
 <t tx="ekr.20131213135427.21827"></t>
@@ -10012,7 +10076,32 @@ except KeyError:
             return "self, "
     return ""
 </t>
-<t tx="ekr.20150618105435.1"></t>
+<t tx="ekr.20150618105435.1">@language rest
+
+The @bool use-find-dialog and @bool minibuffer-find-mode settings comprise
+a tri-state setting, as shown in this table:
+    
+minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
+--------------------    ---------------     --------------------------
+    True                    Ignored         minibuffer
+    False                   True            dialog
+    False                   False           Find tab in the log pane
+
+*All modes*
+
+- Start the search with Ctrl-F (start-search).
+- Enter the find pattern.
+- (Optional) Use &lt;Tab&gt; to enter the search pattern.
+- Use &lt;Enter&gt; to start the search.
+
+*dialog and find tab modes*
+
+- Non-functional "buttons" remind you of key bindings.
+
+*minibuffer mode*
+
+- Use Ctrl-G as always to leave the minibuffer.
+- The Find tab is not made visible, but the status area shows the settings.</t>
 <t tx="ekr.20150620100923.1">/* leoSettings.leo: @data qt-gui-user-style-sheet */
 
 /* alternative active pane highlighting */
@@ -11099,7 +11188,6 @@ if 0: # The base class
       function/method into the headline of the imported node.
       
 **Note**: The importer will copy only the first line of a multiline decorator.</t>
-<t tx="ekr.20170706103545.1">True: Report unchanged written files.</t>
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
@@ -11554,9 +11642,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # The calls to config.get* are commented out in the code,
     # but get_configs isn't smart enough to know that.
     for ignore in (
-        'auto-set-ignore-case',
-        'find-def-creates-clones',
-        'qt-rich-text-zoom-in',
         'theme-name',
         'pytest-path', # In a (disabled) @button node
         'leo-to-html-%s', # Loads multiple settings from an .ini file.
@@ -11787,16 +11872,15 @@ The --init-docks command-line option is the easy way to do this.</t>
 # Not ready yet:
 # pyzoworkspace</t>
 <t tx="ekr.20190915192551.1"></t>
-<t tx="ekr.20190915192624.1"></t>
 <t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20190915192705.1"></t>
 <t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
-<t tx="ekr.20190926105603.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
-<t tx="ekr.20190926105638.1"># Not used at present.  See https://github.com/leo-editor/leo-editor/issues/1266</t>
-<t tx="ekr.20190926110021.1">True: automatically beautify external files when writing them.</t>
+<t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length.
+Zero suppresses all line joining.</t>
+<t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
-<t tx="ekr.20191023140453.1"></t>
+<t tx="ekr.20191023140453.1"># Not ready yet.</t>
 <t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
 
 Otherwise, the sphinx command will cd to the directory containing the input file.</t>
@@ -11811,6 +11895,40 @@ sphinx-build {input_dir} {output_dir} {i_path}</t>
 The output_dir directory specified in the command:
 
 sphinx-build {input_dir} {output_dir} {i_path}</t>
+<t tx="ekr.20200210045434.1">True:  allow joined lines to contain strings.
+False: (Recommended by EKR): Retain alignment of strings.</t>
+<t tx="ekr.20200226102108.1"></t>
+<t tx="ekr.20200226102131.1">True: report unchanged files when saving a .leo file.</t>
+<t tx="ekr.20200226103829.1"></t>
+<t tx="ekr.20200226104131.1"></t>
+<t tx="ekr.20200226105416.1">def check_user_settings(self, settings_d, user_settings_d):
+    """
+    Report settings in myLeoSettings.leo that are not in leoSettings.leo.
+    
+    This method requires exact matches between settings: it does no munging.
+    """
+    unusual_settings = (
+        'color-theme',  # Uses td.get_string_setting.
+        'theme-name',  # Uses td.get_string_setting.
+    )
+    for key in user_settings_d:
+        settings = settings_d.get(key, [])
+        user_settings = user_settings_d.get(key, [])
+        for user_setting in user_settings:
+            if user_setting not in settings and user_setting not in unusual_settings:
+                print(f"Unknown setting in myLeoSettings.leo: {key} {user_setting}")
+</t>
+<t tx="ekr.20200226173056.1"></t>
+<t tx="ekr.20200226173425.1">@language rest
+@wrap
+
+Bookmarks are created as the first node in the outline which has been
+opened longest. You can this setting to specify an alternative location.
+For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
+</t>
+<t tx="ekr.20200227064211.1"></t>
+<t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
+<t tx="ekr.20200229053354.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

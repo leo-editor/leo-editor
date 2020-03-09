@@ -16,21 +16,23 @@ class PrintingController:
         """Ctor for PrintingController class."""
         self.c = c
         self.reload_settings()
-        
+
     def reload_settings(self):
         c = self.c
         self.font_size = c.config.getString('printing-font-size') or '12'
-        self.font_family = c.config.getString('printing-font-family') or 'DejaVu Sans Mono'
+        self.font_family = c.config.getString(
+            'printing-font-family') or 'DejaVu Sans Mono'
         self.stylesheet = self.construct_stylesheet()
-        
+
     reloadSettings = reload_settings
     #@+node:ekr.20150419124739.8: *4* pr.construct stylesheet
     def construct_stylesheet(self):
         """Return the Qt stylesheet to be used for printing."""
         family, size = self.font_family, self.font_size
         table = (
-            'h1 {font-family: %s}' % (family),
-            'pre {font-family: %s; font-size: %spx}' % (family, size),
+            # Clearer w/o f-strings.
+            f"h1 {{font-family: {family}}}",
+            f"pre {{font-family: {family}; font-size: {size}px}}",
         )
         return '\n'.join(table)
     #@+node:ekr.20150509035503.1: *3* pr.cmd (decorator)
@@ -47,8 +49,8 @@ class PrintingController:
         contents = ''
         for n in nodes:
             if heads:
-                contents += '<h1>%s</h1>\n' % (self.sanitize_html(n.h))
-            contents += '<pre>%s</pre>\n' % (self.sanitize_html(n.b))
+                contents += f"<h1>{self.sanitize_html(n.h)}</h1>\n"
+            contents += f"<pre>{self.sanitize_html(n.b)}</pre>\n"
         doc.setHtml(contents)
         return doc
     #@+node:ekr.20150419124739.9: *4* pr.document
@@ -59,7 +61,7 @@ class PrintingController:
         text = self.sanitize_html(text)
         if head:
             head = self.sanitize_html(head)
-            contents = "<h1>%s</h1>\n<pre>%s</pre>" % (head, text)
+            contents = f"<h1>{head}</h1>\n<pre>{text}</pre>"
         else:
             contents = f"<pre>{text}<pre>"
         doc.setHtml(contents)

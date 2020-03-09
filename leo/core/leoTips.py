@@ -2,19 +2,25 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180121041003.1: * @file leoTips.py
 #@@first
-#@@nobeautify # black chokes on a section reference within a list.
 """Save and show tips to the user."""
 import random
 import leo.core.leoGlobals as g
 assert g
+
+# Define constant strings for use in f-strings.
+at_s = "@"
+ref1_s = "<<"
+ref2_s = ">>"
+
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 #@@beautify
+
+
 class TipManager:
     """A class to manage user tips."""
-    
+
     key = 'shown-tips'
-    
     #@+others
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
     def get_next_tip(self):
@@ -24,33 +30,36 @@ class TipManager:
         seen = db.get(self.key, [])
         unseen = [i for i in range(len(tips)) if i not in seen]
         if not unseen:
-            db [self.key] = []
+            db[self.key] = []
             unseen = list(range(len(tips)))
             seen = []
         # Choose a tip at random from the unseen tips.
         i = random.choice(unseen)
         assert i not in seen, (i, seen)
         seen.append(i)
-        db [self.key] = seen
+        db[self.key] = seen
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
 #@@beautify
+
+
 class UserTip:
     """A User Tip."""
-    
+
     def __init__(self, n=0, tags=None, text='', title=''):
-        self.n = n # Not used.
-        self.tags = tags or [] # Not used.
+        self.n = n  # Not used.
+        self.tags = tags or []  # Not used.
         self.title = title.strip()
         self.text = text.strip()
-        
+
     def __repr__(self):
-        return '%s\n\n%s\n' % (self.title, self.text)
+        return f"{self.title}\n\n{self.text}\n"
 
     __str__ = __repr__
 #@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
 #@@beautify
+
 def make_tips(c):
     """
     A script to make entries in the global tips array.
@@ -72,7 +81,7 @@ def make_tips(c):
     """
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
-    
+
     def get_tips(data):
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
@@ -84,24 +93,18 @@ def make_tips(c):
             lines = g.splitLines(body)
             for i, s in enumerate(lines):
                 if s.strip().lower().startswith('tags:'):
-                    lines = lines[:i] + lines[i+1:]
+                    lines = lines[:i] + lines[i + 1 :]
                     text = ''.join(lines).strip()
                     s = s.strip().rstrip('.').strip()
-                    s = s[len('tags:'):].strip()
+                    s = s[len('tags:') :].strip()
                     tags = [z.strip() for z in s.split(',')]
                     break
             else:
                 tags = []
                 text = body.strip()
-            tips.append(
-                UserTip(
-                    n=n,
-                    tags=tags,
-                    text=text.strip(),
-                    title=title.strip(),
-                ))
+            tips.append(UserTip(n=n, tags=tags, text=text.strip(), title=title.strip(),))
         return tips
-    
+
     g.cls()
     template = '''\
 UserTip(
@@ -115,14 +118,15 @@ UserTip(
 """),
 '''
     template = g.adjustTripleString(template, c.tab_width)
-    for kind in ('open',): # 'closed':
-        data = requests.get(url+kind).json()
+    for kind in ('open',):  # 'closed':
+        data = requests.get(url + kind).json()
         for tip in get_tips(data):
             tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
 #@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
 #@@beautify
+
 def make_tip_nodes(c):
     """Create a list of all tips as the last top-level node."""
     global tips
@@ -134,12 +138,13 @@ def make_tip_nodes(c):
         p.h = tip.title
         p.b = tip.text
     if root.hasChildren():
-        root.h = '%s User Tips' % root.numberOfChildren()
+        root.h = f"{root.numberOfChildren()} User Tips"
         c.sortSiblings(p=root.firstChild())
     root.expand()
     c.selectPosition(root)
     c.redraw()
 #@-others
+
 # The global tips array.
 tips = [
 #@+<< define tips >>
@@ -180,7 +185,6 @@ This allows you to work on nodes scattered throughout an
 outline without altering the structure of @file nodes.
 
 """),
-
 #@+node:ekr.20180324065653.3: *4* myLeoSettings.leo
 UserTip(
     n=616,
@@ -195,7 +199,6 @@ Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 
 """),
-
 #@+node:ekr.20180324065152.3: *4* Re @button make-md-toc
 UserTip(
     n=625,
@@ -210,7 +213,6 @@ You can then copy the text from the console to your document.
 The selected outline node should be an `@auto-md` node.
 
 """),
-
 #@+node:ekr.20180324073053.1: *3* Tips re Commands
 #@+node:ekr.20180324072156.1: *4* cff command
 UserTip(
@@ -226,7 +228,6 @@ the children of a new last top-level node.
 This is a great way to study code.
 
 """),
-
 #@+node:ekr.20180324065153.1: *4* beautify command & @nobeautify
 UserTip(
     n=623,
@@ -251,7 +252,6 @@ last top-level node.
 Use this to gather nodes throughout an outline.
 
 """),
-
 #@+node:ekr.20180324072541.1: *4* find-quick-selected command
 UserTip(
     n=607,
@@ -262,7 +262,6 @@ UserTip(
 The find-quick-selected (Ctrl-Shift-F) command finds all nodes containing the selected text.
 
 """),
-
 #@+node:ekr.20180324072904.1: *4* goto-next-clone command
 UserTip(
     n=0,
@@ -275,7 +274,6 @@ Use Alt-N to cycle through the clones of the present cloned node.
 This is a fast way of finding the clone whose ancestor is an @<file> node.
     
 """),
-
 #@+node:ekr.20180527052858.1: *4* help-*
 UserTip(
     n=0,
@@ -316,7 +314,6 @@ UserTip(
 The parse-body command parses p.b (the body text of the selected node) into separate nodes.
 
 """),
-
 #@+node:ekr.20180324065153.2: *4* pylint command
 UserTip(
     n=622,
@@ -346,7 +343,6 @@ For example, instead of pressing an @button button, execute its command from the
 Now you can re-execute the button using Ctrl-P.
 
 """),
-
 #@+node:ekr.20180324065153.3: *4* rst3 command
 UserTip(
     n=621,
@@ -358,7 +354,6 @@ UserTip(
 <p>See <a href="http://leoeditor.com/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
 
 </html>"""),
-
 #@+node:ekr.20180324072625.1: *4* sort-siblings command
 UserTip(
     n=605,
@@ -369,7 +364,6 @@ UserTip(
 The sort-siblings (Alt-A) command sorts all the child nodes of their parent, or all top-level nodes.
 
 """),
-
 #@+node:ekr.20180324073210.1: *3* Tips re Scripting
 #@+node:ekr.20180324065152.1: *4* Clearing the log window
 UserTip(
@@ -404,7 +398,6 @@ For example:</p>
 run Leo from a console</a> for this to work.</p>
  
 </html>"""),
-
 #@+node:ekr.20180324072527.1: *4* g.pdb
 UserTip(
     n=608,
@@ -420,7 +413,6 @@ adapted for Leo.</p>
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072513.1: *4* g.trace
 UserTip(
     n=609,
@@ -467,7 +459,6 @@ Within `@button` scripts, c.p is the presently selected outline node.
 As a result, @button nodes bring scripts to data.
 
 """),
-
 #@+node:ekr.20180324065153.5: *4* Re @test
 UserTip(
     n=619,
@@ -488,37 +479,33 @@ UserTip(
     n=626,
     tags=[],
     title="Use section references sparingly",
-    text="""
+    text=f"""
 
 Within scripts, use section references only when code must
 be placed exactly. Here is a common pattern for @file nodes
 for python files:
 
     @first # -*- coding: utf-8 -*-
-    %s
-    %s
+    {g.angleBrackets('imports')}
+    {'@others'}
 
-""" % (g.angleBrackets('imports'), '@others')),
-
+"""),
 #@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
 UserTip(
     n=0,
     tags=['Scripting',],
     title='Use section refs to avoid one @others per node rule',
-    text="""
+    text=f"""
 
-Nodes can have at most one @others directive. You can work around this restriction as follows:
+Nodes can have at most one {at_s}others directive. You can work around this restriction as follows:
 
-    %(at)sfile myFile.py
-    %(at)sothers
-    %(start)s organizer %(end)s
+    {at_s}file myFile.py
+    {at_s}others
+    {ref1_s} organizer {ref2_s}
 
-where the body of the %(start)s organizer %(end)s node contains just @others.""" % {
-    'at': "@",
-    'end': ">>",
-    'start': "<<",
-}),
+where the body of the {ref1_s} organizer {ref2_s} node contains just {at_s}others.
 
+"""),
 #@+node:ekr.20180324073458.1: *3* Tips re Work flow
 #@+node:ekr.20180324065153.4: *4* Abbreviations
 UserTip(
@@ -537,7 +524,6 @@ can correct spelling mistakes, expand to multiple lines or even trees of nodes.
 can prompt for values to be substituted within the abbreviation.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072110.1: *4* Clones
 UserTip(
     n=615,
@@ -551,7 +537,6 @@ are "live" copies of the node itself and all its descendants.</p>
 <p>Clones are a unique feature of Leo.</p>
 
 </html>"""),
-
 #@+node:ekr.20180324072128.1: *4* Don't remember command names
 UserTip(
     n=614,
@@ -564,7 +549,6 @@ To execute a command, type `Alt-X` followed by the first few characters of comma
 The list of commands matching what you have typed appears.
 
 """),
-
 #@+node:ekr.20180324065145.1: *4* How to assign shortcuts to scripts
 UserTip(
     n=629,
@@ -591,7 +575,6 @@ UserTip(
 Just search LeoDocs.leo.
 
 """),
-
 #@+node:ekr.20180324072812.1: *4* How to find settings
 UserTip(
     n=0,
@@ -604,7 +587,6 @@ Just search leoSettings.leo.
 leoSettings.leo contains the defaults for all of Leo's settings, with documentation for each.
 
 """),
-
 #@+node:ekr.20180312101254.1: *4* How to find your @command nodes
 UserTip(
     n=0,

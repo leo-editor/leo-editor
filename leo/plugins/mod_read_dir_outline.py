@@ -158,7 +158,7 @@ class controller:
             if dossiers:
                 for d in dossiers:
                     compteurglobal = self.importDir(d,compteurglobal)
-            c.setChanged(True)
+            c.setChanged()
             #sélectionne le noeud parent
             c.selectPosition(current)
         except Exception:

@@ -7,7 +7,6 @@ Gui-independent fast-redraw code.
 
 For an explanation, see this thread:
 https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
-
 """
 import leo.core.leoGlobals as g
 import difflib
@@ -19,21 +18,21 @@ class FastRedraw:
     #@+node:ekr.20181202060924.4: ** LeoGui.dump_diff_op_codes
     def dump_diff_op_codes(self, a, b, op_codes):
         """Dump the opcodes returned by difflib.SequenceMatcher."""
-        
+
         def summarize(aList):
             pat = re.compile(r'.*:.*:(.*)')
             return ', '.join([pat.match(z).group(1) for z in aList])
-            
+
         for tag, i1, i2, j1, j2 in op_codes:
             if tag == 'equal':
-                print('%7s at %s:%s (both) ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f"{tag:7} at {i1}:{i2} (both) ==> {summarize(b[j1:j2])!r}")
             elif tag == 'insert':
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
             elif tag == 'delete':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
+                print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
             elif tag == 'replace':
-                print('%7s at %s:%s (a)    ==> %r' % (tag, i1, i2, summarize(a[i1:i2])))
-                print('%7s at %s:%s (b)    ==> %r' % (tag, i1, i2, summarize(b[j1:j2])))
+                print(f"{tag:7} at {i1}:{i2} (a)    ==> {summarize(a[i1:i2])!r}")
+                print(f"{tag:7} at {i1}:{i2} (b)    ==> {summarize(b[j1:j2])!r}")
             else:
                 print('unknown tag')
     #@+node:ekr.20181202060924.5: ** LeoGui.dump_opcodes
@@ -44,16 +43,16 @@ class FastRedraw:
             if kind == 'replace':
                 kind, i1, gnxs1, gnxs2 = z
                 print(kind, i1)
-                print('  a: [%s]' % ',\n    '.join(gnxs1))
-                print('  b: [%s]' % ',\n    '.join(gnxs2))
+                print(f"  a: [%s]" % ',\n    '.join(gnxs1))
+                print(f"  b: [%s]" % ',\n    '.join(gnxs2))
             elif kind in ('delete', 'insert'):
                 kind, i1, gnxs = z
                 print(kind, i1)
-                print('  [%s]' % ',\n    '.join(gnxs))
+                print(f"  [%s]" % ',\n    '.join(gnxs))
             else:
                 print(z)
     #@+node:ekr.20181202060924.2: ** LeoGui.flatten_outline
-    def flatten_outline (self, c):
+    def flatten_outline(self, c):
         """Return a flat list of strings "level:gnx" for all *visible* positions."""
         trace = False and not g.unitTesting
         t1 = time.process_time()
@@ -62,13 +61,12 @@ class FastRedraw:
             self.extend_flattened_outline(aList, p)
         if trace:
             t2 = time.process_time()
-            print('app.flatten_outline: %s entries %6.4f sec.' % (
-                len(aList), (t2-t1)))
+            print(f"app.flatten_outline: {len(aList)} entries {t2 - t1:6.4f} sec.")
         return aList
-            
+
     def extend_flattened_outline(self, aList, p):
         """Add p and all p's visible descendants to aList."""
-        aList.append('%s:%s:%s\n' % (p.level(), p.gnx, p.h))
+        aList.append(f"{p.level()}:{p.gnx}:{p.h}\n")
             # Padding the fields causes problems later.
         if p.isExpanded():
             for child in p.children():
@@ -86,10 +84,8 @@ class FastRedraw:
         def gnxs(aList):
             """Return the gnx list. Do not try to remove this!"""
             return [z.strip() for z in aList]
-            
         #@+others # Define local helpers
         #@-others
-
         d = difflib.SequenceMatcher(None, a, b)
         op_codes = list(d.get_opcodes())
         # dump_diff_op_codes(a, b, op_codes)
@@ -118,10 +114,10 @@ class FastRedraw:
         i, result = 0, []
         while i < len(opcodes):
             op0 = opcodes[i]
-            if i == len(opcodes)-1:
+            if i == len(opcodes) - 1:
                 result.append(op0)
                 break
-            op1 = opcodes[i+1]
+            op1 = opcodes[i + 1]
             kind0, kind1 = op0[0], op1[0]
             # Merge adjacent insert/delete opcodes with the same gnx.
             if (
@@ -132,7 +128,7 @@ class FastRedraw:
                 kind1, index1, gnxs1 = op1
                 if gnxs0[0] == gnxs1[0]:
                     result.append(['move', index0, index1, gnxs0, gnxs1])
-                    i += 2 # Don't scan either op again!
+                    i += 2  # Don't scan either op again!
                     break
             # The default is to retain the opcode.
             result.append(op0)

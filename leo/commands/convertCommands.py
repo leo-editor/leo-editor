@@ -28,7 +28,7 @@ class To_Python:
         self.p = self.c.p.copy()
         aList = g.get_directives_dict_list(self.p)
         self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
-    #@+node:ekr.20150514063305.126: *3* To_Python.go (changed)
+    #@+node:ekr.20150514063305.126: *3* To_Python.go
     def go(self):
         import time
         t1 = time.time()
@@ -36,7 +36,7 @@ class To_Python:
         u, undoType = c.undoer, 'typescript-to-python'
         pp = leoBeautify.CPrettyPrinter(c)
         u.beforeChangeGroup(c.p, undoType)
-        changed, dirtyVnodeList = False, []
+        changed = False
         n_files, n_nodes = 0, 0
         special = ('class ', 'module ', '@file ', '@@file ')
         files = ('@file ', '@@file ')
@@ -54,18 +54,14 @@ class To_Python:
                 s = ''.join(aList)
                 if s != p.b:
                     p.b = s
-                    dirtyVnodeList2 = p.setDirty() # Was p.v.setDirty.
-                    dirtyVnodeList.extend(dirtyVnodeList2)
-                    ### p.v.setDirty()
-                    ### dirtyVnodeList.append(p.v)
+                    p.setDirty()
                     u.afterChangeNodeContents(p, undoType, bunch)
                     changed = True
         # Call this only once, at end.
         if changed:
-            u.afterChangeGroup(c.p, undoType,
-                reportFlag=False, dirtyVnodeList=dirtyVnodeList)
+            u.afterChangeGroup(c.p, undoType, reportFlag=False)
         t2 = time.time()
-        g.es_print('done! %s files, %s nodes, %2.2f sec' % (n_files, n_nodes, t2 - t1))
+        g.es_print(f"done! {n_files} files, {n_nodes} nodes, {t2 - t1:2.2f} sec")
     #@+node:ekr.20150514063305.127: *3* To_Python.convertCodeList
     def convertCodeList(self, aList):
         """The main search/replace method."""
@@ -115,7 +111,7 @@ class To_Python:
             if self.is_string_or_comment(aList, i):
                 i = self.skip_string_or_comment(aList, i)
             elif aList[i] == '!' and not self.match(aList, i + 1, '='):
-                aList[i: i + 1] = list('not ')
+                aList[i : i + 1] = list('not ')
                 i += 4
             else:
                 i += 1
@@ -127,7 +123,7 @@ class To_Python:
     def is_section_ref(self, s):
         n1 = s.find("<<", 0)
         n2 = s.find(">>", 0)
-        return -1 < n1 < n2 and s[n1 + 2: n2].strip()
+        return -1 < n1 < n2 and s[n1 + 2 : n2].strip()
     #@+node:ekr.20150514063305.135: *5* is_string_or_comment
     def is_string_or_comment(self, s, i):
         # Does range checking.
@@ -160,7 +156,7 @@ class To_Python:
             while j < len(aList) and aList[j] in " \t":
                 j += 1
             if j == len(aList) or aList[j] == '\n':
-                del aList[i: j + 1]
+                del aList[i : j + 1]
             else:
                 i = self.skip_past_line(aList, i)
     #@+node:ekr.20150514063305.140: *5* removeExcessWs
@@ -181,15 +177,15 @@ class To_Python:
             # Retain the leading whitespace.
         while i < len(aList):
             if self.is_string_or_comment(aList, i):
-                break # safe
+                break  # safe
             elif self.match(aList, i, '\n'):
                 break
             elif self.match(aList, i, ' ') or self.match(aList, i, '\t'):
                 # Replace all whitespace by one blank.
                 j = self.skip_ws(aList, i)
                 assert(j > i)
-                aList[i: j] = [' ']
-                i += 1 # make sure we don't go past a newline!
+                aList[i:j] = [' ']
+                i += 1  # make sure we don't go past a newline!
             else: i += 1
         return i
     #@+node:ekr.20150514063305.142: *5* removeMatchingBrackets
@@ -198,8 +194,8 @@ class To_Python:
         if i < j < len(aList):
             c = aList[j]
             if c == ')' or c == ']' or c == '}':
-                del aList[j: j + 1]
-                del aList[i: i + 1]
+                del aList[j : j + 1]
+                del aList[i : i + 1]
                 return j - 1
             return j + 1
         return j
@@ -230,7 +226,7 @@ class To_Python:
                 assert(j < i)
                 if i >= len(aList) or aList[i] == '\n':
                     # print "removing trailing ws:", `i-j`
-                    del aList[j: i]
+                    del aList[j:i]
                     i = j
             else: i += 1
     #@+node:ekr.20150514063305.145: *4* replace... & safe_replace
@@ -246,7 +242,7 @@ class To_Python:
         i = 0
         while i < len(aList):
             if self.match(aList, i, findString):
-                aList[i: i + len(findString)] = changeList
+                aList[i : i + len(findString)] = changeList
                 i += len(changeList)
             else:
                 i += 1
@@ -257,7 +253,7 @@ class To_Python:
             # Loop invariant: j > progress at end.
             progress = i
             if self.match(aList, i, "//"):
-                aList[i: i + 2] = ['#']
+                aList[i : i + 2] = ['#']
                 j = self.skip_past_line(aList, i)
             elif self.match(aList, i, "/*"):
                 j = self.skip_c_block_comment(aList, i)
@@ -265,15 +261,15 @@ class To_Python:
                 while k - 1 >= 0 and aList[k - 1] in ' \t':
                     k -= 1
                 assert k == 0 or aList[k - 1] not in ' \t'
-                lws = ''.join(aList[k: i])
-                comment_body = ''.join(aList[i + 2: j - 2])
+                lws = ''.join(aList[k:i])
+                comment_body = ''.join(aList[i + 2 : j - 2])
                 comment_lines = g.splitLines(lws + comment_body)
                 comment_lines = self.munge_block_comment(comment_lines)
-                comment = '\n'.join(comment_lines) # A list of lines.
-                comment_list = list(comment) # A list of characters.
-                aList[k: j] = comment_list
+                comment = '\n'.join(comment_lines)  # A list of lines.
+                comment_list = list(comment)  # A list of characters.
+                aList[k:j] = comment_list
                 j = k + len(comment_list)
-                progress = j - 1 # Disable the check below.
+                progress = j - 1  # Disable the check below.
             elif self.match(aList, i, '"') or self.match(aList, i, "'"):
                 j = self.skip_string(aList, i)
             else:
@@ -291,16 +287,16 @@ class To_Python:
         s = comment_lines[0]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         if n == 1:
-            return ['%s# %s' % ((' ' * (w - 1)), s.strip())]
+            return [f"{' ' * (w - 1)}# {s.strip()}"]
         junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         result = []
         for i, s in enumerate(comment_lines):
             if s.strip():
-                result.append('%s# %s' % ((' ' * w), s.strip()))
+                result.append(f"{' ' * w}# {s.strip()}")
             elif i == n - 1:
-                pass # Omit the line entirely.
+                pass  # Omit the line entirely.
             else:
-                result.append('') # Add a blank line
+                result.append('')  # Add a blank line
         return result
     #@+node:ekr.20150514063305.149: *5* replaceSectionDefs
     def replaceSectionDefs(self, aList):
@@ -309,14 +305,14 @@ class To_Python:
             return
         i = 0
         j = self.is_section_def(aList[i])
-        if j > 0: aList[i: j] = list("@c ")
+        if j > 0: aList[i:j] = list("@c ")
         while i < len(aList):
             if self.is_string_or_comment(aList, i):
                 i = self.skip_string_or_comment(aList, i)
             elif self.match(aList, i, "\n"):
                 i += 1
                 j = self.is_section_def(aList[i])
-                if j > i: aList[i: j] = list("@c ")
+                if j > i: aList[i:j] = list("@c ")
             else: i += 1
     #@+node:ekr.20150514063305.150: *5* safe_replace
     def safe_replace(self, aList, findString, changeString):
@@ -329,19 +325,19 @@ class To_Python:
             return
         changeList = list(changeString)
         i = 0
-        if findString[0].isalpha(): # use self.match_word
+        if findString[0].isalpha():  # use self.match_word
             while i < len(aList):
                 if self.is_string_or_comment(aList, i):
                     i = self.skip_string_or_comment(aList, i)
                 elif self.match_word(aList, i, findString):
-                    aList[i: i + len(findString)] = changeList
+                    aList[i : i + len(findString)] = changeList
                     i += len(changeList)
                 else:
                     i += 1
-        else: #use self.match
+        else:  #use self.match
             while i < len(aList):
                 if self.match(aList, i, findString):
-                    aList[i: i + len(findString)] = changeList
+                    aList[i : i + len(findString)] = changeList
                     i += len(changeList)
                 else:
                     i += 1
@@ -382,7 +378,7 @@ class To_Python:
         return i
     #@+node:ekr.20150514063305.156: *5* skip_string
     def skip_string(self, s, i):
-        delim = s[i] # handle either single or double-quoted strings
+        delim = s[i]  # handle either single or double-quoted strings
         assert(delim == '"' or delim == "'")
         i += 1
         while i < len(s):
@@ -420,7 +416,7 @@ class To_Python:
                 return i
             elif ch == '(' or ch == '[' or ch == '{':
                 i = self.skip_to_matching_bracket(s, i)
-                i += 1 # skip the closing bracket.
+                i += 1  # skip the closing bracket.
             else: i += 1
         return i
     #@+node:ekr.20150514063305.159: *5* skip_ws and skip_ws_and_nl
@@ -441,6 +437,7 @@ class To_Python:
         return i
     #@-others
 #@-<< class To_Python >>
+
 #@+others
 #@+node:ekr.20160316111303.1: ** class ConvertCommandsClass
 class ConvertCommandsClass(BaseEditCommandsClass):
@@ -450,7 +447,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         """Ctor for EditCommandsClass class."""
         # pylint: disable=super-init-not-called
         self.c = c
-
     #@+others
     #@+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
@@ -495,7 +491,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             aList = [z.strip() for z in aList if z.strip()]
             for s in aList:
                 if s.endswith(':'):
-                    key = s[: -1].strip()
+                    key = s[:-1].strip()
                 elif key:
                     ivars = [z.strip() for z in s.split(',') if z.strip()]
                     aList = d.get(key, [])
@@ -563,9 +559,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             sr(aList, " )", ")")
             sr(aList, ") ", ")")
             sr(aList, "@language c", "@language python")
-            self.replaceComments(aList) # should follow all calls to safe_replace
+            self.replaceComments(aList)  # should follow all calls to safe_replace
             self.removeTrailingWs(aList)
-            r(aList, "\t ", "\t") # happens when deleting declarations.
+            r(aList, "\t ", "\t")  # happens when deleting declarations.
         #@+node:ekr.20150514063305.165: *6* handle_all_keywords
         def handle_all_keywords(self, aList):
             """
@@ -576,7 +572,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             while i < len(aList):
                 if self.is_string_or_comment(aList, i):
                     i = self.skip_string_or_comment(aList, i)
-                elif(
+                elif (
                     self.match_word(aList, i, "if") or
                     self.match_word(aList, i, "while") or
                     self.match_word(aList, i, "for") or
@@ -602,7 +598,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             i = self.skip_ws(aList, i)
             if k == i:
                 c = aList[i]
-                aList[i: i + 1] = [' ', c]
+                aList[i : i + 1] = [' ', c]
                 i += 1
             # Remove '(' and matching ')' and add a ':'
             if aList[i] == "(":
@@ -617,14 +613,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     j = self.removeMatchingBrackets(aList, i)
                 if i < j < len(aList):
                     ch = aList[j]
-                    aList[j: j + 1] = [ch, ":", " "]
+                    aList[j : j + 1] = [ch, ":", " "]
                     j = j + 2
                 return j
             return i
         #@+node:ekr.20150514063305.167: *6* mungeAllFunctions
         def mungeAllFunctions(self, aList):
             """Scan for a '{' at the top level that is preceeded by ')' """
-            prevSemi = 0 # Previous semicolon: header contains all previous text
+            prevSemi = 0  # Previous semicolon: header contains all previous text
             i = 0
             firstOpen = None
             while i < len(aList):
@@ -646,7 +642,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 elif self.match(aList, i, "{"):
                     j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                     prevSemi = j
-                    firstOpen = None # restart the scan
+                    firstOpen = None  # restart the scan
                 else:
                     j = i + 1
                 # Handle unusual cases.
@@ -676,21 +672,22 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return 1 + self.skip_to_matching_bracket(aList, i)
             open_paren = firstOpen
             assert(aList[open_paren] == '(')
-            head = aList[prevSemi: open_paren]
+            head = aList[prevSemi:open_paren]
             # do nothing if the head starts with "if", "for" or "while"
             k = self.skip_ws(head, 0)
             if k >= len(head) or not head[k].isalpha():
                 return 1 + self.skip_to_matching_bracket(aList, i)
             kk = self.skip_past_word(head, k)
             if kk > k:
-                headString = ''.join(head[k: kk])
+                headString = ''.join(head[k:kk])
                 # C keywords that might be followed by '{'
                 # print "headString:", headString
-                if headString in ["class", "do", "for", "if", "struct", "switch", "while"]:
+                if headString in [
+                    "class", "do", "for", "if", "struct", "switch", "while"]:
                     return 1 + self.skip_to_matching_bracket(aList, i)
-            args = aList[open_paren: close + 1]
+            args = aList[open_paren : close + 1]
             k = 1 + self.skip_to_matching_bracket(aList, i)
-            body = aList[close + 1: k]
+            body = aList[close + 1 : k]
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
@@ -698,7 +695,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             if head: result.extend(head)
             if args: result.extend(args)
             if body: result.extend(body)
-            aList[prevSemi: k] = result
+            aList[prevSemi:k] = result
             return prevSemi + len(result)
         #@+node:ekr.20150514063305.169: *7* massageFunctionArgs
         def massageFunctionArgs(self, args):
@@ -707,14 +704,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             result = ['(']
             lastWord = []
             if self.class_name:
-                for item in list("self,"): result.append(item) #can put extra comma
+                for item in list("self,"): result.append(item)  #can put extra comma
             i = 1
             while i < len(args):
                 i = self.skip_ws_and_nl(args, i)
                 ch = args[i]
                 if ch.isalpha():
                     j = self.skip_past_word(args, i)
-                    lastWord = args[i: j]
+                    lastWord = args[i:j]
                     i = j
                 elif ch == ',' or ch == ')':
                     for item in lastWord:
@@ -741,7 +738,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if i < len(head) and head[i].isalpha():
                     result = []
                     j = self.skip_past_word(head, i)
-                    prevWord = head[i: j]
+                    prevWord = head[i:j]
                     i = j
                     # look for ::word2
                     i = self.skip_ws(head, i)
@@ -752,13 +749,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i = self.skip_ws(head, i + 2)
                         if i < len(head) and (head[i] == '~' or head[i].isalpha()):
                             j = self.skip_past_word(head, i)
-                            if head[i: j] == prevWord:
+                            if head[i:j] == prevWord:
                                 result.extend('__init__')
-                            elif head[i] == '~' and head[i + 1: j] == prevWord:
+                            elif head[i] == '~' and head[i + 1 : j] == prevWord:
                                 result.extend('__del__')
                             else:
                                 # result.extend(list('::'))
-                                result.extend(head[i: j])
+                                result.extend(head[i:j])
                             i = j
                     else:
                         result.extend(prevWord)
@@ -798,7 +795,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         k = j
                         j = self.skip_to_matching_bracket(body, j)
                         m = '# <Start dedented block>...'
-                        body[k: k + 1] = list(m)
+                        body[k : k + 1] = list(m)
                         j += len(m)
                         while k < j:
                             progress = k
@@ -812,14 +809,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                                     else:
                                         break
                                 if spaces > 0:
-                                    del body[k - spaces: k]
+                                    del body[k - spaces : k]
                                     k -= spaces
                                     j -= spaces
                             else:
                                 k += 1
                             assert progress < k
                         m = '    # <End dedented block>'
-                        body[j: j + 1] = list(m)
+                        body[j : j + 1] = list(m)
                         j += len(m)
                 else:
                     j = i + 1
@@ -838,14 +835,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i = self.skip_string_or_comment(body, i)
                 elif body[i].isalpha():
                     j = self.skip_past_word(body, i)
-                    word = ''.join(body[i: j])
+                    word = ''.join(body[i:j])
                     # print "looking up:", word
                     if word in ivars:
                         # replace word by self.word
                         # print "replacing", word, " by self.", word
                         word = "self." + word
                         word = list(word)
-                        body[i: j] = word
+                        body[i:j] = word
                         delta = len(word) - (j - i)
                         i = j + delta
                     else: i = j
@@ -862,7 +859,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     i = self.skip_ws(body, i + 1)
                     if body[i].isalpha():
                         j = self.skip_past_word(body, i)
-                        word = ''.join(body[i: j])
+                        word = ''.join(body[i:j])
                         i = j
                         if word in self.class_list or word in self.type_list:
                             i = self.skip_ws(body, i)
@@ -872,7 +869,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             if self.match(body, i, ')'):
                                 i += 1
                                 # print "removing cast:", ''.join(body[start:i])
-                                del body[start: i]
+                                del body[start:i]
                                 i = start
                 else: i += 1
             return body
@@ -891,14 +888,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i = self.skip_past_word(body, i)
                 elif body[i].isalpha():
                     j = self.skip_past_word(body, i)
-                    word = ''.join(body[i: j])
+                    word = ''.join(body[i:j])
                     if word in self.class_list or word in self.type_list:
                         j = self.skip_ws(body, j)
                         while self.match(body, j, '*'):
                             j += 1
                         # print "Deleting type name:", ''.join(body[i:j])
                         j = self.skip_ws(body, j)
-                        del body[i: j]
+                        del body[i:j]
                     else:
                         i = j
                 else: i += 1
@@ -924,25 +921,27 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c):
                 """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
-                self.msf = msf = g.importExtension(moduleName='make_stub_files',
-                    pluginName=None, verbose=False, required=False)
+                self.msf = msf = g.import_module('make_stub_files')
                 x = msf.StandAloneMakeStubFile()
                     # x is used *only* to init ivars.
                 # Ivars set on the command line...
                 self.config_fn = None
                 self.enable_unit_tests = False
-                self.files = [] # May also be set in the config file.
+                self.files = []  # May also be set in the config file.
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.')
                 self.output_fn = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
-                self.trace_matches =  c.config.getBool('stub-trace-matches', default = False)
-                self.trace_patterns =  c.config.getBool('stub-trace-patterns', default = False)
-                self.trace_reduce =  c.config.getBool('stub-trace-reduce', default = False)
-                self.trace_visitors =  c.config.getBool('stub-trace-visitors', default = False)
-                self.update_flag = c.config.getBool('stub-update', default = False)
-                self.verbose =  c.config.getBool('stub-verbose', default = False)
-                self.warn =  c.config.getBool('stub-warn', default = False)
+                self.trace_matches = c.config.getBool(
+                    'stub-trace-matches', default=False)
+                self.trace_patterns = c.config.getBool(
+                    'stub-trace-patterns', default=False)
+                self.trace_reduce = c.config.getBool('stub-trace-reduce', default=False)
+                self.trace_visitors = c.config.getBool(
+                    'stub-trace-visitors', default=False)
+                self.update_flag = c.config.getBool('stub-update', default=False)
+                self.verbose = c.config.getBool('stub-verbose', default=False)
+                self.warn = c.config.getBool('stub-warn', default=False)
                 # Pattern lists & dicts, set by config sections...
                 self.patterns_dict = {}
                 self.names_dict = {}
@@ -963,9 +962,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def scan(self, kind):
                 """Return a list of *all* lines from an @data node, including comments."""
                 c = self.c
-                aList = c.config.getData(kind,
-                    strip_comments=False,
-                    strip_data=False)
+                aList = c.config.getData(kind, strip_comments=False, strip_data=False)
                 if not aList:
                     g.trace(f"warning: no @data {kind} node")
                 return aList
@@ -978,7 +975,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
-                    name, value = s.split(':',1)
+                    name, value = s.split(':', 1)
                     d[name.strip()] = value.strip()
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
@@ -1024,7 +1021,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.output_fn = out_fn
                     # compatibility with stand-alone script
                 s = open(abs_fn).read()
-                node = ast.parse(s,filename=fn,mode='exec')
+                node = ast.parse(s, filename=fn, mode='exec')
                 # Make the traverser *after* creating output_fn and output_directory ivars.
                 x = self.msf.StubTraverser(controller=self)
                 x.output_fn = self.output_fn
@@ -1074,7 +1071,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """An interface class between Leo and leo/external/py2cs.py."""
             #@+others
             #@+node:ekr.20160316112717.1: *5* py2cs.ctor
-            def __init__(self,c):
+            def __init__(self, c):
                 """Ctor for Python_To_Coffeescript_Adapter class."""
                 self.c = c
                 self.files = []
@@ -1083,12 +1080,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # self.output_fn = None
                 self.overwrite = c.config.getBool('py2cs-overwrite', default=False)
                 # Connect to the external module.
-                self.py2cs = g.importExtension(
-                    'py2cs',
-                    pluginName=None,
-                    verbose=False,
-                    required=False,
-                )
+                self.py2cs = g.import_module('leo.external.py2cs')
             #@+node:ekr.20160316093019.1: *5* py2cs.main
             def main(self):
                 """Main line for Python_To_CoffeeScript class."""
@@ -1164,7 +1156,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 This may be dubious because it destroys outline structure.
                 """
                 delims = ['#', None, None]
-                return ''.join([z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
+                return ''.join(
+                    [z for z in g.splitLines(s) if not g.is_sentinel(z, delims)])
             #@-others
         #@-others
         c = self.c
@@ -1250,9 +1243,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 sr(aList, ')not(', ') not (')
                 sr(aList, ')or(', ') or (')
                 sr(aList, '@language javascript', '@language python')
-                self.replaceComments(aList) # should follow all calls to safe_replace
+                self.replaceComments(aList)  # should follow all calls to safe_replace
                 self.removeTrailingWs(aList)
-                r(aList, '\t ', '\t') # happens when deleting declarations.
+                r(aList, '\t ', '\t')  # happens when deleting declarations.
             #@+node:ekr.20150514063305.179: *6* comment_scope_ids
             def comment_scope_ids(self, aList):
                 """convert (public|private|export) aLine to aLine # (public|private|export)"""
@@ -1276,6 +1269,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20150514063305.180: *7* handle_scope_keyword
             def handle_scope_keyword(self, aList, i):
                 i1 = i
+                # pylint: disable=undefined-loop-variable
                 for word in ('public', 'private', 'export'):
                     if self.match_word(aList, i, word):
                         i += len(word)
@@ -1287,9 +1281,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Scan to the next newline:
                 i3 = self.skip_line(aList, i)
                 # Optional: move the word to a trailing comment.
-                comment = list(' # %s' % word) if False else []
+                comment = list(f" # {word}") if False else []
                 # Change the list in place.
-                aList[i1: i3] = aList[i2: i3] + comment
+                aList[i1:i3] = aList[i2:i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
                 return i
             #@+node:ekr.20150514063305.181: *6* handle_all_keywords
@@ -1331,7 +1325,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 i = self.skip_ws(aList, i)
                 if k == i:
                     c = aList[i]
-                    aList[i: i + 1] = [' ', c]
+                    aList[i : i + 1] = [' ', c]
                     i += 1
                 # Remove '(' and matching ')' and add a ':'
                 if aList[i] == "(":
@@ -1346,7 +1340,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.removeMatchingBrackets(aList, i)
                     if i < j < len(aList):
                         ch = aList[j]
-                        aList[j: j + 1] = [ch, ":", " "]
+                        aList[j : j + 1] = [ch, ":", " "]
                         j = j + 2
                     return j
                 return i
@@ -1361,8 +1355,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     elif self.match_word(aList, i, 'class'):
                         i1 = i
                         i = self.skip_line(aList, i)
-                        aList[i - 1: i] = list('%s:' % aList[i - 1])
-                        s = ''.join(aList[i1: i])
+                        aList[i - 1 : i] = list(f"{aList[i - 1]}:")
+                        s = ''.join(aList[i1:i])
                         k = s.find(' extends ')
                         if k > -1:
                             k1 = k
@@ -1370,20 +1364,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             k = g.skip_ws(s, k)
                             if k < len(s) and g.is_c_id(s[k]):
                                 k2 = g.skip_id(s, k)
-                                word = s[k: k2]
-                                aList[i1: i] = list('%s (%s)' % (s[: k1], word))
+                                word = s[k:k2]
+                                aList[i1:i] = list(f"{s[:k1]} ({word})")
                     elif self.match_word(aList, i, 'interface'):
-                        aList[i: i + len('interface')] = list('class')
+                        aList[i : i + len('interface')] = list('class')
                         i = self.skip_line(aList, i)
-                        aList[i - 1: i] = list('%s: # interface' % aList[i - 1])
-                        i = self.skip_line(aList, i) # Essential.
+                        aList[i - 1 : i] = list(f"{aList[i - 1]}: # interface")
+                        i = self.skip_line(aList, i)  # Essential.
                     else:
                         i += 1
                     assert i > progress
             #@+node:ekr.20150514063305.184: *6* mungeAllFunctions & helpers
             def mungeAllFunctions(self, aList):
                 """Scan for a '{' at the top level that is preceeded by ')' """
-                prevSemi = 0 # Previous semicolon: header contains all previous text
+                prevSemi = 0  # Previous semicolon: header contains all previous text
                 i = 0
                 firstOpen = None
                 while i < len(aList):
@@ -1399,9 +1393,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = i + 1
                         prevSemi = j
                     elif self.match(aList, i, "{"):
-                        j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
+                        j = self.handlePossibleFunctionHeader(
+                            aList, i, prevSemi, firstOpen)
                         prevSemi = j
-                        firstOpen = None # restart the scan
+                        firstOpen = None  # restart the scan
                     else:
                         j = i + 1
                     # Handle unusual cases.
@@ -1432,21 +1427,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     return 1 + self.skip_to_matching_bracket(aList, i)
                 open_paren = firstOpen
                 assert(aList[open_paren] == '(')
-                head = aList[prevSemi: open_paren]
+                head = aList[prevSemi:open_paren]
                 # do nothing if the head starts with "if", "for" or "while"
                 k = self.skip_ws(head, 0)
                 if k >= len(head) or not head[k].isalpha():
                     return 1 + self.skip_to_matching_bracket(aList, i)
                 kk = self.skip_past_word(head, k)
                 if kk > k:
-                    headString = ''.join(head[k: kk])
+                    headString = ''.join(head[k:kk])
                     # C keywords that might be followed by '{'
                     # print "headString:", headString
                     if headString in ["do", "for", "if", "struct", "switch", "while"]:
                         return 1 + self.skip_to_matching_bracket(aList, i)
-                args = aList[open_paren: close + 1]
+                args = aList[open_paren : close + 1]
                 k = 1 + self.skip_to_matching_bracket(aList, i)
-                body = aList[close + 1: k]
+                body = aList[close + 1 : k]
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
@@ -1454,7 +1449,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if head: result.extend(head)
                 if args: result.extend(args)
                 if body: result.extend(body)
-                aList[prevSemi: k] = result
+                aList[prevSemi:k] = result
                 return prevSemi + len(result)
             #@+node:ekr.20150514063305.186: *7* massageFunctionArgs
             def massageFunctionArgs(self, args):
@@ -1463,14 +1458,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result = ['(']
                 lastWord = []
                 if self.class_name:
-                    for item in list("self,"): result.append(item) #can put extra comma
+                    for item in list("self,"): result.append(item)  #can put extra comma
                 i = 1
                 while i < len(args):
                     i = self.skip_ws_and_nl(args, i)
                     ch = args[i]
                     if ch.isalpha():
                         j = self.skip_past_word(args, i)
-                        lastWord = args[i: j]
+                        lastWord = args[i:j]
                         i = j
                     elif ch == ',' or ch == ')':
                         for item in lastWord:
@@ -1496,7 +1491,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if i < len(head) and head[i].isalpha():
                         result = []
                         j = self.skip_past_word(head, i)
-                        prevWord = head[i: j]
+                        prevWord = head[i:j]
                         i = j
                         # look for ::word2
                         i = self.skip_ws(head, i)
@@ -1507,13 +1502,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             i = self.skip_ws(head, i + 2)
                             if i < len(head) and (head[i] == '~' or head[i].isalpha()):
                                 j = self.skip_past_word(head, i)
-                                if head[i: j] == prevWord:
+                                if head[i:j] == prevWord:
                                     result.extend('__init__')
-                                elif head[i] == '~' and head[i + 1: j] == prevWord:
+                                elif head[i] == '~' and head[i + 1 : j] == prevWord:
                                     result.extend('__del__')
                                 else:
                                     # result.extend(list('::'))
-                                    result.extend(head[i: j])
+                                    result.extend(head[i:j])
                                 i = j
                         else:
                             result.extend(prevWord)
@@ -1554,7 +1549,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                             k = j
                             j = self.skip_to_matching_bracket(body, j)
                             m = '# <Start dedented block>...'
-                            body[k: k + 1] = list(m)
+                            body[k : k + 1] = list(m)
                             j += len(m)
                             while k < j:
                                 progress = k
@@ -1568,14 +1563,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                                         else:
                                             break
                                     if spaces > 0:
-                                        del body[k - spaces: k]
+                                        del body[k - spaces : k]
                                         k -= spaces
                                         j -= spaces
                                 else:
                                     k += 1
                                 assert progress < k
                             m = '    # <End dedented block>'
-                            body[j: j + 1] = list(m)
+                            body[j : j + 1] = list(m)
                             j += len(m)
                     else:
                         j = i + 1

@@ -218,13 +218,13 @@ which node is selected.
 import leo.core.leoGlobals as g
 import asynchat
 import asyncore
-import cgi
 import json
 import http.server
 SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
+import urllib
 import urllib.parse as urlparse
 import os
 import select
@@ -766,7 +766,7 @@ class LeoActions:
                 selection,
                 query.get('description', [''])[0],
             )
-            c.setChanged(True)
+            c.setChanged()
             c.selectPosition(nd) # required for body text redraw
             c.redraw()
             return f
@@ -1064,15 +1064,19 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.32: *3* do_POST
     def do_POST(self):
-        """Begins serving a POST request. The request data must be readable
-         on a file-like object called self.rfile"""
-        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        """
+        Begins serving a POST request. The request data must be readable
+        on a file-like object called self.rfile
+        """
+        # pylint: disable=undefined-variable
+            # urlparse_header and urlparse_multipart appear to be undefined.
+        ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
         length = int(self.headers.getheader('content-length'))
         if ctype == 'multipart/form-data':
-            query = cgi.parse_multipart(self.rfile, pdict)
+            query = urlparse_multipart(self.rfile, pdict)
         elif ctype == 'application/x-www-form-urlencoded':
             qs = self.rfile.read(length)
-            query = cgi.parse_qs(qs, keep_blank_values=1)
+            query = urllib.parse.parse_qs(qs, keep_blank_values=1)
         else:
             query = '' # Unknown content-type
         # some browsers send 2 more bytes...
@@ -1083,7 +1087,7 @@ class RequestHandler(
         self.handle_data()
     #@+node:EKR.20040517080250.33: *3* query
     def query(self, parsedQuery):
-        """Returns the QUERY dictionary, similar to the result of cgi.parse_qs
+        """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
          except that :
          - if the key ends with [], returns the value (a Python list)
          - if not, returns a string, empty if the list is empty, or with the
@@ -1118,7 +1122,7 @@ class RequestHandler(
         if self.path.find('?') >= 0:
             self.qs = self.path[self.path.find('?') + 1:]
             self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(cgi.parse_qs(self.qs, 1))
+        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))
         if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method = "do_" + self.command

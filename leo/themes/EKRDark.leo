@@ -185,6 +185,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180318145515.822"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -302,7 +303,7 @@ DejaVu Sans Mono</t>
 <t tx="ekr.20180318145515.201"></t>
 <t tx="ekr.20180318145515.202"></t>
 <t tx="ekr.20180318145515.203">@LeoYellow</t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e">@language rest
+<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
 @wrap
 @tabwidth -2
 
@@ -908,26 +909,22 @@ QLineEdit#lineEdit {
 }
 </t>
 <t tx="ekr.20180318145515.822">QScrollBar::horizontal {
-   height: 7px;
+   height: 18px;
 }
 QScrollBar::vertical {
-   width: 7px;
+   width: 18px;
 }
 QScrollBar::add-page, QScrollBar::sub-page {
-  background: @dark-base03;
+   background: @dark-base03;
 }
 QScrollBar::handle {
-  background: @dark-base02;
-  color: @dark-base02;
+  background: @dark-base1;
 }
 QScrollBar::handle:hover {
-  background: @dark-base0;
-  color: @dark-base0;
+    background: @dark-base00;
 }
-/* to make these show up, remove the ::handle style above... bug? */
 QScrollBar::add-line, QScrollBar::sub-line {
-  background: @dark-base01;
-  color: @dark-base01;
+   background: @dark-base00;
 }</t>
 <t tx="ekr.20180318145515.823">QSplitter::handle {
   background: @dark-base01;

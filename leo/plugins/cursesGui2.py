@@ -4,7 +4,7 @@
 #@@first
 #@+<< cursesGui2 docstring >>
 #@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
-'''
+"""
 A curses gui for Leo using npyscreen.
 
 The ``--gui=curses`` command-line option enables this plugin.
@@ -23,7 +23,7 @@ https://github.com/leo-editor/leo-editor/issues/488
 
 Devs, please read:
 http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
-'''
+"""
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
 #@+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
@@ -46,18 +46,10 @@ try:
     import curses
 except ImportError:
     curses = None
-npyscreen = g.importExtension(
-    'npyscreen',
-    pluginName=None,
-    required=True,
-    verbose=True, # Issue a warning if the import fails.
-)
-if npyscreen:
-    # pylint: disable=import-error
-        # These imports *will* work, because we are using g.importExtension.
-    import npyscreen.utilNotify as utilNotify
-    assert utilNotify
-    from npyscreen.wgwidget import  EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP
+import leo.external.npyscreen as npyscreen
+import leo.external.npyscreen.utilNotify as utilNotify
+from leo.external.npyscreen.wgwidget import (
+    EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
 #@-<< cursesGui2 imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
@@ -71,12 +63,14 @@ native = True
 #@+others
 #@+node:ekr.20170602094648.1: *3* class LeoBodyTextfield (npyscreen.Textfield)
 class LeoBodyTextfield (npyscreen.Textfield):
-    '''
+    """
     A class to allow an overridden h_addch for body text.
     MultiLines are *not* Textfields, the *contain* Textfields.
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
+
+        self.leo_parent = None  # Injected later.
         super().__init__(*args, **kwargs)
         self.set_handlers()
 
@@ -86,10 +80,10 @@ class LeoBodyTextfield (npyscreen.Textfield):
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
     #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
     def h_addch(self, ch_i):
-        '''
+        """
         Update a single line of the body text, carefully recomputing c.p.b.
         Also, update v.insertSpot, v.selectionLength, and v.selectionStart.
-        '''
+        """
         trace = False and not g.unitTesting
         if not self.editable:
             if trace: g.trace('LeoBodyTextfiedl: not editable')
@@ -131,10 +125,10 @@ class LeoBodyTextfield (npyscreen.Textfield):
         self.begin_at -= 1
     #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
     def h_exit_down(self, ch_i):
-        '''
+        """
         From InputHandler.h_exit_down
         Terminate editing for *this* line, but not overall editing.
-        '''
+        """
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A kludge, but much better than adding a blank.
             self.h_addch(ord('\n'))
@@ -148,7 +142,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
         return None
     #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
     def h_exit_escape(self, ch_i):
-        '''From InputHandler.h_exit_escape'''
+        """From InputHandler.h_exit_escape"""
         # Leo-specific exit code.
         self.leo_parent.set_box_name('Body Pane')
         # Boilerplate exit code...
@@ -159,7 +153,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
         return None
     #@+node:ekr.20170602110807.4: *5* LeoBodyTextfield.h_exit_mouse
     def h_exit_mouse(self, ch_i):
-        '''From InputHandler.h_exit_mouse'''
+        """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
         parent_w = self.leo_parent
         parent_w.set_box_name('Body Pane')
@@ -175,7 +169,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             self.how_exited = EXITED_MOUSE
     #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
     def h_exit_up(self, ch_i):
-        '''LeoBodyTextfield.h_exit_up.'''
+        """LeoBodyTextfield.h_exit_up."""
         # Don't end overall editing.
             # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
@@ -206,12 +200,14 @@ class LeoBodyTextfield (npyscreen.Textfield):
     #@-others
 #@+node:ekr.20170603104320.1: *3* class LeoLogTextfield (npyscreen.Textfield)
 class LeoLogTextfield (npyscreen.Textfield):
-    '''
+    """
     A class to allow an overridden h_addch for body text.
     MultiLines are *not* Textfields, the *contain* Textfields.
-    '''
+    """
 
     def __init__(self, *args, **kwargs):
+    
+        self.leo_parent = None  # Injected later.
         super().__init__(*args, **kwargs)
         self.set_handlers()
 
@@ -221,7 +217,7 @@ class LeoLogTextfield (npyscreen.Textfield):
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
     #@+node:ekr.20170603104320.5: *5* LeoLogTextfield.h_exit_escape
     def h_exit_escape(self, ch_i):
-        '''From InputHandler.h_exit_escape'''
+        """From InputHandler.h_exit_escape"""
         parent_w = self.leo_parent
         parent_w.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
@@ -231,7 +227,7 @@ class LeoLogTextfield (npyscreen.Textfield):
         return None
     #@+node:ekr.20170603104320.6: *5* LeoLogTextfield.h_exit_mouse
     def h_exit_mouse(self, ch_i):
-        '''From InputHandler.h_exit_mouse'''
+        """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
         parent_w = self.leo_parent
         parent_w.set_box_name('Log Pane')
@@ -247,7 +243,7 @@ class LeoLogTextfield (npyscreen.Textfield):
             self.how_exited = EXITED_MOUSE
     #@+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
     def h_exit_down(self, ch_i):
-        '''LeoLogTextfield.h_exit_up. Delegate to LeoLog.'''
+        """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         # g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A pretty horrible kludge.
@@ -263,7 +259,7 @@ class LeoLogTextfield (npyscreen.Textfield):
         return None
     #@+node:ekr.20170603104320.9: *5* LeoLogTextfield.h_exit_up
     def h_exit_up(self, ch_i):
-        '''LeoLogTextfield.h_exit_up. Delegate to LeoLog.'''
+        """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         parent_w = self.leo_parent
         if not self._test_safe_to_exit():
             return False
@@ -297,7 +293,7 @@ class LeoLogTextfield (npyscreen.Textfield):
     #@-others
 #@+node:ekr.20170507184329.1: *3* class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
-    '''A TreeData class that has a len and new_first_child methods.'''
+    """A TreeData class that has a len and new_first_child methods."""
     #@+<< about LeoTreeData ivars >>
     #@+node:ekr.20170516143500.1: *4* << about LeoTreeData ivars >>
     # EKR: TreeData.__init__ sets the following ivars for keyword args.
@@ -334,7 +330,7 @@ class LeoTreeData(npyscreen.TreeData):
     #@+others
     #@+node:ekr.20170516153211.1: *4* LeoTreeData.__getitem__
     def __getitem__(self, n):
-        '''Return the n'th item in this tree.'''
+        """Return the n'th item in this tree."""
         aList = self.get_tree_as_list()
         data = aList[n] if n < len(aList) else None
         # g.trace(n, len(aList), repr(data))
@@ -378,12 +374,12 @@ class LeoTreeData(npyscreen.TreeData):
         return self._parent
     #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
     def get_tree_as_list(self): # only_expanded=True, sort=None, key=None):
-        '''
+        """
         Called only from LeoMLTree.values._getValues.
 
         Return the result of converting this node and its *visible* descendants
         to a list of LeoTreeData nodes.
-        '''
+        """
         assert g.callers(1) == '_getValues', g.callers()
         aList = [z for z in self.walk_tree(only_expanded=True)]
         # g.trace('LeoTreeData', len(aList))
@@ -400,7 +396,7 @@ class LeoTreeData(npyscreen.TreeData):
         return child
     #@+node:ekr.20170516085742.1: *5* LeoTreeData.new_child_at
     def new_child_at(self, index, *args, **keywords):
-        '''Same as new_child, with insert(index, c) instead of append(c)'''
+        """Same as new_child, with insert(index, c) instead of append(c)"""
         # g.trace('LeoTreeData')
         if self.CHILDCLASS:
             cld = self.CHILDCLASS
@@ -477,10 +473,11 @@ class LeoTreeData(npyscreen.TreeData):
     #@-others
 #@+node:ekr.20170508085942.1: *3* class LeoTreeLine (npyscreen.TreeLine)
 class LeoTreeLine(npyscreen.TreeLine):
-    '''A editable TreeLine class.'''
+    """A editable TreeLine class."""
 
     def __init__(self, *args, **kwargs):
 
+        self.leo_c = None  # Injected later.
         super(LeoTreeLine, self).__init__(*args, **kwargs)
         # Done in TreeLine.init:
             # self._tree_real_value   = None
@@ -523,7 +520,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         return g.toUnicode(s) if s else None
     #@+node:ekr.20170522032805.1: *4* LeoTreeLine._print
     def _print(self, left_margin=0):
-        '''LeoTreeLine._print. Adapted from TreeLine._print.'''
+        """LeoTreeLine._print. Adapted from TreeLine._print."""
         # pylint: disable=no-member
 
         def put(char):
@@ -558,7 +555,8 @@ class LeoTreeLine(npyscreen.TreeLine):
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         # This draws the actual line.
-        super(npyscreen.TreeLine, self)._print()
+        ### super(npyscreen.TreeLine, self)._print()
+        super()._print()
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl):
 
@@ -692,12 +690,12 @@ class LeoTreeLine(npyscreen.TreeLine):
     if native:
 
         def when_check_value_changed(self):
-            '''Check whether the widget's value has changed and call when_valued_edited if so.'''
+            """Check whether the widget's value has changed and call when_valued_edited if so."""
             return True
     #@-others
 #@+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
 class QuitButton (npyscreen.MiniButtonPress):
-    '''Override the "Quit Leo" button so it prompts for save if needed.'''
+    """Override the "Quit Leo" button so it prompts for save if needed."""
 
     def whenPressed(self):
         g.app.onQuit()
@@ -734,10 +732,10 @@ def dump_handlers(obj,
         g.printList(sorted(set(aList)))
 #@+node:ekr.20170419094705.1: *3* curses2: init
 def init():
-    '''
+    """
     top-level init for cursesGui2.py pseudo-plugin.
     This plugin should be loaded only from leoApp.py.
-    '''
+    """
     if g.app.gui:
         if not g.app.unitTesting:
             s = "Can't install text gui: previous gui installed"
@@ -749,7 +747,7 @@ def init():
 # CGui.init_logger monkey-patches leoGlobals with these functions.
 #@+node:ekr.20170430112645.1: *4* curses2: es
 def es(*args, **keys):
-    '''Monkey-patch for g.es.'''
+    """Monkey-patch for g.es."""
     d = {
         'color': None,
         'commas': False,
@@ -775,7 +773,7 @@ def has_logger():
     ])
 #@+node:ekr.20170501043411.1: *4* curses2: pr
 def pr(*args, **keys):
-    '''Monkey-patch for g.pr.'''
+    """Monkey-patch for g.pr."""
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
@@ -785,7 +783,7 @@ def pr(*args, **keys):
             logging.info(line)
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args, **keys):
-    '''Monkey-patch for g.trace.'''
+    """Monkey-patch for g.trace."""
     d = {
         'align': 0,
         'before': '',
@@ -833,7 +831,7 @@ def trace(*args, **keys):
     logging.info(line)
 #@+node:ekr.20170526075024.1: *3* method_name
 def method_name(f):
-    '''Print a method name is a simplified format.'''
+    """Print a method name is a simplified format."""
     pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
     m = re.match(pattern, repr(f))
     if m:
@@ -1737,8 +1735,9 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         # Not tested.
+        from leo.external.npyscreen.fmFileSelector import selectFile
         self.in_dialog = True
-        s = utilNotify.selectFile(
+        s = selectFile(
             select_dir=False,
             must_exist=False,
             confirm_if_exists=True,
@@ -2600,14 +2599,13 @@ class CoreTree (leoFrame.LeoTree):
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
             if not c.changed:
-                c.setChanged(True)
+                c.setChanged()
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
                 # c.frame.scanForTabWidth(p)
                 # c.frame.body.recolor(p)
-            dirtyVnodeList = p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True)
+            p.setDirty()
+            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
         # if changed:
         #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
@@ -2868,8 +2866,8 @@ class LeoBody (npyscreen.MultiLineEditable):
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         if not c.changed:
-            c.setChanged(True)
-        ### self.updateEditors()
+            c.setChanged()
+        # self.updateEditors()
         p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name

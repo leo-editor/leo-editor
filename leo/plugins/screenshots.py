@@ -1040,7 +1040,7 @@ class ScreenShotController:
     #@+node:ekr.20101005193146.5687: *4* copy_files & helper
     #@+at We would like to do sphinx "make" operations only in the top-level sphinx
     # folder (leo/doc/html) so that only a single _build directory tree would exist.
-    # 
+    #
     # Alas, that doesn't work.  To get links correct, the build must be done in
     # the individual slide folders.  So we *must* copy all the files.
     #@@c
@@ -1130,8 +1130,7 @@ class ScreenShotController:
                 path, junk = g.os_path_split(path)
             if not g.os_path_exists(path):
                 g.trace(tag, path)
-                g.makeAllNonExistentDirectories(path,
-                    c=sc.c, force=True, verbose=True)
+                g.makeAllNonExistentDirectories(path)
     #@+node:ekr.20101008112639.5625: *4* make_at_url_node_for_built_slide
     def make_at_url_node_for_built_slide(self):
         '''Create an @url node for built slide.'''
@@ -1647,8 +1646,10 @@ class ScreenShotController:
         return ok
     #@+node:ekr.20100914090933.5643: *5* create_setup_leo_file
     def create_setup_leo_file(self):
-        '''Create an ouline containing all children of sc.screenshot_tree.
-        Do not copy @slide nodes or @slideshow nodes.'''
+        '''
+        Create an ouline containing all children of sc.screenshot_tree.
+        Do not copy @slide nodes or @slideshow nodes.
+        '''
         sc = self; fn = sc.finalize('screenshot-setup.leo')
         c = g.app.newCommander(fn)
 
@@ -1680,6 +1681,8 @@ class ScreenShotController:
                     z.expand()
         # Save the file silently.
         c.fileCommands.save(fn)
+        # pylint: disable=no-member
+            # c.close does exist.
         c.close()
         return fn
     #@+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers

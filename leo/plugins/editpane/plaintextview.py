@@ -4,7 +4,7 @@
 #@+node:tbrown.20171028115502.1: ** << plaintextview.py declarations >>
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets # QtCore, QtGui, QtConst
+from leo.core.leoQt import QtWidgets  # QtCore, QtGui, QtConst
 #@-<< plaintextview.py declarations >>
 #@+others
 #@+node:tbrown.20171028115502.2: ** class LEP_PlainTextView
@@ -21,7 +21,6 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.c = c
         self.lep = lep
         self.setStyleSheet("* {background: #998; color: #222; }")
-
     #@+node:tbrown.20171028115502.4: *3* new_text
     def new_text(self, text):
         """new_text - update for new text
@@ -30,7 +29,6 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
             text (str): new text
         """
         self.setPlainText(text)
-
     #@+node:tbrown.20171028115502.5: *3* update_text
     def update_text(self, text):
         """update_text - update for current text
@@ -43,8 +41,6 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
         self.new_text(text)
         self.horizontalScrollBar().setValue(h)
         self.verticalScrollBar().setValue(v)
-
-
     #@-others
 #@+node:tbrown.20171028115502.6: ** class LEP_PlainTextViewB
 class LEP_PlainTextViewB(LEP_PlainTextView):

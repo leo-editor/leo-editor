@@ -5,30 +5,24 @@
 """Entry point for Leo in Python."""
 #@+<< imports and inits >>
 #@+node:ekr.20080921091311.1: ** << imports and inits >> (runLeo.py)
-# import pdb ; pdb = pdb.set_trace
 import os
 import sys
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
-# pyw-and-pythonw-does-not-run-under-windows-7/30310192#30310192
 if sys.executable.endswith("pythonw.exe"):
     sys.stdout = open(os.devnull, "w");
     sys.stderr = open(
         os.path.join(os.getenv("TEMP"),
-        "stderr-"+os.path.basename(sys.argv[0])),
+        "stderr-" + os.path.basename(sys.argv[0])),
         "w")
 path = os.getcwd()
 if path not in sys.path:
     # print('appending %s to sys.path' % path)
     sys.path.append(path)
-# Import leoGlobals, but do NOT set g.
-import leo.core.leoGlobals as leoGlobals
-# Create g.app.
+# #1472: bind to g immediately.
+import leo.core.leoGlobals as g
 import leo.core.leoApp as leoApp
-leoGlobals.app = leoApp.LeoApp()
-# **Now** we can set g.
-g = leoGlobals
-assert(g.app)
+g.app = leoApp.LeoApp()
 #@-<< imports and inits >>
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
@@ -45,7 +39,8 @@ def profile_leo():
         import pstats
     except ImportError:
         g.es_print('can not import pstats: this is a Python distro bug')
-        g.es_print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+        g.es_print(
+            'https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
         g.es_print('try installing pstats yourself')
         return
     import cProfile as profile
@@ -55,7 +50,7 @@ def profile_leo():
     # On Windows, name must be a plain string.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
         # This is a binary file.
-    print('profiling binary stats to %s' % name)
+    print(f"profiling binary stats to {name}")
     profile.run('import leo ; leo.run()', name)
     p = pstats.Stats(name)
     p.strip_dirs()
@@ -81,6 +76,7 @@ def run_console(*args, **keywords):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+
 if __name__ == "__main__":
     run()
 #@-leo

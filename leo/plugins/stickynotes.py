@@ -130,7 +130,7 @@ def stickynote_new_f(event):
     p2.h = time.asctime()
     mknote(c, p2)
     # Fix #249: Leo and Stickynote plugin do not request to save.
-    c.setChanged(True)
+    c.setChanged()
     c.redraw(p2)
 #@+node:ville.20091023181249.5266: *3* g.command('stickynoter')
 @g.command('stickynoter')
@@ -158,7 +158,7 @@ def stickynoter_f(event):
             if p.v is v:
                 c.selectPosition(c.p)
             # Fix #249: Leo and Stickynote plugin do not request to save
-            c.setChanged(True)
+            c.setChanged()
             c.redraw()
 
     nf = SimpleRichText(focusin, focusout)  # not LessSimpleRichText
@@ -169,7 +169,7 @@ def stickynoter_f(event):
     # Fix #249: Leo and Stickynote plugin do not request to save.
     # Do this only on focusout:
         # p.setDirty()
-        # c.setChanged(True)
+        # c.setChanged()
         # c.redraw()
 
     def textchanged_cb():
@@ -215,7 +215,7 @@ if encOK:
                 v.b = enc
                 v.setDirty()
                 # Fix #249: Leo and Stickynote plugin do not request to save
-                c.setChanged(True)
+                c.setChanged()
             nf.dirty = False
             p = c.p
             if p.v is v:
@@ -506,7 +506,7 @@ def mknote(c,p, parent=None, focusin=None, focusout=None):
                     v.b = nf.toPlainText()
                     v.setDirty()
                     # Fix #249: Leo and Stickynote plugin do not request to save
-                    c.setChanged(True)
+                    c.setChanged()
                 nf.dirty = False
                 p = c.p
                 if p.v is v:

@@ -1087,15 +1087,14 @@ class BookMarkDisplay:
         u = c.undoer
         if p.hasVisBack(c): newNode = p.visBack(c)
         else: newNode = p.next()
-        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)
         if self.current == p.v:
             self.current = p.v.parents[0]
         p.doDelete(newNode)  # p is deleted, newNode is where to go afterwards
-        c.setChanged(True)
-        u.afterDeleteNode(newNode, "Bookmark deletion", undoData,
-            dirtyVnodeList=dirtyVnodeList)
+        c.setChanged()
+        u.afterDeleteNode(newNode, "Bookmark deletion", undoData)
         c.redraw()
         self.c.bodyWantsFocusNow()
 
@@ -1107,7 +1106,7 @@ class BookMarkDisplay:
         p = bm.v.context.vnode2position(bm.v)
         p.moveToFirstChildOf(p.parent())
         bm.v.setDirty()
-        bm.v.context.setChanged(True)
+        bm.v.context.setChanged()
         bm.v.context.redraw()
         bm.v.context.bodyWantsFocusNow()
         self.show_list(self.get_list())
@@ -1143,7 +1142,7 @@ class BookMarkDisplay:
         g.es("Bookmark updated")
         bm.v.b = new_url
         bm.v.setDirty()
-        bm.v.context.setChanged(True)
+        bm.v.context.setChanged()
         bm.v.context.redraw()
         bm.v.context.bodyWantsFocusNow()
         self.show_list(self.get_list())

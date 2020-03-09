@@ -27,7 +27,7 @@ Notes:
 #@-<< docstring>>
 # As in leo.py we must be very careful about imports.
 # pylint: disable = global-variable-not-assigned
-g = None # set by init: do *not* import it here!
+g = None  # set by init: do *not* import it here!
 inited = False
 pymacsFile = __file__
 # print('leoPymacs:pymacsFile',pymacsFile)
@@ -62,7 +62,7 @@ def init():
     global inited
     if inited:
         return
-    inited = True # Only try once, no matter what happens.
+    inited = True  # Only try once, no matter what happens.
     # Add the parent path of this file to sys.path
     import os
     import sys
@@ -84,7 +84,7 @@ def init():
         print('leoPymacs.init: can not import leoGlobals')
     global g; g = leoGlobals
     # print('leoPymacs:init:g',g)
-    if 1: # These traces show up in the pymacs buffer.
+    if 1:  # These traces show up in the pymacs buffer.
         g.trace('app', g.app)
         g.trace('gui', g.app.gui)
 #@+node:ekr.20061024075542.1: ** open (pymacs)
@@ -118,7 +118,7 @@ def run_script(c, script, p=None):
         useSelectedText=False,
         define_g=True,
         define_name='__main__',
-        silent=True, # Don't write to the log.
+        silent=True,  # Don't write to the log.
     )
     return g.app.scriptResult
 #@-others

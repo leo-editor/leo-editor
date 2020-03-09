@@ -2,7 +2,6 @@
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
 import leo.core.leoGlobals as g
-# import sys
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu:
@@ -11,10 +10,10 @@ class LeoMenu:
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__(self, frame):
         self.c = frame.c
-        self.enable_dict = {} # Created by finishCreate.
+        self.enable_dict = {}  # Created by finishCreate.
         self.frame = frame
         self.isNull = False
-        self.menus = {} # Menu dictionary.
+        self.menus = {}  # Menu dictionary.
         self.menuShortcuts = {}
 
     def finishCreate(self):
@@ -92,7 +91,7 @@ class LeoMenu:
         }
 
         for i in range(1,9):
-            d ['expand-to-level-%s' % (i)] = lambda: c.p.hasChildren()
+            d [f"expand-to-level-{i}"] = lambda: c.p.hasChildren()
 
         if 0: # Initial testing.
             commandKeys = list(c.commandsDict.keys())
@@ -146,7 +145,7 @@ class LeoMenu:
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
-                name = kind[len('@menu'):].strip()
+                name = kind[len('@menu') :].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
                     # Fix #528: Don't create duplicate menu items.
                     menu = self.createNewMenu(name)
@@ -188,7 +187,7 @@ class LeoMenu:
                 if table:
                     self.createMenuEntries(parentMenu, table)
                 if not self.handleSpecialMenus(name, parentName,
-                    alt_name=val2, #848.
+                    alt_name=val2,  #848.
                     table=table,
                 ):
                     menu = self.createNewMenu(name, parentName)
@@ -198,7 +197,7 @@ class LeoMenu:
                         self.createMenuFromConfigList(name, val, level + 1)
                 table = []
             elif kind == '@item':
-                name = str(val) # Item names must always be ascii.
+                name = str(val)  # Item names must always be ascii.
                 if val2:
                     # Translated names can be unicode.
                     table.append((val2, name),)
@@ -244,7 +243,7 @@ class LeoMenu:
     #@+node:ekr.20051022053758.1: *3* LeoMenu.Helpers
     #@+node:ekr.20031218072017.3783: *4* LeoMenu.canonicalize*
     def canonicalizeMenuName(self, name):
-        
+
         # #1121 & #1188. Allow Chinese characters in command names
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch.isalnum()])
@@ -284,13 +283,13 @@ class LeoMenu:
             realLabel = realLabel.replace("&", "")
             # c.add_command ensures that c.outerUpdate is called.
             c.add_command(menu, label=realLabel,
-                accelerator='', # The accelerator is now computed dynamically.
+                accelerator='',  # The accelerator is now computed dynamically.
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
     def createMasterMenuCallback(self, dynamicMenu, command, commandName):
-        
+
         # pylint: disable=no-else-return
             # This code is simpler as it is.
 
@@ -359,7 +358,7 @@ class LeoMenu:
             command = s.replace('&', '').lower()
             if label == '-':
                 self.add_separator(menu)
-                done = True # That's all.
+                done = True  # That's all.
         else:
             ok = isinstance(data, (list, tuple)) and len(data) in (2, 3)
             if ok:
@@ -371,10 +370,10 @@ class LeoMenu:
                     label, junk, command = data
                 if label in (None, '-'):
                     self.add_separator(menu)
-                    done = True # That's all.
+                    done = True  # That's all.
             else:
-                g.trace('bad data in menu table: %s' % repr(data))
-                done = True # Ignore bad data
+                g.trace(f"bad data in menu table: {repr(data)}")
+                done = True  # Ignore bad data
         return label, command, done
     #@+node:ekr.20111028060955.16563: *5* LeoMenu.traceMenuTable
     def traceMenuTable(self, table):
@@ -410,23 +409,24 @@ class LeoMenu:
     #@+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
     def createNewMenu(self, menuName, parentName="top", before=None):
         try:
-            parent = self.getMenu(parentName) # parent may be None.
+            parent = self.getMenu(parentName)  # parent may be None.
             menu = self.getMenu(menuName)
             if menu:
                 # Not an error.
                 # g.error("menu already exists:", menuName)
-                return None # Fix #528.
+                return None  # Fix #528.
             menu = self.new_menu(parent, tearoff=0, label=menuName)
             self.setMenu(menuName, menu)
             label = self.getRealMenuName(menuName)
             amp_index = label.find("&")
             label = label.replace("&", "")
-            if before: # Insert the menu before the "before" menu.
+            if before:  # Insert the menu before the "before" menu.
                 index_label = self.getRealMenuName(before)
                 amp_index = index_label.find("&")
                 index_label = index_label.replace("&", "")
                 index = parent.index(index_label)
-                self.insert_cascade(parent, index=index, label=label, menu=menu, underline=amp_index)
+                self.insert_cascade(
+                    parent, index=index, label=label, menu=menu, underline=amp_index)
             else:
                 self.add_cascade(parent, label=label, menu=menu, underline=amp_index)
             return menu
@@ -452,7 +452,7 @@ class LeoMenu:
         """
         k = self.c.k
         if not table: return
-        g.app.openWithTable = table # Override any previous table.
+        g.app.openWithTable = table  # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
         if not parent:
@@ -543,7 +543,8 @@ class LeoMenu:
             event = g.app.gui.create_key_event(c)
             # The first parameter must be event, and it must default to None.
 
-            def minibufferMenuCallback(event=event, self=self, command=command, label=name):
+            def minibufferMenuCallback(
+                event=event, self=self, command=command, label=name):
                 c = self.c
                 return c.doCommand(command, label, event)
 
@@ -552,11 +553,13 @@ class LeoMenu:
             # The first parameter must be event, and it must default to None.
 
             def legacyMenuCallback(event=None, self=self, command=command, label=name):
-                c = self.c # 2012/03/04.
+                c = self.c  # 2012/03/04.
                 c.check_event(event)
                 return c.doCommand(command, label)
 
             return legacyMenuCallback
+        # For pylint
+        return None
     #@+node:ekr.20031218072017.3805: *4* LeoMenu.deleteMenu
     def deleteMenu(self, menuName):
         try:
@@ -622,6 +625,7 @@ class LeoMenu:
 
     def add_separator(self, menu):
         self.oops()
+
     # def bind (self,bind_shortcut,callback):
     #     self.oops()
 
@@ -634,7 +638,8 @@ class LeoMenu:
     def destroy(self, menu):
         self.oops()
 
-    def insert(self, menuName, position, label, command, underline=None): # New in Leo 4.4.3 a1
+    def insert(
+        self, menuName, position, label, command, underline=None):  # New in Leo 4.4.3 a1
         self.oops()
 
     def insert_cascade(self, parent, index, label, menu, underline):
@@ -644,7 +649,7 @@ class LeoMenu:
         # 2010: added label arg for pylint.
         self.oops()
     #@+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
-    def activateMenu(self, menuName): # New in Leo 4.4b2.
+    def activateMenu(self, menuName):  # New in Leo 4.4b2.
         self.oops()
 
     def clearAccel(self, menu, name):

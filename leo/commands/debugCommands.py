@@ -15,7 +15,7 @@ import sys
 def cmd(name):
     """Command decorator for the DebugCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'debugCommands',])
-    
+
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.103: ** debug.collectGarbage
@@ -105,8 +105,10 @@ class DebugCommandsClass(BaseEditCommandsClass):
         debuggers = (
             # #1431: only expand path expression in @string debugger-path.
             c.expand_path_expression(c.config.getString('debugger-path')),
-            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'), # winpdb 1.1.2 or newer
-            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'), # oder version.
+            g.os_path_join(pythonDir, 'Lib', 'site-packages', 'winpdb.py'),
+                # winpdb 1.1.2 or newer.
+            g.os_path_join(pythonDir, 'scripts', '_winpdb.py'),
+                # Older version.
         )
         for debugger in debuggers:
             if debugger:
@@ -130,7 +132,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('killed log listener.')
         else:
             g.es_print('log listener not active.')
-
     #@+node:ekr.20150514063305.109: ** debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):
@@ -195,7 +196,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 print('Warning: @bool dockable-log-tabs is True')
             central_widget = g.app.get_central_widget(c)
             if central_widget != 'outline':
-                print('Warning: @string central-dock-widget is %r' % central_widget)
+                print(f"Warning: @string central-dock-widget is {central_widget!r}")
         else:
             print('no c')
     #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
@@ -221,6 +222,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in the outline's process, so tests *can* change the outline.
         """
         self.c.testManager.doTests(all=False, marked=False)
+
     # Externally run tests...
 
     @cmd('run-all-unit-tests-externally')

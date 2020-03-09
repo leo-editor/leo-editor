@@ -197,7 +197,7 @@ class TagController:
         tags = set(p.v.u.get(self.TAG_LIST_KEY, set([])))
         tags.add(tag)
         p.v.u[self.TAG_LIST_KEY] = tags
-        self.c.setChanged(True)
+        self.c.setChanged()
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* tag_c.remove_tag
     def remove_tag(self, p, tag):
@@ -212,7 +212,7 @@ class TagController:
         else:
             del v.u[self.TAG_LIST_KEY]
             # prevent a few corner cases, and conserve disk space
-        self.c.setChanged(True)
+        self.c.setChanged()
         self.update_taglist(tag)
     #@-others
 #@+node:peckj.20140804114520.15199: ** class LeoTagWidget
@@ -228,8 +228,6 @@ if QtWidgets:
             self.initUI()
             self.registerCallbacks()
             self.mapping = {}
-            # py--lint: disable=anomalous-backslash-in-string
-            #self.search_chars = ['&','|','-','^']
             self.search_re = r'(&|\||-|\^)'
             self.custom_searches = []
             g.registerHandler('select2', self.select2_hook)

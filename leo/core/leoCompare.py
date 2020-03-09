@@ -23,8 +23,8 @@ class BaseLeoCompare:
         ignoreInteriorWhitespace=False,
         ignoreLeadingWhitespace=True,
         ignoreSentinelLines=False,
-        limitCount=0, # Zero means don't stop.
-        limitToExtension=".py", # For directory compares.
+        limitCount=0,  # Zero means don't stop.
+        limitToExtension=".py",  # For directory compares.
         makeWhitespaceVisible=True,
         printBothMatches=False,
         printMatches=False,
@@ -128,7 +128,7 @@ class BaseLeoCompare:
         if self.outputFile:
             self.outputFile.close()
             self.outputFile = None
-        return None # To keep pychecker happy.
+        return None  # To keep pychecker happy.
     #@+node:ekr.20031218072017.3636: *3* compare_files (entry)
     def compare_files(self, name1, name2):
         if name1 == name2:
@@ -137,7 +137,7 @@ class BaseLeoCompare:
         self.compare_two_files(name1, name2)
     #@+node:ekr.20180211123531.1: *3* compare_list_of_files (entry for scripts)
     def compare_list_of_files(self, aList1):
-        
+
         aList = list(set(aList1))
         while len(aList) > 1:
             path1 = aList[0]
@@ -177,8 +177,8 @@ class BaseLeoCompare:
         if self.ignoreInteriorWhitespace:
             k1 = g.skip_ws(s1, 0)
             k2 = g.skip_ws(s2, 0)
-            ws1 = s1[: k1]
-            ws2 = s2[: k2]
+            ws1 = s1[:k1]
+            ws2 = s2[:k2]
             tail1 = s1[k1:]
             tail2 = s2[k2:]
             tail1 = tail1.replace(" ", "").replace("\t", "")
@@ -226,12 +226,14 @@ class BaseLeoCompare:
             if s1:
                 if self.ignoreBlankLines and s1.isspace():
                     s1 = None; continue
-                if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(s1, sentinelComment1):
+                if self.ignoreSentinelLines and sentinelComment1 and self.isSentinel(
+                    s1, sentinelComment1):
                     s1 = None; continue
             if s2:
                 if self.ignoreBlankLines and s2.isspace():
                     s2 = None; continue
-                if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(s2, sentinelComment2):
+                if self.ignoreSentinelLines and sentinelComment2 and self.isSentinel(
+                    s2, sentinelComment2):
                     s2 = None; continue
             #@-<< ignore blank lines and/or sentinels >>
             n1 = len(s1); n2 = len(s2)
@@ -266,7 +268,7 @@ class BaseLeoCompare:
                     self.show("")
                     printTrailing = False
             #@-<< warn if mismatch limit reached >>
-            s1 = s2 = None # force a read of both lines.
+            s1 = s2 = None  # force a read of both lines.
         #@+<< handle reporting after at least one eof is seen >>
         #@+node:ekr.20031218072017.3643: *4* << handle reporting after at least one eof is seen >>
         if n1 > 0:
@@ -301,7 +303,7 @@ class BaseLeoCompare:
     #@+node:ekr.20031218072017.3647: *4* compare.dump
     def dump(self, tag, s):
         compare = self; out = tag
-        for ch in s[: -1]: # don't print the newline
+        for ch in s[:-1]:  # don't print the newline
             if compare.makeWhitespaceVisible:
                 if ch == '\t':
                     out += "["; out += "t"; out += "]"
@@ -311,7 +313,7 @@ class BaseLeoCompare:
             else:
                 if 1:
                     out += ch
-                else: # I don't know why I thought this was a good idea ;-)
+                else:  # I don't know why I thought this was a good idea ;-)
                     if ch == '\t' or ch == ' ':
                         out += ' '
                     else:
@@ -408,7 +410,6 @@ class BaseLeoCompare:
         self.show("printMismatches:" + str(self.printMismatches))
         self.show("printTrailingMismatches:" + str(self.printTrailingMismatches))
     #@-others
-
 class LeoCompare(BaseLeoCompare):
     """
     A class containing Leo's compare code.
@@ -422,15 +423,14 @@ class CompareLeoOutlines:
     A class to do outline-oriented diffs of two or more .leo files.
     Similar to GitDiffController, adapted for use by scripts.
     """
-    
-    def __init__ (self, c):
+
+    def __init__(self, c):
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
         self.file_node = None
         self.root = None
         self.path1 = None
         self.path2 = None
-
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
     def diff_list_of_files(self, aList, visible=True):
@@ -462,16 +462,16 @@ class CompareLeoOutlines:
         c2 = self.open_outline(fn2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2)
-            self.file_node.b = '%s\n@language %s\n' % (
-                self.file_node.b.rstrip(),
-                c2.target_language)
+            self.file_node.b = (
+                f"{self.file_node.b.rstrip()}\n"
+                f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
         """Compute inserted, deleted, changed dictionaries."""
-        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
+        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
-        added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
+        added = {key: d2.get(key) for key in d2 if not d1.get(key)}
         deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
         changed = {}
         for key in d1:
@@ -504,7 +504,7 @@ class CompareLeoOutlines:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@language patch\n')
-                    body.append('@language %s\n' % (c2.target_language))
+                    body.append(f"@language {c2.target_language}\n")
                 else:
                     body = ['Only headline has changed']
                 organizer.b = ''.join(body)
@@ -561,7 +561,7 @@ class CompareLeoOutlines:
         """Return the contents of the file whose path is given."""
         with open(path, 'rb') as f:
             s = f.read()
-        return g.toUnicode(s).replace('\r','')
+        return g.toUnicode(s).replace('\r', '')
     #@+node:ekr.20180211170333.13: *4* loc.make_diff_outlines
     def make_diff_outlines(self, c1, c2):
         """Create an outline-oriented diff from the outlines c1 and c2."""
@@ -596,8 +596,8 @@ def diff_and_open_leo_files(event):
     the diffs of those files, two at a time.
     """
     diff_leo_files_helper(event,
-        title = "Diff And Open Leo Files",
-        visible = True,
+        title="Diff And Open Leo Files",
+        visible=True,
     )
 #@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
@@ -608,8 +608,8 @@ def diff_leo_files(event):
     Creates a top-level node showing the diffs of those files, two at a time.
     """
     diff_leo_files_helper(event,
-        title = "Diff Leo Files",
-        visible = False,
+        title="Diff Leo Files",
+        visible=False,
     )
 #@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
@@ -639,12 +639,12 @@ def diffMarkedNodes(event):
             p1, p2 = aList[0], aList[1]
             aList = aList[1:]
             lines = difflib.Differ().compare(
-                g.splitLines(p1.b.rstrip()+'\n'),
-                g.splitLines(p2.b.rstrip()+'\n'))
+                g.splitLines(p1.b.rstrip() + '\n'),
+                g.splitLines(p2.b.rstrip() + '\n'))
             p = root.insertAsLastChild()
             # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.h = 'diff %s' % n
-            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
+            p.h = f"diff {n}"
+            p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
             for p3 in (p1, p2):
                 clone = p3.clone()
                 clone.moveToLastChildOf(p)
@@ -654,7 +654,6 @@ def diffMarkedNodes(event):
         c.redraw()
     else:
         g.es_print('Please mark at least 2 nodes')
-
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event, title, visible):
     """Prompt for a list of .leo files to open."""
@@ -688,19 +687,19 @@ def go():
         ignoreInteriorWhitespace=False,
         ignoreLeadingWhitespace=True,
         ignoreSentinelLines=False,
-        limitCount=9, # Zero means don't stop.
-        limitToExtension=".py", # For directory compares.
+        limitCount=9,  # Zero means don't stop.
+        limitToExtension=".py",  # For directory compares.
         makeWhitespaceVisible=True,
         printBothMatches=False,
         printMatches=False,
         printMismatches=True,
         printTrailingMismatches=False,
         outputFileName=None)
-    if 1: # Compare all files in Tangle test directories
+    if 1:  # Compare all files in Tangle test directories
         path1 = "c:\\prog\\test\\tangleTest\\"
         path2 = "c:\\prog\\test\\tangleTestCB\\"
         compare.compare_directories(path1, path2)
-    else: # Compare two files.
+    else:  # Compare two files.
         name1 = "c:\\prog\\test\\compare1.txt"
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1, name2)

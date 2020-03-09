@@ -147,7 +147,7 @@ def find_function(funcname, filename):
 #@+node:ekr.20110914171443.7247: *3* getsourcelines
 def getsourcelines(obj):
 
-    print('edb.getsourcelines',obj)
+    print('edb.getsourcelines', obj)
 
     lines, lineno = inspect.findsource(obj)
     if inspect.isframe(obj) and obj.f_globals is obj.f_locals:
@@ -155,7 +155,7 @@ def getsourcelines(obj):
         return lines, 1
     elif inspect.ismodule(obj):
         return lines, 1
-    return inspect.getblock(lines[lineno:]), lineno+1
+    return inspect.getblock(lines[lineno:]), lineno + 1
 #@+node:ekr.20110914171443.7248: *3* lasti2lineno
 def lasti2lineno(code, lasti):
     linestarts = list(dis.findlinestarts(code))
@@ -167,6 +167,7 @@ def lasti2lineno(code, lasti):
 #@+node:ekr.20110914171443.7249: ** class _rstr
 class _rstr(str):
     """String that doesn't quote its repr."""
+
     def __repr__(self):
         return self
 #@+node:ekr.20110914171443.7250: ** class Pdb (bdb.Bdb,cmd.Cmd)
@@ -176,7 +177,8 @@ class _rstr(str):
 # command "pdb.line_prefix = '\n% '".
 # line_prefix = ': '    # Use this to get the old situation back
 
-line_prefix = '\n-> '   # Probably a better default
+line_prefix = '\n-> '  # Probably a better default
+
 
 class Pdb(bdb.Bdb, cmd.Cmd):
 
@@ -227,14 +229,14 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         except IOError:
             pass
 
-        self.commands = {} # associates a command list to breakpoint numbers
-        self.commands_doprompt = {} # for each bp num, tells if the prompt
+        self.commands = {}  # associates a command list to breakpoint numbers
+        self.commands_doprompt = {}  # for each bp num, tells if the prompt
                                     # must be disp. after execing the cmd list
-        self.commands_silent = {}   # for each bp num, tells if the stack trace
+        self.commands_silent = {}  # for each bp num, tells if the stack trace
                                     # must be disp. after execing the cmd list
         self.commands_defining = False  # True while in the process of defining
                                         # a command list
-        self.commands_bnum = None   # The breakpoint number for which we are
+        self.commands_bnum = None  # The breakpoint number for which we are
                                     # defining a list
     #@+node:ekr.20110914171443.7252: *3* sigint_handler
     def sigint_handler(self, signum, frame):
@@ -278,6 +280,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
     #@+node:ekr.20110914171443.7256: *3* execRcLines
     # Can be executed earlier than 'setup' if desired
+
     def execRcLines(self):
         if not self.rcLines:
             return
@@ -304,7 +307,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         # EKR.
         if filename == '<string>':
-            filename = self._getval('__file__',frame=frame)
+            filename = self._getval('__file__', frame=frame)
                 # EKR: frame keyword argument is new.
             filename = self.canonic(filename)
 
@@ -365,20 +368,20 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         return s
     #@+node:ekr.20110914171443.7260: *3* Actual overrides of Pdb methods
     #@+node:ekr.20110914171443.7261: *4* _getval (edb)
-    def _getval(self, arg,frame=None):
+    def _getval(self, arg, frame=None):
 
         # EKR: added the frame keyword argument.
         if frame:
             f_globals = frame.f_globals
-            f_locals  = frame.f_locals
+            f_locals = frame.f_locals
         else:
             f_globals = self.curframe.f_globals
-            f_locals  = self.curframe_locals
+            f_locals = self.curframe_locals
 
         try:
             # EKR.
             # return eval(arg, self.curframe.f_globals, self.curframe_locals)
-            return eval(arg,f_globals,f_locals)
+            return eval(arg, f_globals, f_locals)
         except Exception:
             exc_info = sys.exc_info()[:2]
             self.error(traceback.format_exception_only(*exc_info)[-1].strip())
@@ -453,8 +456,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         breaklist = self.get_file_breaks(filename)
         try:
             lines = linecache.getlines(filename, self.curframe.f_globals)
-            self._print_lines(lines[first-1:last], first, breaklist,
-                              self.curframe)
+            self._print_lines(lines[first - 1 : last], first, breaklist, self.curframe)
             self.lineno = min(last, len(lines))
             if len(lines) < last:
                 self.message('[EOF]')
@@ -467,6 +469,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
     #@+node:ekr.20110914171443.7265: *4* _cmdloop
     # General interaction function
+
     def _cmdloop(self):
         while True:
             try:
@@ -487,8 +490,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         Returns True if the normal interaction function must be called,
         False otherwise."""
         # self.currentbp is set in bdb in Bdb.break_here if a breakpoint was hit
-        if getattr(self, "currentbp", False) and \
-               self.currentbp in self.commands:
+        if getattr(self, "currentbp", False) and self.currentbp in self.commands:
             currentbp = self.currentbp
             self.currentbp = 0
             lastcmd_back = self.lastcmd
@@ -544,13 +546,13 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             return
         if cmd == 'silent':
             self.commands_silent[self.commands_bnum] = True
-            return # continue to handle other cmd def in the cmd list
+            return  # continue to handle other cmd def in the cmd list
         elif cmd == 'end':
             self.cmdqueue = []
-            return 1 # end of cmd list
+            return 1  # end of cmd list
         cmdlist = self.commands[self.commands_bnum]
         if arg:
-            cmdlist.append(cmd+' '+arg)
+            cmdlist.append(cmd + ' ' + arg)
         else:
             cmdlist.append(cmd)
         # Determine if we must stop
@@ -610,13 +612,14 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             marker = line.find(';;')
             if marker >= 0:
                 # queue up everything after marker
-                next = line[marker+2:].lstrip()
+                next = line[marker + 2 :].lstrip()
                 self.cmdqueue.append(next)
                 line = line[:marker].rstrip()
         return line
 
     #@+node:ekr.20110914171443.7273: *4* preloop
     # Called before loop, handles display expressions
+
     def preloop(self):
         displaying = self.displaying.get(self.curframe)
         if displaying:
@@ -650,8 +653,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
 
         exc_type, exc_value, exc_traceback = exc_info
         frame.f_locals['__exception__'] = exc_type, exc_value
-        self.message(traceback.format_exception_only(
-            exc_type,exc_value)[-1].strip())
+        self.message(traceback.format_exception_only(exc_type, exc_value)[-1].strip())
 
         self.interaction(frame, exc_traceback)
 
@@ -686,7 +688,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         print(msg, file=self.stdout)
     #@+node:ekr.20110914171443.7280: *4* error
     def error(self, msg):
-        print('***',msg,file=self.stdout)
+        print('***', msg, file=self.stdout)
     #@+node:ekr.20110914171443.7281: *3* Command definitions...
     # Command definitions, called by cmdloop()
     # The argument is the remaining string on the command line
@@ -771,7 +773,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             self.prompt = prompt_back
 
     #@+node:ekr.20110914171443.7283: *4* do_break (Pdb)
-    def do_break(self, arg, temporary = 0):
+    def do_break(self, arg, temporary=0):
         """b(reak) [ ([filename:]lineno | function) [, condition] ]
         Without argument, list all breaks.
 
@@ -801,7 +803,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         comma = arg.find(',')
         if comma > 0:
             # parse stuff after comma: "condition"
-            cond = arg[comma+1:].lstrip()
+            cond = arg[comma + 1 :].lstrip()
             arg = arg[:comma].rstrip()
         # parse stuff before comma: [filename:]lineno | function
         colon = arg.rfind(':')
@@ -814,7 +816,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 return
             else:
                 filename = f
-            arg = arg[colon+1:].lstrip()
+            arg = arg[colon + 1 :].lstrip()
             try:
                 lineno = int(arg)
             except ValueError:
@@ -826,9 +828,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 lineno = int(arg)
             except ValueError:
                 try:
-                    func = eval(arg,
-                                self.curframe.f_globals,
-                                self.curframe_locals)
+                    func = eval(arg, self.curframe.f_globals, self.curframe_locals)
                 except Exception:
                     func = arg
                 try:
@@ -847,7 +847,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                         self.error('The specified object %r is not a function '
                                    'or was not found along sys.path.' % arg)
                         return
-                    funcname = ok # ok contains a function name
+                    funcname = ok  # ok contains a function name
                     lineno = int(ln)
         if not filename:
             filename = self.defaultFile()
@@ -953,8 +953,8 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         co = self.curframe.f_code
         dict = self.curframe_locals
         n = co.co_argcount
-        if co.co_flags & 4: n = n+1
-        if co.co_flags & 8: n = n+1
+        if co.co_flags & 4: n = n + 1
+        if co.co_flags & 8: n = n + 1
         for i in range(n):
             name = co.co_varnames[i]
             if name in dict:
@@ -987,7 +987,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             # Make sure it works for "clear C:\foo\bar.py:12"
             i = arg.rfind(':')
             filename = arg[:i]
-            arg = arg[i+1:]
+            arg = arg[i + 1 :]
             try:
                 lineno = int(arg)
             except ValueError:
@@ -1011,7 +1011,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                 self.clear_bpbynumber(i)
                 self.message('Deleted %s' % bp)
 
-    do_cl = do_clear # 'c' is already an abbreviation for 'continue'
+    do_cl = do_clear  # 'c' is already an abbreviation for 'continue'
 
     #@+node:ekr.20110914171443.7291: *5* do_condition
     def do_condition(self, arg):
@@ -1043,8 +1043,8 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         Continue execution, only stop when a breakpoint is encountered.
         """
         if not self.nosigint:
-            self._previous_sigint_handler = \
-                signal.signal(signal.SIGINT, self.sigint_handler)
+            self._previous_sigint_handler = signal.signal(
+                signal.SIGINT, self.sigint_handler)
         self.set_continue()
         return 1
 
@@ -1261,6 +1261,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             pass
 
     # make "print" an alias of "p" since print isn't a Python statement anymore
+
     do_print = do_p
     #@+node:ekr.20110914171443.7305: *5* do_pp
     def do_pp(self, arg):
@@ -1335,7 +1336,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         try:
             # print('edb.do_source: obj',repr(arg))
             lines, lineno = getsourcelines(obj)
-        except (IOError, TypeError) as err:
+        except(IOError, TypeError) as err:
             self.error(err)
             return
         self._print_lines(lines, lineno)
@@ -1617,10 +1618,10 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         lookupmodule() translates (possibly incomplete) file or module name
         into an absolute file name.
         """
-        if os.path.isabs(filename) and  os.path.exists(filename):
+        if os.path.isabs(filename) and os.path.exists(filename):
             return filename
         f = os.path.join(sys.path[0], filename)
-        if  os.path.exists(f) and self.canonic(f) == self.mainpyfile:
+        if os.path.exists(f) and self.canonic(f) == self.mainpyfile:
             return f
         root, ext = os.path.splitext(filename)
         if ext == '':
@@ -1628,7 +1629,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         if os.path.isabs(filename):
             return filename
         for dirname in sys.path:
-            if hasattr(os,'readlink'):
+            if hasattr(os, 'readlink'):
                 # pylint: disable=no-member
                 # we have just checked to see that readlink exists.
                 while os.path.islink(dirname):
@@ -1647,8 +1648,8 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         # (this gets rid of pdb's globals and cleans old variables on restarts).
         import __main__
         __main__.__dict__.clear()
-        __main__.__dict__.update({"__name__"    : "__main__",
-                                  "__file__"    : filename,
+        __main__.__dict__.update({"__name__": "__main__",
+                                  "__file__": filename,
                                   "__builtins__": __builtins__,
                                  })
 
@@ -1661,8 +1662,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
         self.mainpyfile = self.canonic(filename)
         self._user_requested_quit = False
         with open(filename, "rb") as fp:
-            statement = "exec(compile(%r, %r, 'exec'))" % \
-                        (fp.read(), self.mainpyfile)
+            statement = "exec(compile(%r, %r, 'exec'))" % (fp.read(), self.mainpyfile)
         self.run(statement)
     #@-others
 
@@ -1734,12 +1734,14 @@ def pm():
 #@+node:ekr.20110914171443.7340: ** Entries
 #@+node:ekr.20110914171443.7341: *3* test
 # Main program for testing
+
 TESTCMD = 'import x; x.main()'
 
 def test():
     run(TESTCMD)
 #@+node:ekr.20110914171443.7342: *3* help
 # print help
+
 def help():
     import pydoc
     pydoc.pager(__doc__)
@@ -1761,12 +1763,12 @@ def main():
         elif opt in ['-c', '--command']:
             commands.append(optarg)
 
-    mainpyfile = args[0]     # Get script filename
+    mainpyfile = args[0]  # Get script filename
     if not os.path.exists(mainpyfile):
         print('Error:', mainpyfile, 'does not exist')
         sys.exit(1)
 
-    sys.argv[:] = args      # Hide "pdb.py" and pdb options from argument list
+    sys.argv[:] = args  # Hide "pdb.py" and pdb options from argument list
 
     # Replace pdb's dir with script's dir in front of module search path.
     sys.path[0] = os.path.dirname(mainpyfile)
@@ -1806,6 +1808,7 @@ def main():
 #@@pagewidth 70
 
 # When invoked as main program, invoke the debugger on a script
+
 if __name__ == '__main__':
     import pdb
     pdb.main()

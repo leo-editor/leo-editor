@@ -23,7 +23,6 @@ class ControlCommandsClass(BaseEditCommandsClass):
         """Ctor for ControlCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
-
     #@+others
     #@+node:ekr.20150514063305.91: *3* executeSubprocess
     def executeSubprocess(self, event, command):
@@ -35,8 +34,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             p = subprocess.Popen(
                 shlex.split(command),
                 stdout=subprocess.PIPE,
-                stderr=None if trace else subprocess.PIPE,
-                    # subprocess.DEVNULL is Python 3 only.
+                stderr=subprocess.DEVNULL if trace else subprocess.PIPE,
                 shell=sys.platform.startswith('win'),
             )
             out, err = p.communicate()
@@ -46,7 +44,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
             g.es_exception()
         k.keyboardQuit()
             # Inits vim mode too.
-        g.es('Done: %s' % command)
+        g.es(f"Done: {command}")
     #@+node:ekr.20150514063305.92: *3* print plugins info...
     @cmd('show-plugin-handlers')
     def printPluginHandlers(self, event=None):

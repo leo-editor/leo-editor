@@ -273,7 +273,7 @@ class leoscreen_Controller:
         insert_point = editor.getInsertPoint()
         editor.insert(insert_point, self.get_line_prefix+line+'\n')
         editor.setInsertPoint(insert_point)
-        c.setChanged(True)
+        c.setChanged()
     #@+node:tbrown.20100528205637.5725: *3* _get_output
     def _get_output(self):
         """grab some output"""
@@ -334,7 +334,7 @@ class leoscreen_Controller:
         n = p.insertAsLastChild()
         n.h = time.strftime(self.time_fmt)
         n.b = dat
-        c.setChanged(True)
+        c.setChanged()
         c.selectPosition(n)
         c.redraw()
     #@+node:tbrown.20100424115939.5735: *3* show

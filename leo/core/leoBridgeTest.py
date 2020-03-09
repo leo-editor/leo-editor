@@ -37,7 +37,7 @@ def main():
 #@+node:ekr.20080730161153.4: *3* runUnitTests (leoBridgeTest.py)
 def runUnitTests(c, g):
     """Run all the unit tests from the leoBridge."""
-    nodeName = 'All unit tests' # The tests to run.
+    nodeName = 'All unit tests'  # The tests to run.
     try:
         p = g.findNodeAnywhere(c, nodeName)
         if p:
@@ -72,10 +72,11 @@ def scanOptions():
         options.gui = None
     return options
 #@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
 if __name__ == '__main__':
     print(f"leoBridgeTest.py: argv: {sys.argv!r}")
     main()
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+
 #@-leo

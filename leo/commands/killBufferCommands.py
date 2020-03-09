@@ -32,7 +32,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # The index of the next item to be returned in
             # g.app.globalKillBuffer by iterateKillBuffer.
         self.reloadSettings()
-            
+
     def reloadSettings(self):
         """KillBufferCommandsClass.reloadSettings."""
         c = self.c
@@ -44,8 +44,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         the text contains something other than whitespace.
         """
         if self.addWsToKillRing or text.strip():
-            g.app.globalKillBuffer = [
-                z for z in g.app.globalKillBuffer if z != text]
+            g.app.globalKillBuffer = [z for z in g.app.globalKillBuffer if z != text]
             g.app.globalKillBuffer.insert(0, text)
     #@+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')
@@ -119,14 +118,14 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         def __init__(self, c):
             """Ctor for KillBufferIterClass class."""
             self.c = c
-            self.index = 0 # The index of the next item to be returned.
+            self.index = 0  # The index of the next item to be returned.
 
         def __iter__(self):
             return self
         #@+node:ekr.20150514063305.418: *4* next
         def next(self):
             commands = self.c.killBufferCommands
-            aList = g.app.globalKillBuffer # commands.killBuffer
+            aList = g.app.globalKillBuffer  # commands.killBuffer
             if not aList:
                 self.index = 0
                 return None
@@ -142,7 +141,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
         __next__ = next
         #@-others
-
     def iterateKillBuffer(self):
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* kill (helper)
@@ -179,11 +177,11 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # Kill the trailing newline of the body text.
             i = max(0, len(s) - 1)
             j = len(s)
-        elif ins + 1 < j and s[ins: j - 1].strip() and g.match(s, j - 1, '\n'):
+        elif ins + 1 < j and s[ins : j - 1].strip() and g.match(s, j - 1, '\n'):
             # Kill the line, but not the newline.
             i, j = ins, j - 1
         elif g.match(s, j - 1, '\n'):
-            i = ins # Kill the newline in the present line.
+            i = ins  # Kill the newline in the present line.
         else:
             i = j
         if i < j:
@@ -205,7 +203,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             # Kill the line, but not the newline.
             j -= 1
         else:
-            pass # Kill the newline in the present line.
+            pass  # Kill the newline in the present line.
         self.kill(event, i, j, undoType='kill-line')
     #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave & helper
     @cmd('kill-region')
@@ -264,7 +262,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         while j < len(s) and s[j] in (' ', '\t'):
             j += 1
         if j > i:
-            ws = s[i: j]
+            ws = s[i:j]
             w.delete(i, j)
             if undoType:
                 self.beginCommand(w, undoType=undoType)
@@ -299,7 +297,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             s = self.kbiterator.next()
             if s is None: s = clip_text or ''
             if i != j: w.deleteTextSelection()
-            if s != s.lstrip(): # s contains leading whitespace.
+            if s != s.lstrip():  # s contains leading whitespace.
                 i2, j2 = g.getLine(text, i)
                 k = g.skip_ws(text, i2)
                 if i2 < i <= k:
@@ -339,9 +337,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             i = s.find(ch, ins)
             if i == -1: return
             self.beginCommand(w, undoType='zap-to-char')
-            self.addToKillBuffer(s[ins: i])
-            g.app.gui.replaceClipboardWith(s[ins: i]) # Support for proper yank.
-            w.setAllText(s[: ins] + s[i:])
+            self.addToKillBuffer(s[ins:i])
+            g.app.gui.replaceClipboardWith(s[ins:i])  # Support for proper yank.
+            w.setAllText(s[:ins] + s[i:])
             w.setInsertPoint(ins)
             self.endCommand(changed=True, setLabel=True)
     #@-others

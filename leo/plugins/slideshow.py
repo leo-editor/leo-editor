@@ -125,9 +125,11 @@ class slideshowController:
         c = self.c
         self.findFirstSlideShow()
         if not self.firstSlideShow:
-            return g.es('No slide show found')
+            g.es('No slide show found')
+            return
         if not self.slideShowRoot:
-            return self.select(self.firstSlideShow)
+            self.select(self.firstSlideShow)
+            return
         p = c.p
         h = p.h.strip()
         if h.startswith('@slideshow'):
@@ -137,7 +139,8 @@ class slideshowController:
             if self.ignored(p):
                 p = p.threadNext()
             elif h.startswith('@slideshow'):
-                return self.select(p)
+                self.select(p)
+                return
             elif g.match_word(h, 0, '@ignore'):
                 p = p.nodeAfterTree()
             else:
@@ -176,9 +179,11 @@ class slideshowController:
         c = self.c
         self.findFirstSlideShow()
         if not self.firstSlideShow:
-            return g.es('No slide show found')
+            g.es('No slide show found')
+            return
         if not self.slideShowRoot:
-            return self.select(self.firstSlideShow)
+            self.select(self.firstSlideShow)
+            return
         p = c.p
         h = p.h.strip()
         if h.startswith('@slideshow'):
@@ -188,7 +193,8 @@ class slideshowController:
             if self.ignored(p):
                 p = p.threadBack()
             elif h.startswith('@slideshow'):
-                return self.select(p)
+                self.select(p)
+                return
             else:
                 p = p.threadBack()
         self.select(self.firstSlideShow)
