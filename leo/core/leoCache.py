@@ -101,6 +101,7 @@ class CommanderCacher:
             # 1484: Change only the key!
             if isinstance(c.db, CommanderWrapper):
                 c.db.key = fn
+                self.commit()
             else:
                 g.trace('can not happen', c.db.__class__.__name__)
     #@-others
