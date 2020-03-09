@@ -1541,6 +1541,14 @@ assert d.get('language') == 'python'
 assert d.get('tabwidth') == -4
 # assert d.get('path').endswith('xyzzy')
 assert d.get('pagewidth') == 120
+#@+node:ekr.20200308204241.1: *4* @test fast.readWithElementTree
+"""This code tests the translation table and associated logic."""
+import leo.core.leoFileCommands as leoFileCommands
+table = leoFileCommands.FastRead(c, {}).translate_table
+s = chr(0) + "a" + chr(0) + "b"
+assert len(s) == 4, len(s)
+s = s.translate(table)
+assert len(s) == 2, len(s)
 #@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoAtFile tests')
