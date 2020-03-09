@@ -1665,8 +1665,7 @@ class LeoApp:
     #@+node:ekr.20190613062357.1: *3* app.WindowState...
     #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (new)
     def restoreEditorDockState(self, c):
-        
-        g.trace(c.shortFileName())
+
         dw = c.frame.top
         if not dw:
             return
@@ -1694,7 +1693,6 @@ class LeoApp:
             )
             body.selectLabel(wrapper)
             body.selectEditor(wrapper)
-            g.trace(i, dock_name, ap, p and p.h)
     #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
