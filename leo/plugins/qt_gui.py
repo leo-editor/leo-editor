@@ -781,10 +781,14 @@ class LeoQtGui(leoGui.LeoGui):
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
         self.total_docks += 1
-        dock.setWindowTitle(name.capitalize())
+        if name:
+            dock.setWindowTitle(name.capitalize())
+        else:
+            w = QtWidgets.QWidget()
+            dock.setTitleBarWidget(w)
         # #1327: frameFactory.createFrame now ensures that the main window is visible.
         return dock
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock
+    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock (changed)
     def make_global_outlines_dock(self):
         """
         Create the top-level Outlines (plural) dock,
@@ -798,7 +802,9 @@ class LeoQtGui(leoGui.LeoGui):
             closeable=not is_central,
             moveable=not is_central,
             height=50,  # was 100: #1339.
-            name="Leo Outlines")
+            ### name="Leo Outlines")
+            name='',  # #1527.
+        )
         if is_central:
             main_window.setCentralWidget(dock)
         else:
