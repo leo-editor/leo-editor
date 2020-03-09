@@ -136,12 +136,13 @@
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
-<v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh></v>
 <v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
-<v t="ekr.20151227063335.1"><vh>@clean ../../About leo.exe.TXT</vh></v>
+<v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
+<v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
+</v>
 <v t="ekr.20150425135153.1"><vh>homebrew install script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
@@ -149,7 +150,6 @@
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
-<v t="maphew.20190208142757.1"><vh>@clean ../../optional-tools.txt</vh></v>
 </v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
@@ -160,7 +160,7 @@
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
-<v t="ekr.20180828095843.1"><vh>Update verions.py in the -rel branch</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update versions.py in the -rel branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
@@ -168,6 +168,16 @@
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
+</v>
+<v t="mhw.20191107063807.1"><vh>Clean up root dir</vh>
+<v t="mhw.20191101123146.1"><vh>To Delete</vh>
+<v t="ekr.20151227063335.1"><vh>@@clean ../../About leo.exe.TXT</vh></v>
+<v t="maphew.20190208142757.1"><vh>@@clean ../../optional-tools.txt</vh></v>
+<v t="ekr.20130809141000.1990"><vh>@@clean ../../INSTALL.TXT</vh></v>
+</v>
+<v t="mhw.20191107063030.1"><vh>To Move</vh>
+<v t="ekr.20150416081546.7"></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -1649,7 +1659,8 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
   Do **not** copy searchindex.js.
-</t>
+- tools/webroot/*  go to top of website, e.g.
+      tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
@@ -2432,6 +2443,41 @@ deploy:
     on:
       tags: true
       branch: master
+</t>
+<t tx="mhw.20191101123146.1">Refresh / audit MANIFEST.in excludes and includes
+https://github.com/leo-editor/leo-editor/issues/1077
+
+Files in this tree are or will be deleted from the Leo's root directory. They're
+kept here for easy restoration or migration to another place if it's decided
+they should be kept.
+
+-matt (@maphew)
+</t>
+<t tx="mhw.20191107063030.1">_Files and nodes which could probably live somewhere else._
+
+
+This is an organizer node of clones for the things-to-be-moved, e.g. use "Go to
+clone" and move that. These nodes can be removed when satisfied nothing was
+broken.</t>
+<t tx="mhw.20191107063807.1">Refresh / audit MANIFEST.in excludes and includes
+https://github.com/leo-editor/leo-editor/issues/1077
+
+-matt (@maphew)
+</t>
+<t tx="mhw.20191107064451.1">There is conceptual overlap between this node and the Desktop-integration
+scripts held in Scripts.leo. My current thinking is the scripts should be moved
+to or at least managed from Dist.
+
+-matt  </t>
+<t tx="mhw.20191107064521.1">@language unknown_language
+[Desktop Entry]
+Encoding=UTF-8
+Version=master
+Type=Application
+Terminal=true
+Exec=/snap/bin/leo-editor.leo
+Name=Leo Editor
+Icon=/snap/meta/gui/icon.png
 </t>
 </tnodes>
 </leo_file>
