@@ -1663,7 +1663,7 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState...
-    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (new)
+    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
     def restoreEditorDockState(self, c):
 
         dw = c.frame.top
