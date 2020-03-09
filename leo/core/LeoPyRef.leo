@@ -98,7 +98,6 @@
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
-<v t="ekr.20150605175037.1"><vh>@file leoCheck.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
@@ -193,11 +192,7 @@
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
 <v t="ekr.20150304130753.6"><vh>&lt;&lt;scripts&gt;&gt;</vh></v>
 </v>
-<v t="ekr.20181009072707.1"><vh>@clean ../../run_travis_unit_tests.py</vh>
-<v t="ekr.20181009084156.1"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20181009084245.1"><vh>&lt;&lt; compute path &gt;&gt;</vh></v>
-<v t="ekr.20181009084323.1"><vh>&lt;&lt; run tests &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20181009072707.1"><vh>@clean ../../run_travis_unit_tests.py</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
@@ -320,6 +315,8 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
+<v t="ekr.20200308194542.1"><vh>check gnx's</vh></v>
+<v t="ekr.20200308195230.1"><vh>Find gnx</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
@@ -762,6 +759,7 @@ def pre_init_mode(c):
     e.createKeywords()
     e.createBracketRules()
     e.createDefiningWordRules()
+
 </t>
 <t tx="ekr.20150326145530.10">def createKeywords(self):
     """
@@ -789,6 +787,7 @@ def pre_init_mode(c):
             # Always make the entry.
             d[z] = kind
             self.extendRulesDict(ch=z[0], func=func)
+
 </t>
 <t tx="ekr.20150326145530.11">def createStringRule(self, d, pair):
     """Create an entry in d for a string keyword."""
@@ -800,11 +799,12 @@ def pre_init_mode(c):
 
     def forth_string_word_rule(colorer, s, i):
         return colorer.match_span(s, i, kind="literal1", begin=begin.strip(), end=end.strip(),
-            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+            at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
             delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=False) # Don't require ending word.
+            no_escape=False, no_line_break=False, no_word_break=False)  # Don't require ending word.
 
     return forth_string_word_rule
+
 </t>
 <t tx="ekr.20150326145530.12">def extendRulesDict(self, ch, func):
     global rulesDict
@@ -813,18 +813,19 @@ def pre_init_mode(c):
     if func not in aList:
         aList.append(func)
         rulesDict[ch] = aList
+
 </t>
 <t tx="ekr.20150326145530.2"># Rules for forth_main ruleset.
 
 def forth_block_comment_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2", begin="(", end=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
         delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
 def forth_comment_rule(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="\\",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
+        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
         delegate="", exclude_match=False)
 
 def forth_keyword_rule(colorer, s, i):
@@ -832,7 +833,7 @@ def forth_keyword_rule(colorer, s, i):
 
 def forth_string_rule(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word
+        at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word
         delegate="", exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 # ==========================
@@ -936,6 +937,7 @@ if 0:
         return colorer.match_keywords(s, i)
 </t>
 <t tx="ekr.20150326145530.3"># Properties for forth mode.
+
 properties = {
     # "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
     "lineComment": "\\",
@@ -954,7 +956,7 @@ attributesDictDict = {
     "forth_main": forth_main_attributes_dict,
 }
 # Keywords dict for forth_main ruleset.
-forth_main_keywords_dict = {} # Created by extendForth class.
+forth_main_keywords_dict = {}  # Created by extendForth class.
 # Dictionary of keywords dictionaries for forth mode.
 keywordsDictDict = {
     "forth_main": forth_main_keywords_dict,
@@ -972,13 +974,16 @@ rulesDictDict = {
 }
 # Import dict for forth mode.
 importDict = {}
+
+
 </t>
 <t tx="ekr.20150326145530.4">class extendForth:
     """A helper class to extend the mode tables from @data forth-x settings."""
+
     @others
 </t>
 <t tx="ekr.20150326145530.5">def __init__(self):
-    self.c = None # set by pre_init_mode function.
+    self.c = None  # set by pre_init_mode function.
     #
     # Default forth keywords: extended by @data forth-words
     # Forth words to be rendered in boldface: extended by @data forth-bold-words
@@ -989,7 +994,7 @@ importDict = {}
     self.bolditalicwords = []
     #
     # Forth words that define brackets: extended by @data forth-delimiter-pairs
-    self.brackets = [] # Helper: a list of tuples.
+    self.brackets = []  # Helper: a list of tuples.
     self.brackets1 = []
     self.brackets2 = []
     #
@@ -1020,7 +1025,7 @@ importDict = {}
     self.stringwords = []
     self.stringwords1 = []
     self.stringwords2 = []
-    self.verbose = False # True: tell when extending forth words.
+    self.verbose = False  # True: tell when extending forth words.
 
 </t>
 <t tx="ekr.20150326145530.6">def init(self):
@@ -1037,7 +1042,7 @@ importDict = {}
         (self.italicwords, "forth-italic-words"),
     )
     # Add entries from @data nodes (if they exist) to the corresponding lists.
-    for(ivarList, setting) in table:
+    for (ivarList, setting) in table:
         extras = []
         aList = c.config.getData(setting)
         if aList:
@@ -1055,8 +1060,9 @@ importDict = {}
         ("brackets", "@data forth-delimiter-pairs"),
         ("stringwords", "@data forth-string-word-pairs"),
     )
-    for(ivar, setting) in table2:
+    for (ivar, setting) in table2:
         self.splitList(ivar, setting)
+
 </t>
 <t tx="ekr.20150326145530.7">def splitList(self, ivar, setting):
     """Process lines containing pairs of entries
@@ -1077,6 +1083,7 @@ importDict = {}
     name2 = '%s2' % ivar
     setattr(self, name1, result1)
     setattr(self, name2, result2)
+
 </t>
 <t tx="ekr.20150326145530.8">def createBracketRules(self):
     for z in self.brackets1:
@@ -1089,11 +1096,12 @@ def createBracketRule(self, begin):
 
     def forth_bracket_rule(colorer, s, i):
         return colorer.match_span(s, i, kind="bracketRange", begin=begin, end=end,
-            at_line_start=False, at_whitespace_end=False, at_word_start=True, # Require word.
+            at_line_start=False, at_whitespace_end=False, at_word_start=True,  # Require word.
             delegate="", exclude_match=False,
-            no_escape=False, no_line_break=False, no_word_break=True) # Require word.
+            no_escape=False, no_line_break=False, no_word_break=True)  # Require word.
 
     return forth_bracket_rule
+
 </t>
 <t tx="ekr.20150326145530.9">def createDefiningWordRules(self):
     for z in self.definingwords:
@@ -1105,14 +1113,15 @@ def createDefiningWordRule(self, word):
     def forth_defining_word_rule(colorer, s, i):
 
         return colorer.match_word_and_regexp(s, i,
-            kind1="keyword2", # defining word
+            kind1="keyword2",  # defining word
             word=word,
-            kind2="keyword3", # bold
+            kind2="keyword3",  # bold
             pattern=r'(\s)*(\S)+',
             at_line_start=False, at_whitespace_end=False, at_word_start=False,
             exclude_match=False)
 
     return forth_defining_word_rule
+
 </t>
 <t tx="ekr.20150413091056.1">'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
 
@@ -2102,13 +2111,11 @@ try:
     if not found:
         print('No unit tests')
         sys.exit(1)
-    runner = unittest.TextTestRunner(
-        failfast=True, verbosity=1)
+    runner = unittest.TextTestRunner(failfast=True, verbosity=1)
     try:
         result = runner.run(suite)
         if result.errors or result.failures:
-            print('errors: %s, failures: %s' % (
-                len(result.errors), len(result.failures)))
+            print(f"errors: {len(result.errors)}, failures: {len(result.failures)}")
             sys.exit(1)
         else:
             print('Travis unit tests all passed.')
@@ -2119,58 +2126,6 @@ try:
         sys.exit(1)
 except Exception as e:
     print('Unexpected exception 2', e)
-    sys.exit(1)
-</t>
-<t tx="ekr.20181009084156.1">import leo.core.leoBridge as leoBridge
-import os
-import sys
-# import pdb ; pdb.set_trace()
-import unittest
-
-</t>
-<t tx="ekr.20181009084245.1">load_dir = os.path.abspath(os.path.dirname(__file__))
-test_dir = os.path.join(load_dir, 'leo', 'test')
-path = os.path.join(test_dir, 'unitTest.leo')
-assert os.path.exists(path), repr(path)
-</t>
-<t tx="ekr.20181009084323.1">tm = c.testManager
-g.unitTesting = g.app.unitTesting = True
-suite = unittest.makeSuite(unittest.TestCase)
-aList = tm.findAllUnitTestNodes(all=False, marked=False)
-setup_script = None
-found = False
-for p in aList:
-    if tm.isTestSetupNode(p):
-        setup_script = p.b
-        test = None
-    elif tm.isTestNode(p):
-        test = tm.makeTestCase(p, setup_script)
-    elif tm.isSuiteNode(p):
-        test = tm.makeTestSuite(p, setup_script)
-    elif tm.isTestClassNode(p):
-        test = tm.makeTestClass(p)
-    else:
-        test = None
-    if test:
-        suite.addTest(test)
-        found = True
-if not found:
-    print('No unit tests')
-    sys.exit(1)
-runner = unittest.TextTestRunner(
-    failfast=True, verbosity=1)
-try:
-    result = runner.run(suite)
-    if result.errors or result.failures:
-        print('errors: %s, failures: %s' % (
-            len(result.errors), len(result.failures)))
-        sys.exit(1)
-    else:
-        print('Travis unit tests all passed.')
-        sys.exit(0)
-except Exception:
-    print('Unexpected exception')
-    g.es_exception()
     sys.exit(1)
 </t>
 <t tx="ekr.20181013081645.1">@path test</t>
@@ -2243,5 +2198,28 @@ viewrendered.py
 # xdb_pane.py
 </t>
 <t tx="ekr.20190607124533.1"></t>
+<t tx="ekr.20200308194542.1">d = {}  # Keys are gnxs; values are lists of vnodes with that gnx.
+n = 0  # Number of unique vnodes.
+seen = {}  # Keys are id(vnode); values are True.
+for p in c.all_positions():
+    v = p.v
+    if id(v) in seen:
+        continue
+    seen [id(v)] = True
+    n += 1
+    gnx = v.gnx
+    aList = d.get(gnx, [])
+    if v not in aList:
+        aList.append(v)
+        d [gnx] = aList
+    if len(aList) &gt; 1:
+        print(f"gnx clash: {gnx}")
+        g.printObj(aList)
+print(f"{n} unique vnodes")</t>
+<t tx="ekr.20200308195230.1">"""Print vnodes having "ekr.20150605175037.1" as a gnx"""
+for p in c.all_positions():
+    if p.v.gnx == "ekr.20150605175037.1":
+        print(id(p.v), p.h)
+</t>
 </tnodes>
 </leo_file>

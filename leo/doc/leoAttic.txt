@@ -388,7 +388,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.tc.add_tag(p.v,tag) # WRONG: should be p.
 
 '''
-#@+node:ekr.20160109150703.1: *4* class Stats (old & stupid, from leoCheck.py)
+#@+node:ekr.20160109150703.1: *4* class Stats (old & stupid, from )
 class Stats(object):
     '''A class containing global statistics & other data'''
     @others
