@@ -96,8 +96,13 @@ class CommanderCacher:
         save and save-as set changeName to True, save-to does not.
         """
         self.commit()
-        if changeName:
-            c.db = self.get_wrapper(c, fn=fn)
+        if fn and changeName:
+            ### c.db = self.get_wrapper(c, fn=fn)
+            # 1484: Change only the key!
+            if isinstance(c.db, CommanderWrapper):
+                c.db.key = fn
+            else:
+                g.trace('can not happen', c.db.__class__.__name__)
     #@-others
 #@+node:ekr.20180627052459.1: ** class CommanderWrapper
 class CommanderWrapper:
