@@ -73,6 +73,8 @@
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
+<v t="ekr.20200308194542.1"><vh>script: check gnx's</vh></v>
+<v t="ekr.20200308195230.1"><vh>script: Find gnx</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -315,8 +317,6 @@
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
 </v>
 </v>
-<v t="ekr.20200308194542.1"><vh>check gnx's</vh></v>
-<v t="ekr.20200308195230.1"><vh>Find gnx</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943">@nosearch
