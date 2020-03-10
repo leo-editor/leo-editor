@@ -2170,15 +2170,40 @@ class ToDoImporter:
         self.c = c
 
     #@+others
-    #@+node:ekr.20200310101028.1: *3* todo_i.import_files
-    def import_files(self, files):
-        """Import all todo.txt files in the given list of file names."""
-        for file_name in files:
-            with open(file_name, 'r') as f:
+    #@+node:ekr.20200310103606.1: *3* todo_i.get_tasks_from_file
+    def get_tasks_from_file(self, path):
+        """Return the tasks from the given path."""
+        tag = 'import-todo-text-files'
+        if not os.path.exists(path):
+            print(f"{tag}: file not found: {path}")
+            return []
+        try:
+            with open(path, 'r') as f:
                 contents = f.read()
                 tasks = self.parse_file_contents(contents)
-                sfn = g.shortFileName(file_name)
-                g.printObj(tasks, f"tasks in {sfn}")
+            return tasks
+        except Exception:
+            print(f"unexpected exception in {tag}")
+            g.es_exception()
+            return []
+    #@+node:ekr.20200310101028.1: *3* todo_i.import_files
+    def import_files(self, files):
+        """
+        Import all todo.txt files in the given list of file names.
+        
+        Return a dict: keys are full paths, values are lists of ToDoTasks"
+        """
+        d, tag = {}, 'import-todo-text-files'
+        for path in files:
+            try:
+                with open(path, 'r') as f:
+                    contents = f.read()
+                    tasks = self.parse_file_contents(contents)
+                    d [path] = tasks
+            except Exception:
+                print(f"unexpected exception in {tag}")
+                g.es_exception()
+        return d
     #@+node:ekr.20200310062758.1: *3* todo_i.parse_file_contents
     # Patterns...
     comment_s = r'^\s*#.*$'
@@ -2194,7 +2219,10 @@ class ToDoImporter:
     incomplete_pat = re.compile(incomplete_s)
         
     def parse_file_contents(self, s):
-        
+        """
+        Parse the contents of a file.
+        Return a list of ToDoTask objects.
+        """
         trace = False
         tasks = []
         for line in g.splitLines(s):
@@ -2227,7 +2255,11 @@ class ToDoImporter:
         return tasks
     #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
     def prompt_for_files(self):
-        """Prompt for a list of todo.text files and import them."""
+        """
+        Prompt for a list of todo.text files and import them.
+        
+        Return a python dict. Keys are full paths; values are lists of ToDoTask objects.
+        """
         c = self.c
         types = [
             ("Text files", "*.txt"),
@@ -2240,9 +2272,16 @@ class ToDoImporter:
             multiple=True,
         )
         c.bringToFront()
-        if names:
-            g.chdir(names[0])
-            self.import_files(names)
+        if not names:
+            return {}
+        g.chdir(names[0])
+        d = self.import_files(names)
+        for key in sorted(d):
+            tasks = d.get(key)
+            print(f"tasks in {g.shortFileName(key)}...\n")
+            for task in tasks:
+                print(f"    {task}")
+        return d
     #@-others
 #@+node:ekr.20200310063208.1: ** class ToDoTask
 class ToDoTask:
@@ -2289,6 +2328,7 @@ class ToDoTask:
 
     def parse_task(self):
 
+        trace = False and not g.unitTesting
         s = self.task_s
         table = (
             ('context', self.context_pat, self.contexts),
@@ -2299,24 +2339,22 @@ class ToDoTask:
             for m in re.finditer(pat, s):
                 pat_s = repr(pat).replace("re.compile('", "").replace("')", "")
                 pat_s = pat_s.replace(r'\\', '\\')
+                # Check for false key:val match:
                 if pat == self.key_val_pat:
                     key, value = m.group(2), m.group(3)
                     if ':' in key or ':' in value:
-                        # g.trace(f"false key:value: {m.group(1)}")
                         break
                 tag = m.group(1)
-                # g.trace(f"{self.task_s:55} :{pat_s:13}: {tag}")
                 # Add the tag.
                 if tag in aList:
-                    g.trace('Duplicate tag:', tag)
+                    if trace: g.trace('Duplicate tag:', tag)
                 else:
-                    g.trace(f"Add {kind} tag: {tag!s}")
+                    if trace: g.trace(f"Add {kind} tag: {tag!s}")
                     aList.append(tag)
                 # Remove the tag from the task.
                 s = re.sub(pat, "", s)
         if s != self.task_s:
             self.task_s = s.strip()
-            # g.trace(f"new task_s: {s}")
     #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
 class ZimImportController:
@@ -2502,7 +2540,6 @@ def import_todo_text_files(event):
     c = event.get('c')
     if c:
         ToDoImporter(c).prompt_for_files()
-
 #@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
 @g.command('import-zim-folder')
 def import_zim_command(event):
