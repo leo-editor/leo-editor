@@ -2206,16 +2206,12 @@ class ToDoImporter:
         return d
     #@+node:ekr.20200310062758.1: *3* todo_i.parse_file_contents
     # Patterns...
-    # comment_s = r'^\s*#.*$'
-    # comment_pat = re.compile(comment_s)
-    mark_s = r'[x]\ '
+    mark_s = r'([x]\ )'
+    priority_s = r'(\([A-Z]\)\ )'
     date_s = r'([0-9]{4}-[0-9]{2}-[0-9]{2}\ )'
     task_s = r'\s*(.+)'
-    priority_s = r'(\([A-Z]\)\ )'
-    complete_s = fr"^{mark_s}{priority_s}?{date_s}{date_s}?{task_s}$"
-    incomplete_s = fr"^{priority_s}?{date_s}?{task_s}$"
-    complete_pat = re.compile(complete_s)
-    incomplete_pat = re.compile(incomplete_s)
+    line_s = fr"^{mark_s}?{priority_s}?{date_s}?{date_s}?{task_s}$"
+    line_pat = re.compile(line_s)
         
     def parse_file_contents(self, s):
         """
@@ -2227,30 +2223,33 @@ class ToDoImporter:
         for line in g.splitLines(s):
             if not line.strip():
                 continue
-            # if self.comment_pat.match(line):
-                # if trace: print(f"   comment: {line.rstrip()!s}")
-                # continue
-            m = self.complete_pat.match(line)
-            if m:
-                if trace: print(f"  complete: {line.rstrip()!s}")
-                priority = m.group(1)
-                complete_date = m.group(2)
-                assert complete_date
-                start_date = m.group(3)
-                task_s = m.group(4)
-                assert task_s
-                tasks.append(ToDoTask(True, priority, start_date, complete_date, task_s))
+            if trace:
+                print(f"task: {line.rstrip()!s}")
+            m = self.line_pat.match(line)
+            if not m:
+                print(f"invalid task: {line.rstrip()!s}")
                 continue
-            m = self.incomplete_pat.match(line)
-            if m:
-                if trace: print(f"incomplete: {line.rstrip()!s}")
-                priority = m.group(1)
-                start_date = m.group(2)
-                task_s = m.group(3)
-                assert task_s
-                tasks.append(ToDoTask(False, priority, start_date, None, task_s))
+            # Groups 1, 2 and 5 are context independent.
+            completed = m.group(1)
+            priority = m.group(2)
+            task_s = m.group(5)
+            if not task_s:
+                print(f"invalid task: {line.rstrip()!s}")
                 continue
-            print('invalid task:', repr(line))
+            # Groups 3 and 4 are context dependent.
+            if m.group(3) and m.group(4):
+                complete_date = m.group(3)
+                start_date = m.group(4)
+            elif completed:
+                complete_date = m.group(3)
+                start_date = ''
+            else:
+                start_date = m.group(3) or ''
+                complete_date = ''
+            if completed and not complete_date:
+                print(f"no completion date: {line.rstrip()!s}")
+            tasks.append(ToDoTask(
+                bool(completed), priority, start_date, complete_date, task_s))
         return tasks
     #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
     def prompt_for_files(self):
