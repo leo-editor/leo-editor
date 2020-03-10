@@ -11,22 +11,113 @@ Creates a window for *live* rendering of reSTructuredText, markdown text,
 images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
+#@+node:TomP.20200308230224.1: *3* About
+About
+=====
+
+The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the ViewRendered plugin and enhances the display of Restructured Text (RsT) and Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
+
+    #. Display entire subtrees starting at the selected node;
+    #. Display code and literal blocks in a visually distinct way;
+    #. Any number of code blocks and be intermixed with RsT ot MD in a single node.
+    #. Display just the code blocks;
+    #. Colorize code blocks;
+    #. Execute Python code in the code blocks;
+    #. Insert the print() output of an execution at the bottom of the rendered display;
+    #. Identify code blocks by either an @language directive or by the code block syntax normally used by RsT or MD (e.g., code fences for MD);
+    #. Honor "@" and "@c" directives to ignore all lines between them;
+    #. Export the rendered node or subtree to the system browser;
+    #. Optionally render mathematics symbols and equations using MathJax;
+    #. Correctly handle RsT or MD in a docstring'
+    #. While an entire subtree rendering is visible, the display can be locked so that the entire tree shows even while a single node is being edited.
+    #. When an entire subtree is rendered, and editing is being done in one node, the display can be frozen (no changes will be displayed) if necessary to avoid excessive delay in re-rendering, or visual anomalies.
+    #. The default rendering language for a node can be selected to by one of "RsT", "MD", or "TEXT".  This setting applies when the node or subtree has no @rst or @md headline.
+    #. Displays a node's headline text as the overall heading for the rendering.  However, if the first line of a node exactly equals the headline text (not counting a directive like "@rst"), only one copy of that heading will be displayed.
+
+@setting nodes in an @settings tree can modify the behavior of the plugin.
+#@+node:TomP.20200308232305.1: *3* Limitations and Quirks
+Limitations and Quirks
+======================
+    
+    #. The plugin requires QT5 and Python 3.6+. All Leo versions since 6.0 also use them, so this requirement should always be met.
+    
+    #. At the current time, the plugin **only works** when Leo is launched using docks.  For Leo versions > 6.1, this means launching it with the **``--use-docks``** parameter.
+
+    #. The RsT processor (``docutils``) is fussy about having blank lines after blocks.  A node may render correctly on its own, but will show errors when displayed in a subtree.  In most cases, the fix is to add a blank line at the end of a node. This may be fixed in a future version.
+    
+    #. Without MathJax, mathematical symbols RsT is rendered using CSS, which has a cruder appearance than MathJax rendering but may be servicable.  With MD, mathematical symbols are not rendered.
+    
+    #. Code blocks for several programming languages can be colorized, even within a single node.  But only Python blocks can be executed.  Blocks intended for another language (such as javascript) will cause syntax errors if an attempt is made to execute the node.
+    
+    #. The Viewrendered2 plugin, now obsolete, could be set to display execution output as RsT.  This was useful for code that would print RsT.  The current VR3 plugin cannot be set to render the output as RsT.
+
+    #. Behavior for nodes other than @rst or @md nodes is the same as for the Viewrendered plugin.  This includes any bugs or unexpected behaviors.
+
+    #. There is currently no provision to pass through extensions to the Markdown processor.
+
 #@+node:TomP.20200115200249.1: *3* Dependencies
 Dependencies
 ============
 
-This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
-so installing docutils is highly recommended when using this plugin.
+This plugin uses docutils, http://docutils.sourceforge.net/, 
+to render reStructuredText, so installing docutils is highly 
+recommended when using this plugin.
 
-This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+This plugin uses markdown, 
+http://http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this plugin.
+
+
+#@+node:TomP.20200115200807.1: *3* Settings and Configuration
+Settings and Configuration
+##########################
+
+Settings
+========
+
+Settings are put into nodes with the headlines ``@setting ....``.  They must be placed into an ``@settings`` tree, preferably in the myLeoSettings file.
+
+.. csv-table:: Settings
+   :header: "Setting", "Default", "Values", "Purpose"
+   :widths: 18, 5, 5, 30
+
+   "vr3-default-kind", "rst", "rst, md", "Default for rendering type"
+   "vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
+   "vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
+   "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
+   "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
+   "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
+
+**Examples**::
+
+    @string vr3-mathjax-url = file:///D:/utility/mathjax/es5/tex-chtml.js
+    @string vr3-mathjax-url = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML
+    @string vr3-md-math-output = True
+
+Stylesheets
+===========
+CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  They are used if no other location is specified by an ``@setting`` node, or if a specified file:/// URL does not exist.  If the MD stylesheet is removed, the plugin will re-create it on startup, but the RsT stylesheet will not be recreated if removed.
+
+MathJax Script Location
+=======================
+The script for MathJax rendering of math symbols can be in a local directory on your computer.  This has the advantages of fast loading and working without an internet. Using an Internet URL has the advantage that the URL will work if the exported HTML file is sent to someone else.
+
+If the MathJax scripts are installed on the local computer, it is recommended that one of the ``.js`` script files in the ``es`` directory be used, as shown in the above table.  If the script is loaded from the Internet, the URL must include a ``?config`` specifer.  The one shown in the example above works well.
+ 
+Hot Key
+=======
+Binding the plugin's visibility to a hot key is very desirable.  ``Alt-0`` is convenient.  The standard Leo way to bind a hot key is by putting the binding into the body of a setting node with the headline ``@shortcuts``.  Here is an example for the VR3 plugin::
+
+    vr3-toggle = Alt+0
+
+
 
 
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
 ========
 
-viewrendered.py creates the following (``Alt-X``) commands:
+viewrendered3.py creates the following (``Alt-X``) commands:
 
 ``viewrendered (abbreviated vr3)``
     Opens a new rendering window.
@@ -163,28 +254,6 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
   **Note**: if the first character of the body text is ``<`` after removing Leo directives,
   the contents of body pane is taken to be an svg image.
   
-#@+node:TomP.20200115200807.1: *3* Settings
-Settings
-========
-
-- ``@color rendering-pane-background-color = white``
-  The background color the rendering pane when rendering text.
-
-- ``@bool view-rendered-auto-create = False``
-  When True, show the rendering pane when Leo opens an outline.
-
-- ``@bool view-rendered-auto-hide = False``
-  When True, hide the rendering pane for text-only renderings.
-
-- ``@string view-rendered-default-kind = rst``
-  The default kind of rendering.  One of (big,rst,md,html)
-
-- ``@string view-rendered-md-extensions = extra``
-  A comma-delineated list of markdown extensions to use.
-  Suitable extensions can be seen here:
-  http://pythonhosted.org/Markdown/extensions/index.html
-
-#@+node:TomP.20200115201807.1: *3* Known Limitations and Issues
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
 ================
@@ -2295,9 +2364,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     if i > 0:
                         chunks.append(_chunk)
                     _lang = TEXT
-                    for lan in LANGUAGES:
-                        if lan in line:
-                            _lang = lan
+                    for lan_t in LANGUAGES:
+                        if lan_t in line:
+                            _lang = lan_t
+                            break
 
                     _tag = CODE if _lang in LANGUAGES else TEXT
                     _chunk = Chunk(_tag, _structure, _lang)
@@ -2640,14 +2710,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.db['viewrendered_default_layouts'] = layouts[h]
     #@+node:TomP.20191226054120.1: *3* vr3.show_toolbar
     def show_toolbar(self):
-        _toolbar = self.vr3_toolbar
+        try:
+            _toolbar = self.vr3_toolbar
+        except RuntimeError as e:
+            g.es(f'show_toolbar(): {type(e)}: {e}')
+            return
 
         if _toolbar and _toolbar.isHidden():
             try:
-                #action = _toolbar.toggleViewAction()
                 _toolbar.setVisible(True)
-            except Exception as e:
-                g.es('=== show_toolbar(): %s: %s' % (type(e), e))
+            except RuntimeError as e:
+                g.es('show_toolbar(): %s: %s' % (type(e), e))
     #@+node:TomP.20191226055702.1: *3* vr3.hide_toolbar
     def hide_toolbar(self):
         _toolbar = self.vr3_toolbar
