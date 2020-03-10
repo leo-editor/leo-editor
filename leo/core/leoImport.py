@@ -2206,15 +2206,14 @@ class ToDoImporter:
         return d
     #@+node:ekr.20200310062758.1: *3* todo_i.parse_file_contents
     # Patterns...
-    comment_s = r'^\s*#.*$'
+    # comment_s = r'^\s*#.*$'
+    # comment_pat = re.compile(comment_s)
     mark_s = r'[x]\ '
     date_s = r'([0-9]{4}-[0-9]{2}-[0-9]{2}\ )'
     task_s = r'\s*(.+)'
     priority_s = r'(\([A-Z]\)\ )'
     complete_s = fr"^{mark_s}{priority_s}?{date_s}{date_s}?{task_s}$"
     incomplete_s = fr"^{priority_s}?{date_s}?{task_s}$"
-    #
-    comment_pat = re.compile(comment_s)
     complete_pat = re.compile(complete_s)
     incomplete_pat = re.compile(incomplete_s)
         
@@ -2228,9 +2227,9 @@ class ToDoImporter:
         for line in g.splitLines(s):
             if not line.strip():
                 continue
-            if self.comment_pat.match(line):
-                if trace: print(f"   comment: {line.rstrip()!s}")
-                continue
+            # if self.comment_pat.match(line):
+                # if trace: print(f"   comment: {line.rstrip()!s}")
+                # continue
             m = self.complete_pat.match(line)
             if m:
                 if trace: print(f"  complete: {line.rstrip()!s}")
