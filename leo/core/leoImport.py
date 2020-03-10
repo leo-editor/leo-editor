@@ -2163,6 +2163,161 @@ class TabImporter:
             return ''.join([z[len(lws) :] for z in lines])
         return ''
     #@-others
+#@+node:ekr.20200310060123.1: ** class ToDoImporter
+class ToDoImporter:
+    
+    def __init__(self, c):
+        self.c = c
+
+    #@+others
+    #@+node:ekr.20200310101028.1: *3* todo_i.import_files
+    def import_files(self, files):
+        """Import all todo.txt files in the given list of file names."""
+        for file_name in files:
+            with open(file_name, 'r') as f:
+                contents = f.read()
+                tasks = self.parse_file_contents(contents)
+                sfn = g.shortFileName(file_name)
+                g.printObj(tasks, f"tasks in {sfn}")
+    #@+node:ekr.20200310062758.1: *3* todo_i.parse_file_contents
+    # Patterns...
+    comment_s = r'^\s*#.*$'
+    mark_s = r'[x]\ '
+    date_s = r'([0-9]{4}-[0-9]{2}-[0-9]{2}\ )'
+    task_s = r'\s*(.+)'
+    priority_s = r'(\([A-Z]\)\ )'
+    complete_s = fr"^{mark_s}{priority_s}?{date_s}{date_s}?{task_s}$"
+    incomplete_s = fr"^{priority_s}?{date_s}?{task_s}$"
+    #
+    comment_pat = re.compile(comment_s)
+    complete_pat = re.compile(complete_s)
+    incomplete_pat = re.compile(incomplete_s)
+        
+    def parse_file_contents(self, s):
+        
+        trace = False
+        tasks = []
+        for line in g.splitLines(s):
+            if not line.strip():
+                continue
+            if self.comment_pat.match(line):
+                if trace: print(f"   comment: {line.rstrip()!s}")
+                continue
+            m = self.complete_pat.match(line)
+            if m:
+                if trace: print(f"  complete: {line.rstrip()!s}")
+                priority = m.group(1)
+                complete_date = m.group(2)
+                assert complete_date
+                start_date = m.group(3)
+                task_s = m.group(4)
+                assert task_s
+                tasks.append(ToDoTask(True, priority, start_date, complete_date, task_s))
+                continue
+            m = self.incomplete_pat.match(line)
+            if m:
+                if trace: print(f"incomplete: {line.rstrip()!s}")
+                priority = m.group(1)
+                start_date = m.group(2)
+                task_s = m.group(3)
+                assert task_s
+                tasks.append(ToDoTask(False, priority, start_date, None, task_s))
+                continue
+            print('invalid task:', repr(line))
+        return tasks
+    #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
+    def prompt_for_files(self):
+        """Prompt for a list of todo.text files and import them."""
+        c = self.c
+        types = [
+            ("Text files", "*.txt"),
+            ("All files", "*"),
+        ]
+        names = g.app.gui.runOpenFileDialog(c,
+            title="Import todo.txt File",
+            filetypes=types,
+            defaultextension=".txt",
+            multiple=True,
+        )
+        c.bringToFront()
+        if names:
+            g.chdir(names[0])
+            self.import_files(names)
+    #@-others
+#@+node:ekr.20200310063208.1: ** class ToDoTask
+class ToDoTask:
+    """A class representing the components of a task line."""
+
+    def __init__(self, completed, priority, start_date, complete_date, task_s):
+        self.completed = completed
+        self.priority = priority and priority[1] or ''
+        self.start_date = start_date and start_date.rstrip() or ''
+        self.complete_date = complete_date and complete_date.rstrip() or ''
+        self.task_s = task_s.strip()
+        # Parse tags into separate dictionaries.
+        self.projects = []
+        self.contexts = []
+        self.key_vals = []
+        self.parse_task()
+
+    #@+others
+    #@+node:ekr.20200310075514.1: *3* task.__repr__ & __str__
+    def __repr__(self):
+        start_s = self.start_date if self.start_date else ''
+        end_s = self.complete_date if self.complete_date else ''
+        mark_s = '[X]' if self.completed else '[ ]'
+        result = [
+            f"Task: "
+            f"{mark_s} "
+            f"{self.priority:1} "
+            f"start: {start_s:10} "
+            f"end: {end_s:10} "
+            f"{self.task_s}"
+        ]
+        for ivar in ('contexts', 'projects', 'key_vals'):
+            aList = getattr(self, ivar, None)
+            if aList:
+                result.append(f"{' '*13}{ivar}: {aList}")
+        return '\n'.join(result)
+
+    __str__ = __repr__
+    #@+node:ekr.20200310063138.1: *3* task.parse_task
+    # Patterns...
+    project_pat = re.compile(r'(\+\S+)')
+    context_pat = re.compile(r'(@\S+)')
+    key_val_pat = re.compile(r'((\S+):(\S+))')  # Might be a false match.
+
+    def parse_task(self):
+
+        s = self.task_s
+        table = (
+            ('context', self.context_pat, self.contexts),
+            ('project', self.project_pat, self.projects),
+            ('key:val', self.key_val_pat, self.key_vals),
+        )
+        for kind, pat, aList in table:
+            for m in re.finditer(pat, s):
+                pat_s = repr(pat).replace("re.compile('", "").replace("')", "")
+                pat_s = pat_s.replace(r'\\', '\\')
+                if pat == self.key_val_pat:
+                    key, value = m.group(2), m.group(3)
+                    if ':' in key or ':' in value:
+                        # g.trace(f"false key:value: {m.group(1)}")
+                        break
+                tag = m.group(1)
+                # g.trace(f"{self.task_s:55} :{pat_s:13}: {tag}")
+                # Add the tag.
+                if tag in aList:
+                    g.trace('Duplicate tag:', tag)
+                else:
+                    g.trace(f"Add {kind} tag: {tag!s}")
+                    aList.append(tag)
+                # Remove the tag from the task.
+                s = re.sub(pat, "", s)
+        if s != self.task_s:
+            self.task_s = s.strip()
+            # g.trace(f"new task_s: {s}")
+    #@-others
 #@+node:ekr.20141210051628.26: ** class ZimImportController
 class ZimImportController:
     """
@@ -2340,6 +2495,14 @@ def import_tabbed_files_command(event):
     c = event.get('c')
     if c:
         TabImporter(c).prompt_for_files()
+#@+node:ekr.20200310095703.1: *3* @g.command(import-todo-text-files)
+@g.command('import-todo-text-files')
+def import_todo_text_files(event):
+    """Prompt for free-mind files and import them."""
+    c = event.get('c')
+    if c:
+        ToDoImporter(c).prompt_for_files()
+
 #@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
 @g.command('import-zim-folder')
 def import_zim_command(event):
