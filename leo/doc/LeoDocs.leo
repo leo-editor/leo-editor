@@ -11885,7 +11885,7 @@ To install Python, see http://python.org.
 
 **Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.6 or later.
 
-**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab. There is an executable installer for Windows users.
+**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
 </t>
 <t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another outline. This is a frequently requested feature. For example::
 
@@ -18040,7 +18040,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`feedparser`: https://pypi.python.org/pypi/feedparser
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
-.. _`PyEnchant`:  http://pythonhosted.org/pyenchant/download.html
+.. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
 .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
