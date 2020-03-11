@@ -1004,6 +1004,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`viewrendered3` Module
+--------------------------
+
+.. automodule:: leo.plugins.viewrendered3
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`vim` Module
 -----------------
 
