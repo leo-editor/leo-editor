@@ -97,7 +97,6 @@ class CommanderCacher:
         """
         self.commit()
         if fn and changeName:
-            ### c.db = self.get_wrapper(c, fn=fn)
             # 1484: Change only the key!
             if isinstance(c.db, CommanderWrapper):
                 c.db.key = fn
