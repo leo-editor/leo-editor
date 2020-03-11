@@ -184,12 +184,12 @@ class API_Wrapper (leoFrame.StringTextWrapper):
     #@@wrap
     #@+at
     # These methods implement Leo's high-level api for the body pane.
-    # 
+    #
     # Consider Leo's sort-lines command. sort-lines knows nothing about which gui
     # is in effect. It updates the body pane using *only* the high-level api.
-    # 
+    #
     # These methods must do two things:
-    #     
+    #
     # 1. Call the corresponding super() method to update self.s, self.i and self.ins.
     # 2. Call the corresponding flx_body methods to update the flx_body widget,
     #    except while unit testing.

@@ -921,8 +921,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             def __init__(self, c):
                 """MakeStubFile.ctor. From StandAloneMakeStubFile.ctor."""
                 self.c = c
-                ### self.msf = msf = g.importExtension(moduleName='make_stub_files',
-                ###     pluginName=None, verbose=False, required=False)
                 self.msf = msf = g.import_module('make_stub_files')
                 x = msf.StandAloneMakeStubFile()
                     # x is used *only* to init ivars.

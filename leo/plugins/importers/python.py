@@ -102,7 +102,7 @@ class Py_Importer(Importer):
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        tail_p = None
+        self.tail_p = None
         prev_state = self.state_class()
         target = PythonTarget(parent, prev_state)
         stack = [target, target]
@@ -120,11 +120,11 @@ class Py_Importer(Importer):
                 pass # Sets self.skip and self.decorator_lines.
             elif self.starts_block(i, lines, new_state, prev_state, stack):
                 first = False
-                tail_p = None
+                self.tail_p = None
                 self.start_new_block(i, lines, new_state, prev_state, stack)
             elif first:
                 if self.is_ws_line(line):
-                    p = tail_p or top.p
+                    p = self.tail_p or top.p
                     self.add_line(p, line)
                 else:
                     first = False
@@ -134,9 +134,9 @@ class Py_Importer(Importer):
                     stack.append(PythonTarget(p, new_state))
             elif self.ends_block(line, new_state, prev_state, stack):
                 first = False
-                tail_p = self.end_block(i, lines, new_state, prev_state, stack)
+                self.tail_p = self.end_block(i, lines, new_state, prev_state, stack)
             else:
-                p = tail_p or top.p
+                p = self.tail_p or top.p
                 self.add_line(p, line)
             prev_state = new_state
         if self.skip:
@@ -277,6 +277,10 @@ class Py_Importer(Importer):
             return False
         if top.kind == 'def' and new_state.indent > prev_indent:
             # class/def within a def.
+            # #1493: Insert decorators.
+            p = self.tail_p or top.p
+            for line in self.decorator_lines:
+                self.add_line(p, line)
             return False
         if top.at_others_flag and new_state.indent > prev_indent:
             return False

@@ -628,7 +628,6 @@ class Importer:
         '''
         Generate the ref line. Return the headline.
         '''
-        ### g.trace('' if  target.ref_flag else '@others')
         indent_ws = self.get_str_lws(line)
         h = self.clean_headline(line, p=None)
         if self.gen_refs:

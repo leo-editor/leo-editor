@@ -1031,7 +1031,7 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
@@ -2318,8 +2318,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20150618105435.1"></v>
-<v t="ekr.20131119143342.20107"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
