@@ -168,8 +168,9 @@ class ScreenArea:
         except curses.error:
             pass
         self.ALL_SHOWN = (
-            self.show_from_y is 0 and
-            self.show_from_x is 0 and
+            # #1525: change 'is' to '==' to avoid deprecation warning.
+            self.show_from_y == 0 and
+            self.show_from_x == 0 and
             _my >= self.lines and
             _mx >= self.columns
         )

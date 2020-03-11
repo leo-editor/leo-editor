@@ -1841,9 +1841,6 @@ class LeoApp:
             aps.append(ap)
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
-        if 0: ###
-            g.trace('added_editor_apps', c.db['added_editor_aps'])
-            g.trace('added_editor_docks', c.db['added_editor_docks'])
     #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
     def saveGlobalWindowState(self):
         """
