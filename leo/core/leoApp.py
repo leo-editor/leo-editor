@@ -1663,7 +1663,7 @@ class LeoApp:
             c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20190613062357.1: *3* app.WindowState...
-    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
+    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (changed)
     def restoreEditorDockState(self, c):
 
         dw = c.frame.top
@@ -1691,6 +1691,8 @@ class LeoApp:
                 p = p,
                 wrapper = wrapper,
             )
+            w =  c.frame.body.wrapper.widget
+            body.updateInjectedIvars(w, p) ###
             body.selectLabel(wrapper)
             body.selectEditor(wrapper)
     #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState

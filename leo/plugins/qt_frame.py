@@ -1973,6 +1973,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w = wrapper and wrapper.widget
             # Careful: w may not exist during unit testing.
         if w:
+            g.trace(w.objectName(), g.callers())
             self.updateInjectedIvars(w, p)
             self.selectLabel(wrapper)
     #@+node:ekr.20110605121601.18198: *5* LeoQtBody.cycleEditorFocus
@@ -2073,6 +2074,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         w = wrapper.widget
         label = getattr(w, 'leo_label', None)
+        # g.trace(label.__class__.__name__, label and label.objectName() or 'None')
         if isinstance(label, QtWidgets.QDockWidget):
             # #1517.
             label.setWindowTitle(c.p.h)
@@ -2092,6 +2094,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.selectEditorLockout:
             return None
         w = wrapper.widget
+        g.trace(w)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
 
