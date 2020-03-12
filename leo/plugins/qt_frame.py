@@ -1973,7 +1973,6 @@ class LeoQtBody(leoFrame.LeoBody):
         w = wrapper and wrapper.widget
             # Careful: w may not exist during unit testing.
         if w:
-            g.trace(w.objectName(), g.callers())
             self.updateInjectedIvars(w, p)
             self.selectLabel(wrapper)
     #@+node:ekr.20110605121601.18198: *5* LeoQtBody.cycleEditorFocus
