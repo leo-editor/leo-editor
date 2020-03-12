@@ -1228,13 +1228,6 @@ class QTextEditWrapper(QTextMixin):
             self.set_config()
             self.set_signals()
             
-    def __repr__(self):
-        return (
-            f"QTextEditWrapper: "
-            f"name: {self.name} "
-            f"widget.objectName(): {self.widget.objectName()}")
-        
-    __str__ = __repr__
     #@+node:ekr.20110605121601.18076: *4* qtew.set_config
     def set_config(self):
         """Set configuration options for QTextEdit."""
@@ -1278,6 +1271,12 @@ class QTextEditWrapper(QTextMixin):
                     c.k.keyboardQuit(setFocus=False)
             #@-others
             self.widget.mouseReleaseEvent = mouseReleaseEvent
+    #@+node:ekr.20200312052821.1: *3* qtew.repr
+    def __repr__(self):
+        # Add a leading space to align with StringTextWrapper.
+        return f" <QTextEditWrapper: {id(self)} {self.name}>"
+        
+    __str__ = __repr__
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
     # These are all widget-dependent
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)

@@ -1480,11 +1480,13 @@ class LeoTree:
         tag = 'LeoTree.select'
         c = self.c
         if g.app.killed or self.tree_select_lockout:  # Essential.
-            # if trace: print('%30s: LOCKOUT' % (tag))
             return
-        if trace:  # and c.p != p:
-            print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
+        if trace:
+            if 1:
+                print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
+            else:
                 # Format matches traces in leoflexx.py
+                print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
         try:
             self.tree_select_lockout = True
             self.prev_v = c.p.v
