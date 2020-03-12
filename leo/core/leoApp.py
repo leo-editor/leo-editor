@@ -1666,6 +1666,8 @@ class LeoApp:
     #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
     def restoreEditorDockState(self, c):
 
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'app.restoreEditorDockState'
         dw = c.frame.top
         if not dw:
             return
@@ -1693,6 +1695,8 @@ class LeoApp:
             )
             body.selectLabel(wrapper)
             body.selectEditor(wrapper)
+            if trace:
+                print(f"{tag:>30}: {wrapper} {dock_name}")
     #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
@@ -1809,13 +1813,15 @@ class LeoApp:
         except Exception:
             g.es_print(tag, 'unexpected exception setting window state')
             g.es_exception()
-    #@+node:ekr.20200305061637.1: *4* app.saveEditorDockState (new)
+    #@+node:ekr.20200305061637.1: *4* app.saveEditorDockState
     def saveEditorDockState(self, c):
         """
         Save the name and current position of all additional editor docks.
         
         This is called for all closed windows.
         """
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'app.saveEditorDockState'
         # Get the archived positions and docks from the editor wrappers.
         dw = c.frame.top
         d = c.frame.body.editorWrappers
@@ -1839,6 +1845,8 @@ class LeoApp:
             ap = ','.join([str(z) for z in p.archivedPosition()])
             dock_names.append(dock_name)
             aps.append(ap)
+            if trace:
+                print(f"{tag:>30} {dock_name}")
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
     #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState

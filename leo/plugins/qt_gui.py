@@ -951,7 +951,7 @@ class LeoQtGui(leoGui.LeoGui):
         app = QtWidgets.QApplication
         w = app.focusWidget()
         if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
-            has_w = hasattr(w, 'leo_wrapper') and w.leo_wrapper
+            has_w = getattr(w, 'leo_wrapper', None)
             if has_w:
                 if trace: g.trace(w)
             elif c:

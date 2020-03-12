@@ -2086,6 +2086,8 @@ class LeoQtBody(leoFrame.LeoBody):
     def selectEditor(self, wrapper):
         """Select editor w and node w.leo_p."""
         # pylint: disable=arguments-differ
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'qt_body.selectEditor'
         c = self.c
         if not wrapper:
             return c.frame.body.wrapper
@@ -2094,10 +2096,8 @@ class LeoQtBody(leoFrame.LeoBody):
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
-
-        def report(s):
-            g.trace(f"*** {s:9} wrapper {id(wrapper)} w {id(w)} {c.p.h}")
-
+        if trace:
+            print(f"{tag:>30}: {wrapper} {c.p.h}")
         if wrapper and wrapper == c.frame.body.wrapper:
             self.deactivateEditors(wrapper)
             if hasattr(w, 'leo_p') and w.leo_p and w.leo_p != c.p:
@@ -2227,6 +2227,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
+        print(f"{'qt_body.injectIvars':>30}: {wrapper!r}") ###
         # Inject ivars
         if name == '1':
             w.leo_p = None  # Will be set when the second editor is created.
@@ -2292,10 +2293,12 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj):
         """Handle a focus-in event in the body pane."""
-        # Update history only in leoframe.tree.select.
-        # c.nodeHistory.update(c.p)
+        trace = 'select' in g.app.debug and not g.unitTesting
+        tag = 'qt_body.onFocusIn'
         if obj.objectName() == 'richTextEdit':
-            wrapper = hasattr(obj, 'leo_wrapper') and obj.leo_wrapper
+            wrapper = getattr(obj, 'leo_wrapper', None)
+            if trace:
+                print(f"{tag:>30}: {wrapper}")
             if wrapper and wrapper != self.wrapper:
                 self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in', obj)
