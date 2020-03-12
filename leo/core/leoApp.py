@@ -1666,7 +1666,7 @@ class LeoApp:
     #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
     def restoreEditorDockState(self, c):
 
-        trace = 'dock' in g.app.debug and not g.unitTesting
+        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
         tag = 'app.restoreEditorDockState'
         body = c.frame.body
         dw = c.frame.top
@@ -1825,7 +1825,7 @@ class LeoApp:
         
         This is called for all closed windows.
         """
-        trace = 'dock' in g.app.debug and not g.unitTesting
+        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
         tag = 'app.saveEditorDockState'
         # Get the archived positions and docks from the editor wrappers.
         dw = c.frame.top

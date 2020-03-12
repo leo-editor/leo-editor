@@ -2224,7 +2224,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
     def injectIvars(self, parentFrame, name, p, wrapper):
 
-        trace = 'dock' in g.app.debug and not g.unitTesting
+        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
         tag = 'qt_body.injectIvars'
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
