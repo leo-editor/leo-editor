@@ -1679,15 +1679,27 @@ class LeoApp:
         aps = aps_s.split(';')
         dock_names = dock_names_s.split(';')
         if len(aps) != len(dock_names):
-            g.trace('oops')
+            g.trace('can not happen')
             return
         if trace: g.trace('START')
-        # #1527: Inject ivars in the main body wrapper.
+        #
+        # #1527: Part 1: Inject leo_wrapper ivar.
+        #                Similar to LeoQtBody.injectIvars.
         wrapper = body.wrapper
         w = wrapper.widget
         w.leo_wrapper = wrapper
         if trace:
             print(f"{tag:>30}: {wrapper} <dock for main body>")
+        #
+        # #1527: Part 2: Pack the Body's label so it tracks p.h.
+        #                Similar to code for the 'add-editor' command.
+        if body.use_gutter:
+            dw.packLabel(w.parent(), n=1)
+            w.leo_label = w.parent().leo_label
+        else:
+            dw.packLabel(w, n=1)
+        #
+        # Restore all *added* editors.
         d = body.editorWrappers
         for i, dock_name in enumerate(dock_names):
             ap = aps[i]
