@@ -1666,8 +1666,9 @@ class LeoApp:
     #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
     def restoreEditorDockState(self, c):
 
-        trace = 'select' in g.app.debug and not g.unitTesting
+        trace = 'dock' in g.app.debug and not g.unitTesting
         tag = 'app.restoreEditorDockState'
+        body = c.frame.body
         dw = c.frame.top
         if not dw:
             return
@@ -1680,7 +1681,13 @@ class LeoApp:
         if len(aps) != len(dock_names):
             g.trace('oops')
             return
-        body = c.frame.body
+        if trace: g.trace('START')
+        # #1527: Inject ivars in the main body wrapper.
+        wrapper = body.wrapper
+        w = wrapper.widget
+        w.leo_wrapper = wrapper
+        if trace:
+            print(f"{tag:>30}: {wrapper} <dock for main body>")
         d = body.editorWrappers
         for i, dock_name in enumerate(dock_names):
             ap = aps[i]
@@ -1697,6 +1704,7 @@ class LeoApp:
             body.selectEditor(wrapper)
             if trace:
                 print(f"{tag:>30}: {wrapper} {dock_name}")
+        if trace: g.trace('END')
     #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
     def restoreGlobalWindowState(self):
         """
@@ -1776,10 +1784,7 @@ class LeoApp:
         for key, method in table:
             val = self.db.get(key)
             if trace:
-                g.trace(f"{sfn} found key: {key}\n{str(val)}")
-                if key == 'windowState:C:/Users/edreamleo/ekr.leo':
-                    self.ekr_val = str(val)
-                    g.trace('SET: ekr.leo')
+                g.trace(f"{sfn} found key: {key}")
             if val:
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
@@ -1820,7 +1825,7 @@ class LeoApp:
         
         This is called for all closed windows.
         """
-        trace = 'select' in g.app.debug and not g.unitTesting
+        trace = 'dock' in g.app.debug and not g.unitTesting
         tag = 'app.saveEditorDockState'
         # Get the archived positions and docks from the editor wrappers.
         dw = c.frame.top
@@ -1846,7 +1851,7 @@ class LeoApp:
             dock_names.append(dock_name)
             aps.append(ap)
             if trace:
-                print(f"{tag:>30} {dock_name}")
+                print(f"{tag:>30}: {dock_name}")
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
     #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
@@ -1913,17 +1918,7 @@ class LeoApp:
                 val = bytes().join(val)  # PySide
             val = base64.encodebytes(val).decode('ascii')
             if trace:
-                g.trace(f"{c.shortFileName()} set key: {key}\n{str(val)}")
-                if key == 'windowState:C:/Users/edreamleo/ekr.leo':
-                    g.trace('ekr.leo: Match:', str(val) == self.ekr_val)
-                    g.trace(f"str(val)\n{str(val)}")
-                    g.trace(f"ekr_val\n{self.ekr_val}")
-                    i = 0
-                    while i < len(str(val)):
-                        if str(val)[i] != self.ekr_val[i]:
-                            g.trace('Mismatch at', i, str(val)[i], self.ekr_val[i])
-                        i += 1
-                            
+                g.trace(f"{c.shortFileName()} set key: {key}")         
             g.app.db[key] = val
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager

@@ -2224,10 +2224,13 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
     def injectIvars(self, parentFrame, name, p, wrapper):
 
+        trace = 'dock' in g.app.debug and not g.unitTesting
+        tag = 'qt_body.injectIvars'
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
-        print(f"{'qt_body.injectIvars':>30}: {wrapper!r}") ###
+        if trace:
+            print(f"{tag:>30}: {wrapper!r} {g.callers(1)}")
         # Inject ivars
         if name == '1':
             w.leo_p = None  # Will be set when the second editor is created.

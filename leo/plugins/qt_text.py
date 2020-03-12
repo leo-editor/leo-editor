@@ -1273,7 +1273,8 @@ class QTextEditWrapper(QTextMixin):
             self.widget.mouseReleaseEvent = mouseReleaseEvent
     #@+node:ekr.20200312052821.1: *3* qtew.repr
     def __repr__(self):
-        return f"<QTextEditWrapper: {id(self)} {self.name}>" # {self.widget.objectName()}"
+        # Add a leading space to align with StringTextWrapper.
+        return f" <QTextEditWrapper: {id(self)} {self.name}>"
         
     __str__ = __repr__
     #@+node:ekr.20110605121601.18078: *3* qtew.High-level interface
