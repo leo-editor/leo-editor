@@ -31264,7 +31264,7 @@ The following functions declare that commas, semicolons, whitespace and parenthe
             kind == 'op' and value not in ',;()')
     
     def is_significant_token(token):
-        """Return True if the given token is a syncronizing token"""
+        """Return True if the given token is a synchronizing token"""
         return is_significant(token.kind, token.value)
 
 @language rest
