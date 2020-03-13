@@ -11836,7 +11836,7 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.1
+| latest_release_version = 6.2
 | latest_release_date = {{Start date and age|2019|06|18}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
@@ -20946,11 +20946,11 @@ wget --no-check-certificate https://bitbucket.org/pypa/setuptools/raw/bootstrap/
 
 py3-pyqt5/bin/python ez_setup.py --insecure
 
-wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.1.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
+wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.2.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
 
-tar xzvf pip-6.1.tar.gz
+tar xzvf pip-6.2.tar.gz
 
-cd pip-6.1
+cd pip-6.2
 
 ../py3-pyqt5/bin/python setup.py install
 
@@ -22553,7 +22553,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-6.1.
+~/leo-6.2.
 
 You now have several choices.
 
@@ -22561,7 +22561,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-6.1
+    cd ~/leo-6.2
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
@@ -31446,7 +31446,7 @@ At present, they work only w/o docks.</t>
 
 Code
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
-  A major project. See https://github.com/leo-editor/leo-editor/issues/1440
+- This is a major project. See https://github.com/leo-editor/leo-editor/issues/1440
  
 Features and settings
 - Added an importer for todo.txt files.
