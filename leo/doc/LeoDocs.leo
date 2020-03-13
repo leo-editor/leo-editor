@@ -7631,7 +7631,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2019 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2020 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -7652,7 +7652,7 @@ These parts are are clearly marked in Leo's code as follows:
     
 Portions of Leo's pyzo interface uses code from pyzo:
 
-    Copyright (C) 2013-2019, the Pyzo development team
+    Copyright (C) 2013-2020, the Pyzo development team
     
     Pyzo is distributed under the terms of the (new) BSD License.
     The full license can be found in 'license.txt'.

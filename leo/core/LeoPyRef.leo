@@ -9,10 +9,8 @@
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20150531102337.1"><vh>@bool tidy-keep-blank-lines = False</vh></v>
-<v t="ekr.20150617060607.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
-<v t="ekr.20190406193429.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20190406193429.1"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
@@ -32,17 +30,22 @@
 <v t="ekr.20150509183433.2"><vh>create_d</vh></v>
 <v t="ekr.20150509183433.3"><vh>create_decorator (@button)</vh></v>
 <v t="ekr.20150509183433.4"><vh>create_decorators V2</vh></v>
-<v t="ekr.20150509183832.1"><vh>define_s (@button make-decorators2)</vh></v>
 <v t="ekr.20150509183433.8"><vh>munge_lines</vh></v>
 <v t="ekr.20150509183433.9"><vh>run V2</vh></v>
 </v>
+<v t="ekr.20190406154306.1"><vh>@@button open-pyzo</vh></v>
 <v t="ekr.20150703061709.1"><vh>@@button run-pylint</vh></v>
 <v t="ekr.20180824065751.1"><vh>@@button show-gnx</vh></v>
 <v t="ekr.20131121084830.16362"><vh>@@button toggle-debug</vh></v>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
-<v t="ekr.20190406154306.1"><vh>@button open-pyzo</vh></v>
+</v>
+<v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
+<v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
+<v t="ekr.20200212095937.3"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20200212095937.5"><vh>@int beautify-max-join-line-length = 0</vh></v>
+<v t="ekr.20200212095937.6"><vh>@int beautify-max-split-line-length = 90</vh></v>
 </v>
 </v>
 <v t="ekr.20140103105930.16446"><vh>@views</vh>
@@ -67,14 +70,11 @@
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
-<v t="ekr.20170428084123.1"><vh>Recursive import script</vh>
-<v t="ekr.20170428084123.2"><vh>&lt;&lt; old dir_ settings &gt;&gt;</vh></v>
-</v>
+<v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
+<v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
-<v t="ekr.20200308194542.1"><vh>script: check gnx's</vh></v>
-<v t="ekr.20200308195230.1"><vh>script: Find gnx</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -92,7 +92,6 @@
 </v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
-<v t="ekr.20190515070742.1"><vh>@file leoMarkup.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
@@ -109,7 +108,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005806000000302e31392e3171017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31352e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3171057d71065808000000616e6e6f7461746571077d7108735806000000302e31392e3171097d710a5808000000616e6e6f74617465710b7d710c73752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -123,7 +122,6 @@
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3071017d71022858090000007374725f6374696d657103580c000000313331393439313330362e30710458090000007374725f6d74696d657105580d000000313331393439323330312e3532710658090000007374725f6174696d657107580d000000313331393534393339302e38397108755805000000302e332e3171097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313331393436373033382e3235710e58090000007374725f6174696d65710f580c000000313332303432323637302e397110755805000000302e332e3271117d71122858090000007374725f6374696d657113580c000000313331393436303438332e30711458090000007374725f6d74696d657115580d000000313331393436373035302e3438711658090000007374725f6174696d657117580d000000313331393436373035302e34387118755805000000302e332e3371197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313332303432323639302e3534711e58090000007374725f6174696d65711f580d000000313332303433343235372e33367120755805000000302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755805000000302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
-<v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
@@ -324,7 +322,6 @@
 <t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
-@language python
 </t>
 <t tx="ekr.20031218072017.2604"></t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
@@ -404,7 +401,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240"></t>
+<t tx="ekr.20051031040240">@nosearch</t>
 <t tx="ekr.20080412053100.5">@language rest
 </t>
 <t tx="ekr.20080730161153.8"></t>
@@ -508,8 +505,7 @@ Leo's core uses this api almost exclusively. That is, Leo's core code treats wra
 
 There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
 </t>
-<t tx="ekr.20140902032918.18591">@
-@language rest
+<t tx="ekr.20140902032918.18591">@language rest
 @wrap
 
 Leo uses a model/view/controller architecture.
@@ -521,7 +517,7 @@ Leo uses a model/view/controller architecture.
 - View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
 
 **Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
-@c
+
 </t>
 <t tx="ekr.20140902155015.18674"></t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
@@ -533,6 +529,7 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20150304125314.4">@tabwidth -2
 @killbeautify
+@language xml
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
@@ -606,7 +603,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 
 &lt;/xsl:stylesheet&gt;
 </t>
-<t tx="ekr.20150304130753.4">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<t tx="ekr.20150304130753.4">@language xml
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 
@@ -976,11 +974,11 @@ rulesDictDict = {
 importDict = {}
 
 
-</t>
-<t tx="ekr.20150326145530.4">class extendForth:
+class extendForth:
     """A helper class to extend the mode tables from @data forth-x settings."""
 
-    @others
+</t>
+<t tx="ekr.20150326145530.4">    @others
 </t>
 <t tx="ekr.20150326145530.5">def __init__(self):
     self.c = None  # set by pre_init_mode function.
@@ -1123,7 +1121,7 @@ def createDefiningWordRule(self, word):
     return forth_defining_word_rule
 
 </t>
-<t tx="ekr.20150413091056.1">'''Warn if leoProjects.txt or leoToDo.txt contain any clones.'''
+<t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
 clones,nodes,seen = 0,0,set()
 table = (
@@ -1132,7 +1130,7 @@ table = (
 )
 
 def check_clone(c,p0,root):
-    '''Warn if p appears in any @&lt;file&gt; node outside of root's tree.'''
+    """Warn if p appears in any @&lt;file&gt; node outside of root's tree."""
     global nodes,seen
     v = p0.v
     for p in c.all_positions():
@@ -1179,11 +1177,11 @@ contract-log-pane</t>
 print('===== Start =====')
 
 class CreateDecorators:
-    '''
+    """
     A class to create decorators from tables in getPublicCommands.
     
     Note: the node "Found: getPublicCommands" must exist.
-    '''
+    """
     def __init__(self,c,make_changes):
         self.c = c
         self.fixups = self.create_fixups()
@@ -1220,7 +1218,7 @@ CreateDecorators(c,make_changes=False).run()
     return p
 </t>
 <t tx="ekr.20150507175246.1">def munge_lines(self,root,publicCommands):
-    '''Return munged lines of '''
+    """Return munged lines of """
     s = publicCommands.b
     i,j = s.find('{'),s.find('}')
     s = s[i+1:j]
@@ -1234,7 +1232,7 @@ CreateDecorators(c,make_changes=False).run()
     return lines
 </t>
 <t tx="ekr.20150508062944.1">def run(self):
-    '''Top-level code.'''
+    """Top-level code."""
     self.n = 0
     found = g.findNodeAnywhere(c,'Found: getPublicCommands')
     assert found
@@ -1248,7 +1246,7 @@ CreateDecorators(c,make_changes=False).run()
     print('\n%s commands %s failed' % (self.n,self.n_fail))
 </t>
 <t tx="ekr.20150508063412.1">def create_decorators(self,d,root):
-    '''Create decorators for all items in d in root's tree.'''
+    """Create decorators for all items in d in root's tree."""
     # print('***** %s' % root.h)
     if root.h in self.fixups:
         roots = []
@@ -1273,7 +1271,7 @@ CreateDecorators(c,make_changes=False).run()
             self.n_fail += 1
 </t>
 <t tx="ekr.20150508063538.1">def create_d(self,lines,publicCommands):
-    '''Create a dict. keys are method names; values are command names.'''
+    """Create a dict. keys are method names; values are command names."""
     trace = False
     if trace:
         g.trace('\n', publicCommands.h)
@@ -1292,7 +1290,7 @@ CreateDecorators(c,make_changes=False).run()
     return d
 </t>
 <t tx="ekr.20150508063926.1">def find_class(self,p):
-    '''Return the position of the class enclosing p.'''
+    """Return the position of the class enclosing p."""
     for p2 in p.parents():
         if p2.h.lower().find('class') &gt; -1 and p2.b.find('class') &gt; -1:
             return p2
@@ -1301,10 +1299,10 @@ CreateDecorators(c,make_changes=False).run()
         return None
 </t>
 <t tx="ekr.20150508071622.1">def create_decorator(self,c_name,f_name,root):
-    '''
+    """
     Search root for a definition of f_name.
     If found, insert @cmd(f_name) before the definition.
-    '''
+    """
     # g.trace('%45s %s' % (c_name,f_name))
     trace = False
     found = False
@@ -1328,11 +1326,11 @@ CreateDecorators(c,make_changes=False).run()
     return found
 </t>
 <t tx="ekr.20150508074623.1">def create_fixups(self):
-    '''
+    """
     Return a fixup dict.
     Keys are headlines for classes.
     Values are new headlines of nodes containing the actual class.
-    '''
+    """
     return {
         'ChapterCommandsClass': ['class ChapterController'],
         'EditCommandsClass': [
@@ -1363,11 +1361,11 @@ make_changes = True
     # True, actually make the change
 
 class CreateDecorators:
-    '''
+    """
     A class to create decorators from tables in getPublicCommands.
     
     Note: the node "Found: getPublicCommands" must exist.
-    '''
+    """
     def __init__(self):
         self.n = 0
         self.n_fail = 0
@@ -1377,7 +1375,7 @@ class CreateDecorators:
 CreateDecorators().run()
 </t>
 <t tx="ekr.20150509183433.2">def create_d(self,lines):
-    '''Create a dict. keys are method names; values are command names.'''
+    """Create a dict. keys are method names; values are command names."""
     trace = False
     d = {}
     for s in lines:
@@ -1394,10 +1392,10 @@ CreateDecorators().run()
     return d
 </t>
 <t tx="ekr.20150509183433.3">def create_decorator(self,c_name,f_name,root):
-    '''
+    """
     Search root for a definition of f_name.
     If found, insert @cmd(f_name) before the definition.
-    '''
+    """
     trace = True
     found = False
     decorator = "@cmd('%s')\n" % (c_name)
@@ -1421,7 +1419,7 @@ CreateDecorators().run()
     return found
 </t>
 <t tx="ekr.20150509183433.4">def create_decorators(self,d):
-    '''Create decorators for all items in d in root's tree.'''
+    """Create decorators for all items in d in root's tree."""
     table = (
         'class Commands', # c.
         'class LeoQtFrame', # f.
@@ -1443,11 +1441,11 @@ CreateDecorators().run()
             found = self.create_decorator(c_name,f_name,root)
             if found: break
         if not found and f_name not in self.suppress:
-            print('===== not found: %s' % (f_name))
+            print(f"===== not found: {f_name!r}")
             self.n_fail += 1
 </t>
 <t tx="ekr.20150509183433.8">def munge_lines(self,s):
-    '''Return munged lines of s. '''
+    """Return munged lines of s. """
     lines = sorted([z.strip() for z in g.splitLines(s) if z.strip()])
     lines = [z for z in lines if not z.startswith('#')]
     lines = [z[:z.find('#')] if z.find('#') &gt; -1 else z for z in lines]
@@ -1458,214 +1456,19 @@ CreateDecorators().run()
     return lines
 </t>
 <t tx="ekr.20150509183433.9">def run(self):
-    '''Top-level code.'''
+    """Top-level code."""
     lines = self.munge_lines(self.s)
     d = self.create_d(lines)
     self.create_decorators(d)
     print('%s commands %s failed' % (self.n,self.n_fail))
 </t>
-<t tx="ekr.20150509183832.1"># 'check-all-python-code':      c.checkAllPythonCode,
-# 'check-python-code':          c.checkPythonCode,
-# 'extract-python-method':        c.extractPythonMethod,
-# 'extract-section':              c.extractSection,
-# 'import-at-file':               c.importAtFile,
-# 'import-at-root':               c.importAtRoot,
-# 'import-cweb-files':            c.importCWEBFiles,
-# 'import-derived-file':          c.importDerivedFile,
-# 'import-flattened-outline':     c.importFlattenedOutline,
-# 'import-noweb-files':           c.importNowebFiles,
-# 'mark-changed-roots':           c.markChangedRoots,
-# 'mark-clones':                c.markClones,
-# 'open-compare-window':        c.openCompareWindow,
-# 'open-online-tutorial':       c.leoTutorial,
-# 'reformat-body':              c.reformatBody, # 2013/10/02.
-def define_s(self):
-    return '''
-'abort-edit-headline':          f.abortEditLabelCommand,
-'about-leo':                    c.about,
-'add-comments':                 c.addComments,     
-'beautify':                     c.beautifyPythonCode,
-'beautify-all':                 c.beautifyAllPythonCode,
-'beautify-c':                   c.beautifyCCode,
-'beautify-tree':                c.beautifyPythonTree,
-'cascade-windows':              f.cascade,
-'check-derived-file':           c.atFileCommands.checkDerivedFile,
-'check-leo-file':               c.fileCommands.checkLeoFile,
-'check-outline':                c.fullCheckOutline,
-'clean-recent-files':           c.cleanRecentFiles,
-'clear-recent-files':           c.clearRecentFiles,
-'clone-node':                   c.clone,
-'clone-node-to-last-node':      c.cloneToLastNode,
-'close-window':                 c.close,
-'contract-all':                 c.contractAllHeadlines,
-'contract-all-other-nodes':     c.contractAllOtherNodes,
-'contract-node':                c.contractNode,
-'contract-or-go-left':          c.contractNodeOrGoToParent,
-'contract-parent':              c.contractParent,
-'convert-all-blanks':           c.convertAllBlanks,
-'convert-all-tabs':             c.convertAllTabs,
-'convert-blanks':               c.convertBlanks,
-'convert-tabs':                 c.convertTabs,
-'copy-node':                    c.copyOutline,
-'copy-text':                    f.copyText,
-'cut-node':                     c.cutOutline,
-'cut-text':                     f.cutText,
-'de-hoist':                     c.dehoist,
-'delete-comments':              c.deleteComments,
-'delete-node':                  c.deleteOutline,
-'demote':                       c.demote,
-'dump-outline':                 c.dumpOutline,
-'edit-headline':                c.editHeadline,
-'end-edit-headline':            f.endEditLabelCommand,
-'equal-sized-panes':            f.equalSizedPanes,
-'execute-script':               c.executeScript,
-'exit-leo':                     g.app.onQuit,
-'expand-all':                   c.expandAllHeadlines,
-'expand-all-subheads':          c.expandAllSubheads,
-'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
-'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
-'expand-next-level':            c.expandNextLevel,
-'expand-node':                  c.expandNode,
-'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
-'expand-prev-level':            c.expandPrevLevel,
-'expand-to-level-1':            c.expandLevel1,
-'expand-to-level-2':            c.expandLevel2,
-'expand-to-level-3':            c.expandLevel3,
-'expand-to-level-4':            c.expandLevel4,
-'expand-to-level-5':            c.expandLevel5,
-'expand-to-level-6':            c.expandLevel6,
-'expand-to-level-7':            c.expandLevel7,
-'expand-to-level-8':            c.expandLevel8,
-'expand-to-level-9':            c.expandLevel9,
-'export-headlines':             c.exportHeadlines,
-'extract':                      c.extract,
-'extract-names':                c.extractSectionNames,
-'find-next-clone':              c.findNextClone,
-'flatten-outline':              c.flattenOutline,
-'flatten-outline-to-node':      c.flattenOutlineToNode,
-'go-back':                      c.goPrevVisitedNode,
-'go-forward':                   c.goNextVisitedNode,
-'goto-first-node':              c.goToFirstNode,
-'goto-first-sibling':           c.goToFirstSibling,
-'goto-first-visible-node':      c.goToFirstVisibleNode,
-'goto-last-node':               c.goToLastNode,
-'goto-last-sibling':            c.goToLastSibling,
-'goto-last-visible-node':       c.goToLastVisibleNode,
-'goto-next-changed':            c.goToNextDirtyHeadline,
-'goto-next-clone':              c.goToNextClone,
-'goto-next-history-node':       c.goToNextHistory,
-'goto-next-marked':             c.goToNextMarkedHeadline,
-'goto-next-node':               c.selectThreadNext,
-'goto-next-sibling':            c.goToNextSibling,
-'goto-next-visible':            c.selectVisNext,
-'goto-parent':                  c.goToParent,
-'goto-prev-history-node':       c.goToPrevHistory,
-'goto-prev-node':               c.selectThreadBack,
-'goto-prev-sibling':            c.goToPrevSibling,
-'goto-prev-visible':            c.selectVisBack,
-'hide-invisibles':              c.hideInvisibles,
-'hoist':                        c.hoist,
-'import-file':                  c.importAnyFile,
-'indent-region':                c.indentBody,
-'insert-body-time':             c.insertBodyTime,
-'insert-child':                 c.insertChild,
-'insert-node':                  c.insertHeadline,
-'insert-node-before':           c.insertHeadlineBefore,
-'mark':                         c.markHeadline,
-'mark-changed-items':           c.markChangedHeadlines,
-'mark-subheads':                c.markSubheads,
-'match-brackets':               c.findMatchingBracket,
-'minimize-all':                 f.minimizeAll,
-'move-outline-down':            c.moveOutlineDown,
-'move-outline-left':            c.moveOutlineLeft,
-'move-outline-right':           c.moveOutlineRight,
-'move-outline-up':              c.moveOutlineUp,
-'new':                          c.new,
-'open-cheat-sheet-leo':         c.openCheatSheet,
-'open-leoDocs-leo':             c.leoDocumentation,
-'open-leoPlugins-leo':          c.openLeoPlugins,
-'open-leoSettings-leo':         c.openLeoSettings,
-'open-local-settings':          c.selectAtSettingsNode,
-'open-myLeoSettings-leo':       c.openMyLeoSettings,
-'open-offline-tutorial':        f.leoHelp,
-'open-online-home':             c.leoHome,
-'open-online-toc':              c.openLeoTOC,
-'open-online-tutorials':        c.openLeoTutorials,
-'open-online-videos':           c.openLeoVideos,
-'open-outline':                 c.open_outline,
-'open-python-window':           c.openPythonWindow,
-'open-quickstart-leo':          c.leoQuickStart,
-'open-scripts-leo':             c.openLeoScripts,
-'open-users-guide':             c.openLeoUsersGuide,
-'open-with':                    c.openWith,
-'outline-to-cweb':              c.outlineToCWEB,
-'outline-to-noweb':             c.outlineToNoweb,
-'paste-node':                   c.pasteOutline,
-'paste-retaining-clones':       c.pasteOutlineRetainingClones,
-'paste-text':                   f.pasteText,
-'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
-'pretty-print-python-code':     c.prettyPrintPythonCode,
-'promote':                      c.promote,
-'read-at-auto-nodes':           c.readAtAutoNodes,
-'read-at-file-nodes':           c.readAtFileNodes,
-'read-at-shadow-nodes':         c.readAtShadowNodes,
-'read-file-into-node':          c.readFileIntoNode,
-'read-outline-only':            c.readOutlineOnly,
-'redo':                         c.undoer.redo,
-'reformat-paragraph':           c.reformatParagraph,
-'refresh-from-disk':            c.refreshFromDisk,
-'remove-sentinels':             c.removeSentinels,
-'resize-to-screen':             f.resizeToScreen,
-'revert':                       c.revert,
-'save-all':                     c.saveAll,
-'save-file':                    c.save,
-'save-file-as':                 c.saveAs,
-'save-file-as-unzipped':        c.saveAsUnzipped,
-'save-file-as-zipped':          c.saveAsZipped,
-'save-file-to':                 c.saveTo,
-'set-colors':                   c.colorPanel,
-'set-font':                     c.fontPanel,
-'settings':                     c.preferences,
-'show-invisibles':              c.showInvisibles,
-'sort-children':                c.sortChildren,
-'sort-recent-files':            c.sortRecentFiles,
-'sort-siblings':                c.sortSiblings,
-'tangle':                       c.tangle,
-'tangle-all':                   c.tangleAll,
-'tangle-marked':                c.tangleMarked,
-'toggle-active-pane':           f.toggleActivePane,
-'toggle-angle-brackets':        c.toggleAngleBrackets,
-'toggle-invisibles':            c.toggleShowInvisibles,
-'toggle-sparse-move':           c.toggleSparseMove,
-'toggle-split-direction':       f.toggleSplitDirection,
-'undo':                         c.undoer.undo,
-'unformat-paragraph':           c.unformatParagraph,
-'unindent-region':              c.dedentBody,
-'unmark-all':                   c.unmarkAll,
-'untangle':                     c.untangle,
-'untangle-all':                 c.untangleAll,
-'untangle-marked':              c.untangleMarked,
-'weave':                        c.weave,
-'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
-'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
-'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
-'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
-'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
-'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
-'write-file-from-node':         c.writeFileFromNode,
-'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
-'write-outline-only':           c.fileCommands.writeOutlineOnly,
-'''
-</t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150531102337.1"></t>
 <t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
 </t>
 <t tx="ekr.20150604130353.2"></t>
-<t tx="ekr.20150617060607.1"></t>
 <t tx="ekr.20150703061709.1">@language python
 
-'''myLeoSettings.py: save the outline and run the pylint command'''
+"""myLeoSettings.py: save the outline and run the pylint command"""
 
 # print('@button run-pylint: %s' % c.shortFileName())
 if c.isChanged():
@@ -1744,37 +1547,22 @@ else:
         print('done')
         </t>
 <t tx="ekr.20170427114412.1"></t>
-<t tx="ekr.20170428084123.1">'''Recursively import all python files in a directory and clean the result.'''
-if 0:
-    &lt;&lt; old dir_ settings &gt;&gt;
+<t tx="ekr.20170428084123.1">"""Recursively import all python files in a directory and clean the result."""
 g.cls()
-dir_ = r'C:\leo.repo\leo-editor\leo\core\editpane'
-# dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+# dir_ = r'C:\leo.repo\leointeg\src'
+# dir_ = r'C:\apps\Emacs\share\emacs\26.1\lisp\outline.el'
+# dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\Pymacs.py'
+# dir_ = r'C:\Users\edreamleo\emacs-packages\pymacs.el'
+# dir_ = r'C:\leo.repo\pscript'
+dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
 c.recursiveImport(
     dir_ = dir_,
-    kind = '@file', # '@clean', #'@nosent','@auto','@file',
-    recursive = True,
+    kind = '@clean', # '@clean', #'@nosent','@auto','@file',
+    recursive = False,
     safe_at_file = False,
-    theTypes = ['.py',],
+    theTypes = ['.py',] # '.py',],
 )
 </t>
-<t tx="ekr.20170428084123.2">dir_ = r'C:\prog\yoton',
-dir_ = r'c:\leo.repo\ace\lib'
-# Tests: 2017/04/07
-dir_ = r'c:\leo.repo\ace\demo\kitchen-sink\dev_util.js' # pass.
-dir_ = r'c:\leo.repo\ace\demo\static-highlighter\server.js' # Perfect import fails.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\asciidoc_highlight_rules.js' # undefined sections.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\abap.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\lib\event.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\lib' # pass.
-dir_ = r'c:\leo.repo\ace\demo' # All pass except server.js
-dir_ = r'c:\test\js-import-test.js' # pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\coffee\coffee.js'
-# Perfect import fails. Compressed code. Maybe will never pass.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\behaviour' # All pass
-dir_ = r'c:\leo.repo\ace\lib\ace\mode' # One failure.
-dir_ = r'c:\leo.repo\ace\lib\ace\mode\xquery\xqlint.js' # perfect import fails.
-dir_ = r'c:\prog\brython-home.html'</t>
 <t tx="ekr.20170428084208.443">#!/usr/bin/python
 # This file generates pyflakes warnings for *all* imported symbols.
 @others
@@ -1912,7 +1700,7 @@ else:
 assert g.os_path_exists(new_dir), repr(new_dir)
 assert g.os_path_exists(path), repr(path)
 stamp = time.strftime("%Y%m%d-%H%M%S")
-fn = g.os_path_finalize_join(path, 'leo-bundle-all-%s' % (stamp))
+fn = g.os_path_finalize_join(path, f"leo-bundle-all-{stamp}")
 bundle_command = 'git bundle create %s --all' % fn
 print(bundle_command)
 os.chdir(new_dir)
@@ -1923,12 +1711,12 @@ os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
 <t tx="ekr.20171031111403.1"></t>
-<t tx="ekr.20180225010644.1"></t>
+<t tx="ekr.20180225010644.1">@nobeautify</t>
 <t tx="ekr.20180225010707.1"></t>
 <t tx="ekr.20180225010743.1">@nosearch</t>
 <t tx="ekr.20180225010850.1"></t>
 <t tx="ekr.20180225010913.1"></t>
-<t tx="ekr.20180324065741.1">'''Copy the selected text to the next node.'''
+<t tx="ekr.20180324065741.1">"""Copy the selected text to the next node."""
 w = c.frame.body.wrapper
 s = w.getSelectedText()
 if s.strip():
@@ -2060,8 +1848,8 @@ precede the node's line that have not already been returned.
 
 efc.GitDiffController(c).diff_two_branches(
     branch1='devel', # old branch
-    branch2='dock', # new branch
-    fn='leo/plugins/qt_frame.py',
+    branch2='gnx', # new branch
+    fn='leo/core/leoBridge.py',
     directory=None,
 )
 </t>
@@ -2155,8 +1943,8 @@ found 284 nodes
 <t tx="ekr.20190402091335.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='0505d8c9cabbd3', # Much better alignment
-    rev2='588a192fa7a026', # Latest
+    rev1='42f0774b6b6e8f', # Latest, in devel.
+    rev2='fd483131eb0668', # Latest, in fstrings branch.
     directory=None,
 )
 </t>
@@ -2198,28 +1986,24 @@ viewrendered.py
 # xdb_pane.py
 </t>
 <t tx="ekr.20190607124533.1"></t>
-<t tx="ekr.20200308194542.1">d = {}  # Keys are gnxs; values are lists of vnodes with that gnx.
-n = 0  # Number of unique vnodes.
-seen = {}  # Keys are id(vnode); values are True.
-for p in c.all_positions():
-    v = p.v
-    if id(v) in seen:
-        continue
-    seen [id(v)] = True
-    n += 1
+<t tx="ekr.20200212095937.1"></t>
+<t tx="ekr.20200212095937.2">True:  allow joined lines to contain strings.
+False: (Recommended by EKR): Retain alignment of strings.</t>
+<t tx="ekr.20200212095937.3">True: Retain indentation of overindented stand-alone comment lines.</t>
+<t tx="ekr.20200212095937.5"># At present I am of the opinion that joining lines is usually a bad idea.
+
+Should be &lt;= beautify-max-split-line-length</t>
+<t tx="ekr.20200212095937.6"></t>
+<t tx="ekr.20200308193719.1">d = {}  # Keys are gnxs, values is a list of vnodes with that gnx.
+for v in c.all_nodes():
     gnx = v.gnx
     aList = d.get(gnx, [])
     if v not in aList:
         aList.append(v)
         d [gnx] = aList
-    if len(aList) &gt; 1:
-        print(f"gnx clash: {gnx}")
-        g.printObj(aList)
-print(f"{n} unique vnodes")</t>
-<t tx="ekr.20200308195230.1">"""Print vnodes having "ekr.20150605175037.1" as a gnx"""
-for p in c.all_positions():
-    if p.v.gnx == "ekr.20150605175037.1":
-        print(id(p.v), p.h)
-</t>
+        if len(aList) &gt; 1:
+            print(f"gnx clash: {gnx}")
+            g.printObj(aList)
+print('done')</t>
 </tnodes>
 </leo_file>

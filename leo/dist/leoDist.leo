@@ -186,7 +186,7 @@
 </t>
 <t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2019 by Edward K. Ream.
+Copyright (c) 1997-2020 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -219,7 +219,7 @@ These parts are are clearly marked in Leo's code as follows:
     
 Portions of Leo's pyzo interface uses code from pyzo:
 
-    Copyright (C) 2013-2019, the Pyzo development team
+    Copyright (C) 2013-2020, the Pyzo development team
     
     Pyzo is distributed under the terms of the (new) BSD License.
     The full license can be found in 'license.txt'.
@@ -230,7 +230,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.1
+Version: 6.2
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -249,24 +249,21 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.1, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.1**
+**The highlights of Leo 6.2**
 
-- Pyzo in Leo: Pyzo can optionally run *within* Leo.
-- Added support for asciidoc and asciidoctor.
-- Added support for pandoc and sphinx.
-- Added support for black.
-- The history_tracer plugin animates git commits.
-- Integration of Leo with VS code.
-- New command-line arguments: --global-docks and --window-spot.
-- New cursor-movement commands.
-
-Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
-their contributions to Leo 6.1.
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  Leo's fstringify and beautify commands use these classes.
+- Added an importer for todo.txt files
+- Leo's legacy layout is now the default.
+- Fixed all known bugs, including some notable, long-standing bugs.
+- Fixed several "fit and finish" issues.
+- Removed unused settings from leoSettings.leo.
 
 **Links**
 
@@ -598,7 +595,7 @@ leo/test/unittest/.leo_shadow/  export-ignore
 
 2. Search for copyright
 
-    Latest copyright date: 2019.
+    Latest copyright date: 2020.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150416081546.1"></t>
@@ -1673,7 +1670,8 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with Python 3.
-- Run ll -a with with Python 3.</t>
+- Run pylint (EKR's ll -a script) with with Python 3.
+</t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 - Create a full (annotated) tag:

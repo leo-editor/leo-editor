@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 1997-2019 by Edward K. Ream.
+Copyright (c) 1997-2020 by Edward K. Ream.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ These parts are are clearly marked in Leo's code as follows:
     
 Portions of Leo's pyzo interface uses code from pyzo:
 
-    Copyright (C) 2013-2019, the Pyzo development team
+    Copyright (C) 2013-2020, the Pyzo development team
     
     Pyzo is distributed under the terms of the (new) BSD License.
     The full license can be found in 'license.txt'.

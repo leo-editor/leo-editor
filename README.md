@@ -1,21 +1,18 @@
-Leo 6.1, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
+Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.1**
+**The highlights of Leo 6.2**
 
-- Pyzo in Leo: Pyzo can optionally run *within* Leo.
-- Added support for asciidoc and asciidoctor.
-- Added support for pandoc and sphinx.
-- Added support for black.
-- The history_tracer plugin animates git commits.
-- Integration of Leo with VS code.
-- New command-line arguments: --global-docks and --window-spot.
-- New cursor-movement commands.
-
-Special thanks to Vitalije Milosevic, Brian Theado, and Matt Wilkie for
-their contributions to Leo 6.1.
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  Leo's fstringify and beautify commands use these classes.
+- Added an importer for todo.txt files
+- Leo's legacy layout is now the default.
+- Fixed all known bugs, including some notable, long-standing bugs.
+- Fixed several "fit and finish" issues.
+- Removed unused settings from leoSettings.leo.
 
 **Links**
 

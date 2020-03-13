@@ -3333,6 +3333,13 @@
 <v t="ekr.20191026200311.18"><vh>#1306: @nopyflakes</vh></v>
 </v>
 </v>
+<v t="ekr.20200313080216.1"><vh>Leo 6.2: fstringify, TOG &amp; TOT classes</vh>
+<v t="ekr.20200313080216.2"><vh>6.2: Code</vh></v>
+<v t="ekr.20200313080216.3"><vh>6.2: Commands</vh></v>
+<v t="ekr.20200313080216.4"><vh>6.2: Features</vh></v>
+<v t="ekr.20200313080216.5"><vh>6.2: Bugs</vh></v>
+<v t="ekr.20200313080216.6"><vh>6.2: Settings and command-line options</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26098,6 +26105,102 @@ https://github.com/leo-editor/leo-editor/issues/1272
 https://github.com/leo-editor/leo-editor/issues/1325
 </t>
 <t tx="ekr.20191026200311.9">https://github.com/leo-editor/leo-editor/issues/1388
+</t>
+<t tx="ekr.20200313080216.1">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.2**
+
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  Leo's fstringify and beautify commands use these classes.
+- Added an importer for todo.txt files
+- Leo's legacy layout is now the default.
+- Fixed all known bugs, including some notable, long-standing bugs.
+- Fixed several "fit and finish" issues.
+- Removed unused settings from leoSettings.leo.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20200313080216.2">Convert Leo's code to fstrings:
+https://github.com/leo-editor/leo-editor/issues/1421
+
+Unify the ast and token worlds:
+https://github.com/leo-editor/leo-editor/issues/1440
+This was a major project:
+- Add TokenOrderGenerator and TokenOrderTraverser classes.
+- Add the Fstringify and Orange classes.
+
+Simplify startup logic:
+https://github.com/leo-editor/leo-editor/issues/1472
+
+Retire @doc file convention:
+https://github.com/leo-editor/leo-editor/issues/1496
+
+Add ivars for command1/2 event handlers:
+https://github.com/leo-editor/leo-editor/issues/1508
+
+Replace idle-time handlers with QApplication.processEvents:
+https://groups.google.com/d/msg/leo-editor/EvBDDCybV2E/tnRAZDqXCgAJ
+Changed g.recursiveUNLSearch and QtIconBarClass.goto_command.</t>
+<t tx="ekr.20200313080216.3">Add fstringify-files and diff-fstringify-files commands.
+
+Improve beautify-files command and add diff-beautify-files command.
+
+Restore Leo's pane commands:
+https://github.com/leo-editor/leo-editor/issues/1518
+At present, they work only w/o docks.</t>
+<t tx="ekr.20200313080216.4">Persistent body editors:
+https://github.com/leo-editor/leo-editor/issues/1268
+
+Improve alt-click popups:
+https://github.com/leo-editor/leo-editor/issues/1286
+
+Add tool tips for headlines:
+https://github.com/leo-editor/leo-editor/issues/1310
+
+Add an importer for todo.txt files
+https://github.com/leo-editor/leo-editor/issues/1499</t>
+<t tx="ekr.20200313080216.5">For a list of all bugs fixed in Leo 6.2 see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.2+label%3Abug
+The first comment in each bug contains a summary of the bug and its fix.
+
+Notable bugs:
+
+Leo-Bridge can be wrong about an outline read from a file:
+https://github.com/leo-editor/leo-editor/issues/1437
+The fix is due to Vitalije Milosevic.
+
+Possible problems with marks:
+https://github.com/leo-editor/leo-editor/issues/1484
+
+execute_shell_commands creates zombie processes:
+https://github.com/leo-editor/leo-editor/issues/1489
+</t>
+<t tx="ekr.20200313080216.6">Leo's legacy layout is now the default:
+https://github.com/leo-editor/leo-editor/issues/1514
+- Add --use-docks option.
+- Deprecate --no-dock option.
+- The--global-docks command-line option implies --use-docks.
+- The default for @string initial-split-orientation is horizontal.
+
+Retired the @bool beautify-autobeautify setting.
+
+Removed many unused settings from leoSettings.leo.
 </t>
 </tnodes>
 </leo_file>

@@ -92,7 +92,6 @@
 <v t="TL.20090225102340.32"><vh>@file nodeActions.py</vh></v>
 <v t="edream.110203113231.720"><vh>@file outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file paste_as_headlines.py</vh></v>
-<v t="ekr.20041021120118"><vh>@file pretty_print.py</vh></v>
 <v t="tbrown.20070117104409"><vh>@file quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file setHomeDirectory.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file word_count.py</vh></v>
@@ -108,12 +107,12 @@
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
-<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
-<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
-<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
 <v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
 <v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
+<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
+<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
+<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
+<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
 <v t="ekr.20180119164431.1"><vh>@file patch_python_colorizer.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
@@ -177,6 +176,7 @@
 <v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20181103094900.1"><vh>@file leoflexx.py</vh></v>
 <v t="ekr.201811100000000.1"><vh>@file leoflexx_js.py</vh></v>
+<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="ekr.20190813161639.1"><vh>@file pyzo_in_leo.py</vh></v>
 <v t="ekr.20190805022257.1"><vh>Unused: @file file pyzo_file_browser.py</vh>
 <v t="ekr.20190809093446.1"><vh> &lt;&lt; pyzo_file_browser imports &gt;&gt;</vh></v>
@@ -432,13 +432,12 @@
 <v t="ekr.20160519123329.1"><vh>@edit QNCalendarWidget.py</vh></v>
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
-<v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="vitalije.20190928154420.1"><vh>@file history_tracer.py</vh></v>
+<v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
 <v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
-<v t="peckj.20150428142633.1"><vh>@file python_terminal.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="ekr.20170313020320.1"><vh>@file settings_finder.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file systray.py</vh></v>
@@ -958,7 +957,7 @@ except ImportError:
 
         # Create the directory if it doesn't exist.
         theDir, junk = g.os_path_split(self.outputFileName)
-        theDir = c.os_path_finalize(theDir)
+        theDir = g.os_path_finalize(theDir) # #1341.
         if not g.os_path_exists(theDir):
             ok = g.makeAllNonExistentDirectories(theDir,c=c,force=False)
             if not ok:
@@ -2516,7 +2515,7 @@ To activate the rst3 plugin, do the following:
 beautify-node
 beautify-tree
 </t>
-<t tx="ekr.20160122104400.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
+<t tx="ekr.20160122104400.1"></t>
 <t tx="ekr.20160412101537.1">'''Imports c:\prog\Julia.ipynb to the node import-Julia.ipynb'''
 import nbformat
 @others
@@ -2558,7 +2557,7 @@ assert p, h
 @others
 Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
-<t tx="ekr.20160510132151.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">c.backup_helper(sub_dir='leoPlugins')
+<t tx="ekr.20160510132151.1">c.backup_helper(sub_dir='leoPlugins')
 </t>
 <t tx="ekr.20161030154232.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
 # aTestExample notFoundExample.
@@ -2862,20 +2861,24 @@ if 0: # A more complex example, for the C language.
     # self.squares += delta_s
     return i
 </t>
-<t tx="ekr.20170203054655.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
-<t tx="ekr.20170420085814.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">'''Recursively import all python files in a directory and clean the result.'''
-dir_ = r'C:\leo.repo\leo-editor\leo\plugins\pyzo'
+<t tx="ekr.20170203054655.1"></t>
+<t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
 g.cls()
-c.recursiveImport(
-    dir_ = dir_,
-    kind = '@clean', # '@clean', #'@nosent','@auto','@file',
-    recursive = True,
-    safe_at_file = False,
-    theTypes = ['.py',],
-)
+dir_ = r'C:\leo.repo\reveal.js\js\reveal.js'
+c.tab_width = 4
+try:
+    c.recursiveImport(
+        dir_ = dir_,
+        kind = '@auto', # '@clean', # '@file','@nosent','@auto','@file',
+        recursive = True,
+        safe_at_file = False,
+        theTypes = ['.js',],
+	)
+finally:
+	c.tab_width = -4
 </t>
 <t tx="ekr.20170709095709.1">**Temporary**: So I can fix #516 without going crazy.</t>
-<t tx="ekr.20170811173231.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language python
+<t tx="ekr.20170811173231.1">@language python
 import os
 import subprocess
 import sys
@@ -2906,7 +2909,7 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20181017164437.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"># Replace underscore by - in settings names.
+<t tx="ekr.20181017164437.1"># Replace underscore by - in settings names.
 g.cls()
 import re
 kinds = (
