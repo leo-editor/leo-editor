@@ -2358,8 +2358,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20191003051240.1"></v>
 <v t="ekr.20200313060126.1"></v>
+<v t="ekr.20200225075435.1"></v>
 <v t="ekr.20200313051805.1"><vh>TOG Stuff</vh>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
 <v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
@@ -2391,7 +2391,6 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
-<v t="ekr.20200225075435.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31325,7 +31324,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Leo's legacy layout is now the default.
 - Fixed all known bugs, including some notable, long-standing bugs.
 - Fixed several "fit and finish" issues.
-- Removed many unused settings from leoSettings.leo.
+- Removed unused settings from leoSettings.leo.
 
 **Links**
 
@@ -31441,7 +31440,22 @@ Improve beautify-files command and add diff-beautify-files command.
 Restore Leo's pane commands:
 https://github.com/leo-editor/leo-editor/issues/1518
 At present, they work only w/o docks.</t>
-<t tx="ekr.20200313060126.1"></t>
+<t tx="ekr.20200313060126.1">Commands
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+
+Code
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  A major project. See https://github.com/leo-editor/leo-editor/issues/1440
+ 
+Features and settings
+- Added an importer for todo.txt files.
+- Leo's legacy layout is now the default.
+- Removed unused settings from leoSettings.leo.
+
+Bugs
+- Fixed all known bugs, including some notable, long-standing bugs.
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
