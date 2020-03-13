@@ -1575,6 +1575,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
 <v t="ekr.20190122044116.1"><vh>What's new in Leo 5.9</vh></v>
@@ -1736,6 +1737,34 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
+<v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
+<v t="ekr.20200313054557.1"><vh>6.2: Commands</vh></v>
+<v t="ekr.20200313051859.1"><vh>6.2: Features</vh></v>
+<v t="ekr.20200313051926.1"><vh>6.2: Bugs</vh></v>
+<v t="ekr.20200313053803.1"><vh>6.2: Settings and command-line options</vh></v>
+</v>
+<v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
+<v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
+<v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
+<v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
+<v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
+<v t="ekr.20191007104843.1"><vh>Support for pandoc, including @language pandoc</vh></v>
+<v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
+<v t="ekr.20191026191805.1"><vh>Support for sphinx</vh></v>
+</v>
+<v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
+<v t="ekr.20191003052014.1"><vh>Minor bugs</vh></v>
+<v t="ekr.20191003051510.1696"><vh>#1338: {{ conflicts</vh></v>
+</v>
+<v t="ekr.20191003051809.1"><vh>6.1: Code features</vh></v>
+<v t="ekr.20191003050703.11"><vh>6.1: Features</vh></v>
+<v t="ekr.20191003050703.15"><vh>6.1: Settings, directives, command-line arguments</vh>
+<v t="ekr.20191003051510.14"><vh>#1263: --window-spot</vh></v>
+<v t="ekr.20191003051510.1274"><vh>#1289: --global-docks</vh></v>
+<v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
+</v>
+</v>
 <v t="ekr.20191003062919.1"><vh>Leo 6.0 release notes</vh>
 <v t="ekr.20191003062919.2"><vh>Acknowledgements</vh></v>
 <v t="ekr.20191003062919.3"><vh>6.0: Major features</vh>
@@ -2330,27 +2359,7 @@
 </v>
 </v>
 <v t="ekr.20191003051240.1"></v>
-<v t="ekr.20191003050703.1"><vh>Leo 6.1 release notes</vh>
-<v t="ekr.20191003050703.3"><vh>6.1: Major features</vh>
-<v t="ekr.20191003060551.1"><vh>#1093: pyzo_in_leo plugin</vh></v>
-<v t="ekr.20191003061844.1"><vh>#1315: The history_tracer plugin animates git commits</vh></v>
-<v t="ekr.20191004072604.1"><vh>Support for asciidoc and asciidoctor</vh></v>
-<v t="ekr.20191007104843.1"><vh>Support for pandoc, including @language pandoc</vh></v>
-<v t="ekr.20191003055249.1"><vh>Support for black</vh></v>
-<v t="ekr.20191026191805.1"><vh>Support for sphinx</vh></v>
-</v>
-<v t="ekr.20191003050703.6"><vh>6.1: Bugs</vh>
-<v t="ekr.20191003052014.1"><vh>Minor bugs</vh></v>
-<v t="ekr.20191003051510.1696"><vh>#1338: {{ conflicts</vh></v>
-</v>
-<v t="ekr.20191003051809.1"><vh>6.1: Code features</vh></v>
-<v t="ekr.20191003050703.11"><vh>6.1: Features</vh></v>
-<v t="ekr.20191003050703.15"><vh>6.1: Settings, directives, command-line arguments</vh>
-<v t="ekr.20191003051510.14"><vh>#1263: --window-spot</vh></v>
-<v t="ekr.20191003051510.1274"><vh>#1289: --global-docks</vh></v>
-<v t="ekr.20191003051510.1626"><vh>#1306: @nopyflakes</vh></v>
-</v>
-</v>
+<v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200313051805.1"><vh>TOG Stuff</vh>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
 <v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
@@ -2382,13 +2391,7 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
-<v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
-<v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
-<v t="ekr.20200313054557.1"><vh>6.2: Commands</vh></v>
-<v t="ekr.20200313051859.1"><vh>6.2: Features</vh></v>
-<v t="ekr.20200313051926.1"><vh>6.2: Bugs</vh></v>
-<v t="ekr.20200313053803.1"><vh>6.2: Setting and command-line options</vh></v>
-</v>
+<v t="ekr.20200225075435.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31308,15 +31311,21 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
-<t tx="ekr.20200225075435.1">Leo 6.2, http://leoeditor.com, is now available on
-[GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20200225075435.1">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.2**
 
-
-
+- Added the fstringify-files and diff-fstringify-files commands.
+- Improved the beautify-files command. Added the diff-beautify-files commands.
+- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
+  Leo's fstringify and beautify commands use these classes.
+- Added an importer for todo.txt files
+- Leo's legacy layout is now the default.
+- Fixed all known bugs, including some notable, long-standing bugs.
+- Fixed several "fit and finish" issues.
+- Removed many unused settings from leoSettings.leo.
 
 **Links**
 
@@ -31414,14 +31423,16 @@ https://github.com/leo-editor/leo-editor/issues/1508
 Replace idle-time handlers with QApplication.processEvents:
 https://groups.google.com/d/msg/leo-editor/EvBDDCybV2E/tnRAZDqXCgAJ
 Changed g.recursiveUNLSearch and QtIconBarClass.goto_command.</t>
-<t tx="ekr.20200313053803.1">Retired @bool beautify-autobeautify.
-
-Change Leo's layout defaults
+<t tx="ekr.20200313053803.1">Leo's legacy layout is now the default:
 https://github.com/leo-editor/leo-editor/issues/1514
 - Add --use-docks option.
 - Deprecate --no-dock option.
 - The--global-docks command-line option implies --use-docks.
 - The default for @string initial-split-orientation is horizontal.
+
+Retired the @bool beautify-autobeautify setting.
+
+Removed many unused settings from leoSettings.leo.
 </t>
 <t tx="ekr.20200313054557.1">Add fstringify-files and diff-fstringify-files commands.
 
@@ -31430,6 +31441,7 @@ Improve beautify-files command and add diff-beautify-files command.
 Restore Leo's pane commands:
 https://github.com/leo-editor/leo-editor/issues/1518
 At present, they work only w/o docks.</t>
+<t tx="ekr.20200313060126.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
