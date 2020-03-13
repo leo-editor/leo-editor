@@ -156,15 +156,15 @@
 </v>
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
+<v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
 <v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
-<v t="ekr.20180828095749.1"><vh>Create a -rel *branch* late.</vh></v>
-<v t="ekr.20180828095843.1"><vh>Update versions.py in the -rel branch</vh></v>
-<v t="ekr.20190618104430.1"><vh>Merge -rel branch into master</vh></v>
+<v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
+<v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
-<v t="ekr.20190618104609.1"><vh>Merge git *tag* into devel</vh></v>
+<v t="ekr.20190618104609.1"><vh>Merge master into devel</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel branch</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
@@ -1629,9 +1629,18 @@ g.es_print('done')
 
 Overview:
 
-1. Do as much work as possible in "devel".
-2. Update leoVersion.py *after* creating -rel branch.
-</t>
+1. Create a **release branch**, called 6.2.
+   This branch should be based on devel.
+   This branch will hold all work for 6.2-b1 and 6.2 (final).
+
+2. *Never* merge devel into the release branch.
+   It's fine to merge the release branch into devel.
+   
+3. Fix last-minute bugs in a **bug-fix branch**.
+   Base bug-fix branches on the *release* branch, not devel.
+   After fixing the bug, merge the bug-fix branch into both devel and the release branch.
+   
+4. Update leoVersion.py (in devel) after merging the release branch into devel.</t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">LeoDocs.leo:
 - Make sure copyright dates are correct.
 - Update the "last updated" text in index.html.
@@ -1677,18 +1686,15 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 git tag -a v5.9.x -m "Added v5.9.x tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095749.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">git checkout -b x.y-final-rel
-git push origin x.y-final-rel
-</t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
 - Update version constant.
 </t>
-<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge create dev tag that matches
+<t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.0-b2-devel'
+    #static version = '6.3-devel'
 
 git checkout devel
-git tag -a v6.0-b2-dev -m "Added v6.0-b2-dev tag"
+git tag -a v6.3-dev -m "Added v6.3-dev tag"
 git push --follow-tags
 update version in leoVersion.py.
 </t>
@@ -2186,6 +2192,9 @@ There is a "Draft New Release" button at the top-right of the page.
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
+<t tx="ekr.20200313063940.1">git checkout -b 6.2
+git push origin 6.2
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -2352,7 +2361,7 @@ build-backend = 'setuptools.build_meta'
 # This flag says that the code is written to work on both Python 2 and Python
 # 3. If at all possible, it is good practice to do this. If you cannot, you
 # will need to generate wheels for each Python version that you support.
-universal=1
+universal=0
 </t>
 <t tx="maphew.20190208142757.1">@language python
 # A list of pip installable tools and libraries in the Requirements File Format
@@ -2421,10 +2430,8 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
-    ## Using PEP-518 (pypoject.toml) requires pip &gt;v10 
-    - python -m pip install --upgrade pip
     - pip --version
-    - pip install setupext-janitor
+    - pip install setupext-janitor asttokens
 script:
     ## Test: Unit tests
     - python run_travis_unit_tests.py
