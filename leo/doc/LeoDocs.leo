@@ -31313,7 +31313,7 @@ portable solution I've come across is:
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
 <t tx="ekr.20200225075435.1">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.2**
 
