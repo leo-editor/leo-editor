@@ -77,7 +77,7 @@ class BaseSpellWrapper:
             if g.os_path_exists(path):
                 return path
         #
-        g.es_print('Do spellpyx.txt file found')
+        g.es_print('No spellpyx.txt file found')
         return None
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word):
