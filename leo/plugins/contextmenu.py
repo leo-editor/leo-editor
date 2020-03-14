@@ -78,7 +78,6 @@ def context_menu_open(event):
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     global inited
-    # print "contextmenu init()"
     if g.app.gui.guiName() != "qt":
         return False
     g.plugin_signon(__name__)
@@ -242,7 +241,6 @@ def openwith_rclick(c,p,menu):
     #@+node:ekr.20140613141207.17666: *4* openwith_rclick_cb
     def openwith_rclick_cb():
 
-        #print "Editing", path, fname
         if editor:
             cmd = '%s "%s"' % (editor, absp)
             g.es('Edit: %s' % cmd)
