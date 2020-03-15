@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file d:/Tom/devel/leo/plugins/viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file viewrendered3.py
 #@@tabwidth -4
 #@@language python
 """
@@ -282,7 +282,8 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-#pylint: disable=no-member
+#pylint: disable=no-member,invalid-name
+
 trace = False
     # This global trace is convenient.
 #@+<< imports >>
@@ -470,7 +471,7 @@ def init():
         if (
             not g.unitTesting and
             not g.app.batchMode and
-            not g.app.gui.guiName() in ('browser', 'curses')
+            g.app.gui.guiName() in ('browser', 'curses')  # EKR.
         ):
             g.es_print('viewrendered3 requires Qt')
         return False
@@ -552,18 +553,15 @@ def getVr3(event):
 
     global controllers
     if g.app.gui.guiName() != 'qt':
-        return
+        return None
     c = event.get('c')
     if not c:
         return None
-
     h = c.hash()
     vr3 = controllers.get(h) if h else None
     if not vr3:
         controllers[h] = vr3 = viewrendered(event)
-
     return vr3
-
 #@+node:TomP.20191215195433.16: ** vr3.Commands
 #@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
@@ -742,25 +740,22 @@ def execute_code(event):
 def export_rst_html(event):
     """Export rendering to system browser."""
     vr3 = getVr3(event)
-    if not vr3: return
-
+    if not vr3:
+        return
     try:
         _html = vr3.rst_html
     except NameError as e:
         g.es('=== %s: %s' % (type(e), e))
         return
-
-    if not _html: return
-    if type(_html) != type(''):
-        _html = g.toUnicode(_html)
-
+    if not _html:
+        return
+    _html = g.toUnicode(_html)
     # Write to temp file
     c = vr3.c
     path = c.getNodePath(c.rootPosition())
     pathname = g.os_path_finalize_join(path, VR3_TEMP_FILE)
     with io.open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
-
     webbrowser.open_new_tab(pathname)
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
 @g.command('vr3-lock-unlock-tree')
@@ -928,9 +923,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     # This method changes '\' to '/' in the path if needed.
                     self.rst_stylesheet = g.os_path_finalize_join(pth)
                     return
-                else:
-                    g.es('Specified VR3 stylesheet not found; using default')
-            else: return
+                g.es('Specified VR3 stylesheet not found; using default')
+            return
 
         # Default location
         # NOTE - for the stylesheet url we need to use forward slashes no matter
@@ -1087,6 +1081,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         NAMES CREATED
         'vr3-toolbar-label' -- the toolbar label.
         """
+        # pylint: disable=unnecessary-lambda
 
         # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
         # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
@@ -1219,8 +1214,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
         #@-others
-
-
     #@+node:TomP.20191215195433.43: *3* vr3.contract & expand
     def contract(self):
         #VrC.contract(self)
@@ -1282,17 +1275,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.47: *3* vr3.set_html
     def set_html(self, s, w):
         '''Set text in w to s, preserving scroll position.'''
-        #pc = self
-        #p = pc.c.p
         c = self.c
-
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
-
-        if type(s) != type(str): # Might have been a byte array depending on converter
-            s = g.toUnicode(s)
-
+        s = g.toUnicode(s)
         url_base = QtCore.QUrl('file:///' + path + '/')
         try:
             w.setHtml(s, url_base)
@@ -1313,7 +1300,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def zoomView(self):
         try:
             w = self.qwev
-        except:
+        except Exception:
             return
 
         _zf = w.zoomFactor()
@@ -1351,7 +1338,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f == pc.update_rst or pc.update_md:
+        if f in (pc.update_rst, pc.update_md):  # EKR.
              self.show_toolbar()
         else:
             self.hide_toolbar()
@@ -1728,7 +1715,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         import sys
         pc = self
         c = pc.c
-        ###
         if sys.platform.startswith('win'):
             g.es_print('latex rendering not ready for Python 3')
             w = pc.ensure_text_widget()
@@ -1783,7 +1769,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.show()
 
         if got_markdown:
-            if not node_list: return
+            if not node_list:
+                return
             if node_list:
                 s = node_list[0].b
             else:
@@ -1796,8 +1783,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 h = self.convert_markdown_to_html(node_list)
             if h:
-                if type(h) != type(''):
-                    h = g.toUnicode(s)
+                h = g.toUnicode(s)  # EKR.
                 self.set_html(h, w)
                 self.rst_html = h
         else:
@@ -1819,7 +1805,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc = self
         c, p = pc.c, pc.c.p
         if g.app.gui.guiName() != 'qt':
-            return
+            return ''  # EKR
 
         vr3 = controllers.get(c.hash())
         if not vr3:
@@ -2069,7 +2055,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         )
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.73: *4* vr3.update_rst & helpers
-    def update_rst(self, node_list, keywords={}):
+    def update_rst(self, node_list, keywords=None):
         """Update rst in the vr3 pane.
         
             ARGUMENTS
@@ -2079,7 +2065,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
-
+        if not keywords:  # EKR
+            keywords = {}
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
@@ -2087,7 +2074,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.show()
 
         if got_docutils:
-            if not node_list or type(node_list[0]) == type(''):
+            if not node_list or isinstance(node_list[0], str):  # EKR.
                 # We were called as a "scrolled message"
                 s = keywords.get('s', '')
             else:
@@ -2121,7 +2108,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@@language python
         c, p = self.c, self.c.p
         if g.app.gui.guiName() != 'qt':
-            return
+            return ''  # EKR
 
         vr3 = controllers.get(c.hash())
         if not vr3:
@@ -2549,7 +2536,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.must_change_widget(QWebView):
             try:
                 w = self.qwev
-            except:
+            except Exception:
                 # Instantiate and cache a new QWebView.
                 w = QWebView() # For QT5, this is actually a QWebEngineView
                 #w.page().setZoomFactor(1.0)
@@ -2628,8 +2615,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
         pc = self
-        #return not pc.w or pc.w.__class__ != widget_class
-        return not pc.w or type(pc.w) != widget_class
+        return not pc.w or pc.w.__class__ != widget_class  # EKR.
     #@+node:TomP.20191215195433.85: *5* vr3.remove_directives
     def remove_directives(self, s):
         """Remove all Leo directives from a string except "@language"."""
@@ -2894,15 +2880,12 @@ class StateMachine:
             self.last_state = self.state
             self.state = State.IN_SKIP
             return
-
-        elif marker == Marker.END_SKIP:
-            self.inskip == False
+        if marker == Marker.END_SKIP:
+            self.inskip = False  # EKR.
             self.state = self.last_state
             return
-
-        elif self.state == State.IN_SKIP:
+        if self.state == State.IN_SKIP:
             return
-
         try:
             action, next = StateMachine.State_table[(state, marker)]
         except KeyError:
