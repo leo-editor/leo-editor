@@ -1041,6 +1041,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setObjectName('viewrendered3_pane')
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
+        self.create_toolbar()
         if not g.app.dock:
             return
         # Allow the VR dock to move only in special circumstances.
@@ -1048,9 +1049,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         moveable = g.app.init_docks or central_body
         self.leo_dock = dock = g.app.gui.create_dock_widget(
             closeable=True, moveable=moveable, height=50, name='ViewRendered3')
-
-        self.create_toolbar()
-
         if central_body:
             # Create a stand-alone dockable area.
             dock.setWidget(self)
