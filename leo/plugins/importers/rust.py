@@ -16,80 +16,92 @@ class Rust_Importer(Importer):
         # Init the base class.
         super().__init__(
             importCommands,
-            language = 'c',
+            language = 'rust',
             state_class = Rust_ScanState,
         )
         self.headline = None
-        ###
-            # # Fix #545 by supporting @data c_import_typedefs.
-            # aSet = set()
-            # for z in (
-                # 'auto', 'bool', 'char', 'const', 'double',
-                # 'extern', 'float', 'int', 'register',
-                # 'signed', 'short', 'static', 'typedef',
-                # 'union', 'unsigned', 'void', 'volatile',
-            # ):
-                # aSet.add(z)
-            # for z in self.c.config.getData('c_import_typedefs') or []:
-                # aSet.add(z)
-            # self.rust_type_names = '(%s)' % '|'.join(list(aSet))
-        
-        self.rust_type_names = []
-        self.rust_types_pattern = re.compile(self.rust_type_names)
-        self.rust_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.rust_type_names))
-        self.rust_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.rust_type_names))
-        self.rust_keywords = '(%s)' % '|'.join([
-            'break', 'case', 'continue', 'default', 'do', 'else', 'enum',
-            'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
-        ])
-        self.rust_keywords_pattern = re.compile(self.rust_keywords)
-
+      
     #@+others
-    #@+node:ekr.20200316101240.3: *3* rust_i.match_name_patterns
-    ###
-    rust_name_pattern = re.compile(r'\s*([\w:]+)')
+    #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict (** to do)
+    #@@nobeautify
 
-    def match_name_patterns(self, line):
-        '''Set self.headline if the line defines a typedef name.'''
-        m = self.rust_name_pattern.match(line)
-        if m:
-            word = m.group(1)
-            if not self.rust_types_pattern.match(word):
-                self.headline = word
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+
+        def add_key(d, pattern, data):
+            key = pattern[0]
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+
+        if context:
+            d = {
+                # key    kind      pattern  ends?
+                '\\':   [('len+1', '\\',    None),],
+                '"':    [('len',   '"',     context == '"'),],
+                "'":    [('len',   "'",     context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2, ('len', block2, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None),],
+                '"':    [('len', '"', '"',     None),],
+                "'":    [('len', "'", "'",     None),],
+                '{':    [('len', '{', context, (1,0,0)),],
+                '}':    [('len', '}', context, (-1,0,0)),],
+                '(':    [('len', '(', context, (0,1,0)),],
+                ')':    [('len', ')', context, (0,-1,0)),],
+                '[':    [('len', '[', context, (0,0,1)),],
+                ']':    [('len', ']', context, (0,0,-1)),],
+            }
+            if comment:
+                add_key(d, comment, ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1, ('len', block1, block1, None))
+        return d
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
-    # Define patterns that can start a block
-    rust_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
-    rust_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\s*(\w*)(.*)')
 
     def match_start_patterns(self, line):
         '''
         True if line matches any block-starting pattern.
         If true, set self.headline.
         '''
-        m = self.rust_extern_pattern.match(line)
+        m = self.func_pattern.match(line)
         if m:
-            self.headline = line.strip()
-            return True
-        m = self.rust_class_pattern.match(line)
-        if m:
-            prefix = m.group(1).strip() if m.group(1) else ''
-            self.headline = '%sclass %s' % (prefix, m.group(3))
-            self.headline = self.headline.strip()
-            return True
-        m = self.rust_func_pattern.match(line)
-        if m:
-            if self.rust_types_pattern.match(m.group(3)):
-                return True
-            prefix = m.group(1).strip() if m.group(1) else ''
-            self.headline = '%s %s' % (prefix, m.group(3))
-            self.headline = self.headline.strip()
-            return True
-        m = self.rust_typedef_pattern.match(line)
-        if m:
-            # Does not set self.headline.
-            return True
-        m = self.rust_types_pattern.match(line)
+            pub_s = m.group(1) or ''
+            self.headline = f"{pub_s}{m.group(2)} {m.group(3)}".strip()
         return bool(m)
+    #@+node:ekr.20200316120005.1: *3* rust_i.post_pass
+    def post_pass(self, parent):
+        '''
+        Optional Stage 2 of the importer pipeline, consisting of zero or more
+        substages. Each substage alters nodes in various ways.
+
+        Subclasses may freely override this method, **provided** that all
+        substages use the API for setting body text. Changing p.b directly will
+        cause asserts to fail later in i.finish().
+        '''
+        self.clean_all_headlines(parent)
+        ###
+            # if self.c.config.getBool("add-context-to-headlines"):
+                # self.add_class_names(parent)
+        self.clean_all_nodes(parent)
+        self.unindent_all_nodes(parent)
+        #
+        # This sub-pass must follow unindent_all_nodes.
+        self.promote_trailing_underindented_lines(parent)
+        self.promote_last_lines(parent)
+        #
+        # This probably should be the last sub-pass.
+        self.delete_all_empty_nodes(parent)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -115,10 +127,11 @@ class Rust_Importer(Importer):
             i += 1
             assert i < len(lines), (i, len(lines))
             line = lines[i]
-            if not self.headline:
-                self.match_name_patterns(line)
-                if self.headline:
-                    child.h = '%s %s' % (child.h.strip(), self.headline)
+            ###
+                # if not self.headline:
+                    # self.match_name_patterns(line)
+                    # if self.headline:
+                        # child.h = '%s %s' % (child.h.strip(), self.headline)
             self.add_line(child, lines[i])
     #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
@@ -127,8 +140,9 @@ class Rust_Importer(Importer):
         line = lines[i]
         if prev_state.context:
             return False
-        if self.rust_keywords_pattern.match(line):
-            return False
+        ###
+            # if self.rust_keywords_pattern.match(line):
+                # return False
         if not self.match_start_patterns(line):
             return False
         # Must not be a complete statement.
@@ -181,7 +195,6 @@ class Rust_ScanState:
         Return i = data[1]
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data
-        # self.bs_nl = bs_nl
         self.context = context
         self.curlies += delta_c
         return i
