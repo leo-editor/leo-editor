@@ -1781,7 +1781,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 h = self.convert_markdown_to_html(node_list)
             if h:
-                h = g.toUnicode(s)  # EKR.
+                h = g.toUnicode(h)  # EKR.
                 self.set_html(h, w)
                 self.rst_html = h
         else:
