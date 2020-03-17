@@ -4029,6 +4029,36 @@ class Commands:
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
+    #@+node:ekr.20200317084616.1: *4* c.ekr_deletePositionsInList
+    def ekr_deletePositionsInList(self, aList):
+        """Delete all positions in the given list."""
+        c = self
+        current = c.p
+        while aList:
+            # del_p is the next position to be deleted.
+            del_p = aList.pop()  # Ensure loop termination.
+            # Calculate new_positions.
+            new_positions = []
+            for p in aList:
+                new_p = p.position_after_deleting(del_p)
+                if new_p:
+                    new_positions.append(new_p)
+            # Update the future c.p.
+            if current and current not in aList:
+                current = current.position_after_deleting(del_p)
+            # Delete del_p.
+            del_p.doDelete()
+            # Check the new positions.
+            for p in new_positions:
+                assert c.positionExists(p)
+            # Update aList.
+            aList = new_positions
+        # Make sure c.hiddenRootNode always has at least one child.
+        if not c.hiddenRootNode.children:
+            v = leoNodes.VNode(context=c)
+            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
+        # Redraw.
+        c.selectPosition(current or c.rootPosition())
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict
