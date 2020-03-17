@@ -41,55 +41,11 @@ class Rust_Importer(Importer):
         tail = m.group(3) or ''.strip()
         tail = re.sub(self.arg_pat, '', tail, count=1)
         tail = re.sub(self.type_pat, '', tail, count=1)
-        # Return trailing '(' or '{'
+        # Remove trailing '(' or '{'
         tail = tail.strip()
         if tail.endswith(('{', '(')):
             tail = tail[:-1]
         return f"{head} {tail}".strip().replace('  ', ' ')
-    #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict (** to do)
-    #@@nobeautify
-
-    def get_new_dict(self, context):
-        '''
-        Return a *general* state dictionary for the given context.
-        Subclasses may override...
-        '''
-        comment, block1, block2 = self.single_comment, self.block1, self.block2
-
-        def add_key(d, pattern, data):
-            key = pattern[0]
-            aList = d.get(key,[])
-            aList.append(data)
-            d[key] = aList
-
-        if context:
-            d = {
-                # key    kind      pattern  ends?
-                '\\':   [('len+1', '\\',    None),],
-                '"':    [('len',   '"',     context == '"'),],
-                "'":    [('len',   "'",     context == "'"),],
-            }
-            if block1 and block2:
-                add_key(d, block2, ('len', block2, True))
-        else:
-            # Not in any context.
-            d = {
-                # key    kind pattern new-ctx  deltas
-                '\\':[('len+1', '\\', context, None),],
-                '"':    [('len', '"', '"',     None),],
-                "'":    [('len', "'", "'",     None),],
-                '{':    [('len', '{', context, (1,0,0)),],
-                '}':    [('len', '}', context, (-1,0,0)),],
-                '(':    [('len', '(', context, (0,1,0)),],
-                ')':    [('len', ')', context, (0,-1,0)),],
-                '[':    [('len', '[', context, (0,0,1)),],
-                ']':    [('len', ']', context, (0,0,-1)),],
-            }
-            if comment:
-                add_key(d, comment, ('all', comment, '', None))
-            if block1 and block2:
-                add_key(d, block1, ('len', block1, block1, None))
-        return d
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
     func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\b(.*)')
@@ -111,7 +67,8 @@ class Rust_Importer(Importer):
         # Insert the reference in *this* node.
         h = self.gen_ref(line, target.p, target)
         # Create a new child and associated target.
-        if self.headline: h = self.headline
+        if self.headline:
+            h = self.headline
         if new_state.level() > prev_state.level():
             child = self.create_child_node(target.p, line, h)
         else:
@@ -128,11 +85,6 @@ class Rust_Importer(Importer):
             i += 1
             assert i < len(lines), (i, len(lines))
             line = lines[i]
-            ###
-                # if not self.headline:
-                    # self.match_name_patterns(line)
-                    # if self.headline:
-                        # child.h = '%s %s' % (child.h.strip(), self.headline)
             self.add_line(child, lines[i])
     #@+node:ekr.20200316101240.6: *3* rust_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
