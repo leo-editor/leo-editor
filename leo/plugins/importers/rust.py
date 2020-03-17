@@ -93,9 +93,6 @@ class Rust_Importer(Importer):
         line = lines[i]
         if prev_state.context:
             return False
-        ###
-            # if self.rust_keywords_pattern.match(line):
-                # return False
         if not self.match_start_patterns(line):
             return False
         # Must not be a complete statement.
@@ -126,7 +123,7 @@ class Rust_ScanState:
             prev = d.get('prev')
             self.context = prev.context
             self.curlies = prev.curlies
-            self.parens = prev.parens  ### New.
+            self.parens = prev.parens
         else:
             self.context = ''
             self.curlies = 0
@@ -153,7 +150,7 @@ class Rust_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.context = context
         self.curlies += delta_c
-        self.parens += delta_p ### experimental.
+        self.parens += delta_p
         return i
 
     #@-others
