@@ -42,13 +42,13 @@ class Rust_Importer(Importer):
         tail = m.group(3) or ''.strip()
         tail = re.sub(self.arg_pat, '', tail, count=1)
         tail = re.sub(self.type_pat, '', tail, count=1)
+        # Clean lifetime specs except for impl.
         if not head.startswith('impl'):
             tail = re.sub(self.life_pat, '', tail, count=1)
         # Remove trailing '(' or '{'
         tail = tail.strip()
         if tail.endswith(('{', '(')):
             tail = tail[:-1]
-        # Clean the lifetime, but only if something else exists.
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
@@ -116,6 +116,54 @@ class Rust_Importer(Importer):
             else:
                 break
         return False
+    #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict
+    #@@nobeautify
+
+    def get_new_dict(self, context):
+        '''
+        Return a *general* state dictionary for the given context.
+        Subclasses may override...
+        '''
+        comment, block1, block2 = self.single_comment, self.block1, self.block2
+
+        def add_key(d, pattern, data):
+            key = pattern[0]
+            aList = d.get(key,[])
+            aList.append(data)
+            d[key] = aList
+        #
+        # About context dependent lifetime tokens:
+        # https://doc.rust-lang.org/stable/reference/tokens.html#lifetimes-and-loop-labels
+        #
+        # It looks like we can just ignore 'x' and 'x tokens.
+        if context:
+            d = {
+                # key    kind      pattern  ends?
+                '\\':   [('len+1', '\\',    None),],
+                '"':    [('len',   '"',     context == '"'),],
+                # "'":    [('len',   "'",     context == "'"),],
+            }
+            if block1 and block2:
+                add_key(d, block2, ('len', block2, True))
+        else:
+            # Not in any context.
+            d = {
+                # key    kind pattern new-ctx  deltas
+                '\\':[('len+1', '\\', context, None)],
+                '"':    [('len', '"', '"',     None)],
+                # "'":    [('len', "'", "'",     None)],
+                '{':    [('len', '{', context, (1,0,0))],
+                '}':    [('len', '}', context, (-1,0,0))],
+                '(':    [('len', '(', context, (0,1,0))],
+                ')':    [('len', ')', context, (0,-1,0))],
+                '[':    [('len', '[', context, (0,0,1))],
+                ']':    [('len', ']', context, (0,0,-1))],
+            }
+            if comment:
+                add_key(d, comment, ('all', comment, '', None))
+            if block1 and block2:
+                add_key(d, block1, ('len', block1, block1, None))
+        return d
     #@-others
 #@+node:ekr.20200316101240.7: ** class Rust_ScanState
 class Rust_ScanState:
@@ -135,7 +183,11 @@ class Rust_ScanState:
 
     def __repr__(self):
         '''Rust_ScanState.__repr__'''
-        return 'Rust_ScanState context: %r curlies: %s' % (self.context, self.curlies)
+        return (
+            f"<Rust_ScanState "
+            f"context: {self.context!r} "
+            f"curlies: {self.curlies} "
+            f"parens: {self.parens}>")
 
     __str__ = __repr__
 
