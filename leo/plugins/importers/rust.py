@@ -22,6 +22,31 @@ class Rust_Importer(Importer):
         self.headline = None
       
     #@+others
+    #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
+    clean_pat = re.compile(r'^\s*(pub\b)?\s*(enum|fn|impl|struct)\b(.*)')
+    arg_pat = re.compile(r'\((.*)\)')
+    type_pat = re.compile(r'(\s*->.*)(\{|\()')
+
+    def clean_headline(self, s, p=None):
+        '''
+        Remove argument list and return value.
+        '''
+        s = s.strip()
+        m = self.clean_pat.match(s)
+        if not m:
+            return s
+        g1 = m.group(1) or ''
+        g2 = m.group(2) or ''
+        head = f"{g1} {g2}".strip()
+        # Remove the argument list and return value.
+        tail = m.group(3) or ''.strip()
+        tail = re.sub(self.arg_pat, '', tail, count=1)
+        tail = re.sub(self.type_pat, '', tail, count=1)
+        # Return trailing '(' or '{'
+        tail = tail.strip()
+        if tail.endswith(('{', '(')):
+            tail = tail[:-1]
+        return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict (** to do)
     #@@nobeautify
 
@@ -67,7 +92,9 @@ class Rust_Importer(Importer):
                 add_key(d, block1, ('len', block1, block1, None))
         return d
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
-    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\s*(\w*)(.*)')
+    ### func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\s*(\w*)(.*)')
+
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\b')
 
     def match_start_patterns(self, line):
         '''
@@ -76,32 +103,8 @@ class Rust_Importer(Importer):
         '''
         m = self.func_pattern.match(line)
         if m:
-            pub_s = m.group(1) or ''
-            self.headline = f"{pub_s}{m.group(2)} {m.group(3)}".strip()
+            self.headline = line.strip()
         return bool(m)
-    #@+node:ekr.20200316120005.1: *3* rust_i.post_pass
-    def post_pass(self, parent):
-        '''
-        Optional Stage 2 of the importer pipeline, consisting of zero or more
-        substages. Each substage alters nodes in various ways.
-
-        Subclasses may freely override this method, **provided** that all
-        substages use the API for setting body text. Changing p.b directly will
-        cause asserts to fail later in i.finish().
-        '''
-        self.clean_all_headlines(parent)
-        ###
-            # if self.c.config.getBool("add-context-to-headlines"):
-                # self.add_class_names(parent)
-        self.clean_all_nodes(parent)
-        self.unindent_all_nodes(parent)
-        #
-        # This sub-pass must follow unindent_all_nodes.
-        self.promote_trailing_underindented_lines(parent)
-        self.promote_last_lines(parent)
-        #
-        # This probably should be the last sub-pass.
-        self.delete_all_empty_nodes(parent)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
@@ -173,9 +176,11 @@ class Rust_ScanState:
             prev = d.get('prev')
             self.context = prev.context
             self.curlies = prev.curlies
+            self.parens = prev.parens  ### New.
         else:
             self.context = ''
             self.curlies = 0
+            self.parens = 0
 
     def __repr__(self):
         '''Rust_ScanState.__repr__'''
@@ -187,7 +192,8 @@ class Rust_ScanState:
     #@+node:ekr.20200316101240.8: *3* rust_state.level
     def level(self):
         '''Rust_ScanState.level.'''
-        return self.curlies
+        # return self.curlies
+        return (self.curlies, self.parens)
     #@+node:ekr.20200316101240.9: *3* rust_state.update
     def update(self, data):
         '''
@@ -197,6 +203,7 @@ class Rust_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.context = context
         self.curlies += delta_c
+        self.parens += delta_p ### experimental.
         return i
 
     #@-others
