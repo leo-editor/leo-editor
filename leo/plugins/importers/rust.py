@@ -47,7 +47,11 @@ class Rust_Importer(Importer):
             tail = re.sub(self.life_pat, '', tail, count=1)
         # Remove trailing '(' or '{'
         tail = tail.strip()
-        if tail.endswith(('{', '(')):
+        while tail.endswith(('{', '(')):
+            tail = tail[:-1]
+        # Remove trailing '>' sometimes.
+        tail = tail.strip()
+        if '<' not in tail and tail.endswith('>'):
             tail = tail[:-1]
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
@@ -102,20 +106,7 @@ class Rust_Importer(Importer):
         # Must not be a complete statement.
         if line.find(';') > -1:
             return False
-        # Scan ahead until an open { is seen. the skip count.
-        self.skip = 0
-        while self.skip < 10:
-            if new_state.level() > prev_state.level():
-                return True
-            self.skip += 1
-            i += 1
-            if i < len(lines):
-                line = lines[i]
-                prev_state = new_state
-                new_state = self.scan_line(line, prev_state)
-            else:
-                break
-        return False
+        return True
     #@+node:ekr.20200316114132.1: *3* rust_i.get_new_dict
     #@@nobeautify
 

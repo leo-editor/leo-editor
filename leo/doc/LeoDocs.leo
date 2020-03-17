@@ -2391,6 +2391,7 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
+<v t="ekr.20200317152358.1"><vh>*** Mention rust importer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31458,6 +31459,7 @@ Features and settings
 Bugs
 - Fixed all known bugs, including some notable, long-standing bugs.
 </t>
+<t tx="ekr.20200317152358.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
