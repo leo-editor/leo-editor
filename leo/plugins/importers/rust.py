@@ -25,6 +25,7 @@ class Rust_Importer(Importer):
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
     arg_pat = re.compile(r'\((.*)\)')
     type_pat = re.compile(r'(\s*->.*)(\{|\()')
+    life_pat = re.compile(r'(\<.*\>)')
 
     def clean_headline(self, s, p=None):
         '''
@@ -41,14 +42,17 @@ class Rust_Importer(Importer):
         tail = m.group(3) or ''.strip()
         tail = re.sub(self.arg_pat, '', tail, count=1)
         tail = re.sub(self.type_pat, '', tail, count=1)
+        if not head.startswith('impl'):
+            tail = re.sub(self.life_pat, '', tail, count=1)
         # Remove trailing '(' or '{'
         tail = tail.strip()
         if tail.endswith(('{', '(')):
             tail = tail[:-1]
+        # Clean the lifetime, but only if something else exists.
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
-    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\b(.*)')
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct)\b(.*)')
 
     def match_start_patterns(self, line):
         '''
