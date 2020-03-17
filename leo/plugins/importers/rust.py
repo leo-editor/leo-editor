@@ -23,7 +23,6 @@ class Rust_Importer(Importer):
       
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
-    clean_pat = re.compile(r'^\s*(pub\b)?\s*(enum|fn|impl|struct)\b(.*)')
     arg_pat = re.compile(r'\((.*)\)')
     type_pat = re.compile(r'(\s*->.*)(\{|\()')
 
@@ -32,7 +31,7 @@ class Rust_Importer(Importer):
         Remove argument list and return value.
         '''
         s = s.strip()
-        m = self.clean_pat.match(s)
+        m = self.func_pattern.match(s)
         if not m:
             return s
         g1 = m.group(1) or ''
@@ -92,9 +91,8 @@ class Rust_Importer(Importer):
                 add_key(d, block1, ('len', block1, block1, None))
         return d
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
-    ### func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\s*(\w*)(.*)')
-
-    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\b')
+    # clean_headline also uses this pattern.
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|struct)\b(.*)')
 
     def match_start_patterns(self, line):
         '''
