@@ -4000,6 +4000,21 @@ class Commands:
         # faster than the old: there is no need to sort positions.
         #@-<< theory of operation >>
         c = self
+        # =====================================================================
+        # new implementation disabled by default
+        # vitalije 2020-03-17 17:29 
+        if False:
+            def p2link(p):
+                parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+                return p._childIndex, parent_v
+            links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+            for i, v in links_to_be_cut:
+                ch = v.children.pop(i)
+                ch.parents.remove(v)
+            if redraw:
+                c.redraw()
+            return
+        # ======================end of new implementation=======================
         # Verify all positions *before* altering the tree.
         aList2 = []
         for p in aList:
