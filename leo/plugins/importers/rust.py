@@ -56,7 +56,7 @@ class Rust_Importer(Importer):
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
-    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct)\b(.*)')
+    func_pattern = re.compile(r'\s*(pub )?\s*(enum|fn|impl|mod|struct|trait)\b(.*)')
 
     def match_start_patterns(self, line):
         '''
