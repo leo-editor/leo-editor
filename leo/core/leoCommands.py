@@ -3871,13 +3871,9 @@ class Commands:
         u.afterChangeGroup(parent, undoType, undoData)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
-    def deletePositionsInList(self, aList, callback=None, redraw=True):
+    def deletePositionsInList(self, aList, redraw=True):
         """
-        Delete all vnodes corresponding to the positions in aList. If a
-        callback is given, the callback is called for every node in the list.
-
-        The callback takes one explicit argument, p. As usual, the callback can
-        bind values using keyword arguments.
+        Delete all vnodes corresponding to the positions in aList.
 
         This is *very* tricky code. The theory of operation section explains why.
         """
@@ -3999,51 +3995,19 @@ class Commands:
         # solid foundation. Moreover, the new algorithm should be considerably
         # faster than the old: there is no need to sort positions.
         #@-<< theory of operation >>
+        # New implementation by Vitalije 2020-03-17 17:29 
         c = self
-        # =====================================================================
-        # new implementation disabled by default
-        # vitalije 2020-03-17 17:29 
-        if False:
-            def p2link(p):
-                parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-                return p._childIndex, parent_v
-            links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
-            for i, v in links_to_be_cut:
-                ch = v.children.pop(i)
-                ch.parents.remove(v)
-            if redraw:
-                c.redraw()
-            return
-        # ======================end of new implementation=======================
-        # Verify all positions *before* altering the tree.
-        aList2 = []
-        for p in aList:
-            if c.positionExists(p):
-                aList2.append(p.copy())
-            else:
-                g.trace('invalid position', p)
-        if not aList2:
-            return  # Don't redraw the screen unless necessary!
-        # Delete p.v for all positions p in reversed(sorted(aList2)).
-        if callback:
-            for p in reversed(sorted(aList2)):
-                if c.positionExists(p):
-                    callback(p)
-        else:
-            for p in reversed(sorted(aList2)):
-                if c.positionExists(p):
-                    v = p.v
-                    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-                    if v in parent_v.children:
-                        childIndex = parent_v.children.index(v)
-                        v._cutLink(childIndex, parent_v)
-        # Make sure c.hiddenRootNode always has at least one child.
-        if not c.hiddenRootNode.children:
-            v = leoNodes.VNode(context=c)
-            v._addCopiedLink(childIndex=0, parent_v=c.hiddenRootNode)
+
+        def p2link(p):
+            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            return p._childIndex, parent_v
+
+        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+        for i, v in links_to_be_cut:
+            ch = v.children.pop(i)
+            ch.parents.remove(v)
         if redraw:
-            c.selectPosition(c.rootPosition())
-                # Calls redraw()
+            c.redraw()
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict
