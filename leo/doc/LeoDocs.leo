@@ -2391,7 +2391,6 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
-<v t="ekr.20200317152358.1"><vh>*** Mention rust importer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31321,7 +31320,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Improved the beautify-files command. Added the diff-beautify-files commands.
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
   Leo's fstringify and beautify commands use these classes.
-- Added an importer for todo.txt files
+- Added an importer for todo.txt files.
+- Added an importer for rust.
 - Leo's legacy layout is now the default.
 - Fixed all known bugs, including some notable, long-standing bugs.
 - Fixed several "fit and finish" issues.
@@ -31422,7 +31422,10 @@ https://github.com/leo-editor/leo-editor/issues/1508
 
 Replace idle-time handlers with QApplication.processEvents:
 https://groups.google.com/d/msg/leo-editor/EvBDDCybV2E/tnRAZDqXCgAJ
-Changed g.recursiveUNLSearch and QtIconBarClass.goto_command.</t>
+Changed g.recursiveUNLSearch and QtIconBarClass.goto_command.
+
+Rewrote c.deletePositionsInList:
+https://github.com/leo-editor/leo-editor/issues/1539</t>
 <t tx="ekr.20200313053803.1">Leo's legacy layout is now the default:
 https://github.com/leo-editor/leo-editor/issues/1514
 - Add --use-docks option.
@@ -31450,16 +31453,17 @@ At present, they work only w/o docks.</t>
 Code
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
 - This is a major project. See https://github.com/leo-editor/leo-editor/issues/1440
+- Rewrote c.deletePositionsInList. New code by Виталије Милошевић, (Vitalije Milosevic).
  
 Features and settings
 - Added an importer for todo.txt files.
 - Leo's legacy layout is now the default.
 - Removed unused settings from leoSettings.leo.
+- Added an importer for rust.
 
 Bugs
 - Fixed all known bugs, including some notable, long-standing bugs.
 </t>
-<t tx="ekr.20200317152358.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
