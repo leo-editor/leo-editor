@@ -1533,54 +1533,6 @@ class Position:
         p._unlink()
         p._linkAsRoot(oldRoot)
         return p
-    #@+node:ekr.20200317090622.1: *4* p.positionAfterDeleting
-    def positionAfterDeleting(self, p2):
-        """
-        Return self as is *will* be after deleting position p2.
-        
-        Return None if deleting position p2 will delete self.
-        """
-        p = self
-        c = p.v.context
-        
-        def delete(parent, i, v):
-            """Delete v from parent.children."""
-            assert parent.children[i] == v
-            del parent.children[i]
-        
-
-        assert c, g.callers()
-        if p == p2 or p2.isAncestorOf(p):
-            return None
-            
-        # parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-        # children = parent_v.children[i]
-        # i = p._childIndex
-        # j = children.parents.index(parent_v)
-        # del children.parents[j]
-        # del parent_v.children[i]
-            
-               
-        # Stack entries are tuples (v, childIndex).
-        for parent_v, childIndex in p.stack:
-            pass
-        
-        
-        ### parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-            
-
-    ### Ref
-        # def p2link(p):
-            # parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-            # return (p._childIndex, parent_v)
-        
-        # def deletePositionsInList2(aList):
-            # links_to_be_cut = sorted(set(p2link(x) for x in aList), reverse=True)
-            # for i, v in links_to_be_cut:
-                # ch = v.children[i]
-                # j = ch.parents.index(v)
-                # del ch.parents[j]
-                # del v.children[i]
     #@+node:ekr.20180123062833.1: *4* p.promote
     def promote(self):
         """A low-level promote helper."""
