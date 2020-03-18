@@ -2391,6 +2391,7 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
+<v t="ekr.20200317152358.1"><vh>*** Mention rust importer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31433,11 +31434,13 @@ Retired the @bool beautify-autobeautify setting.
 
 Removed many unused settings from leoSettings.leo.
 </t>
-<t tx="ekr.20200313054557.1">Add fstringify-files and diff-fstringify-files commands.
+<t tx="ekr.20200313054557.1">Added fstringify-files and diff-fstringify-files commands.
 
-Improve beautify-files command and add diff-beautify-files command.
+Improved beautify-files command and add diff-beautify-files command.
 
-Restore Leo's pane commands:
+Removed beautify-node and beautify-tree commands.
+
+Restored Leo's pane commands:
 https://github.com/leo-editor/leo-editor/issues/1518
 At present, they work only w/o docks.</t>
 <t tx="ekr.20200313060126.1">Commands
@@ -31456,6 +31459,7 @@ Features and settings
 Bugs
 - Fixed all known bugs, including some notable, long-standing bugs.
 </t>
+<t tx="ekr.20200317152358.1"></t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with

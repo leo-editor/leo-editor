@@ -194,13 +194,12 @@ class Position:
         # whenever any mutable VNode object changes.
         self._childIndex = childIndex
         self.v = v
-        # New in Leo 4.5: stack entries are tuples (v,childIndex).
+        # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.
         else:
             self.stack = []
         g.app.positions += 1
-        # self.txtOffset = None # see self.textOffset()
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
     def __eq__(self, p2):
         """Return True if two positions are equivalent."""
