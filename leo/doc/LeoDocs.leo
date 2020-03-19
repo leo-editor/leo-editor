@@ -31336,8 +31336,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Improved the beautify-files command. Added the diff-beautify-files commands.
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
   Leo's fstringify and beautify commands use these classes.
-- Added an importer for todo.txt files.
-- Added an importer for rust.
+- Added importers for the rust language and todo.txt files.
+- Added the viewrendered3 plugin.
 - Leo's legacy layout is now the default.
 - Fixed all known bugs, including some notable, long-standing bugs.
 - Fixed several "fit and finish" issues.
@@ -31460,22 +31460,23 @@ Removed beautify-node and beautify-tree commands.
 Restored Leo's pane commands:
 https://github.com/leo-editor/leo-editor/issues/1518
 At present, they work only w/o docks.</t>
-<t tx="ekr.20200313060126.1">Commands
+<t tx="ekr.20200313060126.1">Commands:
 - Added the fstringify-files and diff-fstringify-files commands.
 - Improved the beautify-files command. Added the diff-beautify-files commands.
 
-Code
+Code:
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
-- This is a major project. See https://github.com/leo-editor/leo-editor/issues/1440
+  See https://github.com/leo-editor/leo-editor/issues/1440
 - Rewrote c.deletePositionsInList. New code by Виталије Милошевић, (Vitalije Milosevic).
  
-Features and settings
-- Added an importer for todo.txt files.
+Features and settings:
+- Added importers for the rust language and todo.txt files.
+- Added the viewrendered3 plugin.
 - Leo's legacy layout is now the default.
 - Removed unused settings from leoSettings.leo.
 - Added an importer for rust.
 
-Bugs
+Bugs:
 - Fixed all known bugs, including some notable, long-standing bugs.
 </t>
 <t tx="ekr.20200319035525.1">The positions passed to p.deletePositionsInList only *specify* the desired
