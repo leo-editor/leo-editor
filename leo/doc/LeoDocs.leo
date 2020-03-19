@@ -1544,6 +1544,7 @@
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
+<v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
 <v t="ekr.20150210062226.4"><vh>The Mulder/Ream update algorithm</vh>
@@ -2391,6 +2392,7 @@
 </v>
 <v t="ekr.20200312084115.1"><vh>Token Order Classes.md</vh></v>
 </v>
+<v t="ekr.20131008041326.16341"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31463,6 +31465,176 @@ Features and settings
 
 Bugs
 - Fixed all known bugs, including some notable, long-standing bugs.
+</t>
+<t tx="ekr.20200319035525.1">The positions passed to p.deletePositionsInList only *specify* the desired
+changes; the only way to *make* those changes is to operate on vnodes!
+
+Consider this outline, containing no clones::
+
+    + ROOT
+      - A
+      - B
+
+The fundamental problem is this. If we delete node A, the index of
+node B in ROOT.children will change. This problem has (almost) nothing
+to do with clones or positions.
+
+**Proof that c.deletePositionsInList is correct**
+
+Clearly, deleting a positions ultimately means changing vnodes,
+specifically, v.parents and v.children for v in some set of vnodes. We must
+show that the particular set of changed vnodes in the new code is the
+correct set of vnodes, and that the changes made to that set are correct.
+This is far from obvious at first glance.
+
+**The new code**
+
+Here is Vitalije's version of c.deletePositionsInList, without the docstring::
+
+@language python
+    def deletePositionsInList(self, aList):
+        c = self
+        
+        # Ensure all positions are valid.
+        aList = [p for p in aList if c.positionExists(p)]
+        if not aList:
+            return
+    
+        def p2link(p):
+            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+            return p._childIndex, parent_v
+    
+        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+    
+        # The main loop.
+        for i, v in links_to_be_cut:
+            child_v = v.children.pop(i)
+            child_v.parents.remove(v)
+        
+@language rest
+To begin the proof, note that the main loop has the expected "form". That
+is, when we delete a node, we will:
+
+1. Delete child_v = v.children[i] for some v and i.
+
+2. Delete child_v from its parents array.
+
+v.parents is an unordered array, so child_v.parents.remove(v) is all that
+is needed. This line might crash if one of the positions is invalid. It
+will also crash if v is not present in child_v.parents. I'll discuss this
+later.
+
+To complete the proof, we must show that the main loop deletes all and only
+those vnodes implied by the positions in aList. We can tentatively assume
+that the main loop will work properly if that data in links_to_be_cut is
+correct, but there some subtleties lurking here which I'll discuss later.
+
+The following code creates links_to_be_cut::
+    
+@language python
+
+    def p2link(p):
+        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+        return p._childIndex, parent_v
+
+    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+
+@language rest
+This is elegant (compressed) code. Let's examine it carefully...
+
+p2link produces tuples (childIndex, parent_v). These become bound to i, v
+in the main loop::
+
+@language python
+    # The main loop.
+    for i, v in links_to_be_cut:
+        child_v = v.children.pop(i)
+        child_v.parents.remove(v)
+        
+@language rest
+To make this work, parent_v must be the vnode whose i'th child should be
+deleted. This line does that::
+
+@language python
+    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+
+@language rest
+- p.stack entries have the form (v, childIndex), so p.stack[-1] is the
+  position p's immediate parent vnode, if p has a parent. Otherwise,
+  c.hiddenRootNode is the proper parent vnode.
+
+- p._childIndex is also the correct value for i.
+
+We have just proved the following:
+    
+    *Deleting position p means executing the main loop for (i, v) returned by p2link(p).*
+
+**Sorting and filtering**
+
+The following line filters and sorts the results produced by p2link::
+
+@language python
+    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0]
+
+@language rest
+Let's break this into parts, from "inside" to "outside"
+
+- map(p2link, aList) applies p2link to every position in aList.
+  The result is a list of tuples (i, v). It may contain duplicates.
+
+- set(map(p2link, aList) removes those duplicates.
+  Let **theSet** be set(map(p2link, aList).
+
+- Finally, sorted(theSet, key=lambda x:-x[0]) creates a generator
+  equivalent to a sorted list.
+
+The generator will deliver the tuples (i, v) in descending order of i, when
+several tuples (i, v) have the same vnode. The generator does not order
+tuples on v, and there is no need to do so.
+
+It's easy to understand the intent of this sort order. The main loop
+contains this line::
+
+    child_v = v.children.pop(i)
+
+The sort order means that pop(i) happens before pop(j) if i &gt; j. This
+ensures that the precomputed values of i won't change in the main loop.
+
+**Completing the proof**
+
+The algorithm appears sound. The tuples (i, v) computed from p2link(p)
+correctly describe the work to be done. Filtering ensures that the work is
+done once. Sorting ensuress that child indices i will not change during the
+main loop.
+
+The (i, v) tuples are sorted on i, but not v. aList can contain positions
+in any order, so we know only that for any particular vnode v the main loop
+will handle tuples (i1, v), (i2, v), ... in the correct order.
+
+There are two final questions to consider:
+
+First, does the order in which the main loop handles vnodes matter?
+
+No. The vnode data are independent. The main loop works regardless of
+whether a vnode has already been unlinked.
+
+Second, could the following lines ever fail?
+::
+
+    child_v = v.children.pop(i)
+    child_v.parents.remove(v)
+
+No. Sorting and filtering ensure that (i, v) are unique. v is guaranteed to
+be in child_v.parents because v.children[i] must exist.
+
+This concludes the proof.
+
+**Discussion**
+
+The algorithm is sound because the tuples (i, v) contain no duplicates. For
+any particular v, the main loop will process the set of tuples (i, v) in
+descending order of i. This resolves the question of whether deleting
+already deleted positions is valid.
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
