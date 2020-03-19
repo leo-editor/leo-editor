@@ -8,7 +8,8 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Improved the beautify-files command. Added the diff-beautify-files commands.
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
   Leo's fstringify and beautify commands use these classes.
-- Added an importer for todo.txt files
+- Added importers for the rust language and todo.txt files.
+- Added the viewrendered3 plugin.
 - Leo's legacy layout is now the default.
 - Fixed all known bugs, including some notable, long-standing bugs.
 - Fixed several "fit and finish" issues.
