@@ -3874,129 +3874,15 @@ class Commands:
     def deletePositionsInList(self, aList, redraw=True):
         """
         Delete all vnodes corresponding to the positions in aList.
-
-        This is *very* tricky code. The theory of operation section explains why.
+        
+        See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
-        #@+<< theory of operation >>
-        #@+node:ekr.20150312080344.8: *5* << theory of operation >> (deletePositionsInList)
-        #@@language rest
-        #@+at
-        # The Aha: the positions passed to p.deletePositionsInList only
-        # *specify* the desired changes; the only way to *make* those changes is
-        # to operate on vnodes!
-        #
-        # Consider this outline, containing no clones::
-        #
-        #     + ROOT
-        #       - A
-        #       - B
-        #
-        # The fundamental problem is this. If we delete node A, the index of
-        # node B in ROOT.children will change. This problem has (almost) nothing
-        # to do with clones or positions.
-        #
-        # To make this concrete, let's look at the *vnodes* that represent this
-        # tree. It is the vnodes, and *not* the positions, that represent all of
-        # Leo's data. Let ROOT, A and B be the vnodes corresponding to the nodes
-        # ROOT, A and B. ROOT.children will look like this at first::
-        #
-        #     ROOT.children = [A,B]
-        #
-        # That is, the children array contains references (links) to both A and
-        # B. After deleting A, we will have::
-        #
-        #     ROOT.children = [B]
-        #
-        # As you can see, the reference to B is at index 1 of ROOT.children
-        # before deleting A, and at index 0 of ROOT.children after deleting A.
-        # Thus, *any* position referring to B will become invalid after deleting
-        # A.
-        #
-        # Several people, including myself, have proposed an unsound
-        # solution--just delete positions in reverse order, so that B will be
-        # deleted before A. This idea has appeal, but it is wrong. Here is an
-        # outline that shows that there is *no* correct order for deleting
-        # positions. All A' nodes are clones of each other::
-        #
-        #     + ROOT
-        #       + A'
-        #         - B # at position p1
-        #       + A'
-        #         - B # at position p2
-        #
-        # **Important**: B is *not* a clone. Also note that there is only *one*
-        # node called A and *one* node called B. The children arrays will look
-        # like::
-        #
-        #     ROOT.children = [A,A]
-        #     A.children = [B]
-        #     B.children = []
-        #
-        # It surely must be reasonable to pass either *or both* positions p1 and
-        # p2 to p.deletePositionsInList. But after deleting the B corresponding
-        # to p1, the children arrays will look like:
-        #
-        #     ROOT.children = [A,A]
-        #     A.children = []
-        #     B.children = [] # B is no longer referenced anywhere!
-        #
-        # So if p.deletePositionsInList attempts to delete position p2 (from A),
-        # B will no longer appear in A.children!
-        #
-        # There are many other cases that we could discuss, but the conclusion
-        # in all cases is that we must use the positions passed to
-        # p.deletePositionsInList only as *hints* about what to do.
-        #
-        # Happily, there is a simple strategy that sidesteps all the
-        # difficulties:
-        #
-        # Step 1. Verify, *before* making any changes to the outline, that all
-        # the positions passed to p.deletePositionsInList *initially* make
-        # sense.
-        #
-        # Step 2. Treat each position as a "request" to delete *some* vnode from
-        # the children array in the *position's* parent vnode.
-        #
-        # This is just a bit subtle. Let me explain it in detail.
-        #
-        # First, recall that vnodes do not have unique parent vnodes. Because of
-        # clones, a vnode may may have *many* parents. Happily, every position
-        # *does* specify a unique parent (vnode) at that position.
-        #
-        # Second, as shown above, there is no way to order positions such that
-        # all later positions remain valid. As the example above shows, deleting
-        # (the vnode corresponding to) a position P may cause *all* later
-        # positions referring to P.v to refer to *already deleted* vnodes.
-        #
-        # In other words, we simply *must* ignore the child indices in
-        # positions. Given a position P, P.parent is well defined. So Step 2
-        # above will simply delete the *first* element in P.parent.children
-        # containing P.v.
-        #
-        # As we have seen, there may not even *be* any such element of
-        # P.parent.children: a previous delete may have already deleted the last
-        # item of P.parent.children equal to P.v. That should *not* be
-        # considered an error--Step 1 has ensured that all positions
-        # *originally* did make sense.
-        #
-        # Summary
-        #
-        # Positions passed to p.deletePositionsInList specify *vnodes* to be
-        # deleted from specific parents, but they do *not* specify at what index
-        # in the parent.children array (if any!) those vnodes are to be found.
-        # The algorithm will delete the *first* item in the children array that
-        # references the vnode to be deleted.
-        #
-        # This will almost always be good enough. In the unlikely event that
-        # more control is desired, p.deletePositionsInList can not possibly be
-        # used.
-        #
-        # The new emphasis on vnodes at last puts the problem an a completely
-        # solid foundation. Moreover, the new algorithm should be considerably
-        # faster than the old: there is no need to sort positions.
-        #@-<< theory of operation >>
         # New implementation by Vitalije 2020-03-17 17:29 
         c = self
+        # Ensure all positions are valid.
+        aList = [p for p in aList if c.positionExists(p)]
+        if not aList:
+            return
 
         def p2link(p):
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
