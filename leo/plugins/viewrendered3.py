@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file d:/Tom/devel/leo/plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
 """
@@ -2710,11 +2710,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(f'show_toolbar(): {type(e)}: {e}')
             return
 
-        if _toolbar and _toolbar.isHidden():
-            try:
+        try:
+            if _toolbar and _toolbar.isHidden():
                 _toolbar.setVisible(True)
-            except RuntimeError as e:
-                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
+        except RuntimeError as e:
+            g.es('show_toolbar(): %s: %s' % (type(e), e))
     #@+node:TomP.20191226055702.1: *3* vr3.hide_toolbar
     def hide_toolbar(self):
         _toolbar = self.vr3_toolbar
