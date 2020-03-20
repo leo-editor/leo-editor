@@ -51,7 +51,9 @@ class LeoQtTree(leoFrame.LeoTree):
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_update = False  # true when update on idle needed
-        if 0:  # EKR: This looks like a bad idea.
+        if 1:
+            # For Leo 6.2, these calls should be enabled.
+            # See #1536.
             g.registerHandler('save1', self.clear_visual_icons)
             g.registerHandler('headkey2', self.update_appearance)
             g.registerHandler('idle', self.update_appearance_idle)
