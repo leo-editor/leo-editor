@@ -171,7 +171,7 @@ def deletenodes_rclick(c,p,menu):
             c.selectPosition(c.rootPosition())
         c.redraw()
     #@-<< define deletenodes_rclick_cb >>
-    action = menu.addAction("Delete")
+    action = menu.addAction("Delete Node")
     action.triggered.connect(deletenodes_rclick_cb)
 #@+node:ville.20090701110830.10215: *3* editnode_rclick
 def editnode_rclick(c,p,menu):
