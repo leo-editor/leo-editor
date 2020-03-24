@@ -310,13 +310,9 @@ def openwith_rclick(c,p,menu):
 #@+node:ville.20090630221949.5462: *3* refresh_rclick
 def refresh_rclick(c,p,menu):
 
-    # define callback.
-    #@+others
-    #@+node:ekr.20140613141207.17671: *4* refresh_rclick_cb
     def refresh_rclick_cb():
-
         c.refreshFromDisk()
-    #@-others
+
     split = p.h.split(None,1)
     if len(split) >= 2 and p.anyAtFileNodeName():
         action = menu.addAction("Refresh from disk")
