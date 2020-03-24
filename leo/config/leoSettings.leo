@@ -12583,21 +12583,24 @@ a single @data contextmenu_commands node. </t>
 # for these settings to take effect.
 
 # Add commands to contextmenu
-# The format is &lt;command&gt; SPACE &lt;description&gt;
+# The format is *either*:
+#   &lt;command&gt; SPACE &lt;description&gt;
+# *or( a single "-" giving a menu separator.
 
-# stickynote Create a sticky note
-# read-at-file-nodes Read in file nodes
-
+undo Undo
+redo Redo
+-
 copy-text Copy Text
 cut-text Cut Text
-delete-text Delete Text
 paste-text Paste Text
 select-all Select All Text
-
+-
 copy-node Copy Node
 cut-node Cut Node
+delete-node Delete Node
 paste-node Paste Node
-paste-retaining-clones Paste Node As Clone</t>
+paste-retaining-clones Paste Node As Clone
+-</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>

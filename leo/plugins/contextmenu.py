@@ -91,10 +91,18 @@ def init ():
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
     handlers = [
-        openwith_rclick, refresh_rclick, editnode_rclick,
-        nextclone_rclick, marknodes_rclick,
-        configuredcommands_rclick, deletenodes_rclick,
-        openurl_rclick,pylint_rclick]
+        # Add user-specified items first.
+        configuredcommands_rclick,
+        # Add the rest...
+        openwith_rclick,
+        refresh_rclick,
+        editnode_rclick,
+        nextclone_rclick,
+        marknodes_rclick,
+        # deletenodes_rclick,
+        openurl_rclick,
+        pylint_rclick,
+    ]
     g.tree_popup_handlers.extend(handlers)
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
@@ -105,11 +113,15 @@ def configuredcommands_rclick(c, p, menu):
         return
     cmds = [z.split(None,1) for z in config]
     for data in cmds:
+        # Leo 6.2: Allows separator.
+        if data == ["-"]:
+            menu.addSeparator()
+            continue
         # Fix #1084
         try:
             cmd, desc = data
         except ValueError:
-            g.es_print('Invalid @data contextmenu_commands')
+            g.es_print(f"Bad @data contextmenu_commands entry: {data!r}")
             continue
         desc = desc.strip()
         action = menu.addAction(desc)
