@@ -11,10 +11,13 @@ The TokenOrderGenerator class unifies python's token-based and ast-based
 worlds by creating two-way links between tokens in the token list and ast
 nodes in the parse tree.
 
-# Project documentation and status:
+# Project documentation:
     
-    See the first comment of Leo issue #1440:
-        https://github.com/leo-editor/leo-editor/issues/1440
+    The first comment of Leo issue #1440:
+    https://github.com/leo-editor/leo-editor/issues/1440
+    
+    Leo's Appendices:
+    http://leoeditor.com/appendices.html#appendices
         
 ===== Example 1: Create links for the given file.
     

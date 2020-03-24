@@ -47,6 +47,7 @@ import leo.core.leoGlobals as g
 import os
 import subprocess
 from leo.core.leoQt import QtCore
+from leo.core.leoGui import LeoKeyEvent
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
@@ -90,34 +91,49 @@ def init ():
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
     handlers = [
-        openwith_rclick, refresh_rclick, editnode_rclick,
-        nextclone_rclick, marknodes_rclick,
-        configuredcommands_rclick, deletenodes_rclick,
-        openurl_rclick,pylint_rclick]
+        # Add user-specified items first.
+        configuredcommands_rclick,
+        # Add the rest...
+        openwith_rclick,
+        refresh_rclick,
+        editnode_rclick,
+        nextclone_rclick,
+        marknodes_rclick,
+        # deletenodes_rclick,
+        openurl_rclick,
+        pylint_rclick,
+    ]
     g.tree_popup_handlers.extend(handlers)
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
-def configuredcommands_rclick(c,p,menu):
-    """ Provide "edit in EDITOR" context menu item """
+def configuredcommands_rclick(c, p, menu):
+    """Add all items given by @data contextmenu-commands"""
     config = c.config.getData('contextmenu_commands')
-    if config:
-        cmds = [el.split(None,1) for el in config]
-        for data in cmds:
-            # Fix #1084
-            try:
-                cmd, desc = data
-            except ValueError:
-                g.es_print('Invalid @data contextmenu_commands')
-                continue
-            desc = desc.strip()
-            action = menu.addAction(desc)
-            # action.setToolTip(cmd)
+    if not config:
+        return
+    cmds = [z.split(None,1) for z in config]
+    for data in cmds:
+        # Leo 6.2: Allows separator.
+        if data == ["-"]:
+            menu.addSeparator()
+            continue
+        # Fix #1084
+        try:
+            cmd, desc = data
+        except ValueError:
+            g.es_print(f"Bad @data contextmenu_commands entry: {data!r}")
+            continue
+        desc = desc.strip()
+        action = menu.addAction(desc)
 
-            def create_callback(cm):
-                return lambda: c.k.simulateCommand(cm)
-        
-            configcmd_rclick_cb = create_callback(cmd)
-            action.triggered.connect(configcmd_rclick_cb)
+        def create_callback(cm):
+            w = g.app.gui.get_focus(c)
+            wrapper = getattr(w, 'wrapper', None)
+            key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
+            return lambda: c.k.simulateCommand(cm, event=key_event)
+    
+        configcmd_rclick_cb = create_callback(cmd)
+        action.triggered.connect(configcmd_rclick_cb)
 
 #@+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
 def deletenodes_rclick(c,p,menu):
@@ -171,7 +187,7 @@ def deletenodes_rclick(c,p,menu):
             c.selectPosition(c.rootPosition())
         c.redraw()
     #@-<< define deletenodes_rclick_cb >>
-    action = menu.addAction("Delete")
+    action = menu.addAction("Delete Node")
     action.triggered.connect(deletenodes_rclick_cb)
 #@+node:ville.20090701110830.10215: *3* editnode_rclick
 def editnode_rclick(c,p,menu):
@@ -310,13 +326,9 @@ def openwith_rclick(c,p,menu):
 #@+node:ville.20090630221949.5462: *3* refresh_rclick
 def refresh_rclick(c,p,menu):
 
-    # define callback.
-    #@+others
-    #@+node:ekr.20140613141207.17671: *4* refresh_rclick_cb
     def refresh_rclick_cb():
-
         c.refreshFromDisk()
-    #@-others
+
     split = p.h.split(None,1)
     if len(split) >= 2 and p.anyAtFileNodeName():
         action = menu.addAction("Refresh from disk")
