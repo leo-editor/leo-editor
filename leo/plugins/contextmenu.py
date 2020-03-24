@@ -47,6 +47,7 @@ import leo.core.leoGlobals as g
 import os
 import subprocess
 from leo.core.leoQt import QtCore
+from leo.core.leoGui import LeoKeyEvent
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
@@ -97,27 +98,30 @@ def install_handlers():
     g.tree_popup_handlers.extend(handlers)
 #@+node:ekr.20140724211116.19255: ** Handlers
 #@+node:ville.20091008192104.7691: *3* configuredcommands_rclick
-def configuredcommands_rclick(c,p,menu):
-    """ Provide "edit in EDITOR" context menu item """
+def configuredcommands_rclick(c, p, menu):
+    """Add all items given by @data contextmenu-commands"""
     config = c.config.getData('contextmenu_commands')
-    if config:
-        cmds = [el.split(None,1) for el in config]
-        for data in cmds:
-            # Fix #1084
-            try:
-                cmd, desc = data
-            except ValueError:
-                g.es_print('Invalid @data contextmenu_commands')
-                continue
-            desc = desc.strip()
-            action = menu.addAction(desc)
-            # action.setToolTip(cmd)
+    if not config:
+        return
+    cmds = [z.split(None,1) for z in config]
+    for data in cmds:
+        # Fix #1084
+        try:
+            cmd, desc = data
+        except ValueError:
+            g.es_print('Invalid @data contextmenu_commands')
+            continue
+        desc = desc.strip()
+        action = menu.addAction(desc)
 
-            def create_callback(cm):
-                return lambda: c.k.simulateCommand(cm)
-        
-            configcmd_rclick_cb = create_callback(cmd)
-            action.triggered.connect(configcmd_rclick_cb)
+        def create_callback(cm):
+            w = g.app.gui.get_focus(c)
+            wrapper = getattr(w, 'wrapper', None)
+            key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
+            return lambda: c.k.simulateCommand(cm, event=key_event)
+    
+        configcmd_rclick_cb = create_callback(cmd)
+        action.triggered.connect(configcmd_rclick_cb)
 
 #@+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
 def deletenodes_rclick(c,p,menu):

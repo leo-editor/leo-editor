@@ -2318,6 +2318,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ville.20091008201813.3911"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12586,6 +12587,12 @@ a single @data contextmenu_commands node. </t>
 
 # stickynote Create a sticky note
 # read-at-file-nodes Read in file nodes
+
+copy-text Copy Text
+cut-text Cut Text
+delete-text Delete Text
+paste-text Paste Text
+select-all Select All Text
 
 copy-node Copy Node
 cut-node Cut Node
