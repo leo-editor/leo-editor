@@ -629,7 +629,7 @@
 <v t="ekr.20141108064630.16"><vh>How can I put background images in the body pane?</vh></v>
 <v t="ekr.20180529064307.1"><vh>How can I run code at startup?</vh></v>
 <v t="ekr.20180619051649.1"><vh>How can I sync settings across .leo files?</vh></v>
-<v t="ekr.20160304081437.3"><vh>How can I use a dark theme in Leo?</vh></v>
+<v t="ekr.20160304081437.3"><vh>How do I enable a theme .leo file?</vh></v>
 <v t="ekr.20060805094325"><vh>How can I use Leo's legacy key bindings?</vh></v>
 <v t="ekr.20050830120844"><vh>How do I add a new menu item from a plugin?</vh></v>
 <v t="ekr.20110531155858.20564"><vh>How do I set selection colors?</vh></v>
@@ -20905,6 +20905,19 @@ At one time I thought the following might work, but it appears that it doesn't:
 <t tx="ekr.20160304081437.3">To enable a theme .leo file, put the following setting in myLeoSettings.leo::
 
     @string theme-name = &lt;theme file, without the .leo extension&gt;
+    
+Dark themes::
+
+    @string theme-name = BreezeDarkTheme
+    @string theme-name = EKRDark
+    @string theme-name = LeoBlackSolarized
+    @string theme-name = ZephyrDarkTheme
+    
+Light themes::
+
+    @string theme-name = DefaultTheme
+    @string theme-name = EKRLight
+    @string theme-name = PaperLightTheme
 
 You can also define a theme directly in myLeoSettings.leo as follows:
 
@@ -31326,7 +31339,7 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
-<t tx="ekr.20200225075435.1">Leo 6.2-b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20200225075435.1">Leo 6.2 final, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
