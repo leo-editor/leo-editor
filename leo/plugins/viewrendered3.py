@@ -370,7 +370,7 @@ JAVASCRIPT = 'javascript'
 JAVA = 'java'
 C = 'c'
 CSS = 'css'
-RESPONSE = 'response'
+#RESPONSE = 'response'
 TEXT = 'text'
 
 VR3_TEMP_FILE = 'leo_rst_html.html'
