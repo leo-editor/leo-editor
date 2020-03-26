@@ -994,7 +994,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
-    <head>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">        
+    <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     <script type="text/javascript" src="{self.mathjax_url}"></script>
@@ -1881,7 +1882,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
                 return _html
 
-        _html = self.md_header + s
+        _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
         return _html
         #@-others
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
