@@ -33,7 +33,7 @@ leoVersion.version:     Leo's version number.
 # 5.9:    May 5, 2019.
 # 6.0:    August 2, 2019.
 # 6.1:    November 8, 2019.
-# 6.2-b1  March 19, 2020.
+# 6.2:    March 27, 2020.
 #@-<< version dates >>
 version = '6.2 final'
 static_date = 'March 27, 2020'
