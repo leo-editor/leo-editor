@@ -1164,8 +1164,8 @@
 </v>
 <v t="ekr.20180403104558.1"><vh>@menu &amp;Beautify Text</vh>
 <v t="ekr.20170316105542.1"><vh>@item beautify-&amp;c</vh></v>
-<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-node</vh></v>
-<v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;tree</vh></v>
+<v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-files</vh></v>
+<v t="ekr.20131213135427.22268"><vh>@item &amp;diff-beautify-files</vh></v>
 </v>
 <v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize Text</vh>
 <v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
@@ -2318,7 +2318,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ville.20091008201813.3911"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

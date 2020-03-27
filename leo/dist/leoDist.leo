@@ -1669,9 +1669,9 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - tools/webroot/*  go to top of website, e.g.
       tools/webroot/load-leo.html --&gt; http://leoeditor.com/load-leo.html</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
-- Run the "check-bindings" button in leoSettings.leo.
-- Run all unit tests with Python 3.
-- Run pylint (EKR's ll -a script) with with Python 3.
+- Run all "check" buttons in leoSettings.leo.
+- Run all unit tests, on Windows and Linux.
+- Run pylint (EKR's ll -a script).
 </t>
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
