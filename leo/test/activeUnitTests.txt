@@ -12674,6 +12674,9 @@ if 0:
     print(path12,g.os.path.abspath(path12))
     print(path13,g.os.path.abspath(path13))
 #@+node:ekr.20071113145804.19: *4* @test g.pdb
+# This test causes segmentation fault on Linux
+# vitalije: 27-03-2020
+self.skipTest("causes seg-fault on Linux")
 import sys
 
 # Not a good unit test; it probably will never fail.
@@ -22742,12 +22745,7 @@ try:
 except ImportError:
     self.skipTest('No docutils')
 
-path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
-module = g.importFromPath(
-    moduleName='leo_pdf',
-    path=path,
-    verbose = False)
-assert module
+import leo.plugins.leo_pdf
 s = '''This is a test.'''
 result = c.rstCommands.writeToDocutils(p,s,'.pdf')
 assert result,result
