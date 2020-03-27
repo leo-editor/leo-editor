@@ -38,6 +38,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items = []
         self.item2positionDict = {}
         self.item2vnodeDict = {}
+        self.nodeIconsDict = {} # keys are gnx, values are declutter generated icons
         self.position2itemDict = {}
         self.vnode2itemsDict = {}  # values are lists of items.
         self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
@@ -50,13 +51,7 @@ class LeoQtTree(leoFrame.LeoTree):
         #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
-        self.declutter_update = False  # true when update on idle needed
-        if 1:
-            # For Leo 6.2, these calls should be enabled.
-            # See #1536.
-            g.registerHandler('save1', self.clear_visual_icons)
-            g.registerHandler('headkey2', self.update_appearance)
-            g.registerHandler('idle', self.update_appearance_idle)
+
         if 0:  # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -313,32 +308,6 @@ class LeoQtTree(leoFrame.LeoTree):
 
     redraw = full_redraw
     redraw_now = full_redraw
-    #@+node:tbrown.20150807093655.1: *5* qtree.clear_visual_icons
-    def clear_visual_icons(self, tag, keywords):
-        """clear_visual_icons - remove 'declutter' icons before save
-
-        this method must return None to tell Leo to continue normal processing
-
-        :param str tag: 'save1'
-        :param dict keywords: Leo hook keywords
-        """
-
-        if not self.use_declutter:
-            return None
-
-        c = keywords['c']
-        if c != self.c:
-            return None
-
-        if c.config.getBool('tree-declutter', default=False):
-            com = c.editCommands
-            for nd in c.all_unique_positions():
-                icons = [i for i in com.getIconList(nd) if 'visualIcon' not in i]
-                com.setIconList(nd, icons, False)
-
-        self.declutter_update = True
-
-        return None
     #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node & helpers
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
@@ -382,14 +351,13 @@ class LeoQtTree(leoFrame.LeoTree):
                             self.declutter_style(arg, c, cmd, item, new_icons)
                     break  # Don't try pattern.search if pattern.match succeeds.
         com = c.editCommands
-        allIcons = com.getIconList(p)
-        icons = [i for i in allIcons if 'visualIcon' not in i]
-        if len(allIcons) != len(icons) or new_icons:
+        p_icons = com.getIconList(p)
+        old_icons = set(x.get('relPath', '') for x in self.nodeIconsDict.get(p.gnx, []))
+        new_icons = [x for x in new_icons if x not in old_icons]
+        if new_icons:
             for icon in new_icons:
-                com.appendImageDictToList(
-                    icons, icon, 2, on='vnode', visualIcon='1'
-                )
-            com.setIconList(p, icons, False)
+                com.appendImageDictToList(p_icons, icon, 2)
+            self.nodeIconsDict[p.gnx] = p_icons
     #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace
     def declutter_replace(self, arg, cmd, item, m, pattern, text):
         """
@@ -538,47 +506,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.position2itemDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
-    #@+node:tbrown.20150808075906.1: *5* qtree.update_appearance (no longer used)
-    def update_appearance(self, tag, keywords):
-        """clear_visual_icons - update appearance, but can't call
-        self.full_redraw() now, so just set a flag to do it on idle.
-
-        :param str tag: 'headkey2'
-        :param dict keywords: Leo hook keywords
-        """
-        if not self.use_declutter:
-            return None
-        c = keywords['c']
-        if c != self.c:
-            return None
-        self.declutter_update = True
-        return None
-    #@+node:tbrown.20150808082111.1: *5* qtree.update_appearance_idle (no longer used)
-    def update_appearance_idle(self, tag, keywords):
-        """clear_visual_icons - update appearance now we're safely out of
-        the redraw loop.
-
-        :param str tag: 'idle'
-        :param dict keywords: Leo hook keywords
-        """
-        if not self.use_declutter:
-            return None
-        c = keywords['c']
-        if c != self.c:
-            return None
-
-        if isinstance(QtWidgets.QApplication.focusWidget(), QtWidgets.QLineEdit):
-            # when search results are found in headlines headkey2 fires
-            # (on the second search hit in a headline), and full_redraw()
-            # below takes the headline out of edit mode, and Leo crashes,
-            # probably because the find code didn't expect to leave edit
-            # mode.  So don't update when a QLineEdit has focus
-            return None
-
-        if self.declutter_update:
-            self.declutter_update = False
-            c.redraw_later()
-        return None
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p):
 
@@ -980,7 +907,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
     def getCompositeIconImage(self, p, val):
         """Get the icon at position p."""
-        userIcons = self.c.editCommands.getIconList(p)
+        userIcons = self.nodeIconsDict.get(p.gnx, [])
         # Don't take this shortcut - not theme aware, see getImageImage()
         # which is called below - TNB 20130313
             # if not userIcons:
@@ -1001,8 +928,9 @@ class LeoQtTree(leoFrame.LeoTree):
         if not images:
             return None
         hsep = self.c.config.getInt('tree-icon-separation') or 0
-        width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         height = max([i.height() for i in images])
+        images = [i.scaledToHeight(height) for i in images]
+        width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color

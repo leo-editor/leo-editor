@@ -14,6 +14,7 @@ import leo.plugins.qt_frame as qt_frame
 import leo.plugins.qt_idle_time as qt_idle_time
 import leo.plugins.qt_text as qt_text
 import datetime
+import functools
 import re
 import sys
 if 1:
@@ -1080,6 +1081,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_exception()
             return None
     #@+node:ekr.20110605121601.18517: *4* qt_gui.getImageImage
+    @functools.lru_cache(maxsize=128)
     def getImageImage(self, name):
         """Load the image in file named `name` and return it."""
         fullname = self.getImageFinder(name)
@@ -1093,7 +1095,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
     #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder
     dump_given = False
-
+    @functools.lru_cache(maxsize=128)
     def getImageFinder(self, name):
         """Theme aware image (icon) path searching."""
         trace = 'themes' in g.app.debug
@@ -1151,6 +1153,7 @@ class LeoQtGui(leoGui.LeoGui):
         g.trace('not found:', name)
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
+    @functools.lru_cache(maxsize=128)
     def getTreeImage(self, c, path):
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
