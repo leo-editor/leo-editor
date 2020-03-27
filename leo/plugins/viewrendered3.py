@@ -333,6 +333,7 @@ try:
     got_markdown = True
 except ImportError:
     got_markdown = False
+    print('VR3: ***** No Markdown *****')
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
@@ -1363,7 +1364,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dock = pc.leo_dock or pc
             if dock.isHidden():
                 w = pc.ensure_text_widget()
-                w.setPlainText(s)
+                ###### w.setPlainText(s)
                 return
 
             # For rst, md handler
@@ -1788,8 +1789,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 self.set_html(h, w)
                 self.rst_html = h
         else:
-            s = node_list[0].b
-            w.setPlainText(s)
+            ### s = node_list[0].b
+            ### w.setPlainText(s)
+            w.setHtml('')  # EKR.
 
     #@+node:TomP.20191215195433.66: *5* convert_markdown_to_html
     def convert_markdown_to_html(self, node_list, s=''):
