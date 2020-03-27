@@ -157,8 +157,8 @@
 </v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist (GitHub Only)</vh>
 <v t="ekr.20200313063940.1"><vh>Create the release branch *first*</vh></v>
-<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.2"><vh>Files</vh></v>
+<v t="ekr.20180405171433.4"><vh>Pre-testing</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in the release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
