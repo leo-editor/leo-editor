@@ -316,40 +316,13 @@ class LeoQtTree(leoFrame.LeoTree):
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
         """
-        if self.declutter_patterns is None:
-            self.declutter_patterns = []
-            warned = False
-            lines = c.config.getData("tree-declutter-patterns")
-            for line in lines:
-                try:
-                    cmd, arg = line.split(None, 1)
-                except ValueError:
-                    # Allow empty arg, and guard against user errors.
-                    cmd = line.strip()
-                    arg = ''
-                if cmd.startswith('#'):
-                    pass
-                elif cmd == 'RULE':
-                    self.declutter_patterns.append((re.compile(arg), []))
-                else:
-                    if self.declutter_patterns:
-                        self.declutter_patterns[-1][1].append((cmd, arg))
-                    elif not warned:
-                        warned = True
-                        g.log('Declutter patterns must start with RULE*',
-                            color='error')
         text = str(item.text(0))
         new_icons = []
-        for pattern, cmds in self.declutter_patterns:
-            for func in (pattern.match, pattern.search):
-                m = func(text)
-                if m:
-                    for cmd, arg in cmds:
-                        if self.declutter_replace(arg, cmd, item, m, pattern, text):
-                            pass
-                        else:
-                            self.declutter_style(arg, c, cmd, item, new_icons)
-                    break  # Don't try pattern.search if pattern.match succeeds.
+        for pattern, cmds in self.get_declutter_patterns():
+            m = pattern.match(text) or pattern.search(text)
+            if m:
+                self.apply_declutter_rules(cmds, item, m, pattern, text, new_icons)
+
         com = c.editCommands
         p_icons = com.getIconList(p)
         old_icons = set(x.get('relPath', '') for x in self.nodeIconsDict.get(p.gnx, []))
@@ -409,6 +382,41 @@ class LeoQtTree(leoFrame.LeoTree):
             font = item.font(0)
             font.setPointSize(int(arg))
             item.setFont(0, font)
+    #@+node:vitalije.20200327162532.1: *6* qtree.get_declutter_patterns
+    def get_declutter_patterns(self):
+        "Initializes self.declutter_patterns from configuration and returns it"
+        if self.declutter_patterns is not None:
+            return self.declutter_patterns
+        c = self.c
+        patterns = []
+        warned = False
+        lines = c.config.getData("tree-declutter-patterns")
+        for line in lines:
+            try:
+                cmd, arg = line.split(None, 1)
+            except ValueError:
+                # Allow empty arg, and guard against user errors.
+                cmd = line.strip()
+                arg = ''
+            if cmd.startswith('#'):
+                pass
+            elif cmd == 'RULE':
+                patterns.append((re.compile(arg), []))
+            else:
+                if patterns:
+                    patterns[-1][1].append((cmd, arg))
+                elif not warned:
+                    warned = True
+                    g.log('Declutter patterns must start with RULE*',
+                        color='error')
+        self.declutter_patterns = patterns
+        return patterns
+    #@+node:vitalije.20200327163522.1: *6* qtree.apply_declutter_rules
+    def apply_declutter_rules(self, cmds, item, m, pattern, text, new_icons):
+        """Applies all commands for the matched rule."""
+        for cmd, arg in cmds:
+            if not self.declutter_replace(arg, cmd, item, m, pattern, text):
+                self.declutter_style(arg, self.c, cmd, item, new_icons)
     #@+node:ekr.20110605121601.17874: *5* qtree.drawChildren
     def drawChildren(self, p, parent_item):
         """Draw the children of p if they should be expanded."""
