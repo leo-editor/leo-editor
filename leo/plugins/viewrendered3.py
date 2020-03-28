@@ -290,6 +290,10 @@ trace = False
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
 import json
 import os
+import warnings
+
+# Ignore *all* warnings.
+warnings.simplefilter("ignore")
 
 try:
     from urllib.request import urlopen
