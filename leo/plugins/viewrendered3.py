@@ -483,7 +483,7 @@ def init():
             g.es_print('viewrendered3 requires Qt')
         return False
     if not QWebView:
-        g.es_print('viewrendered3.py requires QtWebKitWidgets.QWebView')  ###
+        g.es_print('viewrendered3.py requires QtWebKitWidgets.QWebView')
         g.es_print('pip install PyQtWebEngine')
         return False
     if not got_docutils:
@@ -1292,13 +1292,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s = g.toUnicode(s)
         url_base = QtCore.QUrl('file:///' + path + '/')
         w.setHtml(s, url_base)
-        ###
-            # try:
-                # # A QWebView.
-                # w.setHtml(s, url_base)
-            # except Exception:
-                # # A QTextBrowser.
-                # w.setHtml(s)  # #1543.
         w.show()
     #@+node:TomP.20191215195433.48: *3* vr3.underline
     def underline(self, s):
@@ -1365,7 +1358,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dock = pc.leo_dock or pc
             if dock.isHidden():
                 w = pc.ensure_text_widget()
-                ###### w.setPlainText(s)
+                ### w.setPlainText(s)
                 return
 
             # For rst, md handler
@@ -1430,14 +1423,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if n is not None:
             settings = w.settings()
             settings.setFontSize(settings.DefaultFontSize, n)
-            ###
-                # try:
-                    # # BaseTextWidget is a QWebView.
-                    # settings = w.settings()
-                    # settings.setFontSize(settings.DefaultFontSize, n)
-                # except AttributeError:
-                    # # BaseTextWidget is a QTextBrowser.
-                    # pass
         return w
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
@@ -1790,8 +1775,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 self.set_html(h, w)
                 self.rst_html = h
         else:
-            ### s = node_list[0].b
-            ### w.setPlainText(s)
+            # s = node_list[0].b
             w.setHtml('')  # EKR.
 
     #@+node:TomP.20191215195433.66: *5* convert_markdown_to_html
