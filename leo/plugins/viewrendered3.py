@@ -282,37 +282,40 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-#pylint: disable=no-member,invalid-name
+# pylint: disable=no-else-break
+    # This warning looks wrong!
 
 trace = False
     # This global trace is convenient.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
+#
+# Stdlib...
+from contextlib import redirect_stdout
+from enum import Enum, auto
+import html
+import io
+from io import StringIO
 import json
 import os
-import warnings
-
-# Ignore *all* warnings.
-warnings.simplefilter("ignore")
-
-try:
-    from urllib.request import urlopen
-except ImportError:
-    try:
-        from urllib import urlopen  # for Python 2.7 (although no longer used).
-    except ImportError:
-        urllib = None
-
+import os.path
+import shutil
+import sys
+import webbrowser
+from urllib.request import urlopen
+if 0:
+    import warnings
+    # Ignore *all* warnings.
+    warnings.simplefilter("ignore")
+#
+# Leo imports...
 import leo.core.leoGlobals as g
-try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets#, QString
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
-    #from PyQt5.QtCore import pyqtSignal
-except Exception:
-    QtWidgets = False
-
+import leo.plugins.qt_text as qt_text
+import leo.plugins.free_layout as free_layout
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+#
+# Optional imports...
 try:
     import docutils
     import docutils.core
@@ -331,13 +334,25 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-# markdown support, non-vital
+    print('VR3: *** no docutils')
 try:
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-    print('VR3: ***** No Markdown *****')
+    print('VR3: *** No Markdown ***')
+try:
+    import matplotlib # Make *sure* this is imported.
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+except Exception:
+    matplotlib = None
+    print('VR3: *** No matplotlib')
+try:
+    import numpy as np
+except Exception:
+    print('VR3: *** No numpy')
+    np = None
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
@@ -345,43 +360,37 @@ try:
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
-
-# for VR3.  t.b. passin
-import sys
-import os.path
-import io
-from io import StringIO
-
-import shutil
-from enum import Enum, auto
-
-import webbrowser
-from contextlib import redirect_stdout
-from pygments import cmdline
-
+    print('VR3: *** No nbformat')
+try:
+    from pygments import cmdline
+except ImportError:
+    pygments = None
+    print('VR3: *** no pygments')
 try:
     QWebView = QtWebKitWidgets.QWebView
 except Exception:
-    QWebView = QtWidgets.QTextBrowser  # #1542.
+    QWebView = None
+    # The top-level init function gives the error.
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
-ZOOM_FACTOR = 1.2
+if 1:
+    # pylint: disable=invalid-name
+    C = 'c'
 CODE = 'code'
-RST = 'rst'
-REST = 'rest'
+CSS = 'css'
+JAVA = 'java'
+JAVASCRIPT = 'javascript'
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
-
-JAVASCRIPT = 'javascript'
-JAVA = 'java'
-C = 'c'
-CSS = 'css'
 RESPONSE = 'response'
+REST = 'rest'
+RST = 'rst'
 TEXT = 'text'
-
 VR3_TEMP_FILE = 'leo_rst_html.html'
+ZOOM_FACTOR = 1.2
+
 MD_STYLESHEET_APPEND = '''pre {
    font-size: 110%;
    border: 1px solid gray; 
@@ -415,16 +424,6 @@ asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
 
-#@+<< set BaseTextWidget >>
-#@+node:TomP.20191215195433.5: ** << set BaseTextWidget >> (vr3)
-if QtWidgets:
-    try:
-        BaseTextWidget = QtWebKitWidgets.QWebView
-    except Exception:
-        BaseTextWidget = QtWidgets.QTextBrowser
-else:
-    BaseTextWidget = None
-#@-<< set BaseTextWidget >>
 #@+<< define html templates >>
 #@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
 image_template = '''\
@@ -482,6 +481,10 @@ def init():
             g.app.gui.guiName() in ('browser', 'curses')  # EKR.
         ):
             g.es_print('viewrendered3 requires Qt')
+        return False
+    if not QWebView:
+        g.es_print('viewrendered3.py requires QtWebKitWidgets.QWebView')  ###
+        g.es_print('pip install PyQtWebEngine')
         return False
     if not got_docutils:
         g.es_print('Warning: viewrendered3.py running without docutils.')
@@ -842,6 +845,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None # The present widget in the rendering pane.
 
         # For viewrendered3
+        self.qwev = self.create_base_text_widget()
         self.rst_html = ''
         self.code_only = False
         self.show_whole_tree = False
@@ -1287,12 +1291,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
         url_base = QtCore.QUrl('file:///' + path + '/')
-        try:
-            # A QWebView.
-            w.setHtml(s, url_base)
-        except Exception:
-            # A QTextBrowser.
-            w.setHtml(s)  # #1543.
+        w.setHtml(s, url_base)
+        ###
+            # try:
+                # # A QWebView.
+                # w.setHtml(s, url_base)
+            # except Exception:
+                # # A QTextBrowser.
+                # w.setHtml(s)  # #1543.
         w.show()
     #@+node:TomP.20191215195433.48: *3* vr3.underline
     def underline(self, s):
@@ -1304,22 +1310,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
         return '%s\n%s\n\n' % (s, ch * n)
     #@+node:TomP.20191231110143.1: *3* vr3.zoomView
-
     def zoomView(self):
-        try:
-            w = self.qwev
-        except Exception:
-            return
-
+        w = self.qwev
         _zf = w.zoomFactor()
         w.setZoomFactor(_zf * ZOOM_FACTOR)
     #@+node:TomP.20191231111540.1: *3* vr3.shrinkView
     def shrinkView(self):
-        try:
-            w = self.qwev
-        except NameError:
-            return
-
+        w = self.qwev
         _zf = w.zoomFactor()
         w.setZoomFactor(_zf / ZOOM_FACTOR)
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
@@ -1422,18 +1419,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     pc.deactivate()
     #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
-        '''Create a QWebView or a QTextBrowser.'''
+        '''
+        Create a QWebView.
+        
+        For QT5, this is actually a QWebEngineView
+        '''
         c = self.c
-        w = BaseTextWidget()
+        w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
-        if n:
-            try:
-                # BaseTextWidget is a QWebView.
-                settings = w.settings()
-                settings.setFontSize(settings.DefaultFontSize, n)
-            except AttributeError:
-                # BaseTextWidget is a QTextBrowser.
-                pass
+        if n is not None:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+            ###
+                # try:
+                    # # BaseTextWidget is a QWebView.
+                    # settings = w.settings()
+                    # settings.setFontSize(settings.DefaultFontSize, n)
+                # except AttributeError:
+                    # # BaseTextWidget is a QTextBrowser.
+                    # pass
         return w
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
@@ -1610,7 +1614,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         '''Update html in the vr3 pane.'''
         pc = self
         c = pc.c
-        if pc.must_change_widget(BaseTextWidget):
+        if pc.must_change_widget(QWebView):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert(w == pc.w)
@@ -1676,7 +1680,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         '''Update @jupyter node in the vr3 pane.'''
         pc = self
         c = pc.c
-        if pc.must_change_widget(BaseTextWidget):
+        if pc.must_change_widget(QWebView):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert(w == pc.w)
@@ -1718,7 +1722,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
         '''Update latex in the vr3 pane.'''
-        import sys
         pc = self
         c = pc.c
         if sys.platform.startswith('win'):
@@ -1728,7 +1731,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setPlainText(s)
             c.bodyWantsFocusNow()
             return
-        if pc.must_change_widget(BaseTextWidget):
+        if pc.must_change_widget(QWebView):
             w = self.create_base_text_widget()
             pc.embed_widget(w)
             assert(w == pc.w)
@@ -1743,14 +1746,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_latex_html(self, s):
         '''Create an html page embedding the latex code s.'''
         c = self.c
-        # pylint: disable=deprecated-method
-        try:
-            import html
-            escape = html.escape
-        except AttributeError:
-            import cgi
-            escape = cgi.escape
-        html_s = escape(s)
+        # py--lint: disable=deprecated-method
+        html_s = html.escape(s)
         template = latex_template % (html_s)
         template = g.adjustTripleString(template, c.tab_width).strip()
         return template
@@ -2020,19 +2017,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             backend = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
             if g.os_path_exists(backend):
-                try:
-                    # The order of these statements is important...
-                    import matplotlib
-                    matplotlib.use('module://leo.plugins.pyplot_backend')
-                except ImportError:
-                    g.trace('===== FAIL: pyplot.backend')
+                if matplotlib:
+                    try:
+                        matplotlib.use('module://leo.plugins.pyplot_backend')
+                    except ImportError:
+                        g.trace('===== FAIL: pyplot.backend')
             else:
                 g.trace('===== MISSING: pyplot.backend')
         try:
-            import matplotlib # Make *sure* this is imported.
-            import matplotlib.pyplot as plt
-            import numpy as np
-            import matplotlib.animation as animation
             plt.ion() # Automatically set interactive mode.
             namespace = {
                 'animation': animation,
@@ -2273,11 +2265,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         _in_quotes = line.count(_quotes_type) == 1
                     else:
                         _in_quotes = False
-
             #@-<< handle quotes >>
             #@+<< handle_ats >>
             #@+node:TomP.20200112103729.2: *7* << handle_ats >>
-
             # Honor "@", "@c": skip all lines after "@" until next "@c".
             # However, ignore these markers if we are in a code block and
             # and also within a quoted section.
@@ -2285,7 +2275,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if line.rstrip() == '@':
                     _skipthis = True
                     continue
-                elif line.rstrip() == '@c':
+                if line.rstrip() == '@c':
                     _skipthis = False
                     continue
                 if _skipthis:
@@ -2517,7 +2507,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = QtWidgets.QTextBrowser()
 
             def handleClick(url, w=w):
-                import leo.plugins.qt_text as qt_text
                 wrapper = qt_text.QTextEditWrapper(w, name='vr3-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
@@ -2538,17 +2527,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def ensure_web_widget(self):
         '''Swap a webengineview widget into the rendering pane if necessary.'''
         pc = self
+        w = self.qwev
         if pc.must_change_widget(QWebView):
-            try:
-                w = self.qwev
-            except Exception:
-                # Instantiate and cache a new QWebView.
-                w = QWebView() # For QT5, this is actually a QWebEngineView
-                #w.page().setZoomFactor(1.0)
-                self.qwev = w
             pc.embed_widget(w) # Creates w.wrapper
             assert(w == pc.w)
-
         return pc.w
     #@+node:TomP.20191215195433.81: *5* vr3.get_kind
     def get_kind(self, p):
@@ -2911,7 +2893,6 @@ class StateMachine:
     #@-<< do_state >>
     #@+<< get_marker >>
     #@+node:TomP.20200212085651.1: *3* << get_marker >>
-
     def get_marker(self, line):
         """Return classification information about a line.
         
