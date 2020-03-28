@@ -884,6 +884,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':
             self.shrinkView()
+    #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
+    def create_base_text_widget(self):
+        '''
+        Create a QWebView.
+        
+        For QT5, this is actually a QWebEngineView
+        '''
+        c = self.c
+        w = QWebView()
+        n = c.config.getInt('qweb-view-font-size')
+        if n is not None:
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        return w
     #@+node:TomP.20191215195433.38: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
@@ -907,80 +921,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@@c
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
         pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
-    #@+node:TomP.20200303185005.1: *4* vr3.set_rst_stylesheet
-    def set_rst_stylesheet(self):
-        """Set rst stylesheet to default if none specified.
-        
-        A file location must start with 'file:///';. If
-        a file does not exist for the path, use the default
-        stylesheet.
-        
-        The default location is in leo/plugins/viewrendered3.
-        
-        VARIABLE USED
-        self.rst_stylesheet -- The URL to the stylesheet.  Need not include
-                               the "file:///", and must be an absolute path 
-                               if it is a local file.  
-                               
-                               Set by @string vr3-rst-stylesheet.
-        """
-
-        # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
-        # If so, check if it exists.
-        if self.rst_stylesheet:
-            if self.rst_stylesheet.startswith('file:///'):
-                pth = self.rst_stylesheet.split('file:///')[1]
-                if os.path.exists(pth):
-                    # Note that docutils must *not* have a leading 'file:///'
-                    # This method changes '\' to '/' in the path if needed.
-                    self.rst_stylesheet = g.os_path_finalize_join(pth)
-                    return
-                g.es('Specified VR3 stylesheet not found; using default')
-            return
-
-        # Default location
-        # NOTE - for the stylesheet url we need to use forward slashes no matter
-        # what OS is being used.  Apparently, the g.os_path methods do this.
-        vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-        self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
-    #@+node:TomP.20200103171535.1: *4* vr3.set_md_stylesheet
-    def set_md_stylesheet(self):
-        """Verify or create css stylesheet for Markdown node.
-        
-        If there is no custom css stylesheet specified by self.md_stylesheet,
-        check if there is one at the standard location.  If not, create
-        a default stylesheet and write it to a file at that place.
-        
-        The default location is assumed to be at leo/plugins/viewrendered3.
-        
-        VARIABLE USED
-        self.md_stylesheet -- The URL to the stylesheet.  Need not include
-                               the "file:///", and must be an absolute path 
-                               if it is a local file.  
-                               
-                               Set by @string vr3-md-stylesheet.  
-        """
-
-        # If no custom stylesheet specified, use standard one.
-        if not self.md_stylesheet:
-            # Look for the standard one
-            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
-
-            # If there is no stylesheet at the standard location, have Pygments 
-            # generate a default stylesheet there.
-            # Note: "cmdline" is a function imported from pygments
-            if not os.path.exists(style_path):
-                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
-                # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with io.open(style_path, 'w') as out:
-                    with redirect_stdout(out):
-                        cmdline.main(args)
-                # Add some fine-tuning css
-                with io.open(style_path, 'a') as out:
-                    out.write(MD_STYLESHEET_APPEND)
-            self.md_stylesheet = 'file:///' + style_path
-
     #@+node:TomP.20200104001436.1: *4* vr3.create_md_header
     def create_md_header(self):
         """Create a header for the md HTML output.
@@ -1020,27 +960,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     </head>
     '''
 
-    #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
-    def reloadSettings(self):
-        c = self.c
-        c.registerReloadSettings(self)
-        #self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-        #self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
-        self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-        self.external_dock = c.config.getBool('use-vr3-dock', default=False)
-        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
-
-        self.math_output = c.config.getBool('vr3-math-output', default=False)
-        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
-        self.rst_math_output = 'mathjax ' + self.mathjax_url
-
-        self.set_rst_stylesheet()
-
-        self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
-        self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
-
-        self.set_md_stylesheet()
-        self.create_md_header()
     #@+node:TomP.20191215195433.40: *4* vr3.create_pane
     def create_pane(self, parent):
         '''Create the vr3 pane or dock.'''
@@ -1073,6 +992,101 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         if g.app.init_docks:
             dock.show()
+    #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        #self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+        #self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+        self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
+        self.external_dock = c.config.getBool('use-vr3-dock', default=False)
+        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+
+        self.math_output = c.config.getBool('vr3-math-output', default=False)
+        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
+        self.rst_math_output = 'mathjax ' + self.mathjax_url
+
+        self.set_rst_stylesheet()
+
+        self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
+        self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
+
+        self.set_md_stylesheet()
+        self.create_md_header()
+    #@+node:TomP.20200103171535.1: *4* vr3.set_md_stylesheet
+    def set_md_stylesheet(self):
+        """Verify or create css stylesheet for Markdown node.
+        
+        If there is no custom css stylesheet specified by self.md_stylesheet,
+        check if there is one at the standard location.  If not, create
+        a default stylesheet and write it to a file at that place.
+        
+        The default location is assumed to be at leo/plugins/viewrendered3.
+        
+        VARIABLE USED
+        self.md_stylesheet -- The URL to the stylesheet.  Need not include
+                               the "file:///", and must be an absolute path 
+                               if it is a local file.  
+                               
+                               Set by @string vr3-md-stylesheet.  
+        """
+
+        # If no custom stylesheet specified, use standard one.
+        if not self.md_stylesheet:
+            # Look for the standard one
+            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
+            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
+
+            # If there is no stylesheet at the standard location, have Pygments 
+            # generate a default stylesheet there.
+            # Note: "cmdline" is a function imported from pygments
+            if not os.path.exists(style_path):
+                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
+                # pygments cmdline() writes to stdout; we have to redirect it to a file
+                with io.open(style_path, 'w') as out:
+                    with redirect_stdout(out):
+                        cmdline.main(args)
+                # Add some fine-tuning css
+                with io.open(style_path, 'a') as out:
+                    out.write(MD_STYLESHEET_APPEND)
+            self.md_stylesheet = 'file:///' + style_path
+
+    #@+node:TomP.20200303185005.1: *4* vr3.set_rst_stylesheet
+    def set_rst_stylesheet(self):
+        """Set rst stylesheet to default if none specified.
+        
+        A file location must start with 'file:///';. If
+        a file does not exist for the path, use the default
+        stylesheet.
+        
+        The default location is in leo/plugins/viewrendered3.
+        
+        VARIABLE USED
+        self.rst_stylesheet -- The URL to the stylesheet.  Need not include
+                               the "file:///", and must be an absolute path 
+                               if it is a local file.  
+                               
+                               Set by @string vr3-rst-stylesheet.
+        """
+
+        # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
+        # If so, check if it exists.
+        if self.rst_stylesheet:
+            if self.rst_stylesheet.startswith('file:///'):
+                pth = self.rst_stylesheet.split('file:///')[1]
+                if os.path.exists(pth):
+                    # Note that docutils must *not* have a leading 'file:///'
+                    # This method changes '\' to '/' in the path if needed.
+                    self.rst_stylesheet = g.os_path_finalize_join(pth)
+                    return
+                g.es('Specified VR3 stylesheet not found; using default')
+            return
+
+        # Default location
+        # NOTE - for the stylesheet url we need to use forward slashes no matter
+        # what OS is being used.  Apparently, the g.os_path methods do this.
+        vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
+        self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
     #@+node:TomP.20191215195433.42: *3* vr3.closeEvent
     def closeEvent(self, event):
         '''Close the vr3 window.'''
@@ -1410,20 +1424,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 except Exception:
                     g.es_exception()
                     pc.deactivate()
-    #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
-    def create_base_text_widget(self):
-        '''
-        Create a QWebView.
-        
-        For QT5, this is actually a QWebEngineView
-        '''
-        c = self.c
-        w = QWebView()
-        n = c.config.getInt('qweb-view-font-size')
-        if n is not None:
-            settings = w.settings()
-            settings.setFontSize(settings.DefaultFontSize, n)
-        return w
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         '''Embed widget w in the free_layout splitter.'''
