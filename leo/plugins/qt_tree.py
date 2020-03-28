@@ -51,7 +51,7 @@ class LeoQtTree(leoFrame.LeoTree):
         #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
-
+        self.declutter_data = {}
         if 0:  # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -316,12 +316,18 @@ class LeoQtTree(leoFrame.LeoTree):
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
         """
-        text = str(item.text(0))
-        new_icons = []
-        for pattern, cmds in self.get_declutter_patterns():
-            m = pattern.match(text) or pattern.search(text)
-            if m:
-                self.apply_declutter_rules(cmds, item, m, pattern, text, new_icons)
+        dd = self.declutter_data
+        if p.h in dd:
+            text, new_icons = dd[p.h]
+            item.setText(0, text)
+        else:
+            text = str(item.text(0))
+            new_icons = []
+            for pattern, cmds in self.get_declutter_patterns():
+                m = pattern.match(text) or pattern.search(text)
+                if m:
+                    self.apply_declutter_rules(cmds, item, m, pattern, text, new_icons)
+            dd[p.h] = item.text(0), new_icons
 
         com = c.editCommands
         p_icons = com.getIconList(p)
