@@ -19,7 +19,6 @@ assert time
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
 class LeoQtTree(leoFrame.LeoTree):
     """Leo Qt tree class"""
-    callbacksInjected = False  # A class var.
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
