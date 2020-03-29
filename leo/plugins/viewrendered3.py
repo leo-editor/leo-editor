@@ -287,6 +287,8 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 trace = False
     # This global trace is convenient.
+new = True
+    # Experimental: use QWebView for text.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
 #
@@ -468,7 +470,7 @@ def decorate_window(w):
     w.resize(600, 300)
 #@+node:TomP.20191215195433.9: *3* vr3.init
 def init():
-    '''Return True if the plugin has loaded successfully.'''
+    """Return True if the plugin has loaded successfully."""
     #global got_docutils
     if g.app.gui.guiName() != 'qt':
         return False
@@ -496,7 +498,7 @@ def init():
     return True
 #@+node:TomP.20191215195433.10: *3* vr3.isVisible
 def isVisible():
-    '''Return True if the VR pane is visible.'''
+    """Return True if the VR pane is visible."""
     pass
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
@@ -615,7 +617,7 @@ def viewrendered(event):
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
-    '''Close the rendering pane.'''
+    """Close the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -654,7 +656,7 @@ close_rendering_pane = hide_rendering_pane
 #@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
 @g.command('vr3-lock')
 def lock_rendering_pane(event):
-    '''Lock the rendering pane.'''
+    """Lock the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -663,7 +665,7 @@ def lock_rendering_pane(event):
 #@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
 @g.command('vr3-pause-play-movie')
 def pause_play_movie(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -675,7 +677,7 @@ def pause_play_movie(event):
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
-    '''Show the rendering pane.'''
+    """Show the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -683,7 +685,7 @@ def show_rendering_pane(event):
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
-    '''Toggle the rendering pane.'''
+    """Toggle the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -716,7 +718,7 @@ def toggle_rendering_pane(event):
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -725,7 +727,7 @@ def unlock_rendering_pane(event):
 #@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
 @g.command('vr3-update')
 def update_rendering_pane(event):
-    '''Update the rendering pane'''
+    """Update the rendering pane"""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -809,11 +811,11 @@ class ViewRenderedProvider3:
     #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
-    '''A class to control rendering in a rendering pane.'''
+    """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:TomP.20191215195433.37: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
-        '''Ctor for ViewRenderedController class.'''
+        """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
         super().__init__(parent)
@@ -866,11 +868,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
-        '''
+        """
         Create a QWebView.
         
         For QT5, this is actually a QWebEngineView
-        '''
+        """
         c = self.c
         w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
@@ -942,7 +944,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.40: *4* vr3.create_pane
     def create_pane(self, parent):
-        '''Create the vr3 pane or dock.'''
+        """Create the vr3 pane or dock."""
         c = self.c
         dw = c.frame.top
         self.leo_dock = None # May be set below.
@@ -1217,11 +1219,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-        '''
+        """
         Update the vr3 pane. Called at idle time.
         
         If the VR3 variable "freeze" is True, do not update.
-        '''
+        """
 
         if self.freeze: return
         pc = self
@@ -1315,9 +1317,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-        '''Embed widget w in the free_layout splitter.'''
-        #VrC.embed_widget(self, w, delete_callback=None)
-
+        """Embed widget w in the free_layout splitter."""
         pc = self; c = pc.c #X ; splitter = pc.splitter
         pc.w = w
         layout = self.layout()
@@ -1340,7 +1340,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
-        '''Set the background color of the vr3 pane.'''
+        """Set the background color of the vr3 pane."""
         if 0: # Do not do this! It interferes with themes.
             pc = self
             if not colorName: return
@@ -1352,13 +1352,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
-        '''Return True if we must update the rendering pane.'''
-        #_must_update = VrC.must_update(self, keywords)
-        # if _must_update and self.w:
-            # # Hide the old widget so it won't keep us from seeing the new one.
-            # self.w.hide()
-        # return _must_update
-
+        """Return True if we must update the rendering pane."""
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
@@ -1391,7 +1385,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
     def update_asciidoc(self, s, keywords):
-        '''Update asciidoc in the vr3 pane.'''
+        """Update asciidoc in the vr3 pane."""
         #VrC.pdate_asciidoc(self, s, keywords)
 
         global asciidoctor_exec, asciidoc3_exec
@@ -1411,12 +1405,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.update_rst(s,keywords)
     #@+node:TomP.20191215195433.55: *5* vr3.make_asciidoc_title
     def make_asciidoc_title(self, s):
-        '''Generate an asciiidoc title for s.'''
+        """Generate an asciiidoc title for s."""
         line = '#' * (min(4, len(s)))
         return f"{line}\n{s}\n{line}\n\n"
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoctor
     def convert_to_asciidoctor(self, s):
-        '''Convert s to html using the asciidoctor or asciidoc processor.'''
+        """Convert s to html using the asciidoctor or asciidoc processor."""
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1455,7 +1449,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
       
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
-        '''Update the graphics script in the vr3 pane.'''
+        """Update the graphics script in the vr3 pane."""
         pc = self; c = pc.c
         force = keywords.get('force')
         if pc.gs and not force:
@@ -1485,7 +1479,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     update_html_count = 0
 
     def update_html(self, s, keywords):
-        '''Update html in the vr3 pane.'''
+        """Update html in the vr3 pane."""
         pc = self
         c = pc.c
         if pc.must_change_widget(QWebView):
@@ -1501,12 +1495,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.60: *4* vr3.update_image
     def update_image(self, s, keywords):
-        '''Update an image in the vr3 pane.
+        """Update an image in the vr3 pane.
         
         The path to the file can be an absolute or relative file path,
         or an http: URL.  It must be the first line in the body.
         File URLs must not start with "file:".
-        '''
+        """
 
         pc = self
         if not s.strip():
@@ -1551,7 +1545,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     update_jupyter_count = 0
 
     def update_jupyter(self, s, keywords):
-        '''Update @jupyter node in the vr3 pane.'''
+        """Update @jupyter node in the vr3 pane."""
         pc = self
         c = pc.c
         if pc.must_change_widget(QWebView):
@@ -1568,7 +1562,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.62: *5* vr3.get_jupyter_source
     def get_jupyter_source(self, c):
-        '''Return the html for the @jupyer node.'''
+        """Return the html for the @jupyer node."""
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -1595,7 +1589,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return s
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
-        '''Update latex in the vr3 pane.'''
+        """Update latex in the vr3 pane."""
         pc = self
         c = pc.c
         if sys.platform.startswith('win'):
@@ -1618,7 +1612,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.64: *5* vr3.create_latex_html
     def create_latex_html(self, s):
-        '''Create an html page embedding the latex code s.'''
+        """Create an html page embedding the latex code s."""
         c = self.c
         # py--lint: disable=deprecated-method
         html_s = html.escape(s)
@@ -1767,7 +1761,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     movie_warning = False
 
     def update_movie(self, s, keywords):
-        '''Update a movie in the vr3 pane.'''
+        """Update a movie in the vr3 pane."""
         # pylint: disable=maybe-no-member
             # 'PyQt4.phonon' has no 'VideoPlayer' member
             # 'PyQt4.phonon' has no 'VideoCategory' member
@@ -1817,19 +1811,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vp.play()
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):
-        '''Update a networkx graphic in the vr3 pane.'''
+        """Update a networkx graphic in the vr3 pane."""
         pc = self
         w = pc.ensure_text_widget()
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
         pc.show()
     #@+node:TomP.20191215195433.69: *4* vr3.update_pandoc & helpers
     def update_pandoc(self, s, keywords):
-        '''
+        """
         Update an @pandoc in the vr3 pane.
         
         There is no such thing as @language pandoc,
         so only @pandoc nodes trigger this code.
-        '''
+        """
         global pandoc_exec
         pc = self
         w = pc.ensure_text_widget()
@@ -1846,7 +1840,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.update_rst(s,keywords)
     #@+node:TomP.20191215195433.70: *5* vr3.convert_to_pandoc
     def convert_to_pandoc(self, s):
-        '''Convert s to html using the asciidoctor or asciidoc processor.'''
+        """Convert s to html using the asciidoctor or asciidoc processor."""
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1883,7 +1877,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             return f.read()
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
-        '''Get the pyplot script at c.p.b and show it.'''
+        """Get the pyplot script at c.p.b and show it."""
         c = self.c
         if not self.pyplot_imported:
             self.pyplot_imported = True
@@ -2370,7 +2364,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.79: *4* vr3.utils for update helpers...
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
-        '''Swap a text widget into the rendering pane if necessary.'''
+        """Swap a text widget into the rendering pane if necessary."""
 
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):
@@ -2396,7 +2390,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return pc.w
     #@+node:TomP.20191227101625.1: *5* vr3.ensure_web_widget
     def ensure_web_widget(self):
-        '''Swap a webengineview widget into the rendering pane if necessary.'''
+        """Swap a webengineview widget into the rendering pane if necessary."""
         pc = self
         w = self.qwev
         if pc.must_change_widget(QWebView):
@@ -2519,7 +2513,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:ekr.20200329054506.1: *3* vr3: command helpers...
     #@+node:TomP.20191215195433.44: *4* vr3.activate
     def activate(self):
-        '''Activate the vr3-window.'''
+        """Activate the vr3-window."""
         pc = self
         if pc.active:
             return
@@ -2553,7 +2547,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             splitter.setSizes(sizes)
     #@+node:TomP.20191215195433.45: *4* vr3.deactivate
     def deactivate(self):
-        '''Deactivate the vr3 window.'''
+        """Deactivate the vr3 window."""
         #VrC.deactivate(self)
 
         pc = self
@@ -2563,13 +2557,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.active = False
     #@+node:TomP.20191215195433.46: *4* vr3.lock/unlock
     def lock(self):
-        '''Lock the vr3 pane to the current node .'''
+        """Lock the vr3 pane to the current node ."""
         #g.note('rendering pane locked')
         self.lock_to_tree = True
         self.current_tree_root = self.c.p
 
     def unlock(self):
-        '''Unlock the vr3 pane.'''
+        """Unlock the vr3 pane."""
         #g.note('rendering pane unlocked')
         self.lock_to_tree = False
         self.current_tree_root = None
@@ -2644,7 +2638,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:ekr.20200329054429.1: *3* vr3: events...
     #@+node:TomP.20191215195433.42: *4* vr3.closeEvent
     def closeEvent(self, event):
-        '''Close the vr3 window.'''
+        """Close the vr3 window."""
         self.deactivate()
     #@+node:TomP.20200104180310.1: *4* vr3.keyPressEvent
     def keyPressEvent(self, event):
@@ -2669,7 +2663,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:ekr.20200329054601.1: *3* vr3: utils
     #@+node:TomP.20191215195433.47: *4* vr3.set_html
     def set_html(self, s, w):
-        '''Set text in w to s, preserving scroll position.'''
+        """Set text in w to s, preserving scroll position."""
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
@@ -2680,7 +2674,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w.show()
     #@+node:TomP.20191215195433.48: *4* vr3.underline
     def underline(self, s):
-        '''Generate rST underlining for s.'''
+        """Generate rST underlining for s."""
         ch = '#'
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
         return '%s\n%s\n\n' % (s, ch * n)
