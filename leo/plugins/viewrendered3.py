@@ -287,7 +287,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 trace = False
     # This global trace is convenient.
-new = True
+new = False
     # Experimental: use QWebView for text.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
@@ -974,7 +974,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         if g.app.init_docks:
             dock.show()
-    #@+node:TomP.20191215224043.1: *4* vr3.create_toolbar
+    #@+node:TomP.20191215224043.1: *4* vr3.create_toolbar & helper functions
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
         
@@ -1002,23 +1002,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _default_type_button =  QtWidgets.QPushButton("Default Kind")
         _toolbar.addWidget(_default_type_button)
 
-        #@+others
-        #@+node:TomP.20191231135656.1: *5* Menu Creation Helpers
-        def set_menu_var(menu_var_name, action):
-            """Update an QAction's linked variable's value.
-            
-            ARGUMENTS
-            menu_var_name -- the name of the instance variable that holds this action's
-                             isChecked() value.
-            action -- the QAction.
-            
-            RETURNS
-            nothing
-            """
-
-            setattr(self, menu_var_name, action.isChecked())
-            self.c.k.simulateCommand('vr3-update')
-
+        #@+others  # functions.
+        #@+node:ekr.20200329060917.1: *5* function: vr3.set_action
         def set_action(label, menu_var_name):
             """Add a QAction to a QT menu.
             
@@ -1041,6 +1026,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
 
+        #@+node:ekr.20200329060941.1: *5* function: vr3.set_default_kind
+        def set_default_kind(kind):
+            self.default_kind = kind
+            self.c.k.simulateCommand('vr3-update')
+        #@+node:ekr.20200329061514.1: *5* function: vr3.set_freeze
+        def set_freeze(checked):
+            self.freeze = checked
+        #@+node:ekr.20200329060918.1: *5* function: vr3.set_group_action
         def set_group_action(label, kind):
             """Add a QAction to a QT menu along with a GroupAction that coordinates the checked state.
             
@@ -1059,17 +1052,28 @@ class ViewRenderedController3(QtWidgets.QWidget):
             group.addAction(_action)
             menu.addAction(_action)
 
-        def set_default_kind(kind):
-            self.default_kind = kind
+        #@+node:ekr.20200329060916.1: *5* function: vr3.set_menu_var
+        def set_menu_var(menu_var_name, action):
+            """Update an QAction's linked variable's value.
+            
+            ARGUMENTS
+            menu_var_name -- the name of the instance variable that holds this action's
+                             isChecked() value.
+            action -- the QAction.
+            
+            RETURNS
+            nothing
+            """
+
+            setattr(self, menu_var_name, action.isChecked())
             self.c.k.simulateCommand('vr3-update')
-        #@+node:TomP.20191231140246.1: *5* Create Menus
+        #@+node:ekr.20200329061448.1: *5* function: vr3.set_tree_lock
         def set_tree_lock(checked):
             self.lock_to_tree = checked
             self.current_tree_root = self.c.p if checked else None
-
-        def set_freeze(checked):
-            self.freeze = checked
-
+        #@-others
+        #@+<< vr3: create menus >>
+        #@+node:TomP.20191231140246.1: *5* << vr3: create menus >>
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
         _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
@@ -1083,17 +1087,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_action("Code Only", 'code_only')
         _options_button.setMenu(menu)
 
-
         menu = QtWidgets.QMenu()
         group = QtWidgets.QActionGroup(self)
         set_group_action('RsT', RST)
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
         _default_type_button.setMenu(menu)
-
-
-
-        #@+node:TomP.20191231135753.1: *5* Finish Toolbar
+        #@-<< vr3: create menus >>
+        #@+<< vr3: finish toolbar >>
+        #@+node:TomP.20191231135753.1: *5* << vr3: finish toolbar >>
         _export_button = QtWidgets.QPushButton("Export")
         _export_button.setDefault(True)
         _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
@@ -1120,7 +1122,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
-        #@-others
+        #@-<< vr3: finish toolbar >>
     #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
     def reloadSettings(self):
         c = self.c
@@ -1353,6 +1355,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
         """Return True if we must update the rendering pane."""
+        if new:  ###
+            return False
+
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
@@ -2365,6 +2370,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
         """Swap a text widget into the rendering pane if necessary."""
+        if new:
+            return pc.w
 
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):
