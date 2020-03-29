@@ -864,26 +864,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.activate()
         self.zoomed = False
 
-    #@+node:TomP.20200104180310.1: *4* vr3 listen for keys
-    def keyPressEvent(self, event):
-        """Take actions on keypresses when the VR3 render pane has focus and a key is pressed. 
-        
-        A method of this name receives keystrokes for most or all QObject-descended objects.
-        Currently, check only for <CNTRL-=> and <CONTROL-MINUS> events for zooming or unzooming
-        the VR3 browser pane.
-        """
-
-        mod = ''
-        modifiers = event.modifiers()
-        bare_key = event.text()
-
-        if modifiers and modifiers == QtCore.Qt.ControlModifier:
-            mod = 'cntrl'
-
-        if bare_key == '=' and mod == 'cntrl':
-            self.zoomView()
-        elif bare_key == '-' and mod == 'cntrl':
-            self.shrinkView()
     #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         '''
@@ -992,6 +972,153 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         if g.app.init_docks:
             dock.show()
+    #@+node:TomP.20191215224043.1: *4* vr3.create_toolbar
+    def create_toolbar(self):
+        """Create toolbar and attach to the VR3 widget.
+        
+        Child widgets can be found using the findChild() method with the
+        name of the child widget.  E.g.,
+        
+        label = self.findChild(QtWidgets.QLabel, 'vr3-toolbar-label')
+        
+        Note that "self" refers to the enclosing viewrendered3 instance.
+        
+        NAMES CREATED
+        'vr3-toolbar-label' -- the toolbar label.
+        """
+        # pylint: disable=unnecessary-lambda
+
+        # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
+        # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
+
+        c = self.c
+        _toolbar = QtWidgets.QToolBar('Menus')
+        _options_button = QtWidgets.QPushButton("View Options")
+        _options_button.setDefault(True)
+        _toolbar.addWidget(_options_button)
+
+        _default_type_button =  QtWidgets.QPushButton("Default Kind")
+        _toolbar.addWidget(_default_type_button)
+
+        #@+others
+        #@+node:TomP.20191231135656.1: *5* Menu Creation Helpers
+        def set_menu_var(menu_var_name, action):
+            """Update an QAction's linked variable's value.
+            
+            ARGUMENTS
+            menu_var_name -- the name of the instance variable that holds this action's
+                             isChecked() value.
+            action -- the QAction.
+            
+            RETURNS
+            nothing
+            """
+
+            setattr(self, menu_var_name, action.isChecked())
+            self.c.k.simulateCommand('vr3-update')
+
+        def set_action(label, menu_var_name):
+            """Add a QAction to a QT menu.
+            
+            ARGUMENTS
+            label -- a string containing the display label for the action.
+            menu_var_name -- the name of the instance variable that holds this action's
+                             isChecked() value.  For example, if the menu_var_name
+                             is 'code_only', then a variable self.code_only will be
+                             created, and updated if the action's isChecked status
+                             is changed.
+                             
+                             Note that "self" refers to the enclosing viewrendered3 instance.
+                             
+            RETURNS
+            nothing
+            """
+
+            setattr(self, menu_var_name, False)
+            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
+            menu.addAction(_action)
+
+        def set_group_action(label, kind):
+            """Add a QAction to a QT menu along with a GroupAction that coordinates the checked state.
+            
+            The triggered function sets the value of the self.default_kind variable.
+            
+            ARGUMENTS
+            label -- a string containing the display label for the action.
+            kind -- the kind of structure to be used by default (e.g., 'rst', 'md', 'text')
+            
+            RETURNS
+            nothing.
+            """
+
+            _action = QtWidgets.QAction(label, self, checkable=True)
+            _action.triggered.connect(lambda: set_default_kind(kind))
+            group.addAction(_action)
+            menu.addAction(_action)
+
+        def set_default_kind(kind):
+            self.default_kind = kind
+            self.c.k.simulateCommand('vr3-update')
+        #@+node:TomP.20191231140246.1: *5* Create Menus
+        def set_tree_lock(checked):
+            self.lock_to_tree = checked
+            self.current_tree_root = self.c.p if checked else None
+
+        def set_freeze(checked):
+            self.freeze = checked
+
+        menu = QtWidgets.QMenu()
+        set_action("Entire Tree", 'show_whole_tree')
+        _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
+        _action.triggered.connect(lambda checked: set_tree_lock(checked))
+        menu.addAction(_action)
+
+        _action = QtWidgets.QAction('Freeze', self, checkable=True)
+        _action.triggered.connect(lambda checked: set_freeze(checked))
+        menu.addAction(_action)
+
+        set_action("Code Only", 'code_only')
+        _options_button.setMenu(menu)
+
+
+        menu = QtWidgets.QMenu()
+        group = QtWidgets.QActionGroup(self)
+        set_group_action('RsT', RST)
+        set_group_action('MD', MD)
+        set_group_action('Text', TEXT)
+        _default_type_button.setMenu(menu)
+
+
+
+        #@+node:TomP.20191231135753.1: *5* Finish Toolbar
+        _export_button = QtWidgets.QPushButton("Export")
+        _export_button.setDefault(True)
+        _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
+        _toolbar.addWidget(_export_button)
+
+        _reload_button = QtWidgets.QPushButton("Reload")
+        _reload_button.setDefault(True)
+        _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
+        _toolbar.addWidget(_reload_button)
+
+        _execute_button = QtWidgets.QPushButton('Execute')
+        _execute_button.setDefault(True)
+        _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
+        _toolbar.addWidget(_execute_button)
+
+        #_hide_button = QtWidgets.QPushButton('Hide')
+        #_hide_button.clicked.connect(lambda: self.w.hide())
+        #_toolbar.addWidget(_hide_button)
+
+        # _label = QtWidgets.QLabel('<b>ViewRendered3</b>')
+        # _label.setObjectName(VR3_TOOLBAR_NAME)
+        # _label.setTextFormat(1)
+        # _toolbar.addWidget(_label)
+
+        self.layout().setMenuBar(_toolbar)
+        self.vr3_toolbar = _toolbar
+        #@-others
     #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
     def reloadSettings(self):
         c = self.c
@@ -1087,249 +1214,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # what OS is being used.  Apparently, the g.os_path methods do this.
         vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
         self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
-    #@+node:TomP.20191215195433.42: *3* vr3.closeEvent
-    def closeEvent(self, event):
-        '''Close the vr3 window.'''
-        self.deactivate()
-    #@+node:TomP.20191215224043.1: *3* vr3.create_toolbar
-    def create_toolbar(self):
-        """Create toolbar and attach to the VR3 widget.
-        
-        Child widgets can be found using the findChild() method with the
-        name of the child widget.  E.g.,
-        
-        label = self.findChild(QtWidgets.QLabel, 'vr3-toolbar-label')
-        
-        Note that "self" refers to the enclosing viewrendered3 instance.
-        
-        NAMES CREATED
-        'vr3-toolbar-label' -- the toolbar label.
-        """
-        # pylint: disable=unnecessary-lambda
-
-        # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
-        # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
-
-        c = self.c
-        _toolbar = QtWidgets.QToolBar('Menus')
-        _options_button = QtWidgets.QPushButton("View Options")
-        _options_button.setDefault(True)
-        _toolbar.addWidget(_options_button)
-
-        _default_type_button =  QtWidgets.QPushButton("Default Kind")
-        _toolbar.addWidget(_default_type_button)
-
-        #@+others
-        #@+node:TomP.20191231135656.1: *4* Menu Creation Helpers
-        def set_menu_var(menu_var_name, action):
-            """Update an QAction's linked variable's value.
-            
-            ARGUMENTS
-            menu_var_name -- the name of the instance variable that holds this action's
-                             isChecked() value.
-            action -- the QAction.
-            
-            RETURNS
-            nothing
-            """
-
-            setattr(self, menu_var_name, action.isChecked())
-            self.c.k.simulateCommand('vr3-update')
-
-        def set_action(label, menu_var_name):
-            """Add a QAction to a QT menu.
-            
-            ARGUMENTS
-            label -- a string containing the display label for the action.
-            menu_var_name -- the name of the instance variable that holds this action's
-                             isChecked() value.  For example, if the menu_var_name
-                             is 'code_only', then a variable self.code_only will be
-                             created, and updated if the action's isChecked status
-                             is changed.
-                             
-                             Note that "self" refers to the enclosing viewrendered3 instance.
-                             
-            RETURNS
-            nothing
-            """
-
-            setattr(self, menu_var_name, False)
-            _action = QtWidgets.QAction(label, self, checkable=True)
-            _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
-            menu.addAction(_action)
-
-        def set_group_action(label, kind):
-            """Add a QAction to a QT menu along with a GroupAction that coordinates the checked state.
-            
-            The triggered function sets the value of the self.default_kind variable.
-            
-            ARGUMENTS
-            label -- a string containing the display label for the action.
-            kind -- the kind of structure to be used by default (e.g., 'rst', 'md', 'text')
-            
-            RETURNS
-            nothing.
-            """
-
-            _action = QtWidgets.QAction(label, self, checkable=True)
-            _action.triggered.connect(lambda: set_default_kind(kind))
-            group.addAction(_action)
-            menu.addAction(_action)
-
-        def set_default_kind(kind):
-            self.default_kind = kind
-            self.c.k.simulateCommand('vr3-update')
-        #@+node:TomP.20191231140246.1: *4* Create Menus
-        def set_tree_lock(checked):
-            self.lock_to_tree = checked
-            self.current_tree_root = self.c.p if checked else None
-
-        def set_freeze(checked):
-            self.freeze = checked
-
-        menu = QtWidgets.QMenu()
-        set_action("Entire Tree", 'show_whole_tree')
-        _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
-        _action.triggered.connect(lambda checked: set_tree_lock(checked))
-        menu.addAction(_action)
-
-        _action = QtWidgets.QAction('Freeze', self, checkable=True)
-        _action.triggered.connect(lambda checked: set_freeze(checked))
-        menu.addAction(_action)
-
-        set_action("Code Only", 'code_only')
-        _options_button.setMenu(menu)
-
-
-        menu = QtWidgets.QMenu()
-        group = QtWidgets.QActionGroup(self)
-        set_group_action('RsT', RST)
-        set_group_action('MD', MD)
-        set_group_action('Text', TEXT)
-        _default_type_button.setMenu(menu)
-
-
-
-        #@+node:TomP.20191231135753.1: *4* Finish Toolbar
-        _export_button = QtWidgets.QPushButton("Export")
-        _export_button.setDefault(True)
-        _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
-        _toolbar.addWidget(_export_button)
-
-        _reload_button = QtWidgets.QPushButton("Reload")
-        _reload_button.setDefault(True)
-        _reload_button.clicked.connect(lambda: c.k.simulateCommand('vr3-update'))
-        _toolbar.addWidget(_reload_button)
-
-        _execute_button = QtWidgets.QPushButton('Execute')
-        _execute_button.setDefault(True)
-        _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
-        _toolbar.addWidget(_execute_button)
-
-        #_hide_button = QtWidgets.QPushButton('Hide')
-        #_hide_button.clicked.connect(lambda: self.w.hide())
-        #_toolbar.addWidget(_hide_button)
-
-        # _label = QtWidgets.QLabel('<b>ViewRendered3</b>')
-        # _label.setObjectName(VR3_TOOLBAR_NAME)
-        # _label.setTextFormat(1)
-        # _toolbar.addWidget(_label)
-
-        self.layout().setMenuBar(_toolbar)
-        self.vr3_toolbar = _toolbar
-        #@-others
-    #@+node:TomP.20191215195433.43: *3* vr3.contract & expand
-    def contract(self):
-        #VrC.contract(self)
-        self.change_size(-100)
-
-    def expand(self):
-        #VrC.expand(self)
-        self.change_size(100)
-
-    def change_size(self, delta):
-    #    VrC.change_size(self, delta)
-
-        if hasattr(self.c, 'free_layout'):
-            splitter = self.parent()
-            i = splitter.indexOf(self)
-            assert i > -1
-            sizes = splitter.sizes()
-            n = len(sizes)
-            for j, size in enumerate(sizes):
-                if j == i:
-                    sizes[j] = max(0, size + delta)
-                else:
-                    sizes[j] = max(0, size - int(delta / (n - 1)))
-            splitter.setSizes(sizes)
-    #@+node:TomP.20191215195433.44: *3* vr3.activate
-    def activate(self):
-        '''Activate the vr3-window.'''
-        #VrC.activate(self)
-
-        pc = self
-        if pc.active: return
-        pc.inited = True
-        pc.active = True
-        g.registerHandler('select2', pc.update)
-        g.registerHandler('idle', pc.update)
-    #@+node:TomP.20191215195433.45: *3* vr3.deactivate
-    def deactivate(self):
-        '''Deactivate the vr3 window.'''
-        #VrC.deactivate(self)
-
-        pc = self
-        # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select3', pc.update)
-        g.unregisterHandler('idle', pc.update)
-        pc.active = False
-    #@+node:TomP.20191215195433.46: *3* vr3.lock/unlock
-    def lock(self):
-        '''Lock the vr3 pane to the current node .'''
-        #g.note('rendering pane locked')
-        self.lock_to_tree = True
-        self.current_tree_root = self.c.p
-
-    def unlock(self):
-        '''Unlock the vr3 pane.'''
-        #g.note('rendering pane unlocked')
-        self.lock_to_tree = False
-        self.current_tree_root = None
-
-    #@+node:TomP.20191215195433.47: *3* vr3.set_html
-    def set_html(self, s, w):
-        '''Set text in w to s, preserving scroll position.'''
-        c = self.c
-        # Find path relative to this file.  Needed as the base of relative
-        # URLs, e.g., image or included files.
-        path = c.getNodePath(c.p)
-        s = g.toUnicode(s)
-        url_base = QtCore.QUrl('file:///' + path + '/')
-        w.setHtml(s, url_base)
-        w.show()
-    #@+node:TomP.20191215195433.48: *3* vr3.underline
-    def underline(self, s):
-        '''Generate rST underlining for s.'''
-        #VrC.underline(self, s)
-
-        ch = '#'
-        n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
-        return '%s\n%s\n\n' % (s, ch * n)
-    #@+node:TomP.20191231110143.1: *3* vr3.zoomView
-    def zoomView(self):
-        w = self.qwev
-        _zf = w.zoomFactor()
-        w.setZoomFactor(_zf * ZOOM_FACTOR)
-    #@+node:TomP.20191231111540.1: *3* vr3.shrinkView
-    def shrinkView(self):
-        w = self.qwev
-        _zf = w.zoomFactor()
-        w.setZoomFactor(_zf / ZOOM_FACTOR)
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-        '''Update the vr3 pane. Called at idle time.
+        '''
+        Update the vr3 pane. Called at idle time.
         
         If the VR3 variable "freeze" is True, do not update.
         '''
@@ -2481,9 +2370,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.79: *4* vr3.utils for update helpers...
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
-        '''Swap a text widget into the rendering pane if necessary.
-        
-        Cannot delegate to viewrendered version.'''
+        '''Swap a text widget into the rendering pane if necessary.'''
 
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):
@@ -2629,20 +2516,65 @@ class ViewRenderedController3(QtWidgets.QWidget):
             sys.stderr = saveerr # restore stderr
 
         return bufferout.getvalue(), buffererr.getvalue() + except_err
-    #@+node:TomP.20191215195433.86: *3* vr3.adjust_layout (legacy only)
-    def adjust_layout(self, which):
-        #VrC.adjust_layout(self, which)
+    #@+node:ekr.20200329054506.1: *3* vr3: command helpers...
+    #@+node:TomP.20191215195433.44: *4* vr3.activate
+    def activate(self):
+        '''Activate the vr3-window.'''
+        pc = self
+        if pc.active:
+            return
+        pc.inited = True
+        pc.active = True
+        g.registerHandler('select2', pc.update)
+        g.registerHandler('idle', pc.update)
+    #@+node:TomP.20191215195433.43: *4* vr3.contract & expand
+    def contract(self):
+        #VrC.contract(self)
+        self.change_size(-100)
 
-        global layouts
-        c = self.c
-        splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            splitter.load_layout(loc)
-        elif which == 'open' and loo and splitter:
-            splitter.load_layout(loo)
-    #@+node:TomP.20191215195433.87: *3* vr3.show_dock_or_pane
+    def expand(self):
+        #VrC.expand(self)
+        self.change_size(100)
+
+    def change_size(self, delta):
+    #    VrC.change_size(self, delta)
+
+        if hasattr(self.c, 'free_layout'):
+            splitter = self.parent()
+            i = splitter.indexOf(self)
+            assert i > -1
+            sizes = splitter.sizes()
+            n = len(sizes)
+            for j, size in enumerate(sizes):
+                if j == i:
+                    sizes[j] = max(0, size + delta)
+                else:
+                    sizes[j] = max(0, size - int(delta / (n - 1)))
+            splitter.setSizes(sizes)
+    #@+node:TomP.20191215195433.45: *4* vr3.deactivate
+    def deactivate(self):
+        '''Deactivate the vr3 window.'''
+        #VrC.deactivate(self)
+
+        pc = self
+        # Never disable the idle-time hook: other plugins may need it.
+        g.unregisterHandler('select3', pc.update)
+        g.unregisterHandler('idle', pc.update)
+        pc.active = False
+    #@+node:TomP.20191215195433.46: *4* vr3.lock/unlock
+    def lock(self):
+        '''Lock the vr3 pane to the current node .'''
+        #g.note('rendering pane locked')
+        self.lock_to_tree = True
+        self.current_tree_root = self.c.p
+
+    def unlock(self):
+        '''Unlock the vr3 pane.'''
+        #g.note('rendering pane unlocked')
+        self.lock_to_tree = False
+        self.current_tree_root = None
+
+    #@+node:TomP.20191215195433.87: *4* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
 
         c, vr = self.c, self
@@ -2657,9 +2589,103 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr.show()
             vr.adjust_layout('open')
         c.bodyWantsFocusNow()
-    #@+node:TomP.20191215195433.88: *3* vr3.store_layout
+    #@+node:TomP.20191215195433.86: *5* vr3.adjust_layout (legacy only)
+    def adjust_layout(self, which):
+        #VrC.adjust_layout(self, which)
+
+        global layouts
+        c = self.c
+        splitter = self.splitter
+        deflo = c.db.get('viewrendered_default_layouts', (None, None))
+        loc, loo = layouts.get(c.hash(), deflo)
+        if which == 'closed' and loc and splitter:
+            splitter.load_layout(loc)
+        elif which == 'open' and loo and splitter:
+            splitter.load_layout(loo)
+    #@+node:ekr.20200329054651.1: *4* vr3: toolbar helpers...
+    #@+node:TomP.20200106204157.1: *5* vr3.get_toolbar_label
+    def get_toolbar_label(self):
+        """Return the toolbar label object."""
+        
+        return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
+    #@+node:TomP.20191226055702.1: *5* vr3.hide_toolbar
+    def hide_toolbar(self):
+        _toolbar = self.vr3_toolbar
+        if not _toolbar: return
+
+        try:
+            _toolbar.setVisible(False)
+        except Exception as e:
+            g.es('=== hide_toolbar(): %s: %s' % (type(e), e))
+    #@+node:TomP.20191226054120.1: *5* vr3.show_toolbar
+    def show_toolbar(self):
+        try:
+            _toolbar = self.vr3_toolbar
+        except RuntimeError as e:
+            g.es(f'show_toolbar(): {type(e)}: {e}')
+            return
+
+        if _toolbar and _toolbar.isHidden():
+            try:
+                _toolbar.setVisible(True)
+            except RuntimeError as e:
+                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
+    #@+node:ekr.20200329054729.1: *4* vr3: zoom helpers...
+    #@+node:TomP.20191231111540.1: *5* vr3.shrinkView
+    def shrinkView(self):
+        w = self.qwev
+        _zf = w.zoomFactor()
+        w.setZoomFactor(_zf / ZOOM_FACTOR)
+    #@+node:TomP.20191231110143.1: *5* vr3.zoomView
+    def zoomView(self):
+        w = self.qwev
+        _zf = w.zoomFactor()
+        w.setZoomFactor(_zf * ZOOM_FACTOR)
+    #@+node:ekr.20200329054429.1: *3* vr3: events...
+    #@+node:TomP.20191215195433.42: *4* vr3.closeEvent
+    def closeEvent(self, event):
+        '''Close the vr3 window.'''
+        self.deactivate()
+    #@+node:TomP.20200104180310.1: *4* vr3.keyPressEvent
+    def keyPressEvent(self, event):
+        """Take actions on keypresses when the VR3 render pane has focus and a key is pressed. 
+        
+        A method of this name receives keystrokes for most or all QObject-descended objects.
+        Currently, check only for <CNTRL-=> and <CONTROL-MINUS> events for zooming or unzooming
+        the VR3 browser pane.
+        """
+
+        mod = ''
+        modifiers = event.modifiers()
+        bare_key = event.text()
+
+        if modifiers and modifiers == QtCore.Qt.ControlModifier:
+            mod = 'cntrl'
+
+        if bare_key == '=' and mod == 'cntrl':
+            self.zoomView()
+        elif bare_key == '-' and mod == 'cntrl':
+            self.shrinkView()
+    #@+node:ekr.20200329054601.1: *3* vr3: utils
+    #@+node:TomP.20191215195433.47: *4* vr3.set_html
+    def set_html(self, s, w):
+        '''Set text in w to s, preserving scroll position.'''
+        c = self.c
+        # Find path relative to this file.  Needed as the base of relative
+        # URLs, e.g., image or included files.
+        path = c.getNodePath(c.p)
+        s = g.toUnicode(s)
+        url_base = QtCore.QUrl('file:///' + path + '/')
+        w.setHtml(s, url_base)
+        w.show()
+    #@+node:TomP.20191215195433.48: *4* vr3.underline
+    def underline(self, s):
+        '''Generate rST underlining for s.'''
+        ch = '#'
+        n = max(4, len(g.toEncodedString(s, reportErrors=False)))
+        return '%s\n%s\n\n' % (s, ch * n)
+    #@+node:TomP.20191215195433.88: *4* vr3.store_layout
     def store_layout(self, which):
-        #VrC.store_layout(self, which)
 
         global layouts
         c = self.c; h = c.hash()
@@ -2675,33 +2701,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             loo = json.loads(json.dumps(loo))
             layouts[h] = loc, loo
         c.db['viewrendered_default_layouts'] = layouts[h]
-    #@+node:TomP.20191226054120.1: *3* vr3.show_toolbar
-    def show_toolbar(self):
-        try:
-            _toolbar = self.vr3_toolbar
-        except RuntimeError as e:
-            g.es(f'show_toolbar(): {type(e)}: {e}')
-            return
-
-        if _toolbar and _toolbar.isHidden():
-            try:
-                _toolbar.setVisible(True)
-            except RuntimeError as e:
-                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
-    #@+node:TomP.20191226055702.1: *3* vr3.hide_toolbar
-    def hide_toolbar(self):
-        _toolbar = self.vr3_toolbar
-        if not _toolbar: return
-
-        try:
-            _toolbar.setVisible(False)
-        except Exception as e:
-            g.es('=== hide_toolbar(): %s: %s' % (type(e), e))
-    #@+node:TomP.20200106204157.1: *3* vr3.get_toolbar_label
-    def get_toolbar_label(self):
-        """Return the toolbar label object."""
-        
-        return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@-others
 #@+node:TomP.20200213170204.1: ** class State
 class State(Enum):
