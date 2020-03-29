@@ -52,6 +52,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_data = {}
+        self.loaded_images = {}
         if 0:  # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -314,26 +315,31 @@ class LeoQtTree(leoFrame.LeoTree):
         :param QWidgetItem item: tree node widget item
         """
         dd = self.declutter_data
-        if p.h in dd:
-            text, new_icons = dd[p.h]
+        iconVal = p.v.computeIcon()
+        if (p.h, iconVal) in dd:
+            text, new_icons = dd[(p.h, iconVal)]
             item.setText(0, text)
         else:
-            text = str(item.text(0))
-            new_icons = []
+            text = p.h
+            new_icons = self.sorted_icons(p)
             for pattern, cmds in self.get_declutter_patterns():
                 m = pattern.match(text) or pattern.search(text)
                 if m:
                     self.apply_declutter_rules(cmds, item, m, pattern, text, new_icons)
-            dd[p.h] = item.text(0), new_icons
-
-        com = c.editCommands
-        p_icons = com.getIconList(p)
-        old_icons = set(x.get('relPath', '') for x in self.nodeIconsDict.get(p.gnx, []))
-        new_icons = [x for x in new_icons if x not in old_icons]
-        if new_icons:
-            for icon in new_icons:
-                com.appendImageDictToList(p_icons, icon, 2)
-            self.nodeIconsDict[p.gnx] = p_icons
+            dd[(p.h, iconVal)] = item.text(0), new_icons
+            self.nodeIconsDict[p.gnx] = new_icons
+    #@+node:vitalije.20200329153544.1: *6* qtree.sorted_icons
+    def sorted_icons(self, p):
+        '''
+        Returns a list of icon filenames for this node.
+        The list is sorted to owner the 'where' key of image dicts.
+        '''
+        c = self.c
+        icons = c.editCommands.getIconList(p)
+        a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
+        a.append(f'box{p.v.computeIcon():02d}.png')
+        a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+        return a
     #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace
     def declutter_replace(self, arg, cmd, item, m, pattern, text):
         """
@@ -915,29 +921,24 @@ class LeoQtTree(leoFrame.LeoTree):
         """Return the proper icon for position p."""
         p.v.iconVal = val = p.v.computeIcon()
         return self.getCompositeIconImage(p, val)
-    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
-    def getCompositeIconImage(self, p, val):
-        """Get the icon at position p."""
-        userIcons = self.nodeIconsDict.get(p.gnx, [])
-        # Don't take this shortcut - not theme aware, see getImageImage()
-        # which is called below - TNB 20130313
-            # if not userIcons:
-            #     return self.getStatusIconImage(p)
-        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-        hash.append(str(val))
-        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-        hash = ':'.join(hash)
-        if hash in g.app.gui.iconimages:
-            icon = g.app.gui.iconimages[hash]
-            return icon
-        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                 if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage(f"box{val:02d}.png"))
-        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                      if i['where'] == 'beforeHeadline'])
-        images = [z for z in images if z]  # 2013/12/23: Remove missing images.
-        if not images:
-            return None
+    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
+    def icon_filenames_for_node(self, p, val):
+        '''Prepares and returns a list of icon filenames
+           related to this node.
+        '''
+        nicon = f'box{val:02d}.png'
+        fnames = self.nodeIconsDict.get(p.gnx, [nicon])
+        pat = re.compile(r'^box\d\d\.png$')
+        loaded_images = self.loaded_images
+        for i, f in enumerate(fnames):
+            if pat.match(f):
+                fnames[i] = nicon
+                f = nicon
+            if f not in loaded_images:
+                loaded_images[f] = g.app.gui.getImageImage(f)
+        return fnames
+    #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
+    def make_composite_icon(self, images):
         hsep = self.c.config.getInt('tree-icon-separation') or 0
         height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
@@ -952,11 +953,21 @@ class LeoQtTree(leoFrame.LeoTree):
             # which stops this being called again and again
         x = 0
         for i in images:
-            painter.drawPixmap(x, (height - i.height()) // 2, i)
+            painter.drawPixmap(x, 0, i)
             x += i.width() + hsep
         painter.end()
-        icon = QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
-        g.app.gui.iconimages[hash] = icon
+        return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
+    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
+    def getCompositeIconImage(self, p, val):
+        """Get the icon at position p."""
+        fnames = self.icon_filenames_for_node(p, val)
+        h = ':'.join(fnames)
+        icon = g.app.gui.iconimages.get(h)
+        loaded_images = self.loaded_images
+        images = list(map(loaded_images.get, fnames))
+        if not icon:
+            icon = self.make_composite_icon(images)
+            g.app.gui.iconimages[h] = icon
         return icon
     #@+node:ekr.20110605121601.17947: *4* qtree.getIconImage
     def getIconImage(self, p):
