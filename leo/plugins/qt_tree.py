@@ -87,9 +87,6 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         # w = c.frame.top
         tw = self.treeWidget
-        if not LeoQtTree.callbacksInjected:
-            LeoQtTree.callbacksInjected = True
-            self.injectCallbacks()  # A base class method.
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
