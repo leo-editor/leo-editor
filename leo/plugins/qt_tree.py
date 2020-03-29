@@ -494,9 +494,8 @@ class LeoQtTree(leoFrame.LeoTree):
             if icon:
                 item.setIcon(0, icon)
             return item
-        # Draw the icon.
-        if p:
-            # Expand self.drawItemIcon(p, item).
+        else:
+            # Draw the icon.
             v.iconVal = v.computeIcon()
             icon = self.getCompositeIconImage(p, v.iconVal)
                 # **Slow**, but allows per-vnode icons.
@@ -927,17 +926,15 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18410: *4* qtree.drawIcon
     def drawIcon(self, p):
         """Redraw the icon at p."""
+        return self.updateIcon(p)
+        # the following code is wrong. It constructs a new item
+        # and assignes the icon to it. However this item is never
+        # added to the treeWidget so it is soon garbage collceted
         w = self.treeWidget
         itemOrTree = self.position2item(p) or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         icon = self.getIcon(p)
         self.setItemIcon(item, icon)
-    #@+node:ekr.20110605121601.17946: *4* qtree.drawItemIcon
-    def drawItemIcon(self, p, item):
-        """Set the item's icon to p's icon."""
-        icon = self.getIcon(p)
-        if icon:
-            self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
     def getIcon(self, p):
         """Return the proper icon for position p."""
@@ -1000,22 +997,6 @@ class LeoQtTree(leoFrame.LeoTree):
             icon = self.make_composite_icon(images)
             g.app.gui.iconimages[h] = icon
         return icon
-    #@+node:ekr.20110605121601.17947: *4* qtree.getIconImage
-    def getIconImage(self, p):
-        # User icons are not supported in the base class.
-        if g.app.gui.isNullGui:
-            return None
-        return self.getStatusIconImage(p)
-    #@+node:ekr.20110605121601.17948: *4* qtree.getStatusIconImage
-    def getStatusIconImage(self, p):
-        val = p.v.computeIcon()
-        r = g.app.gui.getIconImage(
-            f"box{val:02d}.png")
-        return r
-    #@+node:ekr.20110605121601.17949: *4* qtree.getVnodeIcon
-    def getVnodeIcon(self, p):
-        """Return the proper icon for position p."""
-        return self.getIcon(p)
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
     def setItemIcon(self, item, icon):
 
@@ -1024,12 +1005,8 @@ class LeoQtTree(leoFrame.LeoTree):
             # Important: do not set lockouts here.
             # This will generate changed events,
             # but there is no itemChanged event handler.
-            self.setItemIconHelper(item, icon)
-    #@+node:ekr.20110605121601.18413: *4* qtree.setItemIconHelper
-    def setItemIconHelper(self, item, icon):
-        # Generates an item-changed event.
-        if item:
             item.setIcon(0, icon)
+
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
     def updateIcon(self, p, force=False):
         """Update p's icon."""
