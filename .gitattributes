@@ -7,12 +7,9 @@
 
 git-manifest.txt                export-ignore
 MakeFile                        export-ignore
-MANIFEST.in                     export-ignore
 
 leoStandAloneGlobals.py         export-ignore
 stand_alone_globals.leo         export-ignore
-# setup.cfg                     export-ignore
-# setup.py                      export-ignore
 
 # Do not include the top-level docs folder in distributions
 docs/                           export-ignore
