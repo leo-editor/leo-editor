@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file d:/Tom/devel/leo/plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
 """
@@ -12,8 +12,8 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About
-=====
+About Viewrendered3 V3.0b3
+==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the ViewRendered plugin and enhances the display of Restructured Text (RsT) and Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
 
@@ -283,7 +283,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 #@-<< vr3 docstring >>
 """
 #pylint: disable=no-member,invalid-name
-
 trace = False
     # This global trace is convenient.
 #@+<< imports >>
@@ -370,7 +369,7 @@ JAVASCRIPT = 'javascript'
 JAVA = 'java'
 C = 'c'
 CSS = 'css'
-RESPONSE = 'response'
+#RESPONSE = 'response'
 TEXT = 'text'
 
 VR3_TEMP_FILE = 'leo_rst_html.html'
@@ -994,7 +993,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.md_math_output and self.mathjax_url:
             self.md_header = fr'''
-    <head>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">        
+    <head xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     <script type="text/javascript" src="{self.mathjax_url}"></script>
@@ -1881,7 +1881,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
                 return _html
 
-        _html = self.md_header + s
+        _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
         return _html
         #@-others
     #@+node:TomP.20191215195433.67: *4* vr3.update_movie
@@ -2710,11 +2710,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(f'show_toolbar(): {type(e)}: {e}')
             return
 
-        if _toolbar and _toolbar.isHidden():
-            try:
+        try:
+            if _toolbar and _toolbar.isHidden():
                 _toolbar.setVisible(True)
-            except RuntimeError as e:
-                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
+        except RuntimeError as e:
+            g.es('show_toolbar(): %s: %s' % (type(e), e))
     #@+node:TomP.20191226055702.1: *3* vr3.hide_toolbar
     def hide_toolbar(self):
         _toolbar = self.vr3_toolbar
