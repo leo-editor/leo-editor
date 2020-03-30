@@ -5,6 +5,7 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
+    - python -m pip install --upgrade pip
     - pip --version
     - pip install setupext-janitor asttokens
 script:

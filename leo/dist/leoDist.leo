@@ -568,12 +568,9 @@ editing ``.leoID.txt``.
 
 git-manifest.txt                export-ignore
 MakeFile                        export-ignore
-MANIFEST.in                     export-ignore
 
 leoStandAloneGlobals.py         export-ignore
 stand_alone_globals.leo         export-ignore
-# setup.cfg                     export-ignore
-# setup.py                      export-ignore
 
 # Do not include the top-level docs folder in distributions
 docs/                           export-ignore
@@ -2398,6 +2395,7 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
+    - python -m pip install --upgrade pip
     - pip --version
     - pip install setupext-janitor asttokens
 script:
