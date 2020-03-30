@@ -230,7 +230,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.2
+Version: 6.2.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -249,7 +249,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -2427,6 +2427,7 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
+    - python -m pip install --upgrade pip
     - pip --version
     - pip install setupext-janitor asttokens
 script:
