@@ -268,17 +268,17 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
+- Leo's home page: https://leoeditor.com
+- [Documentation](https://leoeditor.com/leo_toc.html)
+- [Tutorials](https://leoeditor.com/tutorial.html)
+- [Video tutorials](https://leoeditor.com/screencasts.html)
+- [Forum](https://groups.google.com/group/leo-editor)
+- [Download](https://leoeditor.com/download)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](https://leoeditor.com/load-leo.html)
+- [More links](https://leoeditor.com/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -2426,6 +2426,7 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
+    - python -m pip install --upgrade pip
     - pip --version
     - pip install setupext-janitor asttokens
 script:
