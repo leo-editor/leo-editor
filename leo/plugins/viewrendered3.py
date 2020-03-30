@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b3
+About Viewrendered3 V3.0b4
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the ViewRendered plugin and enhances the display of Restructured Text (RsT) and Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
@@ -49,11 +49,9 @@ Limitations and Quirks
 
     #. The plugin requires QT5 and Python 3.6+. All Leo versions since 6.0 also use them, so this requirement should always be met.
 
-    #. At the current time, the plugin **only works** when Leo is launched using docks.  For Leo versions > 6.1, this means launching it with the **``--use-docks``** parameter.
-
     #. The RsT processor (``docutils``) is fussy about having blank lines after blocks.  A node may render correctly on its own, but will show errors when displayed in a subtree.  In most cases, the fix is to add a blank line at the end of a node. This may be fixed in a future version.
     
-    #. Without MathJax, mathematical symbols RsT is rendered using CSS, which has a cruder appearance than MathJax rendering but may be servicable.  With MD, mathematical symbols are not rendered.
+    #. Without MathJax, mathematical symbols in RsT are rendered using CSS, which has a cruder appearance than MathJax rendering but may be servicable.  With MD, mathematical symbols are not rendered without MathJax.
     
     #. Code blocks for several programming languages can be colorized, even within a single node.  But only Python blocks can be executed.  Blocks intended for another language (such as javascript) will cause syntax errors if an attempt is made to execute the node.
     
@@ -63,7 +61,7 @@ Limitations and Quirks
 
     #. There is currently no provision to pass through extensions to the Markdown processor.
     
-    #. The rendered pane have the magnification change (zoom and unzoom) using the standard hot keys <CTRL>+ - and <CTRL>+ =.  This only works if the cursor has been clicked inside the render pane first.
+    #. The rendered pane cand change the magnification (zoom and unzoom) using the standard hot keys <CTRL>+ - and <CTRL>+ =.  This only works if the cursor has been clicked inside the render pane first.  You may have to click back in the body or outline panes after this.
 
 #@+node:TomP.20200115200249.1: *3* Dependencies
 Dependencies
