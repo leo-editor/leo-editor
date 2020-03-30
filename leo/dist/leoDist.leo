@@ -2167,6 +2167,8 @@ There is a "Draft New Release" button at the top-right of the page.
 
 Public announcements, after Matt creates a package:
 
+- Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
+
 - Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
 
@@ -2426,6 +2428,7 @@ git:
     ## Clone depth, must be big enough to include a tag
     depth: 500
 install:
+    - python -m pip install --upgrade pip
     - pip --version
     - pip install setupext-janitor asttokens
 script:
