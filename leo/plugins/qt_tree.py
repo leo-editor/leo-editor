@@ -941,7 +941,8 @@ class LeoQtTree(leoFrame.LeoTree):
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
         else:
-            self.getCompositeImage(p, p.v.computeIcon())
+            p.v.iconVal = iv = p.v.computeIcon()
+            self.getCompositeIconImage(p, iv)
 
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, p, val):
