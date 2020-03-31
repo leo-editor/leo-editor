@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b4
+About Viewrendered3 V3.0b5
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the ViewRendered plugin and enhances the display of Restructured Text (RsT) and Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
@@ -56,12 +56,14 @@ Limitations and Quirks
     #. Code blocks for several programming languages can be colorized, even within a single node.  But only Python blocks can be executed.  Blocks intended for another language (such as javascript) will cause syntax errors if an attempt is made to execute the node.
     
     #. The Viewrendered2 plugin, now obsolete, could be set to display execution output as RsT.  This was useful for code that would print RsT.  The current VR3 plugin cannot be set to render the output as RsT.
+    
+    #. Text nodes and subtrees that have no language specified are rendered as preformated text.  They cannot be executed.
 
     #. Behavior for nodes other than @rst or @md nodes is the same as for the Viewrendered plugin.  This includes any bugs or unexpected behaviors.
 
     #. There is currently no provision to pass through extensions to the Markdown processor.
     
-    #. The rendered pane cand change the magnification (zoom and unzoom) using the standard hot keys <CTRL>+ - and <CTRL>+ =.  This only works if the cursor has been clicked inside the render pane first.  You may have to click back in the body or outline panes after this.
+    #. The rendered pane can change the magnification (zoom and unzoom) using the standard hot keys <CTRL>+ - and <CTRL>+ =.  This only works if the cursor has been clicked inside the render pane first.  You may have to click back in the body or outline panes after this.
 
 #@+node:TomP.20200115200249.1: *3* Dependencies
 Dependencies
@@ -379,8 +381,10 @@ if 1:
     C = 'c'
 CODE = 'code'
 CSS = 'css'
+ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
+
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
@@ -402,6 +406,12 @@ body, th, td {
   background-color: white;
   font-size: 90%;
 }
+'''
+
+TEXT_HTML_HEADER = f'''<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset={ENCODING}">
+</head>
 '''
 
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
@@ -880,9 +890,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
-    #    VrC.create_dispatch_dict(self)
-
-        # From viewrendered (i.e., VrC)
         pc = self
         pc.dispatch_dict = {
             'big': pc.update_rst,
@@ -892,12 +899,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'md': pc.update_md,
             'movie': pc.update_movie,
             'networkx': pc.update_networkx,
-            'rst': pc.update_rst,
             'pyplot': pc.update_pyplot,
+            'rst': pc.update_rst,
             'svg': pc.update_svg,
+            'text': pc.update_text,
             #'url': pc.update_url,
         }
-    #@@c
+
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
         pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
     #@+node:TomP.20200329223820.4: *4* vr3.create_md_header
@@ -1240,7 +1248,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f in (pc.update_rst, pc.update_md):  # EKR.
+        if f in (pc.update_rst, pc.update_md, 
+                 pc.update_text):
              self.show_toolbar()
         else:
             self.hide_toolbar()
@@ -1270,10 +1279,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             # Dispatch based on the computed kind.
             kind = keywords.get('flags') if 'flags' in keywords else _kind
-            if not kind or kind == TEXT:
+            if not kind:
                 # Just display plain text.
-                w = pc.ensure_text_widget()
-                w.setPlainText(s)
+                #xxx w = pc.ensure_text_widget()
+                #xxx w.setPlainText(s)
+                h = f'<pre>{s}</pre>'
+                w = pc.w
+                self.set_html(h, w)
+                self.rst_html = h
                 w.show()
                 return
 
@@ -1293,13 +1306,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 except UnboundLocalError as e:
                     g.es('=======', tag, e)
                     return
-            if kind in (MD, RST, REST) and _tree and self.show_whole_tree:
+            if kind in (MD, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace('no handler for kind: %s' % kind)
                 f = pc.update_rst
-            if kind in (MD, RST, REST):
+            if kind in (MD, RST, REST, TEXT):
                 f(_tree, keywords)
             else:
                 f(s, keywords)
@@ -2516,6 +2529,32 @@ class ViewRenderedController3(QtWidgets.QWidget):
             sys.stderr = saveerr # restore stderr
 
         return bufferout.getvalue(), buffererr.getvalue() + except_err
+    #@+node:TomP.20200330152649.1: *4* vr3.update_text
+    def update_text(self, node_list, keywords=None):
+        """Update as text-only in the vr3 pane.
+        
+            ARGUMENTS
+            node_list -- a list of outline nodes to be processed.
+            keywords -- a dictionary of keywords
+            
+            RETURNS
+            nothing
+        """
+        # Do this regardless of whether we show the widget or not.
+        self.ensure_web_widget()
+        assert self.w
+        w = self.w
+        lines = []
+        for node in node_list:
+            lines.append(node.b)
+        s = '\n'.join(lines)
+        s = html.escape(s, quote=True)
+        s = f'{TEXT_HTML_HEADER}<pre>{s}</pre></html>'
+        h = s.encode('utf-8')
+        self.set_html(h, w)
+        self.rst_html = h
+
+        w.show()
     #@+node:TomP.20200329230436.1: *4* vr3: command helpers...
     #@+node:TomP.20200329230436.2: *5* vr3.activate
     def activate(self):
@@ -2610,26 +2649,23 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@+node:TomP.20200329230436.10: *6* vr3.hide_toolbar
     def hide_toolbar(self):
-        _toolbar = self.vr3_toolbar
-        if not _toolbar: return
-
         try:
-            _toolbar.setVisible(False)
-        except Exception as e:
-            g.es('=== hide_toolbar(): %s: %s' % (type(e), e))
+            _toolbar = self.vr3_toolbar
+        except RuntimeError as e:
+            g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
+            return
+
+        _toolbar.setVisible(False)
     #@+node:TomP.20200329230436.11: *6* vr3.show_toolbar
     def show_toolbar(self):
         try:
             _toolbar = self.vr3_toolbar
         except RuntimeError as e:
-            g.es(f'show_toolbar(): {type(e)}: {e}')
+            g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
             return
 
-        if _toolbar and _toolbar.isHidden():
-            try:
-                _toolbar.setVisible(True)
-            except RuntimeError as e:
-                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
+        _toolbar.setVisible(True)
+
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
     def shrinkView(self):
