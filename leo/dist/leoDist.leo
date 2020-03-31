@@ -273,7 +273,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [Tutorials](https://leoeditor.com/tutorial.html)
 - [Video tutorials](https://leoeditor.com/screencasts.html)
 - [Forum](https://groups.google.com/group/leo-editor)
-- [Download](https://leoeditor.com/download)
+- [Download](https://github.com/leo-editor/leo-editor/releases)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leoeditor.com/testimonials.html)
