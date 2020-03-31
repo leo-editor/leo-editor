@@ -2054,17 +2054,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.es('VR3 - missing URL for MathJax')
 
         # Call docutils to get the string.
-        html = None
+        _html = None
         if result.strip():
             try:
-                html = publish_string(result, writer_name='html', settings_overrides=args)
+                _html = publish_string(result, writer_name='html', settings_overrides=args)
             except SystemMessage as sm:
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     result = 'RST error:\n%s\n\n%s' % (msg, result)
 
-            self.rst_html = html
-            return html
+            self.rst_html = _html
+            return _html
 
         return ''
         #@-others
