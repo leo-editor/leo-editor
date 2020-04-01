@@ -31708,11 +31708,13 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
-<t tx="matt.20200331213038.1">When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
+<t tx="matt.20200331213038.1">.._`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
+
+When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
 
 This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.
 
-Details at https://github.com/leo-editor/leo-editor/issues/603
+Details at `Missing files when installing Leo from PyPI using "pip install leo`_
 
 * An editable install is from source code, either a git clone or downloaded archive. See: 
 - Installing Leo with git
