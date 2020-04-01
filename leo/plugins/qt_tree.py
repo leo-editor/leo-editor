@@ -337,6 +337,7 @@ class LeoQtTree(leoFrame.LeoTree):
             """
             Execute cmd and return True if cmd is any replace command.
             """
+            # pylint: disable=undefined-loop-variable
             if cmd == 'REPLACE':
                 s = pattern.sub(arg, text)
                 item.setText(0, s)
@@ -493,13 +494,12 @@ class LeoQtTree(leoFrame.LeoTree):
             if icon:
                 item.setIcon(0, icon)
             return item
-        else:
-            # Draw the icon.
-            v.iconVal = v.computeIcon()
-            icon = self.getCompositeIconImage(p, v.iconVal)
-                # **Slow**, but allows per-vnode icons.
-            if icon:
-                item.setIcon(0, icon)
+        # Draw the icon.
+        v.iconVal = v.computeIcon()
+        icon = self.getCompositeIconImage(p, v.iconVal)
+            # **Slow**, but allows per-vnode icons.
+        if icon:
+            item.setIcon(0, icon)
         return item
     #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree
     def drawTopTree(self, p):
@@ -928,21 +928,20 @@ class LeoQtTree(leoFrame.LeoTree):
         return self.updateIcon(p)
         # the following code is wrong. It constructs a new item
         # and assignes the icon to it. However this item is never
-        # added to the treeWidget so it is soon garbage collceted
-        w = self.treeWidget
-        itemOrTree = self.position2item(p) or w
-        item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        icon = self.getIcon(p)
-        self.setItemIcon(item, icon)
+        # added to the treeWidget so it is soon garbage collected
+            # w = self.treeWidget
+            # itemOrTree = self.position2item(p) or w
+            # item = QtWidgets.QTreeWidgetItem(itemOrTree)
+            # icon = self.getIcon(p)
+            # self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
     def getIcon(self, p):
         """Return the proper icon for position p."""
         if self.use_declutter:
             item = self.position2item(p)
             return item and self.declutter_node(self.c, p, item)
-        else:
-            p.v.iconVal = iv = p.v.computeIcon()
-            self.getCompositeIconImage(p, iv)
+        p.v.iconVal = iv = p.v.computeIcon()
+        return self.getCompositeIconImage(p, iv)
 
     #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
     def icon_filenames_for_node(self, p, val):
