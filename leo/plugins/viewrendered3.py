@@ -358,8 +358,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 trace = False
     # This global trace is convenient.
-new = False
-    # Experimental: use QWebView for text.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
 #
@@ -455,7 +453,6 @@ CSS = 'css'
 ENCODING = 'utf-8'
 JAVA = 'java'
 JAVASCRIPT = 'javascript'
-
 MD = 'md'
 PYPLOT = 'pyplot'
 PYTHON = 'python'
@@ -677,7 +674,7 @@ def viewrendered(event):
         return vr3
     #
     # Legacy code: add the pane to the splitter.
-    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
+    layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
@@ -694,7 +691,7 @@ def viewrendered(event):
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
-    '''Close the rendering pane.'''
+    """Close the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -733,7 +730,7 @@ close_rendering_pane = hide_rendering_pane
 #@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
 @g.command('vr3-lock')
 def lock_rendering_pane(event):
-    '''Lock the rendering pane.'''
+    """Lock the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -742,7 +739,7 @@ def lock_rendering_pane(event):
 #@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
 @g.command('vr3-pause-play-movie')
 def pause_play_movie(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -754,7 +751,7 @@ def pause_play_movie(event):
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
-    '''Show the rendering pane.'''
+    """Show the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -762,7 +759,7 @@ def show_rendering_pane(event):
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
-    '''Toggle the rendering pane.'''
+    """Toggle the rendering pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -795,7 +792,7 @@ def toggle_rendering_pane(event):
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
-    '''Pause or play a movie in the rendering pane.'''
+    """Pause or play a movie in the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -804,7 +801,7 @@ def unlock_rendering_pane(event):
 #@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
 @g.command('vr3-update')
 def update_rendering_pane(event):
-    '''Update the rendering pane'''
+    """Update the rendering pane"""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -888,7 +885,7 @@ class ViewRenderedProvider3:
     #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
-    '''A class to control rendering in a rendering pane.'''
+    """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
@@ -942,7 +939,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_dispatch_dict()
         self.activate()
         self.zoomed = False
-
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1017,7 +1013,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     </head>
     '''
-
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
     def create_pane(self, parent):
         """Create the vr3 pane or dock."""
@@ -1101,7 +1096,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _action = QtWidgets.QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
-
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
         def set_default_kind(kind):
             self.default_kind = kind
@@ -1128,7 +1122,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
-
         #@+node:TomP.20200329223820.11: *5* function: vr3.set_menu_var
         def set_menu_var(menu_var_name, action):
             """Update an QAction's linked variable's value.
@@ -1273,7 +1266,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet -- The URL to the stylesheet.  Need not include
                                the "file:///", and must be an absolute path
                                if it is a local file.
-
                                Set by @string vr3-rst-stylesheet.
         """
 
@@ -1298,10 +1290,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-        '''Update the vr3 pane. Called at idle time.
+        """Update the vr3 pane. Called at idle time.
 
         If the VR3 variable "freeze" is True, do not update.
-        '''
+        """
 
         if self.freeze: return
         pc = self
@@ -1341,7 +1333,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dock = pc.leo_dock or pc
             if dock.isHidden():
                 w = pc.ensure_text_widget()
-
                 return
 
             # For rst, md handler
@@ -1419,7 +1410,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
-        '''Set the background color of the vr3 pane.'''
+        """Set the background color of the vr3 pane."""
         if 0: # Do not do this! It interferes with themes.
             pc = self
             if not colorName: return
@@ -1432,9 +1423,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
         '''Return True if we must update the rendering pane.'''
-        if new:  ###
-            return False
-
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
@@ -1467,7 +1455,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
     def update_asciidoc(self, s, keywords):
-        '''Update asciidoc in the vr3 pane.'''
+        """Update asciidoc in the vr3 pane."""
         #VrC.pdate_asciidoc(self, s, keywords)
 
         global asciidoctor_exec, asciidoc3_exec
@@ -1487,12 +1475,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.update_rst(s, keywords)
     #@+node:TomP.20191215195433.55: *5* vr3.make_asciidoc_title
     def make_asciidoc_title(self, s):
-        '''Generate an asciiidoc title for s.'''
+        """Generate an asciiidoc title for s."""
         line = '#' * (min(4, len(s)))
         return f"{line}\n{s}\n{line}\n\n"
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoctor
     def convert_to_asciidoctor(self, s):
-        '''Convert s to html using the asciidoctor or asciidoc processor.'''
+        """Convert s to html using the asciidoctor or asciidoc processor."""
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -1531,7 +1519,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
-        '''Update the graphics script in the vr3 pane.'''
+        """Update the graphics script in the vr3 pane."""
         pc = self; c = pc.c
         force = keywords.get('force')
         if pc.gs and not force:
@@ -1577,12 +1565,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.60: *4* vr3.update_image
     def update_image(self, s, keywords):
-        '''Update an image in the vr3 pane.
+        """Update an image in the vr3 pane.
 
         The path to the file can be an absolute or relative file path,
         or an http: URL.  It must be the first line in the body.
         File URLs must not start with "file:".
-        '''
+        """
 
         pc = self
         if not s.strip():
@@ -1644,7 +1632,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.62: *5* vr3.get_jupyter_source
     def get_jupyter_source(self, c):
-        '''Return the html for the @jupyer node.'''
+        """Return the html for the @jupyer node."""
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -1843,7 +1831,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     movie_warning = False
 
     def update_movie(self, s, keywords):
-        '''Update a movie in the vr3 pane.'''
+        """Update a movie in the vr3 pane."""
         # pylint: disable=maybe-no-member
             # 'PyQt4.phonon' has no 'VideoPlayer' member
             # 'PyQt4.phonon' has no 'VideoCategory' member
@@ -1893,19 +1881,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vp.play()
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):
-        '''Update a networkx graphic in the vr3 pane.'''
+        """Update a networkx graphic in the vr3 pane."""
         pc = self
         w = pc.ensure_text_widget()
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
         pc.show()
     #@+node:TomP.20191215195433.69: *4* vr3.update_pandoc & helpers
     def update_pandoc(self, s, keywords):
-        '''
+        """
         Update an @pandoc in the vr3 pane.
 
         There is no such thing as @language pandoc,
         so only @pandoc nodes trigger this code.
-        '''
+        """
         global pandoc_exec
         pc = self
         w = pc.ensure_text_widget()
@@ -1922,7 +1910,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.update_rst(s, keywords)
     #@+node:TomP.20191215195433.70: *5* vr3.convert_to_pandoc
     def convert_to_pandoc(self, s):
-        '''Convert s to html using the asciidoctor or asciidoc processor.'''
+        """Convert s to html using the asciidoctor or asciidoc processor."""
         pc = self
         c, p = pc.c, pc.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -2214,11 +2202,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         _in_quotes = line.count(_quotes_type) == 1
                     else:
                         _in_quotes = False
-
             #@-<< handle quotes >>
             #@+<< handle_ats >>
             #@+node:TomP.20200112103729.2: *7* << handle_ats >>
-
             # Honor "@", "@c": skip all lines after "@" until next "@c".
             # However, ignore these markers if we are in a code block and
             # and also within a quoted section.
@@ -2226,7 +2212,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if line.rstrip() == '@':
                     _skipthis = True
                     continue
-                elif line.rstrip() == '@c':
+                if line.rstrip() == '@c':
                     _skipthis = False
                     continue
                 if _skipthis:
@@ -2449,9 +2435,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
         """Swap a text widget into the rendering pane if necessary."""
-        if new:
-            return pc.w
-
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):
             # Instantiate a new QTextBrowser.
@@ -2679,7 +2662,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #g.note('rendering pane unlocked')
         self.lock_to_tree = False
         self.current_tree_root = None
-
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
 
@@ -2702,7 +2684,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global layouts
         c = self.c
         splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
+        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
         loc, loo = layouts.get(c.hash(), deflo)
         if which == 'closed' and loc and splitter:
             splitter.load_layout(loc)
@@ -2792,9 +2774,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def store_layout(self, which):
 
         global layouts
-        c = self.c; h = c.hash()
+        c = self.c
         splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
+        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
         (loc, loo) = layouts.get(c.hash(), deflo)
         if which == 'closed' and splitter:
             loc = splitter.get_saveable_layout()
@@ -2804,7 +2786,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             loo = splitter.get_saveable_layout()
             loo = json.loads(json.dumps(loo))
             layouts[h] = loc, loo
-        c.db['viewrendered_default_layouts'] = layouts[h]
+        c.db['viewrendered3_default_layouts'] = layouts[h]
     #@-others
 #@+node:TomP.20200213170204.1: ** class State
 class State(Enum):
@@ -2980,7 +2962,6 @@ class StateMachine:
     #@-<< do_state >>
     #@+<< get_marker >>
     #@+node:TomP.20200212085651.1: *3* << get_marker >>
-
     def get_marker(self, line):
         """Return classification information about a line.
 
@@ -3056,7 +3037,6 @@ class StateMachine:
         (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):      (Action.add_line, State.BASE),
     }
     #@-<< State Table >>
-
 
 #@-others
 
