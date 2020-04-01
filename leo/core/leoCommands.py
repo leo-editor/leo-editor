@@ -1090,25 +1090,21 @@ class Commands:
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
-        # Important: do not call p.isAncestorOf here.
-        c = self
-        if not p or not p.v:
-            return False
-        if root and p == root:
-            return True
-        p = p.copy()
-        while p.hasParent():
-            old_n, old_v = p._childIndex, p.v
-            p.moveToParent()
-            if root and p == root:
-                return True
-            if not old_v.isNthChildOf(old_n, p.v):
+        if not p or not p.v: return False
+
+        rstack = root.stack + [(root.v, root._childIndex)] if root else []
+        pstack = p.stack + [(p.v, p._childIndex)]
+
+        if len(rstack) > len(p.stack): return False
+
+        par = self.hiddenRootNode
+        for j, x in enumerate(pstack):
+            if j < len(rstack) and x != rstack[j]: return False
+            v, i = x
+            if i >= len(par.children) or v is not par.children[i]:
                 return False
-        if root:
-            exists = p == root
-        else:
-            exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        return exists
+            par = v
+        return True
     #@+node:ekr.20160427153457.1: *6* c.dumpPosition
     def dumpPosition(self, p):
         """Dump position p and it's ancestors."""
