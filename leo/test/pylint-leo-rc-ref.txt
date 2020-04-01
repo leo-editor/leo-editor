@@ -53,11 +53,16 @@ disable=
         exec-used,
         global-statement, #  Assume we know what we are doing.
         global-variable-not-assigned, # not helpful.
+        import-error,
+        import-outside-toplevel, # Requires substantial code changes.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
         misplaced-comparison-constant, # pedantic.
         missing-docstring, # Instead, use Leo's find-missing-docstrings command.
+        no-elif-break, # **Possible pylint bug**
+        no-else-break, # **Possible pylint bug**
         no-self-use, # so what?
         protected-access,
+        redeclared-assigned-name,
         redefined-argument-from-local, # I do this all the time.
         redefined-builtin, # all, next, etc. so what?
         redefined-outer-name,
@@ -65,6 +70,7 @@ disable=
         reimported,
         too-few-public-methods,
         ungrouped-imports,
+        unnecessary-comprehension,
         unnecessary-pass, # Can be pedantic in some situations.
         unused-argument,
         useless-import-alias, # the "as" keeps pyflakes happy.

@@ -1902,6 +1902,7 @@ class RecursiveImportController:
     #@+node:ekr.20180524100258.1: *5* ric.add_class_names
     def add_class_names(self, p):
         """Add class names to headlines for all descendant nodes."""
+        # pylint: disable=no-else-continue
         after, class_name = None, None
         class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
         paren_pattern = re.compile(r'(.*)\(.*\.py\)')

@@ -3882,7 +3882,7 @@ class Commands:
         # Ensure all positions are valid.
         aList = [p for p in aList if c.positionExists(p)]
         if not aList:
-            return
+            return []
 
         def p2link(p):
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
