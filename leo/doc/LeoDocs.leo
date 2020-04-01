@@ -553,7 +553,9 @@
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
-<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh></v>
+<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
+<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+</v>
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
 <v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
 <v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
@@ -2381,6 +2383,7 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
+<v t="ekr.20180130033527.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12529,13 +12532,13 @@ write_intermediate_file = True
 Downloading Leo
 ###############
 
-There are four ways to download Leo:
+There are three ways to download Leo:
 
-- **New**: Leo 5.7 final will have a `Python wheel`_, so ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies. See `Installing Leo with pip`_.
+- ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
 
-- We recommend installing Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code. All of Leo's developers use git.
+- Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
 
-- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot`_.
+- If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
 </t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
@@ -26133,7 +26136,8 @@ the headline of any node.
 </t>
 <t tx="ekr.20180130033527.1">.. _`Install pip`:      https://pip.pypa.io/en/stable/installing/               
 .. _`Install Python`:   http://python.org.
-.. _`pip`:              https://pypi.python.org/pypi/pip
+.. _`pip`:              https://pypi.org/pypi/pip
+.. _`PyPi`:              https://pypi.org/
 
 Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically.
 
@@ -26143,10 +26147,18 @@ Python's `pip`_ tool will download *and* install Leo and all of Leo's dependenci
 
     pip --version
 
-3. Install Leo and all required packages:
+In some circumstances using pip as a module works better:
+
+    python -m pip --version
+
+3. Download and install Leo and all required packages from `PyPi`_::
 
     pip install leo
-</t>
+
+or 
+
+    python -m pip install leo
+    </t>
 <t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
 <t tx="ekr.20180130092843.1">.. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
 
@@ -31696,6 +31708,17 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
+<t tx="matt.20200331213038.1">.._`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
+
+When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
+
+This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.
+
+Details at `Missing files when installing Leo from PyPI using "pip install leo`_
+
+* An editable install is from source code, either a git clone or downloaded archive. See: 
+- Installing Leo with git
+- Installing from sources (Windows)</t>
 <t tx="mhw.20191008134016.1"></t>
 <t tx="mhw.20191008134029.1">##########################
 Leo and Asciidoctor
