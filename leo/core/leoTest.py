@@ -1416,27 +1416,25 @@ class TestManager:
             line2 = lines2[i]
             if line1 == line2:
                 continue
-            else:
-                n1 = g.skip_ws(line1, 0)
-                n2 = g.skip_ws(line2, 0)
-                if (
-                    not g.match(line1, n1, delim1)
-                    or not g.match(line2, n2, delim1)
-                ):
-                    if verbose: g.trace("Mismatched non-sentinel lines")
-                    return False
-                n1 += len(delim1)
-                n2 += len(delim1)
-                if g.match(line1, n1, "@+node") and g.match(line2, n2, "@+node"):
-                    continue
-                if g.match(line1, n1, "@-node") and g.match(line2, n2, "@-node"):
-                    continue
-                else:
-                    if verbose:
-                        g.trace("Mismatched sentinel lines", delim1)
-                        g.trace("line1:", repr(line1))
-                        g.trace("line2:", repr(line2))
-                    return False
+            n1 = g.skip_ws(line1, 0)
+            n2 = g.skip_ws(line2, 0)
+            if (
+                not g.match(line1, n1, delim1)
+                or not g.match(line2, n2, delim1)
+            ):
+                if verbose: g.trace("Mismatched non-sentinel lines")
+                return False
+            n1 += len(delim1)
+            n2 += len(delim1)
+            if g.match(line1, n1, "@+node") and g.match(line2, n2, "@+node"):
+                continue
+            if g.match(line1, n1, "@-node") and g.match(line2, n2, "@-node"):
+                continue
+            if verbose:
+                g.trace("Mismatched sentinel lines", delim1)
+                g.trace("line1:", repr(line1))
+                g.trace("line2:", repr(line2))
+            return False
         return True
     #@+node:ekr.20051104075904.25: *4* TM.compareOutlines
     def compareOutlines(self, root1, root2, compareHeadlines=True, tag='', report=True):
