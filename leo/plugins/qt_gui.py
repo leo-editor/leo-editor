@@ -527,7 +527,9 @@ class LeoQtGui(leoGui.LeoGui):
         s = d.getExistingDirectory(parent, title, startdir)
         return s
     #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog & helper
-    def runOpenFileDialog(self, c, title, filetypes,
+    def runOpenFileDialog(self, c,
+        title,
+        filetypes,
         defaultextension='',
         multiple=False,
         startpath=None,
