@@ -283,7 +283,7 @@ This plugin renders @md, @image, @jupyter, @html, @movie, @networkx and @svg
 nodes as follows:
 
 **Note**: For @image, @movie and @svg nodes, either the headline or the first
-line of body text may contain a filename.  If relative, the filename is resolve
+line of body text may contain a filename.  If relative, the filename is resolved
 relative to Leo's load directory.
 
 - ``@md`` renders the body text as markdown, as described above.
@@ -326,7 +326,8 @@ relative to Leo's load directory.
 
 - ``@svg`` renders the file as a (possibly animated) svg (Scalable Vector Image).
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
-  **Note**: if the first character of the body text is ``<`` after removing
+  
+  .. note:: if the first character of the body text is ``<`` after removing
             Leo directives, the contents of body pane is taken to be an svg image.
 
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
