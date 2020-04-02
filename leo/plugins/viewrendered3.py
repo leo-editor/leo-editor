@@ -1067,7 +1067,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         c = self.c
         _toolbar = QtWidgets.QToolBar('Menus')
-        QtWidgets.QToolBar.__init___self()
         _options_button = QtWidgets.QPushButton("View Options")
         _options_button.setDefault(True)
         _toolbar.addWidget(_options_button)
