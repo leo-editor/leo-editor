@@ -330,8 +330,8 @@ function validate_file($name)
   // check size
   $headers = get_headers($name);
   foreach($headers as $h)
-  {
-    $chunks = split(":", $h);
+  {    // split is deprecated. See Leo issue #1551
+    // $chunks = split(":", $h);    $chunks = explode(":", $h);
     $type   = $chunks[0];
     if ($type == "Content-Length")
       $File_Size = $chunks[1];
