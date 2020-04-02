@@ -892,7 +892,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
-        super().__init__(parent)
+        QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        #super().__init__(parent)
 
         self.create_pane(parent)
         # Set the ivars.
@@ -1375,16 +1376,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 f(s, keywords)
         else:
+            pass
             # Save the scroll position.
-            w = pc.w
-            if w.__class__ == QtWidgets.QTextBrowser:
-                # 2011/07/30: The widget may no longer exist.
-                try:
-                    sb = w.verticalScrollBar()
-                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                except Exception:
-                    g.es_exception()
-                    pc.deactivate()
+            # w = pc.w
+            # if w.__class__ == QtWidgets.QTextBrowser:
+                # # 2011/07/30: The widget may no longer exist.
+                # try:
+                    # sb = w.verticalScrollBar()
+                    # pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+                # except Exception:
+                    # g.es_exception()
+                    # pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         '''Embed widget w in the free_layout splitter.'''
