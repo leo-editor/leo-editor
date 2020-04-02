@@ -2570,7 +2570,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # print &gt;&gt; buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
             # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered3 exception')
             g.es_exception()
             except_err = f'{type(e).__name__}: {str(e)}\n'
         # Restore stdout, stderr
@@ -2775,6 +2775,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         global layouts
         c = self.c
+        h = c.hash()
         splitter = self.splitter
         deflo = c.db.get('viewrendered3_default_layouts', (None, None))
         (loc, loo) = layouts.get(c.hash(), deflo)
