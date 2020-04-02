@@ -358,8 +358,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 trace = False
     # This global trace is convenient.
-new = False
-    # Experimental: use QWebView for text.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
 #
@@ -676,7 +674,7 @@ def viewrendered(event):
         return vr3
     #
     # Legacy code: add the pane to the splitter.
-    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
+    layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
     if splitter:
@@ -894,7 +892,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
-        super().__init__(parent)
+        QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        #super().__init__(parent)
 
         self.create_pane(parent)
         # Set the ivars.
@@ -941,16 +940,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_dispatch_dict()
         self.activate()
         self.zoomed = False
-
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.50: *4* vr3.create_base_text_widget
-    def create_base_text_widget(self):
-        """
-        Create a QWebView.
-        
-        For QT5, this is actually a QWebEngineView
-        """
-=======
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -958,7 +947,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         For QT5, this is actually a QWebEngineView
         """
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         c = self.c
         w = QWebView()
         n = c.config.getInt('qweb-view-font-size')
@@ -966,11 +954,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             settings = w.settings()
             settings.setFontSize(settings.DefaultFontSize, n)
         return w
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.38: *4* vr3.create_dispatch_dict
-=======
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def create_dispatch_dict(self):
         pc = self
         pc = self
@@ -991,11 +975,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
         pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
-<<<<<<< HEAD
-    #@+node:TomP.20200104001436.1: *4* vr3.create_md_header
-=======
     #@+node:TomP.20200329223820.4: *4* vr3.create_md_header
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def create_md_header(self):
         """Create a header for the md HTML output.
 
@@ -1034,12 +1014,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
     </head>
     '''
-
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.40: *4* vr3.create_pane
-=======
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def create_pane(self, parent):
         """Create the vr3 pane or dock."""
         c = self.c
@@ -1071,11 +1046,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
         if g.app.init_docks:
             dock.show()
-<<<<<<< HEAD
-    #@+node:TomP.20191215224043.1: *4* vr3.create_toolbar & helper functions
-=======
     #@+node:TomP.20200329223820.6: *4* vr3.create_toolbar & helper functions
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
 
@@ -1104,11 +1075,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _toolbar.addWidget(_default_type_button)
 
         #@+others  # functions.
-<<<<<<< HEAD
-        #@+node:ekr.20200329060917.1: *5* function: vr3.set_action
-=======
         #@+node:TomP.20200329223820.7: *5* function: vr3.set_action
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         def set_action(label, menu_var_name):
             """Add a QAction to a QT menu.
 
@@ -1130,17 +1097,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _action = QtWidgets.QAction(label, self, checkable=True)
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
-
-<<<<<<< HEAD
-        #@+node:ekr.20200329060941.1: *5* function: vr3.set_default_kind
-        def set_default_kind(kind):
-            self.default_kind = kind
-            self.c.k.simulateCommand('vr3-update')
-        #@+node:ekr.20200329061514.1: *5* function: vr3.set_freeze
-        def set_freeze(checked):
-            self.freeze = checked
-        #@+node:ekr.20200329060918.1: *5* function: vr3.set_group_action
-=======
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
         def set_default_kind(kind):
             self.default_kind = kind
@@ -1149,7 +1105,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         def set_freeze(checked):
             self.freeze = checked
         #@+node:TomP.20200329223820.10: *5* function: vr3.set_group_action
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         def set_group_action(label, kind):
             """Coordinates the menu's checked state.
 
@@ -1168,48 +1123,28 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
-
-<<<<<<< HEAD
-        #@+node:ekr.20200329060916.1: *5* function: vr3.set_menu_var
-        def set_menu_var(menu_var_name, action):
-            """Update an QAction's linked variable's value.
-            
-=======
         #@+node:TomP.20200329223820.11: *5* function: vr3.set_menu_var
         def set_menu_var(menu_var_name, action):
             """Update an QAction's linked variable's value.
 
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
             ARGUMENTS
             menu_var_name -- the name of the instance variable that holds this action's
                              isChecked() value.
             action -- the QAction.
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
             RETURNS
             nothing
             """
 
             setattr(self, menu_var_name, action.isChecked())
             self.c.k.simulateCommand('vr3-update')
-<<<<<<< HEAD
-        #@+node:ekr.20200329061448.1: *5* function: vr3.set_tree_lock
-=======
         #@+node:TomP.20200329223820.12: *5* function: vr3.set_tree_lock
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         def set_tree_lock(checked):
             self.lock_to_tree = checked
             self.current_tree_root = self.c.p if checked else None
         #@-others
         #@+<< vr3: create menus >>
-<<<<<<< HEAD
-        #@+node:TomP.20191231140246.1: *5* << vr3: create menus >>
-=======
         #@+node:TomP.20200329223820.13: *5* << vr3: create menus >>
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
         _action = QtWidgets.QAction('Lock to Tree Root', self, checkable=True)
@@ -1231,11 +1166,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _default_type_button.setMenu(menu)
         #@-<< vr3: create menus >>
         #@+<< vr3: finish toolbar >>
-<<<<<<< HEAD
-        #@+node:TomP.20191231135753.1: *5* << vr3: finish toolbar >>
-=======
         #@+node:TomP.20200329223820.14: *5* << vr3: finish toolbar >>
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         _export_button = QtWidgets.QPushButton("Export")
         _export_button.setDefault(True)
         _export_button.clicked.connect(lambda: c.k.simulateCommand('vr3-export-rst-html'))
@@ -1263,11 +1194,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
         #@-<< vr3: finish toolbar >>
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.39: *4* vr3.reloadSettings
-=======
     #@+node:TomP.20200329223820.15: *4* vr3.reloadSettings
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
@@ -1276,73 +1203,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
-<<<<<<< HEAD
-
-        self.math_output = c.config.getBool('vr3-math-output', default=False)
-        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
-        self.rst_math_output = 'mathjax ' + self.mathjax_url
-
-        self.set_rst_stylesheet()
-
-        self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
-        self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
-
-        self.set_md_stylesheet()
-        self.create_md_header()
-    #@+node:TomP.20200103171535.1: *4* vr3.set_md_stylesheet
-    def set_md_stylesheet(self):
-        """Verify or create css stylesheet for Markdown node.
-        
-        If there is no custom css stylesheet specified by self.md_stylesheet,
-        check if there is one at the standard location.  If not, create
-        a default stylesheet and write it to a file at that place.
-        
-        The default location is assumed to be at leo/plugins/viewrendered3.
-        
-        VARIABLE USED
-        self.md_stylesheet -- The URL to the stylesheet.  Need not include
-                               the "file:///", and must be an absolute path 
-                               if it is a local file.  
-                               
-                               Set by @string vr3-md-stylesheet.  
-        """
-
-        # If no custom stylesheet specified, use standard one.
-        if not self.md_stylesheet:
-            # Look for the standard one
-            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
-            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
-
-            # If there is no stylesheet at the standard location, have Pygments 
-            # generate a default stylesheet there.
-            # Note: "cmdline" is a function imported from pygments
-            if not os.path.exists(style_path):
-                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
-                # pygments cmdline() writes to stdout; we have to redirect it to a file
-                with io.open(style_path, 'w') as out:
-                    with redirect_stdout(out):
-                        cmdline.main(args)
-                # Add some fine-tuning css
-                with io.open(style_path, 'a') as out:
-                    out.write(MD_STYLESHEET_APPEND)
-            self.md_stylesheet = 'file:///' + style_path
-
-    #@+node:TomP.20200303185005.1: *4* vr3.set_rst_stylesheet
-    def set_rst_stylesheet(self):
-        """Set rst stylesheet to default if none specified.
-        
-        A file location must start with 'file:///';. If
-        a file does not exist for the path, use the default
-        stylesheet.
-        
-        The default location is in leo/plugins/viewrendered3.
-        
-        VARIABLE USED
-        self.rst_stylesheet -- The URL to the stylesheet.  Need not include
-                               the "file:///", and must be an absolute path 
-                               if it is a local file.  
-                               
-=======
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
@@ -1407,8 +1267,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet -- The URL to the stylesheet.  Need not include
                                the "file:///", and must be an absolute path
                                if it is a local file.
-
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
                                Set by @string vr3-rst-stylesheet.
         """
 
@@ -1433,14 +1291,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag, keywords):
-<<<<<<< HEAD
-        """
-        Update the vr3 pane. Called at idle time.
-        
-=======
-        '''Update the vr3 pane. Called at idle time.
+        """Update the vr3 pane. Called at idle time.
 
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         If the VR3 variable "freeze" is True, do not update.
         """
 
@@ -1482,11 +1334,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             dock = pc.leo_dock or pc
             if dock.isHidden():
                 w = pc.ensure_text_widget()
-<<<<<<< HEAD
-                ### w.setPlainText(s)
-=======
-
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
                 return
 
             # For rst, md handler
@@ -1529,23 +1376,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 f(s, keywords)
         else:
+            pass
             # Save the scroll position.
-            w = pc.w
-            if w.__class__ == QtWidgets.QTextBrowser:
-                # 2011/07/30: The widget may no longer exist.
-                try:
-                    sb = w.verticalScrollBar()
-                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                except Exception:
-                    g.es_exception()
-                    pc.deactivate()
+            # w = pc.w
+            # if w.__class__ == QtWidgets.QTextBrowser:
+                # # 2011/07/30: The widget may no longer exist.
+                # try:
+                    # sb = w.verticalScrollBar()
+                    # pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+                # except Exception:
+                    # g.es_exception()
+                    # pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-<<<<<<< HEAD
-        """Embed widget w in the free_layout splitter."""
-=======
         '''Embed widget w in the free_layout splitter.'''
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         pc = self; c = pc.c #X ; splitter = pc.splitter
         pc.w = w
         layout = self.layout()
@@ -1580,14 +1424,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
-<<<<<<< HEAD
-        """Return True if we must update the rendering pane."""
-=======
         '''Return True if we must update the rendering pane.'''
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
-        if new:  ###
-            return False
-
         _must_update = False
         pc = self
         c, p = pc.c, pc.c.p
@@ -1730,13 +1567,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.60: *4* vr3.update_image
     def update_image(self, s, keywords):
-<<<<<<< HEAD
         """Update an image in the vr3 pane.
-        
-=======
-        '''Update an image in the vr3 pane.
 
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         The path to the file can be an absolute or relative file path,
         or an http: URL.  It must be the first line in the body.
         File URLs must not start with "file:".
@@ -2605,9 +2437,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
         """Swap a text widget into the rendering pane if necessary."""
-        if new:
-            return pc.w
-
         c, pc = self.c, self
         if pc.must_change_widget(QtWidgets.QTextBrowser):
             # Instantiate a new QTextBrowser.
@@ -2637,11 +2466,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w = self.qwev
         if pc.must_change_widget(QWebView):
             pc.embed_widget(w) # Creates w.wrapper
-<<<<<<< HEAD
-            assert(w == pc.w)
-=======
             assert w == pc.w
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
         return pc.w
     #@+node:TomP.20191215195433.81: *5* vr3.get_kind
     def get_kind(self, p):
@@ -2747,7 +2572,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # print &gt;&gt; buffererr, traceback.format_exc()
             # buffererr.flush() # otherwise exception info appears too late
             # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-            g.es('Viewrendered2 exception')
+            g.es('Viewrendered3 exception')
             g.es_exception()
             except_err = f'{type(e).__name__}: {str(e)}\n'
         # Restore stdout, stderr
@@ -2756,24 +2581,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             sys.stderr = saveerr # restore stderr
 
         return bufferout.getvalue(), buffererr.getvalue() + except_err
-<<<<<<< HEAD
-    #@+node:ekr.20200329054506.1: *3* vr3: command helpers...
-    #@+node:TomP.20191215195433.44: *4* vr3.activate
-    def activate(self):
-        """Activate the vr3-window."""
-        pc = self
-        if pc.active:
-            return
-        pc.inited = True
-        pc.active = True
-        g.registerHandler('select2', pc.update)
-        g.registerHandler('idle', pc.update)
-    #@+node:TomP.20191215195433.43: *4* vr3.contract & expand
-    def contract(self):
-        #VrC.contract(self)
-        self.change_size(-100)
-
-=======
     #@+node:TomP.20200330152649.1: *4* vr3.update_text
     def update_text(self, node_list, keywords=None):
         """Update as text-only in the vr3 pane.
@@ -2816,7 +2623,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #VrC.contract(self)
         self.change_size(-100)
 
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def expand(self):
         #VrC.expand(self)
         self.change_size(100)
@@ -2836,11 +2642,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 else:
                     sizes[j] = max(0, size - int(delta / (n - 1)))
             splitter.setSizes(sizes)
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.45: *4* vr3.deactivate
-=======
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def deactivate(self):
         """Deactivate the vr3 window."""
         #VrC.deactivate(self)
@@ -2850,11 +2652,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         g.unregisterHandler('select3', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.46: *4* vr3.lock/unlock
-=======
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def lock(self):
         """Lock the vr3 pane to the current node ."""
         #g.note('rendering pane locked')
@@ -2866,12 +2664,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #g.note('rendering pane unlocked')
         self.lock_to_tree = False
         self.current_tree_root = None
-
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.87: *4* vr3.show_dock_or_pane
-=======
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
     def show_dock_or_pane(self):
 
         c, vr = self.c, self
@@ -2886,11 +2679,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr.show()
             vr.adjust_layout('open')
         c.bodyWantsFocusNow()
-<<<<<<< HEAD
-    #@+node:TomP.20191215195433.86: *5* vr3.adjust_layout (legacy only)
-    def adjust_layout(self, which):
-        #VrC.adjust_layout(self, which)
-=======
     #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
     def adjust_layout(self, which):
         #VrC.adjust_layout(self, which)
@@ -2898,7 +2686,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global layouts
         c = self.c
         splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
+        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
         loc, loo = layouts.get(c.hash(), deflo)
         if which == 'closed' and loc and splitter:
             splitter.load_layout(loc)
@@ -2923,11 +2711,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def show_toolbar(self):
         try:
             _toolbar = self.vr3_toolbar
+            _toolbar.setVisible(True)
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
             return
 
-        _toolbar.setVisible(True)
 
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
@@ -2986,109 +2774,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return '%s\n%s\n\n' % (s, ch * n)
     #@+node:TomP.20200329230503.4: *5* vr3.store_layout
     def store_layout(self, which):
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
 
         global layouts
         c = self.c
+        h = c.hash()
         splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
-<<<<<<< HEAD
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            splitter.load_layout(loc)
-        elif which == 'open' and loo and splitter:
-            splitter.load_layout(loo)
-    #@+node:ekr.20200329054651.1: *4* vr3: toolbar helpers...
-    #@+node:TomP.20200106204157.1: *5* vr3.get_toolbar_label
-    def get_toolbar_label(self):
-        """Return the toolbar label object."""
-        
-        return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
-    #@+node:TomP.20191226055702.1: *5* vr3.hide_toolbar
-    def hide_toolbar(self):
-        _toolbar = self.vr3_toolbar
-        if not _toolbar: return
-
-        try:
-            _toolbar.setVisible(False)
-        except Exception as e:
-            g.es('=== hide_toolbar(): %s: %s' % (type(e), e))
-    #@+node:TomP.20191226054120.1: *5* vr3.show_toolbar
-    def show_toolbar(self):
-        try:
-            _toolbar = self.vr3_toolbar
-        except RuntimeError as e:
-            g.es(f'show_toolbar(): {type(e)}: {e}')
-            return
-
-        if _toolbar and _toolbar.isHidden():
-            try:
-                _toolbar.setVisible(True)
-            except RuntimeError as e:
-                g.es('show_toolbar(): cannot setVisible(): %s: %s' % (type(e), e))
-    #@+node:ekr.20200329054729.1: *4* vr3: zoom helpers...
-    #@+node:TomP.20191231111540.1: *5* vr3.shrinkView
-    def shrinkView(self):
-        w = self.qwev
-        _zf = w.zoomFactor()
-        w.setZoomFactor(_zf / ZOOM_FACTOR)
-    #@+node:TomP.20191231110143.1: *5* vr3.zoomView
-    def zoomView(self):
-        w = self.qwev
-        _zf = w.zoomFactor()
-        w.setZoomFactor(_zf * ZOOM_FACTOR)
-    #@+node:ekr.20200329054429.1: *3* vr3: events...
-    #@+node:TomP.20191215195433.42: *4* vr3.closeEvent
-    def closeEvent(self, event):
-        """Close the vr3 window."""
-        self.deactivate()
-    #@+node:TomP.20200104180310.1: *4* vr3.keyPressEvent
-    def keyPressEvent(self, event):
-        """Take actions on keypresses when the VR3 render pane has focus and a key is pressed. 
-        
-        A method of this name receives keystrokes for most or all QObject-descended objects.
-        Currently, check only for <CNTRL-=> and <CONTROL-MINUS> events for zooming or unzooming
-        the VR3 browser pane.
-        """
-
-        mod = ''
-        modifiers = event.modifiers()
-        bare_key = event.text()
-
-        if modifiers and modifiers == QtCore.Qt.ControlModifier:
-            mod = 'cntrl'
-
-        if bare_key == '=' and mod == 'cntrl':
-            self.zoomView()
-        elif bare_key == '-' and mod == 'cntrl':
-            self.shrinkView()
-    #@+node:ekr.20200329054601.1: *3* vr3: utils
-    #@+node:TomP.20191215195433.47: *4* vr3.set_html
-    def set_html(self, s, w):
-        """Set text in w to s, preserving scroll position."""
-        c = self.c
-        # Find path relative to this file.  Needed as the base of relative
-        # URLs, e.g., image or included files.
-        path = c.getNodePath(c.p)
-        s = g.toUnicode(s)
-        url_base = QtCore.QUrl('file:///' + path + '/')
-        w.setHtml(s, url_base)
-        w.show()
-    #@+node:TomP.20191215195433.48: *4* vr3.underline
-    def underline(self, s):
-        """Generate rST underlining for s."""
-        ch = '#'
-        n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-        return '%s\n%s\n\n' % (s, ch * n)
-    #@+node:TomP.20191215195433.88: *4* vr3.store_layout
-    def store_layout(self, which):
-
-        global layouts
-        c = self.c; h = c.hash()
-        splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
-=======
->>>>>>> a75713b74c4fd263112d92f4ba08739be924fac9
+        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
         (loc, loo) = layouts.get(c.hash(), deflo)
         if which == 'closed' and splitter:
             loc = splitter.get_saveable_layout()
@@ -3098,7 +2789,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             loo = splitter.get_saveable_layout()
             loo = json.loads(json.dumps(loo))
             layouts[h] = loc, loo
-        c.db['viewrendered_default_layouts'] = layouts[h]
+        c.db['viewrendered3_default_layouts'] = layouts[h]
     #@-others
 #@+node:TomP.20200213170204.1: ** class State
 class State(Enum):
@@ -3349,7 +3040,6 @@ class StateMachine:
         (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):      (Action.add_line, State.BASE),
     }
     #@-<< State Table >>
-
 
 #@-others
 
