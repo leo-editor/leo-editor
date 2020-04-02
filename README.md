@@ -18,10 +18,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 **Quick Install**
 
 - Install python3
-- if not using git:
+- if not using git:  
     `pip install leo`
-- If using git:
-    `git clone https://github.com/leo-editor/leo-editor.git`
+
+- If using git:  
+    `git clone https://github.com/leo-editor/leo-editor.git`  
     `pip install --editable leo-editor`
 
 See [Getting Started](http://leoeditor.com/getting-started.html) for more. 
