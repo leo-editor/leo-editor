@@ -855,6 +855,23 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
+#@+node:TomP.20200401222739.1: *3* g.command('vr3-x-hide')
+@g.command('vr3-x-hide')
+def x_hide(event):
+    vr3 = getVr3(event)
+    c = event.get('c')
+    if g.app.dock:
+        dock = vr3.leo_dock
+        if dock:
+            dock.hide()
+            #dock.raise_()
+                # #1230.
+    else:
+        vr3.activate()
+        vr3.show()
+        vr3.adjust_layout('open')
+
+    c.bodyWantsFocusNow()
 #@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3 (vr3)
 class ViewRenderedProvider3:
     #@+others
@@ -1312,10 +1329,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f in (pc.update_rst, pc.update_md, pc.update_text):
-            self.show_toolbar()
-        else:
-            self.hide_toolbar()
+        # if f in (pc.update_rst, pc.update_md, pc.update_text):
+            # self.show_toolbar()
+        # else:
+            # self.hide_toolbar()
         if self.locked:
             return
 
