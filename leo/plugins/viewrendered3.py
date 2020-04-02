@@ -2649,7 +2649,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         pc = self
         # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select3', pc.update)
+        g.unregisterHandler('select2', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
