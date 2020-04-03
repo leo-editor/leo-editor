@@ -269,10 +269,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 **Quick Install**
 
 - Install python3
-- if not using git:
+- if not using git:  
     `pip install leo`
-- If using git:
-    `git clone https://github.com/leo-editor/leo-editor.git`
+
+- If using git:  
+    `git clone https://github.com/leo-editor/leo-editor.git`  
     `pip install --editable leo-editor`
 
 See [Getting Started](http://leoeditor.com/getting-started.html) for more. 
@@ -284,7 +285,7 @@ See [Getting Started](http://leoeditor.com/getting-started.html) for more.
 - [Tutorials](https://leoeditor.com/tutorial.html)
 - [Video tutorials](https://leoeditor.com/screencasts.html)
 - [Forum](https://groups.google.com/group/leo-editor)
-- [Download](https://github.com/leo-editor/leo-editor/releases)
+- [Download](https://leoeditor.com/download.html)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leoeditor.com/testimonials.html)

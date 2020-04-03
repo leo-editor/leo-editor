@@ -34,7 +34,7 @@ See [Getting Started](http://leoeditor.com/getting-started.html) for more.
 - [Tutorials](https://leoeditor.com/tutorial.html)
 - [Video tutorials](https://leoeditor.com/screencasts.html)
 - [Forum](https://groups.google.com/group/leo-editor)
-- [Download](https://github.com/leo-editor/leo-editor/releases)
+- [Download](https://leoeditor.com/download.html)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leoeditor.com/testimonials.html)
