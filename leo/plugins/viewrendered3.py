@@ -746,8 +746,11 @@ def pause_play_movie(event):
     vp = vr3.vp
     if not vp:
         return
-    f = vp.pause if vp.isPlaying() else vp.play
+    #g.es('===', vp.state())
+    _state = vp.state()
+    f = vp.pause if _state == 1 else vp.play
     f()
+
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
@@ -1312,10 +1315,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f in (pc.update_rst, pc.update_md, pc.update_text):
-            self.show_toolbar()
-        else:
-            self.hide_toolbar()
+        # if f in (pc.update_rst, pc.update_md, pc.update_text):
+            # self.show_toolbar()
+        # else:
+            # self.hide_toolbar()
         if self.locked:
             return
 
