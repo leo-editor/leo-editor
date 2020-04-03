@@ -1025,7 +1025,6 @@ class LeoQtTree(leoFrame.LeoTree):
         else:
             self.nodeIconsDict.pop(p.gnx, None)
             icon = self.getIcon(p)  # sets p.v.iconVal
-            g.trace('icons', self.nodeIconsDict.get(p.gnx))
             # Update all cloned items.
             items = self.vnode2items(p.v)
             if not items:
