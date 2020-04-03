@@ -8323,7 +8323,7 @@ def setIconList(self,p,l,setDirty=True):
         return
     if trace: g.trace(l,g.callers(6))
     self._setIconListHelper(p,l,p.v,setDirty)
-
+    self.frame.tree.updateIcon(pm, force=True)
 #@+node:ekr.20090701125429.6012: *8* _setIconListHelper
 def _setIconListHelper(self,p,subl,uaLoc,setDirty):
     """icon setting code common between v and t nodes
