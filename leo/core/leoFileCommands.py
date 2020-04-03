@@ -783,6 +783,8 @@ class FileCommands:
             for gnx in topgnxes:
                 v = fc.gnxDict[gnx]
                 c.hiddenRootNode.children.append(v)
+                if gnx in pubgnxes:
+                    v.parents.append(c.hiddenRootNode)
         #@+node:vitalije.20170831144827.8: *6* priv_data
         def priv_data(gnxes):
             dbrow = lambda v: (

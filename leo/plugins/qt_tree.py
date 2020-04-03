@@ -399,14 +399,16 @@ class LeoQtTree(leoFrame.LeoTree):
         if (p.h, iconVal) in dd:
             text, new_icons = dd[(p.h, iconVal)]
             item.setText(0, text)
+            new_icons = sorted_icons(p) + new_icons
         else:
             text = p.h
-            new_icons = sorted_icons(p)
+            new_icons = []
             for pattern, cmds in self.get_declutter_patterns():
                 m = pattern.match(text) or pattern.search(text)
                 if m:
                     apply_declutter_rules(cmds)
             dd[(p.h, iconVal)] = item.text(0), new_icons
+            new_icons = sorted_icons(p) + new_icons
             self.nodeIconsDict[p.gnx] = new_icons
             preload_images()
         h = ':'.join(new_icons)
