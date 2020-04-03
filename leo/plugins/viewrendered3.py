@@ -314,11 +314,15 @@ relative to Leo's load directory.
 
   Use file:// urls for local files. Some examples:
 
-      Windows: file:///c:/Test/a_notebook.ipynb
+      Windows: ``file:///c:/Test/a_notebook.ipynb``
 
-      Linux:   file:///home/a_notebook.ipynb
+      Linux:   ``file:///home/a_notebook.ipynb``
 
-- ``@movie`` plays the file as a movie.  @movie also works for music files.
+- ``@movie`` plays a file as a movie. @movie also works for music files. 
+  The path to the file must be on the first line of the body of the node. 
+  Media can be started or paused using the *vr3-pause-play-movie* command.  
+  Movies might not render in the current version, depending in video 
+  type and installed codecs.
 
 - ``@networkx`` is non-functional at present.  It is intended to
   render the body text as a networkx graph.
@@ -1336,7 +1340,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # This avoids annoying messages with rst.
             dock = pc.leo_dock or pc
             if dock.isHidden():
-                w = pc.ensure_text_widget()
+                #w = pc.ensure_text_widget()
                 return
 
             # For rst, md handler
