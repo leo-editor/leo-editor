@@ -1095,7 +1095,7 @@ class Commands:
         rstack = root.stack + [(root.v, root._childIndex)] if root else []
         pstack = p.stack + [(p.v, p._childIndex)]
 
-        if len(rstack) > len(p.stack): return False
+        if len(rstack) > len(pstack): return False
 
         par = self.hiddenRootNode
         for j, x in enumerate(pstack):
