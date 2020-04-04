@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b5
+About Viewrendered3 V3.0b6
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -314,11 +314,15 @@ relative to Leo's load directory.
 
   Use file:// urls for local files. Some examples:
 
-      Windows: file:///c:/Test/a_notebook.ipynb
+      Windows: ``file:///c:/Test/a_notebook.ipynb``
 
-      Linux:   file:///home/a_notebook.ipynb
+      Linux:   ``file:///home/a_notebook.ipynb``
 
-- ``@movie`` plays the file as a movie.  @movie also works for music files.
+- ``@movie`` plays a file as a movie. @movie also works for music files. 
+  The path to the file must be on the first line of the body of the node. 
+  Media can be started or paused using the *vr3-pause-play-movie* command.  
+  Movies might not render in the current version, depending in video 
+  type and installed codecs.
 
 - ``@networkx`` is non-functional at present.  It is intended to
   render the body text as a networkx graph.
@@ -746,8 +750,11 @@ def pause_play_movie(event):
     vp = vr3.vp
     if not vp:
         return
-    f = vp.pause if vp.isPlaying() else vp.play
+    #g.es('===', vp.state())
+    _state = vp.state()
+    f = vp.pause if _state == 1 else vp.play
     f()
+
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
@@ -1312,10 +1319,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f in (pc.update_rst, pc.update_md, pc.update_text):
-            self.show_toolbar()
-        else:
-            self.hide_toolbar()
+        # if f in (pc.update_rst, pc.update_md, pc.update_text):
+            # self.show_toolbar()
+        # else:
+            # self.hide_toolbar()
         if self.locked:
             return
 
@@ -1333,7 +1340,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # This avoids annoying messages with rst.
             dock = pc.leo_dock or pc
             if dock.isHidden():
-                w = pc.ensure_text_widget()
+                #w = pc.ensure_text_widget()
                 return
 
             # For rst, md handler
@@ -2649,7 +2656,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         pc = self
         # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select3', pc.update)
+        g.unregisterHandler('select2', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
@@ -2702,11 +2709,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def hide_toolbar(self):
         try:
             _toolbar = self.vr3_toolbar
+            _toolbar.setVisible(False)
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
             return
 
-        _toolbar.setVisible(False)
     #@+node:TomP.20200329230436.11: *6* vr3.show_toolbar
     def show_toolbar(self):
         try:
