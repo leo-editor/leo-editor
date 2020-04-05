@@ -120,7 +120,7 @@ Settings
 Settings are put into nodes with the headlines ``@setting ....``.  They must be
 placed into an ``@settings`` tree, preferably in the myLeoSettings file.
 
-.. csv-table:: Settings
+.. csv-table:: String Settings
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
@@ -131,11 +131,20 @@ placed into an ``@settings`` tree, preferably in the myLeoSettings file.
    "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
 
+.. csv-table:: Int Settings (integer only, do not use any units)
+   :header: "Setting", "Default", "Values", "Purpose"
+   :widths: 18, 5, 5, 30
+
+   qweb-view-font-size, -, small integer, Change Initial Font size
+
 **Examples**::
 
     @string vr3-mathjax-url = file:///D:/utility/mathjax/es5/tex-chtml.js
     @string vr3-mathjax-url = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML
     @string vr3-md-math-output = True
+    @int qweb-view-font-size = 16
+
+**Note** The font size setting, *qweb-view-font-size*, will probably not be needed. Useful values will generally be from 8 - 20.
 
 Stylesheets
 ===========
@@ -489,7 +498,7 @@ TEXT_HTML_HEADER = f'''<html>
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 
-VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
+#VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
 
 # For code rendering
 LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS)
@@ -2701,10 +2710,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             splitter.load_layout(loo)
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
-    def get_toolbar_label(self):
-        """Return the toolbar label object."""
-
-        return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
+    #@+at
+    # def get_toolbar_label(self):
+    #     """Return the toolbar label object."""
+    #
+    #     return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@+node:TomP.20200329230436.10: *6* vr3.hide_toolbar
     def hide_toolbar(self):
         try:
