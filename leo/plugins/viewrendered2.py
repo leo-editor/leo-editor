@@ -1040,7 +1040,7 @@ class WebViewPlus(QtWidgets.QWidget):
                     else:
                         result.append('\n\n')
                     continue
-                elif word in g.globalDirectiveList:
+                if word in g.globalDirectiveList:
                     continue
             if codeflag:
                 emit_line = not (s.startswith('@') or s.startswith('<<')) if self.code_only else True
@@ -1294,7 +1294,7 @@ class WebViewPlus(QtWidgets.QWidget):
                     else:
                         result.append('\n\n')
                     continue
-                elif word in g.globalDirectiveList:
+                if word in g.globalDirectiveList:
                     continue
             if codeflag:
                 emit_line = not (s.startswith('@') or s.startswith('<<')) if self.code_only else True

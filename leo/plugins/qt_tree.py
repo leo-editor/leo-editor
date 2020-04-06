@@ -1027,8 +1027,7 @@ class LeoQtTree(leoFrame.LeoTree):
             icon = self.getIcon(p)  # sets p.v.iconVal
             # Update all cloned items.
             items = self.vnode2items(p.v)
-            if not items:
-                g.trace(f'no-items for {p.h}[{p.gnx}]')
+            # if not items: g.trace(f'no-items for {p.h}[{p.gnx}]')
             for item in items:
                 self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons

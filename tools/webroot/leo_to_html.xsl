@@ -15,6 +15,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
     -->
     <style>
+        body{background-color: #505050}
         /* pre { background:#FFE7C6; } */
         /* Must use h1 for nodes: see below. */
         h1 {
@@ -28,16 +29,20 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
           top: 10px;
           height: 300px;
           width: 700px;
-          overflow: scroll;
+          overflow-x: hidden;
+          overflow-y: scroll;
           line-height: 0.8;
-
+          border: solid #bbb 1px;
+          
         }
         div.bodypane {
           position: absolute;
-          top: 310px;
+          background: #ffffec; /* Leo yellow */
+          top: 312px;
           height: 300px;
           width: 700px;
           overflow: scroll;
+          border: solid #bbb 1px;
         }
         div.tnode {
             visibility: hidden;
