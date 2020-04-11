@@ -2204,8 +2204,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for i, line in enumerate(lines):
             #@+<< handle toctree >>
             #@+node:TomP.20200411133219.1: *7* << handle toctree >>
-            # Skip all lines in an indented block started by ".. toctree::" or ".. index::"
-            # We need to skip all lines in a block until there is a non-blank
+            # Skip all lines in an indented block started by a string in SKIPBLOCKS
+            # such as ".. toctree::" or ".. index::"
+            # We need to skip all lines in the block until there is a non-blank
             # line that is not indented, or we have reached the last line.
             if not _in_code_block and not _in_skipblock:
                 for d in SKIPBLOCKS:
@@ -2408,6 +2409,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = ' '.join(_headline)
             else:
                 _headline_str = p.h
+            _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str.replace('\\', '\\\\')
             _underline = '='*len(_headline_str)
 
