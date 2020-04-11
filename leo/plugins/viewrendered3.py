@@ -384,6 +384,7 @@ import json
 import os
 import os.path
 import shutil
+import string
 import sys
 import webbrowser
 from urllib.request import urlopen
@@ -508,6 +509,7 @@ RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
 
 RST_INDENT = '    '
+SKIPBLOCKS = ('.. toctree::', '.. index::')
 #@-<< declarations >>
 
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -2194,11 +2196,33 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _in_code_block = False
         _in_quotes = False
         _quotes_type = None
+        _in_skipblock = False
 
         #c = self.c
         #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
+            #@+<< handle toctree >>
+            #@+node:TomP.20200411133219.1: *7* << handle toctree >>
+            # Skip all lines in an indented block started by ".. toctree::" or ".. index::"
+            # We need to skip all lines in a block until there is a non-blank
+            # line that is not indented, or we have reached the last line.
+            if not _in_code_block and not _in_skipblock:
+                for d in SKIPBLOCKS:
+                    if line.startswith(d):
+                        _in_skipblock = True
+                        break
+                if _in_skipblock:
+                    continue
+
+            if _in_skipblock:
+                if not line.strip():
+                    continue
+                is_indented = line[0] in string.whitespace
+                if is_indented:
+                    continue
+                _in_skipblock = False
+            #@-<< handle toctree >>
             #@+<< handle quotes >>
             #@+node:TomP.20200117172607.1: *7* << handle quotes >>
             # Detect if we are starting or ending a multi-line
