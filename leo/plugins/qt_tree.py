@@ -414,6 +414,7 @@ class LeoQtTree(leoFrame.LeoTree):
         h = ':'.join(new_icons)
         icon = g.app.gui.iconimages.get(h)
         if not icon:
+            preload_images()
             images = [loaded_images.get(x) for x in new_icons]
             icon = self.make_composite_icon(images)
             g.app.gui.iconimages[h] = icon
