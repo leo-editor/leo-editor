@@ -2178,6 +2178,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _tag = CODE if _lang in (PYTHON,) else TEXT
 
             return _lang, _tag
+
+        def indented(line):
+            return line[0] in string.whitespace
+
+        def empty_line(line):
+            return not line.strip()
         #@-<< rst special line helpers >>
         #@+<< Loop Over Lines >>
         #@+node:TomP.20200112103729.1: *6* << Loop Over Lines >>
@@ -2217,12 +2223,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     continue
 
             if _in_skipblock:
-                if not line.strip():
+                if empty_line(line):
+                    try:
+                        next_line = lines[i + 1]
+                    except IndexError: # no more lines
+                        continue
+                    if not empty_line(next_line) and not indented(next_line):
+                        _in_skipblock = False
+                        continue
+                elif indented(line):
                     continue
-                is_indented = line[0] in string.whitespace
-                if is_indented:
-                    continue
-                _in_skipblock = False
             #@-<< handle toctree >>
             #@+<< handle quotes >>
             #@+node:TomP.20200117172607.1: *7* << handle quotes >>
@@ -2369,6 +2379,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@-<< Loop Over Lines >>
         #@+<< Finalize Node >>
         #@+node:TomP.20200112103742.1: *6* << Finalize Node >>
+        # Make sure chunk ends with a blank line
+        _chunk.add_line('\n')
 
         chunks.append(_chunk)
 
