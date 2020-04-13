@@ -22485,46 +22485,21 @@ And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-edit
 Now you have a choice.  You can use Leo's binary (single-click) installer
 or download Leo's sources directly.
 </t>
-<t tx="ekr.20170206073747.3">.. _`SourceForge download page`: http://sourceforge.net/projects/leo/files/Leo/
+<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
 .. _`Running Leo`: running.html
 
-Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
-</t>
-<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
+Download Leo’s sources using one of the methods described at `Leo's download page`_.
 
-You may download Leo's sources in one of three ways, as described at
-`Leo's download page`_.
+After download unpack the zip archive where you like and from a python enabled command shell:
 
-*Method 1: Application Install*
-After download run::
-
-    pip install C:\\users\me\Downloads\\leo-editor-master.zip
-
-This will put Leo in Python's \*site-packages* folder, for example,
-C:\\Python36\\Lib\\site-packages, and create launch scripts in
-PYTHONHOME\\Scripts.
-
-*Method 2: Editable Install*
-After download unpack the zip archive where you like and::
-
-    pip install --editable C:\\path\\to\\leo-editor
+	pip install --editable C:\\path\\to\\leo-editor
 
 This will leave Leo where it is and and create launch scripts in
 PYTHONHOME\\Scripts.
 
-*Running Leo*
-
-See "Running Leo after pip install leo".
-
-
-Next, you will find it convenient to create Windows files associations
-for .leo files, as described in the next section.
+Next see `Running Leo`_ and then optionally come back here for _Creating Windows file associations_.
 </t>
-<t tx="ekr.20170206073747.5">*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-From *Settings* menu select **Open Desktop Integration**.
+<t tx="ekr.20170206073747.5">From *Settings* menu select **Open Desktop Integration**.
 The new Leo file that opens will add 4 buttons under the menu bar:
 
 *[Register-leo]* - Creates registry keys for Leo file type and .leo
