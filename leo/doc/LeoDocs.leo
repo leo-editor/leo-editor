@@ -22468,17 +22468,17 @@ Leo.
 1. First, you need to get git from http://git-scm.com/.
 2. Get Leo from GitHub by doing::
 
-        git clone --depth=500 https://github.com/leo-editor/leo-editor (http access)
-    
+``git clone --depth=500 --no-single-branch https://github.com/leo-editor/leo-editor`` (http access)
+
    or::
-   
-        git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
+
+``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
 
 3. Install dependencies and create leo script launcher::
 
         pip install --editable path/to/leo-editor
         
-And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
+And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, run ``git pull``.
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
