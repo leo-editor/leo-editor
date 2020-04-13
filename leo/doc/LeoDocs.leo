@@ -18631,10 +18631,10 @@ Wrappers allow the same text-handling code to work regardless of whether the act
 
 Various vim commands advertise, just by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim's tab handler no longer knows *anything* about colon commands, or what any command intends to do with the tab. If the command handler has a tab_callback attribute, vim's tab handler just calls it.
 
-Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial::
+Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial:
 
-@language python
-    
+.. code:: python
+
     class Tabnew:
         '''
         A class to handle Vim's :tabnew command.
@@ -18664,12 +18664,10 @@ Here is the flattened form of the class that handles the :tabnew command. Note t
                     pass
             else:
                 c.new()
-            
-@language rest
 
-This pattern is particularly well suited to Leo, because the various getPublicCommands methods reference those functions in their command dictionaries. Here, the new entries are::
+This pattern is particularly well suited to Leo, because the various getPublicCommands methods reference those functions in their command dictionaries. Here, the new entries are:
 
-@language python
+.. code:: python
 
     ':r':       vc.LoadFileAtCursor(vc),
     ':tabnew':  vc.Tabnew(vc),
@@ -20182,21 +20180,19 @@ The following commands work much like the `Emacs cursor commands`_::
 <t tx="ekr.20150323102036.1">@language rest
 
 Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
-the callback to be called at idle time forever. This should suffice for most purposes::
+the callback to be called at idle time forever. This should suffice for most purposes:
 
-@language python
+.. code:: python
 
     def print_hi():
         print('hi')
-    
+
     g.app.idleTimeManager.add_callback(print_hi)
 
-@language rest
+For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance:
 
-For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
+.. code:: python
 
-@language python
-    
     def handler(it):
         """IdleTime handler.  it is an IdleTime instance."""
         delta_t = it.time-it.starting_time
@@ -20209,8 +20205,6 @@ For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. 
     it = g.IdleTime(handler,delay=500)
     if it: it.start()
 
-@language rest
-
 The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
 
     handler 1 ekr.leo 0.5100
@@ -20219,10 +20213,10 @@ The code creates an instance of the IdleTime class that calls the given handler 
     handler 4 ekr.leo 2.0500
     handler 5 ekr.leo 2.5610
     handler done
-    
-Timer instances are completely independent::
 
-@language python
+Timer instances are completely independent:
+
+.. code:: python
 
     def handler1(it):
         delta_t = it.time-it.starting_time
@@ -20230,21 +20224,19 @@ Timer instances are completely independent::
         if it.count &gt;= 5:
             g.trace('done')
             it.stop()
-
+    
     def handler2(it):
         delta_t = it.time-it.starting_time
         g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
         if it.count &gt;= 10:
             g.trace('done')
             it.stop()
-
+    
     it1 = g.IdleTime(handler1,delay=500)
     it2 = g.IdleTime(handler2,delay=1000)
     if it1 and it2:
         it1.start()
         it2.start()
-        
-@language rest
 
 Here is the output::
 
@@ -26640,10 +26632,12 @@ The eval* commands are now in mod_scripting.py.
 <t tx="ekr.20180404022106.1">https://github.com/leo-editor/leo-editor/issues/781
 </t>
 <t tx="ekr.20180404063924.1">Command-line options:
+
 - Added --theme=&lt;name&gt;
 - Added --trace-themes
 
 Settings:
+
 - Added @string theme-name
 - Added @string initial-chooser-directory
   Used by Ctrl-O (file-open-by-name)
@@ -27119,7 +27113,7 @@ Related issues:
 </t>
 <t tx="ekr.20180505114332.5">https://github.com/leo-editor/leo-editor/issues/848
 
-The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
+The first non-blank, non-comment line of the node ``@menu Recent Files`` can contain an alternate (translated) menu name.
 
 You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="ekr.20180505114332.8">https://github.com/leo-editor/leo-editor/issues/862
@@ -27241,11 +27235,11 @@ The new setting: @bool find-def-creates-clones (default False) controls whether 
 </t>
 <t tx="ekr.20180511101509.1">https://github.com/leo-editor/leo-editor/issues/868
 
-As usual, spellings are not significant. For example:
+As usual, spellings are not significant. For example::
 
-clone-find-all-flattened = Key_Pad+9
-clone-find-all = keypad-PageUp
-    # Same as keypad+pageup, etc. etc.</t>
+    clone-find-all-flattened = Key_Pad+9
+    clone-find-all = keypad-PageUp
+        # Same as keypad+pageup, etc. etc.</t>
 <t tx="ekr.20180522101650.1">Clicking on underlined links in the log pane takes you to the proper node and line.</t>
 <t tx="ekr.20180522101756.1">BackgroundProcessManager.start_process now takes two new kwargs:  link_pattern and link_root:
 
@@ -28529,7 +28523,8 @@ The new code just makes regularizeName more flexible.</t>
 <t tx="ekr.20180930062351.25">https://github.com/leo-editor/leo-editor/issues/924
 </t>
 <t tx="ekr.20180930062351.26"></t>
-<t tx="ekr.20180930062351.27">
+<t tx="ekr.20180930062351.27">::
+
          12766782 function calls (12734775 primitive calls) in 8.997 seconds
 
    Ordered by: internal time
@@ -28795,22 +28790,28 @@ The new code just makes regularizeName more flexible.</t>
    119593    0.039    0.000    0.231    0.000 leoNodes.py:654(p.headString) #
    119593    0.034    0.000    0.265    0.000 leoNodes.py:1601(p.__get_h) #
     55575    0.026    0.000    0.035    0.000 leoNodes.py:1184(p.moveToParent) #</t>
-<t tx="ekr.20180930062351.29">         11685846 function calls (11653798 primitive calls) in 8.145 seconds
+<t tx="ekr.20180930062351.29">::
+
+         11685846 function calls (11653798 primitive calls) in 8.145 seconds
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
 
-# Probably from cProfile, not a big deal...
+# Probably from cProfile, not a big deal...::
+
         1    1.129    1.129    1.305    1.305 {built-in method exec_}
       584    1.025    0.002    1.025    0.002 {built-in method __new__ of type object at 0x00000000664AB3F0}
      6775    0.219    0.000    0.219    0.000 {built-in method nt.stat}
 
-# Surprise, but not horrible.
+# Surprise, but not horrible::
+
    145181    0.208    0.000    0.422    0.000 spellCommands.py:243(add_expanded_line) # 
    
-# The first benchmark: 165 files scanned in about 0.16 seconds.  Very good.
+# The first benchmark: 165 files scanned in about 0.16 seconds.  Very good::
+
       165    0.162    0.001    0.333    0.002 leoAtFile.py:5163(fast_at.scan_lines)
 
-# marks routines that have way too many calls, and add way too much time.
-# Each of these items adds almost as much time as scan_lines!
+# marks routines that have way too many calls, and add way too much time
+
+# Each of these items adds almost as much time as scan_lines\!::
 
    521491    0.138    0.000    0.188    0.000 leoGlobals.py:5551(g.isUnicode) #
    212321    0.135    0.000    0.243    0.000 leoGlobals.py:4530(g.match_word) #
@@ -28826,11 +28827,12 @@ The new code just makes regularizeName more flexible.</t>
     11373    0.091    0.000    0.302    0.000 leoGlobals.py:2911(g.get_directives_dict) #
    106781    0.091    0.000    0.311    0.000 leoNodes.py:1203(p.moveToThreadNext) # Slow!
 
-# Benchmark: lots of calls, not too much time.
+# Benchmark: lots of calls, not too much time::
+
   1236269    0.089    0.000    0.089    0.000 {built-in method builtins.len} 
    ...
    132602    0.082    0.000    0.214    0.000 leoNodes.py:2228(v.headString) #
-...
+
     72681    0.079    0.000    0.367    0.000 leoCommands.py:812(c.all_unique_positions) #
     98137    0.078    0.000    0.105    0.000 leoNodes.py:1150(p.moveToNext) #
    122195    0.073    0.000    0.111    0.000 leoNodes.py:780(p.hasNext) #
@@ -28838,7 +28840,8 @@ The new code just makes regularizeName more flexible.</t>
    158556    0.069    0.000    0.115    0.000 leoGlobals.py:4585(g.skip_line) #
    248025    0.067    0.000    0.067    0.000 {method 'replace' of 'str' objects}
 
-# Another benchmark: about the expected number of calls, and a reasonable time.
+# Another benchmark: about the expected number of calls, and a reasonable time::
+
     12544    0.067    0.000    0.082    0.000 leoNodes.py:1931(v.__init__)
 
         2    0.061    0.030    0.105    0.053 spellCommands.py:132(add_words_from_dict)
@@ -28848,8 +28851,10 @@ The new code just makes regularizeName more flexible.</t>
     57881    0.048    0.000    0.115    0.000 leoGlobals.py:6958(g.toUnicodeFileEncoding) # ???
    166257    0.046    0.000    0.047    0.000 {built-in method builtins.hasattr}
    186038    0.044    0.000    0.061    0.000 leoGlobals.py:5579(g.isWordChar) #
-...
-# The last benchmarks: Python's readers are very fast.
+   ...
+
+# The last benchmarks: Python's readers are very fast::
+
         6    0.031    0.005    0.031    0.005 {method 'feed' of 'xml.etree.ElementTree.XMLParser' objects}
       696    0.028    0.000    0.028    0.000 {method 'read' of '_io.FileIO' objects}</t>
 <t tx="ekr.20180930062351.3"></t>
@@ -29581,9 +29586,9 @@ The following script creates a list of all positions having an icon, that is, an
 </t>
 <t tx="ekr.20181015144118.36">@language rest
 
-This script inserts three icons in the current outline node. Running the script again will insert three more::
+This script inserts three icons in the current outline node. Running the script again will insert three more:
 
-@language python
+.. code:: python
 
     table = (
         'edittrash.png',
@@ -29595,10 +29600,12 @@ This script inserts three icons in the current outline node. Running the script 
             '..', 'Icons', 'Tango', '16x16', 'status', icon)
         if g.os_path_exists(fn):
             c.editCommands.insertIconFromFile(path=fn)
-        
+
 @language rest
-        
-This deletes all icons of the node at position p::
+
+This deletes all icons of the node at position p:
+
+.. code:: python
 
     c.editCommands.deleteNodeIcons(p=p)
 </t>
@@ -29743,7 +29750,7 @@ This will be the last version of Leo that supports Python 2.
 Major features
 - LeoWapp: Leo in a browser.
 - Optional syntax coloring using pygments.
-  Optional: you may use @color &amp; @font directives instead of pygments styles.
+- Optional you may use @color &amp; @font directives instead of pygments styles.
 - Integrated debugger.
 
 Other features
@@ -29918,10 +29925,12 @@ https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.9+lab
   See: https://github.com/leo-editor/leo-editor-contrib/blob/master/leonine.py
   
 Changed/improved settings:
+
 - Improved --trace-coloring traces
 - #993: use -, not underscore, for settings names.
 
 Removed settings:
+
 - Removed --session-save and --session-restore command-line arguments.
 - Removed @string trailing-body-newlines.
 - Remove @string qt-ui-file-name.
@@ -29956,23 +29965,21 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123122138.1"></t>
 <t tx="ekr.20190307093145.1">@language rest
 
-g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples::
+g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples:
 
-@language python
+.. code:: python
 
     # Run the qml app in a separate process:
     g.execute_shell_commands('qmlscene /test/qml_test.qml')
-    
+
     # List the contents of a directory:
     g.execute_shell_commands([
         'cd ~/test',
         'ls -a',
     ])
-    
+
     # Run a python test in a separate process.
     g.execute_shell_commands('python /test/qt_test.py')
-
-@language rest
 
 g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
 </t>
@@ -30023,6 +30030,7 @@ Removed --session-save and --session-restore command-line arguments.
 Leo saves and restores loaded files only if file names are *not* given on the command line.
 
 **Startup**
+
 - If the command line contains file names, Leo will load only those files.
   In that case, Leo does *not* save session data on exit.
 - Otherwise, Leo loads files from the previously saved session data in session.leo.
@@ -30598,7 +30606,7 @@ https://github.com/leo-editor/leo-editor/issues/1273
 #1274: leoQt.py should return None for everything when in bridge
 https://github.com/leo-editor/leo-editor/issues/1274
 
-#1276: clear-*-uas don't set outline dirty
+#1276: clear-\*-uas don't set outline dirty
 https://github.com/leo-editor/leo-editor/issues/1276
 
 #1285: Control-clicks can find definitions in the wrong outline
@@ -30748,7 +30756,7 @@ https://github.com/leo-editor/leo-editor/issues/1211
 Status Bar Won't Accept Style
 https://github.com/leo-editor/leo-editor/issues/1218
 
-vim-mode-*-border settings do not work on Qt 5
+vim-mode-\*-border settings do not work on Qt 5
 https://github.com/leo-editor/leo-editor/issues/1221
 
 gui=console. delete line command d is not working
@@ -31281,9 +31289,9 @@ You can then run the fstringify commands as follows::
     changed = leoAst.Fstringify().fstringify_file(filename)
     changed = leoAst.Fstringify().fstringify_diff_files(filename)</t>
 <t tx="ekr.20200107142833.1">This method creates the tokens list and the parse tree and adds all links
-between tokens and parse tree nodes::
+between tokens and parse tree nodes:
 
-@language python
+.. code:: python
 
     def init_from_file(self, filename):
         """
@@ -31486,15 +31494,18 @@ Restored Leo's pane commands:
 https://github.com/leo-editor/leo-editor/issues/1518
 At present, they work only w/o docks.</t>
 <t tx="ekr.20200313060126.1">Commands:
+
 - Added the fstringify-files and diff-fstringify-files commands.
 - Improved the beautify-files command. Added the diff-beautify-files commands.
 
 Code:
+
 - Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
   See https://github.com/leo-editor/leo-editor/issues/1440
 - Rewrote c.deletePositionsInList. New code by Виталије Милошевић, (Vitalije Milosevic).
  
 Features and settings:
+
 - Added importers for the rust language and todo.txt files.
 - Added the viewrendered3 plugin.
 - Leo's legacy layout is now the default.
@@ -31502,6 +31513,7 @@ Features and settings:
 - Added an importer for rust.
 
 Bugs:
+
 - Fixed all known bugs, including some notable, long-standing bugs.
 </t>
 <t tx="ekr.20200319035525.1">The positions passed to p.deletePositionsInList only *specify* the desired
@@ -31527,28 +31539,29 @@ This is far from obvious at first glance.
 
 **The new code**
 
-Here is Vitalije's version of c.deletePositionsInList, without the docstring::
+Here is Vitalije's version of c.deletePositionsInList, without the docstring:
 
-@language python
+.. code:: python
+
     def deletePositionsInList(self, aList):
         c = self
-        
+
         # Ensure all positions are valid.
         aList = [p for p in aList if c.positionExists(p)]
         if not aList:
             return
-    
+
         def p2link(p):
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
-    
+
         links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
     
         # The main loop.
         for i, v in links_to_be_cut:
             child_v = v.children.pop(i)
             child_v.parents.remove(v)
-        
+
 @language rest
 To begin the proof, note that the main loop has the expected "form". That
 is, when we delete a node, we will:
@@ -31567,9 +31580,9 @@ those vnodes implied by the positions in aList. We can tentatively assume
 that the main loop will work properly if that data in links_to_be_cut is
 correct, but there some subtleties lurking here which I'll discuss later.
 
-The following code creates links_to_be_cut::
-    
-@language python
+The following code creates links_to_be_cut:
+
+.. code:: python
 
     def p2link(p):
         parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
@@ -31581,17 +31594,17 @@ The following code creates links_to_be_cut::
 This is elegant (compressed) code. Let's examine it carefully...
 
 p2link produces tuples (childIndex, parent_v). These become bound to i, v
-in the main loop::
+in the main loop:
 
-@language python
+.. code:: python
+
     # The main loop.
     for i, v in links_to_be_cut:
         child_v = v.children.pop(i)
         child_v.parents.remove(v)
-        
-@language rest
+
 To make this work, parent_v must be the vnode whose i'th child should be
-deleted. This line does that::
+deleted. This line does that:
 
 @language python
     parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
@@ -31708,17 +31721,20 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
-<t tx="matt.20200331213038.1">.._`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
+<t tx="matt.20200331213038.1">.. _`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
 
 When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
 
 This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.
 
-Details at `Missing files when installing Leo from PyPI using "pip install leo`_
+Details at `Missing files when installing Leo from PyPI using "pip install leo"`_
 
-* An editable install is from source code, either a git clone or downloaded archive. See: 
+\* An editable install is from source code, either a git clone or downloaded archive. See: 
+
 - Installing Leo with git
-- Installing from sources (Windows)</t>
+- Installing from sources (Windows)
+
+</t>
 <t tx="mhw.20191008134016.1"></t>
 <t tx="mhw.20191008134029.1">##########################
 Leo and Asciidoctor
