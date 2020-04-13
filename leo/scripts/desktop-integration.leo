@@ -107,7 +107,30 @@ Example of success:
 [Register-leo] - Creates registry keys for Leo file type and .leo file association. Afterwards .leo files will show Leo icon and double-clicking them will open in Leo Editor.
 
 [Unregister-leo] - Removes the above
-</t>
+
+
+### Manually ###
+
+From a Windows console with administrator privilege.
+
+1. Define the Leo file type
+
+Leo has been installed with pip:
+
+    ftype LeoFile="&lt;path to python&gt;\Scripts\leo.exe" "%1" %*
+
+Running Leo from a source code copy:
+
+    ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
+
+
+2. Associate Leo's file type
+
+    assoc .leo=LeoFile
+
+More info:
+ - https://ss64.com/nt/ftype.html
+ - https://superuser.com/questions/963464/find-path-of-standard-executable-for-a-given-file-type-in-windows</t>
 <t tx="lkj.20190712001203.1"></t>
 <t tx="maphew.20130509185752.1607">def register_leo(pyexe, launchLeo, icon):
     """Create registry key for Leo file type, set default icon and launch command    
@@ -275,11 +298,7 @@ Todo: move desktop-links code into external files also (enables running from com
 </t>
 <t tx="maphew.20190712113401.1"></t>
 <t tx="maphew.20190712113412.1"></t>
-<t tx="maphew.20191007115940.1">*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-From *Settings* menu select **Open Desktop Integration**.
+<t tx="maphew.20191007115940.1">From *Settings* menu select **Open Desktop Integration**.
 The new Leo file that opens will add 2 buttons under the menu bar:
 
 *[Register-leo]* - Creates registry keys for Leo file type and .leo

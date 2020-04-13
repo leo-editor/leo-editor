@@ -559,7 +559,6 @@
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
 <v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
 <v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20170206073747.3"><vh>Using the single-click installer</vh></v>
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
@@ -26403,9 +26402,9 @@ You can run as many of these process as you like, without involving the BPM in a
 </t>
 <t tx="ekr.20180226154417.1">After running ``pip install leo`` from a console type::
 
-    ``leo`` - start Leo in normal graphical mode (qt)
-    ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
-    ``leo-m``, ``leo-messages`` [Windows only] - start Leo in normal (qt) mode, and echo log messages to the starting shell
+``leo`` - start Leo in normal graphical mode (qt)
+``leo-c``, ``leo-console`` - start Leo in console (curses) mode
+``leo-m``, ``leo-messages`` [Windows only] - start Leo in normal (qt) mode, and echo log messages to the starting shell
 
 The launchers are installed in ``PYTHONHOME/Scripts``.
 
