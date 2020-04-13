@@ -2310,7 +2310,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         if lines[j].startswith(_indentation): continue
                         if j == _numlines - 1:
                             _last_code_line_num = j
-                        elif lines[j + 1][0] not in (' ', '\t'):
+                        elif lines[j + 1] and lines[j + 1][0] not in (' ', '\t'):
                             _last_code_line_num = j
                             break
             elif line.find('@language') == 0 and not _in_quotes:
