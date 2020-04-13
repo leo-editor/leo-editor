@@ -26073,22 +26073,19 @@ button using Ctrl-P.
 <t tx="ekr.20180126190053.1"></t>
 <t tx="ekr.20180126191031.1">The `Anaconda`_ scientific computing environment includes Python, NumPy, SciPy, PyQt, and over a thousand other tools, packages and libraries. It's a 500+ MB download but you're guaranteed to have everything needed.
 
-To install Leo do this from a console::
-
-    pip install leo
-
 The `Miniconda`_ environment includes just Python and the `conda` package management tool. Pick and choose from the full Anaconda ecosystem.
 
-To install Leo using Miniconda, do this from a console::
+Preparation, create an environment for Leo, activate it, and then install python::
 
-    conda install pyqt
-    conda run pip install PyQtWebEngine
-    conda run pip install leo
-    
-To install Leo using Anaconda, do this from a console::
+    conda create -n leo
+    conda activate leo
+    conda install python
 
-    conda run pip install PyQtWebEngine
-    conda run pip install leo
+Strictly speaking this step can be skipped and Leo installed in the conda _base_ environment. The conda developers generally advise against installing in _base_ unless this program is the only thing the machine will be used for.
+
+To install Leo run this from a console::
+
+    pip install leo
 </t>
 <t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
 <t tx="ekr.20180128051013.1">for pane in ('body', 'tree', 'log'):
