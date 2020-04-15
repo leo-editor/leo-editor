@@ -321,6 +321,23 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
+    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus (restored)
+    @cmd('editor-cycle-focus')
+    @cmd('cycle-editor-focus')  # There is no LeoQtBody method
+    def cycleEditorFocus(self, event=None):
+        """Cycle keyboard focus between the body text editors."""
+        c = self.c
+        d = self.editorWrappers
+        w = c.frame.body.wrapper
+        values = list(d.values())
+        if len(values) > 1:
+            i = values.index(w) + 1
+            if i == len(values):
+                i = 0
+            w2 = values[i]
+            assert(w != w2)
+            self.selectEditor(w2)
+            c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
     def deleteEditor(self, event=None):
         """Delete the presently selected body text editor."""
