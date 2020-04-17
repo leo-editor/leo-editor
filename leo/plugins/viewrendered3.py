@@ -2271,6 +2271,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if _skipthis:
                     continue
             #@-<< handle_ats >>
+            #@+<< handle at-image >>
+            #@+node:TomP.20200416153716.1: *7* << handle at-image >>
+            # Detect @image directive and insert RsT code for it
+            if not _in_code_block:
+                if line.startswith('@image'):
+                    fields = line.split(' ', 1)
+                    if len(fields) > 1:
+                        url = fields[1]
+                        line = f'\n.. image:: {url}\n\n'
+                    else:
+                        # No url for an image: ignore and skip to next line
+                        continue
+            #@-<< handle at-image >>
             #@+<< identify_code_blocks >>
             #@+node:TomP.20200112103729.3: *7* << identify_code_blocks >>
             # Identify code blocks
@@ -2875,6 +2888,18 @@ class Action:
         sm.current_chunk.add_line(line)
 
     @staticmethod
+    def add_image(sm, line, tag=None):
+        marker, tag, _lang = StateMachine.get_marker(None, line)
+        # Get image url
+        fields = line.split(' ', 1)
+        if len(fields) > 1:
+            url = fields[1]
+            line = f'![]({url})\n'
+            sm.current_chunk.add_line(line)
+        # If no url parameter, do nothing
+
+
+    @staticmethod
     def no_action(sm, line, tag=None):
         pass
 #@+node:TomP.20200213170250.1: ** class Marker
@@ -2888,6 +2913,7 @@ class Marker(Enum):
     MARKER_NONE = auto() # Not a special line.
     START_SKIP = auto()
     END_SKIP = auto()
+    IMAGE_MARKER = auto()
 #@+node:TomP.20191231172446.1: ** class Chunk
 class Chunk:
     """Holds a block of text, with various metadata about it."""
@@ -3050,7 +3076,7 @@ class StateMachine:
         elif line.strip() == '@c':
             marker = Marker.END_SKIP
 
-        # A marker line may start with "@language" or a Markdown code fence.
+        # A marker line may start with "@language", "@image", or a Markdown code fence.
         elif line.startswith("@language"):
             marker = Marker.AT_LANGUAGE_MARKER
             lang = MD
@@ -3058,6 +3084,10 @@ class StateMachine:
                 if _lang in line:
                     lang = _lang
                     break
+        elif line.startswith("@image"):
+            marker = Marker.IMAGE_MARKER
+            lang = MD
+
         elif line.startswith(MD_CODE_FENCE):
             lang = MD
             for _lang in LANGUAGES:
@@ -3085,6 +3115,8 @@ class StateMachine:
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
         (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
+
+        (State.BASE, Marker.IMAGE_MARKER):                 (Action.add_image, State.BASE),
 
         # ========= Markdown-specific states ==================
         (State.BASE, Marker.MD_FENCE_LANG_MARKER):         (Action.new_chunk, State.FENCED_CODE),
