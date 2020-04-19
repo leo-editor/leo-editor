@@ -18052,6 +18052,7 @@ Leo's minimal dependencies are:
 
 * `Python`_ 3.6 or later.
 * `PyQt4`_ or `PyQt5`_.
+* `PyQtWebEngine`
 
 The following packages are optional, but recommended:
 
