@@ -19,10 +19,17 @@ path = os.getcwd()
 if path not in sys.path:
     # print('appending %s to sys.path' % path)
     sys.path.append(path)
-# #1472: bind to g immediately.
-import leo.core.leoGlobals as g
-import leo.core.leoApp as leoApp
-g.app = leoApp.LeoApp()
+try:
+    # #1472: bind to g immediately.
+    import leo.core.leoGlobals as g
+    import leo.core.leoApp as leoApp
+    g.app = leoApp.LeoApp()
+except Exception as e:
+    print(e)
+    msg = "\n*** Leo could not be started ***"
+    msg += "\nPlease verify you've installed the required dependencies:"
+    msg += "\nhttps://leoeditor.com/installing.html"
+    sys.exit(msg)
 #@-<< imports and inits >>
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
