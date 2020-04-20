@@ -24977,7 +24977,7 @@ Enable or disable italics::
 
 Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
 
-    WEIGHT DemoBold
+    WEIGHT DemiBold
 </t>
 <t tx="ekr.20171122090736.1">Here are some examples of decluttering rulesets::
 
