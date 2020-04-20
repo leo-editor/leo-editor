@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b6
+About Viewrendered3 V3.0b7
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -975,7 +975,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
-        pc = self
         pc.dispatch_dict = {
             'big': pc.update_rst,
             'html': pc.update_html,
@@ -1200,15 +1199,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
         _toolbar.addWidget(_execute_button)
 
-        #_hide_button = QtWidgets.QPushButton('Hide')
-        #_hide_button.clicked.connect(lambda: self.w.hide())
-        #_toolbar.addWidget(_hide_button)
-
-        # _label = QtWidgets.QLabel('<b>ViewRendered3</b>')
-        # _label.setObjectName(VR3_TOOLBAR_NAME)
-        # _label.setTextFormat(1)
-        # _toolbar.addWidget(_label)
-
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
         #@-<< vr3: finish toolbar >>
@@ -1216,8 +1206,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        #self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-        #self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
@@ -1665,7 +1653,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not url:
                 return ''
             if not nbformat:
-                return 'can not import nbformt to render url: %r' % url
+                return 'can not import nbformat to render url: %r' % url
             try:
                 s = urlopen(url).read().decode()
             except Exception:
