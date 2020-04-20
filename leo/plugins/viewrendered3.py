@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b7
+About Viewrendered3 V3.0b8
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2009,6 +2009,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
+
         if not keywords:  # EKR
             keywords = {}
         # Do this regardless of whether we show the widget or not.
@@ -2027,7 +2028,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             isHtml = s and s[0] == '<'
             self.rst_html = ''
             if s and isHtml:
-                h = s
+                #h = s
+                _code = []
+                for n in node_list:
+                    _code.append(n.b)
+                h = '\n'.join(_code)
             else:
                 h = self.convert_to_html(node_list, s)
             if h:
@@ -2440,8 +2445,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
     def update_svg(self, s, keywords):
-        #VrC.update_svg(self, s, keywords)
-
         pc = self
         if pc.must_change_widget(QtSvg.QSvgWidget):
             w = QtSvg.QSvgWidget()
