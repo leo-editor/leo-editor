@@ -12,7 +12,7 @@ images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b5
+About Viewrendered3 V3.0b8
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -120,7 +120,7 @@ Settings
 Settings are put into nodes with the headlines ``@setting ....``.  They must be
 placed into an ``@settings`` tree, preferably in the myLeoSettings file.
 
-.. csv-table:: Settings
+.. csv-table:: String Settings
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
@@ -131,11 +131,20 @@ placed into an ``@settings`` tree, preferably in the myLeoSettings file.
    "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
 
+.. csv-table:: Int Settings (integer only, do not use any units)
+   :header: "Setting", "Default", "Values", "Purpose"
+   :widths: 18, 5, 5, 30
+
+   qweb-view-font-size, -, small integer, Change Initial Font size
+
 **Examples**::
 
     @string vr3-mathjax-url = file:///D:/utility/mathjax/es5/tex-chtml.js
     @string vr3-mathjax-url = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML
     @string vr3-md-math-output = True
+    @int qweb-view-font-size = 16
+
+**Note** The font size setting, *qweb-view-font-size*, will probably not be needed. Useful values will generally be from 8 - 20.
 
 Stylesheets
 ===========
@@ -314,11 +323,15 @@ relative to Leo's load directory.
 
   Use file:// urls for local files. Some examples:
 
-      Windows: file:///c:/Test/a_notebook.ipynb
+      Windows: ``file:///c:/Test/a_notebook.ipynb``
 
-      Linux:   file:///home/a_notebook.ipynb
+      Linux:   ``file:///home/a_notebook.ipynb``
 
-- ``@movie`` plays the file as a movie.  @movie also works for music files.
+- ``@movie`` plays a file as a movie. @movie also works for music files. 
+  The path to the file must be on the first line of the body of the node. 
+  Media can be started or paused using the *vr3-pause-play-movie* command.  
+  Movies might not render in the current version, depending in video 
+  type and installed codecs.
 
 - ``@networkx`` is non-functional at present.  It is intended to
   render the body text as a networkx graph.
@@ -371,6 +384,7 @@ import json
 import os
 import os.path
 import shutil
+import string
 import sys
 import webbrowser
 from urllib.request import urlopen
@@ -485,7 +499,7 @@ TEXT_HTML_HEADER = f'''<html>
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 
-VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
+#VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
 
 # For code rendering
 LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS)
@@ -495,6 +509,7 @@ RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
 
 RST_INDENT = '    '
+SKIPBLOCKS = ('.. toctree::', '.. index::')
 #@-<< declarations >>
 
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -746,8 +761,11 @@ def pause_play_movie(event):
     vp = vr3.vp
     if not vp:
         return
-    f = vp.pause if vp.isPlaying() else vp.play
+    #g.es('===', vp.state())
+    _state = vp.state()
+    f = vp.pause if _state == 1 else vp.play
     f()
+
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
@@ -956,7 +974,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return w
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
-        pc = self
         pc = self
         pc.dispatch_dict = {
             'big': pc.update_rst,
@@ -1182,15 +1199,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _execute_button.clicked.connect(lambda: c.k.simulateCommand('vr3-execute'))
         _toolbar.addWidget(_execute_button)
 
-        #_hide_button = QtWidgets.QPushButton('Hide')
-        #_hide_button.clicked.connect(lambda: self.w.hide())
-        #_toolbar.addWidget(_hide_button)
-
-        # _label = QtWidgets.QLabel('<b>ViewRendered3</b>')
-        # _label.setObjectName(VR3_TOOLBAR_NAME)
-        # _label.setTextFormat(1)
-        # _toolbar.addWidget(_label)
-
         self.layout().setMenuBar(_toolbar)
         self.vr3_toolbar = _toolbar
         #@-<< vr3: finish toolbar >>
@@ -1198,8 +1206,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        #self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-        #self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
@@ -1312,10 +1318,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             _kind = pc.get_kind(p) or self.default_kind
         f = pc.dispatch_dict.get(_kind)
-        if f in (pc.update_rst, pc.update_md, pc.update_text):
-            self.show_toolbar()
-        else:
-            self.hide_toolbar()
+        # if f in (pc.update_rst, pc.update_md, pc.update_text):
+            # self.show_toolbar()
+        # else:
+            # self.hide_toolbar()
         if self.locked:
             return
 
@@ -1333,7 +1339,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # This avoids annoying messages with rst.
             dock = pc.leo_dock or pc
             if dock.isHidden():
-                w = pc.ensure_text_widget()
+                #w = pc.ensure_text_widget()
                 return
 
             # For rst, md handler
@@ -1647,7 +1653,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not url:
                 return ''
             if not nbformat:
-                return 'can not import nbformt to render url: %r' % url
+                return 'can not import nbformat to render url: %r' % url
             try:
                 s = urlopen(url).read().decode()
             except Exception:
@@ -2003,6 +2009,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             RETURNS
             nothing
         """
+
         if not keywords:  # EKR
             keywords = {}
         # Do this regardless of whether we show the widget or not.
@@ -2021,7 +2028,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             isHtml = s and s[0] == '<'
             self.rst_html = ''
             if s and isHtml:
-                h = s
+                #h = s
+                _code = []
+                for n in node_list:
+                    _code.append(n.b)
+                h = '\n'.join(_code)
             else:
                 h = self.convert_to_html(node_list, s)
             if h:
@@ -2160,6 +2171,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _tag = CODE if _lang in (PYTHON,) else TEXT
 
             return _lang, _tag
+
+        def indented(line):
+            return line[0] in string.whitespace
+
+        def empty_line(line):
+            return not line.strip()
         #@-<< rst special line helpers >>
         #@+<< Loop Over Lines >>
         #@+node:TomP.20200112103729.1: *6* << Loop Over Lines >>
@@ -2178,11 +2195,38 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _in_code_block = False
         _in_quotes = False
         _quotes_type = None
+        _in_skipblock = False
 
         #c = self.c
         #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
+            #@+<< handle toctree >>
+            #@+node:TomP.20200411133219.1: *7* << handle toctree >>
+            # Skip all lines in an indented block started by a string in SKIPBLOCKS
+            # such as ".. toctree::" or ".. index::"
+            # We need to skip all lines in the block until there is a non-blank
+            # line that is not indented, or we have reached the last line.
+            if not _in_code_block and not _in_skipblock:
+                for d in SKIPBLOCKS:
+                    if line.startswith(d):
+                        _in_skipblock = True
+                        break
+                if _in_skipblock:
+                    continue
+
+            if _in_skipblock:
+                if empty_line(line):
+                    try:
+                        next_line = lines[i + 1]
+                    except IndexError: # no more lines
+                        continue
+                    if not empty_line(next_line) and not indented(next_line):
+                        _in_skipblock = False
+                        continue
+                elif indented(line):
+                    continue
+            #@-<< handle toctree >>
             #@+<< handle quotes >>
             #@+node:TomP.20200117172607.1: *7* << handle quotes >>
             # Detect if we are starting or ending a multi-line
@@ -2220,6 +2264,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if _skipthis:
                     continue
             #@-<< handle_ats >>
+            #@+<< handle at-image >>
+            #@+node:TomP.20200416153716.1: *7* << handle at-image >>
+            # Detect @image directive and insert RsT code for it
+            if not _in_code_block:
+                if line.startswith('@image'):
+                    fields = line.split(' ', 1)
+                    if len(fields) > 1:
+                        url = fields[1]
+                        line = f'\n.. image:: {url}\n\n'
+                    else:
+                        # No url for an image: ignore and skip to next line
+                        continue
+            #@-<< handle at-image >>
             #@+<< identify_code_blocks >>
             #@+node:TomP.20200112103729.3: *7* << identify_code_blocks >>
             # Identify code blocks
@@ -2259,7 +2316,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         if lines[j].startswith(_indentation): continue
                         if j == _numlines - 1:
                             _last_code_line_num = j
-                        elif lines[j + 1][0] not in (' ', '\t'):
+                        elif lines[j + 1] and lines[j + 1][0] not in (' ', '\t'):
                             _last_code_line_num = j
                             break
             elif line.find('@language') == 0 and not _in_quotes:
@@ -2328,6 +2385,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@-<< Loop Over Lines >>
         #@+<< Finalize Node >>
         #@+node:TomP.20200112103742.1: *6* << Finalize Node >>
+        # Make sure chunk ends with a blank line
+        _chunk.add_line('\n')
 
         chunks.append(_chunk)
 
@@ -2368,6 +2427,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = ' '.join(_headline)
             else:
                 _headline_str = p.h
+            _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str.replace('\\', '\\\\')
             _underline = '='*len(_headline_str)
 
@@ -2385,8 +2445,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
     def update_svg(self, s, keywords):
-        #VrC.update_svg(self, s, keywords)
-
         pc = self
         if pc.must_change_widget(QtSvg.QSvgWidget):
             w = QtSvg.QSvgWidget()
@@ -2649,7 +2707,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         pc = self
         # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select3', pc.update)
+        g.unregisterHandler('select2', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
     #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
@@ -2694,19 +2752,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
             splitter.load_layout(loo)
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
-    def get_toolbar_label(self):
-        """Return the toolbar label object."""
-
-        return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
+    #@+at
+    # def get_toolbar_label(self):
+    #     """Return the toolbar label object."""
+    #
+    #     return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
     #@+node:TomP.20200329230436.10: *6* vr3.hide_toolbar
     def hide_toolbar(self):
         try:
             _toolbar = self.vr3_toolbar
+            _toolbar.setVisible(False)
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
             return
 
-        _toolbar.setVisible(False)
     #@+node:TomP.20200329230436.11: *6* vr3.show_toolbar
     def show_toolbar(self):
         try:
@@ -2820,6 +2879,18 @@ class Action:
         sm.current_chunk.add_line(line)
 
     @staticmethod
+    def add_image(sm, line, tag=None):
+        marker, tag, _lang = StateMachine.get_marker(None, line)
+        # Get image url
+        fields = line.split(' ', 1)
+        if len(fields) > 1:
+            url = fields[1]
+            line = f'![]({url})\n'
+            sm.current_chunk.add_line(line)
+        # If no url parameter, do nothing
+
+
+    @staticmethod
     def no_action(sm, line, tag=None):
         pass
 #@+node:TomP.20200213170250.1: ** class Marker
@@ -2833,6 +2904,7 @@ class Marker(Enum):
     MARKER_NONE = auto() # Not a special line.
     START_SKIP = auto()
     END_SKIP = auto()
+    IMAGE_MARKER = auto()
 #@+node:TomP.20191231172446.1: ** class Chunk
 class Chunk:
     """Holds a block of text, with various metadata about it."""
@@ -2995,7 +3067,7 @@ class StateMachine:
         elif line.strip() == '@c':
             marker = Marker.END_SKIP
 
-        # A marker line may start with "@language" or a Markdown code fence.
+        # A marker line may start with "@language", "@image", or a Markdown code fence.
         elif line.startswith("@language"):
             marker = Marker.AT_LANGUAGE_MARKER
             lang = MD
@@ -3003,6 +3075,10 @@ class StateMachine:
                 if _lang in line:
                     lang = _lang
                     break
+        elif line.startswith("@image"):
+            marker = Marker.IMAGE_MARKER
+            lang = MD
+
         elif line.startswith(MD_CODE_FENCE):
             lang = MD
             for _lang in LANGUAGES:
@@ -3030,6 +3106,8 @@ class StateMachine:
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
         (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
+
+        (State.BASE, Marker.IMAGE_MARKER):                 (Action.add_image, State.BASE),
 
         # ========= Markdown-specific states ==================
         (State.BASE, Marker.MD_FENCE_LANG_MARKER):         (Action.new_chunk, State.FENCED_CODE),
