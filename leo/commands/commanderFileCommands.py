@@ -88,9 +88,6 @@ def restartLeo(self, event=None):
     # 5. Complete the shutdown.
     g.app.finishQuit()
     # 6. Restart.
-    ###
-        # g.trace('session manager', bool(g.app.sessionManager))
-        # g.printObj(sys.argv, tag='sys.argv')
     if g.app.sessionManager:
         # Don't specify files, thereby using session data.
         args = ['-c'] + [sys.argv[0]]
