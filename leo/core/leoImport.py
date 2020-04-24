@@ -2496,13 +2496,8 @@ class LegacyExternalFileImporter:
     A class to import external files written by versions of Leo earlier
     than 5.0.
     """
-    # Sentinels to ignore...
-    ignore = (
-        '#@+at', '#@-at',
-        '#@+leo', '#@-leo',
-        '#@nonl', '#@nl',
-        '#@-others',
-    )
+    # Sentinels to ignore, without the leading comment delim.
+    ignore = ('@+at', '@-at', '@+leo', '@-leo', '@nonl', '@nl', '@-others')
     
     def __init__(self, c):
         self.c = c
@@ -2524,33 +2519,55 @@ class LegacyExternalFileImporter:
             node.lines.append(line)
         else:
             print('orphan line: ', repr(line))
+    #@+node:ekr.20200424160847.1: *3* legacy.compute_delim1
+    def compute_delim1(self, path):
+        """Return the opening comment delim for the given file."""
+        junk, ext = os.path.splitext(path)
+        if not ext:
+            return None
+        language = g.app.extension_dict.get(ext[1:])
+        if not language:
+            return None
+        delim1, delim2, delim3 = g.set_delims_from_language(language)
+        g.trace(language, delim1 or delim2)
+        return delim1 or delim2
     #@+node:ekr.20200424153139.1: *3* legacy.import_file
     def import_file(self, path):
         """Import one legacy external file."""
         c = self.c
         root_h = g.shortFileName(path)
+        delim1 = self.compute_delim1(path)
+        if not delim1:
+            g.es_print('unknown file extension:', color='red')
+            g.es_print(path)
+            return
         # Read the file into s.
         with open(path, 'r') as f:
             s = f.read()
         # Do nothing if the file is a newer external file.
-        if '#@+leo-ver=4' not in s:
-            g.es_print('not a legacy external file:')
+        if delim1 + '@+leo-ver=4' not in s:
+            g.es_print('not a legacy external file:', color='red')
             g.es_print(path)
             return
+        # Compute the local ignore list for this file.
+        ignore = tuple(delim1 + z for z in self.ignore)
         # Handle each line of the file.
         nodes = []  # An list of nodes, in file order.
         stack = []  # A stack of nodes.
         for line in g.splitLines(s):
             s = line.lstrip()
             lws = line[:len(line) - len(line.lstrip())]
-            if s.startswith('#@@'):
+            if s.startswith(delim1 + '@@'):
                 self.add(lws + s[2:], stack)
-            elif s.startswith(self.ignore):
+            elif s.startswith(ignore):
                 # Ignore these. Use comments instead of @doc bodies.
                 pass
-            elif s.startswith('#@+others') or s.startswith('#@' + lws + '@+others'):
+            elif (
+                s.startswith(delim1 + '@+others') or
+                s.startswith(delim1 + '@' + lws + '@+others')
+            ):
                 self.add(lws + '@others\n', stack)
-            elif s.startswith('#@+node:'):
+            elif s.startswith(delim1 + '@+node:'):
                 # Compute the headline.
                 if stack:
                     h = s[8:]
@@ -2562,10 +2579,10 @@ class LegacyExternalFileImporter:
                 node = self.Node(h, len(stack))
                 nodes.append(node)
                 stack.append(node)
-            elif s.startswith('#@-node'):
+            elif s.startswith(delim1 + '@-node'):
                 # End the node.
                 stack.pop()
-            elif s.startswith('#@'):
+            elif s.startswith(delim1 + '@'):
                 print('oops:', repr(s))
             else:
                 self.add(line, stack)
