@@ -2532,6 +2532,11 @@ class LegacyExternalFileImporter:
         # Read the file into s.
         with open(path, 'r') as f:
             s = f.read()
+        # Do nothing if the file is a newer external file.
+        if '#@+leo-ver=4' not in s:
+            g.es_print('not a legacy external file:')
+            g.es_print(path)
+            return
         # Handle each line of the file.
         nodes = []  # An list of nodes, in file order.
         stack = []  # A stack of nodes.
