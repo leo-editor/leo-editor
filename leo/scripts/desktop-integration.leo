@@ -330,16 +330,7 @@ double-clicking them will open in Leo Editor.
 
 *[Unregister-leo]* - Removes the above.
 </t>
-<t tx="mhw-debug-1081.20190216130451.1"># py2 shims
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-
-import leo
+<t tx="mhw-debug-1081.20190216130451.1">import leo
 import leo.core.leoGlobals as g
 import os
 import sys
