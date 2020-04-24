@@ -5,15 +5,6 @@
 """Remove registry key for Leo file type and .leo file association"""
 #@+others
 #@+node:mhw-debug-1081.20190216130451.1: ** imports
-# py2 shims
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-
 import leo
 import leo.core.leoGlobals as g
 import os
