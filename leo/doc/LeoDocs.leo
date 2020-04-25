@@ -15441,9 +15441,9 @@ boils down to:
 
  - install python (v3.6 or newer)
  - optionally download Leo source code
- - run: `pip install leo` or `pip install --edtiable path/to/code` from 
+ - run: ``pip install leo`` or ``pip install --edtiable path/to/code`` from 
     a python enabled command prompt
- - run `leo` from that same python enabled command prompt
+ - run ``leo`` from that same python enabled command prompt
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
@@ -22483,6 +22483,10 @@ Leo.
    or::
 
 ``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
+
+  followed by checking out the _devel_ branch::
+
+``git chekout devel`` 
 
 3. Install dependencies and create leo script launcher::
 
