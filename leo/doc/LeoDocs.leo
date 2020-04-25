@@ -31547,7 +31547,7 @@ later.
 To complete the proof, we must show that the main loop deletes all and only
 those vnodes implied by the positions in aList. We can tentatively assume
 that the main loop will work properly if that data in links_to_be_cut is
-correct, but there some subtleties lurking here which I'll discuss later.
+correct, but there are some subtleties lurking here which I'll discuss later.
 
 The following code creates links_to_be_cut::
     
