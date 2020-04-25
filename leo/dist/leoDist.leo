@@ -151,6 +151,9 @@
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 </v>
+<v t="maphew.20200424174643.1"><vh>Conda</vh>
+<v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
+</v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
 </v>
@@ -2383,6 +2386,30 @@ universal=0
 
 pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
 pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
+</t>
+<t tx="maphew.20200424174643.1">@language md
+
+# Preliminary build recipe
+
+    pushd code\leo-editor
+    python setup.py sdist
+
+Make note of archive name in dist/ and update meta.yaml accordingly:
+
+    url: "../../../../dist/leo-6.2.dev106.tar.gz"
+
+then:
+
+    conda build leo\dist\conda\leo
+
+There's **a lot** of disk use and screen output. Takes about 5 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output.
+
+
+### Sources
+
+- Official docs - https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html
+
+- @stas00; creating tarball using setup.py to stop copying entire work folder; https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
 </t>
 <t tx="matt.20181004031246.1">@language md
 

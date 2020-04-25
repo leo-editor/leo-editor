@@ -1,0 +1,46 @@
+{% set name = "leo" %}
+{% set version = "6.2.dev106" %}
+{% set root = "../../../.." %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  # url: "https://github.com/leo-editor/leo-editor/archive/v{{ version }}.tar.gz"
+  # sha256: "95ae6334e1c1ead096bae7695c1c0a0b8c6992a83ea6c88166f94dd750fc68ae"
+  
+  # create this archive first with `python setup.py sdist`
+  # https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
+  url: "{{ root }}/dist/leo-6.2.dev106.tar.gz"
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - semantic_version
+    #- setupext-janitor
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  imports:
+    - leo
+
+about:
+  home: "https://leoeditor.com"
+  license: BSD
+  license_family: BSD
+  license_file: "{{ root }}/LICENSE"
+  summary: "Leo is an Outliner, Editor, and Personal Information Manager written in 100% Python."
+  doc_url: 
+  dev_url: https://github.com/leo-editor/leo-editor/
+
+extra:
+  recipe-maintainers:
+    - maphew
