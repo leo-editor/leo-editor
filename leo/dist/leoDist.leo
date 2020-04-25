@@ -2402,8 +2402,19 @@ then:
 
     conda build leo\dist\conda\leo
 
-There's **a lot** of disk use and screen output. Takes about 5 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output.
+There's **a lot** of disk use and screen output. Takes about 10 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output, and then tests installing that again in turn.
 
+If successful, test a local install in new env:
+
+    conda create -n leo-conda
+    conda activate leo-conda
+    conda install c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+If successful (according to docs, haven't made it this far yet):
+
+    anaconda upload c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+    
+    
 
 ### Sources
 
