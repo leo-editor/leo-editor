@@ -562,7 +562,9 @@
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
-<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
+<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh>
+<v t="maphew.20200425162117.1"><vh>Note</vh></v>
+</v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
 <v t="ekr.20170206073747.6"><vh>@rst-ignore-tree Installing Leo on Linux</vh>
 <v t="ekr.20170206073747.7"><vh>Installing from a debian package</vh></v>
@@ -15433,7 +15435,15 @@ Installing Leo
 
 .. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
-This chapter tells how to install and run Leo on Windows, Linux and MacOS.
+This chapter tells how to install and run Leo on Windows, Linux and
+MacOS. It might look complicated because it's long, but really it just
+boils down to:
+
+ - install python (v3.6 or newer)
+ - optionally download Leo source code
+ - run: `pip install leo` or `pip install --edtiable path/to/code` from 
+    a python enabled command prompt
+ - run `leo` from that same python enabled command prompt
 
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
@@ -31646,6 +31656,8 @@ any particular v, the main loop will process the set of tuples (i, v) in
 descending order of i. This resolves the question of whether deleting
 already deleted positions is valid.
 </t>
+<t tx="maphew.20200425162117.1">Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
@@ -31745,13 +31757,6 @@ time passes, upgrade desired::
     pip install --editable .
 
 `single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
-
-###
-Note
-###
-
-Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
-
 
 See `Running Leo`_ for how to run Leo after installing it.
 </t>
