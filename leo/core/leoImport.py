@@ -2567,6 +2567,9 @@ class LegacyExternalFileImporter:
                 s.startswith(delim1 + '@' + lws + '@+others')
             ):
                 self.add(lws + '@others\n', stack)
+            elif s.startswith(delim1 + '@<<'):
+                n = len(delim1 + '@<<')
+                self.add(lws + '<<' + s[n:].rstrip() + '\n', stack)
             elif s.startswith(delim1 + '@+node:'):
                 # Compute the headline.
                 if stack:
