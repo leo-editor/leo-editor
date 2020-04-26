@@ -2382,7 +2382,6 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
-<v t="ekr.20180130033527.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15435,6 +15434,12 @@ Installing Leo
 
 This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
+These instructions look complicated because they're long, but really they just boil down to:
+
+- install python (v3.6 or newer).
+- run `pip install leo` from a python enabled command prompt.
+- run leo from that same python enabled command prompt.
+
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
 .. contents:: Contents
@@ -18042,6 +18047,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
 .. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
+.. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
 .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
@@ -22466,13 +22472,13 @@ quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
 1. First, you need to get git from http://git-scm.com/.
-2. Get Leo from GitHub by doing::
+2. Get Leo from GitHub by doing:
 
-``git clone --depth=500 --no-single-branch https://github.com/leo-editor/leo-editor`` (http access)
+    ``git clone --depth=500 --no-single-branch https://github.com/leo-editor/leo-editor`` (http access)
 
-   or::
+    or:
 
-``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
+    ``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
 
 3. Install dependencies and create leo script launcher::
 
@@ -22497,7 +22503,7 @@ After download unpack the zip archive where you like and from a python enabled c
 This will leave Leo where it is and and create launch scripts in
 PYTHONHOME\\Scripts.
 
-Next see `Running Leo`_ and then optionally come back here for _Creating Windows file associations_.
+Next see `Running Leo`_ and then optionally come back here for `Creating Windows file associations`_.
 </t>
 <t tx="ekr.20170206073747.5">From *Settings* menu select **Open Desktop Integration**.
 The new Leo file that opens will add 4 buttons under the menu bar:
@@ -31680,15 +31686,14 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
-<t tx="matt.20200331213038.1">.._`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
-
-When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
+<t tx="matt.20200331213038.1">When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
 
 This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.
 
-Details at `Missing files when installing Leo from PyPI using "pip install leo`_
+Details at `Missing files when installing Leo from PyPI using "pip install leo"`_.
 
-* An editable install is from source code, either a git clone or downloaded archive. See: 
+* An editable install is from source code, either a git clone or downloaded archive. See:
+
 - Installing Leo with git
 - Installing from sources (Windows)</t>
 <t tx="mhw.20191008134016.1"></t>
@@ -31746,9 +31751,7 @@ time passes, upgrade desired::
 
 `single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
 
-###
-Note
-###
+**Note**
 
 Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
 
