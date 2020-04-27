@@ -1999,6 +1999,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         )
         c.bodyWantsFocusNow()
     #@+node:TomP.20191215195433.73: *4* vr3.update_rst & helpers
+    #@@language python
     def update_rst(self, node_list, keywords=None):
         """Update rst in the vr3 pane.
 
@@ -2028,19 +2029,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
             isHtml = s and s[0] == '<'
             self.rst_html = ''
             if s and isHtml:
-                #h = s
-                _code = []
-                for n in node_list:
-                    _code.append(n.b)
+                _code = [n.b for n in node_list]
                 h = '\n'.join(_code)
             else:
                 h = self.convert_to_html(node_list, s)
             if h:
                 self.set_html(h, w)
         else:
-            s = node_list[0].b
-            w.setPlainText(s)
+            _text_list = [n.b for n in node_list]
+            s = '<pre>' + '\n'.join(_text_list)  + '\</pre>'
+            self.set_html(s, w)
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
+    #@@language python
     def convert_to_html(self, node_list, s=''):
         """Convert node_list to html using docutils.
 
@@ -2086,13 +2086,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += sproc
                 if codelines:
                     codelist.extend(codelines)
-
+        #@+node:TomP.20200426183119.1: *6* vr3.execute code blocks
+        #@@language python
         # Execute code blocks; capture and insert execution results.
         # This means anything written to stdout or stderr.
         if self.execute_flag and codelist:
             code = '\n'.join(codelist)
             c = self.c
             environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+
+            # Assumes Python code will be executed
             execution_result, err_result = self.exec_code(code, environment)
 
             # Format execution result
