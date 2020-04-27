@@ -22479,6 +22479,10 @@ Leo.
     or:
 
     ``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
+    
+    followed by checking out the _devel_ branch:
+
+``git chekout devel`` 
 
 3. Install dependencies and create leo script launcher::
 
