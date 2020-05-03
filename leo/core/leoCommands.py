@@ -211,7 +211,7 @@ class Commands:
         self.abbrevCommands = None
         self.editCommands = None
         self.db = {}  # May be set to a PickleShare instance later.
-        self.bufferCommands = None  ###
+        self.bufferCommands = None
         self.chapterCommands = None
         self.controlCommands = None
         self.convertCommands = None
@@ -331,7 +331,7 @@ class Commands:
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
-        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)  ###
+        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -348,7 +348,7 @@ class Commands:
         self.subCommanders = [
             self.abbrevCommands,
             self.atFileCommands,
-            self.bufferCommands,  ###
+            self.bufferCommands,
             self.chapterController,
             self.controlCommands,
             self.convertCommands,
