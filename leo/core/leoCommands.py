@@ -211,6 +211,7 @@ class Commands:
         self.abbrevCommands = None
         self.editCommands = None
         self.db = {}  # May be set to a PickleShare instance later.
+        self.bufferCommands = None  ###
         self.chapterCommands = None
         self.controlCommands = None
         self.convertCommands = None
@@ -268,6 +269,7 @@ class Commands:
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
+        import leo.commands.bufferCommands as bufferCommands
         import leo.commands.checkerCommands as checkerCommands
         assert checkerCommands
             # To suppress a pyflakes warning.
@@ -329,6 +331,7 @@ class Commands:
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
+        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)  ###
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -345,6 +348,7 @@ class Commands:
         self.subCommanders = [
             self.abbrevCommands,
             self.atFileCommands,
+            self.bufferCommands,  ###
             self.chapterController,
             self.controlCommands,
             self.convertCommands,
