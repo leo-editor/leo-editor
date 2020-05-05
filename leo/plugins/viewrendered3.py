@@ -2212,12 +2212,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # We need to skip all lines in the block until there is a non-blank
             # line that is not indented, or we have reached the last line.
             if not _in_code_block and not _in_skipblock:
-                for d in SKIPBLOCKS:
-                    if line.startswith(d):
-                        _in_skipblock = True
-                        break
+                _in_skipblock = any(line.startswith(d) for d in SKIPBLOCKS)
                 if _in_skipblock:
-                    continue
+                    break
 
             if _in_skipblock:
                 if empty_line(line):
