@@ -2214,7 +2214,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not _in_code_block and not _in_skipblock:
                 _in_skipblock = any(line.startswith(d) for d in SKIPBLOCKS)
                 if _in_skipblock:
-                    break
+                    continue
 
             if _in_skipblock:
                 if empty_line(line):
