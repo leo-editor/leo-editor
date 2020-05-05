@@ -6,13 +6,12 @@
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
-#@@wrap
-Creates a window for *live* rendering of reSTructuredText, markdown text,
-images, movies, sounds, rst, html, jupyter notebooks, etc.
+Creates a window for *live* rendering of reSTructuredText, 
+markdown text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b8
+About Viewrendered3 V3.0b9
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -31,7 +30,7 @@ Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
     #. Honor "@" and "@c" directives to ignore all lines between them;
     #. Export the rendered node or subtree to the system browser;
     #. Optionally render mathematics symbols and equations using MathJax;
-    #. Correctly handle RsT or MD in a docstring'
+    #. Correctly handle RsT or MD in a docstring;
     #. While an entire subtree rendering is visible, the display can be locked
        so that the entire tree shows even while a single node is being edited.
     #. When an entire subtree is rendered, and editing is being done in one
@@ -144,7 +143,8 @@ placed into an ``@settings`` tree, preferably in the myLeoSettings file.
     @string vr3-md-math-output = True
     @int qweb-view-font-size = 16
 
-**Note** The font size setting, *qweb-view-font-size*, will probably not be needed. Useful values will generally be from 8 - 20.
+**Note** The font size setting, *qweb-view-font-size*, will probably not be needed. 
+Useful values will generally be from 8 - 20.
 
 Stylesheets
 ===========
@@ -430,12 +430,12 @@ try:
     import matplotlib # Make *sure* this is imported.
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
-except Exception:
+except ImportError:
     matplotlib = None
     print('VR3: *** No matplotlib')
 try:
     import numpy as np
-except Exception:
+except ImportError:
     print('VR3: *** No numpy')
     np = None
 # nbformat (@jupyter) support, non-vital.
@@ -567,9 +567,9 @@ def init():
             # #1248.
     # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
-        if (not g.unitTesting and
-           not g.app.batchMode and
-           g.app.gui.guiName() in ('browser', 'curses')  # EKR.
+        if (not g.unitTesting\
+            and not g.app.batchMode\
+            and g.app.gui.guiName() in ('browser', 'curses')  # EKR.
            ):
             g.es_print('viewrendered3 requires Qt')
         return False
@@ -2037,7 +2037,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 self.set_html(h, w)
         else:
             _text_list = [n.b for n in node_list]
-            s = '<pre>' + '\n'.join(_text_list)  + '\</pre>'
+            s = '<pre>' + '\n'.join(_text_list)  + r'\</pre>'
             self.set_html(s, w)
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
     #@@language python
@@ -2080,7 +2080,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Add node's text as a headline
                 s = node.b
                 s = self.remove_directives(s)
-                s, headline_str = self.make_rst_headline(node, s)
+                s = self.make_rst_headline(node, s)
+
                 # Process node's entire body text to handle @language directives
                 sproc, codelines = self.process_rst_node(s)
                 result += sproc
@@ -2115,7 +2116,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@@language python
         args = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
-            args['stylesheet_path'] = '{}'.format(self.rst_stylesheet)
+            args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
 
         if self.math_output:
@@ -2124,20 +2125,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 g.es('VR3 - missing URL for MathJax')
 
-        # Call docutils to get the string.
-        _html = None
+        # Call docutils to get the html rendering.
+        _html = ''.encode(ENCODING)
         if result.strip():
             try:
-                _html = publish_string(result, writer_name='html', settings_overrides=args)
+                _html = publish_string(result, writer_name='html',
+                                       settings_overrides=args)
             except SystemMessage as sm:
                 msg = sm.args[0]
                 if 'SEVERE' in msg or 'FATAL' in msg:
-                    result = 'RST error:\n%s\n\n%s' % (msg, result)
+                    result = f'RST error:\n{msg}\n\n{result}'
+                    _html = result.encode(ENCODING)
 
-            self.rst_html = _html
-            return _html
-
-        return ''
+        self.rst_html = _html
+        return _html
         #@-others
 
 
@@ -2417,7 +2418,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s -- a string
 
         RETURNS
-        a tuple (s, _headline), where the string _headline + s
+        a string s1 where s1 = _headline + s.
         """
 
         _underline = ''
@@ -2438,11 +2439,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Assumes that 1st two lines are a heading if
         # node headline == body's first line.
         body_lines = p.b.split('\n', 1)
-        if _headline_str == body_lines[0].strip():
-            return s, _headline_str
+        if _headline_str != body_lines[0].strip():
+            s = f'{_headline_str}\n{_underline}\n\n{s}'
 
-        s = f'{_headline_str}\n{_underline}\n\n{s}'
-        return s, _headline_str
+        return s
     #@+node:TomP.20191215195433.77: *4* vr3.update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
@@ -2534,8 +2534,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Return the proper rendering kind for node p."""
 
         #  #1287: Honor both kind of directives node by node.
-        for p in p.self_and_parents(p):
-            language = self.get_language(p)
+        for p1 in p.self_and_parents(p):
+            language = self.get_language(p1)
             if got_markdown and language in ('md', 'markdown'):
                 return language
             if got_docutils and language in ('rest', 'rst'):
