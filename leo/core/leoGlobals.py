@@ -97,8 +97,6 @@ globalDirectiveList = [
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 #
 # For commands based on functions, use the @g.command decorator.
-#
-# See also: https://github.com/leo-editor/leo-editor/issues/325
 #@@c
 #@@language python
 
