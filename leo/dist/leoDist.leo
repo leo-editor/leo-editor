@@ -77,6 +77,7 @@
 <v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
+<v t="maphew.20200506223713.1"><vh>How to build Leo exe (draft)</vh></v>
 <v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
 <v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
@@ -2457,6 +2458,43 @@ If successful (according to docs, haven't made it this far yet):
 
 - @stas00; creating tarball using setup.py to stop copying entire work folder; https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
 </t>
+<t tx="maphew.20200506223713.1">2020-05-06, matt
+
+Having another go at building an all-in-one portable Leo executable with
+PyInstaller
+
+
+Guide: https://blog.aaronhktan.com/posts/2018/05/14/pyqt5-pyinstaller-executable
+
+fix ModuleNotFoundError: No module named 'pkg_resources.py2_warn'
+https://github.com/pypa/setuptools/issues/1963#issuecomment-574265532
+
+-----
+
+&gt; pip install pyinstaller
+&gt; pyinstaller launchLeo.py
+    # one time only, to make template .spec file
+
+&gt; rename launchLeo.spec leo.spec
+
+#edit .spec file and add:
+
+a = Analysis(['launchLeo.py'],
+             ...
+             datas=[('leo', 'leo')],
+             hiddenimports=['pkg_resources.py2_warn'],
+             ...
+             )
+
+&gt; pyinstaller leo\dist\leo.spec
+
+# open new CMD shell, verify no python or leo present, then:
+
+&gt; dist\leo\leo.exe
+
+# fix errors as can until everything works.
+
+-----</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
