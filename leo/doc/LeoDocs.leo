@@ -559,7 +559,6 @@
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
 <v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
 <v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20170206073747.3"><vh>Using the single-click installer</vh></v>
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
 <v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
 </v>
@@ -2383,7 +2382,7 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
-<v t="ekr.20180130033527.1"></v>
+<v t="mhw.20191008134029.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15436,6 +15435,12 @@ Installing Leo
 
 This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
+These instructions look complicated because they're long, but really they just boil down to:
+
+- install python (v3.6 or newer).
+- run `pip install leo` from a python enabled command prompt.
+- run leo from that same python enabled command prompt.
+
 **Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
 
 .. contents:: Contents
@@ -18043,6 +18048,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
 .. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
+.. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
 .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt4`:      http://www.riverbankcomputing.com/software/pyqt/download
@@ -18053,6 +18059,7 @@ Leo's minimal dependencies are:
 
 * `Python`_ 3.6 or later.
 * `PyQt4`_ or `PyQt5`_.
+* `PyQtWebEngine`
 
 The following packages are optional, but recommended:
 
@@ -22458,65 +22465,44 @@ quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
 1. First, you need to get git from http://git-scm.com/.
-2. Get Leo from GitHub by doing::
+2. Get Leo from GitHub by doing:
 
-        git clone --depth=500 https://github.com/leo-editor/leo-editor (http access)
+    ``git clone --depth=500 --no-single-branch https://github.com/leo-editor/leo-editor`` (http access)
+
+    or:
+
+    ``git clone --depth=500  --no-single-branch git@github.com:leo-editor/leo-editor.git`` (ssh access)
     
-   or::
-   
-        git clone --depth=500 git@github.com:leo-editor/leo-editor.git (ssh access)
+    followed by checking out the _devel_ branch:
+
+``git chekout devel`` 
 
 3. Install dependencies and create leo script launcher::
 
         pip install --editable path/to/leo-editor
         
-And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
+And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, run ``git pull``.
 </t>
 <t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
 
 Now you have a choice.  You can use Leo's binary (single-click) installer
 or download Leo's sources directly.
 </t>
-<t tx="ekr.20170206073747.3">.. _`SourceForge download page`: http://sourceforge.net/projects/leo/files/Leo/
+<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
 .. _`Running Leo`: running.html
 
-Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
-</t>
-<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
+Download Leo’s sources using one of the methods described at `Leo's download page`_.
 
-You may download Leo's sources in one of three ways, as described at
-`Leo's download page`_.
+After download unpack the zip archive where you like and from a python enabled command shell:
 
-*Method 1: Application Install*
-After download run::
-
-    pip install C:\\users\me\Downloads\\leo-editor-master.zip
-
-This will put Leo in Python's \*site-packages* folder, for example,
-C:\\Python36\\Lib\\site-packages, and create launch scripts in
-PYTHONHOME\\Scripts.
-
-*Method 2: Editable Install*
-After download unpack the zip archive where you like and::
-
-    pip install --editable C:\\path\\to\\leo-editor
+	pip install --editable C:\\path\\to\\leo-editor
 
 This will leave Leo where it is and and create launch scripts in
 PYTHONHOME\\Scripts.
 
-*Running Leo*
-
-See "Running Leo after pip install leo".
-
-
-Next, you will find it convenient to create Windows files associations
-for .leo files, as described in the next section.
+Next see `Running Leo`_ and then optionally come back here for `Creating Windows file associations`_.
 </t>
-<t tx="ekr.20170206073747.5">*Important*: Leo's binary Windows installer sets file associations
-automatically, so this section is needed only if you are installing Leo
-from a .zip file or other sources.
-
-From *Settings* menu select **Open Desktop Integration**.
+<t tx="ekr.20170206073747.5">From *Settings* menu select **Open Desktop Integration**.
 The new Leo file that opens will add 4 buttons under the menu bar:
 
 *[Register-leo]* - Creates registry keys for Leo file type and .leo
@@ -24994,7 +24980,7 @@ Enable or disable italics::
 
 Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
 
-    WEIGHT DemoBold
+    WEIGHT DemiBold
 </t>
 <t tx="ekr.20171122090736.1">Here are some examples of decluttering rulesets::
 
@@ -26090,22 +26076,19 @@ button using Ctrl-P.
 <t tx="ekr.20180126190053.1"></t>
 <t tx="ekr.20180126191031.1">The `Anaconda`_ scientific computing environment includes Python, NumPy, SciPy, PyQt, and over a thousand other tools, packages and libraries. It's a 500+ MB download but you're guaranteed to have everything needed.
 
-To install Leo do this from a console::
-
-    pip install leo
-
 The `Miniconda`_ environment includes just Python and the `conda` package management tool. Pick and choose from the full Anaconda ecosystem.
 
-To install Leo using Miniconda, do this from a console::
+Preparation, create an environment for Leo, activate it, and then install python::
 
-    conda install pyqt
-    conda run pip install PyQtWebEngine
-    conda run pip install leo
-    
-To install Leo using Anaconda, do this from a console::
+    conda create -n leo
+    conda activate leo
+    conda install python
 
-    conda run pip install PyQtWebEngine
-    conda run pip install leo
+Strictly speaking this step can be skipped and Leo installed in the conda _base_ environment. The conda developers generally advise against installing in _base_ unless this program is the only thing the machine will be used for.
+
+To install Leo run this from a console::
+
+    pip install leo
 </t>
 <t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
 <t tx="ekr.20180128051013.1">for pane in ('body', 'tree', 'log'):
@@ -26423,9 +26406,9 @@ You can run as many of these process as you like, without involving the BPM in a
 </t>
 <t tx="ekr.20180226154417.1">After running ``pip install leo`` from a console type::
 
-    ``leo`` - start Leo in normal graphical mode (qt)
-    ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
-    ``leo-m``, ``leo-messages`` [Windows only] - start Leo in normal (qt) mode, and echo log messages to the starting shell
+``leo`` - start Leo in normal graphical mode (qt)
+``leo-c``, ``leo-console`` - start Leo in console (curses) mode
+``leo-m``, ``leo-messages`` [Windows only] - start Leo in normal (qt) mode, and echo log messages to the starting shell
 
 The launchers are installed in ``PYTHONHOME/Scripts``.
 
@@ -31578,7 +31561,7 @@ later.
 To complete the proof, we must show that the main loop deletes all and only
 those vnodes implied by the positions in aList. We can tentatively assume
 that the main loop will work properly if that data in links_to_be_cut is
-correct, but there some subtleties lurking here which I'll discuss later.
+correct, but there are some subtleties lurking here which I'll discuss later.
 
 The following code creates links_to_be_cut:
 
@@ -31721,15 +31704,15 @@ Time passes, upgrade desired::
 dramatically speed up download time as it only grabs the latest
 development branch and skips all but the last couple weeks or months of
 history.</t>
-<t tx="matt.20200331213038.1">.. _`Missing files when installing Leo from PyPI using "pip install leo"`:    https://github.com/leo-editor/leo-editor/issues/603
-
-When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
+<t tx="matt.20200331213038.1">When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
 
 This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.
 
-Details at `Missing files when installing Leo from PyPI using "pip install leo"`_
+Details at `Missing files when installing Leo from PyPI using "pip install leo"`_.
 
 \* An editable install is from source code, either a git clone or downloaded archive. See: 
+
+* An editable install is from source code, either a git clone or downloaded archive. See:
 
 - Installing Leo with git
 - Installing from sources (Windows)
@@ -31790,9 +31773,7 @@ time passes, upgrade desired::
 
 `single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
 
-###
-Note
-###
+**Note**
 
 Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
 

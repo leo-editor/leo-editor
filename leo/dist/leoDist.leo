@@ -151,6 +151,10 @@
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 </v>
+<v t="maphew.20200424174643.1"><vh>Conda</vh>
+<v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
+<v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
+</v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
 </v>
@@ -2383,6 +2387,75 @@ universal=0
 
 pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
 pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
+</t>
+<t tx="maphew.20200424174643.1">@language md
+
+# Build new Leo Anaconda Release
+_a work in progress (matt)_
+
+_I discovered Conda-Forge recipes already integrated with Continual Integration, and, once accepted, publishing to the conda forge package system. Here's what I know so far._
+
+Local fork:
+https://github.com/leo-editor/conda-forge-recipes/tree/leo
+
+PR to merge with upstream:
+https://github.com/conda-forge/staged-recipes/pull/11380
+
+
+Note: the `meta.yaml` file in this folder is for reference not the real one used by the Conda Forge system. The local _staged recipes_ fork is the authoritative version:
+
+https://github.com/leo-editor/conda-forge-recipes/tree/leo/recipes/leo/meta.yaml
+
+## Release Procedure
+
+1. Get tag name of release
+2. Get sha256 hash for the release archive
+3. Update `leo/meta.yaml` accordingly
+4. Push to local fork
+5. Check CI results in about 10 minutes
+
+Follow up as needed.
+
+
+
+
+### References
+
+ - Conda Forge docs - [contributing packages][0]
+ 
+ 
+ [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
+ </t>
+<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+
+    pushd code\leo-editor
+    python setup.py sdist
+
+Make note of archive name in dist/ and update meta.yaml accordingly:
+
+    url: "../../../../dist/leo-6.2.dev106.tar.gz"
+
+then:
+
+    conda build leo\dist\conda\leo
+
+There's **a lot** of disk use and screen output. Takes about 10 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output, and then tests installing that again in turn.
+
+If successful, test a local install in new env:
+
+    conda create -n leo-conda
+    conda activate leo-conda
+    conda install c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+If successful (according to docs, haven't made it this far yet):
+
+    anaconda upload c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+### Sources
+
+- Official docs - https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html
+
+- @stas00; creating tarball using setup.py to stop copying entire work folder; https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
 </t>
 <t tx="matt.20181004031246.1">@language md
 

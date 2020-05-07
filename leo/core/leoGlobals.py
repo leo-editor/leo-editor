@@ -89,21 +89,14 @@ globalDirectiveList = [
 #@@nobeautify
 #@@language rest
 #@+at
-# *Don't even think about removing the @cmd decorators!*
-# See https://github.com/leo-editor/leo-editor/issues/325
-#
-# The cmd_instance_dict supports the @cmd decorators in various files. For
-# example, the following appears in leo.commands.
+# The cmd_instance_dict supports per-class @cmd decorators. For example, the
+# following appears in leo.commands.
 #
 #     def cmd(name):
 #         """Command decorator for the abbrevCommands class."""
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 #
-# **Important**
-#
-# All *new* commands should be defined using @g.command, but
-# this dict will remain forever so as not to break existing code.
-#
+# For commands based on functions, use the @g.command decorator.
 #@@c
 #@@language python
 

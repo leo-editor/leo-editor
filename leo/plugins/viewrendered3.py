@@ -2031,6 +2031,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if s and isHtml:
                 _code = [n.b for n in node_list]
                 h = '\n'.join(_code)
+                for n in node_list:
+                    _code.append(n.b)
+                h = '\n'.join(_code)
             else:
                 h = self.convert_to_html(node_list, s)
             if h:
@@ -2212,7 +2215,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # We need to skip all lines in the block until there is a non-blank
             # line that is not indented, or we have reached the last line.
             if not _in_code_block and not _in_skipblock:
-                _in_skipblock = any(line.startswith(d) for d in SKIPBLOCKS)
+                for d in SKIPBLOCKS:
+                    if line.startswith(d):
+                        _in_skipblock = True
+                        break
                 if _in_skipblock:
                     continue
 

@@ -665,6 +665,16 @@ class GitDiffController:
                     p3 = organizer.insertAsLastChild()
                     p3.h = 'New:' + v2.h
                     p3.b = v2.b
+            elif kind.lower() == 'added':
+                v = d.get(key)
+                new_p = self.find_gnx(self.c, v.fileIndex)
+                if new_p:  # Make a clone, if possible.
+                    p = new_p.clone()
+                    p.moveToLastChildOf(parent)
+                else:
+                    p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
