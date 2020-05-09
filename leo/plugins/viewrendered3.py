@@ -369,8 +369,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 # pylint: disable=no-else-break
     # This warning looks wrong!
 
-trace = False
-    # This global trace is convenient.
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >> (v3)
 #
@@ -512,9 +510,8 @@ RST_INDENT = '    '
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 #@-<< declarations >>
 
-asciidoctor_exec = shutil.which('asciidoctor')
-asciidoc3_exec = shutil.which('asciidoc3')
-pandoc_exec = shutil.which('pandoc')
+trace = False
+    # This global trace is convenient.
 
 #@+<< define html templates >>
 #@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
@@ -550,6 +547,40 @@ layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 
 #@+others
+#@+node:TomP.20200508124457.1: ** find_exe()
+def find_exe(exename):
+    """Locate an executable and return its path.
+    
+    Works for Windows and Linux.  Works whether or not a virtual
+    environment is in effect.
+    
+    Finds executables that are in:
+        - the Python Scripts directory;
+        - the system path.
+        
+    ARGUMENT
+    exename -- the name of the executable file to find.
+    
+    RETURNS
+    the full path to the executable as a string, or None.
+    Returns None if the found executable is not marked as executable.
+    """
+
+    # Works for Linux and Windows
+    venvdir = os.getenv("VIRTUAL_ENV")
+    if venvdir:
+        scriptsdir = os.path.join(venvdir, 'Scripts')
+    else:
+        scriptsdir = os.path.join(os.path.dirname(sys.executable), 'Scripts')
+
+    exe = shutil.which(exename, os.X_OK, scriptsdir) or \
+          shutil.which(exename, os.X_OK)
+
+    return exe
+#@+node:TomP.20200508125029.1: ** Find External Executables
+asciidoctor_exec = find_exe('asciidoctor')
+asciidoc3_exec = find_exe('asciidoc3')
+pandoc_exec = find_exe('pandoc')
 #@+node:TomP.20191215195433.7: ** vr3.Top-level
 #@+node:TomP.20191215195433.8: *3* vr3.decorate_window
 def decorate_window(w):
@@ -2031,9 +2062,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if s and isHtml:
                 _code = [n.b for n in node_list]
                 h = '\n'.join(_code)
-                for n in node_list:
-                    _code.append(n.b)
-                h = '\n'.join(_code)
             else:
                 h = self.convert_to_html(node_list, s)
             if h:
@@ -2215,10 +2243,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # We need to skip all lines in the block until there is a non-blank
             # line that is not indented, or we have reached the last line.
             if not _in_code_block and not _in_skipblock:
-                for d in SKIPBLOCKS:
-                    if line.startswith(d):
-                        _in_skipblock = True
-                        break
+                _in_skipblock = any(line.startswith(d) for d in SKIPBLOCKS)
                 if _in_skipblock:
                     continue
 
