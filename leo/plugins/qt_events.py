@@ -197,12 +197,17 @@ class LeoQtEventFilter(QtCore.QObject):
         if keynum == qt.Key_AltGr:
             return removeAltCtrl(mods)
         #
+        # Never alter complex characters.
+        if len(actual_ch) != 1:
+            return mods
+        #
+        # #1563: Remove Shift modifier from ascii keys.
+        if ord(actual_ch) <= 127 and 'Shift' in mods:
+            mods.remove('Shift')
+        #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
-        if (
-            len(actual_ch) == 1 and ord(actual_ch) > 127 and
-            'Alt' in mods and 'Control' in mods
-        ):
+        if ord(actual_ch) > 127 and 'Alt' in mods and 'Control' in mods:
             return removeAltCtrl(mods)
         return mods
     #@+node:ekr.20180417161548.1: *5* filter.doLateTweaks
