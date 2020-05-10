@@ -1601,7 +1601,7 @@ class LeoFind:
             c.frame.tree.onHeadChanged(p, 'Change')
         else:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
-        c.frame.tree.drawIcon(p)  # redraw only the icon.
+        c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
     #@+node:ekr.20060526201951: *5* makeRegexSubs
     def makeRegexSubs(self, change_text, groups):
@@ -1946,7 +1946,7 @@ class LeoFind:
                     p.setMarked()
                     p.setDirty()
                     if not self.changeAllFlag:
-                        c.frame.tree.drawIcon(p)  # redraw only the icon.
+                        c.frame.tree.updateIcon(p)  # redraw only the icon.
                 return pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self.shouldStayInNode(p):

@@ -2619,7 +2619,7 @@ class KeyHandlerClass:
             k.setState('last-full-command', 1, handler=k.repeatComplexCommandHelper)
             k.setLabelBlue(f"Redo: {str(k.mb_history[0])}")
         else:
-            g.warning('no previous command')
+            g.warning('no previous minibuffer command')
     #@+node:ekr.20131017100903.16689: *5* repeatComplexCommandHelper
     def repeatComplexCommandHelper(self, event):
         k = self; c = k.c

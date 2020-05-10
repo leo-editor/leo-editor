@@ -967,6 +967,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             # no difference between original and current list of dictionaries
             return
         self._setIconListHelper(p, l, p.v, setDirty)
+        if g.app.gui.guiName() == 'qt':
+            self.c.frame.tree.updateIcon(p, True)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc, setDirty):
         """icon setting code common between v and t nodes

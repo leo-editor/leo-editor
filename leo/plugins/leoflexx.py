@@ -68,7 +68,6 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # pylint: disable=logging-not-lazy
-# pylint: disable=missing-super-argument
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event

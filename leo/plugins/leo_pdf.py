@@ -21,68 +21,68 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@@nocolor
 #@+at
 # I. Bugs and bug fixes
-# 
+#
 # This file, leo_pdf.py, is derived from rlpdf.py. It is intended as a replacement
 # for it. The copyright below applies only to this file, and to no other part of
 # Leo.
-# 
+#
 # This code fixes numerous bugs that must have existed in rlpdf.py. That code was
 # apparently out-of-date. For known bugs in the present code see the 'to do'
 # section.
-# 
+#
 # II. New and improved code.
-# 
+#
 # This code pushes only Bunch's on the context stack. The Bunch class is slightly
 # adapted from the Python Cookbook.
-# 
+#
 # Pushing only Bunches greatly simplifies the code and makes it more robust: there
 # is no longer any need for one part of the code to pop as many entries as another
 # part pushed. Furthermore, Bunch's can have as much internal structure as needed
 # without affecting any other part of the code.
-# 
+#
 # The following methods make using Bunch's trivial: push, pop, peek, inContext.
 # inContext searches the context stack for a Bunch of the indicated 'kind'
 # attribute, returning the Bunch if found.
-# 
+#
 # The following 'code generator' methods were heavily rewritten:
 # visit/depart_title, visit/depart_visit_footnote_reference, footnote_backrefs
 # and visit/depart_label.
-# 
+#
 # III. Passing intermediateFile.txt to reportlab.
-# 
+#
 # You can use an 'intermediate' file as the input to reportlab. This can be highly
 # useful: you can see what output reportlab will accept before the code generators
 # can actually generate it.
-# 
+#
 # The way this works is as follows:
 # 1. Run this code as usual, with the trace in PDFTranslator.createParagraph
 # enabled. This trace will print the contents of each paragraph to be sent to
 # reportlab, along with the paragraph's style.
-# 
+#
 # 2. Take the resulting console output and put it in the file called
 # intermediateFile.txt, in the same folder as the original document.
-# 
+#
 # 3. At the start of Writer.translate, change the 'if 1:' to 'if: 0'. This causes
 # the code to use the dummyPDFTranslator class instead of the usual PDFTranslator
 # class.
-# 
+#
 # 4. *Rerun* this code. Because of step 3, the code will read
 # intermediateFile.txt and send it, paragraph by paragraph, to reportlab. The
 # actual work is done in buildFromIntermediateFile. This method assumes the output
 # was produced by the trace in PDFTranslator.createParagraph as discussed
 # in point 2 above.
-# 
+#
 # IV. About tracing and debugging.
-# 
+#
 # As mentioned in the imports section, it is not necessary to import leoGlobals.
 # This file is part of Leo, and contains debugging stuff such as g.trace and
 # g.toString. There are also g.splitLines, g.es_exception, etc. used by debugging
 # code.
-# 
+#
 # The trace in PDFTranslator.createParagraph is extremely useful for figuring out
 # what happened. Various other calls to g.trace are commented out throughout the
 # code. These were the way I debugged this code.
-# 
+#
 # Edward K. Ream:  Aug 22, 2005.
 #@-<< about this code >>
 #@+<< copyright >>
@@ -125,15 +125,15 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@+node:ekr.20090704103932.5166: *3* Early versions
 #@+node:ekr.20090704103932.5167: *4* Initial conversion
 #@+at
-# 
+#
 # - Added 'c:\reportlab_1_20' to sys.path.
-# 
+#
 # - Obtained this file and stylesheet.py from
 #   http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
-# 
+#
 # - Put stylesheet.py in docutils/writers directory.
 #   This is a stylesheet class used by the file.
-# 
+#
 # - Made minor mods to stop crashes.
 #     - Added support for the '--stylesheet' option.
 #         - This may be doing more harm than good.
@@ -142,18 +142,18 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #         - depart_title
 #@+node:ekr.20090704103932.5168: *4* 0.0.1
 #@+at
-# 
+#
 # - Removed '\r' characters in Writer.translate.
 # - Created self.push and self.pop.
 # - Rewrote visit/depart_title.  The code now is clear and works properly.
-# 
+#
 # To do:
 #     The code in several places uses x in self.context.
 #     This won't work when g.Bunches are on the context stack,
 #     so we shall need a method that searches the bunches on the stack.
 #@+node:ekr.20090704103932.5169: *4* 0.0.2
 #@+at
-# 
+#
 # - Fixed bug in visit_reference: added self.push(b).
 # - Added putHead, putTail utilities.
 # - Simplified most of the code.
@@ -161,30 +161,30 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 # - Almost all the grunt work is done.
 #@+node:ekr.20090704103932.5170: *4* 0.0.3
 #@+at
-# 
+#
 # All grunt work completed:
-# 
+#
 # - Moved Bunch class into this file (so no dependencies on leoGlobals.py).
-# 
+#
 # - Simplified calls to self.push
-# 
+#
 # - Finish all simple methods.
-# 
+#
 # - Better dumps in createParagraph.
 #@+node:ekr.20090704103932.5171: *4* 0.0.4
 #@+at
-# 
+#
 # - Added dummyPDFTranslator class.
-# 
+#
 # - Added support for this dummy class to Writer.translate.
 #@+node:ekr.20090704103932.5172: *4* 0.0.5
 #@+at
-# 
+#
 # - First working version.
-# 
+#
 #@+node:ekr.20090704103932.5173: *3* 0.1
 #@+at
-# 
+#
 # - Completed the conversion to using Bunches on the context stack.
 #     - Added peek method.
 #     - In context now searches from top of context stack and returns a Bunch.
@@ -192,19 +192,19 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #         - footnote_backrefs sets b.setLink and b.links.  Much clearer code.
 #         - visit/depart_label uses b.setLink and b.links to generate code.
 # - The code now passes a minimal test of footnote code.
-# 
+#
 # - WARNING: auto-footnote numbering does not work.  I doubt it ever did.  I feel under no obligation to make it work.
 #@+node:ekr.20090704103932.5174: *3* 0.2
 #@+at
-# 
+#
 # - Added 'about this code' section.
 #@+node:ekr.20090704103932.5175: *3* 0.3
 #@+at Minor improvements to documentation.
 #@+node:ekr.20090704103932.5176: *3* 0.4
 #@+at
-# 
+#
 # - Added warning to docstring that this is not a valid Leo plugin.
-# 
+#
 # - Added init function that always returns False.  This helps Leo's unit tests.
 #@-others
 
@@ -212,14 +212,14 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 # 0.5 EKR:
 # - Define subclasses of docutils classes only if docutils can be imported.
 # - This supresses errors during unit tests.
-# 
+#
 # 1.0 EKR 2011/11/03:
 # - Various changes to come accomodate docutils changes.
 #     - Added dummy Reporter class for use by get_language.
 #     - I suspect this should be logger class, but I don't much care.
 # - Incorporate getStyleSheet from stylesheet.py, obtained from:
 #     http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
-# 
+#
 # Note: passing writer_name = leo.plugins.leo_pdf to docutils does not work,
 # presumably because __import__('leo.plugins.leo_pdf') returns the *leo* module,
 # and docutils seems not to be aware of it. Thus, the new rst3 code passes writer
@@ -229,7 +229,7 @@ Rewritten by Edward K. Ream for the Leo rst3 plugin.
 #@+node:ekr.20090704103932.5177: ** << to do >>
 #@@nocolor
 #@+at
-# 
+#
 # - Bullets show up as a black 2 ball.
 # - More flexible handling of style sheets.
 # - Auto-footnote numbering does not work.
@@ -479,18 +479,18 @@ def get_language (doctree):
     return language
 #@+node:ekr.20090704103932.5179: ** class Bunch (object)
 #@+at
-# 
+#
 # From The Python Cookbook: Often we want to just collect a bunch of stuff
 # together, naming each item of the bunch; a dictionary's OK for that, but a small
 # do-nothing class is even handier, and prettier to use.
-# 
+#
 # Create a Bunch whenever you want to group a few variables:
-# 
+#
 #     point = Bunch(datum=y, squared=y*y, coord=x)
-# 
+#
 # You can read/write the named attributes you just created, add others, del some
 # of them, etc::
-# 
+#
 #     if point.squared > threshold:
 #         point.isok = True
 #@@c
@@ -592,7 +592,7 @@ if docutils:
 
             if not reportlab:
                 return ''
-            out = StringIO()
+            out = io.BytesIO()
             doc = reportlab.platypus.SimpleDocTemplate(out,
                 pagesize=reportlab.lib.pagesizes.A4)
             doc.build(story)
@@ -625,8 +625,8 @@ if docutils:
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
-            self.output = self.output.replace('\n\r','\n')
-            self.output = self.output.replace('\r\n','\n')
+            self.output = b'\n'.join(self.output.splitlines(False))
+            #self.output = self.output.replace(b'\r\n',b'\n')
             if 0: # This is the actual .pdf output returned from doc.build(story)
                 # doc is a Platypus (and this reportlab) document.
                 g.trace('output','*'*40)

@@ -710,6 +710,7 @@ class Importer:
 
     def add_class_names(self, p):
         '''Add class names to headlines for all descendant nodes.'''
+        # pylint: disable=no-else-continue
         if g.app.unitTesting:
             return # Don't changes the expected headlines.
         after, fn, class_name = None, None, None

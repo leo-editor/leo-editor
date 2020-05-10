@@ -321,6 +321,23 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
+    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus (restored)
+    @cmd('editor-cycle-focus')
+    @cmd('cycle-editor-focus')  # There is no LeoQtBody method
+    def cycleEditorFocus(self, event=None):
+        """Cycle keyboard focus between the body text editors."""
+        c = self.c
+        d = self.editorWrappers
+        w = c.frame.body.wrapper
+        values = list(d.values())
+        if len(values) > 1:
+            i = values.index(w) + 1
+            if i == len(values):
+                i = 0
+            w2 = values[i]
+            assert(w != w2)
+            self.selectEditor(w2)
+            c.frame.body.wrapper = w2
     #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
     def deleteEditor(self, event=None):
         """Delete the presently selected body text editor."""
@@ -1359,49 +1376,6 @@ class LeoTree:
     def getEditTextDict(self, v):
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v, [])
-    #@+node:ekr.20040803072955.21: *4* LeoTree.injectCallbacks
-    def injectCallbacks(self):
-        c = self.c
-        #@+<< define callbacks to be injected in the position class >>
-        #@+node:ekr.20040803072955.22: *5* << define callbacks to be injected in the position class >>
-        # **Important:: These VNode methods are entitled to know about gui-level code.
-        #@+others
-        #@+node:ekr.20040803072955.23: *6* OnHyperLinkControlClick
-        def OnHyperLinkControlClick(self, event=None, c=c):
-            """Callback injected into position class."""
-            p = self
-            if c and c.exists:
-                try:
-                    if not g.doHook("hypercclick1", c=c, p=p, event=event):
-                        c.selectPosition(p)
-                        c.redraw()
-                        c.frame.body.wrapper.setInsertPoint(0)
-                    g.doHook("hypercclick2", c=c, p=p, event=event)
-                except Exception:
-                    g.es_event_exception("hypercclick")
-        #@+node:ekr.20040803072955.24: *6* OnHyperLinkEnter
-        def OnHyperLinkEnter(self, event=None, c=c):
-            """Callback injected into position class."""
-            try:
-                p = self
-                g.doHook("hyperenter1", c=c, p=p, event=event)
-                g.doHook("hyperenter2", c=c, p=p, event=event)
-            except Exception:
-                g.es_event_exception("hyperenter")
-        #@+node:ekr.20040803072955.25: *6* OnHyperLinkLeave
-        def OnHyperLinkLeave(self, event=None, c=c):
-            """Callback injected into position class."""
-            try:
-                p = self
-                g.doHook("hyperleave1", c=c, p=p, event=event)
-                g.doHook("hyperleave2", c=c, p=p, event=event)
-            except Exception:
-                g.es_event_exception("hyperleave")
-        #@-others
-        #@-<< define callbacks to be injected in the position class >>
-
-        for f in (OnHyperLinkControlClick, OnHyperLinkEnter, OnHyperLinkLeave):
-            g.funcToMethod(f, leoNodes.position)
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
     def onHeadlineKey(self, event):
         """Handle a key event in a headline."""

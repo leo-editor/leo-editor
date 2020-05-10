@@ -211,6 +211,7 @@ class Commands:
         self.abbrevCommands = None
         self.editCommands = None
         self.db = {}  # May be set to a PickleShare instance later.
+        self.bufferCommands = None
         self.chapterCommands = None
         self.controlCommands = None
         self.convertCommands = None
@@ -268,6 +269,7 @@ class Commands:
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
+        import leo.commands.bufferCommands as bufferCommands
         import leo.commands.checkerCommands as checkerCommands
         assert checkerCommands
             # To suppress a pyflakes warning.
@@ -329,6 +331,7 @@ class Commands:
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
+        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -345,6 +348,7 @@ class Commands:
         self.subCommanders = [
             self.abbrevCommands,
             self.atFileCommands,
+            self.bufferCommands,
             self.chapterController,
             self.controlCommands,
             self.convertCommands,
@@ -1090,25 +1094,21 @@ class Commands:
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
-        # Important: do not call p.isAncestorOf here.
-        c = self
-        if not p or not p.v:
-            return False
-        if root and p == root:
-            return True
-        p = p.copy()
-        while p.hasParent():
-            old_n, old_v = p._childIndex, p.v
-            p.moveToParent()
-            if root and p == root:
-                return True
-            if not old_v.isNthChildOf(old_n, p.v):
+        if not p or not p.v: return False
+
+        rstack = root.stack + [(root.v, root._childIndex)] if root else []
+        pstack = p.stack + [(p.v, p._childIndex)]
+
+        if len(rstack) > len(pstack): return False
+
+        par = self.hiddenRootNode
+        for j, x in enumerate(pstack):
+            if j < len(rstack) and x != rstack[j]: return False
+            v, i = x
+            if i >= len(par.children) or v is not par.children[i]:
                 return False
-        if root:
-            exists = p == root
-        else:
-            exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        return exists
+            par = v
+        return True
     #@+node:ekr.20160427153457.1: *6* c.dumpPosition
     def dumpPosition(self, p):
         """Dump position p and it's ancestors."""
@@ -3874,7 +3874,7 @@ class Commands:
     def deletePositionsInList(self, aList, redraw=True):
         """
         Delete all vnodes corresponding to the positions in aList.
-        
+
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
         # New implementation by Vitalije 2020-03-17 17:29 
@@ -3882,18 +3882,55 @@ class Commands:
         # Ensure all positions are valid.
         aList = [p for p in aList if c.positionExists(p)]
         if not aList:
-            return
+            return []
 
         def p2link(p):
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
 
         links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+        undodata = []
         for i, v in links_to_be_cut:
             ch = v.children.pop(i)
             ch.parents.remove(v)
+            undodata.append((v.gnx, i, ch.gnx))
         if redraw:
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
             c.redraw()
+        return undodata
+
+    #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions
+    def undoableDeletePositions(self, aList):
+        """
+        Deletes all vnodes corresponding to the positions in aList,
+        and make changes undoable.
+        """
+        c = self
+        u = c.undoer
+        data = c.deletePositionsInList(aList)
+        gnx2v = c.fileCommands.gnxDict
+        def undo():
+            for pgnx, i, chgnx in reversed(u.getBead(u.bead).data):
+                v = gnx2v[pgnx]
+                ch = gnx2v[chgnx]
+                v.children.insert(i, ch)
+                ch.parents.append(v)
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
+        def redo():
+            for pgnx, i, chgnx in u.getBead(u.bead + 1).data:
+                v = gnx2v[pgnx]
+                ch = v.children.pop(i)
+                ch.parents.remove(v)
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
+        u.pushBead(g.Bunch(
+            data=data,
+            undoType='delete nodes',
+            undoHelper=undo,
+            redoHelper=redo,
+        ))
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict

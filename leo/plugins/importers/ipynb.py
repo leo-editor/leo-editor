@@ -213,15 +213,14 @@ class Import_IPYNB:
     def get_file_name(self):
         '''Open a dialog to write a Jupyter (.ipynb) file.'''
         c = self.c
-        fn = g.app.gui.runSaveFileDialog(
+        fn = g.app.gui.runOpenFileDialog(
             c,
             defaultextension=".ipynb",
             filetypes=[
-                ("Jupyter files", "*.ipynb"),
+                ("Jupyter notebooks", "*.ipynb"),
                 ("All files", "*"),
             ],
-            initialfile='',
-            title="Export To Jupyter File",
+            title="Import Jupyter Notebook",
         )
         c.bringToFront()
         return fn

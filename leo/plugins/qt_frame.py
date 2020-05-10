@@ -2095,7 +2095,6 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.selectEditorLockout:
             return None
         w = wrapper.widget
-        g.trace(w)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
         if trace:

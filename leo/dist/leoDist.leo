@@ -77,6 +77,7 @@
 <v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
+<v t="maphew.20200506223713.1"><vh>How to build Leo exe (draft)</vh></v>
 <v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
 <v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
@@ -150,6 +151,10 @@
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
+</v>
+<v t="maphew.20200424174643.1"><vh>Conda</vh>
+<v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
+<v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
@@ -266,19 +271,31 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - Fixed several "fit and finish" issues.
 - Removed unused settings from leoSettings.leo.
 
+**Quick Install**
+
+- Install python3
+- if not using git:  
+    `pip install leo`
+
+- If using git:  
+    `git clone https://github.com/leo-editor/leo-editor.git`  
+    `pip install --editable leo-editor`
+
+See [Getting Started](http://leoeditor.com/getting-started.html) for more. 
+
 **Links**
 
-- Leo's home page: http://leoeditor.com
-- [Documentation](http://leoeditor.com/leo_toc.html)
-- [Tutorials](http://leoeditor.com/tutorial.html)
-- [Video tutorials](http://leoeditor.com/screencasts.html)
-- [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
+- Leo's home page: https://leoeditor.com
+- [Documentation](https://leoeditor.com/leo_toc.html)
+- [Tutorials](https://leoeditor.com/tutorial.html)
+- [Video tutorials](https://leoeditor.com/screencasts.html)
+- [Forum](https://groups.google.com/group/leo-editor)
+- [Download](https://leoeditor.com/download.html)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
-- [More links](http://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](https://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](https://leoeditor.com/load-leo.html)
+- [More links](https://leoeditor.com/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -1624,9 +1641,9 @@ g.es_print('done')
 
 Overview:
 
-1. Create a **release branch**, called 6.2.
+1. Create a **release branch**, called 6.3.
    This branch should be based on devel.
-   This branch will hold all work for 6.2-b1 and 6.2 (final).
+   This branch will hold all work for 6.3-b1 and 6.3 final.
 
 2. *Never* merge devel into the release branch.
    It's fine to merge the release branch into devel.
@@ -1674,12 +1691,9 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 
 - Create a full (annotated) tag:
   - Do not use the -f option.
-  - Make sure the tag does not conflict with the release branch.
-    Release *branches* should end with "-rel"
-    Tags should start with "v".
-    Tags should *not* end with "-rel"
+  - Tags should start with "v"
 
-git tag -a v5.9.x -m "Added v5.9.x tag"
+git tag -a v6.3-b1 -m "Added v6.3-b1 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1690,7 +1704,7 @@ git push --follow-tags
     #static version = '6.3-devel'
 
 git checkout devel
-git tag -a v6.3-dev -m "Added v6.3-dev tag"
+git tag -a v6.4-devel -m "Added v6.4.devel tag"
 git push --follow-tags
 update version in leoVersion.py.
 </t>
@@ -2150,7 +2164,7 @@ zipFile2 =      abspath(join(rootDir,'Leo-%s-temp.zip' % (version)))
             if exists(src_path) and exists(dst_path):
                 shutil.copyfile(src_path,dst_path)
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From rel branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.3 branch:
     
 - git merge master
 - Fix any conflicts and push.
@@ -2166,10 +2180,14 @@ git push</t>
 This must be done *soon* after the release's actual commit.
 There is a "Draft New Release" button at the top-right of the page.
 </t>
-<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to SourceForge:  http://sourceforge.net/projects/leo/
+<t tx="ekr.20190618104704.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Announce to leo-editor first.
+
+Public announcements, after Matt creates a package:
+
+- Update version number on Wikipedia: https://en.wikipedia.org/wiki/Leo_(text_editor)
+
+- Announce to SourceForge:  http://sourceforge.net/projects/leo/
    **Markdown accepted, so paste release notes in LeoDocs.leo.**.
-   
-- Announce to leo-editor.
 
 - Announce to Python-announce-list using email:
    python-announce-list@python.org
@@ -2188,8 +2206,8 @@ There is a "Draft New Release" button at the top-right of the page.
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Run all unit tests.
 - Run pylint on all files.
 </t>
-<t tx="ekr.20200313063940.1">git checkout -b 6.2
-git push origin 6.2
+<t tx="ekr.20200313063940.1">git checkout -b 6.3
+git push origin 6.3
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
@@ -2371,6 +2389,112 @@ universal=0
 pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
 pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
 </t>
+<t tx="maphew.20200424174643.1">@language md
+
+# Build new Leo Anaconda Release
+_a work in progress (matt)_
+
+_I discovered Conda-Forge recipes already integrated with Continual Integration, and, once accepted, publishing to the conda forge package system. Here's what I know so far._
+
+Local fork:
+https://github.com/leo-editor/conda-forge-recipes/tree/leo
+
+PR to merge with upstream:
+https://github.com/conda-forge/staged-recipes/pull/11380
+
+
+Note: the `meta.yaml` file in this folder is for reference not the real one used by the Conda Forge system. The local _staged recipes_ fork is the authoritative version:
+
+https://github.com/leo-editor/conda-forge-recipes/tree/leo/recipes/leo/meta.yaml
+
+## Release Procedure
+
+1. Get tag name of release
+2. Get sha256 hash for the release archive
+3. Update `leo/meta.yaml` accordingly
+4. Push to local fork
+5. Check CI results in about 10 minutes
+
+Follow up as needed.
+
+
+
+
+### References
+
+ - Conda Forge docs - [contributing packages][0]
+ 
+ 
+ [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
+ </t>
+<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+
+    pushd code\leo-editor
+    python setup.py sdist
+
+Make note of archive name in dist/ and update meta.yaml accordingly:
+
+    url: "../../../../dist/leo-6.2.dev106.tar.gz"
+
+then:
+
+    conda build leo\dist\conda\leo
+
+There's **a lot** of disk use and screen output. Takes about 10 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output, and then tests installing that again in turn.
+
+If successful, test a local install in new env:
+
+    conda create -n leo-conda
+    conda activate leo-conda
+    conda install c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+If successful (according to docs, haven't made it this far yet):
+
+    anaconda upload c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+### Sources
+
+- Official docs - https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html
+
+- @stas00; creating tarball using setup.py to stop copying entire work folder; https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
+</t>
+<t tx="maphew.20200506223713.1">2020-05-06, matt
+
+Having another go at building an all-in-one portable Leo executable with
+PyInstaller
+
+
+Guide: https://blog.aaronhktan.com/posts/2018/05/14/pyqt5-pyinstaller-executable
+
+fix ModuleNotFoundError: No module named 'pkg_resources.py2_warn'
+https://github.com/pypa/setuptools/issues/1963#issuecomment-574265532
+
+-----
+
+&gt; pip install pyinstaller
+&gt; pyinstaller launchLeo.py
+    # one time only, to make template .spec file
+
+&gt; rename launchLeo.spec leo.spec
+
+#edit .spec file and add:
+
+a = Analysis(['launchLeo.py'],
+             ...
+             datas=[('leo', 'leo')],
+             hiddenimports=['pkg_resources.py2_warn'],
+             ...
+             )
+
+&gt; pyinstaller leo\dist\leo.spec
+
+# open new CMD shell, verify no python or leo present, then:
+
+&gt; dist\leo\leo.exe
+
+# fix errors as can until everything works.
+
+-----</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
