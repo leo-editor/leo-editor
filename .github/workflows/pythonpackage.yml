@@ -34,3 +34,8 @@ jobs:
         pwd
         ls
         pyinstaller leo/dist/leo.spec
+    - name: create dist archive
+      run: |
+        pushd dist
+        zip -orq leo-devel.zip leo
+        
