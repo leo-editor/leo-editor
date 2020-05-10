@@ -5,14 +5,14 @@ name: Python package
 
 on:
   push:
-    branches: [ master, devel ]
+    branches: [ gh-act ]
   pull_request:
-    branches: [ master, devel ]
+    branches: [ devel ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest, windows-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
