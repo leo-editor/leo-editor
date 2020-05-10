@@ -203,11 +203,11 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # #1563: Remove *plain* Shift modifier from ascii keys.
         if (
-            False and
             ord(actual_ch) <= 127 and 'Shift' in mods 
-            and 'Alt' not in mods and 'Ctrl' not in mods
+            and 'Alt' not in mods and 'Control' not in mods
         ):
             mods.remove('Shift')
+            # g.trace('mods', mods, 'ch', repr(actual_ch))
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
