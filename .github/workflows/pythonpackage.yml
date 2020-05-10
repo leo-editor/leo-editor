@@ -31,7 +31,6 @@ jobs:
         pip install --editable .
     - name: pyinstaller build
       run: |
-        echo %cd%
-        dir /w
-        where pysintaller
+        pwd
+        ls
         pyinstaller leo/dist/leo.spec
