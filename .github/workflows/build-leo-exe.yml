@@ -23,6 +23,23 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    
+    - name: Get pip cache
+      # https://github.com/actions/cache/issues/175
+      id: pip-cache
+      run: |
+        import site
+        print('::set-output name=dir' + site.getsitepackages()[0])
+        shell: python
+    - name: Cache pip packages
+      uses: actions/cache@v1
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}./../../../
+        # note addition of py ver, https://github.com/actions/cache/issues/175#issuecomment-586641991
+        key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.python-version }}-pip
+    
     - name: Install Leo and dependencies
       run: |
         python -m pip install --upgrade pip
