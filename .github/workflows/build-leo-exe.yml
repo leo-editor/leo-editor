@@ -31,11 +31,13 @@ jobs:
         pip install --editable .
     - name: pyinstaller build
       run: |
+        $ErrorView = 'NormalView'
         pwd
         ls
         pyinstaller leo/dist/leo.spec
     - name: create dist archive
       run: |
+        $ErrorView = 'NormalView'
         pushd dist
         zip -orq leo-devel.zip leo
         
