@@ -38,6 +38,8 @@ jobs:
     - name: create dist archive
       run: |
         $ErrorView = 'NormalView'
-        pushd dist
-        zip -orq leo-devel.zip leo
-        
+        python leo/dist/zip-leo-exe.py
+    - uses: actions/upload-artifact@v2
+      with:
+        name: leo-windows-exe
+        path: dist/*.zip
