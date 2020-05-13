@@ -30,7 +30,7 @@ jobs:
       run: |
         import site
         print('::set-output name=dir' + site.getsitepackages()[0])
-        shell: python
+      shell: python
     - name: Cache pip packages
       uses: actions/cache@v1
       with:
