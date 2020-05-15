@@ -203,6 +203,7 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # #1563: Remove *plain* Shift modifier from ascii keys.
         if (
+            False and ###
             ord(actual_ch) <= 127 and 'Shift' in mods 
             and 'Alt' not in mods and 'Control' not in mods
         ):
