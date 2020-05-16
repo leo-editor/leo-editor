@@ -201,14 +201,15 @@ class LeoQtEventFilter(QtCore.QObject):
         if len(actual_ch) != 1:
             return mods
         #
-        # #1563: Remove *plain* Shift modifier from ascii keys.
+        # #1563: A hack for German keyboards:
+        #        Remove *plain* Shift modifier for colon and semicolon.
+        #        https://en.m.wikipedia.org/wiki/German_keyboard_layout
         if (
-            False and ###
-            ord(actual_ch) <= 127 and 'Shift' in mods 
-            and 'Alt' not in mods and 'Control' not in mods
+            actual_ch in ":;" and 'Shift' in mods and
+            'Alt' not in mods and 'Control' not in mods
         ):
             mods.remove('Shift')
-            # g.trace('mods', mods, 'ch', repr(actual_ch))
+            g.trace('mods', mods, 'ch', repr(actual_ch))
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
