@@ -2222,7 +2222,7 @@ class Commands:
                 g.trace(f"not leo event: {event!r}, callers: {g.callers()}")
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
-    #@+node:ekr.20031218072017.2817: *4* c.doCommand
+    #@+node:ekr.20031218072017.2817: *4* c.doCommand (sets k.funcReturn)
     command_count = 0
 
     def doCommand(self, command, label, event=None):
@@ -2255,7 +2255,12 @@ class Commands:
         if not g.doHook("command1", c=c, p=p, label=label):
             try:
                 c.inCommand = True
-                val = c.executeAnyCommand(command, event)
+                ### val = c.executeAnyCommand(command, event)
+                try:
+                    val = command(event)
+                except Exception:
+                    g.es_exception()
+                    val = None
                 if c and c.exists:  # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
@@ -2275,18 +2280,15 @@ class Commands:
         if c and c.exists:
             p = c.p
             g.doHook("command2", c=c, p=p, label=label)
-    #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand
-    def executeAnyCommand(self, command, event):
-        """
-        Execute a command, no matter how defined.
-        
-        Supports @g.commander_command and @g.new_cmd_decorator and plain methods.
-        """
-        try:
-            return command(event)
-        except Exception:
-            g.es_exception()
-            return None
+    #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand (no longer used)
+    ###
+        # def executeAnyCommand(self, command, event):
+            # """Execute a command, no matter how defined."""
+            # try:
+                # return command(event)
+            # except Exception:
+                # g.es_exception()
+                # return None
     #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand
     def executeMinibufferCommand(self, commandName):
         c = self; k = c.k
