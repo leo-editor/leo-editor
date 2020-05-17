@@ -1638,7 +1638,6 @@ class KeyHandlerClass:
             # True: abbreviations are on.
         self.arg = ''
             # The value returned by k.getArg.
-        ### self.commandName = None  # The name of the command being executed.
         self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
         # These are true globals
