@@ -1483,9 +1483,6 @@ class GetArg:
         self.tabList = tabList[:] if tabList else []
         #
         # Set the k globals...
-        ###
-            # Not used.
-            # k.argSelectedText = c.frame.body.wrapper.getSelectedText()
         k.functionTail = None
         k.oneCharacterArg = oneCharacter
         #
@@ -1641,9 +1638,6 @@ class KeyHandlerClass:
             # True: abbreviations are on.
         self.arg = ''
             # The value returned by k.getArg.
-        ###
-            # Not used.
-            # self.argSelectedText = ''  # The selected text in state 0.
         self.commandName = None  # The name of the command being executed.
         self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
@@ -1656,13 +1650,6 @@ class KeyHandlerClass:
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
         self.negativeArg = False
-        ###
-            # Not used.
-            # self.newMinibufferWidget = None
-                # Usually the minibuffer restores focus.
-                # This overrides this default.
-        ###
-            # self.regx = g.bunch(iter=None,key=None)
         self.repeatCount = None
         self.state = g.bunch(kind=None, n=None, handler=None)
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
@@ -2437,7 +2424,6 @@ class KeyHandlerClass:
 
         else:
             func = c.commandsDict.get(commandName)
-        ### k.newMinibufferWidget = None
         if func:
             # These must be done *after* getting the command.
             k.clearState()
@@ -2447,58 +2433,21 @@ class KeyHandlerClass:
             w = event and event.widget
             if hasattr(w, 'permanent') and not w.permanent:
                 # In a headline that is being edited.
-                # g.es('Can not execute commands from headlines')
                 c.endEditing()
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                ### c.executeAnyCommand(func, event)
             else:
-                c.widgetWantsFocusNow(event and event.widget)
-                    # Important, so cut-text works, e.g.
-                ### c.executeAnyCommand(func, event)
+                c.widgetWantsFocusNow(event and event.widget)  # So cut-text works, e.g.
             try:
                 func(event)
             except Exception:
                 g.es_exception()
-            ### k.endCommand(commandName)
             k.commandName = None
-            ### What about k.funcReturn
             return True
-        #
         # Show possible completions if the command does not exist.
         k.doTabCompletion(list(c.commandsDict.keys()))
-        # Annoying.
-            # k.keyboardQuit()
-            # k.setStatusLabel(f"Command does not exist: {commandName}")
-            # c.bodyWantsFocus()
         return False
-    #@+node:ekr.20061031131434.113: *4* k.endCommand
-    def endCommand(self, commandName):
-        """Make sure Leo updates the widget following a command.
-
-        Never changes the minibuffer label: individual commands must do that.
-        """
-        self.commandName = None
-        
-        
-        ### None of this seems necessary.
-            # k = self; c = k.c
-            # # The command may have closed the window.
-            # if g.app.quitting or not c.exists: return
-            # # Set the best possible undoType: prefer explicit commandName to k.commandName.
-            # commandName = commandName or k.commandName or ''
-            # k.commandName = k.commandName or commandName or ''
-            # if commandName:
-                # if not k.inState():
-                    # k.commandName = None
-                # ### Do *not* call this by default.  It interferes with undo.
-                    # # c.frame.body.onBodyChanged(undoType='Typing')
-                # ###
-                    # # if k.newMinibufferWidget:
-                        # # c.widgetWantsFocusNow(k.newMinibufferWidget)
-                        # # # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
-                        # # k.newMinibufferWidget = None
     #@+node:ekr.20061031131434.114: *3* k.Externally visible commands
     #@+node:ekr.20070613133500: *4* k.menuCommandKey
     def menuCommandKey(self, event=None):
@@ -3139,7 +3088,6 @@ class KeyHandlerClass:
         ch = event.char
         #
         # Defensive programming
-        #
         if not k.state.kind:
             return None
         if not k.state.handler:
@@ -3147,14 +3095,12 @@ class KeyHandlerClass:
             return None
         #
         # Handle auto-completion before checking for unbound keys.
-        #
         if k.state.kind == 'auto-complete':
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
             return val
         #
         # Ignore unbound non-ascii keys.
-        #
         if (
             k.ignore_unbound_non_ascii_keys and
             len(ch) == 1 and
@@ -3164,10 +3110,8 @@ class KeyHandlerClass:
             return None
         #
         # Call the state handler.
-        #
         val = k.state.handler(event)
         if val != 'continue':
-            ### k.endCommand(k.commandName)
             k.commandName = None
         return val
     #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
@@ -3664,7 +3608,6 @@ class KeyHandlerClass:
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
-            ### k.endCommand(commandName)
             k.commandName = None
             return
         #
@@ -3674,18 +3617,8 @@ class KeyHandlerClass:
         #
         # Handle the func argument, if given.
         if func:
-            ### specialCallback no longer exists.
-                # if commandName.startswith('specialCallback'):
-                    # # The callback function will call c.doCommand.
-                    # val = func(event)
-                    # # Set k.funcReturn for k.simulateCommand..
-                    # k.funcReturn = k.funcReturn or val
-                # else:
-                    # # Call c.doCommand directly.
-                    # c.doCommand(func, commandName, event=event)
             c.doCommand(func, commandName, event=event)
             if c.exists:
-                ### k.endCommand(commandName)
                 k.commandName = None
                 c.frame.updateStatusLine()
             return
@@ -3968,7 +3901,6 @@ class KeyHandlerClass:
         w = g.app.gui.get_focus(c)
         if w:
             c.frame.log.deleteTab('Mode')  # Changes focus to the body pane
-        ### k.endCommand(k.stroke)
         k.commandName = None
         k.inputModeName = None
         k.clearState()

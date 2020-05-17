@@ -2255,7 +2255,6 @@ class Commands:
         if not g.doHook("command1", c=c, p=p, label=label):
             try:
                 c.inCommand = True
-                ### val = c.executeAnyCommand(command, event)
                 try:
                     val = command(event)
                 except Exception:
@@ -2280,15 +2279,6 @@ class Commands:
         if c and c.exists:
             p = c.p
             g.doHook("command2", c=c, p=p, label=label)
-    #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand (no longer used)
-    ###
-        # def executeAnyCommand(self, command, event):
-            # """Execute a command, no matter how defined."""
-            # try:
-                # return command(event)
-            # except Exception:
-                # g.es_exception()
-                # return None
     #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand
     def executeMinibufferCommand(self, commandName):
         c = self; k = c.k
