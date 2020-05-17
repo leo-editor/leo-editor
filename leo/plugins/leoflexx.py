@@ -707,7 +707,6 @@ class LeoBrowserApp(flx.PyComponent):
                 c.gotoCommands.find_file_line(n=int(commandName))
         else:
             func = c.commandsDict.get(commandName)
-        ### k.newMinibufferWidget = None
         if func:
             # These must be done *after* getting the command.
             k.clearState()
@@ -731,8 +730,6 @@ class LeoBrowserApp(flx.PyComponent):
                 func(event)
             except Exception:
                 g.es_exception()
-            ### k.endCommand(commandName)
-            k.commandName = None
             return True
         if 0: # Not ready yet
             # Show possible completions if the command does not exist.

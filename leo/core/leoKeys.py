@@ -1638,7 +1638,7 @@ class KeyHandlerClass:
             # True: abbreviations are on.
         self.arg = ''
             # The value returned by k.getArg.
-        self.commandName = None  # The name of the command being executed.
+        ### self.commandName = None  # The name of the command being executed.
         self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
         # These are true globals
@@ -2443,7 +2443,6 @@ class KeyHandlerClass:
                 func(event)
             except Exception:
                 g.es_exception()
-            k.commandName = None
             return True
         # Show possible completions if the command does not exist.
         k.doTabCompletion(list(c.commandsDict.keys()))
@@ -3111,8 +3110,6 @@ class KeyHandlerClass:
         #
         # Call the state handler.
         val = k.state.handler(event)
-        if val != 'continue':
-            k.commandName = None
         return val
     #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
     def doUnboundPlainKey(self, event):
@@ -3608,7 +3605,6 @@ class KeyHandlerClass:
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
-            k.commandName = None
             return
         #
         # Ignore abbreviations.
@@ -3619,7 +3615,6 @@ class KeyHandlerClass:
         if func:
             c.doCommand(func, commandName, event=event)
             if c.exists:
-                k.commandName = None
                 c.frame.updateStatusLine()
             return
         #
@@ -3901,7 +3896,6 @@ class KeyHandlerClass:
         w = g.app.gui.get_focus(c)
         if w:
             c.frame.log.deleteTab('Mode')  # Changes focus to the body pane
-        k.commandName = None
         k.inputModeName = None
         k.clearState()
         k.resetLabel()
