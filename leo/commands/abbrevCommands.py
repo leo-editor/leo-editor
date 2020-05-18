@@ -255,16 +255,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             if trace: g.trace(f"No prefix in {s!r}")
             return False
-        # 448: Add abbreviations for commands.
-        if 0:  # Not worth documenting.
-            val, tag = self.abbrevs.get(word, (None, None))
-            if val and c.k.commandExists(val):
-                # Execute the command directly,
-                # so as not to call this method recursively.
-                commandName = val
-                func = c.commandsDict.get(commandName)
-                c.doCommand(func, commandName, event)
-                return False
         c.abbrev_subst_env['_abr'] = word
         if trace: g.trace(f"Found {word!r} = {val!r}")
         if tag == 'tree':

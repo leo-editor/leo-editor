@@ -1634,22 +1634,20 @@ class KeyHandlerClass:
         self.setDefaultEditingAction()
     #@+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
     def defineExternallyVisibleIvars(self):
-        self.abbrevOn = False
-            # True: abbreviations are on.
-        self.arg = ''
-            # The value returned by k.getArg.
+        self.abbrevOn = False  # True: abbreviations are on.
+        self.arg = ''  # The value returned by k.getArg.
         self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
+        #
         # These are true globals
         self.getArgEscapes = []
-        self.getArgEscapeFlag = False  # A signal that the user escaped getArg in an unusual way.
-        self.givenArgs = []
-             # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
-        self.inputModeBindings = {}
+        self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
+        self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
+        ### self.inputModeBindings = {}
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
-        self.negativeArg = False
-        self.repeatCount = None
+        ### self.negativeArg = False
+        ### self.repeatCount = None
         self.state = g.bunch(kind=None, n=None, handler=None)
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self):
@@ -2956,16 +2954,17 @@ class KeyHandlerClass:
         """Return the command handler for the given command name, or None."""
         c, k = self.c, self
         commandName = commandName.strip()
-        if commandName:
-            aList = commandName.split(None)
-            if len(aList) == 1:
-                k.givenArgs = []
-            else:
-                commandName = aList[0]
-                k.givenArgs = aList[1:]
-            func = c.commandsDict.get(commandName)
-            return func
-        return None
+        if not commandName:
+            return None
+        aList = commandName.split(None)
+        if len(aList) == 1:
+            k.givenArgs = []
+        else:
+            commandName = aList[0]
+            k.givenArgs = aList[1:]
+        func = c.commandsDict.get(commandName)
+        return func
+        
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'
@@ -3568,7 +3567,7 @@ class KeyHandlerClass:
         #
         # Let k.masterCommand handle the unbound character.
         k.masterCommand(event=event, stroke=stroke)
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand (to do: simplify)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.
@@ -3610,7 +3609,7 @@ class KeyHandlerClass:
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
             return
         #
-        # Handle the func argument, if given.
+        # Invoke the command, if given.
         if func:
             c.doCommand(func, commandName, event=event)
             if c.exists:
@@ -4295,130 +4294,6 @@ class KeyHandlerClass:
     #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor(self, state, w):
         pass
-    #@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers
-    def universalDispatcher(self, event):
-        """Handle accumulation of universal argument."""
-        #@+<< about repeat counts >>
-        #@+node:ekr.20061031131434.201: *4* << about repeat counts >>
-        #@@nocolor
-        #@+at  Any Emacs command can be given a numeric argument. Some commands interpret the
-        # argument as a repetition count. For example, giving an argument of ten to the
-        # key C-f (the command forward-char, move forward one character) moves forward ten
-        # characters. With these commands, no argument is equivalent to an argument of
-        # one. Negative arguments are allowed. Often they tell a command to move or act
-        # backwards.
-        #
-        # If your keyboard has a META key, the easiest way to specify a numeric argument
-        # is to type digits and/or a minus sign while holding down the the META key. For
-        # example,
-        #
-        # M-5 C-n
-        #
-        # moves down five lines. The characters Meta-1, Meta-2, and so on, as well as
-        # Meta--, do this because they are keys bound to commands (digit-argument and
-        # negative-argument) that are defined to contribute to an argument for the next
-        # command.
-        #
-        # Another way of specifying an argument is to use the C-u (universal-argument)
-        # command followed by the digits of the argument. With C-u, you can type the
-        # argument digits without holding down shift keys. To type a negative argument,
-        # start with a minus sign. Just a minus sign normally means -1. C-u works on all
-        # terminals.
-        #
-        # C-u followed by a character which is neither a digit nor a minus sign has the
-        # special meaning of "multiply by four". It multiplies the argument for the next
-        # command by four. C-u twice multiplies it by sixteen. Thus, C-u C-u C-f moves
-        # forward sixteen characters. This is a good way to move forward "fast", since it
-        # moves about 1/5 of a line in the usual size screen. Other useful combinations
-        # are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), C-u C-u C-o
-        # (make "a lot" of blank lines), and C-u C-k (kill four lines).
-        #
-        # Some commands care only about whether there is an argument and not about its
-        # value. For example, the command M-q (fill-paragraph) with no argument fills
-        # text; with an argument, it justifies the text as well. (See section Filling
-        # Text, for more information on M-q.) Just C-u is a handy way of providing an
-        # argument for such commands.
-        #
-        # Some commands use the value of the argument as a repeat count, but do something
-        # peculiar when there is no argument. For example, the command C-k (kill-line)
-        # with argument n kills n lines, including their terminating newlines. But C-k
-        # with no argument is special: it kills the text up to the next newline, or, if
-        # point is right at the end of the line, it kills the newline itself. Thus, two
-        # C-k commands with no arguments can kill a non-blank line, just like C-k with an
-        # argument of one. (See section Deletion and Killing, for more information on
-        # C-k.)
-        #
-        # A few commands treat a plain C-u differently from an ordinary argument. A few
-        # others may treat an argument of just a minus sign differently from an argument
-        # of -1. These unusual cases will be described when they come up; they are always
-        # to make the individual command more convenient to use.
-        #@-<< about repeat counts >>
-        k = self
-        state = k.getState('u-arg')
-        stroke = event.stroke if event else ''
-        if state == 0:
-            k.dispatchEvent = event
-            # The call should set the label.
-            k.setState('u-arg', 1, k.universalDispatcher)
-            k.repeatCount = 1
-        elif state == 1:
-            char = event.char if event else ''
-            if char == 'Escape':
-                k.keyboardQuit()
-            elif char == k.universalArgKey:
-                k.repeatCount = k.repeatCount * 4
-            elif char.isdigit() or char == '-':
-                k.updateLabel(event)
-            elif char in (
-                'Alt_L', 'Alt_R',
-                'Control_L', 'Control_R',
-                'Meta_L', 'Meta_R',
-                'Shift_L', 'Shift_R',
-            ):
-                k.updateLabel(event)
-            else:
-                # *Anything* other than C-u, '-' or a numeral is taken to be a command.
-                val = k.getLabel(ignorePrompt=True)
-                try: n = int(val) * k.repeatCount
-                except ValueError: n = 1
-                k.clearState()
-                event = k.dispatchEvent
-                k.executeNTimes(event, n)
-                k.keyboardQuit()
-        elif state == 2:
-            k.doControlU(event, stroke)
-    #@+node:ekr.20061031131434.202: *4* k.executeNTimes
-    def executeNTimes(self, event, n):
-
-        c, k = self.c, self
-        w = event and event.widget
-        stroke = event.stroke if event else ''
-        if not stroke: return
-        if stroke == k.fullCommandKey:
-            for z in range(n):
-                k.fullCommand(event)
-        else:
-            bi = k.getPaneBinding(stroke, event and event.widget)
-            if bi:
-                for z in range(n):
-                    event = g.app.gui.create_key_event(c, event=event, w=w)
-                    k.masterCommand(
-                        commandName=None,
-                        event=event,
-                        func=bi.func,
-                        stroke=stroke,
-                    )
-            else:
-                for z in range(n):
-                    k.masterKeyHandler(event)
-    #@+node:ekr.20061031131434.203: *4* doControlU
-    def doControlU(self, event, stroke):
-        k = self
-        ch = event.char if event else ''
-        k.setLabelBlue(f"Control-u {g.stripBrackets(stroke)}")
-        if ch == '(':
-            k.clearState()
-            k.resetLabel()
     #@-others
 #@+node:ekr.20120208064440.10150: ** class ModeInfo
 class ModeInfo:

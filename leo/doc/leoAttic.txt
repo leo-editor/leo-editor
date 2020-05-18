@@ -21890,6 +21890,160 @@ def factorial(n):
             result = int(factor)
         factor += 1
     return result
+#@+node:ekr.20200518051925.1: ** From leoKeys.py
+#@+node:ekr.20061031131434.113: *3* k.endCommand (no longer used)
+def endCommand(self, commandName):
+    """Make sure Leo updates the widget following a command.
+
+    Never changes the minibuffer label: individual commands must do that.
+    """
+    k = self; c = k.c
+    # The command may have closed the window.
+    if g.app.quitting or not c.exists: return
+    # Set the best possible undoType: prefer explicit commandName to k.commandName.
+    commandName = commandName or k.commandName or ''
+    k.commandName = k.commandName or commandName or ''
+    if commandName:
+        if not k.inState():
+            k.commandName = None
+        Do *not* call this by default.  It interferes with undo.
+            # c.frame.body.onBodyChanged(undoType='Typing')
+        
+            # if k.newMinibufferWidget:
+                # c.widgetWantsFocusNow(k.newMinibufferWidget)
+                # # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
+                # k.newMinibufferWidget = None
+#@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers (not used)
+def universalDispatcher(self, event):
+    """Handle accumulation of universal argument."""
+    << about repeat counts >>
+    k = self
+    state = k.getState('u-arg')
+    stroke = event.stroke if event else ''
+    if state == 0:
+        k.dispatchEvent = event
+        # The call should set the label.
+        k.setState('u-arg', 1, k.universalDispatcher)
+        k.repeatCount = 1
+    elif state == 1:
+        char = event.char if event else ''
+        if char == 'Escape':
+            k.keyboardQuit()
+        elif char == k.universalArgKey:
+            k.repeatCount = k.repeatCount * 4
+        elif char.isdigit() or char == '-':
+            k.updateLabel(event)
+        elif char in (
+            'Alt_L', 'Alt_R',
+            'Control_L', 'Control_R',
+            'Meta_L', 'Meta_R',
+            'Shift_L', 'Shift_R',
+        ):
+            k.updateLabel(event)
+        else:
+            # *Anything* other than C-u, '-' or a numeral is taken to be a command.
+            val = k.getLabel(ignorePrompt=True)
+            try: n = int(val) * k.repeatCount
+            except ValueError: n = 1
+            k.clearState()
+            event = k.dispatchEvent
+            k.executeNTimes(event, n)
+            k.keyboardQuit()
+    elif state == 2:
+        k.doControlU(event, stroke)
+#@+node:ekr.20061031131434.201: *4* << about repeat counts >>
+@nocolor
+@  Any Emacs command can be given a numeric argument. Some commands interpret the
+argument as a repetition count. For example, giving an argument of ten to the
+key C-f (the command forward-char, move forward one character) moves forward ten
+characters. With these commands, no argument is equivalent to an argument of
+one. Negative arguments are allowed. Often they tell a command to move or act
+backwards.
+
+If your keyboard has a META key, the easiest way to specify a numeric argument
+is to type digits and/or a minus sign while holding down the the META key. For
+example,
+
+M-5 C-n
+
+moves down five lines. The characters Meta-1, Meta-2, and so on, as well as
+Meta--, do this because they are keys bound to commands (digit-argument and
+negative-argument) that are defined to contribute to an argument for the next
+command.
+
+Another way of specifying an argument is to use the C-u (universal-argument)
+command followed by the digits of the argument. With C-u, you can type the
+argument digits without holding down shift keys. To type a negative argument,
+start with a minus sign. Just a minus sign normally means -1. C-u works on all
+terminals.
+
+C-u followed by a character which is neither a digit nor a minus sign has the
+special meaning of "multiply by four". It multiplies the argument for the next
+command by four. C-u twice multiplies it by sixteen. Thus, C-u C-u C-f moves
+forward sixteen characters. This is a good way to move forward "fast", since it
+moves about 1/5 of a line in the usual size screen. Other useful combinations
+are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), C-u C-u C-o
+(make "a lot" of blank lines), and C-u C-k (kill four lines).
+
+Some commands care only about whether there is an argument and not about its
+value. For example, the command M-q (fill-paragraph) with no argument fills
+text; with an argument, it justifies the text as well. (See section Filling
+Text, for more information on M-q.) Just C-u is a handy way of providing an
+argument for such commands.
+
+Some commands use the value of the argument as a repeat count, but do something
+peculiar when there is no argument. For example, the command C-k (kill-line)
+with argument n kills n lines, including their terminating newlines. But C-k
+with no argument is special: it kills the text up to the next newline, or, if
+point is right at the end of the line, it kills the newline itself. Thus, two
+C-k commands with no arguments can kill a non-blank line, just like C-k with an
+argument of one. (See section Deletion and Killing, for more information on
+C-k.)
+
+A few commands treat a plain C-u differently from an ordinary argument. A few
+others may treat an argument of just a minus sign differently from an argument
+of -1. These unusual cases will be described when they come up; they are always
+to make the individual command more convenient to use.
+#@+node:ekr.20061031131434.202: *4* k.executeNTimes
+def executeNTimes(self, event, n):
+
+    c, k = self.c, self
+    w = event and event.widget
+    stroke = event.stroke if event else ''
+    if not stroke: return
+    if stroke == k.fullCommandKey:
+        for z in range(n):
+            k.fullCommand(event)
+    else:
+        bi = k.getPaneBinding(stroke, event and event.widget)
+        if bi:
+            for z in range(n):
+                event = g.app.gui.create_key_event(c, event=event, w=w)
+                k.masterCommand(
+                    commandName=None,
+                    event=event,
+                    func=bi.func,
+                    stroke=stroke,
+                )
+        else:
+            for z in range(n):
+                k.masterKeyHandler(event)
+#@+node:ekr.20061031131434.203: *4* doControlU
+def doControlU(self, event, stroke):
+    k = self
+    ch = event.char if event else ''
+    k.setLabelBlue(f"Control-u {g.stripBrackets(stroke)}")
+    if ch == '(':
+        k.clearState()
+        k.resetLabel()
+#@+node:ekr.20171124074112.1: *3* c.executeAnyCommand (no longer used)
+# def executeAnyCommand(self, command, event):
+    # """Execute a command, no matter how defined."""
+    # try:
+        # return command(event)
+    # except Exception:
+        # g.es_exception()
+        # return None
 #@-all
 #@@nosearch
 #@-leo
