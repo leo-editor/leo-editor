@@ -212,7 +212,7 @@ class LeoQtEventFilter(QtCore.QObject):
             and 'Alt' not in mods and 'Control' not in mods
         ):
             mods.remove('Shift')
-            g.trace('mods', mods, 'ch', repr(actual_ch))
+            # g.trace('mods', mods, 'ch', repr(actual_ch))
         #
         # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
         # Testing: Alt-Ctrl-E is '€'.
