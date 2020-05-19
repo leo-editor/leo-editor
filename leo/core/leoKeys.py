@@ -1237,7 +1237,7 @@ class GetArg:
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
-    def compute_tab_list(self, tabList, backspace=False, allow_empty_completion=False):
+    def compute_tab_list(self, tabList):
         """Compute and show the available completions."""
         # Support vim-mode commands.
         command = self.get_label()
@@ -2238,7 +2238,7 @@ class KeyHandlerClass:
                 if stroke and not pane.endswith('-mode'):
                     k.bindKey(pane, stroke, command, commandName, tag=tag)
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
-    def makeMasterGuiBinding(self, stroke, w=None, trace=False):
+    def makeMasterGuiBinding(self, stroke, w=None):
         """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
         k = self; c = k.c; f = c.frame
         if w:
