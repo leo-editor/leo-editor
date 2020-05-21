@@ -363,7 +363,16 @@ class LeoFind:
             count = find.findAll(clone_find_all=True, clone_find_all_flattened=True)
             found = count > 0
         else:
-            found = find.findNext(initFlag=False)
+            # #1592.  Ignore hits under control of @nosearch
+            while True:
+                found = find.findNext(initFlag=False)
+                if not found:
+                    break  # Done.
+                for p in c.p.self_and_parents():
+                    if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+                        break  # Not done.
+                else:
+                    break  # Done.
         if not found and defFlag:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
             word2 = self.switchStyle(word)
@@ -376,7 +385,16 @@ class LeoFind:
                         clone_find_all=True, clone_find_all_flattened=True)
                     found = count > 0
                 else:
-                    found = find.findNext(initFlag=False)
+                    # #1592.  Ignore hits under control of @nosearch
+                    while True:
+                        found = find.findNext(initFlag=False)
+                        if not found:
+                            break  # Done.
+                        for p in c.p.self_and_parents():
+                            if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+                                break  # Not done.
+                        else:
+                            break  # Done.
         if found and use_cff:
             last = c.lastTopLevel()
             if count == 1:
