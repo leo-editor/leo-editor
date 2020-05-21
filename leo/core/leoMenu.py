@@ -543,8 +543,7 @@ class LeoMenu:
             event = g.app.gui.create_key_event(c)
             # The first parameter must be event, and it must default to None.
 
-            def minibufferMenuCallback(
-                event=event, self=self, command=command, label=name):
+            def minibufferMenuCallback(event=event, self=self, command=command, label=name):
                 c = self.c
                 return c.doCommand(command, label, event)
 

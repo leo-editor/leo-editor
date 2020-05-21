@@ -3035,7 +3035,7 @@ class KeyHandlerClass:
             k.handleUnboundKeys(event)
             return
         #
-        # Call k.masterCommandHandler if the binding exists.
+        # Call k.masterCommand if the binding exists.
         #
         if bi:
             k.masterCommand(
