@@ -3315,6 +3315,13 @@ def getOutputNewline(c=None, name=None):
     else: s = '\n'  # Default for erroneous values.
     assert isinstance(s, str), repr(s)
     return s
+#@+node:ekr.20200521075143.1: *3* g.inAtNosearch
+def inAtNosearch(p):
+    """Return True if p or p's ancestors contain an @nosearch directive."""
+    for p in p.self_and_parents():
+        if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+            return True
+    return False
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
 # This pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
