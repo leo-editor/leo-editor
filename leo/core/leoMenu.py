@@ -285,7 +285,12 @@ class LeoMenu:
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (creates commands dynamically)
     def createMasterMenuCallback(self, command, commandName):
-
+        """
+        Create a callback for the given args.
+        
+        - If command is a string, it is treated as a command name.
+        - Otherwise, it should be a callable representing the actual command.
+        """
         c = self.c
 
         def getWidget():
@@ -337,7 +342,7 @@ class LeoMenu:
         else:
             # First, get the old-style name.
             # #1121: Allow Chinese characters in command names
-            commandName = label.strip() ### self.computeOldStyleShortcutKey(label)
+            commandName = label.strip()
         command = c.commandsDict.get(commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
