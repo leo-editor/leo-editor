@@ -2289,7 +2289,10 @@ class Commands:
         # Get the command's function.
         command_func = c.commandsDict.get(command_name.replace('&', ''))
         if not command_func:
-            g.es_print(f"no command function for {command_name!r}", color='red')
+            message = f"no command function for {command_name!r}"
+            if g.app.unitTesting or g.app.inBridge:
+                raise AttributeError(message)
+            g.es_print(message, color='red')
             return None
         # Invoke the function.
         val = c.doCommand(command_func, command_name, event)

@@ -1634,17 +1634,18 @@ class KeyHandlerClass:
         self.setDefaultEditingAction()
     #@+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
     def defineExternallyVisibleIvars(self):
+
         self.abbrevOn = False  # True: abbreviations are on.
         self.arg = ''  # The value returned by k.getArg.
-        self.functionTail = None  # For commands that take minibuffer arguments.
-        #
-        # These are true globals
-        self.getArgEscapes = []
         self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
-        self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
+        self.getArgEscapes = []
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
         self.state = g.bunch(kind=None, n=None, handler=None)
+        
+        ### Remove ???
+        self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
+        self.functionTail = None  # For commands that take minibuffer arguments.
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self):
         """Define internal ivars of the KeyHandlerClass class."""
@@ -2919,48 +2920,14 @@ class KeyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists (event, func)
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
         """Execute a Leo command by name."""
-        c, k = self.c, self
-        func = self.commandExists(commandName)
-        if func:
-            # Support @g.commander_command
-            c_func = getattr(c, func.__name__, None)
-            if c_func:
-                return c_func(event=event)
-            if event:
-                pass
-            elif commandName.startswith('specialCallback'):
-                event = None  # A legacy function.
-            else:  # Create a dummy event as a signal.
-                event = g.app.gui.create_key_event(c)
-            return_value = k.masterCommand(event=event, func=func)
-            if c.exists:
-                return return_value
-            return None
-        if g.app.unitTesting:
-            raise AttributeError(f"no such command: {commandName}")
-        if g.app.inBridge:
-            raise AttributeError(f"no such command: {commandName}")
-        g.error(f"simulateCommand: no command for {commandName}")
-        return None
-    #@+node:ekr.20170324143353.1: *5* k.commandExists
-    def commandExists(self, commandName):
-        """Return the command handler for the given command name, or None."""
-        c, k = self.c, self
-        commandName = commandName.strip()
-        if not commandName:
-            return None
-        aList = commandName.split(None)
-        if len(aList) == 1:
-            k.givenArgs = []
-        else:
-            commandName = aList[0]
-            k.givenArgs = aList[1:]
-        func = c.commandsDict.get(commandName)
-        return func
-        
+        c = self.c
+        if not event:
+            # Create a default key event.
+            event = g.app.gui.create_key_event(c)
+        c.doCommandByName(commandName, event)
     #@+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(self, event, callback=None,
         filterExt=None, prompt='Enter File Name: ', tabName='Dired'

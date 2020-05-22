@@ -119,20 +119,20 @@ def configuredcommands_rclick(c, p, menu):
             continue
         # Fix #1084
         try:
-            cmd, desc = data
+            command_name, desc = data
         except ValueError:
             g.es_print(f"Bad @data contextmenu_commands entry: {data!r}")
             continue
         desc = desc.strip()
         action = menu.addAction(desc)
 
-        def create_callback(cm):
+        def create_callback(command_name):
             w = g.app.gui.get_focus(c)
             wrapper = getattr(w, 'wrapper', None)
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
-            return lambda: c.k.simulateCommand(cm, event=key_event)
+            return lambda: c.k.simulateCommand(command_name, event=key_event)
     
-        configcmd_rclick_cb = create_callback(cmd)
+        configcmd_rclick_cb = create_callback(command_name)
         action.triggered.connect(configcmd_rclick_cb)
 
 #@+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
