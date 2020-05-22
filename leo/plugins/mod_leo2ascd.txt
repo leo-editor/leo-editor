@@ -2356,17 +2356,13 @@ def CreateOpenTreeMenu (tag,keywords):
             ("-",None,None),
             ("XEmacs: Open nodes in sub-tree","None",OpenTreeInXEmacs),
         )
-        c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
+        c.frame.menu.createMenuEntries(exportMenu, newEntries) ###,dynamicMenu=True)
 
 if 1:
     g.registerHandler(("start2","menu2","command2"),CreateOpenTreeMenu)
 
     __version__ = ".4" # Set version for the plugin handler.
     g.plugin_signon(__name__)
-@doc
-
-
-@code
 #@+node:ekr.20040331071919.33: *4* << Filename modification >>
 @language python
 @tabwidth -4

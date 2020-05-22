@@ -33,11 +33,11 @@ __version__ = '2.0'
 #@@killcolor
 
 #@+at
-# 
+#
 # 1.3 Original version by Frédéric Momméja
-# 
+#
 # 1.4 EKR:  Changes for 4.3 code base and new plugins style.
-# 
+#
 #     - Created typical init and onCreate functions.
 #     - Created language global.
 #     - Changed true/false to True/False.
@@ -79,7 +79,7 @@ def onCreate (tag, keywords):
         ("-", None, None),
         (mess1, "Shift+Ctrl+Alt+D",cc.readDir))
 
-    c.frame.menu.createMenuEntries(menu,table,dynamicMenu=True)
+    c.frame.menu.createMenuEntries(menu, table) ###,dynamicMenu=True)
 #@+node:ekr.20050301083306.6: ** class controller
 class controller:
 

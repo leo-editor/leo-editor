@@ -126,6 +126,6 @@ def create_UserMenu (tag,keywords):
         ("insUser", 'Shift+F6', c.insertUser),
         ("insOK",'Ctrl+Shift+O',c.insertOKcmd)]
 
-    c.frame.menu.createMenuEntries(c.pluginMenu,table,dynamicMenu=True)
+    c.frame.menu.createMenuEntries(c.pluginMenu, table) ###,dynamicMenu=True)
 #@-others
 #@-leo

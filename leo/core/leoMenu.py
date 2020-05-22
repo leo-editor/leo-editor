@@ -260,7 +260,7 @@ class LeoMenu:
         """Compute the old-style shortcut key for @shortcuts entries."""
         # #1121: Allow Chinese characters in command names
         return s.strip()
-    #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
+    #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers (ignores dynamicMenu kwarg)
     def createMenuEntries(self, menu, table, dynamicMenu=False):
         """
         Create a menu entry from the table.
@@ -273,11 +273,14 @@ class LeoMenu:
         self.traceMenuTable(table)
         for data in table:
             label, command, done = self.getMenuEntryInfo(data, menu)
-            if done: continue
-            commandName = self.getMenuEntryBindings(command, dynamicMenu, label)
-            if not commandName: continue
-            masterMenuCallback = self.createMasterMenuCallback(
-                dynamicMenu, command, commandName)
+            if done:
+                continue
+            ### commandName = self.getMenuEntryBindings(command, dynamicMenu, label)
+            commandName = self.getMenuEntryBindings(command, label)
+            if not commandName:
+                continue
+            masterMenuCallback = self.createMasterMenuCallback(command, commandName)
+                ### dynamicMenu, command, commandName)
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
@@ -287,55 +290,51 @@ class LeoMenu:
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
-    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (event, func OR commandName, event)
-    def createMasterMenuCallback(self, dynamicMenu, command, commandName):
-
-        # pylint: disable=no-else-return
-            # This code is simpler as it is.
+    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (ignores dynamicMenu kwarg)
+    def createMasterMenuCallback(self, command, commandName): ### dynamicMenu, 
 
         c = self.c
 
         def setWidget():
             w = c.frame.getFocus()
             if w and g.isMac:
-                 # 2012/01/11: redirect (MacOS only).
+                # Redirect (MacOS only).
                 wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
-            # 2015/05/14: return a wrapper if possible.
+            # Return a wrapper if possible.
             if not g.isTextWrapper(w):
                 w = getattr(w, 'wrapper', w)
             return w
+            
+        ###
+            # if dynamicMenu:
+                # g.trace(commandName)
+            # if dynamicMenu:
+                # if command:
+        
+                    # def masterDynamicMenuCallback(c=c, command=command):
+                        # w = setWidget()
+                        # event = g.app.gui.create_key_event(c, w=w)
+                        # return c.k.masterCommand(func=command, event=event)
+        
+                    # return masterDynamicMenuCallback
+                # else:
+                    # g.internalError('no callback for dynamic menu item.')
+        
+                    # def dummyMasterMenuCallback():
+                        # pass
+        
+                    # return dummyMasterMenuCallback
 
-        if dynamicMenu:
-            if command:
+        def master_menu_callback(): ### c=c, commandName=commandName):
+            event = g.app.gui.create_key_event(c, w=setWidget())
+            return c.k.masterCommand(commandName=commandName, event=event)
 
-                def masterDynamicMenuCallback(c=c, command=command):
-                    # 2012/01/07: set w here.
-                    w = setWidget()
-                    event = g.app.gui.create_key_event(c, w=w)
-                    return c.k.masterCommand(func=command, event=event)
-
-                return masterDynamicMenuCallback
-            else:
-                g.internalError('no callback for dynamic menu item.')
-
-                def dummyMasterMenuCallback():
-                    pass
-
-                return dummyMasterMenuCallback
-        else:
-
-            def masterStaticMenuCallback(c=c, commandName=commandName):
-                # 2011/10/28: Use only the command name to dispatch the command.
-                # 2012/01/07: Bug fix: set w here.
-                w = setWidget()
-                event = g.app.gui.create_key_event(c, w=w)
-                return c.k.masterCommand(commandName=commandName, event=event)
-
-            return masterStaticMenuCallback
-    #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
-    def getMenuEntryBindings(self, command, dynamicMenu, label):
+        return master_menu_callback
+    #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings (ignores dynamicMenu kwarg)
+    ### def getMenuEntryBindings(self, command, dynamicMenu, label):
+    def getMenuEntryBindings(self, command, label):
         """Compute commandName from command."""
         c = self.c
         if isinstance(command, str):
@@ -392,7 +391,7 @@ class LeoMenu:
                     print(format % (name, func and func.__name__ or '<NO FUNC>'))
             else:
                 print(format % (data, ''))
-    #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
+    #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable (ignores dynamicMenu kwarg)
     def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
 
         if g.app.gui.isNullGui:
@@ -401,7 +400,7 @@ class LeoMenu:
             menu = self.getMenu(menuName)
             if menu is None:
                 return
-            self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
+            self.createMenuEntries(menu, table) ###, dynamicMenu=dynamicMenu)
         except Exception:
             g.es_print("exception creating items for", menuName, "menu")
             g.es_exception()
