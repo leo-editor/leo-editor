@@ -2222,47 +2222,48 @@ class Commands:
                 g.trace(f"not leo event: {event!r}, callers: {g.callers()}")
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
-    #@+node:ekr.20031218072017.2817: *4* c.doCommand (sets k.funcReturn)
+    #@+node:ekr.20031218072017.2817: *4* c.doCommand (No longer sets k.funcReturn)
     command_count = 0
 
-    def doCommand(self, command, label, event=None):
+    def doCommand(self, command_func, command_name, event):
         """
-        Execute the given command, invoking hooks and catching exceptions.
+        Execute the given command function, invoking hooks and catching exceptions.
 
-        The code assumes that the "command1" hook has completely handled the command if
-        g.doHook("command1") returns False.
-        This provides a simple mechanism for overriding commands.
+        The code assumes that the "command1" hook has completely handled the
+        command func if g.doHook("command1") returns False. This provides a
+        simple mechanism for overriding commands.
         """
         c, p = self, self.p
         c.setLog()
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
-        self.command_function = command
-        self.command_name = getattr(command, '__name__', label or repr(command))
+        self.command_function = command_func
+        self.command_name = command_name  ### getattr(command, '__name__', command_name or repr(command))
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return
+            return None
         if c.exists and c.inCommand and not g.unitTesting:
             g.app.commandInterruptFlag = True
             g.error('ignoring command: already executing a command.')
-            return
+            return None
         g.app.commandInterruptFlag = False
-        if label and event is None:  # Do this only for legacy commands.
-            if label == "cantredo": label = "redo"
-            if label == "cantundo": label = "undo"
-            g.app.commandName = label
-        if not g.doHook("command1", c=c, p=p, label=label):
+        ###
+            # if command_name and event is None:  # Do this only for legacy commands.
+                # if command_name == "cantredo": command_name = "redo"
+                # if command_name == "cantundo": command_name = "undo"
+                # g.app.commandName = command_name
+        if not g.doHook("command1", c=c, p=p, label=command_name):
             try:
                 c.inCommand = True
                 try:
-                    val = command(event)
+                    return_value = command_func(event)
                 except Exception:
                     g.es_exception()
-                    val = None
+                    return_value = None
                 if c and c.exists:  # Be careful: the command could destroy c.
                     c.inCommand = False
-                    c.k.funcReturn = val
+                    ## c.k.funcReturn = return_value
             except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
@@ -2278,15 +2279,36 @@ class Commands:
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p
-            g.doHook("command2", c=c, p=p, label=label)
-    #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand
+            g.doHook("command2", c=c, p=p, label=command_name)
+        return return_value
+    #@+node:ekr.20200522075411.1: *4* c.doCommandByName (new)
+    def doCommandByName(self, command_name, event):
+        """
+        Execute one command, given the name of the command.
+        
+        The caller must do any required keystroke-only tasks.
+        
+        Return the result, if any, of the command.
+        """
+        c = self
+        # Get the command's function.
+        command_func = c.commandsDict.get(command_name.replace('&', ''))
+        if not command_func:
+            g.es_print(f"no command function for {command_name!r}", color='red')
+            return None
+        # Invoke the function.
+        val = c.doCommand(command_func, command_name, event)
+        if c.exists:
+            c.frame.updateStatusLine()
+        return val
+    #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand (commandName, event, stroke)
     def executeMinibufferCommand(self, commandName):
         c = self; k = c.k
         func = c.commandsDict.get(commandName)
         if func:
             event = g.app.gui.create_key_event(c)
-            k.masterCommand(commandName=None, event=event, func=func)
-            return k.funcReturn
+            return k.masterCommand(commandName=None, event=event, func=func)
+            ### return k.funcReturn
         g.error(f"no such command: {commandName} {g.callers()}")
         return None
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand

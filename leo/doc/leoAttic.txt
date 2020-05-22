@@ -22044,6 +22044,33 @@ def doControlU(self, event, stroke):
     # except Exception:
         # g.es_exception()
         # return None
+#@+node:ekr.20200522082827.1: ** From leoMenu.py
+#@+node:ekr.20031218072017.4117: ** LeoMenu.defineMenuCallback (no longer used)
+def defineMenuCallback(self, command, name, minibufferCommand):
+    # pylint: disable=no-else-return
+        # This code is simpler as it is.
+    c = self.c
+    if minibufferCommand:
+        # Create a dummy event as a signal to doCommand.
+        event = g.app.gui.create_key_event(c)
+        # The first parameter must be event, and it must default to None.
+
+        def minibufferMenuCallback(event=event, self=self, command=command, label=name):
+            c = self.c
+            return c.doCommand(command, label, event)
+
+        return minibufferMenuCallback
+    else:
+        # The first parameter must be event, and it must default to None.
+
+        def legacyMenuCallback(event=None, self=self, command=command, label=name):
+            c = self.c  # 2012/03/04.
+            c.check_event(event)
+            return c.doCommand(command, label)
+
+        return legacyMenuCallback
+    # For pylint
+    return None
 #@-all
 #@@nosearch
 #@-leo

@@ -287,7 +287,7 @@ class LeoMenu:
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
-    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
+    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (event, func OR commandName, event)
     def createMasterMenuCallback(self, dynamicMenu, command, commandName):
 
         # pylint: disable=no-else-return
@@ -533,32 +533,6 @@ class LeoMenu:
             if menu:
                 self.destroy(menu)
                 self.destroyMenu(i)
-    #@+node:ekr.20031218072017.4117: *4* LeoMenu.defineMenuCallback
-    def defineMenuCallback(self, command, name, minibufferCommand):
-        # pylint: disable=no-else-return
-            # This code is simpler as it is.
-        c = self.c
-        if minibufferCommand:
-            # Create a dummy event as a signal to doCommand.
-            event = g.app.gui.create_key_event(c)
-            # The first parameter must be event, and it must default to None.
-
-            def minibufferMenuCallback(event=event, self=self, command=command, label=name):
-                c = self.c
-                return c.doCommand(command, label, event)
-
-            return minibufferMenuCallback
-        else:
-            # The first parameter must be event, and it must default to None.
-
-            def legacyMenuCallback(event=None, self=self, command=command, label=name):
-                c = self.c  # 2012/03/04.
-                c.check_event(event)
-                return c.doCommand(command, label)
-
-            return legacyMenuCallback
-        # For pylint
-        return None
     #@+node:ekr.20031218072017.3805: *4* LeoMenu.deleteMenu
     def deleteMenu(self, menuName):
         try:

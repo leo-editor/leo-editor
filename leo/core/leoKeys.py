@@ -1636,7 +1636,7 @@ class KeyHandlerClass:
     def defineExternallyVisibleIvars(self):
         self.abbrevOn = False  # True: abbreviations are on.
         self.arg = ''  # The value returned by k.getArg.
-        self.funcReturn = None  # For k.simulateCommand
+        ### self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
         #
         # These are true globals
@@ -2923,7 +2923,7 @@ class KeyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists (event, func)
     def simulateCommand(self, commandName, event=None):
         """Execute a Leo command by name."""
         c, k = self.c, self
@@ -2939,9 +2939,9 @@ class KeyHandlerClass:
                 event = None  # A legacy function.
             else:  # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c)
-            k.masterCommand(event=event, func=func)
+            return_value = k.masterCommand(event=event, func=func)
             if c.exists:
-                return k.funcReturn
+                return return_value  ### k.funcReturn
             return None
         if g.app.unitTesting:
             raise AttributeError(f"no such command: {commandName}")
@@ -2998,6 +2998,37 @@ class KeyHandlerClass:
             return
         k.doBinding(event)
             # Calls handleUnboundKeys if no binding.
+    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
+    def callStateFunction(self, event):
+        """Call the state handler associated with this event."""
+        k = self
+        ch = event.char
+        #
+        # Defensive programming
+        if not k.state.kind:
+            return None
+        if not k.state.handler:
+            g.error('callStateFunction: no state function for', k.state.kind)
+            return None
+        #
+        # Handle auto-completion before checking for unbound keys.
+        if k.state.kind == 'auto-complete':
+            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+            val = k.state.handler(event)
+            return val
+        #
+        # Ignore unbound non-ascii keys.
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and
+            ch and ch not in ('\b', '\n', '\r', '\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            return None
+        #
+        # Call the state handler.
+        val = k.state.handler(event)
+        return val
     #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
     def checkKeyEvent(self, event):
         """Perform sanity checks on the incoming event."""
@@ -3078,90 +3109,6 @@ class KeyHandlerClass:
             demo.prev_command()
             return True
         return False
-    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
-    def callStateFunction(self, event):
-        """Call the state handler associated with this event."""
-        k = self
-        ch = event.char
-        #
-        # Defensive programming
-        if not k.state.kind:
-            return None
-        if not k.state.handler:
-            g.error('callStateFunction: no state function for', k.state.kind)
-            return None
-        #
-        # Handle auto-completion before checking for unbound keys.
-        if k.state.kind == 'auto-complete':
-            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
-            val = k.state.handler(event)
-            return val
-        #
-        # Ignore unbound non-ascii keys.
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            len(ch) == 1 and
-            ch and ch not in ('\b', '\n', '\r', '\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            return None
-        #
-        # Call the state handler.
-        val = k.state.handler(event)
-        return val
-    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
-    def doUnboundPlainKey(self, event):
-        """
-        Handle unbound plain keys.
-        Return True if k.masterKeyHandler should return.
-        """
-        c, k = self.c, self
-        stroke, w = event.stroke, event.widget
-        #
-        # Ignore non-plain keys.
-        if not k.isPlainKey(stroke):
-            return False
-        #
-        # Ignore any keys in the background tree widget.
-        if c.widget_name(w).startswith('canvas'):
-            return False
-        #
-        # Ignore the char if it is bound to the auto-complete command.
-        if self.isAutoCompleteChar(stroke):
-            return False
-        #
-        # Handle the unbound key.
-        k.handleUnboundKeys(event)
-        return True
-    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
-    def isAutoCompleteChar(self, stroke):
-        """
-        Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.
-        """
-        k = self; state = k.unboundKeyAction
-        assert g.isStrokeOrNone(stroke)
-        if stroke and state in ('insert', 'overwrite'):
-            for key in (state, 'body', 'log', 'text', 'all'):
-                d = k.masterBindingsDict.get(key, {})
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
-                        if bi.commandName == 'auto-complete':
-                            return True
-        return False
-    #@+node:ekr.20180418025241.1: *5* k.doVim
-    def doVim(self, event):
-        """
-        Handle vim mode.
-        Return True if k.masterKeyHandler should return.
-        """
-        c = self.c
-        if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.do_key(event)
-            return ok
-        return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
         """
@@ -3228,6 +3175,59 @@ class KeyHandlerClass:
         if handler:
             handler(event)
         return True
+    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
+    def doUnboundPlainKey(self, event):
+        """
+        Handle unbound plain keys.
+        Return True if k.masterKeyHandler should return.
+        """
+        c, k = self.c, self
+        stroke, w = event.stroke, event.widget
+        #
+        # Ignore non-plain keys.
+        if not k.isPlainKey(stroke):
+            return False
+        #
+        # Ignore any keys in the background tree widget.
+        if c.widget_name(w).startswith('canvas'):
+            return False
+        #
+        # Ignore the char if it is bound to the auto-complete command.
+        if self.isAutoCompleteChar(stroke):
+            return False
+        #
+        # Handle the unbound key.
+        k.handleUnboundKeys(event)
+        return True
+    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
+    def isAutoCompleteChar(self, stroke):
+        """
+        Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.
+        """
+        k = self; state = k.unboundKeyAction
+        assert g.isStrokeOrNone(stroke)
+        if stroke and state in ('insert', 'overwrite'):
+            for key in (state, 'body', 'log', 'text', 'all'):
+                d = k.masterBindingsDict.get(key, {})
+                if d:
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
+                        if bi.commandName == 'auto-complete':
+                            return True
+        return False
+    #@+node:ekr.20180418025241.1: *5* k.doVim
+    def doVim(self, event):
+        """
+        Handle vim mode.
+        Return True if k.masterKeyHandler should return.
+        """
+        c = self.c
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.do_key(event)
+            return ok
+        return False
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding & helper
     def getPaneBinding(self, stroke, w):
 
@@ -3434,7 +3434,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (commandName, event, func, stroke)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3475,36 +3475,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
-    def isSpecialKey(self, event):
-        """Return True if char is a special key."""
-        if not event:
-            # An empty event is not an error.
-            return False
-        # Fix #917.
-        if len(event.char) > 1 and not event.stroke.s:
-            # stroke.s was cleared, but not event.char.
-            return True
-        return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
-    def doKeyboardQuit(self, event):
-        """
-        Handle keyboard-quit logic.
-        return True if k.masterKeyHandler should return.
-        """
-        c, k = self.c, self
-        stroke = event.stroke
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            if getattr(c, 'screenCastController', None):
-                c.screenCastController.quit()
-            k.masterCommand(
-                commandName='keyboard-quit',
-                event=event,
-                func=k.keyboardQuit,
-                stroke=stroke)
-            return True
-        return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (event, stroke)
     def handleUnboundKeys(self, event):
 
         c, k = self.c, self
@@ -3567,13 +3538,49 @@ class KeyHandlerClass:
         #
         # Let k.masterCommand handle the unbound character.
         k.masterCommand(event=event, stroke=stroke)
+    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
+    def isSpecialKey(self, event):
+        """Return True if char is a special key."""
+        if not event:
+            # An empty event is not an error.
+            return False
+        # Fix #917.
+        if len(event.char) > 1 and not event.stroke.s:
+            # stroke.s was cleared, but not event.char.
+            return True
+        return event.char in g.app.gui.ignoreChars
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (commandName, event, func, stroke)
+    def doKeyboardQuit(self, event):
+        """
+        Handle keyboard-quit logic.
+        return True if k.masterKeyHandler should return.
+        """
+        c, k = self.c, self
+        stroke = event.stroke
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            if getattr(c, 'screenCastController', None):
+                c.screenCastController.quit()
+            k.masterCommand(
+                commandName='keyboard-quit',
+                event=event,
+                func=k.keyboardQuit,
+                stroke=stroke)
+            return True
+        return False
     #@+node:ekr.20061031131434.105: *5* k.masterCommand (to do: simplify)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.
         All commands and keystrokes pass through here.
-        This returns None, but may set k.funcReturn.
+        
+        Return the value returned by the command, or None if no command is executed.
         """
+        ### To do:
+        # - Remove all kwargs.
+        # - Create a new method for keystroke-only tasks.
+        
+        ### No longer true: This returns None, but may set k.funcReturn.
+        
         c, k = self.c, self
         if event: c.check_event(event)
         c.setLog()
@@ -3582,7 +3589,7 @@ class KeyHandlerClass:
         #
         # Ignore all special keys.
         if k.isSpecialKey(event):
-            return
+            return None
         #
         # Compute func if not given.
         # It is *not* an error for func to be None.
@@ -3590,12 +3597,12 @@ class KeyHandlerClass:
             func = c.commandsDict.get(commandName.replace('&', ''))
             if not func:
                 g.es_print(f"no command for @item {commandName!r}", color='red')
-                return
+                return None
         commandName = commandName or func and func.__name__ or '<no function>'
         if 'keys' in g.app.debug:
             # A very important trace.
             g.trace(commandName, 'stroke', stroke)
-        k.funcReturn = None  # For unit testing.
+        ### k.funcReturn = None  # For unit testing.
         #
         # Remember the key.
         k.setLossage(ch, stroke)
@@ -3603,57 +3610,28 @@ class KeyHandlerClass:
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
-            return
+            return None
         #
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
-            return
+            return None
         #
         # Invoke the command, if given.
         if func:
-            c.doCommand(func, commandName, event=event)
+            return_value = c.doCommand(func, commandName, event=event)
             if c.exists:
                 c.frame.updateStatusLine()
-            return
+            return return_value
         #
         # Ignore unbound keys in a state.
         if k.inState():
-            return
+            return None
         #
         # Finally, call k.handleDefaultChar.
         k.handleDefaultChar(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
-    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
-    def setEventWidget(self, event):
-        """
-        A hack: redirect the event to the text part of the log.
-        """
-        c = self.c
-        w = event.widget
-        w_name = c.widget_name(w)
-        if w_name.startswith('log'):
-            event.widget = c.frame.log.logCtrl
-    #@+node:ekr.20180418031417.1: *5* k.traceVars
-    def traceVars(self, event):
-
-        trace = False and not g.unitTesting
-        traceGC = False
-        verbose = False
-        k = self
-        if not trace:
-            return
-        if traceGC:
-            g.printNewObjects('masterKey 1')
-        if verbose:
-            char = event.char
-            state = k.state.kind
-            stroke = event.stroke
-            g.trace(
-                f"stroke: {stroke!r}, "
-                f"char: {char!r}, "
-                f"state: {state}, "
-                f"state2: {k.unboundKeyAction}")
+        return None
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         """Search all visible nodes for a headline starting with stroke."""
@@ -3695,6 +3673,36 @@ class KeyHandlerClass:
                 # c.selectPosition(p)
                 # c.redraw()
             # return found
+    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
+    def setEventWidget(self, event):
+        """
+        A hack: redirect the event to the text part of the log.
+        """
+        c = self.c
+        w = event.widget
+        w_name = c.widget_name(w)
+        if w_name.startswith('log'):
+            event.widget = c.frame.log.logCtrl
+    #@+node:ekr.20180418031417.1: *5* k.traceVars
+    def traceVars(self, event):
+
+        trace = False and not g.unitTesting
+        traceGC = False
+        verbose = False
+        k = self
+        if not trace:
+            return
+        if traceGC:
+            g.printNewObjects('masterKey 1')
+        if verbose:
+            char = event.char
+            state = k.state.kind
+            stroke = event.stroke
+            g.trace(
+                f"stroke: {stroke!r}, "
+                f"char: {char!r}, "
+                f"state: {state}, "
+                f"state2: {k.unboundKeyAction}")
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
