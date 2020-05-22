@@ -255,11 +255,6 @@ class LeoMenu:
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
-    #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey
-    def computeOldStyleShortcutKey(self, s):
-        """Compute the old-style shortcut key for @shortcuts entries."""
-        # #1121: Allow Chinese characters in command names
-        return s.strip()
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers (ignores dynamicMenu kwarg)
     def createMenuEntries(self, menu, table): ###, dynamicMenu=False):
         """
@@ -288,7 +283,7 @@ class LeoMenu:
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
-    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (ignores dynamicMenu kwarg)
+    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (creates commands dynamically)
     def createMasterMenuCallback(self, command, commandName):
 
         c = self.c
@@ -305,11 +300,32 @@ class LeoMenu:
                 w = getattr(w, 'wrapper', w)
             return w
 
-        def master_menu_callback():
-            event = g.app.gui.create_key_event(c, w=setWidget())
-            return c.k.masterCommand(commandName=commandName, event=event)
+        if isinstance(command, str):
+            
+            def static_menu_callback():
+                event = g.app.gui.create_key_event(c, w=setWidget())
+                return c.k.masterCommand(commandName=commandName, event=event)
 
-        return master_menu_callback
+            return static_menu_callback
+            
+        # New in Leo 6.3...
+        if not callable(command):
+
+            def dummy_menu_callback():
+                pass
+        
+            g.internalError(f"command not callable: {command!r}")
+            return dummy_menu_callback
+
+        # Create a command dynamically.
+        ### g.trace(f"{commandName:20} {command!r}")
+
+        def dynamic_menu_callback():
+            event = g.app.gui.create_key_event(c, w=setWidget())
+            ### This call will change when kwargs are removed.
+            return c.k.masterCommand(func=command, event=event)
+
+        return dynamic_menu_callback
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings (ignores dynamicMenu kwarg)
     def getMenuEntryBindings(self, command, label):
         """Compute commandName from command."""
@@ -319,14 +335,22 @@ class LeoMenu:
             commandName = command
         else:
             # First, get the old-style name.
-            commandName = self.computeOldStyleShortcutKey(label)
-            g.trace(f"{command.__name__:20} {commandName}")
+            # #1121: Allow Chinese characters in command names
+            commandName = label.strip() ### self.computeOldStyleShortcutKey(label)
         command = c.commandsDict.get(commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
     def getMenuEntryInfo(self, data, menu):
         """
         Parse a single entry in the table passed to createMenuEntries.
+        
+        Table entries have the following formats:
+            
+        1. A string, used as the command name.
+        2. A 2-tuple: (command_name, command_func)
+        3. A 3-tuple: (command_name, menu_shortcut, command_func)
+        
+        Special case: If command_name is None or "-" it represents a menu separator.
         """
         done = False
         if isinstance(data, str):
@@ -373,7 +397,7 @@ class LeoMenu:
             else:
                 print(format % (data, ''))
     #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable (ignores dynamicMenu kwarg)
-    def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
+    def createMenuItemsFromTable(self, menuName, table): ###, dynamicMenu=False):
 
         if g.app.gui.isNullGui:
             return

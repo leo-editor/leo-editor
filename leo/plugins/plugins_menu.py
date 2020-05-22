@@ -113,7 +113,7 @@ def addPluginMenuItem(p, c):
             table.extend(sorted(items))
         c.frame.menu.createMenuEntries(m, table) ###, dynamicMenu=True)
     else:
-        table = ((plugin_name, None, p.about),)
+        table = [(plugin_name, None, p.about)]
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p), table) ###, dynamicMenu=True)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu(tag, keywords):
