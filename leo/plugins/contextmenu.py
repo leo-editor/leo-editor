@@ -339,8 +339,10 @@ def refresh_rclick(c,p,menu):
 def pylint_rclick(c,p,menu):
     '''Run pylint on the selected node.'''
     action = menu.addAction("Run Pylint")
+    
     def pylint_rclick_cb(aBool):
-        c.executeMinibufferCommand('pylint')
+        c.k.simulateCommand('pylint')
+    
     action.triggered.connect(pylint_rclick_cb)
 #@+node:ekr.20140724211116.19256: ** Helpers
 #@+node:ville.20110428163751.7685: *3* guess_file_type

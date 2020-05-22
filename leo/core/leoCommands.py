@@ -2222,7 +2222,7 @@ class Commands:
                 g.trace(f"not leo event: {event!r}, callers: {g.callers()}")
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
-    #@+node:ekr.20031218072017.2817: *4* c.doCommand (No longer sets k.funcReturn)
+    #@+node:ekr.20031218072017.2817: *4* c.doCommand
     command_count = 0
 
     def doCommand(self, command_func, command_name, event):
@@ -2299,15 +2299,6 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
-    #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand (commandName, event, stroke)
-    def executeMinibufferCommand(self, commandName):
-        c = self; k = c.k
-        func = c.commandsDict.get(commandName)
-        if func:
-            event = g.app.gui.create_key_event(c)
-            return k.masterCommand(commandName=None, event=event, func=func)
-        g.error(f"no such command: {commandName} {g.callers()}")
-        return None
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         """Make commandName the command to be executed by repeat-complex-command."""

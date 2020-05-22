@@ -66,11 +66,11 @@ def lineScrollHelper(c, prefix1, prefix2, suffix):
     w = c.frame.body.wrapper
     ins = w.getInsertPoint()
     c.inCommand = False
-    c.executeMinibufferCommand(prefix1 + 'line' + suffix)
+    c.k.simulateCommand(prefix1 + 'line' + suffix)
     ins2 = w.getInsertPoint()
     # If the cursor didn't change, then go to beginning/end of line
     if ins == ins2:
-        c.executeMinibufferCommand(prefix2 + 'of-line' + suffix)
+        c.k.simulateCommand(prefix2 + 'of-line' + suffix)
 #@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
 def delete_trace_statements(event=None):

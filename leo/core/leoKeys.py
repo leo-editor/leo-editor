@@ -2920,7 +2920,7 @@ class KeyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
     def simulateCommand(self, commandName, event=None):
         """Execute a Leo command by name."""
         c = self.c
