@@ -68,7 +68,7 @@ class pluginController:
         else:
             table = (("Open &xterm",None,self.launchxTerm),)
         c.frame.menu.createNewMenu("E&xtensions","top")
-        c.frame.menu.createMenuItemsFromTable("Extensions", table) ###,dynamicMenu=True)
+        c.frame.menu.createMenuItemsFromTable("Extensions", table)
     #@+node:EKR.20040517080049.7: *3* _getpath
     def _getpath (self,p):
 

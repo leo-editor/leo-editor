@@ -119,13 +119,11 @@ def insertUser (self,event=None):
 def create_UserMenu (tag,keywords):
 
     c = keywords.get("c")
-
     c.pluginsMenu = c.frame.menu.createNewMenu("UserMenu")
-
     table = [
         ("insUser", 'Shift+F6', c.insertUser),
-        ("insOK",'Ctrl+Shift+O',c.insertOKcmd)]
-
-    c.frame.menu.createMenuEntries(c.pluginMenu, table) ###,dynamicMenu=True)
+        ("insOK",'Ctrl+Shift+O',c.insertOKcmd),
+    ]
+    c.frame.menu.createMenuEntries(c.pluginMenu, table)
 #@-others
 #@-leo

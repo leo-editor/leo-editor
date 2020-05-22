@@ -67,19 +67,16 @@ def onCreate (tag, keywords):
 
     c = keywords.get('c')
     cc = controller(c)
-
     menu = c.frame.menu.getMenu('Outline')
-
     if language == 'french':
         mess1 = "Lit un Répertoire..."
     else:
         mess1 = "Read a Directory..."
-
     table = (
         ("-", None, None),
-        (mess1, "Shift+Ctrl+Alt+D",cc.readDir))
-
-    c.frame.menu.createMenuEntries(menu, table) ###,dynamicMenu=True)
+        (mess1, "Shift+Ctrl+Alt+D",cc.readDir),
+    )
+    c.frame.menu.createMenuEntries(menu, table)
 #@+node:ekr.20050301083306.6: ** class controller
 class controller:
 

@@ -170,7 +170,7 @@ class ParamClass:
         table = (
             ("Parameterize Section Reference",None,self.parameterize),
         )
-        c.frame.menu.createMenuItemsFromTable("Outline", table) ###,dynamicMenu=True)
+        c.frame.menu.createMenuItemsFromTable("Outline", table)
     #@-others
 #@-others
 #@@language python

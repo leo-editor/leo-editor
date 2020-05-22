@@ -255,8 +255,8 @@ class LeoMenu:
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
-    #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers (ignores dynamicMenu kwarg)
-    def createMenuEntries(self, menu, table): ###, dynamicMenu=False):
+    #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
+    def createMenuEntries(self, menu, table):
         """
         Create a menu entry from the table.
         
@@ -288,7 +288,8 @@ class LeoMenu:
 
         c = self.c
 
-        def setWidget():
+        def getWidget():
+            """Carefully return the widget that has focus."""
             w = c.frame.getFocus()
             if w and g.isMac:
                 # Redirect (MacOS only).
@@ -303,30 +304,30 @@ class LeoMenu:
         if isinstance(command, str):
             
             def static_menu_callback():
-                event = g.app.gui.create_key_event(c, w=setWidget())
+                event = g.app.gui.create_key_event(c, w=getWidget())
                 return c.k.masterCommand(commandName=commandName, event=event)
 
             return static_menu_callback
             
-        # New in Leo 6.3...
+        # The command must be a callable.
         if not callable(command):
 
-            def dummy_menu_callback():
+            def dummy_menu_callback(event=None):
                 pass
         
             g.internalError(f"command not callable: {command!r}")
             return dummy_menu_callback
 
         # Create a command dynamically.
-        ### g.trace(f"{commandName:20} {command!r}")
+        # The command should have
 
         def dynamic_menu_callback():
-            event = g.app.gui.create_key_event(c, w=setWidget())
+            event = g.app.gui.create_key_event(c, w=getWidget())
             ### This call will change when kwargs are removed.
             return c.k.masterCommand(func=command, event=event)
 
         return dynamic_menu_callback
-    #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings (ignores dynamicMenu kwarg)
+    #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
     def getMenuEntryBindings(self, command, label):
         """Compute commandName from command."""
         c = self.c
@@ -396,8 +397,8 @@ class LeoMenu:
                     print(format % (name, func and func.__name__ or '<NO FUNC>'))
             else:
                 print(format % (data, ''))
-    #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable (ignores dynamicMenu kwarg)
-    def createMenuItemsFromTable(self, menuName, table): ###, dynamicMenu=False):
+    #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
+    def createMenuItemsFromTable(self, menuName, table):
 
         if g.app.gui.isNullGui:
             return
@@ -405,7 +406,7 @@ class LeoMenu:
             menu = self.getMenu(menuName)
             if menu is None:
                 return
-            self.createMenuEntries(menu, table) ###, dynamicMenu=dynamicMenu)
+            self.createMenuEntries(menu, table)
         except Exception:
             g.es_print("exception creating items for", menuName, "menu")
             g.es_exception()

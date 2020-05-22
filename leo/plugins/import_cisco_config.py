@@ -51,8 +51,7 @@ def create_import_cisco_menu (tag,keywords):
     table = (
         ("-",None,None),
         ("Import C&isco Configuration","Shift+Ctrl+I",importCiscoConfigCallback))
-
-    c.frame.menu.createMenuEntries(importMenu, table) ###,dynamicMenu=True)
+    c.frame.menu.createMenuEntries(importMenu, table)
 #@+node:edream.110203113231.672: ** importCiscoConfig
 def importCiscoConfig(c):
 

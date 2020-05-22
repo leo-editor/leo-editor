@@ -253,12 +253,13 @@ def on_create(tag, keywords):
         c.frame.menu.createMenuItemsFromTable("Outline", [("-", None, None),])
 
         # create an expandable menu
-        table = [("Single Day", None, instance.insert_day_node),
-                 ("Full Month", None, instance.insert_month_node),
-                 ("Full Year", None, instance.insert_year_node)]
-
+        table = [
+            ("Single Day", None, instance.insert_day_node),
+            ("Full Month", None, instance.insert_month_node),
+            ("Full Year", None, instance.insert_year_node),
+        ]
         expandMenu = c.frame.menu.createNewMenu("Insert Date Nodes...", "Outline")
-        c.frame.menu.createMenuEntries(expandMenu, table) ###, dynamicMenu = True)
+        c.frame.menu.createMenuEntries(expandMenu, table)
     #@-<< Create the plug-in menu. >>
 
 #@-others
