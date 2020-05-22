@@ -974,8 +974,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def make_composite_icon(self, images):
         hsep = self.c.config.getInt('tree-icon-separation') or 0
         images = [x for x in images if x]
-        ### height =self.treeWidget.iconSize().height()
-        height = max([i.height() for i in images]) ### Old code.
+        height = max([i.height() for i in images])
         images = [i.scaledToHeight(height) for i in images]
         width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)

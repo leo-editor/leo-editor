@@ -2238,7 +2238,7 @@ class Commands:
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
         self.command_function = command_func
-        self.command_name = command_name  ### getattr(command, '__name__', command_name or repr(command))
+        self.command_name = command_name
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
@@ -2248,11 +2248,6 @@ class Commands:
             g.error('ignoring command: already executing a command.')
             return None
         g.app.commandInterruptFlag = False
-        ###
-            # if command_name and event is None:  # Do this only for legacy commands.
-                # if command_name == "cantredo": command_name = "redo"
-                # if command_name == "cantundo": command_name = "undo"
-                # g.app.commandName = command_name
         if not g.doHook("command1", c=c, p=p, label=command_name):
             try:
                 c.inCommand = True
@@ -2308,7 +2303,6 @@ class Commands:
         if func:
             event = g.app.gui.create_key_event(c)
             return k.masterCommand(commandName=None, event=event, func=func)
-            ### return k.funcReturn
         g.error(f"no such command: {commandName} {g.callers()}")
         return None
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand

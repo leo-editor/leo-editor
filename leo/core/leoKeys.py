@@ -1636,18 +1636,14 @@ class KeyHandlerClass:
     def defineExternallyVisibleIvars(self):
         self.abbrevOn = False  # True: abbreviations are on.
         self.arg = ''  # The value returned by k.getArg.
-        ### self.funcReturn = None  # For k.simulateCommand
         self.functionTail = None  # For commands that take minibuffer arguments.
         #
         # These are true globals
         self.getArgEscapes = []
         self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
         self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
-        ### self.inputModeBindings = {}
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode promopt.
-        ### self.negativeArg = False
-        ### self.repeatCount = None
         self.state = g.bunch(kind=None, n=None, handler=None)
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self):
@@ -2941,7 +2937,7 @@ class KeyHandlerClass:
                 event = g.app.gui.create_key_event(c)
             return_value = k.masterCommand(event=event, func=func)
             if c.exists:
-                return return_value  ### k.funcReturn
+                return return_value
             return None
         if g.app.unitTesting:
             raise AttributeError(f"no such command: {commandName}")
@@ -3578,9 +3574,6 @@ class KeyHandlerClass:
         ### To do:
         # - Remove all kwargs.
         # - Create a new method for keystroke-only tasks.
-        
-        ### No longer true: This returns None, but may set k.funcReturn.
-        
         c, k = self.c, self
         if event: c.check_event(event)
         c.setLog()
@@ -3602,7 +3595,6 @@ class KeyHandlerClass:
         if 'keys' in g.app.debug:
             # A very important trace.
             g.trace(commandName, 'stroke', stroke)
-        ### k.funcReturn = None  # For unit testing.
         #
         # Remember the key.
         k.setLossage(ch, stroke)
