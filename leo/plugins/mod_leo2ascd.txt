@@ -2354,7 +2354,7 @@ def CreateOpenTreeMenu (tag,keywords):
         exportMenu = c.frame.menu.getMenu('Open With')
         newEntries = (
             ("-",None,None),
-            ("XEmacs: Open nodes in sub-tree","None",OpenTreeInXEmacs),
+            ("XEmacs: Open nodes in sub-tree","None", OpenTreeInXEmacs),
         )
         c.frame.menu.createMenuEntries(exportMenu, newEntries) ###,dynamicMenu=True)
 

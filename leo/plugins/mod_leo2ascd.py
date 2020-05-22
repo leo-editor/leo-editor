@@ -157,7 +157,7 @@ def CreateAscMenu(tag,keywords):
     exportMenu = c.frame.menu.getMenu('export')
     table = (
         ("-", None, None),
-        ("Export all to &AsciiDoc","Alt+Shift+A",WriteAll),
+        ("Export all to &AsciiDoc", "Alt+Shift+A", WriteAll),
         ("Export current tree to AsciiDoc","Alt+Shift+T",WriteTreeOfCurrentNode),
         ("Log all root and ascfile to log pane","Alt+Shift+L",WriteAllRoots),
     )

@@ -115,7 +115,7 @@ def insertUser (self,event=None):
     i = w.getInsertPoint()
     w.insert(i,stamp)
     c.frame.body.onBodyChanged("Typing",oldSel=oldSel)
-#@+node:ekr.20040205071616.10: ** create_UserMenu
+#@+node:ekr.20040205071616.10: ** create_UserMenu (mnplugins.py)
 def create_UserMenu (tag,keywords):
 
     c = keywords.get("c")
