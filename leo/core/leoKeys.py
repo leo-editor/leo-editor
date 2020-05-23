@@ -3070,6 +3070,65 @@ class KeyHandlerClass:
             demo.prev_command()
             return True
         return False
+    #@+node:ekr.20200523081446.1: *5* k.doKeyOnlyTasks (NEW)
+    def doKeyOnlyTasks(self, event):
+        """
+        Do keystroke-related tasks related to commands.
+        """
+        c, k = self.c, self
+        if not event:
+            g.trace('Can not happen: no event')
+        ch, stroke = event.char, event.stroke
+        if not stroke:
+            g.trace('Can not happen: no stroke')
+            return 
+        ### c.check_event(event)
+        ### c.setLog()
+        ### k.stroke = stroke  # Set this global for general use.
+        #
+        # Ignore all special keys.
+        if k.isSpecialKey(event):
+            return
+        ###
+            # # Compute func if not given.
+            # # It is *not* an error for func to be None.
+            # if commandName and not func:
+                # func = c.commandsDict.get(commandName.replace('&', ''))
+                # if not func:
+                    # g.es_print(f"no command for @item {commandName!r}", color='red')
+                    # return None
+            # commandName = commandName or func and func.__name__ or '<no function>'
+            # if 'keys' in g.app.debug:
+                # # A very important trace.
+                # g.trace(commandName, 'stroke', stroke)
+        #
+        # Remember the key.
+        k.setLossage(ch, stroke)
+        #
+        # Handle keyboard-quit.
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            k.keyboardQuit()
+            return
+        #
+        # Ignore abbreviations.
+        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
+            return
+        ####
+            # # Invoke the command, if given.
+            # if func:
+                # return_value = c.doCommand(func, commandName, event=event)
+                # if c.exists:
+                    # c.frame.updateStatusLine()
+                # return return_value
+        #
+        # Ignore unbound keys in a state.
+        if k.inState():
+            return
+        #
+        # Finally, call k.handleDefaultChar.
+        k.handleDefaultChar(event, stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
         """
@@ -3422,8 +3481,8 @@ class KeyHandlerClass:
             k.keyboardQuit()
         else:
             c.minibufferWantsFocus()  # New in Leo 4.5.
-        # Pass this on for macro recording.
-        ### SIMPLIFY
+        #
+            # Pass this on for macro recording.
             # k.masterCommand(
                 # commandName=bi.commandName,
                 # event=event,
@@ -3437,7 +3496,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (Test)
     def handleUnboundKeys(self, event):
 
         c, k = self.c, self
@@ -3499,7 +3558,11 @@ class KeyHandlerClass:
             return
         #
         # Let k.masterCommand handle the unbound character.
-        k.masterCommand(event=event, stroke=stroke)
+        ### k.masterCommand(event=event, stroke=stroke)
+        k.doKeyOnlyTasks(event)
+        k.handleDefaultChar(event, stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         """Return True if char is a special key."""
@@ -3533,9 +3596,6 @@ class KeyHandlerClass:
         
         Return the value returned by the command, or None if no command is executed.
         """
-        ### To do:
-        # - Remove all kwargs.
-        # - Create a new method for keystroke-only tasks.
         c, k = self.c, self
         if event: c.check_event(event)
         c.setLog()
