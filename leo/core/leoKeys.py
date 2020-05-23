@@ -187,7 +187,7 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (MUST insert period!)
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
@@ -197,6 +197,10 @@ class AutoCompleterClass:
         w = event and event.w or c.get_focus()
         self.force = force
         if state not in ('insert', 'overwrite'):
+            return
+        if not force:
+            # Ctrl-period does *not* insert a period.
+            k.masterCommand(event=event)
             return
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
@@ -3505,22 +3509,23 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (SIMPLIFY)
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
         """
         Handle keyboard-quit logic.
         return True if k.masterKeyHandler should return.
         """
         c, k = self.c, self
-        stroke = event.stroke
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        ### stroke = event.stroke
+        if k.abortAllModesKey and event.stroke == k.abortAllModesKey:
             if getattr(c, 'screenCastController', None):
                 c.screenCastController.quit()
-            k.masterCommand(
-                commandName='keyboard-quit',
-                event=event,
-                func=k.keyboardQuit,
-                stroke=stroke)
+            c.doCommandByName('keyboard-quit', event)
+            ### k.masterCommand(
+                # commandName='keyboard-quit',
+                # event=event,
+                # func=k.keyboardQuit,
+                # stroke=stroke)
             return True
         return False
     #@+node:ekr.20061031131434.105: *5* k.masterCommand (SIMPLIFY)
