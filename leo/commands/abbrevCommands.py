@@ -145,7 +145,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """Called from AbbrevCommands.reload_settings aka reloadSettings."""
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
-        # Init these here for k.masterCommand.
         c.abbrev_place_end = c.config.getString('abbreviations-place-end')
         c.abbrev_place_start = c.config.getString('abbreviations-place-start')
         c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
@@ -223,7 +222,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         """
-        Not a command.  Called from k.masterCommand to expand
+        Not a command.  Called from k.doKeyOnlyTasks to expand
         abbreviations in event.widget.
 
         Words start with '@'.

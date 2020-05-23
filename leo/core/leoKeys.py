@@ -251,7 +251,7 @@ class AutoCompleterClass:
         """Toggle whether calltips are enabled."""
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20061031131434.13: *4* ac.showCalltips (no longer calls k.masterCommand)
+    #@+node:ekr.20061031131434.13: *4* ac.showCalltips
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
         """Show the calltips at the cursor."""
@@ -3006,7 +3006,7 @@ class KeyHandlerClass:
         if event:
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
                 # A continuous unit test, better than "@test k.isPlainKey".
-    #@+node:ekr.20180418033838.1: *5* k.doBinding
+    #@+node:ekr.20180418033838.1: *5* k.doBinding (SIMPLIFY)
     def doBinding(self, event):
         """
         The last phase of k.masertKeyHandler.
@@ -3454,10 +3454,19 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed, SIMPLIFY)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed, TEST, simplify more)
     def handleUnboundKeys(self, event):
-
+        
         c, k = self.c, self
+        
+        def handle_default_key(stroke):
+            ignore = k.doKeyOnlyTasks(event)
+            if not ignore:
+                # Handle the unbound character.
+                k.handleDefaultChar(event, stroke)
+                if c.exists:
+                    c.frame.updateStatusLine()
+
         stroke = event.stroke
         if not g.assert_is(stroke, g.KeyStroke):
             return
@@ -3482,7 +3491,7 @@ class KeyHandlerClass:
             stroke and k.isPlainKey(stroke) and
             k.unboundKeyAction in ('insert', 'overwrite')
         ):
-            k.masterCommand(event=event, stroke=stroke)
+            handle_default_key(stroke)
             return
         # Ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
@@ -3490,31 +3499,25 @@ class KeyHandlerClass:
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
-            k.masterCommand(event=event, stroke=stroke)
+            # k.masterCommand(event=event, stroke=stroke)
+            handle_default_key(stroke)
             return
         # #868
         if stroke.isNumPadKey():
             return  # To have effect, these must be bound.
         # Ignore unbound non-ascii character.
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            not stroke.isPlainKey()
-        ):
+        if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
             return
         # Never insert escape or insert characters.
-        if (
-            stroke and stroke.find('Escape') != -1 or
-            stroke and stroke.find('Insert') != -1
-        ):
-            return
-        # We aren't going to ignore the key. Do key-only tasks.
-        ignore = k.doKeyOnlyTasks(event)
-        if ignore:
+        ###
+            # if (
+                # stroke and stroke.find('Escape') != -1 or
+                # stroke and stroke.find('Insert') != -1
+            # ):
+        if 'Escape' in stroke or 'Insert' in stroke:
             return
         # Handle the unbound character.
-        k.handleDefaultChar(event, stroke)
-        if c.exists:
-            c.frame.updateStatusLine()
+        handle_default_key(stroke)
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         """Return True if char is a special key."""
@@ -3540,7 +3543,7 @@ class KeyHandlerClass:
             c.doCommandByName('keyboard-quit', event)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand (SIMPLIFY)
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand (To Be Deleted?)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.
