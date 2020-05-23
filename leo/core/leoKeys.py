@@ -187,7 +187,7 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (MUST insert period!)
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (SIMPLIFY)
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
@@ -199,8 +199,9 @@ class AutoCompleterClass:
         if state not in ('insert', 'overwrite'):
             return
         if not force:
-            # Ctrl-period does *not* insert a period.
-            k.masterCommand(event=event)
+            # Ctrl-period does *not* insert a period,
+            # but plain periods *must* be inserted!
+            k.masterCommand(event=event)  ### SIMPLIFY.
             return
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
@@ -3394,7 +3395,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (SIMPLIFY)
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (no longer calls k.masterCommand)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3422,11 +3423,12 @@ class KeyHandlerClass:
         else:
             c.minibufferWantsFocus()  # New in Leo 4.5.
         # Pass this on for macro recording.
-        k.masterCommand(
-            commandName=bi.commandName,
-            event=event,
-            func=bi.func,
-            stroke=stroke)
+        ### SIMPLIFY
+            # k.masterCommand(
+                # commandName=bi.commandName,
+                # event=event,
+                # func=bi.func,
+                # stroke=stroke)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
             # Use the state *after* executing the command.

@@ -310,7 +310,6 @@ class LeoMenu:
             
             def static_menu_callback():
                 event = g.app.gui.create_key_event(c, w=getWidget())
-                ### return c.k.masterCommand(commandName=commandName, event=event)
                 c.doCommandByName(commandName, event)
 
             return static_menu_callback
@@ -329,8 +328,6 @@ class LeoMenu:
 
         def dynamic_menu_callback():
             event = g.app.gui.create_key_event(c, w=getWidget())
-            ### This call will change when kwargs are removed.
-            ### return c.k.masterCommand(func=command, event=event)
             return c.doCommandByName(commandName, event)
 
         return dynamic_menu_callback
