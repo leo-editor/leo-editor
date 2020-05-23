@@ -3010,6 +3010,7 @@ class KeyHandlerClass:
     def doBinding(self, event):
         """
         The last phase of k.masertKeyHandler.
+
         Execute the command associated with stroke's binding.
         Call k.handleUnboundKeys for killed or non-existent bindings.
         """
@@ -3426,7 +3427,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (not changed yet)
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (changed)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3443,23 +3444,23 @@ class KeyHandlerClass:
         assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
         #
         # Special case the replace-string command in the minibuffer.
-        #
         if bi.commandName == 'replace-string' and state == 'getArg':
             return 'ignore'
         #
         # Execute this command.
-        #
         if bi.commandName not in k.singleLineCommandList:
             k.keyboardQuit()
         else:
             c.minibufferWantsFocus()  # New in Leo 4.5.
-        if 1:
-            # Pass this on, NOT just for macro recording.
-            k.masterCommand(
-                commandName=bi.commandName,
-                event=event,
-                func=bi.func,
-                stroke=stroke)
+        #
+        # Pass this on, NOT just for macro recording.
+        ### k.masterCommand(
+            # commandName=bi.commandName,
+            # event=event,
+            # func=bi.func,
+            # stroke=stroke)
+        c.doCommandByName(bi.commandName, event)
+        #
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
             # Use the state *after* executing the command.
