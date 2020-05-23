@@ -2950,8 +2950,9 @@ class KeyHandlerClass:
             return
         if k.doUnboundPlainKey(event):
             return
-        k.doBinding(event)
-            # Calls handleUnboundKeys if no binding.
+        if k.doBinding(event):
+            return
+        k.handleUnboundKeys(event)
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
         """Call the state handler associated with this event."""
@@ -3002,38 +3003,33 @@ class KeyHandlerClass:
     #@+node:ekr.20180418033838.1: *5* k.doBinding (changed)
     def doBinding(self, event):
         """
-        The last phase of k.masertKeyHandler.
-
-        Execute the command associated with stroke's binding.
-        Call k.handleUnboundKeys for killed or non-existent bindings.
+        Attempt to find a binding for the event's stroke.
+        If found, execute the command and return True
+        Otherwise, return False
         """
         c, k = self.c, self
-        char, stroke, w = event.char, event.stroke, event.widget
         #
         # Use getPaneBindings for *all* keys.
-        bi = k.getPaneBinding(stroke, w)
+        bi = k.getPaneBinding(event.stroke, event.w)
         #
-        # Call k.handleUnboudKeys for all killed bindings.
+        # #327: ignore killed bindings.
         if bi and bi.commandName in k.killedBindings:
-            #327: ignore killed bindings.
-            k.handleUnboundKeys(event)
-            return
+            return False  
         #
         # Execute the command if the binding exists.
         if bi:
             ignore = k.doKeyOnlyTasks(event)
             if not ignore:
-                # Handle the unbound character.
                 c.doCommandByName(bi.commandName, event)
-            return
+            return True
         #
         # Handle unbound keys in the tree (not headlines).
-        if c.widget_name(w).startswith('canvas'):
-            k.searchTree(char)
-            return
+        if c.widget_name(event.w).startswith('canvas'):
+            k.searchTree(event.char)
+            return True
         #
-        # No binding exists. Call k.handleUnboundKey.
-        k.handleUnboundKeys(event)
+        # No binding exists.
+        return False
     #@+node:ekr.20180418023827.1: *5* k.doDemo
     def doDemo(self, event):
         """
@@ -3443,7 +3439,10 @@ class KeyHandlerClass:
         return 'found'
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
     def handleUnboundKeys(self, event):
-        
+        """
+        The last step of k.masterKeyHandler.
+        Handle key events when no binding exists.
+        """
         c, k = self.c, self
         stroke = event.stroke
         if not g.assert_is(stroke, g.KeyStroke):
