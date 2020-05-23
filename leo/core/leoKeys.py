@@ -3075,6 +3075,8 @@ class KeyHandlerClass:
     def doKeyOnlyTasks(self, event):
         """
         Do keystroke-related tasks related to commands.
+        
+        Return True if we should ignore the event.
         """
         c, k = self.c, self
         if not event:
@@ -3082,26 +3084,20 @@ class KeyHandlerClass:
         ch, stroke = event.char, event.stroke
         if not stroke:
             g.trace('Can not happen: no stroke')
-            return 
+            return True
         # Ignore all special keys.
         if k.isSpecialKey(event):
-            return
+            return True
         # Remember the key.
         k.setLossage(ch, stroke)
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
-            return
+            return True
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
-            return
-        # Ignore unbound keys in a state.
-        if k.inState():
-            return
-        # Finally, handle the character.
-        k.handleDefaultChar(event, stroke)
-        if c.exists:
-            c.frame.updateStatusLine()
+            return True
+        return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
         """
@@ -3431,7 +3427,6 @@ class KeyHandlerClass:
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
-        
         Return 'continue', 'ignore', 'found'
         """
         c, k = self.c, self
@@ -3442,25 +3437,15 @@ class KeyHandlerClass:
         if not bi:
             return 'continue'
         assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
-        #
-        # Special case the replace-string command in the minibuffer.
+        # Ignore the replace-string command in the minibuffer.
         if bi.commandName == 'replace-string' and state == 'getArg':
             return 'ignore'
-        #
         # Execute this command.
         if bi.commandName not in k.singleLineCommandList:
             k.keyboardQuit()
         else:
-            c.minibufferWantsFocus()  # New in Leo 4.5.
-        #
-        # Pass this on, NOT just for macro recording.
-        ### k.masterCommand(
-            # commandName=bi.commandName,
-            # event=event,
-            # func=bi.func,
-            # stroke=stroke)
-        c.doCommandByName(bi.commandName, event)
-        #
+            c.minibufferWantsFocus()
+            c.doCommandByName(bi.commandName, event)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
             # Use the state *after* executing the command.
@@ -3469,7 +3454,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed, SIMPLIFY)
     def handleUnboundKeys(self, event):
 
         c, k = self.c, self
@@ -3523,7 +3508,9 @@ class KeyHandlerClass:
         ):
             return
         # We aren't going to ignore the key. Do key-only tasks.
-        k.doKeyOnlyTasks(event)
+        ignore = k.doKeyOnlyTasks(event)
+        if ignore:
+            return
         # Handle the unbound character.
         k.handleDefaultChar(event, stroke)
         if c.exists:
