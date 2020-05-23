@@ -3509,23 +3509,18 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (now calls c.doCommandByName)
     def doKeyboardQuit(self, event):
         """
         Handle keyboard-quit logic.
         return True if k.masterKeyHandler should return.
         """
         c, k = self.c, self
-        ### stroke = event.stroke
-        if k.abortAllModesKey and event.stroke == k.abortAllModesKey:
+        stroke = getattr(event, 'stroke', None)
+        if k.abortAllModesKey and stroke and stroke == k.abortAllModesKey:
             if getattr(c, 'screenCastController', None):
                 c.screenCastController.quit()
             c.doCommandByName('keyboard-quit', event)
-            ### k.masterCommand(
-                # commandName='keyboard-quit',
-                # event=event,
-                # func=k.keyboardQuit,
-                # stroke=stroke)
             return True
         return False
     #@+node:ekr.20061031131434.105: *5* k.masterCommand (SIMPLIFY)
