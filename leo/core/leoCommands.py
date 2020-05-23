@@ -2304,10 +2304,9 @@ class Commands:
         """Insert the character given by key stroke."""
         c, k = self, self.k
         ignore = k.doKeyOnlyTasks(event)
-        if ignore:
-            return
-        # Handle the unbound character.
-        c.insertUnboundHelper(event, stroke)
+        if not ignore:
+            # Handle the unbound character.
+            c.insertUnboundHelper(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
     #@+node:ekr.20061031131434.110: *5* c.insertUnboundHelper (was k.handleUnboundKeys)
