@@ -2767,17 +2767,13 @@ class KeyHandlerClass:
         ga.get_minibuffer_command_name.
         """
         return self.getArgInstance.get_minibuffer_command_name()
-    #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
+    #@+node:ekr.20061031131434.130: *4* k.keyboardQuit (changed)
     @cmd('keyboard-quit')
-    def keyboardQuit(self, event=None, setFocus=True, mouseClick=False):
-        """
-        This method clears the state and the minibuffer label.
-        """
+    def keyboardQuit(self, event=None, setFocus=True):
+        """Clears the state and the minibuffer label."""
         k = self; c = k.c
         if g.app.quitting:
             return
-        # 2011/05/30: We may be called from Qt event handlers.
-        # Make sure to end editing!
         c.endEditing()
         # Completely clear the mode.
         if setFocus:
@@ -2915,7 +2911,7 @@ class KeyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand (changed)
     def simulateCommand(self, commandName, event=None):
         """Execute a Leo command by name."""
         c = self.c
@@ -3505,10 +3501,11 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (changed)
+    #@+node:ekr.20180418024449.1: *5* k.doKeyboardQuit (changed)
     def doKeyboardQuit(self, event):
         """
-        Handle keyboard-quit logic.
+        A helper for k.masterKeyHandler: Handle keyboard-quit logic.
+        
         return True if k.masterKeyHandler should return.
         """
         c, k = self.c, self
