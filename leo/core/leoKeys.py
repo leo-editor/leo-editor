@@ -187,13 +187,12 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (FIX)
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (changed)
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
         c, k = self.c, self.k
         state = k.unboundKeyAction
-        g.trace(event)
         # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
         self.force = force
@@ -202,15 +201,14 @@ class AutoCompleterClass:
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
-            ###k.masterCommand(event=event)  ### SIMPLIFY.
-            if 1:
-                ignore = k.doKeyOnlyTasks(event)
-                if not ignore:
-                    # Handle the unbound character.
-                    k.handleDefaultChar(event, event and event.stroke)
-                    if c.exists:
-                        c.frame.updateStatusLine()
-            return
+            k.masterCommand(event=event)  ### SIMPLIFY.
+            ignore = k.doKeyOnlyTasks(event)
+            if not ignore:
+                # Handle the unbound character.
+                k.handleDefaultChar(event, event and event.stroke)
+                if c.exists:
+                    c.frame.updateStatusLine()
+            ###return ### This return was the problem.
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
@@ -259,7 +257,7 @@ class AutoCompleterClass:
         """Toggle whether calltips are enabled."""
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20061031131434.13: *4* ac.showCalltips
+    #@+node:ekr.20061031131434.13: *4* ac.showCalltips (changed)
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
         """Show the calltips at the cursor."""
@@ -3549,7 +3547,7 @@ class KeyHandlerClass:
             c.doCommandByName('keyboard-quit', event)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand (Delete!!)
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand (Delete or rename & rewrite)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.
