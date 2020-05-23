@@ -187,12 +187,13 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (SIMPLIFY)
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (FIX)
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
         c, k = self.c, self.k
         state = k.unboundKeyAction
+        g.trace(event)
         # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
         self.force = force
@@ -201,7 +202,14 @@ class AutoCompleterClass:
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
-            k.masterCommand(event=event)  ### SIMPLIFY.
+            ###k.masterCommand(event=event)  ### SIMPLIFY.
+            if 1:
+                ignore = k.doKeyOnlyTasks(event)
+                if not ignore:
+                    # Handle the unbound character.
+                    k.handleDefaultChar(event, event and event.stroke)
+                    if c.exists:
+                        c.frame.updateStatusLine()
             return
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
@@ -3006,7 +3014,7 @@ class KeyHandlerClass:
         if event:
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
                 # A continuous unit test, better than "@test k.isPlainKey".
-    #@+node:ekr.20180418033838.1: *5* k.doBinding (SIMPLIFY)
+    #@+node:ekr.20180418033838.1: *5* k.doBinding (changed)
     def doBinding(self, event):
         """
         The last phase of k.masertKeyHandler.
@@ -3018,34 +3026,33 @@ class KeyHandlerClass:
         char, stroke, w = event.char, event.stroke, event.widget
         #
         # Use getPaneBindings for *all* keys.
-        #
         bi = k.getPaneBinding(stroke, w)
         #
         # Call k.handleUnboudKeys for all killed bindings.
-        #
         if bi and bi.commandName in k.killedBindings:
             #327: ignore killed bindings.
             k.handleUnboundKeys(event)
             return
         #
-        # Call k.masterCommand if the binding exists.
-        #
+        # Execute the command if the binding exists.
         if bi:
-            k.masterCommand(
-                event=event,
-                commandName=bi.commandName,
-                func=bi.func,
-                stroke=bi.stroke)
+            ignore = k.doKeyOnlyTasks(event)
+            if not ignore:
+                # Handle the unbound character.
+                c.doCommandByName(bi.commandName, event)
+            ### k.masterCommand(
+                # event=event,
+                # commandName=bi.commandName,
+                # func=bi.func,
+                # stroke=bi.stroke)
             return
         #
         # Handle unbound keys in the tree (not headlines).
-        #
         if c.widget_name(w).startswith('canvas'):
             k.searchTree(char)
             return
         #
         # No binding exists. Call k.handleUnboundKey.
-        #
         k.handleUnboundKeys(event)
     #@+node:ekr.20180418023827.1: *5* k.doDemo
     def doDemo(self, event):
@@ -3096,7 +3103,7 @@ class KeyHandlerClass:
             return True
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
-            return True
+            return False
         return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
@@ -3499,7 +3506,6 @@ class KeyHandlerClass:
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
-            # k.masterCommand(event=event, stroke=stroke)
             handle_default_key(stroke)
             return
         # #868
@@ -3543,7 +3549,7 @@ class KeyHandlerClass:
             c.doCommandByName('keyboard-quit', event)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand (To Be Deleted?)
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand (Delete!!)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.
