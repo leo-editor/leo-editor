@@ -187,7 +187,7 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (no longer calls k.masterCommand)
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
@@ -197,11 +197,6 @@ class AutoCompleterClass:
         w = event and event.w or c.get_focus()
         self.force = force
         if state not in ('insert', 'overwrite'):
-            return
-        # First, handle the invocation character as usual.
-        if not force:
-            # Ctrl-period does *not* insert a period.
-            ### k.masterCommand(event=event)
             return
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
@@ -263,10 +258,6 @@ class AutoCompleterClass:
         if (k.enable_calltips or force) and not is_headline:
             self.w = w
             self.calltip()
-        ###
-        # else:
-            # # Just insert the invocation character as usual.
-            # k.masterCommand(event=event)
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     @cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
