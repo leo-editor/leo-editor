@@ -3082,50 +3082,22 @@ class KeyHandlerClass:
         if not stroke:
             g.trace('Can not happen: no stroke')
             return 
-        ### c.check_event(event)
-        ### c.setLog()
-        ### k.stroke = stroke  # Set this global for general use.
-        #
         # Ignore all special keys.
         if k.isSpecialKey(event):
             return
-        ###
-            # # Compute func if not given.
-            # # It is *not* an error for func to be None.
-            # if commandName and not func:
-                # func = c.commandsDict.get(commandName.replace('&', ''))
-                # if not func:
-                    # g.es_print(f"no command for @item {commandName!r}", color='red')
-                    # return None
-            # commandName = commandName or func and func.__name__ or '<no function>'
-            # if 'keys' in g.app.debug:
-                # # A very important trace.
-                # g.trace(commandName, 'stroke', stroke)
-        #
         # Remember the key.
         k.setLossage(ch, stroke)
-        #
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
             return
-        #
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
             return
-        ####
-            # # Invoke the command, if given.
-            # if func:
-                # return_value = c.doCommand(func, commandName, event=event)
-                # if c.exists:
-                    # c.frame.updateStatusLine()
-                # return return_value
-        #
         # Ignore unbound keys in a state.
         if k.inState():
             return
-        #
-        # Finally, call k.handleDefaultChar.
+        # Finally, handle the character.
         k.handleDefaultChar(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
@@ -3454,7 +3426,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (no longer calls k.masterCommand)
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (changed)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3496,7 +3468,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (Test)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
     def handleUnboundKeys(self, event):
 
         c, k = self.c, self
@@ -3509,19 +3481,16 @@ class KeyHandlerClass:
             stroke.removeNumPadModifier()
             k.getArg(event, stroke=stroke)
             return
-        #
         # Ignore all unbound characters in command mode.
         if k.unboundKeyAction == 'command':
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             return
-        #
         # Ignore unbound F-keys.
         if stroke.isFKey():
             return
-        #
-        #  Handle a normal character in insert/overwrite.
+        # Handle a normal character in insert/overwrite.
         # <Return> is *not* a normal character.
         if (
             stroke and k.isPlainKey(stroke) and
@@ -3529,8 +3498,7 @@ class KeyHandlerClass:
         ):
             k.masterCommand(event=event, stroke=stroke)
             return
-        #
-        # Always ignore unbound Alt/Ctrl keys.
+        # Ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return
         # #868
@@ -3540,26 +3508,22 @@ class KeyHandlerClass:
             return
         # #868
         if stroke.isNumPadKey():
-            # To have effect, these must be bound.
-            return
-        #
+            return  # To have effect, these must be bound.
         # Ignore unbound non-ascii character.
         if (
             k.ignore_unbound_non_ascii_keys and
             not stroke.isPlainKey()
         ):
             return
-        #
         # Never insert escape or insert characters.
         if (
             stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
             return
-        #
-        # Let k.masterCommand handle the unbound character.
-        ### k.masterCommand(event=event, stroke=stroke)
+        # We aren't going to ignore the key. Do key-only tasks.
         k.doKeyOnlyTasks(event)
+        # Handle the unbound character.
         k.handleDefaultChar(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
@@ -3574,7 +3538,7 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (now calls c.doCommandByName)
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (changed)
     def doKeyboardQuit(self, event):
         """
         Handle keyboard-quit logic.
