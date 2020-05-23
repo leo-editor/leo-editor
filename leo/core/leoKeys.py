@@ -187,7 +187,7 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (no longer calls k.masterCommand)
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
@@ -201,7 +201,8 @@ class AutoCompleterClass:
         # First, handle the invocation character as usual.
         if not force:
             # Ctrl-period does *not* insert a period.
-            k.masterCommand(event=event)
+            ### k.masterCommand(event=event)
+            return
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
@@ -250,7 +251,7 @@ class AutoCompleterClass:
         """Toggle whether calltips are enabled."""
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20061031131434.13: *4* ac.showCalltips
+    #@+node:ekr.20061031131434.13: *4* ac.showCalltips (no longer calls k.masterCommand)
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
         """Show the calltips at the cursor."""
@@ -262,9 +263,10 @@ class AutoCompleterClass:
         if (k.enable_calltips or force) and not is_headline:
             self.w = w
             self.calltip()
-        else:
-            # Just insert the invocation character as usual.
-            k.masterCommand(event=event)
+        ###
+        # else:
+            # # Just insert the invocation character as usual.
+            # k.masterCommand(event=event)
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     @cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
@@ -860,13 +862,13 @@ class AutoCompleterClass:
                 extend = common_prefix[len(prefix) :]
                 ins = w.getInsertPoint()
                 w.insert(ins, extend)
+            return
+        if ch == '(' and k.enable_calltips:
+            # This calls self.exit if the '(' is valid.
+            self.calltip()
         else:
-            if ch == '(' and k.enable_calltips:
-                # This calls self.exit if the '(' is valid.
-                self.calltip()
-            else:
-                self.insert_string(ch)
-                self.exit()
+            self.insert_string(ch)
+            self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
         """Insert s at the insertion point."""
@@ -3397,7 +3399,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (commandName, event, func, stroke)
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (SIMPLIFY)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3438,7 +3440,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (event, stroke)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys(self, event):
 
         c, k = self.c, self
@@ -3512,7 +3514,7 @@ class KeyHandlerClass:
             # stroke.s was cleared, but not event.char.
             return True
         return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (commandName, event, func, stroke)
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (SIMPLIFY)
     def doKeyboardQuit(self, event):
         """
         Handle keyboard-quit logic.
@@ -3530,7 +3532,7 @@ class KeyHandlerClass:
                 stroke=stroke)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand (to do: simplify)
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand (SIMPLIFY)
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         """
         This is the central dispatching method.

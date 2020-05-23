@@ -283,7 +283,7 @@ class LeoMenu:
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
-    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (creates commands dynamically)
+    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (now calls c.doCommandByName)
     def createMasterMenuCallback(self, command, commandName):
         """
         Create a callback for the given args.
@@ -310,7 +310,8 @@ class LeoMenu:
             
             def static_menu_callback():
                 event = g.app.gui.create_key_event(c, w=getWidget())
-                return c.k.masterCommand(commandName=commandName, event=event)
+                ### return c.k.masterCommand(commandName=commandName, event=event)
+                c.doCommandByName(commandName, event)
 
             return static_menu_callback
             
@@ -320,7 +321,7 @@ class LeoMenu:
             def dummy_menu_callback(event=None):
                 pass
         
-            g.internalError(f"command not callable: {command!r}")
+            g.trace(f"bad command: {command!r}", color='red')
             return dummy_menu_callback
 
         # Create a command dynamically.
@@ -329,7 +330,8 @@ class LeoMenu:
         def dynamic_menu_callback():
             event = g.app.gui.create_key_event(c, w=getWidget())
             ### This call will change when kwargs are removed.
-            return c.k.masterCommand(func=command, event=event)
+            ### return c.k.masterCommand(func=command, event=event)
+            return c.doCommandByName(commandName, event)
 
         return dynamic_menu_callback
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
