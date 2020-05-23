@@ -3426,7 +3426,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (changed)
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (not changed yet)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3453,13 +3453,13 @@ class KeyHandlerClass:
             k.keyboardQuit()
         else:
             c.minibufferWantsFocus()  # New in Leo 4.5.
-        #
-            # Pass this on for macro recording.
-            # k.masterCommand(
-                # commandName=bi.commandName,
-                # event=event,
-                # func=bi.func,
-                # stroke=stroke)
+        if 1:
+            # Pass this on, NOT just for macro recording.
+            k.masterCommand(
+                commandName=bi.commandName,
+                event=event,
+                func=bi.func,
+                stroke=stroke)
         # Careful: the command could exit.
         if c.exists and not k.silentMode:
             # Use the state *after* executing the command.
