@@ -222,8 +222,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         """
-        Not a command.  Called from k.doKeyOnlyTasks to expand
-        abbreviations in event.widget.
+        Not a command.  Expand abbreviations in event.widget.
 
         Words start with '@'.
         """

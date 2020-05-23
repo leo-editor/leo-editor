@@ -64,9 +64,7 @@ assert time
 #    bindings are as expeced.
 #
 # B. If k.getPaneBinding finds a command associated with the incoming
-#    keystroke, k.masterKeyHandler calls k.masterCommand to execute the
-#    command. k.masterCommand handles many complex. See the source code for
-#    details.
+#    keystroke, k.masterKeyHandler executes the command.
 #
 # C. If k.getPaneBinding fails to bind the incoming keystroke to a command,
 #    k.masterKeyHandler calls k.handleUnboundKeys to handle the keystroke.
@@ -201,19 +199,12 @@ class AutoCompleterClass:
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
-            k.masterCommand(event=event)  ### SIMPLIFY.
-            ignore = k.doKeyOnlyTasks(event)
-            if not ignore:
-                # Handle the unbound character.
-                k.handleDefaultChar(event, event and event.stroke)
-                if c.exists:
-                    c.frame.updateStatusLine()
-            ###return ### This return was the problem.
+            c.insertUnboundStroke(event, event.stroke)
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
         self.language = g.scanForAtLanguage(c, c.p)
-        if w and (k.enable_autocompleter or force):  # self.language == 'python':
+        if w and (k.enable_autocompleter or force):
             self.w = w
             self.start(event)
     #@+node:ekr.20061031131434.10: *4* ac.autoCompleteForce
@@ -3038,11 +3029,6 @@ class KeyHandlerClass:
             if not ignore:
                 # Handle the unbound character.
                 c.doCommandByName(bi.commandName, event)
-            ### k.masterCommand(
-                # event=event,
-                # commandName=bi.commandName,
-                # func=bi.func,
-                # stroke=bi.stroke)
             return
         #
         # Handle unbound keys in the tree (not headlines).
@@ -3459,19 +3445,10 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed, TEST, simplify more)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
     def handleUnboundKeys(self, event):
         
         c, k = self.c, self
-        
-        def handle_default_key(stroke):
-            ignore = k.doKeyOnlyTasks(event)
-            if not ignore:
-                # Handle the unbound character.
-                k.handleDefaultChar(event, stroke)
-                if c.exists:
-                    c.frame.updateStatusLine()
-
         stroke = event.stroke
         if not g.assert_is(stroke, g.KeyStroke):
             return
@@ -3496,7 +3473,7 @@ class KeyHandlerClass:
             stroke and k.isPlainKey(stroke) and
             k.unboundKeyAction in ('insert', 'overwrite')
         ):
-            handle_default_key(stroke)
+            c.insertUnboundStroke(event, stroke)
             return
         # Ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
@@ -3504,7 +3481,7 @@ class KeyHandlerClass:
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
-            handle_default_key(stroke)
+            c.insertUnboundStroke(event, stroke)
             return
         # #868
         if stroke.isNumPadKey():
@@ -3513,15 +3490,10 @@ class KeyHandlerClass:
         if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
             return
         # Never insert escape or insert characters.
-        ###
-            # if (
-                # stroke and stroke.find('Escape') != -1 or
-                # stroke and stroke.find('Insert') != -1
-            # ):
         if 'Escape' in stroke or 'Insert' in stroke:
             return
         # Handle the unbound character.
-        handle_default_key(stroke)
+        c.insertUnboundStroke(event, stroke)
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         """Return True if char is a special key."""
@@ -3547,64 +3519,6 @@ class KeyHandlerClass:
             c.doCommandByName('keyboard-quit', event)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand (Delete or rename & rewrite)
-    def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
-        """
-        This is the central dispatching method.
-        All commands and keystrokes pass through here.
-        
-        Return the value returned by the command, or None if no command is executed.
-        """
-        c, k = self.c, self
-        if event: c.check_event(event)
-        c.setLog()
-        k.stroke = stroke  # Set this global for general use.
-        ch = event.char if event else ''
-        #
-        # Ignore all special keys.
-        if k.isSpecialKey(event):
-            return None
-        #
-        # Compute func if not given.
-        # It is *not* an error for func to be None.
-        if commandName and not func:
-            func = c.commandsDict.get(commandName.replace('&', ''))
-            if not func:
-                g.es_print(f"no command for @item {commandName!r}", color='red')
-                return None
-        commandName = commandName or func and func.__name__ or '<no function>'
-        if 'keys' in g.app.debug:
-            # A very important trace.
-            g.trace(commandName, 'stroke', stroke)
-        #
-        # Remember the key.
-        k.setLossage(ch, stroke)
-        #
-        # Handle keyboard-quit.
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            k.keyboardQuit()
-            return None
-        #
-        # Ignore abbreviations.
-        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
-            return None
-        #
-        # Invoke the command, if given.
-        if func:
-            return_value = c.doCommand(func, commandName, event=event)
-            if c.exists:
-                c.frame.updateStatusLine()
-            return return_value
-        #
-        # Ignore unbound keys in a state.
-        if k.inState():
-            return None
-        #
-        # Finally, call k.handleDefaultChar.
-        k.handleDefaultChar(event, stroke)
-        if c.exists:
-            c.frame.updateStatusLine()
-        return None
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         """Search all visible nodes for a headline starting with stroke."""

@@ -2299,6 +2299,17 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
+    #@+node:ekr.20200523135601.1: *4* c.insertUnboundStroke (new)
+    def insertUnboundStroke(self, event, stroke):
+        """Execute the command represented by the given key stroke."""
+        c, k = self, self.k
+        ignore = k.doKeyOnlyTasks(event)
+        if ignore:
+            return
+        # Handle the unbound character.
+        k.handleDefaultChar(event, stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         """Make commandName the command to be executed by repeat-complex-command."""
