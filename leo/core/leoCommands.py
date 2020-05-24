@@ -2333,7 +2333,7 @@ class Commands:
             return
         # Ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl():
-            if not self.enable_alt_ctrl_bindings:
+            if not k.enable_alt_ctrl_bindings:
                 return
             if k.ignore_unbound_non_ascii_keys:
                 return
