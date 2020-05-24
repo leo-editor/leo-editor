@@ -2961,38 +2961,8 @@ class KeyHandlerClass:
             return
         ### k.handleUnboundKeys(event)
         c.insertCharFromEvent(event)
-    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
-    def callStateFunction(self, event):
-        """Call the state handler associated with this event."""
-        k = self
-        ch = event.char
-        #
-        # Defensive programming
-        if not k.state.kind:
-            return None
-        if not k.state.handler:
-            g.error('callStateFunction: no state function for', k.state.kind)
-            return None
-        #
-        # Handle auto-completion before checking for unbound keys.
-        if k.state.kind == 'auto-complete':
-            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
-            val = k.state.handler(event)
-            return val
-        #
-        # Ignore unbound non-ascii keys.
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            len(ch) == 1 and
-            ch and ch not in ('\b', '\n', '\r', '\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            return None
-        #
-        # Call the state handler.
-        val = k.state.handler(event)
-        return val
-    #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
+    #@+node:ekr.20200524151214.1: *5* Setup...
+    #@+node:ekr.20180418040158.1: *6* k.checkKeyEvent
     def checkKeyEvent(self, event):
         """Perform sanity checks on the incoming event."""
         # These assert's should be safe, because eventFilter
@@ -3008,36 +2978,72 @@ class KeyHandlerClass:
         if event:
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
                 # A continuous unit test, better than "@test k.isPlainKey".
-    #@+node:ekr.20180418033838.1: *5* k.doBinding (changed)
-    def doBinding(self, event):
+    #@+node:ekr.20180418034305.1: *6* k.setEventWidget
+    def setEventWidget(self, event):
         """
-        Attempt to find a binding for the event's stroke.
-        If found, execute the command and return True
-        Otherwise, return False
+        A hack: redirect the event to the text part of the log.
+        """
+        c = self.c
+        w = event.widget
+        w_name = c.widget_name(w)
+        if w_name.startswith('log'):
+            event.widget = c.frame.log.logCtrl
+    #@+node:ekr.20180418031417.1: *6* k.traceVars
+    def traceVars(self, event):
+
+        trace = False and not g.unitTesting
+        traceGC = False
+        verbose = False
+        k = self
+        if not trace:
+            return
+        if traceGC:
+            g.printNewObjects('masterKey 1')
+        if verbose:
+            char = event.char
+            state = k.state.kind
+            stroke = event.stroke
+            g.trace(
+                f"stroke: {stroke!r}, "
+                f"char: {char!r}, "
+                f"state: {state}, "
+                f"state2: {k.unboundKeyAction}")
+    #@+node:ekr.20180418031118.1: *5* 1. k.isSpecialKey
+    def isSpecialKey(self, event):
+        """Return True if char is a special key."""
+        if not event:
+            # An empty event is not an error.
+            return False
+        # Fix #917.
+        if len(event.char) > 1 and not event.stroke.s:
+            # stroke.s was cleared, but not event.char.
+            return True
+        return event.char in g.app.gui.ignoreChars
+    #@+node:ekr.20110609161752.16459: *5* 2. k.setLossage
+    def setLossage(self, ch, stroke):
+
+        # k = self
+        if ch or stroke:
+            if len(g.app.lossage) > 99:
+                g.app.lossage.pop()
+        # This looks like a memory leak, but isn't.
+        g.app.lossage.insert(0, (ch, stroke),)
+    #@+node:ekr.20180418024449.1: *5* 3. k.doKeyboardQuit
+    def doKeyboardQuit(self, event):
+        """
+        A helper for k.masterKeyHandler: Handle keyboard-quit logic.
+        
+        return True if k.masterKeyHandler should return.
         """
         c, k = self.c, self
-        #
-        # Use getPaneBindings for *all* keys.
-        bi = k.getPaneBinding(event.stroke, event.w)
-        #
-        # #327: ignore killed bindings.
-        if bi and bi.commandName in k.killedBindings:
-            return False  
-        #
-        # Execute the command if the binding exists.
-        if bi:
-            ### g.trace(bi.commandName, event.stroke)
-            c.doCommandByName(bi.commandName, event)
+        stroke = getattr(event, 'stroke', None)
+        if k.abortAllModesKey and stroke and stroke == k.abortAllModesKey:
+            if getattr(c, 'screenCastController', None):
+                c.screenCastController.quit()
+            c.doCommandByName('keyboard-quit', event)
             return True
-        #
-        # Handle unbound keys in the tree (not headlines).
-        if c.widget_name(event.w).startswith('canvas'):
-            k.searchTree(event.char)
-            return True
-        #
-        # No binding exists.
         return False
-    #@+node:ekr.20180418023827.1: *5* k.doDemo
+    #@+node:ekr.20180418023827.1: *5* 4. k.doDemo
     def doDemo(self, event):
         """
         Support the demo.py plugin.
@@ -3061,7 +3067,7 @@ class KeyHandlerClass:
             demo.prev_command()
             return True
         return False
-    #@+node:ekr.20091230094319.6244: *5* k.doMode
+    #@+node:ekr.20091230094319.6244: *5* 5. k.doMode & helpers
     def doMode(self, event):
         """
         Handle mode bindings.
@@ -3127,132 +3133,38 @@ class KeyHandlerClass:
         if handler:
             handler(event)
         return True
-    #@+node:ekr.20180418025241.1: *5* k.doVim
-    def doVim(self, event):
-        """
-        Handle vim mode.
-        Return True if k.masterKeyHandler should return.
-        """
-        c = self.c
-        if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.do_key(event)
-            return ok
-        return False
-    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding & helper
-    def getPaneBinding(self, stroke, w):
-
+    #@+node:ekr.20061031131434.108: *6* k.callStateFunction
+    def callStateFunction(self, event):
+        """Call the state handler associated with this event."""
         k = self
-        if not g.assert_is(stroke, g.KeyStroke):
-            return None
-        for key, name in (
-            # Order here is similar to bindtags order.
-            ('command', None),
-            ('insert', None),
-            ('overwrite', None),
-            ('button', None),
-            ('body', 'body'),
-            ('text', 'head'),  # Important: text bindings in head before tree bindings.
-            ('tree', 'head'),
-            ('tree', 'canvas'),
-            ('log', 'log'),
-            ('text', 'log'),
-            ('text', None),
-            ('all', None),
-        ):
-            val = k.getBindingHelper(key, name, stroke, w)
-            if val:
-                return val
-        return None
-    #@+node:ekr.20180418105228.1: *6* getPaneBindingHelper
-    def getBindingHelper(self, key, name, stroke, w):
-        """Find a binding for the widget with the given name."""
-        c, k = self.c, self
+        ch = event.char
         #
-        # Return if the pane's name doesn't match the event's widget.
-        state = k.unboundKeyAction
-        w_name = c.widget_name(w)
-        pane_matches = (
-            name and w_name.startswith(name) or
-            key in ('command', 'insert', 'overwrite') and state == key or
-            key in ('text', 'all') and g.isTextWrapper(w) or
-            key in ('button', 'all')
-        )
-        if not pane_matches:
+        # Defensive programming
+        if not k.state.kind:
+            return None
+        if not k.state.handler:
+            g.error('callStateFunction: no state function for', k.state.kind)
             return None
         #
-        # Return if there is no binding at all.
-        d = k.masterBindingsDict.get(key, {})
-        if not d:
-            return None
-        bi = d.get(stroke)
-        if not bi:
-            return None
+        # Handle auto-completion before checking for unbound keys.
+        if k.state.kind == 'auto-complete':
+            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+            val = k.state.handler(event)
+            return val
         #
-        # Ignore previous/next-line commands while editing headlines.
+        # Ignore unbound non-ascii keys.
         if (
-            key == 'text' and
-            name == 'head' and
-            bi.commandName in ('previous-line', 'next-line')
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and
+            ch and ch not in ('\b', '\n', '\r', '\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
         ):
             return None
         #
-        # The binding has been found.
-        return bi
-    #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
-    def handleInputShortcut(self, event, stroke):
-        c, k, p = self.c, self, self.c.p
-        k.clearState()
-        if p.h.startswith(('@shortcuts', '@mode')):
-            # line of text in body
-            w = c.frame.body
-            before, sel, after = w.getInsertLines()
-            m = k._cmd_handle_input_pattern.search(sel)
-            assert m  # edit-shortcut was invoked on a malformed body line
-            sel = f"{m.group(0)} {stroke.s}"
-            udata = c.undoer.beforeChangeNodeContents(p)
-            w.setSelectionAreas(before, sel, after)
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-            w.onBodyChanged('change shortcut')
-            cmdname = m.group(0).rstrip('= ')
-            k.editShortcut_do_bind_helper(stroke, cmdname)
-            return
-        if p.h.startswith(('@command', '@button')):
-            udata = c.undoer.beforeChangeNodeContents(p)
-            cmd = p.h.split('@key', 1)[0]
-            p.h = f"{cmd} @key={stroke.s}"
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-            try:
-                cmdname = cmd.split(' ', 1)[1].strip()
-                k.editShortcut_do_bind_helper(stroke, cmdname)
-            except IndexError:
-                pass
-            return
-        # this should never happen
-        g.error('not in settings node shortcut')
-    #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
-    _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
-
-    def isInShortcutBodyLine(self):
-        k = self; c = k.c; p = c.p
-        if p.h.startswith(('@shortcuts', '@mode')):
-            # line of text in body
-            w = c.frame.body
-            before, sel, after = w.getInsertLines()
-            m = k._cmd_handle_input_pattern.search(sel)
-            return bool(m)
-        return p.h.startswith(('@command', '@button'))
-    #@+node:vitalije.20170709151658.1: *6* k.isEditShortcutSensible
-    def isEditShortcutSensible(self):
-        k = self; c = k.c; p = c.p
-        return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
-    #@+node:vitalije.20170709202924.1: *6* k.editShortcut_do_bind_helper
-    def editShortcut_do_bind_helper(self, stroke, cmdname):
-        k = self; c = k.c
-        cmdfunc = c.commandsDict.get(cmdname)
-        if cmdfunc:
-            k.bindKey('all', stroke, cmdfunc, cmdname)
-            g.es('bound', stroke, 'to command', cmdname)
-    #@+node:ekr.20061031131434.152: *5* k.handleMiniBindings
+        # Call the state handler.
+        val = k.state.handler(event)
+        return val
+    #@+node:ekr.20061031131434.152: *6* k.handleMiniBindings
     def handleMiniBindings(self, event, state, stroke):
         """Find and execute commands bound to the event."""
         k = self
@@ -3294,7 +3206,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper (changed)
+    #@+node:ekr.20180418114300.1: *7* k.handleMinibufferHelper (changed)
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.
@@ -3325,33 +3237,161 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
-    def isSpecialKey(self, event):
-        """Return True if char is a special key."""
-        if not event:
-            # An empty event is not an error.
-            return False
-        # Fix #917.
-        if len(event.char) > 1 and not event.stroke.s:
-            # stroke.s was cleared, but not event.char.
-            return True
-        return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.doKeyboardQuit (changed)
-    def doKeyboardQuit(self, event):
+    #@+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
+    def handleInputShortcut(self, event, stroke):
+        c, k, p = self.c, self, self.c.p
+        k.clearState()
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            assert m  # edit-shortcut was invoked on a malformed body line
+            sel = f"{m.group(0)} {stroke.s}"
+            udata = c.undoer.beforeChangeNodeContents(p)
+            w.setSelectionAreas(before, sel, after)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            w.onBodyChanged('change shortcut')
+            cmdname = m.group(0).rstrip('= ')
+            k.editShortcut_do_bind_helper(stroke, cmdname)
+            return
+        if p.h.startswith(('@command', '@button')):
+            udata = c.undoer.beforeChangeNodeContents(p)
+            cmd = p.h.split('@key', 1)[0]
+            p.h = f"{cmd} @key={stroke.s}"
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            try:
+                cmdname = cmd.split(' ', 1)[1].strip()
+                k.editShortcut_do_bind_helper(stroke, cmdname)
+            except IndexError:
+                pass
+            return
+        # this should never happen
+        g.error('not in settings node shortcut')
+    #@+node:vitalije.20170709151653.1: *7* k.isInShortcutBodyLine
+    _cmd_handle_input_pattern = re.compile(r'[A-Za-z0-9_\-]+\s*=')
+
+    def isInShortcutBodyLine(self):
+        k = self; c = k.c; p = c.p
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            return bool(m)
+        return p.h.startswith(('@command', '@button'))
+    #@+node:vitalije.20170709151658.1: *7* k.isEditShortcutSensible
+    def isEditShortcutSensible(self):
+        k = self; c = k.c; p = c.p
+        return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
+    #@+node:vitalije.20170709202924.1: *7* k.editShortcut_do_bind_helper
+    def editShortcut_do_bind_helper(self, stroke, cmdname):
+        k = self; c = k.c
+        cmdfunc = c.commandsDict.get(cmdname)
+        if cmdfunc:
+            k.bindKey('all', stroke, cmdfunc, cmdname)
+            g.es('bound', stroke, 'to command', cmdname)
+    #@+node:ekr.20180418025241.1: *5* 6. k.doVim
+    def doVim(self, event):
         """
-        A helper for k.masterKeyHandler: Handle keyboard-quit logic.
-        
-        return True if k.masterKeyHandler should return.
+        Handle vim mode.
+        Return True if k.masterKeyHandler should return.
+        """
+        c = self.c
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.do_key(event)
+            return ok
+        return False
+    #@+node:ekr.20180418033838.1: *5* 7. k.doBinding & helpers
+    def doBinding(self, event):
+        """
+        Attempt to find a binding for the event's stroke.
+        If found, execute the command and return True
+        Otherwise, return False
         """
         c, k = self.c, self
-        stroke = getattr(event, 'stroke', None)
-        if k.abortAllModesKey and stroke and stroke == k.abortAllModesKey:
-            if getattr(c, 'screenCastController', None):
-                c.screenCastController.quit()
-            c.doCommandByName('keyboard-quit', event)
+        #
+        # Use getPaneBindings for *all* keys.
+        bi = k.getPaneBinding(event.stroke, event.w)
+        #
+        # #327: ignore killed bindings.
+        if bi and bi.commandName in k.killedBindings:
+            return False  
+        #
+        # Execute the command if the binding exists.
+        if bi:
+            ### g.trace(bi.commandName, event.stroke)
+            c.doCommandByName(bi.commandName, event)
             return True
+        #
+        # Handle unbound keys in the tree (not headlines).
+        if c.widget_name(event.w).startswith('canvas'):
+            k.searchTree(event.char)
+            return True
+        #
+        # No binding exists.
         return False
-    #@+node:ekr.20160409035115.1: *5* k.searchTree
+    #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
+    def getPaneBinding(self, stroke, w):
+
+        k = self
+        if not g.assert_is(stroke, g.KeyStroke):
+            return None
+        for key, name in (
+            # Order here is similar to bindtags order.
+            ('command', None),
+            ('insert', None),
+            ('overwrite', None),
+            ('button', None),
+            ('body', 'body'),
+            ('text', 'head'),  # Important: text bindings in head before tree bindings.
+            ('tree', 'head'),
+            ('tree', 'canvas'),
+            ('log', 'log'),
+            ('text', 'log'),
+            ('text', None),
+            ('all', None),
+        ):
+            val = k.getBindingHelper(key, name, stroke, w)
+            if val:
+                return val
+        return None
+    #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper
+    def getBindingHelper(self, key, name, stroke, w):
+        """Find a binding for the widget with the given name."""
+        c, k = self.c, self
+        #
+        # Return if the pane's name doesn't match the event's widget.
+        state = k.unboundKeyAction
+        w_name = c.widget_name(w)
+        pane_matches = (
+            name and w_name.startswith(name) or
+            key in ('command', 'insert', 'overwrite') and state == key or
+            key in ('text', 'all') and g.isTextWrapper(w) or
+            key in ('button', 'all')
+        )
+        if not pane_matches:
+            return None
+        #
+        # Return if there is no binding at all.
+        d = k.masterBindingsDict.get(key, {})
+        if not d:
+            return None
+        bi = d.get(stroke)
+        if not bi:
+            return None
+        #
+        # Ignore previous/next-line commands while editing headlines.
+        if (
+            key == 'text' and
+            name == 'head' and
+            bi.commandName in ('previous-line', 'next-line')
+        ):
+            return None
+        #
+        # The binding has been found.
+        return bi
+    #@+node:ekr.20160409035115.1: *6* k.searchTree
     def searchTree(self, char):
         """Search all visible nodes for a headline starting with stroke."""
         if not char: return
@@ -3392,36 +3432,6 @@ class KeyHandlerClass:
                 # c.selectPosition(p)
                 # c.redraw()
             # return found
-    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
-    def setEventWidget(self, event):
-        """
-        A hack: redirect the event to the text part of the log.
-        """
-        c = self.c
-        w = event.widget
-        w_name = c.widget_name(w)
-        if w_name.startswith('log'):
-            event.widget = c.frame.log.logCtrl
-    #@+node:ekr.20180418031417.1: *5* k.traceVars
-    def traceVars(self, event):
-
-        trace = False and not g.unitTesting
-        traceGC = False
-        verbose = False
-        k = self
-        if not trace:
-            return
-        if traceGC:
-            g.printNewObjects('masterKey 1')
-        if verbose:
-            char = event.char
-            state = k.state.kind
-            stroke = event.stroke
-            g.trace(
-                f"stroke: {stroke!r}, "
-                f"char: {char!r}, "
-                f"state: {state}, "
-                f"state2: {k.unboundKeyAction}")
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
@@ -3896,15 +3906,6 @@ class KeyHandlerClass:
         if not g.assert_is(stroke, g.KeyStroke):
             return stroke
         return stroke.prettyPrint()
-    #@+node:ekr.20110609161752.16459: *4* k.setLossage
-    def setLossage(self, ch, stroke):
-
-        # k = self
-        if ch or stroke:
-            if len(g.app.lossage) > 99:
-                g.app.lossage.pop()
-        # This looks like a memory leak, but isn't.
-        g.app.lossage.insert(0, (ch, stroke),)
     #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char(self, stroke):
         """
