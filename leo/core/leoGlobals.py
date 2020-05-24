@@ -994,6 +994,7 @@ class KeyStroke:
             return d.get(s)
         return s if len(s) == 1 else ''
     #@-others
+
 def isStroke(obj):
     return isinstance(obj, KeyStroke)
 

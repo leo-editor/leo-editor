@@ -2314,6 +2314,56 @@ class Commands:
             return
         if not g.unitTesting: g.trace(stroke) ###
         #
+        # From k.handleUnboundKeys.
+        #
+        
+        # #1448: Very late special case for getArg state.
+        #        This is not needed for other states.
+        if stroke.isNumPadKey() and k.state.kind == 'getArg':
+            stroke.removeNumPadModifier()
+            k.getArg(event, stroke=stroke)
+            return
+        # Handle all unbound characters in command mode.
+        if k.unboundKeyAction == 'command':
+            w = g.app.gui.get_focus(c)
+            if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+                c.onCanvasKey(event)
+            return
+        # Ignore unbound F-keys.
+        if stroke.isFKey():
+            return
+        # Handle a normal character in insert/overwrite.
+        # <Return> is *not* a normal character.
+        if 0: ###
+            if (
+                stroke and k.isPlainKey(stroke) and
+                k.unboundKeyAction in ('insert', 'overwrite')
+            ):
+                c.insertCharFromEvent(event)
+                return
+        # Ignore unbound Alt/Ctrl keys.
+        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
+            return
+        # #868
+        if stroke.isPlainNumPad():
+            stroke.removeNumPadModifier()
+            event.stroke = stroke
+            ### c.insertCharFromEvent(event)
+            ### return
+        # #868
+        if stroke.isNumPadKey():
+            return  # To have effect, these must be bound.
+        # Ignore unbound non-ascii character.
+        if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
+            return
+        # Never insert escape or insert characters.
+        if 'Escape' in stroke.s or 'Insert' in stroke.s:
+            return
+        #
+        # End k.handleUnboundKeys
+        #
+        
+        #
         # Ignore unbound alt-ctrl key
         if stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
