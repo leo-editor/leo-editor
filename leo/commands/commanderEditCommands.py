@@ -519,7 +519,7 @@ def indentBody(self, event=None):
     c, undoType = self, 'Indent Region'
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
-    ### Experimental.
+    # New in Leo 6.3.
     if sel_1 == sel_2:
         c.editCommands.selfInsertCommand(event)
         return

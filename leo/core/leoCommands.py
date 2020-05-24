@@ -2366,9 +2366,12 @@ class Commands:
             c.frame.tree.onHeadlineKey(event)
             return
         #
-        # Handle events in the background tree.
+        # Handle events in the background tree (not headlines).
         if name.startswith('canvas'):
-            if not stroke:  # Not exactly right, but it seems to be good enough.
+            if event.char:
+                k.searchTree(event.char)
+            # Not exactly right, but it seems to be good enough.
+            elif not stroke:
                 c.onCanvasKey(event)
             return
         #

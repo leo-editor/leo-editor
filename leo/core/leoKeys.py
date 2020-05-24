@@ -3319,13 +3319,7 @@ class KeyHandlerClass:
         #
         # Execute the command if the binding exists.
         if bi:
-            ### g.trace(bi.commandName, event.stroke)
             c.doCommandByName(bi.commandName, event)
-            return True
-        #
-        # Handle unbound keys in the tree (not headlines).
-        if c.widget_name(event.w).startswith('canvas'):
-            k.searchTree(event.char)
             return True
         #
         # No binding exists.
