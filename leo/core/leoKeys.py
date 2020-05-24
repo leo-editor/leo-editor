@@ -254,14 +254,17 @@ class AutoCompleterClass:
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
         """Show the calltips at the cursor."""
-        c = self.c; k = c.k
+        c, k = self.c, self.c.k
         w = event and event.w
-        if not w: return
+        if not w:
+            return
         is_headline = c.widget_name(w).startswith('head')
         # Insert the calltip if possible, but not in headlines.
         if (k.enable_calltips or force) and not is_headline:
             self.w = w
             self.calltip()
+        else:
+            c.insertUnboundStroke(event, event.stroke)
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     @cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
@@ -2942,17 +2945,15 @@ class KeyHandlerClass:
         # Order is very important here...
         if k.isSpecialKey(event):
             return
+        k.setLossage(event.char, event.stroke)
         if k.doKeyboardQuit(event):
             return
-        k.setLossage(event.char, event.stroke) ###
         if k.doDemo(event):
             return
         if k.doMode(event):
             return
         if k.doVim(event):
             return
-        ###if k.doUnboundPlainKey(event): ### Huh???
-        ###    return
         if k.doBinding(event):
             return
         # Ignore abbreviations.
@@ -3024,9 +3025,6 @@ class KeyHandlerClass:
         #
         # Execute the command if the binding exists.
         if bi:
-            ### g.trace(bi)
-            ###ignore = k.doKeyOnlyTasks(event)
-            ###if not ignore:
             c.doCommandByName(bi.commandName, event)
             return True
         #
@@ -3127,48 +3125,6 @@ class KeyHandlerClass:
         if handler:
             handler(event)
         return True
-    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
-    def doUnboundPlainKey(self, event):
-        """
-        Handle unbound plain keys.
-        Return True if k.masterKeyHandler should return.
-        """
-        c, k = self.c, self
-        stroke, w = event.stroke, event.widget
-        #
-        # Ignore non-plain keys.
-        if not k.isPlainKey(stroke):
-            return False
-        #
-        # Ignore any keys in the background tree widget.
-        if c.widget_name(w).startswith('canvas'):
-            return False
-        #
-        # Ignore the char if it is bound to the auto-complete command.
-        if self.isAutoCompleteChar(stroke):
-            return False
-        #
-        # Handle the unbound key.
-        k.handleUnboundKeys(event)
-        return True
-    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
-    def isAutoCompleteChar(self, stroke):
-        """
-        Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.
-        """
-        k = self; state = k.unboundKeyAction
-        assert g.isStrokeOrNone(stroke)
-        if stroke and state in ('insert', 'overwrite'):
-            for key in (state, 'body', 'log', 'text', 'all'):
-                d = k.masterBindingsDict.get(key, {})
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
-                        if bi.commandName == 'auto-complete':
-                            return True
-        return False
     #@+node:ekr.20180418025241.1: *5* k.doVim
     def doVim(self, event):
         """
