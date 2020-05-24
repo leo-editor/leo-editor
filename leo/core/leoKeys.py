@@ -198,7 +198,7 @@ class AutoCompleterClass:
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
-            c.insertUnboundStroke(event, event.stroke)
+            c.insertCharFromEvent(event)
         if c.exists:
             c.frame.updateStatusLine()
         # Allow autocompletion only in the body pane.
@@ -263,7 +263,7 @@ class AutoCompleterClass:
             self.w = w
             self.calltip()
         else:
-            c.insertUnboundStroke(event, event.stroke)
+            c.insertCharFromEvent(event)
     #@+node:ekr.20061031131434.14: *4* ac.showCalltipsForce
     @cmd('show-calltips-force')
     def showCalltipsForce(self, event=None):
@@ -3331,7 +3331,7 @@ class KeyHandlerClass:
         """
         c, k = self.c, self
         stroke = event.stroke
-        if not g.assert_is(stroke, g.KeyStroke):
+        if not stroke:
             return
         # #1448: Very late special case for getArg state.
         #        This is not needed for other states.
@@ -3354,7 +3354,7 @@ class KeyHandlerClass:
             stroke and k.isPlainKey(stroke) and
             k.unboundKeyAction in ('insert', 'overwrite')
         ):
-            c.insertUnboundStroke(event, stroke)
+            c.insertCharFromEvent(event)
             return
         # Ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
@@ -3362,7 +3362,8 @@ class KeyHandlerClass:
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
-            c.insertUnboundStroke(event, stroke)
+            event.stroke = stroke
+            c.insertCharFromEvent(event)
             return
         # #868
         if stroke.isNumPadKey():
@@ -3374,7 +3375,7 @@ class KeyHandlerClass:
         if 'Escape' in stroke or 'Insert' in stroke:
             return
         # Handle the unbound character.
-        c.insertUnboundStroke(event, stroke)
+        c.insertCharFromEvent(event)
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         """Return True if char is a special key."""

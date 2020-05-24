@@ -2299,21 +2299,16 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
-    #@+node:ekr.20200523135601.1: *4* c.insertUnboundStroke (new)
-    def insertUnboundStroke(self, event, stroke):
-        """Insert the character given by key stroke."""
-        c = self
-        # Handle the unbound character.
-        c.insertUnboundHelper(event, stroke)
-        if c.exists:
-            c.frame.updateStatusLine()
-    #@+node:ekr.20061031131434.110: *5* c.insertUnboundHelper (new)
-    def insertUnboundHelper(self, event, stroke):
-        """Insert a character given by the stroke."""
+    #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent (new)
+    def insertCharFromEvent(self, event):
+        """
+        Insert the character given by event.
+        
+        What happens depends on which widget has focus.
+        """
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
-        if not stroke:
-            stroke = event.stroke
+        stroke = event.stroke
         if not stroke:
             return
         #
@@ -2327,6 +2322,7 @@ class Commands:
             action = k.unboundKeyAction
             if action in ('insert', 'overwrite'):
                 c.editCommands.selfInsertCommand(event, action=action)
+                c.frame.updateStatusLine()
             return
         #
         # Handle events in headlines.
