@@ -22006,7 +22006,7 @@ def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
     if c.exists:
         c.frame.updateStatusLine()
     return None
-#@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers (not used)
+#@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers (no longer used)
 def universalDispatcher(self, event):
     """Handle accumulation of universal argument."""
     << about repeat counts >>
@@ -22129,6 +22129,87 @@ def doControlU(self, event, stroke):
     if ch == '(':
         k.clearState()
         k.resetLabel()
+#@+node:ekr.20200523081446.1: *3* k.doKeyOnlyTasks (new: no longer used)
+def doKeyOnlyTasks(self, event):
+    """
+    Do keystroke-related tasks related to commands.
+    
+    Return True if we should ignore the event.
+    """
+    ### c, k = self.c, self
+    k = self
+    assert event, g.callers()
+    ###if not event: g.trace('Can not happen: no event')
+        
+    ### ch, stroke = event.char, event.stroke
+    assert event.stroke, g.callers()
+    ###
+        # if not event.stroke:
+            # g.trace('Can not happen: no stroke')
+            # return True
+    ### # Ignore all special keys.
+    assert not k.isSpecialKey(event), g.callers()
+    ###
+        # if k.isSpecialKey(event):
+            # g.trace('\n===== Can not happen: k.isSpecial')
+            # return True
+    ###
+        # Remember the key.
+        # k.setLossage(ch, stroke)
+    ### # Handle keyboard-quit.
+    if k.abortAllModesKey and event.stroke == k.abortAllModesKey:
+        g.trace('\n===== Can not happen: Ctrl-G')
+        ### k.keyboardQuit()
+        ### return True
+        assert False, g.callers()
+    ###
+        # # Ignore abbreviations.
+        # if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
+            # return False
+    return False
+#@+node:ekr.20180418025702.1: *3* k.doUnboundPlainKey & helper (no longer used)
+def doUnboundPlainKey(self, event):
+    """
+    Handle unbound plain keys.
+    Return True if k.masterKeyHandler should return.
+    """
+    c, k = self.c, self
+    stroke, w = event.stroke, event.widget
+    #
+    # Ignore non-plain keys.
+    if not k.isPlainKey(stroke):
+        return False
+    #
+    # Ignore any keys in the background tree widget.
+    if c.widget_name(w).startswith('canvas'):
+        return False
+    #
+    # Ignore the char if it is bound to the auto-complete command.
+    if self.isAutoCompleteChar(stroke):
+        return False
+    #
+    # Handle the unbound key.
+    g.trace(event.stroke)
+    k.handleUnboundKeys(event)
+    return True
+#@+node:ekr.20110209083917.16004: *4* k.isAutoCompleteChar
+def isAutoCompleteChar(self, stroke):
+    """
+    Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.
+    """
+    k = self; state = k.unboundKeyAction
+    assert g.isStrokeOrNone(stroke)
+    if stroke and state in ('insert', 'overwrite'):
+        for key in (state, 'body', 'log', 'text', 'all'):
+            d = k.masterBindingsDict.get(key, {})
+            if d:
+                bi = d.get(stroke)
+                if bi:
+                    assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
+                    if bi.commandName == 'auto-complete':
+                        return True
+    return False
 #@-all
 #@@nosearch
 #@-leo

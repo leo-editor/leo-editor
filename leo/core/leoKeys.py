@@ -195,7 +195,6 @@ class AutoCompleterClass:
         self.force = force
         if k.unboundKeyAction not in ('insert', 'overwrite'):
             return
-        g.trace(c.command_name, g.callers(6))
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
@@ -2945,6 +2944,7 @@ class KeyHandlerClass:
         # Order is very important here...
         if k.isSpecialKey(event):
             return
+        # Add *all* characters to the lossage.
         k.setLossage(event.char, event.stroke)
         if k.doKeyboardQuit(event):
             return
@@ -3323,7 +3323,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed) (calls c.insertUnboundStroke)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
     def handleUnboundKeys(self, event):
         """
         The last step of k.masterKeyHandler.

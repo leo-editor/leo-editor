@@ -2307,22 +2307,18 @@ class Commands:
         c.insertUnboundHelper(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
-    #@+node:ekr.20061031131434.110: *5* c.insertUnboundHelper (was k.handleUnboundKeys)
+    #@+node:ekr.20061031131434.110: *5* c.insertUnboundHelper (new)
     def insertUnboundHelper(self, event, stroke):
-        """
-        Handle an unbound key, based on the event's widget.
-        Do not assume that stroke exists.
-        """
+        """Insert a character given by the stroke."""
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
-        ### New.
         if not stroke:
             stroke = event.stroke
         if not stroke:
             return
         #
         # Ignore unbound alt-ctrl key
-        if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
+        if stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
             return
         #
@@ -2331,8 +2327,6 @@ class Commands:
             action = k.unboundKeyAction
             if action in ('insert', 'overwrite'):
                 c.editCommands.selfInsertCommand(event, action=action)
-            else:
-                pass  # Ignore the key
             return
         #
         # Handle events in headlines.
@@ -2356,12 +2350,9 @@ class Commands:
             return
         #
         # Send the event to the text widget, not the LeoLog instance.
-        if not stroke:
-            stroke = event.stroke
-        if stroke:
-            i = log_w.getInsertPoint()
-            s = stroke.toGuiChar()
-            log_w.insert(i, s)
+        i = log_w.getInsertPoint()
+        s = stroke.toGuiChar()
+        log_w.insert(i, s)
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         """Make commandName the command to be executed by repeat-complex-command."""
