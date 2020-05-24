@@ -185,7 +185,7 @@ class AutoCompleterClass:
             # True: show results in autocompleter tab.
             # False: show results in a QCompleter widget.
     #@+node:ekr.20061031131434.8: *3* ac.Top level
-    #@+node:ekr.20061031131434.9: *4* ac.autoComplete (changed)
+    #@+node:ekr.20061031131434.9: *4* ac.autoComplete
     @cmd('auto-complete')
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
@@ -249,7 +249,7 @@ class AutoCompleterClass:
         """Toggle whether calltips are enabled."""
         self.k.enable_calltips = not self.k.enable_calltips
         self.showCalltipsStatus()
-    #@+node:ekr.20061031131434.13: *4* ac.showCalltips (changed)
+    #@+node:ekr.20061031131434.13: *4* ac.showCalltips
     @cmd('show-calltips')
     def showCalltips(self, event=None, force=False):
         """Show the calltips at the cursor."""
@@ -2771,7 +2771,7 @@ class KeyHandlerClass:
         ga.get_minibuffer_command_name.
         """
         return self.getArgInstance.get_minibuffer_command_name()
-    #@+node:ekr.20061031131434.130: *4* k.keyboardQuit (changed)
+    #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     @cmd('keyboard-quit')
     def keyboardQuit(self, event=None, setFocus=True):
         """Clears the state and the minibuffer label."""
@@ -2915,7 +2915,7 @@ class KeyHandlerClass:
                     if d.get(key) == commandName:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
-    #@+node:ekr.20061031131434.127: *4* k.simulateCommand (changed)
+    #@+node:ekr.20061031131434.127: *4* k.simulateCommand
     def simulateCommand(self, commandName, event=None):
         """Execute a Leo command by name."""
         c = self.c
@@ -2959,7 +2959,6 @@ class KeyHandlerClass:
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
             return
-        ### k.handleUnboundKeys(event)
         c.insertCharFromEvent(event)
     #@+node:ekr.20200524151214.1: *5* Setup...
     #@+node:ekr.20180418040158.1: *6* k.checkKeyEvent
@@ -3206,7 +3205,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20180418114300.1: *7* k.handleMinibufferHelper (changed)
+    #@+node:ekr.20180418114300.1: *7* k.handleMinibufferHelper
     def handleMinibufferHelper(self, event, pane, state, stroke):
         """
         Execute a pane binding in the minibuffer.

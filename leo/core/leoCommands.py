@@ -2235,7 +2235,6 @@ class Commands:
         """
         c, p = self, self.p
         c.setLog()
-        if not g.unitTesting: g.trace(command_name) ###
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
         self.command_function = command_func
@@ -2277,7 +2276,7 @@ class Commands:
             p = c.p
             g.doHook("command2", c=c, p=p, label=command_name)
         return return_value
-    #@+node:ekr.20200522075411.1: *4* c.doCommandByName (new)
+    #@+node:ekr.20200522075411.1: *4* c.doCommandByName
     def doCommandByName(self, command_name, event):
         """
         Execute one command, given the name of the command.
@@ -2300,7 +2299,7 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
-    #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent (new)
+    #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
         Insert the character given by event.
@@ -2312,13 +2311,10 @@ class Commands:
         stroke = event.stroke
         if not stroke:
             return
-        if not g.unitTesting: g.trace(stroke) ###
         #
-        # From k.handleUnboundKeys.
+        # Part 1: Very late special cases.
         #
-        
-        # #1448: Very late special case for getArg state.
-        #        This is not needed for other states.
+        # #1448
         if stroke.isNumPadKey() and k.state.kind == 'getArg':
             stroke.removeNumPadModifier()
             k.getArg(event, stroke=stroke)
@@ -2329,30 +2325,25 @@ class Commands:
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             return
+        #
+        # Part 2: Filter out keys that should never be inserted by default.
+        #
         # Ignore unbound F-keys.
         if stroke.isFKey():
             return
-        # Handle a normal character in insert/overwrite.
-        # <Return> is *not* a normal character.
-        if 0: ###
-            if (
-                stroke and k.isPlainKey(stroke) and
-                k.unboundKeyAction in ('insert', 'overwrite')
-            ):
-                c.insertCharFromEvent(event)
-                return
         # Ignore unbound Alt/Ctrl keys.
-        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
-            return
+        if stroke.isAltCtrl():
+            if not self.enable_alt_ctrl_bindings:
+                return
+            if k.ignore_unbound_non_ascii_keys:
+                return
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
             event.stroke = stroke
-            ### c.insertCharFromEvent(event)
-            ### return
         # #868
         if stroke.isNumPadKey():
-            return  # To have effect, these must be bound.
+            return
         # Ignore unbound non-ascii character.
         if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
             return
@@ -2360,14 +2351,7 @@ class Commands:
         if 'Escape' in stroke.s or 'Insert' in stroke.s:
             return
         #
-        # End k.handleUnboundKeys
-        #
-        
-        #
-        # Ignore unbound alt-ctrl key
-        if stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
-            g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
-            return
+        # Part 3: Handle the event depending on the pane and state.
         #
         # Handle events in the body pane.
         if name.startswith('body'):
