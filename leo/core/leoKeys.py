@@ -3025,7 +3025,7 @@ class KeyHandlerClass:
         #
         # Execute the command if the binding exists.
         if bi:
-            g.trace(bi.commandName, event.stroke)
+            ### g.trace(bi.commandName, event.stroke)
             c.doCommandByName(bi.commandName, event)
             return True
         #

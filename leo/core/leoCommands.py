@@ -2235,6 +2235,7 @@ class Commands:
         """
         c, p = self, self.p
         c.setLog()
+        if not g.unitTesting: g.trace(command_name) ###
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
         self.command_function = command_func
@@ -2311,7 +2312,7 @@ class Commands:
         stroke = event.stroke
         if not stroke:
             return
-        g.trace(stroke)
+        if not g.unitTesting: g.trace(stroke) ###
         #
         # Ignore unbound alt-ctrl key
         if stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:

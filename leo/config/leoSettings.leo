@@ -2319,6 +2319,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20060603215208"></v>
+<v t="ekr.20060925060533.4"></v>
+<v t="ekr.20200524143637.1"><vh>COPY: @shortcuts Text operations</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3609,19 +3612,25 @@ delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
+### NEW:
+indent-region                       !text = Tab
+### OLD:
 # indent-region                     = Tab # Only when text is selected.
-indent-region                       = ctrl-greater # Ctrl-shift-&gt;
+# indent-region                     = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
-newline-and-indent                  = Ctrl-j
-newline-and-indent                  !text = Tab
+# newline-and-indent                = Ctrl-j
+# newline-and-indent                !text = Tab
 focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
 unformat-paragraph                  = Shift-Ctrl-u
-unindent-region                     = ctrl-less # Ctrl-Shift-&lt;
-unindent-region                     = Shift-tab # Only when text is selected.
+### NEW
+unindent-region                     !text = Shift-Tab
+# OLD:
+# unindent-region                     = ctrl-less # Ctrl-Shift-&lt;
+# unindent-region                     = Shift-tab # Only when text is selected.
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>
@@ -11931,6 +11940,41 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 <t tx="ekr.20200518065357.1">True: Remove Shift modifier when the desired key is a colon or semicolon.
       This fixes an infelicity in German keyboards.
 </t>
+<t tx="ekr.20200524143637.1">add-comments                        = Ctrl-parenleft
+backward-delete-char                !text = BackSpace
+backward-delete-char                = Shift-BackSpace
+backward-delete-word                = Ctrl-BackSpace
+backward-kill-word                  = Alt-BackSpace
+copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
+cut-text                            = Ctrl-x
+delete-char                         = Shift-Delete
+delete-char                         = Keypad+Shift+Delete
+delete-char                         !text = Delete
+delete-char                         !text = Keypad+Delete
+delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
+delete-word                         = Ctrl-Delete
+delete-word                         = Keypad+Ctrl+Delete
+delete-spaces                       = None
+#
+### NEW: Everything should work with tab unbound.
+# indent-region                     !text = Tab
+### indent-region                   = Tab # Only when text is selected.
+### indent-region                   = ctrl-greater # Ctrl-shift-&gt;
+kill-line                           = Ctrl-k
+kill-to-end-of-line                 = None
+### newline-and-indent                  = Ctrl-j
+### newline-and-indent                  !text = Tab
+focus-to-body                       !tree = Tab
+paste-text                          = Ctrl-v
+reformat-paragraph                  = Shift-Ctrl-p
+split-line                          = None
+unformat-paragraph                  = Shift-Ctrl-u
+unindent-region                     !text = Shift-Tab
+### unindent-region                 = ctrl-less # Ctrl-Shift-&lt;
+### unindent-region                 = Shift-tab # Only when text is selected.
+yank                                = Ctrl-Y
+yank-pop                            = Alt-Y
+zap-to-character                    = Alt-z</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
