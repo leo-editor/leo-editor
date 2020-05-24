@@ -2311,6 +2311,7 @@ class Commands:
         stroke = event.stroke
         if not stroke:
             return
+        g.trace(stroke)
         #
         # Ignore unbound alt-ctrl key
         if stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
