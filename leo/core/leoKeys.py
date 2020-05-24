@@ -190,16 +190,18 @@ class AutoCompleterClass:
     def autoComplete(self, event=None, force=False):
         """An event handler for autocompletion."""
         c, k = self.c, self.k
-        state = k.unboundKeyAction
         # pylint: disable=consider-using-ternary
         w = event and event.w or c.get_focus()
         self.force = force
-        if state not in ('insert', 'overwrite'):
+        if k.unboundKeyAction not in ('insert', 'overwrite'):
             return
+        g.trace(c.command_name, g.callers(6))
         if not force:
             # Ctrl-period does *not* insert a period,
             # but plain periods *must* be inserted!
             c.insertUnboundStroke(event, event.stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
@@ -2930,7 +2932,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         """The master key handler for almost all key bindings."""
-        k = self
+        c, k = self.c, self
         # Setup...
         if 'keys' in g.app.debug:
             g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
@@ -2942,16 +2944,20 @@ class KeyHandlerClass:
             return
         if k.doKeyboardQuit(event):
             return
+        k.setLossage(event.char, event.stroke) ###
         if k.doDemo(event):
             return
         if k.doMode(event):
             return
         if k.doVim(event):
             return
-        if k.doUnboundPlainKey(event):
-            return
+        ###if k.doUnboundPlainKey(event): ### Huh???
+        ###    return
         if k.doBinding(event):
             return
+        # Ignore abbreviations.
+        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
+            return False
         k.handleUnboundKeys(event)
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
@@ -3018,9 +3024,10 @@ class KeyHandlerClass:
         #
         # Execute the command if the binding exists.
         if bi:
-            ignore = k.doKeyOnlyTasks(event)
-            if not ignore:
-                c.doCommandByName(bi.commandName, event)
+            ### g.trace(bi)
+            ###ignore = k.doKeyOnlyTasks(event)
+            ###if not ignore:
+            c.doCommandByName(bi.commandName, event)
             return True
         #
         # Handle unbound keys in the tree (not headlines).
@@ -3053,33 +3060,6 @@ class KeyHandlerClass:
                 g.trace('demo-prev', stroke)
             demo.prev_command()
             return True
-        return False
-    #@+node:ekr.20200523081446.1: *5* k.doKeyOnlyTasks (NEW)
-    def doKeyOnlyTasks(self, event):
-        """
-        Do keystroke-related tasks related to commands.
-        
-        Return True if we should ignore the event.
-        """
-        c, k = self.c, self
-        if not event:
-            g.trace('Can not happen: no event')
-        ch, stroke = event.char, event.stroke
-        if not stroke:
-            g.trace('Can not happen: no stroke')
-            return True
-        # Ignore all special keys.
-        if k.isSpecialKey(event):
-            return True
-        # Remember the key.
-        k.setLossage(ch, stroke)
-        # Handle keyboard-quit.
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            k.keyboardQuit()
-            return True
-        # Ignore abbreviations.
-        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
-            return False
         return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
@@ -3387,7 +3367,7 @@ class KeyHandlerClass:
             else:
                 c.bodyWantsFocus()
         return 'found'
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed) (calls c.insertUnboundStroke)
     def handleUnboundKeys(self, event):
         """
         The last step of k.masterKeyHandler.
@@ -3403,7 +3383,7 @@ class KeyHandlerClass:
             stroke.removeNumPadModifier()
             k.getArg(event, stroke=stroke)
             return
-        # Ignore all unbound characters in command mode.
+        # Handle all unbound characters in command mode.
         if k.unboundKeyAction == 'command':
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):

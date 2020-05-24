@@ -2302,11 +2302,9 @@ class Commands:
     #@+node:ekr.20200523135601.1: *4* c.insertUnboundStroke (new)
     def insertUnboundStroke(self, event, stroke):
         """Insert the character given by key stroke."""
-        c, k = self, self.k
-        ignore = k.doKeyOnlyTasks(event)
-        if not ignore:
-            # Handle the unbound character.
-            c.insertUnboundHelper(event, stroke)
+        c = self
+        # Handle the unbound character.
+        c.insertUnboundHelper(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
     #@+node:ekr.20061031131434.110: *5* c.insertUnboundHelper (was k.handleUnboundKeys)
@@ -2317,6 +2315,11 @@ class Commands:
         """
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
+        ### New.
+        if not stroke:
+            stroke = event.stroke
+        if not stroke:
+            return
         #
         # Ignore unbound alt-ctrl key
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
@@ -2359,7 +2362,6 @@ class Commands:
             i = log_w.getInsertPoint()
             s = stroke.toGuiChar()
             log_w.insert(i, s)
-        
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         """Make commandName the command to be executed by repeat-complex-command."""
