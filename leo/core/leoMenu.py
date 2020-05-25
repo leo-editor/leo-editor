@@ -283,7 +283,7 @@ class LeoMenu:
                 command=masterMenuCallback,
                 commandName=commandName,
                 underline=amp_index)
-    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback (now calls c.doCommandByName)
+    #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
     def createMasterMenuCallback(self, command, commandName):
         """
         Create a callback for the given args.
