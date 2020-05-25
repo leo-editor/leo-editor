@@ -324,14 +324,10 @@ class LeoMenu:
             return dummy_menu_callback
 
         # Create a command dynamically.
-        # The command should have
-        
-        if commandName.startswith('About'): ###
-            g.trace(commandName)
 
         def dynamic_menu_callback():
             event = g.app.gui.create_key_event(c, w=getWidget())
-            return c.doCommandByName(commandName, event)
+            return c.doCommand(command, commandName, event)  # #1595
 
         return dynamic_menu_callback
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings

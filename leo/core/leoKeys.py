@@ -1642,7 +1642,7 @@ class KeyHandlerClass:
         self.modePrompt = ''  # The mode promopt.
         self.state = g.bunch(kind=None, n=None, handler=None)
         
-        ### Remove ???
+        # Remove ???
         self.givenArgs = []  # Args specified after the command name in k.simulateCommand.
         self.functionTail = None  # For commands that take minibuffer arguments.
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
