@@ -325,6 +325,9 @@ class LeoMenu:
 
         # Create a command dynamically.
         # The command should have
+        
+        if commandName.startswith('About'): ###
+            g.trace(commandName)
 
         def dynamic_menu_callback():
             event = g.app.gui.create_key_event(c, w=getWidget())

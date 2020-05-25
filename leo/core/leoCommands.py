@@ -2293,6 +2293,7 @@ class Commands:
             if g.app.unitTesting or g.app.inBridge:
                 raise AttributeError(message)
             g.es_print(message, color='red')
+            g.trace(g.callers())
             return None
         # Invoke the function.
         val = c.doCommand(command_func, command_name, event)
