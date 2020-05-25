@@ -60,3 +60,9 @@ jobs:
       with:
         name: leo-windows-exe
         path: dist/*.zip
+    # fix tar not found error
+    # error: https://github.com/leo-editor/leo-editor/runs/671206414?check_suite_focus=true#step:17:5
+    # Thank you https://github.com/r-lib/actions/issues/13#issuecomment-558875616
+    - name: ensure tar in path for 'Post Cache' step
+      run: echo "::add-path::C:\Program Files\Git\usr\bin"
+      if: contains(runner.os, 'windows')
