@@ -363,7 +363,11 @@ class LeoFind:
             count = find.findAll(clone_find_all=True, clone_find_all_flattened=True)
             found = count > 0
         else:
-            found = find.findNext(initFlag=False)
+            # #1592.  Ignore hits under control of @nosearch
+            while True:
+                found = find.findNext(initFlag=False)
+                if not found or not g.inAtNosearch(c.p):
+                    break
         if not found and defFlag:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
             word2 = self.switchStyle(word)
@@ -376,7 +380,11 @@ class LeoFind:
                         clone_find_all=True, clone_find_all_flattened=True)
                     found = count > 0
                 else:
-                    found = find.findNext(initFlag=False)
+                    # #1592.  Ignore hits under control of @nosearch
+                    while True:
+                        found = find.findNext(initFlag=False)
+                        if not found or not g.inAtNosearch(c.p):
+                            break
         if found and use_cff:
             last = c.lastTopLevel()
             if count == 1:
@@ -877,6 +885,7 @@ class LeoFind:
             self.stateZeroHelper(event,
                 prefix='Clone Find All: ',
                 handler=self.minibufferCloneFindAll1)
+
     def minibufferCloneFindAll1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -906,6 +915,7 @@ class LeoFind:
             self.stateZeroHelper(event,
                 prefix='Clone Find All Flattened: ',
                 handler=self.minibufferCloneFindAllFlattened1)
+
     def minibufferCloneFindAllFlattened1(self, event):
         c = self.c; k = self.k
         k.clearState()
@@ -932,6 +942,7 @@ class LeoFind:
             self.stateZeroHelper(event,
                 prefix='Clone Find Tag: ',
                 handler=self.minibufferCloneFindTag1)
+
     def minibufferCloneFindTag1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -1777,7 +1788,7 @@ class LeoFind:
     #@+node:ekr.20160422071747.1: *6* find.doCloneFindAllHelper
     def doCloneFindAllHelper(self, clones, count, flatten, p, skip):
         """Handle the cff or cfa at node p."""
-        if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+        if g.inAtNosearch(p):
             p.moveToNodeAfterTree()
             return count
         found = self.findNextBatchMatch(p)

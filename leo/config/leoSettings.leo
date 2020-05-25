@@ -765,6 +765,7 @@
 <v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20181018104056.1"><vh>@bool smart-quotes = False</vh></v>
+<v t="ekr.20200518065357.1"><vh>@bool use-german-keyboard = False</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn-about-redefined-shortcuts = True</vh></v>
 <v t="ekr.20181018113612.1"><vh>@string default-editing-state = insert</vh></v>
@@ -11927,6 +11928,9 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 <t tx="ekr.20200227064211.1"></t>
 <t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
 <t tx="ekr.20200229053354.1"></t>
+<t tx="ekr.20200518065357.1">True: Remove Shift modifier when the desired key is a colon or semicolon.
+      This fixes an infelicity in German keyboards.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
