@@ -2303,7 +2303,8 @@ class Commands:
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
-        Insert the character given by event.
+        Handle the character given by event *without*
+        executing any command that might be bound to it.
         
         What happens depends on which widget has focus.
         """

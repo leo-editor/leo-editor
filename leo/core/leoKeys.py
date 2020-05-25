@@ -2956,7 +2956,7 @@ class KeyHandlerClass:
             return
         if k.doBinding(event):
             return
-        # Ignore abbreviations.
+        # Handle abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
             return
         c.insertCharFromEvent(event)
