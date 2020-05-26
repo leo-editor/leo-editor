@@ -527,6 +527,7 @@
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
 <v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
 <v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
+<v t="ekr.20200526090848.1"><vh>Satheesh Vattekkat</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -31670,6 +31671,45 @@ any particular v, the main loop will process the set of tuples (i, v) in
 descending order of i. This resolves the question of whether deleting
 already deleted positions is valid.
 </t>
+<t tx="ekr.20200526090848.1">Sun, Dec 15, 2019
+	
+I had some really old version of leo - I believe it was 5.x and was
+installed 1.5 years ago. I use Leo for collecting thoughts, writing
+down stuff, structuring a talk etc. Decided to get out of comfort zone
+and cloned git repo and dailly git pull and started using that.
+
+This is brilliant. Bunch of my myLeoSettings.leo stuf is no longer
+needed with dockable panes for body and outline; and it remembers
+setting too. Plus, the default look is very nice (I am on elementaryos
+5.1)
+    
+Went to LeoVue site and only one word. *Wow*. Installed the CDN
+version on laptop as well and put it under local nginx. So good that I
+actually don't use any of the render stuff that I used to do before.
+
+Now there is a blue bar that shows the opened files - under window
+title bar, and above menus. I usually have only one file open and this
+takes away premium vertical space in my laptop - how do I get rid of
+that? When I had multiple files open, I could right click on one of
+them and do some "detach" to get it out for that file - but I want
+this to be permanently hidden. FWIW, I also keep icon-bar always
+hidden to save space - which seems to be remembered in this version
+than me having to start leo with such a setting.
+
+Overall awsome stuff - rarely do one get so thrilled to see software so nicely advanced and still true to its core in a short time.
+
+
+I am trying to convert different people to use Leo and they have their
+own leo files. We share those over git or shared folder. Having an
+ability to import also allows individual contribs to larger outlines.
+
+It also helps in keeping the left side outline pane a bit more
+manageable. On large outlines, there is too much vertical scrolling to
+keep focus. This can also be solved by giving some option to collapse
+everything outside current node to one single ellipsis/plus sign as
+well.
+
+Back to learning new leo  then :)</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
