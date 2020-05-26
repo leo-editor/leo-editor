@@ -2300,6 +2300,9 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
+        
+    # #1596.
+    executeMinibufferCommand = doCommandByName
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
