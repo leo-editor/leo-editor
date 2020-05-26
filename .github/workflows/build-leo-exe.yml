@@ -24,7 +24,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Get pip cache
+    - name: Get python location
       # Get location of Python and set to a var (between the :: and ::)
       # https://github.com/actions/cache/issues/175
       id: pip-cache
@@ -32,11 +32,11 @@ jobs:
         import site
         print('::set-output name=dir::' + site.getsitepackages()[0])
       shell: python
-    - name: Cache pip packages
+    - name: Cache python tree
       uses: actions/cache@v1
       with:
         # Cache starting 3 levels up from python dir (maybe too greedy)
-        # using the var from 'Get pip cache'
+        # using the var from 'Get python location'
         # looks like: C:\hostedtoolcache\windows\Python\3.6.8\x64/../../../
         path: ${{ steps.pip-cache.outputs.dir }}/../../../
         # note addition of py ver, https://github.com/actions/cache/issues/175#issuecomment-586641991
