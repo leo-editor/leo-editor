@@ -2300,6 +2300,12 @@ class Commands:
         if c.exists:
             c.frame.updateStatusLine()
         return val
+    #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
+    def executeMinibufferCommand(self, commandName):
+        """Call c.doCommandByName, creating the required event."""
+        c = self
+        event = g.app.gui.create_key_event(c)
+        return c.doCommandByName(commandName, event)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """

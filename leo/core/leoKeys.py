@@ -3567,7 +3567,7 @@ class KeyHandlerClass:
             else:
                 w.insert(ins, ch)
                 i = ins + 1
-    #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
+    #@+node:ekr.20120208064440.10190: *3* k.Modes
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands(self):
         """Add commands created by @mode settings to c.commandsDict."""
@@ -3644,7 +3644,7 @@ class KeyHandlerClass:
         if k.inState():
             k.endMode()
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper (revise helper)
+    #@+node:ekr.20061031131434.165: *4* k.modeHelp & helper
     @cmd('mode-help')
     def modeHelp(self, event):
         """
@@ -3689,7 +3689,7 @@ class KeyHandlerClass:
         # This isn't perfect in variable-width fonts.
         for s1, s2 in data:
             g.es('', '%*s %s' % (n, s1, s2), tabName=tabName)
-    #@+node:ekr.20061031131434.164: *4* k.reinitMode (call k.createModeBindings???)
+    #@+node:ekr.20061031131434.164: *4* k.reinitMode
     def reinitMode(self, modeName):
         k = self
         d = k.modeBindingsDict
@@ -3701,7 +3701,7 @@ class KeyHandlerClass:
         else:
             # Do not set the status line here.
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
-    #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler (OLD)
+    #@+node:ekr.20120208064440.10199: *4* k.generalModeHandler
     def generalModeHandler(self, event,
         commandName=None,
         func=None,
@@ -3783,59 +3783,6 @@ class KeyHandlerClass:
         w = k.modeWidget if k.silentMode else k.w
         k.createModeBindings(modeName, d, w)
         k.showStateAndMode(prompt=prompt)
-    #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
-    def NEWgeneralModeHandler(self, event,
-        commandName=None,
-        func=None,
-        modeName=None,
-        nextMode=None,
-        prompt=None
-    ):
-        """Handle a mode defined by an @mode node in leoSettings.leo."""
-        k = self; c = k.c
-        state = k.getState(modeName)
-        if state == 0:
-            k.inputModeName = modeName
-            k.modePrompt = prompt or modeName
-            k.modeWidget = event and event.widget
-            k.setState(modeName, 1, handler=k.generalModeHandler)
-            self.initMode(event, modeName)
-            # Careful: k.initMode can execute commands that will destroy a commander.
-            if g.app.quitting or not c.exists: return
-            if not k.silentMode:
-                if c.config.getBool('showHelpWhenEnteringModes'):
-                    k.modeHelp(event)
-                else:
-                    c.frame.log.hideTab('Mode')
-        elif not func:
-            g.trace('No func: improper key binding')
-        else:
-            if commandName == 'mode-help':
-                func(event)
-            else:
-                self.endMode()
-                # New in 4.4.1 b1: pass an event describing the original widget.
-                if event:
-                    event.w = event.widget = k.modeWidget
-                else:
-                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
-                func(event)
-                if g.app.quitting or not c.exists:
-                    pass
-                elif nextMode in (None, 'none'):
-                    # Do *not* clear k.inputModeName or the focus here.
-                    # func may have put us in *another* mode.
-                    pass
-                elif nextMode == 'same':
-                    silent = k.silentMode
-                    k.setState(modeName, 1, handler=k.generalModeHandler)
-                    self.reinitMode(modeName)  # Re-enter this mode.
-                    k.silentMode = silent
-                else:
-                    k.silentMode = False  # All silent modes must do --> set-silent-mode.
-                    self.initMode(event, nextMode)  # Enter another mode.
-                    # Careful: k.initMode can execute commands that will destroy a commander.
-                    # if g.app.quitting or not c.exists: return
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
     def computeInverseBindingDict(self):
