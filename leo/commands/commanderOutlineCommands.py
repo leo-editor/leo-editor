@@ -197,7 +197,7 @@ def pasteAsTemplate(self, event=None):
         b = bodies[chgnx]
         gnx = translation.get(chgnx)
         if gnx in seen:
-            yield parent_gnx, gnx, heads[gnx], b
+            yield parent_gnx, gnx, heads.get(gnx), b
         else:
             seen.add(gnx)
             h = xv[0].text
@@ -283,7 +283,7 @@ def pasteAsTemplate(self, event=None):
     translation = { x: translate_gnx(x) for x in bodies.keys() }
         # we generate new gnx for each node in the copied tree
 
-    seen = set() # required for the treatment of local clones inside the copied tree
+    seen = set(outside) # required for the treatment of local clones inside the copied tree
 
     heads = {}
 
