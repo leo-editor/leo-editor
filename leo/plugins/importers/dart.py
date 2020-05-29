@@ -20,7 +20,7 @@ class Dart_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161123121021.1: *3* dart_i.clean_headline
-    dart_pattern = re.compile(r'^\s*([\w_]+\s*)+\(')
+    dart_pattern = re.compile(r'^\s*([\w_][\w_\s]*)\(')
 
     def clean_headline(self, s, p=None):
 
