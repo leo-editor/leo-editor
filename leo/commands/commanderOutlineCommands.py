@@ -6,6 +6,7 @@
 import leo.core.leoGlobals as g
 import xml.etree.ElementTree as ElementTree
 import leo.core.leoNodes as leoNodes
+import leo.core.leoFileCommands as leoFileCommands
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
@@ -249,7 +250,9 @@ def pasteAsTemplate(self, event=None):
             if isNew:
                 v.h = h
                 v.b = b
-
+                ua = uas.get(gnx)
+                if ua:
+                    v.unknownAttributes = ua
             # get parent node `vpar`
             vpar = getv(pgnx)[0]
 
@@ -273,8 +276,7 @@ def pasteAsTemplate(self, event=None):
     xvnodes = xroot.find('vnodes')
     xtnodes = xroot.find('tnodes')
 
-    bodies = { x.attrib['tx']: x.text or ''
-                            for x in xtnodes }
+    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtnodes)
 
     root_gnx = xvnodes[0].attrib.get('t') # the gnx of copied node
     outside = { x.gnx for x in skip_root(c.hiddenRootNode) }
