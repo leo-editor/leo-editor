@@ -277,8 +277,8 @@ def pasteAsTemplate(self, event=None):
                             for x in xtnodes }
 
     root_gnx = xvnodes[0].attrib.get('t') # the gnx of copied node
-    outside = { x.gnx: x for x in skip_root(c.hiddenRootNode) }
-        # outside will contain nodes that are outside the copied tree
+    outside = { x.gnx for x in skip_root(c.hiddenRootNode) }
+        # outside will contain gnxes of nodes that are outside the copied tree
 
     translation = { x: translate_gnx(x) for x in bodies.keys() }
         # we generate new gnx for each node in the copied tree
