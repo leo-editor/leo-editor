@@ -4,6 +4,9 @@
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
 import leo.core.leoGlobals as g
+import xml.etree.ElementTree as ElementTree
+import leo.core.leoNodes as leoNodes
+import leo.core.leoFileCommands as leoFileCommands
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
@@ -157,6 +160,168 @@ def computeVnodeInfoDict(c):
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
+#@+node:vitalije.20200529105105.1: *3* c_oc.pasteAsTemplate
+@g.commander_command('paste-as-template')
+def pasteAsTemplate(self, event=None):
+    c = self
+    p = c.p
+    #@+others
+    #@+node:vitalije.20200529112224.1: *4* skip_root
+    def skip_root(v):
+        '''
+        generates v nodes in the outline order
+        but skips a subtree of the node with root_gnx
+        '''
+        if v.gnx != root_gnx:
+            yield v
+            for ch in v.children:
+                yield from skip_root(ch)
+    #@+node:vitalije.20200529112459.1: *4* translate_gnx
+    def translate_gnx(gnx):
+        '''
+        allocates a new gnx for all nodes that
+        are not found outside copied tree
+        '''
+        if gnx in outside:
+            return gnx
+        return g.app.nodeIndices.computeNewIndex()
+    #@+node:vitalije.20200529115141.1: *4* viter
+    def viter(parent_gnx, xv):
+        '''
+        iterates <v> nodes generating tuples:
+            
+            (parent_gnx, child_gnx, headline, body)
+        
+        skipping the descendants of already seen nodes.
+        '''
+        chgnx = xv.attrib.get('t')
+        b = bodies[chgnx]
+        gnx = translation.get(chgnx)
+        if gnx in seen:
+            yield parent_gnx, gnx, heads.get(gnx), b
+        else:
+            seen.add(gnx)
+            h = xv[0].text
+            heads[gnx] = h
+            yield parent_gnx, gnx, h, b
+            for xch in xv[1:]:
+                yield from viter(gnx, xch)
+    #@+node:vitalije.20200529114857.1: *4* getv
+    gnx2v = c.fileCommands.gnxDict
+    def getv(gnx):
+        '''
+        returns a pair (vnode, is_new) for the given gnx.
+        if node doesn't exist, creates a new one.
+        '''
+        v = gnx2v.get(gnx)
+        if v is None:
+            return leoNodes.VNode(c, gnx), True
+        return v, False
+    #@+node:vitalije.20200529115539.1: *4* do_paste
+    def do_paste(vpar, index):
+        '''
+        pastes a new node as a child of vpar at given index 
+        '''
+        vpargnx = vpar.gnx
+        # the first node is inserted at the given index
+        # and the rest are just appended at parents children
+        # to achieve this we first create a generator object
+        rows = viter(vpargnx, xvnodes[0])
+
+        # then we just take first tuple
+        pgnx, gnx, h, b = next(rows)
+
+        # create vnode
+        v, _ = getv(gnx)
+        v.h = h
+        v.b = b
+
+        # and finally insert it at the given index
+        vpar.children.insert(index, v)
+        v.parents.append(vpar)
+
+        pasted = v # remember the first node as a return value
+
+        # now we iterate the rest of tuples
+        for pgnx, gnx, h, b in rows:
+
+            # get or create a child `v`
+            v, isNew = getv(gnx)
+            if isNew:
+                v.h = h
+                v.b = b
+                ua = uas.get(gnx)
+                if ua:
+                    v.unknownAttributes = ua
+            # get parent node `vpar`
+            vpar = getv(pgnx)[0]
+
+            # and link them
+            vpar.children.append(v)
+            v.parents.append(vpar)
+
+        return pasted
+    #@+node:vitalije.20200529120440.1: *4* undoHelper
+    def undoHelper():
+        v = vpar.children.pop(index)
+        v.parents.remove(vpar)
+        c.redraw(bunch.p)
+    #@+node:vitalije.20200529120537.1: *4* redoHelper
+    def redoHelper():
+        vpar.children.insert(index, pasted)
+        pasted.parents.append(vpar)
+        c.redraw(newp)
+    #@-others
+    xroot = ElementTree.fromstring(g.app.gui.getTextFromClipboard())
+    xvnodes = xroot.find('vnodes')
+    xtnodes = xroot.find('tnodes')
+
+    bodies, uas = leoFileCommands.FastRead(c, {}).scanTnodes(xtnodes)
+
+    root_gnx = xvnodes[0].attrib.get('t') # the gnx of copied node
+    outside = { x.gnx for x in skip_root(c.hiddenRootNode) }
+        # outside will contain gnxes of nodes that are outside the copied tree
+
+    translation = { x: translate_gnx(x) for x in bodies.keys() }
+        # we generate new gnx for each node in the copied tree
+
+    seen = set(outside) # required for the treatment of local clones inside the copied tree
+
+    heads = {}
+
+    bunch = c.undoer.createCommonBunch(p)
+    #@+<< prepare destination data >>
+    #@+node:vitalije.20200529111500.1: *4* << prepare destination data >>
+    # destination data consists of 
+    #    1. vpar --- parent v node that should receive pasted child
+    #    2. index --- at which pasted child will be
+    #    3. parStack --- a stack for creating new position of the pasted node
+    #
+    # the new position will be:  Position(vpar.children[index], index, parStack)
+    # but it can't be calculated yet, before actual paste is done
+    if p.isExpanded():
+        # paste as a first child of current position
+        vpar = p.v
+        index = 0
+        parStack = p.stack + [(p.v, p._childIndex)]
+    else:
+        # paste after the current position
+        parStack = p.stack
+        vpar = p.stack[-1][0] if p.stack else c.hiddenRootNode
+        index = p._childIndex + 1
+
+    #@-<< prepare destination data >>
+
+    pasted = do_paste(vpar, index)
+
+    newp = leoNodes.Position(pasted, index, parStack)
+
+    bunch.undoHelper = undoHelper
+    bunch.redoHelper = redoHelper
+    bunch.undoType = 'paste-retaining-outside-clones'
+
+    c.undoer.pushBead(bunch)
+    c.redraw(newp)
 #@+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
 def dumpOutline(self, event=None):
