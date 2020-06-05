@@ -154,7 +154,6 @@ setup(
     entry_points=define_entry_points(),
     python_requires='>=3.6',
 )
-
 #@@language python
 #@@tabwidth -4
 #@-leo
