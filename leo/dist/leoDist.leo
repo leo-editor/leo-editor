@@ -137,10 +137,13 @@
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
-<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
+<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
+<v t="maphew.20200605112532.1"><vh>@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
+</v>
 <v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
 <v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
 </v>
@@ -2495,6 +2498,68 @@ a = Analysis(['launchLeo.py'],
 # fix errors as can until everything works.
 
 -----</t>
+<t tx="maphew.20200605112459.1"></t>
+<t tx="maphew.20200605112532.1">@language yaml
+# Create an "all in one" bundle of Leo and all dependencies for Windows that 
+# doesn't need to be installed in order to run, just unzip and use.
+
+name: Build standalone leo.exe
+
+on:
+  push:
+    branches: [ master, devel, gh-act ]
+    tags: 
+      - 'v*' 
+  pull_request:
+    branches: [ master, devel, gh-act ]
+    tags: 
+      - 'v*' 
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip packages
+      uses: actions/cache@v2
+      with:
+        path: ~\Appdata\Local\pip\Cache
+        # note addition of py ver, https://github.com/actions/cache/issues/175#issuecomment-586641991
+        #key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.python-version }}-pip
+    
+    - name: Install Leo and dependencies
+      run: |
+        python -m pip install --upgrade pip
+        #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install wheel pyinstaller
+        pip install --editable .
+    - name: pyinstaller build
+      run: |
+        $ErrorView = 'NormalView'
+        pwd
+        ls
+        pyinstaller leo/dist/leo.spec
+    - name: create dist archive
+      run: |
+        $ErrorView = 'NormalView'
+        python leo/dist/zip-leo-exe.py
+    - uses: actions/upload-artifact@v2
+      with:
+        name: leo-windows-exe
+        path: dist/*.zip
+</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
@@ -2513,7 +2578,8 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 ...`)
 
 </t>
-<t tx="matt.20190205105334.1">language: python
+<t tx="matt.20190205105334.1">@language yaml
+language: python
 python:
   - "3.6"
 git:
