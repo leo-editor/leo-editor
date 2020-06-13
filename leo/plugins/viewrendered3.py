@@ -439,11 +439,15 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
-    from nbconvert import HTMLExporter
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
     print('VR3: *** No nbformat')
+try:
+    from nbconvert import HTMLExporter
+except ImportError:
+    nbformat = None
+    print('VR3: *** No nbconvert')
 try:
     from pygments import cmdline
 except ImportError:
