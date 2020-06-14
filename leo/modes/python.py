@@ -190,7 +190,9 @@ python_main_keywords_dict = {
     "apply": "keyword2",
     "as": "keyword1",
     "assert": "keyword1",
-    "basestring": "keyword2", # Exists only in Python 2.
+    "async": "keyword1",  # Python 3.7
+    "await": "keyword1", # Python 3.7.
+    "basestring": "keyword2",  # Only in Python 2.
     "bool": "keyword2",
     "break": "keyword1",
     "buffer": "keyword2",
