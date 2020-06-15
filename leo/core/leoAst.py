@@ -5282,12 +5282,20 @@ class TestTOG(BaseTest):
         # Compute all fields to BaseTest.
         aList = sorted(dir(_ast))
         remove = [
-            'Interactive', 'Suite',  # Not necessary.
+            'Interactive', # Not necessary.
+            'Suite',  # Not necessary.
             'PyCF_ONLY_AST',  # A constant,
             'AST',  # The base class,
+            # New, for Python 3.8.
+            'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+            'PyCF_TYPE_COMMENTS',
+            # These may have to be added.
+            # FunctionType,
+            # NamedExpr,
+            # TypeIgnore,
         ]
         aList = [z for z in aList if not z[0].islower()]
-            # Remove base classe
+            # Remove base classes.
         aList = [z for z in aList
             if not z.startswith('_') and not z in remove]
         # Now test them.
@@ -5305,8 +5313,8 @@ class TestTOG(BaseTest):
                 else:  # pragma: no cover
                     errors += 1
                     print(
-                        f"Missing {traverser.__class__.__name__} visitor "
-                        f"for: {z}")
+                        f"Missing visitor: "
+                        f"{traverser.__class__.__name__}.{z}")
         msg = f"{nodes} node types, {ops} op types, {errors} errors"
         assert not errors, msg
     #@+node:ekr.20191227052446.50: *4* Plain Strings...
