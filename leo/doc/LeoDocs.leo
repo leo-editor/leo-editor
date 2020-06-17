@@ -31829,7 +31829,7 @@ Example::
 
 For easier upgrading substitute ``git clone`` for wget &amp; 7z steps::
 
-    git clone --single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
+    git clone --no-single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
     pip install --editable leo-editor
     
 time passes, upgrade desired::
@@ -31839,7 +31839,7 @@ time passes, upgrade desired::
     pip uninstall leo
     pip install --editable .
 
-`single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
+`b` and `depth` are optional, but will dramatically speed up download time as it only grabs the latest development branch, the tips of other branches, and skips all but the last couple weeks or months of history.
 
 **Note**
 
