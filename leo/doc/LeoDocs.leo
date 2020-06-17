@@ -31727,6 +31727,16 @@ Getting to the latest leo.exe:
 .. image:: https://user-images.githubusercontent.com/486200/83912469-c390e100-a722-11ea-868a-cf56c379eec0.png
 
 .. _`Build standalone leo.exe`: https://github.com/leo-editor/leo-editor/actions?query=workflow:%22Build+standalone+leo.exe%22
+
+
+##################
+Upgrading in place
+##################
+
+ 1. Download source archive from Github repository, `devel branch`_
+ 2. Replace contents of ``C:\Apps\leo\leo\*.*`` with contents of ``leo-editor\leo\*.*``. (Note: the nested "leo\leo" folder structure is significant.)
+
+.. _`devel branch`: https://github.com/leo-editor/leo-editor/tree/devel
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
