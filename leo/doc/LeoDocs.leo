@@ -551,6 +551,7 @@
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
+<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
@@ -12527,6 +12528,7 @@ write_intermediate_file = True
 .. _`Python wheel`:             https://pythonwheels.com/
 .. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
+.. _`Standalone leo.exe`:       download.html#standalone
 
 ###############
 Downloading Leo
@@ -12539,7 +12541,8 @@ There are three ways to download Leo:
 - Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
 
 - If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
-</t>
+
+- All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -31710,6 +31713,21 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
+<t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
+
+Getting to the latest leo.exe:
+
+ 1. Navigate to **Actions**
+ 2. Select `Build standalone leo.exe`_ from workflow list in the left table of contents
+ 3. Look for a recent event with a checkmark and click on it
+ 4. Look for **Artifacts** heading and under it: **leo-windows-exe** in blue.
+
+.. image:: https://user-images.githubusercontent.com/486200/83912441-bb38a600-a722-11ea-9abf-43ce833723c2.png
+
+.. image:: https://user-images.githubusercontent.com/486200/83912469-c390e100-a722-11ea-868a-cf56c379eec0.png
+
+.. _`Build standalone leo.exe`: https://github.com/leo-editor/leo-editor/actions?query=workflow:%22Build+standalone+leo.exe%22
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
