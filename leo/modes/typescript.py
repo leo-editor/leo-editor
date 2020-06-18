@@ -342,7 +342,7 @@ rulesDict1 = {
     ",": [typescript_rule24,],
     "-": [typescript_rule11,],
     ".": [typescript_rule21,],
-    "/": [typescript_rule0,typescript_rule12,],
+    "/": [typescript_rule0,typescript_rule4,typescript_rule12,],
     "0": [typescript_rule31,],
     "1": [typescript_rule31,],
     "2": [typescript_rule31,],
