@@ -872,7 +872,7 @@ class AtFile:
     def openFileHelper(self, fileName):
         """Open a file, reporting all exceptions."""
         at = self
-        s = None
+        s = ''
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
