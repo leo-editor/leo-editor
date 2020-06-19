@@ -709,8 +709,11 @@ class Importer:
         # Note: this method is never called for @clean trees.
 
     def add_class_names(self, p):
-        '''Add class names to headlines for all descendant nodes.'''
-        # pylint: disable=no-else-continue
+        '''
+        Add class names to headlines for all descendant nodes.
+
+        Called only when @bool add-context-to-headlines is True.
+        '''
         if g.app.unitTesting:
             return # Don't changes the expected headlines.
         after, fn, class_name = None, None, None
@@ -722,7 +725,7 @@ class Importer:
                 fn = g.shortFileName(p.h[len(prefix):].strip())
                 after, class_name = None, None
                 continue
-            elif p.h.startswith('@path '):
+            if p.h.startswith('@path '):
                 after, fn, class_name = None, None, None
             elif p.h.startswith('class '):
                 class_name = p.h[5:].strip()
