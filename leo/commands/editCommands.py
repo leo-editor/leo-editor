@@ -1977,6 +1977,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, junk = g.getLine(s, sel_1)
         i2, j = g.getLine(s, sel_2)
         lines = s[i:j]
+        if not lines.strip():
+            return
         self.beginCommand(w, undoType='move-lines-to-next-node')
         try:
             next_i, next_j = g.getLine(s, j)
