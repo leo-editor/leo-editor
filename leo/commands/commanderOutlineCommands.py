@@ -282,7 +282,7 @@ def pasteAsTemplate(self, event=None):
     outside = { x.gnx for x in skip_root(c.hiddenRootNode) }
         # outside will contain gnxes of nodes that are outside the copied tree
 
-    translation = { x: translate_gnx(x) for x in bodies.keys() }
+    translation = { x: translate_gnx(x) for x in bodies }
         # we generate new gnx for each node in the copied tree
 
     seen = set(outside) # required for the treatment of local clones inside the copied tree
