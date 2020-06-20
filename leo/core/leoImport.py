@@ -1175,6 +1175,10 @@ class LeoImportCommands:
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
             p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+            
+    def cythonUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.pyx')
 
     def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
