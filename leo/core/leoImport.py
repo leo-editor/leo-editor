@@ -1768,6 +1768,8 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
         # force_at_others = False, #tag:no-longer-used
+        add_context=None,  # Override setting only if True/False
+        add_file_context=None,  # Override setting only if True/False
         add_path=True,
         recursive=True,
         safe_at_file=True,
@@ -1786,6 +1788,15 @@ class RecursiveImportController:
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
+        # #1605:
+
+        def set_bool(setting, val):
+            if val not in (True, False):
+                return
+            c.config.set(None, 'bool', setting, val, warn=True)
+            
+        set_bool('add-context-to-headlines', add_context)
+        set_bool('add-file-context-to-headlines', add_file_context)
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
         """
