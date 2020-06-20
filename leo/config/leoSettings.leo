@@ -746,6 +746,7 @@
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
+<v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
@@ -2319,6 +2320,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20110611092035.16480"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11931,6 +11933,10 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 <t tx="ekr.20200518065357.1">True: Remove Shift modifier when the desired key is a colon or semicolon.
       This fixes an infelicity in German keyboards.
 </t>
+<t tx="ekr.20200620060909.1">True: The cython importer will copy the first decorator preceding a
+      function/method into the headline of the imported node.
+      
+**Note**: The importer will copy only the first line of a multiline decorator.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12571,13 +12577,12 @@ AltControlShift hoist
 #     WITH: /
 
 </t>
-<t tx="tbrown.20180525163032.1">If True, names uses headline "Foo.bar" for bar() defined in class
-Foo, and headline "bar (foo.py)" for bar() defined at top level in
-foo.py.  This is useful if you've cloned the node so its origin is
-not obvious from context.
+<t tx="tbrown.20180525163032.1">If True, uses headline "Foo.bar" for bar() defined in class Foo, and
+headline "bar (foo.py)" for bar() defined at top level in foo.py. This is
+useful if you've cloned the node so its origin is not obvious from context.
 
-If False, does not do the above, useful if you don't use clones
-and don't want the visual clutter of repeated class / file names.</t>
+If False, does not do the above, useful if you don't use clones and don't
+want the visual clutter of repeated class / file names.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

@@ -28,7 +28,6 @@ class Cython_Importer(py_importer.Py_Importer):
             state_class = Cython_ScanState,
             strict=True,
         )
-        self.language = self.name = 'cython'
         self.put_decorators = self.c.config.getBool('put-cython-decorators-in-imported-headlines')
     #@+node:ekr.20200619141201.3: *3* cy_i.clean_headline
     def clean_headline(self, s, p=None):

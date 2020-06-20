@@ -12,11 +12,11 @@ Target = linescanner.Target
 class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
 
-    def __init__(self, importCommands, **kwargs):
+    def __init__(self, importCommands, language='python', **kwargs):
         '''Py_Importer.ctor.'''
         super().__init__(
             importCommands,
-            language='python',
+            language=language,
             state_class = Python_ScanState,
             strict=True,
         )
