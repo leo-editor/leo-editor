@@ -158,11 +158,14 @@ class Importer:
         c = self.c
         if not c:
             return
+        getBool = c.config.getBool
         c.registerReloadSettings(self)
         # self.at_auto_separate_non_def_nodes = False
-        self.at_auto_warns_about_leading_whitespace = \
-            c.config.getBool('at_auto_warns_about_leading_whitespace')
+        self.add_context = getBool("add-context-to-headlines")
+        self.add_file_context = getBool("add-file-context-to-headlines")
+        self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
+       
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
 
@@ -693,7 +696,8 @@ class Importer:
         cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
-        if self.c.config.getBool("add-context-to-headlines"):
+        ### if self.c.config.getBool("add-context-to-headlines"):
+        if self.add_context:
             self.add_class_names(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
@@ -738,7 +742,7 @@ class Importer:
             if class_name:
                 if not p.h.startswith(class_name):
                     p.h = '%s.%s' % (class_name, p.h)
-            elif fn:
+            elif fn and self.add_file_context:
                 tag = ' (%s)' % fn
                 if not p.h.endswith(tag):
                     p.h += tag

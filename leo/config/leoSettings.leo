@@ -746,6 +746,7 @@
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
 <v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
+<v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put-python-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
@@ -11937,6 +11938,13 @@ For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
       function/method into the headline of the imported node.
       
 **Note**: The importer will copy only the first line of a multiline decorator.</t>
+<t tx="ekr.20200620064409.1">*Note*: Used only if @bool add-context-to-headlines is True.
+
+If True, use headline "bar (foo.py)" for bar() defined at top level in foo.py. This is
+useful if you've cloned the node so its origin is not obvious from context.
+
+If False, does not do the above, useful if you don't use clones and don't
+want the visual clutter of repeated class / file names.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12577,9 +12585,7 @@ AltControlShift hoist
 #     WITH: /
 
 </t>
-<t tx="tbrown.20180525163032.1">If True, uses headline "Foo.bar" for bar() defined in class Foo, and
-headline "bar (foo.py)" for bar() defined at top level in foo.py. This is
-useful if you've cloned the node so its origin is not obvious from context.
+<t tx="tbrown.20180525163032.1">If True, uses headline "Foo.bar" for bar() defined in class Foo.
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
