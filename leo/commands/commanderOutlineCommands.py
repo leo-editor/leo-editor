@@ -320,6 +320,7 @@ def pasteAsTemplate(self, event=None):
     bunch.redoHelper = redoHelper
     bunch.undoType = 'paste-retaining-outside-clones'
 
+    newp.setDirty()
     c.undoer.pushBead(bunch)
     c.redraw(newp)
 #@+node:ekr.20040412060927: ** c_oc.dumpOutline
