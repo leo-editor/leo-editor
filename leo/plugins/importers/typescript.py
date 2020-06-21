@@ -22,8 +22,14 @@ class TS_Importer(Importer):
             # class name
         (1, re.compile(r'export\s+(class\s+\w+)')),
             # export class name
+        (1, re.compile(r'export\s+enum\s+(\w+)')),
+            # function name
+        (1, re.compile(r'export\s+const\s+enum\s+(\w+)')),
+            # function name
         (1, re.compile(r'export\s+function\s+(\w+)')),
             # function name
+        (1, re.compile(r'export\s+interface\s+(\w+)')),
+            # interface name
         (1, re.compile(r'function\s+(\w+)')),
             # function name
         (1, re.compile(r'(constructor).*{')),
