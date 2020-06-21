@@ -22,6 +22,8 @@ class TS_Importer(Importer):
             # class name
         (1, re.compile(r'export\s+(class\s+\w+)')),
             # export class name
+        (1, re.compile(r'export\s+function\s+(\w+)')),
+            # function name
         (1, re.compile(r'function\s+(\w+)')),
             # function name
         (1, re.compile(r'(constructor).*{')),
