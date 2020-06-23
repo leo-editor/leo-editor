@@ -71,7 +71,9 @@ class Rust_Importer(Importer):
     #@+node:ekr.20200623083608.1: *3* rust_i.promote_last_lines
     def promote_last_lines(self, parent):
         '''
-        Move trailing comment lines to next node.
+        Move trailing comment and macro lines to the start of the next node.
+        
+        For now, @others anywhere in a node prevents all moves.
         '''
         for p in parent.subtree():
             next = p.threadNext()
