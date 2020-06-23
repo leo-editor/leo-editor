@@ -68,6 +68,32 @@ class Rust_Importer(Importer):
         if m:
             self.headline = line.strip()
         return bool(m)
+    #@+node:ekr.20200623083608.1: *3* rust_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''
+        Move trailing comment lines to next node.
+        '''
+        for p in parent.subtree():
+            next = p.threadNext()
+            if not next:
+                continue
+            lines = self.get_lines(p)
+            if '@others' in ''.join(lines):
+                # Don't move anything.
+                continue
+            comment_lines = []
+            for line in reversed(lines):
+                if line.strip().startswith(('//', '#[', '#!')):
+                    comment_lines.insert(0, line)
+                    lines.pop()
+                elif line.strip():
+                    break
+                else:
+                    lines.pop()
+            if ''.join(comment_lines).strip():
+                next_lines = self.get_lines(next)
+                self.set_lines(next, comment_lines + next_lines)
+                self.set_lines(p, lines)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
