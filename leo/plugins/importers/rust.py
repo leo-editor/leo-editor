@@ -23,9 +23,10 @@ class Rust_Importer(Importer):
       
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
-    arg_pat = re.compile(r'\((.*)\)')
-    type_pat = re.compile(r'(\s*->.*)(\{|\()')
+    arg_pat = re.compile(r'(\(.*?\))')
+    type_pat = re.compile(r'(\s*->.*)')
     life_pat = re.compile(r'(\<.*\>)')
+    body_pat = re.compile(r'(\{.*\})')
 
     def clean_headline(self, s, p=None):
         '''
@@ -42,17 +43,17 @@ class Rust_Importer(Importer):
         tail = m.group(3) or ''.strip()
         tail = re.sub(self.arg_pat, '', tail, count=1)
         tail = re.sub(self.type_pat, '', tail, count=1)
+        tail = re.sub(self.body_pat, '', tail, count=1)
         # Clean lifetime specs except for impl.
         if not head.startswith('impl'):
             tail = re.sub(self.life_pat, '', tail, count=1)
         # Remove trailing '(' or '{'
         tail = tail.strip()
-        while tail.endswith(('{', '(')):
-            tail = tail[:-1]
+        while tail.endswith(('{', '(', ',', ')')):
+            tail = tail[:-1].rstrip()
         # Remove trailing '>' sometimes.
-        tail = tail.strip()
-        if '<' not in tail and tail.endswith('>'):
-            tail = tail[:-1]
+        while '<' not in tail and tail.endswith('>'):
+            tail = tail[:-1].rstrip()
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
