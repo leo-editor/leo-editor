@@ -324,14 +324,13 @@ if 1:  # pragma: no cover
         """
         Run black, fstringify or tests, depending on sys.argv.
         """
-        parser = argparse.ArgumentParser(description='arg_test.py [args*]...')
+        parser = argparse.ArgumentParser(description=None)
         add = parser.add_argument
-        add('-f', '--fstringify', dest='f_flag', metavar='FILE', help='Fstringify')
-        add('-fd', '--fstringify-diff', dest='fd_flag', metavar='FILE', help='Fstringify-diff')
-        add('-o', '--orange', dest='o_flag' , metavar='FILE', help='Run orange')
-        add('-od', '--orange-diff', dest='od_flag' , metavar='FILE', help='Run orange')
+        add('-f', '--fstringify', dest='f_flag', metavar='FILE')
+        add('-fd', '--fstringify-diff', dest='fd_flag', metavar='FILE')
+        add('-o', '--orange', dest='o_flag' , metavar='FILE')
+        add('-od', '--orange-diff', dest='od_flag' , metavar='FILE')
         args = parser.parse_args()
-        print(args)
         if args.f_flag:
             fstringify_command(args.f_flag)
         elif args.fd_flag:
