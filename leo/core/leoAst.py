@@ -89,6 +89,7 @@ https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20200105054219.1: ** << imports >> (leoAst.py)
+import argparse
 import ast
 import codecs
 import difflib
@@ -274,9 +275,77 @@ class LeoGlobals:  # pragma: no cover
         s2 = s[: n - 3] + f"...({len(s)})"
         return s2 + '\n' if s.endswith('\n') else s2
     #@-others
-#@+node:ekr.20160521104628.1: **  leoAst.py: top-level
+#@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
+#@+node:ekr.20200702114557.1: *3* command: fstringify_command
+def fstringify_command(filename):
+    """
+    Entry point for --fstringify.
+    """
+    if 1:
+        import leo.core.leoGlobals as g
+        g.pdb()
+    if not os.path.exists(filename):
+        print(f"file not found: {filename}")
+        return
+    print('fstringify', filename)
+    ## contents = read_file(filename)
+    ## contents, tokens, tree = make_data(contents, filename)
+    fs = Fstringify()
+    ### fs.silent = True
+    fs.fstringify_file_silent (filename)
+    ## result_s = fs.fstringify(contents, filename, tokens, tree)
+    ## g.trace(len(result_s))
+#@+node:ekr.20200702115002.1: *3* command: orange_command
+def orange_command(filename):
+
+    if not os.path.exists(filename):
+        print(f"file not found: {filename}")
+        return
+    print('black', filename)
+#@+node:ekr.20200702103402.1: *3* function: make_data (new)
+def make_data(contents, filename):
+    """Return (contents, tokens, tree) for the given contents."""
+    contents = contents.lstrip('\\\n')
+    if not contents:  # pragma: no cover
+        return '', None, None
+    # Create the TOG instance.
+    tog = TokenOrderGenerator()
+    tog.filename = filename
+    # Pass 0: create the tokens and parse tree
+    tokens = make_tokens(contents)
+    if not tokens:  # pragma: no cover
+        return '', None, None
+    tree = parse_ast(contents)
+    if not tree:  # pragma: no cover
+        return '', None, None
+    tog.balance_tokens(tokens)
+    # Pass 1: create the links
+    try:
+        tog.create_links(tokens, tree)
+    except Exception:
+        # self.create_links has already given the exception.
+        return '', None, None
+    return contents, tokens, tree
+#@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
+    #@+node:ekr.20200702102239.1: *3* function: main
+    def main():
+        """
+        Run black, fstringify or tests, depending on sys.argv.
+        """
+        parser = argparse.ArgumentParser(description='arg_test.py [args*]...')
+        add = parser.add_argument
+        add('-f', '--fstringify', dest='f_flag', metavar='FILE', help='Run fstringify')
+        add('-o', '--orange', dest='o_flag' , metavar='FILE', help='Run orange')
+        args = parser.parse_args()
+        print(args)
+        if args.f_flag:
+            fstringify_command(args.f_flag)
+        elif args.o_flag:
+            orange_command(args.o_flag)
+        else:
+            unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
     def regularize_nls(s):
@@ -6458,7 +6527,8 @@ class Tokenizer:
 #@-others
 g = LeoGlobals()
 if __name__ == '__main__':
-    unittest.main()
+    main()
+    ### unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
