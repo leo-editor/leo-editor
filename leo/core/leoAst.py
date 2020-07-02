@@ -280,52 +280,42 @@ class LeoGlobals:  # pragma: no cover
 def fstringify_command(filename):
     """
     Entry point for --fstringify.
+    
+    Fstringify the given file, overwriting the file.
     """
-    if 1:
-        import leo.core.leoGlobals as g
-        g.pdb()
-    if not os.path.exists(filename):
+    if os.path.exists(filename):
+        print(f"fstringify {filename}") 
+        Fstringify().fstringify_file_silent(filename)
+    else:
         print(f"file not found: {filename}")
-        return
-    print('fstringify', filename)
-    ## contents = read_file(filename)
-    ## contents, tokens, tree = make_data(contents, filename)
-    fs = Fstringify()
-    ### fs.silent = True
-    fs.fstringify_file_silent (filename)
-    ## result_s = fs.fstringify(contents, filename, tokens, tree)
-    ## g.trace(len(result_s))
+#@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
+def fstringify_diff_command(filename):
+    """
+    Entry point for --fstringify-diff.
+    
+    Print the diff that would be produced by fstringify.
+    """
+    if os.path.exists(filename):
+        print(f"fstringify-diff {filename}")
+        Fstringify().fstringify_file_diff(filename)
+    else:
+        print(f"file not found: {filename}")
 #@+node:ekr.20200702115002.1: *3* command: orange_command
 def orange_command(filename):
 
-    if not os.path.exists(filename):
+    if os.path.exists(filename):
+        print(f"orange {filename}")
+        Orange().beautify_file(filename)
+    else:
         print(f"file not found: {filename}")
-        return
-    print('black', filename)
-#@+node:ekr.20200702103402.1: *3* function: make_data (new)
-def make_data(contents, filename):
-    """Return (contents, tokens, tree) for the given contents."""
-    contents = contents.lstrip('\\\n')
-    if not contents:  # pragma: no cover
-        return '', None, None
-    # Create the TOG instance.
-    tog = TokenOrderGenerator()
-    tog.filename = filename
-    # Pass 0: create the tokens and parse tree
-    tokens = make_tokens(contents)
-    if not tokens:  # pragma: no cover
-        return '', None, None
-    tree = parse_ast(contents)
-    if not tree:  # pragma: no cover
-        return '', None, None
-    tog.balance_tokens(tokens)
-    # Pass 1: create the links
-    try:
-        tog.create_links(tokens, tree)
-    except Exception:
-        # self.create_links has already given the exception.
-        return '', None, None
-    return contents, tokens, tree
+#@+node:ekr.20200702121315.1: *3* command: orange_diff_command
+def orange_diff_command(filename):
+
+    if os.path.exists(filename):
+        print(f"orange-diff {filename}")
+        Orange().beautify_file_diff(filename)
+    else:
+        print(f"file not found: {filename}")
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
@@ -336,14 +326,20 @@ if 1:  # pragma: no cover
         """
         parser = argparse.ArgumentParser(description='arg_test.py [args*]...')
         add = parser.add_argument
-        add('-f', '--fstringify', dest='f_flag', metavar='FILE', help='Run fstringify')
+        add('-f', '--fstringify', dest='f_flag', metavar='FILE', help='Fstringify')
+        add('-fd', '--fstringify-diff', dest='fd_flag', metavar='FILE', help='Fstringify-diff')
         add('-o', '--orange', dest='o_flag' , metavar='FILE', help='Run orange')
+        add('-od', '--orange-diff', dest='od_flag' , metavar='FILE', help='Run orange')
         args = parser.parse_args()
         print(args)
         if args.f_flag:
             fstringify_command(args.f_flag)
+        elif args.fd_flag:
+            fstringify_diff_command(args.fd_flag)
         elif args.o_flag:
             orange_command(args.o_flag)
+        elif args.od_flag:
+            orange_diff_command(args.od_flag)
         else:
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
