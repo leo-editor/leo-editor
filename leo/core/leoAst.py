@@ -326,10 +326,12 @@ if 1:  # pragma: no cover
         """
         parser = argparse.ArgumentParser(description=None)
         add = parser.add_argument
-        add('-f', '--fstringify', dest='f_flag', metavar='FILE')
-        add('-fd', '--fstringify-diff', dest='fd_flag', metavar='FILE')
-        add('-o', '--orange', dest='o_flag' , metavar='FILE')
-        add('-od', '--orange-diff', dest='od_flag' , metavar='FILE')
+        add('--fstringify', dest='f_flag', metavar='FILE', help='Leonine Fstringify')
+        add('--fstringify-diff', dest='fd_flag', metavar='FILE', help='Show diff')
+        add('--orange', dest='o_flag' , metavar='FILE', help='Leonine Black')
+        add('--orange-diff', dest='od_flag' , metavar='FILE', help='Show diff')
+        add('--pytest', dest='pyt_flag', action='store_true', help='Run pytest')
+        add('--unittest', dest='ut_flag', action='store_true', help='Run unittest.main()')
         args = parser.parse_args()
         if args.f_flag:
             fstringify_command(args.f_flag)
@@ -339,7 +341,11 @@ if 1:  # pragma: no cover
             orange_command(args.o_flag)
         elif args.od_flag:
             orange_diff_command(args.od_flag)
-        else:
+        elif args.pyt_flag:
+            import pytest
+            pytest.main(args=[__file__])
+        elif args.ut_flag:
+            sys.argv.remove('--unittest')
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
@@ -6523,7 +6529,6 @@ class Tokenizer:
 g = LeoGlobals()
 if __name__ == '__main__':
     main()
-    ### unittest.main()
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
