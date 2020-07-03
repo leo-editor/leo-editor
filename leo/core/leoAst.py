@@ -329,9 +329,9 @@ if 1:  # pragma: no cover
         """Run commands specified by sys.argv."""
         usage = (
             '\n'
-            '    leoAst.py (--help | --pytest | unittest)\n'
-            '    OR\n'
-            '    leoAst.py (--fstringify | --fstringify-diff | --orange | --orange-diff) PATHS')
+            '    leoAst.py (--help|--pytest|--unittest)\n'
+            '    -or-\n'
+            '    leoAst.py (--fstringify|--fstringify-diff|--orange|--orange-diff) PATHS')
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=True)
