@@ -331,9 +331,9 @@ if 1:  # pragma: no cover
             '\n\n'
             'leoAst.py (--help | --pytest | unittest)\n'
             'OR\n'
-            'leoAst.py (--fstringify | --fstringify-diff | --orange | --orange-diff) FILES')
+            'leoAst.py (--fstringify | --fstringify-diff | --orange | --orange-diff) PATHS')
         parser = argparse.ArgumentParser(description=None, usage=usage)
-        parser.add_argument('FILES', nargs='*', help='list of files')
+        parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=True)
         add = group.add_argument
         add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
@@ -343,7 +343,7 @@ if 1:  # pragma: no cover
         add('--pytest', dest='pytest', action='store_true', help='run pytest')
         add('--unittest', dest='unittest', action='store_true', help='run unittest.main()')
         args = parser.parse_args()
-        files = args.FILES
+        files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
         if not files:
