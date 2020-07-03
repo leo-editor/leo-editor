@@ -93,6 +93,7 @@ import argparse
 import ast
 import codecs
 import difflib
+import glob
 import io
 import os
 import re
@@ -343,6 +344,10 @@ if 1:  # pragma: no cover
         add('--unittest', dest='unittest', action='store_true', help='run unittest.main()')
         args = parser.parse_args()
         files = args.FILES
+        if len(files) == 1 and os.path.isdir(files[0]):
+            files = glob.glob(f"{files[0]}{os.sep}*.py")
+        if not files:
+            return
         if args.f:
             fstringify_command(files)
         if args.fd:
