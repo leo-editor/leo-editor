@@ -277,74 +277,87 @@ class LeoGlobals:  # pragma: no cover
     #@-others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
 #@+node:ekr.20200702114557.1: *3* command: fstringify_command
-def fstringify_command(filename):
+def fstringify_command(files):
     """
     Entry point for --fstringify.
     
     Fstringify the given file, overwriting the file.
     """
-    if os.path.exists(filename):
-        print(f"fstringify {filename}") 
-        Fstringify().fstringify_file_silent(filename)
-    else:
-        print(f"file not found: {filename}")
+    for filename in files:
+        if os.path.exists(filename):
+            print(f"fstringify {filename}") 
+            Fstringify().fstringify_file_silent(filename)
+        else:
+            print(f"file not found: {filename}")
 #@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
-def fstringify_diff_command(filename):
+def fstringify_diff_command(files):
     """
     Entry point for --fstringify-diff.
     
     Print the diff that would be produced by fstringify.
     """
-    if os.path.exists(filename):
-        print(f"fstringify-diff {filename}")
-        Fstringify().fstringify_file_diff(filename)
-    else:
-        print(f"file not found: {filename}")
+    for filename in files:
+        if os.path.exists(filename):
+            print(f"fstringify-diff {filename}")
+            Fstringify().fstringify_file_diff(filename)
+        else:
+            print(f"file not found: {filename}")
 #@+node:ekr.20200702115002.1: *3* command: orange_command
-def orange_command(filename):
+def orange_command(files):
 
-    if os.path.exists(filename):
-        print(f"orange {filename}")
-        Orange().beautify_file(filename)
-    else:
-        print(f"file not found: {filename}")
+    for filename in files:
+        if os.path.exists(filename):
+            print(f"orange {filename}")
+            Orange().beautify_file(filename)
+        else:
+            print(f"file not found: {filename}")
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
-def orange_diff_command(filename):
+def orange_diff_command(files):
 
-    if os.path.exists(filename):
-        print(f"orange-diff {filename}")
-        Orange().beautify_file_diff(filename)
-    else:
-        print(f"file not found: {filename}")
+    for filename in files:
+        if os.path.exists(filename):
+            print(f"orange-diff {filename}")
+            Orange().beautify_file_diff(filename)
+        else:
+            print(f"file not found: {filename}")
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20200702102239.1: *3* function: main
     def main():
-        """
-        Run black, fstringify or tests, depending on sys.argv.
-        """
-        parser = argparse.ArgumentParser(description=None)
-        add = parser.add_argument
-        add('--fstringify', dest='f_flag', metavar='FILE', help='Leonine Fstringify')
-        add('--fstringify-diff', dest='fd_flag', metavar='FILE', help='Show diff')
-        add('--orange', dest='o_flag' , metavar='FILE', help='Leonine Black')
-        add('--orange-diff', dest='od_flag' , metavar='FILE', help='Show diff')
-        add('--pytest', dest='pyt_flag', action='store_true', help='Run pytest')
-        add('--unittest', dest='ut_flag', action='store_true', help='Run unittest.main()')
+        """Run commands specified by sys.argv."""
+        usage = (
+            '\n\n'
+            'leoAst.py (--help | --pytest | unittest)\n'
+            'OR\n'
+            'leoAst.py (--fstringify | --fstringify-diff | --orange | --orange-diff) FILES')
+        parser = argparse.ArgumentParser(description=None, usage=usage)
+        parser.add_argument('FILES', nargs='*', help='list of files')
+        group = parser.add_mutually_exclusive_group(required=True)
+        add = group.add_argument
+        add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
+        add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
+        add('--orange', dest='o' , action='store_true', help='leonine Black')
+        add('--orange-diff', dest='od', action='store_true', help='show orange diff')
+        add('--pytest', dest='pytest', action='store_true', help='run pytest')
+        add('--unittest', dest='unittest', action='store_true', help='run unittest.main()')
         args = parser.parse_args()
-        if args.f_flag:
-            fstringify_command(args.f_flag)
-        elif args.fd_flag:
-            fstringify_diff_command(args.fd_flag)
-        elif args.o_flag:
-            orange_command(args.o_flag)
-        elif args.od_flag:
-            orange_diff_command(args.od_flag)
-        elif args.pyt_flag:
-            import pytest
-            pytest.main(args=[__file__])
-        elif args.ut_flag:
+        files = args.FILES
+        if args.f:
+            fstringify_command(files)
+        if args.fd:
+            fstringify_diff_command(files)
+        if args.o:
+            orange_command(files)
+        if args.od:
+            orange_diff_command(files)
+        if args.pytest:
+            try:
+                import pytest
+                pytest.main(args=[__file__])
+            except Exception:
+                print('pytest not found')
+        if args.unittest:
             sys.argv.remove('--unittest')
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
