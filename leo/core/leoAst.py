@@ -357,7 +357,6 @@ if 1:  # pragma: no cover
         if args.pytest:
             try:
                 import pytest
-                print(pytest)
                 pytest.main(args=[__file__])
             except Exception:
                 print('pytest not found')
