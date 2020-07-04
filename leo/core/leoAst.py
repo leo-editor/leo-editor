@@ -346,8 +346,6 @@ if 1:  # pragma: no cover
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
-        if not files:
-            return
         if args.f:
             fstringify_command(files)
         if args.fd:
@@ -359,6 +357,7 @@ if 1:  # pragma: no cover
         if args.pytest:
             try:
                 import pytest
+                print(pytest)
                 pytest.main(args=[__file__])
             except Exception:
                 print('pytest not found')
