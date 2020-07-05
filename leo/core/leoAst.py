@@ -327,11 +327,13 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702102239.1: *3* function: main
     def main():
         """Run commands specified by sys.argv."""
-        usage = (
-            '\n'
-            '    leoAst.py (--help|--pytest|--unittest)\n'
-            '    -or-\n'
-            '    leoAst.py (--fstringify|--fstringify-diff|--orange|--orange-diff) PATHS')
+        usage = '\n'.join([
+            '\n',
+            '    leoAst.py --help',
+            '    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS',
+            '    leoAst.py --pytest ["-k ARGS"]',
+            '    leoAst.py --unittest [ARGS',
+        ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
         group = parser.add_mutually_exclusive_group(required=True)
@@ -340,8 +342,8 @@ if 1:  # pragma: no cover
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
         add('--orange', dest='o' , action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
-        add('--pytest', dest='pytest', action='store_true', help='run pytest')
-        add('--unittest', dest='unittest', action='store_true', help='run unittest.main()')
+        add('--pytest', dest='pytest', metavar='"-k ARGS"', help='run pytest')
+        add('--unittest', dest='unittest', metavar='ARGS', help='run unittest')
         args = parser.parse_args()
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
@@ -355,10 +357,13 @@ if 1:  # pragma: no cover
         if args.od:
             orange_diff_command(files)
         if args.pytest:
+            # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
                 import pytest
-                pytest.main(args=[__file__])
+                sys.argv.remove('--pytest')
+                pytest.main(args=sys.argv)
             except Exception:
+                g.es_exception()
                 print('pytest not found')
         if args.unittest:
             sys.argv.remove('--unittest')
@@ -1582,11 +1587,20 @@ class TokenOrderGenerator:
             yield from self.gen(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
     def do_Constant(self, node):  # pragma: no cover
-
-        # Maybe in later versions of Python.
-        # In that case, more testing will be needed.
-        assert False, g.callers()
-        yield from self.gen_token('number', str(node.s))
+        
+        # Support Python 3.8.
+        g.trace('*****', type(node.value), repr(node.value), node.kind, node.s)
+        # yield from self.gen_token('number', str(node.s)) # was 'number'
+        
+        if isinstance(node.value, str):
+            token = self.find_next_significant_token()
+            yield from self.gen_token('string', token.value)
+        elif isinstance(node.value, (int, float)):
+            token = self.find_next_significant_token()
+            yield from self.gen_token('number', token.value)
+        elif isinstance(node.value, bool):
+            token = self.find_next_significant_token()
+            yield from self.gen_token('name', token.value)
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -1698,10 +1712,12 @@ class TokenOrderGenerator:
     def do_Name(self, node):
 
         yield from self.gen_name(node.id)
+        ### g.trace('-----', node.id)
 
     def do_NameConstant(self, node):
 
         yield from self.gen_name(repr(node.value))
+        ### g.trace('-----', node.value)
     #@+node:ekr.20191113063144.45: *6* tog.Num
     def do_Num(self, node):
 
