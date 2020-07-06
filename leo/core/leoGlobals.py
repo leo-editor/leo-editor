@@ -7570,7 +7570,7 @@ def run_unit_test_in_separate_process(command):
     print('')
     print(command)
     if out.strip():
-        print('traces...')
+        # print('traces...')
         print(out.rstrip())
     print(err.rstrip())
     # There may be skipped tests...
