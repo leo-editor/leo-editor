@@ -332,7 +332,7 @@ if 1:  # pragma: no cover
             '    leoAst.py --help',
             '    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS',
             '    leoAst.py --pytest ["-k ARGS"]',
-            '    leoAst.py --unittest [ARGS',
+            '    leoAst.py --unittest [ARGS]',
         ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
