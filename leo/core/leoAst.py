@@ -1590,7 +1590,6 @@ class TokenOrderGenerator:
     def do_Constant(self, node):  # pragma: no cover
         
         # Support Python 3.8.
-        # g.trace('*****', type(node.value), repr(node.value), repr(node.s))
         if node.value is None or isinstance(node.value, bool):
             yield from self.gen_token('name', repr(node.value))  # Weird: return a name!
         elif node.value == Ellipsis:
@@ -1602,7 +1601,8 @@ class TokenOrderGenerator:
         elif isinstance(node.value, bytes):
             yield from self.do_Bytes(node)
         else:
-            g.trace(repr(node.value), g.callers()) ###
+            # Unknown type.
+            g.trace('----- Oops -----', repr(node.value), g.callers())
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -1649,10 +1649,6 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(',')
-    #@+node:ekr.20200706093815.1: *6* tog.FunctionType (TEST)
-    def do_FunctionType(self, node):
-        
-        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.40: *6* tog.Index
     def do_Index(self, node):
 
@@ -1714,20 +1710,15 @@ class TokenOrderGenerator:
             yield from self.gen_name('for')
             yield from self.gen(z)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant & NamedExpr (TEST)
+    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
     def do_Name(self, node):
 
-        ### g.trace('-----', node.id)
         yield from self.gen_name(node.id)
 
     def do_NameConstant(self, node):
 
-        ### g.trace('-----', node.value)
         yield from self.gen_name(repr(node.value))
 
-    def do_NamedExpr(self, node):
-        
-        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.45: *6* tog.Num
     def do_Num(self, node):
 
@@ -1846,10 +1837,6 @@ class TokenOrderGenerator:
         # Do not call gen_op for parens or commas here.
         # They do not necessarily exist in the token list!
         yield from self.gen(node.elts)
-    #@+node:ekr.20200706093430.1: *6* tog.TypeIgnore (TEST)
-    def do_TypeIgnore(self, node):
-        
-        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.53: *5* tog: Operators
     #@+node:ekr.20191113063144.55: *6* tog.BinOp
     def do_BinOp(self, node):
@@ -5403,9 +5390,11 @@ class TestTOG(BaseTest):
             'Suite',  # Not necessary.
             'PyCF_ONLY_AST',  # A constant,
             'AST',  # The base class,
-            # New, for Python 3.8.
+            # Python 3.8: Not node types.
             'PyCF_ALLOW_TOP_LEVEL_AWAIT',
             'PyCF_TYPE_COMMENTS',
+            # Python 3.8: Maybe not node types. Not properly documented...
+            'FunctionType', 'NamedExpr', 'TypeIgnore',
         ]
         aList = [z for z in aList if not z[0].islower()]
             # Remove base classes.
