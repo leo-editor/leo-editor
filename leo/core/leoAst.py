@@ -107,7 +107,7 @@ v1, v2, junk, junk, junk = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* Python 3.7.
-use_async_tokens = (v1, v2) >= (3,) and (v1, v2) != (3, 7)
+use_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -284,7 +284,7 @@ def fstringify_command(files):
     
     Fstringify the given file, overwriting the file.
     """
-    for filename in files:
+    for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"fstringify {filename}") 
             Fstringify().fstringify_file_silent(filename)
@@ -297,7 +297,7 @@ def fstringify_diff_command(files):
     
     Print the diff that would be produced by fstringify.
     """
-    for filename in files:
+    for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"fstringify-diff {filename}")
             Fstringify().fstringify_file_diff(filename)
@@ -306,7 +306,7 @@ def fstringify_diff_command(files):
 #@+node:ekr.20200702115002.1: *3* command: orange_command
 def orange_command(files):
 
-    for filename in files:
+    for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"orange {filename}")
             Orange().beautify_file(filename)
@@ -315,7 +315,7 @@ def orange_command(files):
 #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
 def orange_diff_command(files):
 
-    for filename in files:
+    for filename in files:  # pragma: no cover
         if os.path.exists(filename):
             print(f"orange-diff {filename}")
             Orange().beautify_file_diff(filename)
@@ -1262,7 +1262,8 @@ class TokenOrderGenerator:
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {token.line.strip()}\n"
                     f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
-                    f"      found: {token.kind}.{token.value!r}\n")
+                    f"      found: {token.kind}.{token.value!r}\n"
+                    f"token.index: {token.index}\n")
             # Skip the insignificant token.
             px += 1
         else:  # pragma: no cover
@@ -1589,18 +1590,19 @@ class TokenOrderGenerator:
     def do_Constant(self, node):  # pragma: no cover
         
         # Support Python 3.8.
-        g.trace('*****', type(node.value), repr(node.value), node.kind, node.s)
-        # yield from self.gen_token('number', str(node.s)) # was 'number'
-        
-        if isinstance(node.value, str):
-            token = self.find_next_significant_token()
-            yield from self.gen_token('string', token.value)
+        # g.trace('*****', type(node.value), repr(node.value), repr(node.s))
+        if node.value is None or isinstance(node.value, bool):
+            yield from self.gen_token('name', repr(node.value))  # Weird: return a name!
+        elif node.value == Ellipsis:
+            yield from self.gen_op('...')
+        elif isinstance(node.value, str):
+            yield from self.do_Str(node)
         elif isinstance(node.value, (int, float)):
-            token = self.find_next_significant_token()
-            yield from self.gen_token('number', token.value)
-        elif isinstance(node.value, bool):
-            token = self.find_next_significant_token()
-            yield from self.gen_token('name', token.value)
+            yield from self.gen_token('number', repr(node.value))
+        elif isinstance(node.value, bytes):
+            yield from self.do_Bytes(node)
+        else:
+            g.trace(repr(node.value), g.callers()) ###
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -1647,6 +1649,10 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             if i < len(node.dims) - 1:
                 yield from self.gen_op(',')
+    #@+node:ekr.20200706093815.1: *6* tog.FunctionType (TEST)
+    def do_FunctionType(self, node):
+        
+        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.40: *6* tog.Index
     def do_Index(self, node):
 
@@ -1708,16 +1714,20 @@ class TokenOrderGenerator:
             yield from self.gen_name('for')
             yield from self.gen(z)
         yield from self.gen_op(']')
-    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
+    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant & NamedExpr (TEST)
     def do_Name(self, node):
 
-        yield from self.gen_name(node.id)
         ### g.trace('-----', node.id)
+        yield from self.gen_name(node.id)
 
     def do_NameConstant(self, node):
 
-        yield from self.gen_name(repr(node.value))
         ### g.trace('-----', node.value)
+        yield from self.gen_name(repr(node.value))
+
+    def do_NamedExpr(self, node):
+        
+        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.45: *6* tog.Num
     def do_Num(self, node):
 
@@ -1836,6 +1846,10 @@ class TokenOrderGenerator:
         # Do not call gen_op for parens or commas here.
         # They do not necessarily exist in the token list!
         yield from self.gen(node.elts)
+    #@+node:ekr.20200706093430.1: *6* tog.TypeIgnore (TEST)
+    def do_TypeIgnore(self, node):
+        
+        yield from self.gen_name(repr(node.value))  ### Test !
     #@+node:ekr.20191113063144.53: *5* tog: Operators
     #@+node:ekr.20191113063144.55: *6* tog.BinOp
     def do_BinOp(self, node):
@@ -3305,8 +3319,9 @@ class BaseTest(unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:  # pragma: no cover
             return '', None, None
-        if 0:  # Excellent traces for tracking down mysteries.
+        if 0: # Sometimes useful.
             dump_contents(contents)
+        if 0:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
         if 0:  # Sometimes useful.
             dump_tokens(tokens)
@@ -4124,7 +4139,7 @@ class TestOrange(BaseTest):
         
         contents = r'''\
     def get_semver(tag):
-        """Return 'Semantic Version' from tag string"""
+        """bug 1429 docstring"""
         try:
             import semantic_version
             version = str(semantic_version.Version.coerce(tag, partial=True))
@@ -5391,10 +5406,6 @@ class TestTOG(BaseTest):
             # New, for Python 3.8.
             'PyCF_ALLOW_TOP_LEVEL_AWAIT',
             'PyCF_TYPE_COMMENTS',
-            # These may have to be added.
-            # FunctionType,
-            # NamedExpr,
-            # TypeIgnore,
         ]
         aList = [z for z in aList if not z[0].islower()]
             # Remove base classes.
