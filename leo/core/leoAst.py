@@ -342,8 +342,8 @@ if 1:  # pragma: no cover
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
         add('--orange', dest='o' , action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
-        add('--pytest', dest='pytest', metavar='"-k ARGS"', help='run pytest')
-        add('--unittest', dest='unittest', metavar='ARGS', help='run unittest')
+        add('--pytest', dest='pytest', metavar='"-k ARGS"', nargs='?', const=[], default=False, help='run pytest')
+        add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
@@ -356,7 +356,7 @@ if 1:  # pragma: no cover
             orange_command(files)
         if args.od:
             orange_diff_command(files)
-        if args.pytest:
+        if args.pytest is not False:
             # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
                 import pytest
@@ -365,7 +365,7 @@ if 1:  # pragma: no cover
             except Exception:
                 g.es_exception()
                 print('pytest not found')
-        if args.unittest:
+        if args.unittest is not False:
             sys.argv.remove('--unittest')
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
