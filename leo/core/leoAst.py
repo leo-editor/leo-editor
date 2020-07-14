@@ -1543,10 +1543,20 @@ class TokenOrderGenerator:
             yield from self.gen(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
     def do_Constant(self, node):  # pragma: no cover
+        """
+        
+        https://greentreesnakes.readthedocs.io/en/latest/nodes.html
+        
+        A constant. The value attribute holds the Python object it represents.
+        This can be simple types such as a number, string or None, but also
+        immutable container types (tuples and frozensets) if all of their
+        elements are constant.
+        """
         
         # Support Python 3.8.
         if node.value is None or isinstance(node.value, bool):
-            yield from self.gen_token('name', repr(node.value))  # Weird: return a name!
+            # Weird: return a name!
+            yield from self.gen_token('name', repr(node.value))  
         elif node.value == Ellipsis:
             yield from self.gen_op('...')
         elif isinstance(node.value, str):
@@ -1555,6 +1565,10 @@ class TokenOrderGenerator:
             yield from self.gen_token('number', repr(node.value))
         elif isinstance(node.value, bytes):
             yield from self.do_Bytes(node)
+        elif isinstance(node.value, tuple):
+            yield from self.do_Tuple(node)
+        elif isinstance(node.value, frozenset):
+            yield from self.do_Set(node)
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
