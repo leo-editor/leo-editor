@@ -196,6 +196,7 @@ class Command:
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
+        func.__func_name__ = func.__name__ # For leoInteg.
         func.is_command = True
         func.command_name = self.name
         return func
@@ -238,6 +239,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__func_name__ = func.__name__ # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -295,6 +297,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
+        new_cmd_wrapper.__func_name__ = func.__name__ # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
