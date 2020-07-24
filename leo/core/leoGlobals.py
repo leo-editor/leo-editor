@@ -3693,7 +3693,7 @@ def computeStandardDirectories():
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
 
-    branch = g.gitBranchName(path=g.os_path_dirname(fileName))
+    branch, commit = g.gitInfoForFile(fileName)  # #1616
     if not fileName:
         return branch + ": untitled" if branch else 'untitled'
     path, fn = g.os_path_split(fileName)
@@ -5154,6 +5154,34 @@ def gitCommitNumber(path=None):
     """
     branch, commit = g.gitInfo(path)
     return commit
+#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
+def gitInfoForFile(filename):
+    """
+    return the git (branch, commit) info associated for the given file.
+    
+    Look for a .git directory in the file's directory, and parent directories.
+    """
+    from pathlib import Path
+    branch, commit = '', ''
+    if filename:
+        parent = Path(filename)
+        while parent:
+            git_dir = os.path.join(parent, '.git')
+            if os.path.exists(git_dir) and os.path.isdir(git_dir):
+                head = os.path.join(git_dir, 'HEAD')
+                if os.path.exists(head):
+                    branch, commit = g.gitInfo(head)
+                    break
+            if parent == parent.parent:
+                break
+            parent = parent.parent
+    return branch, commit
+#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
+def gitInfoForOutline(c):
+    """
+    Return the git (branch, commit) info associated for commander c.
+    """
+    return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path=None):
     """
