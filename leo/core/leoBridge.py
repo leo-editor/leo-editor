@@ -267,6 +267,8 @@ class BridgeController:
                     # g.TracingNullObject(tag='g.app.db')
             fileName = self.completeFileName(fileName)
             c = self.createFrame(fileName)
+            # Leo 6.3: support leoInteg.
+            g.app.windowList.append(c.frame)
             if not self.useCaches:
                 c.db = g.NullObject()
                     # g.TracingNullObject(tag='c.db')
@@ -300,7 +302,8 @@ class BridgeController:
             if g.os_path_exists(fileName):
                 # This takes a long time due to imports in c.__init__
                 c = g.openWithFileName(fileName)
-                if c: return c
+                if c:
+                    return c
             elif not self.silentMode:
                 print(f"file not found: {fileName}. creating new window")
         # Create a new frame. Unlike leo.run, this is not a startup window.

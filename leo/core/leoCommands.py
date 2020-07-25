@@ -3785,6 +3785,8 @@ class Commands:
         c.recolor()
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
+        add_context=None,  # Override setting only if True/False
+        add_file_context=None,  # Override setting only if True/False
         add_path=True,
         recursive=True,
         safe_at_file=True,
@@ -3820,6 +3822,8 @@ class Commands:
             try:
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
+                    add_context=add_context,
+                    add_file_context=add_file_context,
                     add_path=add_path,
                     recursive=recursive,
                     safe_at_file=safe_at_file,

@@ -1959,6 +1959,33 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.insert(i, ''.join(keeplines))
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
+    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (new)
+    @cmd('move-lines-to-next-node')
+    def moveLineToNextNode(self, event):
+        """Move one or *trailing* lines to the start of the next node."""
+        c = self.c
+        if not c.p.threadNext():
+            return
+        w = self.editWidget(event)
+        if not w:
+            return
+        s = w.getAllText()
+        sel_1, sel_2 = w.getSelectionRange()
+        i, junk = g.getLine(s, sel_1)
+        i2, j = g.getLine(s, sel_2)
+        lines = s[i:j]
+        if not lines.strip():
+            return
+        self.beginCommand(w, undoType='move-lines-to-next-node')
+        try:
+            next_i, next_j = g.getLine(s, j)
+            w.delete(i, next_j)
+            c.p.b = w.getAllText().rstrip() + '\n'
+            c.selectPosition(c.p.threadNext())
+            c.p.b = lines + '\n' + c.p.b
+            c.recolor()
+        finally:
+            self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.284: *4* ec.splitLine
     @cmd('split-line')
     def splitLine(self, event):

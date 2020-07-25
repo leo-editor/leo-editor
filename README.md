@@ -1,4 +1,4 @@
-Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 

@@ -2179,7 +2179,11 @@ class LocalConfigManager:
             g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
-        """Init the setting for name to val."""
+        """
+        Init the setting for name to val.
+        
+        The "p" arg is not used.
+        """
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)

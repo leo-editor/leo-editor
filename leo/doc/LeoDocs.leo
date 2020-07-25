@@ -551,6 +551,7 @@
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
+<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
@@ -12527,6 +12528,7 @@ write_intermediate_file = True
 .. _`Python wheel`:             https://pythonwheels.com/
 .. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
+.. _`Standalone leo.exe`:       download.html#standalone
 
 ###############
 Downloading Leo
@@ -12539,7 +12541,8 @@ There are three ways to download Leo:
 - Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
 
 - If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.
-</t>
+
+- All in one `Standalone leo.exe`_ (Windows only) - complete package with all dependencies. Just download, unzip and run.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -31343,7 +31346,7 @@ portable solution I've come across is:
 - Press arrow cursor keys to move the outline centrally on active screen.
   (usually right- and down-arrow)
 - Press [enter] when it's moved on-screen enough to nab the Title bar with the mouse cursor.</t>
-<t tx="ekr.20200225075435.1">Leo 6.2 final, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20200225075435.1">Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -31710,6 +31713,31 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
+<t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
+
+Getting to the latest leo.exe:
+
+ 1. Navigate to **Actions**
+ 2. Select `Build standalone leo.exe`_ from workflow list in the left table of contents
+ 3. Look for a recent event with a checkmark and click on it
+ 4. Look for **Artifacts** heading and under it: **leo-windows-exe** in blue.
+
+.. image:: https://user-images.githubusercontent.com/486200/83912441-bb38a600-a722-11ea-9abf-43ce833723c2.png
+
+.. image:: https://user-images.githubusercontent.com/486200/83912469-c390e100-a722-11ea-868a-cf56c379eec0.png
+
+.. _`Build standalone leo.exe`: https://github.com/leo-editor/leo-editor/actions?query=workflow:%22Build+standalone+leo.exe%22
+
+
+##################
+Upgrading in place
+##################
+
+ 1. Download source archive from Github repository, `devel branch`_
+ 2. Replace contents of ``C:\Apps\leo\leo\*.*`` with contents of ``leo-editor\leo\*.*``. (Note: the nested "leo\leo" folder structure is significant.)
+
+.. _`devel branch`: https://github.com/leo-editor/leo-editor/tree/devel
+</t>
 <t tx="matt.20180826201749.1">**Problem**
 
 When installing Leo from GitHub with
@@ -31801,7 +31829,7 @@ Example::
 
 For easier upgrading substitute ``git clone`` for wget &amp; 7z steps::
 
-    git clone --single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
+    git clone --no-single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
     pip install --editable leo-editor
     
 time passes, upgrade desired::
@@ -31811,7 +31839,7 @@ time passes, upgrade desired::
     pip uninstall leo
     pip install --editable .
 
-`single-branch`, `b` and `depth` are all optional, but will dramatically speed up download time as it only grabs the latest development branch and skips all but the last couple weeks or months of history.
+`b` and `depth` are optional, but will dramatically speed up download time as it only grabs the latest development branch, the tips of other branches, and skips all but the last couple weeks or months of history.
 
 **Note**
 

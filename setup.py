@@ -113,8 +113,7 @@ user_requires = [
 #@+node:maphew.20190207205714.1: ** define_entry_points
 def define_entry_points(entry_points=None):
     """
-    1. Define scripts that get installed to PYTHONHOME/Scripts.
-    2. Extend `python setup.py clean` to remove more files (issue #1055)
+    Define scripts that get installed to PYTHONHOME/Scripts.
     """
     print('Creating entry_points for [OS name - system]: {} - {}'.format(
         platform.os.name, platform.system()))
@@ -155,7 +154,6 @@ setup(
     entry_points=define_entry_points(),
     python_requires='>=3.6',
 )
-
 #@@language python
 #@@tabwidth -4
 #@-leo

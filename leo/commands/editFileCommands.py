@@ -334,7 +334,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event):
+    def gitDiff(self, event=None):  # 2020/07/18, for leoInteg.
 
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20170806094318.7: *3* efc.insertFile

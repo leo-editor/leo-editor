@@ -192,6 +192,12 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20160318094003.1"><vh>leoAst</vh>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+<v t="ekr.20200219070034.1"><vh>@test python -m leo.core.leoAst</vh></v>
+</v>
+<v t="ekr.20200620061759.1"><vh>@test cython importer</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1487,6 +1493,36 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20160318094003.1"># Most unit tests are now in leoAst.py itself.
+</t>
+<t tx="ekr.20160318094009.1">import leo.external.make_stub_files as msf
+import leo.external.py2cs as py2cs
+import ast, tokenize
+path = g.os_path_finalize_join(g.app.loadDir,
+    '..', 'test', 'unittest', 'python3_test.py')
+assert g.os_path_exists(path), path
+fn = g.shortFileName(path)
+with open(path, 'r') as f:
+    source = f.read()
+node = ast.parse(source, filename=fn, mode='exec')
+with open(path, 'r') as f:
+    src = f.read()
+readlines = g.ReadLinesClass(src).next
+tokens = list(tokenize.generate_tokens(readlines))
+s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+assert s
+controller = msf.StandAloneMakeStubFile()
+msf.StubTraverser(controller).visit(node)
+</t>
+<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -1592,6 +1628,60 @@ nodeB
     pass</t>
 <t tx="ekr.20200205065723.3">def eggs():
     pass
+</t>
+<t tx="ekr.20200219070034.1">#1498: Run per-file unit tests from unitTest.leo.
+command = 'python3 -m unittest leo.core.leoAst'
+g.run_unit_test_in_separate_process(command)
+</t>
+<t tx="ekr.20200620061759.1">if False: # Preamble
+    if c.isChanged(): c.save()
+    import leo.core.leoImport as leoImport
+    import leo.plugins.importers.linescanner as linescanner
+    import leo.plugins.importers.cython
+    import importlib
+    importlib.reload(leo.plugins.importers.linescanner)
+    importlib.reload(leo.plugins.importers.cython)
+    importlib.reload(leoImport)
+    # g.app.loadManager.createAllImportersData()
+    ic = leoImport.LeoImportCommands(c)
+else:
+    ic = c.importCommands  
+
+s = '''\
+from libc.math cimport pow
+
+cdef double square_and_add (double x):
+    """Compute x^2 + x as double.
+
+    This is a cdef function that can be called from within
+    a Cython program, but not from Python.
+    """
+    return pow(x, 2.0) + x
+
+cpdef print_result (double x):
+    """This is a cpdef function that can be called from Python."""
+    print("({} ^ 2) + {} = {}".format(x, x, square_and_add(x)))
+
+'''
+table = (
+    'Declarations',
+    'double',
+    'print_result',
+)
+try:
+    ic.cythonUnitTest(p,s=s,showTree=True)
+    if 1: # Check structure
+        root = c.p.lastChild()
+        assert root.h.startswith('@@'), root.h
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1: # Delete children
+        p.deleteAllChildren()
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>

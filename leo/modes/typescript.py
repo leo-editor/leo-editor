@@ -194,11 +194,12 @@ keywordsDictDict = {
 
 # Rules for typescript_main ruleset.
 
-if 0:
-    def typescript_rule0(colorer, s, i):
-        return colorer.match_eol_span(s, i, kind="comment1", seq="//",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+# #1602
+def typescript_rule0(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment3", begin="/*", end="*/",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False,
+        delegate="",exclude_match=False,
+        no_escape=False, no_line_break=False, no_word_break=False)
 
 def typescript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
@@ -341,7 +342,7 @@ rulesDict1 = {
     ",": [typescript_rule24,],
     "-": [typescript_rule11,],
     ".": [typescript_rule21,],
-    "/": [typescript_rule4,typescript_rule12,], # typescript_rule0,
+    "/": [typescript_rule0,typescript_rule4,typescript_rule12,],
     "0": [typescript_rule31,],
     "1": [typescript_rule31,],
     "2": [typescript_rule31,],
