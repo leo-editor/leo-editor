@@ -5606,20 +5606,6 @@ class TestTOG(BaseTest):
 class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
     #@+others
-    #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
-    def show_example_dump(self):  # pragma: no cover
-
-        # Will only be run when enabled explicitly.
-
-        contents = """\
-    print('line 1')
-    print('line 2')
-    print('line 3')
-    """
-        contents, tokens, tree = self.make_data(contents)
-        dump_contents(contents)
-        dump_tokens(tokens)
-        dump_tree(tokens, tree)
     #@+node:ekr.20200122165910.1: *4* TT.show_asttokens_script
     def show_asttokens_script(self):  # pragma: no cover
         """
@@ -5716,6 +5702,20 @@ class TestTokens(BaseTest):
                         f"children: {children_s}")
             # Print the resulting tokens.
             g.printObj(tokens, tag='Tokens')
+    #@+node:ekr.20200121025938.1: *4* TT.show_example_dump
+    def show_example_dump(self):  # pragma: no cover
+
+        # Will only be run when enabled explicitly.
+
+        contents = """\
+    print('line 1')
+    print('line 2')
+    print('line 3')
+    """
+        contents, tokens, tree = self.make_data(contents)
+        dump_contents(contents)
+        dump_tokens(tokens)
+        dump_tree(tokens, tree)
     #@+node:ekr.20200110015014.6: *4* TT.test_bs_nl_tokens
     def test_bs_nl_tokens(self):
         # Test https://bugs.python.org/issue38663.
@@ -5768,6 +5768,46 @@ class TestTokens(BaseTest):
     def test_string_concatentation_3(self):
         # plain string followed by f-string on the same line
         self.check_roundtrip("""'abc' f'xyz'""")
+    #@+node:ekr.20160521103254.1: *4* TT.test_vistors_exist
+    def test_vistors_exist(self):
+        """Ensure that visitors for all ast nodes exist."""
+        import _ast
+        # Compute all fields to BaseTest.
+        aList = sorted(dir(_ast))
+        remove = [
+            'Interactive', # Not necessary.
+            'Suite',  # Not necessary.
+            'PyCF_ONLY_AST',  # A constant,
+            'AST',  # The base class,
+            # Python 3.8: Not node types.
+            'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+            'PyCF_TYPE_COMMENTS',
+            # Python 3.8: Maybe not node types. Not properly documented...
+            'FunctionType', 'NamedExpr', 'TypeIgnore',
+        ]
+        aList = [z for z in aList if not z[0].islower()]
+            # Remove base classes.
+        aList = [z for z in aList
+            if not z.startswith('_') and not z in remove]
+        # Now test them.
+        table = (
+            TokenOrderGenerator,
+        )
+        for class_ in table:
+            traverser = class_()
+            errors, nodes, ops = 0, 0, 0
+            for z in aList:
+                if hasattr(traverser, 'do_' + z):
+                    nodes += 1
+                elif _op_names.get(z):
+                    ops += 1
+                else:  # pragma: no cover
+                    errors += 1
+                    print(
+                        f"Missing visitor: "
+                        f"{traverser.__class__.__name__}.{z}")
+        msg = f"{nodes} node types, {ops} op types, {errors} errors"
+        assert not errors, msg
     #@-others
 #@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
 class TestTopLevelFunctions(BaseTest):
