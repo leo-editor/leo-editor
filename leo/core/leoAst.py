@@ -36,9 +36,12 @@ https://github.com/leo-editor/leo-editor/issues/1440
 **Stand-alone operation**
    
 usage:
-    leoAst.py (--help | --pytest | --unittest)
-    OR
-    leoAst.py (--fstringify | --fstringify-diff | --orange | --orange-diff) PATHS
+    
+    leoAst.py --help
+    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
+    leoAst.py --py-cov [ARGS]   # Example: --py-cov "-f TestOrange"
+    leoAst.py --pytest [ARGS]   # Example: --pytest "-f TestOrange"
+    leoAst.py --unittest [ARGS] # Example: --unittest TestOrange
 
 positional arguments:
   PATHS              directory or list of files
@@ -49,8 +52,9 @@ optional arguments:
   --fstringify-diff  show fstringify diff
   --orange           leonine Black
   --orange-diff      show orange diff
-  --pytest           run pytest
-  --unittest         run unittest.main()
+  --py-cov           run pytest --cov on leoAst.py
+  --pytest           run pytest on leoAst.py
+  --unittest         run unittest on leoAst.py
 """
 #@-<< docstring >>
 #@+<< imports >>
@@ -297,8 +301,8 @@ if 1:  # pragma: no cover
             '\n',
             '    leoAst.py --help',
             '    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS',
-            '    leoAst.py --py-cov',
-            '    leoAst.py --pytest ["-k ARGS"]',
+            '    leoAst.py --py-cov [ARGS]',
+            '    leoAst.py --pytest [ARGS]',
             '    leoAst.py --unittest [ARGS]',
         ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
@@ -309,11 +313,19 @@ if 1:  # pragma: no cover
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
         add('--orange', dest='o' , action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
-        add('--py-cov', dest='pycov', action='store_true', help='run py-cov')
-        add('--pytest', dest='pytest', metavar='"-k ARGS"', nargs='?', const=[], default=False, help='run pytest')
-        add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
+        add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False,
+            help='run pytest --cov\n# Example: --py-cov "-k TestOrange"')
+        add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False,
+            help='run pytest # Example: --pytest "-k TestOrange" ')
+        add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False,
+            help='run unittest # Example: --unittest TestOrange')
         args = parser.parse_args()
         # g.printObj(args, tag='ARGS')
+        if args:
+            if isinstance(args, str):
+                sys.args.append(args)
+            if isinstance(args, list):
+                sys.args.extend(args)
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
@@ -325,7 +337,7 @@ if 1:  # pragma: no cover
             orange_command(files)
         if args.od:
             orange_diff_command(files)
-        if args.pycov:
+        if isinstance(args.pycov, (str, list)):
             try:
                 import pytest
                 sys.argv.remove('--py-cov')
@@ -335,12 +347,13 @@ if 1:  # pragma: no cover
                     '--cov=leo.core.leoAst',
                     'leo/core/leoAst.py',
                 ]
+                args.extend(sys.argv)
                 pytest.main(args=args)
             except Exception:
                 g.es_exception()
                 print('pytest not found')
             return # Seems necessary.
-        if isinstance(args.pytest, list):
+        if isinstance(args.pytest, (str, list)):
             # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
                 import pytest
@@ -349,7 +362,7 @@ if 1:  # pragma: no cover
             except Exception:
                 g.es_exception()
                 print('pytest not found')
-        if isinstance(args.unittest, list):
+        if isinstance(args.unittest, (str, list)):
             sys.argv.remove('--unittest')
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
