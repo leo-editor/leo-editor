@@ -3710,18 +3710,37 @@ class TestFiles(BaseTest):  # pragma: no cover
     """
     Tests for the TokenOrderGenerator class that act on files.
     
-    These tests do not start with 'test_', so they are not run by default.
+    All of these tests failed at once time.
     """
     #@+others
-    #@+node:ekr.20200123050742.1: *4* TestFiles.optional_test_various_leo_files
-    def optional_test_various_leo_files(self):
+    #@+node:ekr.20200726145235.2: *4* TestFiles.test_leoApp
+    def test_leoApp(self):
         
-        table = (
-            'leoApp.py', 'leoAst.py', 'leoDebugger.py', 'leoFind.py',
-            'leoGlobals.py', 'leoTips.py', 'runLeo.py',
-        )
-        for filename in table:
-            self.make_file_data(filename)
+        self.make_file_data('leoApp.py')
+    #@+node:ekr.20200726145235.1: *4* TestFiles.test_leoAst
+    def test_leoAst(self):
+        
+        self.make_file_data('leoAst.py')
+    #@+node:ekr.20200726145333.1: *4* TestFiles.test_leoDebugger
+    def test_leoDebugger(self):
+        
+        self.make_file_data('leoDebugger.py')
+    #@+node:ekr.20200726145333.2: *4* TestFiles.test_leoFind
+    def test_leoFind(self):
+        
+        self.make_file_data('leoFind.py')
+    #@+node:ekr.20200726145333.3: *4* TestFiles.test_leoGlobals
+    def test_leoGlobals(self):
+        
+        self.make_file_data('leoGlobals.py')
+    #@+node:ekr.20200726145333.4: *4* TestFiles.test_leoTips
+    def test_leoTips(self):
+        
+        self.make_file_data('leoTips.py')
+    #@+node:ekr.20200726145735.1: *4* TestFiles.test_runLeo
+    def test_runLeo(self):
+        
+        self.make_file_data('runLeo.py')
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
@@ -6228,7 +6247,7 @@ class Fstringify(TokenOrderTraverser):
         result = list(re.finditer(self.format_pat, s))
         return result
     #@+node:ekr.20200726125841.1: *5* fs.scan_for_values (token based, not used)
-    def scan_for_values(self):
+    def scan_for_values(self):  # pragma: no cover 
         """
         **Important**: This method is not used. It shows how to "parse"
         the RHS of an % operator using tokens instead of a parse tree. 
