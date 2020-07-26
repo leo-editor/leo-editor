@@ -2402,6 +2402,11 @@ class Orange:
     """
     A flexible and powerful beautifier for Python.
     Orange is the new black.
+    
+    *Important*: This is a predominantly a *token*-based beautifier.
+    However, orange.colon and orange.possible_unary_op use the parse
+    tree to provide context that would otherwise be difficult to
+    deduce.
     """
     # This switch is really a comment. It will always be false.
     # It marks the code that simulates the operation of the black tool.
@@ -5903,6 +5908,7 @@ class Fstringify(TokenOrderTraverser):
     """A class to fstringify files."""
 
     silent = True  # for pytest. Defined in all entries.
+
     #@+others
     #@+node:ekr.20191222083947.1: *4* fs.fstringify
     def fstringify(self, contents, filename, tokens, tree):
@@ -6607,6 +6613,14 @@ class Tokenizer:
         Handle the given token, optionally including between-token whitespace.
         
         This is part of the "gem".
+        
+        Links:
+            
+        - 11/13/19: ENB: A much better untokenizer
+          https://groups.google.com/forum/#!msg/leo-editor/DpZ2cMS03WE/VPqtB9lTEAAJ
+      
+        - Untokenize does not round-trip ws before bs-nl
+          https://bugs.python.org/issue38663
         """
         import token as token_module
         # Unpack..
