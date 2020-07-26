@@ -3330,11 +3330,8 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
         """Return (contents, tokens, tree) corresponding to the contents of the given file."""
-        # For EKR only.
-        directory = r'c:\leo.repo\leo-editor\leo\core'
-        filename = os.path.join(directory, filename)
-        if not os.path.exists(filename):
-            self.skipTest('file does not exist')
+        filename = __file__
+        assert os.path.exists(filename), repr(filename)
         contents = read_file(filename)
         contents, tokens, tree = self.make_data(contents, filename)
         return contents, tokens, tree
@@ -5845,12 +5842,8 @@ class TestTopLevelFunctions(BaseTest):
     #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
     def test_get_encoding_directive(self):
 
-        # This method doesn't have access to g.app.loadDir.
-        # So just use EKR's path, on Windows.
-        directory = r'c:\leo.repo\leo-editor\leo\core'
-        filename = os.path.join(directory, 'leoAst.py')
-        if not os.path.exists(filename):
-            self.skipTest(f"not found: {filename}")
+        filename = __file__
+        assert os.path.exists(filename), repr(filename)
         with open(filename, 'rb') as f:
             bb = f.read()
         e = get_encoding_directive(bb)
@@ -5858,12 +5851,8 @@ class TestTopLevelFunctions(BaseTest):
     #@+node:ekr.20200107150857.1: *4* test_strip_BOM
     def test_strip_BOM(self):
 
-        # This method doesn't have access to g.app.loadDir.
-        # So just use EKR's path, on Windows.
-        directory = r'c:\leo.repo\leo-editor\leo\core'
-        filename = os.path.join(directory, 'leoAst.py')
-        if not os.path.exists(filename):
-            self.skipTest(f"not found: {filename}")
+        filename = __file__
+        assert os.path.exists(filename), repr(filename)
         with open(filename, 'rb') as f:
             bb = f.read()
         assert bb, filename
