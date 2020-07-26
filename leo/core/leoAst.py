@@ -36,7 +36,6 @@ https://github.com/leo-editor/leo-editor/issues/1440
 **Stand-alone operation**
    
 usage:
-    
     leoAst.py --help
     leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
     leoAst.py --py-cov [ARGS]
@@ -44,7 +43,6 @@ usage:
     leoAst.py --unittest [ARGS]
     
 examples:
-    
     --py-cov "-f TestOrange"
     --pytest "-f TestOrange"
     --unittest TestOrange
