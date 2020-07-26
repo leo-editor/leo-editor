@@ -11,6 +11,17 @@ The TokenOrderGenerator class unifies python's token-based and ast-based
 worlds by creating two-way links between tokens in the token list and ast
 nodes in the parse tree.
 
+**How to view this file**
+
+This file works independently of Leo: http://leoeditor.com/ However, I
+highly recommend using Leo to view this code. You will see the outline
+structure of the code.
+
+When viewed without Leo, you will see special **sentinel comments** that
+create Leo's outline structure. These comments have the form::
+
+    `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
+
 **Project documentation**
 
 Token Order Classes: Theory of operation
