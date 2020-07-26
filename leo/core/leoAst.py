@@ -39,9 +39,15 @@ usage:
     
     leoAst.py --help
     leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
-    leoAst.py --py-cov [ARGS]   # Example: --py-cov "-f TestOrange"
-    leoAst.py --pytest [ARGS]   # Example: --pytest "-f TestOrange"
-    leoAst.py --unittest [ARGS] # Example: --unittest TestOrange
+    leoAst.py --py-cov [ARGS]
+    leoAst.py --pytest [ARGS]
+    leoAst.py --unittest [ARGS]
+    
+examples:
+    
+    --py-cov "-f TestOrange"
+    --pytest "-f TestOrange"
+    --unittest TestOrange
 
 positional arguments:
   PATHS              directory or list of files
@@ -298,12 +304,17 @@ if 1:  # pragma: no cover
     def main():
         """Run commands specified by sys.argv."""
         usage = '\n'.join([
-            '\n',
+            '',
             '    leoAst.py --help',
             '    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS',
             '    leoAst.py --py-cov [ARGS]',
             '    leoAst.py --pytest [ARGS]',
             '    leoAst.py --unittest [ARGS]',
+            '\n',
+            'examples...'
+            '   --py-cov "-f TestOrange"',
+            '   --pytest "-f TestOrange"',
+            '   --unittest TestOrange',
         ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
@@ -313,12 +324,9 @@ if 1:  # pragma: no cover
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
         add('--orange', dest='o' , action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
-        add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False,
-            help='run pytest --cov\n# Example: --py-cov "-k TestOrange"')
-        add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False,
-            help='run pytest # Example: --pytest "-k TestOrange" ')
-        add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False,
-            help='run unittest # Example: --unittest TestOrange')
+        add('--py-cov', dest='pycov', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest --cov')
+        add('--pytest', dest='pytest', metavar='ARGS', nargs='?', const=[], default=False, help='run pytest')
+        add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
         # g.printObj(args, tag='ARGS')
         if args:
