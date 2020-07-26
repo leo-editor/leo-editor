@@ -6214,8 +6214,10 @@ class Fstringify(TokenOrderTraverser):
     def scan_for_values(self):
         """
         **Important**: This method is not used. It shows how to "parse"
-        the RHS of an % operator using tokens instead of a parse tree. As
-        you can see, it is comprable in complexity to scan_format_string.
+        the RHS of an % operator using tokens instead of a parse tree. 
+        
+        This is a recursive descent parser. It is comprable in complexity
+        to fs.scan_format_string.
         
         Return a list of possibly parenthesized values for the format string.
         
