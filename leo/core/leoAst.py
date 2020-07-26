@@ -14,8 +14,8 @@ nodes in the parse tree.
 **How to view this file**
 
 This file works independently of Leo: http://leoeditor.com/ However, I
-highly recommend using Leo to view this code. You will see the outline
-structure of the code.
+highly recommend using Leo to view this code. That way you will see
+the outline structure of the code.
 
 When viewed without Leo, you will see special **sentinel comments** that
 create Leo's outline structure. These comments have the form::
@@ -316,6 +316,7 @@ if 1:  # pragma: no cover
             '    leoAst.py --unittest [ARGS]',
             '\n',
             'examples...'
+            '',
             '   --py-cov "-f TestOrange"',
             '   --pytest "-f TestOrange"',
             '   --unittest TestOrange',
@@ -1058,7 +1059,19 @@ class FailFast(Exception):
 #@+node:ekr.20191227170628.1: ** TOG classes...
 #@+node:ekr.20191113063144.1: *3*  class TokenOrderGenerator
 class TokenOrderGenerator:
-    """A class that traverses ast (parse) trees in token order."""
+    """
+    A class that traverses ast (parse) trees in token order.
+    
+    Overview: https://github.com/leo-editor/leo-editor/issues/1440#issue-522090981
+    
+    Theory of operation:
+    - https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-573661883
+    - http://leoeditor.com/appendices.html#tokenorder-classes-theory-of-operation
+    
+    How to: http://leoeditor.com/appendices.html#tokenorder-class-how-to
+    
+    Project history: https://github.com/leo-editor/leo-editor/issues/1440#issuecomment-574145510
+    """
 
     n_nodes = 0  # The number of nodes that have been visited.
     #@+others
