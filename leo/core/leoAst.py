@@ -313,6 +313,7 @@ if 1:  # pragma: no cover
         add('--pytest', dest='pytest', metavar='"-k ARGS"', nargs='?', const=[], default=False, help='run pytest')
         add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
+        # g.printObj(args, tag='ARGS')
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
@@ -324,21 +325,22 @@ if 1:  # pragma: no cover
             orange_command(files)
         if args.od:
             orange_diff_command(files)
-        if args.pycov is not False:
+        if args.pycov:
             try:
                 import pytest
                 sys.argv.remove('--py-cov')
                 args = [
-                    '--cov-report html',
-                    '--cov-report term-missing',
-                    '--cov leo.core.leoAst',
-                    ' leo/core/leoAst.py',
+                    '--cov-report=html',
+                    '--cov-report=term-missing',
+                    '--cov=leo.core.leoAst',
+                    'leo/core/leoAst.py',
                 ]
                 pytest.main(args=args)
             except Exception:
                 g.es_exception()
                 print('pytest not found')
-        if args.pytest is not False:
+            return # Seems necessary.
+        if isinstance(args.pytest, list):
             # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
                 import pytest
@@ -347,7 +349,7 @@ if 1:  # pragma: no cover
             except Exception:
                 g.es_exception()
                 print('pytest not found')
-        if args.unittest is not False:
+        if isinstance(args.unittest, list):
             sys.argv.remove('--unittest')
             unittest.main()
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
