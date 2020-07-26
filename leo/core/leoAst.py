@@ -65,6 +65,10 @@ optional arguments:
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20200105054219.1: ** << imports >> (leoAst.py)
+try:
+    import pytest
+except Exception:
+    pytest = None
 import argparse
 import ast
 import codecs
@@ -329,11 +333,6 @@ if 1:  # pragma: no cover
         add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
         # g.printObj(args, tag='ARGS')
-        if args:
-            if isinstance(args, str):
-                sys.args.append(args)
-            if isinstance(args, list):
-                sys.args.extend(args)
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
@@ -346,29 +345,24 @@ if 1:  # pragma: no cover
         if args.od:
             orange_diff_command(files)
         if isinstance(args.pycov, (str, list)):
-            try:
-                import pytest
-                sys.argv.remove('--py-cov')
-                args = [
-                    '--cov-report=html',
-                    '--cov-report=term-missing',
-                    '--cov=leo.core.leoAst',
-                    'leo/core/leoAst.py',
-                ]
-                args.extend(sys.argv)
-                pytest.main(args=args)
-            except Exception:
-                g.es_exception()
+            if not pytest:
                 print('pytest not found')
+                return
+            sys.argv.remove('--py-cov')
+            pycov_args = sys.argv + [
+                '--cov-report=html',
+                '--cov-report=term-missing',
+                '--cov=leo.core.leoAst',
+                'leo/core/leoAst.py',
+            ]
+            pytest.main(args=pycov_args)
             return # Seems necessary.
         if isinstance(args.pytest, (str, list)):
-            try:
-                import pytest
-                sys.argv.remove('--pytest')
-                pytest.main(args=sys.argv)
-            except Exception:
-                g.es_exception()
+            if not pytest:
                 print('pytest not found')
+                return
+            sys.argv.remove('--pytest')
+            pytest.main(args=sys.argv)
         if isinstance(args.unittest, (str, list)):
             sys.argv.remove('--unittest')
             unittest.main()
@@ -6216,6 +6210,75 @@ class Fstringify(TokenOrderTraverser):
         """Scan the format string s, returning a list match objects."""
         result = list(re.finditer(self.format_pat, s))
         return result
+    #@+node:ekr.20200726125841.1: *5* fs.scan_for_values (token based, not used)
+    def scan_for_values(self):
+        """
+        **Important**: This method is not used. It shows how to "parse"
+        the RHS of an % operator using tokens instead of a parse tree. As
+        you can see, it is comprable in complexity to scan_format_string.
+        
+        Return a list of possibly parenthesized values for the format string.
+        
+        This method never actually consumes tokens.
+        
+        If all goes well, we'll skip all tokens in the tokens list.
+        """
+        
+        # pylint: disable=no-member # This is example code.
+        # Skip the '%'
+        new_token = self.new_token
+        assert self.look_ahead(0) == ('op', '%')
+        token_i, tokens = self.skip_ahead(0, 'op', '%')
+        # Skip '(' if it's next
+        include_paren = self.look_ahead(token_i) == ('op', '(')
+        if include_paren:
+            token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+            tokens.extend(skipped_tokens)
+        # Find all tokens up to the first ')' or 'for'
+        values, value_list = [], []
+        while token_i < len(self.tokens):
+            # Don't use look_ahead here: handle each token exactly once.
+            token = self.tokens[token_i]
+            token_i += 1
+            tokens.append(token)
+            kind, val = token.kind, token.value
+            if kind == 'ws':
+                continue
+            if kind in ('newline', 'nl'):
+                if include_paren or val.endswith('\\\n'):
+                    # Continue scanning, ignoring the newline.
+                    continue
+                # The newline ends the scan.
+                values.append(value_list)
+                    # Retain the tokens!
+                if not include_paren: # Bug fix.
+                    tokens.pop()  # Rescan the ')'
+                break
+            if (kind, val) == ('op', ')'):
+                values.append(value_list)
+                if not include_paren:
+                    tokens.pop()  # Rescan the ')'
+                break
+            if (kind, val) == ('name', 'for'):
+                self.add_trailing_ws = True
+                tokens.pop()  # Rescan the 'for'
+                values.append(value_list)
+                break
+            if (kind, val) == ('op', ','):
+                values.append(value_list)
+                value_list = []
+            elif kind == 'op' and val in '([{':
+                values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+                value_list.extend(values_list2)
+                tokens.extend(self.tokens[token_i : token_i2])
+                token_i = token_i2
+            elif kind == 'name':
+                # Ensure separation of names.
+                value_list.append(new_token(kind, val))
+                value_list.append(new_token('ws', ' '))
+            else:
+                value_list.append(new_token(kind, val))
+        return values, tokens
     #@+node:ekr.20191222104224.1: *5* fs.scan_rhs
     def scan_rhs(self, node):
         """
