@@ -3330,7 +3330,8 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
     def make_file_data(self, filename):
         """Return (contents, tokens, tree) corresponding to the contents of the given file."""
-        filename = __file__
+        directory = os.path.dirname(__file__)
+        filename = os.path.join(directory, filename)
         assert os.path.exists(filename), repr(filename)
         contents = read_file(filename)
         contents, tokens, tree = self.make_data(contents, filename)
@@ -3682,15 +3683,14 @@ class TestFiles(BaseTest):  # pragma: no cover
     These tests do not start with 'test_', so they are not run by default.
     """
     #@+others
-    #@+node:ekr.20200123050742.1: *4* TestFiles.optional_file_tests
-    def optional_file_tests(self):
-
+    #@+node:ekr.20200123050742.1: *4* TestFiles.optional_test_various_leo_files
+    def optional_test_various_leo_files(self):
+        
         table = (
             'leoApp.py', 'leoAst.py', 'leoDebugger.py', 'leoFind.py',
             'leoGlobals.py', 'leoTips.py', 'runLeo.py',
         )
         for filename in table:
-            g.trace(filename)
             self.make_file_data(filename)
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
