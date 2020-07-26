@@ -362,7 +362,6 @@ if 1:  # pragma: no cover
                 print('pytest not found')
             return # Seems necessary.
         if isinstance(args.pytest, (str, list)):
-            # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
                 import pytest
                 sys.argv.remove('--pytest')
