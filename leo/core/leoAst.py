@@ -297,6 +297,7 @@ if 1:  # pragma: no cover
             '\n',
             '    leoAst.py --help',
             '    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS',
+            '    leoAst.py --py-cov',
             '    leoAst.py --pytest ["-k ARGS"]',
             '    leoAst.py --unittest [ARGS]',
         ])
@@ -308,6 +309,7 @@ if 1:  # pragma: no cover
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
         add('--orange', dest='o' , action='store_true', help='leonine Black')
         add('--orange-diff', dest='od', action='store_true', help='show orange diff')
+        add('--py-cov', dest='pycov', action='store_true', help='run py-cov')
         add('--pytest', dest='pytest', metavar='"-k ARGS"', nargs='?', const=[], default=False, help='run pytest')
         add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
@@ -322,6 +324,20 @@ if 1:  # pragma: no cover
             orange_command(files)
         if args.od:
             orange_diff_command(files)
+        if args.pycov is not False:
+            try:
+                import pytest
+                sys.argv.remove('--py-cov')
+                args = [
+                    '--cov-report html',
+                    '--cov-report term-missing',
+                    '--cov leo.core.leoAst',
+                    ' leo/core/leoAst.py',
+                ]
+                pytest.main(args=args)
+            except Exception:
+                g.es_exception()
+                print('pytest not found')
         if args.pytest is not False:
             # Example: python leo\core\leoAst.py --pytest "-k TestOrange"
             try:
