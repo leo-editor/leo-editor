@@ -3705,12 +3705,15 @@ class AstDumper:  # pragma: no cover
                 if a not in ['ctx',] and b not in (None, [])
         )
     #@-others
-#@+node:ekr.20200122161530.1: *3* class TestFiles (BaseTest)
-class TestFiles(BaseTest):  # pragma: no cover
+#@+node:ekr.20200122161530.1: *3* class Optional_TestFiles (BaseTest)
+class Optional_TestFiles(BaseTest):  # pragma: no cover
     """
     Tests for the TokenOrderGenerator class that act on files.
     
-    All of these tests failed at once time.
+    These are optional tests. They take a long time and are not needed
+    for 100% coverage.
+    
+    All of these tests failed at one time.
     """
     #@+others
     #@+node:ekr.20200726145235.2: *4* TestFiles.test_leoApp
