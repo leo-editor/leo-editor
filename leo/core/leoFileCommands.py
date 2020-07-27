@@ -291,8 +291,14 @@ class FastRead:
                 if e.tag == 'vh':
                     parent_v._headString = g.toUnicode(e.text or '')
                     continue
-                gnx = e.attrib['t']
-                v = gnx2vnode.get(gnx)
+                # #1581: Attempt to handle old Leo outlines.
+                try:
+                    gnx = e.attrib['t']
+                    v = gnx2vnode.get(gnx)
+                except KeyError:
+                    # g.trace('no "t" attrib')
+                    gnx = None
+                    v = None
                 if v:
                     # A clone
                     parent_v.children.append(v)

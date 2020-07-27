@@ -1175,6 +1175,10 @@ class LeoImportCommands:
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
             p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
+            
+    def cythonUnitTest(self, p, fileName=None, s=None, showTree=False):
+        return self.scannerUnitTest(
+            p, fileName=fileName, s=s, showTree=showTree, ext='.pyx')
 
     def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
@@ -1764,6 +1768,8 @@ class RecursiveImportController:
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
         # force_at_others = False, #tag:no-longer-used
+        add_context=None,  # Override setting only if True/False
+        add_file_context=None,  # Override setting only if True/False
         add_path=True,
         recursive=True,
         safe_at_file=True,
@@ -1782,6 +1788,15 @@ class RecursiveImportController:
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
+        # #1605:
+
+        def set_bool(setting, val):
+            if val not in (True, False):
+                return
+            c.config.set(None, 'bool', setting, val, warn=True)
+            
+        set_bool('add-context-to-headlines', add_context)
+        set_bool('add-file-context-to-headlines', add_file_context)
     #@+node:ekr.20130823083943.12613: *3* ric.run & helpers
     def run(self, dir_):
         """
@@ -2490,6 +2505,155 @@ class ZimImportController:
             c.selectPosition(zimNode)
             c.redraw()
     #@-others
+#@+node:ekr.20200424152850.1: ** class LegacyExternalFileImporter
+class LegacyExternalFileImporter:
+    """
+    A class to import external files written by versions of Leo earlier
+    than 5.0.
+    """
+    # Sentinels to ignore, without the leading comment delim.
+    ignore = ('@+at', '@-at', '@+leo', '@-leo', '@nonl', '@nl', '@-others')
+    
+    def __init__(self, c):
+        self.c = c
+    
+    #@+others
+    #@+node:ekr.20200424093946.1: *3* class Node
+    class Node:
+        
+        def __init__(self, h, level):
+            """Hold node data."""
+            self.h = h.strip()
+            self.level = level
+            self.lines = []
+    #@+node:ekr.20200424092652.1: *3* legacy.add
+    def add(self, line, stack):
+        """Add a line to the present node."""
+        if stack:
+            node = stack[-1]
+            node.lines.append(line)
+        else:
+            print('orphan line: ', repr(line))
+    #@+node:ekr.20200424160847.1: *3* legacy.compute_delim1
+    def compute_delim1(self, path):
+        """Return the opening comment delim for the given file."""
+        junk, ext = os.path.splitext(path)
+        if not ext:
+            return None
+        language = g.app.extension_dict.get(ext[1:])
+        if not language:
+            return None
+        delim1, delim2, delim3 = g.set_delims_from_language(language)
+        g.trace(language, delim1 or delim2)
+        return delim1 or delim2
+    #@+node:ekr.20200424153139.1: *3* legacy.import_file
+    def import_file(self, path):
+        """Import one legacy external file."""
+        c = self.c
+        root_h = g.shortFileName(path)
+        delim1 = self.compute_delim1(path)
+        if not delim1:
+            g.es_print('unknown file extension:', color='red')
+            g.es_print(path)
+            return
+        # Read the file into s.
+        with open(path, 'r') as f:
+            s = f.read()
+        # Do nothing if the file is a newer external file.
+        if delim1 + '@+leo-ver=4' not in s:
+            g.es_print('not a legacy external file:', color='red')
+            g.es_print(path)
+            return
+        # Compute the local ignore list for this file.
+        ignore = tuple(delim1 + z for z in self.ignore)
+        # Handle each line of the file.
+        nodes = []  # An list of nodes, in file order.
+        stack = []  # A stack of nodes.
+        for line in g.splitLines(s):
+            s = line.lstrip()
+            lws = line[:len(line) - len(line.lstrip())]
+            if s.startswith(delim1 + '@@'):
+                self.add(lws + s[2:], stack)
+            elif s.startswith(ignore):
+                # Ignore these. Use comments instead of @doc bodies.
+                pass
+            elif (
+                s.startswith(delim1 + '@+others') or
+                s.startswith(delim1 + '@' + lws + '@+others')
+            ):
+                self.add(lws + '@others\n', stack)
+            elif s.startswith(delim1 + '@<<'):
+                n = len(delim1 + '@<<')
+                self.add(lws + '<<' + s[n:].rstrip() + '\n', stack)
+            elif s.startswith(delim1 + '@+node:'):
+                # Compute the headline.
+                if stack:
+                    h = s[8:]
+                    i = h.find(':')
+                    h = h[i+1:] if ':' in h else h
+                else:
+                    h = root_h
+                # Create a node and push it.
+                node = self.Node(h, len(stack))
+                nodes.append(node)
+                stack.append(node)
+            elif s.startswith(delim1 + '@-node'):
+                # End the node.
+                stack.pop()
+            elif s.startswith(delim1 + '@'):
+                print('oops:', repr(s))
+            else:
+                self.add(line, stack)
+        if stack:
+            print('Unbalanced node sentinels')
+        # Generate nodes.
+        last = c.lastTopLevel()
+        root = last.insertAfter()
+        root.h = f"imported file: {root_h}"
+        stack = [root]
+        for node in nodes:
+            b = g.removeExtraLws(''.join(node.lines), -4)
+            level = node.level
+            if level == 0:
+                root.h = root_h
+                root.b = b
+            else:
+                parent = stack[level-1]
+                p = parent.insertAsLastChild()
+                p.b = b
+                p.h = node.h
+                # Good for debugging.
+                # p.h = f"{level} {node.h}"  
+                stack = stack[:level] + [p]
+        c.selectPosition(root)
+        root.expand()  # c.expandAllSubheads()
+        c.redraw()
+    #@+node:ekr.20200424154553.1: *3* legacy.import_files
+    def import_files(self, paths):
+        """Import zero or more files."""
+        for path in paths:
+            if os.path.exists(path):
+                self.import_file(path)
+            else:
+                g.es_print(f"not found: {path!r}")
+    #@+node:ekr.20200424154416.1: *3* legacy.prompt_for_files
+    def prompt_for_files(self):
+        """Prompt for a list of legacy external .py files and import them."""
+        c = self.c
+        types = [
+            ("Legacy external files", "*.py"),
+            ("All files", "*"),
+        ]
+        paths = g.app.gui.runOpenFileDialog(c,
+            title="Import Legacy External Files",
+            filetypes=types,
+            defaultextension=".py",
+            multiple=True)
+        c.bringToFront()
+        if paths:
+            g.chdir(paths[0])
+            self.import_files(paths)
+    #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
 if lxml:
@@ -2511,6 +2675,13 @@ else:
         This command is disabled.  Please install lxml:
         https://lxml.de/installation.html
         """
+#@+node:ekr.20200424154303.1: *3* @g.command(import-legacy-external-file)
+@g.command('import-legacy-external-files')
+def import_legacy_external_files(event):
+    """Prompt for legacy external files and import them."""
+    c = event.get('c')
+    if c:
+        LegacyExternalFileImporter(c).prompt_for_files()
 #@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event):

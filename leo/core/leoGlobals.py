@@ -89,21 +89,14 @@ globalDirectiveList = [
 #@@nobeautify
 #@@language rest
 #@+at
-# *Don't even think about removing the @cmd decorators!*
-# See https://github.com/leo-editor/leo-editor/issues/325
-#
-# The cmd_instance_dict supports the @cmd decorators in various files. For
-# example, the following appears in leo.commands.
+# The cmd_instance_dict supports per-class @cmd decorators. For example, the
+# following appears in leo.commands.
 #
 #     def cmd(name):
 #         """Command decorator for the abbrevCommands class."""
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 #
-# **Important**
-#
-# All *new* commands should be defined using @g.command, but
-# this dict will remain forever so as not to break existing code.
-#
+# For commands based on functions, use the @g.command decorator.
 #@@c
 #@@language python
 
@@ -203,6 +196,7 @@ class Command:
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
+        func.__func_name__ = func.__name__ # For leoInteg.
         func.is_command = True
         func.command_name = self.name
         return func
@@ -245,6 +239,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__func_name__ = func.__name__ # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -302,6 +297,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
+        new_cmd_wrapper.__func_name__ = func.__name__ # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
@@ -1001,6 +997,7 @@ class KeyStroke:
             return d.get(s)
         return s if len(s) == 1 else ''
     #@-others
+
 def isStroke(obj):
     return isinstance(obj, KeyStroke)
 
@@ -3322,6 +3319,13 @@ def getOutputNewline(c=None, name=None):
     else: s = '\n'  # Default for erroneous values.
     assert isinstance(s, str), repr(s)
     return s
+#@+node:ekr.20200521075143.1: *3* g.inAtNosearch
+def inAtNosearch(p):
+    """Return True if p or p's ancestors contain an @nosearch directive."""
+    for p in p.self_and_parents():
+        if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
+            return True
+    return False
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
 # This pattern excludes @encoding.whatever and @encoding(whatever)
 # It must allow @language python, @nocolor-node, etc.
@@ -3690,7 +3694,7 @@ def computeStandardDirectories():
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
 
-    branch = g.gitBranchName(path=g.os_path_dirname(fileName))
+    branch, commit = g.gitInfoForFile(fileName)  # #1616
     if not fileName:
         return branch + ": untitled" if branch else 'untitled'
     path, fn = g.os_path_split(fileName)
@@ -5151,6 +5155,34 @@ def gitCommitNumber(path=None):
     """
     branch, commit = g.gitInfo(path)
     return commit
+#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
+def gitInfoForFile(filename):
+    """
+    return the git (branch, commit) info associated for the given file.
+    
+    Look for a .git directory in the file's directory, and parent directories.
+    """
+    from pathlib import Path
+    branch, commit = '', ''
+    if filename:
+        parent = Path(filename)
+        while parent:
+            git_dir = os.path.join(parent, '.git')
+            if os.path.exists(git_dir) and os.path.isdir(git_dir):
+                head = os.path.join(git_dir, 'HEAD')
+                if os.path.exists(head):
+                    branch, commit = g.gitInfo(head)
+                    break
+            if parent == parent.parent:
+                break
+            parent = parent.parent
+    return branch, commit
+#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
+def gitInfoForOutline(c):
+    """
+    Return the git (branch, commit) info associated for commander c.
+    """
+    return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path=None):
     """
@@ -7570,7 +7602,7 @@ def run_unit_test_in_separate_process(command):
     print('')
     print(command)
     if out.strip():
-        print('traces...')
+        # print('traces...')
         print(out.rstrip())
     print(err.rstrip())
     # There may be skipped tests...

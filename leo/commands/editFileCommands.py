@@ -334,7 +334,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event):
+    def gitDiff(self, event=None):  # 2020/07/18, for leoInteg.
 
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
@@ -665,6 +665,16 @@ class GitDiffController:
                     p3 = organizer.insertAsLastChild()
                     p3.h = 'New:' + v2.h
                     p3.b = v2.b
+            elif kind.lower() == 'added':
+                v = d.get(key)
+                new_p = self.find_gnx(self.c, v.fileIndex)
+                if new_p:  # Make a clone, if possible.
+                    p = new_p.clone()
+                    p.moveToLastChildOf(parent)
+                else:
+                    p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()

@@ -158,11 +158,14 @@ class Importer:
         c = self.c
         if not c:
             return
+        getBool = c.config.getBool
         c.registerReloadSettings(self)
         # self.at_auto_separate_non_def_nodes = False
-        self.at_auto_warns_about_leading_whitespace = \
-            c.config.getBool('at_auto_warns_about_leading_whitespace')
+        self.add_context = getBool("add-context-to-headlines")
+        self.add_file_context = getBool("add-file-context-to-headlines")
+        self.at_auto_warns_about_leading_whitespace = getBool('at_auto_warns_about_leading_whitespace')
         self.warn_about_underindented_lines = True
+       
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
 
@@ -693,7 +696,7 @@ class Importer:
         cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
-        if self.c.config.getBool("add-context-to-headlines"):
+        if self.add_context:
             self.add_class_names(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
@@ -709,8 +712,11 @@ class Importer:
         # Note: this method is never called for @clean trees.
 
     def add_class_names(self, p):
-        '''Add class names to headlines for all descendant nodes.'''
-        # pylint: disable=no-else-continue
+        '''
+        Add class names to headlines for all descendant nodes.
+
+        Called only when @bool add-context-to-headlines is True.
+        '''
         if g.app.unitTesting:
             return # Don't changes the expected headlines.
         after, fn, class_name = None, None, None
@@ -722,7 +728,7 @@ class Importer:
                 fn = g.shortFileName(p.h[len(prefix):].strip())
                 after, class_name = None, None
                 continue
-            elif p.h.startswith('@path '):
+            if p.h.startswith('@path '):
                 after, fn, class_name = None, None, None
             elif p.h.startswith('class '):
                 class_name = p.h[5:].strip()
@@ -735,7 +741,7 @@ class Importer:
             if class_name:
                 if not p.h.startswith(class_name):
                     p.h = '%s.%s' % (class_name, p.h)
-            elif fn:
+            elif fn and self.add_file_context:
                 tag = ' (%s)' % fn
                 if not p.h.endswith(tag):
                     p.h += tag

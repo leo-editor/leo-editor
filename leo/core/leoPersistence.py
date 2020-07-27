@@ -123,6 +123,8 @@ class PersistenceDataController:
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return
+        if not root:
+            return
         if not self.is_foreign_file(root):
             return
         # Create clone links from @gnxs node

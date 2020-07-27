@@ -34,7 +34,7 @@ __version__ = "0.7"
 #@+node:gfunch.20041207100416.2: ** << version history >>
 #@@nocolor
 #@+at
-# 
+#
 # 0.1: Initial version.
 # 0.2: Improved menu structure. Added ini file.
 # 0.3: Changed docstring slightly.
@@ -55,15 +55,15 @@ __version__ = "0.7"
 #@+node:bobjack.20080615065747.5: ** << todo >>
 #@@nocolor
 #@+at
-# 
+#
 # - add commands to allow day, month, year to be input via minibuffer
-# 
+#
 # - add a calendar widget to allow dates to be entered via gui
-# 
+#
 # - add extra methods to controller to make it easier to use the plugin from scripts
-# 
+#
 # - allow date ranges to be specified
-# 
+#
 # - add a dialog that allows all parameters to be slected prior to insertion
 #@-<< todo >>
 
@@ -253,12 +253,13 @@ def on_create(tag, keywords):
         c.frame.menu.createMenuItemsFromTable("Outline", [("-", None, None),])
 
         # create an expandable menu
-        table = [("Single Day", None, instance.insert_day_node),
-                 ("Full Month", None, instance.insert_month_node),
-                 ("Full Year", None, instance.insert_year_node)]
-
+        table = [
+            ("Single Day", None, instance.insert_day_node),
+            ("Full Month", None, instance.insert_month_node),
+            ("Full Year", None, instance.insert_year_node),
+        ]
         expandMenu = c.frame.menu.createNewMenu("Insert Date Nodes...", "Outline")
-        c.frame.menu.createMenuEntries(expandMenu, table, dynamicMenu = True)
+        c.frame.menu.createMenuEntries(expandMenu, table)
     #@-<< Create the plug-in menu. >>
 
 #@-others

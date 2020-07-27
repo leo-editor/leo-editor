@@ -61,6 +61,13 @@ class NodeIndices:
                     except Exception:
                         g.es_exception()
                         self.lastIndex += 1
+    #@+node:ekr.20200528131303.1: *3* ni.computeNewIndex
+    def computeNewIndex(self):
+        """Return a new gnx."""
+        t_s = self.update()
+            # Updates self.lastTime and self.lastIndex.
+        gnx = g.toUnicode(f"{self.userId}.{t_s}.{self.lastIndex:d}")
+        return gnx
     #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 

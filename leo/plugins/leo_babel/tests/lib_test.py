@@ -240,9 +240,8 @@ def  runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
     testCmdr.testRootMostRecnt = testRoot
     cmdrT.selectPosition(testRoot)  # babel_exec() expects the root node to be selected.
     testCmdr.esCapture.beginCollection()
-    cmdrT.executeMinibufferCommand('babel-exec-p')
-    # cmdrT.executeMinibufferCommand() returns immediately
-    # Long before the command is executed.
+    cmdrT.k.simulateCommand('babel-exec-p')
+        # Returns immediately, Long before the command is executed.
 #@+node:bob.20180205135258.1: ** main()
 def main():
     """ Command Line Program Entry point

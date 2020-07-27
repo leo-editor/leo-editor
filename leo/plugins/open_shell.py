@@ -60,16 +60,15 @@ class pluginController:
     #@+node:EKR.20040517080049.6: *3* load_menu
     def load_menu (self):
 
+        c = self.c
         if sys.platform == "win32":
             table = (
                 ("&Open Console Window",None,self.launchCmd),
                 ("Open &Explorer",None,self.launchExplorer))
         else:
             table = (("Open &xterm",None,self.launchxTerm),)
-
-        c = self.c
         c.frame.menu.createNewMenu("E&xtensions","top")
-        c.frame.menu.createMenuItemsFromTable("Extensions",table,dynamicMenu=True)
+        c.frame.menu.createMenuItemsFromTable("Extensions", table)
     #@+node:EKR.20040517080049.7: *3* _getpath
     def _getpath (self,p):
 

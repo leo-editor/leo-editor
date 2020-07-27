@@ -1,0 +1,58 @@
+{% set name = "leo" %}
+{% set version = "6.3.dev" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: "https://github.com/leo-editor/leo-editor/archive/conda.tar.gz" 
+  sha256: 77b1415117842e86107d95ca5b0e1afae2c8d92059f40b446b41db4e1051443b
+
+build:
+  # Uncomment the following line if the package is pure Python and the recipe is exactly the same for all platforms.
+  # It is okay if the dependencies are not built for all platforms/versions, although selectors are still not allowed.
+  # See https://conda-forge.org/docs/maintainer/knowledge_base.html#noarch-python for more details.
+  # noarch: python
+  number: 0
+  # Add the line "skip: True  # [py<35]" (for example) to limit to Python 3.5 and newer, or "skip: True  # [not win]" to limit to Windows.
+  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True  # [py<36]
+  
+  entry_points:
+    - leo = leo.core.runLeo:run
+    - leo-c = leo.core.runLeo:run_console
+    - leo-console = leo.core.runLeo:run_console
+  skip_compile_pyc:
+     - "*/leo/plugins/test/*.py"  # attempt to avoid syntax error plugin test (not working yet)
+  
+requirements:
+  build:
+    - semantic_version
+
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - leo
+
+app:
+    entry: Leo Editor
+    summary: "Leo is an Outliner, Editor, and Personal Information Manager written in 100% Python."
+    icon: LeoApp.ico
+
+about:
+  home: "https://leoeditor.com"
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Leo is an Outliner, Editor, and Personal Information Manager written in 100% Python."
+  dev_url: https://github.com/leo-editor/leo-editor/
+
+extra:
+  recipe-maintainers:
+    - maphew

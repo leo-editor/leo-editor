@@ -330,7 +330,11 @@ def refreshFromDisk(self, event=None):
     fn = p.anyAtFileNodeName()
     shouldDelete = c.sqlite_connection is None
     if not fn:
-        g.warning(f"not an @<file> node:\n{p.h!r}")
+        g.warning(f"not an @<file> node: {p.h!r}")
+        return
+    # #1603.
+    if os.path.isdir(fn):
+        g.warning(f"not a file: {fn!r}")
         return
     b = u.beforeChangeTree(p)
     redraw_flag = True

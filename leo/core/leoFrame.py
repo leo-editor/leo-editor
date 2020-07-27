@@ -39,7 +39,6 @@ assert time
 # convenience methods exists:
 #
 # - body.updateBody & tree.updateBody:
-#     Called by k.masterCommand after any keystroke not handled by k.masterCommand.
 #     These are suprising complex.
 #
 # - body.bodyChanged & tree.headChanged:

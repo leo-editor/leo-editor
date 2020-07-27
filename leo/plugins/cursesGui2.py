@@ -1997,7 +1997,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.select_leo_node(c.p)
         w.update(forceInit=True)
         g.app.gui.curses_form.display()
-    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
+    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand (commandName, event)
     def repeatComplexCommand(self, c):
         '''An override of the 'repeat-complex-command' command.'''
         trace = False and not g.unitTesting
@@ -3209,7 +3209,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170510100003.1: *5* LeoMiniBuffer.h_return (executes command)
+    #@+node:ekr.20170510100003.1: *5* LeoMiniBuffer.h_return (executes command) (complex kwargs!)
     def h_return (self, ch):
         '''
         Handle the return key in the minibuffer.

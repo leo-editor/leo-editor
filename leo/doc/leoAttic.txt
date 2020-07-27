@@ -19716,6 +19716,573 @@ self.assertEqual(u.untokenize(iter(tokens)), 'Hello ')
 self.assertEqual(u.encoding, 'utf-8')
 self.assertEqual(untokenize(iter(tokens)), b'Hello ')
     # *not* u.untokenize.
+#@+node:ekr.20200726083127.1: *3* class FStringifyTokens(NullTokenBeautifier)
+class FstringifyTokens(NullTokenBeautifier):
+    """A token-based tool that converts strings containing % to f-strings."""
+
+    undo_type = "Fstringify"
+
+    def __init__(self, c):
+        super().__init__(c)
+        self.ws = ''
+        self.sanitizer = SyntaxSanitizer(c, keep_comments=True)
+
+    @others
+#@+node:ekr.20200726083127.2: *4* fstring.error
+def error(self, message):
+
+    if not g.unitTesting:
+        g.es_print('')
+        g.es_print(f"line {self.line_number}: {message}:")
+        g.es_print(self.line.strip())
+#@+node:ekr.20200726083127.3: *4* fstring: Conversion
+#@+node:ekr.20200726083127.4: *5* fstring.check_newlines
+def check_newlines(self, tokens):
+    """
+    Check to ensure that no newlines appear within { and }.
+    
+    Return False if there is an error
+    """
+    level = 0
+    for token in tokens:
+        kind, val = token.kind, token.value
+        if kind == 'op':
+            if val == '{':
+                level += 1
+            elif val == '}':
+                level -= 1
+                if level < 0:
+                    self.error('curly bracket underflow')
+                    return False
+        if '\\n' in val and level > 0:
+            self.error('f-expression would contain a backslash')
+            return False
+    if level > 0:
+        self.error('unclosed curly bracket')
+        return False
+    return True
+#@+node:ekr.20200726083127.5: *5* fstring.clean_ws
+ws_pat = re.compile(r'(\s+)([:!][0-9]\})')
+
+def clean_ws(self, s):
+    """Carefully remove whitespace before ! and : specifiers."""
+    s = re.sub(self.ws_pat, r'\2', s)
+    return s
+#@+node:ekr.20200726083127.6: *5* fstring.compute_result
+def compute_result(self, string_val, results_list):
+    """
+    Create the final result as follows:
+        
+    1. Flatten the results array.
+    
+    2. Using string_val (the original string) compute whether to use single
+       or double quotes for the outer fstring.
+    
+    3. Beautify the result using the PythonTokenBeautifier class.
+    
+    Return the result string, or None if there are errors.
+    """
+    trace = False and not g.unitTesting
+    # pylint: disable=import-self
+    import leo.core.leoBeautify as leoBeautify
+    c = self.c
+    #
+    # Flatten the token list.
+    if trace: g.printObj(results_list, tag='TOKENS 1')
+    tokens = []
+    ### To do: define "flatten" helper.
+    for z in results_list:
+        if isinstance(z, (list, tuple)):
+            tokens.extend(z)
+        else:
+            tokens.append(z)
+    if trace: g.printObj(tokens, tag='TOKENS 2')
+    #
+    # Fail if the result would include a backslash within { and }.
+    if not self.check_newlines(tokens):
+        return None
+    #
+    # Ensure consistent quotes.
+    ok = self.change_quotes(string_val, tokens)
+    if not ok:
+        if not g.unitTesting:
+            self.error('string contains backslashes')
+        return None
+    #
+    # Ensure one blank after the f-string.
+    ### Doesn't work well.
+    # tokens.append(self.new_token('fstringify', ' '))
+    #
+    # Use ptb to clean up inter-token whitespace.
+    if trace: g.printObj(tokens, tag='TOKENS: before ptb')
+    x = leoBeautify.PythonTokenBeautifier(c)
+    x.dump_input_tokens = True
+    x.dump_output_tokens = True
+    result_tokens = x.scan_all_beautifier_tokens(tokens)
+    #
+    # Create the result.
+    if trace: g.printObj(result_tokens, tag='TOKENS: after ptb')
+    result = ''.join([z.to_string() for z in result_tokens])
+    # Ensure a space between the new fstring and a previous name.
+    if self.prev_token.kind == 'name':
+        result = ' ' + result
+    if self.add_trailing_ws:
+        result = result + ' '
+    return result
+#@+node:ekr.20200726083127.7: *5* fstring.convert_fstring
+def convert_fstring(self):
+    """
+    Scan a string, converting it to an f-string.
+    The 'string' token has already been consumed.
+    """
+    new_token = self.new_token
+    string_val = self.val
+    self.add_trailing_ws = False
+    specs = self.scan_format_string(string_val)
+    values, tokens = self.scan_for_values()
+    if len(specs) != len(values):
+        self.error('Scanning error')
+        g.trace('\nMISMATCH\n')
+        g.trace('specs:', len(specs), 'values', len(values))
+        g.printObj(specs, tag='SPECS')
+        g.printObj(values, tag='VALUES')
+        # Punt, without popping any more tokens.
+        self.add_token('string', string_val)
+        return
+    # Substitute the values.
+    i, results = 0, [new_token('fstringify', 'f')]
+    for spec_i, m in enumerate(specs):
+        value = values[spec_i]
+        start, end, spec = m.start(0), m.end(0), m.group(1)
+        if start > i:
+            results.append(new_token('fstringify', string_val[i : start]))
+        head, tail = self.munge_spec(spec)
+        results.append(new_token('op', '{'))
+        results.append(new_token('fstringify', value))
+        if head:
+            results.append(new_token('fstringify', '!'))
+            results.append(new_token('fstringify', head))
+        if tail:
+            results.append(new_token('fstringify', ':'))
+            results.append(new_token('fstringify', tail))
+        results.append(new_token('op', '}'))
+        i = end
+    # Add the tail.
+    tail = string_val[i:]
+    if tail:
+        results.append(new_token('fstringify', tail))
+    result = self.compute_result(string_val, results)
+    if result:
+        # Remove whitespace before ! and :.
+        result = self.clean_ws(result)
+        # Actually consume the scanned tokens.
+        for token in tokens:
+            self.tokens.pop(0)
+        self.add_token('string', result)
+    else:
+        # Punt, without popping any more tokens.
+        self.add_token('string', string_val)
+#@+node:ekr.20200726083127.8: *5* fstring.munge_spec
+def munge_spec(self, spec):
+    """
+    Return (head, tail).
+    
+    The format is spec !head:tail or :tail
+    
+    Example specs: s2, r3
+    """
+    ### To do: handle more specs.
+    head, tail = [], []
+    if spec.startswith('+'):
+        pass # Leave it alone!
+    elif spec.startswith('-'):
+        tail.append('>')
+        spec = spec[1:]
+    if spec.endswith('s'):
+        spec = spec[:-1]
+    if spec.endswith('r'):
+        head.append('r')
+        spec = spec[:-1]
+    tail = ''.join(tail) + spec
+    head = ''.join(head)
+    return head, tail
+#@+node:ekr.20200726083127.9: *5* fstring.change_quotes
+def change_quotes(self, string_val, aList):
+    """
+    Carefully change quotes in all "inner" tokens as necessary.
+    
+    Return True if all went well.
+    
+    We expect the following "outer" tokens.
+        
+    aList[0]:  ('fstringify', 'f')
+    aList[1]:  ('fstringify', a string starting with a quote)
+    aList[-1]: ('fstringify', a string ending with a quote that matches aList[1])
+    """
+    # Sanity checks.
+    if len(aList) < 4:
+        return True
+    if not string_val:
+        g.es_print('no string_val!')
+        return False
+    delim = string_val[0]
+    ### delim2 = '"' if delim == "'" else "'"
+    #
+    # Check tokens 0, 1 and -1.
+    token0 = aList[0]
+    token1 = aList[1]
+    token_last = aList[-1]
+    for token in token0, token1, token_last:
+        if token.kind != 'fstringify':
+            g.es_print(f"unexpected token: {token!r}")
+            return False
+    if token0.value != 'f':
+        g.es_print('token[0] error!', repr(token0))
+        return False
+    val1 = token1.value and token1.value[0]
+    if delim != val1:
+        g.es_print('token[1] error!', delim, val1, repr(token1))
+        return False
+    val_last = token_last.value and token_last.value[-1]
+    if delim != val_last:
+        g.es_print('token[-1] error!', delim, val_last, repr(token_last))
+        return False
+    # g.printObj(aList)
+    # Regularize the outer tokens.
+    delim, delim2 = '"', "'"
+    token1.value = delim + token1.value[1:]
+    aList[1] = token1
+    token_last.value = token_last.value[:-1] + delim
+    aList[-1] = token_last
+    #
+    # Replace delim by delim2 in all inner tokens.
+    for z in aList[2:-1]:
+        ### g.trace(z)
+        if not isinstance(z, BeautifierToken):
+            g.es_print('Bad token:', repr(z))
+            return False
+        z.value = z.value.replace(delim, delim2)
+    # g.printObj(aList)
+    return True
+#@+node:ekr.20200726083127.10: *5* fstring.scan_for_values
+def scan_for_values(self):
+    """
+    Return a list of possibly parenthesized values for the format string.
+    
+    This method never actually consumes tokens.
+    
+    If all goes well, we'll skip all tokens in the tokens list.
+    """
+    # Skip the '%'
+    new_token = self.new_token
+    assert self.look_ahead(0) == ('op', '%')
+    token_i, tokens = self.skip_ahead(0, 'op', '%')
+    # Skip '(' if it's next
+    include_paren = self.look_ahead(token_i) == ('op', '(')
+    if include_paren:
+        token_i, skipped_tokens = self.skip_ahead(token_i, 'op', '(')
+        tokens.extend(skipped_tokens)
+    # Find all tokens up to the first ')' or 'for'
+    values, value_list = [], []
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        token = self.tokens[token_i]
+        token_i += 1
+        tokens.append(token)
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('newline', 'nl'):
+            if include_paren or val.endswith('\\\n'):
+                # Continue scanning, ignoring the newline.
+                continue
+            else:
+                # The newline ends the scan.
+                values.append(value_list)
+                    # Retain the tokens!
+                if not include_paren: # Bug fix.
+                    tokens.pop()  # Rescan the ')'
+                break
+        if (kind, val) == ('op', ')'):
+            values.append(value_list)
+            if not include_paren:
+                tokens.pop()  # Rescan the ')'
+            break
+        if (kind, val) == ('name', 'for'):
+            self.add_trailing_ws = True
+            tokens.pop()  # Rescan the 'for'
+            values.append(value_list)
+            break
+        if (kind, val) == ('op', ','):
+            values.append(value_list)
+            value_list = []
+        elif kind == 'op' and val in '([{':
+            values_list2, token_i2 = self.scan_to_matching(token_i-1, val)
+            value_list.extend(values_list2)
+            tokens.extend(self.tokens[token_i : token_i2])
+            token_i = token_i2
+        elif kind == 'name':
+            # Ensure separation of names.
+            value_list.append(new_token(kind, val))
+            value_list.append(new_token('ws', ' '))
+        else:
+            value_list.append(new_token(kind, val))
+    return values, tokens
+#@+node:ekr.20200726083127.11: *5* fstring.scan_format_string
+# format_spec ::=  [[fill]align][sign][#][0][width][,][.precision][type]
+# fill        ::=  <any character>
+# align       ::=  "<" | ">" | "=" | "^"
+# sign        ::=  "+" | "-" | " "
+# width       ::=  integer
+# precision   ::=  integer
+# type        ::=  "b" | "c" | "d" | "e" | "E" | "f" | "F" | "g" | "G" | "n" | "o" | "s" | "x" | "X" | "%"
+
+format_pat = re.compile(r'%(([+-]?[0-9]*(\.)?[0.9]*)*[bcdeEfFgGnoxrsX]?)')
+
+def scan_format_string(self, s):
+    """Scan the format string s, returning a list match objects."""
+    result = list(re.finditer(self.format_pat, s))
+    return result
+#@+node:ekr.20200726083127.12: *5* fstring.scan_to_matching
+def scan_to_matching(self, token_i, val):
+    """
+    self.tokens[token_i] represents an open (, [ or {.
+    
+    Return (values_list, token_i) of all tokens to the matching closing delim.
+    """
+    trace = False and not g.unitTesting
+    new_token = self.new_token
+    if trace:
+        g.trace('=====', token_i, repr(val))
+        g.trace(''.join([z.value for z in self.tokens[token_i:]]))
+    values_list = []
+    kind0, val0 = self.look_ahead(token_i)
+    assert kind0 == 'op' and val0 == val and val in '([{', (kind0, val0)
+    levels = [0, 0, 0]
+    level_index = '([{'.index(val)
+    levels[level_index] += 1
+    # Move past the opening delim.
+    values_list.append(new_token('op', val0))
+    token_i += 1
+    while token_i < len(self.tokens):
+        # Don't use look_ahead here: handle each token exactly once.
+        progress = token_i
+        token = self.tokens[token_i]
+        token_i += 1
+        kind, val = token.kind, token.value
+        if kind == 'ws':
+            continue
+        if kind in ('nl', 'newline'):
+            continue
+        if kind == 'op' and val in ')]}':
+            values_list.append(new_token('op', val))
+            level_index = ')]}'.index(val)
+            levels[level_index] -= 1
+            if levels == [0, 0, 0]:
+                if trace:
+                    g.printObj(values_list, tag=f"scan_to_matching {val!r}")
+                return values_list, token_i
+        elif kind == 'op' and val in '([{':
+            # Recurse.
+            values_list2, token_i = self.scan_to_matching(token_i-1, val)
+            values_list.extend(values_list2)
+        elif kind == 'name':
+            # Ensure separation of names.
+            values_list.append(new_token('name', val))
+            values_list.append(new_token('ws', '  '))
+        else:
+            values_list.append(new_token(kind, val))
+        assert token_i > progress, (kind, val)
+    # Should never happen.
+    g.trace(f"\nFAIL {token_i} {''.join(values_list)}\n")
+    return [], token_i
+#@+node:ekr.20200726083127.13: *4* fstring: Entries
+#@+node:ekr.20200726083127.14: *5* fstring.fstringify_file
+def fstringify_file(self):
+    """
+    Find the nearest @<file> node and convert % to fstrings within it.
+    
+    There is no need to sanitize code when converting an external file.
+    """
+    trace = True and not g.unitTesting
+    verbose = False
+    filename = self.find_root()
+    if not filename:
+        return
+    # Open the file.
+    with open(filename, 'r') as f:
+        contents = f.read()
+    if trace:
+        g.trace(f"Contents...\n\n{contents}")
+    # Generate tokens.
+    tokens = self.tokenize_string(contents, filename)
+    # Handle all tokens, creating the raw result.
+    result = self.scan_all_tokens(contents, tokens)
+    # Trace the results.
+    changed = contents.rstrip() != result.rstrip()
+    if trace and verbose:
+        g.printObj(f"Code List...\n\n{self.code_list}")
+    if trace:
+        g.trace(f"Result...\n\n{result}")
+    if not changed:
+        return
+    # Write the file.
+    with open(filename, 'w') as f:
+        f.write(result)
+#@+node:ekr.20200726083127.15: *5* fstring.fstringify_node
+def fstringify_node(self, p):
+    """
+    fstringify node p.  Return True if the node has been changed.
+    """
+    trace = False and not g.unitTesting
+    verbose = False
+    c = self.c
+    if should_kill_beautify(p):
+        return False
+    contents = p.b
+    if not contents.strip():
+        return False
+    # Unlike with external files, we must sanitize the text!
+    comment_string, contents2 = self.sanitizer.comment_leo_lines(p=p)
+    # Generate tokens.
+    tokens = self.tokenize_string(contents2, p.h)
+    # Handle all tokens, creating the raw result.
+    raw_result = self.scan_all_tokens(contents2, tokens)
+    # Undo the munging of the sources.
+    result = self.sanitizer.uncomment_leo_lines(comment_string, c.p, raw_result)
+    changed = contents.rstrip() != result.rstrip()
+    if changed:
+        p.b = result
+        p.setDirty()
+    # Trace the results.
+    if trace and changed and verbose:
+        g.trace(f"Contents...\n\n{contents}\n")
+        g.trace(f"code list...\n\n{g.objToString(self.code_list)}\n")
+        g.trace(f"raw result...\n\n{raw_result}\n")
+        g.trace(f"Result...\n\n{result}\n")
+    if trace:
+        g.trace('Changed!' if changed else 'No change:', p.h)
+    return changed
+#@+node:ekr.20200726083127.16: *5* fstring.fstringify_tree
+def fstringify_tree(self, p):
+    """fstringify node p."""
+    c = self.c
+    if should_kill_beautify(p):
+        return
+    t1 = time.process_time()
+    changed = total = 0
+    for p in p.self_and_subtree():
+        if g.scanForAtLanguage(c, p) == "python":
+            total += 1
+            if self.fstringify_node(p):
+                changed += 1
+    self.end_undo()
+    if g.unitTesting:
+        return
+    t2 = time.process_time()
+    g.es_print(
+        f"scanned {total} node{g.plural(total)}, "
+        f"changed {changed} node{g.plural(changed)}, "
+        # f"{errors} error{g.plural(errors)} "
+        f"in {t2-t1:4.2f} sec."
+    )
+#@+node:ekr.20200726083127.17: *4* fstring: Tokens
+#@+node:ekr.20200726083127.18: *5* fstring.new_token
+def new_token(self, kind, value):
+    """Return a new token"""
+
+    def item_kind(z):
+        return 'string' if isinstance(z, str) else z.kind
+
+    def val(z):
+        return z if isinstance(z, str) else z.value
+        
+    if isinstance(value, (list, tuple)):
+        return [BeautifierToken(item_kind(z), val(z)) for z in value]    
+    return BeautifierToken(kind, value)
+#@+node:ekr.20200726083127.19: *5* fstring.blank
+def blank(self):
+    """Add a blank request to the code list."""
+    # Same as ptb.blank, but there is no common base class.
+    prev = self.code_list[-1]
+    if prev.kind not in (
+        'blank',
+        'blank-lines',
+        'file-start',
+        'line-end',
+        'line-indent',
+        'lt',
+        'op-no-blanks',
+        'unary-op',
+    ):
+        self.add_token('blank', ' ')
+#@+node:ekr.20200726083127.20: *5* fstring.do_string
+def do_string(self):
+    """Handle a 'string' token."""
+    # See whether a conversion is possible.
+    if (
+        not self.val.lower().startswith(('f', 'r'))
+        and '%' in self.val
+        and self.look_ahead(0) == ('op', '%')
+    ):
+        # Not an f or r string, and a conversion is possible.
+        self.convert_fstring()
+    else:
+        # Just put the string
+        self.add_token('string', self.val) 
+#@+node:ekr.20200726083127.21: *5* fstring.do_token (override)
+def do_token(self, token):
+    """
+    Override NullTokenBeautifier.do_token.
+
+    Handle one input token, a BeautifierToken.
+    """
+    # Only the string handler is overridden.
+    if token.kind == 'string':
+        self.kind = token.kind
+        self.val = token.value
+        # Set these for error messages.
+        self.line = token.line
+        self.line_number = token.line_number
+        self.do_string()
+    else:
+        # Same as super().do_token(token)
+        self.code_list.append(token)
+    self.prev_token = token
+#@+node:ekr.20200726083127.22: *5* fstring.look_ahead & skip_ahead
+def look_ahead(self, n):
+    """
+    Look ahead n tokens, skipping ws tokens  n >= 0.
+    Return (token.kind, token.value)
+    """
+    while n < len(self.tokens):
+        token = self.tokens[n]
+        n += 1
+        assert isinstance(token, BeautifierToken), (repr(token), g.callers())
+        if token.kind != 'ws':
+            return token.kind, token.value
+    return None, None
+        # Strip trailing whitespace from the token value.
+
+def skip_ahead(self, n, target_kind, target_val):
+    """
+    Skip to the target token.  Only ws tokens should intervene.
+
+    Return (n, tokens):
+    """
+    tokens = []
+    while n < len(self.tokens):
+        token = self.tokens[n]
+        tokens.append(token)
+        n += 1
+        if (token.kind, token.value) == (target_kind, target_val):
+            return n, tokens
+        assert token.kind == 'ws', (token.kind, token.value)
+    # Should never happen.
+    return n, []
+#@+node:ekr.20200726083127.23: *5* null_tok_b.scan_all_beautifier_tokens
+
+
 #@+node:ekr.20150605175037.1: ** From leoCheck.py & checkerCommands.py
 @first # -*- coding: utf-8 -*-
 """Experimental code checking for Leo."""
@@ -21890,6 +22457,482 @@ def factorial(n):
             result = int(factor)
         factor += 1
     return result
+#@+node:ekr.20200518051925.1: ** From leoKeys.py
+#@+node:ekr.20171124074112.1: *3* c.executeAnyCommand (no longer used)
+# def executeAnyCommand(self, command, event):
+    # """Execute a command, no matter how defined."""
+    # try:
+        # return command(event)
+    # except Exception:
+        # g.es_exception()
+        # return None
+#@+node:ekr.20051106040126: *3* c.executeMinibufferCommand (no longer used)
+def executeMinibufferCommand(self, commandName):
+    c = self; k = c.k
+    func = c.commandsDict.get(commandName)
+    if func:
+        event = g.app.gui.create_key_event(c)
+        return k.masterCommand(commandName=None, event=event, func=func)
+    g.error(f"no such command: {commandName} {g.callers()}")
+    return None
+#@+node:ekr.20170324143353.1: *3* k.commandExists (no longer used)
+def commandExists(self, commandName):
+    """
+    Return the command handler for the given command name, or None.
+    """
+    ### This is supposed to allow for stuff after the command name.
+    c, k = self.c, self
+    commandName = commandName.strip()
+    if not commandName:
+        return None
+    aList = commandName.split(None)
+    if len(aList) == 1:
+        k.givenArgs = []
+    else:
+        commandName = aList[0]
+        k.givenArgs = aList[1:]
+    func = c.commandsDict.get(commandName)
+    return func
+#@+node:ekr.20200523081446.1: *3* k.doKeyOnlyTasks (new: no longer used)
+def doKeyOnlyTasks(self, event):
+    """
+    Do keystroke-related tasks related to commands.
+    
+    Return True if we should ignore the event.
+    """
+    ### c, k = self.c, self
+    k = self
+    assert event, g.callers()
+    ###if not event: g.trace('Can not happen: no event')
+        
+    ### ch, stroke = event.char, event.stroke
+    assert event.stroke, g.callers()
+    ###
+        # if not event.stroke:
+            # g.trace('Can not happen: no stroke')
+            # return True
+    ### # Ignore all special keys.
+    assert not k.isSpecialKey(event), g.callers()
+    ###
+        # if k.isSpecialKey(event):
+            # g.trace('\n===== Can not happen: k.isSpecial')
+            # return True
+    ###
+        # Remember the key.
+        # k.setLossage(ch, stroke)
+    ### # Handle keyboard-quit.
+    if k.abortAllModesKey and event.stroke == k.abortAllModesKey:
+        g.trace('\n===== Can not happen: Ctrl-G')
+        ### k.keyboardQuit()
+        ### return True
+        assert False, g.callers()
+    ###
+        # # Ignore abbreviations.
+        # if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
+            # return False
+    return False
+#@+node:ekr.20180418025702.1: *3* k.doUnboundPlainKey & helper (no longer used)
+def doUnboundPlainKey(self, event):
+    """
+    Handle unbound plain keys.
+    Return True if k.masterKeyHandler should return.
+    """
+    c, k = self.c, self
+    stroke, w = event.stroke, event.widget
+    #
+    # Ignore non-plain keys.
+    if not k.isPlainKey(stroke):
+        return False
+    #
+    # Ignore any keys in the background tree widget.
+    if c.widget_name(w).startswith('canvas'):
+        return False
+    #
+    # Ignore the char if it is bound to the auto-complete command.
+    if self.isAutoCompleteChar(stroke):
+        return False
+    #
+    # Handle the unbound key.
+    g.trace(event.stroke)
+    k.handleUnboundKeys(event)
+    return True
+#@+node:ekr.20110209083917.16004: *4* k.isAutoCompleteChar
+def isAutoCompleteChar(self, stroke):
+    """
+    Return True if stroke is bound to the auto-complete in
+    the insert or overwrite state.
+    """
+    k = self; state = k.unboundKeyAction
+    assert g.isStrokeOrNone(stroke)
+    if stroke and state in ('insert', 'overwrite'):
+        for key in (state, 'body', 'log', 'text', 'all'):
+            d = k.masterBindingsDict.get(key, {})
+            if d:
+                bi = d.get(stroke)
+                if bi:
+                    assert bi.stroke == stroke, f"bi: {bi} stroke: {stroke}"
+                    if bi.commandName == 'auto-complete':
+                        return True
+    return False
+#@+node:ekr.20061031131434.113: *3* k.endCommand (no longer used)
+def endCommand(self, commandName):
+    """Make sure Leo updates the widget following a command.
+
+    Never changes the minibuffer label: individual commands must do that.
+    """
+    k = self; c = k.c
+    # The command may have closed the window.
+    if g.app.quitting or not c.exists: return
+    # Set the best possible undoType: prefer explicit commandName to k.commandName.
+    commandName = commandName or k.commandName or ''
+    k.commandName = k.commandName or commandName or ''
+    if commandName:
+        if not k.inState():
+            k.commandName = None
+        Do *not* call this by default.  It interferes with undo.
+            # c.frame.body.onBodyChanged(undoType='Typing')
+        
+            # if k.newMinibufferWidget:
+                # c.widgetWantsFocusNow(k.newMinibufferWidget)
+                # # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
+                # k.newMinibufferWidget = None
+#@+node:ekr.20061031131434.110: *3* k.handleDefaultChar (no longer used)
+def handleDefaultChar(self, event, stroke):
+    """
+    Handle an unbound key, based on the event's widget.
+    Do not assume that stroke exists.
+    """
+    c, k, w = self.c, self, event.widget
+    name = c.widget_name(w)
+    #
+    # Ignore unbound alt-ctrl key
+    if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
+        g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
+        return
+    #
+    # Handle events in the body pane.
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert', 'overwrite'):
+            c.editCommands.selfInsertCommand(event, action=action)
+        else:
+            pass  # Ignore the key
+        return
+    #
+    # Handle events in headlines.
+    if name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return
+    #
+    # Handle events in the background tree.
+    if name.startswith('canvas'):
+        if not stroke:  # Not exactly right, but it seems to be good enough.
+            c.onCanvasKey(event)
+        return
+    #
+    # Handle events in the log pane.
+    if name.startswith('log'):
+        # Make sure we can insert into w.
+        log_w = event.widget
+        if not hasattr(log_w, 'supportsHighLevelInterface'):
+            return
+        # Send the event to the text widget, not the LeoLog instance.
+        if not stroke:
+            stroke = event.stroke
+        if stroke:
+            i = log_w.getInsertPoint()
+            s = stroke.toGuiChar()
+            log_w.insert(i, s)
+        return
+    #
+    # Ignore all other events.
+#@+node:ekr.20080510095819.1: *3* k.handleUnboundKeys (no longer used)
+def handleUnboundKeys(self, event):
+    """
+    The last step of k.masterKeyHandler.
+    Handle key events when no binding exists.
+    """
+    c, k = self.c, self
+    stroke = event.stroke
+    if not stroke:
+        return
+    # #1448: Very late special case for getArg state.
+    #        This is not needed for other states.
+    if stroke.isNumPadKey() and k.state.kind == 'getArg':
+        stroke.removeNumPadModifier()
+        k.getArg(event, stroke=stroke)
+        return
+    # Handle all unbound characters in command mode.
+    if k.unboundKeyAction == 'command':
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return
+    # Ignore unbound F-keys.
+    if stroke.isFKey():
+        return
+    # Handle a normal character in insert/overwrite.
+    # <Return> is *not* a normal character.
+    if (
+        stroke and k.isPlainKey(stroke) and
+        k.unboundKeyAction in ('insert', 'overwrite')
+    ):
+        c.insertCharFromEvent(event)
+        return
+    # Ignore unbound Alt/Ctrl keys.
+    if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
+        return
+    # #868
+    if stroke.isPlainNumPad():
+        stroke.removeNumPadModifier()
+        event.stroke = stroke
+        c.insertCharFromEvent(event)
+        return
+    # #868
+    if stroke.isNumPadKey():
+        return  # To have effect, these must be bound.
+    # Ignore unbound non-ascii character.
+    if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
+        return
+    # Never insert escape or insert characters.
+    if 'Escape' in stroke or 'Insert' in stroke:
+        return
+    # Handle the unbound character.
+    c.insertCharFromEvent(event)
+#@+node:ekr.20061031131434.105: *3* k.masterCommand (no longer used)
+def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
+    """
+    This is the central dispatching method.
+    All commands and keystrokes pass through here.
+    
+    Return the value returned by the command, or None if no command is executed.
+    """
+    c, k = self.c, self
+    if event: c.check_event(event)
+    c.setLog()
+    k.stroke = stroke  # Set this global for general use.
+    ch = event.char if event else ''
+    #
+    # Ignore all special keys.
+    if k.isSpecialKey(event):
+        return None
+    #
+    # Compute func if not given.
+    # It is *not* an error for func to be None.
+    if commandName and not func:
+        func = c.commandsDict.get(commandName.replace('&', ''))
+        if not func:
+            g.es_print(f"no command for @item {commandName!r}", color='red')
+            return None
+    commandName = commandName or func and func.__name__ or '<no function>'
+    if 'keys' in g.app.debug:
+        # A very important trace.
+        g.trace(commandName, 'stroke', stroke)
+    #
+    # Remember the key.
+    k.setLossage(ch, stroke)
+    #
+    # Handle keyboard-quit.
+    if k.abortAllModesKey and stroke == k.abortAllModesKey:
+        k.keyboardQuit()
+        return None
+    #
+    # Ignore abbreviations.
+    if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
+        return None
+    #
+    # Invoke the command, if given.
+    if func:
+        return_value = c.doCommand(func, commandName, event=event)
+        if c.exists:
+            c.frame.updateStatusLine()
+        return return_value
+    #
+    # Ignore unbound keys in a state.
+    if k.inState():
+        return None
+    #
+    # Finally, call k.handleDefaultChar.
+    k.handleDefaultChar(event, stroke)
+    if c.exists:
+        c.frame.updateStatusLine()
+    return None
+#@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers (no longer used)
+def universalDispatcher(self, event):
+    """Handle accumulation of universal argument."""
+    << about repeat counts >>
+    k = self
+    state = k.getState('u-arg')
+    stroke = event.stroke if event else ''
+    if state == 0:
+        k.dispatchEvent = event
+        # The call should set the label.
+        k.setState('u-arg', 1, k.universalDispatcher)
+        k.repeatCount = 1
+    elif state == 1:
+        char = event.char if event else ''
+        if char == 'Escape':
+            k.keyboardQuit()
+        elif char == k.universalArgKey:
+            k.repeatCount = k.repeatCount * 4
+        elif char.isdigit() or char == '-':
+            k.updateLabel(event)
+        elif char in (
+            'Alt_L', 'Alt_R',
+            'Control_L', 'Control_R',
+            'Meta_L', 'Meta_R',
+            'Shift_L', 'Shift_R',
+        ):
+            k.updateLabel(event)
+        else:
+            # *Anything* other than C-u, '-' or a numeral is taken to be a command.
+            val = k.getLabel(ignorePrompt=True)
+            try: n = int(val) * k.repeatCount
+            except ValueError: n = 1
+            k.clearState()
+            event = k.dispatchEvent
+            k.executeNTimes(event, n)
+            k.keyboardQuit()
+    elif state == 2:
+        k.doControlU(event, stroke)
+#@+node:ekr.20061031131434.201: *4* << about repeat counts >>
+@nocolor
+@  Any Emacs command can be given a numeric argument. Some commands interpret the
+argument as a repetition count. For example, giving an argument of ten to the
+key C-f (the command forward-char, move forward one character) moves forward ten
+characters. With these commands, no argument is equivalent to an argument of
+one. Negative arguments are allowed. Often they tell a command to move or act
+backwards.
+
+If your keyboard has a META key, the easiest way to specify a numeric argument
+is to type digits and/or a minus sign while holding down the the META key. For
+example,
+
+M-5 C-n
+
+moves down five lines. The characters Meta-1, Meta-2, and so on, as well as
+Meta--, do this because they are keys bound to commands (digit-argument and
+negative-argument) that are defined to contribute to an argument for the next
+command.
+
+Another way of specifying an argument is to use the C-u (universal-argument)
+command followed by the digits of the argument. With C-u, you can type the
+argument digits without holding down shift keys. To type a negative argument,
+start with a minus sign. Just a minus sign normally means -1. C-u works on all
+terminals.
+
+C-u followed by a character which is neither a digit nor a minus sign has the
+special meaning of "multiply by four". It multiplies the argument for the next
+command by four. C-u twice multiplies it by sixteen. Thus, C-u C-u C-f moves
+forward sixteen characters. This is a good way to move forward "fast", since it
+moves about 1/5 of a line in the usual size screen. Other useful combinations
+are C-u C-n, C-u C-u C-n (move down a good fraction of a screen), C-u C-u C-o
+(make "a lot" of blank lines), and C-u C-k (kill four lines).
+
+Some commands care only about whether there is an argument and not about its
+value. For example, the command M-q (fill-paragraph) with no argument fills
+text; with an argument, it justifies the text as well. (See section Filling
+Text, for more information on M-q.) Just C-u is a handy way of providing an
+argument for such commands.
+
+Some commands use the value of the argument as a repeat count, but do something
+peculiar when there is no argument. For example, the command C-k (kill-line)
+with argument n kills n lines, including their terminating newlines. But C-k
+with no argument is special: it kills the text up to the next newline, or, if
+point is right at the end of the line, it kills the newline itself. Thus, two
+C-k commands with no arguments can kill a non-blank line, just like C-k with an
+argument of one. (See section Deletion and Killing, for more information on
+C-k.)
+
+A few commands treat a plain C-u differently from an ordinary argument. A few
+others may treat an argument of just a minus sign differently from an argument
+of -1. These unusual cases will be described when they come up; they are always
+to make the individual command more convenient to use.
+#@+node:ekr.20061031131434.202: *4* k.executeNTimes
+def executeNTimes(self, event, n):
+
+    c, k = self.c, self
+    w = event and event.widget
+    stroke = event.stroke if event else ''
+    if not stroke: return
+    if stroke == k.fullCommandKey:
+        for z in range(n):
+            k.fullCommand(event)
+    else:
+        bi = k.getPaneBinding(stroke, event and event.widget)
+        if bi:
+            for z in range(n):
+                event = g.app.gui.create_key_event(c, event=event, w=w)
+                k.masterCommand(
+                    commandName=None,
+                    event=event,
+                    func=bi.func,
+                    stroke=stroke,
+                )
+        else:
+            for z in range(n):
+                k.masterKeyHandler(event)
+#@+node:ekr.20061031131434.203: *4* doControlU
+def doControlU(self, event, stroke):
+    k = self
+    ch = event.char if event else ''
+    k.setLabelBlue(f"Control-u {g.stripBrackets(stroke)}")
+    if ch == '(':
+        k.clearState()
+        k.resetLabel()
+#@+node:ekr.20120208064440.10201: *3* k.NEWgeneralModeHandler (NEW MODES)
+def NEWgeneralModeHandler(self, event,
+    commandName=None,
+    func=None,
+    modeName=None,
+    nextMode=None,
+    prompt=None
+):
+    """Handle a mode defined by an @mode node in leoSettings.leo."""
+    k = self; c = k.c
+    state = k.getState(modeName)
+    if state == 0:
+        k.inputModeName = modeName
+        k.modePrompt = prompt or modeName
+        k.modeWidget = event and event.widget
+        k.setState(modeName, 1, handler=k.generalModeHandler)
+        self.initMode(event, modeName)
+        # Careful: k.initMode can execute commands that will destroy a commander.
+        if g.app.quitting or not c.exists: return
+        if not k.silentMode:
+            if c.config.getBool('showHelpWhenEnteringModes'):
+                k.modeHelp(event)
+            else:
+                c.frame.log.hideTab('Mode')
+    elif not func:
+        g.trace('No func: improper key binding')
+    else:
+        if commandName == 'mode-help':
+            func(event)
+        else:
+            self.endMode()
+            # New in 4.4.1 b1: pass an event describing the original widget.
+            if event:
+                event.w = event.widget = k.modeWidget
+            else:
+                event = g.app.gui.create_key_event(c, w=k.modeWidget)
+            func(event)
+            if g.app.quitting or not c.exists:
+                pass
+            elif nextMode in (None, 'none'):
+                # Do *not* clear k.inputModeName or the focus here.
+                # func may have put us in *another* mode.
+                pass
+            elif nextMode == 'same':
+                silent = k.silentMode
+                k.setState(modeName, 1, handler=k.generalModeHandler)
+                self.reinitMode(modeName)  # Re-enter this mode.
+                k.silentMode = silent
+            else:
+                k.silentMode = False  # All silent modes must do --> set-silent-mode.
+                self.initMode(event, nextMode)  # Enter another mode.
+                # Careful: k.initMode can execute commands that will destroy a commander.
+                # if g.app.quitting or not c.exists: return
 #@-all
 #@@nosearch
 #@-leo

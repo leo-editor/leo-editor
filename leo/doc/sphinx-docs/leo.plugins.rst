@@ -997,9 +997,17 @@ plugins Package
     :show-inheritance:
 
 :mod:`viewrendered2` Module
---------------------------
+---------------------------
 
 .. automodule:: leo.plugins.viewrendered2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`viewrendered3` Module
+---------------------------
+
+.. automodule:: leo.plugins.viewrendered3
     :members:
     :undoc-members:
     :show-inheritance:

@@ -77,6 +77,7 @@
 <v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
+<v t="maphew.20200506223713.1"><vh>How to build Leo exe (draft)</vh></v>
 <v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
 <v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
@@ -136,10 +137,13 @@
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
-<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
+<v t="maphew.20200605112459.1"><vh>Continual Integration</vh>
+<v t="matt.20190205105334.1"><vh>@clean ../../.travis.yml</vh></v>
+<v t="maphew.20200605112532.1"><vh>@clean ../../.github/workflows/build-leo-exe.yml</vh></v>
+</v>
 <v t="mhw.20191107064451.1"><vh>Desktop integration</vh>
 <v t="mhw.20191107064521.1"><vh>@clean leo-editor.desktop</vh></v>
 </v>
@@ -150,6 +154,10 @@
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
+</v>
+<v t="maphew.20200424174643.1"><vh>Conda</vh>
+<v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
+<v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
 <v t="mhw.20190718140254.1"><vh>Travis</vh>
 <v t="mhw.20190718140259.1"><vh>@clean ../../.travis.yml</vh></v>
@@ -230,7 +238,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.2
+Version: 6.2.1
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -249,7 +257,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.2, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -2384,6 +2392,174 @@ universal=0
 pyenchant  # spell check support. No wheels for some platforms, e.g. amd64
 pyxml; python_version &lt; "3.0"   # Used for XML import. Appears to be only python 2 package
 </t>
+<t tx="maphew.20200424174643.1">@language md
+
+# Build new Leo Anaconda Release
+_a work in progress (matt)_
+
+_I discovered Conda-Forge recipes already integrated with Continual Integration, and, once accepted, publishing to the conda forge package system. Here's what I know so far._
+
+Local fork:
+https://github.com/leo-editor/conda-forge-recipes/tree/leo
+
+PR to merge with upstream:
+https://github.com/conda-forge/staged-recipes/pull/11380
+
+
+Note: the `meta.yaml` file in this folder is for reference not the real one used by the Conda Forge system. The local _staged recipes_ fork is the authoritative version:
+
+https://github.com/leo-editor/conda-forge-recipes/tree/leo/recipes/leo/meta.yaml
+
+## Release Procedure
+
+1. Get tag name of release
+2. Get sha256 hash for the release archive
+3. Update `leo/meta.yaml` accordingly
+4. Push to local fork
+5. Check CI results in about 10 minutes
+
+Follow up as needed.
+
+
+
+
+### References
+
+ - Conda Forge docs - [contributing packages][0]
+ 
+ 
+ [0]: https://conda-forge.org/docs/maintainer/adding_pkgs.html
+ </t>
+<t tx="maphew.20200426185115.1"># Prelimnary build recipe
+
+    pushd code\leo-editor
+    python setup.py sdist
+
+Make note of archive name in dist/ and update meta.yaml accordingly:
+
+    url: "../../../../dist/leo-6.2.dev106.tar.gz"
+
+then:
+
+    conda build leo\dist\conda\leo
+
+There's **a lot** of disk use and screen output. Takes about 10 minutes. Basically it packages and installs Leo in a test env, and then packages that into final output, and then tests installing that again in turn.
+
+If successful, test a local install in new env:
+
+    conda create -n leo-conda
+    conda activate leo-conda
+    conda install c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+If successful (according to docs, haven't made it this far yet):
+
+    anaconda upload c:\apps\Miniconda3\conda-bld\win-64\leo-6.2.dev106-py36_0.tar.bz2
+
+### Sources
+
+- Official docs - https://docs.conda.io/projects/conda-build/en/latest/concepts/recipe.html
+
+- @stas00; creating tarball using setup.py to stop copying entire work folder; https://github.com/conda/conda-build/issues/3214#issuecomment-431920525
+</t>
+<t tx="maphew.20200506223713.1">2020-05-06, matt
+
+Having another go at building an all-in-one portable Leo executable with
+PyInstaller
+
+
+Guide: https://blog.aaronhktan.com/posts/2018/05/14/pyqt5-pyinstaller-executable
+
+fix ModuleNotFoundError: No module named 'pkg_resources.py2_warn'
+https://github.com/pypa/setuptools/issues/1963#issuecomment-574265532
+
+-----
+
+&gt; pip install pyinstaller
+&gt; pyinstaller launchLeo.py
+    # one time only, to make template .spec file
+
+&gt; rename launchLeo.spec leo.spec
+
+#edit .spec file and add:
+
+a = Analysis(['launchLeo.py'],
+             ...
+             datas=[('leo', 'leo')],
+             hiddenimports=['pkg_resources.py2_warn'],
+             ...
+             )
+
+&gt; pyinstaller leo\dist\leo.spec
+
+# open new CMD shell, verify no python or leo present, then:
+
+&gt; dist\leo\leo.exe
+
+# fix errors as can until everything works.
+
+-----</t>
+<t tx="maphew.20200605112459.1"></t>
+<t tx="maphew.20200605112532.1">@language yaml
+# Create an "all in one" bundle of Leo and all dependencies for Windows that 
+# doesn't need to be installed in order to run, just unzip and use.
+
+name: Build standalone leo.exe
+
+on:
+  push:
+    branches: [ master, devel, gh-act ]
+    tags: 
+      - 'v*' 
+  pull_request:
+    branches: [ master, devel, gh-act ]
+    tags: 
+      - 'v*' 
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip packages
+      uses: actions/cache@v2
+      with:
+        path: ~\Appdata\Local\pip\Cache
+        # note addition of py ver, https://github.com/actions/cache/issues/175#issuecomment-586641991
+        #key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-${{ matrix.python-version }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.python-version }}-pip
+    
+    - name: Install Leo and dependencies
+      run: |
+        python -m pip install --upgrade pip
+        #if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install wheel pyinstaller
+        pip install --editable .
+    - name: pyinstaller build
+      run: |
+        $ErrorView = 'NormalView'
+        pwd
+        ls
+        pyinstaller leo/dist/leo.spec
+    - name: create dist archive
+      run: |
+        $ErrorView = 'NormalView'
+        python leo/dist/zip-leo-exe.py
+    - uses: actions/upload-artifact@v2
+      with:
+        name: leo-windows-exe
+        path: dist/*.zip
+</t>
 <t tx="matt.20181004031246.1">@language md
 
 _Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
@@ -2402,7 +2578,8 @@ that updates yml file will delete any comments within it. (e.g. `travis encrypt
 ...`)
 
 </t>
-<t tx="matt.20190205105334.1">language: python
+<t tx="matt.20190205105334.1">@language yaml
+language: python
 python:
   - "3.6"
 git:
