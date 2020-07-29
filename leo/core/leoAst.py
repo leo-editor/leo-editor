@@ -4249,12 +4249,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
 
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
         contents = """\
-    SENT+node:ekr.20160514120655.1: ** class AtFile
     # Leading comment line 1.
     # Leading comment lines 2.
 
@@ -4264,7 +4259,6 @@ class TestOrange(BaseTest):
     # Trailing comment line.
     a = 2
     """
-        contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
