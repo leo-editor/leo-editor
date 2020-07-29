@@ -4196,18 +4196,13 @@ class TestOrange(BaseTest):
     def test_at_doc_part(self):
 
         line_length = 40  # For testing.
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
         contents = f"""\
-    SENT+at Line 1
+    #@+at Line 1
     # Line 2
-    SENTc
+    #@@c
 
     print('hi')
     """
-        contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
