@@ -2432,7 +2432,7 @@ class Orange:
     at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
 
     # Doc parts end with @c or a node sentinel. Specialized for python.
-    end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
+    end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
@@ -4895,6 +4895,26 @@ class TestOrange(BaseTest):
             max_split_line_length=line_length,
         )
         # g.printObj(g.splitLines(results))
+        message = (
+            f"\n"
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
+        assert results == expected, message
+    #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
+    def test_verbatim2(self):
+        
+        contents = """\
+    #@@beautify
+    #@@nobeautify
+    #@+at Starts doc part
+    # More doc part.
+    # The @c ends the doc part.
+    #@@c
+    """
+        contents, tokens, tree = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens, tree)
         message = (
             f"\n"
             f"contents: {contents}\n"
