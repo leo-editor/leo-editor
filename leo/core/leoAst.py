@@ -4901,49 +4901,6 @@ class TestOrange(BaseTest):
             f"expected: {expected!r}\n"
             f"  orange: {results!r}")
         assert results == expected, message
-    #@+node:ekr.20200211190650.1: *4* TestOrange.test_verbatim_fail
-    def test_verbatim_fail(self):
-
-        line_length = 40  # For testing.
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
-        contents = '''\
-    SENTverbatim
-    SENT+node:ekr.20090128083459.82: ADDED.
-    SENTverbatim
-    SENT@nobeautify
-
-    def run(self):
-        if index2 is None: # <--- Essential
-            g.es("No matching bracket.")  # #1447.
-            return
-    SENTverbatim
-    SENT+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
-    class PosList(list):
-    SENTverbatim
-        SENT+others
-    SENTverbatim
-        SENT+node:ekr.20140531104908.17611: *4* PosList.ctor
-        def __init__(self, c, aList=None):
-            if aList is None:
-                for p in c.all_positions():
-                    self.append(p.copy())
-            else:  # <-------
-                pass
-    '''
-        contents = contents.replace('SENT', '#@')
-        contents, tokens, tree = self.make_data(contents)
-        expected = contents + '\n'
-        results = self.beautify(contents, tokens, tree,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
-        # Necessary.
-        expected = expected.replace('#@verbatim\n', '').rstrip() + '\n'
-        results = results.replace('#@verbatim\n', '')
-        assert results == expected, expected_got(expected, results)
     #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
