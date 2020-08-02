@@ -4,9 +4,9 @@
 #@+node:TL.20080507213950.3: ** << docstring >> (nodeActions.py)
 r""" Allows the definition of double-click actions.
 
-The double-click-icon-box command causes this plugin checks for a match of
-the clicked node's headline text with a list of patterns. If a match
-occurs, the plugin executes the associated script.
+Calling the nodeaction-act command or double-clicking a node causes this plugin
+checks for a match of the clicked node's headline text with a list of
+patterns. If a match occurs, the plugin executes the associated script.
 
 **nodeAction** nodes may be located anywhere in the outline. Such nodes
 should contain one or more **pattern nodes** as children. The headline of
@@ -178,7 +178,7 @@ The following global variables are available to the script::
 
 **Examples**
 
-The double-click-icon-box command on a node with a
+The nodeaction-act command on a node with a
 "http:\\\\www.google.com" headline will invoke the script associated with
 the "http:\\\\\*" pattern. The following script in the body of the
 pattern's node displays the URL in a browser::
@@ -199,11 +199,12 @@ execute a command in the first line of the body of a double-clicked node::
 # Derived from the fileActions plugin.
 # Distributed under the same licence as Leo.
 
-__version__ = "0.4"
+__version__ = "0.5"
 #@+<< version history >>
 #@+node:TL.20080507213950.4: ** << version history >>
 #@@nocolor
 #@+at
+# 0.5 : 02-Ago-20 : XC : Added a command annotation, fixed handler registering and @files pattern recognition, removed functionality of doubtful utility
 # 0.3 : 02-Apr-10 : TL : Support search all sub-nodes for pattern match
 # 0.2 : 02-Mar-09 : TL : Support for 'X', 'V', and  '>' directives added
 # 0.1 : 27-Feb-09 : TL : Initial code (modified from FileActions plugin)
@@ -219,17 +220,19 @@ import sys
 import tempfile
 #@-<< imports >>
 
-atFileTypes = [
-    "@file", "@thin", "@file-thin",   "@thinfile",
-    "@asis",   "@file-asis","@silentfile",
-    "@nosent","@file-nosent", "@nosentinelsfile",
-    "@shadow", "@edit",
-]
-
 #@+others
+#@+node:TL.20080507213950.7: ** init (nodeActions.py)
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    if not g.app.batchMode:
+        g.blue("nodeActions: Init")
+    ok = not g.app.unitTesting # Dangerous for unit testing.
+    if ok:
+        g.registerHandler("headdclick1", onIconDoubleClickNA)
+        g.plugin_signon(__name__)
+    return ok
 #@+node:TL.20080507213950.8: ** onIconDoubleClickNA
 def onIconDoubleClickNA(tag, keywords):
-
     c = keywords.get("c")
     p = keywords.get("p")
 
@@ -238,19 +241,17 @@ def onIconDoubleClickNA(tag, keywords):
 
     if doNodeAction(p,c):
         return True
-            #Action was taken - Stop other double-click handlers from running
     return None
-        #No action taken - Let other double-click handlers run
-#@+node:TL.20080507213950.7: ** init (nodeActions.py)
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    if not g.app.batchMode:
-        g.blue("nodeActions: Init")
-    ok = not g.app.unitTesting # Dangerous for unit testing.
-    if ok:
-        g.registerHandler("icondclick1", onIconDoubleClickNA)
-        g.plugin_signon(__name__)
-    return ok
+#@+node:caminhante.20200802125556.1: ** nodeaction-act
+@g.command('nodeaction-act')
+def cmd_nodeaction_act(event):
+    c = event.get('c')
+    p = c.p
+    if not c or not p:
+        return None
+    if doNodeAction(p,c):
+        return True
+    return None
 #@+node:TL.20080507213950.9: ** doNodeAction
 def doNodeAction(pClicked, c):
 
@@ -320,12 +321,10 @@ def doNodeAction(pClicked, c):
             patternBeginsWithAtFiles = re.search( "^@files ", pattern )
             clickedAtFileTypeNode = False #assume @file type node not clicked
             if patternBeginsWithAtFiles:
-                #Check if first word in clicked header is in list of @file types
-                firstWordInClickedHeader = hClicked.split()[0]
-                if firstWordInClickedHeader in atFileTypes:
+                if pClicked.isAnyAtFileNode():
                     clickedAtFileTypeNode = True #Tell "write @file type nodes" code
                     #Replace "@files" in pattern with clicked node's @file type
-                    pattern = re.sub( "^@files", firstWordInClickedHeader, pattern)
+                    pattern = re.sub( "^@files", p.h.split(' ')[0], pattern)
                     if messageLevel >= 4:
                         g.blue( "nA:    Pattern='" + pattern + "' " + "(after @files substitution)")
 
@@ -397,8 +396,7 @@ def applyNodeAction(pScript, pClicked, c):
             namespace = {
                 'c':c, 'g':g,
                 'pClicked': pClicked,
-                'pScript' : pScript,
-                'shellScriptInWindowNA': shellScriptInWindowNA }
+                'pScript' : pScript }
             # exec script in namespace
             exec(script,namespace)
             #Unredirect output
@@ -414,35 +412,6 @@ def applyNodeAction(pScript, pClicked, c):
             g.es_exception(full=False,c=c)
 
         os.chdir(working_directory)
-#@+node:TL.20080507213950.13: ** shellScriptInWindowNA
-def shellScriptInWindowNA(c,script):
-
-    if sys.platform == 'darwin':
-        #@+<< write script to temporary MacOS file >>
-        #@+node:TL.20080507213950.14: *3* << write script to temporary MacOS file >>
-        handle, path = tempfile.mkstemp(text=True)
-        directory = c.frame.openDirectory
-        script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
-        os.write(handle, script)
-        os.close(handle)
-        os.chmod(path,0x700)
-        #@-<< write script to temporary MacOS file >>
-        os.system("open -a /Applications/Utilities/Terminal.app " + path)
-
-    elif sys.platform == 'win32':
-        g.error("shellScriptInWindow not ready for Windows")
-
-    else:
-        #@+<< write script to temporary Unix file >>
-        #@+node:TL.20080507213950.15: *3* << write script to temporary Unix file >>
-        handle, path = tempfile.mkstemp(text=True)
-        directory = c.frame.openDirectory
-        script = ("cd %s\n" % directory) + script + '\n' + ("rm -f %s\n" % path)
-        os.write(handle, script)
-        os.close(handle)
-        os.chmod(path,0x700)
-        #@-<< write script to temporary Unix file >>
-        os.system("xterm -e sh  " + path)
 #@-others
 #@@language python
 #@@tabwidth -4
