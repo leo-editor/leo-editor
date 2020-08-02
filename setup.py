@@ -60,9 +60,9 @@ def git_version(file, version=None):
 def clean_git_tag(tag):
     """Return only version number from tag name. Ignore unknown formats.
        Is specific to tags in Leo's repository.
-            5.7b1          -->  5.7b1
-            Leo-4-4-8-b1   -->  4-4-8-b1
-            v5.3           -->  5.3
+            5.7b1          -->	5.7b1
+            Leo-4-4-8-b1   -->	4-4-8-b1
+            v5.3           -->	5.3
             Fixed-bug-149  -->  Fixed-bug-149
     """
     if tag.lower().startswith('leo-'): tag = tag[4:]
