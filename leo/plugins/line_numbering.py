@@ -10,7 +10,7 @@
    
    Author: vitalije(at)kviziracija.net
 """
-__version__ = "0.1"
+__version__ = "0.2"
 #@+node:vitalije.20170727201931.1: ** imports
 import re
 import leo.core.leoGlobals as g

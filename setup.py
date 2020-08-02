@@ -60,9 +60,9 @@ def git_version(file, version=None):
 def clean_git_tag(tag):
     """Return only version number from tag name. Ignore unknown formats.
        Is specific to tags in Leo's repository.
-            5.7b1          -->	5.7b1
-            Leo-4-4-8-b1   -->	4-4-8-b1
-            v5.3           -->	5.3
+            5.7b1          -->  5.7b1
+            Leo-4-4-8-b1   -->  4-4-8-b1
+            v5.3           -->  5.3
             Fixed-bug-149  -->  Fixed-bug-149
     """
     if tag.lower().startswith('leo-'): tag = tag[4:]
@@ -107,8 +107,8 @@ setup_requires = []
     # setup_requires no longer needed with PEP-518 and pip >v10
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    # ~'PyQt5 >= 5.12',  # v5.12+ to close #1217
-    # ~'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
+    'PyQt5 >= 5.12',  # v5.12+ to close #1217
+    'PyQtWebEngine',  # #1202 QtWebKit needs to be installed separately starting Qt 5.6
     'asttokens',  # abstract syntax tree text parsing
     'docutils',  # used by Sphinx, rST plugin
     'flexx',  # for LeoWapp browser gui
