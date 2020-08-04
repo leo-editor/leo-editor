@@ -872,7 +872,7 @@ class AtFile:
     def openFileHelper(self, fileName):
         """Open a file, reporting all exceptions."""
         at = self
-        s = None
+        s = ''
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
@@ -3401,7 +3401,7 @@ class FastAtRead:
             #@afterref
  # clears in_doc
             #@+<< 4. handle section refs >>
-            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >> (changed)
+            #@+node:ekr.20180602103135.18: *4* << 4. handle section refs >>
             m = ref_pat.match(line)
             if m:
                 in_doc = False
@@ -3411,14 +3411,12 @@ class FastAtRead:
                     stack.append((gnx, indent, body))
                     indent += m.end(1)
                     continue
-                elif stack:
+                if stack:
                     # #1232: Only if the stack exists.
                     # close sentinel.
                     # m.group(2) is '-' because the pattern matched.
                     gnx, indent, body = stack.pop()
                     continue
-                else:
-                    g.trace('=====', repr(line))
             #@-<< 4. handle section refs >>
             #@afterref
  # clears in_doc.

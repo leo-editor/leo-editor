@@ -66,11 +66,11 @@ def lineScrollHelper(c, prefix1, prefix2, suffix):
     w = c.frame.body.wrapper
     ins = w.getInsertPoint()
     c.inCommand = False
-    c.executeMinibufferCommand(prefix1 + 'line' + suffix)
+    c.k.simulateCommand(prefix1 + 'line' + suffix)
     ins2 = w.getInsertPoint()
     # If the cursor didn't change, then go to beginning/end of line
     if ins == ins2:
-        c.executeMinibufferCommand(prefix2 + 'of-line' + suffix)
+        c.k.simulateCommand(prefix2 + 'of-line' + suffix)
 #@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
 def delete_trace_statements(event=None):
@@ -670,7 +670,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Bug fix: 2011/05/23: set the fillColumn ivar!
             self.fillColumn = n = int(k.arg)
             k.setLabelGrey(f"fill column is: {n:d}")
-            k.commandName = f"set-fill-column {n:d}"
         except ValueError:
             k.resetLabel()
         c.widgetWantsFocus(w)
@@ -967,6 +966,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             # no difference between original and current list of dictionaries
             return
         self._setIconListHelper(p, l, p.v, setDirty)
+        if g.app.gui.guiName() == 'qt':
+            self.c.frame.tree.updateIcon(p, True)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc, setDirty):
         """icon setting code common between v and t nodes
@@ -1909,7 +1910,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'flush')
-        k.commandName = f"flush-lines {k.arg}"
     #@+node:ekr.20150514063305.282: *4* ec.keepLines (doesn't work)
     @cmd('keep-lines')
     def keepLines(self, event):
@@ -1929,7 +1929,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'keep')
-        k.commandName = f"keep-lines {k.arg}"
     #@+node:ekr.20150514063305.283: *4* ec.linesHelper
     def linesHelper(self, event, pattern, which):
         w = self.editWidget(event)
@@ -1960,6 +1959,33 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.insert(i, ''.join(keeplines))
         w.setInsertPoint(i)
         self.endCommand(changed=True, setLabel=True)
+    #@+node:ekr.20200619082429.1: *4* ec.moveLinesToNextNode (new)
+    @cmd('move-lines-to-next-node')
+    def moveLineToNextNode(self, event):
+        """Move one or *trailing* lines to the start of the next node."""
+        c = self.c
+        if not c.p.threadNext():
+            return
+        w = self.editWidget(event)
+        if not w:
+            return
+        s = w.getAllText()
+        sel_1, sel_2 = w.getSelectionRange()
+        i, junk = g.getLine(s, sel_1)
+        i2, j = g.getLine(s, sel_2)
+        lines = s[i:j]
+        if not lines.strip():
+            return
+        self.beginCommand(w, undoType='move-lines-to-next-node')
+        try:
+            next_i, next_j = g.getLine(s, j)
+            w.delete(i, next_j)
+            c.p.b = w.getAllText().rstrip() + '\n'
+            c.selectPosition(c.p.threadNext())
+            c.p.b = lines + '\n' + c.p.b
+            c.recolor()
+        finally:
+            self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.284: *4* ec.splitLine
     @cmd('split-line')
     def splitLine(self, event):

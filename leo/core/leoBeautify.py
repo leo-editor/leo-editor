@@ -8,7 +8,6 @@ try:
     import leo.core.leoAst as leoAst
 except ImportError:
     # Allow main() to run in any folder containing leoGlobals.py
-    # pylint: disable=relative-import
     import leoGlobals as g
 
     # Create a dummy decorator.

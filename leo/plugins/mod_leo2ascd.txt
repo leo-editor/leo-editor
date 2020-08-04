@@ -2344,29 +2344,23 @@ def OpenTreeInXEmacs (c):
 def CreateOpenTreeMenu (tag,keywords):
 
     """Create the 'Xemacs: Open Tree' menu item in the Open With menu."""
-
-
     if (tag=="menu2" or
         (tag=="start2") or
-        (tag=="command2" and keywords.get("label")=="new")):
-
+        (tag=="command2" and keywords.get("label")=="new")
+    ):
         c = keywords.get('c')
         exportMenu = c.frame.menu.getMenu('Open With')
-        newEntries = (
+        table = (
             ("-",None,None),
-            ("XEmacs: Open nodes in sub-tree","None",OpenTreeInXEmacs),
+            ("XEmacs: Open nodes in sub-tree","None", OpenTreeInXEmacs),
         )
-        c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
+        c.frame.menu.createMenuEntries(exportMenu, table)
 
 if 1:
     g.registerHandler(("start2","menu2","command2"),CreateOpenTreeMenu)
 
     __version__ = ".4" # Set version for the plugin handler.
     g.plugin_signon(__name__)
-@doc
-
-
-@code
 #@+node:ekr.20040331071919.33: *4* << Filename modification >>
 @language python
 @tabwidth -4

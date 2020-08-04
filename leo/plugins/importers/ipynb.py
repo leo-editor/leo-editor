@@ -6,7 +6,6 @@ import leo.core.leoGlobals as g
 try:
     import nbformat
 except ImportError:
-    g.es_print('import-jupyter-notebook requires nbformat package')
     nbformat = None
 #@+others
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
@@ -31,6 +30,10 @@ class Import_IPYNB:
         Import the given .ipynb file.
         https://nbformat.readthedocs.org/en/latest/format_description.html
         '''
+        # #1601:
+        if not nbformat:
+            g.es_print('import-jupyter-notebook requires nbformat package')
+            return
         c = self.c
         self.fn = fn
         self.parent = None
@@ -50,6 +53,10 @@ class Import_IPYNB:
         '''
         @auto entry point. Called by code in leoImport.py.
         '''
+        # #1601:
+        if not nbformat:
+            g.es_print('import-jupyter-notebook requires nbformat package')
+            return
         c = self.c
         fn = parent.atAutoNodeName()
         if c and fn:
@@ -213,15 +220,14 @@ class Import_IPYNB:
     def get_file_name(self):
         '''Open a dialog to write a Jupyter (.ipynb) file.'''
         c = self.c
-        fn = g.app.gui.runSaveFileDialog(
+        fn = g.app.gui.runOpenFileDialog(
             c,
             defaultextension=".ipynb",
             filetypes=[
-                ("Jupyter files", "*.ipynb"),
+                ("Jupyter notebooks", "*.ipynb"),
                 ("All files", "*"),
             ],
-            initialfile='',
-            title="Export To Jupyter File",
+            title="Import Jupyter Notebook",
         )
         c.bringToFront()
         return fn

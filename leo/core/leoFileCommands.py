@@ -291,8 +291,14 @@ class FastRead:
                 if e.tag == 'vh':
                     parent_v._headString = g.toUnicode(e.text or '')
                     continue
-                gnx = e.attrib['t']
-                v = gnx2vnode.get(gnx)
+                # #1581: Attempt to handle old Leo outlines.
+                try:
+                    gnx = e.attrib['t']
+                    v = gnx2vnode.get(gnx)
+                except KeyError:
+                    # g.trace('no "t" attrib')
+                    gnx = None
+                    v = None
                 if v:
                     # A clone
                     parent_v.children.append(v)
@@ -783,6 +789,8 @@ class FileCommands:
             for gnx in topgnxes:
                 v = fc.gnxDict[gnx]
                 c.hiddenRootNode.children.append(v)
+                if gnx in pubgnxes:
+                    v.parents.append(c.hiddenRootNode)
         #@+node:vitalije.20170831144827.8: *6* priv_data
         def priv_data(gnxes):
             dbrow = lambda v: (

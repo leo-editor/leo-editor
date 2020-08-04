@@ -255,17 +255,12 @@ class LeoMenu:
         if g.isascii(name):
             return ''.join([ch for ch in name.lower() if ch not in '& \t\n\r'])
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
-    #@+node:ekr.20051022044950: *4* LeoMenu.computeOldStyleShortcutKey
-    def computeOldStyleShortcutKey(self, s):
-        """Compute the old-style shortcut key for @shortcuts entries."""
-        # #1121: Allow Chinese characters in command names
-        return s.strip()
     #@+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
-    def createMenuEntries(self, menu, table, dynamicMenu=False):
+    def createMenuEntries(self, menu, table):
         """
         Create a menu entry from the table.
-        New in 4.4: this method shows the shortcut in the menu,
-        but this method **never** binds any shortcuts.
+        
+        This method shows the shortcut in the menu, but **never** binds any shortcuts.
         """
         c = self.c
         if g.app.unitTesting: return
@@ -273,11 +268,12 @@ class LeoMenu:
         self.traceMenuTable(table)
         for data in table:
             label, command, done = self.getMenuEntryInfo(data, menu)
-            if done: continue
-            commandName = self.getMenuEntryBindings(command, dynamicMenu, label)
-            if not commandName: continue
-            masterMenuCallback = self.createMasterMenuCallback(
-                dynamicMenu, command, commandName)
+            if done:
+                continue
+            commandName = self.getMenuEntryBindings(command, label)
+            if not commandName:
+                continue
+            masterMenuCallback = self.createMasterMenuCallback(command, commandName)
             realLabel = self.getRealMenuName(label)
             amp_index = realLabel.find("&")
             realLabel = realLabel.replace("&", "")
@@ -288,54 +284,54 @@ class LeoMenu:
                 commandName=commandName,
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
-    def createMasterMenuCallback(self, dynamicMenu, command, commandName):
-
-        # pylint: disable=no-else-return
-            # This code is simpler as it is.
-
+    def createMasterMenuCallback(self, command, commandName):
+        """
+        Create a callback for the given args.
+        
+        - If command is a string, it is treated as a command name.
+        - Otherwise, it should be a callable representing the actual command.
+        """
         c = self.c
 
-        def setWidget():
+        def getWidget():
+            """Carefully return the widget that has focus."""
             w = c.frame.getFocus()
             if w and g.isMac:
-                 # 2012/01/11: redirect (MacOS only).
+                # Redirect (MacOS only).
                 wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
-            # 2015/05/14: return a wrapper if possible.
+            # Return a wrapper if possible.
             if not g.isTextWrapper(w):
                 w = getattr(w, 'wrapper', w)
             return w
 
-        if dynamicMenu:
-            if command:
+        if isinstance(command, str):
+            
+            def static_menu_callback():
+                event = g.app.gui.create_key_event(c, w=getWidget())
+                c.doCommandByName(commandName, event)
 
-                def masterDynamicMenuCallback(c=c, command=command):
-                    # 2012/01/07: set w here.
-                    w = setWidget()
-                    event = g.app.gui.create_key_event(c, w=w)
-                    return c.k.masterCommand(func=command, event=event)
+            return static_menu_callback
+            
+        # The command must be a callable.
+        if not callable(command):
 
-                return masterDynamicMenuCallback
-            else:
-                g.internalError('no callback for dynamic menu item.')
+            def dummy_menu_callback(event=None):
+                pass
+        
+            g.trace(f"bad command: {command!r}", color='red')
+            return dummy_menu_callback
 
-                def dummyMasterMenuCallback():
-                    pass
+        # Create a command dynamically.
 
-                return dummyMasterMenuCallback
-        else:
+        def dynamic_menu_callback():
+            event = g.app.gui.create_key_event(c, w=getWidget())
+            return c.doCommand(command, commandName, event)  # #1595
 
-            def masterStaticMenuCallback(c=c, commandName=commandName):
-                # 2011/10/28: Use only the command name to dispatch the command.
-                # 2012/01/07: Bug fix: set w here.
-                w = setWidget()
-                event = g.app.gui.create_key_event(c, w=w)
-                return c.k.masterCommand(commandName=commandName, event=event)
-
-            return masterStaticMenuCallback
+        return dynamic_menu_callback
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
-    def getMenuEntryBindings(self, command, dynamicMenu, label):
+    def getMenuEntryBindings(self, command, label):
         """Compute commandName from command."""
         c = self.c
         if isinstance(command, str):
@@ -343,11 +339,23 @@ class LeoMenu:
             commandName = command
         else:
             # First, get the old-style name.
-            commandName = self.computeOldStyleShortcutKey(label)
+            # #1121: Allow Chinese characters in command names
+            commandName = label.strip()
         command = c.commandsDict.get(commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
     def getMenuEntryInfo(self, data, menu):
+        """
+        Parse a single entry in the table passed to createMenuEntries.
+        
+        Table entries have the following formats:
+            
+        1. A string, used as the command name.
+        2. A 2-tuple: (command_name, command_func)
+        3. A 3-tuple: (command_name, menu_shortcut, command_func)
+        
+        Special case: If command_name is None or "-" it represents a menu separator.
+        """
         done = False
         if isinstance(data, str):
             # A single string is both the label and the command.
@@ -393,7 +401,7 @@ class LeoMenu:
             else:
                 print(format % (data, ''))
     #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
-    def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
+    def createMenuItemsFromTable(self, menuName, table):
 
         if g.app.gui.isNullGui:
             return
@@ -401,7 +409,7 @@ class LeoMenu:
             menu = self.getMenu(menuName)
             if menu is None:
                 return
-            self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
+            self.createMenuEntries(menu, table)
         except Exception:
             g.es_print("exception creating items for", menuName, "menu")
             g.es_exception()
@@ -533,33 +541,6 @@ class LeoMenu:
             if menu:
                 self.destroy(menu)
                 self.destroyMenu(i)
-    #@+node:ekr.20031218072017.4117: *4* LeoMenu.defineMenuCallback
-    def defineMenuCallback(self, command, name, minibufferCommand):
-        # pylint: disable=no-else-return
-            # This code is simpler as it is.
-        c = self.c
-        if minibufferCommand:
-            # Create a dummy event as a signal to doCommand.
-            event = g.app.gui.create_key_event(c)
-            # The first parameter must be event, and it must default to None.
-
-            def minibufferMenuCallback(
-                event=event, self=self, command=command, label=name):
-                c = self.c
-                return c.doCommand(command, label, event)
-
-            return minibufferMenuCallback
-        else:
-            # The first parameter must be event, and it must default to None.
-
-            def legacyMenuCallback(event=None, self=self, command=command, label=name):
-                c = self.c  # 2012/03/04.
-                c.check_event(event)
-                return c.doCommand(command, label)
-
-            return legacyMenuCallback
-        # For pylint
-        return None
     #@+node:ekr.20031218072017.3805: *4* LeoMenu.deleteMenu
     def deleteMenu(self, menuName):
         try:

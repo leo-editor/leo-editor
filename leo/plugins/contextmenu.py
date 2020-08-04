@@ -119,20 +119,20 @@ def configuredcommands_rclick(c, p, menu):
             continue
         # Fix #1084
         try:
-            cmd, desc = data
+            command_name, desc = data
         except ValueError:
             g.es_print(f"Bad @data contextmenu_commands entry: {data!r}")
             continue
         desc = desc.strip()
         action = menu.addAction(desc)
 
-        def create_callback(cm):
+        def create_callback(command_name):
             w = g.app.gui.get_focus(c)
             wrapper = getattr(w, 'wrapper', None)
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
-            return lambda: c.k.simulateCommand(cm, event=key_event)
+            return lambda: c.k.simulateCommand(command_name, event=key_event)
     
-        configcmd_rclick_cb = create_callback(cmd)
+        configcmd_rclick_cb = create_callback(command_name)
         action.triggered.connect(configcmd_rclick_cb)
 
 #@+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
@@ -210,6 +210,7 @@ def marknodes_rclick(c,p,menu):
         def marknodes_rclick_cb():
             for p in pl:
                 p.v.setMarked()
+                p.v.setDirty()  # 2020/04/29.
             c.redraw_after_icons_changed()
         action = menu.addAction("Mark")
         action.triggered.connect(marknodes_rclick_cb)
@@ -217,6 +218,7 @@ def marknodes_rclick(c,p,menu):
         def unmarknodes_rclick_cb():
             for p in pl:
                 p.v.clearMarked()
+                p.v.setDirty()  # 2020/04/29.
             c.redraw_after_icons_changed()
         action = menu.addAction("Unmark")
         action.triggered.connect(unmarknodes_rclick_cb)
@@ -337,8 +339,10 @@ def refresh_rclick(c,p,menu):
 def pylint_rclick(c,p,menu):
     '''Run pylint on the selected node.'''
     action = menu.addAction("Run Pylint")
+    
     def pylint_rclick_cb(aBool):
-        c.executeMinibufferCommand('pylint')
+        c.k.simulateCommand('pylint')
+    
     action.triggered.connect(pylint_rclick_cb)
 #@+node:ekr.20140724211116.19256: ** Helpers
 #@+node:ville.20110428163751.7685: *3* guess_file_type

@@ -145,7 +145,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         """Called from AbbrevCommands.reload_settings aka reloadSettings."""
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
-        # Init these here for k.masterCommand.
         c.abbrev_place_end = c.config.getString('abbreviations-place-end')
         c.abbrev_place_start = c.config.getString('abbreviations-place-start')
         c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
@@ -223,8 +222,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         """
-        Not a command.  Called from k.masterCommand to expand
-        abbreviations in event.widget.
+        Not a command.  Expand abbreviations in event.widget.
 
         Words start with '@'.
         """
@@ -255,16 +253,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             if trace: g.trace(f"No prefix in {s!r}")
             return False
-        # 448: Add abbreviations for commands.
-        if 0:  # Not worth documenting.
-            val, tag = self.abbrevs.get(word, (None, None))
-            if val and c.k.commandExists(val):
-                # Execute the command directly,
-                # so as not to call this method recursively.
-                commandName = val
-                func = c.commandsDict.get(commandName)
-                c.doCommand(func, commandName, event)
-                return False
         c.abbrev_subst_env['_abr'] = word
         if trace: g.trace(f"Found {word!r} = {val!r}")
         if tag == 'tree':

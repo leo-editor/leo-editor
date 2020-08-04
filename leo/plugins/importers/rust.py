@@ -23,9 +23,10 @@ class Rust_Importer(Importer):
       
     #@+others
     #@+node:ekr.20200317114526.1: *3* rust_i.clean_headline
-    arg_pat = re.compile(r'\((.*)\)')
-    type_pat = re.compile(r'(\s*->.*)(\{|\()')
+    arg_pat = re.compile(r'(\(.*?\))')
+    type_pat = re.compile(r'(\s*->.*)')
     life_pat = re.compile(r'(\<.*\>)')
+    body_pat = re.compile(r'(\{.*\})')
 
     def clean_headline(self, s, p=None):
         '''
@@ -42,17 +43,17 @@ class Rust_Importer(Importer):
         tail = m.group(3) or ''.strip()
         tail = re.sub(self.arg_pat, '', tail, count=1)
         tail = re.sub(self.type_pat, '', tail, count=1)
+        tail = re.sub(self.body_pat, '', tail, count=1)
         # Clean lifetime specs except for impl.
         if not head.startswith('impl'):
             tail = re.sub(self.life_pat, '', tail, count=1)
         # Remove trailing '(' or '{'
         tail = tail.strip()
-        while tail.endswith(('{', '(')):
-            tail = tail[:-1]
+        while tail.endswith(('{', '(', ',', ')')):
+            tail = tail[:-1].rstrip()
         # Remove trailing '>' sometimes.
-        tail = tail.strip()
-        if '<' not in tail and tail.endswith('>'):
-            tail = tail[:-1]
+        while '<' not in tail and tail.endswith('>'):
+            tail = tail[:-1].rstrip()
         return f"{head} {tail}".strip().replace('  ', ' ')
     #@+node:ekr.20200316101240.4: *3* rust_i.match_start_patterns
     # clean_headline also uses this pattern.
@@ -67,6 +68,34 @@ class Rust_Importer(Importer):
         if m:
             self.headline = line.strip()
         return bool(m)
+    #@+node:ekr.20200623083608.1: *3* rust_i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''
+        Move trailing comment and macro lines to the start of the next node.
+        
+        For now, @others anywhere in a node prevents all moves.
+        '''
+        for p in parent.subtree():
+            next = p.threadNext()
+            if not next:
+                continue
+            lines = self.get_lines(p)
+            if '@others' in ''.join(lines):
+                # Don't move anything.
+                continue
+            comment_lines = []
+            for line in reversed(lines):
+                if line.strip().startswith(('//', '#[', '#!')):
+                    comment_lines.insert(0, line)
+                    lines.pop()
+                elif line.strip():
+                    break
+                else:
+                    lines.pop()
+            if ''.join(comment_lines).strip():
+                next_lines = self.get_lines(next)
+                self.set_lines(next, comment_lines + next_lines)
+                self.set_lines(p, lines)
     #@+node:ekr.20200316101240.5: *3* rust_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''

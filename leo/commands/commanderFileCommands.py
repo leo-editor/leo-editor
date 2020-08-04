@@ -279,7 +279,11 @@ def refreshFromDisk(self, event=None):
     fn = p.anyAtFileNodeName()
     shouldDelete = c.sqlite_connection is None
     if not fn:
-        g.warning(f"not an @<file> node:\n{p.h!r}")
+        g.warning(f"not an @<file> node: {p.h!r}")
+        return
+    # #1603.
+    if os.path.isdir(fn):
+        g.warning(f"not a file: {fn!r}")
         return
     b = u.beforeChangeTree(p)
     redraw_flag = True
@@ -992,7 +996,9 @@ def tangle(self, event=None):
 def open_theme_file(self, event):
     """Open a theme file in a new session and apply the theme."""
     c = event and event.get('c')
-    if not c: return
+    if not c:
+        return
+    # Get the file name.
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
     fn = g.app.gui.runOpenFileDialog(c,
         title="Open Theme File",
@@ -1007,23 +1013,10 @@ def open_theme_file(self, event):
         return
     leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-
-    #--/start: Opening a theme file locks the initiating Leo session #1425
-    #command = f'python launchLeo.py "{fn}"'
-    #os.system(command)
-
-    # fix idea 1:
+    #
+    # #1425: Open the theme file in a separate process.
     command = f'{g.sys.executable} {g.app.loadDir}/runLeo.py "{fn}"'
-
-    # # fix idea 2:
-    # if g.sys.argv[0].endswith('.py'):
-        # command = f'{g.sys.executable} {g.sys.argv[0]} "{fn}"'
-    # else:
-        # command = f'{g.sys.argv[0]} "{fn}"'
-
-    # g.es_print(command)
-    g.subprocess.Popen(command)
-    # --/end
+    g.execute_shell_commands(command) # #1564.
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll

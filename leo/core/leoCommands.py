@@ -211,6 +211,7 @@ class Commands:
         self.abbrevCommands = None
         self.editCommands = None
         self.db = {}  # May be set to a PickleShare instance later.
+        self.bufferCommands = None
         self.chapterCommands = None
         self.controlCommands = None
         self.convertCommands = None
@@ -268,6 +269,7 @@ class Commands:
         import leo.core.leoChapters as leoChapters
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
+        import leo.commands.bufferCommands as bufferCommands
         import leo.commands.checkerCommands as checkerCommands
         assert checkerCommands
             # To suppress a pyflakes warning.
@@ -329,6 +331,7 @@ class Commands:
         self.vimCommands            = leoVim.VimCommands(c)
         # User commands
         self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
+        self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
         self.controlCommands    = controlCommands.ControlCommandsClass(c)
         self.convertCommands    = convertCommands.ConvertCommandsClass(c)
         self.debugCommands      = debugCommands.DebugCommandsClass(c)
@@ -345,6 +348,7 @@ class Commands:
         self.subCommanders = [
             self.abbrevCommands,
             self.atFileCommands,
+            self.bufferCommands,
             self.chapterController,
             self.controlCommands,
             self.convertCommands,
@@ -1090,25 +1094,21 @@ class Commands:
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
-        # Important: do not call p.isAncestorOf here.
-        c = self
-        if not p or not p.v:
-            return False
-        if root and p == root:
-            return True
-        p = p.copy()
-        while p.hasParent():
-            old_n, old_v = p._childIndex, p.v
-            p.moveToParent()
-            if root and p == root:
-                return True
-            if not old_v.isNthChildOf(old_n, p.v):
+        if not p or not p.v: return False
+
+        rstack = root.stack + [(root.v, root._childIndex)] if root else []
+        pstack = p.stack + [(p.v, p._childIndex)]
+
+        if len(rstack) > len(pstack): return False
+
+        par = self.hiddenRootNode
+        for j, x in enumerate(pstack):
+            if j < len(rstack) and x != rstack[j]: return False
+            v, i = x
+            if i >= len(par.children) or v is not par.children[i]:
                 return False
-        if root:
-            exists = p == root
-        else:
-            exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        return exists
+            par = v
+        return True
     #@+node:ekr.20160427153457.1: *6* c.dumpPosition
     def dumpPosition(self, p):
         """Dump position p and it's ancestors."""
@@ -2225,40 +2225,40 @@ class Commands:
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
     command_count = 0
 
-    def doCommand(self, command, label, event=None):
+    def doCommand(self, command_func, command_name, event):
         """
-        Execute the given command, invoking hooks and catching exceptions.
+        Execute the given command function, invoking hooks and catching exceptions.
 
-        The code assumes that the "command1" hook has completely handled the command if
-        g.doHook("command1") returns False.
-        This provides a simple mechanism for overriding commands.
+        The code assumes that the "command1" hook has completely handled the
+        command func if g.doHook("command1") returns False. This provides a
+        simple mechanism for overriding commands.
         """
         c, p = self, self.p
         c.setLog()
         self.command_count += 1
         # New in Leo 6.2. Set command_function and command_name ivars.
-        self.command_function = command
-        self.command_name = getattr(command, '__name__', label or repr(command))
+        self.command_function = command_func
+        self.command_name = command_name
         # The presence of this message disables all commands.
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return
+            return None
         if c.exists and c.inCommand and not g.unitTesting:
             g.app.commandInterruptFlag = True
             g.error('ignoring command: already executing a command.')
-            return
+            return None
         g.app.commandInterruptFlag = False
-        if label and event is None:  # Do this only for legacy commands.
-            if label == "cantredo": label = "redo"
-            if label == "cantundo": label = "undo"
-            g.app.commandName = label
-        if not g.doHook("command1", c=c, p=p, label=label):
+        if not g.doHook("command1", c=c, p=p, label=command_name):
             try:
                 c.inCommand = True
-                val = c.executeAnyCommand(command, event)
+                try:
+                    return_value = command_func(event)
+                except Exception:
+                    g.es_exception()
+                    return_value = None
                 if c and c.exists:  # Be careful: the command could destroy c.
                     c.inCommand = False
-                    c.k.funcReturn = val
+                    ## c.k.funcReturn = return_value
             except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
@@ -2274,29 +2274,128 @@ class Commands:
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p
-            g.doHook("command2", c=c, p=p, label=label)
-    #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand
-    def executeAnyCommand(self, command, event):
+            g.doHook("command2", c=c, p=p, label=command_name)
+        return return_value
+    #@+node:ekr.20200522075411.1: *4* c.doCommandByName
+    def doCommandByName(self, command_name, event):
         """
-        Execute a command, no matter how defined.
+        Execute one command, given the name of the command.
         
-        Supports @g.commander_command and @g.new_cmd_decorator and plain methods.
+        The caller must do any required keystroke-only tasks.
+        
+        Return the result, if any, of the command.
         """
-        try:
-            return command(event)
-        except Exception:
-            g.es_exception()
+        c = self
+        # Get the command's function.
+        command_func = c.commandsDict.get(command_name.replace('&', ''))
+        if not command_func:
+            message = f"no command function for {command_name!r}"
+            if g.app.unitTesting or g.app.inBridge:
+                raise AttributeError(message)
+            g.es_print(message, color='red')
+            g.trace(g.callers())
             return None
-    #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand
+        # Invoke the function.
+        val = c.doCommand(command_func, command_name, event)
+        if c.exists:
+            c.frame.updateStatusLine()
+        return val
+    #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
     def executeMinibufferCommand(self, commandName):
-        c = self; k = c.k
-        func = c.commandsDict.get(commandName)
-        if func:
-            event = g.app.gui.create_key_event(c)
-            k.masterCommand(commandName=None, event=event, func=func)
-            return k.funcReturn
-        g.error(f"no such command: {commandName} {g.callers()}")
-        return None
+        """Call c.doCommandByName, creating the required event."""
+        c = self
+        event = g.app.gui.create_key_event(c)
+        return c.doCommandByName(commandName, event)
+    #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
+    def insertCharFromEvent(self, event):
+        """
+        Handle the character given by event *without*
+        executing any command that might be bound to it.
+        
+        What happens depends on which widget has focus.
+        """
+        c, k, w = self, self.k, event.widget
+        name = c.widget_name(w)
+        stroke = event.stroke
+        if not stroke:
+            return
+        #
+        # Part 1: Very late special cases.
+        #
+        # #1448
+        if stroke.isNumPadKey() and k.state.kind == 'getArg':
+            stroke.removeNumPadModifier()
+            k.getArg(event, stroke=stroke)
+            return
+        # Handle all unbound characters in command mode.
+        if k.unboundKeyAction == 'command':
+            w = g.app.gui.get_focus(c)
+            if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+                c.onCanvasKey(event)
+            return
+        #
+        # Part 2: Filter out keys that should never be inserted by default.
+        #
+        # Ignore unbound F-keys.
+        if stroke.isFKey():
+            return
+        # Ignore unbound Alt/Ctrl keys.
+        if stroke.isAltCtrl():
+            if not k.enable_alt_ctrl_bindings:
+                return
+            if k.ignore_unbound_non_ascii_keys:
+                return
+        # #868
+        if stroke.isPlainNumPad():
+            stroke.removeNumPadModifier()
+            event.stroke = stroke
+        # #868
+        if stroke.isNumPadKey():
+            return
+        # Ignore unbound non-ascii character.
+        if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
+            return
+        # Never insert escape or insert characters.
+        if 'Escape' in stroke.s or 'Insert' in stroke.s:
+            return
+        #
+        # Part 3: Handle the event depending on the pane and state.
+        #
+        # Handle events in the body pane.
+        if name.startswith('body'):
+            action = k.unboundKeyAction
+            if action in ('insert', 'overwrite'):
+                c.editCommands.selfInsertCommand(event, action=action)
+                c.frame.updateStatusLine()
+            return
+        #
+        # Handle events in headlines.
+        if name.startswith('head'):
+            c.frame.tree.onHeadlineKey(event)
+            return
+        #
+        # Handle events in the background tree (not headlines).
+        if name.startswith('canvas'):
+            if event.char:
+                k.searchTree(event.char)
+            # Not exactly right, but it seems to be good enough.
+            elif not stroke:
+                c.onCanvasKey(event)
+            return
+        #
+        # Ignore all events outside the log pane.
+        if not name.startswith('log'):
+            return
+        #
+        # Make sure we can insert into w.
+        log_w = event.widget
+        if not hasattr(log_w, 'supportsHighLevelInterface'):
+            return
+        #
+        # Send the event to the text widget, not the LeoLog instance.
+        i = log_w.getInsertPoint()
+        s = stroke.toGuiChar()
+        log_w.insert(i, s)
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         """Make commandName the command to be executed by repeat-complex-command."""
@@ -3686,6 +3785,8 @@ class Commands:
         c.recolor()
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
+        add_context=None,  # Override setting only if True/False
+        add_file_context=None,  # Override setting only if True/False
         add_path=True,
         recursive=True,
         safe_at_file=True,
@@ -3721,6 +3822,8 @@ class Commands:
             try:
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
+                    add_context=add_context,
+                    add_file_context=add_file_context,
                     add_path=add_path,
                     recursive=recursive,
                     safe_at_file=safe_at_file,
@@ -3874,7 +3977,7 @@ class Commands:
     def deletePositionsInList(self, aList, redraw=True):
         """
         Delete all vnodes corresponding to the positions in aList.
-        
+
         See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
         """
         # New implementation by Vitalije 2020-03-17 17:29 
@@ -3882,18 +3985,55 @@ class Commands:
         # Ensure all positions are valid.
         aList = [p for p in aList if c.positionExists(p)]
         if not aList:
-            return
+            return []
 
         def p2link(p):
             parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
             return p._childIndex, parent_v
 
         links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
+        undodata = []
         for i, v in links_to_be_cut:
             ch = v.children.pop(i)
             ch.parents.remove(v)
+            undodata.append((v.gnx, i, ch.gnx))
         if redraw:
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
             c.redraw()
+        return undodata
+
+    #@+node:vitalije.20200318161844.1: *4* c.undoableDeletePositions
+    def undoableDeletePositions(self, aList):
+        """
+        Deletes all vnodes corresponding to the positions in aList,
+        and make changes undoable.
+        """
+        c = self
+        u = c.undoer
+        data = c.deletePositionsInList(aList)
+        gnx2v = c.fileCommands.gnxDict
+        def undo():
+            for pgnx, i, chgnx in reversed(u.getBead(u.bead).data):
+                v = gnx2v[pgnx]
+                ch = gnx2v[chgnx]
+                v.children.insert(i, ch)
+                ch.parents.append(v)
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
+        def redo():
+            for pgnx, i, chgnx in u.getBead(u.bead + 1).data:
+                v = gnx2v[pgnx]
+                ch = v.children.pop(i)
+                ch.parents.remove(v)
+            if not c.positionExists(c.p):
+                c.setCurrentPosition(c.rootPosition())
+        u.pushBead(g.Bunch(
+            data=data,
+            undoType='delete nodes',
+            undoHelper=undo,
+            redoHelper=redo,
+        ))
     #@+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
     def doBatchOperations(self, aList=None):
         # Validate aList and create the parents dict

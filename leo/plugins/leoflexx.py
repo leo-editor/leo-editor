@@ -68,7 +68,6 @@ flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
 #
 # pylint: disable=logging-not-lazy
-# pylint: disable=missing-super-argument
 #@+others
 #@+node:ekr.20181121040901.1: **  top-level functions
 #@+node:ekr.20181121091633.1: *3* dump_event
@@ -708,7 +707,6 @@ class LeoBrowserApp(flx.PyComponent):
                 c.gotoCommands.find_file_line(n=int(commandName))
         else:
             func = c.commandsDict.get(commandName)
-        k.newMinibufferWidget = None
         if func:
             # These must be done *after* getting the command.
             k.clearState()
@@ -723,12 +721,15 @@ class LeoBrowserApp(flx.PyComponent):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                c.executeAnyCommand(func, event)
+                ### c.executeAnyCommand(func, event)
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                c.executeAnyCommand(func, event)
-            k.endCommand(commandName)
+                ### c.executeAnyCommand(func, event)
+            try:
+                func(event)
+            except Exception:
+                g.es_exception()
             return True
         if 0: # Not ready yet
             # Show possible completions if the command does not exist.

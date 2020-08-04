@@ -11,6 +11,7 @@ include profileLeo.py
 include pylint-leo.bat
 include pylint-leo.py
 include *.nsi
+include LICENSE
 # obscure pip bugfix https://github.com/pypa/setuptools/issues/1694
 include pyproject.toml
 

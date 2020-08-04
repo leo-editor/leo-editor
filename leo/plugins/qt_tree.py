@@ -19,7 +19,6 @@ assert time
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
 class LeoQtTree(leoFrame.LeoTree):
     """Leo Qt tree class"""
-    callbacksInjected = False  # A class var.
     #@+others
     #@+node:ekr.20110605121601.18404: *3* qtree.Birth
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
@@ -38,6 +37,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items = []
         self.item2positionDict = {}
         self.item2vnodeDict = {}
+        self.nodeIconsDict = {} # keys are gnx, values are declutter generated icons
         self.position2itemDict = {}
         self.vnode2itemsDict = {}  # values are lists of items.
         self.editWidgetsDict = {}  # keys are native edit widgets, values are wrappers.
@@ -50,13 +50,8 @@ class LeoQtTree(leoFrame.LeoTree):
         #
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
-        self.declutter_update = False  # true when update on idle needed
-        if 1:
-            # For Leo 6.2, these calls should be enabled.
-            # See #1536.
-            g.registerHandler('save1', self.clear_visual_icons)
-            g.registerHandler('headkey2', self.update_appearance)
-            g.registerHandler('idle', self.update_appearance_idle)
+        self.declutter_data = {}
+        self.loaded_images = {}
         if 0:  # Drag and drop
             w.setDragEnabled(True)
             w.viewport().setAcceptDrops(True)
@@ -92,9 +87,6 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         # w = c.frame.top
         tw = self.treeWidget
-        if not LeoQtTree.callbacksInjected:
-            LeoQtTree.callbacksInjected = True
-            self.injectCallbacks()  # A base class method.
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
@@ -313,134 +305,149 @@ class LeoQtTree(leoFrame.LeoTree):
 
     redraw = full_redraw
     redraw_now = full_redraw
-    #@+node:tbrown.20150807093655.1: *5* qtree.clear_visual_icons
-    def clear_visual_icons(self, tag, keywords):
-        """clear_visual_icons - remove 'declutter' icons before save
-
-        this method must return None to tell Leo to continue normal processing
-
-        :param str tag: 'save1'
-        :param dict keywords: Leo hook keywords
-        """
-
-        if not self.use_declutter:
-            return None
-
-        c = keywords['c']
-        if c != self.c:
-            return None
-
-        if c.config.getBool('tree-declutter', default=False):
-            com = c.editCommands
-            for nd in c.all_unique_positions():
-                icons = [i for i in com.getIconList(nd) if 'visualIcon' not in i]
-                com.setIconList(nd, icons, False)
-
-        self.declutter_update = True
-
-        return None
-    #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node & helpers
+    #@+node:vitalije.20200329160945.1: *5* tree declutter code
+    #@+node:tbrown.20150807090639.1: *6* qtree.declutter_node & helpers
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
 
         :param commander c: commander containing node
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
+        
+        returns composite icon for this node
         """
-        if self.declutter_patterns is None:
-            self.declutter_patterns = []
-            warned = False
-            lines = c.config.getData("tree-declutter-patterns")
-            for line in lines:
-                try:
-                    cmd, arg = line.split(None, 1)
-                except ValueError:
-                    # Allow empty arg, and guard against user errors.
-                    cmd = line.strip()
-                    arg = ''
-                if cmd.startswith('#'):
-                    pass
-                elif cmd == 'RULE':
-                    self.declutter_patterns.append((re.compile(arg), []))
-                else:
-                    if self.declutter_patterns:
-                        self.declutter_patterns[-1][1].append((cmd, arg))
-                    elif not warned:
-                        warned = True
-                        g.log('Declutter patterns must start with RULE*',
-                            color='error')
-        text = str(item.text(0))
-        new_icons = []
-        for pattern, cmds in self.declutter_patterns:
-            for func in (pattern.match, pattern.search):
-                m = func(text)
-                if m:
-                    for cmd, arg in cmds:
-                        if self.declutter_replace(arg, cmd, item, m, pattern, text):
-                            pass
-                        else:
-                            self.declutter_style(arg, c, cmd, item, new_icons)
-                    break  # Don't try pattern.search if pattern.match succeeds.
-        com = c.editCommands
-        allIcons = com.getIconList(p)
-        icons = [i for i in allIcons if 'visualIcon' not in i]
-        if len(allIcons) != len(icons) or new_icons:
-            for icon in new_icons:
-                com.appendImageDictToList(
-                    icons, icon, 2, on='vnode', visualIcon='1'
-                )
-            com.setIconList(p, icons, False)
-    #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace
-    def declutter_replace(self, arg, cmd, item, m, pattern, text):
-        """
-        Execute cmd and return True if cmd is any replace command.
-        """
-        if cmd == 'REPLACE':
-            text = pattern.sub(arg, text)
+        dd = self.declutter_data
+        iconVal = p.v.computeIcon()
+        iconName = f'box{iconVal:02d}.png'
+        loaded_images = self.loaded_images
+        #@+others
+        #@+node:vitalije.20200329153544.1: *7* sorted_icons
+        def sorted_icons(p):
+            '''
+            Returns a list of icon filenames for this node.
+            The list is sorted to owner the 'where' key of image dicts.
+            '''
+            icons = c.editCommands.getIconList(p)
+            a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
+            a.append(iconName)
+            a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+            return a
+        #@+node:ekr.20171122064635.1: *7* declutter_replace
+        def declutter_replace(arg, cmd):
+            """
+            Execute cmd and return True if cmd is any replace command.
+            """
+            # pylint: disable=undefined-loop-variable
+            if cmd == 'REPLACE':
+                s = pattern.sub(arg, text)
+                item.setText(0, s)
+                return True
+            if cmd == 'REPLACE-HEAD':
+                s = text[: m.start()]
+                item.setText(0, s.rstrip())
+                return True
+            if cmd == 'REPLACE-TAIL':
+                s = text[m.end() :]
+                item.setText(0, s.lstrip())
+                return True
+            if cmd == 'REPLACE-REST':
+                s = text[:m.start] + text[m.end() :]
+                item.setText(0, s.strip())
+                return True
+            return False
+        #@+node:ekr.20171122055719.1: *7* declutter_style
+        def declutter_style(arg, cmd):
+            """Handle style options."""
+            arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
+            if cmd == 'ICON':
+                new_icons.append(arg)
+            elif cmd == 'BG':
+                item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
+            elif cmd == 'FG':
+                item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
+            elif cmd == 'FONT':
+                item.setFont(0, QtGui.QFont(arg))
+            elif cmd == 'ITALIC':
+                font = item.font(0)
+                font.setItalic(bool(int(arg)))
+                item.setFont(0, font)
+            elif cmd == 'WEIGHT':
+                arg = getattr(QtGui.QFont, arg, 75)
+                font = item.font(0)
+                font.setWeight(arg)
+                item.setFont(0, font)
+            elif cmd == 'PX':
+                font = item.font(0)
+                font.setPixelSize(int(arg))
+                item.setFont(0, font)
+            elif cmd == 'PT':
+                font = item.font(0)
+                font.setPointSize(int(arg))
+                item.setFont(0, font)
+        #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
+        def apply_declutter_rules(cmds):
+            """Applies all commands for the matched rule."""
+            for cmd, arg in cmds:
+                if not declutter_replace(arg, cmd):
+                    declutter_style(arg, cmd)
+        #@+node:vitalije.20200329162015.1: *7* preload_images
+        def preload_images():
+            for f in new_icons:
+                if f not in loaded_images:
+                    loaded_images[f] = g.app.gui.getImageImage(f)
+        #@-others
+        if (p.h, iconVal) in dd:
+            text, new_icons = dd[(p.h, iconVal)]
             item.setText(0, text)
-            return True
-        if cmd == 'REPLACE-HEAD':
-            s = text[: m.start()]
-            item.setText(0, s.rstrip())
-            return True
-        if cmd == 'REPLACE-TAIL':
-            s = text[m.end() :]
-            item.setText(0, s.lstrip())
-            return True
-        if cmd == 'REPLACE-REST':
-            s = text[:m.start] + text[m.end() :]
-            item.setText(0, s.strip())
-            return True
-        return False
-    #@+node:ekr.20171122055719.1: *6* qtree.declutter_style
-    def declutter_style(self, arg, c, cmd, item, new_icons):
-        """Handle style options."""
-        arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
-        if cmd == 'ICON':
-            new_icons.append(arg)
-        elif cmd == 'BG':
-            item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
-        elif cmd == 'FG':
-            item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
-        elif cmd == 'FONT':
-            item.setFont(0, QtGui.QFont(arg))
-        elif cmd == 'ITALIC':
-            font = item.font(0)
-            font.setItalic(bool(int(arg)))
-            item.setFont(0, font)
-        elif cmd == 'WEIGHT':
-            arg = getattr(QtGui.QFont, arg, 75)
-            font = item.font(0)
-            font.setWeight(arg)
-            item.setFont(0, font)
-        elif cmd == 'PX':
-            font = item.font(0)
-            font.setPixelSize(int(arg))
-            item.setFont(0, font)
-        elif cmd == 'PT':
-            font = item.font(0)
-            font.setPointSize(int(arg))
-            item.setFont(0, font)
+            new_icons = sorted_icons(p) + new_icons
+        else:
+            text = p.h
+            new_icons = []
+            for pattern, cmds in self.get_declutter_patterns():
+                m = pattern.match(text) or pattern.search(text)
+                if m:
+                    apply_declutter_rules(cmds)
+            dd[(p.h, iconVal)] = item.text(0), new_icons
+            new_icons = sorted_icons(p) + new_icons
+            preload_images()
+        self.nodeIconsDict[p.gnx] = new_icons
+        h = ':'.join(new_icons)
+        icon = g.app.gui.iconimages.get(h)
+        if not icon:
+            preload_images()
+            images = [loaded_images.get(x) for x in new_icons]
+            icon = self.make_composite_icon(images)
+            g.app.gui.iconimages[h] = icon
+        return icon
+    #@+node:vitalije.20200327162532.1: *6* qtree.get_declutter_patterns
+    def get_declutter_patterns(self):
+        "Initializes self.declutter_patterns from configuration and returns it"
+        if self.declutter_patterns is not None:
+            return self.declutter_patterns
+        c = self.c
+        patterns = []
+        warned = False
+        lines = c.config.getData("tree-declutter-patterns")
+        for line in lines:
+            try:
+                cmd, arg = line.split(None, 1)
+            except ValueError:
+                # Allow empty arg, and guard against user errors.
+                cmd = line.strip()
+                arg = ''
+            if cmd.startswith('#'):
+                pass
+            elif cmd == 'RULE':
+                patterns.append((re.compile(arg), []))
+            else:
+                if patterns:
+                    patterns[-1][1].append((cmd, arg))
+                elif not warned:
+                    warned = True
+                    g.log('Declutter patterns must start with RULE*',
+                        color='error')
+        self.declutter_patterns = patterns
+        return patterns
     #@+node:ekr.20110605121601.17874: *5* qtree.drawChildren
     def drawChildren(self, p, parent_item):
         """Draw the children of p if they should be expanded."""
@@ -483,18 +490,19 @@ class LeoQtTree(leoFrame.LeoTree):
         d[v] = aList
         # Set the headline and maybe the icon.
         self.setItemText(item, p.h)
-        if self.use_declutter:
-            self.declutter_node(c, p, item)
         # #1310: Add a tool tip.
         item.setToolTip(0, p.h)
-        # Draw the icon.
-        if p:
-            # Expand self.drawItemIcon(p, item).
-            v.iconVal = v.computeIcon()
-            icon = self.getCompositeIconImage(p, v.iconVal)
-                # **Slow**, but allows per-vnode icons.
+        if self.use_declutter:
+            icon = self.declutter_node(c, p, item)
             if icon:
                 item.setIcon(0, icon)
+            return item
+        # Draw the icon.
+        v.iconVal = v.computeIcon()
+        icon = self.getCompositeIconImage(p, v.iconVal)
+            # **Slow**, but allows per-vnode icons.
+        if icon:
+            item.setIcon(0, icon)
         return item
     #@+node:ekr.20110605121601.17876: *5* qtree.drawTopTree
     def drawTopTree(self, p):
@@ -538,47 +546,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.position2itemDict = {}
         self.vnode2itemsDict = {}
         self.editWidgetsDict = {}
-    #@+node:tbrown.20150808075906.1: *5* qtree.update_appearance (no longer used)
-    def update_appearance(self, tag, keywords):
-        """clear_visual_icons - update appearance, but can't call
-        self.full_redraw() now, so just set a flag to do it on idle.
-
-        :param str tag: 'headkey2'
-        :param dict keywords: Leo hook keywords
-        """
-        if not self.use_declutter:
-            return None
-        c = keywords['c']
-        if c != self.c:
-            return None
-        self.declutter_update = True
-        return None
-    #@+node:tbrown.20150808082111.1: *5* qtree.update_appearance_idle (no longer used)
-    def update_appearance_idle(self, tag, keywords):
-        """clear_visual_icons - update appearance now we're safely out of
-        the redraw loop.
-
-        :param str tag: 'idle'
-        :param dict keywords: Leo hook keywords
-        """
-        if not self.use_declutter:
-            return None
-        c = keywords['c']
-        if c != self.c:
-            return None
-
-        if isinstance(QtWidgets.QApplication.focusWidget(), QtWidgets.QLineEdit):
-            # when search results are found in headlines headkey2 fires
-            # (on the second search hit in a headline), and full_redraw()
-            # below takes the headline out of edit mode, and Leo crashes,
-            # probably because the find code didn't expect to leave edit
-            # mode.  So don't update when a QLineEdit has focus
-            return None
-
-        if self.declutter_update:
-            self.declutter_update = False
-            c.redraw_later()
-        return None
     #@+node:ekr.20110605121601.17880: *4* qtree.redraw_after_contract
     def redraw_after_contract(self, p):
 
@@ -961,48 +928,55 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18410: *4* qtree.drawIcon
     def drawIcon(self, p):
         """Redraw the icon at p."""
-        w = self.treeWidget
-        itemOrTree = self.position2item(p) or w
-        item = QtWidgets.QTreeWidgetItem(itemOrTree)
-        icon = self.getIcon(p)
-        self.setItemIcon(item, icon)
-    #@+node:ekr.20110605121601.17946: *4* qtree.drawItemIcon
-    def drawItemIcon(self, p, item):
-        """Set the item's icon to p's icon."""
-        icon = self.getIcon(p)
-        if icon:
-            self.setItemIcon(item, icon)
+        return self.updateIcon(p)
+        # the following code is wrong. It constructs a new item
+        # and assignes the icon to it. However this item is never
+        # added to the treeWidget so it is soon garbage collected
+            # w = self.treeWidget
+            # itemOrTree = self.position2item(p) or w
+            # item = QtWidgets.QTreeWidgetItem(itemOrTree)
+            # icon = self.getIcon(p)
+            # self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helper
     def getIcon(self, p):
         """Return the proper icon for position p."""
-        p.v.iconVal = val = p.v.computeIcon()
-        return self.getCompositeIconImage(p, val)
-    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
-    def getCompositeIconImage(self, p, val):
-        """Get the icon at position p."""
-        userIcons = self.c.editCommands.getIconList(p)
-        # Don't take this shortcut - not theme aware, see getImageImage()
-        # which is called below - TNB 20130313
-            # if not userIcons:
-            #     return self.getStatusIconImage(p)
-        hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
-        hash.append(str(val))
-        hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
-        hash = ':'.join(hash)
-        if hash in g.app.gui.iconimages:
-            icon = g.app.gui.iconimages[hash]
-            return icon
-        images = [g.app.gui.getImageImage(i['file']) for i in userIcons
-                 if i['where'] == 'beforeIcon']
-        images.append(g.app.gui.getImageImage(f"box{val:02d}.png"))
-        images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
-                      if i['where'] == 'beforeHeadline'])
-        images = [z for z in images if z]  # 2013/12/23: Remove missing images.
-        if not images:
-            return None
+        if self.use_declutter:
+            item = self.position2item(p)
+            return item and self.declutter_node(self.c, p, item)
+        p.v.iconVal = iv = p.v.computeIcon()
+        return self.getCompositeIconImage(p, iv)
+
+
+    #@+node:vitalije.20200329153148.1: *5* qtree.icon_filenames_for_node
+    def icon_filenames_for_node(self, p, val):
+        '''Prepares and returns a list of icon filenames
+           related to this node.
+        '''
+        nicon = f'box{val:02d}.png'
+        fnames = self.nodeIconsDict.get(p.gnx)
+        if not fnames:
+            icons = self.c.editCommands.getIconList(p)
+            fnames = [x['file'] for x in icons if x['where'] == 'beforeIcon']
+            fnames.append(nicon)
+            fnames.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+            self.nodeIconsDict[p.gnx] = fnames
+        pat = re.compile(r'^box\d\d\.png$')
+        loaded_images = self.loaded_images
+        for i, f in enumerate(fnames):
+            if pat.match(f):
+                fnames[i] = nicon
+                self.nodeIconsDict[p.gnx] = fnames
+                f = nicon
+            if f not in loaded_images:
+                loaded_images[f] = g.app.gui.getImageImage(f)
+        return fnames
+    #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
+    def make_composite_icon(self, images):
         hsep = self.c.config.getInt('tree-icon-separation') or 0
-        width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
+        images = [x for x in images if x]
         height = max([i.height() for i in images])
+        images = [i.scaledToHeight(height) for i in images]
+        width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
         pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
         pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
         # .rgba() call required for Qt4.7, later versions work with straight color
@@ -1013,28 +987,22 @@ class LeoQtTree(leoFrame.LeoTree):
             # which stops this being called again and again
         x = 0
         for i in images:
-            painter.drawPixmap(x, (height - i.height()) // 2, i)
+            painter.drawPixmap(x, 0, i)
             x += i.width() + hsep
         painter.end()
-        icon = QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
-        g.app.gui.iconimages[hash] = icon
+        return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
+    #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
+    def getCompositeIconImage(self, p, val):
+        """Get the icon at position p."""
+        fnames = self.icon_filenames_for_node(p, val)
+        h = ':'.join(fnames)
+        icon = g.app.gui.iconimages.get(h)
+        loaded_images = self.loaded_images
+        images = list(map(loaded_images.get, fnames))
+        if not icon:
+            icon = self.make_composite_icon(images)
+            g.app.gui.iconimages[h] = icon
         return icon
-    #@+node:ekr.20110605121601.17947: *4* qtree.getIconImage
-    def getIconImage(self, p):
-        # User icons are not supported in the base class.
-        if g.app.gui.isNullGui:
-            return None
-        return self.getStatusIconImage(p)
-    #@+node:ekr.20110605121601.17948: *4* qtree.getStatusIconImage
-    def getStatusIconImage(self, p):
-        val = p.v.computeIcon()
-        r = g.app.gui.getIconImage(
-            f"box{val:02d}.png")
-        return r
-    #@+node:ekr.20110605121601.17949: *4* qtree.getVnodeIcon
-    def getVnodeIcon(self, p):
-        """Return the proper icon for position p."""
-        return self.getIcon(p)
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
     def setItemIcon(self, item, icon):
 
@@ -1043,12 +1011,8 @@ class LeoQtTree(leoFrame.LeoTree):
             # Important: do not set lockouts here.
             # This will generate changed events,
             # but there is no itemChanged event handler.
-            self.setItemIconHelper(item, icon)
-    #@+node:ekr.20110605121601.18413: *4* qtree.setItemIconHelper
-    def setItemIconHelper(self, item, icon):
-        # Generates an item-changed event.
-        if item:
             item.setIcon(0, icon)
+
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
     def updateIcon(self, p, force=False):
         """Update p's icon."""
@@ -1056,13 +1020,17 @@ class LeoQtTree(leoFrame.LeoTree):
         val = p.v.computeIcon()
         # The force arg is needed:
         # Leo's core may have updated p.v.iconVal.
-        if p.v.iconVal == val and not force:
-            return
-        icon = self.getIcon(p)  # sets p.v.iconVal
-        # Update all cloned items.
-        items = self.vnode2items(p.v)
-        for item in items:
-            self.setItemIcon(item, icon)
+        if not force:
+            if p.v.iconVal == val:
+                return
+        else:
+            self.nodeIconsDict.pop(p.gnx, None)
+            icon = self.getIcon(p)  # sets p.v.iconVal
+            # Update all cloned items.
+            items = self.vnode2items(p.v)
+            # if not items: g.trace(f'no-items for {p.h}[{p.gnx}]')
+            for item in items:
+                self.setItemIcon(item, icon)
     #@+node:ekr.20110605121601.17952: *4* qtree.updateVisibleIcons
     def updateVisibleIcons(self, p):
         """Update the icon for p and the icons
