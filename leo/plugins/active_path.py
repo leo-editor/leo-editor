@@ -392,11 +392,14 @@ def openFile(c,parent,d, autoload=False):
             c.config.getData('active_path_bin_open') or '')
 
         if not binary_open:
-            start = open(path).read(100)
-            for i in start:
-                if ord(i) == 0:
-                    binary_open = True
-                    break
+            try:
+                start = open(path).read(100)
+                for i in start:
+                    if ord(i) == 0:
+                        binary_open = True
+                        break
+            except:
+                binary_open = True
 
         if binary_open:
             g.es('Treating file as binary')
