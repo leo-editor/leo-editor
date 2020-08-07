@@ -2388,6 +2388,7 @@
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
 <v t="ekr.20131008041326.16341"></v>
+<v t="ekr.20200807150713.1"><vh>Links for ast.rst</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31699,19 +31700,21 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
-<t tx="ekr.20200807105709.1">.. _`Leo`: leo-editor.com
-.. _`Leo's forum`:   https://groups.google.com/forum/#!forum/leo-editor
-.. _`leoAst.py`: https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py
-
-The classes in leoAst.py unify python's token-based and ast-based worlds by creating two-way links between tokens in the token list and ast nodes in the parse tree.
+<t tx="ekr.20200807105709.1">The classes in `leoAst.py &lt;https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py&gt;`_
+unify python's token-based and ast-based worlds by creating two-way links
+between tokens in the token list and ast nodes in the parse tree.
     
-`leoAst.py`_ is part of `Leo`_, and can be used completely independently of Leo.
+leoAst.py is part of `Leo &lt;https://leoeditor.com&gt;`_, and can be used
+completely independently of Leo.
 
-You must use Leo to see the intended outline structure of the code. Without Leo, you will see special **sentinel comments** that create Leo's outline structure. These comments have the form::
+You must use Leo to see the intended outline structure of the code. Without
+Leo, you will see special **sentinel comments** that create Leo's outline
+structure. These comments have the form::
 
-    `#@&lt;comment-kind&gt;:&lt;user-id&gt;.&lt;timestamp&gt;.&lt;number&gt;: &lt;outline-level&gt; &lt;headline&gt;`
+    #@&lt;comment-kind&gt;:&lt;user-id&gt;.&lt;timestamp&gt;.&lt;number&gt;: &lt;outline-level&gt; &lt;headline&gt;
     
-If you have any trouble installing or using this code, please help for help on `Leo's forum`_
+If you have any trouble installing or using this code, please help for help
+on `Leo's forum &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_
 </t>
 <t tx="ekr.20200807105737.1">.. _`Leo issue #1440`: https://github.com/leo-editor/leo-editor/issues/1440
 
@@ -31751,6 +31754,23 @@ See `Leo issue #1440`_ for notes relating to the code.
       --pytest           run pytest on leoAst.py
       --unittest         run unittest on leoAst.py</t>
 <t tx="ekr.20200807111156.1"></t>
+<t tx="ekr.20200807150713.1">
+`Green Tree Snakes &lt;https://greentreesnakes.readthedocs.io/&gt;`_, an external documentation resource, has good
+details on working with Python ASTs.
+
+`ASTTokens &lt;https://asttokens.readthedocs.io/en/latest/user-guide.html&gt;`_ annotates Python ASTs with the 
+positions of tokens and text in the source code that generated them. This is helpful for tools that make
+source code transformations.
+
+`LibCST &lt;https://libcst.readthedocs.io/&gt;`_ parses code as a Concrete Syntax Tree that looks like an ast tree 
+and keeps all formatting details. It's useful for building automated refactoring (codemod) applications and linters.
+
+`Parso &lt;https://parso.readthedocs.io&gt;`_ is a Python parser that supports error recovery and round-trip parsing
+for different Python versions (in multiple Python versions). Parso is also able to list multiple syntax errors
+in your python file.
+
+`leoAst.py &lt;http://leoeditor.com/appendices.html#leoast-py&gt;`_ unifies the token-based and parse-tree-based views
+of python programs by inserting two-way links between tokens and ast nodes.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
