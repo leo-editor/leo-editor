@@ -6,32 +6,23 @@
 #@+node:ekr.20200113081838.1: ** << docstring >> (leoAst.py)
 """
 leoAst.py:
+    
+The classes in this file unify python's token-based and ast-based worlds by
+creating two-way links between tokens in the token list and ast nodes in
+the parse tree.
 
-The TokenOrderGenerator class unifies python's token-based and ast-based
-worlds by creating two-way links between tokens in the token list and ast
-nodes in the parse tree.
+Full documentation: http://leoeditor.com/appendices.html#leoast-py.
+    
+leoAst.py is part of [Leo](leo-editor.com) but can be used completely
+independently of Leo.
 
-**How to view this file**
-
-This file works independently of Leo: http://leoeditor.com/ However, I
-highly recommend using Leo to view this code. That way you will see
-the outline structure of the code.
-
-When viewed without Leo, you will see special **sentinel comments** that
-create Leo's outline structure. These comments have the form::
+For best results, use Leo to view this code. That way you will see the
+outline structure of the code. When viewed without Leo, you will see
+special **sentinel comments** that create Leo's outline structure. These
+comments have the form::
 
     `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 
-**Project documentation**
-
-Token Order Classes: Theory of operation
-http://leoeditor.com/appendices.html#tokenorder-classes-theory-of-operation
-
-Token Order Clases: How to
-http://leoeditor.com/appendices.html#tokenorder-class-how-to
-    
-Issue 1440: Unify the ast and token worlds.
-https://github.com/leo-editor/leo-editor/issues/1440
 
 **Stand-alone operation**
    
@@ -4983,7 +4974,6 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
     #@+others
-    #@+node:ekr.20200111042805.1: *4* Bugs...
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
@@ -5812,8 +5802,8 @@ class TestTokens(BaseTest):
     def test_string_concatentation_3(self):
         # plain string followed by f-string on the same line
         self.check_roundtrip("""'abc' f'xyz'""")
-    #@+node:ekr.20160521103254.1: *4* TT.test_vistors_exist
-    def test_vistors_exist(self):
+    #@+node:ekr.20160521103254.1: *4* TT.test_visitors_exist
+    def test_visitors_exist(self):
         """Ensure that visitors for all ast nodes exist."""
         import _ast
         # Compute all fields to BaseTest.
