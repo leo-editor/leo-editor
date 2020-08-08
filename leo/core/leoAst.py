@@ -2,27 +2,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 #@@first
+# This file is part of Leo: https://leoeditor.com
+# Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
 #@+<< docstring >>
 #@+node:ekr.20200113081838.1: ** << docstring >> (leoAst.py)
 """
-leoAst.py:
+leoAst.py: This file does not depend on Leo in any way.
     
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
-the parse tree.
-
-Full documentation: http://leoeditor.com/appendices.html#leoast-py.
-    
-leoAst.py is part of [Leo](leo-editor.com) but can be used completely
-independently of Leo.
-
-For best results, use Leo to view this code. That way you will see the
-outline structure of the code. When viewed without Leo, you will see
-special **sentinel comments** that create Leo's outline structure. These
-comments have the form::
-
-    `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
-
+the parse tree. 
 
 **Stand-alone operation**
    
@@ -50,6 +39,24 @@ optional arguments:
   --py-cov           run pytest --cov on leoAst.py
   --pytest           run pytest on leoAst.py
   --unittest         run unittest on leoAst.py
+  
+**Important links**
+
+Ask for help: https://groups.google.com/forum/#!forum/leo-editor
+
+Report a bug: https://github.com/leo-editor/leo-editor/issues
+
+Read the full documentation: http://leoeditor.com/appendices.html#leoast-py
+  
+**Studying this file**
+
+I strongly recommend that you use Leo when studying this code so that you
+will see the file's intended outline structure.
+
+Without Leo, you will see only special **sentinel comments** that create
+Leo's outline structure. These comments have the form::
+
+    `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 """
 #@-<< docstring >>
 #@+<< imports >>
