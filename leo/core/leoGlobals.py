@@ -3164,10 +3164,33 @@ def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
-    for p in p.self_and_parents(copy=False):
+        
+    def find_language(p):
         for s in p.h, p.b:
             for m in g_language_pat.finditer(s):
                 return m.group(1)
+        return None
+        
+    # First, search up the tree.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
+            return language
+    # #1625: Second, expand the search for cloned nodes.
+    # Similar to g.findRootsWithPredicate.
+    clones = []
+    for p in p.self_and_parents(copy=False):
+        if p.isCloned() and p.v not in clones:
+            clones.append(p.v)
+    if clones:
+        for p in c.all_positions(copy=False):
+            if p.isAnyAtFileNode():
+                for p2 in p.self_and_subtree():
+                    if p2.v in clones:
+                        language = find_language(p)
+                        if language:
+                            return language
+    # Finally, fall back to the defaults.
     return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
@@ -4184,7 +4207,6 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-
     for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
