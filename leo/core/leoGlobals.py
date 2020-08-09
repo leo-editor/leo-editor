@@ -3162,34 +3162,36 @@ g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
 
 def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
-    if c is None:
+    if c is None or p is None:
         return None  # c may be None for testing.
         
-    def find_language(p):
-        for s in p.h, p.b:
+    v0 = p.v
+        
+    def find_language(p_or_v):
+        for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
                 return m.group(1)
         return None
-        
+
     # First, search up the tree.
     for p in p.self_and_parents(copy=False):
         language = find_language(p)
         if language:
             return language
     # #1625: Second, expand the search for cloned nodes.
-    # Similar to g.findRootsWithPredicate.
-    clones = []
-    for p in p.self_and_parents(copy=False):
-        if p.isCloned() and p.v not in clones:
-            clones.append(p.v)
-    if clones:
-        for p in c.all_positions(copy=False):
-            if p.isAnyAtFileNode():
-                for p2 in p.self_and_subtree():
-                    if p2.v in clones:
-                        language = find_language(p)
-                        if language:
-                            return language
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        assert parent_v not in seen, parent_v
+        language = find_language(parent_v)
+        if language:
+            g.trace(language, parent_v.h)
+            return language
+        seen.append(parent_v)
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
     # Finally, fall back to the defaults.
     return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
@@ -3225,7 +3227,7 @@ g_noweb_root = re.compile(
 
 def get_directives_dict(p, root=None):
     """
-    Scan p for @directives found in globalDirectiveList.
+    Scan p for Leo directives found in globalDirectiveList.
 
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive
