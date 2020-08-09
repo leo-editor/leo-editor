@@ -3186,7 +3186,6 @@ def findLanguageDirectives(c, p):
         assert parent_v not in seen, parent_v
         language = find_language(parent_v)
         if language:
-            g.trace(language, parent_v.h)
             return language
         seen.append(parent_v)
         for grand_parent_v in parent_v.parents:
