@@ -3308,24 +3308,22 @@ def getLanguageFromAncestorAtFileNode(p):
     v0 = p.v
         
     def find_language(p_or_v):
-        for s in p_or_v.h, p_or_v.b:
-            for m in g_language_pat.finditer(s):
-                language = m.group(1)
-                if g.isValidLanguage(language):
-                    return language
-        return None
-
-    # Legacy code:
-    for p in p.self_and_parents(copy=False):
-        if p.isAnyAtFileNode():
-            name = p.anyAtFileNodeName()
+        if p_or_v.isAnyAtFileNode():
+            name = p_or_v.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
             if g.isValidLanguage(language):
                 return language
-            
-     # #1625: Second, expand the search for cloned nodes.
+        return None
+
+    # First, look at the direct parents.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
+            return language
+    #
+    # #1625: Expand the search for cloned nodes.
     seen = [] # vnodes that have already been searched.
     parents = v0.parents[:] # vnodes whose ancestors are to be searched.
     while parents:
