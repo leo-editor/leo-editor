@@ -3298,7 +3298,7 @@ def get_directives_dict_list(p):
             # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
     return result
-#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (changed)
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p):
     """
     Return the language in effect as determined
