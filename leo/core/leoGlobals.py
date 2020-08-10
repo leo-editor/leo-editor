@@ -308,6 +308,19 @@ def new_cmd_decorator(name, ivars):
     return _decorator
 #@-others
 #@-<< define g.decorators >>
+#@+<< define regex's >>
+#@+node:ekr.20200810093517.1: ** << define regex's >>
+g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
+    # Regex used by this module, and in leoColorizer.py.
+#
+# Patterns used only in this module...
+g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
+    # This pattern excludes @encoding.whatever and @encoding(whatever)
+    # It must allow @language python, @nocolor-node, etc.
+g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
+g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
+#@-<< define regex's >>
 tree_popup_handlers = []  # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -3137,8 +3150,6 @@ def comment_delims_from_extension(filename):
         f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
-
 def findTabWidthDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None:
@@ -3158,8 +3169,6 @@ def findTabWidthDirectives(c, p):
                 if w == 0: w = None
     return w
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
-
 def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None or p is None:
@@ -3170,7 +3179,9 @@ def findLanguageDirectives(c, p):
     def find_language(p_or_v):
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
-                return m.group(1)
+                language = m.group(1)
+                if g.isValidLanguage(language):
+                    return language
         return None
 
     # First, search up the tree.
@@ -3219,10 +3230,6 @@ def findReference(name, root):
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
-
-g_noweb_root = re.compile(
-    '<' + '<' + '*' + '>' + '>' + '=',
-    re.MULTILINE)
 
 def get_directives_dict(p, root=None):
     """
@@ -3291,19 +3298,46 @@ def get_directives_dict_list(p):
             # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p, root=root))
     return result
-#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (changed)
 def getLanguageFromAncestorAtFileNode(p):
     """
     Return the language in effect as determined
     by the file extension of the nearest enclosing @<file> node.
     """
+    
+    v0 = p.v
+        
+    def find_language(p_or_v):
+        for s in p_or_v.h, p_or_v.b:
+            for m in g_language_pat.finditer(s):
+                language = m.group(1)
+                if g.isValidLanguage(language):
+                    return language
+        return None
+
+    # Legacy code:
     for p in p.self_and_parents(copy=False):
         if p.isAnyAtFileNode():
             name = p.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
+            if g.isValidLanguage(language):
+                return language
+            
+     # #1625: Second, expand the search for cloned nodes.
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        assert parent_v not in seen, parent_v
+        language = find_language(parent_v)
+        if language:
             return language
+        seen.append(parent_v)
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c, p):
@@ -3350,12 +3384,12 @@ def inAtNosearch(p):
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             return True
     return False
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
+def isValidLanguage(language):
+    """True if language exists in leo/modes."""
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
+    return g.os_path_exists(fn)
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
-# This pattern excludes @encoding.whatever and @encoding(whatever)
-# It must allow @language python, @nocolor-node, etc.
-
-g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
-
 def isDirective(s):
     """Return True if s starts with a directive."""
     m = g_is_directive_pattern.match(s)
@@ -4315,7 +4349,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     except IndexError:
         target = ''
     try:
-        target = pos_pattern.sub('', unlList[depth])
+        target = g_pos_pattern.sub('', unlList[depth])
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
     except IndexError:
@@ -4323,7 +4357,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         pos = False
     if pos:
         use_idx_mode = True  # ok to use hard/soft_idx
-        target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
+        target = re.sub(g_pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
             if nth_sib < len(heads):
                 order.append(nth_sib)
@@ -4377,7 +4411,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             count = 0
             compare_list = unlList[:]
             for header in reversed(iter_unl[1].split('-->')):
-                if (re.sub(pos_pattern, "", header).replace('--%3E', '-->') ==
+                if (re.sub(g_pos_pattern, "", header).replace('--%3E', '-->') ==
                      compare_list[-1]
                 ):
                     count = count + 1
@@ -4394,8 +4428,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             maxdepth = p.level()
     return False, maxdepth, maxp
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
-pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-
 def recursiveUNLParts(text):
     """recursiveUNLParts - return index, occurence, line_number, col_number
     from an UNL fragment.  line_number is allowed to be negative to indicate
@@ -4405,7 +4437,7 @@ def recursiveUNLParts(text):
     :return: index, occurence, line_number, col_number
     :rtype: (int, int, int, int) or (None, None, None, None)
     """
-    pos = re.findall(pos_pattern, text)
+    pos = re.findall(g_pos_pattern, text)
     if pos:
         return tuple(int(i) if i else 0 for i in pos[0])
     return (None, None, None, None)
