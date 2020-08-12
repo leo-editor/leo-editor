@@ -3194,11 +3194,12 @@ def findLanguageDirectives(c, p):
     parents = v0.parents[:] # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
-        assert parent_v not in seen, parent_v
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
         language = find_language(parent_v)
         if language:
             return language
-        seen.append(parent_v)
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
@@ -3328,11 +3329,12 @@ def getLanguageFromAncestorAtFileNode(p):
     parents = v0.parents[:] # vnodes whose ancestors are to be searched.
     while parents:
         parent_v = parents.pop()
-        assert parent_v not in seen, parent_v
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
         language = find_language(parent_v)
         if language:
             return language
-        seen.append(parent_v)
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
                 parents.append(grand_parent_v)
@@ -3385,6 +3387,9 @@ def inAtNosearch(p):
 #@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
 def isValidLanguage(language):
     """True if language exists in leo/modes."""
+    # 2020/08/12: A hack for c++
+    if language in ('c++', 'cpp'):
+        language = 'cplusplus'
     fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
     return g.os_path_exists(fn)
 #@+node:ekr.20131230090121.16528: *3* g.isDirective

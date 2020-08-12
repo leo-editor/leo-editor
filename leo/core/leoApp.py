@@ -433,7 +433,7 @@ class LeoApp:
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
-            "cpp":      "cpp",
+            "cpp":      "cplusplus", # 2020/08/12: was cpp.
             "css":      "css",
             "d":        "d",
             "dart":     "dart",
