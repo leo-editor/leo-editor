@@ -11,7 +11,8 @@ leoAst.py: This file does not depend on Leo in any way.
     
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
-the parse tree. 
+the parse tree. For more details, see the "Overview" section below.
+
 
 **Stand-alone operation**
    
@@ -39,14 +40,88 @@ optional arguments:
   --py-cov           run pytest --cov on leoAst.py
   --pytest           run pytest on leoAst.py
   --unittest         run unittest on leoAst.py
-  
-**Important links**
 
-Ask for help: https://groups.google.com/forum/#!forum/leo-editor
+    
+**Overview**
 
-Report a bug: https://github.com/leo-editor/leo-editor/issues
+leoAst.py unifies python's token-oriented and ast-oriented worlds.
 
-Read the full documentation: http://leoeditor.com/appendices.html#leoast-py
+leoAst.py defines classes that create two-way links between tokens
+created by python's tokenize module and parse tree nodes created by
+python's ast module:
+
+The Token Order Generator (TOG) class quickly creates the following
+links:
+
+- An *ordered* children array from each ast node to its children.
+
+- A parent link from each ast.node to its parent.
+
+- Two-way links between tokens in the token list, a list of Token
+  objects, and the ast nodes in the parse tree:
+
+  - For each token, token.node contains the ast.node "responsible" for
+    the token.
+
+  - For each ast node, node.first_i and node.last_i are indices into
+    the token list. These indices give the range of tokens that can be
+    said to be "generated" by the ast node.
+
+Once the TOG class has inserted parent/child links, the Token Order
+Traverser (TOT) class traverses trees annotated with parent/child
+links extremely quickly.
+
+
+**Applicability and importance**
+
+Many python developers will find asttokens meets all their needs.
+asttokens is well documented and easy to use. Nevertheless, two-way
+links are significant additions to python's tokenize and ast modules:
+
+- Links from tokens to nodes are assigned to the nearest possible ast
+  node, not the nearest statement, as in asttokens. Links can easily
+  be reassigned, if desired.
+
+- The TOG and TOT classes are intended to be the foundation of tools
+  such as fstringify and black.
+
+- The TOG class solves real problems, such as:
+  https://stackoverflow.com/questions/16748029/
+
+
+**Figures of merit**
+
+Simplicity: The code consists primarily of a set of generators, one
+for every kind of ast node.
+
+Speed: The TOG creates two-way links between tokens and ast nodes in
+roughly the time taken by python's tokenize.tokenize and ast.parse
+library methods. This is substantially faster than the asttokens,
+black or fstringify tools. The TOT class traverses trees annotated
+with parent/child links even more quickly.
+
+Memory: The TOG class makes no significant demands on python's
+resources. Generators add nothing to python's call stack.
+TOG.node_stack is the only variable-length data. This stack resides in
+python's heap, so its length is unimportant. In the worst case, it
+might contain a few thousand entries. The TOT class uses no
+variable-length data at all.
+
+**Links**
+
+Leo...
+Ask for help:       https://groups.google.com/forum/#!forum/leo-editor
+Report a bug:       https://github.com/leo-editor/leo-editor/issues
+leoAst.py docs:     http://leoeditor.com/appendices.html#leoast-py
+
+Other tools...
+asttokens:          https://pypi.org/project/asttokens
+black:              https://pypi.org/project/black/
+fstringify:         https://pypi.org/project/fstringify/
+
+Python modules...
+tokenize.py:        https://docs.python.org/3/library/tokenize.html
+ast.py              https://docs.python.org/3/library/ast.html
   
 **Studying this file**
 
