@@ -439,15 +439,11 @@ except ImportError:
 # nbformat (@jupyter) support, non-vital.
 try:
     import nbformat
+    from nbconvert import HTMLExporter
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
     print('VR3: *** No nbformat')
-try:
-    from nbconvert import HTMLExporter
-except ImportError:
-    nbformat = None
-    print('VR3: *** No nbconvert')
 try:
     from pygments import cmdline
 except ImportError:
@@ -477,6 +473,7 @@ REST = 'rest'
 RST = 'rst'
 TEXT = 'text'
 VR3_TEMP_FILE = 'leo_rst_html.html'
+XML = 'xml'
 ZOOM_FACTOR = 1.2
 
 MD_STYLESHEET_APPEND = '''pre {
@@ -504,7 +501,7 @@ MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 #VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS, XML)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
