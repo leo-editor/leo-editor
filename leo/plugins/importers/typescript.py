@@ -59,6 +59,97 @@ class TS_Importer(Importer):
         )
 
     #@+others
+    #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names
+    def add_class_names(self, p):
+        '''Add class names to headlines for all descendant nodes.'''
+        return 
+    #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
+    def clean_headline(self, s, p=None):
+        '''Return a cleaned up headline s.'''
+        s = s.strip()
+        # Don't clean a headline twice.
+        if s.endswith('>>') and s.startswith('<<'):
+            return s
+        # Try to match patterns.
+        for group_n, pattern in self.function_patterns:
+            m = pattern.match(s)
+            if m:
+                # g.trace('group %s: %s' % (group_n, m.group(group_n)))
+                return m.group(group_n)
+        # Final cleanups, if nothing matches.
+        for ch in '{(=':
+            if s.endswith(ch):
+                s = s[:-1].strip()
+        s = s.replace('  ', ' ')
+        s = s.replace(' (', '(')
+        return g.truncate(s, 100)
+    #@+node:ekr.20200816192919.1: *3* ts_i.promote_last_lines (new)
+    # end_comment_pattern = re.compile(r'(/\*.*?\*/)(.*)', re.DOTALL | re.MULTILINE)
+    start_comment_pat = re.compile(r'/\*')
+
+    def promote_last_lines(self, parent):
+        '''
+        This method is slightly misnamed. It moves trailing comments to the
+        next node.
+        '''
+        trace = False ###
+        # Move trailing comments into following nodes.
+        for p in parent.subtree():
+            if trace: g.trace('-----', p.h)
+            next = p.threadNext()
+                # This can be a node *outside* parent's tree!
+            ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
+            if not ok:
+                if trace: g.trace('no next', p.h)
+                continue
+            ###
+            # A hack: A special case if p has children.
+            # Necessary because ts importer improperly splits some nodes.
+            if p.hasChildren() and next != p.next():
+                next = p.next()
+                ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
+                if not ok:
+                    if trace: g.trace('adjust failed', p.h, next.h if next else 'None')
+                    continue
+            lines = self.get_lines(p)
+            if not lines:
+                continue
+            #
+            # It seems impossible to use a regex to discover disjoint comments.
+            # ".*?" does not play well with multiline and dotall.
+            all_s = ''.join(lines)
+            #
+            # This assumes that previous comments are terminated.
+            all_matches = list(self.start_comment_pat.finditer(all_s))
+            m = all_matches and all_matches[-1]
+            if not m:
+                if trace: g.trace('no match', p.h)
+                continue
+            i = m.start()
+            if '*/' not in all_s[i+2:]:
+                if trace: g.trace('no end delim', p.h)
+                continue
+            j = all_s[i+2:].find('*/')
+            head_s = all_s[:i]
+            tail_s = all_s[i + j + 4:]
+            comment_s = all_s[i: i + j + 4]
+            if 0:
+                g.printObj(head_s, tag='head_s')
+                g.printObj(comment_s, tag='comment_s')
+                g.printObj(tail_s, tag='tail_s')
+            if tail_s.strip():
+                if trace:
+                    g.trace('not trailing', p.h)
+                    g.printObj(tail_s, tag='tail_s')
+                continue  # Not a trailing comment.
+            ### g.trace('move comment', p.h, '==>', next.h)
+            head_lines = g.splitLines(head_s)
+            comment_lines = g.splitLines(comment_s + tail_s)
+            if trace:
+                g.printObj(head_lines, tag='head_lines')
+                g.printObj(comment_lines, tag='comment_lines')
+            self.set_lines(p, head_lines)
+            self.prepend_lines(next, comment_lines)
     #@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
@@ -81,26 +172,6 @@ class TS_Importer(Importer):
                 assert progress < i
 
         return i-1
-    #@+node:ekr.20161118093751.5: *3* ts_i.clean_headline
-    def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline s.'''
-        s = s.strip()
-        # Don't clean a headline twice.
-        if s.endswith('>>') and s.startswith('<<'):
-            return s
-        # Try to match patterns.
-        for group_n, pattern in self.function_patterns:
-            m = pattern.match(s)
-            if m:
-                # g.trace('group %s: %s' % (group_n, m.group(group_n)))
-                return m.group(group_n)
-        # Final cleanups, if nothing matches.
-        for ch in '{(=':
-            if s.endswith(ch):
-                s = s[:-1].strip()
-        s = s.replace('  ', ' ')
-        s = s.replace(' (', '(')
-        return g.truncate(s, 100)
     #@+node:ekr.20180523170649.1: *3* ts_i.starts_block
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
@@ -114,10 +185,6 @@ class TS_Importer(Importer):
             if pattern.match(line) is not None:
                 return True
         return False
-    #@+node:ekr.20190830160459.1: *3* ts_i.add_class_names (new)
-    def add_class_names(self, p):
-        '''Add class names to headlines for all descendant nodes.'''
-        return 
     #@-others
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:
