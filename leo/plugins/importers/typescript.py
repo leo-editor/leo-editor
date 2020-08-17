@@ -93,8 +93,6 @@ class TS_Importer(Importer):
         return g.truncate(s, 100)
     #@+node:ekr.20200816192919.1: *3* ts_i.promote_last_lines
     comment_pat = re.compile(r'(/\*.*?\*/)', re.DOTALL | re.MULTILINE)
-    ### start_comment_pat = re.compile(r'/\*')
-    ### at_others_pat = re.compile(r'(\s*\@others\n)')
 
     def promote_last_lines(self, parent):
         '''
@@ -128,46 +126,12 @@ class TS_Importer(Importer):
             i = m.start()
             head_s = all_s[:i]
             tail_s = all_s[i + len(comment_s):]
-            ### tail_s = all_s[i + j + 4:]
-            ### comment_s = all_s[i: i + j + 4]
             if tail_s.strip():
-                ### g.trace('skip', p.h)
-                ### g.printObj(tail_s, tag='tail_s')
                 continue  # Not a trailing comment.
             head_lines = g.splitLines(head_s) 
             comment_lines = g.splitLines(comment_s + tail_s)
-            ### g.printObj(head_lines, tag='head_lines')
-            ### g.printObj(comment_lines, tag='comment_lines')
             self.set_lines(p, head_lines)
             self.prepend_lines(next, comment_lines)
-                    
-            ###
-                # #
-                # # It seems impossible to use a regex to discover disjoint comments.
-                # # ".*?" does not play well with multiline and dotall.
-                # #
-                # # This assumes that previous comments are terminated.
-                # all_matches = list(self.start_comment_pat.finditer(all_s))
-                # m = all_matches and all_matches[-1]
-                # if not m:
-                    # continue
-                # i = m.start()
-                # if '*/' not in all_s[i+2:]:
-                    # continue
-                # j = all_s[i+2:].find('*/')
-                # head_s = all_s[:i]
-                # tail_s = all_s[i + j + 4:]
-                # comment_s = all_s[i: i + j + 4]
-                # if tail_s.strip():
-                    # ### g.trace('not trailing', p.h)
-                    # ### g.printObj(tail_s, tag='tail_s')
-                    # continue  # Not a trailing comment.
-                # head_lines = g.splitLines(head_s) 
-                # comment_lines = g.splitLines(comment_s + tail_s)
-                # ### g.printObj(head_lines, tag='head_lines')
-                # ### g.printObj(comment_lines, tag='comment_lines')
-                # self.set_lines(p, head_lines)
-                # self.prepend_lines(next, comment_lines)
     #@+node:ekr.20161118093751.2: *3* ts_i.skip_possible_regex
     def skip_possible_regex(self, s, i):
         '''look ahead for a regex /'''
