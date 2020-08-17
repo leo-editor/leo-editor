@@ -11,7 +11,7 @@ markdown text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b9
+About Viewrendered3 V3.0b10
 ==========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2204,7 +2204,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _lang = _fields[1].strip()
             else:
                 _lang = PYTHON # Standard RsT default.
-            _tag = CODE if _lang in (PYTHON,) else TEXT
+            _tag = CODE if _lang in LANGUAGES else TEXT
 
             return _lang, _tag
 
