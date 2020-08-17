@@ -10,6 +10,13 @@ Importer = linescanner.Importer
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
     
+    #@+<< define non-function patterns >>
+    #@+node:ekr.20200817090227.1: *3* << define non-function patterns >>
+    non_function_patterns = (
+
+        re.compile(r'catch\s*\(.*\)'),
+    )
+    #@-<< define non-function patterns >>
     #@+<< define function patterns >>
     #@+node:ekr.20180523172655.1: *3* << define function patterns >>
     kinds = r'(async|public|private|static)'
@@ -44,7 +51,8 @@ class TS_Importer(Importer):
             # kind kind name (...) {
         (2, re.compile(r'%s\s+(\w+)\s*\(.*\).*{' % kinds)),
             # name (...) {
-        (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
+        # #1619: Don't allow completely bare functions.
+        # (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
             # name (...) {
     )
     #@-<< define function patterns >>
@@ -83,18 +91,19 @@ class TS_Importer(Importer):
         s = s.replace('  ', ' ')
         s = s.replace(' (', '(')
         return g.truncate(s, 100)
-    #@+node:ekr.20200816192919.1: *3* ts_i.promote_last_lines (new)
+    #@+node:ekr.20200816192919.1: *3* ts_i.promote_last_lines
     # end_comment_pattern = re.compile(r'(/\*.*?\*/)(.*)', re.DOTALL | re.MULTILINE)
     start_comment_pat = re.compile(r'/\*')
+    at_others_pat = re.compile(r'(\s*\@others\n)')
 
     def promote_last_lines(self, parent):
         '''
         This method is slightly misnamed. It moves trailing comments to the
         next node.
         '''
-        trace = False ###
+        trace = True ###
         # Move trailing comments into following nodes.
-        for p in parent.subtree():
+        for p in parent.self_and_subtree(): ###
             if trace: g.trace('-----', p.h)
             next = p.threadNext()
                 # This can be a node *outside* parent's tree!
@@ -102,22 +111,25 @@ class TS_Importer(Importer):
             if not ok:
                 if trace: g.trace('no next', p.h)
                 continue
-            ###
-            # A hack: A special case if p has children.
-            # Necessary because ts importer improperly splits some nodes.
-            if p.hasChildren() and next != p.next():
+            lines = self.get_lines(p)
+            if not lines:
+                continue
+            all_s = ''.join(lines)
+            # Hack 1: A special case for @others.
+            if 0:
+                if p.hasChildren() and '@others' in all_s:
+                    g.trace('has @others')
+                    pass
+            # Hack 2: A special case if p has children.
+            elif p.hasChildren() and next != p.next():
                 next = p.next()
                 ok = next and self.root.isAncestorOf(next) and self.has_lines(next)
                 if not ok:
                     if trace: g.trace('adjust failed', p.h, next.h if next else 'None')
                     continue
-            lines = self.get_lines(p)
-            if not lines:
-                continue
             #
             # It seems impossible to use a regex to discover disjoint comments.
             # ".*?" does not play well with multiline and dotall.
-            all_s = ''.join(lines)
             #
             # This assumes that previous comments are terminated.
             all_matches = list(self.start_comment_pat.finditer(all_s))
@@ -137,15 +149,25 @@ class TS_Importer(Importer):
                 g.printObj(head_s, tag='head_s')
                 g.printObj(comment_s, tag='comment_s')
                 g.printObj(tail_s, tag='tail_s')
-            if tail_s.strip():
-                if trace:
-                    g.trace('not trailing', p.h)
-                    g.printObj(tail_s, tag='tail_s')
+            #
+            # Special case for a comment just before 
+            at_m = self.at_others_pat.match(tail_s)
+            if False and at_m:
+                # g.pdb()
+                at_others_s = at_m.group(0)
+                g.trace('at_others_s', repr(at_others_s))
+                tail_s = '\n' + tail_s[len(at_others_s):]
+                head_s = head_s + at_others_s
+                g.printObj(head_s, tag='head_s')
+                g.printObj(tail_s, tag='tail_s')
+            elif tail_s.strip():
+                g.trace('not trailing', p.h)
+                g.printObj(tail_s, tag='tail_s')
                 continue  # Not a trailing comment.
             ### g.trace('move comment', p.h, '==>', next.h)
-            head_lines = g.splitLines(head_s)
+            head_lines = g.splitLines(head_s) 
             comment_lines = g.splitLines(comment_s + tail_s)
-            if trace:
+            if 0:
                 g.printObj(head_lines, tag='head_lines')
                 g.printObj(comment_lines, tag='comment_lines')
             self.set_lines(p, head_lines)
@@ -180,6 +202,10 @@ class TS_Importer(Importer):
         line = lines[i].strip()
         for word in ('do', 'else', 'for', 'if', 'switch', 'try', 'while'):
             if line.startswith(word):
+                return False
+        # #1617: Chained calls look like functions, but aren't.
+        for pattern in self.non_function_patterns:
+             if pattern.match(line) is not None:
                 return False
         for group_n, pattern in self.function_patterns:
             if pattern.match(line) is not None:
