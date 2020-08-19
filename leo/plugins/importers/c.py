@@ -148,9 +148,8 @@ class C_Importer(Importer):
         line = lines[i]
         if prev_state.context:
             return False
-        if 0:
-            if self.c_keywords_pattern.match(line):
-                return False
+        if self.c_keywords_pattern.match(line):
+            return False
         if not self.match_start_patterns(line):
             return False
         # Must not be a complete statement.
