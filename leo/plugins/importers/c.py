@@ -21,14 +21,13 @@ class C_Importer(Importer):
         )
         self.headline = None
         # Fix #545 by supporting @data c_import_typedefs.
-        aSet = set()
-        for z in (
+        self.type_keywords = (
             'auto', 'bool', 'char', 'const', 'double',
             'extern', 'float', 'int', 'register',
             'signed', 'short', 'static', 'typedef',
             'union', 'unsigned', 'void', 'volatile',
-        ):
-            aSet.add(z)
+        )
+        aSet = set(self.type_keywords)
         for z in self.c.config.getData('c_import_typedefs') or []:
             aSet.add(z)
         self.c_type_names = '(%s)' % '|'.join(list(aSet))
@@ -42,6 +41,26 @@ class C_Importer(Importer):
         self.c_keywords_pattern = re.compile(self.c_keywords)
 
     #@+others
+    #@+node:ekr.20200819073508.1: *3* c_i.clean_headline
+    def clean_headline(self, s, p=None):
+        '''
+        Adjust headline for templates.
+        '''
+        if not p:
+            return s.strip()
+        lines = self.get_lines(p)
+        if s.startswith('template') and len(lines) > 1:
+            line = lines[1]
+            # Filter out all keywords and cruft.
+            # This isn't perfect, but it's a good start.
+            for z in self.type_keywords:
+                line = re.sub(fr"\b{z}\b", '', line)
+            for ch in '()[]{}=':
+                line = line.replace(ch, '')
+            return line.strip()
+        else:
+            return s.strip()
+        
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 
@@ -55,6 +74,7 @@ class C_Importer(Importer):
     #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
     # Define patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
+    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$') ###
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
 
     def match_start_patterns(self, line):
@@ -63,6 +83,11 @@ class C_Importer(Importer):
         If true, set self.headline.
         '''
         m = self.c_extern_pattern.match(line)
+        if m:
+            self.headline = line.strip()
+            return True
+        # #1626
+        m = self.c_template_pattern.match(line)
         if m:
             self.headline = line.strip()
             return True
@@ -123,8 +148,9 @@ class C_Importer(Importer):
         line = lines[i]
         if prev_state.context:
             return False
-        if self.c_keywords_pattern.match(line):
-            return False
+        if 0:
+            if self.c_keywords_pattern.match(line):
+                return False
         if not self.match_start_patterns(line):
             return False
         # Must not be a complete statement.
