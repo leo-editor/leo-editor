@@ -10,7 +10,9 @@ Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
-
+    
+    #@+others
+    #@+node:ekr.20200819144754.1: *3* c_i.ctor
     def __init__(self, importCommands, **kwargs):
         '''C_Importer.__init__'''
         # Init the base class.
@@ -21,15 +23,16 @@ class C_Importer(Importer):
         )
         self.headline = None
         # Fix #545 by supporting @data c_import_typedefs.
-        self.type_keywords = (
+        self.type_keywords = [
             'auto', 'bool', 'char', 'const', 'double',
             'extern', 'float', 'int', 'register',
             'signed', 'short', 'static', 'typedef',
             'union', 'unsigned', 'void', 'volatile',
+        ]
+        aSet = set(
+            self.type_keywords +
+            (self.c.config.getData('c_import_typedefs') or [])
         )
-        aSet = set(self.type_keywords)
-        for z in self.c.config.getData('c_import_typedefs') or []:
-            aSet.add(z)
         self.c_type_names = '(%s)' % '|'.join(list(aSet))
         self.c_types_pattern = re.compile(self.c_type_names)
         self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
@@ -39,8 +42,6 @@ class C_Importer(Importer):
             'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
         ])
         self.c_keywords_pattern = re.compile(self.c_keywords)
-
-    #@+others
     #@+node:ekr.20200819073508.1: *3* c_i.clean_headline
     def clean_headline(self, s, p=None):
         '''
@@ -58,9 +59,7 @@ class C_Importer(Importer):
             for ch in '()[]{}=':
                 line = line.replace(ch, '')
             return line.strip()
-        else:
-            return s.strip()
-        
+        return s.strip()
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
     c_name_pattern = re.compile(r'\s*([\w:]+)')
 
@@ -74,7 +73,7 @@ class C_Importer(Importer):
     #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
     # Define patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
-    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$') ###
+    c_template_pattern = re.compile(r'\s*template\s*<(.*?)>\s*$')
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
 
     def match_start_patterns(self, line):
