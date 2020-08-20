@@ -1281,10 +1281,8 @@ def todo_dec_pri(event, direction=1):
         pri = ordered[(ordered.index(pri) + direction) % len(ordered)]
 
     pri = c.cleo.setPri(pri)
-
     c.redraw()
-
-    # c.executeMinibufferCommand("todo-inc-pri")
+    # c.k.simulateCommand("todo-inc-pri")
 
 @g.command('todo-inc-pri')
 def todo_inc_pri(event):

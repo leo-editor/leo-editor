@@ -196,6 +196,7 @@ class Command:
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
+        func.__func_name__ = func.__name__ # For leoInteg.
         func.is_command = True
         func.command_name = self.name
         return func
@@ -238,6 +239,7 @@ class CommanderCommand:
             method(event=event)
 
         # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__func_name__ = func.__name__ # For leoInteg.
         commander_command_wrapper.__name__ = self.name
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
@@ -295,6 +297,7 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
+        new_cmd_wrapper.__func_name__ = func.__name__ # For leoInteg.
         new_cmd_wrapper.__name__ = name
         new_cmd_wrapper.__doc__ = func.__doc__
         global_commands_dict[name] = new_cmd_wrapper
@@ -305,6 +308,19 @@ def new_cmd_decorator(name, ivars):
     return _decorator
 #@-others
 #@-<< define g.decorators >>
+#@+<< define regex's >>
+#@+node:ekr.20200810093517.1: ** << define regex's >>
+g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
+    # Regex used by this module, and in leoColorizer.py.
+#
+# Patterns used only in this module...
+g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
+    # This pattern excludes @encoding.whatever and @encoding(whatever)
+    # It must allow @language python, @nocolor-node, etc.
+g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
+g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
+#@-<< define regex's >>
 tree_popup_handlers = []  # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -994,6 +1010,7 @@ class KeyStroke:
             return d.get(s)
         return s if len(s) == 1 else ''
     #@-others
+
 def isStroke(obj):
     return isinstance(obj, KeyStroke)
 
@@ -3133,8 +3150,6 @@ def comment_delims_from_extension(filename):
         f"root: {root!r}")
     return '', '', ''
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
-
 def findTabWidthDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None:
@@ -3154,16 +3169,41 @@ def findTabWidthDirectives(c, p):
                 if w == 0: w = None
     return w
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
-
 def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
-    if c is None:
+    if c is None or p is None:
         return None  # c may be None for testing.
-    for p in p.self_and_parents(copy=False):
-        for s in p.h, p.b:
+        
+    v0 = p.v
+        
+    def find_language(p_or_v):
+        for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
-                return m.group(1)
+                language = m.group(1)
+                if g.isValidLanguage(language):
+                    return language
+        return None
+
+    # First, search up the tree.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
+            return language
+    # #1625: Second, expand the search for cloned nodes.
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
+        language = find_language(parent_v)
+        if language:
+            return language
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
+    # Finally, fall back to the defaults.
     return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
@@ -3192,13 +3232,9 @@ def findReference(name, root):
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
-g_noweb_root = re.compile(
-    '<' + '<' + '*' + '>' + '>' + '=',
-    re.MULTILINE)
-
 def get_directives_dict(p, root=None):
     """
-    Scan p for @directives found in globalDirectiveList.
+    Scan p for Leo directives found in globalDirectiveList.
 
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive
@@ -3269,13 +3305,39 @@ def getLanguageFromAncestorAtFileNode(p):
     Return the language in effect as determined
     by the file extension of the nearest enclosing @<file> node.
     """
-    for p in p.self_and_parents(copy=False):
-        if p.isAnyAtFileNode():
-            name = p.anyAtFileNodeName()
+    
+    v0 = p.v
+        
+    def find_language(p_or_v):
+        if p_or_v.isAnyAtFileNode():
+            name = p_or_v.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
+            if g.isValidLanguage(language):
+                return language
+        return None
+
+    # First, look at the direct parents.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
             return language
+    #
+    # #1625: Expand the search for cloned nodes.
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
+        language = find_language(parent_v)
+        if language:
+            return language
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c, p):
@@ -3322,12 +3384,15 @@ def inAtNosearch(p):
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             return True
     return False
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
+def isValidLanguage(language):
+    """True if language exists in leo/modes."""
+    # 2020/08/12: A hack for c++
+    if language in ('c++', 'cpp'):
+        language = 'cplusplus'
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
+    return g.os_path_exists(fn)
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
-# This pattern excludes @encoding.whatever and @encoding(whatever)
-# It must allow @language python, @nocolor-node, etc.
-
-g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
-
 def isDirective(s):
     """Return True if s starts with a directive."""
     m = g_is_directive_pattern.match(s)
@@ -3690,7 +3755,7 @@ def computeStandardDirectories():
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
 
-    branch = g.gitBranchName(path=g.os_path_dirname(fileName))
+    branch, commit = g.gitInfoForFile(fileName)  # #1616
     if not fileName:
         return branch + ": untitled" if branch else 'untitled'
     path, fn = g.os_path_split(fileName)
@@ -4180,7 +4245,6 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-
     for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
@@ -4288,7 +4352,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     except IndexError:
         target = ''
     try:
-        target = pos_pattern.sub('', unlList[depth])
+        target = g_pos_pattern.sub('', unlList[depth])
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
     except IndexError:
@@ -4296,7 +4360,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         pos = False
     if pos:
         use_idx_mode = True  # ok to use hard/soft_idx
-        target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
+        target = re.sub(g_pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
             if nth_sib < len(heads):
                 order.append(nth_sib)
@@ -4350,7 +4414,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             count = 0
             compare_list = unlList[:]
             for header in reversed(iter_unl[1].split('-->')):
-                if (re.sub(pos_pattern, "", header).replace('--%3E', '-->') ==
+                if (re.sub(g_pos_pattern, "", header).replace('--%3E', '-->') ==
                      compare_list[-1]
                 ):
                     count = count + 1
@@ -4367,8 +4431,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             maxdepth = p.level()
     return False, maxdepth, maxp
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
-pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-
 def recursiveUNLParts(text):
     """recursiveUNLParts - return index, occurence, line_number, col_number
     from an UNL fragment.  line_number is allowed to be negative to indicate
@@ -4378,7 +4440,7 @@ def recursiveUNLParts(text):
     :return: index, occurence, line_number, col_number
     :rtype: (int, int, int, int) or (None, None, None, None)
     """
-    pos = re.findall(pos_pattern, text)
+    pos = re.findall(g_pos_pattern, text)
     if pos:
         return tuple(int(i) if i else 0 for i in pos[0])
     return (None, None, None, None)
@@ -5151,6 +5213,34 @@ def gitCommitNumber(path=None):
     """
     branch, commit = g.gitInfo(path)
     return commit
+#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
+def gitInfoForFile(filename):
+    """
+    return the git (branch, commit) info associated for the given file.
+    
+    Look for a .git directory in the file's directory, and parent directories.
+    """
+    from pathlib import Path
+    branch, commit = '', ''
+    if filename:
+        parent = Path(filename)
+        while parent:
+            git_dir = os.path.join(parent, '.git')
+            if os.path.exists(git_dir) and os.path.isdir(git_dir):
+                head = os.path.join(git_dir, 'HEAD')
+                if os.path.exists(head):
+                    branch, commit = g.gitInfo(head)
+                    break
+            if parent == parent.parent:
+                break
+            parent = parent.parent
+    return branch, commit
+#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
+def gitInfoForOutline(c):
+    """
+    Return the git (branch, commit) info associated for commander c.
+    """
+    return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path=None):
     """
@@ -7570,7 +7660,7 @@ def run_unit_test_in_separate_process(command):
     print('')
     print(command)
     if out.strip():
-        print('traces...')
+        # print('traces...')
         print(out.rstrip())
     print(err.rstrip())
     # There may be skipped tests...

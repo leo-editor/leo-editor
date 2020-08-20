@@ -115,17 +115,15 @@ def insertUser (self,event=None):
     i = w.getInsertPoint()
     w.insert(i,stamp)
     c.frame.body.onBodyChanged("Typing",oldSel=oldSel)
-#@+node:ekr.20040205071616.10: ** create_UserMenu
+#@+node:ekr.20040205071616.10: ** create_UserMenu (mnplugins.py)
 def create_UserMenu (tag,keywords):
 
     c = keywords.get("c")
-
     c.pluginsMenu = c.frame.menu.createNewMenu("UserMenu")
-
     table = [
         ("insUser", 'Shift+F6', c.insertUser),
-        ("insOK",'Ctrl+Shift+O',c.insertOKcmd)]
-
-    c.frame.menu.createMenuEntries(c.pluginMenu,table,dynamicMenu=True)
+        ("insOK",'Ctrl+Shift+O',c.insertOKcmd),
+    ]
+    c.frame.menu.createMenuEntries(c.pluginMenu, table)
 #@-others
 #@-leo

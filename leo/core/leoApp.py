@@ -433,7 +433,7 @@ class LeoApp:
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
-            "cpp":      "cpp",
+            "cpp":      "cplusplus", # 2020/08/12: was cpp.
             "css":      "css",
             "d":        "d",
             "dart":     "dart",
@@ -469,6 +469,7 @@ class LeoApp:
             "jmk":      "jmk",
             "js":       "javascript", # For javascript import test.
             "jsp":      "javaserverpage",
+            "json":     "json", 
             # "jsp":      "jsp",
             "ksh":      "kshell",
             "kv":       "kivy", # PeckJ 2014/05/05
@@ -659,6 +660,7 @@ class LeoApp:
             "javaserverpage"     : "<%-- --%>", # EKR: 2011/11/25 (See also, jsp)
             "jhtml"              : "<!-- -->",
             "jmk"                : "#",
+            "json"               : "#", # EKR: 2020/07/27: Json has no delims. This is a dummy entry.
             "jsp"                : "<%-- --%>",
             "jupyter"            : "<%-- --%>", # Default to markdown?
             "kivy"               : "#", # PeckJ 2014/05/05
@@ -838,6 +840,7 @@ class LeoApp:
             "javaserverpage": "jsp", # EKR: 2011/11/25
             "jhtml"         : "jhtml",
             "jmk"           : "jmk",
+            "json"          : "json", 
             "jsp"           : "jsp",
             "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05

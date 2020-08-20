@@ -33,11 +33,11 @@ __version__ = '2.0'
 #@@killcolor
 
 #@+at
-# 
+#
 # 1.3 Original version by Frédéric Momméja
-# 
+#
 # 1.4 EKR:  Changes for 4.3 code base and new plugins style.
-# 
+#
 #     - Created typical init and onCreate functions.
 #     - Created language global.
 #     - Changed true/false to True/False.
@@ -67,19 +67,16 @@ def onCreate (tag, keywords):
 
     c = keywords.get('c')
     cc = controller(c)
-
     menu = c.frame.menu.getMenu('Outline')
-
     if language == 'french':
         mess1 = "Lit un Répertoire..."
     else:
         mess1 = "Read a Directory..."
-
     table = (
         ("-", None, None),
-        (mess1, "Shift+Ctrl+Alt+D",cc.readDir))
-
-    c.frame.menu.createMenuEntries(menu,table,dynamicMenu=True)
+        (mess1, "Shift+Ctrl+Alt+D",cc.readDir),
+    )
+    c.frame.menu.createMenuEntries(menu, table)
 #@+node:ekr.20050301083306.6: ** class controller
 class controller:
 

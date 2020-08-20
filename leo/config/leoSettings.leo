@@ -2321,7 +2321,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16480"></v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3612,12 +3612,12 @@ delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
-# indent-region                     = Tab # Only when text is selected.
+indent-region                       !text = Tab
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
 newline-and-indent                  = Ctrl-j
-newline-and-indent                  !text = Tab
+### newline-and-indent              !text = Tab
 focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p

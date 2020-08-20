@@ -79,7 +79,7 @@ class BaseColorizer:
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
 
-    at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
+
 
     def updateSyntaxColorer(self, p):
         """
@@ -117,24 +117,19 @@ class BaseColorizer:
     def findAllValidLanguageDirectives(self, p):
         """Return list of all valid @language directives in p.b"""
         languages = set()
-        for m in self.at_language_pattern.finditer(p.b):
+        for m in g.g_language_pat.finditer(p.b):
             language = m.group(1)
-            if self.isValidLanguage(language):
+            if g.isValidLanguage(language):
                 languages.add(language)
         return list(sorted(languages))
     #@+node:ekr.20170127142001.5: *5* bjc.findFirstAtLanguageDirective
     def findFirstValidAtLanguageDirective(self, p):
         """Return the first *valid* @language directive in p.b."""
-        for m in self.at_language_pattern.finditer(p.b):
+        for m in g.g_language_pat.finditer(p.b):
             language = m.group(1)
-            if self.isValidLanguage(language):
+            if g.isValidLanguage(language):
                 return language
         return None
-    #@+node:ekr.20170127142001.6: *5* bjc.isValidLanguage
-    def isValidLanguage(self, language):
-        """True if language exists in leo/modes."""
-        fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
-        return g.os_path_exists(fn)
     #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
         """True if p's parents enable coloring in p."""

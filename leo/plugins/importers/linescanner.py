@@ -523,7 +523,7 @@ class Importer:
             ok = blanks == 0
             message = 'blanks found with @tabwidth %s in %s' % (w, fn)
         if ok:
-            ok = blanks == 0 or tabs == 0
+            ok = (blanks == 0 or tabs == 0)
             message = 'intermixed blanks and tabs in: %s' % (fn)
         if not ok:
             if g.unitTesting:

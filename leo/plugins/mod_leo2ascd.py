@@ -155,13 +155,13 @@ def CreateAscMenu(tag,keywords):
     c = keywords.get('c')
     if not c: return
     exportMenu = c.frame.menu.getMenu('export')
-    newEntries = (
+    table = (
         ("-", None, None),
-        ("Export all to &AsciiDoc","Alt+Shift+A",WriteAll),
-        ("Export current tree to AsciiDoc","Alt+Shift+T",WriteTreeOfCurrentNode),
-        ("Log all root and ascfile to log pane","Alt+Shift+L",WriteAllRoots),
+        ("Export all to &AsciiDoc", "Alt+Shift+A", WriteAll),
+        ("Export current tree to AsciiDoc","Alt+Shift+T", WriteTreeOfCurrentNode),
+        ("Log all root and ascfile to log pane","Alt+Shift+L", WriteAllRoots),
     )
-    c.frame.menu.createMenuEntries(exportMenu,newEntries,dynamicMenu=True)
+    c.frame.menu.createMenuEntries(exportMenu, table)
 #@+node:ekr.20101110094152.5836: *3* GetAscFilename
 def GetAscFilename(c,p):
     'Checks a node for a filename directive.'

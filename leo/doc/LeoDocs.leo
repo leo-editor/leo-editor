@@ -1548,6 +1548,12 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
+<v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
+<v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
+<v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
+<v t="ekr.20200107142458.1"><vh>Running the code python programmatically</vh></v>
+<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests programmatically</vh></v>
+</v>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
 <v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
 <v t="ekr.20200113232354.1"><vh>Other classes</vh></v>
@@ -1556,10 +1562,6 @@
 <v t="ekr.20191206064645.1"><vh>Syncing tokens</vh></v>
 <v t="ekr.20200107105607.1"><vh>Figures of merit</vh></v>
 </v>
-<v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
-<v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
-<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests</vh></v>
-<v t="ekr.20200107110111.1"><vh>Example</vh></v>
 <v t="ekr.20200107110057.1"><vh>Notable functions &amp; methods</vh>
 <v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
 <v t="ekr.20200107112200.1"><vh>Reading &amp; writing files</vh></v>
@@ -1567,6 +1569,7 @@
 <v t="ekr.20200107112459.1"><vh>Updating tokens and parse trees</vh></v>
 <v t="ekr.20200107142833.1"><vh>TokenOrderGenerator.init_from_file</vh></v>
 </v>
+<v t="ekr.20200807105737.1"><vh>Maintaining leoAst.py</vh></v>
 </v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
@@ -2384,7 +2387,6 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
-<v t="mhw.20191008134029.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -31152,8 +31154,7 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20200107061524.1">This is the How To documentation for leoAst.py.</t>
-<t tx="ekr.20200107105607.1">**Simplicity**: The code (all of it) is the simplest thing that could possibly work.
+<t tx="ekr.20200107105607.1">**Simplicity**:
 
 - The distinction between significant and insignificant tokens makes
   token-order traversals possible. This distinction drastically simplifies
@@ -31181,19 +31182,6 @@ which are too slow to be useful.
 - The TOT uses no variable-length data whatever.
 </t>
 <t tx="ekr.20200107110057.1"></t>
-<t tx="ekr.20200107110111.1">The Fstringify.fstringify_file method implements Leo's fstringfy-file command. 
-Here it is, minus error handling code::
-
-@language python
-
-    def fstringify_file(self, filename):
-    
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        results = self.fstringify(contents, filename, tokens, tree)
-        show_diffs(contents, results, filename=filename)
-        print(f"Wrote {filename}")
-        write_file(filename, results, encoding=encoding)</t>
 <t tx="ekr.20200107111656.1">@language rest
 @wrap
 
@@ -31263,10 +31251,7 @@ formats::
         
     def replace_token(token, kind, value):
         """Replace kind and value of the given token."""</t>
-<t tx="ekr.20200107142458.1">leoAst.py is completely self contained. It imports only standard library
-modules.
-
-To access the code, do one of the following::
+<t tx="ekr.20200107142458.1">To access the code, do one of the following::
 
     import leoAst
     import leo.core.leoAst as leoAst
@@ -31713,6 +31698,60 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
+<t tx="ekr.20200807105709.1">The classes in `leoAst.py &lt;https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py&gt;`_
+unify python's token-based and ast-based worlds by creating two-way links
+between tokens in the token list and ast nodes in the parse tree.
+    
+leoAst.py is part of `Leo &lt;https://leoeditor.com&gt;`_, and can be used
+completely independently of Leo.
+
+You must use Leo to see the intended outline structure of the code. Without
+Leo, you will see special **sentinel comments** that create Leo's outline
+structure. These comments have the form::
+
+    #@&lt;comment-kind&gt;:&lt;user-id&gt;.&lt;timestamp&gt;.&lt;number&gt;: &lt;outline-level&gt; &lt;headline&gt;
+    
+If you have any trouble installing or using this code, please help for help
+on `Leo's forum &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_
+</t>
+<t tx="ekr.20200807105737.1">.. _`Leo issue #1440`: https://github.com/leo-editor/leo-editor/issues/1440
+
+New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:
+
+- Add a visitor for the new node.
+- Add one or more unit tests that fully cover the new visitor.
+
+The test_visitors_exist unit test checks that visitors exist for all ast nodes defined by to a particular version of python.
+
+See `Leo issue #1440`_ for notes relating to the code.
+</t>
+<t tx="ekr.20200807110628.1">leoAst.py is designed to be run from the command line::
+
+    usage:
+        leoAst.py --help
+        leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
+        leoAst.py --py-cov [ARGS]
+        leoAst.py --pytest [ARGS]
+        leoAst.py --unittest [ARGS]
+        
+    examples:
+        --py-cov "-f TestOrange"
+        --pytest "-f TestOrange"
+        --unittest TestOrange
+    
+    positional arguments:
+      PATHS              directory or list of files
+    
+    optional arguments:
+      -h, --help         show this help message and exit
+      --fstringify       leonine fstringify
+      --fstringify-diff  show fstringify diff
+      --orange           leonine Black
+      --orange-diff      show orange diff
+      --py-cov           run pytest --cov on leoAst.py
+      --pytest           run pytest on leoAst.py
+      --unittest         run unittest on leoAst.py</t>
+<t tx="ekr.20200807111156.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:

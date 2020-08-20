@@ -66,11 +66,11 @@ def lineScrollHelper(c, prefix1, prefix2, suffix):
     w = c.frame.body.wrapper
     ins = w.getInsertPoint()
     c.inCommand = False
-    c.executeMinibufferCommand(prefix1 + 'line' + suffix)
+    c.k.simulateCommand(prefix1 + 'line' + suffix)
     ins2 = w.getInsertPoint()
     # If the cursor didn't change, then go to beginning/end of line
     if ins == ins2:
-        c.executeMinibufferCommand(prefix2 + 'of-line' + suffix)
+        c.k.simulateCommand(prefix2 + 'of-line' + suffix)
 #@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
 def delete_trace_statements(event=None):
@@ -670,7 +670,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Bug fix: 2011/05/23: set the fillColumn ivar!
             self.fillColumn = n = int(k.arg)
             k.setLabelGrey(f"fill column is: {n:d}")
-            k.commandName = f"set-fill-column {n:d}"
         except ValueError:
             k.resetLabel()
         c.widgetWantsFocus(w)
@@ -1911,7 +1910,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'flush')
-        k.commandName = f"flush-lines {k.arg}"
     #@+node:ekr.20150514063305.282: *4* ec.keepLines (doesn't work)
     @cmd('keep-lines')
     def keepLines(self, event):
@@ -1931,7 +1929,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.clearState()
         k.resetLabel()
         self.linesHelper(event, k.arg, 'keep')
-        k.commandName = f"keep-lines {k.arg}"
     #@+node:ekr.20150514063305.283: *4* ec.linesHelper
     def linesHelper(self, event, pattern, which):
         w = self.editWidget(event)

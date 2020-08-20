@@ -555,7 +555,7 @@ class VimCommands:
         self.quit()
         self.show_status()
         # This seems not to be needed.
-            # self.c.k.keyboardQuit(setFocus=True)
+            # self.c.k.keyboardQuit()
     #@+node:ekr.20140802120757.17999: *5* vc.quit
     def quit(self):
         """

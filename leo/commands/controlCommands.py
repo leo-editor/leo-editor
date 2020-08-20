@@ -91,8 +91,6 @@ class ControlCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         command = g.toUnicode(k.arg)
         if command:
-            # k.commandName = 'shell-command: %s' % command
-            # k.clearState()
             self.executeSubprocess(event, command)
     #@+node:ekr.20150514063305.95: *3* shellCommandOnRegion
     @cmd('shell-command-on-region')
@@ -103,10 +101,8 @@ class ControlCommandsClass(BaseEditCommandsClass):
         if w:
             if w.hasSelection():
                 command = w.getSelectedText()
-                # k.commandName = 'shell-command: %s' % command
                 self.executeSubprocess(event, command)
             else:
-                # k.clearState()
                 g.es('No text selected')
         k.keyboardQuit()
     #@+node:ekr.20150514063305.96: *3* actOnNode
