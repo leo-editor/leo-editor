@@ -12,7 +12,7 @@ markdown text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
 About Viewrendered3 V3.0b10
-==========================
+===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
 ViewRendered plugin and enhances the display of Restructured Text (RsT) and
@@ -129,6 +129,7 @@ placed into an ``@settings`` tree, preferably in the myLeoSettings file.
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
+   "vr3-asciidoc-path", "''", "string", "Path to asciidoc directory (see notes below)"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -272,6 +273,40 @@ can be successfully executed.
 
 As with RsT rendering, do not mix MD and RsT in a single node or subtree.
 
+#@+node:TomP.20200820170225.1: *3* Rendering Asciidoc
+Rendering Asciidoc
+==================
+
+The VR3 plugin will render a node using asciidoc if
+an asciidoc processor has been installed and the node type 
+is ``@asciidoc`` or if the node starts with ``@language asciidoc``.
+The asciidoc processor must be an executable file on the system path,
+or in a directory directory pointed to by the system setting
+named ``vr3-asciidoc-path``.
+
+The asciidoc processor must be one of:
+
+    1. ``asciidoc`` from https://asciidoc.org/index.html.
+       This may be available pre-installed or as a package
+       in some Linux distributions;
+
+    2. ``asciidoc3``, which is available as a python installable
+       package but may be hard to get working on Windows;  or
+       
+    3. Other external asciidoc processors may work if they can be       
+       launched (either directly or by an external batch file), but     
+       they will need to have the same command line parameters 
+       as 1. or 2. above.
+
+Asciidoc can be imported into VR3 instead of being run as an external file by specifying the ``vr3-asciidoc-path`` setting will only work for the ``asciidoc`` from the source stated in 1. above.  This *may* provide faster rendering.
+
+At the present time, VR3 will only render a single node of asciidoc text, and does not understand any Leo directives such as
+``@language python``. It will not recognize or execute code sections.
+In the future, VR3 will be enhanced to provide these capabilities.
+
+Asciidoc dialects vary somewhat.  The dialect used by the asciidoc processor described above does not use the syntactical for ``[.xxx]``,
+e.g., ``[.big.]``.  The leading period must be omitted: ``[big]``.
+Ther may be other differences.
 #@+node:TomP.20200309191519.1: *3* Colorized Languages
 Colorized Languages
 ===================
