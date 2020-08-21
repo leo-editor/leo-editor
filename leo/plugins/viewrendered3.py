@@ -1250,6 +1250,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('RsT', RST)
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
+        set_group_action('Asciidoc', ASCIIDOC)
         _default_type_button.setMenu(menu)
         #@-<< vr3: create menus >>
         #@+<< vr3: finish toolbar >>
