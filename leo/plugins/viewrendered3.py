@@ -1038,6 +1038,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_dispatch_dict()
         self.activate()
         self.zoomed = False
+
+        self.asciidoc3_internal_ok = True
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1587,7 +1589,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         lines = [line for line in lines if not line.startswith('@language')]
         s = '\n'.join(lines)
 
-        h = "Didn't find an asciidoc converter"
+        h = "Didn't find an asciidoc processor"
         if self.asciidoc_proc == asciidoctor_exec:
             asciidoc = AsciiDocAPI()
             infile = io.StringIO(s)
@@ -1598,10 +1600,27 @@ class ViewRenderedController3(QtWidgets.QWidget):
             outfile.close()
         else:
             try:
-                h =  self.convert_to_asciidoc(s)
-                self.rst_html = h
-            except Exception:
-                g.es_exception()
+                # asciidoc3api bug may cause this to fail,
+                # so fall back to launching the external asciidoc3 program.
+                if not self.asciidoc3_internal_ok:
+                    raise AttributeError
+                from asciidoc3.asciidoc3api import AsciiDoc3API
+                adoc = AsciiDoc3API()
+                infile = io.StringIO(s)
+                outfile = io.StringIO()
+                adoc.execute(infile, outfile, backend='html5')
+                h = self.rst_html = outfile.getvalue()
+                infile.close()
+                outfile.close()
+            except (AttributeError, ImportError):
+                if self.asciidoc3_internal_ok:
+                    g.es('VR3 - asciidoc3 error, launching external version')
+                self.asciidoc3_internal_ok = False
+                try:
+                    h =  self.convert_to_asciidoc(s)
+                    self.rst_html = h
+                except Exception:
+                    g.es_exception()
 
         h = g.toUnicode(h)  # EKR.
         self.set_html(h.encode('utf-8'), w)
