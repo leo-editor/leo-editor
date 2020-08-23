@@ -11,7 +11,7 @@ markdown text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b11
+About Viewrendered3 V3.0b12
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -293,12 +293,18 @@ The asciidoc processor must be one of:
     2. ``asciidoc3``, which is available as a python installable
        package but may be hard to get working on Windows;  or
 
-    3. Other external asciidoc processors may work if they can be       
-       launched (either directly or by an external batch file), but     
+    3. Other external asciidoc processors may work if they can be
+       launched (either directly or by an external batch file), but
        they will need to have the same command line parameters 
        as 1. or 2. above.
 
 Asciidoc can be imported into VR3 instead of being run as an external file by specifying the ``vr3-asciidoc-path`` setting will only work for the ``asciidoc`` from the source stated in 1. above.  This *may* provide faster rendering.
+
+If both asciidoc and asciidoc3 are found, then which one will be used can be set by the setting
+
+    @bool vr3-prefer-asciidoc3
+
+Its default setting is False, meaning that asciisdoc will be peferred.
 
 At the present time, VR3 will only render a single node of asciidoc text, and does not understand any Leo directives such as
 ``@language python``. It will not recognize or execute code sections.
@@ -436,7 +442,7 @@ try:
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError
-    QtWidgets = False
+    #QtWidgets = False
 
 # Optional imports...
 try:
@@ -622,7 +628,6 @@ def find_exe(exename):
 asciidoctor_exec = find_exe('asciidoc') or None
 asciidoc3_exec = find_exe('asciidoc3') or None
 pandoc_exec = find_exe('pandoc') or None
-
 #@+node:TomP.20191215195433.7: ** vr3.Top-level
 #@+node:TomP.20191215195433.8: *3* vr3.decorate_window
 def decorate_window(w):
@@ -1300,6 +1305,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.set_asciidoc_import()
+
+        self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', False)
+
+        if self.prefer_asciidoc3:
+            self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
+        else:
+            self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
+
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1560,7 +1573,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def update_asciidoc(self, s, keywords):
         """Update asciidoc in the vr3 pane."""
 
-        global asciidoctor_exec, asciidoc3_exec
+        global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
         pc = self
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
@@ -1574,7 +1587,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         lines = [line for line in lines if not line.startswith('@language')]
         s = '\n'.join(lines)
 
-        if self.asciidoc_path:
+        h = "Didn't find an asciidoc converter"
+        if self.asciidoc_proc == asciidoctor_exec:
             asciidoc = AsciiDocAPI()
             infile = io.StringIO(s)
             outfile = io.StringIO()
@@ -1582,23 +1596,23 @@ class ViewRenderedController3(QtWidgets.QWidget):
             h = self.rst_html = outfile.getvalue()
             infile.close()
             outfile.close()
-        elif asciidoctor_exec or asciidoc3_exec:
+        else:
             try:
-                h =  self.convert_to_asciidoctor(s)
+                h =  self.convert_to_asciidoc(s)
                 self.rst_html = h
             except Exception:
                 g.es_exception()
 
         h = g.toUnicode(h)  # EKR.
-        self.set_html(h, w)
+        self.set_html(h.encode('utf-8'), w)
     #@+node:TomP.20191215195433.55: *5* vr3.make_asciidoc_title
     def make_asciidoc_title(self, s):
         """Generate an asciiidoc title for s."""
         #line = '#' * (min(4, len(s)))
         line = '##'
         return f"{line}\n{s}\n{line}\n\n"
-    #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoctor
-    def convert_to_asciidoctor(self, s):
+    #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc
+    def convert_to_asciidoc(self, s):
         """Convert s to html using the asciidoctor or asciidoc processor."""
 
         pc = self
@@ -1611,6 +1625,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.title:
             s = pc.make_asciidoc_title(pc.title) + s
             pc.title = None
+        #s = pc.run_asciidoctor(g.toUnicode(s))
         s = pc.run_asciidoctor(s)
         return g.toUnicode(s)
     #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor
@@ -1621,32 +1636,32 @@ class ViewRenderedController3(QtWidgets.QWidget):
         The caller handles all exceptions.
         """
 
-        global asciidoctor_exec, asciidoc3_exec
+        global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr3_input.adoc')
-        o_path = g.os_path_finalize_join(home, 'vr3_output.html')
+        i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
+        o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
+
         # Write the input file.
-        with open(i_path, 'w') as f:
+        with open(i_path, 'w', encoding='utf-8') as f:
             f.write(s)
 
         # Call the external program to write the output file.
-        prog = None
-        if asciidoctor_exec:
-            prog = asciidoctor_exec
-            command = f"{prog} -b html5 -o {o_path} {i_path} "
-        elif asciidoc3_exec:
-            prog = asciidoc3_exec
-            command = f"{prog} -b html5 -o {o_path} {i_path} "
-            # The -e option deletes css
+        if self.asciidoc_proc == asciidoctor_exec:
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
+        else:
+            command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
 
-        if prog:
+        if self.asciidoc_proc:
             g.execute_shell_commands(command)
             # Read the output file and return it.
-            with open(o_path, 'r') as f:
-                return f.read()
+            try:
+                with open(o_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            except Exception as e:
+                g.es(f'asciidoc output file not found\n {e}')
         else:
-            return 'Asciidoc not found - cannot render the text'
+            return 'Asciidoc processor not found - cannot render the text'
 
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
