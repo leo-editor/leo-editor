@@ -434,11 +434,10 @@ from urllib.request import urlopen
 
 # Leo imports...
 import leo.core.leoGlobals as g
-try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
-    from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+import leo.plugins.qt_text as qt_text
+import leo.plugins.free_layout as free_layout
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1610,7 +1609,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if self.asciidoc3_internal_ok:
                     g.es('VR3 - asciidoc error, launching external version')
                 self.asciidoc_internal_ok = False
-                try:
+            try:
                     h = self.convert_to_asciidoc_external(s)
                     self.rst_html = h
                 except Exception:
@@ -1637,8 +1636,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 try:
                     h =  self.convert_to_asciidoc_external(s)
                     self.rst_html = h
-                except Exception:
-                    g.es_exception()
+            except Exception:
+                g.es_exception()
 
         h = g.toUnicode(h)  # EKR.
         self.set_html(h.encode('utf-8'), w)
