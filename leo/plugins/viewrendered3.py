@@ -1041,6 +1041,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.zoomed = False
 
         self.asciidoc3_internal_ok = True
+        self.asciidoc_internal_ok = True
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1595,13 +1596,26 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         h = "Didn't find an asciidoc processor"
         if self.asciidoc_proc == asciidoctor_exec:
-            asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
-            infile = io.StringIO(s)
-            outfile = io.StringIO()
-            asciidoc.execute(infile, outfile, backend='html5')
-            h = self.rst_html = outfile.getvalue()
-            infile.close()
-            outfile.close()
+            try:
+                # in case using the imported processor fails,
+                # fall back to launching external asciidoc program
+                asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
+                infile = io.StringIO(s)
+                outfile = io.StringIO()
+                asciidoc.execute(infile, outfile, backend='html5')
+                h = self.rst_html = outfile.getvalue()
+                infile.close()
+                outfile.close()
+            except AttributeError:
+                if self.asciidoc3_internal_ok:
+                    g.es('VR3 - asciidoc error, launching external version')
+                self.asciidoc_internal_ok = False
+                try:
+                    h = self.convert_to_asciidoc_external(s)
+                    self.rst_html = h
+                except Exception:
+                    g.es_exception()
+
         else:
             try:
                 # asciidoc3api bug may cause this to fail,
@@ -1621,7 +1635,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     g.es('VR3 - asciidoc3 error, launching external version')
                 self.asciidoc3_internal_ok = False
                 try:
-                    h =  self.convert_to_asciidoc(s)
+                    h =  self.convert_to_asciidoc_external(s)
                     self.rst_html = h
                 except Exception:
                     g.es_exception()
@@ -1634,9 +1648,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #line = '#' * (min(4, len(s)))
         line = '##'
         return f"{line}\n{s}\n{line}\n\n"
-    #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc
-    def convert_to_asciidoc(self, s):
-        """Convert s to html using the asciidoctor or asciidoc processor."""
+    #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
+    def convert_to_asciidoc_external(self, s):
+        """Convert s to html using external asciidoc or asciidoc3 processor."""
 
         pc = self
         c, p = pc.c, pc.c.p
@@ -1670,13 +1684,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
             f.write(s)
 
         # Call the external program to write the output file.
+        # Assume that the command line may be different between asciidoc and asciidoc3
         if self.asciidoc_proc == asciidoctor_exec:
             command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
         else:
             command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
 
         if self.asciidoc_proc:
-            g.es(f"=== Using external asciidoc {self.asciidor_proc}")
+            g.es(f"=== Using external asciidoc {self.asciidoc_proc}")
             g.execute_shell_commands(command)
             # Read the output file and return it.
             try:
