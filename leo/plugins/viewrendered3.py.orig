@@ -293,8 +293,13 @@ The asciidoc processor must be one of:
     2. ``asciidoc3``, which is available as a python installable
        package but may be hard to get working on Windows;  or
 
+<<<<<<< HEAD
     3. Other external asciidoc processors may work if they can be
        launched (either directly or by an external batch file), but
+=======
+    3. Other external asciidoc processors may work if they can be       
+       launched (either directly or by an external batch file), but     
+>>>>>>> upstream/devel
        they will need to have the same command line parameters 
        as 1. or 2. above.
 
@@ -434,6 +439,7 @@ from urllib.request import urlopen
 
 # Leo imports...
 import leo.core.leoGlobals as g
+<<<<<<< HEAD
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout
@@ -444,6 +450,13 @@ except ImportError:
     raise ImportError from None
     #QtWidgets = False
 
+=======
+import leo.plugins.qt_text as qt_text
+import leo.plugins.free_layout as free_layout
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+#
+>>>>>>> upstream/devel
 # Optional imports...
 try:
     import docutils
@@ -982,12 +995,16 @@ class ViewRenderedProvider3:
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
+<<<<<<< HEAD
 
     # pylint: disable=too-many-public-methods
+=======
+>>>>>>> upstream/devel
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
+<<<<<<< HEAD
 
         self.c = c
         # Create the widget.
@@ -1047,6 +1064,63 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
         Create a QWebView.
 
+=======
+        self.c = c
+        # Create the widget.
+        QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        #super().__init__(parent)
+
+        self.create_pane(parent)
+        # Set the ivars.
+        self.active = False
+        self.badColors = []
+        self.delete_callback = None
+        self.gnx = None
+        self.graphics_class = QtWidgets.QGraphicsWidget
+        self.pyplot_canvas = None
+
+        self.pyplot_imported = False
+        self.gs = None # For @graphics-script: a QGraphicsScene
+        self.gv = None # For @graphics-script: a QGraphicsView
+        self.inited = False
+        self.length = 0 # The length of previous p.b.
+        self.locked = False
+
+        self.pyplot_active = False
+        self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
+        self.sizes = [] # Saved splitter sizes.
+        self.splitter = None
+        self.splitter_index = None # The index of the rendering pane in the splitter.
+        self.title = None
+
+        self.vp = None # The present video player.
+        self.w = None # The present widget in the rendering pane.
+
+        # For viewrendered3
+        self.qwev = self.create_base_text_widget()
+        self.rst_html = ''
+        self.code_only = False
+        self.show_whole_tree = False
+        self.execute_flag = False
+        self.code_only = False
+        self.lock_to_tree = False
+        self.current_tree_root = None
+        self.freeze = False
+
+        # User settings.
+        self.reloadSettings()
+        self.node_changed = True
+
+        # Init.
+        self.create_dispatch_dict()
+        self.activate()
+        self.zoomed = False
+    #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
+    def create_base_text_widget(self):
+        """
+        Create a QWebView.
+
+>>>>>>> upstream/devel
         For QT5, this is actually a QWebEngineView
         """
         c = self.c
@@ -1233,11 +1307,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
             menu_var_name -- the name of the instance variable that holds this action's
                              isChecked() value.
             action -- the QAction.
+<<<<<<< HEAD
 
             RETURNS
             nothing
             """
 
+=======
+
+            RETURNS
+            nothing
+            """
+
+>>>>>>> upstream/devel
             setattr(self, menu_var_name, action.isChecked())
             self.c.k.simulateCommand('vr3-update')
         #@+node:TomP.20200329223820.12: *5* function: vr3.set_tree_lock
@@ -1309,6 +1391,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.set_asciidoc_import()
+<<<<<<< HEAD
 
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', False)
 
@@ -1385,6 +1468,76 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.es('Specified VR3 stylesheet not found; using default')
             return
 
+=======
+    #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
+    def set_md_stylesheet(self):
+        """Verify or create css stylesheet for Markdown node.
+
+        If there is no custom css stylesheet specified by self.md_stylesheet,
+        check if there is one at the standard location.  If not, create
+        a default stylesheet and write it to a file at that place.
+
+        The default location is assumed to be at leo/plugins/viewrendered3.
+
+        VARIABLE USED
+        self.md_stylesheet -- The URL to the stylesheet.  Need not include
+                              the "file:///", and must be an absolute path
+                              if it is a local file.
+
+                              Set by @string vr3-md-stylesheet.
+        """
+
+        # If no custom stylesheet specified, use standard one.
+        if not self.md_stylesheet:
+            # Look for the standard one
+            vr_style_dir = g.os_path_join(g.app.leoDir, 'plugins', 'viewrendered3')
+            style_path = g.os_path_join(vr_style_dir, MD_BASE_STYLESHEET_NAME)
+
+            # If there is no stylesheet at the standard location, have Pygments
+            # generate a default stylesheet there.
+            # Note: "cmdline" is a function imported from pygments
+            if not os.path.exists(style_path):
+                args = [cmdline.__name__, '-S', 'default', '-f', 'html']
+                # pygments cmdline() writes to stdout; we have to redirect it to a file
+                with io.open(style_path, 'w') as out:
+                    with redirect_stdout(out):
+                        cmdline.main(args)
+                # Add some fine-tuning css
+                with io.open(style_path, 'a') as out:
+                    out.write(MD_STYLESHEET_APPEND)
+            self.md_stylesheet = 'file:///' + style_path
+
+    #@+node:TomP.20200329223820.17: *4* vr3.set_rst_stylesheet
+    def set_rst_stylesheet(self):
+        """Set rst stylesheet to default if none specified.
+
+        A file location must start with 'file:///';. If
+        a file does not exist for the path, use the default
+        stylesheet.
+
+        The default location is in leo/plugins/viewrendered3.
+
+        VARIABLE USED
+        self.rst_stylesheet -- The URL to the stylesheet.  Need not include
+                               the "file:///", and must be an absolute path
+                               if it is a local file.
+                               Set by @string vr3-rst-stylesheet.
+        """
+
+        # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
+        # If so, check if it exists.
+        if self.rst_stylesheet:
+            if self.rst_stylesheet.startswith('file:///'):
+                pth = self.rst_stylesheet.split('file:///')[1]
+                if os.path.exists(pth):
+                    # Note that docutils must *not* have a leading 'file:///'
+                    # This method changes '\' to '/' in the path if needed.
+                    self.rst_stylesheet = g.os_path_finalize_join(pth)
+                    return
+                g.es('Specified VR3 stylesheet not found; using default')
+            return
+
+>>>>>>> upstream/devel
         # Default location
         # NOTE - for the stylesheet url we need to use forward slashes no matter
         # what OS is being used.  Apparently, the g.os_path methods do this.
@@ -1531,6 +1684,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
+<<<<<<< HEAD
 
         return
         # Do not do this! It interferes with themes.
@@ -1542,6 +1696,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # elif colorName not in pc.badColors:
             # pc.badColors.append(colorName)
             # g.warning('invalid body background color: %s' % (colorName))
+=======
+        if 0: # Do not do this! It interferes with themes.
+            pc = self
+            if not colorName: return
+            styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
+            if QtGui.QColor(colorName).isValid():
+                w.setStyleSheet(styleSheet)
+            elif colorName not in pc.badColors:
+                pc.badColors.append(colorName)
+                g.warning('invalid body background color: %s' % (colorName))
+>>>>>>> upstream/devel
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
         '''Return True if we must update the rendering pane.'''
@@ -1579,8 +1744,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def update_asciidoc(self, s, keywords):
         """Update asciidoc in the vr3 pane."""
 
+<<<<<<< HEAD
         global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
         global AsciiDocAPI
+=======
+        global asciidoctor_exec, asciidoc3_exec
+>>>>>>> upstream/devel
         pc = self
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
@@ -1594,6 +1763,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         lines = [line for line in lines if not line.startswith('@language')]
         s = '\n'.join(lines)
 
+<<<<<<< HEAD
         h = "Didn't find an asciidoc processor"
         if self.asciidoc_proc == asciidoctor_exec:
             try:
@@ -1642,15 +1812,40 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         h = g.toUnicode(h)  # EKR.
         self.set_html(h.encode('utf-8'), w)
+=======
+        if self.asciidoc_path:
+            asciidoc = AsciiDocAPI()
+            infile = io.StringIO(s)
+            outfile = io.StringIO()
+            asciidoc.execute(infile, outfile, backend='html5')
+            h = self.rst_html = outfile.getvalue()
+            infile.close()
+            outfile.close()
+        elif asciidoctor_exec or asciidoc3_exec:
+            try:
+                h =  self.convert_to_asciidoctor(s)
+                self.rst_html = h
+            except Exception:
+                g.es_exception()
+
+        h = g.toUnicode(h)  # EKR.
+        self.set_html(h, w)
+>>>>>>> upstream/devel
     #@+node:TomP.20191215195433.55: *5* vr3.make_asciidoc_title
     def make_asciidoc_title(self, s):
         """Generate an asciiidoc title for s."""
         #line = '#' * (min(4, len(s)))
         line = '##'
         return f"{line}\n{s}\n{line}\n\n"
+<<<<<<< HEAD
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
         """Convert s to html using external asciidoc or asciidoc3 processor."""
+=======
+    #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoctor
+    def convert_to_asciidoctor(self, s):
+        """Convert s to html using the asciidoctor or asciidoc processor."""
+>>>>>>> upstream/devel
 
         pc = self
         c, p = pc.c, pc.c.p
@@ -1662,6 +1857,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.title:
             s = pc.make_asciidoc_title(pc.title) + s
             pc.title = None
+<<<<<<< HEAD
         #s = pc.run_asciidoctor(g.toUnicode(s))
         s = pc.run_asciidoctor_external(s)
         return g.toUnicode(s)
@@ -1669,6 +1865,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def run_asciidoctor_external(self, s):
         """
         Process s with asciidoc or asciidoc3 external processor.
+=======
+        s = pc.run_asciidoctor(s)
+        return g.toUnicode(s)
+    #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor
+    def run_asciidoctor(self, s):
+        """
+        Process s with asciidoc or asciidoc3.
+>>>>>>> upstream/devel
         Return the contents of the html file.
         The caller handles all exceptions.
         """
@@ -1676,6 +1880,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
+<<<<<<< HEAD
         i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
         o_path = g.os_path_finalize_join(home, 'vr3_adoc.html')
 
@@ -1692,6 +1897,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         if self.asciidoc_proc:
             g.es(f"=== Using external asciidoc {self.asciidoc_proc}")
+=======
+        i_path = g.os_path_finalize_join(home, 'vr3_input.adoc')
+        o_path = g.os_path_finalize_join(home, 'vr3_output.html')
+        # Write the input file.
+        with open(i_path, 'w') as f:
+            f.write(s)
+
+        # Call the external program to write the output file.
+        prog = None
+        if asciidoctor_exec:
+            prog = asciidoctor_exec
+            command = f"{prog} -b html5 -o {o_path} {i_path} "
+        elif asciidoc3_exec:
+            prog = asciidoc3_exec
+            command = f"{prog} -b html5 -o {o_path} {i_path} "
+            # The -e option deletes css
+
+        if prog:
+>>>>>>> upstream/devel
             g.execute_shell_commands(command)
             # Read the output file and return it.
             try:
@@ -1700,7 +1924,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             except Exception as e:
                 g.es(f'asciidoc output file not found\n {e}')
         else:
+<<<<<<< HEAD
             return 'Asciidoc processor not found - cannot render the text'
+=======
+            return 'Asciidoc not found - cannot render the text'
+>>>>>>> upstream/devel
 
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
@@ -1886,11 +2114,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing
         """
 
+<<<<<<< HEAD
         # pylint: disable = R0914  #Too many local variables (26/20) (too-many-locals)
+=======
+>>>>>>> upstream/devel
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
         w = self.w
+<<<<<<< HEAD
 
         if node_list:
             self.show()
@@ -1928,6 +2160,44 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         # pylint: disable=R0914 #Too many local variables
+=======
+
+        if node_list:
+            self.show()
+
+        if got_markdown:
+            if not node_list:
+                return
+            if node_list:
+                s = node_list[0].b
+            else:
+                s = keywords.get('s', '')
+            s = self.remove_directives(s)
+            isHtml = s and s[0] == '<'
+            self.rst_html = ''
+            if s and isHtml:
+                h = s
+            else:
+                h = self.convert_markdown_to_html(node_list)
+            if h:
+                h = g.toUnicode(h)  # EKR.
+                self.set_html(h, w)
+                self.rst_html = h
+        else:
+            # s = node_list[0].b
+            w.setHtml('')  # EKR.
+
+    #@+node:TomP.20191215195433.66: *5* convert_markdown_to_html
+    def convert_markdown_to_html(self, node_list, s=''):
+        """Convert node_list to html using the markdown processor.
+
+        If node_list == [], render the string s.
+
+        RETURNS
+        the HTML returned by markdown.
+        """
+
+>>>>>>> upstream/devel
         #@+others
         #@+node:TomP.20200208211132.1: *6* setup
         pc = self
@@ -2042,6 +2312,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
+<<<<<<< HEAD
         # if QtMultimedia:
             # url = QtCore.QUrl.fromLocalFile(path)
             # content = QtMultimedia.QMediaContent(url)
@@ -2066,6 +2337,32 @@ class ViewRenderedController3(QtWidgets.QWidget):
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
         vp.play()
+=======
+        if QtMultimedia:
+            url = QtCore.QUrl.fromLocalFile(path)
+            content = QtMultimedia.QMediaContent(url)
+            pc.vp = vp = QtMultimedia.QMediaPlayer()
+            vp.setMedia(content)
+            # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+            vp.play()
+        else:
+            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            vw = vp.videoWidget()
+            vw.setObjectName('video-renderer')
+            # Embed the widgets
+
+            def delete_callback():
+                if pc.vp:
+                    pc.vp.stop()
+                    pc.vp.deleteLater()
+                    pc.vp = None
+
+            pc.embed_widget(vp, delete_callback=delete_callback)
+            pc.show()
+            vp = pc.vp
+            vp.load(phonon.MediaSource(path))
+            vp.play()
+>>>>>>> upstream/devel
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):
         """Update a networkx graphic in the vr3 pane."""
@@ -2231,7 +2528,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by docutils.
         """
 
+<<<<<<< HEAD
         # pylint: disable=R0914 # Too many local variables
+=======
+>>>>>>> upstream/devel
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
         #@@language python
@@ -2342,11 +2642,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
            RETURNS
            a string having the code parts formatted as rst code blocks.
         """
+<<<<<<< HEAD
 
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-statements
 
+=======
+>>>>>>> upstream/devel
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
@@ -2598,6 +2901,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ARGUMENTS
         p -- the node being processed.
         s -- a string
+<<<<<<< HEAD
 
         RETURNS
         a string s1 where s1 = _headline + s.
@@ -2696,6 +3000,106 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 except Exception:
                     g.es_exception()
 
+=======
+
+        RETURNS
+        a string s1 where s1 = _headline + s.
+        """
+
+        _underline = ''
+        _headline_str = ''
+        if p.h:
+            if p.h.startswith('@'):
+                _headline = p.h.split()
+                if len(_headline) > 1:
+                    _headline = _headline[1:]
+                _headline_str = ' '.join(_headline)
+            else:
+                _headline_str = p.h
+            _headline_str = _headline_str.strip() # Docutils raises error for leading space
+            _headline_str.replace('\\', '\\\\')
+            _underline = '='*len(_headline_str)
+
+        # Don't duplicate node heading if the body already has it
+        # Assumes that 1st two lines are a heading if
+        # node headline == body's first line.
+        body_lines = p.b.split('\n', 1)
+        if _headline_str != body_lines[0].strip():
+            s = f'{_headline_str}\n{_underline}\n\n{s}'
+
+        return s
+    #@+node:TomP.20191215195433.77: *4* vr3.update_svg
+    # http://doc.trolltech.com/4.4/qtsvg.html
+    # http://doc.trolltech.com/4.4/painting-svgviewer.html
+
+    def update_svg(self, s, keywords):
+        pc = self
+        if pc.must_change_widget(QtSvg.QSvgWidget):
+            w = QtSvg.QSvgWidget()
+            pc.embed_widget(w)
+            assert w == pc.w
+        else:
+            w = pc.w
+        if s.strip().startswith('<'):
+            # Assume it is the svg (xml) source.
+            s = g.adjustTripleString(s, pc.c.tab_width).strip()
+                # Sensitive to leading blank lines.
+            s = g.toEncodedString(s)
+            pc.show()
+            w.load(QtCore.QByteArray(s))
+            w.show()
+        else:
+            # Get a filename from the headline or body text.
+            ok, path = pc.get_fn(s, '@svg')
+            if ok:
+                pc.show()
+                w.load(path)
+                w.show()
+    #@+node:TomP.20191215195433.78: *4* vr3.update_url
+    def update_url(self, s, keywords):
+        #VrC.update_url(self, s, keywords)
+
+        pc = self
+        c, p = self.c, self.c.p
+        colorizer = c.frame.body.colorizer
+        language = colorizer.scanLanguageDirectives(p)
+        if language == 'asciidoc':
+            p.update_asciidoc(s, keywords)
+        elif language in ('rest', 'rst'):
+            pc.update_rst(s, keywords)
+        elif language in ('markdown', 'md'):
+            pc.update_md(s, keywords)
+        elif pc.default_kind in ('rest', 'rst'):
+            pc.update_rst(s, keywords)
+        elif pc.default_kind in ('markdown', 'md'):
+            pc.update_md(s, keywords)
+        else:
+            # Do nothing.
+            g.trace('ignore', s)
+            w = pc.ensure_text_widget()
+            pc.show()
+            w.setPlainText('')
+    #@+node:TomP.20191215195433.79: *4* vr3.utils for update helpers...
+    #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
+    def ensure_text_widget(self):
+        """Swap a text widget into the rendering pane if necessary."""
+        c, pc = self.c, self
+        if pc.must_change_widget(QtWidgets.QTextBrowser):
+            # Instantiate a new QTextBrowser.
+            w = QtWidgets.QTextBrowser()
+
+            def handleClick(url, w=w):
+                wrapper = qt_text.QTextEditWrapper(w, name='vr3-body', c=c)
+                event = g.Bunch(c=c, w=wrapper)
+                g.openUrlOnClick(event, url=url)
+
+            if self.w and hasattr(self.w, 'anchorClicked'):
+                try:
+                    self.w.anchorClicked.disconnect()
+                except Exception:
+                    g.es_exception()
+
+>>>>>>> upstream/devel
             w.anchorClicked.connect(handleClick)
             w.setOpenLinks(False)
 
@@ -2728,6 +3132,107 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200109132851.1: *6* vr3.get_language
     def get_language(self, p):
         """Return the language in effect at position p.
+<<<<<<< HEAD
+
+        Headline directives over-ride normal Leo directives in body text.
+        """
+
+        c = self.c
+        h = p.h
+        # First, look for headline directives.
+        if h.startswith('@'):
+            i = g.skip_id(h, 1, chars='-')
+            word = h[1: i].lower().strip()
+            if word in self.dispatch_dict:
+                return word
+        # Look for @language directives.
+        # Warning: (see #344): don't use c.target_language as a default.
+        colorizer = c.frame.body.colorizer
+        return colorizer.findFirstValidAtLanguageDirective(p.copy())
+    #@+node:TomP.20191215195433.82: *5* vr3.get_fn
+    def get_fn(self, s, tag):
+        pc = self
+        c = pc.c
+        fn = s or c.p.h[len(tag):]
+        fn = fn.strip()
+        # Similar to code in g.computeFileUrl
+        if fn.startswith('~'):
+            # Expand '~' and handle Leo expressions.
+            fn = fn[1:]
+            fn = g.os_path_expanduser(fn)
+            fn = g.os_path_expandExpression(fn, c=c)
+            fn = g.os_path_finalize(fn)
+        else:
+            # Handle Leo expressions.
+            fn = g.os_path_expandExpression(fn, c=c)
+            # Handle ancestor @path directives.
+            if c and c.openDirectory:
+                base = c.getNodePath(c.p)
+                fn = g.os_path_finalize_join(c.openDirectory, base, fn)
+            else:
+                fn = g.os_path_finalize(fn)
+
+        ok = g.os_path_exists(fn)
+        return ok, fn
+
+    #@+node:TomP.20191215195433.83: *5* vr3.get_url
+    def get_url(self, s, tag):
+        #VrC.get_url(self, s, tag)
+
+        p = self.c.p
+        url = s or p.h[len(tag):]
+        url = url.strip()
+        return url
+    #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
+    def must_change_widget(self, widget_class):
+        pc = self
+        return not pc.w or pc.w.__class__ != widget_class  # EKR.
+    #@+node:TomP.20191215195433.85: *5* vr3.remove_directives
+    def remove_directives(self, s):
+        """Remove all Leo directives from a string except "@language"."""
+
+        _directives = g.globalDirectiveList[:]
+        _directives.remove('language')
+        _directives.remove('c')
+        lines = g.splitLines(s)
+        result = []
+        for li in lines:
+            if li.startswith('@'):
+                i = g.skip_id(li, 1)
+                word = li[1: i]
+                if word in _directives:
+                    continue
+            result.append(li)
+        return ''.join(result)
+    #@+node:TomP.20200112233701.1: *5* vr3.execute_code
+    # Modified from VR2
+    def exec_code(self, code, environment):
+        """Execute the code, capturing the output in stdout and stderr."""
+        saveout = sys.stdout # save stdout
+        saveerr = sys.stderr
+        sys.stdout = bufferout = StringIO()
+        sys.stderr = buffererr = StringIO()
+        except_err = ''
+
+        try:
+            exec(code, environment)
+        except Exception as e:
+            # print &gt;&gt; buffererr, traceback.format_exc()
+            # buffererr.flush() # otherwise exception info appears too late
+            # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+            g.es('Viewrendered3 exception')
+            g.es_exception()
+            except_err = f'{type(e).__name__}: {str(e)}\n'
+        # Restore stdout, stderr
+        finally:
+            sys.stdout = saveout # was sys.__stdout__
+            sys.stderr = saveerr # restore stderr
+
+        return bufferout.getvalue(), buffererr.getvalue() + except_err
+    #@+node:TomP.20200330152649.1: *4* vr3.update_text
+    def update_text(self, node_list, keywords=None):
+        """Update as text-only in the vr3 pane.
+=======
 
         Headline directives over-ride normal Leo directives in body text.
         """
@@ -2959,6 +3464,140 @@ class ViewRenderedController3(QtWidgets.QWidget):
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
             return
+>>>>>>> upstream/devel
+
+            ARGUMENTS
+            node_list -- a list of outline nodes to be processed.
+            keywords -- a dictionary of keywords
+
+<<<<<<< HEAD
+            RETURNS
+            nothing
+        """
+        # Do this regardless of whether we show the widget or not.
+        self.ensure_web_widget()
+        assert self.w
+        w = self.w
+        lines = []
+        for node in node_list:
+            lines.append(node.b)
+        s = '\n'.join(lines)
+        s = html.escape(s, quote=True)
+        s = f'{TEXT_HTML_HEADER}<pre>{s}</pre></html>'
+        h = s.encode('utf-8')
+        self.set_html(h, w)
+        self.rst_html = h
+
+        w.show()
+    #@+node:TomP.20200329230436.1: *4* vr3: command helpers...
+    #@+node:TomP.20200329230436.2: *5* vr3.activate
+    def activate(self):
+        """Activate the vr3-window."""
+        pc = self
+        if pc.active:
+            return
+        pc.inited = True
+        pc.active = True
+        g.registerHandler('select2', pc.update)
+        g.registerHandler('idle', pc.update)
+    #@+node:TomP.20200329230436.3: *5* vr3.contract & expand
+    def contract(self):
+        #VrC.contract(self)
+        self.change_size(-100)
+
+    def expand(self):
+        #VrC.expand(self)
+        self.change_size(100)
+
+    def change_size(self, delta):
+    #    VrC.change_size(self, delta)
+
+        if hasattr(self.c, 'free_layout'):
+            splitter = self.parent()
+            i = splitter.indexOf(self)
+            assert i > -1
+            sizes = splitter.sizes()
+            n = len(sizes)
+            for j, size in enumerate(sizes):
+                if j == i:
+                    sizes[j] = max(0, size + delta)
+                else:
+                    sizes[j] = max(0, size - int(delta / (n - 1)))
+            splitter.setSizes(sizes)
+    #@+node:TomP.20200329230436.4: *5* vr3.deactivate
+    def deactivate(self):
+        """Deactivate the vr3 window."""
+        #VrC.deactivate(self)
+
+        pc = self
+        # Never disable the idle-time hook: other plugins may need it.
+        g.unregisterHandler('select2', pc.update)
+        g.unregisterHandler('idle', pc.update)
+        pc.active = False
+    #@+node:TomP.20200329230436.5: *5* vr3.lock/unlock
+    def lock(self):
+        """Lock the vr3 pane to the current node ."""
+        #g.note('rendering pane locked')
+        self.lock_to_tree = True
+        self.current_tree_root = self.c.p
+
+    def unlock(self):
+        """Unlock the vr3 pane."""
+        #g.note('rendering pane unlocked')
+        self.lock_to_tree = False
+        self.current_tree_root = None
+    #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
+    def show_dock_or_pane(self):
+
+        c, vr = self.c, self
+        if g.app.dock:
+            dock = vr.leo_dock
+            if dock:
+                dock.show()
+                dock.raise_()
+                    # #1230.
+        else:
+            vr.activate()
+            vr.show()
+            vr.adjust_layout('open')
+        c.bodyWantsFocusNow()
+    #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
+    def adjust_layout(self, which):
+        #VrC.adjust_layout(self, which)
+
+        global layouts
+        c = self.c
+        splitter = self.splitter
+        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
+        loc, loo = layouts.get(c.hash(), deflo)
+        if which == 'closed' and loc and splitter:
+            splitter.load_layout(loc)
+        elif which == 'open' and loo and splitter:
+            splitter.load_layout(loo)
+    #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
+    #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
+    #@+at
+    # def get_toolbar_label(self):
+    #     """Return the toolbar label object."""
+    #
+    #     return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
+    #@+node:TomP.20200329230436.10: *6* vr3.hide_toolbar
+    def hide_toolbar(self):
+        try:
+            _toolbar = self.vr3_toolbar
+            _toolbar.setVisible(False)
+        except RuntimeError as e:
+            g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
+            return
+
+    #@+node:TomP.20200329230436.11: *6* vr3.show_toolbar
+    def show_toolbar(self):
+        try:
+            _toolbar = self.vr3_toolbar
+            _toolbar.setVisible(True)
+        except RuntimeError as e:
+            g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
+            return
 
 
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
@@ -2987,6 +3626,34 @@ class ViewRenderedController3(QtWidgets.QWidget):
         <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
         """
 
+=======
+    #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
+    #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
+    def shrinkView(self):
+        w = self.qwev
+        _zf = w.zoomFactor()
+        w.setZoomFactor(_zf / ZOOM_FACTOR)
+    #@+node:TomP.20200329230436.14: *6* vr3.zoomView
+    def zoomView(self):
+        w = self.qwev
+        _zf = w.zoomFactor()
+        w.setZoomFactor(_zf * ZOOM_FACTOR)
+    #@+node:TomP.20200329230453.1: *4* vr3: events...
+    #@+node:TomP.20200329230453.2: *5* vr3.closeEvent
+    def closeEvent(self, event):
+        """Close the vr3 window."""
+        self.deactivate()
+    #@+node:TomP.20200329230453.3: *5* vr3.keyPressEvent
+    def keyPressEvent(self, event):
+        """Take actions on keypresses when the VR3 render pane has focus and a
+           key is pressed.
+
+        A method of this name receives keystrokes for most or all
+        QObject-descended objects. Currently, check only for <CNTRL-=> and
+        <CONTROL-MINUS> events for zooming or unzooming the VR3 browser pane.
+        """
+
+>>>>>>> upstream/devel
         mod = ''
         modifiers = event.modifiers()
         bare_key = event.text()
