@@ -441,7 +441,7 @@ try:
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
-    raise ImportError
+    raise ImportError from None
     #QtWidgets = False
 
 # Optional imports...
@@ -983,6 +983,7 @@ class ViewRenderedProvider3:
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
 
+    # pylint: disable=too-many-public-methods
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
@@ -1529,15 +1530,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
-        if 0: # Do not do this! It interferes with themes.
-            pc = self
-            if not colorName: return
-            styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
-            if QtGui.QColor(colorName).isValid():
-                w.setStyleSheet(styleSheet)
-            elif colorName not in pc.badColors:
-                pc.badColors.append(colorName)
-                g.warning('invalid body background color: %s' % (colorName))
+
+        return
+        # Do not do this! It interferes with themes.
+        # pc = self
+        # if not colorName: return
+        # styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
+        # if QtGui.QColor(colorName).isValid():
+            # w.setStyleSheet(styleSheet)
+        # elif colorName not in pc.badColors:
+            # pc.badColors.append(colorName)
+            # g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
         '''Return True if we must update the rendering pane.'''
@@ -1576,6 +1579,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Update asciidoc in the vr3 pane."""
 
         global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
+        global AsciiDocAPI
         pc = self
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
@@ -1591,7 +1595,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         h = "Didn't find an asciidoc processor"
         if self.asciidoc_proc == asciidoctor_exec:
-            asciidoc = AsciiDocAPI()
+            asciidoc = AsciiDocAPI() # pylint: disable=E0602 # Undefined variable 'AsciiDocAPI
             infile = io.StringIO(s)
             outfile = io.StringIO()
             asciidoc.execute(infile, outfile, backend='html5')
@@ -1645,17 +1649,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
             s = pc.make_asciidoc_title(pc.title) + s
             pc.title = None
         #s = pc.run_asciidoctor(g.toUnicode(s))
-        s = pc.run_asciidoctor(s)
+        s = pc.run_asciidoctor_external(s)
         return g.toUnicode(s)
-    #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor
-    def run_asciidoctor(self, s):
+    #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor_external
+    def run_asciidoctor_external(self, s):
         """
-        Process s with asciidoc or asciidoc3.
+        Process s with asciidoc or asciidoc3 external processor.
         Return the contents of the html file.
         The caller handles all exceptions.
         """
 
-        global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
+        global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.os_path_finalize_join(home, 'vr3_adoc.adoc')
@@ -1672,6 +1676,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
 
         if self.asciidoc_proc:
+            g.es(f"=== Using external asciidoc {self.asciidor_proc}")
             g.execute_shell_commands(command)
             # Read the output file and return it.
             try:
@@ -1866,6 +1871,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing
         """
 
+        # pylint: disable = R0914  #Too many local variables (26/20) (too-many-locals)
         # Do this regardless of whether we show the widget or not.
         self.ensure_web_widget()
         assert self.w
@@ -1906,6 +1912,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the HTML returned by markdown.
         """
 
+        # pylint: disable=R0914 #Too many local variables
         #@+others
         #@+node:TomP.20200208211132.1: *6* setup
         pc = self
@@ -2020,30 +2027,30 @@ class ViewRenderedController3(QtWidgets.QWidget):
             pc.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
-        if QtMultimedia:
-            url = QtCore.QUrl.fromLocalFile(path)
-            content = QtMultimedia.QMediaContent(url)
-            pc.vp = vp = QtMultimedia.QMediaPlayer()
-            vp.setMedia(content)
-            # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
-            vp.play()
-        else:
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            vw.setObjectName('video-renderer')
-            # Embed the widgets
+        # if QtMultimedia:
+            # url = QtCore.QUrl.fromLocalFile(path)
+            # content = QtMultimedia.QMediaContent(url)
+            # pc.vp = vp = QtMultimedia.QMediaPlayer()
+            # vp.setMedia(content)
+            # # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+            # vp.play()
+        # else:
+            # pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+        vw = vp.videoWidget()
+        vw.setObjectName('video-renderer')
+        # Embed the widgets
 
-            def delete_callback():
-                if pc.vp:
-                    pc.vp.stop()
-                    pc.vp.deleteLater()
-                    pc.vp = None
+        def delete_callback():
+            if pc.vp:
+                pc.vp.stop()
+                pc.vp.deleteLater()
+                pc.vp = None
 
-            pc.embed_widget(vp, delete_callback=delete_callback)
-            pc.show()
-            vp = pc.vp
-            vp.load(phonon.MediaSource(path))
-            vp.play()
+        pc.embed_widget(vp, delete_callback=delete_callback)
+        pc.show()
+        vp = pc.vp
+        vp.load(phonon.MediaSource(path))
+        vp.play()
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):
         """Update a networkx graphic in the vr3 pane."""
@@ -2209,6 +2216,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by docutils.
         """
 
+        # pylint: disable=R0914 # Too many local variables
         #@+others
         #@+node:TomP.20200105214716.1: *6* vr3.setup
         #@@language python
@@ -2319,6 +2327,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
            RETURNS
            a string having the code parts formatted as rst code blocks.
         """
+
+        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-statements
+
         #@+<< rst special line helpers >>
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
