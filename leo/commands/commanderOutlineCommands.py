@@ -368,6 +368,19 @@ def contractIfNotCurrent(c, p, leaveOpen):
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()
+#@+node:ekr.20200824130837.1: *3* c_oc.contractAllSubheads (new)
+@g.commander_command('contract-all-subheads')
+def contractAllSubheads(self, event=None):
+    """Contract all children of the presently selected node."""
+    c, p = self, self.p
+    if not p:
+        return
+    child = p.firstChild()
+    c.contractSubtree(p)
+    while child:
+        c.contractSubtree(child)
+        child = child.next()
+    c.redraw(p)
 #@+node:ekr.20031218072017.2901: *3* c_oc.contractNode
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
