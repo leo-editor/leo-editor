@@ -967,13 +967,13 @@ class Position:
                 p._childIndex -= 1
                 return
         # Adjust p's stack.
-        stack = []; changed = False; i = 0
+        changed, i, stack = False, 0, []
         while i < len(p.stack):
             v, childIndex = p.stack[i]
             p3 = Position(v=v, childIndex=childIndex, stack=stack[:i])
             while p3:
                 if p2 == p3:
-                    # 2011/02/25: compare full positions, not just vnodes.
+                    # Compare full positions, not just vnodes.
                     # A match with the to-be-moved node.
                     stack.append((v, childIndex - 1),)
                     changed = True
@@ -1532,11 +1532,16 @@ class Position:
         """
         Moves a position to the root position.
 
-        Important: oldRoot must the previous root position if it exists.
+        Important: oldRoot must be the previous root position if it exists.
         """
         p = self  # Do NOT copy the position!
-        if oldRoot:
-            oldRoot._adjustPositionBeforeUnlink(p)
+        #
+        # #1631. Old root can not possibly be affected by unlinking p:
+        # - oldRoot has no previous siblings.
+        # - oldRoot.stack is empty.
+        #
+            # if oldRoot:
+            #    oldRoot._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAsRoot(oldRoot)
         return p
