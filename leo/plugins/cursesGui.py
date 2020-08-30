@@ -170,14 +170,20 @@ class TextFrame(leoFrame.LeoFrame):
         self.ratio = self.secondary_ratio = 0.0
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
     def createFirstTreeNode(self):
+        # 
+        # Same as LeoFrame.createFirstTreeNode
+        #
         c = self.c
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
+        v = leoNodes.VNode(context=c)
+        p = leoNodes.Position(v)
         v.initHeadString("NewHeadline")
-        # New in Leo 4.5: p.moveToRoot would be wrong:
-        # the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        # c.setRootPosition(p) # New in 4.4.2.
+        #
+        # #1631: Initialize here, not in p._linkAsRoot.
+        c.hiddenRootNode.children = []
+        #
+        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        p._linkAsRoot()
+        # c.setRootPosition() # New in 4.4.2.
 
     #@+node:ekr.20150107090324.24: *3* deiconify
     def deiconify(self): pass # N/A

@@ -892,7 +892,7 @@ assert g.os_path_exists(path), path
 # Run the test.
 if 0:
     g.app.debug.append('save')
-    g.cls() ###
+    g.cls()
     print(f"Running {c.p.h}...\n")
 val = at.shouldPromptForDangerousWrite(path, p)
 assert val is False
@@ -915,7 +915,7 @@ assert g.os_path_exists(path), path
 # Run the test.
 if 0:
     g.app.debug.append('save')
-    g.cls() ###
+    g.cls()
     print(f"Running {c.p.h}...\n")
 val = at.precheck(path, p)
 assert val is True
@@ -1259,7 +1259,6 @@ try:
     at.readOneAtShadowNode(fn,child)
 finally:
     child.setHeadString('@@shadow %s' % fn)
-    ### c.setChanged(changed)
     c.clearChanged()
 #@+node:ekr.20090529115704.4565: *5* @@shadow unittest/read_test.py
 @language python
@@ -1482,7 +1481,6 @@ try:
 finally:
 
     child.setHeadString('@@shadow unittest/test_1.py')
-    ### c.setChanged(changed)
     c.clearChanged()
     # c.redraw_now()
 #@+node:ekr.20090529115704.4568: *5* @@shadow unittest/test_1.py
@@ -2315,7 +2313,6 @@ try:
         f"{g.objToString(p2.b, tag='AFTER')}")
 finally:
     p1.b = s
-    ### c.setChanged(False)
     c.clearChanged()
 #@+node:ekr.20150610064930.1: *6* before
 def spam():
@@ -3341,7 +3338,6 @@ try:
             test.b = test_s
             expected.b = expected_s
 finally:
-    ### c.setChanged(False)
     c.clearChanged()
 if 0:
     g.printObj(tests, tag='TESTS')
@@ -3488,7 +3484,6 @@ try:
             expected.b = expected_s
 finally:
     c.selectPosition(p)
-    ### c.setChanged(False)
     c.clearChanged()
 assert not fails, g.objToString(fails, tag='FAILED tests')
 #@+node:ekr.20190914132845.2: *6* peeve: ws in slices
@@ -11941,7 +11936,6 @@ try:
     assert p2,'p2 failed: %s' % repr(p2)
     # assert c.edit_widget(p),'c.edit_widget(p) failed: %s' % repr(p)
 finally:
-    ### c2.setChanged(False)
     c2.clearChanged()
     c2.close()
 #@+node:ekr.20090507084947.5152: *4* @test t.fileIndex remains the same
@@ -21642,8 +21636,7 @@ try:
     assert not child.isCloned(), 'fail 1-c'
     c.undoer.redo()
     assert child.isCloned(),    'fail 1-d'
-    oldRoot = c.rootPosition()
-    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    clone.moveToRoot()
     assert child.isCloned(),    'fail 3-2'
     assert clone.isCloned(),    'fail 4-2'
     assert not clone.parent(),  'fail 5'
@@ -21716,8 +21709,7 @@ else:
     child.setHeadString('child')
     
     try:
-        oldRoot = c.rootPosition()
-        child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+        child.moveToRoot()
         c.setRootPosition(child)
         assert c.positionExists(child)
         assert c.rootPosition().h == 'child', 'fail 1'

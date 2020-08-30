@@ -718,15 +718,18 @@ class LeoFrame:
         self.startupWindow = False  # True if initially opened window
         self.stylesheet = None  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
-    #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
+    #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode (changed)
     def createFirstTreeNode(self):
-        f = self; c = f.c
+        c= self.c
         v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
         v.initHeadString("NewHeadline")
+        #
+        # #1631: Initialize here, not in p._linkAsRoot.
+        c.hiddenRootNode.children = []
+        #
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
-        # c.setRootPosition() # New in 4.4.2.
+        p._linkAsRoot()
     #@+node:ekr.20150509194519.1: *3* LeoFrame.cmd (decorator)
     def cmd(name):
         """Command decorator for the LeoFrame class."""

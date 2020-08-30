@@ -741,7 +741,7 @@ class LeoActions:
     <p>Bookmark saved</p></body>"""         )
             if using_root:
                 nd = parent.insertAfter()
-                nd.moveToRoot(c.rootPosition())
+                nd.moveToRoot()
             else:
                 nd = parent.insertAsNthChild(0)
             if g.pluginIsLoaded('leo.plugins.bookmarks'):

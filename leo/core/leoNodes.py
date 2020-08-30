@@ -1024,21 +1024,20 @@ class Position:
         p._childIndex = n
         child = p.v
         child._addCopiedLink(n, parent_v)
-    #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
-    def _linkAsRoot(self, oldRoot):
+    #@+node:ekr.20080416161551.216: *4* p._linkAsRoot (changed)
+    def _linkAsRoot(self):
         """Link self as the root node."""
         p = self
         assert(p.v)
-        hiddenRootNode = p.v.context.hiddenRootNode
-        # if oldRoot: oldRootNode = oldRoot.v
-        # else:       oldRootNode = None
-        # Init the ivars.
+        parent_v = p.v.context.hiddenRootNode
+        assert parent_v, g.callers()
+        #
+        # Make p the root position.
         p.stack = []
         p._childIndex = 0
-        parent_v = hiddenRootNode
-        child = p.v
-        if not oldRoot: parent_v.children = []
-        child._addLink(0, parent_v)
+        #
+        # Make p.v the first child of parent_v.
+        p.v._addLink(0, parent_v)
         return p
     #@+node:ekr.20080416161551.212: *4* p._parentVnode
     def _parentVnode(self):
@@ -1488,7 +1487,7 @@ class Position:
             p = parent.insertAsNthChild(0)
         else:
             p = p.insertAfter()
-            p.moveToRoot(oldRoot=p)
+            p.moveToRoot()
         return p
     #@+node:ekr.20040310062332.1: *4* p.invalidOutline
     def invalidOutline(self, message):
@@ -1527,23 +1526,14 @@ class Position:
         p._unlink()
         p._linkAsNthChild(parent, n)
         return p
-    #@+node:ekr.20040303175026.6: *4* p.moveToRoot
-    def moveToRoot(self, oldRoot=None):
-        """
-        Moves a position to the root position.
-
-        Important: oldRoot must be the previous root position if it exists.
-        """
+    #@+node:ekr.20040303175026.6: *4* p.moveToRoot (changed)
+    def moveToRoot(self):
+        """Move self to the root position."""
         p = self  # Do NOT copy the position!
         #
-        # #1631. Old root can not possibly be affected by unlinking p:
-        # - oldRoot has no previous siblings.
-        # - oldRoot.stack is empty.
-        #
-            # if oldRoot:
-            #    oldRoot._adjustPositionBeforeUnlink(p)
+        # #1631. The old root can not possibly be affected by unlinking p.
         p._unlink()
-        p._linkAsRoot(oldRoot)
+        p._linkAsRoot()
         return p
     #@+node:ekr.20180123062833.1: *4* p.promote
     def promote(self):

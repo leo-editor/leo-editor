@@ -1255,9 +1255,8 @@ def moveMarked(self, event=None):
     c.redraw()
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode
 def createMoveMarkedNode(c):
-    oldRoot = c.rootPosition()
-    p = oldRoot.insertAfter()
-    p.moveToRoot(oldRoot)
+    p = c.rootPosition().insertAfter()
+    p.moveToRoot()
     c.setHeadString(p, 'Moved marked nodes')
     return p
 #@+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
@@ -1539,7 +1538,7 @@ def moveOutlineUp(self, event=None):
         else:
             # p will be the new root node
             p.setDirty()
-            p.moveToRoot(oldRoot=c.rootPosition())
+            p.moveToRoot()
             moved = True
     elif back2.hasChildren() and back2.isExpanded():
         if c.checkMoveWithParentWithWarning(p, back2, True):
