@@ -556,7 +556,6 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     if p: c.selectPosition(p)  # 2013/12/25
     root = c.p
     for p in c.all_unique_positions():
-        p.v.expandedPositions = []
         p.v.contract()
     for p in root.parents():
         p.expand()

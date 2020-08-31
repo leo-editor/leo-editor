@@ -213,12 +213,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if p == target_p:
                 return
             v = p.v
-            if (v.children and (
-                # Use slower test for clones:
-                len(v.parents) > 1 and p in v.expandedPositions or
-                # Use a quick test for non-clones:
-                len(v.parents) <= 1 and (v.statusBits & v.expandedBit) != 0
-            )):
+            if v.children and c.shouldBeExpanded(p):
                 # p.moveToFirstChild()
                 p.stack.append((v, p._childIndex),)
                 p.v = v.children[0]

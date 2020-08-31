@@ -948,18 +948,6 @@ class Commands:
     # For compatibiility with old scripts...
 
     currentVnode = currentPosition
-    #@+node:ekr.20190506060937.1: *5* c.dumpExpanded
-    @cmd('dump-expanded')
-    def dump_expanded(self, event):
-        c = event.get('c')
-        if not c:
-            return
-        g.es_print('dump-expanded...')
-        for p in c.all_positions():
-            if p.v.expandedPositions:
-                indent = ' ' * p.level()
-                print(f"{indent}{p.h}")
-                g.printObj(p.v.expandedPositions, indent=indent)
     #@+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p):
         c = self
@@ -1136,23 +1124,30 @@ class Commands:
 
     rootVnode = rootPosition
     findRootPosition = rootPosition
-    #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
+    #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded (changed)
     def shouldBeExpanded(self, p):
         """Return True if the node at position p should be expanded."""
         c, v = self, p.v
         if not p.hasChildren():
             return False
-        # Always clear non-existent positions.
-        v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
-        if not p.isCloned():
-            # Do not call p.isExpanded here! It calls this method.
-            return p.v.isExpanded()
+        #
+        # #1631: Expand only the following:
+        # - Ancestors of c.p.
+        # - Expanded non-clones.
+        # - Selected clones.
+        
         if p.isAncestorOf(c.p):
             return True
-        for p2 in v.expandedPositions:
-            if p == p2:
-                return True
-        return False
+        # Do not call p.isExpanded here! It calls this method.
+        if not v.isExpanded():
+            return False
+        if not p.isCloned():
+            return True
+        # g.trace(
+            # f"Expanded clone: p==c.p? {p==c.p} "
+            # f"c.p.isAncestorOf(p)? {c.p.isAncestorOf(p)} p:{p.h}")
+        return p == c.p or c.p.isAncestorOf(p)
+        
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit(self):
         """

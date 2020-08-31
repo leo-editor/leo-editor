@@ -955,10 +955,11 @@ class Position:
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@+node:ekr.20080427062528.4: *4* p._adjustPositionBeforeUnlink
     def _adjustPositionBeforeUnlink(self, p2):
-        """Adjust position p before unlinking p2."""
+        """Adjust p before unlinking p2."""
+        p = self
         # p will change if p2 is a previous sibling of p or
         # p2 is a previous sibling of any ancestor of p.
-        p = self; sib = p.copy()
+        sib = p.copy()
         # A special case for previous siblings.
         # Adjust p._childIndex, not the stack's childIndex.
         while sib.hasBack():
@@ -1686,22 +1687,14 @@ class Position:
         doc="p.u property")
     #@+node:ekr.20040305222924: *3* p.Setters
     #@+node:ekr.20040306220634: *4* p.VNode proxies
-    #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
+    #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded (changed)
     def contract(self):
-        """Contract p.v and clear p.v.expandedPositions list."""
-        p, v = self, self.v
-        v.expandedPositions = [z for z in v.expandedPositions if z != p]
+        """Contract p.v"""
+        v = self.v
         v.contract()
 
     def expand(self):
-        p = self
         v = self.v
-        v.expandedPositions = [z for z in v.expandedPositions if z != p]
-        for p2 in v.expandedPositions:
-            if p == p2:
-                break
-        else:
-            v.expandedPositions.append(p.copy())
         v.expand()
 
     def isExpanded(self):
@@ -1938,8 +1931,6 @@ class VNode:
         self.context = context  # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
-        self.expandedPositions = []
-            # Positions that should be expanded.
         self.insertSpot = None
             # Location of previous insert point.
         self.scrollBarSpot = None
