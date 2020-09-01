@@ -7,29 +7,29 @@
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
 Creates a window for *live* rendering of reSTructuredText, 
-markdown text, images, movies, sounds, rst, html, jupyter notebooks, etc.
+Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b12
+About Viewrendered3 V3.0b13
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
-ViewRendered plugin and enhances the display of Restructured Text (RsT) and
-Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
+ViewRendered plugin and enhances the display of Restructured Text (RsT), 
+Markdown (MD), asnd Asciidoc (nodes and subtrees.  For RsT and MD, the plugin can:
 
     #. Display entire subtrees starting at the selected node;
     #. Display code and literal blocks in a visually distinct way;
-    #. Any number of code blocks and be intermixed with RsT ot MD in a single node.
+    #. Any number of code blocks and be intermixed with RsT, MD, or Asciidoc in a single node.
     #. Display just the code blocks;
     #. Colorize code blocks;
     #. Execute Python code in the code blocks;
     #. Insert the print() output of an execution at the bottom of the rendered display;
     #. Identify code blocks by either an @language directive or by the code block
-       syntax normally used by RsT or MD (e.g., code fences for MD);
+       syntax normally used by RsT, MD, or Asciidoc (e.g., code fences for MD);
     #. Honor "@" and "@c" directives to ignore all lines between them;
     #. Export the rendered node or subtree to the system browser;
-    #. Optionally render mathematics symbols and equations using MathJax;
+    #. Optionally render mathematics symbols and equations using MathJax (not in Asciidoc yet);
     #. Correctly handle RsT or MD in a docstring;
     #. While an entire subtree rendering is visible, the display can be locked
        so that the entire tree shows even while a single node is being edited.
@@ -37,7 +37,7 @@ Markdown (MD) nodes and subtrees.  For RsT and MD, the plugin can:
        node, the display can be frozen (no changes will be displayed) if
        necessary to avoid excessive delay in re-rendering, or visual anomalies.
     #. The default rendering language for a node can be selected to by one of
-       "RsT", "MD", or "TEXT".  This setting applies when the node or subtree
+       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node or subtree
        has no @rst or @md headline.
     #. Displays a node's headline text as the overall heading for the rendering.
        However, if the first line of a node exactly equals the headline text
@@ -116,20 +116,24 @@ Settings and Configuration
 Settings
 ========
 
-Settings are put into nodes with the headlines ``@setting ....``.  They must be
-placed into an ``@settings`` tree, preferably in the myLeoSettings file.
+Settings are put into nodes with the headlines ``@setting ....``.  
+They must be placed into an ``@settings`` tree, preferably 
+in the myLeoSettings file.
 
-.. csv-table:: String Settings
+All settings are of type @string unless shown as ``@bool``
+
+.. csv-table:: VR3 Settings
    :header: "Setting", "Default", "Values", "Purpose"
    :widths: 18, 5, 5, 30
 
-   "vr3-default-kind", "rst", "rst, md", "Default for rendering type"
-   "vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
-   "vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
+   "vr3-default-kind", "rst", "rst, md, asciidoc", "Default for rendering type"
+   "@bool vr3-math-output", "False", "True, False", "RsT MathJax math rendering"
+   "@bool vr3-md-math-output", "False", "True, False", "MD MathJax math rendering"
    "vr3-mathjax-url", "''", "url string", "MathJax script URL (both RsT and MD)"
    "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
-   "vr3-asciidoc-path", "''", "string", "Path to asciidoc directory (see notes below)"
+   "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
+   "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -144,8 +148,7 @@ placed into an ``@settings`` tree, preferably in the myLeoSettings file.
     @string vr3-md-math-output = True
     @int qweb-view-font-size = 16
 
-**Note** The font size setting, *qweb-view-font-size*, will probably not be needed. 
-Useful values will generally be from 8 - 20.
+**Note** The font size setting, *qweb-view-font-size*, will probably not be needed.  Useful values will generally be from 8 - 20.
 
 Stylesheets
 ===========
@@ -277,12 +280,20 @@ As with RsT rendering, do not mix MD and RsT in a single node or subtree.
 Rendering Asciidoc
 ==================
 
-The VR3 plugin will render a node using asciidoc if
-an asciidoc processor has been installed and the node type 
+The VR3 plugin will render a node using Asciidoc if
+an Asciidoc or Asciidoc3 processor has been installed and the node type 
 is ``@asciidoc`` or if the node starts with ``@language asciidoc``.
-The asciidoc processor must be an executable file on the system path,
-or in a directory directory pointed to by the system setting
-named ``vr3-asciidoc-path``.
+
+If an Python Asciidoc processor is used (as opposed to Asciidoc3), 
+The asciidoc processor must be in a directory directory pointed 
+to by the system setting named ``vr3-asciidoc-path``.  As an
+alternative, VR3 will use an executable processor named ``asciidoc``
+if it is on the system path.
+
+.. note:: The Asciidoc processors are quite slow at rendering
+          long documents, as can happen when the "Entire Tree"
+          setting is used.  Restructured Text or Markdown are
+          recommended in those cases.
 
 The asciidoc processor must be one of:
 
@@ -294,25 +305,28 @@ The asciidoc processor must be one of:
        package but may be hard to get working on Windows;  or
 
     3. Other external asciidoc processors may work if they can be
-       launched (either directly or by an external batch file), but
-       they will need to have the same command line parameters 
-       as 1. or 2. above.
+       launched from the system path (either directly or by
+       an external batch file), butthey will need to have the same 
+       command line parameters as 1. or 2. above.
 
-Asciidoc can be imported into VR3 instead of being run as an external file by specifying the ``vr3-asciidoc-path`` setting will only work for the ``asciidoc`` from the source stated in 1. above.  This *may* provide faster rendering.
+Asciidoc can be imported into VR3 instead of being run as an external file 
+by specifying its folder location in the ``@vr3-asciidoc-path`` setting.
+This will only work for ``asciidoc`` from the source stated in 1. above.
+This *may* provide faster rendering.
 
-If both asciidoc and asciidoc3 are found, then which one will be used can be set by the setting
+If both ``asciidoc`` and ``asciidoc3`` are found, then which one will 
+be used can be set by the setting
 
-    @bool vr3-prefer-asciidoc3
+    ``@bool vr3-prefer-asciidoc3``
 
-Its default setting is False, meaning that asciisdoc will be peferred.
+Its default setting is False, meaning that Asciidoc will be preferred
+over Asciidoc3.
 
-At the present time, VR3 will only render a single node of asciidoc text, and does not understand any Leo directives such as
-``@language python``. It will not recognize or execute code sections.
-In the future, VR3 will be enhanced to provide these capabilities.
-
-Asciidoc dialects vary somewhat.  The dialect used by the asciidoc processor described above does not use the syntactical for ``[.xxx]``,
-e.g., ``[.big.]``.  The leading period must be omitted: ``[big]``.
-Ther may be other differences.
+Asciidoc dialects vary somewhat.  The dialect used by the 
+asciidoc processors described above does not use the 
+syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead, 
+the leading period must be omitted: ``[big]``. There may be
+other differences.
 #@+node:TomP.20200309191519.1: *3* Colorized Languages
 Colorized Languages
 ===================
@@ -411,7 +425,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
     # This warning looks wrong!
 
 #@+<< imports >>
-#@+node:TomP.20191215195433.4: ** << imports >> (v3)
+#@+node:TomP.20191215195433.4: ** << imports >>
 #
 # Stdlib...
 from contextlib import redirect_stdout
@@ -427,7 +441,8 @@ import string
 import sys
 import webbrowser
 from urllib.request import urlopen
-#@+at    import warnings
+#@+at
+#     import warnings
 #     # Ignore *all* warnings.
 #     warnings.simplefilter("ignore")
 #@@c
@@ -465,7 +480,9 @@ else:
     got_docutils = False
     print('VR3: *** no docutils')
 try:
-    from markdown import markdown
+    #from markdown import markdown
+    import markdown
+    Markdown = markdown.Markdown(extensions=['fenced_code', 'codehilite', 'def_list'])
     got_markdown = True
 except ImportError:
     got_markdown = False
@@ -552,9 +569,13 @@ TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
 MD_CODE_FENCE = '```'
+ASCDOC_CODE_LANG_MARKER = '[source,'
+ASCDOC_FENCE_MARKER = '----'
 
 RST_INDENT = '    '
 SKIPBLOCKS = ('.. toctree::', '.. index::')
+ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
+
 #@-<< declarations >>
 
 trace = False
@@ -1317,6 +1338,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
 
+        # For development only
+        self.ascdoc_use_sm = c.config.getBool('vr3-use-sm-for-asciidoc', False)
+
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1392,13 +1416,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
-        global AsciiDocAPI
+        global AsciiDocAPI, AsciiDocError
         if self.asciidoc_path:
             if os.path.exists(self.asciidoc_path):
-                global AsciiDocAPI
                 try:
                     sys.path.append(self.asciidoc_path)
-                    from  asciidocapi import AsciiDocAPI
+                    from  asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
                 except ImportError:
                     self.asciidoc_path = ''
             else:
@@ -1454,7 +1477,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 #w = pc.ensure_text_widget()
                 return
 
-            # For rst, md handler
+            # For rst, md, asciidoc handler
             self.rst_html = ''
 
             # Dispatch based on the computed kind.
@@ -1489,7 +1512,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if not f:
                 g.trace('no handler for kind: %s' % kind)
                 f = pc.update_rst
-            if kind in (MD, RST, REST, TEXT):
+            if kind in (ASCIIDOC, MD, RST, REST, TEXT):
                 f(_tree, keywords)
             else:
                 f(s, keywords)
@@ -1576,25 +1599,108 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return _must_update
 
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
-    def update_asciidoc(self, s, keywords):
+    def update_asciidoc(self, node_list, keywords):
         """Update asciidoc in the vr3 pane."""
 
-        global asciidoctor_exec, asciidoc3_exec, asciidoc_proc
-        global AsciiDocAPI
         pc = self
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_web_widget()
         assert pc.w
 
-        if s:
-            pc.show()
+        #if s:
+        pc.show()
 
-        s = ':source-highlighter: pygments\n' + s
-        lines = s.split('\n')
-        lines = [line for line in lines if not line.startswith('@language')]
-        s = '\n'.join(lines)
+        self.rst_html = ''
 
-        h = "Didn't find an asciidoc processor"
+        ascdoc = self.process_asciidoc_nodes(node_list)
+        h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
+        h = g.toUnicode(h)  # EKR.
+        self.set_html(h, w)
+    #@+node:TomP.20200825083904.1: *5* vr3.process_asciidoc_nodes
+    def process_asciidoc_nodes(self, node_list, s=''):
+        """Convert content of Leo nodes, or a string, to Asciidoc.
+        
+        If the input contains Python code and self.execute_flag is True,
+        execute the code and capture stdout and stderr output.
+        Return the Asciidoc output with any execution results
+        appended in a literal block.
+        
+        This method uses a rudimentary state machine.
+        
+        ARGUMENTS
+        node_list -- a list of Leo nodes to process.
+        s -- a string.  The node_list must be empty.
+        
+        RETURNS
+        a string containing the Asciidoc and execution results.
+        """
+
+        result = ASCDOC_PYGMENTS_ATTRIBUTE + '\n'
+        codelist = []
+        sm = StateMachine(self, tag=TEXT, structure=ASCIIDOC, lang=ASCIIDOC)
+
+        if not node_list:
+            lines = s.split('\n')
+            # Process node's entire body text; handle @language directives
+            sproc, codelines = sm.runMachine(lines)
+            result += sproc
+            sm.reset()
+        else:
+            for node in node_list:
+                # Add node's text as a headline
+                s = node.b
+                s = self.remove_directives(s)
+                # Remove "@" directive from headline, if any
+                header = node.h or ''
+                if header.startswith('@'):
+                    fields = header.split()
+                    headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+                else:
+                    headline = header
+                headline_str = '== ' + headline
+                s = headline_str + '\n' + s
+                lines = s.split('\n')
+
+                # Process node's entire body text; handle @language directives
+                sproc, codelines = sm.runMachine(lines)
+                result += sproc
+            if codelines:
+                codelist.extend(codelines)
+                sm.reset(sm.tag, sm.lang)
+
+        # Execute code blocks; capture and insert execution results.
+        # This means anything written to stdout or stderr.
+        if self.execute_flag and codelist:
+            execution_result, err_result = None, None
+            code = '\n'.join(codelist)
+            c = self.c
+            environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+            execution_result, err_result = self.exec_code(code, environment)
+            execution_result, err_result = execution_result.strip(), err_result.strip()
+            self.execute_flag = False
+
+            if execution_result or err_result:
+                result += '\n----\n'
+                if execution_result:
+                    result += f'\n{execution_result}\n'
+                if err_result:
+                    result += f'{err_result}\n'
+                result += '----\n'
+
+        return result
+    #@+node:TomP.20200824155122.1: *5* vr3.convert_to_asciidoc
+
+    def convert_to_asciidoc(self, s):
+        """Convert a string to html using an asciidoc processor.
+
+        ARGUMENT
+        s -- a string
+
+        RETURNS
+        the html returned by the processor.
+        """
+
+        global AsciiDocError
         if self.asciidoc_proc == asciidoctor_exec:
             try:
                 # in case using the imported processor fails,
@@ -1603,51 +1709,55 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 infile = io.StringIO(s)
                 outfile = io.StringIO()
                 asciidoc.execute(infile, outfile, backend='html5')
-                h = self.rst_html = outfile.getvalue()
-                infile.close()
-                outfile.close()
+                h = outfile.getvalue()
+                self.rst_html = h
+                return h
             except AttributeError:
-                if self.asciidoc3_internal_ok:
-                    g.es('VR3 - asciidoc error, launching external version')
+                if self.asciidoc_internal_ok:
+                    g.es('VR3 - asciidoc error, launching external program')
                 self.asciidoc_internal_ok = False
                 try:
                     h = self.convert_to_asciidoc_external(s)
                     self.rst_html = h
+                    return h
                 except Exception:
                     g.es_exception()
-
+                except AsciiDocError as e:
+                    g.es(f'==== asciidoc syntax error: {e}')
+            finally:
+                infile.close()
+                outfile.close()
         else:
+            # This code is nearly the same as for asciidoc. It is
+            # repeated here in case we may want to add something else to
+            # the calling parameters.
             try:
                 # asciidoc3api bug may cause this to fail,
                 # so fall back to launching the external asciidoc3 program.
                 if not self.asciidoc3_internal_ok:
                     raise AttributeError
-                from asciidoc3.asciidoc3api import AsciiDoc3API
+                from asciidoc3.asciidoc3api import AsciiDoc3API #pylint: disable=import-outside-toplevel
                 adoc = AsciiDoc3API()
                 infile = io.StringIO(s)
                 outfile = io.StringIO()
                 adoc.execute(infile, outfile, backend='html5')
-                h = self.rst_html = outfile.getvalue()
-                infile.close()
-                outfile.close()
+                h = outfile.getvalue()
+                self.rst_html = h
+                return h
             except (AttributeError, ImportError):
                 if self.asciidoc3_internal_ok:
-                    g.es('VR3 - asciidoc3 error, launching external version')
+                    g.es('VR3 - asciidoc3 error, launching external program')
                 self.asciidoc3_internal_ok = False
                 try:
                     h =  self.convert_to_asciidoc_external(s)
                     self.rst_html = h
+                    return h
                 except Exception:
                     g.es_exception()
+            finally:
+                infile.close()
+                outfile.close()
 
-        h = g.toUnicode(h)  # EKR.
-        self.set_html(h.encode('utf-8'), w)
-    #@+node:TomP.20191215195433.55: *5* vr3.make_asciidoc_title
-    def make_asciidoc_title(self, s):
-        """Generate an asciiidoc title for s."""
-        #line = '#' * (min(4, len(s)))
-        line = '##'
-        return f"{line}\n{s}\n{line}\n\n"
     #@+node:TomP.20191215195433.56: *5* vr3.convert_to_asciidoc_external
     def convert_to_asciidoc_external(self, s):
         """Convert s to html using external asciidoc or asciidoc3 processor."""
@@ -1659,10 +1769,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        if pc.title:
-            s = pc.make_asciidoc_title(pc.title) + s
-            pc.title = None
-        #s = pc.run_asciidoctor(g.toUnicode(s))
         s = pc.run_asciidoctor_external(s)
         return g.toUnicode(s)
     #@+node:TomP.20191215195433.57: *5* vr3.run_asciidoctor_external
@@ -1969,7 +2075,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
                 else:
                     headline = header
-                headline_str = '#' + headline
+                headline_str = '##' + headline
                 s = headline_str + '\n' + s
                 lines = s.split('\n')
 
@@ -2001,15 +2107,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
-        ext = ['fenced_code', 'codehilite']
+        #ext = ['fenced_code', 'codehilite', 'def_list']
 
         try:
-            s = markdown(result, extensions=ext) # s will be an encoded byte attay
+            s = Markdown.reset().convert(result)
+            _html = s
         except SystemMessage as sm:
             msg = sm.args[0]
             if 'SEVERE' in msg or 'FATAL' in msg:
                 _html = 'MD error:\n%s\n\n%s' % (msg, s)
-                return _html
+                #return _html
 
         _html = self.md_header + '\n<body>\n' + s + '\n</body>\n</html>'
         return _html
@@ -2812,9 +2919,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         try:
             exec(code, environment)
         except Exception as e:
-            # print &gt;&gt; buffererr, traceback.format_exc()
-            # buffererr.flush() # otherwise exception info appears too late
-            # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
             g.es('Viewrendered3 exception')
             g.es_exception()
             except_err = f'{type(e).__name__}: {str(e)}\n'
@@ -3035,7 +3139,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             layouts[h] = loc, loo
         c.db['viewrendered3_default_layouts'] = layouts[h]
     #@-others
-#@+node:TomP.20200213170204.1: ** class State
+#@+node:TomP.20200827172759.1: ** State Machine Components
+#@+node:TomP.20200213170204.1: *3* class State
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
@@ -3043,10 +3148,13 @@ class State(Enum):
     IN_SKIP = auto()
     TO_BE_COMPUTED = auto()
 
-#@+node:TomP.20200213170314.1: ** class Action
+    STARTING_ASCDOC_CODE_BLOCK = auto()
+    ASCDOC_READY_FOR_FENCE = auto()
+
+#@+node:TomP.20200213170314.1: *3* class Action
 class Action:
     @staticmethod
-    def new_chunk(sm, line, tag):
+    def new_chunk(sm, line, tag, language, addline_at_new_start=False):
         """ Add chunk to chunk list, create new chunk.
 
         ARGUMENTS
@@ -3056,33 +3164,51 @@ class Action:
         """
 
         sm.chunk_list.append(sm.current_chunk)
-        marker, tag, _lang = StateMachine.get_marker(None, line)
-        sm.current_chunk = Chunk(tag, sm.structure, _lang)
+        sm.current_chunk = Chunk(tag, sm.structure, language)
+        if addline_at_new_start:
+            sm.current_chunk.add_line(line)
 
     @staticmethod
-    def add_line(sm, line, tag=None):
+    def new_chunk_add_line_to_old_end(sm, line, tag, language):
+        sm.current_chunk.add_line(line)
+        sm.chunk_list.append(sm.current_chunk)
+        sm.current_chunk = Chunk(tag, sm.structure, language)
+
+    @staticmethod
+    def new_chunk_add_line_to_new_start(sm, line, tag, language):
+        Action.new_chunk(sm, line, tag, language, True)
+
+    @staticmethod
+    def add_line(sm, line, tag=None, language=TEXT):
         sm.current_chunk.add_line(line)
 
     @staticmethod
-    def add_image(sm, line, tag=None):
-        marker, tag, _lang = StateMachine.get_marker(None, line)
+    def add_image(sm, line, tag=None, language=None):
+        # Used for @image lines
+        marker, tag, _lang = StateMachine.get_marker(sm, line)
         # Get image url
         fields = line.split(' ', 1)
         if len(fields) > 1:
-            url = fields[1]
-            line = f'![]({url})\n'
-            sm.current_chunk.add_line(line)
-        # If no url parameter, do nothing
-
+            url = fields[1] or ''
+            if url:
+                if sm.structure == MD:
+                    # image syntax: ![label](url)
+                    line = f'![]({url})'
+                elif sm.structure == ASCIIDOC:
+                    # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
+                    line = f'image:{url}[]'
+                sm.current_chunk.add_line(line)
+            # If no url parameter, do nothing
 
     @staticmethod
-    def no_action(sm, line, tag=None):
+    def no_action(sm, line, tag=None, language=TEXT):
         pass
-#@+node:TomP.20200213170250.1: ** class Marker
+#@+node:TomP.20200213170250.1: *3* class Marker
 class Marker(Enum):
     """
     For indicating markers in a text line that characterize their purpose, like "@language".
     """
+
     AT_LANGUAGE_MARKER = auto()
     MD_FENCE_LANG_MARKER = auto() # fence token with language; e.g. ```python
     MD_FENCE_MARKER = auto() # fence token with no language
@@ -3090,7 +3216,12 @@ class Marker(Enum):
     START_SKIP = auto()
     END_SKIP = auto()
     IMAGE_MARKER = auto()
-#@+node:TomP.20191231172446.1: ** class Chunk
+
+    ASCDOC_CODE_MARKER = auto()
+    ASCDOC_CODE_LANG_MARKER = auto() # a line like "[source, python]" before a line "---"
+
+#@+node:TomP.20191231172446.1: *3* class Chunk
+#@@language python
 class Chunk:
     """Holds a block of text, with various metadata about it."""
 
@@ -3107,13 +3238,15 @@ class Chunk:
     def format_code(self):
         """Format the text of a chunk. Include special formatting for CODE chunks.
 
-        Currently only reformats RsT/Python and MD/Python.
+        Currently reformats RsT, MD, and Asciidoc, for code languages
+        python, javascript, java, css, and xml.
         """
 
-        if self.tag != CODE or self.structure not in (RST, REST, MD):
+        if self.tag != CODE or self.structure not in (RST, REST, MD, ASCIIDOC):
             self.formatted = '\n'.join(self.text_lines)
             return
 
+        _formatted = ['']
         if self.tag == CODE:
             if self.structure in (RST, REST):
                 _formatted = ['.. code:: %s\n' % (self.language)]
@@ -3125,11 +3258,18 @@ class Chunk:
                 _formatted.append('')
                 self.formatted = '\n'.join(_formatted)
             elif self.structure == MD:
-                _formatted = [f'{MD_CODE_FENCE}{self.language}\n']
-                _formatted.append('\n'.join(self.text_lines))
-                _formatted.append(f'{MD_CODE_FENCE}\n')
+                _formatted = [f'{MD_CODE_FENCE}{self.language}']
+                _formatted.extend(self.text_lines)
+                _formatted.append(f'{MD_CODE_FENCE}')
                 self.formatted = '\n'.join(_formatted)
-#@+node:TomP.20200211142437.1: ** class StateMachine
+            elif self.structure == ASCIIDOC:
+                code_marker = ASCDOC_CODE_LANG_MARKER + self.language + ']'
+                _formatted = [code_marker]
+                _formatted.append(ASCDOC_FENCE_MARKER)
+                _formatted.extend(self.text_lines)
+                _formatted.append(ASCDOC_FENCE_MARKER)
+                self.formatted = '\n'.join(_formatted)
+#@+node:TomP.20200211142437.1: *3* class StateMachine
 #@@language python
 
 class StateMachine:
@@ -3140,10 +3280,13 @@ class StateMachine:
         self.base_lang = lang
         self.state = State.BASE
         self.last_state = State.BASE
+        self.last_marker = None
 
         self.chunk_list = []
         self.current_chunk = Chunk(self.base_tag, structure, self.base_lang)
         self.lang = lang
+        self.tag = tag
+        self.codelang = ''
 
         self.inskip = False
 
@@ -3153,10 +3296,12 @@ class StateMachine:
         self.chunk_list = []
         self.current_chunk = Chunk(tag, self.structure, lang)
         self.lang = lang
+        self.tag = tag
         self.inskip = False
+        self.codelang = ''
 
     #@+<< runMachine >>
-    #@+node:TomP.20200215180012.1: *3* << runMachine >>
+    #@+node:TomP.20200215180012.1: *4* << runMachine >>
     def runMachine(self, lines):
         """Process a list of text lines and return final text and a list of lines of code.
 
@@ -3167,13 +3312,14 @@ class StateMachine:
         a tuple (final_text, code_lines).
         """
 
-        for i, line in enumerate(lines):
-            self.i = i
+        for self.i, line in enumerate(lines):
             self.do_state(self.state, line)
         self.chunk_list.append(self.current_chunk) # have to pick up the last chunk
 
+
         for ch in self.chunk_list:
             ch.format_code()
+
         if self.vr3.code_only:
             results = [ch.formatted for ch in self.chunk_list if ch.tag == CODE]
         else:
@@ -3187,8 +3333,8 @@ class StateMachine:
         return final_text, codelines
     #@-<< runMachine >>
     #@+<< do_state >>
-    #@+node:TomP.20200213170532.1: *3* << do_state >>
-
+    #@+node:TomP.20200213170532.1: *4* << do_state >>
+    #@@language python
     def do_state(self, state, line):
         marker, tag, language = self.get_marker(line)
         if marker == Marker.START_SKIP:
@@ -3206,6 +3352,7 @@ class StateMachine:
             action, next = StateMachine.State_table[(state, marker)]
         except KeyError:
             return
+
         if next == State.TO_BE_COMPUTED:
             # Need to know if this line specified a code or text language.
             # Only known case is if we are in an @language code block
@@ -3217,11 +3364,12 @@ class StateMachine:
                 next = State.BASE
                 #_lang = self.base_lang
 
-        action(self, line, tag)
+        action(self, line, tag, language)
         self.state = next
     #@-<< do_state >>
     #@+<< get_marker >>
-    #@+node:TomP.20200212085651.1: *3* << get_marker >>
+    #@+node:TomP.20200212085651.1: *4* << get_marker >>
+    #@@language python
     def get_marker(self, line):
         """Return classification information about a line.
 
@@ -3232,9 +3380,9 @@ class StateMachine:
 
         RETURNS
         a tuple (marker, tag, lang), where
-            marker is one of AT_LANGUAGE_MARKER, MD_FENCE_LANG_MARKER, MD_FENCE_MARKER, MARKER_NONE;
+            marker is one of the enumeration from class Marker;
             tag is one of CODE, TEXT;
-            lang is the language (e.g., MD, RST, PYTHON) specified by the line, else None.
+            lang is the language (e.g., MD, RST, ASCIIDOC, PYTHON) specified by the line, else None.
         """
 
         marker = Marker.MARKER_NONE
@@ -3243,7 +3391,7 @@ class StateMachine:
 
         # For debugging
         if line.startswith('#%%%%'):
-            print(self.state, self.current_chunk.language, self.current_chunk.tag)
+            g.es('====', self.state, self.lang, self.current_chunk.language, self.current_chunk.tag)
             return(None, None, None)
 
         # Omit lines between @ and @c
@@ -3252,36 +3400,78 @@ class StateMachine:
         elif line.strip() == '@c':
             marker = Marker.END_SKIP
 
-        # A marker line may start with "@language", "@image", or a Markdown code fence.
+        # A marker line may start with "@language", "@image", or a  code fence.
         elif line.startswith("@language"):
             marker = Marker.AT_LANGUAGE_MARKER
-            lang = MD
             for _lang in LANGUAGES:
                 if _lang in line:
                     lang = _lang
+                    tag = CODE
                     break
         elif line.startswith("@image"):
             marker = Marker.IMAGE_MARKER
-            lang = MD
+            lang = self.structure
 
-        elif line.startswith(MD_CODE_FENCE):
+        elif line.startswith(MD_CODE_FENCE) and self.structure == MD:
             lang = MD
-            for _lang in LANGUAGES:
-                if _lang in line:
+            tag = TEXT
+            _lang = line.split(MD_CODE_FENCE)[1]
+            # If _lang == a code language, we are starting a code block.
+            if _lang:
+                if _lang in LANGUAGES:
                     lang = _lang
+                    tag = CODE
                     marker = Marker.MD_FENCE_LANG_MARKER
-                    break
                 else:
-                    # either a literal block or the end of a fenced code block.
+                    # If _lang is TEXT or unknown, we are starting a new literal block.
+                    lang = _lang
+                    tag = TEXT
                     marker = Marker.MD_FENCE_MARKER
+            else:
+                # If there is no language indicator after the fence,
+                # We are ending the block
+                lang = _lang
+                tag = TEXT
+                marker = Marker.MD_FENCE_MARKER
 
-        if lang in LANGUAGES:
-            tag = CODE
+        elif self.structure == ASCIIDOC:
+            if line.startswith(ASCDOC_CODE_LANG_MARKER):
+                self.codelang = ''
+                lang = ASCIIDOC
+                frags = line.split(',')
+                if len(frags) == 2:
+                    _lang = frags[1][:-1].strip()  # remove trailing ']' and spaces
+                    if _lang in LANGUAGES:
+                        lang = _lang
+                    self.codelang = _lang
+                    marker = Marker.ASCDOC_CODE_LANG_MARKER
+                    self.last_marker = marker
+                    self.tag = TEXT
+            elif line.startswith (ASCDOC_FENCE_MARKER):
+                # Might be either the start or end of a code block
+                if self.last_marker == Marker.ASCDOC_CODE_LANG_MARKER:
+                    if self.codelang in LANGUAGES:
+                        tag = CODE
+                        lang = self.codelang
+                    else:
+                        tag = TEXT
+                    marker = Marker.ASCDOC_CODE_MARKER
+                    self.tag = tag
+                    self.last_marker = Marker.ASCDOC_CODE_MARKER
+                else:
+                    # Must be at the end of a code chunk
+                    lang = ASCIIDOC
+                    tag = TEXT
+                    self.codelang = ''
+                    marker = Marker.ASCDOC_CODE_MARKER
+                    self.last_marker = None
+        else:
+            marker = Marker.MARKER_NONE
 
         return (marker, tag, lang)
     #@-<< get_marker >>
     #@+<< State Table >>
-    #@+node:TomP.20200213171040.1: *3* << State Table >>
+    #@+node:TomP.20200213171040.1: *4* << State Table >>
     State_table = { # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER):  (Action.new_chunk, State.AT_LANG_CODE),
@@ -3290,17 +3480,30 @@ class StateMachine:
 
         # When we encounter a new @language line, the next state might be either
         # State.BASE or State.AT_LANG_CODE, so we have to compute which it will be.
-        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.TO_BE_COMPUTED),
+        (State.AT_LANG_CODE, Marker.AT_LANGUAGE_MARKER): 
+                    (Action.new_chunk, State.TO_BE_COMPUTED),
 
-        (State.BASE, Marker.IMAGE_MARKER):                 (Action.add_image, State.BASE),
+        (State.BASE, Marker.IMAGE_MARKER):          (Action.add_image, State.BASE),
 
         # ========= Markdown-specific states ==================
-        (State.BASE, Marker.MD_FENCE_LANG_MARKER):         (Action.new_chunk, State.FENCED_CODE),
-        (State.BASE, Marker.MD_FENCE_MARKER):              (Action.add_line, State.BASE),
-        (State.FENCED_CODE, Marker.MARKER_NONE):           (Action.add_line, State.FENCED_CODE),
-        (State.FENCED_CODE, Marker.MD_FENCE_MARKER):       (Action.new_chunk, State.BASE),
-        (State.AT_LANG_CODE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
-        (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):      (Action.add_line, State.BASE),
+        (State.BASE, Marker.MD_FENCE_LANG_MARKER):   (Action.new_chunk, State.FENCED_CODE),
+        (State.BASE, Marker.MD_FENCE_MARKER):        (Action.add_line, State.BASE),
+        (State.FENCED_CODE, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_CODE),
+        (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE),
+        (State.AT_LANG_CODE, Marker.MD_FENCE_LANG_MARKER):
+                    (Action.new_chunk, State.FENCED_CODE),
+        (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER): (Action.add_line, State.BASE),
+
+        # ========== ASCIIDOC-specific states =================
+        (State.BASE, Marker.ASCDOC_CODE_LANG_MARKER):
+                    (Action.no_action, State.ASCDOC_READY_FOR_FENCE),
+        (State.ASCDOC_READY_FOR_FENCE, Marker.ASCDOC_CODE_MARKER):
+                    # Start a new code chunk
+                    (Action.new_chunk, State.FENCED_CODE),
+        (State.FENCED_CODE, Marker.MARKER_NONE):        (Action.add_line, State.FENCED_CODE),
+        (State.FENCED_CODE, Marker.ASCDOC_CODE_MARKER):
+                    # End fenced code chunk
+                    (Action.new_chunk, State.BASE)
     }
     #@-<< State Table >>
 
