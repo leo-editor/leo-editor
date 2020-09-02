@@ -21642,8 +21642,7 @@ try:
     assert not child.isCloned(), 'fail 1-c'
     c.undoer.redo()
     assert child.isCloned(),    'fail 1-d'
-    oldRoot = c.rootPosition()
-    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+    clone.moveToRoot()  # Does not change child position.
     assert child.isCloned(),    'fail 3-2'
     assert clone.isCloned(),    'fail 4-2'
     assert not clone.parent(),  'fail 5'
@@ -21716,8 +21715,7 @@ else:
     child.setHeadString('child')
     
     try:
-        oldRoot = c.rootPosition()
-        child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
+        child.moveToRoot()  # Does not change child position.
         c.setRootPosition(child)
         assert c.positionExists(child)
         assert c.rootPosition().h == 'child', 'fail 1'
