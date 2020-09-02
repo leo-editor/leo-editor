@@ -3367,6 +3367,66 @@ class StateMachine:
         action(self, line, tag, language)
         self.state = next
     #@-<< do_state >>
+    #@+<< get_marker_md >>
+    #@+node:TomP.20200901214058.1: *4* << get_marker_md >>
+    def get_marker_md(self, line, tag, _lang, marker):
+        # If _lang == a code language, we are starting a code block.
+        if _lang:
+            if _lang in LANGUAGES:
+                lang = _lang
+                tag = CODE
+                marker = Marker.MD_FENCE_LANG_MARKER
+            else:
+                # If _lang is TEXT or unknown, we are starting a new literal block.
+                lang = _lang
+                tag = TEXT
+                marker = Marker.MD_FENCE_MARKER
+        else:
+            # If there is no language indicator after the fence,
+            # We are ending the block
+            lang = _lang
+            tag = TEXT
+            marker = Marker.MD_FENCE_MARKER
+
+        return (marker, tag, lang)
+    #@-<< get_marker_md >>
+    #@+<< get_marker_asciidoc >>
+    #@+node:TomP.20200901211601.1: *4* << get_marker_asciidoc >>
+    def get_marker_asciidoc(self, line, tag, lang, marker):
+
+        if line.startswith(ASCDOC_CODE_LANG_MARKER):
+            self.codelang = ''
+            lang = ASCIIDOC
+            frags = line.split(',')
+            if len(frags) == 2:
+                _lang = frags[1][:-1].strip()  # remove trailing ']' and spaces
+                if _lang in LANGUAGES:
+                    lang = _lang
+                self.codelang = _lang
+                marker = Marker.ASCDOC_CODE_LANG_MARKER
+                self.last_marker = marker
+                self.tag = TEXT
+        elif line.startswith (ASCDOC_FENCE_MARKER):
+            # Might be either the start or end of a code block
+            if self.last_marker == Marker.ASCDOC_CODE_LANG_MARKER:
+                if self.codelang in LANGUAGES:
+                    tag = CODE
+                    lang = self.codelang
+                else:
+                    tag = TEXT
+                marker = Marker.ASCDOC_CODE_MARKER
+                self.tag = tag
+                self.last_marker = Marker.ASCDOC_CODE_MARKER
+            else:
+                # Must be at the end of a code chunk
+                lang = ASCIIDOC
+                tag = TEXT
+                self.codelang = ''
+                marker = Marker.ASCDOC_CODE_MARKER
+                self.last_marker = None
+
+        return (marker, tag, lang)
+    #@-<< get_marker_asciidoc >>
     #@+<< get_marker >>
     #@+node:TomP.20200212085651.1: *4* << get_marker >>
     #@@language python
@@ -3408,6 +3468,7 @@ class StateMachine:
                     lang = _lang
                     tag = CODE
                     break
+
         elif line.startswith("@image"):
             marker = Marker.IMAGE_MARKER
             lang = self.structure
@@ -3416,55 +3477,13 @@ class StateMachine:
             lang = MD
             tag = TEXT
             _lang = line.split(MD_CODE_FENCE)[1]
-            # If _lang == a code language, we are starting a code block.
-            if _lang:
-                if _lang in LANGUAGES:
-                    lang = _lang
-                    tag = CODE
-                    marker = Marker.MD_FENCE_LANG_MARKER
-                else:
-                    # If _lang is TEXT or unknown, we are starting a new literal block.
-                    lang = _lang
-                    tag = TEXT
-                    marker = Marker.MD_FENCE_MARKER
-            else:
-                # If there is no language indicator after the fence,
-                # We are ending the block
-                lang = _lang
-                tag = TEXT
-                marker = Marker.MD_FENCE_MARKER
+            (marker, tag, lang) = self.get_marker_md(line, tag, _lang, marker)
 
         elif self.structure == ASCIIDOC:
-            if line.startswith(ASCDOC_CODE_LANG_MARKER):
-                self.codelang = ''
-                lang = ASCIIDOC
-                frags = line.split(',')
-                if len(frags) == 2:
-                    _lang = frags[1][:-1].strip()  # remove trailing ']' and spaces
-                    if _lang in LANGUAGES:
-                        lang = _lang
-                    self.codelang = _lang
-                    marker = Marker.ASCDOC_CODE_LANG_MARKER
-                    self.last_marker = marker
-                    self.tag = TEXT
-            elif line.startswith (ASCDOC_FENCE_MARKER):
-                # Might be either the start or end of a code block
-                if self.last_marker == Marker.ASCDOC_CODE_LANG_MARKER:
-                    if self.codelang in LANGUAGES:
-                        tag = CODE
-                        lang = self.codelang
-                    else:
-                        tag = TEXT
-                    marker = Marker.ASCDOC_CODE_MARKER
-                    self.tag = tag
-                    self.last_marker = Marker.ASCDOC_CODE_MARKER
-                else:
-                    # Must be at the end of a code chunk
-                    lang = ASCIIDOC
-                    tag = TEXT
-                    self.codelang = ''
-                    marker = Marker.ASCDOC_CODE_MARKER
-                    self.last_marker = None
+            lang = ASCIIDOC
+            tag = TEXT
+            (marker, tag, lang) = self.get_marker_asciidoc(line, tag, lang, marker)
+
         else:
             marker = Marker.MARKER_NONE
 
