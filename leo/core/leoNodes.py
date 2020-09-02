@@ -1487,7 +1487,7 @@ class Position:
             p = parent.insertAsNthChild(0)
         else:
             p = p.insertAfter()
-            p.moveToRoot(oldRoot=p)
+            p.moveToRoot()
         return p
     #@+node:ekr.20040310062332.1: *4* p.invalidOutline
     def invalidOutline(self, message):
