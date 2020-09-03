@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b14
+About Viewrendered3 V3.0b15
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -1488,12 +1488,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
+        # pylint: disable=import-outside-toplevel
         global AsciiDocAPI, AsciiDocError
         if self.asciidoc_path:
             if os.path.exists(self.asciidoc_path):
                 try:
                     sys.path.append(self.asciidoc_path)
-                    from  asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
+                    from asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
                 except ImportError:
                     self.asciidoc_path = ''
             else:
@@ -1800,7 +1801,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return h
                 except Exception:
                     g.es_exception()
-                except AsciiDocError as e:
+                except AsciiDocError as e:  #pylint: disable=undefined-variable
                     g.es(f'==== asciidoc syntax error: {e}')
             finally:
                 infile.close()
