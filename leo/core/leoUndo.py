@@ -1144,8 +1144,7 @@ class Undoer:
         elif u.newParent:
             u.newP._linkAsNthChild(u.newParent, 0)
         else:
-            oldRoot = c.rootPosition()
-            u.newP._linkAsRoot(oldRoot)
+            u.newP._linkAsRoot()
         c.selectPosition(u.newP)
         u.newP.setDirty()
     #@+node:ekr.20111005152227.15559: *4* u.redoDeleteMarkedNodes
@@ -1226,8 +1225,7 @@ class Undoer:
         elif u.newParent:
             u.newP._linkAsNthChild(u.newParent, 0)
         else:
-            oldRoot = c.rootPosition()
-            u.newP._linkAsRoot(oldRoot)
+            u.newP._linkAsRoot()
         if u.pasteAsClone:
             for bunch in u.afterTree:
                 v = bunch.v
@@ -1445,8 +1443,7 @@ class Undoer:
         elif u.oldParent:
             u.p._linkAsNthChild(u.oldParent, 0)
         else:
-            oldRoot = c.rootPosition()
-            u.p._linkAsRoot(oldRoot)
+            u.p._linkAsRoot()
         u.p.setDirty()
         c.selectPosition(u.p)
     #@+node:ekr.20080425060424.10: *4* u.undoDemote

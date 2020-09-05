@@ -1032,8 +1032,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             p.moveToFirstChildOf(parent,n)
             p.moveToLastChildOf(parent,n)
             p.moveToNthChildOf(parent,n)
-            p.moveToRoot(oldRoot=None)
-                # oldRoot **must** be the old root position if it exists.
+            p.moveToRoot()
 
         The following position methods move positions *themselves*: they change the
         node to which a position refers. They do *not* change outline structure in
