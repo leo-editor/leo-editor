@@ -11,16 +11,18 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b13
+About Viewrendered3 V3.0b16
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
-ViewRendered plugin and enhances the display of Restructured Text (RsT), 
-Markdown (MD), asnd Asciidoc (nodes and subtrees.  For RsT and MD, the plugin can:
+ViewRendered plugin and enhances the display of Restructured Text (RsT),
+Markdown (MD), asnd Asciidoc (nodes and subtrees.  For RsT, MD, and Asciidoc
+the plugin can:
 
-    #. Display entire subtrees starting at the selected node;
-    #. Display code and literal blocks in a visually distinct way;
-    #. Any number of code blocks and be intermixed with RsT, MD, or Asciidoc in a single node.
+    #. Render entire subtrees starting at the selected node;
+    #. Render code and literal blocks in a visually distinct way;
+    #. Any number of code blocks can be intermixed with RsT, MD, or Asciidoc in
+       a single node.
     #. Display just the code blocks;
     #. Colorize code blocks;
     #. Execute Python code in the code blocks;
@@ -28,21 +30,27 @@ Markdown (MD), asnd Asciidoc (nodes and subtrees.  For RsT and MD, the plugin ca
     #. Identify code blocks by either an @language directive or by the code block
        syntax normally used by RsT, MD, or Asciidoc (e.g., code fences for MD);
     #. Honor "@" and "@c" directives to ignore all lines between them;
+    #. Insert an image using the ``@image`` directive in addition to the image
+       syntax for the structured text in use.
     #. Export the rendered node or subtree to the system browser;
-    #. Optionally render mathematics symbols and equations using MathJax (not in Asciidoc yet);
-    #. Correctly handle RsT or MD in a docstring;
+    #. Optionally render mathematics symbols and equations using MathJax (not in
+       Asciidoc yet);
+    #. Correctly handle RsT or MD (not tested for Asciidoc as yet) in a docstring;
     #. While an entire subtree rendering is visible, the display can be locked
        so that the entire tree shows even while a single node is being edited.
     #. When an entire subtree is rendered, and editing is being done in one
        node, the display can be frozen (no changes will be displayed) if
        necessary to avoid excessive delay in re-rendering, or visual anomalies.
     #. The default rendering language for a node can be selected to by one of
-       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node or subtree
-       has no @rst or @md headline.
-    #. Displays a node's headline text as the overall heading for the rendering.
+       "RsT", "MD", "Asciidoc", or "TEXT".  This setting applies when the node 
+       or subtree has no @rst or @md headline.
+    #. Display a node's headline text as the overall heading for the rendering.
        However, if the first line of a node exactly equals the headline text
        (not counting a directive like "@rst"), only one copy of that heading
        will be displayed.
+
+A number of other special types of nodes can be rendered (see the 
+section *Special Renderings*)
 
 @setting nodes in an @settings tree can modify the behavior of the plugin.
 #@+node:TomP.20200309205046.1: *3* Compatibility
@@ -75,10 +83,6 @@ Limitations and Quirks
        within a single node.  But only Python blocks can be executed.  Blocks
        intended for another language (such as javascript) will cause syntax
        errors if an attempt is made to execute the node.
-
-    #. The Viewrendered2 plugin, now obsolete, could be set to display execution
-       output as RsT.  This was useful for code that would print RsT.  The
-       current VR3 plugin cannot be set to render the output as RsT.
 
     #. Text nodes and subtrees that have no language specified are rendered as
        preformated text.  They cannot be executed.
@@ -134,6 +138,8 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
+   "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
+   "@bool vr3-insert-headline-from-node", "True", "True, False". Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -190,46 +196,91 @@ viewrendered3.py- specific commands all start with a "vr3-" prefix.  There is
 rarely a reason to invoke any of them, except for ``vr3-toggle``, which shows
 or hides the VR3 pane. This is best bound to a hot key (see above).
 
-#@+node:TomP.20200115200601.1: *3* Rendering reStructuredText
+#@+node:TomP.20200902222012.1: *3* Structured Text
+Structured Text
+---------------
+
+VR3 renders three kinds of structured text: reStructured Text (RsT), Markdown (MD),
+and Asciidoc.  Normally the currently selected node is rendered, but a menu item
+can be selected to render an entire subtree, or just the code blocks.
+#@+node:TomP.20200902222226.1: *4* Special Directives
+Special Directives
+------------------
+
+For all structured text types, VR3 recognizes certain special Leo directives.
+Each of these directives must begin with an "@" character at the start of a line.
+
+Omit Text
+=========
+All lines between the pair "@" and "@c" will be omitted.
+
+Set Language Type For Node Or Block
+===================================
+If a node or the top of a subtree begins with `@rst`, `@md`, or `asciidoc`,
+that language will be the default language of the node or subtree.  If the
+node or subtree is not marked with one of these `@xxx` types, then the
+default language is given by the setting `@string vr3-default-kind = xxx`.
+This can be overiden by the ``Default Kind`` menu.
+
+Within a node, the ``@language`` directive will set the language to be used
+until another ``@language`` directive or the end of the node.
+
+Current languages are `rst`, `rest`, `md`, `asciidoc`, `text`, `python`,
+`javascript`, `java`, `css`, and `xml`.
+
+A directive line must be blank except for the elements of the directive.
+Examplesof ``@language`` directives::
+
+    Python:
+    @language python
+    def f(x):
+        return 2*x
+
+    @language rest
+    Javascript:
+    @language javascript
+    function f(x) {
+        return 2*x;
+    }
+
+    @language rest
+    Java:
+    @language java
+    function f(x) {
+        return 2*x;
+    }
+
+Alternate Directive For Inserting an Image
+==========================================
+In addition to the image syntax of the structured text in use, the `@image`
+directive can be used::
+
+    @image url-or-file_url
+
+
+#@+node:TomP.20200115200601.1: *4* Rendering reStructuredText
 Rendering reStructuredText
 ==========================
 
 The VR3 plugin will render a node using RsT if its headline, or the headline of
 a parent, starts with ``@rst``. The type of rendering is called its "kind". If
 no kind is known, then RsT rendering will be used unless the ``vr3-default-kind``
-setting is set to ``@md``.  The default kind can also be changed using the
-``Default Kind`` menu.
+setting is set to another allowed value.  The default kind can also be changed 
+using the ``Default Kind`` menu.
 
-Besides the normal RsT method of declaring a code block::
-
-    .. code:: python
-
-        # This will be some Python code
-        def f(x):
-            return 2*x
-
-A code block can be started with an ``@language directive``::
-
-    @language python
-    def f(x):
-        return 2*x
-
-Return to RsT rendering with an ``@language rest`` directive at the start of a
-line (the code block must end with a blank line before the new directive).
-``@language rst`` is also accepted
-
-Any number of code blocks can be used in a node, but do not try to split a
+Any number of code blocks can be used in a node, but do not split a
 code block across two nodes.
 
 Other languages are supported besides python.  See the list of languages below
 at **Colorized Languages**.  Only Python can be successfully executed.
 
-VR3 can render both RsT and MD, but do not mix the two in any one node or subtree.
+VR3 can render RsT, MD, and Asciidoc, but do not include more than one in any
+one node or subtree.
 
 **Note**: reStructuredText errors and warnings will appear in red in the
 rendering pane.
 
-#@+node:TomP.20200115200634.1: *3* Rendering Markdown
+#@+node:TomP.20200115200634.1: *4* Rendering Markdown
 Rendering Markdown
 ==================
 
@@ -245,7 +296,7 @@ rendering must be specified by putting it in a ``@md`` node.
 A literal block is declared using backtick "fences"::
 
 
-    ``` text
+    ```text
     this should be a literal block.
     ```
 
@@ -256,29 +307,20 @@ fence by itself without it. Fences must begin at the start of a line.
 A code block is indicated with the same fence, but the name of
 the language instead::
 
-    ``` python
+    ```python
     def f(x):
         return 2*x
     ```
 
-Code blocks can be also be started with an ``@language directive``::
+.. note::
+    No space is allowed between the fence characters and the language.
 
-    @language python
-    def f(x):
-        return 2*x
+As with RsT rendering, do not mix multiple structured languages in a single 
+node or subtree.
 
-After a code block, MD rendering can specified with a ``@language md``
-directive.
-
-Other languages are supported besides python.  See the
-list of languages below at **Colorized Languages**.  Only Python
-can be successfully executed.
-
-As with RsT rendering, do not mix MD and RsT in a single node or subtree.
-
-#@+node:TomP.20200820170225.1: *3* Rendering Asciidoc
+#@+node:TomP.20200820170225.1: *4* Rendering Asciidoc
 Rendering Asciidoc
-==================
+------------------
 
 The VR3 plugin will render a node using Asciidoc if
 an Asciidoc or Asciidoc3 processor has been installed and the node type 
@@ -290,23 +332,30 @@ to by the system setting named ``vr3-asciidoc-path``.  As an
 alternative, VR3 will use an executable processor named ``asciidoc``
 if it is on the system path.
 
+It is also possible to use the Ruby ``asciidoctor.rb`` program as an external 
+processor.  This will render the Asciidoc much faster than
+
 .. note:: The Asciidoc processors are quite slow at rendering
           long documents, as can happen when the "Entire Tree"
           setting is used.  Restructured Text or Markdown are
-          recommended in those cases.
+          recommended in those cases, or the Ruby version
+          ``asciidoctor`` (see below).
 
 The asciidoc processor must be one of:
 
-    1. ``asciidoc`` from https://asciidoc.org/index.html.
+    1. ``asciidoctor``, which requires a Ruby environment to be
+       installed on your computer;
+
+    2. ``asciidoc`` from https://asciidoc.org/index.html.
        This may be available pre-installed or as a package
        in some Linux distributions;
 
-    2. ``asciidoc3``, which is available as a python installable
+    3. ``asciidoc3``, which is available as a python installable
        package but may be hard to get working on Windows;  or
 
-    3. Other external asciidoc processors may work if they can be
+    4. Other external asciidoc processors may work if they can be
        launched from the system path (either directly or by
-       an external batch file), butthey will need to have the same 
+       an external batch file), but they will need to have the same 
        command line parameters as 1. or 2. above.
 
 Asciidoc can be imported into VR3 instead of being run as an external file 
@@ -322,6 +371,32 @@ be used can be set by the setting
 Its default setting is False, meaning that Asciidoc will be preferred
 over Asciidoc3.
 
+Installing the ``asciidoctor`` Ruby Program
+===========================================
+First install the Ruby code environment.  It is not necessary to install 
+the entire development system. A minimal install will be enough.
+Next, run the following commands in a terminal or Windows console::
+
+    gem install asciidoctor
+    gem install pygments.rb
+
+Specifying a Preference for the External Processor
+==================================================
+To specify that VR3 should use the ``asciidoctor`` external program, add a
+setting to the @settings tree in MyLeoSettings.leo or
+in an outline you wish to render, then reload the settings. This
+setting is::
+
+    @string vr3-prefer-external = asciidoctor
+
+You can use another program of the same name as long as it accepts the same commandline parameters as asciidoctor.  This program must be on the system path.  Ruby and its ``gem`` installer set this up for you.  You can also use a different name for the external program, and you can include the complete path to the processor.
+
+.. note::
+
+    If a different program name is used, source highlighting may not work.
+
+Asciidoc Dialects
+=================
 Asciidoc dialects vary somewhat.  The dialect used by the 
 asciidoc processors described above does not use the 
 syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead, 
@@ -332,7 +407,7 @@ Colorized Languages
 ===================
 
 Currently the languages that can be colorized are Python, Javascript,
-Java, and CSS.
+Java, CSS, and XML.
 
 #@+node:TomP.20200115200704.1: *3* Special Renderings
 Special Renderings
@@ -394,9 +469,9 @@ relative to Leo's load directory.
 
 - ``@svg`` renders the file as a (possibly animated) svg (Scalable Vector Image).
   See http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
-  
+
   .. note:: if the first character of the body text is ``<`` after removing
-            Leo directives, the contents of body pane is taken to be an svg image.
+            Leo directives, the contents of body pane is taken to svg code.
 
 #@+node:TomP.20200115200833.1: *3* Acknowledgments
 Acknowledgments
@@ -412,8 +487,8 @@ any printed output into the node.  Thomas B. Passin enhanced Viewrendered2,
 adding the ability to change from RsT to Python and back within a node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2 functionality with
-Python 3/QT5 .  VR3 brings more enhancements to ReStructured Text and Markdown
-rendering.  Other functionality is the same as for the Viewrendered plugin.
+Python 3/QT5. VR3 brings more enhancements to ReStructured Text and Markdown
+rendering, and adds Asciidoc rendering.  Other functionality is the same as for the Viewrendered plugin.
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
@@ -1063,6 +1138,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
+        self.using_ext_proc_msg_shown = False
     #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
     def create_base_text_widget(self):
         """
@@ -1316,12 +1392,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+        self.set_rst_stylesheet()
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
         self.rst_math_output = 'mathjax ' + self.mathjax_url
 
-        self.set_rst_stylesheet()
+        self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
@@ -1332,15 +1409,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_asciidoc_import()
 
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', False)
+        self.prefer_external = c.config.getString('vr3-prefer-external') or ''
 
         if self.prefer_asciidoc3:
             self.asciidoc_proc = asciidoc3_exec or asciidoctor_exec or None
         else:
             self.asciidoc_proc = asciidoctor_exec or asciidoc3_exec or None
-
-        # For development only
-        self.ascdoc_use_sm = c.config.getBool('vr3-use-sm-for-asciidoc', False)
-
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Verify or create css stylesheet for Markdown node.
@@ -1416,12 +1490,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_stylesheet = g.os_path_join(vr_style_dir, RST_DEFAULT_STYLESHEET_NAME)
     #@+node:TomP.20200820112350.1: *4* vr3.set_asciidoc_import
     def set_asciidoc_import(self):
+        # pylint: disable=import-outside-toplevel
         global AsciiDocAPI, AsciiDocError
         if self.asciidoc_path:
             if os.path.exists(self.asciidoc_path):
                 try:
                     sys.path.append(self.asciidoc_path)
-                    from  asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
+                    from asciidocapi import AsciiDocAPI, AsciiDocError #pylint disable=import-outside-toplevel
                 except ImportError:
                     self.asciidoc_path = ''
             else:
@@ -1637,6 +1712,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         result = ASCDOC_PYGMENTS_ATTRIBUTE + '\n'
         codelist = []
+
         sm = StateMachine(self, tag=TEXT, structure=ASCIIDOC, lang=ASCIIDOC)
 
         if not node_list:
@@ -1651,14 +1727,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node.b
                 s = self.remove_directives(s)
                 # Remove "@" directive from headline, if any
-                header = node.h or ''
-                if header.startswith('@'):
-                    fields = header.split()
-                    headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
-                else:
-                    headline = header
-                headline_str = '== ' + headline
-                s = headline_str + '\n' + s
+                if self.use_node_headline:
+                    header = node.h or ''
+                    if header.startswith('@'):
+                        fields = header.split()
+                        headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+                    else:
+                        headline = header
+                    headline_str = '== ' + headline
+                    s = headline_str + '\n' + s
                 lines = s.split('\n')
 
                 # Process node's entire body text; handle @language directives
@@ -1701,6 +1778,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         global AsciiDocError
+        if self.prefer_external:
+            h =  self.convert_to_asciidoc_external(s)
+            self.rst_html = h
+            return h
+
         if self.asciidoc_proc == asciidoctor_exec:
             try:
                 # in case using the imported processor fails,
@@ -1722,7 +1804,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return h
                 except Exception:
                     g.es_exception()
-                except AsciiDocError as e:
+                except AsciiDocError as e:  #pylint: disable=undefined-variable
                     g.es(f'==== asciidoc syntax error: {e}')
             finally:
                 infile.close()
@@ -1791,13 +1873,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call the external program to write the output file.
         # Assume that the command line may be different between asciidoc and asciidoc3
-        if self.asciidoc_proc == asciidoctor_exec:
+        if 'asciidoctor' in self.prefer_external:
+            command = f"del {o_path} & {self.prefer_external} -b html5 {i_path}"
+        elif self.asciidoc_proc == asciidoctor_exec:
             command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
         else:
             command = f"del {o_path} & {self.asciidoc_proc} -b html5 {i_path}"
 
-        if self.asciidoc_proc:
-            g.es(f"=== Using external asciidoc {self.asciidoc_proc}")
+        ext_proc = self.prefer_external or self.asciidoc_proc
+        if ext_proc:
+            if not self.using_ext_proc_msg_shown:
+                g.es(f"=== Using external asciidoc processor: {ext_proc}")
+                self.using_ext_proc_msg_shown = True
+
             g.execute_shell_commands(command)
             # Read the output file and return it.
             try:
@@ -2065,18 +2153,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
             sm.reset()
         else:
             for node in node_list:
-                # Add node's text as a headline
                 s = node.b
                 s = self.remove_directives(s)
-                # Remove "@" directive from headline, if any
-                header = node.h or ''
-                if header.startswith('@'):
-                    fields = header.split()
-                    headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
-                else:
-                    headline = header
-                headline_str = '##' + headline
-                s = headline_str + '\n' + s
+                if self.use_node_headline:
+                    # Add node's text as a headline
+                    # Remove "@" directive from headline, if any
+                    header = node.h or ''
+                    if header.startswith('@'):
+                        fields = header.split()
+                        headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+                    else:
+                        headline = header
+                    headline_str = '##' + headline
+                    s = headline_str + '\n' + s
                 lines = s.split('\n')
 
                 # Process node's entire body text; handle @language directives
@@ -2367,7 +2456,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Add node's text as a headline
                 s = node.b
                 s = self.remove_directives(s)
-                s = self.make_rst_headline(node, s)
+                if self.use_node_headline:
+                    s = self.make_rst_headline(node, s)
 
                 # Process node's entire body text to handle @language directives
                 sproc, codelines = self.process_rst_node(s)
@@ -2722,7 +2812,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _headline_str = p.h
             _headline_str = _headline_str.strip() # Docutils raises error for leading space
             _headline_str.replace('\\', '\\\\')
-            _underline = '='*len(_headline_str)
+            _underline = '-'*len(_headline_str)
 
         # Don't duplicate node heading if the body already has it
         # Assumes that 1st two lines are a heading if
