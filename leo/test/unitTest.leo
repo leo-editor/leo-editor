@@ -771,19 +771,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935"># TARGETWORD
-
-w = c.frame.body.wrapper
-
-for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-    w.setInsertPoint(5)
-    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-    s = w.getAllText()
-    word = s[2:12]
-    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-    i = w.getInsertPoint()
-    assert i == 5, 'Expected 5, got: %d' % i
-</t>
+<t tx="ekr.20070417092935"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
