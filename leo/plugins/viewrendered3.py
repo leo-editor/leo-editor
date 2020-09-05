@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b15
+About Viewrendered3 V3.0b16
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -139,6 +139,7 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
+   "@bool vr3-insert-headline-from-node", "True", "True, False". Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -1391,12 +1392,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+        self.set_rst_stylesheet()
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
         self.rst_math_output = 'mathjax ' + self.mathjax_url
 
-        self.set_rst_stylesheet()
+        self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
@@ -1725,14 +1727,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node.b
                 s = self.remove_directives(s)
                 # Remove "@" directive from headline, if any
-                header = node.h or ''
-                if header.startswith('@'):
-                    fields = header.split()
-                    headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
-                else:
-                    headline = header
-                headline_str = '== ' + headline
-                s = headline_str + '\n' + s
+                if self.use_node_headline:
+                    header = node.h or ''
+                    if header.startswith('@'):
+                        fields = header.split()
+                        headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+                    else:
+                        headline = header
+                    headline_str = '== ' + headline
+                    s = headline_str + '\n' + s
                 lines = s.split('\n')
 
                 # Process node's entire body text; handle @language directives
@@ -2150,18 +2153,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
             sm.reset()
         else:
             for node in node_list:
-                # Add node's text as a headline
                 s = node.b
                 s = self.remove_directives(s)
-                # Remove "@" directive from headline, if any
-                header = node.h or ''
-                if header.startswith('@'):
-                    fields = header.split()
-                    headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
-                else:
-                    headline = header
-                headline_str = '##' + headline
-                s = headline_str + '\n' + s
+                if self.use_node_headline:
+                    # Add node's text as a headline
+                    # Remove "@" directive from headline, if any
+                    header = node.h or ''
+                    if header.startswith('@'):
+                        fields = header.split()
+                        headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+                    else:
+                        headline = header
+                    headline_str = '##' + headline
+                    s = headline_str + '\n' + s
                 lines = s.split('\n')
 
                 # Process node's entire body text; handle @language directives
@@ -2452,7 +2456,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Add node's text as a headline
                 s = node.b
                 s = self.remove_directives(s)
-                s = self.make_rst_headline(node, s)
+                if self.use_node_headline:
+                    s = self.make_rst_headline(node, s)
 
                 # Process node's entire body text to handle @language directives
                 sproc, codelines = self.process_rst_node(s)
