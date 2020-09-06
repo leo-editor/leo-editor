@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b16
+About Viewrendered3 V3.0b17
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -3363,7 +3363,7 @@ class Chunk:
 #@@language python
 
 class StateMachine:
-    def __init__(self, vr3, tag=TEXT, structure=MD, lang=MD):
+    def __init__(self, vr3, tag=TEXT, structure=RST, lang=RST):
         self.vr3 = vr3
         self.base_tag = tag
         self.structure = structure
@@ -3380,7 +3380,7 @@ class StateMachine:
 
         self.inskip = False
 
-    def reset(self, tag=TEXT, lang=MD):
+    def reset(self, tag=TEXT, lang=RST):
         self.state = State.BASE
         self.last_state = State.BASE
         self.chunk_list = []
@@ -3599,9 +3599,8 @@ class StateMachine:
         (State.BASE, Marker.MD_FENCE_MARKER):        (Action.add_line, State.BASE),
         (State.FENCED_CODE, Marker.MARKER_NONE):     (Action.add_line, State.FENCED_CODE),
         (State.FENCED_CODE, Marker.MD_FENCE_MARKER): (Action.new_chunk, State.BASE),
-        (State.AT_LANG_CODE, Marker.MD_FENCE_LANG_MARKER):
-                    (Action.new_chunk, State.FENCED_CODE),
-        (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER): (Action.add_line, State.BASE),
+        (State.AT_LANG_CODE, Marker.MD_FENCE_MARKER):
+                    (Action.add_line, State.AT_LANG_CODE),
 
         # ========== ASCIIDOC-specific states =================
         (State.BASE, Marker.ASCDOC_CODE_LANG_MARKER):
