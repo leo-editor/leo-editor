@@ -175,7 +175,7 @@ def show_hide_body_dock(event):
     if not dw:
         return
     if not g.app.dock:
-        g.es('this command works only when using docks')
+        g.es('this command requires docks')
         return
     dock = dw.body_dock
     if not dock:
@@ -196,7 +196,7 @@ def show_hide_outline_dock(event):
     if not dw:
         return
     if not g.app.dock:
-        g.es('this command works only when using docks')
+        g.es('this command requires docks')
         return
     dock = dw.outline_dock
     if not dock:
@@ -217,7 +217,7 @@ def show_hide_render_dock(event):
     if not dw:
         return
     if not g.app.dock:
-        g.es('this command works only when using docks')
+        g.es('this command requires docks')
         return
     pc = g.app.pluginsController
     vr = pc.getPluginModule('leo.plugins.viewrendered')
@@ -238,7 +238,7 @@ def show_hide_tabs_dock(event):
     if not dw:
         return
     if not g.app.dock:
-        g.es('this command works only when using docks')
+        g.es('this command requires docks')
         return
     dock = dw.tabs_dock
     if not dock:

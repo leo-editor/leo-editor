@@ -401,13 +401,15 @@ class FreeLayoutController:
 #@+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
 def free_layout_context_menu(event):
-    """free_layout_context_menu - open free layout's context menu, using
-    the first divider of the top splitter for context, for now.
+    """
+    Open free layout's context menu, using the first divider of the top
+    splitter for context.
+    
+    This command does noting when --use-docks is in effect.
     """
     if g.app.dock:
         # #1216
-        g.es('free-layout-context-menu works only when')
-        g.es('--no-dock is in effect')
+        g.es('free-layout-context-menu does nothing when using docks')
         return
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
@@ -416,24 +418,28 @@ def free_layout_context_menu(event):
 #@+node:tbrown.20130403081644.25265: *3* @g.command free-layout-restore
 @g.command('free-layout-restore')
 def free_layout_restore(event):
-    """free_layout_restore - restore layout outline had when it was loaded
+    """
+    Restore layout outline had when it was loaded.
+    
+    This command does noting when --use-docks is in effect.
     """
     if g.app.dock:
         # #1216
-        g.es('free-layout-restore works only when')
-        g.es('--no-dock is in effect')
+        g.es('free-layout-restore does nothing when using docks')
         return
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 #@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
 def free_layout_load(event):
-    """free_layout_load - load layout from menu
+    """
+    Load layout from menu.
+    
+    This command does noting when --use-docks is in effect.
     """
     if g.app.dock:
         # #1216
-        g.es('free-layout-load works only when')
-        g.es('--no-dock is in effect')
+        g.es('free-layout-load does nothing when using docks')
         return
     c = event.get('c')
     d = g.app.db.get('ns_layouts', {})
@@ -454,12 +460,14 @@ def free_layout_load(event):
 #@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
 def free_layout_zoom(event):
-    """free_layout_zoom - (un)zoom the current pane.
+    """
+    (un)zoom the current pane.
+    
+    This command does noting when --use-docks is in effect.
     """
     if g.app.dock:
         # #1216
-        g.es('free-layout-zoom works only when')
-        g.es('--no-dock is in effect')
+        g.es('free-layout-zoom does nothing when using docks')
         return
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()

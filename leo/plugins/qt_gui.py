@@ -769,7 +769,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (changed)
     total_docks = 0
 
     def create_dock_widget(self, closeable, moveable, height, name):
@@ -777,7 +777,8 @@ class LeoQtGui(leoGui.LeoGui):
         dock = QtWidgets.QDockWidget(parent=self.main_window)
             # The parent must be a QMainWindow.
         features = dock.NoDockWidgetFeatures
-        if moveable:
+        # #1643: Widgets are fixed unless --init-docks is in effect
+        if moveable and g.app.init_docks:
             features |= dock.DockWidgetMovable
             features |= dock.DockWidgetFloatable
         if closeable:
