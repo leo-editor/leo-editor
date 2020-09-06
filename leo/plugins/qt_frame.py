@@ -3266,11 +3266,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """
         Toggle the split direction in the present Leo window.
         
-        This command does noting when --dock is in effect.
+        This command does noting when --use-docks is in effect.
         """
         if g.app.dock:
-            g.es('toggle-split-direction works only when')
-            g.es('--no-dock is in effect')
+            g.es('toggle-split-direction does nothing when using docks')
             return
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
