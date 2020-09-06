@@ -43,7 +43,8 @@ def init(): # pyzo_in_leo.py
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
     if not g.app.dock:
-        return oops('is incompatible with --no-dock')
+        return oops('requires --use-docks')
+    # #1643: This test will never fail now.
     if not g.app.use_global_docks:
         return oops('requires --global-docks')
     #

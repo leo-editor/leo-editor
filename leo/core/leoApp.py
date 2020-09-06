@@ -3027,15 +3027,17 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
     def scanOptions(self, fileName, pymacs):
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
         table = (
             '--dock',
-            # '--no-dock', # #1171: retire legacy Qt guis.
+            '--global-docks',  # #1643. use --use-docks instead.
             '--no-cache',
-            '--no-dock', # #1514: Replaced by --use-docks
+            '--no-dock',
+                # #1171: retire legacy Qt guis.
+                # #1514: Replaced by --use-docks
             '--session-restore',
             '--session-save',
         )
@@ -3044,7 +3046,13 @@ class LoadManager:
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print(f"Ignoring the deprecated {bad_option} option")
+                if bad_option == '--global-docks':
+                    # #1643: --global-docks implies --use-docks
+                    print(f"{bad_option} is deprecated. Use --use-docks instead")
+                    if '--use_docks not in sys.argv':
+                        sys.argv.append('--use-docks')
+                else:
+                    print(f"Ignoring the deprecated {bad_option} option")
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -3091,18 +3099,16 @@ class LoadManager:
             add(option, dest=dest, help=help, metavar=m)
 
         add_bool('--diff',          'use Leo as an external git diff')
-        # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--init-docks',    'put docks in default positions')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
-        add_bool('--global-docks',  'use global docks')
+        # add_bool('--global-docks',  'deprecated: use --use-docks')
         add_other('--gui',          'gui to use (qt/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        # add_bool('--no-dock',       'use legacy look & feel')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -3190,7 +3196,7 @@ class LoadManager:
         else:
             script = None
         return script
-    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
+    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions (changed)
     def doSimpleOptions(self, options, trace_m):
         """These args just set g.app ivars."""
         # --fail-fast
@@ -3199,10 +3205,6 @@ class LoadManager:
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
-         # --global-docks
-        g.app.use_global_docks = bool(options.global_docks)
-        if options.global_docks:
-            print(f"--global-docks: {g.app.use_global_docks}")
         # --init-docks
         g.app.init_docks = options.init_docks
         # --listen-to-log
@@ -3213,19 +3215,15 @@ class LoadManager:
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-dock and --use-docks
-        # #1171: retain --no-dock indefinitely.
-        # #1514: --no-dock is the default.
-        if options.use_docks or options.global_docks:
-            # --global-docks implies --use-docks.
+        # --use-docks
+        if options.use_docks or options.init_docks:
             g.app.dock = True
+            g.app.use_global_docks = True  # # 1643.
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
-        g.app.use_splash_screen = (
-            not options.no_splash and
-            not options.minimized)
+        g.app.use_splash_screen = not options.no_splash and not options.minimized
         # --silent
         g.app.silentMode = options.silent
         # --trace=...
@@ -3239,7 +3237,6 @@ class LoadManager:
                     g.app.debug.append(val)
                 else:
                     g.es_print(f"unknown --trace value: {val}")
-        # g.trace('g.app.debug', repr(g.app.debug))
         #
         # These are not bool options.
         # --trace-binding
