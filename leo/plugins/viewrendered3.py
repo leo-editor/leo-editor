@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b17
+About Viewrendered3 V3.0b18
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2143,7 +2143,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200208211347.1: *6* process nodes
         result = ''
         codelist = []
-        sm = StateMachine(self)
+        sm = StateMachine(self, TEXT, MD, MD)
 
         if not node_list:
             lines = s.split('\n')
