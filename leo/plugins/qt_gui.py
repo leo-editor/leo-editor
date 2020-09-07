@@ -780,9 +780,9 @@ class LeoQtGui(leoGui.LeoGui):
         # #1643: Widgets are fixed unless --init-docks is in effect
         if moveable and g.app.init_docks:
             features |= dock.DockWidgetMovable
-            features |= dock.DockWidgetFloatable
         if closeable:
             features |= dock.DockWidgetClosable
+        features |= dock.DockWidgetFloatable
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
