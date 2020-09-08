@@ -154,7 +154,7 @@ class LeoQtGui(leoGui.LeoGui):
         if 'shutdown' in g.app.debug:
             g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
-    #@+node:ekr.20200908164804.1: *3*  qt_gui.finishCreate (new)
+    #@+node:ekr.20200908164804.1: *3*  qt_gui.finishCreate
     def finishCreate(self):
         """A late fix for #1654"""
         main_window = getattr(self, 'main_window')
