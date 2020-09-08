@@ -1400,7 +1400,6 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.saveGlobalWindowState()
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1665,7 +1664,7 @@ class LeoApp:
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
-    #@+node:ekr.20190613062357.1: *3* app.WindowState...
+    #@+node:ekr.20190613062357.1: *3* ----- app.WindowState...
     #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (changed)
     def restoreEditorDockState(self, c):
 
@@ -1722,49 +1721,6 @@ class LeoApp:
             if trace:
                 print(f"{tag:>30}: {wrapper} {dock_name}")
         if trace: g.trace('END')
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (disabled)
-    def restoreGlobalWindowState(self):
-        """
-        Restore the layout of global dock widgets and toolbars.
-        """
-        #
-        # Note for #1189: The windows has already been properly resized
-        #                 by the time this method is called.
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        g.trace('===== g.app.gui.main_window', main_window)
-        return ###
-        #
-        # Support --init-docks.
-        # #1196. Let Qt use it's own notion of a default layout.
-        #        This should work regardless of the central widget.
-        if g.app.init_docks:
-            if trace: g.trace('--init-docks')
-            return
-        key = 'globalWindowState:'
-        val = self.db.get(key)
-        if val:
-            if trace: g.trace(f"found key: {key}")
-            try:
-                val = base64.decodebytes(val.encode('ascii'))
-                    # Elegant pyzo code.
-                main_window.restoreState(val)
-                return
-            except Exception as err:
-                g.trace(f"bad value: {key} {err}")
-                return
-        # This is not an error.
-        if trace: g.trace(f"missing key: {key}")
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     ekr_val = None
 
@@ -1873,38 +1829,6 @@ class LeoApp:
                 print(f"{tag:>30}: {dock_name}")
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (disabled)
-    def saveGlobalWindowState(self):
-        """
-        Save the window geometry and layout of dock widgets and toolbars
-        for Leo's *global* QMainWindow.
-        
-        Called by g.app.finishQuit. 
-        """
-        return ###
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        #
-        # Save the state
-        key = 'globalWindowState:'
-        val = main_window.saveState()
-            # Method is a QMainWindow method.
-        try:
-            val = bytes(val)  # PyQt4
-        except Exception:
-            val = bytes().join(val)  # PySide
-        if trace: g.trace(f"set key: {key}:")
-        g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         """
@@ -2643,7 +2567,6 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
-        g.app.restoreGlobalWindowState()
         g.es('')  # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()

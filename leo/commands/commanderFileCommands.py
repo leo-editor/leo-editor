@@ -179,10 +179,8 @@ def new(self, event=None, gui=None):
     g.app.unlockLog()
     if not old_c:
         frame.setInitialWindowGeometry()
-    # #1643: Neither of these work here.
-    # g.app.restoreGlobalWindowState()
-    # g.app.restoreWindowState(c)
-    
+    # #1643: This doesn't work.
+        # g.app.restoreWindowState(c)
     frame.deiconify()
     frame.lift()
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
