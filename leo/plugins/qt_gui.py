@@ -154,6 +154,12 @@ class LeoQtGui(leoGui.LeoGui):
         if 'shutdown' in g.app.debug:
             g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
+    #@+node:ekr.20200908164804.1: *3*  qt_gui.finishCreate (new)
+    def finishCreate(self):
+        """A late fix for #1654"""
+        main_window = getattr(self, 'main_window')
+        if main_window and not g.app.start_minimized:
+            main_window.show()  # #1654
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
     #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
     def replaceClipboardWith(self, s):
@@ -1187,14 +1193,10 @@ class LeoQtGui(leoGui.LeoGui):
         """Make the *singleton* QMainWindow."""
         window = QtWidgets.QMainWindow()
         window.setObjectName('LeoGlobalMainWindow')
-        # Calling window.show() causes flash.
-            # window.show()
+        # Calling window.show() here causes flash.
         self.attachLeoIcon(window)
         if g.app.start_minimized:
             window.showMinimized()
-        ### This solves #1654, but it ruins the layout of the first file.
-            # else:
-            #    window.show()  # #1654
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.
