@@ -1192,8 +1192,9 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(window)
         if g.app.start_minimized:
             window.showMinimized()
-        else:
-            window.show()  # 2020/09/08.
+        ### This solves #1654, but it ruins the layout of the first file.
+            # else:
+            #    window.show()  # #1654
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.
