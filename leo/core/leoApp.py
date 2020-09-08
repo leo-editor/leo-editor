@@ -1715,7 +1715,7 @@ class LeoApp:
                 wrapper = wrapper,
             )
             w =  c.frame.body.wrapper.widget
-            body.updateInjectedIvars(w, p) ###
+            body.updateInjectedIvars(w, p)
             body.selectLabel(wrapper)
             body.selectEditor(wrapper)
             if trace:
@@ -2953,7 +2953,7 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName, pymacs):
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
@@ -2961,9 +2961,7 @@ class LoadManager:
             '--dock',
             '--global-docks',  # #1643. use --use-docks instead.
             '--no-cache',
-            '--no-dock',
-                # #1171: retire legacy Qt guis.
-                # #1514: Replaced by --use-docks
+            '--no-dock',  # #1171 and #1514: use --use-docks instead.
             '--session-restore',
             '--session-save',
         )
@@ -3122,7 +3120,7 @@ class LoadManager:
         else:
             script = None
         return script
-    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions (changed)
+    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options, trace_m):
         """These args just set g.app ivars."""
         # --fail-fast
