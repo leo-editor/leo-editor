@@ -1722,7 +1722,7 @@ class LeoApp:
             if trace:
                 print(f"{tag:>30}: {wrapper} {dock_name}")
         if trace: g.trace('END')
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
+    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState (disabled)
     def restoreGlobalWindowState(self):
         """
         Restore the layout of global dock widgets and toolbars.
@@ -1742,6 +1742,8 @@ class LeoApp:
                 else:
                     g.trace('no ivar: g.app.gui.main_window')
             return
+        g.trace('===== g.app.gui.main_window', main_window)
+        return ###
         #
         # Support --init-docks.
         # #1196. Let Qt use it's own notion of a default layout.
@@ -1800,9 +1802,9 @@ class LeoApp:
         )
         for key, method in table:
             val = self.db.get(key)
-            if trace:
-                g.trace(f"{sfn} found key: {key}")
             if val:
+                if trace:
+                    g.trace(f"{sfn} found key: {key}")
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
@@ -1871,7 +1873,7 @@ class LeoApp:
                 print(f"{tag:>30}: {dock_name}")
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
+    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState (disabled)
     def saveGlobalWindowState(self):
         """
         Save the window geometry and layout of dock widgets and toolbars
@@ -1879,6 +1881,7 @@ class LeoApp:
         
         Called by g.app.finishQuit. 
         """
+        return ###
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
             if trace: g.trace('g.app.dock is False')
