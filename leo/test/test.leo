@@ -11,7 +11,7 @@
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
 <v t="ekr.20180311210803.1"><vh>re latex button</vh>
 <v t="ekr.20180311195905.1"><vh>@@button Create LaTeX</vh></v>
-<v t="ekr.20180311200239.1"><vh>@clean c:\test\latex_test.tex</vh>
+<v t="ekr.20180311200239.1"><vh>@@clean c:\test\latex_test.tex</vh>
 <v t="ekr.20180311200312.1"><vh>level 1</vh>
 <v t="ekr.20180311200318.1"><vh>level 2</vh></v>
 </v>
@@ -58,6 +58,7 @@
 <v t="ekr.20180319044254.30"><vh>markdown test (including url)</vh></v>
 <v t="ekr.20180319044254.31"><vh>rst test (including url)</vh></v>
 </v>
+<v t="ekr.20200908073756.1"><vh>render test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>
@@ -952,5 +953,9 @@ This is a comment</t>
 <t tx="ekr.20180319044254.9">https://www.youtube.com/watch?v=EB3IokHelRk
 
 # Doesn't play, probably because of https.</t>
+<t tx="ekr.20200908073756.1">@language md
+
+*test*
+</t>
 </tnodes>
 </leo_file>
