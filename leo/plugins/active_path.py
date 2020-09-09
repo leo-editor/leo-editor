@@ -398,7 +398,7 @@ def openFile(c,parent,d, autoload=False):
                     if ord(i) == 0:
                         binary_open = True
                         break
-            except:
+            except Exception:
                 binary_open = True
 
         if binary_open:
