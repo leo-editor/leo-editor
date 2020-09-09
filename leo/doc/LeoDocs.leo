@@ -860,6 +860,7 @@
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
+<v t="ekr.20200909171301.1"><vh>@rst html/leomarkup.html</vh></v>
 <v t="ekr.20050901101608.4"><vh>@rst html/customizing.html</vh>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
@@ -3706,7 +3707,8 @@ The following people have made generous donations to the Leo project: Robert Low
                 rf.recentFiles.remove(name2)
         rf.recentFiles.append(name)
 </t>
-<t tx="ekr.20050306090601">.. index:: uA
+<t tx="ekr.20050306090601">.. index::
+    pair:uA; Reference
 
 Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as **user attributes**, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
 
@@ -15422,6 +15424,7 @@ This is Leo's Users Guide. It covers additional material not covered in the
 .. toctree::
    :maxdepth: 2
 
+   leomarkup
    customizing
    rstplugin3
    plugins
@@ -31752,6 +31755,46 @@ See `Leo issue #1440`_ for notes relating to the code.
       --pytest           run pytest on leoAst.py
       --unittest         run unittest on leoAst.py</t>
 <t tx="ekr.20200807111156.1"></t>
+<t tx="ekr.20200909171301.1">#####################
+Leo's Markup Language
+#####################
+
+.. index::
+    pair: Markup; Reference
+    pair: Section Reference; Reference
+    pair: @others; Reference
+
+Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
+
+There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    &lt;&lt; imports &gt;&gt;
+    @others
+    @language python
+    @tabwidth -4
+    
+A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions and data.
+
+When writing this file, Leo writes the first two lines::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    
+followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
+
+Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
+
+    '''My script'''
+    &lt;&lt; imports &gt;&gt;
+    class Controller:
+        # Child nodes define the methods of this class.
+        @others
+    Controller(c).run # c *is* defined.
+
+**Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
+See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
