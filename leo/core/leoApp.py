@@ -3432,8 +3432,10 @@ class LoadManager:
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
+        # #1570: Recalculate the ratios.
+        junk, frame.ratio, frame.secondary_ratio = frame.initialRatios()
+        # Resize the _new_ frame.
         frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-            # Resize the _new_ frame.
         if not g.os_path_exists(fn):
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
