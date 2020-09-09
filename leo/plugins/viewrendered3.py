@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b18
+About Viewrendered3 V3.0rc1
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -139,7 +139,7 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
-   "@bool vr3-insert-headline-from-node", "True", "True, False". Render node headline as top heading if True"
+   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -496,8 +496,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-# pylint: disable=no-else-break
-    # This warning looks wrong!
 
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
@@ -2194,6 +2192,61 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     result += f'{err_result}\n'
                 result += '```\n'
 
+        #@+node:TomP.20200906224158.1: *6* process nodes orig
+        #@+at
+        # result = ''
+        # codelist = []
+        # sm = StateMachine(self, TEXT, MD, MD)
+        #
+        # if not node_list:
+        #     lines = s.split('\n')
+        #     # Process node's entire body text; handle @language directives
+        #     sproc, codelines = sm.runMachine(lines)
+        #     result += sproc
+        #     sm.reset()
+        # else:
+        #     for node in node_list:
+        #         s = node.b
+        #         s = self.remove_directives(s)
+        #         if self.use_node_headline:
+        #             # Add node's text as a headline
+        #             # Remove "@" directive from headline, if any
+        #             header = node.h or ''
+        #             if header.startswith('@'):
+        #                 fields = header.split()
+        #                 headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+        #             else:
+        #                 headline = header
+        #             headline_str = '##' + headline
+        #             s = headline_str + '\n' + s
+        #         lines = s.split('\n')
+        #
+        #         # Process node's entire body text; handle @language directives
+        #         sproc, codelines = sm.runMachine(lines)
+        #         result += sproc
+        #         if codelines:
+        #             codelist.extend(codelines)
+        #         sm.reset()
+        #
+        # # Execute code blocks; capture and insert execution results.
+        # # This means anything written to stdout or stderr.
+        # if self.execute_flag and codelist:
+        #     execution_result, err_result = None, None
+        #     code = '\n'.join(codelist)
+        #     c = self.c
+        #     environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        #     execution_result, err_result = self.exec_code(code, environment)
+        #     execution_result, err_result = execution_result.strip(), err_result.strip()
+        #     self.execute_flag = False
+        #
+        #     if execution_result or err_result:
+        #         result += '\n```text\n'
+        #         if execution_result:
+        #             result += f'\n{execution_result}\n'
+        #         if err_result:
+        #             result += f'{err_result}\n'
+        #         result += '```\n'
+        #
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
@@ -2587,6 +2640,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
+            #@+<< omit at-others >>
+            #@+node:TomP.20200909123019.1: *7* << omit at-others >>
+            # Omit lines starting with [blank]*line =     @others
+            left = line.lstrip()
+            if left.startswith('@others'):
+                continue
+            #@-<< omit at-others >>
             #@+<< handle toctree >>
             #@+node:TomP.20200411133219.1: *7* << handle toctree >>
             # Skip all lines in an indented block started by a string in SKIPBLOCKS
