@@ -1400,7 +1400,6 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.saveGlobalWindowState()
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1716,53 +1715,12 @@ class LeoApp:
                 wrapper = wrapper,
             )
             w =  c.frame.body.wrapper.widget
-            body.updateInjectedIvars(w, p) ###
+            body.updateInjectedIvars(w, p)
             body.selectLabel(wrapper)
             body.selectEditor(wrapper)
             if trace:
                 print(f"{tag:>30}: {wrapper} {dock_name}")
         if trace: g.trace('END')
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
-    def restoreGlobalWindowState(self):
-        """
-        Restore the layout of global dock widgets and toolbars.
-        """
-        #
-        # Note for #1189: The windows has already been properly resized
-        #                 by the time this method is called.
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        #
-        # Support --init-docks.
-        # #1196. Let Qt use it's own notion of a default layout.
-        #        This should work regardless of the central widget.
-        if g.app.init_docks:
-            if trace: g.trace('--init-docks')
-            return
-        key = 'globalWindowState:'
-        val = self.db.get(key)
-        if val:
-            if trace: g.trace(f"found key: {key}")
-            try:
-                val = base64.decodebytes(val.encode('ascii'))
-                    # Elegant pyzo code.
-                main_window.restoreState(val)
-                return
-            except Exception as err:
-                g.trace(f"bad value: {key} {err}")
-                return
-        # This is not an error.
-        if trace: g.trace(f"missing key: {key}")
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
     ekr_val = None
 
@@ -1800,9 +1758,9 @@ class LeoApp:
         )
         for key, method in table:
             val = self.db.get(key)
-            if trace:
-                g.trace(f"{sfn} found key: {key}")
             if val:
+                if trace:
+                    g.trace(f"{sfn} found key: {key}")
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
@@ -1871,37 +1829,6 @@ class LeoApp:
                 print(f"{tag:>30}: {dock_name}")
         c.db['added_editor_aps'] = ';'.join(aps)
         c.db['added_editor_docks'] = ';'.join(dock_names)
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
-    def saveGlobalWindowState(self):
-        """
-        Save the window geometry and layout of dock widgets and toolbars
-        for Leo's *global* QMainWindow.
-        
-        Called by g.app.finishQuit. 
-        """
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        #
-        # Save the state
-        key = 'globalWindowState:'
-        val = main_window.saveState()
-            # Method is a QMainWindow method.
-        try:
-            val = bytes(val)  # PyQt4
-        except Exception:
-            val = bytes().join(val)  # PySide
-        if trace: g.trace(f"set key: {key}:")
-        g.app.db[key] = base64.encodebytes(val).decode('ascii')
     #@+node:ekr.20190528045643.1: *4* app.saveWindowState
     def saveWindowState(self, c):
         """
@@ -2640,7 +2567,6 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
-        g.app.restoreGlobalWindowState()
         g.es('')  # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
@@ -3027,7 +2953,7 @@ class LoadManager:
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers (changed)
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName, pymacs):
         """Handle all options, remove them from sys.argv and set lm.options."""
         lm = self
@@ -3035,9 +2961,7 @@ class LoadManager:
             '--dock',
             '--global-docks',  # #1643. use --use-docks instead.
             '--no-cache',
-            '--no-dock',
-                # #1171: retire legacy Qt guis.
-                # #1514: Replaced by --use-docks
+            '--no-dock',  # #1171 and #1514: use --use-docks instead.
             '--session-restore',
             '--session-save',
         )
@@ -3196,7 +3120,7 @@ class LoadManager:
         else:
             script = None
         return script
-    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions (changed)
+    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options, trace_m):
         """These args just set g.app ivars."""
         # --fail-fast

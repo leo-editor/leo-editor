@@ -137,9 +137,14 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.app.use_global_docks:
+            # Careful: g.app.gui does not exist yet.
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_global_outlines_dock()
-            # Careful: g.app.gui does not exist yet.
+            # #1654: Do this *last*
+            if g.app.start_minimized:
+                self.main_window.showMinimized()
+            else:
+                self.main_window.show()
         else:
             pass  # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -769,20 +774,19 @@ class LeoQtGui(leoGui.LeoGui):
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
     #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget (changed)
+    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
     total_docks = 0
 
     def create_dock_widget(self, closeable, moveable, height, name):
         """Make a new dock widget in the main window"""
         dock = QtWidgets.QDockWidget(parent=self.main_window)
             # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
+        features = dock.DockWidgetFloatable  # #1643.
         # #1643: Widgets are fixed unless --init-docks is in effect
         if moveable and g.app.init_docks:
             features |= dock.DockWidgetMovable
         if closeable:
             features |= dock.DockWidgetClosable
-        features |= dock.DockWidgetFloatable
         dock.setFeatures(features)
         dock.setMinimumHeight(height)
         dock.setObjectName(f"dock-{self.total_docks}")
@@ -1188,13 +1192,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Make the *singleton* QMainWindow."""
         window = QtWidgets.QMainWindow()
         window.setObjectName('LeoGlobalMainWindow')
-        # Calling window.show() causes flash.
-            # window.show()
+        # Calling window.show() here causes flash.
         self.attachLeoIcon(window)
-        if g.app.start_minimized:
-            window.showMinimized()
-        else:
-            window.show()  # #1654
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.
