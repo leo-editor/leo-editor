@@ -1650,6 +1650,10 @@ class SherlockTracer:
     Being able to zero in on the code of interest can be a big help in
     studying other people's code. This is a non-invasive method: no tracing
     code needs to be inserted anywhere.
+    
+    Usage:
+        
+    g.SherlockTracer(patterns).run()
     """
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
@@ -1715,36 +1719,37 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
     def do_call(self, frame, unused_arg):
         """Trace through a function call."""
-        import os
         frame1 = frame
         code = frame.f_code
-        fn = code.co_filename
+        file_name = code.co_filename
         locals_ = frame.f_locals
-        name = code.co_name
-        full_name = self.get_full_name(locals_, name)
-        if self.is_enabled(fn, full_name, self.patterns):
-            n = 0  # The number of callers of this def.
-            while frame:
-                frame = frame.f_back
-                n += 1
-            # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            dots = '.' * max(0, n - self.n) if self.dots else ''
-            path = f"{os.path.basename(fn):>20}" if self.verbose else ''
-            leadin = '+' if self.show_return else ''
-            # Clearer w/o fstring.
-            args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
-            print(f"{path}{dots}{leadin}{full_name}{args}")
+        function_name = code.co_name
+        try:
+            full_name = self.get_full_name(locals_, function_name)
+        except Exception:
+            full_name = function_name
+        if not self.is_enabled(file_name, full_name, self.patterns):
+            # 2020/09/09: Don't touch, for example, __ methods.
+            return
+        n = 0  # The number of callers of this def.
+        while frame:
+            frame = frame.f_back
+            n += 1
+        dots = '.' * max(0, n - self.n) if self.dots else ''
+        path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
+        leadin = '+' if self.show_return else ''
+        args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
+        print(f"{path}:{dots}{leadin}{full_name}{args}")
         # Always update stats.
-        d = self.stats.get(fn, {})
+        d = self.stats.get(file_name, {})
         d[full_name] = 1 + d.get(full_name, 0)
-        self.stats[fn] = d
+        self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
     def get_args(self, frame):
         """Return name=val for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
-        # fn = code.co_filename
         n = code.co_argcount
         if code.co_flags & 4: n = n + 1
         if code.co_flags & 8: n = n + 1
@@ -1763,30 +1768,40 @@ class SherlockTracer:
                     if val:
                         result.append(f"{name}={val}")
         return ','.join(result)
-    #@+node:ekr.20140402060647.16845: *4* sherlock.do_line
+    #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
+    bad_fns = []
+
     def do_line(self, frame, arg):
         """print each line of enabled functions."""
+        if 1:
+            return
         code = frame.f_code
-        fn = code.co_filename
+        file_name = code.co_filename
         locals_ = frame.f_locals
         name = code.co_name
         full_name = self.get_full_name(locals_, name)
-        if self.is_enabled(fn, full_name, self.patterns):
-            n = frame.f_lineno - 1  # Apparently, the first line is line 1.
-            d = self.contents_d
-            lines = d.get(fn)
-            if not lines:
-                with open(fn) as f:
+        if not self.is_enabled(file_name, full_name, self.patterns):
+            return
+        n = frame.f_lineno - 1  # Apparently, the first line is line 1.
+        d = self.contents_d
+        lines = d.get(file_name)
+        if not lines:
+            print(file_name)
+            try:
+                with open(file_name) as f:
                     s = f.read()
-                lines = g.splitLines(s)
-                d[fn] = lines
-            line = lines[n].rstrip() if n < len(lines) else '<EOF>'
-            if 1:
-                # i = full_name.find('::')
-                # name = full_name if i == -1 else full_name[i+2:]
-                print(f"{name:3} {line}")
-            else:
-                print(f"{g.shortFileName(fn)} {n} {full_name} {line}")
+            except Exception:
+                if file_name not in self.bad_fns:
+                    self.bad_fns.append(file_name)
+                    print(f"open({file_name}) failed")
+                return
+            lines = g.splitLines(s)
+            d[file_name] = lines
+        line = lines[n].rstrip() if n < len(lines) else '<EOF>'
+        if 0:
+            print(f"{name:3} {line}")
+        else:
+            print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
@@ -1836,21 +1851,48 @@ class SherlockTracer:
             # Clearer w/o f-string.
             ret = f" ->\n    %s" % s if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
-    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
-    def fn_is_enabled(self, fn, patterns):
-        """
-        Return True if tracing for fn is enabled.
-        Used only to enable *statistics* for fn.
-        """
-        import re
+    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
+    def fn_is_enabled(self, func, patterns):
+        """Return True if tracing for the given function is enabled."""
+        if func in self.ignored_functions:
+            return False
+            
+        def ignore_function():
+            if func not in self.ignored_functions:
+                self.ignored_functions.append(func)
+                print(f"Ignore function: {func}")
+        #
+        # New in Leo 6.3. Never trace dangerous functions.
+        table = (
+            '_deepcopy.*',
+            # Unicode primitives.
+            'encode\b', 'decode\b',
+            # System functions
+            '.*__next\b',
+            '<frozen>', '<genexpr>', '<listcomp>',
+            # '<decorator-gen-.*>',
+            'get\b', 
+            # String primitives.
+            'append\b', 'split\b', 'join\b', 
+            # File primitives...
+            'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+            'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+        )
+        g.trace('=====', func)
+        for z in table:
+            if re.match(z, func):
+                ignore_function()
+                return False
+        #
+        # Legacy code.  
         try:
             enabled, pattern = False, None
             for pattern in patterns:
                 if pattern.startswith('+:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], func):
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], func):
                         enabled = False
             return enabled
         except Exception:
@@ -1867,25 +1909,74 @@ class SherlockTracer:
         except Exception:
             pass
         return full_name
-    #@+node:ekr.20121128111829.12183: *4* is_enabled
-    def is_enabled(self, fn, name, patterns=None):
-        """Return True if tracing for name in fn is enabled."""
-        import re
+    #@+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
+    ignored_files = []
+    ignored_functions = []
+
+    def is_enabled(self, file_name, function_name, patterns=None):
+        """Return True if tracing for function_name in the given file is enabled."""
+        #
+        # New in Leo 6.3. Never trace through some files.
+        if not os:
+            return False  # Shutting down.
+        base_name = os.path.basename(file_name)
+        if base_name in self.ignored_files:
+            return False
+
+        def ignore_file():
+            if not base_name in self.ignored_files:
+                self.ignored_files.append(base_name)
+                # print(f"Ignore file: {base_name}")
+                
+        def ignore_function():
+            if function_name not in self.ignored_functions:
+                self.ignored_functions.append(function_name)
+                # print(f"Ignore function: {function_name}")
+                
+        if f"{os.sep}lib{os.sep}" in file_name:
+            ignore_file()
+            return False
+        if base_name.startswith('<') and base_name.endswith('>'):
+            ignore_file()
+            return False
+        #
+        # New in Leo 6.3. Never trace dangerous functions.
+        table = (
+            '_deepcopy.*',
+            # Unicode primitives.
+            'encode\b', 'decode\b',
+            # System functions
+            '.*__next\b',
+            '<frozen>', '<genexpr>', '<listcomp>',
+            # '<decorator-gen-.*>',
+            'get\b', 
+            # String primitives.
+            'append\b', 'split\b', 'join\b', 
+            # File primitives...
+            'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+            'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+        )
+        for z in table:
+            if re.match(z, function_name):
+                ignore_function()
+                return False
+        #
+        # Legacy code.
         enabled = False
         if patterns is None: patterns = self.patterns
         for pattern in patterns:
             try:
                 if pattern.startswith('+:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], file_name):
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], file_name):
                         enabled = False
                 elif pattern.startswith('+'):
-                    if re.match(pattern[1:], name):
+                    if re.match(pattern[1:], function_name):
                         enabled = True
                 elif pattern.startswith('-'):
-                    if re.match(pattern[1:], name):
+                    if re.match(pattern[1:], function_name):
                         enabled = False
                 else:
                     self.bad_pattern(pattern)
