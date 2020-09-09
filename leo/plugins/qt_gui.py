@@ -137,9 +137,14 @@ class LeoQtGui(leoGui.LeoGui):
         ):
             self.splashScreen = self.createSplashScreen()
         if g.app.use_global_docks:
+            # Careful: g.app.gui does not exist yet.
             self.main_window = self.make_main_window()
             self.outlines_dock = self.make_global_outlines_dock()
-            # Careful: g.app.gui does not exist yet.
+            # #1654: Do this *last*
+            if g.app.start_minimized:
+                self.main_window.showMinimized()
+            else:
+                self.main_window.show()
         else:
             pass  # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
@@ -154,12 +159,6 @@ class LeoQtGui(leoGui.LeoGui):
         if 'shutdown' in g.app.debug:
             g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
-    #@+node:ekr.20200908164804.1: *3*  qt_gui.finishCreate
-    def finishCreate(self):
-        """A late fix for #1654"""
-        main_window = getattr(self, 'main_window')
-        if main_window and not g.app.start_minimized:
-            main_window.show()  # #1654
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
     #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
     def replaceClipboardWith(self, s):
@@ -1195,10 +1194,6 @@ class LeoQtGui(leoGui.LeoGui):
         window.setObjectName('LeoGlobalMainWindow')
         # Calling window.show() here causes flash.
         self.attachLeoIcon(window)
-        if g.app.start_minimized:
-            window.showMinimized()
-        else:
-            window.show()  # #1654
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.
