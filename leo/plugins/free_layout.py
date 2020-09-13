@@ -127,7 +127,7 @@ class FreeLayoutController:
         splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
         splitter.register_provider(self)
         splitter.splitterClicked_connect(self.splitter_clicked)
-    #@+node:tbrown.20120119080604.22982: *3* flc.embed (FreeLayoutController)
+    #@+node:tbrown.20120119080604.22982: *3* flc.embed
     def embed(self):
         """called from ns_do_context - embed layout in outline's
         @settings, an alternative to the Load/Save named layout system
@@ -151,7 +151,7 @@ class FreeLayoutController:
             g.es(
                 "WARNING: @data free-layout-layout node is not " "under an active @settings node")
         c.redraw()
-    #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter & helper
+    #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter
     def get_main_splitter(self, w=None):
         """
         Return the splitter the main splitter, or None. The main splitter is a
@@ -168,7 +168,7 @@ class FreeLayoutController:
                     return w
                 w = w.parent()
         return None
-    #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter & helper
+    #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
     def get_secondary_splitter(self):
         """
         Return the secondary splitter, if it exists. The secondary splitter
