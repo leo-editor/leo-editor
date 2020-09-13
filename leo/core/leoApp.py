@@ -1747,7 +1747,7 @@ class LeoApp:
         if c.fileName() and not g.app.first_commander:
             g.app.first_commander = c
         #
-        # Restore the data from restore_c, *not* c.
+        # #1665: Restore the data from restore_c, *not* c.
         restore_c = c if c.fileName() else g.app.first_commander
         if restore_c:
             self.restoreEditorDockState(c)
@@ -1832,6 +1832,7 @@ class LeoApp:
             return
         if not c.fileName():
             return
+        # #1665: save only to one file.
         key = f"windowState:{c.fileName()}"
         val = dw.saveState()  # dw.saveState is a QMainWindow method.
         # From pyzo...
