@@ -611,9 +611,6 @@ class Commands:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
-            # #1652.
-            if not script:
-                return
         script_p = p or c.p
             # Only for error reporting below.
         # #532: check all scripts with pyflakes.
