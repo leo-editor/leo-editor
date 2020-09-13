@@ -1722,77 +1722,65 @@ class LeoApp:
                 print(f"{tag:>30}: {wrapper} {dock_name}")
         if trace: g.trace('END')
     #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
-    ekr_val = None
+    first_commander = None
 
     def restoreWindowState(self, c):
         """
-        Restore the layout of dock widgets and toolbars, using the per-file
-        state of the *first* loaded .leo file, or the global state.
+        Restore the layout of dock widgets and toolbars.
         
-        Note: The window's position or size has already been restored.
+        The window's position or size has already been restored.
         """
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         tag = 'app.restoreWindowState:'
+        sfn = c.shortFileName()
         if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
             return
-        dw = c.frame.top
+        dw = c.frame.top  # The window to restore.
         if not dw or not hasattr(dw, 'restoreState'):
-            if trace: g.trace('no dw.restoreState. dw:', repr(dw))
             return
-        # First, restore the editor state.
-        self.restoreEditorDockState(c)
         #
         # Support --init-docks.
-        # #1196. Let Qt use it's own notion of a default layout.
-        #        This should work regardless of the central widget.
         if g.app.init_docks:
-            if trace: g.trace('using qt default layout')
             return
-        sfn = c.shortFileName()
-        table = (
-            # First, try the per-outline state.
-            (f"windowState:{c.fileName()}", dw.restoreState),
-            # Restore the actual window state.
-            ('windowState:', dw.restoreState),
-        )
-        for key, method in table:
+        #
+        # Remember the first-loaded commander.
+        if c.fileName() and not g.app.first_commander:
+            g.app.first_commander = c
+        #
+        # Restore the data from restore_c, *not* c.
+        restore_c = c if c.fileName() else g.app.first_commander
+        if restore_c:
+            self.restoreEditorDockState(c)
+            key = f"windowState:{restore_c.fileName()}"
             val = self.db.get(key)
             if val:
-                if trace:
-                    g.trace(f"{sfn} found key: {key}")
+                if trace: g.trace(f"{sfn} use key: {key}")
                 try:
                     val = base64.decodebytes(val.encode('ascii'))
                         # Elegant pyzo code.
-                    method(val)
+                    # Restore the layout in *this* commander, regardless of restore_c.
+                    dw.restoreState(val)  # restoreState is a QMainWindow method.
                     return
                 except Exception as err:
                     g.trace(f"{sfn} bad value: {key} {err}")
-            # This is not an error.
-            elif trace:
-                g.trace(f"{sfn} missing key: {key}")
         #
-        # #1190 (bad initial layout)
-        # Use a pre-defined layout (magic number).
-        # The print-window-state prints this magic number for a *given* layout.
-        # But this number will work *only* if the central widgets match.
-        try:
-            central_widget = self.get_central_widget(c)
-            # central_widget = c.config.getString('central-dock-widget')
-            # if central_widget:
-                # central_widget = central_widget.lower()
-            if central_widget in (None, 'outline'):
-                if trace:
-                    print(tag, 'using app.defaultWindowState')
+        # #1190: (bad initial layout)
+        #        Use a pre-defined layout (magic number),
+        #        but only if the central widgets match.
+        #        See the print-window-state command.
+        central_widget = self.get_central_widget(c)
+        if central_widget in (None, 'outline'):
+            try:
                 dw.restoreState(self.defaultWindowState)
-            elif trace:
-                print(tag)
-                print('central widget does not match default')
-                print('using qt default window state')
-            # See print-window-state.
-        except Exception:
-            g.es_print(tag, 'unexpected exception setting window state')
-            g.es_exception()
+                if trace: g.trace(f"{sfn} using app.defaultWindowState")
+                return
+            except Exception:
+                g.es_print(f"{tag}:{sfn} unexpected exception")
+                g.es_exception()
+        #
+        # #1196. Let Qt use it's own notion of a default layout.
+        #        This should work regardless of the central widget.
+        if trace: g.trace(f"{sfn} using qt default window state")
     #@+node:ekr.20200305061637.1: *4* app.saveEditorDockState
     def saveEditorDockState(self, c):
         """
@@ -1838,32 +1826,22 @@ class LeoApp:
         """
         trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
         if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
             return
         dw = c.frame.top
         if not dw or not hasattr(dw, 'saveState'):
-            if trace: g.trace('no dw.saveState. dw:', repr(dw))
             return
-        table = (
-            # Save a default *global* state, for *all* outline files.
-            ('windowState:', dw.saveState),
-            # Save a per-file state.
-            (f"windowState:{c.fileName()}", dw.saveState),
-            # Do not save/restore window geometry. That is done elsewhere.
-                # (f"windowGeometry:{c.fileName()}" , dw.saveGeometry),
-        )
-        for key, method in table:
-            # This is pyzo code...
-            val = method()
-                # Method is a QMainWindow method.
-            try:
-                val = bytes(val)  # PyQt4
-            except Exception:
-                val = bytes().join(val)  # PySide
-            val = base64.encodebytes(val).decode('ascii')
-            if trace:
-                g.trace(f"{c.shortFileName()} set key: {key}")         
-            g.app.db[key] = val
+        if not c.fileName():
+            return
+        key = f"windowState:{c.fileName()}"
+        val = dw.saveState()  # dw.saveState is a QMainWindow method.
+        # From pyzo...
+        try:
+            val = bytes(val)  # PyQt4
+        except Exception:
+            val = bytes().join(val)  # PySide
+        val = base64.encodebytes(val).decode('ascii')
+        if trace: g.trace(f"{c.shortFileName()} set key: {key}")         
+        g.app.db[key] = val
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
