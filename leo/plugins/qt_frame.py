@@ -2532,6 +2532,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.createFirstTreeNode()  # Call the base-class method.
         self.menu = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
+        self.setQtStyle()
         self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18251: *5* qtFrame.createSplitterComponents
@@ -2556,9 +2557,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         The full license can be found in 'license.txt'.
         """
         c = self.c
+        trace = 'themes' in g.app.debug
         #
         # Get the requested style name.
         stylename = c.config.getString('qt-style-name') or ''
+        if trace: g.trace(repr(stylename))
         if not stylename:
             return
         #
@@ -2566,6 +2569,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
         if stylename.lower() not in styles:
             g.es_print(f"ignoring unknown Qt style name: {stylename!r}")
+            g.printObj(styles)
             return
         #
         # Change the style and palette.
