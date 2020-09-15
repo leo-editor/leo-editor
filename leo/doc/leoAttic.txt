@@ -23336,6 +23336,33 @@ def saveWindowState(self, c):
         if trace:
             g.trace(f"{c.shortFileName()} set key: {key}")         
         g.app.db[key] = val
+#@+node:ekr.20190523115826.1: *3* dw.addEditorDock
+added_bodies = 0
+
+def addEditorDock(self, closeable=True, moveable=True):
+    """Add an editor dock"""
+    #
+    # Create the new dock.
+    dw, c = self, self.leo_c
+    dw.added_bodies += 1
+    dock = g.app.gui.create_dock_widget(
+        closeable=closeable,
+        moveable=moveable,
+        height=50,
+        name=c.p.h,
+    )
+    dw.added_editor_docks.append(dock)
+    w = dw.createBodyPane(parent=None)
+    dock.setWidget(w)
+    dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
+    #
+    # monkey-patch dock.closeEvent
+
+    def patched_closeEvent(event=None):
+        c.frame.body.delete_editor_command(event, dock=dock)
+
+    dock.closeEvent = patched_closeEvent
+    return dock
 #@+node:ekr.20190522165123.1: *3* dw.createAllDockWidgets
 def createAllDockWidgets(self):
     """Create all the dock widgets."""
