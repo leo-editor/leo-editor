@@ -136,17 +136,6 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-        if g.app.use_global_docks:
-            # Careful: g.app.gui does not exist yet.
-            self.main_window = self.make_main_window()
-            self.outlines_dock = self.make_global_outlines_dock()
-            # #1654: Do this *last*
-            if g.app.start_minimized:
-                self.main_window.showMinimized()
-            else:
-                self.main_window.show()
-        else:
-            pass  # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
             # qtFrame.finishCreate does all the other work.
 
@@ -773,61 +762,6 @@ class LeoQtGui(leoGui.LeoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
-    total_docks = 0
-
-    def create_dock_widget(self, closeable, moveable, height, name):
-        """Make a new dock widget in the main window"""
-        dock = QtWidgets.QDockWidget(parent=self.main_window)
-            # The parent must be a QMainWindow.
-        features = dock.DockWidgetFloatable  # #1643.
-        # #1643: Widgets are fixed unless --init-docks is in effect
-        if moveable and g.app.init_docks:
-            features |= dock.DockWidgetMovable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        dock.setObjectName(f"dock-{self.total_docks}")
-        self.total_docks += 1
-        if name:
-            dock.setWindowTitle(name.capitalize())
-        else:
-            # #1527. Suppress the title.
-            w = QtWidgets.QWidget()
-            dock.setTitleBarWidget(w)
-        # #1327: frameFactory.createFrame now ensures that the main window is visible.
-        return dock
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock
-    def make_global_outlines_dock(self):
-        """
-        Create the top-level Outlines (plural) dock,
-        containing the 
-        The dock's widget will be set later.
-        """
-        main_window = self.main_window
-        # For now, make it the central widget.
-        is_central = True
-        dock = self.create_dock_widget(
-            closeable=not is_central,
-            moveable=not is_central,
-            height=50,  # was 100: #1339.
-            name='',  # #1527: was 'Leo Outlines'
-        )
-        if is_central:
-            main_window.setCentralWidget(dock)
-        else:
-            area = QtCore.Qt.BottomDockWidgetArea
-            main_window.addDockWidget(area, dock)
-        return dock
-    #@+node:ekr.20200305075130.1: *4* qt_gui.find_dock
-    def find_dock(self, w):
-        """return the QDockWidget containing w, or None"""
-        dock = w
-        while dock and not isinstance(dock, QtWidgets.QDockWidget):
-            dock = dock.parent()
-        return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
     def close_event(self, event):

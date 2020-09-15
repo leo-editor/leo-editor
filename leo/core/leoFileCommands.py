@@ -211,26 +211,15 @@ class FastRead:
             y, x = windowSpot  # #1263: (top, left)
         if 'size' in g.app.debug:
             g.trace(w, h, x, y, c.shortFileName())
-        #
-        # #1189: Must be done *after* restoring geometry.
-        #        Was done in TabbedFrameFactory.createMaster.
-        if g.app.use_global_docks:
-            mf = getattr(g.app.gui, 'main_window', None)
-            if not mf:
-                return
-            g.app.gui.set_top_geometry(w, h, x, y)
-            r1, r2 = d.get('r1'), d.get('r2')
-            c.frame.resizePanesToRatio(r1, r2)
-        else:
-            # c.frame may be a NullFrame.
-            c.frame.setTopGeometry(w, h, x, y)
-            r1, r2 = d.get('r1'), d.get('r2')
-            c.frame.resizePanesToRatio(r1, r2)
-            frameFactory = getattr(g.app.gui, 'frameFactory', None)
-            if not frameFactory:
-                return
-            assert frameFactory is not None
-            mf = frameFactory.masterFrame
+        # c.frame may be a NullFrame.
+        c.frame.setTopGeometry(w, h, x, y)
+        r1, r2 = d.get('r1'), d.get('r2')
+        c.frame.resizePanesToRatio(r1, r2)
+        frameFactory = getattr(g.app.gui, 'frameFactory', None)
+        if not frameFactory:
+            return
+        assert frameFactory is not None
+        mf = frameFactory.masterFrame
         if g.app.start_minimized:
             mf.showMinimized()
         elif g.app.start_maximized:

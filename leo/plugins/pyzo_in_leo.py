@@ -23,7 +23,7 @@ pyzo_controller = None
 
 #@+others
 #@+node:ekr.20190930051422.1: ** Top-level functions (pyzo_in_leo)
-#@+node:ekr.20190813161639.4: *3* init
+#@+node:ekr.20190813161639.4: *3* init (pyzo_in_leo)
 init_warning_given = False
 
 def init(): # pyzo_in_leo.py
@@ -42,11 +42,11 @@ def init(): # pyzo_in_leo.py
         
     if g.app.gui.guiName() != "qt":
         return oops('requires Qt gui')
-    if not g.app.dock:
-        return oops('requires --use-docks')
+    if not getattr(g.app, 'dock'):
+        return oops('requires Qt Docks')
     # #1643: This test will never fail now.
-    if not g.app.use_global_docks:
-        return oops('requires --global-docks')
+        # if not g.app.use_global_docks:
+        #     return oops('requires --global-docks')
     #
     # Fail if can't find pyzo.exe.
     pyzo_exec = which('pyzo')
