@@ -94,9 +94,6 @@ class LeoApp:
             # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
-        self.dock = False
-            # #1514: Leo's legacy operation is now the default.
-            # True: use a QDockWidget.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False
@@ -193,12 +190,7 @@ class LeoApp:
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
-        ### 
-            # self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01^\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01^\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x02\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x01\xfd\x00\x00\x001\x00\xff\xff\xff\xfb\x00\x00\x00\x16\x00d\x00o\x00c\x00k\x00.\x00R\x00e\x00n\x00d\x00e\x00r\x01\x00\x00\x02\x05\x00\x00\x01\x19\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01^\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
-                # #
-                # # For self.restoreWindowState the first time Leo is run.
-                # # Use the print-window-state to print this value after arranging the docks to your liking.
-                # # Important: the outline-pane *must* be the central widget.
+
         self.globalKillBuffer = []
             # The global kill buffer.
         self.globalRegisters = {}
@@ -1530,16 +1522,6 @@ class LeoApp:
                 title='Already Open Files',
                 message=message,
                 text="Ok")
-    #@+node:ekr.20190616092159.1: *3* app.get_central_widget
-    def get_central_widget(self, c):
-
-        assert self.dock, g.callers()
-        s = c.config.getString('central-dock-widget')
-        if s:
-            s = s.lower()
-            if s in ('body', 'outline', 'tabs'):
-                return s
-        return 'outline'
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
     def scanner_for_at_auto(self, c, p, **kwargs):

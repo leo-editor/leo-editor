@@ -906,16 +906,6 @@ class LeoQtGui(leoGui.LeoGui):
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         return w
-    #@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
-    def raise_dock(self, widget):
-        """Raise the nearest parent QDockWidget, if any."""
-        while widget:
-            if isinstance(widget, QtWidgets.QDockWidget):
-                widget.raise_()
-                return
-            if not hasattr(widget, 'parent'):
-                return
-            widget = widget.parent()
     #@+node:ekr.20190601054959.1: *4* qt_gui.set_focus
     def set_focus(self, c, w):
         """Put the focus on the widget."""
@@ -929,8 +919,6 @@ class LeoQtGui(leoGui.LeoGui):
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
-        # #1159: raise a parent QDockWidget.
-        self.raise_dock(w)
         w.setFocus()
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
     size_warnings = []

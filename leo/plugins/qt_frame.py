@@ -30,8 +30,6 @@ except ImportError:
     print('Can not import nested_splitter')
     splitter_class = QtWidgets.QSplitter
 #@-<< imports >>
-floatable_docks = True
-    # True: allow QDockWidgets to float.
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
@@ -127,7 +125,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('DynamicWindow.__init__', c.shortFileName())
         super().__init__(parent)
         self.leo_c = c
-        self.added_editor_docks = []  # List of *added* body docks (QDockWidgets).
         self.leo_master = None  # Set in construct.
         self.leo_menubar = None  # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
@@ -277,7 +274,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #
         # Step 2: inject ivars, set bindings, etc.
         inner_frame = c.frame.top.leo_body_inner_frame
-            # Inject ivars *here*, regardless of docking.
+            # Inject ivars *here*.
         body.injectIvars(inner_frame, name, p, wrapper)
         body.updateInjectedIvars(widget, p)
         wrapper.setAllText(p.b)
@@ -289,37 +286,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             # Scintilla only.
             body.recolorWidget(p, wrapper)
-        ###
-            # #
-            # # Create dock, splitting the body dock.
-            # dock = self.addEditorDock()
-            # #
-            # # Create the editor
-            # widget = qt_text.LeoQTextBrowser(None, c, self)
-            # widget.setObjectName('richTextEdit')
-            # wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
-            # self.packLabel(widget)
-            # #
-            # # Inject ivars, set bindings, etc.
-            # inner_frame = self.leo_body_inner_frame
-                # # Inject ivars *here*, regardless of docking.
-            # body.injectIvars(inner_frame, name, p, wrapper)
-            # body.updateInjectedIvars(widget, p)
-            # wrapper.setAllText(p.b)
-            # wrapper.see(0)
-            # c.k.completeAllBindingsForWidget(wrapper)
-            # if isinstance(widget, QtWidgets.QTextEdit):
-                # colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
-                # colorizer.highlighter.setDocument(widget.document())
-            # else:
-                # # Scintilla only.
-                # body.recolorWidget(p, wrapper)
-            # return dock, wrapper
+        
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         """
         Create the *pane* for the body, not the actual QTextBrowser.
-        parent is None when --dock is in effect.
         """
         c = self.leo_c
         #
@@ -328,7 +299,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
         sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
              hPolicy=QtWidgets.QSizePolicy.Expanding,
-                # Needed for docks.
              vPolicy=QtWidgets.QSizePolicy.Expanding,
         )
         page2 = QtWidgets.QWidget()
@@ -356,32 +326,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
         return bodyFrame
-        ###
-            # #
-            # # Create widgets.
-            # #
-            # # bodyFrame has a VGridLayout.
-            # bodyFrame = self.createFrame(parent, 'bodyFrame')
-            # grid = self.createGrid(bodyFrame, 'bodyGrid')
-            # #
-            # # innerFrame has a VBoxLayout.
-            # innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-            # box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
-            # #
-            # # Pack the body alone or *within* a LeoLineTextWidget.
-            # body = self.createText(None, 'richTextEdit')  # A LeoQTextBrowser
-            # if self.use_gutter:
-                # lineWidget = qt_text.LeoLineTextWidget(c, body)
-                # box.addWidget(lineWidget)
-            # else:
-                # box.addWidget(body)
-            # grid.addWidget(innerFrame, 0, 0, 1, 1)
-            # #
-            # # Official ivars
-            # self.richTextEdit = body
-            # self.leo_body_frame = bodyFrame
-            # self.leo_body_inner_frame = innerFrame
-            # return bodyFrame
+     
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget(self):
         """Create the central widget."""
@@ -526,11 +471,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout.setContentsMargins(3, 2, 2, 0)
         hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
-        if g.app.dock:
-            # Parent is a QDockWidget.
-            pass
-        else:
-            self.verticalLayout.addWidget(frame)
+        self.verticalLayout.addWidget(frame)
         label.setBuddy(lineEdit)
             # Transfers focus request from label to lineEdit.
         #
@@ -594,10 +535,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw = self
         dw.setObjectName("MainWindow")
         dw.resize(691, 635)
-        dw.setDockNestingEnabled(False)
-        dw.setDockOptions(
-            QtWidgets.QMainWindow.AllowTabbedDocks |
-            QtWidgets.QMainWindow.AnimatedDocks)
     #@+node:ekr.20110605121601.18152: *4* dw.widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
     def createButton(self, parent, name, label):
@@ -1601,7 +1538,7 @@ class LeoQtBody(leoFrame.LeoBody):
         f, wrapper = dw.addNewEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
-        assert isinstance(f, (QtWidgets.QFrame, QtWidgets.QDockWidget)), f
+        assert isinstance(f, QtWidgets.QFrame), f
         d[name] = wrapper
         if self.numberOfEditors == 2:
             # Inject the ivars into the first editor.
@@ -1635,12 +1572,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18199: *5* LeoQtBody.delete_editor_command
     @cmd('delete-editor')
     @cmd('editor-delete')
-    def delete_editor_command(self, event=None, dock=None):
-        """
-        Delete the presently selected body text editor.
-        
-        dock will be specified if called from a click handler.
-        """
+    def delete_editor_command(self, event=None):
+        """Delete the presently selected body text editor."""
         c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
@@ -1671,28 +1604,6 @@ class LeoQtBody(leoFrame.LeoBody):
                 self.unpackWidget(layout, label)
         w.leo_label = None
         self.selectEditor(new_wrapper)
-        ###
-            # #
-            # # Sanity checks.
-            # if not dock:
-                # dock = w.parent().parent()
-                # if (getattr(w, 'leo_name', None) == '1' or
-                    # not isinstance(dock, QtWidgets.QDockWidget)
-                # ):
-                    # g.warning('can not delete main editor')
-                    # return
-            # #
-            # # Actually delete the dock.
-            # if dock in dw.added_editor_docks:
-                # dw.added_editor_docks.remove(dock)
-            # dw.removeDockWidget(dock)
-                # # A QMainWidget method.
-            # #
-            # # Select another editor.
-            # w.leo_label = None
-            # new_wrapper = list(d.values())[0]
-            # self.numberOfEditors -= 1
-            # self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18200: *5* LeoQtBody.findEditorForChapter
     def findEditorForChapter(self, chapter, p):
         """Return an editor to be assigned to chapter."""
@@ -1723,11 +1634,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         w = wrapper.widget
         label = getattr(w, 'leo_label', None)
-        # g.trace(label.__class__.__name__, label and label.objectName() or 'None')
-        if isinstance(label, QtWidgets.QDockWidget):
-            # #1517.
-            label.setWindowTitle(c.p.h)
-        elif label:
+        if label:
             label.setEnabled(True)
             label.setText(c.p.h)
             label.setEnabled(False)
@@ -1875,7 +1782,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
     def injectIvars(self, parentFrame, name, p, wrapper):
 
-        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
+        trace = g.app.debug == 'select' and not g.app.unitTesting
         tag = 'qt_body.injectIvars'
         w = wrapper.widget
         assert g.isTextWrapper(wrapper), wrapper
@@ -3382,17 +3289,7 @@ class LeoQtLog(leoFrame.LeoLog):
                     # Tell the truth.
             g.app.gui.setFilter(c, widget, contents, 'tabWidget')
             self.contentsDict[tabName] = contents
-            if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
-                # #1154: Support docks in the Log pane.
-                dw = c.frame.top
-                dock = g.app.gui.create_dock_widget(
-                    closeable=True, moveable=True, height=50, name=tabName)  # was 100: #1339.
-                        # #1207: all plugins docks should be closeable.
-                dock.setWidget(contents)
-                area = QtCore.Qt.RightDockWidgetArea
-                dw.addDockWidget(area, dock)
-            else:
-                self.tabWidget.addTab(contents, tabName)
+            self.tabWidget.addTab(contents, tabName)
         return contents
     #@+node:ekr.20110605121601.18328: *4* LeoQtLog.deleteTab
     def deleteTab(self, tabName, force=False):
@@ -3476,15 +3373,11 @@ class LeoQtLog(leoFrame.LeoLog):
             self.frameDict['Spell'] = widget
     #@+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab
     def finishSelectTab(self, tabName):
-        """
-        Select the proper tab, raising it's enclosing dock as needed.
-        """
-        # #1159: raise a parent QDockWidget.
+        """Select the proper tab."""
         w = self.tabWidget
         # Special case for Spell tab.
         if tabName == 'Spell':
             return
-        # Select the proper tab, regardless of g.app.dock.
         i = self.findTabIndex(tabName)
         if i is None:
             g.trace('can not happen', tabName)
