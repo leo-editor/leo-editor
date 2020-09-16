@@ -624,7 +624,6 @@
 </v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
-<v t="ekr.20200227061507.1"><vh>How can I arrange Qt docks?</vh></v>
 <v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 <v t="ekr.20190731085747.1"><vh>How can I customize settings for a particular external file?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
@@ -31364,38 +31363,6 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20200227061507.1">Q. How can I arrange Qt docks so that the outline tree will be on the left, body on the right, no log window, no render window.  I want to know the ropes so I can modify that as desired.  I'm sure it's in the docs somewhere but I haven't put my finger on it.  Thanks.
-
-Answer by Thomas Passin:
-
-I wrestled with this, too, and no, it's not really in the docs.
-
-Here's what I did.  I happen to want outline left, body right, and the tabs pane (the one with the log tab) on the left below the outline.  You should really not get rid of it, because you will want to use the search and Nav tabs at a minimum, and of you start to use the tags or backlinks plugins, they will create new tabs in that pane, too.
-
-First, add a node with this headline to the @settings tree in MyLeoSettings.leo -
-
-@string central-dock-widget = body
-
-The next step is to drag the panes by their title bars where you want them.  But this is tricky and a little non-intuitive.  There are certain areas you can drag to.  When a pane is over one of them, the space underneath will turn a translucent blue color (I *think* it's blue - my color vision isn't always the best).  Then you release the mouse button.
-
-One of these docking  areas is on the right.  The body pane should already be in it, if you put that @setting node in and restarted Leo.  There is another docking area on the left, and you drag the outline pane over there.  The tabs pane may end up tabbed in the same pane as the outline, or with the body pane.  Either way, drag it way down to the bottom under the outline pane on the left.  A new docking area should open up.  Drop the tabs pane there. 
-
-This docking area sometimes is very small, and if so it's easy to miss.  Look closely for a bluish line or tiny rectangle to show up - that will be the place.
-
-After the tabs pane is in place, you can drag its separator bar up or down to adjust its height.
-
-You may find that the next time you open Leo, the height of the tabs pane has changed.  Who know why this happens?  I have noticed that after you have saved the file several times, the height of the tabs pane tends to settle down somewhat.  But I still often have to readjust it after a restart.
-
-If you start Leo with the --global-docks option, then all the outlines will open with the same pane arrangement ( I *think*).
-
-When I was working my way through this, I got the panes into some arrangement that was unusable and I couldn't recover from.  The remedy is to delete Leo's "db" directory (thanks to @ekr for this).  This will let you start again.  On Windows, directory this is usually at
-
-%userprofile%\.leo
-
-Yes, you can type that directly into the address bar of Windows Explorer, or into a command window.  On Linux, it's usually at
-
-~/.leo
 </t>
 <t tx="ekr.20200313051859.1">Persistent body editors:
 https://github.com/leo-editor/leo-editor/issues/1268
