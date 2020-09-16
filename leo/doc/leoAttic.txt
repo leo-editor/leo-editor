@@ -23099,6 +23099,7 @@ def restoreGlobalWindowState(self):
     # This is not an error.
     if trace: g.trace(f"missing key: {key}")
 #@+node:ekr.20200915114300.1: ** ----- Deleted qt docks code
+Rev 96f282672de5c11d00 in devel contains the old code.
 #@+node:ekr.20200303094809.1: *3*  function:dock_widget
 def dock_widget(w):
     """Return the dock widget containing widget w."""
