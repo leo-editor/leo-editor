@@ -286,7 +286,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             # Scintilla only.
             body.recolorWidget(p, wrapper)
-        
+        return parent_frame, wrapper
     #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
     def createBodyPane(self, parent):
         """
