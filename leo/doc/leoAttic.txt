@@ -23100,7 +23100,110 @@ def restoreGlobalWindowState(self):
     if trace: g.trace(f"missing key: {key}")
 #@+node:ekr.20200915114300.1: ** ----- Deleted qt docks code
 Rev 96f282672de5c11d00 in devel contains the old code.
-#@+node:ekr.20200303094809.1: *3*  function:dock_widget
+#@+node:ekr.20200916074952.1: *3* deleted code snippets
+#@+node:ekr.20200915153200.1: *4* from << LeoApp: global data >>
+    self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01^\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01^\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x02\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x01\xfd\x00\x00\x001\x00\xff\xff\xff\xfb\x00\x00\x00\x16\x00d\x00o\x00c\x00k\x00.\x00R\x00e\x00n\x00d\x00e\x00r\x01\x00\x00\x02\x05\x00\x00\x01\x19\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01^\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
+        #
+        # For self.restoreWindowState the first time Leo is run.
+        # Use the print-window-state to print this value after arranging the docks to your liking.
+        # Important: the outline-pane *must* be the central widget.
+#@+node:ekr.20200915153256.1: *4* from dw.addNewEditor
+    #
+    # Create dock, splitting the body dock.
+    dock = self.addEditorDock()
+    #
+    # Create the editor
+    widget = qt_text.LeoQTextBrowser(None, c, self)
+    widget.setObjectName('richTextEdit')
+    wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+    self.packLabel(widget)
+    #
+    # Inject ivars, set bindings, etc.
+    inner_frame = self.leo_body_inner_frame
+        # Inject ivars *here*, regardless of docking.
+    body.injectIvars(inner_frame, name, p, wrapper)
+    body.updateInjectedIvars(widget, p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    c.k.completeAllBindingsForWidget(wrapper)
+    if isinstance(widget, QtWidgets.QTextEdit):
+        colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
+        colorizer.highlighter.setDocument(widget.document())
+    else:
+        # Scintilla only.
+        body.recolorWidget(p, wrapper)
+    return dock, wrapper
+#@+node:ekr.20200915153424.1: *4* from dw.createBodyFrame
+    #
+    # Create widgets.
+    #
+    # bodyFrame has a VGridLayout.
+    bodyFrame = self.createFrame(parent, 'bodyFrame')
+    grid = self.createGrid(bodyFrame, 'bodyGrid')
+    #
+    # innerFrame has a VBoxLayout.
+    innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+    box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
+    #
+    # Pack the body alone or *within* a LeoLineTextWidget.
+    body = self.createText(None, 'richTextEdit')  # A LeoQTextBrowser
+    if self.use_gutter:
+        lineWidget = qt_text.LeoLineTextWidget(c, body)
+        box.addWidget(lineWidget)
+    else:
+        box.addWidget(body)
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    #
+    # Official ivars
+    self.richTextEdit = body
+    self.leo_body_frame = bodyFrame
+    self.leo_body_inner_frame = innerFrame
+    return bodyFrame
+#@+node:ekr.20200915153609.1: *4* from dw.setMainWindowOptions
+    dw.setDockNestingEnabled(False)
+    dw.setDockOptions(
+        QtWidgets.QMainWindow.AllowTabbedDocks |
+        QtWidgets.QMainWindow.AnimatedDocks)
+#@+node:ekr.20200915153647.1: *4* from LeoQtBody.delete_editor_command
+    #
+    # Sanity checks.
+    if not dock:
+        dock = w.parent().parent()
+        if (getattr(w, 'leo_name', None) == '1' or
+            not isinstance(dock, QtWidgets.QDockWidget)
+        ):
+            g.warning('can not delete main editor')
+            return
+    #
+    # Actually delete the dock.
+    if dock in dw.added_editor_docks:
+        dw.added_editor_docks.remove(dock)
+    dw.removeDockWidget(dock)
+        # A QMainWidget method.
+    #
+    # Select another editor.
+    w.leo_label = None
+    new_wrapper = list(d.values())[0]
+    self.numberOfEditors -= 1
+    self.selectEditor(new_wrapper)
+#@+node:ekr.20200915153758.1: *4* from LeoQtBody.select/unselectLabel
+        if isinstance(label, QtWidgets.QDockWidget):
+            # #1517.
+            label.setWindowTitle(c.p.h)
+        el
+#@+node:ekr.20200915153720.1: *4* from LeoQtLog.createTab
+        if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
+            # #1154: Support docks in the Log pane.
+            dw = c.frame.top
+            dock = g.app.gui.create_dock_widget(
+                closeable=True, moveable=True, height=50, name=tabName)  # was 100: #1339.
+                    # #1207: all plugins docks should be closeable.
+            dock.setWidget(contents)
+            area = QtCore.Qt.RightDockWidgetArea
+            dw.addDockWidget(area, dock)
+        else:
+#@+node:ekr.20200916075026.1: *3* deleted functions
+#@+node:ekr.20200303094809.1: *4*  function:dock_widget
 def dock_widget(w):
     """Return the dock widget containing widget w."""
     while w:
@@ -23108,7 +23211,7 @@ def dock_widget(w):
             return w
         w = w.parent()
     return None
-#@+node:ekr.20200303104851.1: *3* 'hide-body-dock'
+#@+node:ekr.20200303104851.1: *4* 'hide-body-dock'
 @g.command('hide-body-dock')
 def hideBodyDock(event):
     '''Hide the Body dock'''
@@ -23119,7 +23222,7 @@ def hideBodyDock(event):
     dock = dock_widget(w)
     if dock:
         dock.hide()
-#@+node:ekr.20200303105224.1: *3* 'hide-outline-dock'
+#@+node:ekr.20200303105224.1: *4* 'hide-outline-dock'
 @g.command('hide-outline-dock')
 def hideOutlineDock(event):
     '''Hide the Outline dock.'''
@@ -23130,7 +23233,7 @@ def hideOutlineDock(event):
     dock = dock_widget(w)
     if dock:
         dock.hide()
-#@+node:ekr.20200303105106.1: *3* 'hide-tabs-dock'
+#@+node:ekr.20200303105106.1: *4* 'hide-tabs-dock'
 @g.command('hide-tabs-dock')
 def hideTabsDock(event):
     '''Hide the Tabs dock.'''
@@ -23141,7 +23244,7 @@ def hideTabsDock(event):
     dock = dock_widget(w)
     if dock:
         dock.hide()
-#@+node:ekr.20200303105513.1: *3* 'show-body-dock'
+#@+node:ekr.20200303105513.1: *4* 'show-body-dock'
 @g.command('show-body-dock')
 def showBodyDock(event):
     '''Show the Body dock'''
@@ -23152,7 +23255,7 @@ def showBodyDock(event):
     dock = dock_widget(w)
     if dock:
         dock.show()
-#@+node:ekr.20200303105712.1: *3* 'show-outline-dock'
+#@+node:ekr.20200303105712.1: *4* 'show-outline-dock'
 @g.command('show-outline-dock')
 def showOutlineDock(event):
     '''Show the Outline dock.'''
@@ -23163,7 +23266,7 @@ def showOutlineDock(event):
     dock = dock_widget(w)
     if dock:
         dock.show()
-#@+node:ekr.20200303105622.1: *3* 'show-tabs-dock'
+#@+node:ekr.20200303105622.1: *4* 'show-tabs-dock'
 @g.command('show-tabs-dock')
 def showTabsDock(event):
     '''Show the Tabs dock.'''
@@ -23174,7 +23277,17 @@ def showTabsDock(event):
     dock = dock_widget(w)
     if dock:
         dock.show()
-#@+node:ekr.20200305102656.1: *3* app.restoreEditorDockState
+#@+node:ekr.20190616092159.1: *4* app.get_central_widget
+def get_central_widget(self, c):
+
+    assert self.dock, g.callers()
+    s = c.config.getString('central-dock-widget')
+    if s:
+        s = s.lower()
+        if s in ('body', 'outline', 'tabs'):
+            return s
+    return 'outline'
+#@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState
 def restoreEditorDockState(self, c):
 
     trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
@@ -23230,7 +23343,7 @@ def restoreEditorDockState(self, c):
         if trace:
             print(f"{tag:>30}: {wrapper} {dock_name}")
     if trace: g.trace('END')
-#@+node:ekr.20190528045549.1: *3* app.restoreWindowState
+#@+node:ekr.20190528045549.1: *4* app.restoreWindowState
 ekr_val = None
 
 def restoreWindowState(self, c):
@@ -23302,7 +23415,7 @@ def restoreWindowState(self, c):
     except Exception:
         g.es_print(tag, 'unexpected exception setting window state')
         g.es_exception()
-#@+node:ekr.20190528045643.1: *3* app.saveWindowState
+#@+node:ekr.20190528045643.1: *4* app.saveWindowState
 def saveWindowState(self, c):
     """
     Save the window geometry and layout of dock widgets and toolbars.
@@ -23337,7 +23450,37 @@ def saveWindowState(self, c):
         if trace:
             g.trace(f"{c.shortFileName()} set key: {key}")         
         g.app.db[key] = val
-#@+node:ekr.20190523115826.1: *3* dw.addEditorDock
+#@+node:ekr.20190613062749.1: *4* debug.print-window-state
+@cmd('print-window-state')
+def printWindowState(self, event=None):
+    """
+    For Leo's core developers: print QMainWindow.saveState().
+    
+    This is the value to be assigned to g.app.defaultWindowState.
+    
+    Warning: this window state should *only* be used for new users! #1190.
+    
+    Recommended procedure:
+
+    - Set @bool user-vr-dock = False.  Close Leo.
+    - Clear .leo/db caches. Reopen Leo.
+    - Make sure Render dock is visible to left of Body dock.
+    - Set @bool user-vr-dock = True. Close Leo & reopen.
+      The vr dock will be moveable.  Don't move it!
+    - Do print-window-state.
+    - Change g.app.defaultWindowState.
+    """
+    c = event.get('c')
+    if c:
+        print(c.frame.top.saveState())
+        if c.config.getBool('dockable-log-tabs', default=False):
+            print('Warning: @bool dockable-log-tabs is True')
+        central_widget = g.app.get_central_widget(c)
+        if central_widget != 'outline':
+            print(f"Warning: @string central-dock-widget is {central_widget!r}")
+    else:
+        print('no c')
+#@+node:ekr.20190523115826.1: *4* dw.addEditorDock
 added_bodies = 0
 
 def addEditorDock(self, closeable=True, moveable=True):
@@ -23364,7 +23507,7 @@ def addEditorDock(self, closeable=True, moveable=True):
 
     dock.closeEvent = patched_closeEvent
     return dock
-#@+node:ekr.20190522165123.1: *3* dw.createAllDockWidgets
+#@+node:ekr.20190522165123.1: *4* dw.createAllDockWidgets
 def createAllDockWidgets(self):
     """Create all the dock widgets."""
     c, dw = self.leo_c, self
@@ -23416,7 +23559,7 @@ def createAllDockWidgets(self):
     # Create other widgets...
     dw.createMenuBar()
     dw.createStatusBar(dw)
-#@+node:ekr.20190527120808.1: *3* dw.createFindDockOrTab
+#@+node:ekr.20190527120808.1: *4* dw.createFindDockOrTab
 def createFindDockOrTab(self, parent):
     """Create a Find dock or tab in the Log pane."""
     assert g.app.dock
@@ -23437,7 +23580,7 @@ def createFindDockOrTab(self, parent):
     if not c.config.getBool('dockable-log-tabs', default=False):
         self.tabWidget.addTab(findScrollArea, 'Find')
     return findScrollArea
-#@+node:ekr.20190528112002.1: *3* dw.createOutlineDock
+#@+node:ekr.20190528112002.1: *4* dw.createOutlineDock
 def createOutlineDock(self, parent):
     """Create the widgets and ivars for Leo's outline."""
     # Create widgets.
@@ -23453,7 +23596,7 @@ def createOutlineDock(self, parent):
     # Official ivars...
     self.treeWidget = treeWidget
     return treeFrame
-#@+node:ekr.20190527120829.1: *3* dw.createSpellDockOrTab
+#@+node:ekr.20190527120829.1: *4* dw.createSpellDockOrTab
 def createSpellDockOrTab(self, parent):
     """Create a Spell dock  or tab in the Log pane."""
     assert g.app.dock
@@ -23473,7 +23616,7 @@ def createSpellDockOrTab(self, parent):
         tabWidget.addTab(spellTab, 'Spell')
         tabWidget.setCurrentIndex(1)
     return spellTab
-#@+node:ekr.20190527163203.1: *3* dw.createTabbedLogDock
+#@+node:ekr.20190527163203.1: *4* dw.createTabbedLogDock
 def createTabbedLogDock(self, parent):
     """Create a tabbed (legacy) Log dock."""
     assert g.app.dock
@@ -23519,7 +23662,7 @@ def createTabbedLogDock(self, parent):
     # Official ivars
     self.tabWidget = tabWidget  # Used by LeoQtLog.
     return logFrame
-#@+node:ekr.20190527121112.1: *3* dw.createTabsDock
+#@+node:ekr.20190527121112.1: *4* dw.createTabsDock
 def createTabsDock(self, parent):
     """Create the Tabs dock."""
     assert g.app.dock
@@ -23542,7 +23685,7 @@ def createTabsDock(self, parent):
     # Official ivars
     self.tabWidget = tabWidget  # Used by LeoQtLog.
     return logFrame
-#@+node:ekr.20190724172314.1: *3* qt: show-hide-body-dock
+#@+node:ekr.20190724172314.1: *4* qt: show-hide-body-dock
 @g.command('show-hide-body-dock')
 def show_hide_body_dock(event):
     """Show or hide the Tabs dock."""
@@ -23563,7 +23706,7 @@ def show_hide_body_dock(event):
         dock.hide()
     else:
         dock.show()
-#@+node:ekr.20190724172258.1: *3* qt: show-hide-outline-dock
+#@+node:ekr.20190724172258.1: *4* qt: show-hide-outline-dock
 @g.command('show-hide-outline-dock')
 def show_hide_outline_dock(event):
     """Show or hide the Outline dock."""
@@ -23584,7 +23727,7 @@ def show_hide_outline_dock(event):
         dock.hide()
     else:
         dock.show()
-#@+node:ekr.20190724172547.1: *3* qt: show-hide-render-dock
+#@+node:ekr.20190724172547.1: *4* qt: show-hide-render-dock
 @g.command('show-hide-render-dock')
 def show_hide_render_dock(event):
     """Show or hide the Tabs dock."""
@@ -23605,7 +23748,7 @@ def show_hide_render_dock(event):
         dock.hide()
     else:
         dock.show()
-#@+node:ekr.20190724170436.1: *3* qt: show-hide-tabs-dock
+#@+node:ekr.20190724170436.1: *4* qt: show-hide-tabs-dock
 @g.command('show-hide-tabs-dock')
 def show_hide_tabs_dock(event):
     """Show or hide the Tabs dock."""
@@ -23626,7 +23769,7 @@ def show_hide_tabs_dock(event):
         dock.hide()
     else:
         dock.show()
-#@+node:ekr.20190819091950.1: *3* qt_gui.create_dock_widget
+#@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
 total_docks = 0
 
 def create_dock_widget(self, closeable, moveable, height, name):
@@ -23651,14 +23794,14 @@ def create_dock_widget(self, closeable, moveable, height, name):
         dock.setTitleBarWidget(w)
     # #1327: frameFactory.createFrame now ensures that the main window is visible.
     return dock
-#@+node:ekr.20200305075130.1: *3* qt_gui.find_dock
+#@+node:ekr.20200305075130.1: *4* qt_gui.find_dock
 def find_dock(self, w):
     """return the QDockWidget containing w, or None"""
     dock = w
     while dock and not isinstance(dock, QtWidgets.QDockWidget):
         dock = dock.parent()
     return dock
-#@+node:ekr.20190822113212.1: *3* qt_gui.make_global_outlines_dock
+#@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock
 def make_global_outlines_dock(self):
     """
     Create the top-level Outlines (plural) dock,
@@ -23680,107 +23823,16 @@ def make_global_outlines_dock(self):
         area = QtCore.Qt.BottomDockWidgetArea
         main_window.addDockWidget(area, dock)
     return dock
-#@+node:ekr.20200915153200.1: *3* from << LeoApp: global data >>
-    self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01^\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01^\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x02\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x01\xfd\x00\x00\x001\x00\xff\xff\xff\xfb\x00\x00\x00\x16\x00d\x00o\x00c\x00k\x00.\x00R\x00e\x00n\x00d\x00e\x00r\x01\x00\x00\x02\x05\x00\x00\x01\x19\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01^\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
-        #
-        # For self.restoreWindowState the first time Leo is run.
-        # Use the print-window-state to print this value after arranging the docks to your liking.
-        # Important: the outline-pane *must* be the central widget.
-#@+node:ekr.20200915153256.1: *3* from dw.addNewEditor
-    #
-    # Create dock, splitting the body dock.
-    dock = self.addEditorDock()
-    #
-    # Create the editor
-    widget = qt_text.LeoQTextBrowser(None, c, self)
-    widget.setObjectName('richTextEdit')
-    wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
-    self.packLabel(widget)
-    #
-    # Inject ivars, set bindings, etc.
-    inner_frame = self.leo_body_inner_frame
-        # Inject ivars *here*, regardless of docking.
-    body.injectIvars(inner_frame, name, p, wrapper)
-    body.updateInjectedIvars(widget, p)
-    wrapper.setAllText(p.b)
-    wrapper.see(0)
-    c.k.completeAllBindingsForWidget(wrapper)
-    if isinstance(widget, QtWidgets.QTextEdit):
-        colorizer = leoColorizer.make_colorizer(c, widget, wrapper)
-        colorizer.highlighter.setDocument(widget.document())
-    else:
-        # Scintilla only.
-        body.recolorWidget(p, wrapper)
-    return dock, wrapper
-#@+node:ekr.20200915153424.1: *3* from dw.createBodyFrame
-    #
-    # Create widgets.
-    #
-    # bodyFrame has a VGridLayout.
-    bodyFrame = self.createFrame(parent, 'bodyFrame')
-    grid = self.createGrid(bodyFrame, 'bodyGrid')
-    #
-    # innerFrame has a VBoxLayout.
-    innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-    box = self.createVLayout(innerFrame, 'bodyVLayout', spacing=0)
-    #
-    # Pack the body alone or *within* a LeoLineTextWidget.
-    body = self.createText(None, 'richTextEdit')  # A LeoQTextBrowser
-    if self.use_gutter:
-        lineWidget = qt_text.LeoLineTextWidget(c, body)
-        box.addWidget(lineWidget)
-    else:
-        box.addWidget(body)
-    grid.addWidget(innerFrame, 0, 0, 1, 1)
-    #
-    # Official ivars
-    self.richTextEdit = body
-    self.leo_body_frame = bodyFrame
-    self.leo_body_inner_frame = innerFrame
-    return bodyFrame
-#@+node:ekr.20200915153609.1: *3* from dw.setMainWindowOptions
-    dw.setDockNestingEnabled(False)
-    dw.setDockOptions(
-        QtWidgets.QMainWindow.AllowTabbedDocks |
-        QtWidgets.QMainWindow.AnimatedDocks)
-#@+node:ekr.20200915153647.1: *3* from LeoQtBody.delete_editor_command
-    #
-    # Sanity checks.
-    if not dock:
-        dock = w.parent().parent()
-        if (getattr(w, 'leo_name', None) == '1' or
-            not isinstance(dock, QtWidgets.QDockWidget)
-        ):
-            g.warning('can not delete main editor')
+#@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
+def raise_dock(self, widget):
+    """Raise the nearest parent QDockWidget, if any."""
+    while widget:
+        if isinstance(widget, QtWidgets.QDockWidget):
+            widget.raise_()
             return
-    #
-    # Actually delete the dock.
-    if dock in dw.added_editor_docks:
-        dw.added_editor_docks.remove(dock)
-    dw.removeDockWidget(dock)
-        # A QMainWidget method.
-    #
-    # Select another editor.
-    w.leo_label = None
-    new_wrapper = list(d.values())[0]
-    self.numberOfEditors -= 1
-    self.selectEditor(new_wrapper)
-#@+node:ekr.20200915153720.1: *3* from LeoQtLog.createTab
-        if g.app.dock and c.config.getBool('dockable-log-tabs', default=False):
-            # #1154: Support docks in the Log pane.
-            dw = c.frame.top
-            dock = g.app.gui.create_dock_widget(
-                closeable=True, moveable=True, height=50, name=tabName)  # was 100: #1339.
-                    # #1207: all plugins docks should be closeable.
-            dock.setWidget(contents)
-            area = QtCore.Qt.RightDockWidgetArea
-            dw.addDockWidget(area, dock)
-        else:
-#@+node:ekr.20200915153758.1: *3* from LeoQtBody.select/unselectLabel
-        if isinstance(label, QtWidgets.QDockWidget):
-            # #1517.
-            label.setWindowTitle(c.p.h)
-        el
+        if not hasattr(widget, 'parent'):
+            return
+        widget = widget.parent()
 #@-all
 #@@nosearch
 #@-leo
