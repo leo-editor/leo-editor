@@ -770,11 +770,6 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider3(c)
     free_layout.register_provider(c, provider)
-    ###
-        # if g.app.dock:
-            # # Instantiate immediately.
-            # viewrendered(event={'c': c})
-    
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -1188,9 +1183,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
     def create_pane(self, parent):
         """Create the vr3 pane or dock."""
-        c = self.c
-        dw = c.frame.top
-        self.leo_dock = None # May be set below.
         if g.app.unitTesting:
             return
         # Create the inner contents.
@@ -1198,26 +1190,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.create_toolbar()
-        ###
-            # if not g.app.dock:
-                # return
-            # # Allow the VR dock to move only in special circumstances.
-            # central_body = g.app.get_central_widget(c) == 'body'
-            # moveable = g.app.init_docks or central_body
-            # self.leo_dock = dock = g.app.gui.create_dock_widget(
-                # closeable=True, moveable=moveable, height=50, name='ViewRendered3')
-            # if central_body:
-                # # Create a stand-alone dockable area.
-                # dock.setWidget(self)
-                # dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-            # else:
-                # # Split the body dock.
-                # # Removed per @ekr- see https://groups.google.com/forum/#!topic/leo-editor/AeHYnVqrQCU:
-                # #dw.leo_docks.append(dock)
-                # dock.setWidget(self)
-                # dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-            # if g.app.init_docks:
-                # dock.show()
     #@+node:TomP.20200329223820.6: *4* vr3.create_toolbar & helper functions
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
@@ -3078,14 +3050,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def show_dock_or_pane(self):
 
         c, vr = self.c, self
-        ###
-            # if g.app.dock:
-                # dock = vr.leo_dock
-                # if dock:
-                    # dock.show()
-                    # dock.raise_()
-                        # # #1230.
-            # else:
         vr.activate()
         vr.show()
         vr.adjust_layout('open')

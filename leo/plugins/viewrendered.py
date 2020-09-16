@@ -714,8 +714,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
-            ### c = self.c
-            ### dw = c.frame.top
             self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
@@ -723,25 +721,6 @@ if QtWidgets: # NOQA
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
-            ###
-                # if not g.app.dock:
-                    # return
-                # # Allow the VR dock to move only in special circumstances.
-                # central_body = g.app.get_central_widget(c) == 'body'
-                # moveable = g.app.init_docks or central_body
-                # self.leo_dock = dock = g.app.gui.create_dock_widget(
-                    # closeable=True, moveable=moveable, height=50, name='Render')
-                # if central_body:
-                    # # Create a stand-alone dockable area.
-                    # dock.setWidget(self)
-                    # dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-                # elif g.app.dock:
-                    # # Split the body dock. Don't register the new dock as an editor doc.
-                    # ### dw.leo_docks.append(dock)
-                    # dock.setWidget(self)
-                    # dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-                # if g.app.init_docks:
-                    # dock.show()
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
             '''Activate the vr-window.'''
@@ -836,14 +815,6 @@ if QtWidgets: # NOQA
         def show_dock_or_pane(self):
 
             c, vr = self.c, self
-            ###
-                # if g.app.dock:
-                    # dock = vr.leo_dock
-                    # if dock:
-                        # dock.show()
-                        # dock.raise_()
-                            # # #1230.
-                # else:
             vr.activate()
             vr.show()
             vr.adjust_layout('open')
