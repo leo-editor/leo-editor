@@ -78,11 +78,16 @@
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
-<v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
+<v t="ekr.20191029023442.1"><vh> 4 kinds of documentation</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
+<v t="ekr.20200522082827.1"><vh>From leoMenu.py</vh>
+<v t="ekr.20051022044950"><vh>LeoMenu.computeOldStyleShortcutKey</vh></v>
+<v t="ekr.20031218072017.4117"><vh>LeoMenu.defineMenuCallback</vh></v>
+</v>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -108,7 +113,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31352e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3171057d71065808000000616e6e6f7461746571077d7108735806000000302e31392e3171097d710a5808000000616e6e6f74617465710b7d710c73752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31392e3171057d71065808000000616e6e6f7461746571077d7108735806000000302e32302e3171097d710a5808000000616e6e6f74617465710b7d710c73752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -326,6 +331,30 @@
 <t tx="ekr.20031218072017.2604"></t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
 </t>
+<t tx="ekr.20031218072017.4117">def defineMenuCallback(self, command, name, minibufferCommand):
+    # pylint: disable=no-else-return
+        # This code is simpler as it is.
+    c = self.c
+    if minibufferCommand:
+        # Create a dummy event as a signal to doCommand.
+        event = g.app.gui.create_key_event(c)
+        # The first parameter must be event, and it must default to None.
+
+        def minibufferMenuCallback(event=event, self=self, command=command, label=name):
+            c = self.c
+            return c.doCommand(command, label, event)
+
+        return minibufferMenuCallback
+    else:
+        # The first parameter must be event, and it must default to None.
+
+        def legacyMenuCallback(event=None, self=self, command=command, label=name):
+            c = self.c # 2012/03/04.
+            c.check_event(event)
+            return c.doCommand(command, label)
+
+        return legacyMenuCallback
+</t>
 <t tx="ekr.20050721093241">@nobeautify
 @nocolor
 
@@ -400,6 +429,11 @@ Important: the first Tkinter index is '1.0', not '0.0', but the row
 returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
+</t>
+<t tx="ekr.20051022044950">def computeOldStyleShortcutKey(self, s):
+    """Compute the old-style shortcut key for @shortcuts entries."""
+    # #1121: Allow Chinese characters in command names
+    return s.strip()
 </t>
 <t tx="ekr.20051031040240">@nosearch</t>
 <t tx="ekr.20080412053100.5">@language rest
@@ -1848,8 +1882,8 @@ precede the node's line that have not already been returned.
 
 efc.GitDiffController(c).diff_two_branches(
     branch1='devel', # old branch
-    branch2='gnx', # new branch
-    fn='leo/core/leoBridge.py',
+    branch2='keys', # new branch
+    fn='leo/core/leoKeys.py',
     directory=None,
 )
 </t>
@@ -1943,8 +1977,8 @@ found 284 nodes
 <t tx="ekr.20190402091335.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='42f0774b6b6e8f', # Latest, in devel.
-    rev2='fd483131eb0668', # Latest, in fstrings branch.
+    rev1='4b8320485c0', # first keys commit
+    rev2='2507a1fcc70', # Latest devel commit
     directory=None,
 )
 </t>
@@ -1986,6 +2020,28 @@ viewrendered.py
 # xdb_pane.py
 </t>
 <t tx="ekr.20190607124533.1"></t>
+<t tx="ekr.20191029023442.1">@language rest
+@wrap
+
+A tutorial: (learn by doing: teacher guides)
+    is learning-oriented
+    allows the newcomer to get started
+    is a lesson
+    
+A how-to guide: (recipe: users ask questions)
+    is goal-oriented
+    shows how to solve a specific problem
+    is a series of steps
+
+A reference guide:
+    is information-oriented
+    describes the machinery
+    is accurate and complete
+
+An explanation/discussion
+    is understanding-oriented
+    explains
+    provides background and context</t>
 <t tx="ekr.20200212095937.1"></t>
 <t tx="ekr.20200212095937.2">True:  allow joined lines to contain strings.
 False: (Recommended by EKR): Retain alignment of strings.</t>
@@ -2005,5 +2061,6 @@ for v in c.all_nodes():
             print(f"gnx clash: {gnx}")
             g.printObj(aList)
 print('done')</t>
+<t tx="ekr.20200522082827.1"></t>
 </tnodes>
 </leo_file>
