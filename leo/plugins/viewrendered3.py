@@ -1079,7 +1079,7 @@ class ViewRenderedProvider3:
     def ns_provides(self):
         # #1671: Better Window names.
         # #1678: duplicates in Open Window list
-        return [('Viewrendered', self.ns_provider_id())]
+        return [('Viewrendered 3', self.ns_provider_id())]
     #@+node:ekr.20200917063448.1: *3* vr3.ns_title
     def ns_title(self, id_):
         if id_ != self.ns_provider_id():
