@@ -1114,6 +1114,7 @@ if QtWidgets:  # NOQA
                             return provided
             return None
 
+        #@+node:ekr.20200917063155.1: *3* ns.get_title
         def get_title(self, id_):
             """Like get_provided(), but just gets a title for a window
             """
