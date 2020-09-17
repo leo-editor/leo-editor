@@ -655,13 +655,11 @@ class ViewRenderedProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self):
-        return [('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        if id_ == '_leo_viewrendered':
+        # #1678: duplicates in Open Window list
+        if id_ == self.ns_provider_id():
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
             h = c.hash()
@@ -671,6 +669,20 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
         return None
+    #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
+    def ns_provider_id(self):
+        return f"vr_id:{self.c.shortFileName()}"
+    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
+    def ns_provides(self):
+        # #1671: Better Window names.
+        # #1678: duplicates in Open Window list
+        return [('Viewrendered', self.ns_provider_id())]
+    #@+node:ekr.20200917063221.1: *3* vr.ns_title
+    def ns_title(self, id_):
+        if id_ != self.ns_provider_id():
+            return None
+        filename = self.c.shortFileName() or 'Unnamed file'
+        return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 if QtWidgets: # NOQA
