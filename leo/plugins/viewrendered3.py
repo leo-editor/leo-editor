@@ -1014,7 +1014,7 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
-#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3 (vr3)
+#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
     #@+node:TomP.20191215195433.33: *3* vr3.__init__
@@ -1492,8 +1492,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             # Use plain text if we are hidden.
             # This avoids annoying messages with rst.
-            dock = pc.leo_dock or pc
-            if dock.isHidden():
+            if pc.isHidden():
                 #w = pc.ensure_text_widget()
                 return
 

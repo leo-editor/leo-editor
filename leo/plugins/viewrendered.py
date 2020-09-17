@@ -609,7 +609,7 @@ def zoom_rendering_pane(event):
                     ns.setSizes(sizes)
                     break
     vr.zoomed = not vr.zoomed
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
+#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
@@ -714,7 +714,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
-            self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
             # Create the inner contents.
@@ -865,8 +864,7 @@ if QtWidgets: # NOQA
                 #
                 # Use plain text if we are hidden.
                 # This avoids annoying messages with rst.
-                dock = pc.leo_dock or pc
-                if dock.isHidden():
+                if pc.isHidden():
                     w = pc.ensure_text_widget()
                     w.setPlainText(s)
                     return
