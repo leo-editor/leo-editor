@@ -1015,10 +1015,10 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
-#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3 (vr3)
+#@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
-    #@+node:TomP.20191215195433.33: *3* vr3.__init__
+    #@+node:ekr.20200918085543.2: *3* vr3.__init__
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -1026,13 +1026,11 @@ class ViewRenderedProvider3:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:TomP.20191215195433.34: *3* vr3.ns_provides
-    def ns_provides(self):
-        return [('Viewrendered3', '_leo_viewrendered3')]
-    #@+node:TomP.20191215195433.35: *3* vr3.ns_provide
+    #@+node:ekr.20200918085543.3: *3* vr3.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        if id_ == '_leo_viewrendered3':
+        # #1678: duplicates in Open Window list
+        if id_ == self.ns_provider_id():
             c = self.c
             vr3 = controllers.get(c.hash()) or ViewRenderedController3(c)
             h = c.hash()
@@ -1042,6 +1040,20 @@ class ViewRenderedProvider3:
             # return ViewRenderedController(self.c)
             return vr3
         return None
+    #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
+    def ns_provider_id(self):
+        return f"vr3_id:{self.c.shortFileName()}"
+    #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
+    def ns_provides(self):
+        # #1671: Better Window names.
+        # #1678: duplicates in Open Window list
+        return [('Viewrendered 3', self.ns_provider_id())]
+    #@+node:ekr.20200918085543.6: *3* vr3.ns_title
+    def ns_title(self, id_):
+        if id_ != self.ns_provider_id():
+            return None
+        filename = self.c.shortFileName() or 'Unnamed file'
+        return f"Viewrendered 3: {filename}"
     #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
