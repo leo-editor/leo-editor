@@ -768,9 +768,6 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider3(c)
     free_layout.register_provider(c, provider)
-    # if g.app.dock:
-        # # Instantiate immediately.
-        # viewrendered(event={'c': c})
 
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
@@ -851,16 +848,7 @@ def viewrendered(event):
     vr3 = controllers.get(h)
     if not vr3:
         controllers[h] = vr3 = ViewRenderedController3(c)
-    # if g.app.dock:
-        # dock = vr3.leo_dock
-        # if not c.mFileName:
-            # # #1318 and #1332: Tricky init code for new windows.
-            # g.app.restoreWindowState(c)
-            # dock.hide()
-            # dock.raise_()
-        # return vr3
-    #
-    # Legacy code: add the pane to the splitter.
+
     layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
@@ -883,15 +871,7 @@ def hide_rendering_pane(event):
     if not vr3: return
 
     c = event.get('c')
-    # if g.app.dock:
-        # if vr3.external_dock:
-            # return # Can't hide a top-level dock.
-        # dock = vr3.leo_dock
-        # if dock:
-            # dock.hide()
-        # return
-    # #
-    # Legacy code.
+
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
@@ -964,23 +944,6 @@ def toggle_rendering_pane(event):
     if not vr3:
         vr3 = viewrendered(event)
         vr3.hide() # So the toggle below will work.
-
-#@+at
-#     if g.app.dock:
-#         if vr3.external_dock:
-#             return # Can't hide a top-level dock.
-#         dock = vr3.leo_dock
-#         if dock:
-#             f = dock.show if dock.isHidden() else dock.hide
-#             f()
-#             if not dock.isHidden():
-#                 vr3.update(tag='view', keywords={'c': c, 'force': True})
-#
-#     elif vr3.isHidden():
-#         show_rendering_pane(event)
-#     else:
-#         hide_rendering_pane(event)
-#@@c
 
     if vr3.isHidden():
         show_rendering_pane(event)
@@ -1220,10 +1183,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
     def create_pane(self, parent):
-        """Create the vr3 pane or dock."""
-        #c = self.c
-        #dw = c.frame.top
-        #self.leo_dock = None # May be set below.
+        """Create the vr3 pane."""
+
         if g.app.unitTesting:
             return
         # Create the inner contents.
@@ -1231,25 +1192,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.create_toolbar()
-        # if not g.app.dock:
-            # return
-        # # # Allow the VR dock to move only in special circumstances.
-        # central_body = g.app.get_central_widget(c) == 'body'
-        # moveable = g.app.init_docks or central_body
-        # self.leo_dock = dock = g.app.gui.create_dock_widget(
-            # closeable=True, moveable=moveable, height=50, name='ViewRendered3')
-        # if central_body:
-            # # Create a stand-alone dockable area.
-            # dock.setWidget(self)
-            # dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-        # else:
-            # # Split the body dock.
-            # # Removed per @ekr- see https://groups.google.com/forum/#!topic/leo-editor/AeHYnVqrQCU:
-            # #dw.leo_docks.append(dock)
-            # dock.setWidget(self)
-            # dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-        # if g.app.init_docks:
-            # dock.show()
     #@+node:TomP.20200329223820.6: *4* vr3.create_toolbar & helper functions
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
@@ -1395,7 +1337,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-    #    self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.set_rst_stylesheet()
 
@@ -1549,13 +1490,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
-
-            # Use plain text if we are hidden.
-            # This avoids annoying messages with rst.
-            #dock = pc.leo_dock or pc
-            # if dock.isHidden():
-                # #w = pc.ensure_text_widget()
-                # return
 
             # For rst, md, asciidoc handler
             self.rst_html = ''
@@ -3172,13 +3106,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def show_dock_or_pane(self):
 
         c, vr = self.c, self
-        # if g.app.dock:
-            # dock = vr.leo_dock
-            # if dock:
-                # dock.show()
-                # dock.raise_()
-                    # # #1230.
-    #    else:
         vr.activate()
         vr.show()
         vr.adjust_layout('open')

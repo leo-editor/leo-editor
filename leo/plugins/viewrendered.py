@@ -609,7 +609,7 @@ def zoom_rendering_pane(event):
                     ns.setSizes(sizes)
                     break
     vr.zoomed = not vr.zoomed
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
+#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
@@ -620,13 +620,11 @@ class ViewRenderedProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self):
-        return [('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        if id_ == '_leo_viewrendered':
+        # #1678: duplicates in Open Window list
+        if id_ == self.ns_provider_id():
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
             h = c.hash()
@@ -636,6 +634,20 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
         return None
+    #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
+    def ns_provider_id(self):
+        return f"vr_id:{self.c.shortFileName()}"
+    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
+    def ns_provides(self):
+        # #1671: Better Window names.
+        # #1678: duplicates in Open Window list
+        return [('Viewrendered', self.ns_provider_id())]
+    #@+node:ekr.20200917063221.1: *3* vr.ns_title
+    def ns_title(self, id_):
+        if id_ != self.ns_provider_id():
+            return None
+        filename = self.c.shortFileName() or 'Unnamed file'
+        return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 if QtWidgets: # NOQA
@@ -714,34 +726,12 @@ if QtWidgets: # NOQA
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
-            ### c = self.c
-            ### dw = c.frame.top
-            self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
             # Create the inner contents.
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
-            ###
-                # if not g.app.dock:
-                    # return
-                # # Allow the VR dock to move only in special circumstances.
-                # central_body = g.app.get_central_widget(c) == 'body'
-                # moveable = g.app.init_docks or central_body
-                # self.leo_dock = dock = g.app.gui.create_dock_widget(
-                    # closeable=True, moveable=moveable, height=50, name='Render')
-                # if central_body:
-                    # # Create a stand-alone dockable area.
-                    # dock.setWidget(self)
-                    # dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-                # elif g.app.dock:
-                    # # Split the body dock. Don't register the new dock as an editor doc.
-                    # ### dw.leo_docks.append(dock)
-                    # dock.setWidget(self)
-                    # dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-                # if g.app.init_docks:
-                    # dock.show()
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
             '''Activate the vr-window.'''
@@ -836,14 +826,6 @@ if QtWidgets: # NOQA
         def show_dock_or_pane(self):
 
             c, vr = self.c, self
-            ###
-                # if g.app.dock:
-                    # dock = vr.leo_dock
-                    # if dock:
-                        # dock.show()
-                        # dock.raise_()
-                            # # #1230.
-                # else:
             vr.activate()
             vr.show()
             vr.adjust_layout('open')
@@ -894,8 +876,7 @@ if QtWidgets: # NOQA
                 #
                 # Use plain text if we are hidden.
                 # This avoids annoying messages with rst.
-                dock = pc.leo_dock or pc
-                if dock.isHidden():
+                if pc.isHidden():
                     w = pc.ensure_text_widget()
                     w.setPlainText(s)
                     return
