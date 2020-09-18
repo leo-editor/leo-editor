@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b18
+About Viewrendered3 V3.0rc2
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -139,7 +139,7 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
-   "@bool vr3-insert-headline-from-node", "True", "True, False". Render node headline as top heading if True"
+   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -496,8 +496,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-# pylint: disable=no-else-break
-    # This warning looks wrong!
 
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
@@ -770,6 +768,7 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider3(c)
     free_layout.register_provider(c, provider)
+
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -849,7 +848,7 @@ def viewrendered(event):
     vr3 = controllers.get(h)
     if not vr3:
         controllers[h] = vr3 = ViewRenderedController3(c)
-    # Add the pane to the splitter.
+
     layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
@@ -870,7 +869,9 @@ def hide_rendering_pane(event):
     """Close the rendering pane."""
     vr3 = getVr3(event)
     if not vr3: return
+
     c = event.get('c')
+
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
@@ -1014,7 +1015,7 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
-#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3
+#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3 (vr3)
 class ViewRenderedProvider3:
     #@+others
     #@+node:TomP.20191215195433.33: *3* vr3.__init__
@@ -1025,11 +1026,13 @@ class ViewRenderedProvider3:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
+    #@+node:TomP.20191215195433.34: *3* vr3.ns_provides
+    def ns_provides(self):
+        return [('Viewrendered3', '_leo_viewrendered3')]
     #@+node:TomP.20191215195433.35: *3* vr3.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        # #1678: duplicates in Open Window list
-        if id_ == self.ns_provider_id():
+        if id_ == '_leo_viewrendered3':
             c = self.c
             vr3 = controllers.get(c.hash()) or ViewRenderedController3(c)
             h = c.hash()
@@ -1039,20 +1042,6 @@ class ViewRenderedProvider3:
             # return ViewRenderedController(self.c)
             return vr3
         return None
-    #@+node:ekr.20200917062658.1: *3* vr3.ns_provider_id
-    def ns_provider_id(self):
-        return f"vr3_id:{self.c.shortFileName()}"
-    #@+node:TomP.20191215195433.34: *3* vr3.ns_provides
-    def ns_provides(self):
-        # #1671: Better Window names.
-        # #1678: duplicates in Open Window list
-        return [('Viewrendered 3', self.ns_provider_id())]
-    #@+node:ekr.20200917063448.1: *3* vr3.ns_title
-    def ns_title(self, id_):
-        if id_ != self.ns_provider_id():
-            return None
-        filename = self.c.shortFileName() or 'Unnamed file'
-        return f"Viewrendered 3: {filename}"
     #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
@@ -1194,7 +1183,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
     def create_pane(self, parent):
-        """Create the vr3 pane or dock."""
+        """Create the vr3 pane."""
+
         if g.app.unitTesting:
             return
         # Create the inner contents.
@@ -1347,7 +1337,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-        self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.set_rst_stylesheet()
 
@@ -1501,12 +1490,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
-
-            # Use plain text if we are hidden.
-            # This avoids annoying messages with rst.
-            if pc.isHidden():
-                #w = pc.ensure_text_widget()
-                return
 
             # For rst, md, asciidoc handler
             self.rst_html = ''
@@ -2150,6 +2133,61 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     result += f'{err_result}\n'
                 result += '```\n'
 
+        #@+node:TomP.20200906224158.1: *6* process nodes orig
+        #@+at
+        # result = ''
+        # codelist = []
+        # sm = StateMachine(self, TEXT, MD, MD)
+        #
+        # if not node_list:
+        #     lines = s.split('\n')
+        #     # Process node's entire body text; handle @language directives
+        #     sproc, codelines = sm.runMachine(lines)
+        #     result += sproc
+        #     sm.reset()
+        # else:
+        #     for node in node_list:
+        #         s = node.b
+        #         s = self.remove_directives(s)
+        #         if self.use_node_headline:
+        #             # Add node's text as a headline
+        #             # Remove "@" directive from headline, if any
+        #             header = node.h or ''
+        #             if header.startswith('@'):
+        #                 fields = header.split()
+        #                 headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+        #             else:
+        #                 headline = header
+        #             headline_str = '##' + headline
+        #             s = headline_str + '\n' + s
+        #         lines = s.split('\n')
+        #
+        #         # Process node's entire body text; handle @language directives
+        #         sproc, codelines = sm.runMachine(lines)
+        #         result += sproc
+        #         if codelines:
+        #             codelist.extend(codelines)
+        #         sm.reset()
+        #
+        # # Execute code blocks; capture and insert execution results.
+        # # This means anything written to stdout or stderr.
+        # if self.execute_flag and codelist:
+        #     execution_result, err_result = None, None
+        #     code = '\n'.join(codelist)
+        #     c = self.c
+        #     environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        #     execution_result, err_result = self.exec_code(code, environment)
+        #     execution_result, err_result = execution_result.strip(), err_result.strip()
+        #     self.execute_flag = False
+        #
+        #     if execution_result or err_result:
+        #         result += '\n```text\n'
+        #         if execution_result:
+        #             result += f'\n{execution_result}\n'
+        #         if err_result:
+        #             result += f'{err_result}\n'
+        #         result += '```\n'
+        #
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
@@ -2543,6 +2581,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
+            #@+<< omit at-others >>
+            #@+node:TomP.20200909123019.1: *7* << omit at-others >>
+            # Omit lines starting with [blank]*line =     @others
+            left = line.lstrip()
+            if left.startswith('@others'):
+                continue
+            #@-<< omit at-others >>
             #@+<< handle toctree >>
             #@+node:TomP.20200411133219.1: *7* << handle toctree >>
             # Skip all lines in an indented block started by a string in SKIPBLOCKS
@@ -3064,6 +3109,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         vr.activate()
         vr.show()
         vr.adjust_layout('open')
+
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
     def adjust_layout(self, which):
