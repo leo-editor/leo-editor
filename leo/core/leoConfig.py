@@ -1001,7 +1001,7 @@ class ActiveSettingsOutline:
         fileName = f"{old_c.fileName()}-active-settings"
         g.es(fileName, color='red')
         c = g.app.newCommander(fileName=fileName)
-        # Restore the layout of docks, if we have ever saved this file.
+        # Restore the layout, if we have ever saved this file.
         if not old_c:
             c.frame.setInitialWindowGeometry()
         # #1340: Don't do this. It is no longer needed.

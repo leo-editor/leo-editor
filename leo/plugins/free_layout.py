@@ -404,13 +404,7 @@ def free_layout_context_menu(event):
     """
     Open free layout's context menu, using the first divider of the top
     splitter for context.
-    
-    This command does noting when --use-docks is in effect.
     """
-    if g.app.dock:
-        # #1216
-        g.es('free-layout-context-menu does nothing when using docks')
-        return
     c = event.get('c')
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
@@ -420,27 +414,13 @@ def free_layout_context_menu(event):
 def free_layout_restore(event):
     """
     Restore layout outline had when it was loaded.
-    
-    This command does noting when --use-docks is in effect.
     """
-    if g.app.dock:
-        # #1216
-        g.es('free-layout-restore does nothing when using docks')
-        return
     c = event.get('c')
     c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 #@+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
 def free_layout_load(event):
-    """
-    Load layout from menu.
-    
-    This command does noting when --use-docks is in effect.
-    """
-    if g.app.dock:
-        # #1216
-        g.es('free-layout-load does nothing when using docks')
-        return
+    """Load layout from menu."""
     c = event.get('c')
     d = g.app.db.get('ns_layouts', {})
     menu = QtWidgets.QMenu(c.frame.top)
@@ -460,15 +440,7 @@ def free_layout_load(event):
 #@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
 def free_layout_zoom(event):
-    """
-    (un)zoom the current pane.
-    
-    This command does noting when --use-docks is in effect.
-    """
-    if g.app.dock:
-        # #1216
-        g.es('free-layout-zoom does nothing when using docks')
-        return
+    """(un)zoom the current pane."""
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider

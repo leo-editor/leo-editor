@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0b18
+About Viewrendered3 V3.0rc3
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -139,7 +139,7 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
    "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
    "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
-   "@bool vr3-insert-headline-from-node", "True", "True, False". Render node headline as top heading if True"
+   "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
    :header: "Setting", "Default", "Values", "Purpose"
@@ -496,8 +496,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-# pylint: disable=no-else-break
-    # This warning looks wrong!
 
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
@@ -770,9 +768,6 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider3(c)
     free_layout.register_provider(c, provider)
-    if g.app.dock:
-        # Instantiate immediately.
-        viewrendered(event={'c': c})
 
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
@@ -853,16 +848,7 @@ def viewrendered(event):
     vr3 = controllers.get(h)
     if not vr3:
         controllers[h] = vr3 = ViewRenderedController3(c)
-    if g.app.dock:
-        dock = vr3.leo_dock
-        if not c.mFileName:
-            # #1318 and #1332: Tricky init code for new windows.
-            g.app.restoreWindowState(c)
-            dock.hide()
-            dock.raise_()
-        return vr3
-    #
-    # Legacy code: add the pane to the splitter.
+
     layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
@@ -885,15 +871,7 @@ def hide_rendering_pane(event):
     if not vr3: return
 
     c = event.get('c')
-    if g.app.dock:
-        if vr3.external_dock:
-            return # Can't hide a top-level dock.
-        dock = vr3.leo_dock
-        if dock:
-            dock.hide()
-        return
-    #
-    # Legacy code.
+
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
@@ -967,17 +945,7 @@ def toggle_rendering_pane(event):
         vr3 = viewrendered(event)
         vr3.hide() # So the toggle below will work.
 
-    if g.app.dock:
-        if vr3.external_dock:
-            return # Can't hide a top-level dock.
-        dock = vr3.leo_dock
-        if dock:
-            f = dock.show if dock.isHidden() else dock.hide
-            f()
-            if not dock.isHidden():
-                vr3.update(tag='view', keywords={'c': c, 'force': True})
-
-    elif vr3.isHidden():
+    if vr3.isHidden():
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
@@ -1047,10 +1015,10 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
-#@+node:TomP.20191215195433.32: ** class ViewRenderedProvider3 (vr3)
+#@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
-    #@+node:TomP.20191215195433.33: *3* vr3.__init__
+    #@+node:ekr.20200918085543.2: *3* vr3.__init__
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -1058,13 +1026,11 @@ class ViewRenderedProvider3:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:TomP.20191215195433.34: *3* vr3.ns_provides
-    def ns_provides(self):
-        return [('Viewrendered3', '_leo_viewrendered3')]
-    #@+node:TomP.20191215195433.35: *3* vr3.ns_provide
+    #@+node:ekr.20200918085543.3: *3* vr3.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        if id_ == '_leo_viewrendered3':
+        # #1678: duplicates in Open Window list
+        if id_ == self.ns_provider_id():
             c = self.c
             vr3 = controllers.get(c.hash()) or ViewRenderedController3(c)
             h = c.hash()
@@ -1074,6 +1040,20 @@ class ViewRenderedProvider3:
             # return ViewRenderedController(self.c)
             return vr3
         return None
+    #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
+    def ns_provider_id(self):
+        return f"vr3_id:{self.c.shortFileName()}"
+    #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
+    def ns_provides(self):
+        # #1671: Better Window names.
+        # #1678: duplicates in Open Window list
+        return [('Viewrendered 3', self.ns_provider_id())]
+    #@+node:ekr.20200918085543.6: *3* vr3.ns_title
+    def ns_title(self, id_):
+        if id_ != self.ns_provider_id():
+            return None
+        filename = self.c.shortFileName() or 'Unnamed file'
+        return f"Viewrendered 3: {filename}"
     #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
@@ -1215,10 +1195,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
     def create_pane(self, parent):
-        """Create the vr3 pane or dock."""
-        c = self.c
-        dw = c.frame.top
-        self.leo_dock = None # May be set below.
+        """Create the vr3 pane."""
+
         if g.app.unitTesting:
             return
         # Create the inner contents.
@@ -1226,25 +1204,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.create_toolbar()
-        if not g.app.dock:
-            return
-        # Allow the VR dock to move only in special circumstances.
-        central_body = g.app.get_central_widget(c) == 'body'
-        moveable = g.app.init_docks or central_body
-        self.leo_dock = dock = g.app.gui.create_dock_widget(
-            closeable=True, moveable=moveable, height=50, name='ViewRendered3')
-        if central_body:
-            # Create a stand-alone dockable area.
-            dock.setWidget(self)
-            dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-        else:
-            # Split the body dock.
-            # Removed per @ekr- see https://groups.google.com/forum/#!topic/leo-editor/AeHYnVqrQCU:
-            #dw.leo_docks.append(dock)
-            dock.setWidget(self)
-            dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-        if g.app.init_docks:
-            dock.show()
     #@+node:TomP.20200329223820.6: *4* vr3.create_toolbar & helper functions
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
@@ -1390,7 +1349,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-        self.external_dock = c.config.getBool('use-vr3-dock', default=False)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.set_rst_stylesheet()
 
@@ -1544,13 +1502,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
-
-            # Use plain text if we are hidden.
-            # This avoids annoying messages with rst.
-            dock = pc.leo_dock or pc
-            if dock.isHidden():
-                #w = pc.ensure_text_widget()
-                return
 
             # For rst, md, asciidoc handler
             self.rst_html = ''
@@ -2194,6 +2145,61 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     result += f'{err_result}\n'
                 result += '```\n'
 
+        #@+node:TomP.20200906224158.1: *6* process nodes orig
+        #@+at
+        # result = ''
+        # codelist = []
+        # sm = StateMachine(self, TEXT, MD, MD)
+        #
+        # if not node_list:
+        #     lines = s.split('\n')
+        #     # Process node's entire body text; handle @language directives
+        #     sproc, codelines = sm.runMachine(lines)
+        #     result += sproc
+        #     sm.reset()
+        # else:
+        #     for node in node_list:
+        #         s = node.b
+        #         s = self.remove_directives(s)
+        #         if self.use_node_headline:
+        #             # Add node's text as a headline
+        #             # Remove "@" directive from headline, if any
+        #             header = node.h or ''
+        #             if header.startswith('@'):
+        #                 fields = header.split()
+        #                 headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
+        #             else:
+        #                 headline = header
+        #             headline_str = '##' + headline
+        #             s = headline_str + '\n' + s
+        #         lines = s.split('\n')
+        #
+        #         # Process node's entire body text; handle @language directives
+        #         sproc, codelines = sm.runMachine(lines)
+        #         result += sproc
+        #         if codelines:
+        #             codelist.extend(codelines)
+        #         sm.reset()
+        #
+        # # Execute code blocks; capture and insert execution results.
+        # # This means anything written to stdout or stderr.
+        # if self.execute_flag and codelist:
+        #     execution_result, err_result = None, None
+        #     code = '\n'.join(codelist)
+        #     c = self.c
+        #     environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
+        #     execution_result, err_result = self.exec_code(code, environment)
+        #     execution_result, err_result = execution_result.strip(), err_result.strip()
+        #     self.execute_flag = False
+        #
+        #     if execution_result or err_result:
+        #         result += '\n```text\n'
+        #         if execution_result:
+        #             result += f'\n{execution_result}\n'
+        #         if err_result:
+        #             result += f'{err_result}\n'
+        #         result += '```\n'
+        #
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
@@ -2587,6 +2593,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
 
         for i, line in enumerate(lines):
+            #@+<< omit at-others >>
+            #@+node:TomP.20200909123019.1: *7* << omit at-others >>
+            # Omit lines starting with [blank]*line =     @others
+            left = line.lstrip()
+            if left.startswith('@others'):
+                continue
+            #@-<< omit at-others >>
             #@+<< handle toctree >>
             #@+node:TomP.20200411133219.1: *7* << handle toctree >>
             # Skip all lines in an indented block started by a string in SKIPBLOCKS
@@ -3105,16 +3118,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def show_dock_or_pane(self):
 
         c, vr = self.c, self
-        if g.app.dock:
-            dock = vr.leo_dock
-            if dock:
-                dock.show()
-                dock.raise_()
-                    # #1230.
-        else:
-            vr.activate()
-            vr.show()
-            vr.adjust_layout('open')
+        vr.activate()
+        vr.show()
+        vr.adjust_layout('open')
+
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
     def adjust_layout(self, which):

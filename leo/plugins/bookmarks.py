@@ -244,11 +244,6 @@ def onCreate(tag, keys):
     if not c:
         return
     BookMarkDisplayProvider(c)
-    if not g.app.dock:
-        return
-    # #1214: Create a dock or an area in the Log pane.
-    bmd = BookMarkDisplay(c)
-    c.frame.log.createTab("Bookmarks", widget=bmd.w)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
 @g.command('bookmarks-open-bookmark')
 def cmd_open_bookmark(event):
@@ -278,13 +273,9 @@ def cmd_open_node(event):
 #@+node:tbrown.20110712100955.39215: ** bookmarks-show
 @g.command('bookmarks-show')
 def cmd_show(event):
-    
-    if g.app.dock:
-       return
+
     c = event.get('c')
     bmd = BookMarkDisplay(c)
-    if g.app.dock:
-       return
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
@@ -480,8 +471,6 @@ def cmd_use_other_outline(event):
         g.es("Use bookmarks-mark-as-target first")
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
-    if g.app.dock:
-       return
     bmd = BookMarkDisplay(c, g._bookmarks_target_v)
     splitter = c.free_layout.get_top_splitter()
     if splitter:
