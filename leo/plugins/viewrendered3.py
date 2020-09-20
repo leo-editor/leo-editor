@@ -2952,7 +2952,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Expand '~' and handle Leo expressions.
             fn = fn[1:]
             fn = g.os_path_expanduser(fn)
-            fn = g.os_path_expandExpression(fn, c=c)
+            fn = c.expand_path_expression(fn)
             fn = g.os_path_finalize(fn)
         else:
             # Handle Leo expressions.
