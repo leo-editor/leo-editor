@@ -1853,7 +1853,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             fn = g.os_path_finalize(fn)
         else:
             # Handle Leo expressions.
-            fn = g.os_path_expandExpression(fn, c=c)
+            fn = c.expand_path_expression(fn)
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)
