@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0rc2
+About Viewrendered3 V3.0rc3
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2965,7 +2965,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Expand '~' and handle Leo expressions.
             fn = fn[1:]
             fn = g.os_path_expanduser(fn)
-            fn = g.os_path_expandExpression(fn, c=c)
+            fn = c.expand_path_expression(fn)
             fn = g.os_path_finalize(fn)
         else:
             # Handle Leo expressions.
