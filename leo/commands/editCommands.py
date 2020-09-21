@@ -2197,9 +2197,10 @@ class EditCommandsClass(BaseEditCommandsClass):
                     while 0 <= i < n and g.isWordChar(s[i]):
                         i += 1
                 else:
-                    while 0 <= i < n and g.isWordChar(s[i]):
-                        i += 1
+                    #1653. Scan for non-words *first*.
                     while 0 <= i < n and not g.isWordChar(s[i]):
+                        i += 1
+                    while 0 <= i < n and g.isWordChar(s[i]):
                         i += 1
             else:
                 i -= 1
