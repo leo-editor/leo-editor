@@ -852,6 +852,7 @@ def viewrendered(event):
     layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
     vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
+
     if splitter:
         vr3.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
@@ -861,6 +862,7 @@ def viewrendered(event):
         elif splitter.orientation() == QtCore.Qt.Horizontal:
             splitter.setSizes(sizes)
         vr3.adjust_layout('open')
+
     c.bodyWantsFocusNow()
     return vr3
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
@@ -1022,6 +1024,7 @@ class ViewRenderedProvider3:
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
+
         if hasattr(c, 'free_layout'):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
@@ -1036,13 +1039,12 @@ class ViewRenderedProvider3:
             h = c.hash()
             controllers[h] = vr3
             if not layouts.get(h):
-                layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-            # return ViewRenderedController(self.c)
+                layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
             return vr3
         return None
     #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
     def ns_provider_id(self):
-        return f"vr3_id:{self.c.shortFileName()}"
+        return "_leo_viewrendered3"
     #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
     def ns_provides(self):
         # #1671: Better Window names.
