@@ -22483,7 +22483,7 @@ Leo.
     
     followed by checking out the _devel_ branch:
 
-``git chekout devel`` 
+``git checkout devel`` 
 
 3. Install dependencies and create leo script launcher::
 
@@ -31634,9 +31634,9 @@ already deleted positions is valid.
 I had some really old version of leo - I believe it was 5.x and was
 installed 1.5 years ago. I use Leo for collecting thoughts, writing
 down stuff, structuring a talk etc. Decided to get out of comfort zone
-and cloned git repo and dailly git pull and started using that.
+and cloned git repo and daily git pull and started using that.
 
-This is brilliant. Bunch of my myLeoSettings.leo stuf is no longer
+This is brilliant. Bunch of my myLeoSettings.leo stuff is no longer
 needed with dockable panes for body and outline; and it remembers
 setting too. Plus, the default look is very nice (I am on elementaryos
 5.1)
@@ -31654,7 +31654,7 @@ this to be permanently hidden. FWIW, I also keep icon-bar always
 hidden to save space - which seems to be remembered in this version
 than me having to start leo with such a setting.
 
-Overall awsome stuff - rarely do one get so thrilled to see software so nicely advanced and still true to its core in a short time.
+Overall awesome stuff - rarely do one get so thrilled to see software so nicely advanced and still true to its core in a short time.
 
 
 I am trying to convert different people to use Leo and they have their

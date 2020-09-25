@@ -235,40 +235,21 @@ class DefaultWrapper(BaseSpellWrapper):
         fn = g.os_path_finalize_join(
             g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
-    #@+node:ekr.20180207073815.1: *3* default.read_words & helper
+    #@+node:ekr.20180207073815.1: *3* default.read_words (changed)
     def read_words(self, kind, fn):
         """Return all the words from the dictionary file."""
         words = set()
         try:
             with open(fn, 'rb') as f:
                 s = g.toUnicode(f.read())
+                # #1688: Do this in place.
                 for line in g.splitLines(s):
-                    self.add_expanded_line(line, words)
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        words.add(line)
         except Exception:
             g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
-    #@+node:ekr.20180207132550.1: *4* default.add_expanded_line
-    def add_expanded_line(self, s, words):
-        """Add the expansion of line s to the words set."""
-        s = g.toUnicode(s).strip()
-        if not s or s.startswith('#'):
-            return
-        # Strip off everything after /
-        i = s.find('/')
-        if i > -1:
-            flags = s[i + 1 :].strip().lower()
-            s = s[:i].strip()
-        else:
-            flags = ''
-        if not s:
-            return
-        words.add(s)
-        words.add(s.lower())
-        # Flags are not properly documented.
-        # Adding plurals is good enough for now.
-        if 's' in flags and not s.endswith('s'):
-            words.add(s + 's')
-            words.add(s.lower() + 's')
     #@+node:ekr.20180207110718.1: *3* default.save_dict
     def save_dict(self, kind, fn, trace=False):
         """
