@@ -12365,20 +12365,6 @@ for ext, expected in table:
     result = g.comment_delims_from_extension(ext)
     assert result==expected,'ext %s expected %s, got %s' % (
         ext,expected,result)
-#@+node:ekr.20160327132053.1: *4* @test g.compute_directives_re
-# Mimic the code in g.get_directives_dict
-import re
-pat = g.compute_directives_re()
-pat = re.compile(pat, re.MULTILINE)
-table = (
-    '@wrap', # The failure case.
-    '@wrap ',
-    '@wrap\n',
-    '@wrap\t',
-)
-for s in table:
-    m = pat.search(s)
-    assert m, repr(s)
 #@+node:ekr.20071113145804.26: *4* @test g.convertPythonIndexToRowCol
 s1 = 'abc\n\np\nxy'
 table1 = (

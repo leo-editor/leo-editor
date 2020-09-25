@@ -235,7 +235,7 @@ class DefaultWrapper(BaseSpellWrapper):
         fn = g.os_path_finalize_join(
             g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
-    #@+node:ekr.20180207073815.1: *3* default.read_words (changed)
+    #@+node:ekr.20180207073815.1: *3* default.read_words
     def read_words(self, kind, fn):
         """Return all the words from the dictionary file."""
         words = set()
