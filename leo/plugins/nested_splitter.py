@@ -1026,8 +1026,13 @@ if QtWidgets:  # NOQA
                         return w2
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
-        def load_layout(self, layout, level=0):
+        def load_layout(self, layout, level=0, c=None):
 
+            trace = 'layouts' in g.app.debug
+            if trace:
+                g.trace('level', level)
+                tag = 'global layout' if c is None else f"layout: {c.shortFileName()}"
+                g.printObj(layout, tag=tag)
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:
@@ -1040,7 +1045,7 @@ if QtWidgets:  # NOQA
                     new._in_layout = True
                     self.insert(found, new)
                     found += 1
-                    new.load_layout(i, level + 1)
+                    new.load_layout(i, level + 1, c=c)
                 else:
                     provided = self.get_provided(i)
                     if provided:

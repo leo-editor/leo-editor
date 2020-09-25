@@ -196,7 +196,7 @@ class FreeLayoutController:
         return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
-        """loadLayouts - Load the outlines layout
+        """loadLayouts - Load the outline's layout
 
         :Parameters:
         - `tag`: from hook event
@@ -212,9 +212,10 @@ class FreeLayoutController:
         c = self.c
         if not (g.app and g.app.db):
             return  # Can happen when running from the Leo bridge.
-        d = g.app.db.get('ns_layouts') or {}
         if c != keys.get('c'):
             return
+        d = g.app.db.get('ns_layouts') or {}
+        g.trace(tag, keys) ###
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))
@@ -237,7 +238,7 @@ class FreeLayoutController:
                 def func(event, c=c, d=d, name=name):
                     layout = d.get(name)
                     if layout:
-                        c.free_layout.get_top_splitter().load_layout(layout)
+                        c.free_layout.get_top_splitter().load_layout(layout, c=c)
                     else:
                         g.trace('no layout', name)
 
@@ -248,7 +249,7 @@ class FreeLayoutController:
         if layout:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
-                splitter.load_layout(layout)
+                splitter.load_layout(layout, c=c)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
         ans = [
@@ -271,10 +272,19 @@ class FreeLayoutController:
             return True
         if id_.startswith('_fl_restore_default'):
             self.get_top_splitter().load_layout(
-                {'content': [{'content': ['_leo_pane:outlineFrame',
-                 '_leo_pane:logFrame'], 'orientation': 1, 'sizes':
-                 [509, 275]}, '_leo_pane:bodyFrame'],
-                 'orientation': 2, 'sizes': [216, 216]})
+                layout = {
+                    'content': [
+                        {'content': [
+                            '_leo_pane:outlineFrame',
+                            '_leo_pane:logFrame'],
+                            'orientation': 1,
+                            'sizes': [509, 275],
+                        },
+                        '_leo_pane:bodyFrame',
+                    ],
+                    'orientation': 2,
+                    'sizes': [216, 216],
+                })
         if id_.startswith('_fl_help'):
             self.c.putHelpFor(__doc__)
             # g.handleUrl("http://leoeditor.com/")
