@@ -573,6 +573,9 @@ class LeoPluginsController:
         finally:
             self.loadingModuleNameStack.pop()
         if result:
+            # #1688: Plugins can update globalDirectiveList.
+            #        Recalculate g.directives_pat.
+            g.update_directives_pat()
             report(f"loaded: {moduleName}")
         self.signonModule = result  # for self.plugin_signon.
         return result
