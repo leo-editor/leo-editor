@@ -77,10 +77,10 @@ class SessionManager:
             exists = fn and g.os_path_exists(fn)
             if not exists:
                 if 'startup' in g.app.debug:
-                    g.trace('file not found:', fn)
+                    g.trace('session file not found:', fn)
                 continue
             if 'startup' in g.app.debug:
-                g.trace('loading:', fn)
+                g.trace('loading session file:', fn)
             g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
                 # This selects the proper position.
     #@+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
