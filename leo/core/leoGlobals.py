@@ -83,6 +83,8 @@ globalDirectiveList = [
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
 ]
+
+directives_pat = None  # Set below.
 #@-<< define g.globalDirectiveList >>
 #@+<< define global decorator dicts >>
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
@@ -3330,15 +3332,16 @@ def get_directives_dict(p, root=None):
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive
     """
-    if root: root_node = root[0]
-    # c = p and p.v and p.v.context
+    if root:
+        root_node = root[0]
     d = {}
-    # Do this every time so plugins can add directives.
-    pat = g.compute_directives_re()
-    directives_pat = re.compile(pat, re.MULTILINE)
+    #
+    # #1688:    legacy: Always compute the pattern.
+    #           g.directives_pat is updated whenever loading a plugin.
+    #
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
-        anIter = directives_pat.finditer(s)
+        anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
@@ -3364,19 +3367,19 @@ def get_directives_dict(p, root=None):
                 g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
             break
     return d
-#@+node:ekr.20090214075058.10: *4* g.compute_directives_re
-def compute_directives_re():
-    """
-    Return an re pattern which word matches all Leo directives.
-    Only g.get_directives_dict uses this pattern.
-    """
-    global globalDirectiveList
+#@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
+def update_directives_pat():
+    """Init/update g.directives_pat"""
+    global globalDirectiveList, directives_pat
     # Use a pattern that guarantees word matches.
     aList = [
         fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
     ]
-    # Clearer w/o f-strings.
-    return f"^@(%s)" % "|".join(aList)
+    pat = f"^@(%s)" % "|".join(aList)
+    directives_pat = re.compile(pat, re.MULTILINE)
+
+# #1688: Initialize g.directives_pat
+update_directives_pat()
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.
