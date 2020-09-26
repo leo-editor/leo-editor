@@ -209,13 +209,16 @@ class FreeLayoutController:
         Useful if you want to temporarily switch to a different layout and then
         back, without having to remember the original layouts name.
         """
+        trace = 'layouts' in g.app.debug
         c = self.c
         if not (g.app and g.app.db):
             return  # Can happen when running from the Leo bridge.
         if c != keys.get('c'):
             return
         d = g.app.db.get('ns_layouts') or {}
-        g.trace(tag, keys) ###
+        if trace:
+            g.trace(tag)
+            g.printObj(keys, tag=f"keys")
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))
@@ -238,7 +241,7 @@ class FreeLayoutController:
                 def func(event, c=c, d=d, name=name):
                     layout = d.get(name)
                     if layout:
-                        c.free_layout.get_top_splitter().load_layout(layout, c=c)
+                        c.free_layout.get_top_splitter().load_layout(c, layout)
                     else:
                         g.trace('no layout', name)
 
@@ -249,7 +252,7 @@ class FreeLayoutController:
         if layout:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
-                splitter.load_layout(layout, c=c)
+                splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
         ans = [
@@ -267,11 +270,13 @@ class FreeLayoutController:
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
     def ns_do_context(self, id_, splitter, index):
+
+        c = self.c
         if id_.startswith('_fl_embed_layout'):
             self.embed()
             return True
         if id_.startswith('_fl_restore_default'):
-            self.get_top_splitter().load_layout(
+            self.get_top_splitter().load_layout(c,
                 layout = {
                     'content': [
                         {'content': [
@@ -314,11 +319,11 @@ class FreeLayoutController:
             name = id_.split(':', 1)[1]
             self.c.db['_ns_layout'] = name
             layout = g.app.db['ns_layouts'][name]
-            self.get_top_splitter().load_layout(layout)
+            self.get_top_splitter().load_layout(c, layout)
             return True
         if id_.startswith('_fl_delete_layout:'):
             name = id_.split(':', 1)[1]
-            if ('yes' == g.app.gui.runAskYesNoCancelDialog(self.c,
+            if ('yes' == g.app.gui.runAskYesNoCancelDialog(c,
                 "Really delete Layout?",
                 f"Really permanently delete the layout '{name}'?")
             ):
@@ -432,6 +437,8 @@ def free_layout_restore(event):
 def free_layout_load(event):
     """Load layout from menu."""
     c = event.get('c')
+    if not c:
+        return
     d = g.app.db.get('ns_layouts', {})
     menu = QtWidgets.QMenu(c.frame.top)
     for k in d:
@@ -446,7 +453,7 @@ def free_layout_load(event):
     layouts = g.app.db.get('ns_layouts', {})
     layout = layouts.get(name)
     if layout:
-        c.free_layout.get_top_splitter().load_layout(layout)
+        c.free_layout.get_top_splitter().load_layout(c, layout)
 #@+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
 def free_layout_zoom(event):
