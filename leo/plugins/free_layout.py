@@ -65,22 +65,29 @@ class FreeLayoutController:
     """
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
+    default_layout = {  # 2020/09/28
+        'content': [
+            {
+                'content': [
+                    '_leo_pane:outlineFrame',
+                    '_leo_pane:logFrame'
+                ],
+                'orientation': 1,
+                'sizes': [509, 275],
+            },
+            '_leo_pane:bodyFrame',
+        ],
+        'orientation': 2,
+        'sizes': [216, 216],
+    }
+
     def __init__(self, c):
         """Ctor for FreeLayoutController class."""
-
-        # if hasattr(c,'free_layout'):
-            # return
         self.c = c
-        # c.free_layout = self
-            # To be removed
-        # g.registerHandler('after-create-leo-frame',self.bindControllers)
-        # attach to an outline
+        # Init first.
         g.registerHandler('after-create-leo-frame', self.init)
-        # now that the outline's set up (plugins etc.), load layout for
-        # outline, can't do that sooner as plugins must be loaded first
-        # to provide their widgets in panels etc.
+        # Load layouts *after* plugins have been loaded, so that providers exist.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
-        # self.init()
     #@+node:tbrown.20110203111907.5522: *3*  flc.init
     def init(self, tag, keys):
         """Attach to an outline and
