@@ -277,7 +277,9 @@ class FreeLayoutController:
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
     def ns_do_context(self, id_, splitter, index):
-
+        """
+        Do the action indicated by id_. Return True if successful.
+        """
         c = self.c
         if id_.startswith('_fl_embed_layout'):
             self.embed()
@@ -297,6 +299,7 @@ class FreeLayoutController:
                     'orientation': 2,
                     'sizes': [216, 216],
                 })
+            return True
         if id_.startswith('_fl_help'):
             self.c.putHelpFor(__doc__)
             # g.handleUrl("http://leoeditor.com/")
