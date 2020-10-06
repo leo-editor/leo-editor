@@ -6,12 +6,12 @@
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
 #@@language rest
-Creates a window for *live* rendering of reSTructuredText, 
+Creates a window for live rendering of reSTructuredText, 
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0rc3
+About Viewrendered3 V3.0rc4
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -137,8 +137,8 @@ All settings are of type @string unless shown as ``@bool``
    "vr3-rst-stylesheet", "''", "url string", "URL for RsT Stylesheet"
    "vr3-md-stylesheet", "''", "url string", "URL for MD stylesheet"
    "vr3-asciidoc-path", "''", "string", "Path to ``asciidoc`` directory"
-   "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``Asciidoc3`` if available"
-   "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Ruby ``asciidoctor`` program"
+   "@bool vr3-prefer-asciidoc3", "False", "True, False", "Use ``asciidoc3`` if available, else use ``asciidoc``"
+   "@string vr3-prefer-external", "''", "Name of external asciidoctor processor", "Use Ruby ``asciidoctor`` program"
    "@bool vr3-insert-headline-from-node", "True", "True, False", "Render node headline as top heading if True"
 
 .. csv-table:: Int Settings (integer only, do not use any units)
@@ -595,6 +595,9 @@ except Exception:
 #@+node:TomP.20191231111412.1: ** << declarations >>
 # pylint: disable=invalid-name
     C = 'c'
+VR3_NS_ID = '_leo_viewrendered3'
+VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
+
 ASCIIDOC = 'asciidoc'
 CODE = 'code'
 CSS = 'css'
@@ -631,10 +634,8 @@ TEXT_HTML_HEADER = f'''<html>
 </head>
 '''
 
-RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
-
-#VR3_TOOLBAR_NAME = 'vr3-toolbar-label'
+RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 
 # For code rendering
 LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS, XML)
@@ -849,8 +850,8 @@ def viewrendered(event):
     if not vr3:
         controllers[h] = vr3 = ViewRenderedController3(c)
 
-    layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
-    vr3._ns_id = '_leo_viewrendered3' # for free_layout load/save
+    layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
+    vr3._ns_id = VR3_NS_ID # for free_layout load/save
     vr3.splitter = splitter = c.free_layout.get_top_splitter()
 
     if splitter:
@@ -869,10 +870,20 @@ def viewrendered(event):
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
+    global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return
+
+#    vr3 = getVr3(event)
+#    if not vr3: return
 
     c = event.get('c')
+    if not c:
+        return
+
+    vr3 = controllers.get(c.hash())
+    if not vr3:
+        vr3 = viewrendered(event)
 
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
@@ -951,6 +962,9 @@ def toggle_rendering_pane(event):
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
+
+    c.bodyWantsFocusNow()
+
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
@@ -1017,6 +1031,34 @@ def lock_unlock_tree(event):
         vr3.lock()
     else:
         vr3.unlock()
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
+@g.command('vr3-use-default-layout')
+def open_with_layout(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+    layout = {'orientation': 1,
+              'content': [{'orientation': 2,
+	                      'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
+	                      'sizes': [200,200]
+	                      },
+                           '_leo_pane:bodyFrame', VR3_NS_ID
+                         ],
+              'sizes': [200,200,200]
+             }
+    vr3.splitter.load_layout(layout)
+    c.k.simulateCommand('vr3-update')
+    c.bodyWantsFocusNow()
+
+#@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
+@g.command('vr3-zoom-view')
+def zoom_view(event):
+    vr3 = getVr3(event)
+    vr3.zoomView()
+#@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
+@g.command('vr3-shrink-view')
+def shrink_view(event):
+    vr3 = getVr3(event)
+    vr3.shrinkView()
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
@@ -1024,7 +1066,7 @@ class ViewRenderedProvider3:
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
-
+        self.vr3_instance = None
         if hasattr(c, 'free_layout'):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
@@ -1035,16 +1077,16 @@ class ViewRenderedProvider3:
         # #1678: duplicates in Open Window list
         if id_ == self.ns_provider_id():
             c = self.c
-            vr3 = controllers.get(c.hash()) or ViewRenderedController3(c)
             h = c.hash()
+            vr3 = controllers.get(h) or ViewRenderedController3(c)
             controllers[h] = vr3
             if not layouts.get(h):
-                layouts[h] = c.db.get('viewrendered3_default_layouts', (None, None))
+                layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
             return vr3
         return None
     #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
     def ns_provider_id(self):
-        return "_leo_viewrendered3"
+        return VR3_NS_ID
     #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
     def ns_provides(self):
         # #1671: Better Window names.
@@ -1066,7 +1108,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
-
         self.c = c
         # Create the widget.
         QtWidgets.QWidget.__init__(self) # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
@@ -3071,17 +3112,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
     #@+node:TomP.20200329230436.3: *5* vr3.contract & expand
+    # Change zoom factor of rendering pane
     def contract(self):
-        #VrC.contract(self)
         self.change_size(-100)
 
     def expand(self):
-        #VrC.expand(self)
         self.change_size(100)
 
     def change_size(self, delta):
-    #    VrC.change_size(self, delta)
-
         if hasattr(self.c, 'free_layout'):
             splitter = self.parent()
             i = splitter.indexOf(self)
@@ -3123,16 +3161,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         vr.activate()
         vr.show()
         vr.adjust_layout('open')
-
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
     def adjust_layout(self, which):
-        #VrC.adjust_layout(self, which)
 
         global layouts
         c = self.c
         splitter = self.splitter
-        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
+        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
         loc, loo = layouts.get(c.hash(), deflo)
         if which == 'closed' and loc and splitter:
             splitter.load_layout(loc)
@@ -3226,7 +3262,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         h = c.hash()
         splitter = self.splitter
-        deflo = c.db.get('viewrendered3_default_layouts', (None, None))
+        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
         (loc, loo) = layouts.get(c.hash(), deflo)
         if which == 'closed' and splitter:
             loc = splitter.get_saveable_layout()
@@ -3236,7 +3272,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             loo = splitter.get_saveable_layout()
             loo = json.loads(json.dumps(loo))
             layouts[h] = loc, loo
-        c.db['viewrendered3_default_layouts'] = layouts[h]
+        c.db[VR3_DEF_LAYOUT] = layouts[h]
     #@-others
 #@+node:TomP.20200827172759.1: ** State Machine Components
 #@+node:TomP.20200213170204.1: *3* class State
