@@ -2307,11 +2307,12 @@ class LoadManager:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
-        """Load the indicated file"""
+        """This is Leo's main startup method."""
         lm = self
-        t1 = time.process_time()
+        #
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
+        t1 = time.process_time()
         print('')  # Give some separation for the coming traces.
         if not lm.isValidPython():
             return
@@ -2327,12 +2328,15 @@ class LoadManager:
             # Disable redraw until all files are loaded.
         #
         # Phase 2: load plugins: the gui has already been set.
+        t2 = time.process_time()
         g.doHook("start1")
+        t3 = time.process_time()
         if g.app.killed:
             return
         g.app.idleTimeManager.start()
         #
         # Phase 3: after loading plugins. Create one or more frames.
+        t3 = time.process_time()
         if lm.options.get('script') and not self.files:
             ok = True
         else:
@@ -2347,8 +2351,13 @@ class LoadManager:
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
-            t2 = time.process_time()
-            g.es_print(f"startup time: {t2 - t1:5.2f} sec")
+            t4 = time.process_time()
+            print('')
+            g.es_print(f"settings:{t2 - t1:5.2f} sec")
+            g.es_print(f" plugins:{t3 - t2:5.2f} sec")
+            g.es_print(f"   files:{t4 - t3:5.2f} sec")
+            g.es_print(f"   total:{t4 - t1:5.2f} sec")
+            print('')
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
@@ -2743,8 +2752,8 @@ class LoadManager:
             '--session-save',
             '--use-docks',
         )
-        trace_m = '''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
-          ipython,keys,plugins,save,select,shutdown,size,startup,themes'''
+        trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,ipython,
+          keys,plugins,save,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)

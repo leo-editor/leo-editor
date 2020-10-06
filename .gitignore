@@ -8,6 +8,7 @@ __pycache__/
 *.orig
 
 # Other programs
+leoProfile
 leo/.vscode/
 
 # PyInstaller folders.
