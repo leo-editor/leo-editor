@@ -2155,7 +2155,7 @@ class LocalConfigManager:
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
-
+        - [T] theme .leo file.
         """
         legend = '''\
     legend:
@@ -2164,6 +2164,7 @@ class LocalConfigManager:
     [D] default settings
     [F] loaded .leo File
     [M] myLeoSettings.leo
+    [T] theme .leo file.
     '''
         c = self.c
         legend = g.adjustTripleString(legend, c.tab_width)
