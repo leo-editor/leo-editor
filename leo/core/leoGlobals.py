@@ -3242,6 +3242,17 @@ def comment_delims_from_extension(filename):
         f"filename: {filename!r}, "
         f"root: {root!r}")
     return '', '', ''
+#@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
+def findAllValidLanguageDirectives(p):
+    """Return list of all valid @language directives in p.b"""
+    if not p:
+        return []
+    languages = set()
+    for m in g.g_language_pat.finditer(p.b):
+        language = m.group(1)
+        if g.isValidLanguage(language):
+            languages.add(language)
+    return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
 def findTabWidthDirectives(c, p):
     """Return the language in effect at position p."""
@@ -3261,6 +3272,16 @@ def findTabWidthDirectives(c, p):
                 junk, w = g.skip_long(s, j)
                 if w == 0: w = None
     return w
+#@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
+def findFirstValidAtLanguageDirective(p):
+    """Return the first *valid* @language directive in p.b."""
+    if not p:
+        return None
+    for m in g.g_language_pat.finditer(p.b):
+        language = m.group(1)
+        if g.isValidLanguage(language):
+            return language
+    return None
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
 def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
@@ -3367,19 +3388,6 @@ def get_directives_dict(p, root=None):
                 g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
             break
     return d
-#@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
-def update_directives_pat():
-    """Init/update g.directives_pat"""
-    global globalDirectiveList, directives_pat
-    # Use a pattern that guarantees word matches.
-    aList = [
-        fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
-    ]
-    pat = f"^@(%s)" % "|".join(aList)
-    directives_pat = re.compile(pat, re.MULTILINE)
-
-# #1688: Initialize g.directives_pat
-update_directives_pat()
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.
@@ -3396,15 +3404,22 @@ def get_directives_dict_list(p):
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p):
     """
-    Return the language in effect as determined
-    by the file extension of the nearest enclosing @<file> node.
+    Return the language in effect from the nearest enclosing @<file> node:
+    1. An unambiguous @language directive of the @<file> node.
+    2. The file extension of the @<file> node.
     """
-    
     v0 = p.v
         
-    def find_language(p_or_v):
-        if p_or_v.isAnyAtFileNode():
-            name = p_or_v.anyAtFileNodeName()
+    def find_language(p):
+        # #1693: First, scan p.b for an *unambiguous* @language directive.
+        if p.b.strip():
+            languages = g.findAllValidLanguageDirectives(p)
+            if len(languages) == 1:  # An unambiguous language
+                language = languages[0]
+                return language
+        # Second: use the file's extension.
+        if p.isAnyAtFileNode():
+            name = p.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
@@ -3478,14 +3493,6 @@ def inAtNosearch(p):
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             return True
     return False
-#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
-def isValidLanguage(language):
-    """True if language exists in leo/modes."""
-    # 2020/08/12: A hack for c++
-    if language in ('c++', 'cpp'):
-        language = 'cplusplus'
-    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
-    return g.os_path_exists(fn)
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
 def isDirective(s):
     """Return True if s starts with a directive."""
@@ -3496,6 +3503,14 @@ def isDirective(s):
             return False
         return bool(m.group(1) in g.globalDirectiveList)
     return False
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
+def isValidLanguage(language):
+    """True if language exists in leo/modes."""
+    # 2020/08/12: A hack for c++
+    if language in ('c++', 'cpp'):
+        language = 'cplusplus'
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
+    return g.os_path_exists(fn)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     """
@@ -3819,6 +3834,19 @@ def stripPathCruft(path):
         path = path[1:-1].strip()
     # We want a *relative* path, not an absolute path.
     return path
+#@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
+def update_directives_pat():
+    """Init/update g.directives_pat"""
+    global globalDirectiveList, directives_pat
+    # Use a pattern that guarantees word matches.
+    aList = [
+        fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
+    ]
+    pat = f"^@(%s)" % "|".join(aList)
+    directives_pat = re.compile(pat, re.MULTILINE)
+
+# #1688: Initialize g.directives_pat
+update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir(path):
