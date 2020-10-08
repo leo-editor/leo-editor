@@ -2835,7 +2835,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         root = p.copy()
         for p in root.self_and_parents(copy=False):
-            language = self.findFirstValidAtLanguageDirective(p)
+            language = g.findFirstValidAtLanguageDirective(p)
             if language:
                 return language
         #  Get the language from the nearest ancestor @<file> node.
