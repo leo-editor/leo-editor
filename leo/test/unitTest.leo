@@ -192,6 +192,9 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20201008055802.1"><vh>----- fails with python 3.8</vh></v>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1475,6 +1478,34 @@ finally:
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20160318094009.1">import leo.external.make_stub_files as msf
+import leo.external.py2cs as py2cs
+import ast, tokenize
+path = g.os_path_finalize_join(g.app.loadDir,
+    '..', 'test', 'unittest', 'python3_test.py')
+assert g.os_path_exists(path), path
+fn = g.shortFileName(path)
+with open(path, 'r') as f:
+    source = f.read()
+node = ast.parse(source, filename=fn, mode='exec')
+with open(path, 'r') as f:
+    src = f.read()
+readlines = g.ReadLinesClass(src).next
+tokens = list(tokenize.generate_tokens(readlines))
+s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
+assert s
+controller = msf.StandAloneMakeStubFile()
+msf.StubTraverser(controller).visit(node)
+</t>
+<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
+</t>
 <t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
 False: (Legacy):      The @auto write code ignores section references.
 </t>
@@ -1581,5 +1612,6 @@ nodeB
 <t tx="ekr.20200205065723.3">def eggs():
     pass
 </t>
+<t tx="ekr.20201008055802.1"></t>
 </tnodes>
 </leo_file>
