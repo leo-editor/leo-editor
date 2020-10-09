@@ -68,7 +68,7 @@ def main():
     controller.scan_options()
     controller.run()
     print('done')
-#@+node:ekr.20160523111738.1: **   unit_test
+#@+node:ekr.20160523111738.1: **   unit_test (py2cs.py)
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
@@ -77,8 +77,15 @@ def unit_test(raise_on_fail=True):
     aList = sorted(dir(_ast))
     remove = [
         'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
         'AST',  # The base class,
+        # Constants...
+        'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+        'PyCF_ONLY_AST',
+        'PyCF_TYPE_COMMENTS',
+        # New ast nodes for Python 3.8.
+        # We can ignore these nodes because ast.parse does not generate them.
+        # (The new kwarg, type_comments, is False by default!)
+        'FunctionType', 'NamedExpr', 'TypeIgnore',
     ]
     aList = [z for z in aList if not z[0].islower()]
         # Remove base classe
