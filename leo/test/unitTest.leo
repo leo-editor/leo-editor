@@ -176,7 +176,8 @@
 <v t="ekr.20100731163237.5782"><vh>@thin unittest/at-thin-html-test.html</vh></v>
 <v t="ekr.20090704085350.5022"><vh>@thin unittest/at-thin-test.py</vh></v>
 </v>
-<v t="ekr.20190923014948.1"><vh>Failures when run from bridge w/ readSettings=False</vh>
+<v t="ekr.20201009075702.1"><vh>Previous fails</vh>
+<v t="ekr.20190923014948.1"><vh>Fails when run from bridge w/ readSettings=False</vh>
 <v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
 <v t="ekr.20150430061225.1"><vh>child</vh></v>
 </v>
@@ -189,12 +190,14 @@
 <v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
 <v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
 </v>
+<v t="ekr.20201008055802.1"><vh>Fails with python 3.8</vh>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
+</v>
+</v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20201008055802.1"><vh>----- fails with python 3.8</vh></v>
-<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
-<v t="ekr.20160318094009.1"><vh>@test Python3 features</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1613,5 +1616,6 @@ nodeB
     pass
 </t>
 <t tx="ekr.20201008055802.1"></t>
+<t tx="ekr.20201009075702.1"></t>
 </tnodes>
 </leo_file>
