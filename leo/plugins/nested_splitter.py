@@ -174,7 +174,7 @@ if QtWidgets:
             y = pos.y()
             rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
             QtWidgets.QToolTip.showText(pos, tip, action.parentWidget(), rect)
-        #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu
+        #@+node:ekr.20110605121601.17965: *3* nsh.splitter_menu (changed)
         def splitter_menu(self, pos):
             """build the context menu for NestedSplitter"""
             splitter = self.splitter()
@@ -338,10 +338,11 @@ if QtWidgets:
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
 
-            def cb(checked, splitter=splitter):  # pylint: disable=function-redefined
-                print(f"\n{splitter.layout_to_text(splitter.top().get_layout())}\n")
+            def print_layout_cb(checked, splitter=splitter):
+                layout = splitter.top().get_layout()
+                g.printObj(layout)
 
-            act.triggered.connect(cb)
+            act.triggered.connect(print_layout_cb)
             submenu.addAction(act)
 
             def load_items(menu, items):
@@ -979,39 +980,44 @@ if QtWidgets:  # NOQA
                 top = self.root._main.findChild(NestedSplitter)
             return top
         #@+node:ekr.20110605121601.17989: *3* ns.get_layout
-        def get_layout(self, _saveable=False):
-            """return {'orientation':QOrientation, 'content':[], 'splitter':ns}
-
-            Where content is a list of widgets, or if a widget is a NestedSplitter, the
-            result of that splitters call to get_layout().  splitter is the splitter
-            which generated the dict.
+        def get_layout(self):
+            """
+            Return a dict describing the layout.
 
             Usually you would call ns.top().get_layout()
-
-            With _saveable==True (via get_saveable_layour()) content entry for
-            non-NestedSplitter items is the provider ID string for the item, or
-            'UNKNOWN', and the splitter entry is omitted.
             """
-            ans = {
-                'orientation': self.orientation(),
-                'content': []
-            }
-            if not _saveable:
-                ans['splitter'] = self
-            ans['sizes'] = self.sizes()
-            for i in range(self.count()):
-                w = self.widget(i)
+            def content(w):
                 if isinstance(w, NestedSplitter):
-                    ans['content'].append(w.get_layout(_saveable=_saveable))
-                else:
-                    if _saveable:
-                        ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
-                    else:
-                        ans['content'].append(w)
-            return ans
+                    return w.get_layout() 
+                return getattr(w, '_ns_id', 'UNKNOWN')
+                
+            def widgets():
+                return (self.widget(i) for i in range(self.count()))
+            
+            return {
+                'content': [content(w) for w in widgets()],
+                'orientation': self.orientation(),
+                'sizes': self.sizes(),
+                'splitter': self,  # Previously, only saveable layouts had the 'splitter' key.
+            }
         #@+node:tbrown.20110628083641.11733: *3* ns.get_saveable_layout
         def get_saveable_layout(self):
-            return self.get_layout(_saveable=True)
+            """
+            Return a dict describing the layout, using id_ fields instead of actual widgets.
+            """
+            def content(w):
+                if isinstance(w, NestedSplitter):
+                    return w.get_saveable_layout()
+                return getattr(w, '_ns_id', 'UNKNOWN')
+                
+            def widgets():
+                return (self.widget(i) for i in range(self.count()))
+            
+            return {
+                'content': [content(w) for w in widgets()],
+                'orientation': self.orientation(),
+                'sizes': self.sizes(),
+            }
         #@+node:ekr.20160416083415.1: *3* ns.get_splitter_by_name
         def get_splitter_by_name(self, name):
             """Return the splitter with the given objectName()."""
@@ -1026,29 +1032,34 @@ if QtWidgets:  # NOQA
                         return w2
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
-        def load_layout(self, layout, level=0):
+        def load_layout(self, c, layout, level=0):
 
+            trace = 'layouts' in g.app.debug
+            if trace:
+                g.trace('level', level)
+                tag = f"layout: {c.shortFileName()}"
+                g.printObj(layout, tag=tag)
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:
                 for i in self.self_and_descendants():
                     for n in range(i.count()):
                         i.widget(n)._in_layout = False
-            for i in layout['content']:
-                if isinstance(i, dict):
+            for content_layout in layout['content']:
+                if isinstance(content_layout, dict):
                     new = NestedSplitter(root=self.root, parent=self)
                     new._in_layout = True
                     self.insert(found, new)
                     found += 1
-                    new.load_layout(i, level + 1)
+                    new.load_layout(c, content_layout, level + 1)
                 else:
-                    provided = self.get_provided(i)
+                    provided = self.get_provided(content_layout)
                     if provided:
                         self.insert(found, provided)
                         provided._in_layout = True
                         found += 1
                     else:
-                        print(f"NO {i}")
+                        print(f"No provider for {content_layout}")
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()
