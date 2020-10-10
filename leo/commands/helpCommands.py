@@ -1146,6 +1146,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
+        - [T] theme .leo file.
         """
         self.c.config.printSettings()
     #@+node:ekr.20190831025811.1: *3* help.showSettingsOutline (new: #852)

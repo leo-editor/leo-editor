@@ -5891,14 +5891,15 @@ class TestTokens(BaseTest):
         # Compute all fields to BaseTest.
         aList = sorted(dir(_ast))
         remove = [
-            'Interactive', # Not necessary.
-            'Suite',  # Not necessary.
-            'PyCF_ONLY_AST',  # A constant,
+            'Interactive', 'Suite',  # Not necessary.
             'AST',  # The base class,
-            # Python 3.8: Not node types.
+            # Constants...
             'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+            'PyCF_ONLY_AST',
             'PyCF_TYPE_COMMENTS',
-            # Python 3.8: Maybe not node types. Not properly documented...
+            # New ast nodes for Python 3.8.
+            # We can ignore these nodes because ast.parse does not generate them.
+            # (The new kwarg, type_comments, is False by default!)
             'FunctionType', 'NamedExpr', 'TypeIgnore',
         ]
         aList = [z for z in aList if not z[0].islower()]
