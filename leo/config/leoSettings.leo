@@ -131,6 +131,7 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20201010141557.1"><vh>@string theme-name = DefaultTheme</vh></v>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -11945,6 +11946,7 @@ useful if you've cloned the node so its origin is not obvious from context.
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
+<t tx="ekr.20201010141557.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
