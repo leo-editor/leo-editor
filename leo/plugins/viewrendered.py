@@ -1537,7 +1537,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            c = self.c
             
             def get_language(p):
                 """
@@ -1553,8 +1552,7 @@ if QtWidgets: # NOQA
                         return word
                 # Look for @language directives.
                 # Warning: (see #344): don't use c.target_language as a default.
-                colorizer = c.frame.body.colorizer
-                return colorizer.findFirstValidAtLanguageDirective(p.copy())
+                return g.findFirstValidAtLanguageDirective(p.copy())
             #
             #  #1287: Honor both kind of directives node by node.
             for p in p.self_and_parents(p):

@@ -2985,8 +2985,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         Headline directives over-ride normal Leo directives in body text.
         """
-
-        c = self.c
         h = p.h
         # First, look for headline directives.
         if h.startswith('@'):
@@ -2996,8 +2994,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 return word
         # Look for @language directives.
         # Warning: (see #344): don't use c.target_language as a default.
-        colorizer = c.frame.body.colorizer
-        return colorizer.findFirstValidAtLanguageDirective(p.copy())
+        return g.findFirstValidAtLanguageDirective(p.copy())
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag):
         pc = self
