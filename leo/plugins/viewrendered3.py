@@ -11,8 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-
-About Viewrendered3 V3.0rc4
+About Viewrendered3 V3.0rc5
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -595,7 +594,7 @@ except Exception:
 #@+<< declarations >>
 #@+node:TomP.20191231111412.1: ** << declarations >>
 # pylint: disable=invalid-name
-    C = 'c'
+C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
 VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
 
@@ -858,7 +857,7 @@ def viewrendered(event):
     if splitter:
         vr3.store_layout('closed')
         sizes = split_last_sizes(splitter.sizes())
-        ok = splitter.add_adjacent(vr3, 'bodyFrame', 'right-of')
+        ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
         if not ok:
             splitter.insert(0, vr3)
         elif splitter.orientation() == QtCore.Qt.Horizontal:
@@ -1046,7 +1045,16 @@ def open_with_layout(event):
                          ],
               'sizes': [200,200,200]
              }
-    vr3.splitter.load_layout(c, layout)
+
+    vr3.splitter = c.free_layout.get_top_splitter()
+    if vr3.splitter:
+        # Make it work with old and new layut code
+        try:
+            vr3.splitter.load_layout(layout)
+        except TypeError:
+            vr3.splitter.load_layout(c, layout)
+    else:
+        g.es('=== No splitter')
     c.k.simulateCommand('vr3-update')
     c.bodyWantsFocusNow()
 
@@ -2985,6 +2993,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         Headline directives over-ride normal Leo directives in body text.
         """
+
+        c = self.c
         h = p.h
         # First, look for headline directives.
         if h.startswith('@'):
@@ -2994,7 +3004,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 return word
         # Look for @language directives.
         # Warning: (see #344): don't use c.target_language as a default.
-        return g.findFirstValidAtLanguageDirective(p.copy())
+        colorizer = getattr(c.frame.body.colorizer, 'findFirstValidAtLanguageDirective', g)
+        return colorizer.findFirstValidAtLanguageDirective(p.copy())
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag):
         pc = self
@@ -3169,9 +3180,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
         deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
         loc, loo = layouts.get(c.hash(), deflo)
         if which == 'closed' and loc and splitter:
-            splitter.load_layout(c, loc)
+            # Make it work with old and new layut code
+            try:
+                splitter.load_layout(loc)
+            except TypeError:
+                splitter.load_layout(c, loc)
         elif which == 'open' and loo and splitter:
-            splitter.load_layout(c, loo)
+            try:
+                splitter.load_layout(loo)
+            except TypeError:
+                splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
     #@+at
