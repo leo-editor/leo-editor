@@ -253,7 +253,7 @@
 <v t="EKR.20040517075715.12"><vh>@file ../plugins/xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@file ../plugins/word_export.py</vh></v>
-<v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
+<v t="EKR.20040517075715.20"><vh>@file-nosent ../plugins/word_export.ini</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.872"><vh>Files and nodes</vh>
