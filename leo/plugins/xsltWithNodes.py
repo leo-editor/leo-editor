@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041010095009: * @file xsltWithNodes.py
+#@+node:mork.20041010095009: * @file ../plugins/xsltWithNodes.py
 #@+<< docstring >>
 #@+node:ekr.20050226120104: ** << docstring >>
 """ Adds the Outline:XSLT menu containing XSLT-related commands.
@@ -48,13 +48,13 @@ import weakref
 # 1. Having space before the start of the document caused it not to work. I fixed
 #    this by striping the whitespace from the start and end of the data at xslt
 #    time.
-# 
+#
 # 2. having a @ right before a tag causes it to not process.
 #     It appears to be safe to follow this pattern:
 #     @ </end>
 #     but not:
 #     @</end>
-# 
+#
 #     I dont know at this point if its just illegal xml, or its a problem in the parser. ??
 #@-<<parser problems>>
 #@+<<future directions>>
@@ -69,13 +69,13 @@ __version__ = '0.6'
 #@@killcolor
 
 #@+at
-# 
+#
 # 0.1: Original code.
-# 
+#
 # 0.2 EKR: Converted to outline.
-# 
+#
 # 0.3: Added more XSLT boilerplate. Added Test with Minidom Discovered parser problem(?).
-# 
+#
 # 0.4 EKR:
 #     - Added init function.
 # 0.5 EKR:
@@ -298,9 +298,9 @@ def addMenu( tag, keywords ):
 #@+node:mork.20041025100716: ** examples/tests
 #@+at
 # table.leo contains the xml.  xslt is in the other node.
-# 
+#
 # To test this plugin, set the xslt node to be the xslt node.
-# 
+#
 # Process it against the table.leo node.
 #@@c
 

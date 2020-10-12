@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110206142055.10640: * @file leofeeds.py
+#@+node:ville.20110206142055.10640: * @file ../plugins/leofeeds.py
 #@+<< docstring >>
 #@+node:ville.20110206142055.10641: ** << docstring >>
 '''

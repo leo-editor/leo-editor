@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.734: * @file quit_leo.py
+#@+node:edream.110203113231.734: * @file ../plugins/quit_leo.py
 """ Shows how to force Leo to quit."""
 #@@language python
 #@@tabwidth -4

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915073259.1: * @file maximizeNewWindows.py
+#@+node:ekr.20040915073259.1: * @file ../plugins/maximizeNewWindows.py
 """Maximizes all new windows."""
 
 #@@language python
@@ -9,9 +9,9 @@ __version__ = "1.4"
 #@+<< version history >>
 #@+node:Dmitry.20101128013501.1257: ** << version history >>
 #@+at
-# 
+#
 # Original written by Jaakko Kourula.
-# 
+#
 # 1.0 EKR:
 #     - Enabled only for windows platform.
 #     - Minor style changes.

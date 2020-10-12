@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040828103325: * @file startfile.py
+#@+node:ekr.20040828103325: * @file ../plugins/startfile.py
 #@+<< docstring >>
 #@+node:ekr.20150411162810.1: ** << docstring >> (startfile.py)
 """
@@ -21,13 +21,13 @@ import os
 #@+<< notes >>
 #@+node:ekr.20040828103325.2: ** << notes >>
 #@+at
-# 
+#
 # Models @folder behavior after an idea and sample code by:
 # korakot ( Korakot Chaovavanich ) @folder for files annotation 2002-11-27 02:39
-# 
+#
 # open file (double-click = startfile) behavior added
 # nodes with @url, @folder, @rst are treated special
-# 
+#
 # This does not check for proper filename syntax.
 # path is the current dir, or the place @folder points to
 # this should probably be changed to @path or so.

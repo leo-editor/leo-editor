@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090518182905.5419: * @file nav_qt.py
+#@+node:ville.20090518182905.5419: * @file ../plugins/nav_qt.py
 #@+<< docstring >>
 #@+node:ville.20090518182905.5420: ** << docstring >>
 '''Adds "Back" and "Forward" buttons (Qt only).

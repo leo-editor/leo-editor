@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20120503224623.3574: * @file leomylyn.py
+#@+node:ville.20120503224623.3574: * @file ../plugins/leomylyn.py
 ''' Provides an experience like Mylyn:http://en.wikipedia.org/wiki/Mylyn for Leo.
 
 It "scores" the nodes based on how interesting they probably are for you,

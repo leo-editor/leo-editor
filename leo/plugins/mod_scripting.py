@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060328125248: * @file mod_scripting.py
+#@+node:ekr.20060328125248: * @file ../plugins/mod_scripting.py
 #@+<< mod_scripting docstring >>
 #@+node:ekr.20060328125248.1: ** << mod_scripting docstring >>
 r"""This plugin script buttons and eval* commands.

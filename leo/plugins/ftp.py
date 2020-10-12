@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20110110105526.5463: * @file ftp.py
+#@+node:ekr.20110110105526.5463: * @file ../plugins/ftp.py
 '''Uploading of file by ftp.'''
 
 # 0.1 05.01.2011 by Ivanov Dmitriy.

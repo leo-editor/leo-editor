@@ -19,7 +19,7 @@ class ComboBox(textbox.Textfield):
     def __init__(self, screen, value = None, values=None,**keywords):
         self.values = values or []
         self.value = value or None
-        if value is 0:
+        if value == 0:
             self.value = 0
         super(ComboBox, self).__init__(screen, **keywords)
 
@@ -36,7 +36,7 @@ class ComboBox(textbox.Textfield):
 
     #@+node:ekr.20170428084207.567: *3* ComboBox._print
     def _print(self):
-        if self.value == None or self.value is '':
+        if self.value == None or self.value == '':
             printme = '-unset-'
         else:
             try:

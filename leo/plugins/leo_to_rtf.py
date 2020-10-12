@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:danr7.20060902083957: * @file leo_to_rtf.py
+#@+node:danr7.20060902083957: * @file ../plugins/leo_to_rtf.py
 #@+<< docstring >>
 #@+node:danr7.20060902085340: ** << docstring >> (leo_to_rtf.py)
 r''' Outputs a Leo outline as a numbered list to an RTF file. The RTF file

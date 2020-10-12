@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.730: * @file dump_globals.py
+#@+node:edream.110203113231.730: * @file ../plugins/dump_globals.py
 """Dumps Python globals at startup."""
 #@@language python
 #@@tabwidth -4

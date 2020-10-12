@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040419105219: * @file lineNumbers.py
+#@+node:ekr.20040419105219: * @file ../plugins/lineNumbers.py
 #@+<< docstring >>
 #@+node:ekr.20101112180523.5423: ** << docstring >>
 ''' Adds #line directives in perl and perlpod programs.
@@ -25,7 +25,7 @@ __version__ = "0.3"
 #@+node:ekr.20050105150253.1: ** << version history >>
 #@@killcolor
 #@+at
-# 
+#
 # 0.1 Mark Ng
 #     - Original code
 # 0.2 EKR:

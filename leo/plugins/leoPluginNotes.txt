@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090430075506.3: * @file leoPluginNotes.txt
+#@+node:ekr.20090430075506.3: * @file ../plugins/leoPluginNotes.txt
 #@+all
 #@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
 # pylint: disable=syntax-error
