@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20141101114322.1: * @file wikiview.py
+#@+node:tbrown.20141101114322.1: * @file ../plugins/wikiview.py
 #@+<< docstring >>
 #@+node:tbrown.20141101114322.2: ** << docstring >>
 r"""

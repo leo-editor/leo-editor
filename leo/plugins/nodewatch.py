@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20131130132659.5964: * @file nodewatch.py
+#@+node:peckj.20131130132659.5964: * @file ../plugins/nodewatch.py
 #@+<< docstring >>
 #@+node:peckj.20131101132841.6445: ** << docstring >>
 '''

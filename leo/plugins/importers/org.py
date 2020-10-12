@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18146: * @file importers/org.py
+#@+node:ekr.20140723122936.18146: * @file ../plugins/importers/org.py
 '''The @auto importer for the org language.'''
 import re
 import leo.core.leoGlobals as g

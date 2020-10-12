@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110403115003.10348: * @file valuespace.py
+#@+node:ville.20110403115003.10348: * @file ../plugins/valuespace.py
 #@+<< docstring >>
 #@+node:ville.20110403115003.10349: ** << docstring >>
 '''Supports Leo scripting using per-Leo-outline namespaces.

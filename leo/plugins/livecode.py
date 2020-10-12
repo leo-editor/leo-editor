@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20140806084727.30174: * @file livecode.py
+#@+node:tbrown.20140806084727.30174: * @file ../plugins/livecode.py
 """
 Show results of code in another pane as it's edited.
 

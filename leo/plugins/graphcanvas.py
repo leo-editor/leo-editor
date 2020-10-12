@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20090206153748.1: * @file graphcanvas.py
+#@+node:tbrown.20090206153748.1: * @file ../plugins/graphcanvas.py
 """
 Provides a widget for displaying graphs (networks) in Leo.
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20141116100154.1: * @file importers/dart.py
+#@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 '''The @auto importer for the dart language.'''
 import re
 import leo.plugins.importers.linescanner as linescanner

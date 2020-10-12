@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160504083330.1: * @file writers/leo_json.py
+#@+node:ekr.20160504083330.1: * @file ../plugins/writers/leo_json.py
 '''The @auto write code for .json files.'''
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.

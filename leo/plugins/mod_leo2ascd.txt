@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110150056.9445: * @file mod_leo2ascd.txt
+#@+node:ekr.20101110150056.9445: * @file ../plugins/mod_leo2ascd.txt
 #@@language plain
 #@@tabwidth -4
 #@+all

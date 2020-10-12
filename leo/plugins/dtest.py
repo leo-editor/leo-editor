@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20070119094733.1: * @file dtest.py
+#@+node:ekr.20070119094733.1: * @file ../plugins/dtest.py
 #@+<< docstring >>
 #@+node:ekr.20070119094733.4: ** << docstring >>
 """ Sends code to the doctest module and reports the result.

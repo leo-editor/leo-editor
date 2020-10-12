@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040910070811.1: * @file run_nodes.py
+#@+node:ekr.20040910070811.1: * @file ../plugins/run_nodes.py
 #@+<< docstring >>
 #@+node:ekr.20050912181956: ** << docstring >> (run_nodes.py)
 r''' Runs a program and interface Leo through its input/output/error streams.
@@ -42,7 +42,7 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@+node:ekr.20040910070811.3: ** << version history >>
 #@@nocolor
 #@+at
-# 
+#
 # 0.13 EKR:
 # - use import leo.core.leoGlobals as leoGlobals and import leoPlugins rather from x import *
 # - Made positions explicit and use position iterators.
@@ -60,7 +60,7 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 # - replaced os.popen3 by calls to subprocess.Popen.
 #   This probably altered the intension of this plugin.
 # - Fixed several other crashers.
-# 
+#
 # Important: at present, this plugin must be considered broken.
 #@-<< version history >>
 #@+<< imports >>

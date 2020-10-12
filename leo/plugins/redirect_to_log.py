@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.924: * @file redirect_to_log.py
+#@+node:edream.110203113231.924: * @file ../plugins/redirect_to_log.py
 """Sends all output to the log pane."""
 
 #@@language python

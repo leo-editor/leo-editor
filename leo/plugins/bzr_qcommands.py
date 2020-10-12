@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110084839.5682: * @file bzr_qcommands.py
+#@+node:ekr.20101110084839.5682: * @file ../plugins/bzr_qcommands.py
 """ Adds a context menu to each node containing all the commands in the bzr Qt
 interface. Bzr is invoked based on the path of the current node.
 

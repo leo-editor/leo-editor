@@ -239,7 +239,6 @@
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
 <v t="ekr.20140225222704.16748"><vh>@file ../plugins/viewrendered2.py</vh></v>
-<v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file ../plugins/mod_leo2ascd.py</vh></v>
 <v t="ekr.20101110150056.9445"><vh>@file ../plugins/mod_leo2ascd.txt</vh></v>
@@ -557,6 +556,7 @@
 <v t="tbrown.20090119215428.2" descendentVnodeUnknownAttributes="7d71005808000000302e362e31332e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323031382d30382d313871077573732e"><vh>@file ../plugins/todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
+<v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #! /usr/bin/env python
 #@+leo-ver=5-thin
-#@+node:ekr.20090704103932.5160: * @file leo_pdf.py
+#@+node:ekr.20090704103932.5160: * @file ../plugins/leo_pdf.py
 #@@first
 #@@first
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20051016160700: * @file testRegisterCommand.py
+#@+node:ekr.20051016160700: * @file ../plugins/testRegisterCommand.py
 '''A plugin to test k.registerCommand.'''
 # See #560: https://github.com/leo-editor/leo-editor/issues/560
 

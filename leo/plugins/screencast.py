@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20120913110135.10579: * @file screencast.py
+#@+node:ekr.20120913110135.10579: * @file ../plugins/screencast.py
 #@+<< docstring >>
 #@+node:ekr.20120913110135.10589: ** << docstring >>
 #@@language rest

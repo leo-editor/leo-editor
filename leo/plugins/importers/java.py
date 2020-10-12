@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18143: * @file importers/java.py
+#@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 '''The @auto importer for the java language.'''
 import re
 import leo.core.leoGlobals as g

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20110125103904.12504: * @file gitarchive.py
+#@+node:ekr.20110125103904.12504: * @file ../plugins/gitarchive.py
 ''' Store snapshots of outline in git.'''
 
 import leo.core.leoGlobals as g

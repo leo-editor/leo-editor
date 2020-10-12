@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110094759.5843: * @file mod_speedups.py
+#@+node:ekr.20101110094759.5843: * @file ../plugins/mod_speedups.py
 ''' Experimental speedups
 
 Various optimizations. Use at your own risk.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080049.1: * @file empty_leo_file.py
+#@+node:EKR.20040517080049.1: * @file ../plugins/empty_leo_file.py
 """Allows Leo to open any empty file as a minimal .leo file."""
 
 #@@language python

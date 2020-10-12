@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:vitalije.20190928154420.1: * @file history_tracer.py
+#@+node:vitalije.20190928154420.1: * @file ../plugins/history_tracer.py
 #@+<< docstring >>
 #@+node:vitalije.20190928154420.2: ** << docstring >>
 """This plugin cooperates with leo-ver-serv utilty.

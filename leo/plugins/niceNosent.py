@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040331151007: * @file niceNosent.py
+#@+node:ekr.20040331151007: * @file ../plugins/niceNosent.py
 #@+<< docstring >>
 #@+node:ekr.20101112180523.5420: ** << docstring >>
 """ Ensures that all descendants of @file-nosent nodes end
@@ -16,7 +16,7 @@ __version__ = "0.3"
 #@+<< version history >>
 #@+node:ekr.20040909122647: ** << version history >>
 #@+at
-# 
+#
 # 0.2 EKR:
 #     - Use isAtNoSentinelsFileNode and atNoSentinelsFileNodeName.
 #     - Use g.os_path_x methods for better unicode support.

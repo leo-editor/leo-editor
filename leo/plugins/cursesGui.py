@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20150107090324.1: * @file cursesGui.py
+#@+node:ekr.20150107090324.1: * @file ../plugins/cursesGui.py
 '''A minimal text-oriented gui.'''
 #@+at
 # Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110095202.5882: * @file zenity_file_dialogs.py
+#@+node:ekr.20101110095202.5882: * @file ../plugins/zenity_file_dialogs.py
 ''' Replaces the tk file dialogs on Linux with external
 calls to the zenity gtk dialog package.
 

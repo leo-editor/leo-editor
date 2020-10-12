@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:timo.20050213160555: * @file bibtex.py
+#@+node:timo.20050213160555: * @file ../plugins/bibtex.py
 #@+<< docstring >>
 #@+node:ekr.20050912175750: ** << docstring >>
 #@@nocolor-node
@@ -91,7 +91,7 @@ entrytypes.append('@string')
 #@+<< to do >>
 #@+node:timo.20050213185039: ** <<to do>>
 #@+at To do list (in approximate order of importance):
-# 
+#
 # - Translating between non-ascii characters and LaTeX code when reading/writing
 # - Checking for duplicate keys
 # - Checking for missing commas when writing the file
