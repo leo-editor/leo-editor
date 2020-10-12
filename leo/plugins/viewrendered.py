@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100318101414.5990: * @file viewrendered.py
+#@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
 #@+<< vr docstring >>
 #@+node:tbrown.20100318101414.5991: ** << vr docstring >>
 '''
