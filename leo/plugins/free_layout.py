@@ -232,7 +232,8 @@ class FreeLayoutController:
             return
         # EKR: Create commands that will load each layout.
         d = g.app.db.get('ns_layouts') or {}
-        g.trace('tag:', tag, 'reloading', reloading, 'keys:', sorted(d.keys()), g.callers())
+        if trace:
+            g.trace('tag:', tag, 'reloading', reloading, 'keys:', sorted(d.keys()), g.callers())
         for key in sorted(d.keys()):
 
             def func(event, c=c, d=d, name=key):
