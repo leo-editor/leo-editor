@@ -338,10 +338,11 @@ if QtWidgets:
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
 
-            def cb(checked, splitter=splitter):  # pylint: disable=function-redefined
-                print(f"\n{splitter.layout_to_text(splitter.top().get_layout())}\n")
+            def print_layout_c(checked, splitter=splitter):  # pylint: disable=function-redefined
+                layout = splitter.top().get_layout()
+                g.printObj(layout)
 
-            act.triggered.connect(cb)
+            act.triggered.connect(print_layout_c)
             submenu.addAction(act)
 
             def load_items(menu, items):
@@ -1053,7 +1054,7 @@ if QtWidgets:  # NOQA
                         provided._in_layout = True
                         found += 1
                     else:
-                        print(f"NO {i}")
+                        print(f"No provider for {content_layout}")
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()
@@ -1131,32 +1132,6 @@ if QtWidgets:  # NOQA
                     if provided:
                         return provided
             return "Leo unnamed window"
-        #@+node:ekr.20110605121601.17990: *3* ns.layout_to_text
-        def layout_to_text(self, layout, _depth=0, _ans=None):
-            """convert the output from get_layout to indented human readable text
-            for development/debugging"""
-            if _ans is None: _ans = []
-            if _depth == 0:
-                _ans = []
-            orientation = 'vertical'
-            if layout['orientation'] == QtCore.Qt.Horizontal:
-                orientation = 'horizontal'
-            _ans.append(
-                f"{'   ' * _depth}{layout['splitter'].__class__.__name__} "
-                f"({layout['splitter'].objectName()}) - {orientation}",
-            )
-            _depth += 1
-            for n, i in enumerate(layout['content']):
-                if isinstance(i, dict):
-                    self.layout_to_text(i, _depth, _ans)
-                else:
-                    _ans.append(
-                        f"{'   ' * _depth}{i.__class__.__name__} "
-                        f"({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}",
-                    )
-            if _depth == 1:
-                return '\n'.join(_ans)
-            return None
         #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
         def zoom_toggle(self, local=False):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane
