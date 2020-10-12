@@ -269,6 +269,22 @@ class FreeLayoutController:
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
+    default_layout = {
+        'content': [
+            {
+                'content': [
+                    '_leo_pane:outlineFrame',
+                    '_leo_pane:logFrame',
+                ],
+                'orientation': 1,
+                'sizes': [509, 275],
+            },
+            '_leo_pane:bodyFrame',
+        ],
+        'orientation': 2,
+        'sizes': [216, 216],
+    }
+
     def ns_do_context(self, id_, splitter, index):
 
         c = self.c
@@ -276,20 +292,7 @@ class FreeLayoutController:
             self.embed()
             return True
         if id_.startswith('_fl_restore_default'):
-            self.get_top_splitter().load_layout(c,
-                layout = {
-                    'content': [
-                        {'content': [
-                            '_leo_pane:outlineFrame',
-                            '_leo_pane:logFrame'],
-                            'orientation': 1,
-                            'sizes': [509, 275],
-                        },
-                        '_leo_pane:bodyFrame',
-                    ],
-                    'orientation': 2,
-                    'sizes': [216, 216],
-                })
+            self.get_top_splitter().load_layout(c, layout=self.default_layout)
         if id_.startswith('_fl_help'):
             self.c.putHelpFor(__doc__)
             # g.handleUrl("http://leoeditor.com/")
