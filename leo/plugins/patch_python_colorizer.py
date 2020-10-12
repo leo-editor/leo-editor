@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20180119164431.1: * @file patch_python_colorizer.py
+#@+node:ekr.20180119164431.1: * @file ../plugins/patch_python_colorizer.py
 '''
 Shows how to patch python colorizer.
 '''

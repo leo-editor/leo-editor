@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.669: * @file import_cisco_config.py
+#@+node:edream.110203113231.669: * @file ../plugins/import_cisco_config.py
 #@+<< docstring >>
 #@+node:ekr.20050912180321: ** << docstring >>
 ''' Allows the user to import Cisco configuration files.

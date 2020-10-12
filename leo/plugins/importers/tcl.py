@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20170615153639.2: * @file importers/tcl.py
+#@+node:ekr.20170615153639.2: * @file ../plugins/importers/tcl.py
 '''
 The @auto importer for the tcl language.
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.873: * @file at_folder.py
+#@+node:edream.110203113231.873: * @file ../plugins/at_folder.py
 r'''Synchronizes @folder nodes with folders.
 
 If a node is named '\@folder *<path_to_folder>*', the content (filenames) of the

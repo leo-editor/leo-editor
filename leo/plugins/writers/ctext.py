@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20140804103545.29975: * @file writers/ctext.py
+#@+node:tbrown.20140804103545.29975: * @file ../plugins/writers/ctext.py
 #@@language python
 #@@tabwidth -4
 import leo.plugins.writers.basewriter as basewriter

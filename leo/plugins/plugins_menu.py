@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080555.2: * @file plugins_menu.py
+#@+node:EKR.20040517080555.2: * @file ../plugins/plugins_menu.py
 #@+<< docstring >>
 #@+node:ekr.20050101090207.9: ** << docstring >>
 ''' Creates a Plugins menu and adds all actives plugins to it.

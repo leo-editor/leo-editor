@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #@+leo-ver=5-thin
-#@+node:bob.20170716135108.2: * @file leo_babel/examples/slowOut.py
+#@+node:bob.20170716135108.2: * @file ../plugins/leo_babel/examples/slowOut.py
 #@@first
 # -*- encoding: utf-8 -*-
 

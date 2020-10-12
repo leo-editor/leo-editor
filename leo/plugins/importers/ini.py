@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18142: * @file importers/ini.py
+#@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 '''The @auto importer for .ini files.'''
 import re
 import leo.core.leoGlobals as g

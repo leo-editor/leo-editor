@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.925: * @file script_io_to_body.py
+#@+node:edream.110203113231.925: * @file ../plugins/script_io_to_body.py
 """Sends output from the Execute Script command to the end of the body pane."""
 
 #@@language python
@@ -15,7 +15,7 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20071212114235: ** << version history >>
 #@@nocolor
 #@+at
-# 
+#
 # 1.5 EKR: A complete rewrite. Now works with Leo 4.4.5 code base.
 # 2.0 EKR: Gui independent.
 #@-<< version history >>

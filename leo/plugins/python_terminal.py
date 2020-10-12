@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20150428142633.1: * @file python_terminal.py
+#@+node:peckj.20150428142633.1: * @file ../plugins/python_terminal.py
 #@@language python
 #@@tabwidth -4
 

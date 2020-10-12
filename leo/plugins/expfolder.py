@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ajones.20070122153625: * @file expfolder.py
+#@+node:ajones.20070122153625: * @file ../plugins/expfolder.py
 #@+<< docstring >>
 #@+node:ajones.20070122153625.1: ** << docstring >> (expfolder.py)
 ''' Adds @expfolder nodes that represent folders in the file system.

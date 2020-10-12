@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20070322113635: * @file bookmarks.py
+#@+node:tbrown.20070322113635: * @file ../plugins/bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
 ''' Manage bookmarks in a list, and show bookmarks in a pane.

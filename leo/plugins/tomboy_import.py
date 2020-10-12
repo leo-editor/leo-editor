@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090503124249.1: * @file tomboy_import.py
+#@+node:ville.20090503124249.1: * @file ../plugins/tomboy_import.py
 ''' Allows imports of notes created in Tomboy / gnote.
 
 Usage:

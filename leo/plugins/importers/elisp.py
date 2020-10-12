@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18141: * @file importers/elisp.py
+#@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
 '''The @auto importer for the elisp language.'''
 import re
 import leo.plugins.importers.linescanner as linescanner

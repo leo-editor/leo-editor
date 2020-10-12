@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101121031443.5330: * @file screenshots.py
+#@+node:ekr.20101121031443.5330: * @file ../plugins/screenshots.py
 #@+<< docstring >>
 #@+node:ekr.20100908115707.5554: ** << docstring >>
 r""" Creates stand-alone slideshows containing screenshots.

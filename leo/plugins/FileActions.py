@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915105758.13: * @file FileActions.py
+#@+node:ekr.20040915105758.13: * @file ../plugins/FileActions.py
 #@+<< docstring >>
 #@+node:ekr.20050912180106: ** << docstring >> (fileActions.py)
 r""" Defines actions taken when double-clicking on @<file> nodes and supports
@@ -45,7 +45,7 @@ __version__ = "0.4"
 #@+node:ekr.20040915110738: ** << version history >>
 #@@nocolor
 #@+at
-# 
+#
 # 0.2 EKR:
 # - Convert to a typical outline.
 # 0.3 EKR:

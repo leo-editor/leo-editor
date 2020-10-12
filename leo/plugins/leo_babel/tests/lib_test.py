@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 #@+leo-ver=5-thin
-#@+node:bob.20180205135005.1: * @file leo_babel/tests/lib_test.py
+#@+node:bob.20180205135005.1: * @file ../plugins/leo_babel/tests/lib_test.py
 #@@first
 #@@first
 #@@language python

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090310191936.10: * @file colorize_headlines.py
+#@+node:ville.20090310191936.10: * @file ../plugins/colorize_headlines.py
 ''' Manipulates appearance of individual tree widget items. (Qt only).
 
 This plugin is mostly an example of how to change the appearance of headlines. As

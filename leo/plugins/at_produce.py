@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20040915085351: * @file at_produce.py
+#@+node:ekr.20040915085351: * @file ../plugins/at_produce.py
 #@+<< docstring >>
 #@+node:ekr.20050311110307: ** << docstring >>
 ''' Executes commands in nodes whose body text starts with @produce.

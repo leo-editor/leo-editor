@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140811080604.9496: * @file sftp.py
+#@+node:peckj.20140811080604.9496: * @file ../plugins/sftp.py
 #@@language python
 #@@tabwidth -4
 
@@ -101,7 +101,7 @@ __version__ = '0.2'
 #@+<< version history >>
 #@+node:peckj.20140218144401.6037: ** << version history >>
 #@+at
-# 
+#
 # Version 0.1 - initial functionality
 # Version 0.2 - use leoQt instead of PyQt4
 #@-<< version history >>

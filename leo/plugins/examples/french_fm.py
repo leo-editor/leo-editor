@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080202.3: * @file examples/french_fm.py
+#@+node:EKR.20040517080202.3: * @file ../plugins/examples/french_fm.py
 #@@first
 """traduit les menus en Français"""
 #@@language python

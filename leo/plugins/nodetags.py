@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20140804114520.9427: * @file nodetags.py
+#@+node:peckj.20140804114520.9427: * @file ../plugins/nodetags.py
 #@+<< docstring >>
 #@+node:peckj.20140804103733.9242: ** << docstring >>
 '''Provides node tagging capabilities to Leo
