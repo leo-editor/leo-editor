@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
 """
@@ -1046,7 +1046,7 @@ def open_with_layout(event):
                          ],
               'sizes': [200,200,200]
              }
-    vr3.splitter.load_layout(layout)
+    vr3.splitter.load_layout(c, layout)
     c.k.simulateCommand('vr3-update')
     c.bodyWantsFocusNow()
 
@@ -3169,9 +3169,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
         loc, loo = layouts.get(c.hash(), deflo)
         if which == 'closed' and loc and splitter:
-            splitter.load_layout(loc)
+            splitter.load_layout(c, loc)
         elif which == 'open' and loo and splitter:
-            splitter.load_layout(loo)
+            splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
     #@+at

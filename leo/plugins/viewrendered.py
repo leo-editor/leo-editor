@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100318101414.5990: * @file viewrendered.py
+#@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
 #@+<< vr docstring >>
 #@+node:tbrown.20100318101414.5991: ** << vr docstring >>
 '''
@@ -749,9 +749,9 @@ if QtWidgets: # NOQA
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
             loc, loo = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
-                splitter.load_layout(loc)
+                splitter.load_layout(c, loc)
             elif which == 'open' and loo and splitter:
-                splitter.load_layout(loo)
+                splitter.load_layout(c, loo)
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
