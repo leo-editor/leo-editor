@@ -993,22 +993,27 @@ if QtWidgets:  # NOQA
             non-NestedSplitter items is the provider ID string for the item, or
             'UNKNOWN', and the splitter entry is omitted.
             """
-            ans = {
-                'orientation': self.orientation(),
-                'content': []
-            }
-            if not _saveable:
-                ans['splitter'] = self
-            ans['sizes'] = self.sizes()
+            if _saveable:
+                ans = {
+                    'content': [],
+                    'orientation': self.orientation(),
+                    'sizes': self.sizes(),
+                }
+            else:
+                ans = {
+                    'content': [],
+                    'orientation': self.orientation(),
+                    'sizes': self.sizes(),
+                    'splitter': self,
+                }
             for i in range(self.count()):
                 w = self.widget(i)
                 if isinstance(w, NestedSplitter):
                     ans['content'].append(w.get_layout(_saveable=_saveable))
+                elif _saveable:
+                    ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
                 else:
-                    if _saveable:
-                        ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
-                    else:
-                        ans['content'].append(w)
+                    ans['content'].append(w)
             return ans
         #@+node:tbrown.20110628083641.11733: *3* ns.get_saveable_layout
         def get_saveable_layout(self):
