@@ -338,7 +338,7 @@ if QtWidgets:
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
 
-            def print_layout_c(checked, splitter=splitter):  # pylint: disable=function-redefined
+            def print_layout_c(checked, splitter=splitter):
                 layout = splitter.top().get_layout()
                 g.printObj(layout)
 
