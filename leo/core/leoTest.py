@@ -505,6 +505,7 @@ class LinterTable():
             'leofts.py',  # Not (yet) in leoPlugins.leo.
             'qtGui.py',  # Dummy file
             'qt_main.py',  # Created automatically.
+            'viewrendered2.py', # To be removed.
             'rst3.py',  # Obsolete
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
