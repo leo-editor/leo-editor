@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:danr7.20060902215215.1: * @file leo_to_html.py
+#@+node:danr7.20060902215215.1: * @file ../plugins/leo_to_html.py
 #@@language python
 #@@tabwidth -4
 
@@ -125,7 +125,7 @@ systems.
 #@+node:danr7.20060902215215.3: ** << version history >>
 #@@killcolor
 #@+at
-# 
+#
 # 1.00 - Finished testing with 4 different options & outlines
 # 0.91 - Got initial headline export code working. Resolved bug in INI file checking
 # 0.90 - Created initial plug-in framework
@@ -157,10 +157,10 @@ systems.
 #     - added support for @string leo_to_html_no_menus setting.
 #     - changed browser_command property default to empty string
 #     - use webbrowser module if browser_command property is empty or does not work.
-# 
-# 
-# 
-# 
+#
+#
+#
+#
 #@-<< version history >>
 #@+<< imports >>
 #@+node:danr7.20060902215215.4: ** << imports >>

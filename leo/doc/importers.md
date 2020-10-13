@@ -160,7 +160,7 @@ where data is the 6-tuple returned from `i.scan_line`, namely:
 The `ScanState.update` method should set all appropriate ivars in the ScanState, ignoring items of the 6-tuple that don't correspond to ScanState ivars.
 
 # Using @button make-importer
-This script appears in both scripts.leo and leoPlugins.leo. To use this script, simply change the constants (strings) in the root `@button` node and run the script.
+This script appears in scripts.leo. To use this script, simply change the constants (strings) in the root `@button` node and run the script.
 
 The script creates an `@@file` node for the new importer. When you are ready, change `@@file` to `@file`. The file contains an `X_Importer` class (a subclass of the base `Importer` class) and a stand-alone `X_ScanState` class. Search for `###` for places that you may want to customize.
 

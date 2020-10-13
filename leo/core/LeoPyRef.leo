@@ -79,7 +79,7 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20181102040815.1"><vh>script: warn about long lines</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
-<v t="ekr.20180816105258.1"><vh>script: diff-branches (one file)</vh></v>
+<v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 </v>
 </v>
@@ -253,7 +253,7 @@
 <v t="EKR.20040517075715.12"><vh>@file ../plugins/xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@file ../plugins/word_export.py</vh></v>
-<v t="EKR.20040517075715.20"><vh>@file-nosent word_export.ini</vh></v>
+<v t="EKR.20040517075715.20"><vh>@file-nosent ../plugins/word_export.ini</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.872"><vh>Files and nodes</vh>
@@ -4372,9 +4372,9 @@ precede the node's line that have not already been returned.
 <t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='devel', # old branch
-    branch2='keys', # new branch
-    fn='leo/core/leoKeys.py',
+    branch1='bc24e6', # old branch/rev
+    branch2='devel', # new branch/rev
+    fn='leo/plugins/nested_splitter.py',
     directory=None,
 )
 </t>

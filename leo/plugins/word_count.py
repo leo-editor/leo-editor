@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:danr7.20061010105952.1: * @file word_count.py
+#@+node:danr7.20061010105952.1: * @file ../plugins/word_count.py
 #@@language python
 #@@tabwidth -4
 

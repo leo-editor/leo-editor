@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517075715.12: * @file xemacs.py
+#@+node:EKR.20040517075715.12: * @file ../plugins/xemacs.py
 #@+<< docstring >>
 #@+node:ekr.20101112195628.5434: ** << docstring >> (xemacs.py)
 ''' Allows you to edit nodes in emacs/xemacs.
@@ -25,9 +25,9 @@ __version__ = "2.0"
 #@+node:ekr.20050218024153.1: ** << version history >> (xemacs.py)
 #@@killcolor
 #@+at
-# 
+#
 # Initial version: http://www.cs.mu.oz.au/~markn/leo/external_editors.leo
-# 
+#
 # 1.5 EKR:
 # - Added commander-specific callback in onCreate.
 # - Added init method.

@@ -1027,8 +1027,8 @@
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
 <v t="ekr.20131213135427.21872"><vh>@item open-leo-docs-leo</vh></v>
 <v t="ekr.20161025090757.1"><vh>@item open-leo-dist-leo</vh></v>
-<v t="ekr.20131213135427.21873"><vh>@item open-leo-plugins-leo</vh></v>
 <v t="ekr.20151225193848.1"><vh>@item open-leo-py-leo</vh></v>
+<v t="ekr.20201013105810.1"><vh>@item open-leo-py-ref-leo</vh></v>
 <v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
@@ -1469,7 +1469,6 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
-<v t="ekr.20131213135427.22046"><vh>@item open-leo-plugins-leo</vh></v>
 <v t="ekr.20131213135427.22047"><vh>@item show-plugins-info</vh></v>
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
@@ -5231,7 +5230,6 @@ Controller(c).run()
     self.errors = 0
     # Commanders...
     self.core = None  # leoPy.leo.
-    self.plugins = None  # leoPlugins.leo.
     self.settings = None  # leoSettings.leo.
     self.user_settings = None  # myLeoSettings.leo
 </t>
@@ -5292,7 +5290,6 @@ Controller(c).run()
     join, loadDir = g.os_path_join, g.app.loadDir
     self.core = open_commander(join(loadDir, '..', 'core', 'leoPy.leo'))
         # Opening LeoPyRef.leo would be slower.
-    self.plugins = open_commander(join(loadDir, '..', 'plugins', 'leoPlugins.leo'))
     self.settings = open_commander(join(loadDir, '..', 'config', 'leoSettings.leo'))
     self.user_settings = open_commander(g.app.loadManager.my_settings_path)
 </t>
@@ -5301,7 +5298,7 @@ Controller(c).run()
     Return a dict containing a representation of all calls to x.config.getX.
     '''
     d = {}
-    for c in (self.core, self.plugins):
+    for c in (self.core, ):
         print('scanning: %s' % c.shortFileName())
         self.get_configs_from_outline(c, d)
     return d
@@ -5960,7 +5957,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21869">&amp;Weave...</t>
 <t tx="ekr.20131213135427.21871">&amp;CheatSheet.leo</t>
 <t tx="ekr.20131213135427.21872">Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.21873">leo&amp;Plugins.leo</t>
 <t tx="ekr.20131213135427.21874">&amp;quickstart.leo</t>
 <t tx="ekr.20131213135427.21875">scr&amp;ipts.leo</t>
 <t tx="ekr.20131213135427.21876"></t>
@@ -6107,7 +6103,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22043">Go To Last Siblin&amp;g</t>
 <t tx="ekr.20131213135427.22044">Go To &amp;Last Visible</t>
 <t tx="ekr.20131213135427.22045"></t>
-<t tx="ekr.20131213135427.22046">Open leo&amp;Plugins.leo</t>
 <t tx="ekr.20131213135427.22047">Print Plugins &amp;Info</t>
 <t tx="ekr.20131213135427.22048"></t>
 <t tx="ekr.20131213135427.22050"></t>
@@ -6523,7 +6518,6 @@ next-line                       = Ctrl-n
 next-line-extend-selection      = None
 open-leo-docs-leo               = None
 open-leo-dist-leo               = None
-open-leo-plugins-leo            = None
 open-leo-settings               = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
@@ -6981,7 +6975,6 @@ next-or-end-of-line                 = None # ! text = Down      # Brian Theado
 next-or-end-of-line-extend-selection= None #! text = Shift-Down # Brian Theado
 open-leo-docs-leo                   = None
 open-leo-dist-leo                   = None
-open-leo-plugins-leo                = None
 open-leo-settings                   = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
@@ -11947,6 +11940,8 @@ useful if you've cloned the node so its origin is not obvious from context.
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="ekr.20201010141557.1"></t>
+<t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

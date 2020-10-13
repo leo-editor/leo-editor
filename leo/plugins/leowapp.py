@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20181028052650.1: * @file leowapp.py
+#@+node:ekr.20181028052650.1: * @file ../plugins/leowapp.py
 #@@first
 '''
 This file is deprecated/obsolete. It may be removed soon.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.720: * @file outline_export.py
+#@+node:edream.110203113231.720: * @file ../plugins/outline_export.py
 """Modifies the way exported outlines are written."""
 
 #@@language python

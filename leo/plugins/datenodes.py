@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060807103814.1: * @file datenodes.py
+#@+node:ekr.20060807103814.1: * @file ../plugins/datenodes.py
 #@+<< docstring >>
 #@+node:bobjack.20080615065747.4: ** << docstring >>
 """ Allows users to insert headlines containing dates.

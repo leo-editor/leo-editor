@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:vitalije.20170727201534.1: * @file line_numbering.py
+#@+node:vitalije.20170727201534.1: * @file ../plugins/line_numbering.py
 #@+others
 #@+node:vitalije.20170727201830.1: ** About line_numbering plugin
 """This plugin makes line numbers in gutter (if used), to represent

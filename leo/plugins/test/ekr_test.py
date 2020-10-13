@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20080214092357: * @file test/ekr_test.py
+#@+node:ekr.20080214092357: * @file ../plugins/test/ekr_test.py
 import leo.core.leoGlobals as g
 
 def init():

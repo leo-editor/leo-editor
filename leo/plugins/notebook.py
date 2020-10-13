@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20120604212857.4215: * @file notebook.py
+#@+node:ville.20120604212857.4215: * @file ../plugins/notebook.py
 ''' QML Notebook
 
 Edit several nodes at once, in a pannable "notebook" view.

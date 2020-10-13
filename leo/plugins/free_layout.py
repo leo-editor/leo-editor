@@ -41,8 +41,9 @@ def init():
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
+    
     #@+<< FreeLayoutController docstring >>
-    #@+node:ekr.20201010080059.1: *3* << FreeLayoutController docstring >>
+    #@+node:ekr.20201013042712.1: *3* << FreeLayoutController docstring >>
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
     code should be in here, none in NestedSplitter.
 
@@ -66,12 +67,14 @@ class FreeLayoutController:
       item we advertised is selected
     """
     #@-<< FreeLayoutController docstring >>
-    default_layout = {  # 2020/09/28
+    #@+<< define default_layout >>
+    #@+node:ekr.20201013042741.1: *3* << define default_layout >>
+    default_layout = {
         'content': [
             {
                 'content': [
                     '_leo_pane:outlineFrame',
-                    '_leo_pane:logFrame'
+                    '_leo_pane:logFrame',
                 ],
                 'orientation': 1,
                 'sizes': [509, 275],
@@ -81,15 +84,15 @@ class FreeLayoutController:
         'orientation': 2,
         'sizes': [216, 216],
     }
+    #@-<< define default_layout >>
 
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
         """Ctor for FreeLayoutController class."""
         self.c = c
-        # Init first.
         g.registerHandler('after-create-leo-frame', self.init)
-        # Load layouts *after* plugins have been loaded, so that providers exist.
+        # Plugins must be loaded first to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
     #@+node:tbrown.20110203111907.5522: *3*  flc.init
     def init(self, tag, keys):
@@ -204,7 +207,7 @@ class FreeLayoutController:
             child = f.top.findChild(NestedSplitter)
             return child and child.top()
         return None
-    #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts
+    #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
     def loadLayouts(self, tag, keys, reloading=False):
         """loadLayouts - Load the outline's layout
 
@@ -225,60 +228,44 @@ class FreeLayoutController:
             return  # Can happen when running from the Leo bridge.
         if c != keys.get('c'):
             return
-        layout = self.getLayout(reloading)
-        # Careful: we could be unit testing or in the Leo bridge.
-        if not layout:
-            if trace: g.trace('no layout')
-            return
-        # EKR: Create commands that will load each layout.
         d = g.app.db.get('ns_layouts') or {}
-        g.trace('tag:', tag, 'reloading', reloading, 'keys:', sorted(d.keys()), g.callers())
-        for key in sorted(d.keys()):
-
-            def func(event, c=c, d=d, name=key):
-                layout = d.get(name)
-                if layout:
-                    c.free_layout.get_top_splitter().load_layout(c, layout)
-                else:
-                    g.trace(f"no layout: {name}")
-
-            name_s = key.strip().lower().replace(' ', '-')
-            commandName = f"free-layout-load-{name_s}"
-            c.k.registerCommand(commandName, func)
-            if trace: g.trace(f"created {commandName} command")
-        # Load the layout!
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.load_layout(c, layout)
-    #@+node:ekr.20200929151012.1: *4* flc.getLayout (new)
-    def getLayout(self, reloading):
-        """Return the layout to be used."""
-        trace = 'layouts' in g.app.debug
-        c = self.c
-        #
-        # 1. The layout in @data free-layout-layout overrides everything else.
+        if trace:
+            g.trace(tag)
+            g.printObj(keys, tag=f"keys")
         layout = c.config.getData("free-layout-layout")
         if layout:
-            try:
-                layout = json.loads('\n'.join(layout))
-                if trace:
-                    g.es_print(f"@data free-layout-layout overrides all saved layouts")
-                return layout
-            except Exception:
-                layout = None
-                g.es_exception()
-                g.trace('Bad layout in @data free-layout-layout')
-        #
-        # 2. Use a saved layout
-        if reloading:
-            name = c.free_layout.original_layout
-            c.db['_ns_layout'] = name
-        else:
-            name = c.db.get('_ns_layout')
-            c.free_layout.original_layout = name
-        d = g.app.db.get('ns_layouts') or {}
-        layout = d.get(name)
-        return layout
+            layout = json.loads('\n'.join(layout))
+        name = c.db.get('_ns_layout')
+        if name:
+            if reloading:
+                name = c.free_layout.original_layout
+                c.db['_ns_layout'] = name
+            else:
+                c.free_layout.original_layout = name
+            if layout:
+                g.es("NOTE: embedded layout in @settings/@data free-layout-layout "
+                     "overrides saved layout " + name)
+            else:
+                layout = d.get(name)
+        # EKR: Create commands that will load each layout.
+        if d:
+            for name in sorted(d.keys()):
+
+                def func(event, c=c, d=d, name=name):
+                    layout = d.get(name)
+                    if layout:
+                        c.free_layout.get_top_splitter().load_layout(c, layout)
+                    else:
+                        g.trace('no layout', name)
+
+                name_s = name.strip().lower().replace(' ', '-')
+                commandName = f"free-layout-load-{name_s}"
+                c.k.registerCommand(commandName, func)
+        # Careful: we could be unit testing or in the Leo bridge.
+        if layout:
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.load_layout(c, layout)
     #@+node:tbrown.20110628083641.11730: *3* flc.ns_context
     def ns_context(self):
         ans = [
@@ -296,16 +283,13 @@ class FreeLayoutController:
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
     def ns_do_context(self, id_, splitter, index):
-        """
-        Do the action indicated by id_. Return True if successful.
-        """
+
         c = self.c
         if id_.startswith('_fl_embed_layout'):
             self.embed()
             return True
         if id_.startswith('_fl_restore_default'):
             self.get_top_splitter().load_layout(c, layout=self.default_layout)
-            return True
         if id_.startswith('_fl_help'):
             self.c.putHelpFor(__doc__)
             # g.handleUrl("http://leoeditor.com/")

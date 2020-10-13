@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20161108125620.1: * @file importers/linescanner.py
+#@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
 #@+<< linescanner docstring >>
 #@+node:ekr.20161108125805.1: ** << linescanner docstring >>
 '''

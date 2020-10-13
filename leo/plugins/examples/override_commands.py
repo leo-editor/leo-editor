@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.919: * @file examples/override_commands.py
+#@+node:edream.110203113231.919: * @file ../plugins/examples/override_commands.py
 """Override the Equal Sized Pane command"""
 #@@language python
 #@@tabwidth -4

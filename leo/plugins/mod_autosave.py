@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.724: * @file mod_autosave.py
+#@+node:edream.110203113231.724: * @file ../plugins/mod_autosave.py
 """ Autosaves the Leo outline every so often.
 
 The time between saves is given by the setting, with default as shown::

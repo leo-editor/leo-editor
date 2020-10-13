@@ -123,25 +123,11 @@ def openLeoDist(self, event=None):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2: return
     g.es("not found:", name)
-#@+node:ekr.20050130152008: *3* c_help.openLeoPlugins
-@g.commander_command('open-leo-plugins-leo')
-@g.commander_command('leo-plugins-leo')
-def openLeoPlugins(self, event=None):
-    """Open leoPlugins.leo in a new Leo window."""
-    c = self
-    names = ('leoPlugins.leo', 'leoPluginsRef.leo',)  # Used in error message.
-    for name in names:
-        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "plugins", name)
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName, old_c=c)
-            if c2: return
-    g.es('not found:', ', '.join(names))
 #@+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
 def openLeoPy(self, event=None):
-    """Open leoPy.leo in a new Leo window."""
+    """Open leoPy.leo or LeoPyRef.leo in a new Leo window."""
     c = self
     names = ('leoPy.leo', 'LeoPyRef.leo',)  # Used in error message.
     for name in names:
@@ -151,6 +137,19 @@ def openLeoPy(self, event=None):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
     g.es('not found:', ', '.join(names))
+#@+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
+@g.commander_command('open-leo-py-ref-leo')
+@g.commander_command('leo-py-ref-leo')
+def openLeoPyRef(self, event=None):
+    """Open leoPyRef.leo in a new Leo window."""
+    c = self
+    path = g.os_path_finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
+    # Only call g.openWithFileName if the file exists.
+    if g.os_path_exists(path):
+        c2 = g.openWithFileName(path, old_c=c)
+        if c2:
+            return
+    g.es('LeoPyRef.leo not found')
 #@+node:ekr.20061018094539: *3* c_help.openLeoScripts
 @g.commander_command('open-scripts-leo')
 @g.commander_command('leo-scripts-leo')

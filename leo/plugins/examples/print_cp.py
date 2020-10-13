@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20060621123339: * @file examples/print_cp.py
+#@+node:ekr.20060621123339: * @file ../plugins/examples/print_cp.py
 '''
 A plugin showing how to convert an @button node to a plugin.
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18152: * @file importers/typescript.py
+#@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 '''The @auto importer for TypeScript.'''
 import leo.core.leoGlobals as g
 assert g

@@ -73,12 +73,12 @@ class Filename(Autocomplete):
                 (lambda x: os.path.split(x)[1].startswith(fname)), flist
                 ))
 
-            if len(possibilities) is 0:
+            if len(possibilities) == 0:
                 # can't complete
                 curses.beep()
                 break
 
-            if len(possibilities) is 1:
+            if len(possibilities) == 1:
                 if self.value != possibilities[0]:
                     self.value = possibilities[0]
                 if os.path.isdir(self.value) \
