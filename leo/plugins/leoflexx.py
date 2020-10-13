@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20181103094900.1: * @file leoflexx.py
+#@+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
 #@@first
 #@@language python
 #@@tabwidth -4

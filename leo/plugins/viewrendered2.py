@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140225222704.16748: * @file viewrendered2.py
+#@+node:ekr.20140225222704.16748: * @file ../plugins/viewrendered2.py
 #@@language python
 #@+<< docstring >>
 #@+node:ekr.20140226074510.4187: ** << docstring >> (VR2)

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110091234.5700: * @file leo_interface.py
+#@+node:ekr.20101110091234.5700: * @file ../plugins/leo_interface.py
 #@+<< docstring >>
 #@+node:ekr.20101112180523.5422: ** << docstring >>
 """ Allows the user to browse XML documents in Leo.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.735: * @file trace_gc_plugin.py
+#@+node:edream.110203113231.735: * @file ../plugins/trace_gc_plugin.py
 """ Traces changes to Leo's objects at idle time."""
 #@@language python
 #@@tabwidth -4

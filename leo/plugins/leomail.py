@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110125222411.10536: * @file leomail.py
+#@+node:ville.20110125222411.10536: * @file ../plugins/leomail.py
 #@+<< docstring >>
 #@+node:ekr.20170228181049.1: ** << docstring >>
 '''

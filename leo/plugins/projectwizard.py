@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090622063842.5264: * @file projectwizard.py
+#@+node:ekr.20090622063842.5264: * @file ../plugins/projectwizard.py
 ''' Creates a wizard that creates @auto nodes.
 
 Opens a file dialog and recursively creates @auto & @path nodes from the path

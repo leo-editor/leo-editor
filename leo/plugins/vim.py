@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:EKR.20040517075715.10: * @file vim.py
+#@+node:EKR.20040517075715.10: * @file ../plugins/vim.py
 #@+<< docstring >>
 #@+node:ekr.20050226184411: ** << docstring >>
 '''
@@ -45,10 +45,10 @@ Settings
 #@+node:ekr.20050226184411.1: ** << version history >>
 #@@killcolor
 #@+at
-# 
+#
 # Contributed by Andrea Galimberti.
 # Edited by Felix Breuer.
-# 
+#
 # 1.5 EKR:
 #     - Added new sections.
 #     - Move most comments into docstring.
@@ -91,67 +91,67 @@ Settings
 #@+at
 #@@language rest
 #@@wrap
-# 
+#
 # I was trying to get Leo to work more effectively with Vim, my editor of choice.
 # To do so, I made several changes to Leo which (I believe) make it work better.
-# 
+#
 # After much exploring and trying various things, I made a change to the os.spawnv
 # section of the openWith function in leoCommands.py. This added line seems to
 # prevent the "weird error message on first open of Vim." (vim.py, line 32) when
 # opening Vim with os.spawnv.
-# 
+#
 # os.spawnv needs the command it is calling as the first argument in the args list
 # in addition, so the command actually shows twice in the total args to os.spawnv.
 # For example::
-# 
+#
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["gvim.exe", "--servername", "LEO", "--remote", "foo.txt"])
-# 
+#
 # If the call is made without the command-name as the first item in the list of
 # args, like so::
-# 
+#
 #     os.spawnv(os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["--servername", "LEO", "--remote", "foo.txt"])
-# 
+#
 # an error message pops up::
-# 
+#
 #     E247: no registered server named "GVIM": Send failed.  Trying to execute locally
-# 
+#
 # This message means that gVim is not looking for a server named "LEO", which
 # presumably the user has already opened with the command "gvim --servername LEO".
 # Instead it is looking for a server named "GVIM", and not finding it, opens the
 # files "foo.txt" and "LEO" (notice that it didn't catch the "--servername"
 # argument and thinks that "LEO" is the name of a new file to create) in two
 # buffers in a local copy of gVim. Now, if the command is::
-# 
+#
 #     os.spawnv(
 #         os.P_NOWAIT, "C:/Program Files/Vim/vim63/gvim.exe",
 #         ["gvim.exe", "--servername", "LEO", "--remote", "foo.txt"])
-# 
+#
 # Everything works great, as long as the user doesn't close the gVim window. If
 # the user has closed the gVim window, then tries to open a node in Vim, they will
 # see this error message::
-# 
+#
 #     E247: no registered server named "LEO": Send failed.
-# 
+#
 # Trying to execute locally If you use the ``--remote-silent`` argument, gVim will
 # start the LEO server without the error message.
-# 
+#
 # You can see which servers gVim has running by typing the following at the
 # command prompt::
-# 
+#
 #     vim --serverlist
-# 
+#
 # The rest of my changes have to do with using the subprocess module instead of
 # the os.system, and various os.spawn* calls. I find subprocess easier to
 # understand, and it is fairly simple to use for the most common kinds of process
 # calls, but is capable of all the variations you may need. It is designed to
 # replace all the os.system, os.spawn, and popen calls. It is available in Python
 # 2.4.
-# 
+#
 # So I added some lines to use subprocess in the OpenWith plugin and the Vim
 # plugin.
-# 
+#
 # I also have added a table in the "create_open_with_menu" function that makes use
 # of the various editors I have used at times. Most of those editors are called
 # with subprocess.Popen.

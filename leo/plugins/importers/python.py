@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18149: * @file importers/python.py
+#@+node:ekr.20140723122936.18149: * @file ../plugins/importers/python.py
 '''The new, line-based, @auto importer for Python.'''
 # Legacy version of this file is in the attic.
 import re

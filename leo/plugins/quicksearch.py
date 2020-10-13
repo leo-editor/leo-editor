@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090314215508.4: * @file quicksearch.py
+#@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
 '''

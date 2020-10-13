@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20081223111325.3: * @file backlink.py
+#@+node:tbrown.20081223111325.3: * @file ../plugins/backlink.py
 #@+<< docstring >>
 #@+node:ekr.20140920145803.17984: ** << docstring >>
 """Allows arbitrary links between nodes.

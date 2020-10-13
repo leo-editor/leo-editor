@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110304230157.6513: * @file systray.py
+#@+node:ville.20110304230157.6513: * @file ../plugins/systray.py
 ''' systray'''
 __version__ = '0.2'
 import leo.core.leoGlobals as g

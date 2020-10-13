@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18151: * @file importers/leo_rst.py
+#@+node:ekr.20140723122936.18151: * @file ../plugins/importers/leo_rst.py
 '''
 The @auto importer for restructured text.
 

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20200619141135.1: * @file importers/cython.py
+#@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 '''@auto importer for cython.'''
 import re
 # import leo.core.leoGlobals as g

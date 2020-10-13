@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110093449.5822: * @file mod_leo2ascd.py
+#@+node:ekr.20101110093449.5822: * @file ../plugins/mod_leo2ascd.py
 __version__ = ".7" # Set version for the plugin handler.
 
 import leo.core.leoGlobals as g

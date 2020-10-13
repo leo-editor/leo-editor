@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160504080826.1: * @file importers/leo_json.py
+#@+node:ekr.20160504080826.1: * @file ../plugins/importers/leo_json.py
 '''The @auto importer for .json files.'''
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.

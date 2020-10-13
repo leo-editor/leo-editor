@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:edream.110203113231.732: * @file enable_gc.py
+#@+node:edream.110203113231.732: * @file ../plugins/enable_gc.py
 """Enables debugging and tracing for Python's garbage collector."""
 #@@language python
 #@@tabwidth -4

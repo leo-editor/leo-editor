@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140723122936.18144: * @file importers/javascript.py
+#@+node:ekr.20140723122936.18144: * @file ../plugins/importers/javascript.py
 '''The @auto importer for JavaScript.'''
 import re
 import unittest

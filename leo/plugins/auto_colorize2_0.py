@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20170619151859.2: * @file auto_colorize2_0.py
+#@+node:ekr.20170619151859.2: * @file ../plugins/auto_colorize2_0.py
 ''' Manipulates appearance of individual tree widget items based on Yaml file.
 
 Settings are defined in a node labeled "Headline Formats".

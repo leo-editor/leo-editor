@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160928073518.1: * @file pyplot_backend.py
+#@+node:ekr.20160928073518.1: * @file ../plugins/pyplot_backend.py
 '''
     A helper for the viewrendered plugin.
     This is *NOT* a real plugin.

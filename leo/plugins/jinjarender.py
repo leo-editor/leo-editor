@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20110409151021.5699: * @file jinjarender.py
+#@+node:ville.20110409151021.5699: * @file ../plugins/jinjarender.py
 #@+<< docstring >>
 #@+node:ville.20110409151021.5700: ** << docstring >>
 ''' Render @jinja nodes.
@@ -25,11 +25,11 @@ __version__ = '0.1'
 #@+node:ville.20110409151021.5701: ** << version history >>
 #@@killcolor
 #@+at
-# 
+#
 # 0.1 Ville M. Vainio:
-# 
+#
 #     * First version
-# 
+#
 #@-<< version history >>
 
 #@+<< imports >>

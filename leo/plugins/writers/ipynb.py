@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160412101901.1: * @file writers/ipynb.py
+#@+node:ekr.20160412101901.1: * @file ../plugins/writers/ipynb.py
 '''The @auto write code for jupyter (.ipynb) files.'''
 import json
 import re

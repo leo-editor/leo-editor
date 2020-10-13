@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20110428144124.29061: * @file xml_edit.py
+#@+node:tbrown.20110428144124.29061: * @file ../plugins/xml_edit.py
 #@@language python
 #@@tabwidth -4
 #@+others

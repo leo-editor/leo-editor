@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20091214233510.5347: * @file geotag.py
+#@+node:tbrown.20091214233510.5347: * @file ../plugins/geotag.py
 ''' Tags nodes with latitude and longitude. '''
 
 #@@language python

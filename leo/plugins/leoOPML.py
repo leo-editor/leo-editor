@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110092851.5742: * @file leoOPML.py
+#@+node:ekr.20101110092851.5742: * @file ../plugins/leoOPML.py
 #@+<< docstring >>
 #@+node:ekr.20060904103412.1: ** << docstring >>
 #@@language rest

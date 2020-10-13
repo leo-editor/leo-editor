@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20080613095157.2: * @file active_path.py
+#@+node:tbrown.20080613095157.2: * @file ../plugins/active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >> (active_path)
 r'''Synchronizes \@path nodes with folders.

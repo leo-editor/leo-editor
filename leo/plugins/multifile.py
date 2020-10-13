@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mork.20041018204908.1: * @file multifile.py
+#@+node:mork.20041018204908.1: * @file ../plugins/multifile.py
 #@+<< docstring >>
 #@+node:ekr.20050226114732: ** << docstring >>
 #@@language rest
