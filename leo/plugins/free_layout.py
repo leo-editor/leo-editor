@@ -41,6 +41,9 @@ def init():
     return g.app.gui.guiName() == "qt"
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
+    
+    #@+<< FreeLayoutController docstring >>
+    #@+node:ekr.20201013042712.1: *3* << FreeLayoutController docstring >>
     """Glue between Leo and the NestedSplitter gui widget.  All Leo aware
     code should be in here, none in NestedSplitter.
 
@@ -63,6 +66,26 @@ class FreeLayoutController:
       provide the advertised service when a splitter-handle context-menu
       item we advertised is selected
     """
+    #@-<< FreeLayoutController docstring >>
+    #@+<< define default_layout >>
+    #@+node:ekr.20201013042741.1: *3* << define default_layout >>
+    default_layout = {
+        'content': [
+            {
+                'content': [
+                    '_leo_pane:outlineFrame',
+                    '_leo_pane:logFrame',
+                ],
+                'orientation': 1,
+                'sizes': [509, 275],
+            },
+            '_leo_pane:bodyFrame',
+        ],
+        'orientation': 2,
+        'sizes': [216, 216],
+    }
+    #@-<< define default_layout >>
+
     #@+others
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
@@ -259,22 +282,6 @@ class FreeLayoutController:
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
-    default_layout = {
-        'content': [
-            {
-                'content': [
-                    '_leo_pane:outlineFrame',
-                    '_leo_pane:logFrame',
-                ],
-                'orientation': 1,
-                'sizes': [509, 275],
-            },
-            '_leo_pane:bodyFrame',
-        ],
-        'orientation': 2,
-        'sizes': [216, 216],
-    }
-
     def ns_do_context(self, id_, splitter, index):
 
         c = self.c
