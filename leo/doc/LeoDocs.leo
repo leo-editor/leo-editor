@@ -12,6 +12,9 @@
 <v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
 <v t="ekr.20191216061528.2"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
+<v t="ekr.20201013034546.2"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
@@ -5109,7 +5112,7 @@ The getBool 'default' argument to getBool specifies the value to be returned if 
 Plugins
 #######
 
-This chapter discusses the plugins contained in leoPlugins.leo. These plugins are part of Leo's official distribution. The next chapter, `Writing Plugins &lt;writingPlugins.html&gt;`_, tells how to write plugins.
+This chapter discusses Leo's plugins. The plugins found in LeoPyRef.leo are part of Leo's official distribution. The next chapter, `Writing Plugins &lt;writingPlugins.html&gt;`_, tells how to write plugins.
 
 The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes &lt;tutorial-scripting#using-button-nodes&gt;`_. Script buttons are extraordinarily useful.
 
@@ -5742,7 +5745,7 @@ Plugins modify how Leo works. With plugins you can give Leo new commands,
 modify how existing commands work, or change any other aspect of Leo's look
 and feel.
 
-leoPlugins.leo contains all of Leo's official plugins. Studying this file is
+leoPyRef.leo contains all of Leo's official plugins. Studying this file is
 a good way to learn how to write plugins.
 
 Writing plugins is like writing any other Leo script.  See
@@ -8521,7 +8524,12 @@ Promote
 
 Reference .leo file
 
-Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. These reference files should contain nothing but @file nodes and should change only when new external files get added to the project. Developers should use *local copies* of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+Leo's `git repository`_ and Leo distributions contain two reference
+files: LeoPyRef.leo and leoGuiPluginsRef.leo. These reference files
+should contain nothing but @file nodes and should change only when new
+external files get added to the project. Developers should use *local
+copies* of reference files for their own work. For example, instead of
+using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
 
 
 .. index::
@@ -9641,14 +9649,15 @@ Important files:
         return ''
 </t>
 <t tx="ekr.20101111175617.24328">def openLeoPlugins(self):
-    fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins','leoPlugins.leo')
+    # Plugins are now found in leoPy.leo.
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins','leoPy.leo')
     c = g.openWithFileName(fn, old_c=self.c, gui=None,)
     if not c:
-        g.error('can not open leoPlugins.leo')
+        g.error('can not open leoPy.leo')
     return c
 </t>
 <t tx="ekr.20101111175617.5037" str_atime="1376412919.0">'''
-Creates an outline containing most docstrings from leoPlugins.leo.
+Creates an outline containing most docstrings from Leo's plugins.
 
 Some docstrings are suppressed.
 '''
@@ -11945,8 +11954,6 @@ C. I use scripts to open particular Leo files. These are batch files on Windows,
     e:       opens ekr.leo.  I use this file for private testing.
     d:       opens LeoDocs.leo.
     s:       opens LeoPy.leo.
-    plugins: opens leoPlugins.leo.
-    gui:     opens leoGui.leo.
     u:       opens unitTest.leo.
 
 These run Leo with Python 3.x. There are similar scripts, ending in 2, that run Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x. Thus, to run a test, I alt-tab to an available console window, then type 'e' or 't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
@@ -15961,9 +15968,7 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 - `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
 - `viewrendered.py`_ creates the rendering pane and renders content in it.
 </t>
-<t tx="ekr.20131009100732.19039">.. leoPlugins.leo#Plugins--&gt;Files and nodes--&gt;@file bookmarks.py
-
-Open bookmarks in a list, and show bookmarks in a pane.
+<t tx="ekr.20131009100732.19039">Open bookmarks in a list, and show bookmarks in a pane.
 </t>
 <t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
@@ -19251,8 +19256,6 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Opens CheatSheet.leo in a new tab or window.
 ``open-leoDocs-leo``
     Opens LeoDocs.leo in a new tab or window.
-``open-leoPlugins-leo``
-    Opens LeoPlugins.leo in a new tab or window.
 ``open-scripts-leo``
     Opens scripts.leo in a new tab or window.
 ``open-leoSettings-leo``
@@ -20877,7 +20880,7 @@ The following sections describe how the beautify-tree and beautify-node commands
             text="Ok")
 </t>
 <t tx="ekr.20150817125512.1">efc.compareTrees does most of the work of comparing two similar outlines.
-For example, here is "@button compare vr-controller" in leoPluginsRef.leo::
+For example, here is "@button compare vr-controller" in leoPyRef.leo::
 
     p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
     p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
@@ -26183,7 +26186,7 @@ Developers will typically execute the read-ref-file command after any git pull t
 </t>
 <t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
-Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
+Leo's `git repository`_ and Leo distributions contain two reference files: LeoPyRef.leo  and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
 <t tx="ekr.20180201041411.1"></t>
 <t tx="ekr.20180201101506.1">https://github.com/leo-editor/leo-editor/issues/658
 
@@ -26232,7 +26235,6 @@ c.backup_helper uses the LEO_BACKUP environment variable as the base of the save
 This method does careful error checking and reporting. The body text of the following four @button backup nodes are all just one line::
 
     c.backup_helper(sub_dir='leoPy') # In leoPy.leo
-    c.backup_helper(sub_dir='leoPlugins') # In leoPlugins.leo
     c.backup_helper(sub_dir='ekr-projects') # In ekr-projects.leo
     c.backup_helper(sub_dir='ekr') # In ekr.leo
 
@@ -31762,6 +31764,43 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
 
 **Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
 See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+<t tx="ekr.20201013034546.1">gnx: ekr.20161120073038.1
+</t>
+<t tx="ekr.20201013034546.2">gnx: ekr.20201013033341.30
+unl: Table of contents
+gnx: ekr.20201013033341.31
+unl: The grand overview
+gnx: ekr.20201013033341.32
+unl: The new importers vs. the old
+gnx: ekr.20201013033341.33
+unl: The Importer class
+gnx: ekr.20201013033341.34
+unl: The Importer class--&gt;i.gen lines &amp; helpers
+gnx: ekr.20201013033341.35
+unl: The Importer class--&gt;The line-oriented API
+gnx: ekr.20201013033341.36
+unl: The Importer class--&gt;Indentation
+gnx: ekr.20201013033341.37
+unl: The ScanState classes
+gnx: ekr.20201013033341.38
+unl: The ScanState classes--&gt;ScanState.context
+gnx: ekr.20201013033341.39
+unl: The ScanState classes--&gt;ScanState.level()
+gnx: ekr.20201013033341.40
+unl: The ScanState classes--&gt;ScanState protocols
+gnx: ekr.20201013033341.41
+unl: Using @button make-importer
+gnx: ekr.20201013033341.42
+unl: Notes
+gnx: ekr.20201013033341.43
+unl: Notes--&gt;Recognizing multi-line patterns
+gnx: ekr.20201013033341.44
+unl: Notes--&gt;The python importer must count brackets
+gnx: ekr.20201013033341.45
+unl: Notes--&gt;Scanning strings and comments
+gnx: ekr.20201013033341.46
+unl: Conclusion
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
