@@ -2390,6 +2390,17 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
+<v t="ekr.20201013111510.1"><vh>Found:replace-all</vh>
+<v t="ekr.20170707034853.55"></v>
+<v t="ekr.20180930062351.13"></v>
+<v t="ekr.20150318110552.59"></v>
+<v t="ekr.20170911082432.66"></v>
+<v t="ekr.20180226032107.1"></v>
+<v t="ekr.20191003062919.12"></v>
+<v t="ekr.20170403185500.1"></v>
+<v t="ekr.20170707034853.41"></v>
+<v t="ekr.20190616175854.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -19752,7 +19763,9 @@ Batch searches:
     Changes all occurrences of the 'find' text with the 'change' text.
     When using the minibuffer to specify search and replace patterns,
     first enter then search pattern,
-    then type ``Tab`` and enter the replacement pattern.
+    then type ``Tab`` and enter the replacement pattern:
+    
+    &lt;Alt-x&gt;replace-all&lt;return&gt;find-pattern&lt;tab&gt;replacement-pattern&lt;return&gt;
     
 Searches creating clones:
 
@@ -31801,6 +31814,11 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
+<t tx="ekr.20201013111510.1">@nosearch
+
+# flattened, ignore-case, head, body
+
+# found 9 nodes</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
