@@ -1028,6 +1028,7 @@
 <v t="ekr.20131213135427.21872"><vh>@item open-leo-docs-leo</vh></v>
 <v t="ekr.20161025090757.1"><vh>@item open-leo-dist-leo</vh></v>
 <v t="ekr.20151225193848.1"><vh>@item open-leo-py-leo</vh></v>
+<v t="ekr.20201013105810.1"><vh>@item open-leo-py-ref-leo</vh></v>
 <v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
@@ -11939,6 +11940,8 @@ useful if you've cloned the node so its origin is not obvious from context.
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="ekr.20201010141557.1"></t>
+<t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
