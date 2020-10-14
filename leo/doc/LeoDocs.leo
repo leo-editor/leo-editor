@@ -1767,6 +1767,13 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20201014052236.1"><vh>Leo 6.3 release notes</vh>
+<v t="ekr.20201014052236.2"><vh>6.3: Code</vh></v>
+<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh></v>
+<v t="ekr.20201014052236.4"><vh>6.3: Features</vh></v>
+<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh></v>
+<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh></v>
+</v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
 <v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
 <v t="ekr.20200313054557.1"><vh>6.2: Commands</vh></v>
@@ -2390,17 +2397,7 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
-<v t="ekr.20201013111510.1"><vh>Found:replace-all</vh>
-<v t="ekr.20170707034853.55"></v>
-<v t="ekr.20180930062351.13"></v>
-<v t="ekr.20150318110552.59"></v>
-<v t="ekr.20170911082432.66"></v>
-<v t="ekr.20180226032107.1"></v>
-<v t="ekr.20191003062919.12"></v>
-<v t="ekr.20170403185500.1"></v>
-<v t="ekr.20170707034853.41"></v>
-<v t="ekr.20190616175854.1"></v>
-</v>
+<v t="ekr.20201014052236.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16688,16 +16685,18 @@ A Brief Summary of Leo
 
 .. Use full links here so links are active in LeoDocs.leo
 
+.. _`Clones`: tutorial-pim.html
+.. _`clone find commands`: html/commands.html# clone-find-commands
+.. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 .. _`Emacs`: https://www.gnu.org/software/emacs/
 .. _`Leo's tutorial`: tutorial.html
-.. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
-.. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
-.. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
 .. _`Leonine`: leonine-world.html
-.. _`Clones`: tutorial-pim.html
-.. _`Python API`: tutorial-scripting.html
-.. _`outline-oriented directives`: tutorial-basics.html#markup
+.. _`Leonine way to refactor programs`: appendices.html#the-leonine-way-to-refactor-code
 .. _`Next`: testimonials.html
+.. _`Python API`: tutorial-scripting.html
+.. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
+.. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
+.. _`outline-oriented directives`: tutorial-basics.html#markup
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
@@ -16724,6 +16723,7 @@ Leo *completely integrates* Python scripting and outlines. Simulating the follow
 - `Clones`_ create multiple views of an outline.  |br|
   Leo's underlying data is a `Directed Acyclic Graphs`_.  |br|
   As a result, Leo organizes data in completely new ways.
+- Leo's `clone find commands`_ enable the `Leonine way to refactor programs`_.
 - Scripts and programs can be composed from outlines using `outline-oriented directives`_.
 - Importers convert flat text into outlines.
 - @test and @suite scripts create unit tests automatically.
@@ -31814,11 +31814,38 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20201013111510.1">@nosearch
+<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
 
-# flattened, ignore-case, head, body
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-# found 9 nodes</t>
+**The highlights of Leo 6.3**
+
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20201014052236.2"></t>
+<t tx="ekr.20201014052236.3"></t>
+<t tx="ekr.20201014052236.4"></t>
+<t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.2 see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.3+label%3Abug
+The first comment in each bug contains a summary of the bug and its fix.
+
+Notable bugs:
+
+</t>
+<t tx="ekr.20201014052236.6"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
