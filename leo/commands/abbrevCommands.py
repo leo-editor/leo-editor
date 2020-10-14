@@ -124,8 +124,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             script = ''.join(script)
             # Allow Leo directives in @data abbreviations-subst-env trees.
             import leo.core.leoNodes as leoNodes
-            v = leoNodes.VNode(context=c)
-            root = leoNodes.Position(v)
+            # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
+            root = c.rootPosition()
+            if root:
+                v = root.v
+            else:
+                # Defensive programming. Probably will never happen.
+                v = leoNodes.VNode(context=c)
+                root = leoNodes.Position(v)
             # Similar to g.getScript.
             script = at.stringToString(
                 root=root,
