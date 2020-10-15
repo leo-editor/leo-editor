@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20121126095734.12418: * @file threadutil.py
+#@+node:ekr.20121126095734.12418: * @file ../plugins/threadutil.py
 #@@language python
 #@@tabwidth -4
 #@+<< threadutils imports >>

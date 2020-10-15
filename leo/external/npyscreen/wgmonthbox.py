@@ -252,7 +252,7 @@ class MonthBox(DateEntryBase):
                     print_column = self.relx
 
                     for thisday in calrow:
-                        if thisday is 0:
+                        if thisday == 0:
                             pass
                         elif day == thisday:
                             if self.do_colors():

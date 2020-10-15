@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20161108125620.1: * @file importers/linescanner.py
+#@+node:ekr.20161108125620.1: * @file ../plugins/importers/linescanner.py
 #@+<< linescanner docstring >>
 #@+node:ekr.20161108125805.1: ** << linescanner docstring >>
 '''
@@ -523,7 +523,7 @@ class Importer:
             ok = blanks == 0
             message = 'blanks found with @tabwidth %s in %s' % (w, fn)
         if ok:
-            ok = blanks == 0 or tabs == 0
+            ok = (blanks == 0 or tabs == 0)
             message = 'intermixed blanks and tabs in: %s' % (fn)
         if not ok:
             if g.unitTesting:

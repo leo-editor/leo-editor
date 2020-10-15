@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20090513125417.5244: * @file interact.py
+#@+node:tbrown.20090513125417.5244: * @file ../plugins/interact.py
 #@+<< docstring >>
 #@+node:tbrown.20090603104805.4937: ** << docstring >>
 """ Adds buttons so Leo can interact with command line environments.

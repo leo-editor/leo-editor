@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20170128213103.1: * @file demo.py
+#@+node:ekr.20170128213103.1: * @file ../plugins/demo.py
 #@@first
 '''
 A plugin that makes making Leo demos easy. See:

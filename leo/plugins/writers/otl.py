@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140726091031.18078: * @file writers/otl.py
+#@+node:ekr.20140726091031.18078: * @file ../plugins/writers/otl.py
 '''The @auto write code for vimoutline (.otl) files.'''
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter

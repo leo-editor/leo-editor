@@ -2,36 +2,17 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 #@@first
+# This file is part of Leo: https://leoeditor.com
+# Leo's copyright notice is based on the MIT license: http://leoeditor.com/license.html
 #@+<< docstring >>
 #@+node:ekr.20200113081838.1: ** << docstring >> (leoAst.py)
 """
-leoAst.py:
-
-The TokenOrderGenerator class unifies python's token-based and ast-based
-worlds by creating two-way links between tokens in the token list and ast
-nodes in the parse tree.
-
-**How to view this file**
-
-This file works independently of Leo: http://leoeditor.com/ However, I
-highly recommend using Leo to view this code. That way you will see
-the outline structure of the code.
-
-When viewed without Leo, you will see special **sentinel comments** that
-create Leo's outline structure. These comments have the form::
-
-    `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
-
-**Project documentation**
-
-Token Order Classes: Theory of operation
-http://leoeditor.com/appendices.html#tokenorder-classes-theory-of-operation
-
-Token Order Clases: How to
-http://leoeditor.com/appendices.html#tokenorder-class-how-to
+leoAst.py: This file does not depend on Leo in any way.
     
-Issue 1440: Unify the ast and token worlds.
-https://github.com/leo-editor/leo-editor/issues/1440
+The classes in this file unify python's token-based and ast-based worlds by
+creating two-way links between tokens in the token list and ast nodes in
+the parse tree. For more details, see the "Overview" section below.
+
 
 **Stand-alone operation**
    
@@ -59,6 +40,98 @@ optional arguments:
   --py-cov           run pytest --cov on leoAst.py
   --pytest           run pytest on leoAst.py
   --unittest         run unittest on leoAst.py
+
+    
+**Overview**
+
+leoAst.py unifies python's token-oriented and ast-oriented worlds.
+
+leoAst.py defines classes that create two-way links between tokens
+created by python's tokenize module and parse tree nodes created by
+python's ast module:
+
+The Token Order Generator (TOG) class quickly creates the following
+links:
+
+- An *ordered* children array from each ast node to its children.
+
+- A parent link from each ast.node to its parent.
+
+- Two-way links between tokens in the token list, a list of Token
+  objects, and the ast nodes in the parse tree:
+
+  - For each token, token.node contains the ast.node "responsible" for
+    the token.
+
+  - For each ast node, node.first_i and node.last_i are indices into
+    the token list. These indices give the range of tokens that can be
+    said to be "generated" by the ast node.
+
+Once the TOG class has inserted parent/child links, the Token Order
+Traverser (TOT) class traverses trees annotated with parent/child
+links extremely quickly.
+
+
+**Applicability and importance**
+
+Many python developers will find asttokens meets all their needs.
+asttokens is well documented and easy to use. Nevertheless, two-way
+links are significant additions to python's tokenize and ast modules:
+
+- Links from tokens to nodes are assigned to the nearest possible ast
+  node, not the nearest statement, as in asttokens. Links can easily
+  be reassigned, if desired.
+
+- The TOG and TOT classes are intended to be the foundation of tools
+  such as fstringify and black.
+
+- The TOG class solves real problems, such as:
+  https://stackoverflow.com/questions/16748029/
+
+
+**Figures of merit**
+
+Simplicity: The code consists primarily of a set of generators, one
+for every kind of ast node.
+
+Speed: The TOG creates two-way links between tokens and ast nodes in
+roughly the time taken by python's tokenize.tokenize and ast.parse
+library methods. This is substantially faster than the asttokens,
+black or fstringify tools. The TOT class traverses trees annotated
+with parent/child links even more quickly.
+
+Memory: The TOG class makes no significant demands on python's
+resources. Generators add nothing to python's call stack.
+TOG.node_stack is the only variable-length data. This stack resides in
+python's heap, so its length is unimportant. In the worst case, it
+might contain a few thousand entries. The TOT class uses no
+variable-length data at all.
+
+**Links**
+
+Leo...
+Ask for help:       https://groups.google.com/forum/#!forum/leo-editor
+Report a bug:       https://github.com/leo-editor/leo-editor/issues
+leoAst.py docs:     http://leoeditor.com/appendices.html#leoast-py
+
+Other tools...
+asttokens:          https://pypi.org/project/asttokens
+black:              https://pypi.org/project/black/
+fstringify:         https://pypi.org/project/fstringify/
+
+Python modules...
+tokenize.py:        https://docs.python.org/3/library/tokenize.html
+ast.py              https://docs.python.org/3/library/ast.html
+  
+**Studying this file**
+
+I strongly recommend that you use Leo when studying this code so that you
+will see the file's intended outline structure.
+
+Without Leo, you will see only special **sentinel comments** that create
+Leo's outline structure. These comments have the form::
+
+    `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 """
 #@-<< docstring >>
 #@+<< imports >>
@@ -2432,7 +2505,7 @@ class Orange:
     at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
 
     # Doc parts end with @c or a node sentinel. Specialized for python.
-    end_doc_pat = re.compile(r"^\s*#@((c(ode)?)|([+]node\b.*))$")
+    end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
     #@+node:ekr.20200107165250.2: *4* orange.ctor
     def __init__(self, settings=None):
@@ -4196,18 +4269,13 @@ class TestOrange(BaseTest):
     def test_at_doc_part(self):
 
         line_length = 40  # For testing.
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
         contents = f"""\
-    SENT+at Line 1
+    #@+at Line 1
     # Line 2
-    SENTc
+    #@@c
 
     print('hi')
     """
-        contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
@@ -4254,12 +4322,7 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
 
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
         contents = """\
-    SENT+node:ekr.20160514120655.1: ** class AtFile
     # Leading comment line 1.
     # Leading comment lines 2.
 
@@ -4269,7 +4332,6 @@ class TestOrange(BaseTest):
     # Trailing comment line.
     a = 2
     """
-        contents = contents.replace('SENT', '#@')
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree)
@@ -4912,49 +4974,26 @@ class TestOrange(BaseTest):
             f"expected: {expected!r}\n"
             f"  orange: {results!r}")
         assert results == expected, message
-    #@+node:ekr.20200211190650.1: *4* TestOrange.test_verbatim_fail
-    def test_verbatim_fail(self):
-
-        line_length = 40  # For testing.
-        #
-        # Warning: Do not put bare sentinel lines here!
-        #          Doing so destroys leoAst.py!
-        #
-        contents = '''\
-    SENTverbatim
-    SENT+node:ekr.20090128083459.82: ADDED.
-    SENTverbatim
-    SENT@nobeautify
-
-    def run(self):
-        if index2 is None: # <--- Essential
-            g.es("No matching bracket.")  # #1447.
-            return
-    SENTverbatim
-    SENT+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
-    class PosList(list):
-    SENTverbatim
-        SENT+others
-    SENTverbatim
-        SENT+node:ekr.20140531104908.17611: *4* PosList.ctor
-        def __init__(self, c, aList=None):
-            if aList is None:
-                for p in c.all_positions():
-                    self.append(p.copy())
-            else:  # <-------
-                pass
-    '''
-        contents = contents.replace('SENT', '#@')
+    #@+node:ekr.20200729083027.1: *4* TestOrange.verbatim2
+    def test_verbatim2(self):
+        
+        contents = """\
+    #@@beautify
+    #@@nobeautify
+    #@+at Starts doc part
+    # More doc part.
+    # The @c ends the doc part.
+    #@@c
+    """
         contents, tokens, tree = self.make_data(contents)
-        expected = contents + '\n'
-        results = self.beautify(contents, tokens, tree,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
-        # Necessary.
-        expected = expected.replace('#@verbatim\n', '').rstrip() + '\n'
-        results = results.replace('#@verbatim\n', '')
-        assert results == expected, expected_got(expected, results)
+        expected = contents
+        results = self.beautify(contents, tokens, tree)
+        message = (
+            f"\n"
+            f"contents: {contents}\n"
+            f"expected: {expected!r}\n"
+            f"  orange: {results!r}")
+        assert results == expected, message
     #@+node:ekr.20200211094209.1: *4* TestOrange.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
@@ -5017,7 +5056,6 @@ class TestTOG(BaseTest):
     The asserts in tog.sync_tokens suffice to create strong unit tests.
     """
     #@+others
-    #@+node:ekr.20200111042805.1: *4* Bugs...
     #@+node:ekr.20191227052446.10: *4* Contexts...
     #@+node:ekr.20191227052446.11: *5* test_ClassDef
     def test_ClassDef(self):
@@ -5846,21 +5884,22 @@ class TestTokens(BaseTest):
     def test_string_concatentation_3(self):
         # plain string followed by f-string on the same line
         self.check_roundtrip("""'abc' f'xyz'""")
-    #@+node:ekr.20160521103254.1: *4* TT.test_vistors_exist
-    def test_vistors_exist(self):
+    #@+node:ekr.20160521103254.1: *4* TT.test_visitors_exist
+    def test_visitors_exist(self):
         """Ensure that visitors for all ast nodes exist."""
         import _ast
         # Compute all fields to BaseTest.
         aList = sorted(dir(_ast))
         remove = [
-            'Interactive', # Not necessary.
-            'Suite',  # Not necessary.
-            'PyCF_ONLY_AST',  # A constant,
+            'Interactive', 'Suite',  # Not necessary.
             'AST',  # The base class,
-            # Python 3.8: Not node types.
+            # Constants...
             'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+            'PyCF_ONLY_AST',
             'PyCF_TYPE_COMMENTS',
-            # Python 3.8: Maybe not node types. Not properly documented...
+            # New ast nodes for Python 3.8.
+            # We can ignore these nodes because ast.parse does not generate them.
+            # (The new kwarg, type_comments, is False by default!)
             'FunctionType', 'NamedExpr', 'TypeIgnore',
         ]
         aList = [z for z in aList if not z[0].islower()]

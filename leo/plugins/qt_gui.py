@@ -136,12 +136,6 @@ class LeoQtGui(leoGui.LeoGui):
             not g.unitTesting
         ):
             self.splashScreen = self.createSplashScreen()
-        if g.app.use_global_docks:
-            self.main_window = self.make_main_window()
-            self.outlines_dock = self.make_global_outlines_dock()
-            # Careful: g.app.gui does not exist yet.
-        else:
-            pass  # g.app.main_window is None.
         self.frameFactory = qt_frame.TabbedFrameFactory()
             # qtFrame.finishCreate does all the other work.
 
@@ -768,61 +762,6 @@ class LeoQtGui(leoGui.LeoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20190819135820.1: *3* qt_gui.Docks
-    #@+node:ekr.20190819091950.1: *4* qt_gui.create_dock_widget
-    total_docks = 0
-
-    def create_dock_widget(self, closeable, moveable, height, name):
-        """Make a new dock widget in the main window"""
-        dock = QtWidgets.QDockWidget(parent=self.main_window)
-            # The parent must be a QMainWindow.
-        features = dock.NoDockWidgetFeatures
-        if moveable:
-            features |= dock.DockWidgetMovable
-            features |= dock.DockWidgetFloatable
-        if closeable:
-            features |= dock.DockWidgetClosable
-        dock.setFeatures(features)
-        dock.setMinimumHeight(height)
-        dock.setObjectName(f"dock-{self.total_docks}")
-        self.total_docks += 1
-        if name:
-            dock.setWindowTitle(name.capitalize())
-        else:
-            # #1527. Suppress the title.
-            w = QtWidgets.QWidget()
-            dock.setTitleBarWidget(w)
-        # #1327: frameFactory.createFrame now ensures that the main window is visible.
-        return dock
-    #@+node:ekr.20190822113212.1: *4* qt_gui.make_global_outlines_dock
-    def make_global_outlines_dock(self):
-        """
-        Create the top-level Outlines (plural) dock,
-        containing the 
-        The dock's widget will be set later.
-        """
-        main_window = self.main_window
-        # For now, make it the central widget.
-        is_central = True
-        dock = self.create_dock_widget(
-            closeable=not is_central,
-            moveable=not is_central,
-            height=50,  # was 100: #1339.
-            name='',  # #1527: was 'Leo Outlines'
-        )
-        if is_central:
-            main_window.setCentralWidget(dock)
-        else:
-            area = QtCore.Qt.BottomDockWidgetArea
-            main_window.addDockWidget(area, dock)
-        return dock
-    #@+node:ekr.20200305075130.1: *4* qt_gui.find_dock
-    def find_dock(self, w):
-        """return the QDockWidget containing w, or None"""
-        dock = w
-        while dock and not isinstance(dock, QtWidgets.QDockWidget):
-            dock = dock.parent()
-        return dock
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
     def close_event(self, event):
@@ -967,16 +906,6 @@ class LeoQtGui(leoGui.LeoGui):
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         return w
-    #@+node:ekr.20190601054955.1: *4* qt_gui.raise_dock
-    def raise_dock(self, widget):
-        """Raise the nearest parent QDockWidget, if any."""
-        while widget:
-            if isinstance(widget, QtWidgets.QDockWidget):
-                widget.raise_()
-                return
-            if not hasattr(widget, 'parent'):
-                return
-            widget = widget.parent()
     #@+node:ekr.20190601054959.1: *4* qt_gui.set_focus
     def set_focus(self, c, w):
         """Put the focus on the widget."""
@@ -990,8 +919,6 @@ class LeoQtGui(leoGui.LeoGui):
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
-        # #1159: raise a parent QDockWidget.
-        self.raise_dock(w)
         w.setFocus()
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
     size_warnings = []
@@ -1187,11 +1114,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Make the *singleton* QMainWindow."""
         window = QtWidgets.QMainWindow()
         window.setObjectName('LeoGlobalMainWindow')
-        # Calling window.show() causes flash.
-            # window.show()
+        # Calling window.show() here causes flash.
         self.attachLeoIcon(window)
-        if g.app.start_minimized:
-            window.showMinimized()
         # Monkey-patch
         window.closeEvent = self.close_event
             # Use self: g.app.gui does not exist yet.

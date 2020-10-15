@@ -83,6 +83,8 @@ globalDirectiveList = [
     'tabwidth', 'terse',
     'unit', 'verbose', 'wrap',
 ]
+
+directives_pat = None  # Set below.
 #@-<< define g.globalDirectiveList >>
 #@+<< define global decorator dicts >>
 #@+node:ekr.20150510103918.1: ** << define global decorator dicts >> (leoGlobals.py)
@@ -308,6 +310,19 @@ def new_cmd_decorator(name, ivars):
     return _decorator
 #@-others
 #@-<< define g.decorators >>
+#@+<< define regex's >>
+#@+node:ekr.20200810093517.1: ** << define regex's >>
+g_language_pat = re.compile(r'^@language\s+(\w+)+', re.MULTILINE)
+    # Regex used by this module, and in leoColorizer.py.
+#
+# Patterns used only in this module...
+g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
+    # This pattern excludes @encoding.whatever and @encoding(whatever)
+    # It must allow @language python, @nocolor-node, etc.
+g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
+g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
+#@-<< define regex's >>
 tree_popup_handlers = []  # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -1637,6 +1652,10 @@ class SherlockTracer:
     Being able to zero in on the code of interest can be a big help in
     studying other people's code. This is a non-invasive method: no tracing
     code needs to be inserted anywhere.
+    
+    Usage:
+        
+    g.SherlockTracer(patterns).run()
     """
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
@@ -1702,36 +1721,37 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
     def do_call(self, frame, unused_arg):
         """Trace through a function call."""
-        import os
         frame1 = frame
         code = frame.f_code
-        fn = code.co_filename
+        file_name = code.co_filename
         locals_ = frame.f_locals
-        name = code.co_name
-        full_name = self.get_full_name(locals_, name)
-        if self.is_enabled(fn, full_name, self.patterns):
-            n = 0  # The number of callers of this def.
-            while frame:
-                frame = frame.f_back
-                n += 1
-            # g_callers = ','.join(self.g.callers(5).split(',')[:-1])
-            dots = '.' * max(0, n - self.n) if self.dots else ''
-            path = f"{os.path.basename(fn):>20}" if self.verbose else ''
-            leadin = '+' if self.show_return else ''
-            # Clearer w/o fstring.
-            args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
-            print(f"{path}{dots}{leadin}{full_name}{args}")
+        function_name = code.co_name
+        try:
+            full_name = self.get_full_name(locals_, function_name)
+        except Exception:
+            full_name = function_name
+        if not self.is_enabled(file_name, full_name, self.patterns):
+            # 2020/09/09: Don't touch, for example, __ methods.
+            return
+        n = 0  # The number of callers of this def.
+        while frame:
+            frame = frame.f_back
+            n += 1
+        dots = '.' * max(0, n - self.n) if self.dots else ''
+        path = f"{os.path.basename(file_name):>20}" if self.verbose else ''
+        leadin = '+' if self.show_return else ''
+        args = f"(%s)" % self.get_args(frame1) if self.show_args else ''
+        print(f"{path}:{dots}{leadin}{full_name}{args}")
         # Always update stats.
-        d = self.stats.get(fn, {})
+        d = self.stats.get(file_name, {})
         d[full_name] = 1 + d.get(full_name, 0)
-        self.stats[fn] = d
+        self.stats[file_name] = d
     #@+node:ekr.20130111185820.10194: *5* sherlock.get_args
     def get_args(self, frame):
         """Return name=val for each arg in the function call."""
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
-        # fn = code.co_filename
         n = code.co_argcount
         if code.co_flags & 4: n = n + 1
         if code.co_flags & 8: n = n + 1
@@ -1750,30 +1770,40 @@ class SherlockTracer:
                     if val:
                         result.append(f"{name}={val}")
         return ','.join(result)
-    #@+node:ekr.20140402060647.16845: *4* sherlock.do_line
+    #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
+    bad_fns = []
+
     def do_line(self, frame, arg):
         """print each line of enabled functions."""
+        if 1:
+            return
         code = frame.f_code
-        fn = code.co_filename
+        file_name = code.co_filename
         locals_ = frame.f_locals
         name = code.co_name
         full_name = self.get_full_name(locals_, name)
-        if self.is_enabled(fn, full_name, self.patterns):
-            n = frame.f_lineno - 1  # Apparently, the first line is line 1.
-            d = self.contents_d
-            lines = d.get(fn)
-            if not lines:
-                with open(fn) as f:
+        if not self.is_enabled(file_name, full_name, self.patterns):
+            return
+        n = frame.f_lineno - 1  # Apparently, the first line is line 1.
+        d = self.contents_d
+        lines = d.get(file_name)
+        if not lines:
+            print(file_name)
+            try:
+                with open(file_name) as f:
                     s = f.read()
-                lines = g.splitLines(s)
-                d[fn] = lines
-            line = lines[n].rstrip() if n < len(lines) else '<EOF>'
-            if 1:
-                # i = full_name.find('::')
-                # name = full_name if i == -1 else full_name[i+2:]
-                print(f"{name:3} {line}")
-            else:
-                print(f"{g.shortFileName(fn)} {n} {full_name} {line}")
+            except Exception:
+                if file_name not in self.bad_fns:
+                    self.bad_fns.append(file_name)
+                    print(f"open({file_name}) failed")
+                return
+            lines = g.splitLines(s)
+            d[file_name] = lines
+        line = lines[n].rstrip() if n < len(lines) else '<EOF>'
+        if 0:
+            print(f"{name:3} {line}")
+        else:
+            print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
@@ -1823,21 +1853,48 @@ class SherlockTracer:
             # Clearer w/o f-string.
             ret = f" ->\n    %s" % s if len(s) > 40 else f" -> {s}"
         return f" -> {ret}"
-    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
-    def fn_is_enabled(self, fn, patterns):
-        """
-        Return True if tracing for fn is enabled.
-        Used only to enable *statistics* for fn.
-        """
-        import re
+    #@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled (not used)
+    def fn_is_enabled(self, func, patterns):
+        """Return True if tracing for the given function is enabled."""
+        if func in self.ignored_functions:
+            return False
+            
+        def ignore_function():
+            if func not in self.ignored_functions:
+                self.ignored_functions.append(func)
+                print(f"Ignore function: {func}")
+        #
+        # New in Leo 6.3. Never trace dangerous functions.
+        table = (
+            '_deepcopy.*',
+            # Unicode primitives.
+            'encode\b', 'decode\b',
+            # System functions
+            '.*__next\b',
+            '<frozen>', '<genexpr>', '<listcomp>',
+            # '<decorator-gen-.*>',
+            'get\b', 
+            # String primitives.
+            'append\b', 'split\b', 'join\b', 
+            # File primitives...
+            'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+            'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+        )
+        g.trace('=====', func)
+        for z in table:
+            if re.match(z, func):
+                ignore_function()
+                return False
+        #
+        # Legacy code.  
         try:
             enabled, pattern = False, None
             for pattern in patterns:
                 if pattern.startswith('+:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], func):
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], func):
                         enabled = False
             return enabled
         except Exception:
@@ -1854,25 +1911,74 @@ class SherlockTracer:
         except Exception:
             pass
         return full_name
-    #@+node:ekr.20121128111829.12183: *4* is_enabled
-    def is_enabled(self, fn, name, patterns=None):
-        """Return True if tracing for name in fn is enabled."""
-        import re
+    #@+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
+    ignored_files = []
+    ignored_functions = []
+
+    def is_enabled(self, file_name, function_name, patterns=None):
+        """Return True if tracing for function_name in the given file is enabled."""
+        #
+        # New in Leo 6.3. Never trace through some files.
+        if not os:
+            return False  # Shutting down.
+        base_name = os.path.basename(file_name)
+        if base_name in self.ignored_files:
+            return False
+
+        def ignore_file():
+            if not base_name in self.ignored_files:
+                self.ignored_files.append(base_name)
+                # print(f"Ignore file: {base_name}")
+                
+        def ignore_function():
+            if function_name not in self.ignored_functions:
+                self.ignored_functions.append(function_name)
+                # print(f"Ignore function: {function_name}")
+                
+        if f"{os.sep}lib{os.sep}" in file_name:
+            ignore_file()
+            return False
+        if base_name.startswith('<') and base_name.endswith('>'):
+            ignore_file()
+            return False
+        #
+        # New in Leo 6.3. Never trace dangerous functions.
+        table = (
+            '_deepcopy.*',
+            # Unicode primitives.
+            'encode\b', 'decode\b',
+            # System functions
+            '.*__next\b',
+            '<frozen>', '<genexpr>', '<listcomp>',
+            # '<decorator-gen-.*>',
+            'get\b', 
+            # String primitives.
+            'append\b', 'split\b', 'join\b', 
+            # File primitives...
+            'access_check\b', 'expanduser\b', 'exists\b', 'find_spec\b',
+            'abspath\b', 'normcase\b', 'normpath\b', 'splitdrive\b',
+        )
+        for z in table:
+            if re.match(z, function_name):
+                ignore_function()
+                return False
+        #
+        # Legacy code.
         enabled = False
         if patterns is None: patterns = self.patterns
         for pattern in patterns:
             try:
                 if pattern.startswith('+:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], file_name):
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if re.match(pattern[2:], fn):
+                    if re.match(pattern[2:], file_name):
                         enabled = False
                 elif pattern.startswith('+'):
-                    if re.match(pattern[1:], name):
+                    if re.match(pattern[1:], function_name):
                         enabled = True
                 elif pattern.startswith('-'):
-                    if re.match(pattern[1:], name):
+                    if re.match(pattern[1:], function_name):
                         enabled = False
                 else:
                     self.bad_pattern(pattern)
@@ -3136,9 +3242,18 @@ def comment_delims_from_extension(filename):
         f"filename: {filename!r}, "
         f"root: {root!r}")
     return '', '', ''
+#@+node:ekr.20170201150505.1: *3* g.findAllValidLanguageDirectives
+def findAllValidLanguageDirectives(p):
+    """Return list of all valid @language directives in p.b"""
+    if not p:
+        return []
+    languages = set()
+    for m in g.g_language_pat.finditer(p.b):
+        language = m.group(1)
+        if g.isValidLanguage(language):
+            languages.add(language)
+    return list(sorted(languages))
 #@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
-
 def findTabWidthDirectives(c, p):
     """Return the language in effect at position p."""
     if c is None:
@@ -3157,17 +3272,52 @@ def findTabWidthDirectives(c, p):
                 junk, w = g.skip_long(s, j)
                 if w == 0: w = None
     return w
+#@+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
+def findFirstValidAtLanguageDirective(p):
+    """Return the first *valid* @language directive in p.b."""
+    if not p:
+        return None
+    for m in g.g_language_pat.finditer(p.b):
+        language = m.group(1)
+        if g.isValidLanguage(language):
+            return language
+    return None
 #@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-g_language_pat = re.compile(r'^@language\s+(\w+)', re.MULTILINE)
-
 def findLanguageDirectives(c, p):
     """Return the language in effect at position p."""
-    if c is None:
+    if c is None or p is None:
         return None  # c may be None for testing.
-    for p in p.self_and_parents(copy=False):
-        for s in p.h, p.b:
+        
+    v0 = p.v
+        
+    def find_language(p_or_v):
+        for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
-                return m.group(1)
+                language = m.group(1)
+                if g.isValidLanguage(language):
+                    return language
+        return None
+
+    # First, search up the tree.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
+            return language
+    # #1625: Second, expand the search for cloned nodes.
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
+        language = find_language(parent_v)
+        if language:
+            return language
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
+    # Finally, fall back to the defaults.
     return c.target_language.lower() if c.target_language else 'python'
 #@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
@@ -3196,26 +3346,23 @@ def findReference(name, root):
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
-g_noweb_root = re.compile(
-    '<' + '<' + '*' + '>' + '>' + '=',
-    re.MULTILINE)
-
 def get_directives_dict(p, root=None):
     """
-    Scan p for @directives found in globalDirectiveList.
+    Scan p for Leo directives found in globalDirectiveList.
 
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive
     """
-    if root: root_node = root[0]
-    # c = p and p.v and p.v.context
+    if root:
+        root_node = root[0]
     d = {}
-    # Do this every time so plugins can add directives.
-    pat = g.compute_directives_re()
-    directives_pat = re.compile(pat, re.MULTILINE)
+    #
+    # #1688:    legacy: Always compute the pattern.
+    #           g.directives_pat is updated whenever loading a plugin.
+    #
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
-        anIter = directives_pat.finditer(s)
+        anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
@@ -3241,19 +3388,6 @@ def get_directives_dict(p, root=None):
                 g.es(f'{g.angleBrackets("*")} may only occur in a topmost node (i.e., without a parent)')
             break
     return d
-#@+node:ekr.20090214075058.10: *4* g.compute_directives_re
-def compute_directives_re():
-    """
-    Return an re pattern which word matches all Leo directives.
-    Only g.get_directives_dict uses this pattern.
-    """
-    global globalDirectiveList
-    # Use a pattern that guarantees word matches.
-    aList = [
-        fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
-    ]
-    # Clearer w/o f-strings.
-    return f"^@(%s)" % "|".join(aList)
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
     """Scans p and all its ancestors for directives.
@@ -3270,16 +3404,49 @@ def get_directives_dict_list(p):
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p):
     """
-    Return the language in effect as determined
-    by the file extension of the nearest enclosing @<file> node.
+    Return the language in effect from the nearest enclosing @<file> node:
+    1. An unambiguous @language directive of the @<file> node.
+    2. The file extension of the @<file> node.
     """
-    for p in p.self_and_parents(copy=False):
+    v0 = p.v
+        
+    def find_language(p):
+        # #1693: First, scan p.b for an *unambiguous* @language directive.
+        if p.b.strip():
+            languages = g.findAllValidLanguageDirectives(p)
+            if len(languages) == 1:  # An unambiguous language
+                language = languages[0]
+                return language
+        # Second: use the file's extension.
         if p.isAnyAtFileNode():
             name = p.anyAtFileNodeName()
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:]  # strip the leading .
             language = g.app.extension_dict.get(ext)
+            if g.isValidLanguage(language):
+                return language
+        return None
+
+    # First, look at the direct parents.
+    for p in p.self_and_parents(copy=False):
+        language = find_language(p)
+        if language:
             return language
+    #
+    # #1625: Expand the search for cloned nodes.
+    seen = [] # vnodes that have already been searched.
+    parents = v0.parents[:] # vnodes whose ancestors are to be searched.
+    while parents:
+        parent_v = parents.pop()
+        if parent_v in seen:
+            continue
+        seen.append(parent_v)
+        language = find_language(parent_v)
+        if language:
+            return language
+        for grand_parent_v in parent_v.parents:
+            if grand_parent_v not in seen:
+                parents.append(grand_parent_v)
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c, p):
@@ -3327,11 +3494,6 @@ def inAtNosearch(p):
             return True
     return False
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
-# This pattern excludes @encoding.whatever and @encoding(whatever)
-# It must allow @language python, @nocolor-node, etc.
-
-g_is_directive_pattern = re.compile(r'^\s*@([\w-]+)\s*')
-
 def isDirective(s):
     """Return True if s starts with a directive."""
     m = g_is_directive_pattern.match(s)
@@ -3341,6 +3503,14 @@ def isDirective(s):
             return False
         return bool(m.group(1) in g.globalDirectiveList)
     return False
+#@+node:ekr.20200810074755.1: *3* g.isValidLanguage (new)
+def isValidLanguage(language):
+    """True if language exists in leo/modes."""
+    # 2020/08/12: A hack for c++
+    if language in ('c++', 'cpp'):
+        language = 'cplusplus'
+    fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
+    return g.os_path_exists(fn)
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     """
@@ -3664,6 +3834,19 @@ def stripPathCruft(path):
         path = path[1:-1].strip()
     # We want a *relative* path, not an absolute path.
     return path
+#@+node:ekr.20090214075058.10: *3* g.update_directives_pat (new)
+def update_directives_pat():
+    """Init/update g.directives_pat"""
+    global globalDirectiveList, directives_pat
+    # Use a pattern that guarantees word matches.
+    aList = [
+        fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
+    ]
+    pat = f"^@(%s)" % "|".join(aList)
+    directives_pat = re.compile(pat, re.MULTILINE)
+
+# #1688: Initialize g.directives_pat
+update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir(path):
@@ -4184,7 +4367,6 @@ def findRootsWithPredicate(c, root, predicate=None):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
     # 1. Search p's tree.
-
     for p in root.self_and_subtree(copy=False):
         if predicate(p) and p.v not in seen:
             seen.append(p.v)
@@ -4292,7 +4474,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     except IndexError:
         target = ''
     try:
-        target = pos_pattern.sub('', unlList[depth])
+        target = g_pos_pattern.sub('', unlList[depth])
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
     except IndexError:
@@ -4300,7 +4482,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         pos = False
     if pos:
         use_idx_mode = True  # ok to use hard/soft_idx
-        target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
+        target = re.sub(g_pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
             if nth_sib < len(heads):
                 order.append(nth_sib)
@@ -4354,7 +4536,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             count = 0
             compare_list = unlList[:]
             for header in reversed(iter_unl[1].split('-->')):
-                if (re.sub(pos_pattern, "", header).replace('--%3E', '-->') ==
+                if (re.sub(g_pos_pattern, "", header).replace('--%3E', '-->') ==
                      compare_list[-1]
                 ):
                     count = count + 1
@@ -4371,8 +4553,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             maxdepth = p.level()
     return False, maxdepth, maxp
 #@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
-pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
-
 def recursiveUNLParts(text):
     """recursiveUNLParts - return index, occurence, line_number, col_number
     from an UNL fragment.  line_number is allowed to be negative to indicate
@@ -4382,7 +4562,7 @@ def recursiveUNLParts(text):
     :return: index, occurence, line_number, col_number
     :rtype: (int, int, int, int) or (None, None, None, None)
     """
-    pos = re.findall(pos_pattern, text)
+    pos = re.findall(g_pos_pattern, text)
     if pos:
         return tuple(int(i) if i else 0 for i in pos[0])
     return (None, None, None, None)

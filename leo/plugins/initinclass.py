@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20101110092851.5812: * @file initinclass.py
+#@+node:ekr.20101110092851.5812: * @file ../plugins/initinclass.py
 #@+<< docstring >>
 #@+node:ekr.20101112180523.5421: ** << docstring >>
 """ Modifies the Python @auto importer so that the importer

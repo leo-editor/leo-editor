@@ -12,6 +12,9 @@
 <v t="ekr.20191216061528.1"><vh>@data:@auto-md ../doc/demo.md</vh>
 <v t="ekr.20191216061528.2"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20201013034546.1"><vh>@data:@auto-md importers.md </vh>
+<v t="ekr.20201013034546.2"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
@@ -624,7 +627,6 @@
 </v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
-<v t="ekr.20200227061507.1"><vh>How can I arrange Qt docks?</vh></v>
 <v t="ekr.20141108064630.18"><vh>How can I create a pane for matplotlib charts?</vh></v>
 <v t="ekr.20190731085747.1"><vh>How can I customize settings for a particular external file?</vh></v>
 <v t="ekr.20060915112109"><vh>How can I enable and disable support for psyco?</vh></v>
@@ -860,6 +862,7 @@
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
+<v t="ekr.20200909171301.1"><vh>@rst html/leomarkup.html</vh></v>
 <v t="ekr.20050901101608.4"><vh>@rst html/customizing.html</vh>
 <v t="EKR.20040524104904.140"><vh>Specifying settings</vh>
 <v t="ekr.20090116130002.1"><vh>Configuration directories</vh></v>
@@ -1548,6 +1551,12 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
+<v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
+<v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
+<v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
+<v t="ekr.20200107142458.1"><vh>Running the code python programmatically</vh></v>
+<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests programmatically</vh></v>
+</v>
 <v t="ekr.20191118115949.1"><vh>TokenOrder classes: Theory of operation</vh>
 <v t="ekr.20191206062224.1"><vh>Token-order classes</vh></v>
 <v t="ekr.20200113232354.1"><vh>Other classes</vh></v>
@@ -1556,10 +1565,6 @@
 <v t="ekr.20191206064645.1"><vh>Syncing tokens</vh></v>
 <v t="ekr.20200107105607.1"><vh>Figures of merit</vh></v>
 </v>
-<v t="ekr.20200107061524.1"><vh>TokenOrder class: How-To</vh>
-<v t="ekr.20200107142458.1"><vh>Accessing the code</vh></v>
-<v t="ekr.20200107143607.1"><vh>Running unit tests and coverage tests</vh></v>
-<v t="ekr.20200107110111.1"><vh>Example</vh></v>
 <v t="ekr.20200107110057.1"><vh>Notable functions &amp; methods</vh>
 <v t="ekr.20200107112037.1"><vh>Initing data structures</vh></v>
 <v t="ekr.20200107112200.1"><vh>Reading &amp; writing files</vh></v>
@@ -1567,6 +1572,7 @@
 <v t="ekr.20200107112459.1"><vh>Updating tokens and parse trees</vh></v>
 <v t="ekr.20200107142833.1"><vh>TokenOrderGenerator.init_from_file</vh></v>
 </v>
+<v t="ekr.20200807105737.1"><vh>Maintaining leoAst.py</vh></v>
 </v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
@@ -1761,6 +1767,13 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20201014052236.1"><vh>Leo 6.3 release notes</vh>
+<v t="ekr.20201014052236.2"><vh>6.3: Code</vh></v>
+<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh></v>
+<v t="ekr.20201014052236.4"><vh>6.3: Features</vh></v>
+<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh></v>
+<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh></v>
+</v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
 <v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
 <v t="ekr.20200313054557.1"><vh>6.2: Commands</vh></v>
@@ -2384,7 +2397,7 @@
 </v>
 <v t="ekr.20200313060126.1"></v>
 <v t="ekr.20200225075435.1"></v>
-<v t="mhw.20191008134029.1"></v>
+<v t="ekr.20201014052236.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3704,7 +3717,8 @@ The following people have made generous donations to the Leo project: Robert Low
                 rf.recentFiles.remove(name2)
         rf.recentFiles.append(name)
 </t>
-<t tx="ekr.20050306090601">.. index:: uA
+<t tx="ekr.20050306090601">.. index::
+    pair:uA; Reference
 
 Leo's .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as **user attributes**, uA's for short. Leo translates between uA's and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will *not* be written to the .leo file. These two ivars are called **attribute ivars**.
 
@@ -5106,7 +5120,7 @@ The getBool 'default' argument to getBool specifies the value to be returned if 
 Plugins
 #######
 
-This chapter discusses the plugins contained in leoPlugins.leo. These plugins are part of Leo's official distribution. The next chapter, `Writing Plugins &lt;writingPlugins.html&gt;`_, tells how to write plugins.
+This chapter discusses Leo's plugins. The plugins found in LeoPyRef.leo are part of Leo's official distribution. The next chapter, `Writing Plugins &lt;writingPlugins.html&gt;`_, tells how to write plugins.
 
 The scripting plugin (mod_scripting.py) deserves special mention. This plugin lets you create **script buttons** in a matter of seconds. See `Using @button nodes &lt;tutorial-scripting#using-button-nodes&gt;`_. Script buttons are extraordinarily useful.
 
@@ -5739,7 +5753,7 @@ Plugins modify how Leo works. With plugins you can give Leo new commands,
 modify how existing commands work, or change any other aspect of Leo's look
 and feel.
 
-leoPlugins.leo contains all of Leo's official plugins. Studying this file is
+leoPyRef.leo contains all of Leo's official plugins. Studying this file is
 a good way to learn how to write plugins.
 
 Writing plugins is like writing any other Leo script.  See
@@ -8518,7 +8532,12 @@ Promote
 
 Reference .leo file
 
-Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. These reference files should contain nothing but @file nodes and should change only when new external files get added to the project. Developers should use *local copies* of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+Leo's `git repository`_ and Leo distributions contain two reference
+files: LeoPyRef.leo and leoGuiPluginsRef.leo. These reference files
+should contain nothing but @file nodes and should change only when new
+external files get added to the project. Developers should use *local
+copies* of reference files for their own work. For example, instead of
+using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
 
 
 .. index::
@@ -9638,14 +9657,15 @@ Important files:
         return ''
 </t>
 <t tx="ekr.20101111175617.24328">def openLeoPlugins(self):
-    fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins','leoPlugins.leo')
+    # Plugins are now found in leoPy.leo.
+    fn = g.os_path_finalize_join(g.app.loadDir,'..','plugins','leoPy.leo')
     c = g.openWithFileName(fn, old_c=self.c, gui=None,)
     if not c:
-        g.error('can not open leoPlugins.leo')
+        g.error('can not open leoPy.leo')
     return c
 </t>
 <t tx="ekr.20101111175617.5037" str_atime="1376412919.0">'''
-Creates an outline containing most docstrings from leoPlugins.leo.
+Creates an outline containing most docstrings from Leo's plugins.
 
 Some docstrings are suppressed.
 '''
@@ -11942,8 +11962,6 @@ C. I use scripts to open particular Leo files. These are batch files on Windows,
     e:       opens ekr.leo.  I use this file for private testing.
     d:       opens LeoDocs.leo.
     s:       opens LeoPy.leo.
-    plugins: opens leoPlugins.leo.
-    gui:     opens leoGui.leo.
     u:       opens unitTest.leo.
 
 These run Leo with Python 3.x. There are similar scripts, ending in 2, that run Leo with Python 2.x. For example, u2 opens unitTest.leo with Python 2.x. Thus, to run a test, I alt-tab to an available console window, then type 'e' or 't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
@@ -15420,6 +15438,7 @@ This is Leo's Users Guide. It covers additional material not covered in the
 .. toctree::
    :maxdepth: 2
 
+   leomarkup
    customizing
    rstplugin3
    plugins
@@ -15957,9 +15976,7 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 - `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
 - `viewrendered.py`_ creates the rendering pane and renders content in it.
 </t>
-<t tx="ekr.20131009100732.19039">.. leoPlugins.leo#Plugins--&gt;Files and nodes--&gt;@file bookmarks.py
-
-Open bookmarks in a list, and show bookmarks in a pane.
+<t tx="ekr.20131009100732.19039">Open bookmarks in a list, and show bookmarks in a pane.
 </t>
 <t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
@@ -16668,16 +16685,18 @@ A Brief Summary of Leo
 
 .. Use full links here so links are active in LeoDocs.leo
 
+.. _`Clones`: tutorial-pim.html
+.. _`clone find commands`: html/commands.html# clone-find-commands
+.. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 .. _`Emacs`: https://www.gnu.org/software/emacs/
 .. _`Leo's tutorial`: tutorial.html
-.. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
-.. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
-.. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
 .. _`Leonine`: leonine-world.html
-.. _`Clones`: tutorial-pim.html
-.. _`Python API`: tutorial-scripting.html
-.. _`outline-oriented directives`: tutorial-basics.html#markup
+.. _`Leonine way to refactor programs`: appendices.html#the-leonine-way-to-refactor-code
 .. _`Next`: testimonials.html
+.. _`Python API`: tutorial-scripting.html
+.. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
+.. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
+.. _`outline-oriented directives`: tutorial-basics.html#markup
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
@@ -16704,6 +16723,7 @@ Leo *completely integrates* Python scripting and outlines. Simulating the follow
 - `Clones`_ create multiple views of an outline.  |br|
   Leo's underlying data is a `Directed Acyclic Graphs`_.  |br|
   As a result, Leo organizes data in completely new ways.
+- Leo's `clone find commands`_ enable the `Leonine way to refactor programs`_.
 - Scripts and programs can be composed from outlines using `outline-oriented directives`_.
 - Importers convert flat text into outlines.
 - @test and @suite scripts create unit tests automatically.
@@ -19247,8 +19267,6 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
     Opens CheatSheet.leo in a new tab or window.
 ``open-leoDocs-leo``
     Opens LeoDocs.leo in a new tab or window.
-``open-leoPlugins-leo``
-    Opens LeoPlugins.leo in a new tab or window.
 ``open-scripts-leo``
     Opens scripts.leo in a new tab or window.
 ``open-leoSettings-leo``
@@ -19745,7 +19763,9 @@ Batch searches:
     Changes all occurrences of the 'find' text with the 'change' text.
     When using the minibuffer to specify search and replace patterns,
     first enter then search pattern,
-    then type ``Tab`` and enter the replacement pattern.
+    then type ``Tab`` and enter the replacement pattern:
+    
+    &lt;Alt-x&gt;replace-all&lt;return&gt;find-pattern&lt;tab&gt;replacement-pattern&lt;return&gt;
     
 Searches creating clones:
 
@@ -20873,7 +20893,7 @@ The following sections describe how the beautify-tree and beautify-node commands
             text="Ok")
 </t>
 <t tx="ekr.20150817125512.1">efc.compareTrees does most of the work of comparing two similar outlines.
-For example, here is "@button compare vr-controller" in leoPluginsRef.leo::
+For example, here is "@button compare vr-controller" in leoPyRef.leo::
 
     p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
     p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
@@ -22479,7 +22499,7 @@ Leo.
     
     followed by checking out the _devel_ branch:
 
-``git chekout devel`` 
+``git checkout devel`` 
 
 3. Install dependencies and create leo script launcher::
 
@@ -26179,7 +26199,7 @@ Developers will typically execute the read-ref-file command after any git pull t
 </t>
 <t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
-Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
+Leo's `git repository`_ and Leo distributions contain two reference files: LeoPyRef.leo  and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
 <t tx="ekr.20180201041411.1"></t>
 <t tx="ekr.20180201101506.1">https://github.com/leo-editor/leo-editor/issues/658
 
@@ -26228,7 +26248,6 @@ c.backup_helper uses the LEO_BACKUP environment variable as the base of the save
 This method does careful error checking and reporting. The body text of the following four @button backup nodes are all just one line::
 
     c.backup_helper(sub_dir='leoPy') # In leoPy.leo
-    c.backup_helper(sub_dir='leoPlugins') # In leoPlugins.leo
     c.backup_helper(sub_dir='ekr-projects') # In ekr-projects.leo
     c.backup_helper(sub_dir='ekr') # In ekr.leo
 
@@ -31152,8 +31171,7 @@ unl: Summary
 gnx: ekr.20191216061356.28
 unl: History and change log
 </t>
-<t tx="ekr.20200107061524.1">This is the How To documentation for leoAst.py.</t>
-<t tx="ekr.20200107105607.1">**Simplicity**: The code (all of it) is the simplest thing that could possibly work.
+<t tx="ekr.20200107105607.1">**Simplicity**:
 
 - The distinction between significant and insignificant tokens makes
   token-order traversals possible. This distinction drastically simplifies
@@ -31181,19 +31199,6 @@ which are too slow to be useful.
 - The TOT uses no variable-length data whatever.
 </t>
 <t tx="ekr.20200107110057.1"></t>
-<t tx="ekr.20200107110111.1">The Fstringify.fstringify_file method implements Leo's fstringfy-file command. 
-Here it is, minus error handling code::
-
-@language python
-
-    def fstringify_file(self, filename):
-    
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        results = self.fstringify(contents, filename, tokens, tree)
-        show_diffs(contents, results, filename=filename)
-        print(f"Wrote {filename}")
-        write_file(filename, results, encoding=encoding)</t>
 <t tx="ekr.20200107111656.1">@language rest
 @wrap
 
@@ -31263,10 +31268,7 @@ formats::
         
     def replace_token(token, kind, value):
         """Replace kind and value of the given token."""</t>
-<t tx="ekr.20200107142458.1">leoAst.py is completely self contained. It imports only standard library
-modules.
-
-To access the code, do one of the following::
+<t tx="ekr.20200107142458.1">To access the code, do one of the following::
 
     import leoAst
     import leo.core.leoAst as leoAst
@@ -31376,38 +31378,6 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
-</t>
-<t tx="ekr.20200227061507.1">Q. How can I arrange Qt docks so that the outline tree will be on the left, body on the right, no log window, no render window.  I want to know the ropes so I can modify that as desired.  I'm sure it's in the docs somewhere but I haven't put my finger on it.  Thanks.
-
-Answer by Thomas Passin:
-
-I wrestled with this, too, and no, it's not really in the docs.
-
-Here's what I did.  I happen to want outline left, body right, and the tabs pane (the one with the log tab) on the left below the outline.  You should really not get rid of it, because you will want to use the search and Nav tabs at a minimum, and of you start to use the tags or backlinks plugins, they will create new tabs in that pane, too.
-
-First, add a node with this headline to the @settings tree in MyLeoSettings.leo -
-
-@string central-dock-widget = body
-
-The next step is to drag the panes by their title bars where you want them.  But this is tricky and a little non-intuitive.  There are certain areas you can drag to.  When a pane is over one of them, the space underneath will turn a translucent blue color (I *think* it's blue - my color vision isn't always the best).  Then you release the mouse button.
-
-One of these docking  areas is on the right.  The body pane should already be in it, if you put that @setting node in and restarted Leo.  There is another docking area on the left, and you drag the outline pane over there.  The tabs pane may end up tabbed in the same pane as the outline, or with the body pane.  Either way, drag it way down to the bottom under the outline pane on the left.  A new docking area should open up.  Drop the tabs pane there. 
-
-This docking area sometimes is very small, and if so it's easy to miss.  Look closely for a bluish line or tiny rectangle to show up - that will be the place.
-
-After the tabs pane is in place, you can drag its separator bar up or down to adjust its height.
-
-You may find that the next time you open Leo, the height of the tabs pane has changed.  Who know why this happens?  I have noticed that after you have saved the file several times, the height of the tabs pane tends to settle down somewhat.  But I still often have to readjust it after a restart.
-
-If you start Leo with the --global-docks option, then all the outlines will open with the same pane arrangement ( I *think*).
-
-When I was working my way through this, I got the panes into some arrangement that was unusable and I couldn't recover from.  The remedy is to delete Leo's "db" directory (thanks to @ekr for this).  This will let you start again.  On Windows, directory this is usually at
-
-%userprofile%\.leo
-
-Yes, you can type that directly into the address bar of Windows Explorer, or into a command window.  On Linux, it's usually at
-
-~/.leo
 </t>
 <t tx="ekr.20200313051859.1">Persistent body editors:
 https://github.com/leo-editor/leo-editor/issues/1268
@@ -31679,9 +31649,9 @@ already deleted positions is valid.
 I had some really old version of leo - I believe it was 5.x and was
 installed 1.5 years ago. I use Leo for collecting thoughts, writing
 down stuff, structuring a talk etc. Decided to get out of comfort zone
-and cloned git repo and dailly git pull and started using that.
+and cloned git repo and daily git pull and started using that.
 
-This is brilliant. Bunch of my myLeoSettings.leo stuf is no longer
+This is brilliant. Bunch of my myLeoSettings.leo stuff is no longer
 needed with dockable panes for body and outline; and it remembers
 setting too. Plus, the default look is very nice (I am on elementaryos
 5.1)
@@ -31699,7 +31669,7 @@ this to be permanently hidden. FWIW, I also keep icon-bar always
 hidden to save space - which seems to be remembered in this version
 than me having to start leo with such a setting.
 
-Overall awsome stuff - rarely do one get so thrilled to see software so nicely advanced and still true to its core in a short time.
+Overall awesome stuff - rarely do one get so thrilled to see software so nicely advanced and still true to its core in a short time.
 
 
 I am trying to convert different people to use Leo and they have their
@@ -31713,6 +31683,169 @@ everything outside current node to one single ellipsis/plus sign as
 well.
 
 Back to learning new leo  then :)</t>
+<t tx="ekr.20200807105709.1">The classes in `leoAst.py &lt;https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py&gt;`_
+unify python's token-based and ast-based worlds by creating two-way links
+between tokens in the token list and ast nodes in the parse tree.
+    
+leoAst.py is part of `Leo &lt;https://leoeditor.com&gt;`_, and can be used
+completely independently of Leo.
+
+You must use Leo to see the intended outline structure of the code. Without
+Leo, you will see special **sentinel comments** that create Leo's outline
+structure. These comments have the form::
+
+    #@&lt;comment-kind&gt;:&lt;user-id&gt;.&lt;timestamp&gt;.&lt;number&gt;: &lt;outline-level&gt; &lt;headline&gt;
+    
+If you have any trouble installing or using this code, please help for help
+on `Leo's forum &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_
+</t>
+<t tx="ekr.20200807105737.1">.. _`Leo issue #1440`: https://github.com/leo-editor/leo-editor/issues/1440
+
+New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:
+
+- Add a visitor for the new node.
+- Add one or more unit tests that fully cover the new visitor.
+
+The test_visitors_exist unit test checks that visitors exist for all ast nodes defined by to a particular version of python.
+
+See `Leo issue #1440`_ for notes relating to the code.
+</t>
+<t tx="ekr.20200807110628.1">leoAst.py is designed to be run from the command line::
+
+    usage:
+        leoAst.py --help
+        leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
+        leoAst.py --py-cov [ARGS]
+        leoAst.py --pytest [ARGS]
+        leoAst.py --unittest [ARGS]
+        
+    examples:
+        --py-cov "-f TestOrange"
+        --pytest "-f TestOrange"
+        --unittest TestOrange
+    
+    positional arguments:
+      PATHS              directory or list of files
+    
+    optional arguments:
+      -h, --help         show this help message and exit
+      --fstringify       leonine fstringify
+      --fstringify-diff  show fstringify diff
+      --orange           leonine Black
+      --orange-diff      show orange diff
+      --py-cov           run pytest --cov on leoAst.py
+      --pytest           run pytest on leoAst.py
+      --unittest         run unittest on leoAst.py</t>
+<t tx="ekr.20200807111156.1"></t>
+<t tx="ekr.20200909171301.1">#####################
+Leo's Markup Language
+#####################
+
+.. index::
+    pair: Markup; Reference
+    pair: Section Reference; Reference
+    pair: @others; Reference
+
+Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
+
+There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    &lt;&lt; imports &gt;&gt;
+    @others
+    @language python
+    @tabwidth -4
+    
+A child node must define the &lt;&lt; import &gt;&gt; node. Other children will typically define classes, methods, functions and data.
+
+When writing this file, Leo writes the first two lines::
+
+    @first # -*- coding: utf-8 -*-
+    '''whatever.py'''
+    
+followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
+
+Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
+
+    '''My script'''
+    &lt;&lt; imports &gt;&gt;
+    class Controller:
+        # Child nodes define the methods of this class.
+        @others
+    Controller(c).run # c *is* defined.
+
+**Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
+See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+<t tx="ekr.20201013034546.1">gnx: ekr.20161120073038.1
+</t>
+<t tx="ekr.20201013034546.2">gnx: ekr.20201013033341.30
+unl: Table of contents
+gnx: ekr.20201013033341.31
+unl: The grand overview
+gnx: ekr.20201013033341.32
+unl: The new importers vs. the old
+gnx: ekr.20201013033341.33
+unl: The Importer class
+gnx: ekr.20201013033341.34
+unl: The Importer class--&gt;i.gen lines &amp; helpers
+gnx: ekr.20201013033341.35
+unl: The Importer class--&gt;The line-oriented API
+gnx: ekr.20201013033341.36
+unl: The Importer class--&gt;Indentation
+gnx: ekr.20201013033341.37
+unl: The ScanState classes
+gnx: ekr.20201013033341.38
+unl: The ScanState classes--&gt;ScanState.context
+gnx: ekr.20201013033341.39
+unl: The ScanState classes--&gt;ScanState.level()
+gnx: ekr.20201013033341.40
+unl: The ScanState classes--&gt;ScanState protocols
+gnx: ekr.20201013033341.41
+unl: Using @button make-importer
+gnx: ekr.20201013033341.42
+unl: Notes
+gnx: ekr.20201013033341.43
+unl: Notes--&gt;Recognizing multi-line patterns
+gnx: ekr.20201013033341.44
+unl: Notes--&gt;The python importer must count brackets
+gnx: ekr.20201013033341.45
+unl: Notes--&gt;Scanning strings and comments
+gnx: ekr.20201013033341.46
+unl: Conclusion
+</t>
+<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.3**
+
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20201014052236.2"></t>
+<t tx="ekr.20201014052236.3"></t>
+<t tx="ekr.20201014052236.4"></t>
+<t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.2 see:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.3+label%3Abug
+The first comment in each bug contains a summary of the bug and its fix.
+
+Notable bugs:
+
+</t>
+<t tx="ekr.20201014052236.6"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:

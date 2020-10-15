@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20091029123555.5319: * @file attrib_edit.py
+#@+node:tbrown.20091029123555.5319: * @file ../plugins/attrib_edit.py
 #@+<< docstring >>
 #@+node:tbrown.20091009210724.10972: ** << docstring >>
 r''' Edits user attributes in a Qt frame.

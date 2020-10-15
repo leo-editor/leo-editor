@@ -368,6 +368,19 @@ def contractIfNotCurrent(c, p, leaveOpen):
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()
+#@+node:ekr.20200824130837.1: *3* c_oc.contractAllSubheads (new)
+@g.commander_command('contract-all-subheads')
+def contractAllSubheads(self, event=None):
+    """Contract all children of the presently selected node."""
+    c, p = self, self.p
+    if not p:
+        return
+    child = p.firstChild()
+    c.contractSubtree(p)
+    while child:
+        c.contractSubtree(child)
+        child = child.next()
+    c.redraw(p)
 #@+node:ekr.20031218072017.2901: *3* c_oc.contractNode
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
@@ -1244,7 +1257,7 @@ def moveMarked(self, event=None):
 def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()
     p = oldRoot.insertAfter()
-    p.moveToRoot(oldRoot)
+    p.moveToRoot()
     c.setHeadString(p, 'Moved marked nodes')
     return p
 #@+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
@@ -1526,7 +1539,7 @@ def moveOutlineUp(self, event=None):
         else:
             # p will be the new root node
             p.setDirty()
-            p.moveToRoot(oldRoot=c.rootPosition())
+            p.moveToRoot()
             moved = True
     elif back2.hasChildren() and back2.isExpanded():
         if c.checkMoveWithParentWithWarning(p, back2, True):

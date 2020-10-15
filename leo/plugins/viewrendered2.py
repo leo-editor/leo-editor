@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140225222704.16748: * @file viewrendered2.py
+#@+node:ekr.20140225222704.16748: * @file ../plugins/viewrendered2.py
 #@@language python
 #@+<< docstring >>
 #@+node:ekr.20140226074510.4187: ** << docstring >> (VR2)
@@ -1849,11 +1849,11 @@ class ViewRenderedController(QtWidgets.QWidget):
             # Expand '~' and handle Leo expressions.
             fn = fn[1:]
             fn = g.os_path_expanduser(fn)
-            fn = g.os_path_expandExpression(fn, c=c)
+            fn = c.expand_path_expression(fn)
             fn = g.os_path_finalize(fn)
         else:
             # Handle Leo expressions.
-            fn = g.os_path_expandExpression(fn, c=c)
+            fn = c.expand_path_expression(fn)
             # Handle ancestor @path directives.
             if c and c.openDirectory:
                 base = c.getNodePath(c.p)

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:vitalije.20170727201534.1: * @file line_numbering.py
+#@+node:vitalije.20170727201534.1: * @file ../plugins/line_numbering.py
 #@+others
 #@+node:vitalije.20170727201830.1: ** About line_numbering plugin
 """This plugin makes line numbers in gutter (if used), to represent
@@ -10,7 +10,7 @@
    
    Author: vitalije(at)kviziracija.net
 """
-__version__ = "0.1"
+__version__ = "0.2"
 #@+node:vitalije.20170727201931.1: ** imports
 import re
 import leo.core.leoGlobals as g
@@ -95,8 +95,8 @@ def renumber(c):
         at.scanAllDirectives(new_p)
         delim_st = at.startSentinelComment
         delim_en = at.endSentinelComment
-        if p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode() \
-            or p.isAtNoSentFileNode():
+        if (p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode() or p.isAtNoSentFileNode()) \
+            or not p.isAnyAtFileNode():
             delim_st = ''
             delim_en = ''
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
@@ -236,11 +236,10 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             return (0, n-st) if delim_st else (0, n-st)
         #@+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
-            if delim_en: return 0, 2
-            return 1,1
+            if delim_st: return 0, 1
+            return 0, 0
         #@+node:vitalije.20170726193941.1: *4* code part
         if code_pattern.match(line):
-            if delim_en: return 1, 2
             if delim_st: return 0, 1
             return 0, 0
         #@-others

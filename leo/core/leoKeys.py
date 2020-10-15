@@ -890,7 +890,7 @@ class AutoCompleterClass:
         table = (z.lower() for z in (
             'leoDocs.leo',
             'LeoGui.leo', 'LeoGuiPluginsRef.leo',
-            'leoPlugins.leo', 'leoPluginsRef.leo',
+            # 'leoPlugins.leo', 'leoPluginsRef.leo',
             'leoPy.leo', 'leoPyRef.leo',
             'myLeoSettings.leo', 'leoSettings.leo',
             'ekr.leo',

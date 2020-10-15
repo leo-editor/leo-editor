@@ -79,8 +79,6 @@ class BaseColorizer:
     #@+node:ekr.20170127142001.1: *3* bc.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
 
-    at_language_pattern = re.compile(r'^@language\s+([\w-]+)', re.MULTILINE)
-
     def updateSyntaxColorer(self, p):
         """
         Scan for color directives in p and its ancestors.
@@ -94,17 +92,17 @@ class BaseColorizer:
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
-    #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives & helpers
+    #@+node:ekr.20170127142001.2: *4* bjc.scanLanguageDirectives
     def scanLanguageDirectives(self, p, use_default=True):
         """Return language based on the directives in p's ancestors."""
         c = self.c
         root = p.copy()
         # Look for the first @language directive only in p itself.
-        language = self.findFirstValidAtLanguageDirective(p)
+        language = g.findFirstValidAtLanguageDirective(p)
         if language:
             return language
         for p in root.parents():
-            languages = self.findAllValidLanguageDirectives(p)
+            languages = g.findAllValidLanguageDirectives(p)
             if len(languages) == 1:  # An unambiguous language
                 language = languages[0]
                 return language
@@ -113,28 +111,6 @@ class BaseColorizer:
         if not language and use_default:
             language = c.target_language
         return language
-    #@+node:ekr.20170201150505.1: *5* bjc.findAllValidLanguageDirectives
-    def findAllValidLanguageDirectives(self, p):
-        """Return list of all valid @language directives in p.b"""
-        languages = set()
-        for m in self.at_language_pattern.finditer(p.b):
-            language = m.group(1)
-            if self.isValidLanguage(language):
-                languages.add(language)
-        return list(sorted(languages))
-    #@+node:ekr.20170127142001.5: *5* bjc.findFirstAtLanguageDirective
-    def findFirstValidAtLanguageDirective(self, p):
-        """Return the first *valid* @language directive in p.b."""
-        for m in self.at_language_pattern.finditer(p.b):
-            language = m.group(1)
-            if self.isValidLanguage(language):
-                return language
-        return None
-    #@+node:ekr.20170127142001.6: *5* bjc.isValidLanguage
-    def isValidLanguage(self, language):
-        """True if language exists in leo/modes."""
-        fn = g.os_path_join(g.app.loadDir, '..', 'modes', f"{language}.py")
-        return g.os_path_exists(fn)
     #@+node:ekr.20170127142001.7: *4* bjc.useSyntaxColoring & helper
     def useSyntaxColoring(self, p):
         """True if p's parents enable coloring in p."""
@@ -957,6 +933,9 @@ class BaseJEditColorizer(BaseColorizer):
     def report_changes(self):
         """Report changes to pygments settings"""
         c = self.c
+        use_pygments = c.config.getBool('use-pygments', default=False)
+        if not use_pygments:  # 1696.
+            return
         trace = 'coloring' in g.app.debug and not g.unitTesting
         if trace:
             g.es_print('\nreport changes...')
@@ -968,8 +947,6 @@ class BaseJEditColorizer(BaseColorizer):
         #
         # Set self.use_pygments only once: it can't be changed later.
         # There is no easy way to re-instantiate classes created by make_colorizer.
-
-        use_pygments = c.config.getBool('use-pygments', default=False)
         if self.prev_use_pygments is None:
             self.use_pygments = self.prev_use_pygments = use_pygments
             show('@bool use-pygments', use_pygments)
@@ -987,11 +964,6 @@ class BaseJEditColorizer(BaseColorizer):
             # This setting is used only in the LeoHighlighter class
         show('@bool use-pytments-styles', self.use_pygments_styles)
         show('@string pygments-style-name', style_name)
-        #
-        # Report other changes only if we are using pygments.
-        if not use_pygments:
-            if trace: print('')
-            return
         #
         # Report changes to @bool use-pygments-style
         if self.prev_use_styles is None:
@@ -1151,7 +1123,7 @@ class JEditColorizer(BaseJEditColorizer):
     def reloadSettings(self):
         """Complete the initialization of all settings."""
         if 'coloring' in g.app.debug and not g.unitTesting:
-            print('reloading jEdit settings.')
+            print('jedit.reloadSettings.')
         # Do the basic inits.
         BaseJEditColorizer.reloadSettings(self)
         # Init everything else.
@@ -2268,16 +2240,16 @@ class JEditColorizer(BaseJEditColorizer):
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
-        if p.v != self.old_v:
-            self.updateSyntaxColorer(p)  # Force a full recolor
-            assert self.language
-            self.init_all_state(p.v)
-            self.init(p)
-        else:
+        if p.v == self.old_v:
             new_language = self.n2languageDict.get(n)
             if new_language != self.language:
                 self.language = new_language
                 self.init(p)
+        else:
+            self.updateSyntaxColorer(p)  # Force a full recolor
+            assert self.language
+            self.init_all_state(p.v)
+            self.init(p)
         if block_n == 0:
             n = self.initBlock0()
         n = self.setState(n)  # Required.
@@ -2863,7 +2835,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         root = p.copy()
         for p in root.self_and_parents(copy=False):
-            language = self.findFirstValidAtLanguageDirective(p)
+            language = g.findFirstValidAtLanguageDirective(p)
             if language:
                 return language
         #  Get the language from the nearest ancestor @<file> node.

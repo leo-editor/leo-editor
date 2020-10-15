@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20080613095157.2: * @file active_path.py
+#@+node:tbrown.20080613095157.2: * @file ../plugins/active_path.py
 #@+<< docstring >>
 #@+node:tbrown.20080613095157.3: ** << docstring >> (active_path)
 r'''Synchronizes \@path nodes with folders.
@@ -392,11 +392,14 @@ def openFile(c,parent,d, autoload=False):
             c.config.getData('active_path_bin_open') or '')
 
         if not binary_open:
-            start = open(path).read(100)
-            for i in start:
-                if ord(i) == 0:
-                    binary_open = True
-                    break
+            try:
+                start = open(path).read(100)
+                for i in start:
+                    if ord(i) == 0:
+                        binary_open = True
+                        break
+            except Exception:
+                binary_open = True
 
         if binary_open:
             g.es('Treating file as binary')

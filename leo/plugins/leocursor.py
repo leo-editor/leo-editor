@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100228141752.5691: * @file leocursor.py
+#@+node:tbrown.20100228141752.5691: * @file ../plugins/leocursor.py
 """ Creates a LeoCursor object that can walk around a Leo outline and decode
 attributes from nodes.
 

@@ -169,36 +169,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
         c = self.c
         c.frame.tree.showStats()
         self.dumpAllObjects()
-    #@+node:ekr.20190613062749.1: ** debug.print-window-state
-    @cmd('print-window-state')
-    def printWindowState(self, event=None):
-        """
-        For Leo's core developers: print QMainWindow.saveState().
-        
-        This is the value to be assigned to g.app.defaultWindowState.
-        
-        Warning: this window state should *only* be used for new users! #1190.
-        
-        Recommended procedure:
-
-        - Set @bool user-vr-dock = False.  Close Leo.
-        - Clear .leo/db caches. Reopen Leo.
-        - Make sure Render dock is visible to left of Body dock.
-        - Set @bool user-vr-dock = True. Close Leo & reopen.
-          The vr dock will be moveable.  Don't move it!
-        - Do print-window-state.
-        - Change g.app.defaultWindowState.
-        """
-        c = event.get('c')
-        if c:
-            print(c.frame.top.saveState())
-            if c.config.getBool('dockable-log-tabs', default=False):
-                print('Warning: @bool dockable-log-tabs is True')
-            central_widget = g.app.get_central_widget(c)
-            if central_widget != 'outline':
-                print(f"Warning: @string central-dock-widget is {central_widget!r}")
-        else:
-            print('no c')
     #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):

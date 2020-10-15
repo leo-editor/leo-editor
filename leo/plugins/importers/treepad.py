@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20180201203240.2: * @file importers/treepad.py
+#@+node:ekr.20180201203240.2: * @file ../plugins/importers/treepad.py
 '''The @auto importer for the TreePad file format.'''
 import leo.core.leoGlobals as g
 import re

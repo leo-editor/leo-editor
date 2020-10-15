@@ -34,6 +34,7 @@ except ImportError:
     import io  # Python 3
 #@-<< imports >>
 isPython3 = sys.version_info >= (3, 0, 0)
+# pylint: disable=no-else-return
 #@+others
 #@+node:ekr.20160317054700.3: **   type functions
 #@+node:ekr.20160317054700.4: *3* is_known_type
@@ -99,7 +100,7 @@ def main():
     print('done')
 #@+node:ekr.20160317054700.5: *3* merge_types (not used)
 #@+node:ekr.20160317054700.6: *3* reduce_types
-#@+node:ekr.20160523111223.1: **   unit_test
+#@+node:ekr.20160523111223.1: **   unit_test (make_stub_files.py)
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
@@ -108,8 +109,15 @@ def unit_test(raise_on_fail=True):
     aList = sorted(dir(_ast))
     remove = [
         'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
         'AST',  # The base class,
+        # Constants...
+        'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+        'PyCF_ONLY_AST',
+        'PyCF_TYPE_COMMENTS',
+        # New ast nodes for Python 3.8.
+        # We can ignore these nodes because ast.parse does not generate them.
+        # (The new kwarg, type_comments, is False by default!)
+        'FunctionType', 'NamedExpr', 'TypeIgnore',
     ]
     aList = [z for z in aList if not z[0].islower()]
         # Remove base classe
@@ -2653,6 +2661,7 @@ class StubTraverser(ast.NodeVisitor):
             self.trace_stubs(child, level=level + 1, aList=aList)
         if level == -1:
             return '\n'.join(aList) + '\n'
+        return None
     #@+node:ekr.20160317054700.179: *3* st.visit_ClassDef
 
     # 2: ClassDef(identifier name, expr* bases,

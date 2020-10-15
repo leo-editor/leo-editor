@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140726091031.18073: * @file writers/markdown.py
+#@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
 '''The @auto write code for markdown.'''
 # pylint: disable=unused-import
 import leo.core.leoGlobals as g

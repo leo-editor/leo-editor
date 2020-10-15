@@ -338,10 +338,11 @@ if QtWidgets:
             submenu = menu.addMenu('Debug')
             act = QtWidgets.QAction("Print splitter layout", self)
 
-            def cb(checked, splitter=splitter):  # pylint: disable=function-redefined
-                print(f"\n{splitter.layout_to_text(splitter.top().get_layout())}\n")
+            def print_layout_c(checked, splitter=splitter):
+                layout = splitter.top().get_layout()
+                g.printObj(layout)
 
-            act.triggered.connect(cb)
+            act.triggered.connect(print_layout_c)
             submenu.addAction(act)
 
             def load_items(menu, items):
@@ -979,39 +980,45 @@ if QtWidgets:  # NOQA
                 top = self.root._main.findChild(NestedSplitter)
             return top
         #@+node:ekr.20110605121601.17989: *3* ns.get_layout
-        def get_layout(self, _saveable=False):
-            """return {'orientation':QOrientation, 'content':[], 'splitter':ns}
-
-            Where content is a list of widgets, or if a widget is a NestedSplitter, the
-            result of that splitters call to get_layout().  splitter is the splitter
-            which generated the dict.
+        def get_layout(self):
+            """
+            Return a dict describing the layout.
 
             Usually you would call ns.top().get_layout()
-
-            With _saveable==True (via get_saveable_layour()) content entry for
-            non-NestedSplitter items is the provider ID string for the item, or
-            'UNKNOWN', and the splitter entry is omitted.
             """
             ans = {
+                'content': [],
                 'orientation': self.orientation(),
-                'content': []
+                'sizes': self.sizes(),
+                'splitter': self,
             }
-            if not _saveable:
-                ans['splitter'] = self
-            ans['sizes'] = self.sizes()
             for i in range(self.count()):
                 w = self.widget(i)
                 if isinstance(w, NestedSplitter):
-                    ans['content'].append(w.get_layout(_saveable=_saveable))
+                    ans['content'].append(w.get_layout())
                 else:
-                    if _saveable:
-                        ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
-                    else:
-                        ans['content'].append(w)
+                    ans['content'].append(w)
             return ans
         #@+node:tbrown.20110628083641.11733: *3* ns.get_saveable_layout
         def get_saveable_layout(self):
-            return self.get_layout(_saveable=True)
+            """
+            Return the dict for saveable layouts.
+            
+            The content entry for non-NestedSplitter items is the provider ID
+            string for the item, or 'UNKNOWN', and the splitter entry is omitted.
+            """
+            ans = {
+                'content': [],
+                'orientation': self.orientation(),
+                'sizes': self.sizes(),
+            }
+            for i in range(self.count()):
+                w = self.widget(i)
+                if isinstance(w, NestedSplitter):
+                    ans['content'].append(w.get_saveable_layout())
+                else:
+                    ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
+            return ans
         #@+node:ekr.20160416083415.1: *3* ns.get_splitter_by_name
         def get_splitter_by_name(self, name):
             """Return the splitter with the given objectName()."""
@@ -1026,29 +1033,34 @@ if QtWidgets:  # NOQA
                         return w2
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
-        def load_layout(self, layout, level=0):
+        def load_layout(self, c, layout, level=0):
 
+            trace = 'layouts' in g.app.debug
+            if trace:
+                g.trace('level', level)
+                tag = f"layout: {c.shortFileName()}"
+                g.printObj(layout, tag=tag)
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:
                 for i in self.self_and_descendants():
                     for n in range(i.count()):
                         i.widget(n)._in_layout = False
-            for i in layout['content']:
-                if isinstance(i, dict):
+            for content_layout in layout['content']:
+                if isinstance(content_layout, dict):
                     new = NestedSplitter(root=self.root, parent=self)
                     new._in_layout = True
                     self.insert(found, new)
                     found += 1
-                    new.load_layout(i, level + 1)
+                    new.load_layout(c, content_layout, level + 1)
                 else:
-                    provided = self.get_provided(i)
+                    provided = self.get_provided(content_layout)
                     if provided:
                         self.insert(found, provided)
                         provided._in_layout = True
                         found += 1
                     else:
-                        print(f"NO {i}")
+                        print(f"No provider for {content_layout}")
             self.prune_empty()
             if self.count() != len(layout['sizes']):
                 not_in_layout = set()
@@ -1114,6 +1126,7 @@ if QtWidgets:  # NOQA
                             return provided
             return None
 
+        #@+node:ekr.20200917063155.1: *3* ns.get_title
         def get_title(self, id_):
             """Like get_provided(), but just gets a title for a window
             """
@@ -1125,32 +1138,6 @@ if QtWidgets:  # NOQA
                     if provided:
                         return provided
             return "Leo unnamed window"
-        #@+node:ekr.20110605121601.17990: *3* ns.layout_to_text
-        def layout_to_text(self, layout, _depth=0, _ans=None):
-            """convert the output from get_layout to indented human readable text
-            for development/debugging"""
-            if _ans is None: _ans = []
-            if _depth == 0:
-                _ans = []
-            orientation = 'vertical'
-            if layout['orientation'] == QtCore.Qt.Horizontal:
-                orientation = 'horizontal'
-            _ans.append(
-                f"{'   ' * _depth}{layout['splitter'].__class__.__name__} "
-                f"({layout['splitter'].objectName()}) - {orientation}",
-            )
-            _depth += 1
-            for n, i in enumerate(layout['content']):
-                if isinstance(i, dict):
-                    self.layout_to_text(i, _depth, _ans)
-                else:
-                    _ans.append(
-                        f"{'   ' * _depth}{i.__class__.__name__} "
-                        f"({str(i.objectName())}) from {getattr(i, '_ns_id', 'UNKNOWN')}",
-                    )
-            if _depth == 1:
-                return '\n'.join(_ans)
-            return None
         #@+node:tbrown.20140522153032.32656: *3* ns.zoom_toggle
         def zoom_toggle(self, local=False):
             """zoom_toggle - (Un)zoom current pane to be only expanded pane

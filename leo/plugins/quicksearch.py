@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ville.20090314215508.4: * @file quicksearch.py
+#@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
 '''
@@ -183,7 +183,7 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.setFocus()
 
     # Careful: we may be unit testing.
-    if wdg and wdg.parent() and not g.app.dock:
+    if wdg and wdg.parent():
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 #@+node:ekr.20111014074810.15659: *3* matchLines

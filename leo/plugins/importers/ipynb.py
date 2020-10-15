@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160412101008.1: * @file importers/ipynb.py
+#@+node:ekr.20160412101008.1: * @file ../plugins/importers/ipynb.py
 '''The @auto importer for Jupyter (.ipynb) files.'''
 import re
 import leo.core.leoGlobals as g

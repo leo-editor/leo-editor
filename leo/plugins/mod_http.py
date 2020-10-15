@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:EKR.20040517080250.1: * @file mod_http.py
+#@+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
 #@@first
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
@@ -224,7 +224,7 @@ SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
-import urllib
+# import urllib
 import urllib.parse as urlparse
 import os
 import select
@@ -1068,23 +1068,26 @@ class RequestHandler(
         Begins serving a POST request. The request data must be readable
         on a file-like object called self.rfile
         """
+        header = self.headers.getheader('content-type')
+        g.trace('not ready yet', repr(header))
+        ### This code is obsolete.
         # pylint: disable=undefined-variable
             # urlparse_header and urlparse_multipart appear to be undefined.
-        ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
-        length = int(self.headers.getheader('content-length'))
-        if ctype == 'multipart/form-data':
-            query = urlparse_multipart(self.rfile, pdict)
-        elif ctype == 'application/x-www-form-urlencoded':
-            qs = self.rfile.read(length)
-            query = urllib.parse.parse_qs(qs, keep_blank_values=1)
-        else:
-            query = '' # Unknown content-type
-        # some browsers send 2 more bytes...
-        [ready_to_read, x, y] = select.select([self.connection], [], [], 0)
-        if ready_to_read:
-            self.rfile.read(2)
-        self.QUERY.update(self.query(query))
-        self.handle_data()
+        ### ctype, pdict = urlparse_header(self.headers.getheader('content-type'))
+        # length = int(self.headers.getheader('content-length'))
+        # if ctype == 'multipart/form-data':
+            # query = urlparse_multipart(self.rfile, pdict)
+        # elif ctype == 'application/x-www-form-urlencoded':
+            # qs = self.rfile.read(length)
+            # query = urllib.parse.parse_qs(qs, keep_blank_values=1)
+        # else:
+            # query = '' # Unknown content-type
+        # # some browsers send 2 more bytes...
+        # [ready_to_read, x, y] = select.select([self.connection], [], [], 0)
+        # if ready_to_read:
+            # self.rfile.read(2)
+        # self.QUERY.update(self.query(query))
+        # self.handle_data()
     #@+node:EKR.20040517080250.33: *3* query
     def query(self, parsedQuery):
         """Returns the QUERY dictionary, similar to the result of urllib.parse_qs

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20130813134319.11942: * @file richtext.py
+#@+node:tbrown.20130813134319.11942: * @file ../plugins/richtext.py
 #@+<< docstring >>
 #@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
 """

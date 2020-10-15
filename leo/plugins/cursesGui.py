@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20150107090324.1: * @file cursesGui.py
+#@+node:ekr.20150107090324.1: * @file ../plugins/cursesGui.py
 '''A minimal text-oriented gui.'''
 #@+at
 # Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
@@ -176,7 +176,7 @@ class TextFrame(leoFrame.LeoFrame):
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong:
         # the node hasn't been linked yet.
-        p._linkAsRoot(oldRoot=None)
+        p._linkAsRoot()
         # c.setRootPosition(p) # New in 4.4.2.
 
     #@+node:ekr.20150107090324.24: *3* deiconify

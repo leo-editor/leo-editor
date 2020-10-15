@@ -110,7 +110,12 @@ class InternalIPKernel:
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
     def cleanup_consoles(self, event=None):
         """Kill all ipython consoles.  Called from app.finishQuit."""
+        trace = 'ipython' in g.app.debug
         for console in self.consoles:
+            # console is a process returned by the Python subprocess module.
+            if trace: g.trace('kill', console)
+            # #1677: neither console.kill nor console.kill works!
+            # console.terminate()  
             console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
     def count(self, event=None):
@@ -122,7 +127,7 @@ class InternalIPKernel:
         
         Called from qt_gui.runWithIpythonKernel.
         """
-        trace = True  # 'ipython' in g.app.debug
+        trace = 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()
@@ -136,8 +141,8 @@ class InternalIPKernel:
             # Using the defaults lets connect_qtconsole find the .json file.
             console = connect_qtconsole()
                 # ipykernel.connect.connect_qtconsole
-            if trace: g.trace(console)
             if console:
+                if trace: g.trace('console:', console)
                 self.consoles.append(console)
             else:
                 self.put_warning('new_qt_console: no console!')

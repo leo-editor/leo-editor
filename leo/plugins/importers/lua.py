@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20170530024520.2: * @file importers/lua.py
+#@+node:ekr.20170530024520.2: * @file ../plugins/importers/lua.py
 '''
 The @auto importer for the lua language.
 

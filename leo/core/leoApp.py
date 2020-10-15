@@ -6,7 +6,6 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
-import base64
 import importlib
 import io
 StringIO = io.StringIO
@@ -95,9 +94,6 @@ class LeoApp:
             # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
-        self.dock = False
-            # #1514: Leo's legacy operation is now the default.
-            # True: use a QDockWidget.
         self.enablePlugins = True
             # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False
@@ -106,8 +102,6 @@ class LeoApp:
             # The gui class.
         self.guiArgName = None
             # The gui name given in --gui option.
-        self.init_docks = False
-            # True: --init-docks
         self.ipython_inited = False
             # True if leoIpython.py imports succeeded.
         self.isTheme = False
@@ -132,8 +126,6 @@ class LeoApp:
             # The name of a setting to trace, or None.
         self.translateToUpperCase = False
             # Never set to True.
-        self.use_global_docks = False
-            # True when --global-docks is in effect.
         self.useIpython = False
             # True: add support for IPython.
         self.use_psyco = False
@@ -198,11 +190,7 @@ class LeoApp:
             # The set of all @auto spellings.
         self.atFileNames = set()
             # The set of all built-in @<file> spellings.
-        self.defaultWindowState = b'\x00\x00\x00\xff\x00\x00\x00\x00\xfd\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x01\x19\x00\x00\x01^\xfc\x02\x00\x00\x00\x01\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00t\x00a\x00b\x00s\x01\x00\x00\x006\x00\x00\x01^\x00\x00\x00\x1b\x00\xff\xff\xff\x00\x00\x00\x03\x00\x00\x03\x1e\x00\x00\x00\xc3\xfc\x01\x00\x00\x00\x02\xfb\x00\x00\x00\x12\x00d\x00o\x00c\x00k\x00.\x00b\x00o\x00d\x00y\x01\x00\x00\x00\x00\x00\x00\x01\xfd\x00\x00\x001\x00\xff\xff\xff\xfb\x00\x00\x00\x16\x00d\x00o\x00c\x00k\x00.\x00R\x00e\x00n\x00d\x00e\x00r\x01\x00\x00\x02\x05\x00\x00\x01\x19\x00\x00\x001\x00\xff\xff\xff\x00\x00\x01\xfd\x00\x00\x01^\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x08\x00\x00\x00\x08\xfc\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x10\x00i\x00c\x00o\x00n\x00-\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00$\x00m\x00i\x00n\x00i\x00b\x00u\x00f\x00f\x00e\x00r\x00-\x00t\x00o\x00o\x00l\x00b\x00a\x00r\x01\x00\x00\x00\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00'
-            #
-            # For self.restoreWindowState the first time Leo is run.
-            # Use the print-window-state to print this value after arranging the docks to your liking.
-            # Important: the outline-pane *must* be the central widget.
+
         self.globalKillBuffer = []
             # The global kill buffer.
         self.globalRegisters = {}
@@ -433,7 +421,7 @@ class LeoApp:
             "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
             "conf":     "apacheconf",
-            "cpp":      "cpp",
+            "cpp":      "cplusplus", # 2020/08/12: was cpp.
             "css":      "css",
             "d":        "d",
             "dart":     "dart",
@@ -1354,8 +1342,6 @@ class LeoApp:
         g.doHook("close-frame", c=c)
         #
         # Save the window state for *all* open files.
-        g.app.saveWindowState(c)
-        g.app.saveEditorDockState(c)
         g.app.commander_cacher.commit()
             # store cache, but don't close it.
         # This may remove frame from the window list.
@@ -1400,7 +1386,6 @@ class LeoApp:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
-            g.app.saveGlobalWindowState()
             g.app.global_cacher.commit_and_close()
             g.app.commander_cacher.commit()
             g.app.commander_cacher.close()
@@ -1537,16 +1522,6 @@ class LeoApp:
                 title='Already Open Files',
                 message=message,
                 text="Ok")
-    #@+node:ekr.20190616092159.1: *3* app.get_central_widget
-    def get_central_widget(self, c):
-
-        assert self.dock, g.callers()
-        s = c.config.getString('central-dock-widget')
-        if s:
-            s = s.lower()
-            if s in ('body', 'outline', 'tabs'):
-                return s
-        return 'outline'
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
     def scanner_for_at_auto(self, c, p, **kwargs):
@@ -1665,278 +1640,6 @@ class LeoApp:
         else:
             c.bodyWantsFocus()
         c.outerUpdate()
-    #@+node:ekr.20190613062357.1: *3* app.WindowState...
-    #@+node:ekr.20200305102656.1: *4* app.restoreEditorDockState (changed)
-    def restoreEditorDockState(self, c):
-
-        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
-        tag = 'app.restoreEditorDockState'
-        body = c.frame.body
-        dw = c.frame.top
-        if not dw:
-            return
-        aps_s= c.db.get('added_editor_aps', '')
-        dock_names_s = c.db.get('added_editor_docks', '')
-        if not aps_s or not dock_names_s:
-            return
-        aps = aps_s.split(';')
-        dock_names = dock_names_s.split(';')
-        if len(aps) != len(dock_names):
-            g.trace('can not happen')
-            return
-        if trace: g.trace('START')
-        #
-        # #1527: Part 1: Inject leo_wrapper ivar.
-        #                Similar to LeoQtBody.injectIvars.
-        wrapper = body.wrapper
-        w = wrapper.widget
-        w.leo_wrapper = wrapper
-        if trace:
-            print(f"{tag:>30}: {wrapper} <dock for main body>")
-        #
-        # #1527: Part 2: Pack the Body's label so it tracks p.h.
-        #                Similar to code for the 'add-editor' command.
-        if body.use_gutter:
-            dw.packLabel(w.parent(), n=1)
-            w.leo_label = w.parent().leo_label
-        else:
-            dw.packLabel(w, n=1)
-        #
-        # Restore all *added* editors.
-        d = body.editorWrappers
-        for i, dock_name in enumerate(dock_names):
-            ap = aps[i]
-            f, wrapper = dw.addNewEditor(dock_name)
-            d[dock_name] = wrapper
-            p = c.archivedPositionToPosition(ap)
-            body.injectIvars(
-                parentFrame = f,
-                name = dock_name,
-                p = p,
-                wrapper = wrapper,
-            )
-            w =  c.frame.body.wrapper.widget
-            body.updateInjectedIvars(w, p) ###
-            body.selectLabel(wrapper)
-            body.selectEditor(wrapper)
-            if trace:
-                print(f"{tag:>30}: {wrapper} {dock_name}")
-        if trace: g.trace('END')
-    #@+node:ekr.20190826022349.1: *4* app.restoreGlobalWindowState
-    def restoreGlobalWindowState(self):
-        """
-        Restore the layout of global dock widgets and toolbars.
-        """
-        #
-        # Note for #1189: The windows has already been properly resized
-        #                 by the time this method is called.
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        #
-        # Support --init-docks.
-        # #1196. Let Qt use it's own notion of a default layout.
-        #        This should work regardless of the central widget.
-        if g.app.init_docks:
-            if trace: g.trace('--init-docks')
-            return
-        key = 'globalWindowState:'
-        val = self.db.get(key)
-        if val:
-            if trace: g.trace(f"found key: {key}")
-            try:
-                val = base64.decodebytes(val.encode('ascii'))
-                    # Elegant pyzo code.
-                main_window.restoreState(val)
-                return
-            except Exception as err:
-                g.trace(f"bad value: {key} {err}")
-                return
-        # This is not an error.
-        if trace: g.trace(f"missing key: {key}")
-    #@+node:ekr.20190528045549.1: *4* app.restoreWindowState
-    ekr_val = None
-
-    def restoreWindowState(self, c):
-        """
-        Restore the layout of dock widgets and toolbars, using the per-file
-        state of the *first* loaded .leo file, or the global state.
-        
-        Note: The window's position or size has already been restored.
-        """
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        tag = 'app.restoreWindowState:'
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        dw = c.frame.top
-        if not dw or not hasattr(dw, 'restoreState'):
-            if trace: g.trace('no dw.restoreState. dw:', repr(dw))
-            return
-        # First, restore the editor state.
-        self.restoreEditorDockState(c)
-        #
-        # Support --init-docks.
-        # #1196. Let Qt use it's own notion of a default layout.
-        #        This should work regardless of the central widget.
-        if g.app.init_docks:
-            if trace: g.trace('using qt default layout')
-            return
-        sfn = c.shortFileName()
-        table = (
-            # First, try the per-outline state.
-            (f"windowState:{c.fileName()}", dw.restoreState),
-            # Restore the actual window state.
-            ('windowState:', dw.restoreState),
-        )
-        for key, method in table:
-            val = self.db.get(key)
-            if trace:
-                g.trace(f"{sfn} found key: {key}")
-            if val:
-                try:
-                    val = base64.decodebytes(val.encode('ascii'))
-                        # Elegant pyzo code.
-                    method(val)
-                    return
-                except Exception as err:
-                    g.trace(f"{sfn} bad value: {key} {err}")
-            # This is not an error.
-            elif trace:
-                g.trace(f"{sfn} missing key: {key}")
-        #
-        # #1190 (bad initial layout)
-        # Use a pre-defined layout (magic number).
-        # The print-window-state prints this magic number for a *given* layout.
-        # But this number will work *only* if the central widgets match.
-        try:
-            central_widget = self.get_central_widget(c)
-            # central_widget = c.config.getString('central-dock-widget')
-            # if central_widget:
-                # central_widget = central_widget.lower()
-            if central_widget in (None, 'outline'):
-                if trace:
-                    print(tag, 'using app.defaultWindowState')
-                dw.restoreState(self.defaultWindowState)
-            elif trace:
-                print(tag)
-                print('central widget does not match default')
-                print('using qt default window state')
-            # See print-window-state.
-        except Exception:
-            g.es_print(tag, 'unexpected exception setting window state')
-            g.es_exception()
-    #@+node:ekr.20200305061637.1: *4* app.saveEditorDockState
-    def saveEditorDockState(self, c):
-        """
-        Save the name and current position of all additional editor docks.
-        
-        This is called for all closed windows.
-        """
-        trace = any([z in g.app.debug for z in ('dock', 'select')]) and not g.app.unitTesting
-        tag = 'app.saveEditorDockState'
-        # Get the archived positions and docks from the editor wrappers.
-        dw = c.frame.top
-        d = c.frame.body.editorWrappers
-        dock_names, aps = [], []
-        for key in d:
-            if key == '1': # Ignore the Body dock.
-                continue
-            wrapper = d.get(key)
-            w = wrapper.widget
-            p = getattr(w, 'leo_p', None)
-            if not p:
-                continue
-            # Find the corresponding dock.
-            dock = g.app.gui.find_dock(w)
-            dock_name = dock and dock.objectName()
-            if not dock_name:
-                continue
-            # Careful: the dock may have been deleted.
-            if dock not in dw.added_editor_docks:
-                continue
-            ap = ','.join([str(z) for z in p.archivedPosition()])
-            dock_names.append(dock_name)
-            aps.append(ap)
-            if trace:
-                print(f"{tag:>30}: {dock_name}")
-        c.db['added_editor_aps'] = ';'.join(aps)
-        c.db['added_editor_docks'] = ';'.join(dock_names)
-    #@+node:ekr.20190826021428.1: *4* app.saveGlobalWindowState
-    def saveGlobalWindowState(self):
-        """
-        Save the window geometry and layout of dock widgets and toolbars
-        for Leo's *global* QMainWindow.
-        
-        Called by g.app.finishQuit. 
-        """
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        main_window = getattr(g.app.gui, 'main_window', None)
-        if not main_window:
-            if trace:
-                if hasattr(g.app.gui, 'main_window'):
-                    g.trace('g.app.gui.main_window is None')
-                else:
-                    g.trace('no ivar: g.app.gui.main_window')
-            return
-        #
-        # Save the state
-        key = 'globalWindowState:'
-        val = main_window.saveState()
-            # Method is a QMainWindow method.
-        try:
-            val = bytes(val)  # PyQt4
-        except Exception:
-            val = bytes().join(val)  # PySide
-        if trace: g.trace(f"set key: {key}:")
-        g.app.db[key] = base64.encodebytes(val).decode('ascii')
-    #@+node:ekr.20190528045643.1: *4* app.saveWindowState
-    def saveWindowState(self, c):
-        """
-        Save the window geometry and layout of dock widgets and toolbars.
-        
-        This is called for all closed windows.
-        """
-        trace = any([z in g.app.debug for z in ('dock', 'cache', 'size', 'startup')])
-        if not g.app.dock:
-            if trace: g.trace('g.app.dock is False')
-            return
-        dw = c.frame.top
-        if not dw or not hasattr(dw, 'saveState'):
-            if trace: g.trace('no dw.saveState. dw:', repr(dw))
-            return
-        table = (
-            # Save a default *global* state, for *all* outline files.
-            ('windowState:', dw.saveState),
-            # Save a per-file state.
-            (f"windowState:{c.fileName()}", dw.saveState),
-            # Do not save/restore window geometry. That is done elsewhere.
-                # (f"windowGeometry:{c.fileName()}" , dw.saveGeometry),
-        )
-        for key, method in table:
-            # This is pyzo code...
-            val = method()
-                # Method is a QMainWindow method.
-            try:
-                val = bytes(val)  # PyQt4
-            except Exception:
-                val = bytes().join(val)  # PySide
-            val = base64.encodebytes(val).decode('ascii')
-            if trace:
-                g.trace(f"{c.shortFileName()} set key: {key}")         
-            g.app.db[key] = val
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
@@ -2604,11 +2307,12 @@ class LoadManager:
             print(d)
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
-        """Load the indicated file"""
+        """This is Leo's main startup method."""
         lm = self
-        t1 = time.process_time()
+        #
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
+        t1 = time.process_time()
         print('')  # Give some separation for the coming traces.
         if not lm.isValidPython():
             return
@@ -2624,12 +2328,15 @@ class LoadManager:
             # Disable redraw until all files are loaded.
         #
         # Phase 2: load plugins: the gui has already been set.
+        t2 = time.process_time()
         g.doHook("start1")
+        t3 = time.process_time()
         if g.app.killed:
             return
         g.app.idleTimeManager.start()
         #
         # Phase 3: after loading plugins. Create one or more frames.
+        t3 = time.process_time()
         if lm.options.get('script') and not self.files:
             ok = True
         else:
@@ -2640,13 +2347,17 @@ class LoadManager:
                 lm.doDiff()
         if not ok:
             return
-        g.app.restoreGlobalWindowState()
         g.es('')  # Clears horizontal scrolling in the log pane.
         if g.app.listen_to_log_flag:
             g.app.listenToLog()
         if 'startup' in g.app.debug:
-            t2 = time.process_time()
-            g.es_print(f"startup time: {t2 - t1:5.2f} sec")
+            t4 = time.process_time()
+            print('')
+            g.es_print(f"settings:{t2 - t1:5.2f} sec")
+            g.es_print(f" plugins:{t3 - t2:5.2f} sec")
+            g.es_print(f"   files:{t4 - t3:5.2f} sec")
+            g.es_print(f"   total:{t4 - t1:5.2f} sec")
+            print('')
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
@@ -3033,18 +2744,20 @@ class LoadManager:
         lm = self
         table = (
             '--dock',
-            # '--no-dock', # #1171: retire legacy Qt guis.
+            '--global-docks',  # #1643. use --use-docks instead.
+            '--init-docks',
             '--no-cache',
-            '--no-dock', # #1514: Replaced by --use-docks
+            '--no-dock',  # #1171 and #1514: use --use-docks instead.
             '--session-restore',
             '--session-save',
+            '--use-docks',
         )
-        trace_m = '''beauty,cache,coloring,dock,drawing,events,focus,git,gnx,
-          ipython,keys,plugins,save,select,shutdown,size,startup,themes'''
+        trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,ipython,
+          keys,layouts,plugins,save,select,shutdown,size,startup,themes'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
-                print(f"Ignoring the deprecated {bad_option} option")
+                print(f"Ignoring the unused/deprecated {bad_option} option")
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
@@ -3091,18 +2804,14 @@ class LoadManager:
             add(option, dest=dest, help=help, metavar=m)
 
         add_bool('--diff',          'use Leo as an external git diff')
-        # add_bool('--dock',          'use a Qt dock')
         add_bool('--fullscreen',    'start fullscreen')
-        add_bool('--init-docks',    'put docks in default positions')
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
-        add_bool('--global-docks',  'use global docks')
         add_other('--gui',          'gui to use (qt/console/null)')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
         add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
-        # add_bool('--no-dock',       'use legacy look & feel')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
         add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
@@ -3114,7 +2823,6 @@ class LoadManager:
         add_other('--trace',        'add one or more strings to g.app.debug', m=trace_m)
         add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
-        add_bool('--use-docks',      'use qt dock widgets')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         add_other('--window-spot',  'initial window position (top x left)', m='SPOT')
         # Multiple bool values.
@@ -3199,12 +2907,6 @@ class LoadManager:
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
-         # --global-docks
-        g.app.use_global_docks = bool(options.global_docks)
-        if options.global_docks:
-            print(f"--global-docks: {g.app.use_global_docks}")
-        # --init-docks
-        g.app.init_docks = options.init_docks
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython
@@ -3213,19 +2915,11 @@ class LoadManager:
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
-        # --no-dock and --use-docks
-        # #1171: retain --no-dock indefinitely.
-        # #1514: --no-dock is the default.
-        if options.use_docks or options.global_docks:
-            # --global-docks implies --use-docks.
-            g.app.dock = True
         # --no-plugins
         if options.no_plugins:
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
-        g.app.use_splash_screen = (
-            not options.no_splash and
-            not options.minimized)
+        g.app.use_splash_screen = not options.no_splash and not options.minimized
         # --silent
         g.app.silentMode = options.silent
         # --trace=...
@@ -3239,7 +2933,6 @@ class LoadManager:
                     g.app.debug.append(val)
                 else:
                     g.es_print(f"unknown --trace value: {val}")
-        # g.trace('g.app.debug', repr(g.app.debug))
         #
         # These are not bool options.
         # --trace-binding
@@ -3399,8 +3092,6 @@ class LoadManager:
         # Step 2: open the outline in the requested gui.
         # For .leo files (and zipped .leo file) this opens the file a second time.
         c = lm.openFileByName(fn, gui, old_c, previousSettings)
-        if c:
-            g.app.restoreWindowState(c)
         return c
     #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
     def openFileByName(self, fn, gui, old_c, previousSettings):
@@ -3511,8 +3202,9 @@ class LoadManager:
         frame.setInitialWindowGeometry()
         frame.deiconify()
         frame.lift()
-        frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-            # Resize the _new_ frame.
+        # #1570: Resize the _new_ frame.
+        frame.splitVerticalFlag, r1, r2 = frame.initialRatios()
+        frame.resizePanesToRatio(r1, r2)
         if not g.os_path_exists(fn):
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.

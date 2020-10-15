@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100318101414.5990: * @file viewrendered.py
+#@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
 #@+<< vr docstring >>
 #@+node:tbrown.20100318101414.5991: ** << vr docstring >>
 '''
@@ -345,10 +345,6 @@ def onCreate(tag, keys):
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
-    if g.app.dock:
-        # Instantiate immediately.
-        viewrendered(event={'c': c})
-
 #@+node:vitalije.20170712174157.1: *3* vr.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -406,16 +402,7 @@ def viewrendered(event):
     vr = controllers.get(h)
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
-    if g.app.dock:
-        dock = vr.leo_dock
-        if not c.mFileName:
-            # #1318 and #1332: Tricky init code for new windows.
-            g.app.restoreWindowState(c)
-            dock.hide()
-            dock.raise_()
-        return vr
-    #
-    # Legacy code: add the pane to the splitter.
+    # Add the pane to the splitter.
     layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
     vr._ns_id = '_leo_viewrendered' # for free_layout load/save
     vr.splitter = splitter = c.free_layout.get_top_splitter()
@@ -442,8 +429,6 @@ def contract_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if g.app.dock:
-        return
     vr.contract()
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
@@ -457,8 +442,6 @@ def expand_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if g.app.dock:
-        return
     vr.expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
@@ -473,15 +456,6 @@ def hide_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if g.app.dock:
-        if vr.external_dock:
-            return # Can't hide a top-level dock.
-        dock = vr.leo_dock
-        if dock:
-            dock.hide()
-        return
-    #
-    # Legacy code.
     if vr.pyplot_active:
         g.es_print('can not close VR pane after using pyplot')
         return
@@ -566,14 +540,7 @@ def toggle_rendering_pane(event):
     if not vr:
         vr = viewrendered(event)
         vr.hide() # So the toggle below will work.
-    if g.app.dock:
-        if vr.external_dock:
-            return # Can't hide a top-level dock.
-        dock = vr.leo_dock
-        if dock:
-            f = dock.show if dock.isHidden() else dock.hide
-            f()
-    elif vr.isHidden():
+    if vr.isHidden():
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
@@ -619,8 +586,6 @@ def zoom_rendering_pane(event):
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if g.app.dock:
-        return
     flc = c.free_layout
     if vr.zoomed:
         for ns in flc.get_top_splitter().top().self_and_descendants():
@@ -644,7 +609,7 @@ def zoom_rendering_pane(event):
                     ns.setSizes(sizes)
                     break
     vr.zoomed = not vr.zoomed
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
+#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
@@ -655,13 +620,11 @@ class ViewRenderedProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self):
-        return [('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
-        if id_ == '_leo_viewrendered':
+        # #1678: duplicates in Open Window list
+        if id_ == self.ns_provider_id():
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
             h = c.hash()
@@ -671,6 +634,21 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
         return None
+    #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
+    def ns_provider_id(self):
+        # return f"vr_id:{self.c.shortFileName()}"
+        return '_leo_viewrendered'
+    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
+    def ns_provides(self):
+        # #1671: Better Window names.
+        # #1678: duplicates in Open Window list
+        return [('Viewrendered', self.ns_provider_id())]
+    #@+node:ekr.20200917063221.1: *3* vr.ns_title
+    def ns_title(self, id_):
+        if id_ != self.ns_provider_id():
+            return None
+        filename = self.c.shortFileName() or 'Unnamed file'
+        return f"Viewrendered: {filename}"
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 if QtWidgets: # NOQA
@@ -749,33 +727,12 @@ if QtWidgets: # NOQA
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''
-            c = self.c
-            dw = c.frame.top
-            self.leo_dock = None # May be set below.
             if g.app.unitTesting:
                 return
             # Create the inner contents.
             self.setObjectName('viewrendered_pane')
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setContentsMargins(0, 0, 0, 0)
-            if not g.app.dock:
-                return
-            # Allow the VR dock to move only in special circumstances.
-            central_body = g.app.get_central_widget(c) == 'body'
-            moveable = g.app.init_docks or central_body
-            self.leo_dock = dock = g.app.gui.create_dock_widget(
-                closeable=True, moveable=moveable, height=50, name='Render')
-            if central_body:
-                # Create a stand-alone dockable area.
-                dock.setWidget(self)
-                dw.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-            elif g.app.dock:
-                # Split the body dock. Don't register the new dock as an editor doc.
-                ### dw.leo_docks.append(dock)
-                dock.setWidget(self)
-                dw.splitDockWidget(dw.body_dock, dock, QtCore.Qt.Horizontal)
-            if g.app.init_docks:
-                dock.show()
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
             '''Activate the vr-window.'''
@@ -793,9 +750,9 @@ if QtWidgets: # NOQA
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
             loc, loo = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
-                splitter.load_layout(loc)
+                splitter.load_layout(c, loc)
             elif which == 'open' and loo and splitter:
-                splitter.load_layout(loo)
+                splitter.load_layout(c, loo)
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
@@ -870,16 +827,9 @@ if QtWidgets: # NOQA
         def show_dock_or_pane(self):
 
             c, vr = self.c, self
-            if g.app.dock:
-                dock = vr.leo_dock
-                if dock:
-                    dock.show()
-                    dock.raise_()
-                        # #1230.
-            else:
-                vr.activate()
-                vr.show()
-                vr.adjust_layout('open')
+            vr.activate()
+            vr.show()
+            vr.adjust_layout('open')
             c.bodyWantsFocusNow()
         #@+node:vitalije.20170712183618.1: *3* vr.store_layout
         def store_layout(self, which):
@@ -927,8 +877,7 @@ if QtWidgets: # NOQA
                 #
                 # Use plain text if we are hidden.
                 # This avoids annoying messages with rst.
-                dock = pc.leo_dock or pc
-                if dock.isHidden():
+                if pc.isHidden():
                     w = pc.ensure_text_widget()
                     w.setPlainText(s)
                     return
@@ -1589,7 +1538,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110320120020.14483: *5* vr.get_kind
         def get_kind(self, p):
             '''Return the proper rendering kind for node p.'''
-            c = self.c
             
             def get_language(p):
                 """
@@ -1605,8 +1553,7 @@ if QtWidgets: # NOQA
                         return word
                 # Look for @language directives.
                 # Warning: (see #344): don't use c.target_language as a default.
-                colorizer = c.frame.body.colorizer
-                return colorizer.findFirstValidAtLanguageDirective(p.copy())
+                return g.findFirstValidAtLanguageDirective(p.copy())
             #
             #  #1287: Honor both kind of directives node by node.
             for p in p.self_and_parents(p):
@@ -1629,11 +1576,11 @@ if QtWidgets: # NOQA
                 # Expand '~' and handle Leo expressions.
                 fn = fn[1:]
                 fn = g.os_path_expanduser(fn)
-                fn = g.os_path_expandExpression(fn, c=c)
+                fn = c.expand_path_expression(fn)
                 fn = g.os_path_finalize(fn)
             else:
                 # Handle Leo expressions.
-                fn = g.os_path_expandExpression(fn, c=c)
+                fn = c.expand_path_expression(fn)
                 # Handle ancestor @path directives.
                 if c and c.openDirectory:
                     base = c.getNodePath(c.p)

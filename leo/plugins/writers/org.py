@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20140726091031.18079: * @file writers/org.py
+#@+node:ekr.20140726091031.18079: * @file ../plugins/writers/org.py
 '''The @auto write code for Emacs org-mode (.org) files.'''
 import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160505094722.1: * @file importers/coffeescript.py
+#@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 '''The @auto importer for coffeescript.'''
 import re
 import leo.core.leoGlobals as g

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20130420091241.44181: * @file screen_capture.py
+#@+node:tbrown.20130420091241.44181: * @file ../plugins/screen_capture.py
 #@+<< docstring >>
 #@+node:ekr.20140910173844.17823: ** << docstring >> (screen_capture.py)
 """

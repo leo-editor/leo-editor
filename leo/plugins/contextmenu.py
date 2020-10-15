@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20090701111504.5294: * @file contextmenu.py
+#@+node:ekr.20090701111504.5294: * @file ../plugins/contextmenu.py
 #@+<< docstring >>
 #@+node:ville.20090630210947.5460: ** << docstring >> (contextmenu.py)
 ''' Defines various useful actions for context menus (Qt only).

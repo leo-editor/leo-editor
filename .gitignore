@@ -5,8 +5,10 @@ __pycache__/
 .cache/
 *.py[cod]
 *.history
+*.orig
 
 # Other programs
+leoProfile
 leo/.vscode/
 
 # PyInstaller folders.

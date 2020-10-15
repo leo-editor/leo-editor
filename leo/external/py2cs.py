@@ -45,28 +45,16 @@ Hosted at: https://github.com/edreamleo/python-to-coffeescript
 #@+<< imports >>
 #@+node:ekr.20160316091132.3: **   << imports >> (python_to_coffeescript.py)
 import ast
-try:
-    import builtins  # Python 3
-except ImportError:
-    import __builtin__ as builtins  # Python 2.
+import configparser
 import glob
+import io
 import optparse
 import os
 import sys
 import time
 import token as token_module
 import tokenize
-import types
-try:
-    import ConfigParser as configparser  # Python 2
-except ImportError:
-    import configparser  # Python 3
-try:
-    import StringIO as io  # Python 2
-except ImportError:
-    import io  # Python 3
 #@-<< imports >>
-isPython3 = sys.version_info >= (3, 0, 0)
 #@+others
 #@+node:ekr.20160316091132.4: **   main
 def main():
@@ -80,7 +68,7 @@ def main():
     controller.scan_options()
     controller.run()
     print('done')
-#@+node:ekr.20160523111738.1: **   unit_test
+#@+node:ekr.20160523111738.1: **   unit_test (py2cs.py)
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
@@ -89,8 +77,15 @@ def unit_test(raise_on_fail=True):
     aList = sorted(dir(_ast))
     remove = [
         'Interactive', 'Suite',  # Not necessary.
-        'PyCF_ONLY_AST',  # A constant,
         'AST',  # The base class,
+        # Constants...
+        'PyCF_ALLOW_TOP_LEVEL_AWAIT',
+        'PyCF_ONLY_AST',
+        'PyCF_TYPE_COMMENTS',
+        # New ast nodes for Python 3.8.
+        # We can ignore these nodes because ast.parse does not generate them.
+        # (The new kwarg, type_comments, is False by default!)
+        'FunctionType', 'NamedExpr', 'TypeIgnore',
     ]
     aList = [z for z in aList if not z[0].islower()]
         # Remove base classe
@@ -251,18 +246,13 @@ class CoffeeScriptTraverser:
         name = node.__class__.__name__
         if isinstance(node, (list, tuple)):
             return ', '.join([self.visit(z) for z in node])
-        elif node is None:
+        if node is None:
             return 'None'
-        else:
-            assert isinstance(node, ast.AST), name
-            method = getattr(self, 'do_' + name)
-            s = method(node)
-            # pylint: disable = undefined-variable
-            if isPython3:
-                assert isinstance(s, str)
-            else:
-                assert isinstance(s, (str, builtins.unicode))
-            return s
+        assert isinstance(node, ast.AST), name
+        method = getattr(self, 'do_' + name)
+        s = method(node)
+        assert isinstance(s, str), (repr(s), method.__name__)
+        return s
     #@+node:ekr.20160316091132.17: *3* cv.Contexts
 
     #
@@ -372,9 +362,8 @@ class CoffeeScriptTraverser:
     #
     # CoffeeScriptTraverser operands...
     #
-    #@+node:ekr.20160316091132.28: *4* cv.arg (Python3 only)
-
-    # 3: arg = (identifier arg, expr? annotation)
+    #@+node:ekr.20160316091132.28: *4* cv.arg
+    # arg = (identifier arg, expr? annotation)
 
     def do_arg(self, node):
 
@@ -403,27 +392,19 @@ class CoffeeScriptTraverser:
                 args2.append(args[i])
             else:
                 args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-        if isPython3:
-            # pylint: disable=no-member
-            args = [self.visit(z) for z in node.kwonlyargs]
-            defaults = [self.visit(z) for z in node.kw_defaults]
-            n_plain = len(args) - len(defaults)
-            for i in range(len(args)):
-                if i < n_plain:
-                    args2.append(args[i])
-                else:
-                    args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
-            # Add the vararg and kwarg expressions.
-            if getattr(node, 'vararg', None):
-                args2.append('*' + self.visit(node.vararg))
-            if getattr(node, 'kwarg', None):
-                args2.append('**' + self.visit(node.kwarg))
-        else:
-            # Add the vararg and kwarg names.
-            if getattr(node, 'vararg', None):
-                args2.append('*' + node.vararg)
-            if getattr(node, 'kwarg', None):
-                args2.append('**' + node.kwarg)
+        args = [self.visit(z) for z in node.kwonlyargs]
+        defaults = [self.visit(z) for z in node.kw_defaults]
+        n_plain = len(args) - len(defaults)
+        for i in range(len(args)):
+            if i < n_plain:
+                args2.append(args[i])
+            else:
+                args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
+        # Add the vararg and kwarg expressions.
+        if getattr(node, 'vararg', None):
+            args2.append('*' + self.visit(node.vararg))
+        if getattr(node, 'kwarg', None):
+            args2.append('**' + self.visit(node.kwarg))
         return ','.join(args2)
     #@+node:ekr.20160316091132.29: *4* cv.Attribute
 
@@ -441,9 +422,8 @@ class CoffeeScriptTraverser:
             # Do *not* handle leading lines here.
             # leading = self.leading_string(node)
             return self.sync_string(node)
-        else:
-            g.trace('==== no lineno', node.s)
-            return node.s
+        g.trace('==== no lineno', node.s)
+        return node.s
     #@+node:ekr.20160316091132.31: *4* cv.Call & cv.keyword
 
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -482,14 +462,28 @@ class CoffeeScriptTraverser:
         return ''.join(result)
     #@+node:ekr.20170721093550.1: *4* cv.Constant (Python 3.6+)
     def do_Constant(self, node):  # Python 3.6+ only.
-        assert isPython3
-        if hasattr(node, 'lineno'):
+
+        if not hasattr(node, 'lineno'):
             # Do *not* handle leading lines here.
-            # leading = self.leading_string(node)
-            return self.sync_string(node)
-        else:
             g.trace('==== no lineno', node.s)
             return node.s
+        val = node.value
+        # Support Python 3.8.
+        if val is None:
+            return 'None'
+        if val == Ellipsis:
+            return '...'
+        if isinstance(val, (bool, bytes, float, int)):
+            return str(val)
+        if isinstance(val, str):
+            return self.sync_string(node)
+        if isinstance(node.value, tuple):
+            return ','.join(node.elts)
+        if isinstance(node.value, frozenset):
+            return '{' + ','.join(node.elts) + '}'
+        # Unknown type.
+        g.trace('----- Oops -----', repr(node.value), g.callers())
+        return node.s
     #@+node:ekr.20160316091132.34: *4* cv.Dict
     def do_Dict(self, node):
         assert len(node.keys) == len(node.values)
@@ -534,7 +528,6 @@ class CoffeeScriptTraverser:
     # FormattedValue(expr value, int? conversion, expr? format_spec)
 
     def do_FormattedValue(self, node):  # Python 3.6+ only.
-        assert isPython3
 
         return '%s%s%s' % (
             self.visit(node.value),
@@ -607,8 +600,7 @@ class CoffeeScriptTraverser:
             step = self.visit(node.step)
         if step:
             return '%s:%s:%s' % (lower, upper, step)
-        else:
-            return '%s:%s' % (lower, upper)
+        return '%s:%s' % (lower, upper)
     #@+node:ekr.20160316091132.44: *4* cv.Str
     def do_Str(self, node):
         '''A string constant, including docstrings.'''
@@ -616,9 +608,8 @@ class CoffeeScriptTraverser:
             # Do *not* handle leading lines here.
             # leading = self.leading_string(node)
             return self.sync_string(node)
-        else:
-            g.trace('==== no lineno', node.s)
-            return node.s
+        g.trace('==== no lineno', node.s)
+        return node.s
     #@+node:ekr.20160316091132.45: *4* cv.Subscript
 
     # Subscript(expr value, slice slice, expr_context ctx)
@@ -927,16 +918,14 @@ class CoffeeScriptTraverser:
         s = 'print(%s)' % ','.join(vals)
         return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.72: *4* cv.Raise
-    # Raise(expr? type, expr? inst, expr? tback)    Python 2
-    # Raise(expr? exc, expr? cause)                 Python 3
+    # Raise(expr? exc, expr? cause)
 
     def do_Raise(self, node):
 
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         args = []
-        attrs = ('exc', 'cause') if isPython3 else ('type', 'inst', 'tback')
-        for attr in attrs:
+        for attr in ('exc', 'cause'):
             if getattr(node, attr, None) is not None:
                 args.append(self.visit(getattr(node, attr)))
         s = 'raise %s' % ', '.join(args) if args else 'raise'
@@ -1174,8 +1163,7 @@ class LeoGlobals:
                     self.shortFileName(code1.co_filename), code1.co_firstlineno)
             if files:
                 return '%s:%s' % (self.shortFileName(code1.co_filename), name)
-            else:
-                return name  # The code name
+            return name  # The code name
         except ValueError:
             # print('g._callerName: ValueError',n)
             return ''  # The stack is not deep enough.
@@ -1216,12 +1204,12 @@ class LeoGlobals:
         '''Returns optimized whitespace corresponding to width with the indicated tab_width.'''
         if width <= 0:
             return ""
-        elif tab_width > 1:
+        if tab_width > 1:
             tabs = int(width / tab_width)
             blanks = int(width % tab_width)
             return ('\t' * tabs) + (' ' * blanks)
-        else:  # Negative tab width always gets converted to blanks.
-            return (' ' * width)
+        # Negative tab width always gets converted to blanks.
+        return (' ' * width)
     #@+node:ekr.20160316091132.87: *3* g.computeLeadingWhitespaceWidth
     def computeLeadingWhitespaceWidth(self, s, tab_width):
         '''Returns optimized whitespace corresponding to width with the indicated tab_width.'''
@@ -1234,22 +1222,6 @@ class LeoGlobals:
             else:
                 break
         return w
-    #@+node:ekr.20160316091132.88: *3* g.isString & isUnicode (py2cs.py)
-    def isString(self, s):
-        '''Return True if s is any string, but not bytes.'''
-        # pylint: disable=no-member
-        if isPython3:
-            return isinstance(s, str)
-        else:
-            return isinstance(s, types.StringTypes)
-
-    def isUnicode(self, s):
-        '''Return True if s is a unicode string.'''
-        # pylint: disable=no-member
-        if isPython3:
-            return isinstance(s, str)
-        else:
-            return isinstance(s, types.UnicodeType)
     #@+node:ekr.20160316091132.89: *3* g.pdb
     def pdb(self):
         try:
@@ -1263,8 +1235,7 @@ class LeoGlobals:
         # pylint: disable=invalid-unary-operand-type
         if n is None or n < 1:
             return os.path.basename(fileName)
-        else:
-            return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
+        return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
     #@+node:ekr.20160316091132.91: *3* g.splitLines
     def splitLines(self, s):
         '''Split s into lines, preserving trailing newlines.'''
@@ -1272,7 +1243,7 @@ class LeoGlobals:
     #@+node:ekr.20160316091132.92: *3* g.toUnicode (py2cs.py)
     def toUnicode(self, s, encoding='utf-8', reportErrors=False):
         '''Connvert a non-unicode string with the given encoding to unicode.'''
-        if g.isUnicode(s):
+        if isinstance(s, str):
             return s
         if not encoding:
             encoding = 'utf-8'
@@ -1287,38 +1258,17 @@ class LeoGlobals:
                 g.trace(g.callers())
                 print("toUnicode: Error converting %s... from %s encoding to unicode" % (
                     s[:200], encoding))
-        except AttributeError:
+        ### except AttributeError:
             # May be a QString.
-            s = g.u(s)
+            ### s = g.u(s)
         return s
-    #@+node:ekr.20160316091132.93: *3* g.trace
+    #@+node:ekr.20160316091132.93: *3* g.trace (py2cs.py) 
     def trace(self, *args, **keys):
         try:
             import leo.core.leoGlobals as leo_g
             leo_g.trace(caller_level=2, *args, **keys)
         except ImportError:
             print(args, keys)
-    #@+node:ekr.20160316091132.94: *3* g.u & g.ue (py2cs.py)
-    if isPython3:
-
-        def u(self, s):
-            '''Return s, converted to unicode from Qt widgets.'''
-            return s
-
-        def ue(self, s, encoding):
-            '''Return s, converted to unicode from an encoded string.'''
-            return s if g.isUnicode(s) else str(s, encoding)
-
-    else:
-
-        def u(self, s):
-            '''Return s, converted to unicode from Qt widgets.'''
-            # pylint: disable = undefined-variable
-            return builtins.unicode(s)
-
-        def ue(self, s, encoding):
-            # pylint: disable = undefined-variable
-            return builtins.unicode(s, encoding)
     #@-others
 #@+node:ekr.20160316091132.95: ** class MakeCoffeeScriptController
 class MakeCoffeeScriptController:
@@ -1505,9 +1455,8 @@ class MakeCoffeeScriptController:
             s = f.read()
             f.close()
             return s
-        else:
-            print('\nconfiguration file not found: %s' % fn)
-            return ''
+        print('\nconfiguration file not found: %s' % fn)
+        return ''
     #@+node:ekr.20160316091132.106: *4* mcs.init_parser
     def init_parser(self, s):
         '''Add double back-slashes to all patterns starting with '['.'''
@@ -1649,17 +1598,13 @@ class TokenSync:
     #@+node:ekr.20160316091132.117: *3* ts.dump_token
     def dump_token(self, token, verbose=False):
         '''Dump the token. It is either a string or a 5-tuple.'''
-        if g.isString(token):
+        if isinstance(token, str):
             return token
-        else:
-            t1, t2, t3, t4, t5 = token
-            kind = g.toUnicode(token_module.tok_name[t1].lower())
-            # raw_val = g.toUnicode(t5)
-            val = g.toUnicode(t2)
-            if verbose:
-                return 'token: %10s %r' % (kind, val)
-            else:
-                return val
+        t1, t2, t3, t4, t5 = token
+        kind = g.toUnicode(token_module.tok_name[t1].lower())
+        # raw_val = g.toUnicode(t5)
+        val = g.toUnicode(t2)
+        return 'token: %10s %r' % (kind, val) if verbose else val
     #@+node:ekr.20160316091132.118: *3* ts.is_line_comment
     def is_line_comment(self, token):
         '''Return True if the token represents a full-line comment.'''
@@ -1729,7 +1674,7 @@ class TokenSync:
         n = getattr(node, 'lineno', None)
         if n is None:
             return '<no line> for %s' % node.__class__.__name__
-        elif continued_lines:
+        if continued_lines:
             aList, n = [], n - 1
             while n < len(self.lines):
                 s = self.lines[n]
@@ -1740,8 +1685,7 @@ class TokenSync:
                     aList.append(s)
                     break
             return ''.join(aList)
-        else:
-            return self.lines[n - 1]
+        return self.lines[n - 1]
     #@+node:ekr.20160316091132.124: *3* ts.sync_string
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
@@ -1751,9 +1695,8 @@ class TokenSync:
             token = tokens.pop(0)
             self.string_tokens[n - 1] = tokens
             return self.token_val(token)
-        else:
-            g.trace('===== underflow line:', n, node.s)
-            return node.s
+        g.trace('===== underflow line:', n, node.s)
+        return node.s
     #@+node:ekr.20160316091132.125: *3* ts.token_kind/raw_val/val
     def token_kind(self, token):
         '''Return the token's type.'''
@@ -1790,8 +1733,7 @@ class TokenSync:
         '''
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
-        else:
-            return '\n'
+        return '\n'
     #@+node:ekr.20160316091132.128: *3* ts.trailing_comment_at_lineno
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #@+leo-ver=5-thin
-#@+node:ekr.20120309073748.9872: * @file bigdash.py
+#@+node:ekr.20120309073748.9872: * @file ../plugins/bigdash.py
 #@@first
 '''
 Global search window
@@ -17,13 +17,13 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ville.20120302233106.3583: ** << notes >> (bigdash.py)
 #@@nocolor-node
 #@+at
-# 
+#
 # Terry: I added an index of the oulines containing hits at the top of the
 # output. Because the link handling is already handled by BigDash and not the
 # WebView widget, I couldn't find a way to use the normal "#id" <href>/<a>
 # index jumping, so I extended the link handling to re-run the search and
 # render hits in the outline of interest at the top.
-# 
+#
 # EKR:
 # - This plugin does not use leofts.
 # - g.app.__global_search contains the singleton GlobalSearch instance.
