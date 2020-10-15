@@ -1768,11 +1768,67 @@
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
 <v t="ekr.20201014052236.1"><vh>Leo 6.3 release notes</vh>
-<v t="ekr.20201014052236.2"><vh>6.3: Code</vh></v>
-<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh></v>
-<v t="ekr.20201014052236.4"><vh>6.3: Features</vh></v>
-<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh></v>
-<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh></v>
+<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh>
+<v t="ekr.20201015122702.807"><vh>#1559: Headline icons doubled</vh></v>
+<v t="ekr.20201015122702.812"><vh>#1563: abbreviations w/ German keyboards</vh></v>
+<v t="ekr.20201015122702.815"><vh>#1564: open theme file fails on posix</vh></v>
+<v t="ekr.20201015122702.818"><vh>#1570: tab pane disappears</vh></v>
+<v t="ekr.20201015122702.892"><vh>#1595: no command function for 'About...'</vh></v>
+<v t="ekr.20201015122702.894"><vh>#1596: executeMinibufferCommand</vh></v>
+<v t="ekr.20201015122702.899"><vh>#1600: leoAst.py fails for python 3.8</vh></v>
+<v t="ekr.20201015122702.970"><vh>#1603: exit after refresh-from-disk</vh></v>
+<v t="ekr.20201015122702.1007"><vh>#1617: Fix ts importer problems</vh></v>
+<v t="ekr.20201015122702.1039"><vh>#1621: open-theme-file on arch linux</vh></v>
+<v t="ekr.20201015122702.1041"><vh>#1625: set language for cloned nodes</vh></v>
+<v t="ekr.20201015122702.1104"><vh>#1653: cursor moves</vh></v>
+<v t="ekr.20201015122702.1182"><vh>#1678: Remove duplicates in nested splitter Open Window list</vh></v>
+<v t="ekr.20201015122702.1185"><vh>#1688: performance bugs on open</vh></v>
+<v t="ekr.20201015122702.1247"><vh>#1696: @test nodes not colored correctly</vh></v>
+<v t="ekr.20201015122702.1260"><vh>#1700: unittest fails w/ python3.8</vh></v>
+</v>
+<v t="ekr.20201014052236.2"><vh>6.3: Code</vh>
+<v t="ekr.20201015122702.51"><vh>#1269: Refactor Leo's key handling code</vh></v>
+<v t="ekr.20201015122702.1271"><vh>#1709: remove pylint complaints from npyscreen sources</vh></v>
+<v t="ekr.20201015122702.1272"><vh>#1710: remove pyflakes complaints from mod_http.py</vh></v>
+</v>
+<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh>
+<v t="ekr.20201015122702.2"><vh>#1128: Add restart command</vh></v>
+<v t="ekr.20201015122702.822"><vh>#1575: Restore cycle-editor-focus</vh></v>
+<v t="ekr.20201015122702.881"><vh>#1593: paste-as-template</vh></v>
+<v t="ekr.20201015122702.998"><vh>#1606: move-lines-to-next-node</vh></v>
+<v t="ekr.20201015122702.1099"><vh>#1632: contract-all-subheads</vh></v>
+<v t="ekr.20201015122702.1256"><vh>#1698: Add [T] to show-settings legend</vh></v>
+<v t="ekr.20201015122702.1275"><vh>Add open-leo-py-ref-leo command </vh></v>
+</v>
+<v t="ekr.20201014052236.4"><vh>6.3: Features</vh>
+<v t="ekr.20201015122734.2"><vh>#0333 Render asciidoc and pandoc markup in VR</vh></v>
+<v t="ekr.20201015122734.54"><vh>#1286: better alt-click popups</vh></v>
+<v t="ekr.20201015122702.806"><vh>#1440: **** Unify the ast and token worlds</vh></v>
+<v t="ekr.20201015122702.817"><vh>#1565: Announce TOG classes</vh></v>
+<v t="ekr.20201015122702.824"><vh>#1581: read old .leo files</vh></v>
+<v t="ekr.20201015122702.871"><vh>#1592: ctrl-click should ignore defs in @nosearch</vh></v>
+<v t="ekr.20201015122702.965"><vh>#1602: ts coloring</vh></v>
+<v t="ekr.20201015122702.980"><vh>#1605: (x.rs) in headlines</vh></v>
+<v t="ekr.20201015122702.1003"><vh>#1616: Show github branch in outline title</vh></v>
+<v t="ekr.20201015122702.1033"><vh>#1619: @language json</vh></v>
+<v t="ekr.20201015122702.1037"><vh>#1620: git-diff clones added nodes</vh></v>
+<v t="ekr.20201015122702.1108"><vh>#1673: **** Retire qt docks</vh></v>
+</v>
+<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh>
+<v t="ekr.20201015144828.1"><vh>Removed dock-related command-line options</vh></v>
+</v>
+<v t="ekr.20201015122734.1"><vh>6.3: Plugins</vh>
+<v t="ekr.20201015122734.56"><vh>#1287: VR plugin should honor headline directives</vh></v>
+<v t="ekr.20201015122734.58"><vh>#1318: better arrangement for docks in new windows</vh></v>
+<v t="ekr.20201015122734.61"><vh>#1332: Plugins:About does not show VR</vh></v>
+<v t="ekr.20201015122734.65"><vh>#1473: Use standard opml tags</vh></v>
+<v t="ekr.20201015122734.72"><vh>#1481: JS importer fails with reveal.js</vh></v>
+<v t="ekr.20201015122734.355"><vh>#1493: python importer</vh></v>
+<v t="ekr.20201015122734.366"><vh>#1531: context menu</vh></v>
+<v t="ekr.20201015122734.384"><vh>#1538: Rust importer</vh></v>
+<v t="ekr.20201015122702.1000"><vh>#1608: cython importer</vh></v>
+<v t="ekr.20201015122702.1057"><vh>#1626: Fix c++ importer problems</vh></v>
+</v>
 </v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
 <v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
@@ -31838,7 +31894,7 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 <t tx="ekr.20201014052236.2"></t>
 <t tx="ekr.20201014052236.3"></t>
 <t tx="ekr.20201014052236.4"></t>
-<t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.2 see:
+<t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.3 see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.3+label%3Abug
 The first comment in each bug contains a summary of the bug and its fix.
 
@@ -31846,6 +31902,139 @@ Notable bugs:
 
 </t>
 <t tx="ekr.20201014052236.6"></t>
+<t tx="ekr.20201015122702.1000">https://github.com/leo-editor/leo-editor/issues/1608</t>
+<t tx="ekr.20201015122702.1003">https://github.com/leo-editor/leo-editor/issues/1616</t>
+<t tx="ekr.20201015122702.1007">https://github.com/leo-editor/leo-editor/issues/1617
+</t>
+<t tx="ekr.20201015122702.1033">https://github.com/leo-editor/leo-editor/issues/1619</t>
+<t tx="ekr.20201015122702.1037">https://github.com/leo-editor/leo-editor/issues/1620</t>
+<t tx="ekr.20201015122702.1039">https://github.com/leo-editor/leo-editor/issues/1621
+
+The fix to #1564 probably fixed this issue.</t>
+<t tx="ekr.20201015122702.1041">https://github.com/leo-editor/leo-editor/issues/1625</t>
+<t tx="ekr.20201015122702.1057">https://github.com/leo-editor/leo-editor/issues/1626</t>
+<t tx="ekr.20201015122702.1099">https://github.com/leo-editor/leo-editor/issues/1632</t>
+<t tx="ekr.20201015122702.1104">https://github.com/leo-editor/leo-editor/issues/1653
+
+forward-word-extend-selection doesn't work the same as back-word-extend-selection
+
+For example, I have:
+
+thing['select_me'] = 'something'.
+
+If I put my cursor at the beginning of select_me (inside the quote) and hit Ctrl+Shift+RtArrow, then I expect to stop before the matching end quote and select the word, but instead it skips the operators and goes to the s in 'something'. If I put the cursor at the end of select_me and Ctrl+Shift+LtArrow to go back, then it does stop at the quote as expected.
+</t>
+<t tx="ekr.20201015122702.1108">Rev 96f2826 in devel contains the old code.
+
+https://github.com/leo-editor/leo-editor/issues/1672
+
+PR: https://github.com/leo-editor/leo-editor/issues/1673
+
+Removed use_global_docks.</t>
+<t tx="ekr.20201015122702.1182">https://github.com/leo-editor/leo-editor/issues/1678</t>
+<t tx="ekr.20201015122702.1185">https://github.com/leo-editor/leo-editor/issues/1688
+
+python profileLeo.py &gt; profile.txt leo\core\leoPy.leo leo\plugins\leoPlugins.leo</t>
+<t tx="ekr.20201015122702.1247">https://github.com/leo-editor/leo-editor/issues/1696</t>
+<t tx="ekr.20201015122702.1256">https://github.com/leo-editor/leo-editor/issues/1698</t>
+<t tx="ekr.20201015122702.1260">https://github.com/leo-editor/leo-editor/issues/1700</t>
+<t tx="ekr.20201015122702.1271">https://github.com/leo-editor/leo-editor/issues/1709</t>
+<t tx="ekr.20201015122702.1272">https://github.com/leo-editor/leo-editor/issues/1710</t>
+<t tx="ekr.20201015122702.1275">Aka leo-py-ref-leo</t>
+<t tx="ekr.20201015122702.2">https://github.com/leo-editor/leo-editor/issues/1128</t>
+<t tx="ekr.20201015122702.51">https://github.com/leo-editor/leo-editor/issues/1269
+
+</t>
+<t tx="ekr.20201015122702.806">https://github.com/leo-editor/leo-editor/issues/1440</t>
+<t tx="ekr.20201015122702.807">https://github.com/leo-editor/leo-editor/issues/1559
+</t>
+<t tx="ekr.20201015122702.812">https://github.com/leo-editor/leo-editor/issues/1563
+
+The fix was to filter.doAltTweaks.
+
+===== shift-tab (unindent-region) failed with the new code.
+
+From https://en.m.wikipedia.org/wiki/German_keyboard_layout
+
+- The positions of the "Z" and "Y" keys are switched.
+
+- Part of the keyboard is adapted to include umlauted vowels (ä, ö, ü) and the sharp s (ß).
+
+- German keyboards change the right Alt key into an Alt Gr key to access a third level of key assignments.
+</t>
+<t tx="ekr.20201015122702.815">https://github.com/leo-editor/leo-editor/issues/1564</t>
+<t tx="ekr.20201015122702.817">https://github.com/leo-editor/leo-editor/issues/1565</t>
+<t tx="ekr.20201015122702.818">https://github.com/leo-editor/leo-editor/issues/1570
+
+PR: https://github.com/leo-editor/leo-editor/pull/1660
+
+The fix was to LM.initWrapperLeoFile.</t>
+<t tx="ekr.20201015122702.822">https://github.com/leo-editor/leo-editor/issues/1575</t>
+<t tx="ekr.20201015122702.824">https://github.com/leo-editor/leo-editor/issues/1581</t>
+<t tx="ekr.20201015122702.871">https://github.com/leo-editor/leo-editor/issues/1592</t>
+<t tx="ekr.20201015122702.881">https://github.com/leo-editor/leo-editor/issues/1593</t>
+<t tx="ekr.20201015122702.892">https://github.com/leo-editor/leo-editor/issues/1595
+
+The fix was to createMasterMenuCallback</t>
+<t tx="ekr.20201015122702.894">https://github.com/leo-editor/leo-editor/issues/1596</t>
+<t tx="ekr.20201015122702.899">https://github.com/leo-editor/leo-editor/issues/1600
+
+
+class arguments(posonlyargs, args, vararg, kwonlyargs, kw_defaults, kwarg, defaults)
+
+The arguments for a function. In Python 3:
+
+args, posonlyargs and kwonlyargs are lists of arg nodes.
+
+vararg and kwarg are single arg nodes, referring to the *args, **kwargs parameters.
+
+kw_defaults is a list of default values for keyword-only arguments.
+If one is None, the corresponding argument is required.
+
+defaults is a list of default values for arguments that can be passed positionally.
+If there are fewer defaults, they correspond to the last n arguments.
+
+Changed in version 3.8: posonlyargs was introduced in Python 3.8</t>
+<t tx="ekr.20201015122702.965">https://github.com/leo-editor/leo-editor/issues/1602</t>
+<t tx="ekr.20201015122702.970">https://github.com/leo-editor/leo-editor/issues/1603</t>
+<t tx="ekr.20201015122702.980">https://github.com/leo-editor/leo-editor/issues/1605</t>
+<t tx="ekr.20201015122702.998"></t>
+<t tx="ekr.20201015122734.1"></t>
+<t tx="ekr.20201015122734.2">https://github.com/leo-editor/leo-editor/issues/333</t>
+<t tx="ekr.20201015122734.355">https://github.com/leo-editor/leo-editor/issues/1493
+
+py_i.gen_lines makes py_i.tail_p an ivar, for py_i.starts_block.
+py_i.starts_block adds decorators for nested defs.</t>
+<t tx="ekr.20201015122734.366">https://github.com/leo-editor/leo-editor/issues/1531</t>
+<t tx="ekr.20201015122734.384">https://github.com/leo-editor/leo-editor/issues/1538
+
+Example signatures:
+
+@language rust
+
+impl From&lt;ParseError&gt; for CompileError {
+
+fn from(error: ParseError) -&gt; Self {
+
+impl fmt::Display for CompileError {
+
+fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; {
+
+pub fn statements_to_symbol_table(
+    statements: &amp;[ast::Statement],
+) -&gt; Result&lt;SymbolTable, SymbolTableError&gt; {
+
+</t>
+<t tx="ekr.20201015122734.54">https://github.com/leo-editor/leo-editor/issues/1286</t>
+<t tx="ekr.20201015122734.56">https://github.com/leo-editor/leo-editor/issues/1287</t>
+<t tx="ekr.20201015122734.58"></t>
+<t tx="ekr.20201015122734.61">https://github.com/leo-editor/leo-editor/issues/1332
+
+See also:
+https://github.com/leo-editor/leo-editor/issues/1318</t>
+<t tx="ekr.20201015122734.65">https://github.com/leo-editor/leo-editor/issues/1473</t>
+<t tx="ekr.20201015122734.72">https://github.com/leo-editor/leo-editor/issues/1481</t>
+<t tx="ekr.20201015144828.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
