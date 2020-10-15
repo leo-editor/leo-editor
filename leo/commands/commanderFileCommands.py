@@ -50,14 +50,8 @@ def reloadSettingsHelper(c, all):
 @g.commander_command('restart-leo')
 def restartLeo(self, event=None):
     """Restart Leo, reloading all presently open outlines."""
-    c = self
-    # 0. Remember the args to be used.
-    if g.app.sessionManager:
-        # Don't specify files, thereby using session data.
-        args = ['-c'] + [sys.argv[0]]
-    else:
-        # Load only those files originally on the command line.
-        args = ['-c'] + [z for z in sys.argv]
+    c, lm = self, g.app.loadManager
+    trace = 'shutdown' in g.app.debug
     # 1. Write .leoRecentFiles.txt.
     g.app.recentFilesManager.writeRecentFilesFile(c)
     # 2. Abort the restart if the user veto's any close.
@@ -82,8 +76,6 @@ def restartLeo(self, event=None):
         # This is similar to g.app.closeLeoWindow.
         g.doHook("close-frame", c=c)
         # Save the window state
-        g.app.saveWindowState(c)
-        g.app.saveEditorDockState(c)
         g.app.commander_cacher.commit() # store cache, but don't close it.
         # This may remove frame from the window list.
         if frame in g.app.windowList:
@@ -94,7 +86,11 @@ def restartLeo(self, event=None):
             g.app.forgetOpenFile(fn=c.fileName(), force=True)
     # 5. Complete the shutdown.
     g.app.finishQuit()
-    # 6. Restart.
+    # 6. Restart, restoring the original command line.
+    args = ['-c'] + [z for z in lm.old_argv]
+    if trace: g.trace('restarting with args', args)
+    sys.stdout.flush()
+    sys.stderr.flush()
     os.execv(sys.executable, args)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
