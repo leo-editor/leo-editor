@@ -2361,8 +2361,10 @@ class LoadManager:
             print('')
         # #1128: support for restart-leo.
         if not g.app.start_minimized:
-            c = g.app.log.c
-            c. frame.bringToFront()
+            try: # Careful: we may be unit testing.
+                g.app.log.c.frame.bringToFront()
+            except Exception:
+                pass
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
