@@ -81,6 +81,7 @@
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
+<v t="ekr.20201015145320.1"><vh>script: import legacy file</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -5398,6 +5399,16 @@ unl: class LeoCloud--&gt;LeoCloud.write_current
 </t>
 <t tx="ekr.20201012111649.4">gnx: ekr.20201012111338.43
 unl: Declarations (leo_cloud_server.py)
+</t>
+<t tx="ekr.20201015145320.1">import leo.core.leoImport as leoImport
+import importlib
+importlib.reload(leoImport)
+g.cls()
+# Change path as necessary.
+path = r'c:\users\edreamleo\lsa.py'
+assert g.os_path_exists(path)
+x = leoImport.LegacyExternalFileImporter(c)
+x.import_file(path)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
