@@ -1382,7 +1382,8 @@ class LeoApp:
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         assert self == g.app, repr(g.app)
-        if 'shutdown' in g.app.debug:
+        trace = 'shutdown' in g.app.debug
+        if trace:
             g.pr('finishQuit: killed:', g.app.killed)
         if not g.app.killed:
             g.doHook("end1")
@@ -2358,6 +2359,12 @@ class LoadManager:
             g.es_print(f"   files:{t4 - t3:5.2f} sec")
             g.es_print(f"   total:{t4 - t1:5.2f} sec")
             print('')
+        # #1128: support for restart-leo.
+        if not g.app.start_minimized:
+            try: # Careful: we may be unit testing.
+                g.app.log.c.frame.bringToFront()
+            except Exception:
+                pass
         g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
