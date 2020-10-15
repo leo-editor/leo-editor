@@ -1776,6 +1776,7 @@
 <v t="ekr.20201015122702.892"><vh>#1595: no command function for 'About...'</vh></v>
 <v t="ekr.20201015122702.894"><vh>#1596: executeMinibufferCommand</vh></v>
 <v t="ekr.20201015122702.899"><vh>#1600: leoAst.py fails for python 3.8</vh></v>
+<v t="ekr.20201015122702.965"><vh>#1602: ts coloring</vh></v>
 <v t="ekr.20201015122702.970"><vh>#1603: exit after refresh-from-disk</vh></v>
 <v t="ekr.20201015122702.1007"><vh>#1617: Fix ts importer problems</vh></v>
 <v t="ekr.20201015122702.1039"><vh>#1621: open-theme-file on arch linux</vh></v>
@@ -1792,42 +1793,42 @@
 <v t="ekr.20201015122702.1272"><vh>#1710: remove pyflakes complaints from mod_http.py</vh></v>
 </v>
 <v t="ekr.20201014052236.3"><vh>6.3: Commands</vh>
-<v t="ekr.20201015122702.2"><vh>#1128: Add restart command</vh></v>
+<v t="ekr.20201015122702.2"><vh>#1128: restart-leo command</vh></v>
 <v t="ekr.20201015122702.822"><vh>#1575: Restore cycle-editor-focus</vh></v>
+<v t="ekr.20201015122702.824"><vh>#1581: import-legacy-external-files</vh></v>
 <v t="ekr.20201015122702.881"><vh>#1593: paste-as-template</vh></v>
 <v t="ekr.20201015122702.998"><vh>#1606: move-lines-to-next-node</vh></v>
 <v t="ekr.20201015122702.1099"><vh>#1632: contract-all-subheads</vh></v>
 <v t="ekr.20201015122702.1256"><vh>#1698: Add [T] to show-settings legend</vh></v>
-<v t="ekr.20201015122702.1275"><vh>Add open-leo-py-ref-leo command </vh></v>
+<v t="ekr.20201015122702.1275"><vh>open-leo-py-ref-leo command </vh></v>
+</v>
+<v t="ekr.20201015152218.1"><vh>6.3: Importers</vh>
+<v t="ekr.20201015122734.72"><vh>#1481: JS importer fails with reveal.js</vh></v>
+<v t="ekr.20201015122734.355"><vh>#1493: python importer</vh></v>
+<v t="ekr.20201015122734.384"><vh>#1538: Rust importer</vh></v>
+<v t="ekr.20201015122702.1000"><vh>#1608: cython importer</vh></v>
+<v t="ekr.20201015122702.1057"><vh>#1626: Fix c++ importer problems</vh></v>
 </v>
 <v t="ekr.20201014052236.4"><vh>6.3: Features</vh>
-<v t="ekr.20201015122734.2"><vh>#0333 Render asciidoc and pandoc markup in VR</vh></v>
 <v t="ekr.20201015122734.54"><vh>#1286: better alt-click popups</vh></v>
-<v t="ekr.20201015122702.806"><vh>#1440: **** Unify the ast and token worlds</vh></v>
-<v t="ekr.20201015122702.817"><vh>#1565: Announce TOG classes</vh></v>
-<v t="ekr.20201015122702.824"><vh>#1581: read old .leo files</vh></v>
+<v t="ekr.20201015122702.806"><vh>#1440: leoAst.py: Unify the ast and token worlds</vh></v>
 <v t="ekr.20201015122702.871"><vh>#1592: ctrl-click should ignore defs in @nosearch</vh></v>
-<v t="ekr.20201015122702.965"><vh>#1602: ts coloring</vh></v>
 <v t="ekr.20201015122702.980"><vh>#1605: (x.rs) in headlines</vh></v>
 <v t="ekr.20201015122702.1003"><vh>#1616: Show github branch in outline title</vh></v>
 <v t="ekr.20201015122702.1033"><vh>#1619: @language json</vh></v>
 <v t="ekr.20201015122702.1037"><vh>#1620: git-diff clones added nodes</vh></v>
-<v t="ekr.20201015122702.1108"><vh>#1673: **** Retire qt docks</vh></v>
+<v t="ekr.20201015122702.1108"><vh>#1673: Retire qt docks</vh></v>
 </v>
 <v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh>
 <v t="ekr.20201015144828.1"><vh>Removed dock-related command-line options</vh></v>
 </v>
 <v t="ekr.20201015122734.1"><vh>6.3: Plugins</vh>
+<v t="ekr.20201015122734.2"><vh>#0333: Render asciidoc and pandoc markup in VR</vh></v>
 <v t="ekr.20201015122734.56"><vh>#1287: VR plugin should honor headline directives</vh></v>
 <v t="ekr.20201015122734.58"><vh>#1318: better arrangement for docks in new windows</vh></v>
 <v t="ekr.20201015122734.61"><vh>#1332: Plugins:About does not show VR</vh></v>
 <v t="ekr.20201015122734.65"><vh>#1473: Use standard opml tags</vh></v>
-<v t="ekr.20201015122734.72"><vh>#1481: JS importer fails with reveal.js</vh></v>
-<v t="ekr.20201015122734.355"><vh>#1493: python importer</vh></v>
 <v t="ekr.20201015122734.366"><vh>#1531: context menu</vh></v>
-<v t="ekr.20201015122734.384"><vh>#1538: Rust importer</vh></v>
-<v t="ekr.20201015122702.1000"><vh>#1608: cython importer</vh></v>
-<v t="ekr.20201015122702.1057"><vh>#1626: Fix c++ importer problems</vh></v>
 </v>
 </v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
@@ -31876,6 +31877,11 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
 **The highlights of Leo 6.3**
 
+- leoAst.py: The unification of Python's token and ast worlds.
+- Retired all Qt Dock code.
+- Improved viewrendered and viewrendered3 plugins.
+- Improved several importer plugins.
+- Refactored Leo's key handling code.
 
 **Links**
 
@@ -31963,7 +31969,6 @@ From https://en.m.wikipedia.org/wiki/German_keyboard_layout
 - German keyboards change the right Alt key into an Alt Gr key to access a third level of key assignments.
 </t>
 <t tx="ekr.20201015122702.815">https://github.com/leo-editor/leo-editor/issues/1564</t>
-<t tx="ekr.20201015122702.817">https://github.com/leo-editor/leo-editor/issues/1565</t>
 <t tx="ekr.20201015122702.818">https://github.com/leo-editor/leo-editor/issues/1570
 
 PR: https://github.com/leo-editor/leo-editor/pull/1660
@@ -32035,6 +32040,7 @@ https://github.com/leo-editor/leo-editor/issues/1318</t>
 <t tx="ekr.20201015122734.65">https://github.com/leo-editor/leo-editor/issues/1473</t>
 <t tx="ekr.20201015122734.72">https://github.com/leo-editor/leo-editor/issues/1481</t>
 <t tx="ekr.20201015144828.1"></t>
+<t tx="ekr.20201015152218.1"></t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
