@@ -1395,9 +1395,13 @@ class JEditColorizer(BaseJEditColorizer):
         return 0
     #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
     def match_section_ref(self, s, i):
+        p = self.c.p
         if self.trace_leo_matches:
             g.trace()
-        p = self.c.p
+        #
+        # Special case for @language patch: section references are not honored.
+        if self.language == 'patch':
+            return 0
         if not g.match(s, i, '<<'):
             return 0
         k = g.find_on_line(s, i + 2, '>>')
