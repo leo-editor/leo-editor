@@ -82,6 +82,8 @@
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 <v t="ekr.20201015145320.1"><vh>script: import legacy file</vh></v>
+<v t="ekr.20201016084019.1"><vh>script: start loggin</vh></v>
+<v t="ekr.20201016084006.1"><vh>script: yoton "other end"</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -5372,6 +5374,32 @@ path = r'c:\users\edreamleo\lsa.py'
 assert g.os_path_exists(path)
 x = leoImport.LegacyExternalFileImporter(c)
 x.import_file(path)
+</t>
+<t tx="ekr.20201016084006.1">import yoton
+
+# Create another context and a sub channel
+ct2 = yoton.Context()
+sub = yoton.SubChannel(ct2, 'chat')
+
+# Connect
+ct2.connect('publichost:test')
+
+# Receive
+while True:
+    i = int(sub.recv())
+    print(i)
+    if i == 10:
+        break
+</t>
+<t tx="ekr.20201016084019.1">import logging
+rootLogger = logging.getLogger('')
+rootLogger.setLevel(logging.DEBUG)
+socketHandler = logging.handlers.SocketHandler(
+    'localhost',
+    logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+)
+rootLogger.addHandler(socketHandler)
+logging.info('-' * 20)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>

@@ -1829,6 +1829,23 @@
 <v t="ekr.20201015122734.61"><vh>#1332: Plugins:About does not show VR</vh></v>
 <v t="ekr.20201015122734.65"><vh>#1473: Use standard opml tags</vh></v>
 <v t="ekr.20201015122734.366"><vh>#1531: context menu</vh></v>
+<v t="ekr.20201016083327.1"><vh>#1669: Deprecated settings_finder plugin</vh>
+<v t="ekr.20201016083327.2"><vh>Found:build_menu</vh>
+<v t="ekr.20201016083327.3"><vh>onCreate</vh></v>
+<v t="ekr.20201016083327.4"><vh>sf._outline_data_to_python</vh></v>
+<v t="ekr.20201016083327.13"><vh>sf.build_menu</vh></v>
+<v t="ekr.20201016083327.6"><vh>sf.tree_to_menulist</vh></v>
+</v>
+<v t="ekr.20201016083327.7"><vh>Found:handleSpecialMenus</vh>
+<v t="ekr.20201016083327.10"><vh>LeoMenu.createMenuFromConfigList</vh></v>
+<v t="ekr.20201016083327.9"><vh>LeoMenu.createMenusFromConfigList &amp; helpers</vh>
+<v t="ekr.20201016083327.10"></v>
+<v t="ekr.20201016083327.12"><vh>LeoMenu.handleSpecialMenus</vh></v>
+</v>
+<v t="ekr.20201016083327.12"></v>
+<v t="ekr.20201016083327.13"></v>
+</v>
+</v>
 </v>
 </v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
@@ -32041,6 +32058,176 @@ https://github.com/leo-editor/leo-editor/issues/1318</t>
 <t tx="ekr.20201015122734.72">https://github.com/leo-editor/leo-editor/issues/1481</t>
 <t tx="ekr.20201015144828.1"></t>
 <t tx="ekr.20201015152218.1"></t>
+<t tx="ekr.20201016083327.1">https://github.com/leo-editor/leo-editor/issues/1669
+This plugin has been deprecated.</t>
+<t tx="ekr.20201016083327.10">def createMenuFromConfigList(self, parentName, aList, level=0):
+    """Build menu based on nested list
+
+    List entries are either:
+
+        ['@item', 'command-name', 'optional-view-name']
+
+    or:
+
+        ['@menu Submenu name', &lt;nested list&gt;, None]
+
+    :param str parentName: name of menu under which to place this one
+    :param list aList: list of entries as described above
+    """
+    parentMenu = self.getMenu(parentName)
+    if not parentMenu:
+        g.trace('NO PARENT', parentName, g.callers())
+    table = []
+    for z in aList:
+        kind, val, val2 = z
+        if kind.startswith('@menu'):
+            # Menu names can be unicode without any problem.
+            name = kind[5:].strip()
+            if table:
+                self.createMenuEntries(parentMenu, table)
+            if not self.handleSpecialMenus(name, parentName,
+                alt_name=val2,  #848.
+                table=table,
+            ):
+                menu = self.createNewMenu(name, parentName)
+                    # Create submenu of parent menu.
+                if menu:
+                    # Partial fix for #528.
+                    self.createMenuFromConfigList(name, val, level + 1)
+            table = []
+        elif kind == '@item':
+            name = str(val)  # Item names must always be ascii.
+            if val2:
+                # Translated names can be unicode.
+                table.append((val2, name),)
+            else:
+                table.append(name)
+        else:
+            g.trace('can not happen: bad kind:', kind)
+    if table:
+        self.createMenuEntries(parentMenu, table)
+</t>
+<t tx="ekr.20201016083327.12">def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
+    """
+    Handle a special menu if name is the name of a special menu.
+    return True if this method handles the menu.
+    """
+    c = self.c
+    if table is None: table = []
+    name2 = name.replace('&amp;', '').replace(' ', '').lower()
+    if name2 == 'plugins':
+        # Create the plugins menu using a hook.
+        g.doHook("create-optional-menus", c=c, menu_name=name)
+        return True
+    if name2.startswith('recentfiles'):
+        # Just create the menu.
+        # createRecentFilesMenuItems will create the contents later.
+        g.app.recentFilesManager.recentFilesMenuName = alt_name or name
+            #848
+        self.createNewMenu(alt_name or name, parentName)
+        return True
+    if name2 == 'help' and g.isMac:
+        helpMenu = self.getMacHelpMenu(table)
+        return helpMenu is not None
+    return False
+</t>
+<t tx="ekr.20201016083327.13">def build_menu(self):
+    """build_menu - build the menu of settings, called from handleSpecialMenus()
+    """
+    menu = self.c.frame.menu
+    # Create the Edit Settings menu at the end of the Settings menu.
+    settings_menu = menu.getMenu('Settings')
+    menu.add_separator(settings_menu)
+    menu.createNewMenu('Edit Settings', 'Settings')
+    finder_menu = self._outline_data_to_python(
+        self.c.config.getOutlineData("settings-finder-menu"))
+    aList = []
+    self.tree_to_menulist(aList, finder_menu)
+    menu.createMenuFromConfigList("Edit Settings", aList[0][1])
+        # #1144: Case must match.
+        # aList is [['@outline-data settings-finder-menu', &lt;list of submenus&gt;, None]]
+        # so aList[0][1] is the list of submenus
+    return aList
+</t>
+<t tx="ekr.20201016083327.2">@nosearch
+
+# flattened, word, ignore-case, head, body
+
+# found 4 nodes</t>
+<t tx="ekr.20201016083327.3">def onCreate (tag, key):
+
+    c = key.get('c')
+    if c:
+        sf = SettingsFinder(c)
+        sf.build_menu()
+
+</t>
+<t tx="ekr.20201016083327.4">def _outline_data_to_python(self, xml):
+    """_outline_data_to_python - make xml from c.config.getOutlineData()
+    into a detached VNode tree.
+
+    FIXME this should be elsewhere, just here to allow build_menu() to
+    wortk for now.
+
+    :param str xml: xml returned by c.config.getOutlineData()
+    :return: VNode tree representing outline data
+    :rtype: VNode
+    """
+    from xml.etree import ElementTree
+    # FIXME, probably shouldn't be going @settings tree -&gt; xml -&gt; VNode tree,
+    # but @settings tree -&gt; VNode tree, xml + paste to use is cumbersome
+    body = {} # node ID to node mapping to fill in body text later
+    top = VNode(self.c)
+    dom = ElementTree.fromstring(xml)
+    self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
+    for t in dom.find('tnodes').findall('t'):
+        if t.text is not None:
+            body[t.get('tx')].b = t.text
+    return top
+</t>
+<t tx="ekr.20201016083327.6">def tree_to_menulist(self, aList, node):
+    """recursive helper for build_menu(), copies VNode tree data
+    to list format used by c.frame.menu.createMenuFromConfigList()
+    """
+    if node.children:
+        child_list = []
+        aList.append(["@menu " + node.h, child_list, None])
+        for child in node.children:
+            self.tree_to_menulist(child_list, child)
+    else:
+        aList.append(["@item", self.get_command(node), node.h])
+</t>
+<t tx="ekr.20201016083327.7">@nosearch
+
+# flattened, word, ignore-case, head, body
+
+# found 4 nodes</t>
+<t tx="ekr.20201016083327.9">def createMenusFromConfigList(self, aList):
+    """
+    Create menus from aList.
+    The 'top' menu has already been created.
+    """
+    # Called from createMenuBar.
+    c = self.c
+    for z in aList:
+        kind, val, val2 = z
+        if kind.startswith('@menu'):
+            name = kind[len('@menu') :].strip()
+            if not self.handleSpecialMenus(name, parentName=None):
+                # Fix #528: Don't create duplicate menu items.
+                menu = self.createNewMenu(name)
+                    # Create top-level menu.
+                if menu:
+                    self.createMenuFromConfigList(name, val, level=0)
+                else:
+                    g.trace('no menu', name)
+        else:
+            self.error(f"{kind} {val} not valid outside @menu tree")
+    aList = c.config.getOpenWith()
+    if aList:
+        # a list of dicts.
+        self.createOpenWithMenuFromTable(aList)
+</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:

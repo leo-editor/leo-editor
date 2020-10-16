@@ -3103,6 +3103,195 @@ exclude = ['leoIPython.py',]
     # leoIPython.py will give an annoying error if IPython can't be imported.
 modules = tm.importAllModulesInPath(path,exclude=exclude)
 suite   = tm.createUnitTestsFromDoctests(modules)
+#@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
+@language rest
+@wrap
+
+- checkout the mvc-prototype branch
+
+- open leo/core/LeoPyRef.leo in Leo and save this document as leo/core/LeoPyRef.db
+  This should provide a large outline for the prototype to play with.
+
+- python leo/extensions/myleoqt.py leo\core\leoPy.db
+#@+node:vitalije.20200502083732.1: *4* @@@file ../extensions/myleoqt.py
+#@+node:vitalije.20200502091628.1: *4* <<imports>>
+from collections import defaultdict
+import sys
+import os
+import pickle
+from PyQt5 import QtCore, QtGui, QtWidgets
+assert QtGui
+import sqlite3
+import time
+import timeit
+import unittest
+from hypothesis.strategies import lists, integers, sampled_from, data
+from hypothesis import given, settings
+from datetime import timedelta
+import random
+
+# Set the path before importing Leo files.
+LEO_INSTALLED_AT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if LEO_INSTALLED_AT not in sys.path:
+    sys.path.append(LEO_INSTALLED_AT)
+LEO_ICONS_DIR = os.path.join(LEO_INSTALLED_AT, 'leo', 'themes', 'light', 'Icons')
+try:
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoGlobals as g
+except ImportError:
+    print('===== import error!')
+g.app = g.bunch(nodeIndices=leoNodes.NodeIndices('vitalije'))
+
+Q = QtCore.Qt
+#@+node:vitalije.20200502103535.1: *4* draw_tree
+def draw_tree(tree, root, icons):
+    def additem(par, parItem):
+        for ch in par.children:
+            item = QtWidgets.QTreeWidgetItem()
+            item.setFlags(item.flags() |
+                          Q.ItemIsEditable |
+                          item.DontShowIndicatorWhenChildless)
+            parItem.addChild(item)
+            item.setText(0, ch.h)
+            item.setData(0, 1024, ch)
+            item.setExpanded(ch.isExpanded())
+            item.setIcon(0, icons[ch.computeIcon()])
+            additem(ch, item)
+    ritem = tree.invisibleRootItem()
+    ritem.setData(0, 1024, root)
+    additem(root, ritem)
+#@+node:vitalije.20200508091419.1: *4* execute_script
+def execute_script(self):
+    c = self.c
+    t = self.tree
+    root = t.invisibleRootItem()
+    curr = t.currentItem()
+    currpath = path_to_item(root, curr)
+
+    # now we need to replace current top level items
+    # with the their clones so that we can preserve
+    # the original ones for undo
+    t.blockSignals(True)
+    n = root.childCount()
+    olditems = [root.takeChild(0) for x in range(n)]
+    for item in olditems:
+        root.addChild(item.clone())
+
+    # let's find current item in the new tree
+    ncurr = item_from_path(root, currpath)
+    t.setCurrentItem(ncurr)
+    t.blockSignals(False)
+
+    # store old v-nodes data
+    old_vs = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
+
+    # new values for the redo operation
+    # if the script finishes without exception
+    # these values will be updated after the script finishes
+    # for now they are the same as the old values
+    newitems = olditems
+    new_vs = old_vs
+    newcurr = curr
+
+    # some more data for the locals in script
+    p = QtPosition(ncurr)
+    v = p.v
+    script = v.b
+
+    @others
+
+    try:
+        exec(script, dict(c=c, v=v, p=p, tree=t, root=root))
+        # update new values and redraw the tree
+        nset = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
+        new_vs =  nset - old_vs
+        old_vs = old_vs - nset
+        item = t.currentItem()
+        newv = item.data(0, 1024)
+        npath = path_to_item(root, item)
+        self.redraw()
+
+        newcurr = item_from_path(root, npath)
+        # we want to keep the same node selected if possible
+        # but script may delete previously selected node or
+        # some other node so their position won't match
+        if not newcurr or newcurr.data(0, 1024) != newv:
+            # let's try to find item that points to the newv
+            for item in iter_all_v_items(root, newv):
+                newcurr = item
+                break
+
+        # remember the newitems for redo
+        n2 = root.childCount()
+        newitems = [root.child(i) for i in range(n2)]
+
+        # select node if we found one to select
+        if newcurr:
+            t.setCurrentItem(newcurr)
+
+    except KeyboardInterrupt:
+        # sometimes script got into an infinite loop
+        # or work too long
+        undoexec()
+        return
+    except:
+        g.es_print_exception()
+        undoexec()
+        return
+    # script terminated successfully let's add undo/redo pair
+    self.c.addUndo(undoexec, redoexec)
+#@+node:vitalije.20200508104717.1: *5* undoexec
+def undoexec():
+    for v, h, b in old_vs:
+        v.b = b
+        v.h = h
+    t.blockSignals(True)
+    root.takeChildren()
+    for item in olditems:
+        root.addChild(item)
+    reconnect_vnodes(root)
+    t.blockSignals(False)
+    t.setCurrentItem(curr)
+#@+node:vitalije.20200508104721.1: *5* redoexec
+def redoexec():
+    for v, h, b in new_vs:
+        v.b = b
+        v.h = h
+    t.blockSignals(True)
+    root.takeChildren()
+    for item in newitems:
+        root.addChild(item)
+    reconnect_vnodes(root)
+    t.blockSignals(False)
+    t.setCurrentItem(newcurr)
+#@+node:vitalije.20200507182943.1: *4* test_select_and_commnads
+@settings(max_examples=50, deadline=timedelta(seconds=4))
+@given(data())
+def test_select_and_commnads(data):
+    app = demo2_app()
+
+    index = data.draw(integers(min_value=0, max_value=10000))
+    names = data.draw(lists(sampled_from(method_names), min_size=5,
+                             max_size=100))
+
+    select_item_at_index(app, index)
+    a1, b1 = outline_shapes(app)
+    for name in names:
+        meth = getattr(app, name)
+        meth()
+        app.processEvents() #
+        if method_names.index(name) > 3:
+            # possible change in the outline
+            a2, b2 = outline_shapes(app)
+            assert a2 == b2
+            if a1 != a2:
+                # the change is real - let's undo it
+                app.undo()
+                a, b = outline_shapes(app)
+                assert a == a1
+                assert b == b1
+                app.redo()
+            a1, b1 = a2, b2
 #@+node:ekr.20200303071111.1: ** ----- Macros
 # Most of this code dates from Leo 5.5.
 #@+node:ekr.20200303061541.113: *3* 5.0 COPY ga.get_arg (entry) & helpers
