@@ -1937,7 +1937,10 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh></v>
 <v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20181018110051.1"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
-<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh>
+<v t="ekr.20201016081803.1"><vh>Alphabetica list</vh></v>
+<v t="ekr.20201016081718.1"><vh>Not recommended</vh></v>
+</v>
 <v t="tbrown.20091129085043.11789"><vh>active_path plugin</vh>
 <v t="tbrown.20091129085043.11790"><vh>@string active-path-attype = auto</vh></v>
 <v t="tbrown.20091129085043.11792"><vh>@string active-path-event = headdclick1</vh></v>
@@ -2322,6 +2325,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20070224073109.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3776,6 +3780,7 @@ To summarize, Leo enables plugins in a (relatively) straightforward way when it 
 Leo acts in a reasonable manner, but it is still possible to get confused even if you know the rules. This suggests that you refrain from putting @enabled-plugins nodes in any .leo file except myLeoSettings.leo. That way all your .leo files will use the same plugins. If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time.
 </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
+# The children of this node are *not* loaded.
 
 # This node *MUST* be a child of the @settings node to take effect.
 
@@ -3785,152 +3790,20 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # Highly-recommended plugins:
 
 plugins_menu.py
-free_layout.py
-    # Now loaded automatically.
-    # But it's useful to have a free_layout menu in the Plugins menu.
-
+free_layout.py      # loaded automatically. Puts free_layout in Plugins menu.
+    
 # Recommended plugins:
 
-contextmenu.py
-    # This is required by the vim.py and xemacs.py plugins.
+contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 leo_to_html.py
 mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
 screen_capture.py
-settings_finder.py
 stickynotes.py
 todo.py
 viewrendered.py
-
-# Alphabetical list of all Leo plugins.
-
-# Note: This list may be out of date. leo/plugins contains all official plugins.
-# Note: Leo loads all qt_*.py files automatically when the qt gui is in effect.
-
-# active_path.py
-# add_directives.py
-# at_folder.py
-# at_produce.py
-# at_view.py
-# attrib_edit.py
-# backlink.py
-# bibtex.py
-# bigdash.py
-# bookmarks.py
-# bzr_qcommands.py
-# chapter_hoist.py
-# colorize_headlines.py
-# contextmenu.py
-# ctagscompleter.py
-# cursesGui.py
-# datenodes.py
-# debugger_pudb.py
-# dragdropgoodies.py
-# dtest.py
-# dump_globals.py
-# empty_leo_file.py
-# enable_gc.py
-# expfolder.py
-# FileActions.py
-# free_layout.py
-    # loaded automatically
-# ftp.py
-# geotag.py
-# gitarchive.py
-# graphcanvas.py
-# import_cisco_config.py
-# initinclass.py
-# interact.py
-# jinjarender.py
-# leo_interface.py
-# leo_pdf.py
-# leo_to_html.py
-# leo_to_rtf.py
-# leocursor.py
-# leofeeds.py
-# leomail.py
-# leomylyn.py
-# leoOPML.py
-# leoremote.py
-# leoscreen.py
-# lineNumbers.py
-# livecode.py
-# macros.py
-# markup_inline.py
-# maximizeNewWindows.py
-# mime.py
-# mnplugins.py
-# mod_autosave.py
-# mod_framesize.py
-# mod_http.py
-# mod_leo2ascd.py
-# mod_read_dir_outline.py
-# mod_scripting.py
-# mod_speedups.py
-# mod_tempfname.py
-# mod_timestamp.py
-# multifile.py
-# nav_qt.py
-# nested_splitter.py
-    # loaded automatically.
-# niceNosent.py
-# nodeActions.py
-# nodediff.py
-# nodetags.py
-# nodewatch.py
-# notebook.py
-# open_shell.py
-# outline_export.py
-# paste_as_headlines.py
-# plugins_menu.py
-# pretty_print.py
-# projectwizard.py
-# python_terminal.py
-# QNCalendarWidget.py
-# qt_quicksearch.py
-# quickMove.py
-# quicksearch.py
-# quit_leo.py
-# read_only_nodes.py
-# redirect_to_log.py
-# richtext.py
-# rss.py
-# rst3.py
-# run_nodes.py
-# screen_capture.py
-# screencast.py
-# screenshots.py
-# script_io_to_body.py
-# scripts_menu.py
-# setHomeDirectory.py
-# settings_finder.py
-# sftp.py
-# slideshow.py
-# spydershell.py
-# startfile.py
-# stickynotes.py
-# stickynotes_plus.py
-# systray.py
-# testRegisterCommand.py
-# textnode.py
-# todo.py
-# tomboy_import.py
-# trace_gc_plugin.py
-# trace_keys.py
-# trace_tags.py
-# valuespace.py
-# viewrendered.py
-# viewrendered2.py
-# vim.py
-# wikiview.py
-# word_count.py
-# word_export.py
-# xemacs.py
-# xml_edit.py
-# xsltWithNodes.py
-# zenity_file_dialogs.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.
@@ -11941,6 +11814,134 @@ If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="ekr.20201010141557.1"></t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
+</t>
+<t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.
+
+# leo_pdf.py
+# leo_to_rtf.py
+# mnplugins.py
+# mod_speedups.py
+# run_nodes.py
+# settings_finder.py
+# stickynotes_plus.py
+# viewrendered2.py</t>
+<t tx="ekr.20201016081803.1"># Alphabetical list of plugins.
+
+# Note: This list may be out of date. leo/plugins contains all official plugins.
+# Note: Leo loads all qt_*.py files automatically when the qt gui is in effect.
+
+# active_path.py
+# add_directives.py
+# at_folder.py
+# at_produce.py
+# at_view.py
+# attrib_edit.py
+# backlink.py
+# bibtex.py
+# bigdash.py
+# bookmarks.py
+# bzr_qcommands.py
+# chapter_hoist.py
+# colorize_headlines.py
+# contextmenu.py
+# ctagscompleter.py
+# cursesGui.py
+# datenodes.py
+# debugger_pudb.py
+# dragdropgoodies.py
+# dtest.py
+# dump_globals.py
+# empty_leo_file.py
+# enable_gc.py
+# expfolder.py
+# FileActions.py
+# free_layout.py # loaded automatically
+# ftp.py
+# geotag.py
+# gitarchive.py
+# graphcanvas.py
+# import_cisco_config.py
+# initinclass.py
+# interact.py
+# jinjarender.py
+# leo_interface.py
+# leo_to_html.py
+# leocursor.py
+# leofeeds.py
+# leomail.py
+# leomylyn.py
+# leoOPML.py
+# leoremote.py
+# leoscreen.py
+# lineNumbers.py
+# livecode.py
+# macros.py
+# markup_inline.py
+# maximizeNewWindows.py
+# mime.py
+# mod_autosave.py
+# mod_framesize.py
+# mod_http.py
+# mod_leo2ascd.py
+# mod_read_dir_outline.py
+# mod_scripting.py
+# mod_tempfname.py
+# mod_timestamp.py
+# multifile.py
+# nav_qt.py
+# niceNosent.py
+# nodeActions.py
+# nodediff.py
+# nodetags.py
+# nodewatch.py
+# notebook.py
+# open_shell.py
+# outline_export.py
+# paste_as_headlines.py
+# plugins_menu.py
+# pretty_print.py
+# projectwizard.py
+# python_terminal.py
+# QNCalendarWidget.py
+# qt_quicksearch.py
+# quickMove.py
+# quicksearch.py
+# quit_leo.py
+# read_only_nodes.py
+# redirect_to_log.py
+# richtext.py
+# rss.py
+# rst3.py
+# screen_capture.py
+# screencast.py
+# screenshots.py
+# script_io_to_body.py
+# scripts_menu.py
+# setHomeDirectory.py
+# settings_finder.py
+# sftp.py
+# slideshow.py
+# spydershell.py
+# startfile.py
+# stickynotes.py
+# systray.py
+# testRegisterCommand.py
+# textnode.py
+# todo.py
+# tomboy_import.py
+# trace_gc_plugin.py
+# trace_keys.py
+# trace_tags.py
+# valuespace.py
+# viewrendered3.py
+# vim.py
+# wikiview.py
+# word_count.py
+# word_export.py
+# xemacs.py
+# xml_edit.py
+# xsltWithNodes.py
+# zenity_file_dialogs.py
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
