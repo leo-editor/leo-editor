@@ -1613,9 +1613,7 @@
 <v t="ekr.20180527084307.1"><vh>What's new in Leo 5.7.3</vh></v>
 <v t="ekr.20180427130312.1"><vh>What's new in Leo 5.7.2</vh></v>
 <v t="ekr.20180404015558.1"><vh>What's new in Leo 5.7.1</vh>
-<v t="ekr.20180411071648.1"><vh>Features</vh>
-<v t="ekr.20180411071654.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
-</v>
+<v t="ekr.20180411071648.1"><vh>Features</vh></v>
 <v t="ekr.20180411071733.1"><vh>Settings</vh></v>
 </v>
 <v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh>
@@ -26779,9 +26777,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20180411071648.1"></t>
-<t tx="ekr.20180411071654.1">https://github.com/leo-editor/leo-editor/issues/850
-
+<t tx="ekr.20180411071648.1">#850: Optionally convert Meta to Alt on MacOs
+https://github.com/leo-editor/leo-editor/issues/850
 This feature is disabled by default. To enable, set @bool replace-meta-with-alt = True.
 </t>
 <t tx="ekr.20180411071733.1">- @bool replace-meta-with-alt.
