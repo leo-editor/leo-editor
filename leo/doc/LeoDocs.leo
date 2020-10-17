@@ -1766,85 +1766,13 @@
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
 <v t="ekr.20201014052236.1"><vh>Leo 6.3 release notes</vh>
-<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh>
-<v t="ekr.20201015122702.807"><vh>#1559: Headline icons doubled</vh></v>
-<v t="ekr.20201015122702.812"><vh>#1563: abbreviations w/ German keyboards</vh></v>
-<v t="ekr.20201015122702.815"><vh>#1564: open theme file fails on posix</vh></v>
-<v t="ekr.20201015122702.818"><vh>#1570: tab pane disappears</vh></v>
-<v t="ekr.20201015122702.892"><vh>#1595: no command function for 'About...'</vh></v>
-<v t="ekr.20201015122702.894"><vh>#1596: executeMinibufferCommand</vh></v>
-<v t="ekr.20201015122702.899"><vh>#1600: leoAst.py fails for python 3.8</vh></v>
-<v t="ekr.20201015122702.965"><vh>#1602: ts coloring</vh></v>
-<v t="ekr.20201015122702.970"><vh>#1603: exit after refresh-from-disk</vh></v>
-<v t="ekr.20201015122702.1007"><vh>#1617: Fix ts importer problems</vh></v>
-<v t="ekr.20201015122702.1039"><vh>#1621: open-theme-file on arch linux</vh></v>
-<v t="ekr.20201015122702.1041"><vh>#1625: set language for cloned nodes</vh></v>
-<v t="ekr.20201015122702.1104"><vh>#1653: cursor moves</vh></v>
-<v t="ekr.20201015122702.1182"><vh>#1678: Remove duplicates in nested splitter Open Window list</vh></v>
-<v t="ekr.20201015122702.1185"><vh>#1688: performance bugs on open</vh></v>
-<v t="ekr.20201015122702.1247"><vh>#1696: @test nodes not colored correctly</vh></v>
-<v t="ekr.20201015122702.1260"><vh>#1700: unittest fails w/ python3.8</vh></v>
-</v>
-<v t="ekr.20201014052236.2"><vh>6.3: Code</vh>
-<v t="ekr.20201015122702.51"><vh>#1269: Refactor Leo's key handling code</vh></v>
-<v t="ekr.20201015122702.1271"><vh>#1709: remove pylint complaints from npyscreen sources</vh></v>
-<v t="ekr.20201015122702.1272"><vh>#1710: remove pyflakes complaints from mod_http.py</vh></v>
-</v>
-<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh>
-<v t="ekr.20201015122702.2"><vh>#1128: restart-leo command</vh></v>
-<v t="ekr.20201015122702.822"><vh>#1575: Restore cycle-editor-focus</vh></v>
-<v t="ekr.20201015122702.824"><vh>#1581: import-legacy-external-files</vh></v>
-<v t="ekr.20201015122702.881"><vh>#1593: paste-as-template</vh></v>
-<v t="ekr.20201015122702.998"><vh>#1606: move-lines-to-next-node</vh></v>
-<v t="ekr.20201015122702.1099"><vh>#1632: contract-all-subheads</vh></v>
-<v t="ekr.20201015122702.1256"><vh>#1698: Add [T] to show-settings legend</vh></v>
-<v t="ekr.20201015122702.1275"><vh>open-leo-py-ref-leo command </vh></v>
-</v>
-<v t="ekr.20201015152218.1"><vh>6.3: Importers</vh>
-<v t="ekr.20201015122734.72"><vh>#1481: JS importer fails with reveal.js</vh></v>
-<v t="ekr.20201015122734.355"><vh>#1493: python importer</vh></v>
-<v t="ekr.20201015122734.384"><vh>#1538: Rust importer</vh></v>
-<v t="ekr.20201015122702.1000"><vh>#1608: cython importer</vh></v>
-<v t="ekr.20201015122702.1057"><vh>#1626: Fix c++ importer problems</vh></v>
-</v>
-<v t="ekr.20201014052236.4"><vh>6.3: Features</vh>
-<v t="ekr.20201015122734.54"><vh>#1286: better alt-click popups</vh></v>
-<v t="ekr.20201015122702.806"><vh>#1440: leoAst.py: Unify the ast and token worlds</vh></v>
-<v t="ekr.20201015122702.871"><vh>#1592: ctrl-click should ignore defs in @nosearch</vh></v>
-<v t="ekr.20201015122702.980"><vh>#1605: (x.rs) in headlines</vh></v>
-<v t="ekr.20201015122702.1003"><vh>#1616: Show github branch in outline title</vh></v>
-<v t="ekr.20201015122702.1033"><vh>#1619: @language json</vh></v>
-<v t="ekr.20201015122702.1037"><vh>#1620: git-diff clones added nodes</vh></v>
-<v t="ekr.20201015122702.1108"><vh>#1673: Retire qt docks</vh></v>
-</v>
-<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh>
-<v t="ekr.20201015144828.1"><vh>Removed dock-related command-line options</vh></v>
-</v>
-<v t="ekr.20201015122734.1"><vh>6.3: Plugins</vh>
-<v t="ekr.20201015122734.2"><vh>#0333: Render asciidoc and pandoc markup in VR</vh></v>
-<v t="ekr.20201015122734.56"><vh>#1287: VR plugin should honor headline directives</vh></v>
-<v t="ekr.20201015122734.58"><vh>#1318: better arrangement for docks in new windows</vh></v>
-<v t="ekr.20201015122734.61"><vh>#1332: Plugins:About does not show VR</vh></v>
-<v t="ekr.20201015122734.65"><vh>#1473: Use standard opml tags</vh></v>
-<v t="ekr.20201015122734.366"><vh>#1531: context menu</vh></v>
-<v t="ekr.20201016083327.1"><vh>#1669: Deprecated settings_finder plugin</vh>
-<v t="ekr.20201016083327.2"><vh>Found:build_menu</vh>
-<v t="ekr.20201016083327.3"><vh>onCreate</vh></v>
-<v t="ekr.20201016083327.4"><vh>sf._outline_data_to_python</vh></v>
-<v t="ekr.20201016083327.13"><vh>sf.build_menu</vh></v>
-<v t="ekr.20201016083327.6"><vh>sf.tree_to_menulist</vh></v>
-</v>
-<v t="ekr.20201016083327.7"><vh>Found:handleSpecialMenus</vh>
-<v t="ekr.20201016083327.10"><vh>LeoMenu.createMenuFromConfigList</vh></v>
-<v t="ekr.20201016083327.9"><vh>LeoMenu.createMenusFromConfigList &amp; helpers</vh>
-<v t="ekr.20201016083327.10"></v>
-<v t="ekr.20201016083327.12"><vh>LeoMenu.handleSpecialMenus</vh></v>
-</v>
-<v t="ekr.20201016083327.12"></v>
-<v t="ekr.20201016083327.13"></v>
-</v>
-</v>
-</v>
+<v t="ekr.20201014052236.5"><vh>6.3: Bugs</vh></v>
+<v t="ekr.20201014052236.2"><vh>6.3: Code</vh></v>
+<v t="ekr.20201014052236.3"><vh>6.3: Commands</vh></v>
+<v t="ekr.20201015152218.1"><vh>6.3: Importers</vh></v>
+<v t="ekr.20201014052236.4"><vh>6.3: Features</vh></v>
+<v t="ekr.20201014052236.6"><vh>6.3: Settings and command-line options</vh></v>
+<v t="ekr.20201015122734.1"><vh>6.3: Plugins</vh></v>
 </v>
 <v t="ekr.20200225075435.1"><vh>Leo 6.2 release notes</vh>
 <v t="ekr.20200313052138.1"><vh>6.2: Code</vh></v>
@@ -31911,319 +31839,163 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20201014052236.2"></t>
-<t tx="ekr.20201014052236.3"></t>
-<t tx="ekr.20201014052236.4"></t>
+<t tx="ekr.20201014052236.2">Refactor Leo's key handling code
+https://github.com/leo-editor/leo-editor/issues/1269
+  
+Remove pylint complaints from npyscreen sources
+https://github.com/leo-editor/leo-editor/issues/1709
+
+Remove pyflakes complaints from mod_http.py
+https://github.com/leo-editor/leo-editor/issues/1710
+</t>
+<t tx="ekr.20201014052236.3">contract-all-subheads
+https://github.com/leo-editor/leo-editor/issues/1632
+  
+cycle-editor-focus (Restored)
+https://github.com/leo-editor/leo-editor/issues/1575
+
+import-legacy-external-files
+https://github.com/leo-editor/leo-editor/issues/1581
+
+paste-as-template
+https://github.com/leo-editor/leo-editor/issues/1593
+
+move-lines-to-next-node
+https://github.com/leo-editor/leo-editor/issues/1606
+
+open-leo-py-ref-leo (Aka leo-py-ref-leo)
+
+restart-leo
+https://github.com/leo-editor/leo-editor/issues/1128
+
+show-settings: Add [T] to legend to indicate theme file settings.
+https://github.com/leo-editor/leo-editor/issues/1698
+</t>
+<t tx="ekr.20201014052236.4">**Major features**
+
+leoAst.py: Unify the ast and token worlds
+https://github.com/leo-editor/leo-editor/issues/1440
+
+Retire qt docks
+https://github.com/leo-editor/leo-editor/issues/1672
+
+**Other features**
+
+Better alt-click popups
+https://github.com/leo-editor/leo-editor/issues/1286
+
+Ctrl-click should ignore defs in @nosearch
+https://github.com/leo-editor/leo-editor/issues/1592
+
+Show github branch in outline title
+https://github.com/leo-editor/leo-editor/issues/1616
+
+Add support for @language json
+https://github.com/leo-editor/leo-editor/issues/1619
+  
+#1620: git-diff clones added nodes
+https://github.com/leo-editor/leo-editor/issues/1620
+</t>
 <t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.3 see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.3+label%3Abug
 The first comment in each bug contains a summary of the bug and its fix.
 
-Notable bugs:
+Crash on reloading workbook while simulating newbie experience
+https://github.com/leo-editor/leo-editor/issues/1381
 
-</t>
-<t tx="ekr.20201014052236.6"></t>
-<t tx="ekr.20201015122702.1000">https://github.com/leo-editor/leo-editor/issues/1608</t>
-<t tx="ekr.20201015122702.1003">https://github.com/leo-editor/leo-editor/issues/1616</t>
-<t tx="ekr.20201015122702.1007">https://github.com/leo-editor/leo-editor/issues/1617
-</t>
-<t tx="ekr.20201015122702.1033">https://github.com/leo-editor/leo-editor/issues/1619</t>
-<t tx="ekr.20201015122702.1037">https://github.com/leo-editor/leo-editor/issues/1620</t>
-<t tx="ekr.20201015122702.1039">https://github.com/leo-editor/leo-editor/issues/1621
+Headline icons doubled
+https://github.com/leo-editor/leo-editor/issues/1559
 
-The fix to #1564 probably fixed this issue.</t>
-<t tx="ekr.20201015122702.1041">https://github.com/leo-editor/leo-editor/issues/1625</t>
-<t tx="ekr.20201015122702.1057">https://github.com/leo-editor/leo-editor/issues/1626</t>
-<t tx="ekr.20201015122702.1099">https://github.com/leo-editor/leo-editor/issues/1632</t>
-<t tx="ekr.20201015122702.1104">https://github.com/leo-editor/leo-editor/issues/1653
+Abbreviations w/ German keyboards
+https://github.com/leo-editor/leo-editor/issues/1563
 
-forward-word-extend-selection doesn't work the same as back-word-extend-selection
+Open theme file fails on posix
+https://github.com/leo-editor/leo-editor/issues/1564
 
-For example, I have:
-
-thing['select_me'] = 'something'.
-
-If I put my cursor at the beginning of select_me (inside the quote) and hit Ctrl+Shift+RtArrow, then I expect to stop before the matching end quote and select the word, but instead it skips the operators and goes to the s in 'something'. If I put the cursor at the end of select_me and Ctrl+Shift+LtArrow to go back, then it does stop at the quote as expected.
-</t>
-<t tx="ekr.20201015122702.1108">Rev 96f2826 in devel contains the old code.
-
-https://github.com/leo-editor/leo-editor/issues/1672
-
-PR: https://github.com/leo-editor/leo-editor/issues/1673
-
-Removed use_global_docks.</t>
-<t tx="ekr.20201015122702.1182">https://github.com/leo-editor/leo-editor/issues/1678</t>
-<t tx="ekr.20201015122702.1185">https://github.com/leo-editor/leo-editor/issues/1688
-
-python profileLeo.py &gt; profile.txt leo\core\leoPy.leo leo\plugins\leoPlugins.leo</t>
-<t tx="ekr.20201015122702.1247">https://github.com/leo-editor/leo-editor/issues/1696</t>
-<t tx="ekr.20201015122702.1256">https://github.com/leo-editor/leo-editor/issues/1698</t>
-<t tx="ekr.20201015122702.1260">https://github.com/leo-editor/leo-editor/issues/1700</t>
-<t tx="ekr.20201015122702.1271">https://github.com/leo-editor/leo-editor/issues/1709</t>
-<t tx="ekr.20201015122702.1272">https://github.com/leo-editor/leo-editor/issues/1710</t>
-<t tx="ekr.20201015122702.1275">Aka leo-py-ref-leo</t>
-<t tx="ekr.20201015122702.2">https://github.com/leo-editor/leo-editor/issues/1128</t>
-<t tx="ekr.20201015122702.51">https://github.com/leo-editor/leo-editor/issues/1269
-
-</t>
-<t tx="ekr.20201015122702.806">https://github.com/leo-editor/leo-editor/issues/1440</t>
-<t tx="ekr.20201015122702.807">https://github.com/leo-editor/leo-editor/issues/1559
-</t>
-<t tx="ekr.20201015122702.812">https://github.com/leo-editor/leo-editor/issues/1563
-
-The fix was to filter.doAltTweaks.
-
-===== shift-tab (unindent-region) failed with the new code.
-
-From https://en.m.wikipedia.org/wiki/German_keyboard_layout
-
-- The positions of the "Z" and "Y" keys are switched.
-
-- Part of the keyboard is adapted to include umlauted vowels (ä, ö, ü) and the sharp s (ß).
-
-- German keyboards change the right Alt key into an Alt Gr key to access a third level of key assignments.
-</t>
-<t tx="ekr.20201015122702.815">https://github.com/leo-editor/leo-editor/issues/1564</t>
-<t tx="ekr.20201015122702.818">https://github.com/leo-editor/leo-editor/issues/1570
-
+Tab pane disappears
+https://github.com/leo-editor/leo-editor/issues/1570
 PR: https://github.com/leo-editor/leo-editor/pull/1660
 
-The fix was to LM.initWrapperLeoFile.</t>
-<t tx="ekr.20201015122702.822">https://github.com/leo-editor/leo-editor/issues/1575</t>
-<t tx="ekr.20201015122702.824">https://github.com/leo-editor/leo-editor/issues/1581</t>
-<t tx="ekr.20201015122702.871">https://github.com/leo-editor/leo-editor/issues/1592</t>
-<t tx="ekr.20201015122702.881">https://github.com/leo-editor/leo-editor/issues/1593</t>
-<t tx="ekr.20201015122702.892">https://github.com/leo-editor/leo-editor/issues/1595
+No command function for 'About...'
+https://github.com/leo-editor/leo-editor/issues/1595
 
-The fix was to createMasterMenuCallback</t>
-<t tx="ekr.20201015122702.894">https://github.com/leo-editor/leo-editor/issues/1596</t>
-<t tx="ekr.20201015122702.899">https://github.com/leo-editor/leo-editor/issues/1600
+#1596: c.executeMinibufferCommand
+https://github.com/leo-editor/leo-editor/issues/1596
 
+leoAst.py fails for python 3.8
+https://github.com/leo-editor/leo-editor/issues/1600
 
-class arguments(posonlyargs, args, vararg, kwonlyargs, kw_defaults, kwarg, defaults)
+Typescript colorizer does not color block comments properly
+https://github.com/leo-editor/leo-editor/issues/1602
 
-The arguments for a function. In Python 3:
+Exit after refresh-from-disk
+https://github.com/leo-editor/leo-editor/issues/1603
 
-args, posonlyargs and kwonlyargs are lists of arg nodes.
+open-theme-file on arch linux
+https://github.com/leo-editor/leo-editor/issues/1621
 
-vararg and kwarg are single arg nodes, referring to the *args, **kwargs parameters.
+Set language for cloned nodes
+https://github.com/leo-editor/leo-editor/issues/1625
 
-kw_defaults is a list of default values for keyword-only arguments.
-If one is None, the corresponding argument is required.
+forward-word-extend-selection doesn't work the same as back-word-extend-selection
+https://github.com/leo-editor/leo-editor/issues/1653
 
-defaults is a list of default values for arguments that can be passed positionally.
-If there are fewer defaults, they correspond to the last n arguments.
+Remove duplicates in nested splitter Open Window list
+https://github.com/leo-editor/leo-editor/issues/1678
 
-Changed in version 3.8: posonlyargs was introduced in Python 3.8</t>
-<t tx="ekr.20201015122702.965">https://github.com/leo-editor/leo-editor/issues/1602</t>
-<t tx="ekr.20201015122702.970">https://github.com/leo-editor/leo-editor/issues/1603</t>
-<t tx="ekr.20201015122702.980">https://github.com/leo-editor/leo-editor/issues/1605</t>
-<t tx="ekr.20201015122702.998"></t>
-<t tx="ekr.20201015122734.1"></t>
-<t tx="ekr.20201015122734.2">https://github.com/leo-editor/leo-editor/issues/333</t>
-<t tx="ekr.20201015122734.355">https://github.com/leo-editor/leo-editor/issues/1493
+Performance bugs on open
+https://github.com/leo-editor/leo-editor/issues/1688
 
-py_i.gen_lines makes py_i.tail_p an ivar, for py_i.starts_block.
-py_i.starts_block adds decorators for nested defs.</t>
-<t tx="ekr.20201015122734.366">https://github.com/leo-editor/leo-editor/issues/1531</t>
-<t tx="ekr.20201015122734.384">https://github.com/leo-editor/leo-editor/issues/1538
+@test nodes not colored correctly
+https://github.com/leo-editor/leo-editor/issues/1696
 
-Example signatures:
+unittest fails w/ python3.8
+https://github.com/leo-editor/leo-editor/issues/1700</t>
+<t tx="ekr.20201014052236.6">Added @bool add-context-to-headline
+https://github.com/leo-editor/leo-editor/issues/1605
 
-@language rust
+Removed the following command-line options:
 
-impl From&lt;ParseError&gt; for CompileError {
+--dock
+--global-docks
+--init-docks
+--no-dock
+--use-docks</t>
+<t tx="ekr.20201015122734.1">Render asciidoc and pandoc markup in VR
+https://github.com/leo-editor/leo-editor/issues/333
+  
+VR plugin should honor headline directives
+https://github.com/leo-editor/leo-editor/issues/1287
 
-fn from(error: ParseError) -&gt; Self {
+Plugins:About does not show VR
+https://github.com/leo-editor/leo-editor/issues/1332
 
-impl fmt::Display for CompileError {
+Use standard opml tags
+https://github.com/leo-editor/leo-editor/issues/1473
 
-fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; {
+Context menu
+https://github.com/leo-editor/leo-editor/issues/1531
 
-pub fn statements_to_symbol_table(
-    statements: &amp;[ast::Statement],
-) -&gt; Result&lt;SymbolTable, SymbolTableError&gt; {
-
+Deprecated settings_finder plugin
+https://github.com/leo-editor/leo-editor/issues/1669
 </t>
-<t tx="ekr.20201015122734.54">https://github.com/leo-editor/leo-editor/issues/1286</t>
-<t tx="ekr.20201015122734.56">https://github.com/leo-editor/leo-editor/issues/1287</t>
-<t tx="ekr.20201015122734.58"></t>
-<t tx="ekr.20201015122734.61">https://github.com/leo-editor/leo-editor/issues/1332
+<t tx="ekr.20201015152218.1">JS importer fails with reveal.js
+https://github.com/leo-editor/leo-editor/issues/1481
 
-See also:
-https://github.com/leo-editor/leo-editor/issues/1318</t>
-<t tx="ekr.20201015122734.65">https://github.com/leo-editor/leo-editor/issues/1473</t>
-<t tx="ekr.20201015122734.72">https://github.com/leo-editor/leo-editor/issues/1481</t>
-<t tx="ekr.20201015144828.1"></t>
-<t tx="ekr.20201015152218.1"></t>
-<t tx="ekr.20201016083327.1">https://github.com/leo-editor/leo-editor/issues/1669
-This plugin has been deprecated.</t>
-<t tx="ekr.20201016083327.10">def createMenuFromConfigList(self, parentName, aList, level=0):
-    """Build menu based on nested list
+Python importer does not import black.py properly
+https://github.com/leo-editor/leo-editor/issues/1493
 
-    List entries are either:
+Create a Rust importer
+https://github.com/leo-editor/leo-editor/issues/1538
 
-        ['@item', 'command-name', 'optional-view-name']
+Create a cython importer
+https://github.com/leo-editor/leo-editor/issues/1608
 
-    or:
-
-        ['@menu Submenu name', &lt;nested list&gt;, None]
-
-    :param str parentName: name of menu under which to place this one
-    :param list aList: list of entries as described above
-    """
-    parentMenu = self.getMenu(parentName)
-    if not parentMenu:
-        g.trace('NO PARENT', parentName, g.callers())
-    table = []
-    for z in aList:
-        kind, val, val2 = z
-        if kind.startswith('@menu'):
-            # Menu names can be unicode without any problem.
-            name = kind[5:].strip()
-            if table:
-                self.createMenuEntries(parentMenu, table)
-            if not self.handleSpecialMenus(name, parentName,
-                alt_name=val2,  #848.
-                table=table,
-            ):
-                menu = self.createNewMenu(name, parentName)
-                    # Create submenu of parent menu.
-                if menu:
-                    # Partial fix for #528.
-                    self.createMenuFromConfigList(name, val, level + 1)
-            table = []
-        elif kind == '@item':
-            name = str(val)  # Item names must always be ascii.
-            if val2:
-                # Translated names can be unicode.
-                table.append((val2, name),)
-            else:
-                table.append(name)
-        else:
-            g.trace('can not happen: bad kind:', kind)
-    if table:
-        self.createMenuEntries(parentMenu, table)
-</t>
-<t tx="ekr.20201016083327.12">def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
-    """
-    Handle a special menu if name is the name of a special menu.
-    return True if this method handles the menu.
-    """
-    c = self.c
-    if table is None: table = []
-    name2 = name.replace('&amp;', '').replace(' ', '').lower()
-    if name2 == 'plugins':
-        # Create the plugins menu using a hook.
-        g.doHook("create-optional-menus", c=c, menu_name=name)
-        return True
-    if name2.startswith('recentfiles'):
-        # Just create the menu.
-        # createRecentFilesMenuItems will create the contents later.
-        g.app.recentFilesManager.recentFilesMenuName = alt_name or name
-            #848
-        self.createNewMenu(alt_name or name, parentName)
-        return True
-    if name2 == 'help' and g.isMac:
-        helpMenu = self.getMacHelpMenu(table)
-        return helpMenu is not None
-    return False
-</t>
-<t tx="ekr.20201016083327.13">def build_menu(self):
-    """build_menu - build the menu of settings, called from handleSpecialMenus()
-    """
-    menu = self.c.frame.menu
-    # Create the Edit Settings menu at the end of the Settings menu.
-    settings_menu = menu.getMenu('Settings')
-    menu.add_separator(settings_menu)
-    menu.createNewMenu('Edit Settings', 'Settings')
-    finder_menu = self._outline_data_to_python(
-        self.c.config.getOutlineData("settings-finder-menu"))
-    aList = []
-    self.tree_to_menulist(aList, finder_menu)
-    menu.createMenuFromConfigList("Edit Settings", aList[0][1])
-        # #1144: Case must match.
-        # aList is [['@outline-data settings-finder-menu', &lt;list of submenus&gt;, None]]
-        # so aList[0][1] is the list of submenus
-    return aList
-</t>
-<t tx="ekr.20201016083327.2">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 4 nodes</t>
-<t tx="ekr.20201016083327.3">def onCreate (tag, key):
-
-    c = key.get('c')
-    if c:
-        sf = SettingsFinder(c)
-        sf.build_menu()
-
-</t>
-<t tx="ekr.20201016083327.4">def _outline_data_to_python(self, xml):
-    """_outline_data_to_python - make xml from c.config.getOutlineData()
-    into a detached VNode tree.
-
-    FIXME this should be elsewhere, just here to allow build_menu() to
-    wortk for now.
-
-    :param str xml: xml returned by c.config.getOutlineData()
-    :return: VNode tree representing outline data
-    :rtype: VNode
-    """
-    from xml.etree import ElementTree
-    # FIXME, probably shouldn't be going @settings tree -&gt; xml -&gt; VNode tree,
-    # but @settings tree -&gt; VNode tree, xml + paste to use is cumbersome
-    body = {} # node ID to node mapping to fill in body text later
-    top = VNode(self.c)
-    dom = ElementTree.fromstring(xml)
-    self._outline_data_build_tree(top, dom.find('vnodes').find('v'), body)
-    for t in dom.find('tnodes').findall('t'):
-        if t.text is not None:
-            body[t.get('tx')].b = t.text
-    return top
-</t>
-<t tx="ekr.20201016083327.6">def tree_to_menulist(self, aList, node):
-    """recursive helper for build_menu(), copies VNode tree data
-    to list format used by c.frame.menu.createMenuFromConfigList()
-    """
-    if node.children:
-        child_list = []
-        aList.append(["@menu " + node.h, child_list, None])
-        for child in node.children:
-            self.tree_to_menulist(child_list, child)
-    else:
-        aList.append(["@item", self.get_command(node), node.h])
-</t>
-<t tx="ekr.20201016083327.7">@nosearch
-
-# flattened, word, ignore-case, head, body
-
-# found 4 nodes</t>
-<t tx="ekr.20201016083327.9">def createMenusFromConfigList(self, aList):
-    """
-    Create menus from aList.
-    The 'top' menu has already been created.
-    """
-    # Called from createMenuBar.
-    c = self.c
-    for z in aList:
-        kind, val, val2 = z
-        if kind.startswith('@menu'):
-            name = kind[len('@menu') :].strip()
-            if not self.handleSpecialMenus(name, parentName=None):
-                # Fix #528: Don't create duplicate menu items.
-                menu = self.createNewMenu(name)
-                    # Create top-level menu.
-                if menu:
-                    self.createMenuFromConfigList(name, val, level=0)
-                else:
-                    g.trace('no menu', name)
-        else:
-            self.error(f"{kind} {val} not valid outside @menu tree")
-    aList = c.config.getOpenWith()
-    if aList:
-        # a list of dicts.
-        self.createOpenWithMenuFromTable(aList)
+Fix ts importer problems
+https://github.com/leo-editor/leo-editor/issues/1617
+  
+Fix c++ importer problems
+https://github.com/leo-editor/leo-editor/issues/1626
 </t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
