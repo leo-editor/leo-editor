@@ -1736,7 +1736,7 @@ class TokenOrderGenerator:
             yield from self.gen(z)
             yield from self.gen_token('op', '}')
     #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
-    def do_Ellipsis(self, node):
+    def do_Ellipsis(self, node): # pragma: no cover (Does not exist for python 3.8+)
 
         yield from self.gen_op('...')
     #@+node:ekr.20191113063144.38: *6* tog.ExtSlice
@@ -1817,12 +1817,12 @@ class TokenOrderGenerator:
 
         yield from self.gen_name(node.id)
 
-    def do_NameConstant(self, node):
+    def do_NameConstant(self, node):  # pragma: no cover (Does not exist in Python 3.8+)
 
         yield from self.gen_name(repr(node.value))
 
     #@+node:ekr.20191113063144.45: *6* tog.Num
-    def do_Num(self, node):
+    def do_Num(self, node):  # pragma: no cover (Does not exist in Python 3.8+)
 
         yield from self.gen_token('number', node.n)
     #@+node:ekr.20191113063144.47: *6* tog.Set
@@ -2498,11 +2498,9 @@ class TokenOrderTraverser:
                 # p.moveToParent()
                 node = node.parent
                 stack.pop()
-                # g.trace('parent:', node.__class__.__name__, stack)
             # not found.
             else:
-                break
-        # g.trace('done', node and node.__class__.__name__, stack)
+                break   # pragma: no cover 
         return self.last_node_index
     #@+node:ekr.20191227160547.1: *4* TOT.visit
     def visit(self, node):
@@ -3326,7 +3324,7 @@ class Orange:
                 if getattr(t, 'newline_kind', None) == 'nl':
                     nls += 1
                 else:
-                    break
+                    break  # pragma: no cover
             i -= 1
         # Retain at the file-start token.
         if i <= 0:
@@ -3344,7 +3342,7 @@ class Orange:
             elif self.code_list[i].kind == 'line-indent':
                 i += 1
             else:
-                break
+                break  # pragma: no cover (defensive)
         if nls <= 0:  # pragma: no cover (defensive)
             return
         # Calculate the joined line.
