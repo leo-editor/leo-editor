@@ -1605,6 +1605,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20201017061850.1"><vh>What's new in Leo 6.3</vh></v>
 <v t="ekr.20200313060126.1"><vh>What's new in Leo 6.2</vh></v>
 <v t="ekr.20191003051240.1"><vh>What's new in Leo 6.1</vh></v>
 <v t="ekr.20190616175854.1"><vh>What's new in Leo 6.0</vh></v>
@@ -2395,7 +2396,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20200313060126.1"></v>
+<v t="ekr.20201017061850.1"></v>
 <v t="ekr.20200225075435.1"></v>
 <v t="ekr.20201014052236.1"></v>
 </vnodes>
@@ -31839,8 +31840,12 @@ Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20201014052236.2">Refactor Leo's key handling code
+<t tx="ekr.20201014052236.2">**Major change**
+
+Refactor Leo's key handling code
 https://github.com/leo-editor/leo-editor/issues/1269
+
+**Other changes**
   
 Remove pylint complaints from npyscreen sources
 https://github.com/leo-editor/leo-editor/issues/1709
@@ -31997,6 +32002,19 @@ https://github.com/leo-editor/leo-editor/issues/1617
 Fix c++ importer problems
 https://github.com/leo-editor/leo-editor/issues/1626
 </t>
+<t tx="ekr.20201017061850.1">Major features:
+- leoAst.py unifies the ast and token worlds.
+- Retired support for Qt docks.
+- Refactored Leo's key handling code.
+
+Features:
+- Merged LeoPlugings.leo into LeoPluginsRef.leo
+- Added cython and rust importers
+- Improved C++, Javascript, Python, TypeScript importers.
+- Added 7 new commands.
+- Added support for @language json.
+
+Fixed all known bugs.</t>
 <t tx="maphew.20200616225715.1">Getting to the archive in order to download is a bit of work as there isn't a stable url.
 
 Getting to the latest leo.exe:
