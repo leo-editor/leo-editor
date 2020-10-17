@@ -159,6 +159,8 @@ v1, v2, junk, junk, junk = sys.version_info
 # https://docs.python.org/3/library/token.html
 # Async tokens exist in Python 3.5+, but *not* Python 3.7.
 use_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
+# ast.parse supports type_comments kwar in Python 3.8+
+use_type_comments = (v1, v2) >= (3, 8)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -943,7 +945,11 @@ if 1:  # pragma: no cover
 
         try:
             s1 = g.toEncodedString(s)
-            tree = ast.parse(s1, filename='before', mode='exec')
+            if use_type_comments:
+                # pylint: disable=unexpected-keyword-arg
+                tree = ast.parse(s1, filename='before', mode='exec', type_comments=True)
+            else:
+                tree = ast.parse(s1, filename='before', mode='exec')
             return tree
         except IndentationError:
             oops('Indentation Error')
@@ -1942,7 +1948,7 @@ class TokenOrderGenerator:
         yield from self.gen_op(op_name_)
         yield from self.gen(node.right)
     #@+node:ekr.20191113063144.56: *6* tog.BoolOp
-    # boolop = And | Or
+    # BoolOp(boolop op, expr* values)
 
     def do_BoolOp(self, node):
 
@@ -2400,6 +2406,30 @@ class TokenOrderGenerator:
         yield from self.gen_name('yield')
         yield from self.gen_name('from')
         yield from self.gen(node.value)
+    #@+node:ekr.20201017072904.1: *5* tog: Type Expressions (Python 3.8+)
+    #@+node:ekr.20201017072929.1: *6* tog.FunctionType
+    # FunctionType(expr* argtypes, expr returns)
+
+    def do_FunctionType(self, node):
+
+        argtypes = getattr(node, 'argtypes', [])
+        for z in argtypes:
+            yield from self.gen(z)
+        yield from self.gen(node.returns)
+    #@+node:ekr.20201017072932.1: *6* tog.NamedExpr
+    # NamedExpr(expr target, expr value)
+
+    def do_NamedExpr(self, node):
+        
+        yield from self.gen(node.target)
+        yield from self.gen(node.value)
+    #@+node:ekr.20201017072932.2: *6* tog.TypeIgnore
+    # type_ignore = TypeIgnore(int lineno, string tag)
+
+    def do_TypeIgnore(self, node):
+        
+        yield from self.gen(node.lineno)
+        yield from self.gen(node.tag)
     #@-others
 #@+node:ekr.20191226195813.1: *3*  class TokenOrderTraverser
 class TokenOrderTraverser:
@@ -5898,9 +5928,10 @@ class TestTokens(BaseTest):
             'PyCF_ONLY_AST',
             'PyCF_TYPE_COMMENTS',
             # New ast nodes for Python 3.8.
-            # We can ignore these nodes because ast.parse does not generate them.
-            # (The new kwarg, type_comments, is False by default!)
-            'FunctionType', 'NamedExpr', 'TypeIgnore',
+            ### Wrong.
+                # We can ignore these nodes because ast.parse does not generate them.
+                # (The new kwarg, type_comments, is False by default!)
+            # 'FunctionType', 'NamedExpr', 'TypeIgnore',
         ]
         aList = [z for z in aList if not z[0].islower()]
             # Remove base classes.
