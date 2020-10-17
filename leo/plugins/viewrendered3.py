@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0rc5
+About Viewrendered3 V3.0
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -910,7 +910,7 @@ close_rendering_pane = hide_rendering_pane
 #@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
 @g.command('vr3-lock')
 def lock_rendering_pane(event):
-    """Lock the rendering pane."""
+    """Lock the rendering pane to prevent updates."""
     vr3 = getVr3(event)
     if not vr3: return
 
@@ -1048,7 +1048,7 @@ def open_with_layout(event):
 
     vr3.splitter = c.free_layout.get_top_splitter()
     if vr3.splitter:
-        # Make it work with old and new layut code
+        # Make it work with old and new layout code
         try:
             vr3.splitter.load_layout(layout)
         except TypeError:
@@ -3171,25 +3171,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         vr.show()
         vr.adjust_layout('open')
         c.bodyWantsFocusNow()
-    #@+node:TomP.20200329230436.7: *6* vr3.adjust_layout (legacy only)
-    def adjust_layout(self, which):
-
-        global layouts
-        c = self.c
-        splitter = self.splitter
-        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            # Make it work with old and new layut code
-            try:
-                splitter.load_layout(loc)
-            except TypeError:
-                splitter.load_layout(c, loc)
-        elif which == 'open' and loo and splitter:
-            try:
-                splitter.load_layout(loo)
-            except TypeError:
-                splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
     #@+at
@@ -3216,6 +3197,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
             return
 
 
+    #@+node:TomP.20200329230436.7: *5* vr3.adjust_layout (legacy only)
+    def adjust_layout(self, which):
+
+        global layouts
+        c = self.c
+        splitter = self.splitter
+        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
+        loc, loo = layouts.get(c.hash(), deflo)
+        if which == 'closed' and loc and splitter:
+            # Make it work with old and new layout code
+            try:
+                splitter.load_layout(loc)
+            except TypeError:
+                splitter.load_layout(c, loc)
+        elif which == 'open' and loo and splitter:
+            try:
+                splitter.load_layout(loo)
+            except TypeError:
+                splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
     def shrinkView(self):
