@@ -13142,7 +13142,6 @@ moz htmlcov/leo_core_leoAst_py.html
 - Google exercises: upper body, cardiac @ home.
 - Alternative to macros.
 </t>
-<t tx="ekr.20201017091636.1"></t>
 <t tx="ekr.20201017160354.1"></t>
 <t tx="ekr.20201018061241.1"></t>
 <t tx="ekr.20201018062305.1">"""Update LeoPyRef.leo from the given list of nodes."""
@@ -13151,7 +13150,11 @@ import os
 main(node_list = ['Startup', 'Notes', 'Code'])
 </t>
 <t tx="ekr.20201018063747.1">def get_content(positions_list):
-    """Return the desired contents of leoPyRef.leo."""
+    """
+    Return the desired contents of leoPyRef.leo.
+    
+    Based on code by Виталије Милошевић.
+    """
     # Make only one copy for all calls.
     fc = c.fileCommands
     fc.currentPosition = c.p
