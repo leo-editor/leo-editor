@@ -229,15 +229,18 @@ class Undoer:
         if name == "Can't Undo":
             return name
         return "Undo " + name
-    #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
+    #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch (new unit test)
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
         if 0:  # Debugging.
             g.pr('-' * 40)
-            for key in sorted(bunch):
-                g.trace(key, bunch.get(key))
+            for key in list(bunch.keys()):
+                g.trace(f"{key:20} {bunch.get(key)!r}")
             g.pr('-' * 20)
+        if g.unitTesting:  # #1694.
+            val = bunch.get('oldMarked')
+            assert val in (True, False), f"{val!r} {g.callers()!s}"
         # bunch is not a dict, so bunch.keys() is required.
         for key in list(bunch.keys()):
             val = bunch.get(key)
@@ -457,7 +460,9 @@ class Undoer:
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
     def afterChangeNodeContents(self, p, command, bunch, inHead=False):
         """Create an undo node using d created by beforeChangeNode."""
-        u = self; c = self.c; w = c.frame.body.wrapper
+        u = self
+        c = self.c
+        w = c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # Set the type & helpers.
@@ -799,7 +804,9 @@ class Undoer:
     def createCommonBunch(self, p):
         """Return a bunch containing all common undo info.
         This is mostly the info for recreating an empty node at position p."""
-        u = self; c = u.c; w = c.frame.body.wrapper
+        u = self
+        c = u.c
+        w = c.frame.body.wrapper
         return g.Bunch(
             oldMarked=p and p.isMarked(),
             oldSel=w and w.getSelectionRange() or None,
@@ -1065,6 +1072,7 @@ class Undoer:
                 undoType=undo_type,
                 undoHelper=u.undoTyping,
                 redoHelper=u.redoTyping,
+                oldMarked=old_p and old_p.isMarked() or False, # #1694
                 oldText=u.oldText,
                 oldSel=u.oldSel,
                 oldNewlines=u.oldNewlines,
@@ -1075,6 +1083,7 @@ class Undoer:
             bunch = old_d
         bunch.leading = u.leading
         bunch.trailing = u.trailing
+        bunch.newMarked=p and p.isMarked() or False  # #1694
         bunch.newNewlines = u.newNewlines
         bunch.newMiddleLines = u.newMiddleLines
         bunch.newSel = u.newSel

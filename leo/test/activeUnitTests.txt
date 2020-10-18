@@ -27051,6 +27051,15 @@ Each child node will in turn have two or more children:
 - an optional selection node containing two lines giving the selection range in Tk coordinates.
 - An optional insert node containing one line giving the insert point in Tk coordinates.
 #@+node:ekr.20060127120604: *6* tempNode
+@language python
+
+def addCommentTest():
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
 #@+node:ekr.20050417202713: *6* addComments
 #@+node:ekr.20050417202713.1: *7* before
 @language python

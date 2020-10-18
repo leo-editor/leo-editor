@@ -198,6 +198,82 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
+<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
+<v t="ekr.20060127120604"><vh>tempNode</vh></v>
+<v t="ekr.20050417202713"><vh>addComments</vh>
+<v t="ekr.20050417202713.1"><vh>before</vh></v>
+<v t="ekr.20050417202713.2"><vh>after</vh></v>
+<v t="ekr.20050417202713.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417204940"><vh>convertAllBlanks</vh>
+<v t="ekr.20050417204940.1"><vh>before</vh></v>
+<v t="ekr.20050417204940.2"><vh>after</vh></v>
+<v t="ekr.20050417204940.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417205012"><vh>convertAllTabs</vh>
+<v t="ekr.20050417205012.1"><vh>before</vh></v>
+<v t="ekr.20050417205012.2"><vh>after</vh></v>
+<v t="ekr.20050417205012.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114"><vh>convertBlanks</vh>
+<v t="ekr.20050417203310"><vh>before</vh></v>
+<v t="ekr.20050417203310.1"><vh>after</vh></v>
+<v t="ekr.20050417203336"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417203114.1"><vh>convertTabs</vh>
+<v t="ekr.20050417204834"><vh>before</vh></v>
+<v t="ekr.20050417204830"><vh>after</vh></v>
+<v t="ekr.20050417204901"><vh>selection</vh></v>
+</v>
+<v t="ekr.20040712101754.49"><vh>dedentBody</vh>
+<v t="ekr.20040712101754.50"><vh>before</vh></v>
+<v t="ekr.20040712101754.51"><vh>after</vh></v>
+<v t="ekr.20040712101754.52"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417202817"><vh>deleteComments</vh>
+<v t="ekr.20050417202817.1"><vh>before</vh></v>
+<v t="ekr.20050417202817.2"><vh>after</vh></v>
+<v t="ekr.20050417202817.3"><vh>selection</vh></v>
+</v>
+<v t="ekr.20111112211307.3910"><vh>deleteComments</vh>
+<v t="ekr.20111112211307.3911"><vh>before</vh></v>
+<v t="ekr.20111112211307.3912"><vh>after</vh></v>
+<v t="ekr.20111112211307.3913"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050417201845"><vh>extract test1</vh>
+<v t="ekr.20050417201845.1"><vh>before</vh></v>
+<v t="ekr.20050417201845.2"><vh>after</vh>
+<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
+</v>
+<v t="ekr.20050417201845.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070540"><vh>extract test2</vh>
+<v t="ekr.20050518070540.1"><vh>before</vh></v>
+<v t="ekr.20050518070545"><vh>after</vh></v>
+<v t="ekr.20050518070540.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518070927"><vh>extract test3</vh>
+<v t="ekr.20050518070927.1"><vh>before</vh></v>
+<v t="ekr.20050518070927.2"><vh>after</vh>
+<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
+</v>
+<v t="ekr.20050518070927.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20050518071251"><vh>extract test4</vh>
+<v t="ekr.20050518071251.1"><vh>before</vh></v>
+<v t="ekr.20050518071258"><vh>after</vh></v>
+<v t="ekr.20050518071251.4"><vh>selection</vh></v>
+</v>
+<v t="ekr.20190210103111.1"><vh>line_to_headline test1</vh>
+<v t="ekr.20190210103111.2"><vh>before</vh></v>
+<v t="ekr.20190210103111.3"><vh>after</vh>
+<v t="ekr.20190210103111.4"><vh>headline</vh></v>
+</v>
+<v t="ekr.20190210103111.5"><vh>selection</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -221,12 +297,239 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
+
+suite = c.testManager.makeEditBodySuite(p)
+
+# g.app.scriptDict['suite'] = suite
+</t>
+<t tx="ekr.20040712101754.38">@language plain
+@
+
+The names of child nodes are the names of commander methods to be called to do the test.
+
+Each child node will in turn have two or more children:
+
+- a "before" node
+- an "after" node
+- an optional selection node containing two lines giving the selection range in Tk coordinates.
+- An optional insert node containing one line giving the insert point in Tk coordinates.
+</t>
+<t tx="ekr.20040712101754.49"></t>
+<t tx="ekr.20040712101754.50">line 1
+    line 2
+    line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.51">line 1
+line 2
+line 3
+line 4
+</t>
+<t tx="ekr.20040712101754.52">2.0
+3.5
+</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
 <t tx="ekr.20050328101834.3"></t>
+<t tx="ekr.20050417201845"></t>
+<t tx="ekr.20050417201845.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050417201845.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050417201845.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050417201845.4">2.0
+5.10
+</t>
+<t tx="ekr.20050417202713"></t>
+<t tx="ekr.20050417202713.1">@language python
+
+def addCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.2">@language python
+
+def addCommentTest():
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202713.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417202817"># created by new add-comments
+</t>
+<t tx="ekr.20050417202817.1">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.2">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20050417202817.3">5.0
+7.8
+</t>
+<t tx="ekr.20050417203114"></t>
+<t tx="ekr.20050417203114.1"></t>
+<t tx="ekr.20050417203310">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417203310.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417203336">1.0
+6.5
+</t>
+<t tx="ekr.20050417204830">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204834">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204901">1.0
+6.5
+</t>
+<t tx="ekr.20050417204940"></t>
+<t tx="ekr.20050417204940.1">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417204940.2">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417204940.3">1.0
+6.5
+</t>
+<t tx="ekr.20050417205012"></t>
+<t tx="ekr.20050417205012.1">@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+</t>
+<t tx="ekr.20050417205012.2">@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+</t>
+<t tx="ekr.20050417205012.3">1.0
+6.5
+</t>
+<t tx="ekr.20050518070540"></t>
+<t tx="ekr.20050518070540.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070540.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518070545">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927"></t>
+<t tx="ekr.20050518070927.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518070927.2">before
+    &lt;&lt; section &gt;&gt;
+after
+</t>
+<t tx="ekr.20050518070927.3">sec line 1
+    sec line 2 indented
+sec line 3
+</t>
+<t tx="ekr.20050518070927.4">2.0
+5.10
+</t>
+<t tx="ekr.20050518071251"></t>
+<t tx="ekr.20050518071251.1">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
+<t tx="ekr.20050518071251.4">2.0
+2.16
+</t>
+<t tx="ekr.20050518071258">before
+    &lt;&lt; section &gt;&gt;
+    sec line 1
+        sec line 2 indented
+sec line 3
+after
+</t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -609,6 +912,16 @@ else:
         if 1:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
+</t>
+<t tx="ekr.20060127120604">@language python
+
+def addCommentTest():
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
 </t>
 <t tx="ekr.20060325071703.1">import sys
 
@@ -1094,6 +1407,39 @@ run-marked-unit-tests-locally       = Alt-5
 run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
+</t>
+<t tx="ekr.20111112211307.3910"># created by old and new add-comments.
+</t>
+<t tx="ekr.20111112211307.3911">@language python
+
+def deleteCommentTest():
+
+#     if 1:
+#         a = 2
+#         b = 3
+
+    # if 1:
+        # a = 2
+        # b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3912">@language python
+
+def deleteCommentTest():
+
+    if 1:
+        a = 2
+        b = 3
+
+    if 1:
+        a = 2
+        b = 3
+
+    pass
+</t>
+<t tx="ekr.20111112211307.3913">5.0
+12.8
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
@@ -1590,6 +1936,18 @@ nodeB
 </t>
 <t tx="ekr.20190113124135.3">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20190210103111.1"></t>
+<t tx="ekr.20190210103111.2">before
+headline
+after
+</t>
+<t tx="ekr.20190210103111.3">before
+after
+</t>
+<t tx="ekr.20190210103111.4"></t>
+<t tx="ekr.20190210103111.5">2.0
+2.0
+</t>
 <t tx="ekr.20190923014948.1"></t>
 <t tx="ekr.20191207060251.1">@language python
 @tabwidth -4
