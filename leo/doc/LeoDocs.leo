@@ -31900,6 +31900,9 @@ https://github.com/leo-editor/leo-editor/issues/1619
   
 #1620: git-diff clones added nodes
 https://github.com/leo-editor/leo-editor/issues/1620
+
+Added @button write-leoPyRef.leo
+https://github.com/leo-editor/leo-editor/issues/1716
 </t>
 <t tx="ekr.20201014052236.5">For a list of all bugs fixed in Leo 6.3 see:
 https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.3+label%3Abug
