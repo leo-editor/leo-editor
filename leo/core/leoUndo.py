@@ -413,7 +413,6 @@ class Undoer:
         isOld = oldOrNew == 'old'
         marked = u.oldMarked if isOld else u.newMarked
         # Note: c.set/clearMarked call a hook.
-        ### g.trace(oldOrNew, marked)
         if marked:
             c.setMarked(u.p)
         else:

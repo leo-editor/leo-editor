@@ -27262,7 +27262,6 @@ newText = p.b + '\n#changed'
 try:
     for marked in (True, False):
         c.undoer.clearUndoState()  # Required.
-        ### print('marked:', marked)
         p.setMarked() if marked else p.clearMarked()
         oldMarked = p.isMarked()
         u.setUndoTypingParams(p,
