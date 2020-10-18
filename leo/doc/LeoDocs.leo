@@ -31927,7 +31927,7 @@ PR: https://github.com/leo-editor/leo-editor/pull/1660
 No command function for 'About...'
 https://github.com/leo-editor/leo-editor/issues/1595
 
-#1596: c.executeMinibufferCommand
+Crash in c.executeMinibufferCommand
 https://github.com/leo-editor/leo-editor/issues/1596
 
 leoAst.py fails for python 3.8
@@ -31956,6 +31956,9 @@ https://github.com/leo-editor/leo-editor/issues/1688
 
 @test nodes not colored correctly
 https://github.com/leo-editor/leo-editor/issues/1696
+
+Problems with marked bits
+https://github.com/leo-editor/leo-editor/issues/1694
 
 unittest fails w/ python3.8
 https://github.com/leo-editor/leo-editor/issues/1700</t>
