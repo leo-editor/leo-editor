@@ -100,6 +100,6 @@ def savetextnode(c, p):
     except IOError as msg:
         g.es("error writing %s: %s" % (name, msg))
         p.setDirty()
-        p.setMarked(1)
+        p.setMarked()
 #@-others
 #@-leo

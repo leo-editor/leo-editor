@@ -199,12 +199,6 @@ class OpmlController:
             # if 'O' in a: v.setOrphan()
             if 'T' in a: self.topVnode = v
             if 'V' in a: self.currentVnode = v
-        if 0: # Leo no longer uses the tnodeList.
-            s = node.attributes.get('leo:tnodeList')
-            tnodeList = s and s.split(',')
-            if tnodeList:
-                # This tnode list will be resolved later.
-                v.tempTnodeList = tnodeList
     #@+node:ekr.20060913220707: *3* oc.dumpTree
     def dumpTree(self, root, dummy=True):
         if not dummy:
