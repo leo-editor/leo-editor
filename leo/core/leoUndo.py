@@ -229,7 +229,7 @@ class Undoer:
         if name == "Can't Undo":
             return name
         return "Undo " + name
-    #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch (new unit test)
+    #@+node:ekr.20060127070008: *4* u.setIvarsFromBunch
     def setIvarsFromBunch(self, bunch):
         u = self
         u.clearOptionalIvars()
@@ -238,7 +238,7 @@ class Undoer:
             for key in list(bunch.keys()):
                 g.trace(f"{key:20} {bunch.get(key)!r}")
             g.pr('-' * 20)
-        if g.unitTesting:  # #1694.
+        if g.unitTesting:  # #1694: An ever-present unit test.
             val = bunch.get('oldMarked')
             assert val in (True, False), f"{val!r} {g.callers()!s}"
         # bunch is not a dict, so bunch.keys() is required.
@@ -413,6 +413,7 @@ class Undoer:
         isOld = oldOrNew == 'old'
         marked = u.oldMarked if isOld else u.newMarked
         # Note: c.set/clearMarked call a hook.
+        ### g.trace(oldOrNew, marked)
         if marked:
             c.setMarked(u.p)
         else:
@@ -852,7 +853,7 @@ class Undoer:
     #@+node:ekr.20110519074734.6096: *5* u.putIvarsToVnode
     def putIvarsToVnode(self, p):
 
-        u = self; v = p.v
+        u, v = self, p.v
         assert self.per_node_undo
         bunch = g.bunch()
         for key in self.optionalIvars:
@@ -878,7 +879,7 @@ class Undoer:
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
         """
-        u = self; c = u.c
+        c, u = self.c, self
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
@@ -895,9 +896,6 @@ class Undoer:
         #@-<< return if there is nothing to do >>
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
-        # Clear all optional params.
-        # for ivar in u.optionalIvars:
-            # setattr(u,ivar,None)
         u.clearOptionalIvars()
         # Set the params.
         u.undoType = undo_type
@@ -1072,7 +1070,7 @@ class Undoer:
                 undoType=undo_type,
                 undoHelper=u.undoTyping,
                 redoHelper=u.redoTyping,
-                oldMarked=old_p and old_p.isMarked() or False, # #1694
+                oldMarked=old_p.isMarked() if old_p else p.isMarked(), # #1694
                 oldText=u.oldText,
                 oldSel=u.oldSel,
                 oldNewlines=u.oldNewlines,
@@ -1083,7 +1081,7 @@ class Undoer:
             bunch = old_d
         bunch.leading = u.leading
         bunch.trailing = u.trailing
-        bunch.newMarked=p and p.isMarked() or False  # #1694
+        bunch.newMarked = p.isMarked()  # #1694 
         bunch.newNewlines = u.newNewlines
         bunch.newMiddleLines = u.newMiddleLines
         bunch.newSel = u.newSel

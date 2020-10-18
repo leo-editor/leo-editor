@@ -17774,40 +17774,6 @@ finally:
     if 1:
         test_node.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20200203073552.210: *7* @@file @test python top-level later decl
-#!/usr/bin/env python3
-
-@others
-if __name__=="__main__":
-    main()
-@language python
-@tabwidth -4
-#@+node:ekr.20200203073552.211: *8* Declarations
-import os
-import re
-
-#@+node:ekr.20200203073552.212: *8* merge_value
-def merge_value(v1, v2):
-    return v
-
-#@+node:ekr.20200203073552.213: *8* class MainDisplay(object)
-class MainDisplay(object):
-
-    @others
-ensure_endswith_newline = lambda x: x if x.endswith('\n') else x + '\n'
-
-#@+node:ekr.20200203073552.214: *9* save_file
-def save_file(self):
-    """Write the file out to disk."""
-    with open(self.save_name, "w") as f:
-        for newline in newlines:
-            f.write(newline)
-
-# This line should be included at the end of the class node.
-#@+node:ekr.20200203073552.215: *8* retab
-def retab(s, tabsize):
-    return ''.join(pieces)
-
 #@+node:ekr.20161115063144.28: *6* @test python trailing comment
 @tabwidth -4
     # Required when running unit tests externally.
@@ -21188,9 +21154,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20191219051329.1: *5* insertAsFirstChild
-#@+node:ekr.20191219051329.3: *5* insertAsNthChild(1)
-#@+node:ekr.20191219051329.2: *5* insertAsLastChild
+#@+node:ekr.20201018145422.1: *5* insertAsFirstChild
+#@+node:ekr.20201018145422.3: *5* insertAsNthChild(1)
+#@+node:ekr.20201018145422.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -21816,9 +21782,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20191219051331.6: *6* A
-#@+node:ekr.20191219051331.8: *6* newHeadline
-#@+node:ekr.20191219051331.7: *6* B
+#@+node:ekr.20201018145422.19: *6* A
+#@+node:ekr.20201018145422.21: *6* newHeadline
+#@+node:ekr.20201018145422.20: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -27015,23 +26981,6 @@ class test:
 X = test()
 sendEmail(X)
 #@+node:ekr.20071113193729: *3* leoUndo
-@
-
-9 failures with Alt-5.
-
-Any unit test that changes the structure of the outline should do the
-following:
-
-- The setUp method should do
-    self.undoMark = c.undoer.getMark()
-before altering the outline.
-
-- The tearDown method should do
-    c.undoer.rollBackToMark(self.undoMark)
-after restoring the outline.
-
-u.rollBackToMark deletes all entries in the undo stack following the saved mark.
-This eliminates references to nodes that no longer exist in the present outline.
 #@+node:ekr.20040712101754.37: *4* @suite Edit body tests
 # Create unit tests in g.app.scriptDict["suite"]
 
@@ -27051,15 +27000,6 @@ Each child node will in turn have two or more children:
 - an optional selection node containing two lines giving the selection range in Tk coordinates.
 - An optional insert node containing one line giving the insert point in Tk coordinates.
 #@+node:ekr.20060127120604: *6* tempNode
-@language python
-
-def addCommentTest():
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
 #@+node:ekr.20050417202713: *6* addComments
 #@+node:ekr.20050417202713.1: *7* before
 @language python
@@ -27314,6 +27254,57 @@ after
 #@+node:ekr.20190210103111.5: *7* selection
 2.0
 2.0
+#@+node:ekr.20201018144248.1: *4* @test restore marked bits
+# Test of #1694.
+u = c.undoer
+oldText = p.b
+newText = p.b + '\n#changed'
+try:
+    for marked in (True, False):
+        c.undoer.clearUndoState()  # Required.
+        ### print('marked:', marked)
+        p.setMarked() if marked else p.clearMarked()
+        oldMarked = p.isMarked()
+        u.setUndoTypingParams(p,
+            undo_type = 'typing',
+            oldText = oldText,
+            newText = newText,
+        )
+        u.undo()
+        assert p.b == oldText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 1', p.isMarked(), oldMarked)
+        u.redo()
+        assert p.b == newText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 2', p.isMarked(), oldMarked)
+finally:
+    p.b = oldText
+    p.clearMarked()
+#@+node:ekr.20190923170025.1: *4* @test undo editHeadline
+# Brian Theado.
+c.undoer.clearUndoState()
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# Select 'node 1' and modify the headline as if a user did it
+node1 = p.copy().moveToFirstChild()
+c.selectPosition(node1)
+c.editHeadline()
+w = c.frame.tree.edit_widget(node1)
+w.insert('1.0', 'changed - ')
+c.endEditing()
+assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
+
+# Move the selection and undo the headline change
+c.selectPosition(node1.copy().moveToNext())
+c.undoer.undo()
+
+# The undo should restore the 'node 1' headline string
+assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
+
+# The undo should select the edited headline.
+assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
+#@+node:ekr.20190923170025.2: *5* node 1
+#@+node:ekr.20190923170025.3: *5* node 2
+#@+node:ekr.20190923170025.4: *5* node 3
 #@+node:bpt.20190825074247.1: *4* @test undo/redoGroup
 # This test exposed a bug with redoGroup c.undoer.bead index off-by-one
 # The first c.pasteOutline() is there to setup the test cases, but it also serves
@@ -27352,6 +27343,27 @@ assert do.b == do_undo_redo.b, "Redo should do the operation again"
 line 1
     line 2
       line 3
+line4
+#@+node:ekr.20201018151721.1: *5* do and undo
+@tabwidth -4
+
+line 1
+    line 2
+      line 3
+line4
+#@+node:ekr.20201018151721.2: *5* do
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
+line4
+#@+node:ekr.20201018151721.3: *5* do, undo, redo
+@tabwidth -4
+
+line 1
+	line 2
+	  line 3
 line4
 #@+node:ekr.20191219051337.3: *5* do and undo
 @tabwidth -4
@@ -27416,32 +27428,6 @@ line 1
 	line 2
 	  line 3
 line4
-#@+node:ekr.20190923170025.1: *4* @test undo editHeadline
-# Brian Theado.
-c.undoer.clearUndoState()
-assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-
-# Select 'node 1' and modify the headline as if a user did it
-node1 = p.copy().moveToFirstChild()
-c.selectPosition(node1)
-c.editHeadline()
-w = c.frame.tree.edit_widget(node1)
-w.insert('1.0', 'changed - ')
-c.endEditing()
-assert [p.h for p in p.subtree()] == ['changed - node 1', 'node 2', 'node 3']
-
-# Move the selection and undo the headline change
-c.selectPosition(node1.copy().moveToNext())
-c.undoer.undo()
-
-# The undo should restore the 'node 1' headline string
-assert [p.h for p in p.subtree()] == ['node 1', 'node 2', 'node 3']
-
-# The undo should select the edited headline.
-assert c.p == node1, f"c.p: {c.p.h}, node1: {node1.h}"
-#@+node:ekr.20190923170025.2: *5* node 1
-#@+node:ekr.20190923170025.3: *5* node 2
-#@+node:ekr.20190923170025.4: *5* node 3
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoUndo tests.')

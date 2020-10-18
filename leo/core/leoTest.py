@@ -209,7 +209,6 @@ class EditBodyTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.75: *3* setUp
     def setUp(self):
         c = self.c; tempNode = self.tempNode
-        # self.undoMark = c.undoer.getMark()
         c.undoer.clearUndoState()
         # Delete all children of temp node.
         while tempNode.firstChild():
@@ -247,7 +246,6 @@ class EditBodyTestCase(unittest.TestCase):
             while tempNode.firstChild():
                 tempNode.firstChild().doDelete()
         tempNode.clearDirty()
-        # c.undoer.rollbackToMark(self.undoMark)
         c.undoer.clearUndoState()
     #@-others
 #@+node:ekr.20051104075904.5: ** class GeneralTestCase
