@@ -3340,6 +3340,7 @@
 <v t="ekr.20200313080216.5"><vh>6.2: Bugs</vh></v>
 <v t="ekr.20200313080216.6"><vh>6.2: Settings and command-line options</vh></v>
 </v>
+<v t="ekr.20201019144336.1"><vh>Leo 6.3: leoAst.py, removed Qt docks</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -26201,6 +26202,33 @@ https://github.com/leo-editor/leo-editor/issues/1514
 Retired the @bool beautify-autobeautify setting.
 
 Removed many unused settings from leoSettings.leo.
+</t>
+<t tx="ekr.20201019144336.1">Leo 6.3, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 6.3**
+
+- leoAst.py: The unification of Python's token and ast worlds.
+- Retired all Qt Dock code.
+- Improved viewrendered and viewrendered3 plugins.
+- Improved several importer plugins.
+- Refactored Leo's key handling code.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 </tnodes>
 </leo_file>

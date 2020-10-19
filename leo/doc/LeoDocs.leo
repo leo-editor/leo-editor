@@ -31813,7 +31813,8 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
@@ -32018,7 +32019,7 @@ https://github.com/leo-editor/leo-editor/issues/1626
 - Refactored Leo's key handling code.
 
 Features:
-- Merged LeoPlugings.leo into LeoPluginsRef.leo
+- Merged leoPlugins.leo into LeoPluginsRef.leo
 - Added cython and rust importers
 - Improved C++, Javascript, Python, TypeScript importers.
 - Added 7 new commands.

@@ -238,7 +238,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.2.1
+Version: 6.3
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -257,48 +257,32 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.2.1, http://leoeditor.com, is now available on [GitHub](https://github.com/leo-editor/leo-editor).
+<t tx="EKR.20040519090846.9">Leo 6.3 b1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 6.2**
+**The highlights of Leo 6.3**
 
-- Added the fstringify-files and diff-fstringify-files commands.
-- Improved the beautify-files command. Added the diff-beautify-files commands.
-- Added the TokenOrderGenerator and TokenOrderTraverser classes in leoAst.py.
-  Leo's fstringify and beautify commands use these classes.
-- Added importers for the rust language and todo.txt files.
-- Added the viewrendered3 plugin.
-- Leo's legacy layout is now the default.
-- Fixed all known bugs, including some notable, long-standing bugs.
-- Fixed several "fit and finish" issues.
-- Removed unused settings from leoSettings.leo.
-
-**Quick Install**
-
-- Install python3
-- if not using git:  
-    `pip install leo`
-
-- If using git:  
-    `git clone https://github.com/leo-editor/leo-editor.git`  
-    `pip install --editable leo-editor`
-
-See [Getting Started](http://leoeditor.com/getting-started.html) for more. 
+- leoAst.py: The unification of Python's token and ast worlds.
+- Retired all Qt Dock code.
+- Improved viewrendered and viewrendered3 plugins.
+- Improved several importer plugins.
+- Refactored Leo's key handling code.
 
 **Links**
 
-- Leo's home page: https://leoeditor.com
-- [Documentation](https://leoeditor.com/leo_toc.html)
-- [Tutorials](https://leoeditor.com/tutorial.html)
-- [Video tutorials](https://leoeditor.com/screencasts.html)
-- [Forum](https://groups.google.com/group/leo-editor)
-- [Download](https://leoeditor.com/download.html)
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
-- [What people are saying about Leo](https://leoeditor.com/testimonials.html)
-- [A web page that displays .leo files](https://leoeditor.com/load-leo.html)
-- [More links](https://leoeditor.com/leoLinks.html)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
 5.0:        setup: 552      zip: 1,617
@@ -1632,7 +1616,6 @@ g.es_print('done')
     'doc/quickstart.leo',
     'external/leo2html.leo',
     'plugins/leoGuiPluginsRef.leo',
-    'plugins/leoPluginsRef.leo',
     'scripts/scripts.leo',
     'test/test.leo',
 )</t>
@@ -1676,8 +1659,8 @@ LeoDist.leo:
 - Make sure no distributed .leo file contains xml-stylesheet elements.
   Run @button check .leo files in leo-dist.leo.
 
-LeoPyRef.leo and LeoPluginsRef.leo:
-- Regenerate from corresponding local file.
+LeoPyRef.leo:
+- Regenerate from leoPy.leo.
 - Remove top-level clones.
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
