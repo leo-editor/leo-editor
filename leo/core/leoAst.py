@@ -5900,6 +5900,8 @@ class TestTokens(BaseTest):
             # 1. ast.parse does not generate them by default.
             # 2. The type comments are ordinary comments.
             #    They do not need to be specially synced.
+            # 3. Tools such as black, orange, and fstringify will
+            #    only ever handle comments as comments.
             'FunctionType', 'NamedExpr', 'TypeIgnore',
         ]
         aList = [z for z in aList if not z[0].islower()]
