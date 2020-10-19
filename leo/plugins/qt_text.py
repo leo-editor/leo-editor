@@ -36,7 +36,7 @@ def zoom_helper(event, delta):
         return
     wrapper = c.frame.body.wrapper
     #
-    # For performance, don't c.styleSheetManager.reload_style_sheets().
+    # For performance, don't call c.styleSheetManager.reload_style_sheets().
     # Apply to body widget directly
     c._style_deltas['font-size-body'] += delta
     ssm = c.styleSheetManager

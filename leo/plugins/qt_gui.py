@@ -1873,15 +1873,20 @@ class StyleSheetManager:
 
     def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
         """Expand @ settings into their corresponding constants."""
-        trace_dict = False
         c = self.c
+        trace = 'zoom' in g.app.debug
         # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
-            settingsDict = c.config.settingsDict
-        if trace_dict:
-            g.trace('===== settingsDict.keys()...')
-            g.printObj(sorted(settingsDict.keys()))
+            settingsDict = c.config.settingsDict  # A TypedDict.
+        if 0:
+            g.trace('===== settingsDict...')
+            for key in settingsDict.keys():
+                print(f"{key:40}: {settingsDict.get(key)}")
         constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
+        if trace:
+            print('')
+            g.trace(f"zoom constants: {constants}")
+            g.printObj(deltas, tag='zoom deltas')  # A defaultdict
         sheet = self.replace_indicator_constants(sheet)
         for pass_n in range(10):
             to_do = self.find_constants_referenced(sheet)
@@ -1905,7 +1910,6 @@ class StyleSheetManager:
         c = self.c
         constants = {}  # old: self.find_constants_defined(sheet)
         deltas = c._style_deltas
-        # legacy
         if font_size_delta:
             deltas['font-size-body'] = font_size_delta
         for delta in c._style_deltas:
