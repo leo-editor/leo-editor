@@ -314,9 +314,9 @@ class BaseJEditColorizer(BaseColorizer):
         """
         Return the font for the given setting name.
         """
+        trace = 'zoom' in g.app.debug
         c, get = self.c, self.c.config.get
         default_size = c.config.defaultBodyFontSize
-        trace = False and not g.unitTesting  # and setting_name.startswith('php')
         for name in (setting_name, setting_name.rstrip('_font')):
             size_error = False
             family = get(name + '_family', 'family')
@@ -331,8 +331,6 @@ class BaseJEditColorizer(BaseColorizer):
                 else:
                     # It's a good idea to set size explicitly.
                     old_size = size or default_size
-                    if trace: g.trace(
-                        "STARTING SIZE", old_size, repr(size), default_size)
                 if isinstance(old_size, str):
                     # All settings should be in units of points.
                     try:
@@ -359,9 +357,10 @@ class BaseJEditColorizer(BaseColorizer):
                 font = g.app.gui.getFontFromParams(family, size, slant, weight)
                 # A good trace: the key shows what is happening.
                 if font:
-                    if trace: g.trace(
-                        f"key: {key:30} family: {family or 'None'} "
-                        f"size: {size or 'None'} {slant} {weight}")
+                    if trace:
+                        g.trace(
+                            f"key: {key:>35} family: {family or 'None'} "
+                            f"size: {size or 'None'} {slant} {weight}")
                     return font
         return None
     #@+node:ekr.20110605121601.18579: *4* bjc.configure_variable_tags
