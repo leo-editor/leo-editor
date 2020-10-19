@@ -2397,7 +2397,6 @@
 </v>
 </v>
 <v t="ekr.20201017061850.1"></v>
-<v t="ekr.20200225075435.1"></v>
 <v t="ekr.20201014052236.1"></v>
 </vnodes>
 <tnodes>
@@ -31889,6 +31888,9 @@ https://github.com/leo-editor/leo-editor/issues/1672
 Better alt-click popups
 https://github.com/leo-editor/leo-editor/issues/1286
 
+Add support for --trace=zoom
+https://github.com/leo-editor/leo-editor/issues/1569
+
 Ctrl-click should ignore defs in @nosearch
 https://github.com/leo-editor/leo-editor/issues/1592
 
@@ -31971,7 +31973,9 @@ Removed the following command-line options:
 --global-docks
 --init-docks
 --no-dock
---use-docks</t>
+--use-docks
+
+Added support for --trace=zoom</t>
 <t tx="ekr.20201015122734.1">Render asciidoc and pandoc markup in VR
 https://github.com/leo-editor/leo-editor/issues/333
   
