@@ -723,7 +723,7 @@ if QtWidgets: # NOQA
             self.auto_create = c.config.getBool('view-rendered-auto-create', False)
             self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
             self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-            self.external_dock = c.config.getBool('use-vr-dock', default=False)
+
         #@+node:ekr.20190614065659.1: *4* vr.create_pane
         def create_pane(self, parent):
             '''Create the VR pane or dock.'''

@@ -665,12 +665,6 @@
 <v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
 </v>
 </v>
-<v t="ekr.20190613024818.1"><vh>Docks</vh>
-<v t="ekr.20190613024838.1"><vh>@bool dockable-log-tabs = False</vh></v>
-<v t="ekr.20190614191608.1"><vh>@bool use-vr-dock = False</vh></v>
-<v t="ekr.20190808031525.1"><vh>@data pyzo_tool_ids</vh></v>
-<v t="ekr.20190613024836.1"><vh>@string central-dock-widget = outline</vh></v>
-</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
@@ -1528,11 +1522,6 @@
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
-<v t="ekr.20190724171032.1"><vh>@item -</vh></v>
-<v t="ekr.20190724173715.1"><vh>@item show-hide-body-dock</vh></v>
-<v t="ekr.20190724173724.1"><vh>@item show-hide-outline-dock</vh></v>
-<v t="ekr.20190724173733.1"><vh>@item show-hide-render-dock</vh></v>
-<v t="ekr.20190724171039.1"><vh>@item show-hide-tabs-dock</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -11477,15 +11466,18 @@ See https://jedi.readthedocs.io/en/latest/index.html
             return False
     #
     # These plugins/use settings in non-standard ways.
-    if setting.startswith(
-        ('bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'zodb'),
+    if setting.startswith((
+            'bookmarks', 'datenodes', 'http', 'opml',
+            'rst3', 'todo', 'vim', 'zodb'
+        ),
     ):
         return False
     #
     # Find settings are defined in non-standard ways.
     for pattern in (
-        'batch', 'change-text', 'find-text', 'ignore-case',
+        'batch', 'change-text',
+        'find-def-creates-clones',
+        'find-text', 'ignore-case',
         'mark-changes', 'mark-finds', 'node-only', 'pattern-match',
         'reverse', 'search-body', 'search-headline', 'suboutline-only',
         'whole-word', 'wrap',
@@ -11531,9 +11523,9 @@ See https://jedi.readthedocs.io/en/latest/index.html
             return False
     #
     # These plugins use settings in non-standard ways.
-    if setting.startswith(
-        ('activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'zodb'),
+    if setting.startswith((
+        'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
+        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
     ):
         return False
     #
@@ -11706,40 +11698,8 @@ c.redraw()
 <t tx="ekr.20190325052226.1"></t>
 <t tx="ekr.20190422173857.1"></t>
 <t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
-<t tx="ekr.20190613024818.1"></t>
-<t tx="ekr.20190613024836.1">valid values are: outline, body, tabs
-
-Warning: you may have to clear the caches in .leo/db after changing this setting.
-
-</t>
-<t tx="ekr.20190613024838.1">False: (recommended) Plugins create areas in the Tabs dock.
-
-True: create separate docks for plugins that used to be in Log pane.</t>
-<t tx="ekr.20190614191608.1">True: The VR dock is (can be) moved.
-False: (Recommended) The VR dock splits the body dock.
-
-*Warning*: You may have to clear caches if you change this setting.
-
-The --init-docks command-line option is the easy way to do this.</t>
 <t tx="ekr.20190622093004.1"></t>
 <t tx="ekr.20190712053127.1"></t>
-<t tx="ekr.20190724171032.1"></t>
-<t tx="ekr.20190724171039.1"></t>
-<t tx="ekr.20190724173715.1"></t>
-<t tx="ekr.20190724173724.1"></t>
-<t tx="ekr.20190724173733.1"></t>
-<t tx="ekr.20190808031525.1"># Valid ids are:
-
-# pyzofilebrowser
-# pyzohistoryviewer
-# pyzointeractivehelp
-# pyzologger
-# pyzowebbrowser
-# pyzosourcestructure
-    # Partially functional.
-
-# Not ready yet:
-# pyzoworkspace</t>
 <t tx="ekr.20190915192551.1"></t>
 <t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20190915192705.1"></t>
