@@ -2403,7 +2403,7 @@ This way makes @root trees more compatible with @file trees.</t>
 Valid values: Any nonzero integer.
 
 Negative tab widths (recommended) cause Leo to convert tabs to blanks when typing.</t>
-<t tx="ekr.20041119034357.32">The page width for wrapping doc parts in derived files.
+<t tx="ekr.20041119034357.32">The page width for wrapping doc parts in external files.
 
 Valid values: any nonzero positive integer.</t>
 <t tx="ekr.20041119034357.38"></t>
