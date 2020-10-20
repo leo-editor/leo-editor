@@ -11850,8 +11850,8 @@ At present, the file leo/plugins/leo_to_html.ini contains configuration settings
 | name = Leo: Leonine Editor with Outlines
 | logo = LEO-Leonine Editor Outliner-icon.png
 | developer = Edward K. Ream, et al.
-| latest_release_version = 6.2
-| latest_release_date = {{Start date and age|2019|06|18}}
+| latest_release_version = 6.3
+| latest_release_date = {{Start date and age|2019|10|19}}
 | size = ~9 MB
 | programming_language = [[Python (programming language)|Python]]
 | operating_system = [[Cross-platform]]
@@ -22561,7 +22561,7 @@ Then run::
 
 You may `download Leo's sources`_ in one of three ways. If the sources
 are zipped, unzip them into a folder in your home directory, say
-~/leo-6.2.
+~/leo-6.3.
 
 You now have several choices.
 
@@ -22569,7 +22569,7 @@ You now have several choices.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-6.2
+    cd ~/leo-6.3
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
