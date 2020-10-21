@@ -31963,6 +31963,9 @@ https://github.com/leo-editor/leo-editor/issues/1696
 Problems with marked bits
 https://github.com/leo-editor/leo-editor/issues/1694
 
+Bug in php importer
+https://github.com/leo-editor/leo-editor/issues/1717
+
 unittest fails w/ python3.8
 https://github.com/leo-editor/leo-editor/issues/1700</t>
 <t tx="ekr.20201014052236.6">Added @bool add-context-to-headline
