@@ -109,11 +109,6 @@ attributesDictDict = {
     "php_tags": php_tags_attributes_dict,
     "php_tags_literal": php_tags_literal_attributes_dict,
 }
-
-
-
-
-
 #@-<< Attribute dicts >>
 #@+<< Keyword dicts >>
 #@+node:ekr.20201021080251.1: ** << keyword dicts >>
@@ -2558,7 +2553,7 @@ keywordsDictDict = {
 #@-<< Keyword dicts >>
 #@+others
 #@+node:ekr.20201021080548.1: ** php_main ruleset
-# Rules for php_main ruleset.
+# Rules for php_main ruleset...
 # All rules start with '<' or '&'.
 
 def php_rule0(colorer, s, i):
@@ -2672,11 +2667,6 @@ php_tags_rulesdict = {
     "=": [php_tags_rule6,],
 }
 
-
-
-
-
-
 #@+node:ekr.20201021082459.1: ** php_tags_literal ruleset
 def php_tags_literal_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
@@ -2735,13 +2725,13 @@ def php_php_literal1(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="php::php_literal",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-        
+
 def php_php_literal2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-        
+
 def php_php_literal3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
@@ -2769,7 +2759,7 @@ def php_php_keyword_rule2(colorer, s, i):
 def php_php_op1(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="=",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
+
 def php_php_op2(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="->",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -2982,7 +2972,7 @@ php_php_literal_rulesdict = {
     "$": [php_php_literal_rule1],
 }
 #@+node:ekr.20201021082124.1: ** php_javascript_php ruleset
-# Rules for the php_javascript_php ruleset.
+# Rules for the php_javascript_php ruleset...
 
 def php_javascript_php_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<?php", end="?>",
@@ -3002,9 +2992,7 @@ def php_javascript_php_rule3(colorer, s, i):
         delegate="php::php",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
-
 # Rules dict for php_javascript_php ruleset.
-
 php_javascript_php_rulesdict = {
     "<": [
         php_javascript_php_rule1,

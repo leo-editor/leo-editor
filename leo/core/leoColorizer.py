@@ -1007,9 +1007,6 @@ class BaseJEditColorizer(BaseColorizer):
         colorName = colorName.replace(
             ' ', '').replace('-', '').replace('_', '').lower().strip()
         colorName = leo_color_database.get(colorName, colorName)
-        # This is weird, so I'll leave it here.
-            # if colorName[-1].isdigit() and colorName[0] != '#':
-                # colorName = colorName[: -1]
         # Get the actual color.
         color = self.actualColorDict.get(colorName)
         if not color:
@@ -1042,10 +1039,11 @@ class BaseJEditColorizer(BaseColorizer):
         self.tagCount += 1
         if trace:
             # A superb trace.
-            p = self.c and self.c.p
-            if p and p.v != self.last_v:
-                print(f'\n{p.h}\n')
-                self.last_v = p.v
+            ###
+                # p = self.c and self.c.p
+                # if p and p.v != self.last_v:
+                    # print(f'\nsetTag: NEW NODE: {p.h}\n')
+                    # self.last_v = p.v
             if len(repr(s[i:j])) <= 20:
                 s2 = repr(s[i:j])
             else:
@@ -1056,7 +1054,6 @@ class BaseJEditColorizer(BaseColorizer):
                 f"setTag: {kind_s:25} {i:3} {j:3} {s2:>20} "
                 f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
             )
-                ### :{g.callers(4)}")
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -2171,8 +2168,8 @@ class JEditColorizer(BaseJEditColorizer):
                     s2 = repr(s[i : i + 17 - 2] + '...')
                 kind_s = f"{delegate}:{tag}"
                 print(
-                    f"colorRangeWithTag: {kind_s:25} {i:3} {j:3} "
-                    f"{s2:>20} {self.matcher_name}")
+                    f"\ncolorRangeWithTag: {kind_s:25} {i:3} {j:3} "
+                    f"{s2:>20} {self.matcher_name}\n")
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -2215,15 +2212,20 @@ class JEditColorizer(BaseJEditColorizer):
 
     def mainLoop(self, n, s):
         """Colorize a *single* line s, starting in state n."""
-        trace = 'coloring' in g.app.db
-        if trace: print('')
+        trace = 'coloring' in g.app.debug
         t1 = time.process_time()
         f = self.restartDict.get(n)
+        if trace:
+            p = self.c and self.c.p
+            if p and p.v != self.last_v:
+                self.last_v = p.v
+                f_name = f.__name__ if f else 'None'
+                print('')
+                g.trace(f"NEW NODE: state {n} = {f_name} {p.h}\n")
         i = f(s) if f else 0
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
-            # g.printList(functions)
             for f in functions:
                 n = f(self, s, i)
                 if n is None:
