@@ -2215,6 +2215,8 @@ class JEditColorizer(BaseJEditColorizer):
 
     def mainLoop(self, n, s):
         """Colorize a *single* line s, starting in state n."""
+        trace = 'coloring' in g.app.db
+        if trace: print('')
         t1 = time.process_time()
         f = self.restartDict.get(n)
         i = f(s) if f else 0
