@@ -2707,7 +2707,7 @@ php_tags_literal_rulesdict = {
 #@+node:ekr.20201021081950.1: ** php_php ruleset
 # Rules for the php_php ruleset...
 
-#@+node:ekr.20201021151300.1: *3* php_php comments
+#@+node:ekr.20201021151300.1: *3* php_php comments...
 def php_php_comment1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
@@ -2729,7 +2729,7 @@ def php_php_comment4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
-#@+node:ekr.20201021151342.1: *3* php_php literals
+#@+node:ekr.20201021151342.1: *3* php_php literals...
 def php_php_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
@@ -2755,11 +2755,7 @@ def php_php_rule8(colorer, s, i):
         delegate="php::php_literal",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
         
-#@+node:ekr.20201021151509.1: *3* php_php keywords
-def php_php_rule9(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
-#@+node:ekr.20201021151548.1: *3* php_php operators
+#@+node:ekr.20201021151548.1: *3* php_php operators...
 def php_php_rule10(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="=",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
@@ -2780,122 +2776,103 @@ def php_php_rule14(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="<=",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.35: *3* php_php_rule15
 def php_php_rule15(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="=",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.36: *3* php_php_rule34
+        
 def php_php_rule34(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="+",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.37: *3* php_php_rule35
+        
 def php_php_rule35(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="-",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.38: *3* php_php_rule36
+        
 def php_php_rule36(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="/",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.39: *3* php_php_rule37
+        
 def php_php_rule37(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="*",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.40: *3* php_php_rule38
+        
 def php_php_rule38(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=">",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.41: *3* php_php_rule39
+        
 def php_php_rule39(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="<",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.42: *3* php_php_rule40
 def php_php_rule40(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="%",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.43: *3* php_php_rule41
+        
 def php_php_rule41(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="&",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.44: *3* php_php_rule42
+        
 def php_php_rule42(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="|",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.45: *3* php_php_rule43
 def php_php_rule43(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="^",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.46: *3* php_php_rule44
 def php_php_rule44(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="~",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.47: *3* php_php_rule45
 def php_php_rule45(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=".",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.48: *3* php_php_rule46
 def php_php_rule46(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="}",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.49: *3* php_php_rule47
 def php_php_rule47(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="{",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.50: *3* php_php_rule48
 def php_php_rule48(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=",",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.51: *3* php_php_rule49
 def php_php_rule49(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=";",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.52: *3* php_php_rule50
 def php_php_rule50(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="]",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.53: *3* php_php_rule51
 def php_php_rule51(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="[",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.54: *3* php_php_rule52
 def php_php_rule52(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="?",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.55: *3* php_php_rule53
 def php_php_rule53(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq="@",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.56: *3* php_php_rule54
 def php_php_rule54(colorer, s, i):
     return colorer.match_seq(s, i, kind="operator", seq=":",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
-#@+node:ekr.20201021080110.57: *3* php_php_rule55
+#@+node:ekr.20201021080110.57: *3* php_php_others...
+def php_php_rule9(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+
 def php_php_rule55(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
-#@+node:ekr.20201021080110.58: *3* php_php_rule56
 def php_php_rule56(colorer, s, i):
     return colorer.match_keywords(s, i)
 
