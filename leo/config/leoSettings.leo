@@ -2067,6 +2067,19 @@
 <v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
+<v t="ekr.20201021105344.1"><vh>viewrendered3 plugin</vh>
+<v t="ekr.20201021110324.1"><vh>@bool vr3-insert-headline-from-node = False</vh></v>
+<v t="ekr.20201021105654.2"><vh>@bool vr3-math-output = False</vh></v>
+<v t="ekr.20201021110420.1"><vh>@bool vr3-md-math-output = False</vh></v>
+<v t="ekr.20201021110503.1"><vh>@bool vr3-prefer-asciidoc3 = False</vh></v>
+<v t="ekr.20201021110638.1"><vh>@int qweb-view-font-size = 16</vh></v>
+<v t="ekr.20201021105651.1"><vh>@string vr3-asciidoc-path = None</vh></v>
+<v t="ekr.20201021105654.1"><vh>@string vr3-default-kind = None</vh></v>
+<v t="ekr.20201021105654.3"><vh>@string vr3-mathjax-url = None</vh></v>
+<v t="ekr.20201021110716.1"><vh>@string vr3-md-stylesheet = None</vh></v>
+<v t="ekr.20201021110839.1"><vh>@string vr3-prefer-external = None</vh></v>
+<v t="ekr.20201021110940.1"><vh>@string vr3-rst-stylesheet = None</vh></v>
+</v>
 <v t="ekr.20051123100536.1"><vh>vim plugin</vh>
 <v t="ekr.20051123100536.2"><vh>@@string vim_cmd = c:\Program Files\vim\vim63\gvim --servername LEO</vh></v>
 <v t="ekr.20051123100536.3"><vh>@@string vim_exe = c:\Program Files\vim\vim63\gvim</vh></v>
@@ -11525,7 +11538,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # These plugins use settings in non-standard ways.
     if setting.startswith((
         'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
+        'rst3', 'todo', 'vim', 'zodb'),
     ):
         return False
     #
@@ -11903,6 +11916,23 @@ want the visual clutter of repeated class / file names.</t>
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
+<t tx="ekr.20201021105344.1"></t>
+<t tx="ekr.20201021105651.1">Path to ``asciidoc`` directory</t>
+<t tx="ekr.20201021105654.1">Default for rendering type: asciidoc, md or rst.</t>
+<t tx="ekr.20201021105654.2">Enable RsT MathJax math rendering</t>
+<t tx="ekr.20201021105654.3">MathJax script URL (both RsT and MD). Typically:
+
+file:///D:/utility/mathjax/es5/tex-chtml.js
+https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/latest.js?config=TeX-AMS_CHTML</t>
+<t tx="ekr.20201021110324.1">True: Render node headline as top heading.</t>
+<t tx="ekr.20201021110420.1">True: Enable MD MathJax math rendering.</t>
+<t tx="ekr.20201021110503.1">True: Use ``asciidoc3`` if available.
+False: Use ``asciidoc``</t>
+<t tx="ekr.20201021110638.1"></t>
+<t tx="ekr.20201021110716.1">"URL for MD stylesheet</t>
+<t tx="ekr.20201021110839.1">Name of external asciidoctor processor program
+</t>
+<t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
