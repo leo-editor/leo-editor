@@ -2730,250 +2730,246 @@ def php_php_comment4(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="", exclude_match=False)
 #@+node:ekr.20201021151342.1: *3* php_php literals...
-def php_php_rule3(colorer, s, i):
+def php_php_literal1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="php::php_literal",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
         
-def php_php_rule4(colorer, s, i):
+def php_php_literal2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
         
-def php_php_rule5(colorer, s, i):
+def php_php_literal3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="`", end="`",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="php::php_literal",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
 
-def php_php_rule8(colorer, s, i):
+def php_php_literal4(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal1",
         begin="<<<[[:space:]'\"]*([[:alnum:]_]+)[[:space:]'\"]*", end="$1",
         at_line_start=False, at_whitespace_end=False, at_word_start=False,
         delegate="php::php_literal",exclude_match=False,
         no_escape=False, no_line_break=False, no_word_break=False)
-        
-#@+node:ekr.20201021151548.1: *3* php_php operators...
-def php_php_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-        
-def php_php_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule43(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule44(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule45(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule49(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule50(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-def php_php_rule54(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-#@+node:ekr.20201021080110.57: *3* php_php_others...
-def php_php_rule9(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
-
-def php_php_rule55(colorer, s, i):
+#@+node:ekr.20201021080110.57: *3* php_php functions & keywords...
+def php_php_function_rule(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
-def php_php_rule56(colorer, s, i):
-    return colorer.match_keywords(s, i)
+def php_php_keyword_rule1(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="keyword3", pattern="$",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
 
+def php_php_keyword_rule2(colorer, s, i):
+    return colorer.match_keywords(s, i)
+#@+node:ekr.20201021151548.1: *3* php_php operators...
+def php_php_op1(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="=",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+        
+def php_php_op2(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="->",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op3(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="!",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op4(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=">=",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op5(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="<=",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op6(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="=",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op7(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="+",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op8(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="-",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op9(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="/",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op10(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="*",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op11(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=">",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op12(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="<",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op13(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="%",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op14(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="&",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op15(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="|",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op16(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="^",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op17(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="~",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op18(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=".",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op19(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="}",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op20(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="{",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op21(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=",",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op22(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=";",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op23(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="]",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op24(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="[",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op25(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="?",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op26(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq="@",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+def php_php_op27(colorer, s, i):
+    return colorer.match_seq(s, i, kind="operator", seq=":",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 #@+node:ekr.20201021082016.1: *3* php_php_rulesdict
 # Rules dict for php_php ruleset.
 php_php_rulesdict = {
-    "!": [php_php_rule12],
-    "\"": [php_php_rule3],
+    "!": [php_php_op3],
+    "\"": [php_php_literal1],
     "#": [php_php_comment4],
-    "$": [php_php_rule9],
-    "%": [php_php_rule40],
-    "&": [php_php_rule41],
-    "'": [php_php_rule4],
-    "(": [php_php_rule55],
-    "*": [php_php_rule37],
-    "+": [php_php_rule34],
-    ",": [php_php_rule48],
-    "-": [php_php_rule11,php_php_rule35],
-    ".": [php_php_rule45],
-    "/": [php_php_comment1,php_php_comment2,php_php_comment3,php_php_rule36],
-    "0": [php_php_rule56],
-    "1": [php_php_rule56],
-    "2": [php_php_rule56],
-    "3": [php_php_rule56],
-    "4": [php_php_rule56],
-    "5": [php_php_rule56],
-    "6": [php_php_rule56],
-    "7": [php_php_rule56],
-    "8": [php_php_rule56],
-    "9": [php_php_rule56],
-    ":": [php_php_rule54],
-    ";": [php_php_rule49],
-    "<": [php_php_rule14,php_php_rule39],
-    "< ": [php_php_rule8],
-    "=": [php_php_rule10,php_php_rule15],
-    ">": [php_php_rule13,php_php_rule38],
-    "?": [php_php_rule52],
-    "@": [php_php_rule53,php_php_rule56],
-    "A": [php_php_rule56],
-    "B": [php_php_rule56],
-    "C": [php_php_rule56],
-    "D": [php_php_rule56],
-    "E": [php_php_rule56],
-    "F": [php_php_rule56],
-    "G": [php_php_rule56],
-    "H": [php_php_rule56],
-    "I": [php_php_rule56],
-    "J": [php_php_rule56],
-    "K": [php_php_rule56],
-    "L": [php_php_rule56],
-    "M": [php_php_rule56],
-    "N": [php_php_rule56],
-    "O": [php_php_rule56],
-    "P": [php_php_rule56],
-    "Q": [php_php_rule56],
-    "R": [php_php_rule56],
-    "S": [php_php_rule56],
-    "T": [php_php_rule56],
-    "U": [php_php_rule56],
-    "V": [php_php_rule56],
-    "W": [php_php_rule56],
-    "X": [php_php_rule56],
-    "Y": [php_php_rule56],
-    "Z": [php_php_rule56],
-    "[": [php_php_rule51],
-    "]": [php_php_rule50],
-    "^": [php_php_rule43],
-    "_": [php_php_rule56],
-    "`": [php_php_rule5],
-    "a": [php_php_rule56],
-    "b": [php_php_rule56],
-    "c": [php_php_rule56],
-    "d": [php_php_rule56],
-    "e": [php_php_rule56],
-    "f": [php_php_rule56],
-    "g": [php_php_rule56],
-    "h": [php_php_rule56],
-    "i": [php_php_rule56],
-    "j": [php_php_rule56],
-    "k": [php_php_rule56],
-    "l": [php_php_rule56],
-    "m": [php_php_rule56],
-    "n": [php_php_rule56],
-    "o": [php_php_rule56],
-    "p": [php_php_rule56],
-    "q": [php_php_rule56],
-    "r": [php_php_rule56],
-    "s": [php_php_rule56],
-    "t": [php_php_rule56],
-    "u": [php_php_rule56],
-    "v": [php_php_rule56],
-    "w": [php_php_rule56],
-    "x": [php_php_rule56],
-    "y": [php_php_rule56],
-    "z": [php_php_rule56],
-    "{": [php_php_rule47],
-    "|": [php_php_rule42],
-    "}": [php_php_rule46],
-    "~": [php_php_rule44],
+    "$": [php_php_keyword_rule1],
+    "%": [php_php_op13],
+    "&": [php_php_op14],
+    "'": [php_php_literal2],
+    "(": [php_php_function_rule],
+    "*": [php_php_op10],
+    "+": [php_php_op7],
+    ",": [php_php_op21],
+    "-": [php_php_op2, php_php_op8],
+    ".": [php_php_op18],
+    "/": [php_php_comment1, php_php_comment2, php_php_comment3, php_php_op9],
+    "0": [php_php_keyword_rule2],
+    "1": [php_php_keyword_rule2],
+    "2": [php_php_keyword_rule2],
+    "3": [php_php_keyword_rule2],
+    "4": [php_php_keyword_rule2],
+    "5": [php_php_keyword_rule2],
+    "6": [php_php_keyword_rule2],
+    "7": [php_php_keyword_rule2],
+    "8": [php_php_keyword_rule2],
+    "9": [php_php_keyword_rule2],
+    ":": [php_php_op27],
+    ";": [php_php_op22],
+    "<": [php_php_op5, php_php_op12],
+    "< ": [php_php_literal4],
+    "=": [php_php_op1, php_php_op6],
+    ">": [php_php_op4, php_php_op11],
+    "?": [php_php_op25],
+    "@": [php_php_op26, php_php_keyword_rule2],
+    "A": [php_php_keyword_rule2],
+    "B": [php_php_keyword_rule2],
+    "C": [php_php_keyword_rule2],
+    "D": [php_php_keyword_rule2],
+    "E": [php_php_keyword_rule2],
+    "F": [php_php_keyword_rule2],
+    "G": [php_php_keyword_rule2],
+    "H": [php_php_keyword_rule2],
+    "I": [php_php_keyword_rule2],
+    "J": [php_php_keyword_rule2],
+    "K": [php_php_keyword_rule2],
+    "L": [php_php_keyword_rule2],
+    "M": [php_php_keyword_rule2],
+    "N": [php_php_keyword_rule2],
+    "O": [php_php_keyword_rule2],
+    "P": [php_php_keyword_rule2],
+    "Q": [php_php_keyword_rule2],
+    "R": [php_php_keyword_rule2],
+    "S": [php_php_keyword_rule2],
+    "T": [php_php_keyword_rule2],
+    "U": [php_php_keyword_rule2],
+    "V": [php_php_keyword_rule2],
+    "W": [php_php_keyword_rule2],
+    "X": [php_php_keyword_rule2],
+    "Y": [php_php_keyword_rule2],
+    "Z": [php_php_keyword_rule2],
+    "[": [php_php_op24],
+    "]": [php_php_op23],
+    "^": [php_php_op16],
+    "_": [php_php_keyword_rule2],
+    "`": [php_php_literal3],
+    "a": [php_php_keyword_rule2],
+    "b": [php_php_keyword_rule2],
+    "c": [php_php_keyword_rule2],
+    "d": [php_php_keyword_rule2],
+    "e": [php_php_keyword_rule2],
+    "f": [php_php_keyword_rule2],
+    "g": [php_php_keyword_rule2],
+    "h": [php_php_keyword_rule2],
+    "i": [php_php_keyword_rule2],
+    "j": [php_php_keyword_rule2],
+    "k": [php_php_keyword_rule2],
+    "l": [php_php_keyword_rule2],
+    "m": [php_php_keyword_rule2],
+    "n": [php_php_keyword_rule2],
+    "o": [php_php_keyword_rule2],
+    "p": [php_php_keyword_rule2],
+    "q": [php_php_keyword_rule2],
+    "r": [php_php_keyword_rule2],
+    "s": [php_php_keyword_rule2],
+    "t": [php_php_keyword_rule2],
+    "u": [php_php_keyword_rule2],
+    "v": [php_php_keyword_rule2],
+    "w": [php_php_keyword_rule2],
+    "x": [php_php_keyword_rule2],
+    "y": [php_php_keyword_rule2],
+    "z": [php_php_keyword_rule2],
+    "{": [php_php_op20],
+    "|": [php_php_op15],
+    "}": [php_php_op19],
+    "~": [php_php_op17],
 }
-
 #@+node:ekr.20201021082036.1: ** php_php_literal ruleset
 # Rules for the php_php_literal ruleset.
 
