@@ -1051,7 +1051,12 @@ class BaseJEditColorizer(BaseColorizer):
             else:
                 s2 = repr(s[i : i + 17 - 2] + '...')
             kind_s = f"{self.language}.{tag}"
-            print(f"set_tag: {kind_s:25} {i:3} {j:3} {s2:>20} {g.callers(2)}")
+            kind_s2 = f"{self.delegate_name}:" if self.delegate_name else ''
+            print(
+                f"setTag: {kind_s:25} {i:3} {j:3} {s2:>20} "
+                f"{self.rulesetName}:{kind_s2}{self.matcher_name}"
+            )
+                ### :{g.callers(4)}")
         self.highlighter.setFormat(i, j - i, format)
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseJEditColorizer)
@@ -1079,8 +1084,10 @@ class JEditColorizer(BaseJEditColorizer):
         #
         # State data used only by this class...
         self.after_doc_language = None
+        self.delegate_name = ''
         self.initialStateNumber = -1
         self.old_v = None
+        self.matcher_name = ''
         self.nextState = 1  # Dont use 0.
         self.n2languageDict = {-1: c.target_language}
         self.restartDict = {}  # Keys are state numbers, values are restart functions.
@@ -1870,6 +1877,7 @@ class JEditColorizer(BaseJEditColorizer):
         no_escape, no_line_break, no_word_break
     ):
         """Remain in this state until 'end' is seen."""
+        self.matcher_name = 'restart:' + self.matcher_name.replace('restart:','')
         i = 0
         j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
         if j == -1:
@@ -2154,16 +2162,17 @@ class JEditColorizer(BaseJEditColorizer):
             # Do *not* check x.flag here. It won't work.
             if trace: g.trace('not in color state')
             return
+        self.delegate_name = delegate
         if delegate:
             if trace:
                 if len(repr(s[i:j])) <= 20:
                     s2 = repr(s[i:j])
                 else:
                     s2 = repr(s[i : i + 17 - 2] + '...')
-                kind_s = f"{delegate}.{tag}"
+                kind_s = f"{delegate}:{tag}"
                 print(
                     f"colorRangeWithTag: {kind_s:25} {i:3} {j:3} "
-                    f"{s2:>20} {g.callers(2)}")
+                    f"{s2:>20} {self.matcher_name}")
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -2174,7 +2183,9 @@ class JEditColorizer(BaseJEditColorizer):
                     if n is None:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
-                        i += n; break
+                        self.matcher_name = f.__name__
+                        i += n
+                        break
                 else:
                     # Use the default chars for everything else.
                     # Use the *delegate's* default characters if possible.
@@ -2185,10 +2196,6 @@ class JEditColorizer(BaseJEditColorizer):
             bunch = self.modeStack.pop()
             self.initModeFromBunch(bunch)
         elif not exclude_match:
-            # if trace:
-                # s2 = repr(s[i: j]) if len(repr(s[i: j])) <= 20 else repr(s[i: i + 17 - 2] + '...')
-                # g.trace('%25s %3s %3s %-20s %s' % (
-                    # ('%s.%s' % (self.language, tag)), i, j, s2, g.callers(2)))
             self.setTag(tag, s, i, j)
         if tag != 'url':
             # Allow UNL's and URL's *everywhere*.
@@ -2221,6 +2228,7 @@ class JEditColorizer(BaseJEditColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
+                    self.matcher_name = f.__name__
                     i += n
                     break
                 elif n < 0:  # Total failure.
