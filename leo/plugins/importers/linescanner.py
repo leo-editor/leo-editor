@@ -537,7 +537,7 @@ class Importer:
         Non-recursively parse all lines of s into parent, creating descendant
         nodes as needed.
         '''
-        trace = False
+        trace = 'importers' in g.app.debug
         tail_p = None
         prev_state = self.state_class()
         target = Target(parent, prev_state)
