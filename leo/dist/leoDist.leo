@@ -1679,6 +1679,7 @@ LeoPyRef.leo:
   - Do not use the -f option.
   - Tags should start with "v"
 
+git checkout master
 git tag -a v6.3-b1 -m "Added v6.3-b1 tag"
 git push --follow-tags
 </t>
