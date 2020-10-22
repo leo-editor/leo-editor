@@ -62,11 +62,15 @@ class BaseColorizer:
             # set by scanLanguageDirectives.
         self.showInvisibles = False
         #
-        # Statistics...
+        # Statistics....
         self.count = 0
         self.full_recolor_count = 0
             # For unit tests.
         self.recolorCount = 0
+        #
+        # For traces...
+        self.matcher_name = ''
+        self.delegate_name = ''
     #@+node:ekr.20190324045134.1: *3* bc.init
     def init(self, p):
         """May be over-ridden in subclasses."""
@@ -1081,10 +1085,8 @@ class JEditColorizer(BaseJEditColorizer):
         #
         # State data used only by this class...
         self.after_doc_language = None
-        self.delegate_name = ''
         self.initialStateNumber = -1
         self.old_v = None
-        self.matcher_name = ''
         self.nextState = 1  # Dont use 0.
         self.n2languageDict = {-1: c.target_language}
         self.restartDict = {}  # Keys are state numbers, values are restart functions.
@@ -2232,7 +2234,7 @@ class JEditColorizer(BaseJEditColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    self.matcher_name = f.__name__
+                    self.matcher_name = f.__name__  # For traces.
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -2245,7 +2247,7 @@ class JEditColorizer(BaseJEditColorizer):
             assert i > progress
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
     def recolor(self, s):
         """
         jEdit.recolor: Recolor a *single* line, s.
