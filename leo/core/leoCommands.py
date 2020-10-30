@@ -1229,11 +1229,12 @@ class Commands:
     #@+node:ekr.20060906211747.1: *4* c.Setters
     #@+node:ekr.20040315032503: *5* c.appendStringToBody
     def appendStringToBody(self, p, s):
-        c = self
+        ### c = self
         if not s: return
         body = p.b
         s = g.toUnicode(s)
-        c.setBodyString(p, body + s)
+        ### c.setBodyString(p, body + s)
+        p.b = body + s
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
     def clearAllMarked(self):
         c = self
@@ -1415,7 +1416,7 @@ class Commands:
         """Trims trailing blank lines from a node.
 
         It is surprising difficult to do this during Untangle."""
-        c = self
+        ### c = self
         body = p.b
         lines = body.split('\n')
         i = len(lines) - 1; changed = False
@@ -1427,8 +1428,7 @@ class Commands:
                 i -= 1; changed = True
             else: break
         if changed:
-            body = ''.join(body) + '\n'  # Add back one last newline.
-            c.setBodyString(p, body)
+            p.b = ''.join(body) + '\n'  # Add back one last newline.
             # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs

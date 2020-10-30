@@ -1336,7 +1336,8 @@ class LeoImportCommands:
             body = p.b
             assert(g.isUnicode(body))
             s = g.toUnicode(s, self.encoding)
-            self.setBodyString(p, body + s)
+            ### self.setBodyString(p, body + s)
+            p.b = body + s
 
     def setBodyString(self, p, s):
         """Similar to c.setBodyString,

@@ -1139,7 +1139,8 @@ class TestManager:
         # pylint: disable=unbalanced-tuple-unpacking
         sel1, sel2 = sels
         c.selectPosition(work)
-        c.setBodyString(work, before.b)
+        ### c.setBodyString(work, before.b)
+        work.b = before.b
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
@@ -1331,7 +1332,8 @@ class TestManager:
         # pylint: disable=unbalanced-tuple-unpacking
         sel1, sel2 = sels
         c.selectPosition(work)
-        c.setBodyString(work, before.b)
+        ### c.setBodyString(work, before.b)
+        work.b = before.b
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
         # The vim-specific part.
         status, n1, command, n2, motion = vc.scan(command)

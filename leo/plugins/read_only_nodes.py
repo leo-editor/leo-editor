@@ -297,7 +297,8 @@ def insert_read_only_node (c,p,name):
     except IOError: # as msg:
         # g.es("error reading %s: %s" % (name, msg))
         # g.es("...not found: " + name)
-        c.setBodyString(p,"") # Clear the body text.
+        ### c.setBodyString(p,"") # Clear the body text.
+        p.b = "" # Clear the body text.
         return True # Mark the node as changed.
     else:
         ext = os.path.splitext(parse[2])[1]
@@ -329,7 +330,7 @@ def insert_read_only_node (c,p,name):
                 new = new + ''.join(hyperlist)
             #@-<< convert HTML to text >>
         previous = p.b
-        c.setBodyString(p,new)
+        p.b = new
         changed = (g.toUnicode(new) != g.toUnicode(previous))
         if changed and previous != "":
             g.es("changed: %s" % name) # A real change.

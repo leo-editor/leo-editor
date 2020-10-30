@@ -1236,8 +1236,10 @@ class Undoer:
             for bunch in u.afterTree:
                 v = bunch.v
                 if u.newP.v == v:
-                    c.setBodyString(u.newP, bunch.body)
-                    c.setHeadString(u.newP, bunch.head)
+                    ### c.setBodyString(u.newP, bunch.body)
+                    ### c.setHeadString(u.newP, bunch.head)
+                    u.newP.b = bunch.body
+                    u.newP.h = bunch.head
                 else:
                     v.setBodyString(bunch.body)
                     v.setHeadString(bunch.head)
@@ -1527,8 +1529,10 @@ class Undoer:
             for bunch in u.beforeTree:
                 v = bunch.v
                 if u.p.v == v:
-                    c.setBodyString(u.p, bunch.body)
-                    c.setHeadString(u.p, bunch.head)
+                    ### c.setBodyString(u.p, bunch.body)
+                    ### c.setHeadString(u.p, bunch.head)
+                    u.p.b = bunch.body
+                    u.p.h = bunch.head
                 else:
                     v.setBodyString(bunch.body)
                     v.setHeadString(bunch.head)
@@ -1660,7 +1664,7 @@ class Undoer:
             u.beads[u.bead] = bunch
         # Replace data in tree with old data.
         u.restoreTree(old_data)
-        c.setBodyString(p, p.b)
+        c.setBodyString(p, p.b)  # This is not a do-nothing.
         return p  # Nothing really changes.
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self):

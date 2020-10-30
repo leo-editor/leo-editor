@@ -58,9 +58,10 @@ def onPreSave(tag=None, keywords=None):
                 nosentNodes.append(p.copy())
                 for p2 in p.self_and_subtree():
                     s = p2.b
-                    lastline = s.split("\n")[-1]
+                    lastline = s.split('\n')[-1]
                     if lastline.strip():
-                        c.setBodyString(p2,s+"\n")
+                        ### c.setBodyString(p2,s+"\n")
+                        p2.b = s + '\n'
 #@+node:ekr.20040331151007.2: ** onPostSave
 def onPostSave(tag=None, keywords=None):
     """After saving an @nosent file, replace all tabs with spaces."""

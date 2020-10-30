@@ -524,7 +524,8 @@ def openDir(c,parent,d):
         c.setHeadString(p,name)
         if name.startswith('/'):
             # sufficient test of dirness as we created newlist
-            c.setBodyString(p, '@path '+name.strip('/'))
+            ### c.setBodyString(p, '@path '+name.strip('/'))
+            p.b = '@path '+name.strip('/')
         elif (c.__active_path['do_autoload'] and
               inReList(name, c.__active_path['autoload'])):
             openFile(c, p, os.path.join(d, p.h), autoload=True)

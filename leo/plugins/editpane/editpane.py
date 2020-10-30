@@ -242,7 +242,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 return p
         g.es("Edit/View pane couldn't find node")
         return None
-    #@+node:tbrown.20171028115438.12: *3* _register_handlers
+    #@+node:tbrown.20171028115438.12: *3* _register_handlers (editpane.py)
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
         """
