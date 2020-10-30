@@ -121,6 +121,18 @@ def onCreate (tag, keys):
     c = keys.get('c')
     if c:
         c.theTagController = TagController(c)
+#@+node:ekr.20201030095215.1: ** show-all-tags
+@g.command('show-all-tags')
+def show_all_tags(event):
+    """Simulate a control-click at the cursor."""
+    c = event.get('c')
+    if not c:
+        return
+    tc = c.theTagController
+    if tc:
+        tc.show_all_tags()
+    else:
+        print('nodetags plugin not enabled')
 #@+node:peckj.20140804103733.9246: ** class TagController
 class TagController:
     
@@ -151,6 +163,24 @@ class TagController:
     def get_all_tags(self):
         ''' return a list of all tags in the outline '''
         return self.taglist
+    #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
+    def show_all_tags(self):
+        """Show all tags, organized by node."""
+        c, tc = self.c, self
+        d = {}
+        for p in c.all_unique_positions():
+            u = p.v.u
+            tags = set(u.get(tc.TAG_LIST_KEY, set([])))
+            for tag in tags:
+                aList = d.get(tag, [])
+                aList.append(p.h)
+                d [tag] = aList
+        # Print all tags.
+        for key in sorted(d):
+            aList = d.get(key)
+            for h in sorted(aList):
+                print(f"{key:>8} {h}")
+     
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):
         ''' ensures the outline's taglist is consistent with the state of the nodes in the outline '''
