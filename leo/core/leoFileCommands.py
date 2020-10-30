@@ -677,7 +677,6 @@ class FileCommands:
         c.atFileCommands.readAll(p, force=True)
         c.redraw()
         # Force an update of the body pane.
-        ### c.setBodyString(p, p.b)
         c.frame.body.onBodyChanged(undoType=None)
     #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
     def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):

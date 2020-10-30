@@ -167,8 +167,6 @@ def importCiscoConfig(c):
         else:
             outClean.append(line)
         prev = line
-
-    ### c.setBodyString(p,'\n'.join(outClean))
     p.b = '\n'.join(outClean)
 
     # scan through the created outline and add children
@@ -180,7 +178,6 @@ def importCiscoConfig(c):
             # if type(blocks[key][0]) == type(''):
             if g.isString(blocks[key][0]):
                 # it's a string, no sub-children, so just print the text
-                ### c.setBodyString(child,'\n'.join(blocks[key]))
                 child.b = '\n'.join(blocks[key])
             else:
                 # it's a multi-level node
@@ -188,7 +185,6 @@ def importCiscoConfig(c):
                     # each value is a list containing the headline and then the text
                     subchild = child.insertAsNthChild(0)
                     c.setHeadString(subchild,value[0])
-                    ### c.setBodyString(subchild,'\n'.join(value))
                     subchild.b = '\n'.join(value)
             # child.sortChildren()
         else:

@@ -1229,12 +1229,9 @@ class Commands:
     #@+node:ekr.20060906211747.1: *4* c.Setters
     #@+node:ekr.20040315032503: *5* c.appendStringToBody
     def appendStringToBody(self, p, s):
-        ### c = self
-        if not s: return
-        body = p.b
-        s = g.toUnicode(s)
-        ### c.setBodyString(p, body + s)
-        p.b = body + s
+
+        if s:
+            p.b = p.b + g.toUnicode(s)
     #@+node:ekr.20031218072017.2984: *5* c.clearAllMarked
     def clearAllMarked(self):
         c = self

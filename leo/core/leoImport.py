@@ -1333,11 +1333,7 @@ class LeoImportCommands:
         """Similar to c.appendStringToBody,
         but does not recolor the text or redraw the screen."""
         if s:
-            body = p.b
-            assert(g.isUnicode(body))
-            s = g.toUnicode(s, self.encoding)
-            ### self.setBodyString(p, body + s)
-            p.b = body + s
+            p.b = p.b + g.toUnicode(s, self.encoding)
 
     def setBodyString(self, p, s):
         """Similar to c.setBodyString,

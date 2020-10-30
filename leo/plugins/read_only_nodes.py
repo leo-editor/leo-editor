@@ -295,9 +295,6 @@ def insert_read_only_node (c,p,name):
         new = f.read()
         f.close()
     except IOError: # as msg:
-        # g.es("error reading %s: %s" % (name, msg))
-        # g.es("...not found: " + name)
-        ### c.setBodyString(p,"") # Clear the body text.
         p.b = "" # Clear the body text.
         return True # Mark the node as changed.
     else:
@@ -308,7 +305,6 @@ def insert_read_only_node (c,p,name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
-            ### pylint: disable=too-many-function-args
             parser = HTMLParser(fmt)
 
             # send the HTML text to the parser
@@ -320,7 +316,6 @@ def insert_read_only_node (c,p,name):
             fh.close()
 
             # finally, get the list of hyperlinks and append to the end of the text
-            ### pylint: disable=no-member
             hyperlinks = parser.anchorlist
             numlinks = len(hyperlinks)
             if numlinks > 0:

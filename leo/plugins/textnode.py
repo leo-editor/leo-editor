@@ -66,7 +66,6 @@ def on_save(tag,keywords):
         h = p.h
         if g.match_word(h,0,"@text") and p.isDirty():
             savetextnode(c, p)
-            ### c.setBodyString(p, "")
             p.b = ""
 #@+node:tbrown.20080128221824: ** getPath
 def getPath(c,p):
@@ -82,14 +81,12 @@ def readtextnode(c, p):
     try:
         file = open(name,"rU")
         g.es("..." + name)
-        ### c.setBodyString(p, file.read())
         p.b = file.read()
         p.clearDirty()
         file.close()
     except IOError as msg:
         g.es("error reading %s: %s" % (name, msg))
         g.es("...not found: " + name)
-        ### c.setBodyString(p,"") # Clear the body text.
         p.b = ''
         p.setDirty()
 #@+node:ajones.20070122185020: ** savetextnode

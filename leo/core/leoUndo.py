@@ -1236,8 +1236,6 @@ class Undoer:
             for bunch in u.afterTree:
                 v = bunch.v
                 if u.newP.v == v:
-                    ### c.setBodyString(u.newP, bunch.body)
-                    ### c.setHeadString(u.newP, bunch.head)
                     u.newP.b = bunch.body
                     u.newP.h = bunch.head
                 else:
@@ -1529,8 +1527,6 @@ class Undoer:
             for bunch in u.beforeTree:
                 v = bunch.v
                 if u.p.v == v:
-                    ### c.setBodyString(u.p, bunch.body)
-                    ### c.setHeadString(u.p, bunch.head)
                     u.p.b = bunch.body
                     u.p.h = bunch.head
                 else:

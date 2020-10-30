@@ -60,7 +60,6 @@ def onPreSave(tag=None, keywords=None):
                     s = p2.b
                     lastline = s.split('\n')[-1]
                     if lastline.strip():
-                        ### c.setBodyString(p2,s+"\n")
                         p2.b = s + '\n'
 #@+node:ekr.20040331151007.2: ** onPostSave
 def onPostSave(tag=None, keywords=None):
