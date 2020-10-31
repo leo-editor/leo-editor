@@ -446,7 +446,7 @@ Suppressing screen flash when redrawing the outline:
     
 Use autocompletion to explore these objects!
 </t>
-<t tx="ekr.20131019184243.16698">Ivars:
+<t tx="ekr.20131019184243.16698">**Properties**:
 
     v.b:    v's body text.
     v.gnx:  v's gnx.
@@ -456,6 +456,13 @@ Use autocompletion to explore these objects!
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see:
 http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+
+*Important*: Generally speaking, vnode properties are fast, while the
+corresponding position properties are much slower. Nevertheless, scripts
+should usually use *position* properties rather than *vnode* properties
+because the position properties handle recoloring and other details.
+Scripts should use *vnode* properties only when making batch changes to
+vnodes.
 </t>
 <t tx="ekr.20131019184243.16699">**Properties**:
 
@@ -524,8 +531,7 @@ New in Leo 5.5: All generators yield distinct positions.
     p.insertBefore()
     p.moveAfter(p2)
     p.moveToNthChildOf(parent,n)
-    p.moveToRoot(oldRoot=None)
-        # oldRoot **must** be the old root position if it exists.
+    p.moveToRoot()
         
 **Moving positions**:
 
