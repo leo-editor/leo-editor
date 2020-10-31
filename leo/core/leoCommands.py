@@ -1276,6 +1276,7 @@ class Commands:
         g.doHook("clear-mark", c=c, p=p)
     #@+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p, s):
+        """This is equivalent to p.b = s."""
         c, v = self, p.v
         if not c or not v:
             return
