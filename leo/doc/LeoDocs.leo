@@ -16855,7 +16855,13 @@ Use autocompletion to explore these objects!
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see the section about
 `userAttributes &lt;customizing.html#adding-extensible-attributes-to-nodes-and-leo-files&gt;`_ in the `Customizing Leo &lt;customizing.html&gt;`_ chapter.
-</t>
+
+*Important*: Generally speaking, vnode properties are fast, while the
+corresponding position properties are much slower. Nevertheless, scripts
+should usually use *position* properties rather than *vnode* properties
+because the position properties handle recoloring and other details.
+Scripts should use *vnode* properties only when making batch changes to
+vnodes.</t>
 <t tx="ekr.20131019061259.16691">**Properties**::
 
     p.b: same as p.v.b.  *Warning*: p.b = s is expensive.
