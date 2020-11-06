@@ -34,7 +34,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith('.py'):
                 n = 0
                 for p2 in p.subtree():
-                    ### bunch2 = c.undoer.beforeChangeNodeContents(p2, oldBody=p2.b)
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
                     if self.cleanAtCleanNode(p2, undoType):
                         n += 1

@@ -706,8 +706,6 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         s = e.text()
         self.closeEditorHelper(e, item)
-        ### oldHead = p.h
-        ### changed = s != oldHead
         changed = s != p.h
         if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
             return
@@ -722,13 +720,11 @@ class LeoQtTree(leoFrame.LeoTree):
             i = s.find('\n')
             if i > -1:
                 s = s[:i]
-                ### if s != oldHead:
                 if s != p.h:
                     g.warning("truncating headline to one line")
             limit = 1000
             if len(s) > limit:
                 s = s[:limit]
-                ### if s != oldHead:
                 if s != p.h:
                     g.warning("truncating headline to", limit, "characters")
             #@-<< truncate s if it has multiple lines >>
@@ -736,7 +732,6 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, s)  # Required to avoid full redraw.
             # #1310: update the tooltip.
             item.setToolTip(0, p.h)
-            ### undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
             undoData = u.beforeChangeNodeContents(p)
             if not c.changed: c.setChanged()
             # We must recolor the body because

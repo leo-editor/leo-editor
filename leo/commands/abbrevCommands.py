@@ -618,7 +618,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         prefix = functools.reduce(g.longestCommonPrefix, aList)
         if prefix.strip():
             ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+            ### b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+            b = c.undoer.beforeChangeNodeContents(p)
             s = s[:i] + prefix + s[j:]
             w.setAllText(s)
             w.setInsertPoint(i + len(prefix))
@@ -678,7 +679,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             w = self.w
             s = w.getAllText()
             ypos = w.getYScrollPosition()
-            b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+            ### b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
+            b = c.undoer.beforeChangeNodeContents(p)
             ins = ins1 = w.getInsertPoint()
             if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
             i, j = g.getWord(s, ins1)
