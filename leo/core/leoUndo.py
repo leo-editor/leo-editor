@@ -724,7 +724,7 @@ class Undoer:
         u.bead += 1
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
-    def beforeChangeNodeContents(self, p, oldHead=None):  ###, oldYScroll=None):
+    def beforeChangeNodeContents(self, p, oldHead=None):
         """Return data that gets passed to afterChangeNode"""
         c, u = self.c, self
         w = c.frame.body.wrapper
@@ -732,7 +732,6 @@ class Undoer:
         bunch.oldBody = p.b
         bunch.oldHead = oldHead or p.h
         # #1413: Always restore yScroll if possible.
-        ### bunch.oldYScroll = oldYScroll
         bunch.oldYScroll = w.getYScrollPosition() if w else 0
         return bunch
     #@+node:ekr.20050315134017.6: *5* u.beforeChangeTree
