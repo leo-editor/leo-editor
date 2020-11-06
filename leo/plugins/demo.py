@@ -419,13 +419,14 @@ class Demo:
         '''Undoably simulates typing in the headline.'''
         c, p = self.c, self.c.p
         undoType = 'Typing'
-        oldHead = p.h
+        ### oldHead = p.h
         tree = c.frame.tree
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
         if undo:
-            undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+            ### undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+            undoData = c.undoer.beforeChangeNodeContents(p)
             p.setDirty()
             c.undoer.afterChangeNodeContents(p, undoType, undoData)
         for ch in s:

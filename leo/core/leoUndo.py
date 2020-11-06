@@ -724,11 +724,12 @@ class Undoer:
         u.bead += 1
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
-    def beforeChangeNodeContents(self, p, oldBody=None, oldHead=None, oldYScroll=None):
+    def beforeChangeNodeContents(self, p, oldHead=None, oldYScroll=None):  ### oldBody=None,
         """Return data that gets passed to afterChangeNode"""
         u = self
         bunch = u.createCommonBunch(p)
-        bunch.oldBody = oldBody or p.b
+        ### bunch.oldBody = oldBody or p.b
+        bunch.oldBody = p.b
         bunch.oldHead = oldHead or p.h
         bunch.oldYScroll = oldYScroll
         return bunch

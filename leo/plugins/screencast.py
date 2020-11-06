@@ -411,14 +411,16 @@ class ScreenCastController:
         n1 and n2 indicate the range of delays between keystrokes.
         '''
         m = self; c = m.c; p = c.p; undoType = 'Typing'
-        oldHead = p.h; tree = c.frame.tree
+        ### oldHead = p.h
+        tree = c.frame.tree
         if n1 is None: n1 = 0.02
         if n2 is None: n2 = 0.095
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
         # Support undo.
-        undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+        ### undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+        undoData = c.undoer.beforeChangeNodeContents(p)
         p.setDirty()
         c.undoer.afterChangeNodeContents(p, undoType, undoData)
         # Lock out key handling in m.state_handler.
