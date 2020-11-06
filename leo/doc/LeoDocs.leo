@@ -31819,7 +31819,7 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on
+<t tx="ekr.20201014052236.1">Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).

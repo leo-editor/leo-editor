@@ -246,7 +246,7 @@ Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: MIT
 Keywords: Outliner, IDE, PIM, DAG, Scripting
-Platform: Windows, Linux, MaxOS
+Platform: Windows, Linux, MacOS
 Classifier: Development Status :: 6 - Mature
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
@@ -255,9 +255,9 @@ Classifier: Operating System :: POSIX :: Linux
 Classifier: Programming Language :: Python
 Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
-Download-URL: http://sourceforge.net/projects/leo/files/
+Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.3 b1, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -1660,8 +1660,7 @@ LeoDist.leo:
   Run @button check .leo files in leo-dist.leo.
 
 LeoPyRef.leo:
-- Regenerate from leoPy.leo.
-- Remove top-level clones.
+- Regenerate from leoPy.leo: run write-LeoPyRef button in LeoPy.leo.
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
@@ -1680,7 +1679,7 @@ LeoPyRef.leo:
   - Tags should start with "v"
 
 git checkout master
-git tag -a v6.3-b1 -m "Added v6.3-b1 tag"
+git tag -a v6.3 -m "Added v6.3 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1688,7 +1687,7 @@ git push --follow-tags
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Matt: After merge, create dev tag that matches
     static version added to leoversion.py earlier.
-    #static version = '6.3-devel'
+    #static version = '6.4-devel'
 
 git checkout devel
 git tag -a v6.4-devel -m "Added v6.4.devel tag"
