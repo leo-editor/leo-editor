@@ -1,4 +1,4 @@
-Leo 6.3 b1, http://leoeditor.com, is now available on
+Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
