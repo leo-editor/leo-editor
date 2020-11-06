@@ -725,7 +725,11 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
     def beforeChangeNodeContents(self, p, oldHead=None):
-        """Return data that gets passed to afterChangeNode"""
+        """
+        Return data that gets passed to afterChangeNode.
+        
+        The oldHead kwarg works around a Qt difficulty when changing headlines.
+        """
         c, u = self.c, self
         w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
