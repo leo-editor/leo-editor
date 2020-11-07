@@ -198,6 +198,15 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20201107161856.1"><vh>Fails</vh>
+<v t="ekr.20051107115231.18"></v>
+<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
+<v t="ekr.20201107162905.1"><vh>A</vh></v>
+<v t="ekr.20201107162905.3"><vh>inserted</vh></v>
+<v t="ekr.20201107162905.2"><vh>B</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -567,11 +576,11 @@ try:
         stroke = k.getStrokeForCommandName('paste-text')
         if stroke is None:
             self.skipTest('no binding for paste-text') # #1345
-        k.manufactureKeyPressForCommandName(w,'paste-text')
+        k.manufactureKeyPressForCommandName(w, 'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
-    assert p.h == h + paste,'oops2 got: %s' % p.h
+    assert p.h == h + paste, 'oops2 got: %s' % p.h
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.h == h,'oops3 got: %s' % p.h
+    assert p.h == h, f"oops3 expected {h} got: {p.h}"
 finally:
     if 1:
         c.setHeadString(p,h) # Essential
@@ -608,6 +617,40 @@ else:
     finally:
         if 1:
             c.setHeadString(p,h) # Essential
+            c.redraw(p)
+</t>
+<t tx="ekr.20051107115231.21">if g.in_bridge:
+    self.skipTest('Not for TravisCI')
+import sys
+if sys.platform.startswith('linux'):
+    self.skipTest('Not for Linux')
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+
+k = c.k
+if k.defaultUnboundKeyAction == 'insert':
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    try:
+        assert w
+        w.setSelectionRange('end','end')
+        # char, shortcut.
+        g.app.gui.event_generate(c,'X','Shift+X',w)
+        g.app.gui.event_generate(c,'Y','Shift+Y',w)
+        g.app.gui.event_generate(c,'Z','Shift+Z',w)
+        g.app.gui.event_generate(c,'\n','Return',w)
+        expected = h + 'XYZ'
+        assert p.h == expected, f"oops 1: expected {expected!r} got {p.h!r}"
+        k.manufactureKeyPressForCommandName(w,'undo')
+        assert p.h == h, f"oops 2: expected {h!r} got {p.h!r}"
+    finally:
+        if 1:
+            c.setHeadString(p, h) # Essential
             c.redraw(p)
 </t>
 <t tx="ekr.20060325071703.1">import sys
@@ -809,6 +852,60 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
+assert p.h == '@test insert node',repr(p.h)
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    assert p.h == '@test insert node',repr(p.h)
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p.expand()
+    c.setCurrentPosition(p2)
+    p4 = c.insertHeadline()
+    assert p4 == c.p
+    p = c.p
+    assert p,'no p'
+    p.setHeadString('inserted')
+    assert p.back(),'no p.back(): %s' % (p)
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
+   
+    # With the new undo logic, it takes 2 undoes.
+    # The first undo undoes the headline changes,
+    # the second undo undoes the insert node.
+    c.undoer.undo()
+    # 2020/11/07: undo/redo for headlines is now handled differently in the nullGui.
+    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser'): ###, 'nullGui'):
+        # The situation is different in a null Gui.
+        pass
+    else:
+        c.undoer.undo() 
+    p = c.p
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p.h, p2.b)
+    assert p.next() == p3,  'fail 4'
+    c.undoer.redo()
+    p = c.p
+    assert p.back(),          'fail 0-2'
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p2,         'fail 3-2'
+    assert p.next() == p3,  'fail 3-2'
+    c.undoer.redo()
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
+finally:
+    if 0:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
 </t>
 <t tx="ekr.20091206090247.5060"># Use these with caution.</t>
 <t tx="ekr.20091206090247.5061">count = 0
@@ -1617,5 +1714,9 @@ nodeB
 </t>
 <t tx="ekr.20201008055802.1"></t>
 <t tx="ekr.20201009075702.1"></t>
+<t tx="ekr.20201107161856.1"></t>
+<t tx="ekr.20201107162905.1"></t>
+<t tx="ekr.20201107162905.2"></t>
+<t tx="ekr.20201107162905.3"></t>
 </tnodes>
 </leo_file>

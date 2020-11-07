@@ -481,6 +481,19 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
+    #@+node:ekr.20201107145642.1: *5* u.afterChangeHeadline (new)
+    def afterChangeHeadline(self, p, command, bunch):
+        """Create an undo node using d created by beforeChangeHeadline."""
+        u = self
+        if u.redoing or u.undoing:
+            return
+        # Set the type & helpers.
+        bunch.kind = 'headline'
+        bunch.undoType = command
+        bunch.undoHelper = u.undoChangeHeadline
+        bunch.redoHelper = u.redoChangeHeadline
+        bunch.newHead = p.h
+        u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
     def afterChangeTree(self, p, command, bunch):
         """Create an undo node for general tree operations using d created by beforeChangeTree"""
@@ -723,6 +736,17 @@ class Undoer:
         # Push the bunch.
         u.bead += 1
         u.beads[u.bead:] = [bunch]
+    #@+node:ekr.20201107145859.1: *5* u.beforeChangeHeadline (new)
+    def beforeChangeHeadline(self, p):
+        """
+        Return data that gets passed to afterChangeNode.
+        
+        The oldHead kwarg works around a Qt difficulty when changing headlines.
+        """
+        u = self
+        bunch = u.createCommonBunch(p)
+        bunch.oldHead = p.h
+        return bunch
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
     def beforeChangeNodeContents(self, p, oldHead=None):
         """
@@ -1129,6 +1153,19 @@ class Undoer:
     def redoHelper(self):
         """The default do-nothing redo helper."""
         pass
+    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
+    def redoChangeHeadline(self):
+        c, u = self.c, self
+        ### w = c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        c.frame.body.recolor(u.p)
+        # Restore the headline.
+        u.p.initHeadString(u.newHead)
+        # This is required so.  Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)
     #@+node:ekr.20050424170219: *4* u.redoClearRecentFiles
     def redoClearRecentFiles(self):
         u = self; c = u.c
@@ -1401,6 +1438,18 @@ class Undoer:
     def undoHelper(self):
         """The default do-nothing undo helper."""
         pass
+    #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline (new)
+    def undoChangeHeadline(self):
+        """Undo a change to a node's headline."""
+        c, u = self.c, self
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        c.frame.body.recolor(u.p)
+        u.p.initHeadString(u.oldHead)
+        # This is required.  Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.oldHead)
     #@+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
     def undoClearRecentFiles(self):
         u = self; c = u.c
@@ -1415,14 +1464,6 @@ class Undoer:
         next.doDelete()
         u.p.setAllAncestorAtFileNodesDirty()
         u.c.selectPosition(u.p)
-    #@+node:ekr.20160502175653.1: *4* u.undoCopyMarkedNodes
-    def undoCopyMarkedNodes(self):
-        u = self
-        next = u.p.next()
-        assert next.h == 'Copies of marked nodes', (u.p.h, next.h)
-        next.doDelete()
-        u.p.setAllAncestorAtFileNodesDirty()
-        u.c.selectPosition(u.p)
     #@+node:ekr.20050412083057.1: *4* u.undoCloneNode
     def undoCloneNode(self):
         u = self; c = u.c; cc = c.chapterController
@@ -1432,6 +1473,14 @@ class Undoer:
         c.deleteOutline()
         u.p.setDirty()
         c.selectPosition(u.p)
+    #@+node:ekr.20160502175653.1: *4* u.undoCopyMarkedNodes
+    def undoCopyMarkedNodes(self):
+        u = self
+        next = u.p.next()
+        assert next.h == 'Copies of marked nodes', (u.p.h, next.h)
+        next.doDelete()
+        u.p.setAllAncestorAtFileNodesDirty()
+        u.c.selectPosition(u.p)
     #@+node:ekr.20111005152227.15557: *4* u.undoDeleteMarkedNodes
     def undoDeleteMarkedNodes(self):
         u = self; c = u.c

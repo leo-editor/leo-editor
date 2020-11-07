@@ -1029,6 +1029,8 @@ class LeoFrame:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
                 s = s[:-1]
+            if wname.startswith('head'): # #1413.
+                c.frame.tree.onHeadChanged(c.p, undoType='Typing')
             # 2011/11/14: headline width methods do nothing at present.
             # if wname.startswith('head'):
                 # The headline is not officially changed yet.
@@ -1055,7 +1057,7 @@ class LeoFrame:
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
             return
-        w = c.get_focus()
+        w = event and event.w or c.get_focus()  # #1413.
         w_name = g.app.gui.widget_name(w)
         if w_name.startswith('head'):
             c.endEditing()
@@ -1264,7 +1266,7 @@ class LeoTree:
             # Leo 5.6: low-level vnode methods increment
             # this count whenever the tree changes.
         self.redrawCount = 0  # For traces
-        self.revertHeadline = None  # For aborting headline edits. ### Why is this necessary???
+        ### self.revertHeadline = None  # For aborting headline edits. ### Why is this necessary???
         self.use_chapters = False  # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
@@ -1290,7 +1292,7 @@ class LeoTree:
 
     def redraw_after_select(self, p=None):
         self.c.redraw()
-    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
+    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (base class)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
@@ -1300,14 +1302,16 @@ class LeoTree:
         Officially change a headline.
         Set the old undo text to the previous revert point.
         """
-        c = self.c; u = c.undoer
-        w = self.edit_widget(p)
+        c, u, w = self.c, self.c.undoer, self.edit_widget(p)
         if c.suppressHeadChanged:
+            g.trace('suppressHeadChanged')
             return
         if not w:
+            g.trace('no w')
             return
         ch = '\n'  # We only report the final keystroke.
-        if s is None: s = w.getAllText()
+        if s is None:
+            s = w.getAllText()
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
@@ -1325,23 +1329,29 @@ class LeoTree:
         s = g.checkUnicode(s or '')
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
-        oldRevert = self.revertHeadline
-        changed = s != oldRevert
-        self.revertHeadline = s
-        p.initHeadString(s)
+        ### oldRevert = self.revertHeadline
+        ### changed = s != oldRevert
+        ### self.revertHeadline = s
+        changed = s != p.h
+        ### g.trace(f"(LeoTree) changed: {changed}, h: {p.h}")
+        if not changed:
+            return  # Leo 6.4: only call the hooks if the headline has actually changed.
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
-        if changed:
-            undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
-            if not c.changed: c.setChanged()
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p)
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
-        if changed:
-            c.redraw_after_head_changed()
+        # Handle undo.
+        ### undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
+        undoData = u.beforeChangeHeadline(p)
+        p.initHeadString(s)  # change p.h *after* calling undoer's before method.
+        if not c.changed:
+            c.setChanged()
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p)
+        p.setDirty()
+        ### u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+        u.afterChangeHeadline(p, undoType, undoData)
+        c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
@@ -1365,7 +1375,7 @@ class LeoTree:
         """Handle a key event in a headline."""
         w = event.widget if event else None
         ch = event.char if event else ''
-        g.trace(repr(ch)) ###
+        ### g.trace(repr(ch)) ###
         # This test prevents flashing in the headline when the control key is held down.
         if ch:
             self.updateHead(event, w)
@@ -1384,6 +1394,7 @@ class LeoTree:
         """
         k = self.c.k
         ch = event.char if event else ''
+        ### g.trace('ch', repr(ch))
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
         if i != j:
@@ -1531,7 +1542,7 @@ class LeoTree:
             if 'select' in g.app.debug:
                 g.trace('select1 override')
             return
-        self.revertHeadline = p.h
+        ### self.revertHeadline = p.h
         c.frame.setWrap(p)
             # Not that expensive
         self.set_body_text_after_select(p, old_p)
@@ -1991,7 +2002,7 @@ class NullTree(LeoTree):
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
-            self.revertHeadline = p.h
+            ### self.revertHeadline = p.h
                 # New in 4.4b2: helps undo.
             wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
             e = None
@@ -2040,7 +2051,7 @@ class NullTree(LeoTree):
             if s.endswith('\n') or s.endswith('\r'):
                 s = s[:-1]
             w.insert(0, s)
-            self.revertHeadline = s
+            ### self.revertHeadline = s
         else:
             g.trace('-' * 20, 'oops')
     #@-others

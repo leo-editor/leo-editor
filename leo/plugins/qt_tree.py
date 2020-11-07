@@ -689,28 +689,32 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (changed) (does undo)
+    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (***) (does undo)
     # Tricky code: do not change without careful thought and testing.
 
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
+    def onHeadChanged(self, p, undoType='Typing'): ###, s=None, e=None):
         """
         Officially change a headline:
         - Get the text from the headline editor.
         - Close the Qt headline editor.
         """
-        c = self.c; u = c.undoer
+        c, u = self.c, self.c.undoer
+        trace = True ### and not g.unitTesting ###
         if not p:
             return
         item = self.getCurrentItem()
         if not item:
             return
-        if not e:
-            e = self.getTreeEditorForItem(item)
+        ###
+            # if not e:
+                # e = self.getTreeEditorForItem(item)
+        e = self.getTreeEditorForItem(item)
         if not e:
             return
-        s = e.text()
+        s = e.text() or '' ###
         self.closeEditorHelper(e, item)
         changed = s != p.h
+        if trace: g.trace(f"(QtTree) changed: {changed:5}, s: {s}")
         if not changed:
             return  # Leo 6.4. Only call hooks if the head
         if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
@@ -734,18 +738,20 @@ class LeoQtTree(leoFrame.LeoTree):
                 g.warning("truncating headline to", limit, "characters")
         #@-<< truncate s if it has multiple lines >>
         ### p.initHeadString(s)
-        p.v.setHeadString(s)  # Set the value in the vnode.
         item.setText(0, s)  # Required to avoid full redraw.
         # #1310: update the tooltip.
         item.setToolTip(0, p.h)
-        undoData = u.beforeChangeNodeContents(p)
+        ### undoData = u.beforeChangeNodeContents(p)
+        undoData = u.beforeChangeHeadline(p)
+        p.v.setHeadString(s)  # Set v.h *after* calling the undoer's before method.
         if not c.changed:
             c.setChanged()
         # We must recolor the body because
         # the headline may contain directives.
         c.frame.body.recolor(p)
         p.setDirty()
-        u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+        ### u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+        u.afterChangeHeadline(p, undoType, undoData)
         g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
         # This is a crucial shortcut.
         if g.unitTesting:
@@ -1119,7 +1125,8 @@ class LeoQtTree(leoFrame.LeoTree):
         def editingFinishedCallback(e=e, item=item, self=self, wrapper=wrapper):
             c = self.c
             w = self.treeWidget
-            self.onHeadChanged(p=c.p, e=e)
+            ### self.onHeadChanged(p=c.p, e=e)
+            self.onHeadChanged(c.p)
             w.setCurrentItem(item)
 
         e.editingFinished.connect(editingFinishedCallback)

@@ -11566,11 +11566,11 @@ try:
         stroke = k.getStrokeForCommandName('paste-text')
         if stroke is None:
             self.skipTest('no binding for paste-text') # #1345
-        k.manufactureKeyPressForCommandName(w,'paste-text')
+        k.manufactureKeyPressForCommandName(w, 'paste-text')
         g.app.gui.event_generate(c,'\n','Return',w)
-    assert p.h == h + paste,'oops2 got: %s' % p.h
+    assert p.h == h + paste, 'oops2 got: %s' % p.h
     k.manufactureKeyPressForCommandName(w,'undo')
-    assert p.h == h,'oops3 got: %s' % p.h
+    assert p.h == h, f"oops3 expected {h} got: {p.h}"
 finally:
     if 1:
         c.setHeadString(p,h) # Essential
@@ -11734,16 +11734,18 @@ if k.defaultUnboundKeyAction == 'insert':
     try:
         assert w
         w.setSelectionRange('end','end')
+        # char, shortcut.
         g.app.gui.event_generate(c,'X','Shift+X',w)
         g.app.gui.event_generate(c,'Y','Shift+Y',w)
         g.app.gui.event_generate(c,'Z','Shift+Z',w)
         g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + 'XYZ'
+        expected = h + 'XYZ'
+        assert p.h == expected, f"oops 1: expected {expected!r} got {p.h!r}"
         k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h
+        assert p.h == h, f"oops 2: expected {h!r} got {p.h!r}"
     finally:
         if 1:
-            c.setHeadString(p,h) # Essential
+            c.setHeadString(p, h) # Essential
             c.redraw(p)
 #@+node:ekr.20051107115231.17: *5* @test typing and undo in headline - at end
 import sys
@@ -21154,9 +21156,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20201018145422.1: *5* insertAsFirstChild
-#@+node:ekr.20201018145422.3: *5* insertAsNthChild(1)
-#@+node:ekr.20201018145422.2: *5* insertAsLastChild
+#@+node:ekr.20201107161838.3: *5* insertAsFirstChild
+#@+node:ekr.20201107161838.5: *5* insertAsNthChild(1)
+#@+node:ekr.20201107161838.4: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -21752,17 +21754,19 @@ try:
     assert p.back(),'no p.back(): %s' % (p)
     assert p.back().h == 'A', 'fail 1'
     assert p.next().h == 'B', 'fail 2'
-    c.undoer.undo()
+   
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser', 'nullGui'):
+    c.undoer.undo()
+    # 2020/11/07: undo/redo for headlines is now handled differently in the nullGui.
+    if g.app.isExternalUnitTest or g.app.gui.guiName() in ('browser'): ###, 'nullGui'):
         # The situation is different in a null Gui.
         pass
     else:
         c.undoer.undo() 
     p = c.p
-    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p.h, p2.b)
     assert p.next() == p3,  'fail 4'
     c.undoer.redo()
     p = c.p
@@ -21782,9 +21786,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20201018145422.19: *6* A
-#@+node:ekr.20201018145422.21: *6* newHeadline
-#@+node:ekr.20201018145422.20: *6* B
+#@+node:ekr.20201107162905.1: *6* A
+#@+node:ekr.20201107162905.3: *6* inserted
+#@+node:ekr.20201107162905.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
