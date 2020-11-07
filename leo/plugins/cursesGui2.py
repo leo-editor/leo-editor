@@ -2838,7 +2838,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         if trace and trace_widgets:
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
-    #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
+    #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged (npyscreen)
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         '''
         Update Leo after the body has been changed.
