@@ -1047,20 +1047,6 @@ class LeoFrame:
     def OnPaste(self, event=None):
         return self.pasteText(event=event, middleButton=True)
     #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
-    #@+node:ekr.20031218072017.3981: *5* LeoFrame.abortEditLabelCommand
-    @cmd('abort-edit-headline')
-    def abortEditLabelCommand(self, event=None):
-        """End editing of a headline and revert to its previous value."""
-        frame = self; c = frame.c; tree = frame.tree
-        p = c.p
-        if g.app.batchMode:
-            c.notValidInBatchMode("Abort Edit Headline")
-            return
-        # Revert the headline text.
-        # Calling c.setHeadString is required.
-        # Otherwise c.redraw would undo the change!
-        c.setHeadString(p, tree.revertHeadline)
-        c.redraw(p)
     #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
@@ -1279,7 +1265,7 @@ class LeoTree:
             # Leo 5.6: low-level vnode methods increment
             # this count whenever the tree changes.
         self.redrawCount = 0  # For traces
-        self.revertHeadline = None
+        self.revertHeadline = None  # For aborting headline edits. ### Why is this necessary???
         self.use_chapters = False  # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
@@ -1305,13 +1291,12 @@ class LeoTree:
 
     def redraw_after_select(self, p=None):
         self.c.redraw()
-    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (Used by the leoBridge module)
+    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
-        # e used in qt_tree.py.
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -1364,16 +1349,14 @@ class LeoTree:
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
         """End editing of a headline and update p.h."""
-        c = self.c; k = c.k; p = c.p
+        ### c = self.c; k = c.k; p = c.p
         # Important: this will redraw if necessary.
-        self.onHeadChanged(p)
-        if 0:
-            # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-            k.setDefaultInputState()
-            k.showStateAndMode()
-        if 0:
-            # This interferes with the find command and interferes with focus generally!
-            c.bodyWantsFocus()
+        self.onHeadChanged(self.c.p)
+        # Do *not* call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+            # k.setDefaultInputState()
+            # k.showStateAndMode()
+        # This interferes with the find command and interferes with focus generally!
+            # c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v):
         # New in 4.2: the default is an empty list.
@@ -1383,6 +1366,7 @@ class LeoTree:
         """Handle a key event in a headline."""
         w = event.widget if event else None
         ch = event.char if event else ''
+        g.trace(repr(ch)) ###
         # This test prevents flashing in the headline when the control key is held down.
         if ch:
             self.updateHead(event, w)
@@ -1396,7 +1380,8 @@ class LeoTree:
     def updateHead(self, event, w):
         """Update a headline from an event.
 
-        The headline officially changes only when editing ends."""
+        The headline officially changes only when editing ends.
+        """
         k = self.c.k
         ch = event.char if event else ''
         i, j = w.getSelectionRange()
@@ -1458,11 +1443,9 @@ class LeoTree:
         if g.app.killed or self.tree_select_lockout:  # Essential.
             return
         if trace:
-            if 1:
-                print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
-            else:
-                # Format matches traces in leoflexx.py
-                print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
+            print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
+            # Format matches traces in leoflexx.py
+                # print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
         try:
             self.tree_select_lockout = True
             self.prev_v = c.p.v

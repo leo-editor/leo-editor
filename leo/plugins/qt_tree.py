@@ -564,7 +564,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # Don't try to shortcut this!
     #@+node:ekr.20110605121601.17882: *4* qtree.redraw_after_head_changed
     def redraw_after_head_changed(self):
-
+        """Redraw all Qt outline items cloned to c.p."""
         if self.busy:
             return
         p = self.c.p
@@ -689,11 +689,15 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged
+    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (changed)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
-        """Officially change a headline."""
+        """
+        Officially change a headline:
+        - Get the text from the headline editor.
+        - Close the Qt headline editor.
+        """
         c = self.c; u = c.undoer
         if not p:
             return
@@ -707,48 +711,50 @@ class LeoQtTree(leoFrame.LeoTree):
         s = e.text()
         self.closeEditorHelper(e, item)
         changed = s != p.h
+        if not changed:
+            return  # Leo 6.4.
         if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
             return
-        if changed:
-            # New in Leo 4.10.1.
-            #@+<< truncate s if it has multiple lines >>
-            #@+node:ekr.20120409185504.10028: *5* << truncate s if it has multiple lines >>
-            # Remove trailing newlines before warning of truncation.
-            while s and s[-1] == '\n':
-                s = s[:-1]
-            # Warn if there are multiple lines.
-            i = s.find('\n')
-            if i > -1:
-                s = s[:i]
-                if s != p.h:
-                    g.warning("truncating headline to one line")
-            limit = 1000
-            if len(s) > limit:
-                s = s[:limit]
-                if s != p.h:
-                    g.warning("truncating headline to", limit, "characters")
-            #@-<< truncate s if it has multiple lines >>
-            p.initHeadString(s)
-            item.setText(0, s)  # Required to avoid full redraw.
-            # #1310: update the tooltip.
-            item.setToolTip(0, p.h)
-            undoData = u.beforeChangeNodeContents(p)
-            if not c.changed: c.setChanged()
-            # We must recolor the body because
-            # the headline may contain directives.
-            c.frame.body.recolor(p)
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+        # New in Leo 4.10.1.
+        #@+<< truncate s if it has multiple lines >>
+        #@+node:ekr.20120409185504.10028: *5* << truncate s if it has multiple lines >>
+        # Remove trailing newlines before warning of truncation.
+        while s and s[-1] == '\n':
+            s = s[:-1]
+        # Warn if there are multiple lines.
+        i = s.find('\n')
+        if i > -1:
+            s = s[:i]
+            if s != p.h:
+                g.warning("truncating headline to one line")
+        limit = 1000
+        if len(s) > limit:
+            s = s[:limit]
+            if s != p.h:
+                g.warning("truncating headline to", limit, "characters")
+        #@-<< truncate s if it has multiple lines >>
+        p.initHeadString(s)
+        item.setText(0, s)  # Required to avoid full redraw.
+        # #1310: update the tooltip.
+        item.setToolTip(0, p.h)
+        undoData = u.beforeChangeNodeContents(p)
+        if not c.changed:
+            c.setChanged()
+        # We must recolor the body because
+        # the headline may contain directives.
+        c.frame.body.recolor(p)
+        p.setDirty()
+        u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
         g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
         # This is a crucial shortcut.
-        if g.unitTesting: return
-        if changed:
-            self.redraw_after_head_changed()
-        if 0:  # Don't do this: it interferes with clicks, and is not needed.
-            if self.stayInTree:
-                c.treeWantsFocus()
-            else:
-                c.bodyWantsFocus()
+        if g.unitTesting:
+            return
+        self.redraw_after_head_changed()
+        # Don't change focus: it interferes with clicks, and is not needed.
+            # if self.stayInTree:
+                # c.treeWantsFocus()
+            # else:
+                # c.bodyWantsFocus()
         p.v.contentModified()
         c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
@@ -1375,8 +1381,7 @@ class LeoQtTree(leoFrame.LeoTree):
         """Override LeoTree.endEditLabel.
 
         End editing of the presently-selected headline."""
-        c = self.c; p = c.currentPosition()
-        self.onHeadChanged(p)
+        self.onHeadChanged(self.c.p)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):
         items = self.getSelectedItems()

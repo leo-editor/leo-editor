@@ -1146,7 +1146,6 @@
 <v t="ekr.20131213135427.21904"><vh>@menu &amp;Edit Headline</vh>
 <v t="ekr.20131213135427.21905"><vh>@item edit-&amp;headline</vh></v>
 <v t="ekr.20131213135427.21906"><vh>@item &amp;end-edit-headline</vh></v>
-<v t="ekr.20131213135427.21907"><vh>@item &amp;abort-edit-headline</vh></v>
 <v t="ekr.20131213135427.21908"><vh>@item insert-headline-&amp;time</vh></v>
 </v>
 <v t="ekr.20131213135427.22266"><vh>@menu &amp;Edit Text</vh>
@@ -3248,7 +3247,6 @@ zap-to-character
 
 Focus
 
-abort-edit-headline
 # cycle-focus
 edit-headline
 end-edit-headline
@@ -5859,7 +5857,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21904"></t>
 <t tx="ekr.20131213135427.21905"></t>
 <t tx="ekr.20131213135427.21906"></t>
-<t tx="ekr.20131213135427.21907"></t>
 <t tx="ekr.20131213135427.21908"></t>
 <t tx="ekr.20131213135427.21910"></t>
 <t tx="ekr.20131213135427.21912">Show In&amp;visibles</t>
@@ -6197,7 +6194,7 @@ insert:  Leo inserts the key at the cursor (like Emacs)
 overwrite: Leo replaces the character at the cursor.</t>
 <t tx="ekr.20140721165014.19148"></t>
 <t tx="ekr.20140721165014.19149">abbrev-list                         = None
-abort-edit-headline                 = Shift-Esc
+# abort-edit-headline                 = Shift-Esc
 about-leo                           = None
 add-comments                        = Ctrl-(
 abbrev-kill-all                     = None
@@ -6546,7 +6543,7 @@ warnings about duplicate bindings.
 </t>
 <t tx="ekr.20140721165014.19155">abbrev-kill-all                     = None
 abbrev-list                         = None
-abort-edit-headline                 = None
+# abort-edit-headline               = None
 about-leo                           = None
 activate-cmds-menu                  = None
 activate-edit-menu                  = None

@@ -2543,7 +2543,7 @@ class CoreTree (leoFrame.LeoTree):
         kinds = ','.join([z for z in table if getattr(self, z)])
         if kinds and trace: g.trace(kinds)
         return kinds # Return the string for debugging
-    #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged
+    #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged (cursesGui2)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged(self, p, s=None, undoType='Typing'):
@@ -2633,12 +2633,12 @@ class CoreTree (leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         wrapper = HeadWrapper(c=self.c, name='head', p=p)
         return wrapper
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (not used)
+    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         self.revertHeadline = p.h
         return None, None
-    #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
+    #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
         End editing of the presently-selected headline.

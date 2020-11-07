@@ -619,14 +619,6 @@ class RunTestExternallyHelperClass:
         for p in aList: last = self.addNode(p, last)
         self.addNode(current, last)
         return True
-        # old code
-            # aList = c.testManager.findMarkForUnitTestNodes()
-            # aList2 = c.testManager.findAllUnitTestNodes(self.all, self.marked)
-            # last = root
-            # if aList2:
-                # for p in aList: last = self.addNode(p, last)
-                # for p in aList2: last = self.addNode(p, last)
-            # return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self, p, last):
         """
