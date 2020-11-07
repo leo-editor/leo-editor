@@ -1156,7 +1156,6 @@ class Undoer:
     #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
     def redoChangeHeadline(self):
         c, u = self.c, self
-        ### w = c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)

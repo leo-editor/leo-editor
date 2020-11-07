@@ -2556,11 +2556,6 @@ class CoreTree (leoFrame.LeoTree):
         if not c.frame.body.wrapper:
             if trace: g.trace('NO wrapper')
             return # Startup.
-        ###
-            # if not self.revertVnode:
-                # if trace: g.trace('no headline ever edited')
-                # self.revertHeadline = ''
-                    # # Fix #1238: A hack to force an update.
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
@@ -2590,10 +2585,7 @@ class CoreTree (leoFrame.LeoTree):
                 # g.warning("truncating headline to", limit, "characters")
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
-        ### oldRevert = self.revertHeadline
-        ### changed = s != oldRevert
         changed = s != p.h
-        ### self.revertHeadline = s
         if not changed:
             return  # Leo 6.4: only call hooks if the headline has changed.
         if trace: g.trace('changed', changed, 'new', repr(s))
@@ -2601,7 +2593,6 @@ class CoreTree (leoFrame.LeoTree):
             return # The hook claims to have handled the event.
         #
         # Handle undo
-        ### undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
         undoData = u.beforeChangeHeadline(p)
         p.initHeadString(s)  # Change p.h *after* calling the undoer's before method.
         if not c.changed:
@@ -2611,7 +2602,6 @@ class CoreTree (leoFrame.LeoTree):
             # c.frame.scanForTabWidth(p)
             # c.frame.body.recolor(p)
         p.setDirty()
-        ### u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
         u.afterChangeHeadline(p, undoType, undoData)
         # if changed:
         #    c.redraw_after_head_changed()
@@ -2643,7 +2633,6 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        ### self.revertHeadline = p.h
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
     def endEditLabel(self):
@@ -3594,7 +3583,6 @@ class LeoMLTree(npyscreen.MLTree):
         # Remember the starting headline, for CTree.onHeadChanged.
         tree = c.frame.tree # CTree
         tree.revertVnode = c.p.v
-        ### tree.revertHeadline = c.p.h
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):

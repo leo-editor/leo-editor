@@ -721,11 +721,9 @@ class LeoBrowserApp(flx.PyComponent):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                ### c.executeAnyCommand(func, event)
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                ### c.executeAnyCommand(func, event)
             try:
                 func(event)
             except Exception:
