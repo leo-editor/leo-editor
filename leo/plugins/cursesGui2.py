@@ -2868,7 +2868,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         if not c.changed:
             c.setChanged()
         # self.updateEditors()
-        p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):

@@ -689,7 +689,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (changed)
+    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (changed) (does undo)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
@@ -712,7 +712,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.closeEditorHelper(e, item)
         changed = s != p.h
         if not changed:
-            return  # Leo 6.4.
+            return  # Leo 6.4. Only call hooks if the head
         if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
             return
         # New in Leo 4.10.1.
@@ -733,7 +733,8 @@ class LeoQtTree(leoFrame.LeoTree):
             if s != p.h:
                 g.warning("truncating headline to", limit, "characters")
         #@-<< truncate s if it has multiple lines >>
-        p.initHeadString(s)
+        ### p.initHeadString(s)
+        p.v.setHeadString(s)  # Set the value in the vnode.
         item.setText(0, s)  # Required to avoid full redraw.
         # #1310: update the tooltip.
         item.setToolTip(0, p.h)
@@ -755,7 +756,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 # c.treeWantsFocus()
             # else:
                 # c.bodyWantsFocus()
-        p.v.contentModified()
         c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
     def onItemClicked(self, item, col, auto_edit=False):

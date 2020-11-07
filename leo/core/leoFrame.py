@@ -640,7 +640,6 @@ class LeoBody:
         #@-<< recolor the body >>
         if not c.changed: c.setChanged()
         self.updateEditors()
-        p.v.contentModified()
         #@+<< update icons if necessary >>
         #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
         redraw_flag = False
@@ -1378,7 +1377,8 @@ class LeoTree:
         pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event, w):
-        """Update a headline from an event.
+        """
+        Update a headline from an event.
 
         The headline officially changes only when editing ends.
         """

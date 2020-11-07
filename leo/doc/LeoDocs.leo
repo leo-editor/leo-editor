@@ -5067,7 +5067,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
     removing the window from g.app.windowList. The hook code may remove the window
     from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
 
-12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
+12. New in Leo 6.4: Leo calls the 'headkey1' and 'headkey2' when the headline has *actually* changed.
 
 13. p is the new node (position) containing '@auto filename.ext'
 
