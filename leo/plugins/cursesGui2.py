@@ -2550,6 +2550,7 @@ class CoreTree (leoFrame.LeoTree):
         Officially change a headline.   
         This is c.frame.tree.onHeadChanged.
         '''
+        # pylint: disable=auguments-differ
         trace = False
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:

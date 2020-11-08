@@ -80,7 +80,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getName(self):
         """Return the name of this widget: must start with "canvas"."""
         return 'canvas(tree)'
-    #@+node:ekr.20110605121601.18406: *4* qtree.initAfterLoad
+    #@+node:ekr.20110605121601.18406: *4* qtree.initAfterLoad (connects event handlers)
     def initAfterLoad(self):
         """Do late-state inits."""
         # Called by Leo's core.
@@ -755,8 +755,8 @@ class LeoQtTree(leoFrame.LeoTree):
             # else:
                 # c.bodyWantsFocus()
         c.outerUpdate()
-    #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
-    def onItemClicked(self, item, col, auto_edit=False):
+    #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked (removed auto_edit kwarg)
+    def onItemClicked(self, item, col): ###, auto_edit=False):
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
         if self.busy:

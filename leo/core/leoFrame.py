@@ -1296,7 +1296,7 @@ class LeoTree:
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
 
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
+    def onHeadChanged(self, p, undoType='Typing'): ###, s=None, e=None):
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
@@ -1309,8 +1309,10 @@ class LeoTree:
             g.trace('no w')
             return
         ch = '\n'  # We only report the final keystroke.
-        if s is None:
-            s = w.getAllText()
+        ###
+            # if s is None:
+                # s = w.getAllText()
+        s = w.getAllText()
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
