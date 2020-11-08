@@ -721,11 +721,9 @@ class LeoBrowserApp(flx.PyComponent):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                ### c.executeAnyCommand(func, event)
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                ### c.executeAnyCommand(func, event)
             try:
                 func(event)
             except Exception:
@@ -1079,15 +1077,13 @@ class LeoBrowserApp(flx.PyComponent):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
         # Undoably set the head. Like leoTree.onHeadChanged, called LeoTree.endEditLabel.
-        oldHead = p.h
         p.v.setHeadString(h)
         undoType = 'Typing'
-        undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
+        undoData = u.beforeChangeNodeContents(p)
         if not c.changed:
             c.setChanged()
-        dirtyVnodeList = p.setDirty()
-        u.afterChangeNodeContents(p, undoType, undoData,
-            dirtyVnodeList=dirtyVnodeList, inHead=True)
+        p.setDirty()
+        u.afterChangeNodeContents(p, undoType, undoData)
         k.keyboardQuit()
         c.redraw()
         w.body.set_focus()
