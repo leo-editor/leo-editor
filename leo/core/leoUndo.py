@@ -748,7 +748,7 @@ class Undoer:
         bunch.oldHead = p.h
         return bunch
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
-    def beforeChangeNodeContents(self, p, oldHead=None):
+    def beforeChangeNodeContents(self, p):
         """
         Return data that gets passed to afterChangeNode.
         
@@ -758,7 +758,7 @@ class Undoer:
         w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
         bunch.oldBody = p.b
-        bunch.oldHead = oldHead or p.h
+        bunch.oldHead = p.h
         # #1413: Always restore yScroll if possible.
         bunch.oldYScroll = w.getYScrollPosition() if w else 0
         return bunch
