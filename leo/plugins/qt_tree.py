@@ -756,7 +756,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 # c.bodyWantsFocus()
         c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked (removed auto_edit kwarg)
-    def onItemClicked(self, item, col): ###, auto_edit=False):
+    def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
         if self.busy:
