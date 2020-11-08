@@ -689,72 +689,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.17912: *4* qtree.onHeadChanged (***) (does undo)
-    # Tricky code: do not change without careful thought and testing.
-
-    def onHeadChanged(self, p, undoType='Typing'):
-        """
-        Officially change a headline:
-        - Get the text from the headline editor.
-        - Close the Qt headline editor.
-        """
-        c, u = self.c, self.c.undoer
-        if not p:
-            return
-        item = self.getCurrentItem()
-        if not item:
-            return
-        e = self.getTreeEditorForItem(item)
-        if not e:
-            return
-        s = e.text()
-        self.closeEditorHelper(e, item)
-        changed = s != p.h
-        if not changed:
-            return  # Leo 6.4. Only call hooks if the head
-        if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
-            return
-        # New in Leo 4.10.1.
-        #@+<< truncate s if it has multiple lines >>
-        #@+node:ekr.20120409185504.10028: *5* << truncate s if it has multiple lines >>
-        # Remove trailing newlines before warning of truncation.
-        while s and s[-1] == '\n':
-            s = s[:-1]
-        # Warn if there are multiple lines.
-        i = s.find('\n')
-        if i > -1:
-            s = s[:i]
-            if s != p.h:
-                g.warning("truncating headline to one line")
-        limit = 1000
-        if len(s) > limit:
-            s = s[:limit]
-            if s != p.h:
-                g.warning("truncating headline to", limit, "characters")
-        #@-<< truncate s if it has multiple lines >>
-        item.setText(0, s)  # Required to avoid full redraw.
-        # #1310: update the tooltip.
-        item.setToolTip(0, p.h)
-        undoData = u.beforeChangeHeadline(p)
-        p.v.setHeadString(s)  # Set v.h *after* calling the undoer's before method.
-        if not c.changed:
-            c.setChanged()
-        # We must recolor the body because
-        # the headline may contain directives.
-        c.frame.body.recolor(p)
-        p.setDirty()
-        u.afterChangeHeadline(p, undoType, undoData)
-        g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
-        # This is a crucial shortcut.
-        if g.unitTesting:
-            return
-        self.redraw_after_head_changed()
-        # Don't change focus: it interferes with clicks, and is not needed.
-            # if self.stayInTree:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
-        c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked (removed auto_edit kwarg)
     def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
@@ -1107,20 +1041,46 @@ class LeoQtTree(leoFrame.LeoTree):
                 else:
                     # Recover silently even if there is a problem.
                     pass
-    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & helper
+    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & editingFinishedCallback (changed)
     def connectEditorWidget(self, e, item):
+        """
+        Connect QLineEdit e to QTreeItem item.
+        
+        Also callback for when the editor ends.
+        
+        New in Leo 6.4: The callback handles all updates w/o calling onHeadChanged.
+        """
+        c, u = self.c, self.c.undoer
         if not e:
             return g.trace('can not happen: no e')
+
+        def editingFinished_callback():
+            """Similar to onHeadChanged"""
+            p = c.p
+            s = e.text()
+            i = s.find('\n')
+            # Truncate to one line.
+            if i > -1:
+                s = s[:i]
+            # #1310: update the tooltip.
+            if p.h != s:
+                # Update p.h and handle undo.
+                item.setToolTip(0, s)
+                undoData = u.beforeChangeHeadline(p)
+                p.v.setHeadString(s)  # Set v.h *after* calling the undoer's before method.
+                if not c.changed:
+                    c.setChanged()
+                # We must recolor the body because
+                # the headline may contain directives.
+                c.frame.body.recolor(p)
+                p.setDirty()
+                u.afterChangeHeadline(p, 'Edit Headline', undoData)
+            self.redraw_after_head_changed()
+            c.outerUpdate()
+
         # Hook up the widget.
         wrapper = self.getWrapper(e, item)
-
-        def editingFinishedCallback(e=e, item=item, self=self, wrapper=wrapper):
-            c = self.c
-            w = self.treeWidget
-            self.onHeadChanged(c.p)
-            w.setCurrentItem(item)
-
-        e.editingFinished.connect(editingFinishedCallback)
+        e.editingFinished.connect(editingFinished_callback)
         return wrapper  # 2011/02/12
     #@+node:ekr.20110605121601.18419: *4* qtree.contractItem & expandItem
     def contractItem(self, item):
@@ -1131,15 +1091,16 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18420: *4* qtree.createTreeEditorForItem
     def createTreeEditorForItem(self, item):
 
+        c = self.c
         w = self.treeWidget
         w.setCurrentItem(item)  # Must do this first.
         if self.use_declutter:
             item.setText(0, item._real_text)
         w.editItem(item)
-        e = w.itemWidget(item, 0)
+        e = w.itemWidget(item, 0)  # e is a QLineEdit
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
-        self.sizeTreeEditor(self.c, e)
+        self.sizeTreeEditor(c, e)
         return e, wrapper
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p, parent_item):
@@ -1346,7 +1307,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # But warning: calling this method twice might not work!
             return None
         return None
-    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel
+    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel (calls qtree.editLabelHelper)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
@@ -1374,12 +1335,23 @@ class LeoQtTree(leoFrame.LeoTree):
         # p = c.currentPosition()
         # ew = self.edit_widget(p)
         # return p if ew else None
-    #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
+    #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel (changed)
     def endEditLabel(self):
-        """Override LeoTree.endEditLabel.
+        """
+        Override LeoTree.endEditLabel.
 
-        End editing of the presently-selected headline."""
-        self.onHeadChanged(self.c.p)
+        Just end editing of the presently-selected QLineEdit!
+        This will trigger the editingFinished_callback defined in createEditorForItem.
+        """
+        item = self.getCurrentItem()
+        if not item:
+            return
+        e = self.getTreeEditorForItem(item)
+        if not e:
+            return
+        # Trigger the end-editing event by simulating a newline.
+        w = self.treeWidget
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)  
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):
         items = self.getSelectedItems()

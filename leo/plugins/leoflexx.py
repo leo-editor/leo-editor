@@ -1072,11 +1072,11 @@ class LeoBrowserApp(flx.PyComponent):
 
     def terminate_do_head(self, args, c, event):
         '''never actually called.'''
-    #@+node:ekr.20181210092817.1: *7* app.end_set_headline
+    #@+node:ekr.20181210092817.1: *7* app.end_set_headline (leoflexx.py)
     def end_set_headline(self, h):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
-        # Undoably set the head. Like leoTree.onHeadChanged, called LeoTree.endEditLabel.
+        # Undoably set the head. Like leoTree.onHeadChanged.
         p.v.setHeadString(h)
         undoType = 'Typing'
         undoData = u.beforeChangeNodeContents(p)

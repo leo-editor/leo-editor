@@ -1609,7 +1609,7 @@ class LeoFind:
             p.setMarked()
             p.setDirty()
         if self.in_headline:
-            c.frame.tree.onHeadChanged(p, 'Change')
+            pass
         else:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.

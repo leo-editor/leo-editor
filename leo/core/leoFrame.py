@@ -1029,8 +1029,6 @@ class LeoFrame:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
                 s = s[:-1]
-            if wname.startswith('head'): # #1413.
-                c.frame.tree.onHeadChanged(c.p, undoType='Typing')
             # 2011/11/14: headline width methods do nothing at present.
             # if wname.startswith('head'):
                 # The headline is not officially changed yet.
@@ -1294,8 +1292,6 @@ class LeoTree:
     #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (base class)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
-    # See also, nativeTree.onHeadChanged.
-
     def onHeadChanged(self, p, undoType='Typing'):
         """
         Officially change a headline.
@@ -1412,7 +1408,7 @@ class LeoTree:
         # 2011/11/14: Not used at present.
             # w.setWidth(self.headWidth(s=s))
         if ch in ('\n', '\r'):
-            self.endEditLabel()  # Now calls self.onHeadChanged.
+            self.endEditLabel()
     #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
     # Drawing & scrolling.
 
@@ -1443,7 +1439,8 @@ class LeoTree:
         if g.app.killed or self.tree_select_lockout:  # Essential.
             return
         if trace:
-            print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
+            print(f"----- {tag}: {p.h}")
+            # print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
             # Format matches traces in leoflexx.py
                 # print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
         try:
