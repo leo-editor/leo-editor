@@ -707,7 +707,7 @@ class LeoQtTree(leoFrame.LeoTree):
         e = self.getTreeEditorForItem(item)
         if not e:
             return
-        s = e.text() ### or '' ###
+        s = e.text()
         self.closeEditorHelper(e, item)
         changed = s != p.h
         if not changed:

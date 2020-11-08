@@ -1082,7 +1082,7 @@ class LeoBrowserApp(flx.PyComponent):
         undoData = u.beforeChangeNodeContents(p)
         if not c.changed:
             c.setChanged()
-        ### dirtyVnodeList = p.setDirty()
+        p.setDirty()
         u.afterChangeNodeContents(p, undoType, undoData)
         k.keyboardQuit()
         c.redraw()
