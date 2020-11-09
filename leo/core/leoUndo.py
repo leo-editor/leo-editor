@@ -441,6 +441,7 @@ class Undoer:
         bunch.undoHelper = u.undoChangeBody
         bunch.redoHelper = u.redoChangeBody
         bunch.newBody = p.b
+        bunch.newHead = p.h
         bunch.oldIns = w.getInsertPoint()
         bunch.newMarked = p.isMarked()
         # Careful: don't use ternary operator.
@@ -757,10 +758,10 @@ class Undoer:
         """
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)
+            # Sets u.oldMarked, u.oldSel, u.p
         bunch.oldBody = p.b
+        bunch.oldHead = p.h
         bunch.oldIns = w.getInsertPoint()
-        bunch.oldMarked = p.isMarked()
-        bunch.oldSel = w.getSelectionRange()
         bunch.oldYScroll = w.getYScrollPosition()
         return bunch
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
@@ -1210,19 +1211,20 @@ class Undoer:
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
-        # Restore the body.
-        u.p.setBodyString(u.newBody)
-        w.setAllText(u.newBody)
-        c.frame.body.recolor(u.p)
-        # Restore the headline.
-        u.p.initHeadString(u.newHead)
-        # This is required so.  Otherwise redraw will revert the change!
+        u.p.b = u.newBody
+        u.p.h = u.newHead
+        # This is required so. Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.newHead)
-        u.p.setMarked() if u.newMarked else u.p.clearMarked()  # pylint: disable=expression-not-assigned
+        if u.newMarked:
+            u.p.setMarked()
+        else:
+            u.p.clearMarked()
         if u.groupCount == 0:
+            w.setAllText(u.newBody)
             i, j = u.newSel
             w.setSelectionRange(i, j, insert=u.newIns)
             w.setYScrollPosition(u.newYScroll)
+            c.frame.body.recolor(u.p)
         u.updateMarks('new')
         u.p.setDirty()
     #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
@@ -1517,20 +1519,23 @@ class Undoer:
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # selectPosition causes recoloring, so don't do this unless needed.
-        if c.p != u.p:  # #1333.
+        if c.p != u.p:
             c.selectPosition(u.p)
         u.p.setDirty()
         u.p.b = u.oldBody
-        w.setAllText(u.oldBody)
-        c.frame.body.recolor(u.p)
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
-        u.p.setMarked() if u.oldMarked else u.p.clearMarked()  # pylint: disable=expression-not-assigned
+        if u.oldMarked:
+            u.p.setMarked()
+        else:
+            u.p.clearMarked()
         if u.groupCount == 0:
+            w.setAllText(u.oldBody)
             i, j = u.oldSel
             w.setSelectionRange(i, j, insert=u.oldIns)
             w.setYScrollPosition(u.oldYScroll)
+            c.frame.body.recolor(u.p)
         u.updateMarks('old')
     #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
     def undoChangeHeadline(self):
