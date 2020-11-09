@@ -1218,17 +1218,11 @@ class Undoer:
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.newHead)
+        u.p.setMarked() if u.newMarked else u.p.clearMarked()  # pylint: disable=expression-not-assigned
         if u.groupCount == 0:
-            w.setInsertPoint(u.newIns)
-            if u.newMarked:
-                u.p.setMarked()
-            else:
-                u.p.clearMarked()
-            if True: ### u.newSel is not None:
-                i, j = u.newSel
-                w.setSelectionRange(i, j)
-            if True: ### u.newYScroll is not None:
-                w.setYScrollPosition(u.newYScroll)
+            i, j = u.newSel
+            w.setSelectionRange(i, j, insert=u.newIns)
+            w.setYScrollPosition(u.newYScroll)
         u.updateMarks('new')
         u.p.setDirty()
     #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
@@ -1532,17 +1526,11 @@ class Undoer:
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
+        u.p.setMarked() if u.oldMarked else u.p.clearMarked()  # pylint: disable=expression-not-assigned
         if u.groupCount == 0:
-            w.setInsertPoint(u.oldIns)
-            if u.oldMarked:
-                u.p.setMarked()
-            else:
-                u.p.clearMarked()
-            if True: ### u.oldSel is not None:
-                i, j = u.oldSel
-                w.setSelectionRange(i, j)
-            if True: ### u.oldYScroll is not None:
-                w.setYScrollPosition(u.oldYScroll)
+            i, j = u.oldSel
+            w.setSelectionRange(i, j, insert=u.oldIns)
+            w.setYScrollPosition(u.oldYScroll)
         u.updateMarks('old')
     #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
     def undoChangeHeadline(self):
