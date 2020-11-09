@@ -689,7 +689,15 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked (removed auto_edit kwarg)
+    #@+node:ekr.20201108200709.1: *4* qtree.onHeadChanged
+    def onHeadChanged(self, p, undoType='Typing'):
+        """Ensure that LeoTree.onHeadChanged is never called."""
+        message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
+        if g.unitTesting:
+            assert False, message
+        else:
+            g.es_print(message)
+    #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
     def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
         # This is called after an item is selected.
