@@ -1123,48 +1123,6 @@ class LeoQtTree(leoFrame.LeoTree):
             pass
         #print "item",item
         return item
-    #@+node:ekr.20110605121601.18422: *4* qtree.editLabelHelper
-    def editLabelHelper(self, item, selectAll=False, selection=None):
-        """
-        Help nativeTree.editLabel do gui-specific stuff.
-        """
-        c, vc = self.c, self.c.vimCommands
-        w = self.treeWidget
-        w.setCurrentItem(item)
-            # Must do this first.
-            # This generates a call to onTreeSelect.
-        w.editItem(item)
-            # Generates focus-in event that tree doesn't report.
-        e = w.itemWidget(item, 0)  # A QLineEdit.
-        if e:
-            s = e.text(); len_s = len(s)
-            if s == 'newHeadline': selectAll = True
-            if selection:
-                # pylint: disable=unpacking-non-sequence
-                # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-                # Note: negative lengths are allowed.
-                i, j, ins = selection
-                if ins is None:
-                    start, n = i, abs(i - j)
-                    # This case doesn't happen for searches.
-                elif ins == j:
-                    start, n = i, j - i
-                else:
-                    start = start, n = j, i - j
-            elif selectAll: start, n, ins = 0, len_s, len_s
-            else: start, n, ins = len_s, 0, len_s
-            e.setObjectName('headline')
-            e.setSelection(start, n)
-            # e.setCursorPosition(ins) # Does not work.
-            e.setFocus()
-            wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
-            if vc and c.vim_mode:  #  and selectAll
-                # For now, *always* enter insert mode.
-                if vc.is_text_wrapper(wrapper):
-                    vc.begin_insert_mode(w=wrapper)
-                else:
-                    g.trace('not a text widget!', wrapper)
-        return e, wrapper
     #@+node:ekr.20110605121601.18423: *4* qtree.getCurrentItem
     def getCurrentItem(self):
         w = self.treeWidget
@@ -1315,7 +1273,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # But warning: calling this method twice might not work!
             return None
         return None
-    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel
+    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
@@ -1336,6 +1294,46 @@ class LeoQtTree(leoFrame.LeoTree):
             self.sizeTreeEditor(c, e)
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
+        return e, wrapper
+    #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
+    def editLabelHelper(self, item, selectAll=False, selection=None):
+        """Helper for qtree.editLabel."""
+        c, vc = self.c, self.c.vimCommands
+        w = self.treeWidget
+        w.setCurrentItem(item)
+            # Must do this first.
+            # This generates a call to onTreeSelect.
+        w.editItem(item)
+            # Generates focus-in event that tree doesn't report.
+        e = w.itemWidget(item, 0)  # A QLineEdit.
+        if e:
+            s = e.text(); len_s = len(s)
+            if s == 'newHeadline': selectAll = True
+            if selection:
+                # pylint: disable=unpacking-non-sequence
+                # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
+                # Note: negative lengths are allowed.
+                i, j, ins = selection
+                if ins is None:
+                    start, n = i, abs(i - j)
+                    # This case doesn't happen for searches.
+                elif ins == j:
+                    start, n = i, j - i
+                else:
+                    start = start, n = j, i - j
+            elif selectAll: start, n, ins = 0, len_s, len_s
+            else: start, n, ins = len_s, 0, len_s
+            e.setObjectName('headline')
+            e.setSelection(start, n)
+            # e.setCursorPosition(ins) # Does not work.
+            e.setFocus()
+            wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
+            if vc and c.vim_mode:  #  and selectAll
+                # For now, *always* enter insert mode.
+                if vc.is_text_wrapper(wrapper):
+                    vc.begin_insert_mode(w=wrapper)
+                else:
+                    g.trace('not a text widget!', wrapper)
         return e, wrapper
     #@+node:ekr.20110605121601.17910: *4* qtree.editPosition (no longer used)
     # def editPosition(self):

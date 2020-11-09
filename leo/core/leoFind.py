@@ -2018,9 +2018,6 @@ class LeoFind:
             if ins is None:
                 if i is not None and j is not None and i != j:
                     ins = min(i, j)
-            # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-            # editLabelHelper now properly sets the insertion range.
-                # elif ins in (i,j): ins = min(i,j)
         elif ins is None:
             ins = 0
         self.init_s_ctrl(s, ins)

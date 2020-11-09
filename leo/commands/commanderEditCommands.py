@@ -281,10 +281,14 @@ def deleteComments(self, event=None):
     result = ''.join(result)
     c.updateBodyPane(
         head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
-#@+node:ekr.20171123135625.54: ** c_ec.editHeadline
+#@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
 def editHeadline(self, event=None):
-    """Begin editing the headline of the selected node."""
+    """
+    Begin editing the headline of the selected node.
+    
+    This is just a wrapper around tree.editLabel.
+    """
     c = self
     k, tree = c.k, c.frame.tree
     if g.app.batchMode:
