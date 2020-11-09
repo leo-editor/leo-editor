@@ -613,7 +613,13 @@ class LeoBody:
     # This is the only key handler for the body pane.
 
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
-        """Update Leo after the body has been changed."""
+        """
+        Update Leo after the body has been changed.
+        
+        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
+        should call u.before/afterChangeBody instead of (eventually) calling
+        u.setUndoTypingParams.
+        """
         c = self.c
         body, w = self, self.wrapper
         p = c.p

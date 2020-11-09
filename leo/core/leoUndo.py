@@ -903,11 +903,16 @@ class Undoer:
         oldSel=None, newSel=None, oldYview=None,
     ):
         """
+        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
+        should call u.before/afterChangeBody instead of (eventually) calling
+        u.setUndoTypingParams.
+        
+        This method is really a too-often-called event handler for Qt
+        onTextChanged events. Indeed, this method is called from the
+        QTextMixin.onTextChanged event handler.
+
         Save enough information to undo or redo a typing operation efficiently,
         that is, with the proper granularity.
-        
-        Called from QTextMixin.onTextChanged, so this method is part of event
-        handling for typing.
 
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.

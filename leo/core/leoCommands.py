@@ -3746,7 +3746,13 @@ class Commands:
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
     def updateBodyPane(
         self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
-        """Handle changed text in the body pane."""
+        """
+        Handle changed text in the body pane.
+        
+        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
+        should call u.before/afterChangeBody instead of (eventually) calling
+        u.setUndoTypingParams.
+        """
         c, p = self, self.p
         body = c.frame.body
         # Update the text and notify the event handler.
