@@ -903,7 +903,11 @@ class Undoer:
         oldSel=None, newSel=None, oldYview=None,
     ):
         """
-        Save enough information to undo or redo typing operation.
+        Save enough information to undo or redo a typing operation efficiently,
+        that is, with the proper granularity.
+        
+        Called from QTextMixin.onTextChanged, so this method is part of event
+        handling for typing.
 
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
