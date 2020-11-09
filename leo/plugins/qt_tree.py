@@ -133,6 +133,22 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.traceCallersFlag:
             return g.callers(5, excludeCaller=True)
         return ''
+    #@+node:ekr.20201108200709.1: *3* qtree.Do-nothings
+    def onHeadChanged(self, p, undoType='Typing'):
+        """Ensure that LeoTree.onHeadChanged is never called."""
+        message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
+        if g.unitTesting:
+            assert False, message
+        else:
+            g.es_print(message)
+
+    def updateHead(self, event, w):
+        """Ensure that LeoTree.updateHead is never called."""
+        message = f"Error: LeoQtTree.updateHead called from {g.callers()}"
+        if g.unitTesting:
+            assert False, message
+        else:
+            g.es_print(message)
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self):
@@ -689,14 +705,6 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1286.
         c, w = self.c, self.treeWidget
         g.app.gui.onContextMenu(c, w, point)
-    #@+node:ekr.20201108200709.1: *4* qtree.onHeadChanged
-    def onHeadChanged(self, p, undoType='Typing'):
-        """Ensure that LeoTree.onHeadChanged is never called."""
-        message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
-        if g.unitTesting:
-            assert False, message
-        else:
-            g.es_print(message)
     #@+node:ekr.20110605121601.17896: *4* qtree.onItemClicked
     def onItemClicked(self, item, col):
         """Handle a click in a BaseNativeTree widget item."""
