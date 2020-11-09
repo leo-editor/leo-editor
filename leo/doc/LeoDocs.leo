@@ -16855,6 +16855,13 @@ Use autocompletion to explore these objects!
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see the section about
 `userAttributes &lt;customizing.html#adding-extensible-attributes-to-nodes-and-leo-files&gt;`_ in the `Customizing Leo &lt;customizing.html&gt;`_ chapter.
+
+*Important*: Generally speaking, vnode properties are fast, while the
+corresponding position properties are much slower. Nevertheless, scripts
+should usually use *position* properties rather than *vnode* properties
+because the position properties handle recoloring and other details.
+Scripts should use *vnode* properties only when making batch changes to
+vnodes.
 </t>
 <t tx="ekr.20131019061259.16691">**Properties**::
 
@@ -31813,7 +31820,7 @@ unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20201013033341.46
 unl: Conclusion
 </t>
-<t tx="ekr.20201014052236.1">Leo 6.3 b1, http://leoeditor.com, is now available on
+<t tx="ekr.20201014052236.1">Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
