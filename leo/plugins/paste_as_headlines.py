@@ -91,9 +91,9 @@ def paste_as_headlines(c):
             cur_pos = insertNode.copy()
             if len(tempHead)>50:
                 c.setHeadString(insertNode,tempHead[:50])
-                c.setBodyString(insertNode,tempHead)
+                insertNode.b = tempHead
             else:
-                c.setHeadString(insertNode,tempHead)
+                insertNode.h = tempHead
     currentPos.expand()
     c.redraw()
 #@-others

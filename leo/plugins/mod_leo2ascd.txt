@@ -2231,7 +2231,7 @@ if Tk: # Register the handlers...
 
                         if update:
                             g.blue("updated from: " + g.shortFileName(path))
-                            c.setBodyString(v,s,encoding)
+                            v.b = s
                             c.selectVnode(v)
                             dict["body"] = s
                         elif conflict:

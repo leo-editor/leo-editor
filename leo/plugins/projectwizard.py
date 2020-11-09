@@ -46,10 +46,8 @@ def auto_walk(c, directory, parent=None, isroot=True):
 
     if not RELATIVE_PATHS: directory = abspath(directory)
     if isroot:
-        body = "@path %s" % normpath(directory)
-        c.setHeadString(p, body)
+        p.h = "@path %s" % normpath(directory)
     for name in listdir(directory):
-
 
         if is_ignorable(name):
             continue

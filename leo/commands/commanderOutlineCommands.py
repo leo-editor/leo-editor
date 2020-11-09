@@ -1257,8 +1257,8 @@ def moveMarked(self, event=None):
 def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()
     p = oldRoot.insertAfter()
+    p.h = 'Moved marked nodes'
     p.moveToRoot()
-    c.setHeadString(p, 'Moved marked nodes')
     return p
 #@+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
 @g.commander_command('mark-changed-items')

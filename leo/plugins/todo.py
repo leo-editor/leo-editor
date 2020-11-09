@@ -734,14 +734,14 @@ class todoController:
     @redrawer
     def show_times(self, p=None, show=False):
 
-        def rnd(x): return re.sub('.0$', '', '%.1f' % x)
+        def rnd(x):
+            return re.sub('.0$', '', '%.1f' % x)
 
         if p is None:
             p = self.c.currentPosition()
 
         for nd in p.self_and_subtree():
-            self.c.setHeadString(nd, re.sub(' <[^>]*>$', '', nd.headString()))
-
+            p.h = re.sub(' <[^>]*>$', '', nd.headString())
             tr = self.getat(nd.v, 'time_req')
             pr = self.getat(nd.v, 'progress')
             try: pr = float(pr)
@@ -759,7 +759,7 @@ class todoController:
                 ans += '>'
 
                 if show:
-                    self.c.setHeadString(nd, nd.headString()+ans)
+                    nd.h = nd.h+ans
                 self.loadIcons(nd)  # update progress icon
 
     #@+node:tbrown.20090119215428.35: *4* recalc_time
