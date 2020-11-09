@@ -3644,20 +3644,13 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2990: *4* c.Selecting
-    #@+node:ekr.20031218072017.2992: *5* c.endEditing (calls tree.endEditLabel)
-    # Ends the editing in the outline.
-
+    #@+node:ekr.20031218072017.2992: *5* c.endEditing
     def endEditing(self):
+        """End the editing of a headline."""
         c = self
         p = c.p
         if p:
             c.frame.tree.endEditLabel()
-        # The following code would be wrong; c.endEditing is a utility method.
-        # k = c.k
-        # if k:
-            # k.setDefaultInputState()
-            # # Recolor the *body* text, **not** the headline.
-            # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
     def getSelectedPositions(self):
         """ Get list (PosList) of currently selected positions
@@ -3750,7 +3743,7 @@ class Commands:
             c.redraw_after_select(p)
         c.treeFocusHelper()
             # This is essential.
-    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
+    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
     def updateBodyPane(
         self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         """Handle changed text in the body pane."""

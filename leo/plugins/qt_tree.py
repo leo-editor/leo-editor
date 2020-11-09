@@ -80,7 +80,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getName(self):
         """Return the name of this widget: must start with "canvas"."""
         return 'canvas(tree)'
-    #@+node:ekr.20110605121601.18406: *4* qtree.initAfterLoad (connects event handlers)
+    #@+node:ekr.20110605121601.18406: *4* qtree.initAfterLoad
     def initAfterLoad(self):
         """Do late-state inits."""
         # Called by Leo's core.
@@ -1049,7 +1049,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 else:
                     # Recover silently even if there is a problem.
                     pass
-    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & editingFinishedCallback (changed)
+    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & editingFinishedCallback
     def connectEditorWidget(self, e, item):
         """
         Connect QLineEdit e to QTreeItem item.
@@ -1315,7 +1315,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # But warning: calling this method twice might not work!
             return None
         return None
-    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel (calls qtree.editLabelHelper)
+    #@+node:ekr.20110605121601.17909: *4* qtree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         if self.busy:
@@ -1343,7 +1343,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # p = c.currentPosition()
         # ew = self.edit_widget(p)
         # return p if ew else None
-    #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel (changed)
+    #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
         """
         Override LeoTree.endEditLabel.

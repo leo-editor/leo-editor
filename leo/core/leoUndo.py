@@ -481,7 +481,7 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
-    #@+node:ekr.20201107145642.1: *5* u.afterChangeHeadline (new)
+    #@+node:ekr.20201107145642.1: *5* u.afterChangeHeadline
     def afterChangeHeadline(self, p, command, bunch):
         """Create an undo node using d created by beforeChangeHeadline."""
         u = self
@@ -736,7 +736,7 @@ class Undoer:
         # Push the bunch.
         u.bead += 1
         u.beads[u.bead:] = [bunch]
-    #@+node:ekr.20201107145859.1: *5* u.beforeChangeHeadline (new)
+    #@+node:ekr.20201107145859.1: *5* u.beforeChangeHeadline
     def beforeChangeHeadline(self, p):
         """
         Return data that gets passed to afterChangeNode.
@@ -1153,7 +1153,7 @@ class Undoer:
     def redoHelper(self):
         """The default do-nothing redo helper."""
         pass
-    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
+    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline
     def redoChangeHeadline(self):
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
@@ -1433,11 +1433,11 @@ class Undoer:
         u.bead -= 1
         u.setUndoTypes()
     #@+node:ekr.20110519074734.6093: *3* u.undo helpers
-    #@+node:ekr.20191213085246.1: *4*  u.undoHeoper (do-nothing)
+    #@+node:ekr.20191213085246.1: *4*  u.undoHeoper
     def undoHelper(self):
         """The default do-nothing undo helper."""
         pass
-    #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline (new)
+    #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
     def undoChangeHeadline(self):
         """Undo a change to a node's headline."""
         c, u = self.c, self

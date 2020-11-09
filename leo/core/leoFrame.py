@@ -1289,7 +1289,7 @@ class LeoTree:
 
     def redraw_after_select(self, p=None):
         self.c.redraw()
-    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (base class)
+    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     def onHeadChanged(self, p, undoType='Typing'):
