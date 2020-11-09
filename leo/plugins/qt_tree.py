@@ -133,15 +133,6 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.traceCallersFlag:
             return g.callers(5, excludeCaller=True)
         return ''
-    #@+node:ekr.20201108200709.1: *3* qtree.Do-nothings
-    if 1:
-        def onHeadChanged(self, p, undoType='Typing'):
-            """Ensure that LeoTree.onHeadChanged is never called."""
-            message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
-            if g.unitTesting:
-                assert False, message
-            else:
-                g.es_print(message)
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self):
@@ -1032,7 +1023,7 @@ class LeoQtTree(leoFrame.LeoTree):
             n = w.topLevelItemCount()
             items = [w.topLevelItem(z) for z in range(n)]
         return items
-    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & editingFinishedCallback
+    #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & callback
     def connectEditorWidget(self, e, item):
         """
         Connect QLineEdit e to QTreeItem item.
@@ -1041,13 +1032,11 @@ class LeoQtTree(leoFrame.LeoTree):
         
         New in Leo 6.4: The callback handles all updates w/o calling onHeadChanged.
         """
-        c, u = self.c, self.c.undoer
-        if not e:
-            return g.trace('can not happen: no e')
-
+        c, p, u = self.c, self.c.p, self.c.undoer
+        #@+others  # define the callback.
+        #@+node:ekr.20201109043641.1: *5* function: editingFinished_callback
         def editingFinished_callback():
-            """Similar to onHeadChanged"""
-            p = c.p
+            """Called when Qt emits the editingFinished signal."""
             s = e.text()
             i = s.find('\n')
             # Truncate to one line.
@@ -1068,11 +1057,14 @@ class LeoQtTree(leoFrame.LeoTree):
                 u.afterChangeHeadline(p, 'Edit Headline', undoData)
             self.redraw_after_head_changed()
             c.outerUpdate()
-
-        # Hook up the widget.
-        wrapper = self.getWrapper(e, item)
-        e.editingFinished.connect(editingFinished_callback)
-        return wrapper  # 2011/02/12
+        #@-others
+        if e:
+            # Hook up the widget.
+            wrapper = self.getWrapper(e, item)
+            e.editingFinished.connect(editingFinished_callback)
+            return wrapper  # 2011/02/12
+        g.trace('can not happen: no e')
+        return None
     #@+node:ekr.20110605121601.18419: *4* qtree.contractItem & expandItem
     def contractItem(self, item):
         self.treeWidget.collapseItem(item)
