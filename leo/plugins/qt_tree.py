@@ -134,21 +134,14 @@ class LeoQtTree(leoFrame.LeoTree):
             return g.callers(5, excludeCaller=True)
         return ''
     #@+node:ekr.20201108200709.1: *3* qtree.Do-nothings
-    def onHeadChanged(self, p, undoType='Typing'):
-        """Ensure that LeoTree.onHeadChanged is never called."""
-        message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
-        if g.unitTesting:
-            assert False, message
-        else:
-            g.es_print(message)
-
-    def updateHead(self, event, w):
-        """Ensure that LeoTree.updateHead is never called."""
-        message = f"Error: LeoQtTree.updateHead called from {g.callers()}"
-        if g.unitTesting:
-            assert False, message
-        else:
-            g.es_print(message)
+    if 1:
+        def onHeadChanged(self, p, undoType='Typing'):
+            """Ensure that LeoTree.onHeadChanged is never called."""
+            message = f"Error: LeoQtTree.onHeadChanged called from {g.callers()}"
+            if g.unitTesting:
+                assert False, message
+            else:
+                g.es_print(message)
     #@+node:ekr.20110605121601.17872: *3* qtree.Drawing
     #@+node:ekr.20110605121601.18408: *4* qtree.clear
     def clear(self):
@@ -1039,24 +1032,6 @@ class LeoQtTree(leoFrame.LeoTree):
             n = w.topLevelItemCount()
             items = [w.topLevelItem(z) for z in range(n)]
         return items
-    #@+node:ekr.20110605121601.18417: *4* qtree.closeEditorHelper
-    def closeEditorHelper(self, e, item):
-        'End editing of the underlying QLineEdit widget for the headline.' ''
-        w = self.treeWidget
-        if e:
-            w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
-            try:
-                # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
-                # underlying C/C++ object has been deleted
-                w.setItemWidget(item, 0, None)
-                    # Make sure e is never referenced again.
-                w.setCurrentItem(item)
-            except RuntimeError:
-                if 1:  # Testing.
-                    g.es_exception()
-                else:
-                    # Recover silently even if there is a problem.
-                    pass
     #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & editingFinishedCallback
     def connectEditorWidget(self, e, item):
         """
@@ -1343,12 +1318,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 else:
                     g.trace('not a text widget!', wrapper)
         return e, wrapper
-    #@+node:ekr.20110605121601.17910: *4* qtree.editPosition (no longer used)
-    # def editPosition(self):
-        # c = self.c
-        # p = c.currentPosition()
-        # ew = self.edit_widget(p)
-        # return p if ew else None
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
         """
@@ -1363,9 +1332,10 @@ class LeoQtTree(leoFrame.LeoTree):
         e = self.getTreeEditorForItem(item)
         if not e:
             return
-        # Trigger the end-editing event by simulating a newline.
+        # Trigger the end-editing event.
         w = self.treeWidget
-        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)  
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        w.setCurrentItem(item)
     #@+node:ekr.20110605121601.17915: *4* qtree.getSelectedPositions
     def getSelectedPositions(self):
         items = self.getSelectedItems()

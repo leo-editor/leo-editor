@@ -23633,6 +23633,24 @@ if len(s) > limit:
     s = s[:limit]
     if s != p.h:
         g.warning("truncating headline to", limit, "characters")
+#@+node:ekr.20110605121601.18417: *3* qtree.closeEditorHelper (not used)
+def closeEditorHelper(self, e, item):
+    'End editing of the underlying QLineEdit widget for the headline.' ''
+    w = self.treeWidget
+    if e:
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        try:
+            # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
+            # underlying C/C++ object has been deleted
+            w.setItemWidget(item, 0, None)
+                # Make sure e is never referenced again.
+            w.setCurrentItem(item)
+        except RuntimeError:
+            if 1:  # Testing.
+                g.es_exception()
+            else:
+                # Recover silently even if there is a problem.
+                pass
 #@-all
 #@@nosearch
 #@-leo
