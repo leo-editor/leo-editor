@@ -185,7 +185,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         p = self.findBuffer(self.fromName)
         if p:
             c.endEditing()
-            c.setHeadString(p, name)
+            p.h = name
             c.redraw(p)
     #@+node:ekr.20150514045829.13: *4* switchToBuffer
     @cmd('buffer-switch-to')

@@ -93,7 +93,7 @@ def paste_as_headlines(c):
                 c.setHeadString(insertNode,tempHead[:50])
                 insertNode.b = tempHead
             else:
-                c.setHeadString(insertNode,tempHead)
+                insertNode.h = tempHead
     currentPos.expand()
     c.redraw()
 #@-others

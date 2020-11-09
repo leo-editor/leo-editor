@@ -1638,7 +1638,8 @@ class Position:
         cff, replace-all and recursive import. In such situations, code should
         use p.v.h instead of p.h.
         """
-        p = self; c = p.v and p.v.context
+        p = self
+        c = p.v and p.v.context
         if c:
             c.setHeadString(p, val)
             # Warning: c.setHeadString is *expensive*.

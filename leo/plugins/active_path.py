@@ -373,7 +373,7 @@ def createFile(c,parent,d):
         'Create file @'+atType+' '+d+'?')
     if ok == 'no':
         return False
-    c.setHeadString(parent, '@'+atType+' '+d)
+    parent.h = '@'+atType+' '+d
     c.bodyWantsFocus()
     return True
 #@+node:tbrown.20080613095157.9: ** openFile
@@ -521,7 +521,7 @@ def openDir(c,parent,d):
 
         p = parent.insertAsNthChild(0)
         c.setChanged()
-        c.setHeadString(p,name)
+        p.h = name
         if name.startswith('/'):
             # sufficient test of dirness as we created newlist
             p.b = '@path '+name.strip('/')
@@ -554,7 +554,7 @@ def openDir(c,parent,d):
                 for orphan in p.subtree():
                     c.setHeadString(orphan, '*'+orphan.h.strip('*')+'*')
         if p.h != nh:  # don't dirty node unless we must
-            c.setHeadString(p,nh)
+            p.h = nh
 
     c.selectPosition(parent)
 #@+node:tbrown.20100304090709.31081: ** loadDocstring

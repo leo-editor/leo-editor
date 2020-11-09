@@ -281,7 +281,7 @@ def insert_read_only_node (c,p,name):
             title="Open",
             filetypes=[("All files", "*")],
         )
-        c.setHeadString(p,"@read-only %s" % name)
+        p.h = "@read-only %s" % name
         c.redraw()
     parse = urlparse(name)
     try:

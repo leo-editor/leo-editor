@@ -74,7 +74,7 @@ def importCiscoConfig(c):
         return
 
     p = current.insertAsNthChild(0)
-    c.setHeadString(p,"cisco config: %s" % name)
+    p.h = "cisco config: %s" % name
     c.redraw()
 
     try:
@@ -111,7 +111,7 @@ def importCiscoConfig(c):
                     out.append(g.angleBrackets(customLine))
                     # create first-level child
                     child = p.insertAsNthChild(0)
-                    c.setHeadString(child,g.angleBrackets(customLine))
+                    child.h = g.angleBrackets(customLine)
                     children.append(child)
 
                 blocks[customLine].append(linelist[i])
@@ -133,7 +133,7 @@ def importCiscoConfig(c):
                     out.append(g.angleBrackets(key))
                     # create first-level child
                     child = p.insertAsNthChild(0)
-                    c.setHeadString(child,g.angleBrackets(key))
+                    child.h = g.angleBrackets(key)
                     children.append(child)
 
                 value = [linelist[i]]
@@ -184,7 +184,7 @@ def importCiscoConfig(c):
                 for value in blocks[key]:
                     # each value is a list containing the headline and then the text
                     subchild = child.insertAsNthChild(0)
-                    c.setHeadString(subchild,value[0])
+                    subchild.h = value[0]
                     subchild.b = '\n'.join(value)
             # child.sortChildren()
         else:

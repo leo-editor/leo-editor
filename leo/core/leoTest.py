@@ -361,7 +361,7 @@ class ImportExportTestCase(unittest.TestCase):
         # Create a node under temp_p.
         child = temp_p.insertAsLastChild()
         assert(child)
-        c.setHeadString(child, "import/export test: " + self.p.h)
+        child.h = "import/export test: " + self.p.h
         c.selectPosition(child)
         # Get the dialog name and the fileName from the dialog node.
         # This is used below to set up the dialog dict for NullGui.simulateDialog.
