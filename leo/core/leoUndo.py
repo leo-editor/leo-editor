@@ -82,6 +82,7 @@ class Undoer:
         self.newBody = None
         self.newChildren = None
         self.newHead = None
+        self.newIns = None
         self.newMarked = None
         self.newN = None
         self.newP = None
@@ -95,6 +96,7 @@ class Undoer:
         self.oldBody = None
         self.oldChildren = None
         self.oldHead = None
+        self.oldIns = None
         self.oldMarked = None
         self.oldN = None
         self.oldParent = None
@@ -422,6 +424,32 @@ class Undoer:
         u.c.setChanged()
     #@+node:ekr.20031218072017.3608: *3* u.Externally visible entries
     #@+node:ekr.20050318085432.4: *4* u.afterX...
+    #@+node:ekr.20201109075104.1: *5* u.afterChangeBody
+    def afterChangeBody(self, p, command, bunch):
+        """
+        Create an undo node using d created by beforeChangeNode.
+        
+        This method saves all data saved by the deprecated
+        u.setUndoTypingParams method.
+        """
+        u, w = self, self.c.frame.body.wrapper
+        if u.redoing or u.undoing:
+            return
+        # Set the type & helpers.
+        bunch.kind = 'body'
+        bunch.undoType = command
+        bunch.undoHelper = u.undoChangeBody
+        bunch.redoHelper = u.redoChangeBody
+        bunch.newBody = p.b
+        bunch.oldIns = w.getInsertPoint()
+        bunch.newMarked = p.isMarked()
+        # Careful: don't use ternary operator.
+        if w:
+            bunch.newSel = w.getSelectionRange()
+        else:
+            bunch.newSel = 0, 0
+        bunch.newYScroll = w.getYScrollPosition() if w else 0
+        u.pushBead(bunch)
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
         """
@@ -457,7 +485,7 @@ class Undoer:
             u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-    #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
+    #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents (deprecated)
     def afterChangeNodeContents(self, p, command, bunch, inHead=False):
         """Create an undo node using d created by beforeChangeNode."""
         u = self
@@ -719,6 +747,22 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
+    #@+node:ekr.20201109074740.1: *5* u.beforeChangeBody
+    def beforeChangeBody(self, p):
+        """
+        Return data that gets passed to afterChangeBody.
+        
+        This method saves all data saved by the deprecated
+        u.setUndoTypingParams method.
+        """
+        w = self.c.frame.body.wrapper
+        bunch = self.createCommonBunch(p)
+        bunch.oldBody = p.b
+        bunch.oldIns = w.getInsertPoint()
+        bunch.oldMarked = p.isMarked()
+        bunch.oldSel = w.getSelectionRange()
+        bunch.oldYScroll = w.getYScrollPosition()
+        return bunch
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
         """Prepare to undo a group of undoable operations."""
@@ -747,13 +791,9 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldHead = p.h
         return bunch
-    #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents
+    #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents (deprecated)
     def beforeChangeNodeContents(self, p):
-        """
-        Return data that gets passed to afterChangeNode.
-        
-        The oldHead kwarg works around a Qt difficulty when changing headlines.
-        """
+        """Return data that gets passed to afterChangeNode."""
         c, u = self.c, self
         w = c.frame.body.wrapper
         bunch = u.createCommonBunch(p)
@@ -898,7 +938,7 @@ class Undoer:
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
-    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams
+    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams (deprecated)
     def setUndoTypingParams(self, p, undo_type, oldText, newText,
         oldSel=None, newSel=None, oldYview=None,
     ):
@@ -1008,7 +1048,8 @@ class Undoer:
         #@-<< save the selection and scrolling position >>
         #@+<< adjust the undo stack, clearing all forward entries >>
         #@+node:ekr.20040324061854.3: *5* << adjust the undo stack, clearing all forward entries >>
-        #@+at New in Leo 4.3. Instead of creating a new bead on every character, we
+        #@+at
+        # New in Leo 4.3. Instead of creating a new bead on every character, we
         # may adjust the top bead:
         # word granularity: adjust the top bead if the typing would continue the word.
         # line granularity: adjust the top bead if the typing is on the same line.
@@ -1162,7 +1203,35 @@ class Undoer:
     def redoHelper(self):
         """The default do-nothing redo helper."""
         pass
-    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline
+    #@+node:ekr.20201109080732.1: *4* u.redoChangeBody
+    def redoChangeBody(self):
+        c, u, w = self.c, self, self.c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        # Restore the body.
+        u.p.setBodyString(u.newBody)
+        w.setAllText(u.newBody)
+        c.frame.body.recolor(u.p)
+        # Restore the headline.
+        u.p.initHeadString(u.newHead)
+        # This is required so.  Otherwise redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.newHead)
+        if u.groupCount == 0:
+            w.setInsertPoint(u.newIns)
+            if u.newMarked:
+                u.p.setMarked()
+            else:
+                u.p.clearMarked()
+            if True: ### u.newSel is not None:
+                i, j = u.newSel
+                w.setSelectionRange(i, j)
+            if True: ### u.newYScroll is not None:
+                w.setYScrollPosition(u.newYScroll)
+        u.updateMarks('new')
+        u.p.setDirty()
+    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
     def redoChangeHeadline(self):
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
@@ -1446,6 +1515,35 @@ class Undoer:
     def undoHelper(self):
         """The default do-nothing undo helper."""
         pass
+    #@+node:ekr.20201109080631.1: *4* u.undoChangeBody
+    def undoChangeBody(self):
+        """
+        Undo all changes to the contents of a node,
+        including headline and body text, and marked bits.
+        """
+        c, u, w = self.c, self, self.c.frame.body.wrapper
+        # selectPosition causes recoloring, so don't do this unless needed.
+        if c.p != u.p:  # #1333.
+            c.selectPosition(u.p)
+        u.p.setDirty()
+        u.p.b = u.oldBody
+        w.setAllText(u.oldBody)
+        c.frame.body.recolor(u.p)
+        u.p.h = u.oldHead
+        # This is required.  Otherwise c.redraw will revert the change!
+        c.frame.tree.setHeadline(u.p, u.oldHead)
+        if u.groupCount == 0:
+            w.setInsertPoint(u.oldIns)
+            if u.oldMarked:
+                u.p.setMarked()
+            else:
+                u.p.clearMarked()
+            if True: ### u.oldSel is not None:
+                i, j = u.oldSel
+                w.setSelectionRange(i, j)
+            if True: ### u.oldYScroll is not None:
+                w.setYScrollPosition(u.oldYScroll)
+        u.updateMarks('old')
     #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
     def undoChangeHeadline(self):
         """Undo a change to a node's headline."""
