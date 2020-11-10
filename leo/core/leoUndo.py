@@ -523,6 +523,8 @@ class Undoer:
         bunch.redoHelper = u.redoChangeHeadline
         bunch.newHead = p.h
         u.pushBead(bunch)
+
+    afterChangeHead = afterChangeHeadline
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
     def afterChangeTree(self, p, command, bunch):
         """Create an undo node for general tree operations using d created by beforeChangeTree"""
@@ -792,6 +794,8 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldHead = p.h
         return bunch
+
+    beforeChangeHead = beforeChangeHeadline
     #@+node:ekr.20050315133212.2: *5* u.beforeChangeNodeContents (deprecated)
     def beforeChangeNodeContents(self, p):
         """Return data that gets passed to afterChangeNode."""
@@ -1227,7 +1231,7 @@ class Undoer:
             c.frame.body.recolor(u.p)
         u.updateMarks('new')
         u.p.setDirty()
-    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline (new)
+    #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline
     def redoChangeHeadline(self):
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
