@@ -203,20 +203,17 @@ class View:
         @path is a path object for a directory
         @node is the node to work with
         """
-
-        c = self.c
-
         # delete all nodes before creating, to avoid duplicates
         while node.firstChild():
             node.firstChild().doDelete(node)
 
         for file in path.files():
             child = node.insertAsLastChild()
-            c.setHeadString(child,'@view %s' % file.name)
+            child.h = '@view %s' % file.name
 
         for file in path.dirs():
             child = node.insertAsLastChild()
-            c.setHeadString(child,'@view %s' % file.name)
+            child.h = '@view %s' % file.name
     #@-others
 #@-others
 #@@language python

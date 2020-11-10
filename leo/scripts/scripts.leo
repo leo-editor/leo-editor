@@ -396,6 +396,40 @@
 <v t="ekr.20200505051957.7"><vh>do_part</vh></v>
 </v>
 </v>
+<v t="ekr.20201030065542.1"><vh>Leo 6.4</vh>
+<v t="ekr.20201030065548.2"><vh>script: make-annonymous (Dangerous!)</vh></v>
+<v t="ekr.20201030065548.3"><vh>script: print summary of c.config.settingsDict</vh></v>
+<v t="ekr.20201030065548.4"><vh>script: remove-icon-script</vh></v>
+<v t="ekr.20201030065548.5"><vh>script: set window to youtube size</vh></v>
+<v t="ekr.20201030065548.6"><vh>Script: Speed Ream: install leowapp</vh>
+<v t="ekr.20201030065548.7"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20201030065548.8"><vh>&lt;&lt; usage &gt;&gt;</vh></v>
+<v t="ekr.20201030065548.9"><vh>&lt;&lt; commands &gt;&gt;</vh></v>
+<v t="ekr.20201030065548.10"><vh>imports</vh></v>
+<v t="ekr.20201030065548.11"><vh>globals</vh></v>
+<v t="ekr.20201030065548.12"><vh>data</vh></v>
+<v t="ekr.20201030065548.13"><vh>control routines</vh></v>
+<v t="ekr.20201030065548.14"><vh>run routines</vh>
+<v t="ekr.20201030065548.15"><vh>setup_dirs</vh></v>
+<v t="ekr.20201030065548.16"><vh>leo_copy_test</vh></v>
+<v t="ekr.20201030065548.17"><vh>create_dir</vh></v>
+<v t="ekr.20201030065548.18"><vh>run_env_cmd</vh></v>
+<v t="ekr.20201030065548.19"><vh>clone_repo</vh></v>
+<v t="ekr.20201030065548.20"><vh>setup_git</vh></v>
+<v t="ekr.20201030065548.21"><vh>unzip</vh></v>
+<v t="ekr.20201030065548.22"><vh>get_names</vh></v>
+<v t="ekr.20201030065548.23"><vh>setup_zip</vh></v>
+<v t="ekr.20201030065548.24"><vh>pull_repo</vh></v>
+<v t="ekr.20201030065548.25"><vh>install</vh></v>
+</v>
+</v>
+<v t="ekr.20201030065548.26"><vh>script: write @clean node without writing .leo file</vh>
+<v t="ekr.20201030065548.27"><vh>@@clean at_clean_test.py</vh>
+<v t="ekr.20201030065548.28"><vh>spam</vh></v>
+<v t="ekr.20201030065548.29"><vh>eggs</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -4796,6 +4830,568 @@ doc_pat = re.compile(r'(""".*?""")', (re.MULTILINE | re.DOTALL))
         '\n',
     ]
     return body_lines, command_lines, headline
+</t>
+<t tx="ekr.20201030065542.1"></t>
+<t tx="ekr.20201030065548.10">from os      import environ
+from os      import getcwd
+from os      import mkdir
+from os      import system
+from os      import unlink
+from os.path import exists
+from os.path import join
+from pickle  import dump
+from pickle  import load
+from sys     import argv
+from sys     import exit
+
+"""
+from subprocess import Popen, PIPE
+"""
+</t>
+<t tx="ekr.20201030065548.11">CWD         = getcwd()
+DATA_NAME   = "data.dat"
+DATA_FILE   = join(CWD,DATA_NAME)
+DIAL_REPO   = "https://github.com/flexxui/dialite.git"
+SOURCES     = "sources"
+VIRTUAL_ENV ="/home/bridge1/Virtual/leowapp/env"
+ar1         = ar2 = ar3 = None
+
+</t>
+<t tx="ekr.20201030065548.12">repo_list = (
+(
+"dialite",
+"master",
+"/home/bridge1/Virtual/leowapp/zips/dialite-master.zip",
+"https://github.com/flexxui/dialite.git",
+),
+(
+"pscript",
+"master",
+"/home/bridge1/Virtual/leowapp/zips/pscript-master.zip",
+"https://github.com/flexxui/pscript.git",
+),
+(
+"tornado",
+"master",
+"/home/bridge1/Virtual/leowapp/zips/tornado-master.zip",
+"https://github.com/tornadoweb/tornado.git",
+),
+(
+"webruntime",
+"master",
+"/home/bridge1/Virtual/leowapp/zips/webruntime-master.zip",
+"https://github.com/flexxui/webruntime.git",
+),
+(
+"flexx",
+"master",
+"/home/bridge1/Virtual/leowapp/zips/flexx-master.zip",
+"https://github.com/flexxui/flexx.git",
+),
+(
+"leo-editor",
+"skeleton",
+"/home/bridge1/Virtual/leowapp/zips/leo-editor-skeleton.zip",
+"https://github.com/leo-editor/leo-editor.git",
+),
+)
+
+order = (
+"dialzip",
+"dialgit",
+"dialins",
+"pscrzip",
+"pscrgit",
+"pscrins",
+"tornzip",
+"torngit",
+"tornins",
+"webrzip",
+"webrgit",
+"webrins",
+"flexzip",
+"flexgit",
+"flexins",
+"leozip",
+"leogit",
+"leoins",
+"leocpy",
+)
+
+data = {
+"dialzip":("setup_zip('dialite')",
+           "Unzip the dialite zip and place it in the correct directory",
+           False),
+"dialgit":("setup_git('dialite')",
+           "Setup the dialite github repo.",
+           False),
+"dialins":("install('dialite')",
+           "Using pip, install dialite from the sources directory",
+           False),
+"pscrzip":("setup_zip('pscript')",
+           "Unzip the pscript zip and place it in the correct directory",
+           False),
+"pscrgit":("setup_git('pscript')",
+           "Setup the pcscript github repo.",
+           False),
+"pscrins":("install('pscript')",
+           "Using pip, install pscript from the sources directory",
+           False),
+"tornzip":("setup_zip('tornado')",
+           "Unzip the tornado zip and place it in the correct directory",
+           False),
+"torngit":("setup_git('tornado')",
+           "Setup the tornado github repo.",
+           False),
+"tornins":("install('tornado')",
+           "Using pip, install tornado from the sources directory",
+           False),
+"webrzip":("setup_zip('webruntime')",
+           "Unzip the webruntime zip and place it in the correct directory",
+           False),
+"webrgit":("setup_git('webruntime')",
+           "Setup the webruntime github repo.",
+           False),
+"webrins":("install('webruntime')",
+           "Using pip, install webruntime from the sources directory",
+           False),
+"flexzip":("setup_zip('flexx')",
+           "Unzip the flexx zip and place it in the correct directory",
+           False),
+"flexgit":("setup_git('flexx')",
+           "Setup the flexx github repo.",
+           False),
+"flexins":("install('flexx')",
+           "Using pip, install flexx from the sources directory",
+           False),
+"leozip" :("setup_zip('leo-editor')",
+           "Unzip the leo-editor zip and place it in the correct directory",
+           False),
+"leogit": ("setup_git('leo-editor')",
+           "Setup the leo-editor github repo.",
+           False),
+"leoins": ("install('leo-editor')",
+           "Using pip, install leo-editor from the sources directory",
+           False),
+"leocpy": ("leo_copy_test()",
+           "Copy the leo test directory, which is used by leowapp, but"\
+           " is not part of the leo github distribution in the master"\
+           " branch",
+           False),
+}
+
+if exists(DATA_FILE):
+    with open(DATA_FILE, "rb") as f:
+        data = load(f)
+</t>
+<t tx="ekr.20201030065548.13">def usage():
+    print(u)
+
+def get_args():
+    global ar1,ar2,ar3
+    try:
+        ar1 = argv[0]
+        #print("ar1 = " + ar1)
+        ar2 = argv[1]
+        #print("ar2 = " + ar2)
+        ar3 = argv[2]
+        #print("ar3 = " + ar3)
+    except:
+        pass        
+
+def dump_opts():
+    for item in order:
+        print("{}: {}".format(item.ljust(7," "),data[item][1]))
+    print("")
+
+def save_data():
+    with open(DATA_FILE, "wb") as f:
+        dump(data,f,protocol=0)
+
+def do_step(item):
+    # Do this step in the process, regardless of whether it has been done
+    # or not. If it completes without failure, mark it done.
+    val = data[item]
+    print
+    print("{}: {}".format(item,val[1]))
+    print(val[0])
+    exec(val[0])
+    print
+    data[item] = (val[0],val[1],True)
+
+def run():
+    # ar2 is the step name.
+    global ar2
+
+    get_args()
+
+    if not ar2:
+        # If there is no step name, just show usage and the steps
+        usage()
+        dump_opts()
+
+    elif ar2 in data:
+        # If the step name is in the list, just do this step and
+        # mark it done
+        do_step(ar2)
+        save_data()
+
+    if ar2 == "next":
+        # do the next step in the process that hasn't been done already,
+        # then mark it done
+        for item in order:
+            if data[item][2] == False:
+                do_step(item)
+                save_data()
+                break
+
+    if ar2 == "steps":
+        # list all the steps
+        print("")
+        dump_opts()
+
+    if ar2 == "show":
+        # show the next step in the process that hasn't been done already
+        for item in order:
+            if data[item][2] == False:
+                print("\n{}: {}\n".format(item,data[item][1]))
+                break
+
+    if ar2 == "restart":
+        # delete data.dat from the current directory
+        if exists(DATA_FILE):
+            unlink(DATA_FILE)
+
+    if ar2 == "commands":
+        # show some interesting command lines used by this script
+        print(cmds)
+</t>
+<t tx="ekr.20201030065548.14">@others
+</t>
+<t tx="ekr.20201030065548.15">def setup_dirs():
+    for item in dir_list:
+        create_dir(item)
+</t>
+<t tx="ekr.20201030065548.16">def leo_copy_test():
+    """
+    TODO: Copy the entire directory:
+        sources/leo-editor-skeleton/test to
+    site-packages/leo/test
+    """
+    pass
+</t>
+<t tx="ekr.20201030065548.17">def create_dir(item):
+    name = join(CWD,item)
+    if not exists(name):
+        print("creating {}".format(name))
+        mkdir(name)
+</t>
+<t tx="ekr.20201030065548.18">def run_env_cmd(cmd):
+    msg = "\n\nERROR! Pip install must be run under the "\
+          "virtual environment:\n'{}'!\n\n".format(VIRTUAL_ENV)
+    try:
+        if not environ['VIRTUAL_ENV'] == VIRTUAL_ENV:
+            barf # raise exception
+    except:
+        print(msg)
+        exit(0)
+    print(cmd)
+    system(cmd)
+</t>
+<t tx="ekr.20201030065548.19">def clone_repo(name,branch,git_name):
+    git_dir = join(CWD,SOURCES,"{}-{}/.git".format(name,branch))
+    if not exists(git_dir):
+        mkdir(git_dir)
+    cmd =  "cd {} &amp;&amp; git clone --bare --single-branch -b {} --depth=1 --shallow-submodules {} .".format(git_dir,branch,git_name)
+    print(cmd)
+    system(cmd)
+    return
+</t>
+<t tx="ekr.20201030065548.2">"""Remove all sensitive material in this outline, except for this node."""
+# Warning: This script is dangerous! Use on a copy of your outline.
+n = 1
+v0 = c.p.v
+for p in c.all_unique_positions():
+    if p.v != v0:
+        p.h = f"node {n}"
+        p.b = ''
+        n += 1
+c.redraw()</t>
+<t tx="ekr.20201030065548.20">"""
+Clone a bare .git directory for the github repo
+"""
+def setup_git(repo_name):
+    name,branch,zip_name,git_name = get_names(repo_name)
+    if not name:
+        return
+    clone_repo(name,branch,git_name)
+    pull_repo(name,branch,git_name)
+    return
+</t>
+<t tx="ekr.20201030065548.21">def unzip(name):
+    dest = join(CWD,SOURCES)
+    cmd = "unzip -o {} -d {}".format(name,dest)
+    print(cmd)
+    system(cmd)
+    return
+    src  = join(CWD,"zips","{}.zip".format(name))
+    dest = join(CWD,SOURCES)
+    #print(src)
+
+</t>
+<t tx="ekr.20201030065548.22">def get_names(repo_name):
+    for item in repo_list:
+        (name,branch,zip_name,git_name) = item
+        if name == repo_name:
+            stub = "name:{}\nbranch:{}\nzip: {}\ngit: {}"
+            print(stub.format(name,branch,zip_name,git_name))
+            return name,branch,zip_name,git_name
+    return None,None,None,None
+</t>
+<t tx="ekr.20201030065548.23">"""
+Unzip a master zip file into its source directory
+"""
+def setup_zip(repo_name):
+    name,branch,zip_name,git_name = get_names(repo_name)
+    if not name:
+        return
+    unzip(zip_name)
+</t>
+<t tx="ekr.20201030065548.24">def pull_repo(name,branch,git_name):
+    print("pull_repo")
+    repo_dir = join(CWD,SOURCES,"{}-{}".format(name,branch))
+    cmd =  "cd {} &amp;&amp; git init".format(repo_dir)
+    print(cmd)
+    system(cmd)
+    cmd =  "cd {} &amp;&amp; git pull --depth=1 --allow-unrelated-histories {}  {}".format(repo_dir,git_name,branch)
+    print(cmd)
+    system(cmd)
+    return
+</t>
+<t tx="ekr.20201030065548.25">def install(repo_name):
+
+    name,branch,zip_name,git_name = get_names(repo_name)
+    if not name:
+        return
+    src = join(CWD, SOURCES,"{}-{}".format(name,branch))
+    cmd = "pip install --upgrade --no-deps --force-reinstall {}"
+    cmd = cmd.format(src)
+    run_env_cmd(cmd)
+</t>
+<t tx="ekr.20201030065548.26">at = c.atFileCommands
+p = g.findNodeAnywhere(c, '@clean at_clean_test.py')
+assert p
+at.write(p, kind='@clean', nosentinels=True, toString=False)
+for p2 in p.self_and_subtree():
+    p2.v.clearDirty()
+c.redraw()</t>
+<t tx="ekr.20201030065548.27">@others # changed.
+</t>
+<t tx="ekr.20201030065548.28">def spam():
+    pass # changed 3
+</t>
+<t tx="ekr.20201030065548.29">def eggs():
+    pass
+
+</t>
+<t tx="ekr.20201030065548.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">d = c.config.settingsDict
+sources = list(set([gs.path for gs in d.d.values() if gs.path is not None]))
+    # Yes, gs.path can be None.
+#
+# Compute the summary dict.
+summary = {}
+for path in sources:
+    inner_d = g.TypedDict(
+        name=g.shortFileName(path),
+        keyType=str,
+        valType=g.GeneralSetting)
+    summary [path] = inner_d
+    for key, val in d.items():
+        if val.path == path:
+            inner_d [key] = val
+#
+# Show the summary dict.
+if 1:
+    # Brief: good for quck checks.
+    g.printObj([str(z) for z in summary.values()])
+else:
+    # Complete. Good for deep debugging.
+    g.printObj(summary)</t>
+<t tx="ekr.20201030065548.4">"""Remove icons for the node whose headline is h"""
+h = 'my headline'
+p = g.findNodeAnywhere(c, h)
+if p:
+    c.editCommands.deleteNodeIcons(p=p)
+    c.redraw_now()
+else:
+    g.es_print('not found', h)</t>
+<t tx="ekr.20201030065548.5">height, width = 682, 1264
+w = c.frame.top
+while w.parent():
+    w = w.parent()
+w.resize(1264, 682)
+w.move(200, 200)
+</t>
+<t tx="ekr.20201030065548.6">@language python
+@tabwidth -4
+&lt;&lt; docstring &gt;&gt;
+&lt;&lt; usage &gt;&gt;
+&lt;&lt; commands &gt;&gt;
+@others
+run()
+</t>
+<t tx="ekr.20201030065548.7">@language rest
+@wrap
+
+"""
+install.py
+
+Version 1.0
+Copyright David Speed Ream 25 November 2018
+This file is released to public domain.
+
+
+Install leowapp into a virtual python virtual environment on Ubuntu or
+Debian.
+
+run python install.py for usage information.
+
+This install does not depend upon or install QT.
+This install does require git to be installed.
+
+To use this script to install leowapp in a NOT python virtual environment,
+go to the routine:
+    run_env_cmd()
+
+and comment out everything except the last two lines. Make sure to examine
+the consequences of doing this prior to doing it. Or make a backup first.
+    
+After this install is completed, new updates to any of the projects
+(except tornado) can be pulled from github, getting only the most recent
+changes, additions or deletions to any of the project files. After such a
+change, the project must be reinstalled again using pip using one of the
+script commands. For example, after pulling a change to leowapp, reinstall
+leowapp again by:
+    starting the virtual environment
+    running python install.py leoins
+
+This install method requires manually getting zip files for each project
+and placing them into the ./zips folder.
+
+All the flexx project zips come from github flexxui. Leo which comes from
+github leo-editor. Tornado comes from tornadoweb.
+
+In the ./zips directory, place the following zip files:
+ dialite-master.zip
+ flexx-master.zip
+ leo-editor-skeleton.zip
+ pscript-master.zip
+ tornado-master.zip
+ webruntime-master.zip
+
+The directory structure when starting this script:
+
+~/anydir
+~/anydir/zips
+~/anydir/zips/dialite-master.zip
+~/anydir/zips/flexx-master.zip
+~/anydir/zips/leo-editor-skeleton.zip
+~/anydir/zips/pscript-master.zip
+~/anydir/zips/tornado-master.zip
+~/anydir/zips/webruntime-master.zip
+
+Creathing the python virtual environment:
+    This is what I did on Ubuntu 18.10
+
+cd ~/anydir
+
+python3 -m venv env
+
+Prior to running this install script, and always prior to running leowapp,
+enter the virtual env by:
+
+cd ~/anydir
+source env/bin/activate
+
+After done with work:
+cd ~/anydir
+deactivate
+"""
+</t>
+<t tx="ekr.20201030065548.8">@language rest
+@wrap
+
+u = \
+"""
+Basic Usage:
+
+cd ~/this_directory
+
+python3 install.py
+    print this usage message, then:
+    list all available steps
+
+python3 install.py show
+    show the next step in the sequence
+
+python3 install.py next
+    do the next step in the sequence
+
+python3 install.py &lt;step name&gt;
+    do the given step
+
+python3 install.py restart
+    Restart the process over from the start. This deletes the file data.dat
+    from the current directory.
+
+python3 install.py commands
+    show some interesting command lines used by this script
+
+"""
+
+</t>
+<t tx="ekr.20201030065548.9">@language rest
+@wrap
+
+"""
+The following lines are displayed by entering:
+    python install.py commands
+
+"""
+
+cmds = \
+"""
+
+unzip, force overwrite, to destination folder.
+
+unzip -o myzip.zip -d /home/me/working_stuff/destination_folder
+
+From an existing empty project folder, create a valid .git folder for an
+existing github project.
+
+-mkdir /home/me/stuff/my-project/.git
+-cd /home/me/stuff/my-project/.git
+-git clone --bare --single-branch -b mybranch --depth=1 --shallow-submodules https://github.com/my-project/my-project.git .
+
+After making a valid .git folder for the project, and after extracting the
+source files from a git zip into the project folder, setup the project for
+use and get any recent changes to the project from github.
+
+-cd /home/me/stuff/my-project
+-git init
+-git reset HEAD
+-git pull --depth=1 --allow-unrelated-histories https://github.com/my-project/my-project.git mybranch
+-git status
+-After running git status, if any items are marked 'modified' or 'deleted',
+then manually run git: checkout &lt;item&gt;
+-keep running status and checkout until all items are up to date
+
+Using pip, install a package downloaded via the github process above into
+the current python installation without pulling in other dependencies.
+Please note that all the given command line options must be used, even when installing a package for the first time.
+
+-pip install --upgrade --no-deps --force-reinstall /home/me/stuff/my-project
+"""
 </t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863

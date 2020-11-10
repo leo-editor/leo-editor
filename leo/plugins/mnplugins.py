@@ -63,8 +63,7 @@ def onStart (tag,keywords):
 #@+node:ekr.20040205071616.4: ** setHeadOK
 def setHeadOK(c,v):
 
-    s = OKFLAG + v.h
-    c.setHeadString(v,s)
+    v.h = OKFLAG + v.h
 
 #@+node:ekr.20040205071616.5: ** mnplugins.insertBodystamp
 def insertBodystamp (c,v):

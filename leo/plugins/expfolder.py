@@ -100,7 +100,7 @@ def on_icondclick(tag, keywords):
                 c.setHeadString(pn, "@text "+f)
                 pn.clearDirty()
             else:
-                c.setHeadString(pn, f)
+                pn.h = f
         for d in dirs:
             pn = p.insertAsNthChild(0)
             c.setHeadString(pn, "@expfolder "+d)

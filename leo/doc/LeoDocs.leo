@@ -16861,7 +16861,8 @@ corresponding position properties are much slower. Nevertheless, scripts
 should usually use *position* properties rather than *vnode* properties
 because the position properties handle recoloring and other details.
 Scripts should use *vnode* properties only when making batch changes to
-vnodes.</t>
+vnodes.
+</t>
 <t tx="ekr.20131019061259.16691">**Properties**::
 
     p.b: same as p.v.b.  *Warning*: p.b = s is expensive.

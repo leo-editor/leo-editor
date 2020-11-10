@@ -741,7 +741,7 @@ def rp_get_leading_ws(c, lines, tabWidth):
     if len(lines) == 1:
         leading_ws[1] = leading_ws[0]
     return indents, leading_ws
-#@+node:ekr.20171123135625.47: *3* def rp_reformat
+#@+node:ekr.20171123135625.47: *3* function: rp_reformat
 def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
     body = c.frame.body
@@ -918,7 +918,7 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
     if lines:
         result = ' '.join([z.strip() for z in lines]) + '\n'
         unreformat(c, head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.50: *3* def.unreformat
+#@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
     body = c.frame.body
