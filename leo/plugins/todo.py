@@ -72,15 +72,6 @@ import re
 import datetime
 import time
 
-# #1591: Missing icons in the todo plugin.
-workaround = False
-from leo.core.leoQt import isQt5
-if isQt5:
-    from leo.core.leoQt import qt_version
-    qt_version = [int(z) for z in qt_version.split('.')]
-    if qt_version[1] > 12:
-        workaround = True
-
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
@@ -403,6 +394,8 @@ class todoController:
         self.loadAllIcons()
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
+        # #1591: patch labels if necessary.
+        self.patch_1591()
     #@+node:tbrown.20090119215428.17: *4* todo_c.close
     def close(self, tag, key):
         "unregister handlers on closing commander"
@@ -465,6 +458,50 @@ class todoController:
         
         ### if icons: g.printObj(icons, tag=f"icons for {p.h}") ###
         ec.setIconList(p, icons, setDirty=False)
+    #@+node:ekr.20201111044510.1: *4* todo_c.patch_1591
+    def patch_1591(self):
+        """
+        A workaround for #1591.
+        
+        Add labels and tooltips for all buttons.
+        """
+        # Patch the buttons only if the pyqt version is greater than 5.12.
+        from leo.core.leoQt import isQt5, qt_version
+        if not isQt5:
+            return
+        qt_version = [int(z) for z in qt_version.split('.')]
+        if qt_version[1] <= 12:
+            return
+        ui = self.ui.UI
+        # Add text and tooltips to all numeric priority buttons.
+        for i in range(10):
+            button = getattr(ui, f"butPri{i}")
+            button.setText(f"{i}")
+            button.setToolTip(f"Priority {i}")
+        # Add text and tooltips to other buttons...
+        table = (
+            # Alternate priorities...
+            ('butPriChk', 'Check', 'Check Mark'),
+            ('butPriToDo', 'Box', 'Box Mark'),
+            ('butPriX', 'X', 'Black X'),
+            ('butPriXgry', 'X', 'Gray X'),
+            ('butPriBang', '!', 'Exclamation Point'),
+            ('butPriQuery', '?', 'Question Mark'),
+            ('butPriBullet', '•', 'Bullet'),
+            ('butPriClr', 'Clear', 'Clear Priority'),
+            # Other labels...
+            ('butDetails', 'Details', 'Toggle Details'),
+            ('butNext', 'Next Node', 'Next Node'),
+            ('butNextTodo', 'Next Todo', 'Next To Do'),
+            ('butClrTime', 'Clear Time', 'Clear Required Time'),
+            ('butClrProg', 'Clear Progress', 'Clear Progress')
+        )
+        for attr, text, tooltip in table:
+            button = getattr(ui, attr)
+            button.setText(text)
+            button.setToolTip(tooltip)
+            
+            
     #@+node:tbrown.20090119215428.12: *4* todo_c.reloadSettings
     def reloadSettings(self):
         c = self.c
@@ -1191,12 +1228,10 @@ class todoController:
         # pylint: disable=maybe-no-member
         created = self.getat(v,'created')
         if created and isinstance(created, datetime.datetime) and created.year >= 1900:
-            ### got_created = True
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
         else:
-            # .strftime doesn't work if not, has happened
-            ### got_created = False
+            # .strftime doesn't work here! This has has happened...
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
                 created = datetime.datetime.strptime(gdate, '%Y%m%d%H%M')
@@ -1210,6 +1245,7 @@ class todoController:
             else:
                 self.ui.UI.createdTxt.setText("")
 
+        # Update the label.
         h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
         ago = (datetime.date.today()-created.date()).days if created else 0
