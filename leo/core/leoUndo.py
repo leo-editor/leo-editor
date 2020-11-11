@@ -487,7 +487,7 @@ class Undoer:
         # Recalculate the menu labels.
         u.setUndoTypes()
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents (deprecated)
-    def afterChangeNodeContents(self, p, command, bunch, inHead=False):
+    def afterChangeNodeContents(self, p, command, bunch):
         """Create an undo node using d created by beforeChangeNode."""
         u = self
         c = self.c
@@ -499,7 +499,7 @@ class Undoer:
         bunch.undoType = command
         bunch.undoHelper = u.undoNodeContents
         bunch.redoHelper = u.redoNodeContents
-        bunch.inHead = inHead  # 2013/08/26
+        bunch.inHead = False  # 2013/08/26
         bunch.newBody = p.b
         bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
