@@ -876,7 +876,6 @@ class todoController:
             # use getImageImage because it's theme aware
             fn = g.os_path_join('cleo', fn)
             icon = QtGui.QIcon(g.app.gui.getImageImage(fn))
-            g.trace(icon, g.shortFileName(fn)) ###
             self.menuicons[pri] = icon
         return self.menuicons[pri]
     #@+node:tbrown.20090119215428.18: *4* todo_c.showHelp
