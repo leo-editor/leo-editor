@@ -202,26 +202,20 @@ def convertTabs(self, event=None):
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
     """Remove one tab's worth of indentation from all presently selected lines."""
-    c, undoType = self, 'Unindent'
-    w = c.frame.body.wrapper
-    sel_1, sel_2 = w.getSelectionRange()
-    ins = w.getInsertPoint()
+    c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
+    bunch = u.beforeChangeBody(p)
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
         s = g.computeLeadingWhitespace(width - abs(tab_width), tab_width) + line[i:]
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
     if changed:
-        # Leo 5.6: preserve insert point.
-        preserveSel = sel_1 == sel_2
-        if preserveSel:
-            ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
-            oldSel = ins, ins
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+        p.b = head + ''.join(result) + tail
+        u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
@@ -520,14 +514,15 @@ def indentBody(self, event=None):
     in effect determines amount of indentation. (not yet) A numeric argument
     specifies the column to indent to.
     """
-    c, undoType = self, 'Indent Region'
+    c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
+    bunch = u.beforeChangeBody(p)
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
     # New in Leo 6.3.
+    ### To do: fix #1729 ### This test is VERY BAD.
     if sel_1 == sel_2:
         c.editCommands.selfInsertCommand(event)
         return
-    ins = w.getInsertPoint()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     changed, result = False, []
@@ -537,13 +532,8 @@ def indentBody(self, event=None):
         if s != line: changed = True
         result.append(s)
     if changed:
-        # Leo 5.6: preserve insert point.
-        preserveSel = sel_1 == sel_2
-        if preserveSel:
-            ins += tab_width
-            oldSel = ins, ins
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+        p.b = head + ''.join(result) + tail
+        u.afterChangeBody(p, undoType, bunch)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
