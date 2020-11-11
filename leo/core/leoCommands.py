@@ -3744,8 +3744,7 @@ class Commands:
         c.treeFocusHelper()
             # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
-    def updateBodyPane(
-        self, head, middle, tail, undoType, oldSel, oldYview):
+    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
         """
         Handle changed text in the body pane.
         
