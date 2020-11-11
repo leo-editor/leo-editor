@@ -3750,8 +3750,8 @@ class Commands:
         Handle changed text in the body pane.
         
         New in Leo 6.4: This method is deprecated. New Leo commands and scripts
-        should call u.before/afterChangeBody instead of (eventually) calling
-        u.setUndoTypingParams.
+        should call u.before/afterChangeBody instead of calling this method,
+        which eventually calls u.setUndoTypingParams.
         """
         c, p = self, self.p
         body = c.frame.body
