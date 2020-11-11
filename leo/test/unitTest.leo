@@ -1107,13 +1107,10 @@ free_layout.py # needs to be early
 viewrendered.py
 
 # Recommended plugins:
-### contextmenu.py
-# leo_to_html.py
 mod_scripting.py
-# nav_qt.py
-# quicksearch.py
-# stickynotes.py
-# todo.py
+
+# Testing:
+todo.py  # #1691.
 </t>
 <t tx="ekr.20111124090010.3939">if g.app.gui.guiName() == 'browser':
     self.skipTest('browser gui')

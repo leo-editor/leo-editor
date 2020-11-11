@@ -64,13 +64,22 @@ todo_calendar_cols
 # pylint: disable=unnecessary-lambda
 
 #@+<< imports >>
-#@+node:tbrown.20090119215428.4: ** << imports >>
+#@+node:tbrown.20090119215428.4: ** << imports >> (todo.py)
 import leo.core.leoGlobals as g
 
 import os
 import re
 import datetime
 import time
+
+# #1591: Missing icons in the todo plugin.
+workaround = False
+from leo.core.leoQt import isQt5
+if isQt5:
+    from leo.core.leoQt import qt_version
+    qt_version = [int(z) for z in qt_version.split('.')]
+    if qt_version[1] > 12:
+        workaround = True
 
 NO_TIME = datetime.date(3000, 1, 1)
 
@@ -105,7 +114,7 @@ def popup_entry(c,p,menu):
 if g.app.gui.guiName() == "qt":
     class todoQtUI(QtWidgets.QWidget):
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor
+        #@+node:ekr.20111118104929.10204: *3* todo_ui.ctor
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
@@ -248,7 +257,7 @@ if g.app.gui.guiName() == "qt":
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
-        #@+node:ekr.20111118104929.10203: *3* make_func
+        #@+node:ekr.20111118104929.10203: *3* todo_ui.make_func
         def make_func(self, edit, toggle, method, default):
 
             def func(value, edit=edit, toggle=toggle,
@@ -268,7 +277,7 @@ if g.app.gui.guiName() == "qt":
 
             return func
 
-        #@+node:ekr.20111118104929.10205: *3* populateMenu
+        #@+node:ekr.20111118104929.10205: *3* todo_ui.populateMenu
         @staticmethod
         def populateMenu(menu,o):
             menu.addAction('Find next ToDo', o.find_todo)
@@ -291,12 +300,12 @@ if g.app.gui.guiName() == "qt":
             m.addAction('Delete Todo from node', o.clear_all)
             m.addAction('Delete Todo from subtree', lambda:o.clear_all(recurse=True))
             m.addAction('Delete Todo from all', lambda:o.clear_all(all=True))
-        #@+node:ekr.20111118104929.10207: *3* setProgress
+        #@+node:ekr.20111118104929.10207: *3* todo_ui.setProgress
         def setProgress(self, prgr):
             self.UI.spinProg.blockSignals(True)
             self.UI.spinProg.setValue(prgr)
             self.UI.spinProg.blockSignals(False)
-        #@+node:ekr.20111118104929.10208: *3* setTime
+        #@+node:ekr.20111118104929.10208: *3* todo_ui.setTime
         def setTime(self, timeReq):
             self.UI.spinTime.blockSignals(True)
             self.UI.spinTime.setValue(timeReq)
@@ -309,7 +318,34 @@ class todoController:
     '''A per-commander class that manages tasks.'''
 
     #@+others
-    #@+node:tbrown.20090119215428.10: *3* priority table
+    #@+node:ekr.20201110095937.1: *3* todo_c:   Decorators
+    #@+node:tbrown.20090119215428.13: *4* todo_c.redrawer
+    def redrawer(fn):
+        """decorator for methods which create the need for a redraw"""
+        # pylint: disable=no-self-argument
+        def todo_redrawer_callback(self, *args, **kargs):
+            self.redrawLevels += 1
+            try:
+                # pylint: disable=not-callable
+                ans = fn(self,*args, **kargs)
+            finally:
+                self.redrawLevels -= 1
+                if self.redrawLevels == 0:
+                    self.redraw()
+            return ans
+        return todo_redrawer_callback
+    #@+node:tbrown.20090119215428.14: *4* todo_c.projectChanger
+    def projectChanger(fn):
+        """decorator for methods which change projects"""
+        # pylint: disable=no-self-argument
+        def project_changer_callback(self, *args, **kargs):
+            # pylint: disable=not-callable
+            ans = fn(self,*args, **kargs)
+            self.update_project()
+            return ans
+        return project_changer_callback
+    #@+node:ekr.20201110100039.1: *3* todo_c:  Birth & death
+    #@+node:tbrown.20090119215428.10: *4* todo_c. priority table
     priorities = {
       1: {'long': 'Urgent',    'short': '1', 'icon': 'pri1.png'},
       2: {'long': 'Very High', 'short': '2', 'icon': 'pri2.png'},
@@ -335,7 +371,11 @@ class todoController:
     _date_fields = ['created', 'date', 'duedate', 'nextworkdate', 'prisetdate']
     _time_fields = ['duetime', 'nextworktime', 'time']
     _datetime_fields = _date_fields + _time_fields
-    #@+node:tbrown.20090119215428.11: *3* __init__ & helper (todoController)
+    #@+node:tbrown.20090522142657.7894: *4* todo_c.__del__
+    def __del__(self):
+        for i in self.handlers:
+            g.unregisterHandler(i[0], i[1])
+    #@+node:tbrown.20090119215428.11: *4* todo_c.__init__
     def __init__ (self,c):
         '''ctor for todoController class.'''
         self.c = c
@@ -363,134 +403,26 @@ class todoController:
         self.loadAllIcons()
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
-    #@+node:tbrown.20090119215428.12: *4* reloadSettings (todoController)
-    def reloadSettings(self):
-        c = self.c
-        c.registerReloadSettings(self)
-        self.time_name = c.config.getString('todo-time-name') or 'days'
-        self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
-        self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
-        self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
-    #@+node:tbrown.20090522142657.7894: *3* __del__
-    def __del__(self):
+    #@+node:tbrown.20090119215428.17: *4* todo_c.close
+    def close(self, tag, key):
+        "unregister handlers on closing commander"
+
+        if self.c != key['c']: return  # not our problem
+
         for i in self.handlers:
             g.unregisterHandler(i[0], i[1])
-    #@+node:tbnorth.20170925093004.1: *3* _date
-    def _date(self, d):
-        """_date - convert a string to a date
-
-        :param str d: date to convert
-        :return: datetime.date
-        """
-        if not d.strip():
-            return ''
-        return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
-
-    def _time(self, d):
-        """_time - convert a string to a time
-
-        :param str d: time to convert
-        :return: datetime.time
-        """
-        if not d.strip():
-            return ''
-        return datetime.datetime.strptime(d, "%H:%M:%S.%f").time()
-    #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
-    def addPopupMenu(self,c,p,menu):
-
-        def rnd(x):
-            return re.sub('.0$', '', '%.1f' % x)
-        taskmenu = menu.addMenu("Task")
-        submenu = taskmenu.addMenu("Status")
-        iconlist = [(menu, i) for i in self.recentIcons]
-        iconlist.extend([(submenu, i) for i in self.priorities])
-        for m,i in iconlist:
-            icon = self.menuicon(i)
-            a = m.addAction(icon, self.priorities[i]["long"])
-            a.setIconVisibleInMenu(True)
-            def icon_cb(checked, pri=i):
-                self.setPri(pri)
-            a.triggered.connect(icon_cb)
-        submenu = taskmenu.addMenu("Progress")
-        for i in range(11):
-            icon = self.menuicon(10*i, progress=True)
-            a = submenu.addAction(icon, "%d%%" % (i*10))
-            a.setIconVisibleInMenu(True)
-            def progress_cb(checked, prog=i):
-                self.set_progress(val=10*prog)
-            a.triggered.connect(progress_cb)
-        prog = self.getat(p.v, 'progress')
-        if isinstance(prog,int):
-            a = taskmenu.addAction("(%d%% complete)"%prog)
-            a.setIconVisibleInMenu(True)
-            a.enabled = False
-        time_ = self.getat(p.v, 'time_req')
-        if isinstance(time_,float):
-            if isinstance(prog,int):
-                f = prog/100.
-                a = taskmenu.addAction("(%s+%s=%s %s)"%(rnd(f*time_),
-                    rnd((1.-f)*time_),rnd(time_), self.time_name))
-            else:
-                a = taskmenu.addAction("(%s %s)"%(rnd(time_), self.time_name))
-            a.enabled = False
-        todoQtUI.populateMenu(taskmenu, self)
-    #@+node:tbrown.20090630144958.5320: *3* menuicon
-    def menuicon(self, pri, progress=False):
-        """return icon from cache, placing it there if needed"""
-
-        if progress:
-            prog = pri
-            pri = 'prog-%d'%pri
-
-        if pri not in self.menuicons:
-
-            if progress:
-                fn = 'prg%03d.png' % prog
-            else:
-                fn = self.priorities[pri]["icon"]
-
-            # use getImageImage because it's theme aware
-            fn = g.os_path_join('cleo', fn)
-            self.menuicons[pri] = QtGui.QIcon(g.app.gui.getImageImage(fn))
-
-        return self.menuicons[pri]
-    #@+node:tbrown.20090119215428.13: *3* redrawer
-    def redrawer(fn):
-        """decorator for methods which create the need for a redraw"""
-        # pylint: disable=no-self-argument
-        def todo_redrawer_callback(self, *args, **kargs):
-            self.redrawLevels += 1
-            try:
-                # pylint: disable=not-callable
-                ans = fn(self,*args, **kargs)
-            finally:
-                self.redrawLevels -= 1
-                if self.redrawLevels == 0:
-                    self.redraw()
-            return ans
-        return todo_redrawer_callback
-    #@+node:tbrown.20090119215428.14: *3* projectChanger
-    def projectChanger(fn):
-        """decorator for methods which change projects"""
-        # pylint: disable=no-self-argument
-        def project_changer_callback(self, *args, **kargs):
-            # pylint: disable=not-callable
-            ans = fn(self,*args, **kargs)
-            self.update_project()
-            return ans
-        return project_changer_callback
-    #@+node:tbrown.20090119215428.15: *3* loadAllIcons
+    #@+node:tbrown.20090119215428.15: *4* todo_c.loadAllIcons & helper
     @redrawer
     def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
-    #@+node:tbrown.20090119215428.16: *3* loadIcons
+    #@+node:tbrown.20090119215428.16: *5* todo_c.loadIcons
     @redrawer
-    def loadIcons(self, p,clear=False):
+    def loadIcons(self, p, clear=False):
 
-        com = self.c.editCommands
-        allIcons = com.getIconList(p)
+        ec = self.c.editCommands
+        allIcons = ec.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
         if self.icon_order == 'pri-first':
             iterations = ['priority', 'progress', 'duedate']
@@ -504,7 +436,7 @@ class todoController:
                 pri = self.getat(p.v, 'priority')
                 if pri: pri = int(pri)
                 if pri in self.priorities:
-                    com.appendImageDictToList(icons, g.os_path_join('cleo', self.priorities[pri]['icon']),
+                    ec.appendImageDictToList(icons, g.os_path_join('cleo', self.priorities[pri]['icon']),
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
@@ -515,7 +447,7 @@ class todoController:
                     prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
-                    com.appendImageDictToList(icons, g.os_path_join('cleo', use),
+                    ec.appendImageDictToList(icons, g.os_path_join('cleo', use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
             elif which == 'duedate':
                 duedate = self.getat(p.v, 'duedate')
@@ -528,26 +460,23 @@ class todoController:
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
-                    com.appendImageDictToList(icons, g.os_path_join('cleo', icon),
+                    ec.appendImageDictToList(icons, g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-
-        com.setIconList(p, icons, setDirty=False)
-    #@+node:tbrown.20090119215428.17: *3* close
-    def close(self, tag, key):
-        "unregister handlers on closing commander"
-
-        if self.c != key['c']: return  # not our problem
-
-        for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])
-    #@+node:tbrown.20090119215428.18: *3* showHelp
-    def showHelp(self):
-        g.es('Check the Plugins menu Todo entry')
-    #@+node:tbrown.20090119215428.19: *3* attributes...
-    #@+at
-    # annotate was the previous name of this plugin, which is why the default values
-    # for several keyword args is 'annotate'.
-    #@+node:tbrown.20090119215428.20: *4* delUD
+        
+        ### if icons: g.printObj(icons, tag=f"icons for {p.h}") ###
+        ec.setIconList(p, icons, setDirty=False)
+    #@+node:tbrown.20090119215428.12: *4* todo_c.reloadSettings
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.time_name = c.config.getString('todo-time-name') or 'days'
+        self.icon_location = c.config.getString('todo-icon-location') or 'beforeHeadline'
+        self.prog_location = c.config.getString('todo-prog-location') or 'beforeHeadline'
+        self.icon_order = c.config.getString('todo-icon-order') or 'pri-first'
+    #@+node:tbrown.20090119215428.19: *3* todo_c: Attributes...
+    # annotate was the previous name of this plugin, which is why the default
+    # values for several keyword args is 'annotate'.
+    #@+node:tbrown.20090119215428.20: *4* todo_c.delUD
     def delUD (self,node,udict="annotate"):
 
         ''' Remove our dict from the node'''
@@ -557,7 +486,7 @@ class todoController:
         ):
 
             del node.unknownAttributes[udict]
-    #@+node:tbrown.20090119215428.21: *4* hasUD
+    #@+node:tbrown.20090119215428.21: *4* todo_c.hasUD
     def hasUD (self,node,udict="annotate"):
 
         ''' Return True if the node has an UD.'''
@@ -567,7 +496,7 @@ class todoController:
             udict in node.unknownAttributes and
             isinstance(node.unknownAttributes.get(udict), dict)
         )
-    #@+node:tbrown.20090119215428.22: *4* getat
+    #@+node:tbrown.20090119215428.22: *4* todo_c.getat
     def getat(self, node, attrib):
         "new attribute getter"
         if (hasattr(node,'unknownAttributes') and
@@ -582,12 +511,12 @@ class todoController:
                 x = self._time(x)
             return x
         return 9999 if attrib == "priority" else ''
-    #@+node:tbrown.20090119215428.23: *4* testDefault
+    #@+node:tbrown.20090119215428.23: *4* todo_c.testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
         # pylint: disable=consider-using-ternary
         return attrib == "priority" and val == 9999 or val == ""
-    #@+node:tbrown.20090119215428.24: *4* setat
+    #@+node:tbrown.20090119215428.24: *4* todo_c.setat
     def setat(self, node, attrib, val):
         "new attribute setter"
 
@@ -651,7 +580,7 @@ class todoController:
 
         if isDefault:  # check if all default, if so drop dict.
             self.dropEmpty(node, dictOk = True)
-    #@+node:tbrown.20090119215428.25: *4* dropEmpty
+    #@+node:tbrown.20090119215428.25: *4* todo_c.dropEmpty
     def dropEmpty(self, node, dictOk = False):
 
         if (dictOk or
@@ -672,19 +601,19 @@ class todoController:
                 return True
 
         return False
-    #@+node:tbrown.20090119215428.26: *4* safe_del
+    #@+node:tbrown.20090119215428.26: *4* todo_c.safe_del
     def safe_del(self, d, k):
         "delete a key from a dict. if present"
         if k in d: del d[k]
-    #@+node:tbrown.20090119215428.27: *3* drawing...
-    #@+node:tbrown.20090119215428.28: *4* redraw
+    #@+node:tbrown.20090119215428.27: *3* todo_c: Drawing...
+    #@+node:tbrown.20090119215428.28: *4* todo_c.redraw
     def redraw(self):
 
         self.updateUI()
         if not g.app.initing:
             self.c.redraw()
                 # This is disabled (converted to redraw_later) during startup.
-    #@+node:tbrown.20090119215428.29: *4* clear_all
+    #@+node:tbrown.20090119215428.29: *4* todo_c.clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
 
@@ -700,236 +629,8 @@ class todoController:
             self.loadIcons(p)
             self.show_times(p)
 
-    #@+node:tbrown.20090119215428.30: *3* Progress/time/project...
-    #@+node:tbrown.20090119215428.31: *4* progress_clear
-    @redrawer
-    @projectChanger
-    def progress_clear(self,v=None):
-
-        self.setat(self.c.currentPosition().v, 'progress', '')
-    #@+node:tbrown.20090119215428.32: *4* set_progress
-    @redrawer
-    @projectChanger
-    def set_progress(self,p=None, val=None):
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-
-        if val is None: return
-
-        self.setat(v, 'progress', val)
-    #@+node:tbrown.20090119215428.33: *4* set_time_req
-    @redrawer
-    @projectChanger
-    def set_time_req(self,p=None, val=None):
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-        if val is None:
-            return
-        self.setat(v, 'time_req', val)
-        if self.getat(v, 'progress') == '':
-            self.setat(v, 'progress', 0)
-    #@+node:tbrown.20090119215428.34: *4* show_times
-    @redrawer
-    def show_times(self, p=None, show=False):
-
-        def rnd(x):
-            return re.sub('.0$', '', '%.1f' % x)
-
-        if p is None:
-            p = self.c.currentPosition()
-
-        for nd in p.self_and_subtree():
-            p.h = re.sub(' <[^>]*>$', '', nd.headString())
-            tr = self.getat(nd.v, 'time_req')
-            pr = self.getat(nd.v, 'progress')
-            try: pr = float(pr)
-            except Exception: pr = ''
-            if tr != '' or pr != '':
-                ans = ' <'
-                if tr != '':
-                    if pr == '' or pr == 0 or pr == 100:
-                        ans += rnd(tr) + ' ' + self.time_name
-                    else:
-                        ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
-                    if pr != '': ans += ', '
-                if pr != '':
-                    ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
-                ans += '>'
-
-                if show:
-                    nd.h = nd.h+ans
-                self.loadIcons(nd)  # update progress icon
-
-    #@+node:tbrown.20090119215428.35: *4* recalc_time
-    def recalc_time(self, p=None, clear=False):
-
-        if p is None:
-            p = self.c.currentPosition()
-
-        v = p.v
-        time_totl = None
-        time_done = None
-
-        # get values from children, if any
-        for cn in p.children():
-            ans = self.recalc_time(cn.copy(), clear)
-            if time_totl is None:
-                time_totl = ans[0]
-            else:
-                if ans[0] is not None: time_totl += ans[0]
-
-            if time_done is None:
-                time_done = ans[1]
-            else:
-                if ans[1] is not None: time_done += ans[1]
-
-        if time_totl is not None:  # some value returned
-
-            if clear:  # then we should just clear our values
-                self.setat(v, 'progress', '')
-                self.setat(v, 'time_req', '')
-                return (time_totl, time_done)
-
-            if time_done is not None:  # some work done
-                # can't round derived progress without getting bad results form show_times
-                if time_totl == 0:
-                    pr = 0.
-                else:
-                    pr = float(time_done) / float(time_totl) * 100.
-                self.setat(v, 'progress', pr)
-            else:
-                self.setat(v, 'progress', 0)
-            self.setat(v, 'time_req', time_totl)
-        else:  # no values from children, use own
-            tr = self.getat(v, 'time_req')
-            pr = self.getat(v, 'progress')
-            if tr != '':
-                time_totl = tr
-                if pr != '':
-                    time_done = float(pr) / 100. * tr
-                else:
-                    self.setat(v, 'progress', 0)
-
-        return (time_totl, time_done)
-    #@+node:tbrown.20090119215428.36: *4* clear_time_req
-    @redrawer
-    @projectChanger
-    def clear_time_req(self, p=None):
-
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-        self.setat(v, 'time_req', '')
-    #@+node:tbrown.20090119215428.37: *4* update_project
-    @redrawer
-    def update_project(self, p=None):
-        """Find highest parent with '@project' in headline and run recalc_time
-        and maybe show_times (if headline has '@project time')"""
-
-        if p is None:
-            p = self.c.currentPosition()
-        project = None
-
-        for nd in p.self_and_parents():
-            if nd.headString().find('@project') > -1:
-                project = nd.copy()
-
-        if project:
-            self.recalc_time(project)
-            if project.headString().find('@project time') > -1:
-                self.show_times(project, show=True)
-            else:
-                self.show_times(p, show=True)
-        else:
-            self.show_times(p, show=False)
-    #@+node:tbrown.20090119215428.38: *4* local_recalc
-    @redrawer
-    def local_recalc(self, p=None):
-        self.recalc_time(p)
-    #@+node:tbrown.20090119215428.39: *4* local_clear
-    @redrawer
-    def local_clear(self, p=None):
-        self.recalc_time(p, clear=True)
-    #@+node:tbrown.20110213091328.16233: *4* set_due_date
-    def set_due_date(self,p=None, val=None, mode='adjust', field='duedate'):
-        "mode: `adjust` for change in time, `check` for checkbox toggle"
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-
-        if field == 'duedate':
-            toggle = self.ui.UI.dueDateToggle
-        else:
-            toggle = self.ui.UI.nxtwkDateToggle
-
-        if mode == 'check':
-            if toggle.checkState() == QtConst.Unchecked:
-                self.setat(v, field, "")
-            else:
-                self.setat(v, field, val.toPyDate())
-        else:
-            toggle.setCheckState(QtConst.Checked)
-            self.setat(v, field, val.toPyDate())
-
-        self.updateUI()  # if change was made to date with offset selector
-        self.loadIcons(p)
-    #@+node:tbrown.20110213091328.16235: *4* set_due_time
-    def set_due_time(self,p=None, val=None, mode='adjust', field='duetime'):
-        "mode: `adjust` for change in time, `check` for checkbox toggle"
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-
-        if field == 'duetime':
-            toggle = self.ui.UI.dueTimeToggle
-        else:
-            toggle = self.ui.UI.nxtwkTimeToggle
-
-        if mode == 'check':
-            if toggle.checkState() == QtConst.Unchecked:
-                self.setat(v, field, "")
-            else:
-                self.setat(v, field, val.toPyTime())
-        else:
-            toggle.setCheckState(QtConst.Checked)
-            self.setat(v, field, val.toPyTime())
-        self.loadIcons(p)
-
-    #@+node:tbrown.20121204084515.60965: *4* set_date_offset
-    def set_date_offset(self, field='nextworkdate'):
-        """set_nxtwk_date_offset - update date by selected offset
-
-        offset sytax::
-
-            +5 five days after today
-            -5 five days before today
-            >5 move current date 5 days later
-            <5 move current date 5 days earlier
-
-        """
-
-        if field == 'nextworkdate':
-            offset = str(self.ui.UI.nxtwkDateOffset.currentText())
-        else:
-            offset = str(self.ui.UI.dueDateOffset.currentText())
-
-        mult = 1  # to handle '<' as a negative relative offset
-
-        date = QtCore.QDate.currentDate()
-
-        if '<' in offset or '>' in offset:
-            date = self.ui.UI.nxtwkDateEdit.date()
-
-        if offset.startswith('<'):
-            mult = -1
-
-        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field=field)
-        p = self.c.currentPosition()
-        self.loadIcons(p)
-    #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
-    #@+node:tbrown.20090119215428.41: *4* childrenTodo
+    #@+node:tbrown.20090119215428.40: *3* todo_c: Icons...
+    #@+node:tbrown.20090119215428.41: *4* todo_c.childrenTodo
     @redrawer
     def childrenTodo(self, p=None):
         if p is None:
@@ -938,7 +639,7 @@ class todoController:
             if self.getat(p.v, 'priority') != 9999: continue
             self.setat(p.v, 'priority', 19)
             self.loadIcons(p)
-    #@+node:tbrown.20130207095125.20463: *4* dueClear
+    #@+node:tbrown.20130207095125.20463: *4* todo_c.dueClear
     @redrawer
     def dueClear(self, p=None):
         """clear due date on descendants, useful for creating a master todo
@@ -947,20 +648,23 @@ class todoController:
             p = self.c.currentPosition()
         for p in p.subtree():
             self.setat(p.v, 'duedate', '')
-    #@+node:tbrown.20130207103126.28498: *4* needs_doing
-    def needs_doing(self, v=None, pri=None, due=None):
-        """needs_doing - Return true if the node is a todo node that needs doing
-
-        :Parameters:
-        - `v`: vnode
-        """
-
-        if v is not None:
-            pri = self.getat(v, 'priority')
-            due = self.getat(v, 'duedate')
-
-        return (pri in self.todo_priorities) or (due and pri == 9999)
-    #@+node:tbrown.20090119215428.42: *4* find_todo
+    #@+node:tbrown.20110213153425.16373: *4* todo_c.duekey
+    def duekey(self, v, field='due'):
+        """key function for sorting by due date/time"""
+        # pylint: disable=boolean-datetime
+        priority = self.getat(v, 'priority')
+        done = priority not in self.todo_priorities
+        date_ = self.getat(v, field+'date') or datetime.date(3000,1,1)
+        time_ = self.getat(v, field+'time') or datetime.time(23, 59, 59)
+        return done, date_, time_, priority
+    #@+node:tbrown.20110213153425.16377: *4* todo_c.dueSort
+    @redrawer
+    def dueSort(self, p=None, field='due'):
+        if p is None:
+            p = self.c.currentPosition()
+        self.c.selectPosition(p)
+        self.c.sortSiblings(key=lambda x: self.duekey(x, field=field))
+    #@+node:tbrown.20090119215428.42: *4* todo_c.find_todo
     @redrawer
     def find_todo(self, p=None, stage = 0):
         """Recursively find the next todo"""
@@ -992,7 +696,20 @@ class todoController:
         if stage == 0: g.es("None found")
 
         return False
-    #@+node:tbrown.20090119215428.43: *4* prikey
+    #@+node:tbrown.20130207103126.28498: *4* todo_c.needs_doing
+    def needs_doing(self, v=None, pri=None, due=None):
+        """needs_doing - Return true if the node is a todo node that needs doing
+
+        :Parameters:
+        - `v`: vnode
+        """
+
+        if v is not None:
+            pri = self.getat(v, 'priority')
+            due = self.getat(v, 'duedate')
+
+        return (pri in self.todo_priorities) or (due and pri == 9999)
+    #@+node:tbrown.20090119215428.43: *4* todo_c.prikey
     def prikey(self, v):
         """key function for sorting by priority"""
         # getat returns 9999 for nodes without priority, so you'll only get -1
@@ -1004,23 +721,7 @@ class todoController:
             pa = -1
 
         return pa if pa != 24 else 0
-    #@+node:tbrown.20110213153425.16373: *4* duekey
-    def duekey(self, v, field='due'):
-        """key function for sorting by due date/time"""
-        # pylint: disable=boolean-datetime
-        priority = self.getat(v, 'priority')
-        done = priority not in self.todo_priorities
-        date_ = self.getat(v, field+'date') or datetime.date(3000,1,1)
-        time_ = self.getat(v, field+'time') or datetime.time(23, 59, 59)
-        return done, date_, time_, priority
-    #@+node:tbrown.20110213153425.16377: *4* dueSort
-    @redrawer
-    def dueSort(self, p=None, field='due'):
-        if p is None:
-            p = self.c.currentPosition()
-        self.c.selectPosition(p)
-        self.c.sortSiblings(key=lambda x: self.duekey(x, field=field))
-    #@+node:tbrown.20090119215428.44: *4* priority_clear
+    #@+node:tbrown.20090119215428.44: *4* todo_c.priority_clear
     @redrawer
     def priority_clear(self,v=None):
 
@@ -1028,14 +729,14 @@ class todoController:
             v = self.c.currentPosition().v
         self.setat(v, 'priority', 9999)
         self.loadIcons(self.c.currentPosition())
-    #@+node:tbrown.20090119215428.45: *4* priSort
+    #@+node:tbrown.20090119215428.45: *4* todo_c.priSort
     @redrawer
     def priSort(self, p=None):
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
         self.c.sortSiblings(key=self.prikey)
-    #@+node:tbrown.20090119215428.46: *4* reclassify
+    #@+node:tbrown.20090119215428.46: *4* todo_c.reclassify
     @redrawer
     def reclassify(self, p=None):
         """change priority codes"""
@@ -1091,7 +792,7 @@ class todoController:
                 cnt += 1
         g.es('\n%d priorities reclassified, new distribution:' % cnt)
         self.showDist()
-    #@+node:tbrown.20090119215428.47: *4* setPri
+    #@+node:tbrown.20090119215428.47: *4* todo_c.setPri
     @redrawer
     def setPri(self,pri):
 
@@ -1104,7 +805,7 @@ class todoController:
         self.setat(p.v, 'priority', pri)
         self.setat(p.v, 'prisetdate', str(datetime.date.today()))
         self.loadIcons(p)
-    #@+node:tbrown.20090119215428.48: *4* showDist
+    #@+node:tbrown.20090119215428.48: *4* todo_c.showDist
     def showDist(self, p=None):
         """show distribution of priority levels in subtree"""
         if p is None:
@@ -1121,7 +822,316 @@ class todoController:
             if pri[0] in self.priorities:
                 g.es('%s\t%d\t%s\t(%s)' % (self.priorities[pri[0]]['short'], pri[1],
                     self.priorities[pri[0]]['long'],pri[0]))
-    #@+node:tbrown.20150605111428.1: *3* updateStyle
+    #@+node:ekr.20201110100115.1: *3* todo_c: Menus...
+    #@+node:tbrown.20090630144958.5319: *4* todo_c.addPopupMenu
+    def addPopupMenu(self,c,p,menu):
+
+        def rnd(x):
+            return re.sub('.0$', '', '%.1f' % x)
+        taskmenu = menu.addMenu("Task")
+        submenu = taskmenu.addMenu("Status")
+        iconlist = [(menu, i) for i in self.recentIcons]
+        iconlist.extend([(submenu, i) for i in self.priorities])
+        for m,i in iconlist:
+            icon = self.menuicon(i)
+            a = m.addAction(icon, self.priorities[i]["long"])
+            a.setIconVisibleInMenu(True)
+            def icon_cb(checked, pri=i):
+                self.setPri(pri)
+            a.triggered.connect(icon_cb)
+        submenu = taskmenu.addMenu("Progress")
+        for i in range(11):
+            icon = self.menuicon(10*i, progress=True)
+            a = submenu.addAction(icon, "%d%%" % (i*10))
+            a.setIconVisibleInMenu(True)
+            def progress_cb(checked, prog=i):
+                self.set_progress(val=10*prog)
+            a.triggered.connect(progress_cb)
+        prog = self.getat(p.v, 'progress')
+        if isinstance(prog,int):
+            a = taskmenu.addAction("(%d%% complete)"%prog)
+            a.setIconVisibleInMenu(True)
+            a.enabled = False
+        time_ = self.getat(p.v, 'time_req')
+        if isinstance(time_,float):
+            if isinstance(prog,int):
+                f = prog/100.
+                a = taskmenu.addAction("(%s+%s=%s %s)"%(rnd(f*time_),
+                    rnd((1.-f)*time_),rnd(time_), self.time_name))
+            else:
+                a = taskmenu.addAction("(%s %s)"%(rnd(time_), self.time_name))
+            a.enabled = False
+        todoQtUI.populateMenu(taskmenu, self)
+    #@+node:tbrown.20090630144958.5320: *4* todo_c.menuicon
+    def menuicon(self, pri, progress=False):
+        """return icon from cache, placing it there if needed"""
+        if progress:
+            prog = pri
+            pri = 'prog-%d'%pri
+        if pri not in self.menuicons:
+            if progress:
+                fn = 'prg%03d.png' % prog
+            else:
+                fn = self.priorities[pri]["icon"]
+            # use getImageImage because it's theme aware
+            fn = g.os_path_join('cleo', fn)
+            icon = QtGui.QIcon(g.app.gui.getImageImage(fn))
+            g.trace(icon, g.shortFileName(fn)) ###
+            self.menuicons[pri] = icon
+        return self.menuicons[pri]
+    #@+node:tbrown.20090119215428.18: *4* todo_c.showHelp
+    def showHelp(self):
+        g.es('Check the Plugins menu Todo entry')
+    #@+node:tbrown.20090119215428.30: *3* todo_c: Progress/time/project...
+    #@+node:tbnorth.20170925093004.1: *4* todo_c._date & _time
+    def _date(self, d):
+        """_date - convert a string to a date
+
+        :param str d: date to convert
+        :return: datetime.date
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
+
+    def _time(self, d):
+        """_time - convert a string to a time
+
+        :param str d: time to convert
+        :return: datetime.time
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d, "%H:%M:%S.%f").time()
+    #@+node:tbrown.20090119215428.36: *4* todo_c.clear_time_req
+    @redrawer
+    @projectChanger
+    def clear_time_req(self, p=None):
+
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+        self.setat(v, 'time_req', '')
+    #@+node:tbrown.20090119215428.39: *4* todo_c.local_clear
+    @redrawer
+    def local_clear(self, p=None):
+        self.recalc_time(p, clear=True)
+    #@+node:tbrown.20090119215428.38: *4* todo_c.local_recalc
+    @redrawer
+    def local_recalc(self, p=None):
+        self.recalc_time(p)
+    #@+node:tbrown.20090119215428.31: *4* todo_c.progress_clear
+    @redrawer
+    @projectChanger
+    def progress_clear(self,v=None):
+
+        self.setat(self.c.currentPosition().v, 'progress', '')
+    #@+node:tbrown.20090119215428.35: *4* todo_c.recalc_time
+    def recalc_time(self, p=None, clear=False):
+
+        if p is None:
+            p = self.c.currentPosition()
+
+        v = p.v
+        time_totl = None
+        time_done = None
+
+        # get values from children, if any
+        for cn in p.children():
+            ans = self.recalc_time(cn.copy(), clear)
+            if time_totl is None:
+                time_totl = ans[0]
+            else:
+                if ans[0] is not None: time_totl += ans[0]
+
+            if time_done is None:
+                time_done = ans[1]
+            else:
+                if ans[1] is not None: time_done += ans[1]
+
+        if time_totl is not None:  # some value returned
+
+            if clear:  # then we should just clear our values
+                self.setat(v, 'progress', '')
+                self.setat(v, 'time_req', '')
+                return (time_totl, time_done)
+
+            if time_done is not None:  # some work done
+                # can't round derived progress without getting bad results form show_times
+                if time_totl == 0:
+                    pr = 0.
+                else:
+                    pr = float(time_done) / float(time_totl) * 100.
+                self.setat(v, 'progress', pr)
+            else:
+                self.setat(v, 'progress', 0)
+            self.setat(v, 'time_req', time_totl)
+        else:  # no values from children, use own
+            tr = self.getat(v, 'time_req')
+            pr = self.getat(v, 'progress')
+            if tr != '':
+                time_totl = tr
+                if pr != '':
+                    time_done = float(pr) / 100. * tr
+                else:
+                    self.setat(v, 'progress', 0)
+
+        return (time_totl, time_done)
+    #@+node:tbrown.20121204084515.60965: *4* todo_c.set_date_offset
+    def set_date_offset(self, field='nextworkdate'):
+        """set_nxtwk_date_offset - update date by selected offset
+
+        offset sytax::
+
+            +5 five days after today
+            -5 five days before today
+            >5 move current date 5 days later
+            <5 move current date 5 days earlier
+
+        """
+
+        if field == 'nextworkdate':
+            offset = str(self.ui.UI.nxtwkDateOffset.currentText())
+        else:
+            offset = str(self.ui.UI.dueDateOffset.currentText())
+
+        mult = 1  # to handle '<' as a negative relative offset
+
+        date = QtCore.QDate.currentDate()
+
+        if '<' in offset or '>' in offset:
+            date = self.ui.UI.nxtwkDateEdit.date()
+
+        if offset.startswith('<'):
+            mult = -1
+
+        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field=field)
+        p = self.c.currentPosition()
+        self.loadIcons(p)
+    #@+node:tbrown.20110213091328.16233: *4* todo_c.set_due_date
+    def set_due_date(self,p=None, val=None, mode='adjust', field='duedate'):
+        "mode: `adjust` for change in time, `check` for checkbox toggle"
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+
+        if field == 'duedate':
+            toggle = self.ui.UI.dueDateToggle
+        else:
+            toggle = self.ui.UI.nxtwkDateToggle
+
+        if mode == 'check':
+            if toggle.checkState() == QtConst.Unchecked:
+                self.setat(v, field, "")
+            else:
+                self.setat(v, field, val.toPyDate())
+        else:
+            toggle.setCheckState(QtConst.Checked)
+            self.setat(v, field, val.toPyDate())
+
+        self.updateUI()  # if change was made to date with offset selector
+        self.loadIcons(p)
+    #@+node:tbrown.20110213091328.16235: *4* todo_c.set_due_time
+    def set_due_time(self,p=None, val=None, mode='adjust', field='duetime'):
+        "mode: `adjust` for change in time, `check` for checkbox toggle"
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+
+        if field == 'duetime':
+            toggle = self.ui.UI.dueTimeToggle
+        else:
+            toggle = self.ui.UI.nxtwkTimeToggle
+
+        if mode == 'check':
+            if toggle.checkState() == QtConst.Unchecked:
+                self.setat(v, field, "")
+            else:
+                self.setat(v, field, val.toPyTime())
+        else:
+            toggle.setCheckState(QtConst.Checked)
+            self.setat(v, field, val.toPyTime())
+        self.loadIcons(p)
+
+    #@+node:tbrown.20090119215428.32: *4* todo_c.set_progress
+    @redrawer
+    @projectChanger
+    def set_progress(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+
+        if val is None: return
+
+        self.setat(v, 'progress', val)
+    #@+node:tbrown.20090119215428.33: *4* todo_c.set_time_req
+    @redrawer
+    @projectChanger
+    def set_time_req(self,p=None, val=None):
+        if p is None:
+            p = self.c.currentPosition()
+        v = p.v
+        if val is None:
+            return
+        self.setat(v, 'time_req', val)
+        if self.getat(v, 'progress') == '':
+            self.setat(v, 'progress', 0)
+    #@+node:tbrown.20090119215428.34: *4* todo_c.show_times
+    @redrawer
+    def show_times(self, p=None, show=False):
+
+        def rnd(x):
+            return re.sub('.0$', '', '%.1f' % x)
+
+        if p is None:
+            p = self.c.currentPosition()
+
+        for nd in p.self_and_subtree():
+            p.h = re.sub(' <[^>]*>$', '', nd.headString())
+            tr = self.getat(nd.v, 'time_req')
+            pr = self.getat(nd.v, 'progress')
+            try: pr = float(pr)
+            except Exception: pr = ''
+            if tr != '' or pr != '':
+                ans = ' <'
+                if tr != '':
+                    if pr == '' or pr == 0 or pr == 100:
+                        ans += rnd(tr) + ' ' + self.time_name
+                    else:
+                        ans += '%s+%s=%s %s' % (rnd(pr/100.*tr), rnd((1-pr/100.)*tr), rnd(tr), self.time_name)
+                    if pr != '': ans += ', '
+                if pr != '':
+                    ans += rnd(pr) + '%'  # pr may be non-integer if set by recalc_time
+                ans += '>'
+
+                if show:
+                    nd.h = nd.h+ans
+                self.loadIcons(nd)  # update progress icon
+
+    #@+node:tbrown.20090119215428.37: *4* todo_c.update_project
+    @redrawer
+    def update_project(self, p=None):
+        """Find highest parent with '@project' in headline and run recalc_time
+        and maybe show_times (if headline has '@project time')"""
+
+        if p is None:
+            p = self.c.currentPosition()
+        project = None
+
+        for nd in p.self_and_parents():
+            if nd.headString().find('@project') > -1:
+                project = nd.copy()
+
+        if project:
+            self.recalc_time(project)
+            if project.headString().find('@project time') > -1:
+                self.show_times(project, show=True)
+            else:
+                self.show_times(p, show=True)
+        else:
+            self.show_times(p, show=False)
+    #@+node:ekr.20201110095903.1: *3* todo_c: Utils...
+    #@+node:tbrown.20150605111428.1: *4* todo_c.updateStyle
     def updateStyle(self,tag=None,k=None):
         """
         updateStyle - calling widget.setStyleSheet("/* */") is a trick to get Qt to
@@ -1148,7 +1158,7 @@ class todoController:
             if time.time() - old_time > 0.2:
                 w.setStyleSheet("/* */")
                 self._widget_to_style = None
-    #@+node:tbrown.20090119215428.49: *3* updateUI
+    #@+node:tbrown.20090119215428.49: *4* todo_c.updateUI
     def updateUI(self,tag=None,k=None):
 
         if k and k['c'] != self.c:
@@ -1181,14 +1191,13 @@ class todoController:
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
         # pylint: disable=maybe-no-member
         created = self.getat(v,'created')
-        if created and \
-           isinstance(created, datetime.datetime) and \
-           created.year >= 1900:  # .strftime doesn't work if not, has happened
-            got_created = True
+        if created and isinstance(created, datetime.datetime) and created.year >= 1900:
+            ### got_created = True
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
         else:
-            got_created = False
+            # .strftime doesn't work if not, has happened
+            ### got_created = False
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
                 created = datetime.datetime.strptime(gdate, '%Y%m%d%H%M')
@@ -1197,26 +1206,25 @@ class todoController:
             except Exception:
                 created = None
             if created:
-                self.ui.UI.createdTxt.setText(created.strftime("%d %b %y?"))
+                self.ui.UI.createdTxt.setText(created.strftime("Created %d %b %Y"))
                 self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
             else:
                 self.ui.UI.createdTxt.setText("")
 
+        h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
         ago = (datetime.date.today()-created.date()).days if created else 0
-        txt = "%s\nCreated%s %d days ago, due in %s" % (
-            self.c and self.c.p and self.c.p.h or '',
-            '' if got_created else '?',
-            ago,
-            (due - datetime.date.today()).days if due else 'N/A',
-        )
-
+        if due:
+            days = (due - datetime.date.today()).days
+            txt = f"{h}\nCreated {ago} days ago, due in {days}"
+        else:
+            txt = f"{h}\nCreated {ago} days ago"
         self.ui.UI.txtDetails.setText(txt)
         prisetdate = self.getat(v, 'prisetdate')
         self.ui.UI.txtDetails.setToolTip("Priority set %s" %
             (str(prisetdate).strip() or '?')
         )
-    #@+node:tbrown.20121129095833.39490: *3* unl_to_pos
+    #@+node:tbrown.20121129095833.39490: *4* todo_c.unl_to_pos
     def unl_to_pos(self, unl, for_p):
         """"unl may be an outline (like c) or an UNL (string)
 
