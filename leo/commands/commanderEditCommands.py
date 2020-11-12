@@ -218,10 +218,14 @@ def dedentBody(self, event=None):
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
+            ### ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
+            ### oldSel = ins, ins
+            line = result[0]
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            ins = len(head) + i
             oldSel = ins, ins
         result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) ###, preserveSel)
+        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
