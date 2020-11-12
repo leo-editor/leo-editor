@@ -2307,10 +2307,11 @@ class Commands:
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
-        Handle the character given by event *without*
-        executing any command that might be bound to it.
-        
-        What happens depends on which widget has focus.
+        Handle the character given by event, ignoring various special keys:
+        - getArg state: k.getArg.
+        - Tree: onCanvasKey or onHeadlineKey.
+        - Body: ec.selfInsertCommand
+        - Log: log_w.insert
         """
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)

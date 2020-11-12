@@ -528,17 +528,19 @@ def indentBody(self, event=None):
         if s != line:
             changed = True
         result.append(s)
-    if changed:
-        # Leo 5.6: preserve insert point.
-        preserveSel = sel_1 == sel_2
-        if preserveSel:
-            # Leo 6.4: Place tab at end of the lws.
-            line = result[0]
-            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-            ins = len(head) + i
-            oldSel = ins, ins
-        middle = ''.join(result)
-        c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
+    if not changed:
+        return
+    # Leo 5.6: preserve insert point.
+    preserveSel = sel_1 == sel_2
+    if preserveSel:
+        # Leo 6.4: Place tab at end of the lws.
+        line = result[0]
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        ins = len(head) + i
+        oldSel = ins, ins
+    ### g.trace('(indent-region) oldSel', oldSel)
+    middle = ''.join(result)
+    c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):

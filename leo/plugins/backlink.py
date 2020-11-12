@@ -645,7 +645,7 @@ class backlinkController:
         p = self.linkMark
         self.linkMark = self.c.p.copy()
         self.c.selectPosition(p)
-    #@+node:ekr.20090616105756.3967: *3* updateTab
+    #@+node:ekr.20090616105756.3967: *3* updateTab (backlink.py)
     def updateTab(self,tag,k):
         """called by leo select position hook"""
         if k['c'] != self.c: return  # not our problem
