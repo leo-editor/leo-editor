@@ -203,9 +203,11 @@ def convertTabs(self, event=None):
 def dedentBody(self, event=None):
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
-    bunch = u.beforeChangeBody(p)
+    w = c.frame.body.wrapper
+    sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    bunch = u.beforeChangeBody(p)
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
@@ -214,7 +216,7 @@ def dedentBody(self, event=None):
             changed = True
         result.append(s)
     if changed:
-        if 1: # Undo branch
+        if 0: # Undo branch
             p.b = head + ''.join(result) + tail
             u.afterChangeBody(p, undoType, bunch)
         else: # tabs branch
@@ -526,11 +528,11 @@ def indentBody(self, event=None):
     specifies the column to indent to.
     """
     c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
-    bunch = u.beforeChangeBody(p)
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    bunch = u.beforeChangeBody(p)
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
