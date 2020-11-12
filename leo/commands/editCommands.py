@@ -1483,7 +1483,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins += 1
         w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
-    #@+node:ekr.20150514063305.262: *4* ec.insertNewLine
+    #@+node:ekr.20150514063305.262: *4* ec.insertNewLine (insert-newline)
     @cmd('insert-newline')
     def insertNewLine(self, event):
         """Insert a newline at the cursor."""
@@ -1509,10 +1509,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.setInputState('insert')
         k.showStateAndMode()
         self.endCommand()
-    #@+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab
+    #@+node:ekr.20150514063305.263: *4* ec.insertNewLineAndTab (newline-and-indent)
     @cmd('newline-and-indent')
     def insertNewLineAndTab(self, event):
         """Insert a newline and tab at the cursor."""
+        trace = 'keys' in g.app.debug
         c, k = self.c, self.c.k
         p = c.p
         w = self.editWidget(event)
@@ -1523,6 +1524,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         name = c.widget_name(w)
         if name.startswith('head'):
             return
+        if trace: g.trace('(newline-and-indent)')
         self.beginCommand(w, undoType='insert-newline-and-indent')
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType=None)
@@ -1621,6 +1623,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         This is the default binding for all keys in the body pane.
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         """
+        trace = 'keys' in g.app.debug
         c, p = self.c, self.c.p
         w = self.editWidget(event)
         if not w:
@@ -1640,11 +1643,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.checkUnicode(ch) in brackets
         #@-<< set local vars >>
+        if trace: g.trace('ch', repr(ch)) # and ch in '\n\r\t'
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return
         if ch == '\t':
-            self.updateTab(p, w)
+            self.updateTab(p, w, smartTab=True)
         elif ch == '\b':
             # This is correct: we only come here if there no bindngs for this key.
             self.backwardDeleteCharacter(event)
@@ -1707,20 +1711,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             g.app.gui.insertKeyEvent(event, i)
         if inBrackets and self.flashMatchingBrackets:
             self.flashMatchingBracketsHelper(c, ch, i, p, w)
-    #@+node:ekr.20150514063305.270: *5* ec.doPlainTab
-    def doPlainTab(self, s, i, tab_width, w):
-        """Insert spaces equivalent to one tab."""
-        start, end = g.getLine(s, i)
-        s2 = s[start:i]
-        width = g.computeWidth(s2, tab_width)
-        if tab_width > 0:
-            w.insert(i, '\t')
-            ins = i + 1
-        else:
-            n = abs(tab_width) - (width % abs(tab_width))
-            w.insert(i, ' ' * n)
-            ins = i + n
-        w.setSelectionRange(ins, ins, insert=ins)
     #@+node:ekr.20180806045802.1: *5* ec.doSmartQuote
     def doSmartQuote(self, action, ch, oldSel, w):
         """Convert a straight quote to a curly quote, depending on context."""
@@ -1865,31 +1855,55 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(i + 1)
     #@+node:ekr.20150514063305.277: *5* ec.updateTab
     def updateTab(self, p, w, smartTab=True):
-        """Add spaces equivalent to a tab."""
+        """
+        A helper for selfInsertCommand.
+
+        Add spaces equivalent to a tab.
+        """
         c = self.c
         i, j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
         if i != j:
-            # w.delete(i,j)
             c.indentBody()
-        else:
-            tab_width = c.getTabWidth(p)
-            # Get the preceeding characters.
-            s = w.getAllText()
-            start, end = g.getLine(s, i)
-            after = s[i:end]
-            if after.endswith('\n'): after = after[:-1]
-            # Only do smart tab at the start of a blank line.
-            doSmartTab = (smartTab and c.smart_tab and i == start)
-                # Truly at the start of the line.
-                # and not after # Nothing *at all* after the cursor.
-            if doSmartTab:
-                self.updateAutoIndent(p, w)
-                # Add a tab if otherwise nothing would happen.
-                if s == w.getAllText():
-                    self.doPlainTab(s, i, tab_width, w)
-            else:
+            return
+        tab_width = c.getTabWidth(p)
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start, end = g.getLine(s, i)
+        after = s[i:end]
+        if after.endswith('\n'):
+            after = after[:-1]
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+        if doSmartTab:
+            self.updateAutoIndent(p, w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
                 self.doPlainTab(s, i, tab_width, w)
+        else:
+            self.doPlainTab(s, i, tab_width, w)
+    #@+node:ekr.20150514063305.270: *6* ec.doPlainTab
+    def doPlainTab(self, s, i, tab_width, w):
+        """
+        A helper for selfInsertCommand, called from updateTab.
+        
+        Insert spaces equivalent to one tab.
+        """
+        trace = 'keys' in g.app.debug
+        start, end = g.getLine(s, i)
+        s2 = s[start:i]
+        width = g.computeWidth(s2, tab_width)
+        if trace: g.trace('width', width)
+        if tab_width > 0:
+            w.insert(i, '\t')
+            ins = i + 1
+        else:
+            n = abs(tab_width) - (width % abs(tab_width))
+            w.insert(i, ' ' * n)
+            ins = i + n
+        w.setSelectionRange(ins, ins, insert=ins)
     #@+node:ekr.20150514063305.280: *3* ec: lines
     #@+node:ekr.20150514063305.281: *4* ec.flushLines (doesn't work)
     @cmd('flush-lines')

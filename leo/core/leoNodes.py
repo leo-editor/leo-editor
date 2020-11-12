@@ -1601,7 +1601,7 @@ class Position:
         **Warning: the p.b = whatever is *expensive* because it calls
         c.setBodyString().
 
-        Usually, code *should* this setter, despite its cost, because it
+        Usually, code *should* use this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
 
@@ -1609,7 +1609,8 @@ class Position:
         cff, replace-all and recursive import. In such situations, code should
         use p.v.b instead of p.b.
         """
-        p = self; c = p.v and p.v.context
+        p = self
+        c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
             # Warning: c.setBodyString is *expensive*.
@@ -1629,7 +1630,7 @@ class Position:
         **Warning: the p.h = whatever is *expensive* because it calls
         c.setHeadString().
 
-        Usually, code *should* this setter, despite its cost, because it
+        Usually, code *should* use this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
 
@@ -1637,7 +1638,8 @@ class Position:
         cff, replace-all and recursive import. In such situations, code should
         use p.v.h instead of p.h.
         """
-        p = self; c = p.v and p.v.context
+        p = self
+        c = p.v and p.v.context
         if c:
             c.setHeadString(p, val)
             # Warning: c.setHeadString is *expensive*.

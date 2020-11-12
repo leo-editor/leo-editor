@@ -214,8 +214,19 @@ def dedentBody(self, event=None):
             changed = True
         result.append(s)
     if changed:
-        p.b = head + ''.join(result) + tail
-        u.afterChangeBody(p, undoType, bunch)
+        if 1: # Undo branch
+            p.b = head + ''.join(result) + tail
+            u.afterChangeBody(p, undoType, bunch)
+        else: # tabs branch
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                line = result[0]
+                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                ins = len(head) + i
+                oldSel = ins, ins
+            result = ''.join(result)
+            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
@@ -518,22 +529,32 @@ def indentBody(self, event=None):
     bunch = u.beforeChangeBody(p)
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
-    # New in Leo 6.3.
-    ### To do: fix #1729 ### This test is VERY BAD.
-    if sel_1 == sel_2:
-        c.editCommands.selfInsertCommand(event)
-        return
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
         s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
-    if changed:
-        p.b = head + ''.join(result) + tail
-        u.afterChangeBody(p, undoType, bunch)
+        if 0:  # undo branch
+            if changed:
+                p.b = head + ''.join(result) + tail
+                u.afterChangeBody(p, undoType, bunch)
+        else: # tabs branch
+            if not changed:
+                return
+            # Leo 5.6: preserve insert point.
+            preserveSel = sel_1 == sel_2
+            if preserveSel:
+                # Leo 6.4: Place tab at end of the lws.
+                line = result[0]
+                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                ins = len(head) + i
+                oldSel = ins, ins
+            middle = ''.join(result)
+            c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
@@ -735,7 +756,7 @@ def rp_get_leading_ws(c, lines, tabWidth):
     if len(lines) == 1:
         leading_ws[1] = leading_ws[0]
     return indents, leading_ws
-#@+node:ekr.20171123135625.47: *3* def rp_reformat
+#@+node:ekr.20171123135625.47: *3* function: rp_reformat
 def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
     body = c.frame.body
@@ -912,7 +933,7 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
     if lines:
         result = ' '.join([z.strip() for z in lines]) + '\n'
         unreformat(c, head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.50: *3* def.unreformat
+#@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
     body = c.frame.body

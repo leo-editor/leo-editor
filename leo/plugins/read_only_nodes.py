@@ -281,7 +281,7 @@ def insert_read_only_node (c,p,name):
             title="Open",
             filetypes=[("All files", "*")],
         )
-        c.setHeadString(p,"@read-only %s" % name)
+        p.h = "@read-only %s" % name
         c.redraw()
     parse = urlparse(name)
     try:
@@ -295,9 +295,7 @@ def insert_read_only_node (c,p,name):
         new = f.read()
         f.close()
     except IOError: # as msg:
-        # g.es("error reading %s: %s" % (name, msg))
-        # g.es("...not found: " + name)
-        c.setBodyString(p,"") # Clear the body text.
+        p.b = "" # Clear the body text.
         return True # Mark the node as changed.
     else:
         ext = os.path.splitext(parse[2])[1]
@@ -307,7 +305,7 @@ def insert_read_only_node (c,p,name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
-            # pylint: disable=too-many-function-args
+            # py###lint: disable=too-many-function-args
             parser = HTMLParser(fmt)
 
             # send the HTML text to the parser
@@ -319,7 +317,7 @@ def insert_read_only_node (c,p,name):
             fh.close()
 
             # finally, get the list of hyperlinks and append to the end of the text
-            # pylint: disable=no-member
+            # py###lint: disable=no-member
             hyperlinks = parser.anchorlist
             numlinks = len(hyperlinks)
             if numlinks > 0:
@@ -329,7 +327,7 @@ def insert_read_only_node (c,p,name):
                 new = new + ''.join(hyperlist)
             #@-<< convert HTML to text >>
         previous = p.b
-        c.setBodyString(p,new)
+        p.b = new
         changed = (g.toUnicode(new) != g.toUnicode(previous))
         if changed and previous != "":
             g.es("changed: %s" % name) # A real change.

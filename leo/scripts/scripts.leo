@@ -429,6 +429,8 @@
 <v t="ekr.20201030065548.29"><vh>eggs</vh></v>
 </v>
 </v>
+<v t="ekr.20201110014825.1"><vh>script: add tags for issues</vh></v>
+<v t="ekr.20201110014834.1"><vh>script: remove all tags</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -5393,6 +5395,51 @@ Please note that all the given command line options must be used, even when inst
 -pip install --upgrade --no-deps --force-reinstall /home/me/stuff/my-project
 """
 </t>
+<t tx="ekr.20201110014825.1">"""Add tags for all matches of '# #[0-9]+'"""
+g.cls()
+import re
+d_all = {}
+d_added = {}
+tc = c.theTagController
+pat = re.compile(r'# #([0-9]+)')
+for p in c.all_unique_positions():
+    u = p.v.u
+    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
+    for m in pat.finditer(p.b):
+        tag = m.group(1)
+        aSet = d_all.get(tag, set())
+        aSet.add(p.h)
+        d_all [int(tag)] = aSet
+        # Add the tag. tc.add_tag is way too slow.
+        if tag not in tags:
+            tags.add(tag)
+            u[tc.TAG_LIST_KEY] = tags
+            aSet = d_added.get(tag, set())
+            aSet.add(p.h)
+            d_added [int(tag)] = aSet
+if 1: # Print all added tags.
+    print('Added tags...')
+    for key in sorted(d_added):
+        aList = d_added.get(key)
+        for h in sorted(aList):
+            print(f"{key:&gt;8} {h}")
+if 1: # Print all tags.
+    print('All tags...')
+    for key in sorted(d_all):
+        aList = d_all.get(key)
+        for h in sorted(aList):
+            print(f"{key:&gt;8} {h}")
+print('done')</t>
+<t tx="ekr.20201110014834.1">"""Remove all tags."""
+g.cls()
+tc = c.theTagController
+for p in c.all_unique_positions():
+    u = p.v.u
+    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
+    for tag in tags:
+        print(f"remove {tag:10} {p.h}")
+        tc.remove_tag(p, tag)
+print('done')</t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>

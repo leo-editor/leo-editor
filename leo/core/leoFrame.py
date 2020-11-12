@@ -610,8 +610,6 @@ class LeoBody:
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
-    # This is the only key handler for the body pane.
-
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         """
         Update Leo after the body has been changed.
@@ -629,10 +627,12 @@ class LeoBody:
         newText = w.getAllText()  # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
-            oldText = p.b; changed = True
+            oldText = p.b
+            changed = True
         else:
             changed = oldText != newText
-        if not changed: return
+        if not changed:
+            return
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
