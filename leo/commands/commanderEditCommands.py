@@ -519,6 +519,8 @@ def indentBody(self, event=None):
     c, undoType = self, 'Indent Region'
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
+    # The following test is totally evil.
+    # There *must* be a total separation between bindings and commands!
     # New in Leo 6.3.
     if sel_1 == sel_2:
         c.editCommands.selfInsertCommand(event)
