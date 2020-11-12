@@ -1343,7 +1343,7 @@ class LeoImportCommands:
         s = g.toUnicode(s, self.encoding)
         current = c.p
         if current and p.v == current.v:
-            c.frame.body.setSelectionAreas(s, None, None)
+            c.frame.body.setSelectionAreas(s)
             w = c.frame.body.wrapper
             i = w.getInsertPoint()
             w.setSelectionRange(i, i)

@@ -1287,7 +1287,7 @@ class Commands:
         # But setRecentFiles may change a _clone_ of the selected node!
         if current and p.v == current.v:
             # Revert to previous code, but force an empty selection.
-            c.frame.body.setSelectionAreas(s, None, None)
+            c.frame.body.setSelectionAreas(s)
             w = c.frame.body.wrapper
             i = w.getInsertPoint()
             w.setSelectionRange(i, i)

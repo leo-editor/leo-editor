@@ -662,7 +662,7 @@ class LeoBody:
             c.redraw_after_icons_changed()
         #@-<< update icons if necessary >>
     #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
-    def setSelectionAreas(self, before, sel, after):
+    def setSelectionAreas(self, head, middle='', tail=''):
         """
         Replace the body text by before + sel + after and
         set the selection so that the sel text is selected.
@@ -672,13 +672,10 @@ class LeoBody:
         # 2012/02/05: save/restore Yscroll position.
         pos = w.getYScrollPosition()
         s = w.getAllText()
-        before = before or ''
-        sel = sel or ''
-        after = after or ''
         w.delete(0, len(s))
-        w.insert(0, before + sel + after)
-        i = len(before)
-        j = max(i, len(before) + len(sel) - 1)
+        w.insert(0, head + middle + tail)
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(pos)
         return i, j

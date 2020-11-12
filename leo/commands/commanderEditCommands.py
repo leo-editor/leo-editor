@@ -203,7 +203,7 @@ def convertTabs(self, event=None):
 def dedentBody(self, event=None):
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
-    w = c.frame.body.wrapper
+    body, w = c.frame.body, c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -217,7 +217,9 @@ def dedentBody(self, event=None):
         result.append(s)
     if changed:
         if 0: # Undo branch
-            p.b = head + ''.join(result) + tail
+            middle = ''.join(result)
+            p.b = head + middle + tail
+            body.setSelectionAreas(head, middle, tail)
             u.afterChangeBody(p, undoType, bunch)
         else: # tabs branch
             # Leo 5.6: preserve insert point.
