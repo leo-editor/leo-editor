@@ -519,7 +519,6 @@ def indentBody(self, event=None):
     c, undoType = self, 'Indent Region'
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
-    ins = w.getInsertPoint()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     changed, result = False, []
@@ -533,17 +532,11 @@ def indentBody(self, event=None):
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            if 0: # old code
-                ins += tab_width
-                oldSel = ins, ins
-            else:
-                line = result[0]
-                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                ### lws = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-                ### g.trace(repr(lws))
-                g.trace(i, width)
-                ins = len(head) + i
-                oldSel = ins, ins
+            # Leo 6.4: Place tab at end of the lws.
+            line = result[0]
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            ins = len(head) + i
+            oldSel = ins, ins
         middle = ''.join(result)
         c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
