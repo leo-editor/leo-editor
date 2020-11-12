@@ -305,7 +305,6 @@ def insert_read_only_node (c,p,name):
             fh = StringIO()
             fmt = AbstractFormatter(DumbWriter(fh))
             # the parser stores parsed data into fh (file-like handle)
-            # py###lint: disable=too-many-function-args
             parser = HTMLParser(fmt)
 
             # send the HTML text to the parser
@@ -317,7 +316,6 @@ def insert_read_only_node (c,p,name):
             fh.close()
 
             # finally, get the list of hyperlinks and append to the end of the text
-            # py###lint: disable=no-member
             hyperlinks = parser.anchorlist
             numlinks = len(hyperlinks)
             if numlinks > 0:
