@@ -221,7 +221,7 @@ def dedentBody(self, event=None):
             ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
             oldSel = ins, ins
         result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) ###, preserveSel)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
@@ -519,12 +519,6 @@ def indentBody(self, event=None):
     c, undoType = self, 'Indent Region'
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
-    # The following test is totally evil.
-    # There *must* be a total separation between bindings and commands!
-    # New in Leo 6.3.
-    if sel_1 == sel_2:
-        c.editCommands.selfInsertCommand(event)
-        return
     ins = w.getInsertPoint()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -532,16 +526,26 @@ def indentBody(self, event=None):
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
         s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
     if changed:
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            ins += tab_width
-            oldSel = ins, ins
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+            if 0: # old code
+                ins += tab_width
+                oldSel = ins, ins
+            else:
+                line = result[0]
+                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+                ### lws = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
+                ### g.trace(repr(lws))
+                g.trace(i, width)
+                ins = len(head) + i
+                oldSel = ins, ins
+        middle = ''.join(result)
+        c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
