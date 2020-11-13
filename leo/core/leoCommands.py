@@ -991,7 +991,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self): ###, expandSelection=False):
+    def getBodyLines(self):
         """
         Return head,lines,tail where:
 
@@ -1006,19 +1006,13 @@ class Commands:
         body = c.frame.body
         w = body.wrapper
         oldVview = w.getYScrollPosition()
-        if False: ### expandSelection:
-            s = w.getAllText()
-            head = tail = ''
-            oldSel = 0, len(s)
-            lines = g.splitLines(s)  # Retain the newlines of each line.
-        else:
-            # Note: lines is the entire line containing the insert point if no selection.
-            head, s, tail = body.getSelectionLines()
-            lines = g.splitLines(s)  # Retain the newlines of each line.
-            # Expand the selection.
-            i = len(head)
-            j = max(i, len(head) + len(s) - 1)
-            oldSel = i, j
+        # Note: lines is the entire line containing the insert point if no selection.
+        head, s, tail = body.getSelectionLines()
+        lines = g.splitLines(s)  # Retain the newlines of each line.
+        # Expand the selection.
+        i = len(head)
+        j = max(i, len(head) + len(s) - 1)
+        oldSel = i, j
         return head, lines, tail, oldSel, oldVview  # string,list,string,tuple.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
     def getTabWidth(self, p):

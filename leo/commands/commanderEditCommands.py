@@ -221,7 +221,7 @@ def convertTabs(self, event=None):
     c = self
     w = self.frame.body.wrapper
     w.selectAllText()
-    head, lines, tail, oldSel, oldYview = self.getBodyLines() ###expandSelection=True)
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
