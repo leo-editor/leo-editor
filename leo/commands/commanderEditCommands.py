@@ -430,6 +430,7 @@ def extract(self, event=None):
        selected lines become the child's body text.
     """
     #@-<< docstring for extract command >>
+    g.trace()
     c, undoType = self, 'Extract'
     body, current, u, w = c.frame.body, c.p, c.undoer, c.frame.body.wrapper
     #
@@ -462,8 +463,7 @@ def extract(self, event=None):
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
     newSel = i, j
-    w.setSelectionRange(i, j, insert=j) ###
-    ### w.setYScrollPosition(oldYview)
+    w.setSelectionRange(i, j, insert=j)
     #
     # This handles the undo.
     body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
