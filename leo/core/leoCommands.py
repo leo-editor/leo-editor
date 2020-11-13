@@ -1280,12 +1280,9 @@ class Commands:
         # This worked because commands work on the presently selected node.
         # But setRecentFiles may change a _clone_ of the selected node!
         if current and p.v == current.v:
-            # Revert to previous code, but force an empty selection.
-            c.frame.body.setSelectionAreas(s)
             w = c.frame.body.wrapper
-            i = w.getInsertPoint()
-            w.setSelectionRange(i, i)
-            # This code destoys all tags, so we must recolor.
+            w.setAllText(s)
+            v.setSelection(0,0)
             c.recolor()
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
