@@ -529,8 +529,9 @@ def indentBody(self, event=None):
     in effect determines amount of indentation. (not yet) A numeric argument
     specifies the column to indent to.
     """
-    c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
-    w = c.frame.body.wrapper
+    c, p, u = self, self.p, self.undoer
+    body = c.frame.body
+    w = body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
@@ -544,9 +545,24 @@ def indentBody(self, event=None):
         result.append(s)
     if not changed:
         return
-    if 0:  # undo branch
-        p.b = head + ''.join(result) + tail
-        u.afterChangeBody(p, undoType, bunch)
+    if 1:  # undo branch
+        # First, Set p.b and w's text.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
+        # Calculate the proper selection range.
+        if sel_1 == sel_2:
+            line = result[0]
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            i = len(head) + i
+            ins = j = i
+        else:
+            i = len(head)
+            j = max(i, len(head) + len(middle) - 1)
+            ins = j
+        w.setSelectionRange(i, j, insert=ins)
+        w.setYScrollPosition(oldYview)
+        u.afterChangeBody(p, 'Unindent Region', bunch)
     else: # tabs branch
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
@@ -557,7 +573,7 @@ def indentBody(self, event=None):
             ins = len(head) + i
             oldSel = ins, ins
         middle = ''.join(result)
-        c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
+        c.updateBodyPane(head, middle, tail, 'Unindent Region', oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
