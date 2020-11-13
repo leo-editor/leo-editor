@@ -182,6 +182,7 @@ def convertBlanks(self, event=None):
     #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
+    oldYview = w.getYScrollPosition()
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     #
