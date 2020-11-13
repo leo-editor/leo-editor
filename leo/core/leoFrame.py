@@ -661,9 +661,11 @@ class LeoBody:
         if redraw_flag:
             c.redraw_after_icons_changed()
         #@-<< update icons if necessary >>
-    #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
+    #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas (no longer used, deprecated)
     def setSelectionAreas(self, head, middle='', tail=''):
         """
+        This method is deprecated and no longer used.
+        
         Replace the body text by before + middle + after.
 
         Select all the text, preserving the y scroll value.
