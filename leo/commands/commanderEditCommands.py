@@ -202,12 +202,15 @@ def convertTabs(self, event=None):
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
     """Remove one tab's worth of indentation from all presently selected lines."""
-    c, p, u, undoType = self, self.p, self.undoer, 'Unindent Region'
-    body, w = c.frame.body, c.frame.body.wrapper
+    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
+    # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     bunch = u.beforeChangeBody(p)
+    #
+    # Calculate the result.
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
@@ -215,22 +218,27 @@ def dedentBody(self, event=None):
         if s != line:
             changed = True
         result.append(s)
-    if changed:
-        if 0: # Undo branch
-            middle = ''.join(result)
-            p.b = head + middle + tail
-            body.setSelectionAreas(head, middle, tail)
-            u.afterChangeBody(p, undoType, bunch)
-        else: # tabs branch
-            # Leo 5.6: preserve insert point.
-            preserveSel = sel_1 == sel_2
-            if preserveSel:
-                line = result[0]
-                i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-                ins = len(head) + i
-                oldSel = ins, ins
-            result = ''.join(result)
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+    if not changed:
+        return
+    #
+    # Set p.b and w's text first.
+    middle = ''.join(result)
+    p.b = head + middle + tail  # Sets dirty and changed bits.
+    w.setAllText(head + middle + tail)
+    #
+    # Calculate the proper selection range (i, j, ins).
+    if sel_1 == sel_2:
+        line = result[0]
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        i = j = ins = len(head) + i
+    else:
+        i = len(head)
+        j = ins = max(i, len(head) + len(middle) - 1)
+    #
+    # Set the selection range and scroll position.
+    w.setSelectionRange(i, j, insert=ins)
+    w.setYScrollPosition(oldYview)
+    u.afterChangeBody(p, 'Unindent Region', bunch)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
@@ -565,7 +573,7 @@ def indentBody(self, event=None):
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=ins)
     w.setYScrollPosition(oldYview)
-    u.afterChangeBody(p, 'Unindent Region', bunch)
+    u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
