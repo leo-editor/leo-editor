@@ -1070,15 +1070,15 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
 #@+node:ekr.20171123135625.50: *3* function: unreformat
 def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
-    body = c.frame.body
-    w = body.wrapper
-    # This destroys recoloring.
-    junk, ins = body.setSelectionAreas(head, result, tail)
-    changed = original != head + result + tail
+    body, w = c.frame.body, c.frame.body.wrapper
+    s = head + result + tail
+    i = len(head)
+    j = ins = max(i, len(head) + len(result) - 1)
+    w.setAllText(s)  # Destroys coloring.
+    changed = original != s
     if changed:
         body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
     # Advance to the next paragraph.
-    s = w.getAllText()
     ins += 1  # Move past the selection.
     while ins < len(s):
         i, j = g.getLine(s, ins)
@@ -1088,8 +1088,7 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         else:
             ins = i
             break
-    # setSelectionAreas has destroyed the coloring.
-    c.recolor()
+    c.recolor()  # Required.
     w.setSelectionRange(ins, ins, insert=ins)
     # More useful than for reformat-paragraph.
     w.see(ins)
