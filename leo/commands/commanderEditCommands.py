@@ -406,6 +406,8 @@ def editHeadline(self, event=None):
 #@+node:ekr.20171123135625.23: ** c_ec.extract & helpers
 @g.commander_command('extract')
 def extract(self, event=None):
+    #@+<< docstring for extract command >>
+    #@+node:ekr.20201113130021.1: *3* << docstring for extract command >>
     r"""
     Create child node from the selected body text.
 
@@ -427,12 +429,15 @@ def extract(self, event=None):
     3. Otherwise, the first line becomes the child's headline, and all
        selected lines become the child's body text.
     """
-    c = self
-    current = c.p  # Unchanging.
-    body, u, w, undoType = c.frame.body, c.undoer, c.frame.body.wrapper, 'Extract'
+    #@-<< docstring for extract command >>
+    c, undoType = self, 'Extract'
+    body, current, u, w = c.frame.body, c.p, c.undoer, c.frame.body.wrapper
+    #
+    # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         return  # Nothing selected.
+    #
     # Remove leading whitespace.
     junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
@@ -440,28 +445,26 @@ def extract(self, event=None):
     ref_h = extractRef(c, h).strip()
     def_h = extractDef_find(c, lines)
     if ref_h:
-        # h,b,middle = ref_h,lines[1:],lines[0]
-        # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
-        h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]
+        h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]  # By vitalije.
     elif def_h:
         h, b, middle = def_h, lines, ''
     else:
         h, b, middle = lines[0].strip(), lines[1:], ''
+    #
+    # Start group.
     u.beforeChangeGroup(current, undoType)
     undoData = u.beforeInsertNode(current)
     p = createLastChildNode(c, current, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
     #
-    # Change the body pane.
-    #
-    # Update the text and notify the event handler.
-    body.setSelectionAreas(head, middle, tail)
-    #
-    # Set the selection.
+    # Update the text. and selection
+    w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
     newSel = i, j
-    w.setSelectionRange(i, j)
+    w.setSelectionRange(i, j, insert=j) ###
+    ### w.setYScrollPosition(oldYview)
+    #
     # This handles the undo.
     body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
     # Update the changed mark and icon.
