@@ -411,7 +411,7 @@ def extract(self, event=None):
     """
     c = self
     current = c.p  # Unchanging.
-    u, undoType = c.undoer, 'Extract'
+    body, u, w, undoType = c.frame.body, c.undoer, c.frame.body.wrapper, 'Extract'
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         return  # Nothing selected.
@@ -433,8 +433,42 @@ def extract(self, event=None):
     undoData = u.beforeInsertNode(current)
     p = createLastChildNode(c, current, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
-    c.updateBodyPane(head, middle, tail,
-        undoType=undoType, oldSel=None, oldYview=oldYview)
+    if 1:
+        ### c.updateBodyPane(head, middle, tail,undoType=undoType, oldSel=None, oldYview=oldYview)
+        """Handle changed text in the body pane."""
+        ### c, p = self, self.p
+        ### body = c.frame.body
+        # Update the text and notify the event handler.
+        body.setSelectionAreas(head, middle, tail)
+        ###
+            # Expand the selection.
+            # head = head or ''
+            # middle = middle or ''
+            # tail = tail or ''
+        # 
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
+        newSel = i, j
+        ### body.wrapper.setSelectionRange(i, j)
+        w.setSelectionRange(i, j)
+        # This handles the undo.
+        body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
+        # Update the changed mark and icon.
+        p.setDirty()
+        c.setChanged()
+        c.redraw_after_icons_changed()
+        # Scroll as necessary.
+        if oldYview:
+            ### body.wrapper.setYScrollPosition(oldYview)
+            w.setYScrollPosition(oldYview)
+        else:
+            ### body.wrapper.seeInsertPoint()
+            w.seeInsertPoint()
+        ### body.wrapper.setFocus()
+        w.setFocus()
+        c.recolor()
+    else:
+        c.updateBodyPane(head, middle, tail,undoType=undoType, oldSel=None, oldYview=oldYview)
     u.afterChangeGroup(current, undoType=undoType)
     p.parent().expand()
     c.redraw(p.parent())  # A bit more convenient than p.
@@ -849,16 +883,21 @@ def rp_get_leading_ws(c, lines, tabWidth):
 #@+node:ekr.20171123135625.47: *3* function: rp_reformat
 def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
-    body = c.frame.body
+    body, p, u = c.frame.body, c.p, c.undoer
+    assert p, u ###
     w = body.wrapper
     # This destroys recoloring.
     junk, ins = body.setSelectionAreas(head, result, tail)
     changed = original != head + result + tail
     if changed:
+        #
+        # "Before" snapshot.
+        ### bunch = u.beforeChangeBody(p)
         s = w.getAllText()
         # Fix an annoying glitch when there is no
         # newline following the reformatted paragraph.
-        if not tail and ins < len(s): ins += 1
+        if not tail and ins < len(s):
+            ins += 1
         # 2010/11/16: stay in the paragraph.
         body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
     else:

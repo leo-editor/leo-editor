@@ -2896,7 +2896,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # self.dump_handlers()
-    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body
+    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
     def update_body(self, ins, s):
         '''
         Update self.values and p.b and vnode ivars after the present line changes.
