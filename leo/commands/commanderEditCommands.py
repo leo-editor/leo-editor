@@ -895,26 +895,20 @@ def rp_get_leading_ws(c, lines, tabWidth):
 #@+node:ekr.20171123135625.47: *3* function: rp_reformat
 def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
-    body, p, u = c.frame.body, c.p, c.undoer
-    assert p, u ###
-    w = body.wrapper
-    # This destroys recoloring.
-    junk, ins = body.setSelectionAreas(head, result, tail)
+    body, w = c.frame.body, c.frame.body.wrapper
+    s = head + result + tail
+    i = len(head)
+    j = ins = max(i, len(head) + len(result) - 1)
+    w.setAllText(s)  # Destroys coloring.
     changed = original != head + result + tail
     if changed:
-        #
-        # "Before" snapshot.
-        ### bunch = u.beforeChangeBody(p)
-        s = w.getAllText()
-        # Fix an annoying glitch when there is no
-        # newline following the reformatted paragraph.
+        # Adjust when newline follows the reformatted paragraph.
         if not tail and ins < len(s):
             ins += 1
-        # 2010/11/16: stay in the paragraph.
+        # Stay in the paragraph.
         body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
     else:
         # Advance to the next paragraph.
-        s = w.getAllText()
         ins += 1  # Move past the selection.
         while ins < len(s):
             i, j = g.getLine(s, ins)
@@ -925,7 +919,6 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
             else:
                 ins = i
                 break
-        # setSelectionAreas has destroyed the coloring.
         c.recolor()
     w.setSelectionRange(ins, ins, insert=ins)
     # 2011/10/26: Calling see does more harm than good.
