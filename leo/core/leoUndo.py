@@ -432,7 +432,7 @@ class Undoer:
         This method saves all data saved by the deprecated
         u.setUndoTypingParams method.
         """
-        u, w = self, self.c.frame.body.wrapper
+        c, u, w = self.c, self, self.c.frame.body.wrapper
         if u.redoing or u.undoing:
             return
         # Set the type & helpers.
@@ -451,6 +451,11 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
+        # Do common state updates for the body pane.
+        c.recolor()
+        c.redraw_after_icons_changed()
+        w.setFocus()
+        
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
         """
