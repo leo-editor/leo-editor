@@ -218,29 +218,52 @@ def convertBlanks(self, event=None):
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""
-    c = self
-    w = self.frame.body.wrapper
+    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
+    # "Before" snapshot.
+    bunch = u.beforeChangeBody(p)
+    #
+    # Data...
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
-    changed = False
-    if tabWidth:
-        result = []
-        for line in lines:
-            i, w = g.skip_leading_ws_with_indent(line, 0, tabWidth)
-            s = g.computeLeadingWhitespace(w, -abs(tabWidth)) + line[i:]
-                # use negative width.
-            if s != line: changed = True
-            result.append(s)
-        if changed:
-            undoType = 'Convert Tabs'
-            result = ''.join(result)
-            oldSel = None
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
-                # Handles undo
-    return changed
+    if not tabWidth:
+        return False
+    changed,result = False, []
+    for line in lines:
+        i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
+        s = g.computeLeadingWhitespace(width, -abs(tabWidth)) + line[i:]
+            # use negative width.
+        if s != line: changed = True
+        result.append(s)
+    if not changed:
+        return False
+    #
+    # Set p.b and w's text first.
+    middle = ''.join(result)
+    p.b = head + middle + tail  # Sets dirty and changed bits.
+    w.setAllText(head + middle + tail)
+    #
+    # Calculate the proper selection range (i, j, ins).
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    #
+    # Set the selection range and scroll position.
+    w.setSelectionRange(i, j, insert=j)
+    w.setYScrollPosition(oldYview)
+    #
+    # "after" snapshot.
+    u.afterChangeBody(p, 'Add Comments', bunch)
+    return True
+    ###
+        # undoType = 'Convert Tabs'
+        # result = ''.join(result)
+        # oldSel = None
+        # c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+                # # Handles undo
+        # return True
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
