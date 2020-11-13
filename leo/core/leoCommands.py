@@ -3743,8 +3743,7 @@ class Commands:
         c.treeFocusHelper()
             # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
-    def updateBodyPane(
-        self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
+    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
         """Handle changed text in the body pane."""
         c, p = self, self.p
         body = c.frame.body
@@ -3754,13 +3753,10 @@ class Commands:
         head = head or ''
         middle = middle or ''
         tail = tail or ''
-        if preserveSel:
-            # Leo 5.6: just use the computed oldSel.
-            i, j = oldSel
-        else:
-            i = len(head)
-            j = max(i, len(head) + len(middle) - 1)
-            newSel = i, j
+        # 
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
+        newSel = i, j
         body.wrapper.setSelectionRange(i, j)
         # This handles the undo.
         body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
