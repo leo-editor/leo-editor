@@ -1570,21 +1570,30 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Select all lines if there is no existing selection.
         """
-        c = self.c
-        w = self.editWidget(event)
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
+        bunch = u.beforeChangeBody(p)
         expandSelection = not w.hasSelection()
-        head, lines, tail, oldSel, oldYview = c.getBodyLines(
-            expandSelection=expandSelection)
+        head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection)
         changed, result = False, []
         for line in lines:
             if line.strip():
                 result.append(line)
             else:
                 changed = True
-        result = ''.join(result)
-        if changed:
-            oldSel, undoType = None, 'remove-blank-lines'
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+        if not changed:
+            return
+        #
+        # Set p.b and w's text first.
+        middle = ''.join(result)
+        p.b = head + middle + tail  # Sets dirty and changed bits.
+        w.setAllText(head + middle + tail)
+        #
+        # Set the insert point and vertical scroll position.
+        i = len(head)
+        j = max(i, len(head) + len(middle) - 1)
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
+        c.undoer.afterChangeBody(p, 'remove-blank-lines', bunch)
     #@+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
     def replaceCurrentCharacter(self, event):
