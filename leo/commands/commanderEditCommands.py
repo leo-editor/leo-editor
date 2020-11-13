@@ -539,11 +539,13 @@ def indentBody(self, event=None):
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
+    # "Before" snapshot.
+    bunch = u.beforeChangeBody(p)
+    #
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    bunch = u.beforeChangeBody(p)
     #
     # Calculate the result.
     changed, result = False, []
@@ -573,6 +575,8 @@ def indentBody(self, event=None):
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=ins)
     w.setYScrollPosition(oldYview)
+    #
+    # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')

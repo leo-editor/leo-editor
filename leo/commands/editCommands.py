@@ -1571,9 +1571,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         Select all lines if there is no existing selection.
         """
         c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
+        #
+        # "Before" snapshot.
         bunch = u.beforeChangeBody(p)
+        #
+        # Initial data.
         expandSelection = not w.hasSelection()
         head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection)
+        #
+        # Calculate the result.
         changed, result = False, []
         for line in lines:
             if line.strip():
@@ -1593,6 +1599,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         j = max(i, len(head) + len(middle) - 1)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
+        #
+        # "after" snapshot.
         c.undoer.afterChangeBody(p, 'remove-blank-lines', bunch)
     #@+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
