@@ -451,42 +451,32 @@ def extract(self, event=None):
     undoData = u.beforeInsertNode(current)
     p = createLastChildNode(c, current, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
-    if 1:
-        ### c.updateBodyPane(head, middle, tail,undoType=undoType, oldSel=None, oldYview=oldYview)
-        """Handle changed text in the body pane."""
-        ### c, p = self, self.p
-        ### body = c.frame.body
-        # Update the text and notify the event handler.
-        body.setSelectionAreas(head, middle, tail)
-        ###
-            # Expand the selection.
-            # head = head or ''
-            # middle = middle or ''
-            # tail = tail or ''
-        # 
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-        newSel = i, j
-        ### body.wrapper.setSelectionRange(i, j)
-        w.setSelectionRange(i, j)
-        # This handles the undo.
-        body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
-        # Update the changed mark and icon.
-        p.setDirty()
-        c.setChanged()
-        c.redraw_after_icons_changed()
-        # Scroll as necessary.
-        if oldYview:
-            ### body.wrapper.setYScrollPosition(oldYview)
-            w.setYScrollPosition(oldYview)
-        else:
-            ### body.wrapper.seeInsertPoint()
-            w.seeInsertPoint()
-        ### body.wrapper.setFocus()
-        w.setFocus()
-        c.recolor()
+    #
+    # Change the body pane.
+    #
+    # Update the text and notify the event handler.
+    body.setSelectionAreas(head, middle, tail)
+    #
+    # Set the selection.
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    newSel = i, j
+    w.setSelectionRange(i, j)
+    # This handles the undo.
+    body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
+    # Update the changed mark and icon.
+    p.setDirty()
+    c.setChanged()
+    c.redraw_after_icons_changed()
+    # Scroll as necessary.
+    if oldYview:
+        w.setYScrollPosition(oldYview)
     else:
-        c.updateBodyPane(head, middle, tail,undoType=undoType, oldSel=None, oldYview=oldYview)
+        w.seeInsertPoint()
+    w.setFocus()
+    c.recolor()
+    #
+    # Add the changes to the group.
     u.afterChangeGroup(current, undoType=undoType)
     p.parent().expand()
     c.redraw(p.parent())  # A bit more convenient than p.
