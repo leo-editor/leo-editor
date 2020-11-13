@@ -618,49 +618,49 @@ class LeoBody:
         should call u.before/afterChangeBody instead of (eventually) calling
         u.setUndoTypingParams.
         """
-        c = self.c
-        body, w = self, self.wrapper
-        p = c.p
-        insert = w.getInsertPoint()
-        ch = '' if insert == 0 else w.get(insert - 1)
-        ch = g.checkUnicode(ch)
-        newText = w.getAllText()  # Note: getAllText converts to unicode.
-        newSel = w.getSelectionRange()
-        if not oldText:
+        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        #
+        # Init data.
+        newText = w.getAllText()  # getAllText converts to unicode.
+        if oldText:
+            p.v.b = oldText
+            changed = oldText != newText
+        else:
             oldText = p.b
             changed = True
-        else:
-            changed = oldText != newText
         if not changed:
             return
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        p.v.setBodyString(newText)
+        #
+        # "Before" snapshot.
+        bunch = u.beforeChangeBody(p)
+        #
+        # Careful. Don't redraw unless necessary.
+        p.v.b = newText  # p.b would cause a redraw.
         p.v.insertSpot = w.getInsertPoint()
-        #@+<< recolor the body >>
-        #@+node:ekr.20051026083733.6: *5* << recolor the body >>
+        if p.isDirty():
+            redraw_flag = False
+        else:
+            p.setDirty()
+            redraw_flag = True
+        #
+        # "after" snapshot.
+        u.afterChangeBody(p, undoType, bunch)
+        #
+        # Recolor the body.
         c.frame.scanForTabWidth(p)
         body.recolor(p)
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        #@-<< recolor the body >>
-        if not c.changed: c.setChanged()
+        if not c.changed:
+            c.setChanged()
+        # Update editors.
         self.updateEditors()
-        #@+<< update icons if necessary >>
-        #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
-        redraw_flag = False
-        # Update dirty bits.
-        if not p.isDirty():
-            p.setDirty()
-            redraw_flag = True
-        # Update icons. p.v.iconVal may not exist during unit tests.
+        # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-            redraw_flag = True
         if redraw_flag:
             c.redraw_after_icons_changed()
-        #@-<< update icons if necessary >>
     #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas (no longer used, deprecated)
     def setSelectionAreas(self, head, middle='', tail=''):
         """

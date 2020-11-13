@@ -1102,6 +1102,8 @@
 </v>
 <v t="ekr.20070306091949"><vh>@test zz end of leoEditCommands tests</vh></v>
 </v>
+<v t="ekr.20051109091731"></v>
+<v t="ekr.20061104172236.3"></v>
 </vnodes>
 <tnodes>
 <t tx="btheado.20190926182937.1">c.testManager.runEditCommandTest(p)
@@ -3930,7 +3932,7 @@ w = c.frame.body.wrapper
 
 for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
     w.setInsertPoint(5)
-    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
+    c.editCommands.capitalizeHelper(event=None,which=which,undoType='X')
     s = w.getAllText()
     word = s[2:12]
     assert word == result, 'Expected %s, got: %s' % (result,repr(word))
@@ -6396,14 +6398,16 @@ c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20130918043621.4196">line 1
 line 2
-line 3</t>
+line 3
+</t>
 <t tx="ekr.20130918043621.4197">line 1
 line 2
 line 3
 </t>
 <t tx="ekr.20130918043621.4198">line 1
 line 2
-line 3</t>
+line 3
+</t>
 <t tx="ekr.20130918043621.4199">c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20130918043621.4200">line 1
@@ -6473,14 +6477,16 @@ c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20130918051958.4177">line 1
 line 2
-line 3</t>
+line 3
+</t>
 <t tx="ekr.20130918051958.4178">line 1
 line 2
 line 3
 </t>
 <t tx="ekr.20130918051958.4179">line 1
 line 2
-line 3</t>
+line 3
+</t>
 <t tx="ekr.20130918052416.4180">c.testManager.runEditCommandTest(p)
 </t>
 <t tx="ekr.20130918052416.4181">line 1
