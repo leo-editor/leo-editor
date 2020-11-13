@@ -1576,8 +1576,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         bunch = u.beforeChangeBody(p)
         #
         # Initial data.
-        expandSelection = not w.hasSelection()
-        head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection)
+        ### expandSelection = not w.hasSelection()
+        ### w.selectAllText()
+        ### head, lines, tail, oldSel, oldYview = c.getBodyLines() ### expandSelection)
+        oldYview = w.getYScrollPosition()
+        lines = g.splitLines(p.b)
         #
         # Calculate the result.
         changed, result = False, []
@@ -1590,13 +1593,19 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         #
         # Set p.b and w's text first.
-        middle = ''.join(result)
-        p.b = head + middle + tail  # Sets dirty and changed bits.
-        w.setAllText(head + middle + tail)
+        result = ''.join(result)
+        p.b = result
+        w.setAllText(result)
+        ###
+            # middle = ''.join(result)
+            # p.b = head + middle + tail  # Sets dirty and changed bits.
+            # w.setAllText(head + middle + tail)
         #
         # Set the insert point and vertical scroll position.
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
+        ###
+            # i = len(head)
+            # j = max(i, len(head) + len(middle) - 1)
+        i, j = 0, max(0, len(result) - 1)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(oldYview)
         #

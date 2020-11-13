@@ -991,7 +991,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self, expandSelection=False):
+    def getBodyLines(self): ###, expandSelection=False):
         """
         Return head,lines,tail where:
 
@@ -1006,7 +1006,7 @@ class Commands:
         body = c.frame.body
         w = body.wrapper
         oldVview = w.getYScrollPosition()
-        if expandSelection:
+        if False: ### expandSelection:
             s = w.getAllText()
             head = tail = ''
             oldSel = 0, len(s)

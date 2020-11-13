@@ -174,9 +174,17 @@ def convertAllTabs(self, event=None):
 #@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
-    """Convert all blanks to tabs in the selected node."""
-    c = self
-    head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=True)
+    """
+    Convert *all* blanks to tabs in the selected node.
+    Return True if the the p.b was changed.
+    """
+    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
+    # "Before" snapshot.
+    bunch = u.beforeChangeBody(p)
+    w.selectAllText()
+    head, lines, tail, oldSel, oldYview = c.getBodyLines()
+    #
     # Use the relative @tabwidth, not the global one.
     d = c.scanAllDirectives()
     tabWidth = d.get("tabwidth")
@@ -192,19 +200,31 @@ def convertBlanks(self, event=None):
         result.append(s)
     if not changed:
         return False
+    #
+    # Set p.b and w's text first.
     middle = ''.join(result)
-    oldSel = None
-    c.updateBodyPane(head, middle, tail, 'Convert Blanks', oldSel, oldYview)  # Handles undo
+    p.b = head + middle + tail  # Sets dirty and changed bits.
+    w.setAllText(head + middle + tail)
+    #
+    # Select all text and set scroll position.
+    w.selectAllText()
+    w.setYScrollPosition(oldYview)
+    #
+    # "after" snapshot.
+    u.afterChangeBody(p, 'Indent Region', bunch)
     return True
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     """Convert all tabs to blanks in the selected node."""
-    c = self; changed = False
-    head, lines, tail, oldSel, oldYview = self.getBodyLines(expandSelection=True)
+    c = self
+    w = self.frame.body.wrapper
+    w.selectAllText()
+    head, lines, tail, oldSel, oldYview = self.getBodyLines() ###expandSelection=True)
     # Use the relative @tabwidth, not the global one.
     theDict = c.scanAllDirectives()
     tabWidth = theDict.get("tabwidth")
+    changed = False
     if tabWidth:
         result = []
         for line in lines:
