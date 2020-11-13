@@ -300,10 +300,13 @@ def deleteComments(self, event=None):
     *See also*: add-comments.
     """
     #@-<< deleteComments docstring >>
-    c = self
-    p = c.p
+    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
+    # "Before" snapshot.
+    bunch = u.beforeChangeBody(p)
+    #
+    # Initial data.
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    result = []
     if not lines:
         g.warning('no text selected')
         return
@@ -312,6 +315,9 @@ def deleteComments(self, event=None):
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
     d1, d2, d3 = g.set_delims_from_language(language)
+    #
+    # Calculate the result.
+    changed, result = False, []
     if d1:
         # Remove the single-line comment delim in front of each line
         d1b = d1 + ' '
@@ -320,8 +326,10 @@ def deleteComments(self, event=None):
             i = g.skip_ws(s, 0)
             if g.match(s, i, d1b):
                 result.append(s[:i] + s[i + n1b :])
+                changed = True
             elif g.match(s, i, d1):
                 result.append(s[:i] + s[i + n1 :])
+                changed = True
             else:
                 result.append(s)
     else:
@@ -332,15 +340,31 @@ def deleteComments(self, event=None):
             j = s.find(d3, i + n2)
             if g.match(s, i, d2) and j > -1:
                 first = i + n2
-                if g.match(s, first, ' '): first += 1
+                if g.match(s, first, ' '):
+                    first += 1
                 last = j
-                if g.match(s, last - 1, ' '): last -= 1
+                if g.match(s, last - 1, ' '):
+                    last -= 1
                 result.append(s[:i] + s[first:last] + s[j + n3 :])
+                changed = True
             else:
                 result.append(s)
-    result = ''.join(result)
-    c.updateBodyPane(
-        head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
+    if not changed:
+        return
+    #
+    # Set p.b and w's text first.
+    middle = ''.join(result)
+    p.b = head + middle + tail  # Sets dirty and changed bits.
+    w.setAllText(head + middle + tail)
+    #
+    # Set the selection range and scroll position.
+    i = len(head)
+    j = ins = max(i, len(head) + len(middle) - 1)
+    w.setSelectionRange(i, j, insert=ins)
+    w.setYScrollPosition(oldYview)
+    #
+    # "after" snapshot.
+    u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
 def editHeadline(self, event=None):
