@@ -175,25 +175,27 @@ def convertAllTabs(self, event=None):
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
     """Convert all blanks to tabs in the selected node."""
-    c = self; changed = False
+    c = self
     head, lines, tail, oldSel, oldYview = c.getBodyLines(expandSelection=True)
     # Use the relative @tabwidth, not the global one.
-    theDict = c.scanAllDirectives()
-    tabWidth = theDict.get("tabwidth")
-    if tabWidth:
-        result = []
-        for line in lines:
-            s = g.optimizeLeadingWhitespace(line, abs(tabWidth))
-                # Use positive width.
-            if s != line: changed = True
-            result.append(s)
-        if changed:
-            undoType = 'Convert Blanks'
-            result = ''.join(result)
-            oldSel = None
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
-                # Handles undo
-    return changed
+    d = c.scanAllDirectives()
+    tabWidth = d.get("tabwidth")
+    if not tabWidth:
+        return False
+    #
+    # Calculate the result.
+    changed, result = False, []
+    for line in lines:
+        s = g.optimizeLeadingWhitespace(line, abs(tabWidth))  # Use positive width.
+        if s != line:
+            changed = True
+        result.append(s)
+    if not changed:
+        return False
+    middle = ''.join(result)
+    oldSel = None
+    c.updateBodyPane(head, middle, tail, 'Convert Blanks', oldSel, oldYview)  # Handles undo
+    return True
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
