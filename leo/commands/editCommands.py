@@ -1562,7 +1562,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins += tab_width
         w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
-    #@+node:ekr.20150514063305.266: *4* ec.removeBlankLines
+    #@+node:ekr.20150514063305.266: *4* ec.removeBlankLines (remove-blank-lines)
     @cmd('remove-blank-lines')
     def removeBlankLines(self, event):
         """
