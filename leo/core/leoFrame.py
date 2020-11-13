@@ -664,18 +664,16 @@ class LeoBody:
     #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
     def setSelectionAreas(self, head, middle='', tail=''):
         """
-        Replace the body text by before + sel + after and
-        set the selection so that the sel text is selected.
+        Replace the body text by before + middle + after.
+
+        Select all the text, preserving the y scroll value.
         """
-        body = self
-        w = body.wrapper
-        # 2012/02/05: save/restore Yscroll position.
+        w = self.wrapper
+        # Save/restore Yscroll position.
         pos = w.getYScrollPosition()
-        s = w.getAllText()
-        w.delete(0, len(s))
-        w.insert(0, head + middle + tail)
         i = len(head)
         j = max(i, len(head) + len(middle) - 1)
+        w.setAllText(head + middle + tail)
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(pos)
         return i, j

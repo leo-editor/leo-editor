@@ -3736,7 +3736,7 @@ class Commands:
             c.redraw_after_select(p)
         c.treeFocusHelper()
             # This is essential.
-    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
+    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (no longer used, deprecated)
     def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
         """
         Handle changed text in the body pane.
