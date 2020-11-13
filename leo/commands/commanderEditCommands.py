@@ -231,6 +231,8 @@ def convertTabs(self, event=None):
     tabWidth = theDict.get("tabwidth")
     if not tabWidth:
         return False
+    #
+    # Calculate the result.
     changed,result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tabWidth)
@@ -257,13 +259,6 @@ def convertTabs(self, event=None):
     # "after" snapshot.
     u.afterChangeBody(p, 'Add Comments', bunch)
     return True
-    ###
-        # undoType = 'Convert Tabs'
-        # result = ''.join(result)
-        # oldSel = None
-        # c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
-                # # Handles undo
-        # return True
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
