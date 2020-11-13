@@ -3743,14 +3743,9 @@ class Commands:
         c.treeFocusHelper()
             # This is essential.
     #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
-    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False): ###
-        """
-        Handle changed text in the body pane.
-        
-        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
-        should call u.before/afterChangeBody instead of calling this method,
-        which eventually calls u.setUndoTypingParams.
-        """
+    def updateBodyPane(
+        self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
+        """Handle changed text in the body pane."""
         c, p = self, self.p
         body = c.frame.body
         # Update the text and notify the event handler.
@@ -3759,11 +3754,16 @@ class Commands:
         head = head or ''
         middle = middle or ''
         tail = tail or ''
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
+        if preserveSel:
+            # Leo 5.6: just use the computed oldSel.
+            i, j = oldSel
+        else:
+            i = len(head)
+            j = max(i, len(head) + len(middle) - 1)
+            newSel = i, j
         body.wrapper.setSelectionRange(i, j)
         # This handles the undo.
-        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+        body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
         # Update the changed mark and icon.
         p.setDirty()
         c.setChanged()
