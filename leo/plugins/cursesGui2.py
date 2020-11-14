@@ -3252,14 +3252,19 @@ class LeoMiniBuffer(npyscreen.Textfield):
             g.app.gui.repeatComplexCommand(c)
         else:
             # All other alt-x command
-            k.masterCommand(
-                commandName=commandName,
-                event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                func=None,
-                stroke=None,
-            )
+            event=KeyEvent(c,char='',event='',shortcut='',w=None)
+            c.doCommandByName(commandName, event)
+            ###
+                # g.trace(k)
+                # k.masterCommand(
+                    # commandName=commandName,
+                    # event=KeyEvent(c,char='',event='',shortcut='',w=None),
+                    # func=None,
+                    # stroke=None,
+                # )
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
+            c.redraw()
         # Do a full redraw, with c.p as the first visible node.
         # g.trace('----- after command')
         g.app.gui.redraw_in_context(c)
