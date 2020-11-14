@@ -2623,10 +2623,12 @@ class Commands:
         """
         # c = self
         try:
-            with open(fn, 'r') as f:
+            with open(fn, 'rb') as f:  # 2020/11/14: Allow unicode characters!
                 s = f.read()
+                s = g.toUnicode(s)
             return s.find('@+leo-ver=') > -1
         except Exception:
+            g.es_exception()
             return False
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event=None):
