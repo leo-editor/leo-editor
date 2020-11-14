@@ -6059,8 +6059,8 @@ def u(s):
     """
     Return s, converted to unicode from Qt widgets.
     
-    leoQt.py uses is as a stand-in for QString, but all other calls to
-    g.u can and should be removed.
+    leoQt.py uses this as a stand-in for QString, but all other calls
+    to g.u can and should be removed.
     
     Neither Leo's core nor any of Leo's official plugins call this
     method directly.
