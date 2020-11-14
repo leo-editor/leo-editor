@@ -1638,8 +1638,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         """
         trace = 'keys' in g.app.debug
-        c, p = self.c, self.c.p
-        w = self.editWidget(event)
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
+        undoType = 'Typing'
         if not w:
             return
         #@+<< set local vars >>
@@ -1653,7 +1653,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         name = c.widget_name(w)
         oldSel = w.getSelectionRange() if name.startswith('body') else (None, None)
         oldText = p.b if name.startswith('body') else ''
-        undoType = 'Typing'
+        oldYview = w.getYScrollPosition()
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.checkUnicode(ch) in brackets
         #@-<< set local vars >>
@@ -1683,12 +1683,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
         c.editCommands.setMoveCol(w, spot)
+        #
         # Update the text and handle undo.
         newText = w.getAllText()
-        changed = newText != oldText
-        if changed:
-            c.frame.body.onBodyChanged(undoType=undoType,
-                oldSel=oldSel, oldText=oldText, oldYview=None)
+        if newText != oldText:
+            # Call setUndoTypingParams to honor the user's undo granularity.
+            newSel = w.getSelectionRange()
+            u.setUndoTypingParams(p, undoType,
+                oldText=oldText, newText=newText,
+                oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):

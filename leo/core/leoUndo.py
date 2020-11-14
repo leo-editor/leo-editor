@@ -911,23 +911,21 @@ class Undoer:
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
-    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams (deprecated) & helper
+    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams & helper
     def setUndoTypingParams(self, p, undo_type, oldText, newText,
         oldSel=None, newSel=None, oldYview=None,
     ):
         """
-        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
-        should call u.before/afterChangeBody instead of (eventually) calling
-        u.setUndoTypingParams.
-        
-        This method is really an event handler for Qt onTextChanged events.
-        Only QTextMixin.onTextChanged should call this method.
-
         Save enough information to undo or redo a typing operation efficiently,
         that is, with the proper granularity.
-
+        
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
+        
+        Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
+        
+        **All other uses of this methods are deprecated.** New Leo commands and
+        scripts should call u.before/afterChangeBody.
         """
         c, u = self.c, self
         #@+<< return if there is nothing to do >>
