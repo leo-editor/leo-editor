@@ -195,32 +195,6 @@ class Undoer:
             u.beads[u.bead:] = [bunch]
             # Recalculate the menu labels.
             u.setUndoTypes()
-    #@+node:ekr.20050126081529: *4* u.recognizeStartOfTypingWord
-    def recognizeStartOfTypingWord(self,
-        old_lines, old_row, old_col, old_ch,
-        new_lines, new_row, new_col, new_ch,
-        prev_row, prev_col
-    ):
-        """
-        A potentially user-modifiable method that should return True if the
-        typing indicated by the params starts a new 'word' for the purposes of
-        undo with 'word' granularity.
-
-        u.setUndoTypingParams calls this method only when the typing could possibly
-        continue a previous word. In other words, undo will work safely regardless
-        of the value returned here.
-
-        old_ch is the char at the given (Tk) row, col of old_lines.
-        new_ch is the char at the given (Tk) row, col of new_lines.
-
-        The present code uses only old_ch and new_ch. The other arguments are given
-        for use by more sophisticated algorithms.
-        """
-        # Start a word if new_ch begins whitespace + word
-        new_word_started = not old_ch.isspace() and new_ch.isspace()
-        # Start a word if the cursor has been moved since the last change
-        moved_cursor = new_row != prev_row or new_col != prev_col + 1
-        return new_word_started or moved_cursor
     #@+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name):
         if name == "Can't Redo":
@@ -426,12 +400,7 @@ class Undoer:
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20201109075104.1: *5* u.afterChangeBody
     def afterChangeBody(self, p, command, bunch):
-        """
-        Create an undo node using d created by beforeChangeNode.
-        
-        This method saves all data saved by the deprecated
-        u.setUndoTypingParams method.
-        """
+        """Create an undo node using d created by beforeChangeNode."""
         c = self.c
         u, w = self, c.frame.body.wrapper
         if u.redoing or u.undoing:
@@ -452,9 +421,7 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
-        # Do common state updates for the body pane.
-        ### c.recolor()
-        ### c.redraw_after_icons_changed()
+        # Do *not* recolor or redraw here!
         w.setFocus()
         
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
@@ -758,12 +725,7 @@ class Undoer:
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
     #@+node:ekr.20201109074740.1: *5* u.beforeChangeBody
     def beforeChangeBody(self, p):
-        """
-        Return data that gets passed to afterChangeBody.
-        
-        This method saves all data saved by the deprecated
-        u.setUndoTypingParams method.
-        """
+        """Return data that gets passed to afterChangeBody."""
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)
             # Sets u.oldMarked, u.oldSel, u.p
@@ -949,7 +911,7 @@ class Undoer:
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
-    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams (deprecated)
+    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams (deprecated) & helper
     def setUndoTypingParams(self, p, undo_type, oldText, newText,
         oldSel=None, newSel=None, oldYview=None,
     ):
@@ -958,9 +920,8 @@ class Undoer:
         should call u.before/afterChangeBody instead of (eventually) calling
         u.setUndoTypingParams.
         
-        This method is really a too-often-called event handler for Qt
-        onTextChanged events. Indeed, this method is called from the
-        QTextMixin.onTextChanged event handler.
+        This method is really an event handler for Qt onTextChanged events.
+        Only QTextMixin.onTextChanged should call this method.
 
         Save enough information to undo or redo a typing operation efficiently,
         that is, with the proper granularity.
@@ -1181,6 +1142,32 @@ class Undoer:
         if u.per_node_undo:
             u.putIvarsToVnode(p)
         return bunch  # Never used.
+    #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
+    def recognizeStartOfTypingWord(self,
+        old_lines, old_row, old_col, old_ch,
+        new_lines, new_row, new_col, new_ch,
+        prev_row, prev_col
+    ):
+        """
+        A potentially user-modifiable method that should return True if the
+        typing indicated by the params starts a new 'word' for the purposes of
+        undo with 'word' granularity.
+
+        u.setUndoTypingParams calls this method only when the typing could possibly
+        continue a previous word. In other words, undo will work safely regardless
+        of the value returned here.
+
+        old_ch is the char at the given (Tk) row, col of old_lines.
+        new_ch is the char at the given (Tk) row, col of new_lines.
+
+        The present code uses only old_ch and new_ch. The other arguments are given
+        for use by more sophisticated algorithms.
+        """
+        # Start a word if new_ch begins whitespace + word
+        new_word_started = not old_ch.isspace() and new_ch.isspace()
+        # Start a word if the cursor has been moved since the last change
+        moved_cursor = new_row != prev_row or new_col != prev_col + 1
+        return new_word_started or moved_cursor
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event=None):

@@ -609,14 +609,15 @@ class LeoBody:
         sel = g.checkUnicode(s[i:j])
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
-    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
+    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         """
         Update Leo after the body has been changed.
         
-        New in Leo 6.4: This method is deprecated. New Leo commands and scripts
-        should call u.before/afterChangeBody instead of (eventually) calling
-        u.setUndoTypingParams.
+        New in Leo 6.4: This method is deprecated.
+        
+        New Leo commands and scripts should call u.before/afterChangeBody
+        instead.
         """
         body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
         #

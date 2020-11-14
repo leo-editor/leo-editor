@@ -293,20 +293,20 @@ class ScreenCastController:
         # inject c.screenCastController
         c.screenCastController = self
     #@+node:ekr.20120916193057.10605: *3* sc.Entry points
-    #@+node:ekr.20120913110135.10580: *4* sc.body_keys
+    #@+node:ekr.20120913110135.10580: *4* sc.body_keys (screencast.py)
     def body_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the body pane.
         n1 and n2 indicate the range of delays between keystrokes.
         '''
-        m = self; c = m.c
+        c, m, p, u = self.c, self, self.c.p, self.c.undoer
+        w = c.frame.body.wrapper.widget
         if n1 is None: n1 = 0.02
         if n2 is None: n2 = 0.095
         m.key_w = m.pane_widget('body')
         c.bodyWantsFocusNow()
-        p = c.p
-        w = c.frame.body.wrapper.widget
-        c.undoer.setUndoTypingParams(p, 'typing',
-            oldText=p.b, newText=p.b + s, oldSel=None, newSel=None, oldYview=None)
+        bunch = u.beforeChangeBody(p)
+        p.b = p.b + s
+        u.afterChangeBody(p, 'Typing', bunch)
         for ch in s:
             p.b = p.b + ch
             w.repaint()

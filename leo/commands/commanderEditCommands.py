@@ -727,8 +727,7 @@ def line_to_headline(self, event=None):
     
     Cut the selected line and make it the new node's headline
     """
-    c, w = self, self.frame.body.wrapper
-    p = c.p
+    c, p, w = self, self.p, self.frame.body.wrapper
     ins, s = w.getInsertPoint(), p.b
     u, undoType = c.undoer, 'Extract Line'
     i = g.find_line_start(s, ins)
@@ -737,16 +736,24 @@ def line_to_headline(self, event=None):
     if not line:
         return
     u.beforeChangeGroup(p, undoType)
+    #
+    # Start outer undo.
     undoData = u.beforeInsertNode(p)
     p2 = p.insertAsLastChild()
     p2.h = line
     u.afterInsertNode(p2, undoType, undoData)
-    oldText = p.b
+    #
+    # "before" snapshot.
+    bunch = u.beforeChangeBody(p)
     p.b = s[:i] + s[j:]
     w.setInsertPoint(i)
-    u.setUndoTypingParams(p, undoType, oldText=oldText, newText=p.b)
     p2.setDirty()
     c.setChanged()
+    #
+    # "after" snapshot.
+    u.afterChangeBody(p, 'Typing', bunch)
+    #
+    # Finish outer undo.
     u.afterChangeGroup(p, undoType=undoType)
     c.redraw_after_icons_changed()
     p.expand()
