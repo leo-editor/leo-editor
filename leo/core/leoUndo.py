@@ -913,7 +913,7 @@ class Undoer:
             u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams & helper
     def setUndoTypingParams(self, p, undo_type, oldText, newText,
-        oldSel=None, newSel=None, oldYview=None,
+        newInsert=None, oldSel=None, newSel=None, oldYview=None,
     ):
         """
         Save enough information to undo or redo a typing operation efficiently,
@@ -1139,6 +1139,30 @@ class Undoer:
         #@-<< adjust the undo stack, clearing all forward entries >>
         if u.per_node_undo:
             u.putIvarsToVnode(p)
+        ### Experimental: add common code from onTextChanged, selfInsertCommand
+        #
+        # Update the VNode.
+        p.v.setBodyString(newText)
+        if True:
+            p.v.insertSpot = newInsert
+            if newSel is None:
+                if newInsert is None:
+                    i = j = 0
+                else:
+                    i, j = newInsert
+            else:
+                i, j = newSel
+            i, j = g.toPythonIndex(newText, i), g.toPythonIndex(newText, j)
+            if i > j:
+                i, j = j, i
+            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        # No need to redraw the screen.
+        ###if not self.useScintilla:
+        c.recolor()
+        if not c.changed and c.frame.initComplete:
+            c.setChanged()
+        c.frame.body.updateEditors()
+        c.frame.tree.updateIcon(p)
         return bunch  # Never used.
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(self,
