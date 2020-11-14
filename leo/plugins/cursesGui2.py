@@ -2864,23 +2864,15 @@ class LeoBody (npyscreen.MultiLineEditable):
         p.v.insertSpot = w.getInsertPoint()
         if not p.isDirty():
             p.setDirty()
-        #
-        # Update
+        if not c.changed:
+            c.setChanged()
         insert = w.getInsertPoint()
         ch = '' if insert == 0 else w.get(insert - 1)
         ch = g.toUnicode(ch)
         newText = w.getAllText() # Note: getAllText converts to unicode.
-        
-        ###
-            # if not oldText:
-                # oldText = p.b
-            # if oldText == newText:
-                # return
         if trace:
             newSel = w.getSelectionRange()
             g.trace('oldSel', oldSel, 'newSel', newSel)
-        ### c.undoer.setUndoTypingParams(p, undoType,
-        ###    oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
         p.v.insertSpot = w.getInsertPoint()
         #
@@ -2890,8 +2882,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         # Don't recolor the body, but pretend we did.
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        if not c.changed:
-            c.setChanged()
+        
         # self.updateEditors()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
