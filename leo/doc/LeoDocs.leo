@@ -26661,7 +26661,7 @@ The open-theme-file command will show you the effect of a theme file without cha
 
 To enable a theme, put the following setting in myLeoSettings.leo::
 
-    @string theme-name &lt;name of theme file&gt;
+    @string theme-name = &lt;name of theme file&gt;
 
 **Important**: When using themes, it's best to disable all other theme-related settings in myLeoSettings.leo.
 
