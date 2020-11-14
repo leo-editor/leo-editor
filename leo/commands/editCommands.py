@@ -1687,11 +1687,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call setUndoTypingParams to honor the user's undo granularity.
-            newSel = w.getSelectionRange()
-            u.setUndoTypingParams(p, undoType,
-                oldText=oldText, newText=newText,
-                oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+            c.frame.body.onBodyChanged(undoType=undoType,
+                oldSel=oldSel, oldText=oldText, oldYview=None)
+            if 0: # not yet
+                # Call setUndoTypingParams to honor the user's undo granularity.
+                newSel = w.getSelectionRange()
+                u.setUndoTypingParams(p, undoType,
+                    oldText=oldText, newText=newText,
+                    oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
