@@ -3733,41 +3733,6 @@ class Commands:
             c.redraw_after_select(p)
         c.treeFocusHelper()
             # This is essential.
-    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (no longer used, deprecated)
-    def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
-        """
-        Handle changed text in the body pane.
-        
-        This method is deprecated.  Please use u.before/afterChangeBody instead.
-        
-        Neither Leo's core nor any of Leo's official plugins use this method.
-        """
-        c, p = self, self.p
-        body = c.frame.body
-        # Update the text and notify the event handler.
-        body.setSelectionAreas(head, middle, tail)
-        # Expand the selection.
-        head = head or ''
-        middle = middle or ''
-        tail = tail or ''
-        # 
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-        newSel = i, j
-        body.wrapper.setSelectionRange(i, j)
-        # This handles the undo.
-        body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
-        # Update the changed mark and icon.
-        p.setDirty()
-        c.setChanged()
-        c.redraw_after_icons_changed()
-        # Scroll as necessary.
-        if oldYview:
-            body.wrapper.setYScrollPosition(oldYview)
-        else:
-            body.wrapper.seeInsertPoint()
-        body.wrapper.setFocus()
-        c.recolor()
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
         add_context=None,  # Override setting only if True/False

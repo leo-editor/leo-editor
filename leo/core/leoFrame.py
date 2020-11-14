@@ -614,10 +614,8 @@ class LeoBody:
         """
         Update Leo after the body has been changed.
         
-        New in Leo 6.4: This method is deprecated.
-        
-        New Leo commands and scripts should call u.before/afterChangeBody
-        instead.
+        This method is deprecated. New Leo commands and scripts should
+        call u.before/afterChangeBody instead.
         """
         body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
         #
@@ -662,24 +660,6 @@ class LeoBody:
             p.v.iconVal = val
         if redraw_flag:
             c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas (no longer used, deprecated)
-    def setSelectionAreas(self, head, middle='', tail=''):
-        """
-        This method is deprecated and no longer used.
-        
-        Replace the body text by before + middle + after.
-
-        Select all the text, preserving the y scroll value.
-        """
-        w = self.wrapper
-        # Save/restore Yscroll position.
-        pos = w.getYScrollPosition()
-        i = len(head)
-        j = max(i, len(head) + len(middle) - 1)
-        w.setAllText(head + middle + tail)
-        w.setSelectionRange(i, j, insert=j)
-        w.setYScrollPosition(pos)
-        return i, j
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:

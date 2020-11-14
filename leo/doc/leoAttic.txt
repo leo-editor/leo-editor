@@ -23553,7 +23553,60 @@ def raise_dock(self, widget):
         if not hasattr(widget, 'parent'):
             return
         widget = widget.parent()
-#@+node:ekr.20201107142422.1: ** Old headline code
+#@+node:ekr.20201114072346.1: ** ----- Undo code
+#@+node:ekr.20171123135625.51: *3* c.updateBodyPane (Not used)
+def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
+    """
+    Handle changed text in the body pane.
+    
+    This method is deprecated.  Please use u.before/afterChangeBody instead.
+    
+    Neither Leo's core nor any of Leo's official plugins use this method.
+    """
+    c, p = self, self.p
+    body = c.frame.body
+    # Update the text and notify the event handler.
+    body.setSelectionAreas(head, middle, tail)
+    # Expand the selection.
+    head = head or ''
+    middle = middle or ''
+    tail = tail or ''
+    # 
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    newSel = i, j
+    body.wrapper.setSelectionRange(i, j)
+    # This handles the undo.
+    body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
+    # Update the changed mark and icon.
+    p.setDirty()
+    c.setChanged()
+    c.redraw_after_icons_changed()
+    # Scroll as necessary.
+    if oldYview:
+        body.wrapper.setYScrollPosition(oldYview)
+    else:
+        body.wrapper.seeInsertPoint()
+    body.wrapper.setFocus()
+    c.recolor()
+#@+node:ekr.20031218072017.4037: *3* LeoBody.setSelectionAreas (Not used)
+def setSelectionAreas(self, head, middle='', tail=''):
+    """
+    This method is deprecated and no longer used.
+    
+    Replace the body text by before + middle + after.
+
+    Select all the text, preserving the y scroll value.
+    """
+    w = self.wrapper
+    # Save/restore Yscroll position.
+    pos = w.getYScrollPosition()
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    w.setAllText(head + middle + tail)
+    w.setSelectionRange(i, j, insert=j)
+    w.setYScrollPosition(pos)
+    return i, j
 #@+node:ekr.20031218072017.3981: *3* LeoFrame.abortEditLabelCommand
 @cmd('abort-edit-headline')
 def abortEditLabelCommand(self, event=None):
@@ -23568,6 +23621,24 @@ def abortEditLabelCommand(self, event=None):
     # Otherwise c.redraw would undo the change!
     c.setHeadString(p, tree.revertHeadline)
     c.redraw(p)
+#@+node:ekr.20110605121601.18417: *3* qtree.closeEditorHelper (not used)
+def closeEditorHelper(self, e, item):
+    'End editing of the underlying QLineEdit widget for the headline.' ''
+    w = self.treeWidget
+    if e:
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        try:
+            # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
+            # underlying C/C++ object has been deleted
+            w.setItemWidget(item, 0, None)
+                # Make sure e is never referenced again.
+            w.setCurrentItem(item)
+        except RuntimeError:
+            if 1:  # Testing.
+                g.es_exception()
+            else:
+                # Recover silently even if there is a problem.
+                pass
 #@+node:ekr.20110605121601.17912: *3* qtree.onHeadChanged
 # Tricky code: do not change without careful thought and testing.
 
@@ -23633,24 +23704,6 @@ if len(s) > limit:
     s = s[:limit]
     if s != p.h:
         g.warning("truncating headline to", limit, "characters")
-#@+node:ekr.20110605121601.18417: *3* qtree.closeEditorHelper (not used)
-def closeEditorHelper(self, e, item):
-    'End editing of the underlying QLineEdit widget for the headline.' ''
-    w = self.treeWidget
-    if e:
-        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
-        try:
-            # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
-            # underlying C/C++ object has been deleted
-            w.setItemWidget(item, 0, None)
-                # Make sure e is never referenced again.
-            w.setCurrentItem(item)
-        except RuntimeError:
-            if 1:  # Testing.
-                g.es_exception()
-            else:
-                # Recover silently even if there is a problem.
-                pass
 #@-all
 #@@nosearch
 #@-leo
