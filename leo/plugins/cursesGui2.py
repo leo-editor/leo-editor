@@ -2841,23 +2841,53 @@ class LeoBody (npyscreen.MultiLineEditable):
         '''
         trace = False and not g.unitTesting
         c = self.leo_c
-        wrapper = self.leo_wrapper
+        u = c.undoer
+        w = self.leo_wrapper
         p = c.p
-        insert = wrapper.getInsertPoint()
-        ch = '' if insert == 0 else wrapper.get(insert - 1)
-        ch = g.toUnicode(ch)
-        newText = wrapper.getAllText() # Note: getAllText converts to unicode.
-        newSel = wrapper.getSelectionRange()
-        if not oldText:
+        #
+        # Init data.
+        newText = w.getAllText()  # getAllText converts to unicode.
+        if oldText:
+            p.v.b = oldText
+            changed = oldText != newText
+        else:
             oldText = p.b
-        if oldText == newText:
+            changed = True
+        if not changed:
             return
-        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        #
+        # "Before" snapshot.
+        bunch = u.beforeChangeBody(p)
+        #
+        # Careful. Don't redraw unless necessary.
+        p.v.b = newText  # p.b would cause a redraw.
+        p.v.insertSpot = w.getInsertPoint()
+        if not p.isDirty():
+            p.setDirty()
+        #
+        # Update
+        insert = w.getInsertPoint()
+        ch = '' if insert == 0 else w.get(insert - 1)
+        ch = g.toUnicode(ch)
+        newText = w.getAllText() # Note: getAllText converts to unicode.
+        
+        ###
+            # if not oldText:
+                # oldText = p.b
+            # if oldText == newText:
+                # return
+        if trace:
+            newSel = w.getSelectionRange()
+            g.trace('oldSel', oldSel, 'newSel', newSel)
+        ### c.undoer.setUndoTypingParams(p, undoType,
+        ###    oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
-        p.v.insertSpot = wrapper.getInsertPoint()
-        # Don't recolor the body.
+        p.v.insertSpot = w.getInsertPoint()
+        #
+        # "after" snapshot.
+        u.afterChangeBody(p, undoType, bunch)
+        #
+        # Don't recolor the body, but pretend we did.
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         if not c.changed:
