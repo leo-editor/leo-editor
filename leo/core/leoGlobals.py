@@ -675,10 +675,11 @@ class KeyStroke:
     def __hash__(self):
         return self.s.__hash__() if self.s else 0
     #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
-    def __str__(self):
+    def __repr__(self):
         return f"<KeyStroke: {repr(self.s)}>"
 
-    __repr__ = __str__
+    def __str__(self):
+        return repr(self.s)
     #@+node:ekr.20180417160703.1: *4* ks.dump
     def dump(self):
         """Show results of printable chars."""

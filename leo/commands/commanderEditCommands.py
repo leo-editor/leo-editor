@@ -218,7 +218,9 @@ def dedentBody(self, event=None):
         # Leo 5.6: preserve insert point.
         preserveSel = sel_1 == sel_2
         if preserveSel:
-            ins = max(len(head), len(result[0]) - len(lines[0]) + ins)
+            line = result[0]
+            i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+            ins = len(head) + i
             oldSel = ins, ins
         result = ''.join(result)
         c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
@@ -519,27 +521,28 @@ def indentBody(self, event=None):
     c, undoType = self, 'Indent Region'
     w = c.frame.body.wrapper
     sel_1, sel_2 = w.getSelectionRange()
-    # New in Leo 6.3.
-    if sel_1 == sel_2:
-        c.editCommands.selfInsertCommand(event)
-        return
-    ins = w.getInsertPoint()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     changed, result = False, []
     for line in lines:
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
         s = g.computeLeadingWhitespace(width + abs(tab_width), tab_width) + line[i:]
-        if s != line: changed = True
+        if s != line:
+            changed = True
         result.append(s)
-    if changed:
-        # Leo 5.6: preserve insert point.
-        preserveSel = sel_1 == sel_2
-        if preserveSel:
-            ins += tab_width
-            oldSel = ins, ins
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
+    if not changed:
+        return
+    # Leo 5.6: preserve insert point.
+    preserveSel = sel_1 == sel_2
+    if preserveSel:
+        # Leo 6.4: Place tab at end of the lws.
+        line = result[0]
+        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        ins = len(head) + i
+        oldSel = ins, ins
+    ### g.trace('(indent-region) oldSel', oldSel)
+    middle = ''.join(result)
+    c.updateBodyPane(head, middle, tail, undoType, oldSel, oldYview, preserveSel)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):

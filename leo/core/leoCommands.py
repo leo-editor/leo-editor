@@ -2307,10 +2307,11 @@ class Commands:
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
     def insertCharFromEvent(self, event):
         """
-        Handle the character given by event *without*
-        executing any command that might be bound to it.
-        
-        What happens depends on which widget has focus.
+        Handle the character given by event, ignoring various special keys:
+        - getArg state: k.getArg.
+        - Tree: onCanvasKey or onHeadlineKey.
+        - Body: ec.selfInsertCommand
+        - Log: log_w.insert
         """
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
@@ -3748,7 +3749,7 @@ class Commands:
             c.redraw_after_select(p)
         c.treeFocusHelper()
             # This is essential.
-    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane (handles changeNodeContents)
+    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
     def updateBodyPane(
         self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
         """Handle changed text in the body pane."""

@@ -62,22 +62,28 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
+        """Return False if Qt should handle the event."""
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
         if not self.c.p:
-            return False  # Startup. Let Qt handle the key event
-        if 'keys' in g.app.debug and isinstance(event, QtGui.QKeyEvent):
-            self.traceKeys(obj, event)
-        elif 'events' in g.app.debug:
-            self.traceEvent(obj, event)
-            self.traceWidget(event)
+            return False  # Startup.
+        #
+        # Trace events.
+        if 'events' in g.app.debug:
+            if isinstance(event, QtGui.QKeyEvent):
+                self.traceKeys(obj, event)
+            else:
+                self.traceEvent(obj, event)
+                self.traceWidget(event)
+        #
+        # Let Qt handle the non-key events.
         if self.doNonKeyEvent(event, obj):
-            return False  # Let Qt handle the non-key event.
+            return False
         #
         # Ignore incomplete key events.
         if self.shouldIgnoreKeyEvent(event, obj):
-            return False  # Let Qt handle the key event.
+            return False
         #
         # Generate a g.KeyStroke for k.masterKeyHandler.
         try:
