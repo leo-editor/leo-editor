@@ -1139,7 +1139,8 @@ class Undoer:
         #@-<< adjust the undo stack, clearing all forward entries >>
         if u.per_node_undo:
             u.putIvarsToVnode(p)
-        ### Experimental: add common code from onTextChanged, selfInsertCommand
+        #
+        # 2020/11/14: Finish updating the text.
         #
         # Update the VNode.
         p.v.setBodyString(newText)
@@ -1156,14 +1157,11 @@ class Undoer:
             if i > j:
                 i, j = j, i
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        # No need to redraw the screen.
-        ###if not self.useScintilla:
         c.recolor()
         if not c.changed and c.frame.initComplete:
             c.setChanged()
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
-        return bunch  # Never used.
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(self,
         old_lines, old_row, old_col, old_ch,

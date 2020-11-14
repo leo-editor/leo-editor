@@ -1687,34 +1687,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            if 0:
-                c.frame.body.onBodyChanged(undoType=undoType,
-                    oldSel=oldSel, oldText=oldText, oldYview=None)
-            else:
-                # Call setUndoTypingParams to honor the user's undo granularity.
-                newSel = w.getSelectionRange()
-                newInsert = w.getInsertPoint()
-                newSel = w.getSelectionRange()
-                newText = w.getAllText()  # Converts to unicode.
-                u.setUndoTypingParams(p, undoType, oldText, newText,
-                    oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
-                if 0:
-                    ### Experimental. from onTextChanged:
-                    # Update the VNode.
-                    p.v.setBodyString(newText)
-                    if True:
-                        p.v.insertSpot = newInsert
-                        i, j = newSel
-                        i, j = g.toPythonIndex(newText, i), g.toPythonIndex(newText, j)
-                        if i > j: i, j = j, i
-                        p.v.selectionStart, p.v.selectionLength = (i, j - i)
-                    # No need to redraw the screen.
-                    ###if not self.useScintilla:
-                    c.recolor()
-                    if not c.changed and c.frame.initComplete:
-                        c.setChanged()
-                    c.frame.body.updateEditors()
-                    c.frame.tree.updateIcon(p)
+            # Call setUndoTypingParams to honor the user's undo granularity.
+            newSel = w.getSelectionRange()
+            newInsert = w.getInsertPoint()
+            newSel = w.getSelectionRange()
+            newText = w.getAllText()  # Converts to unicode.
+            u.setUndoTypingParams(p, undoType, oldText, newText,
+                oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
 
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
