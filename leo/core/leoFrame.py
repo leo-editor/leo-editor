@@ -1999,13 +1999,19 @@ class NullTree(LeoTree):
     def redraw_after_expand(self, p):
         self.redraw()
 
-    def redraw_after_head_changed(self): self.redraw()
+    def redraw_after_head_changed(self):
+        self.redraw()
 
-    def redraw_after_icons_changed(self): self.redraw()
+    def redraw_after_icons_changed(self):
+        self.redraw()
 
-    def redraw_after_select(self, p=None): self.redraw()
+    def redraw_after_select(self, p=None):
+        self.redraw()
 
     def scrollTo(self, p):
+        pass
+        
+    def updateIcon(self, p, force=False):
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
