@@ -1657,6 +1657,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.checkUnicode(ch) in brackets
         #@-<< set local vars >>
+        if not ch:
+            return
         if trace: g.trace('ch', repr(ch)) # and ch in '\n\r\t'
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
@@ -1676,8 +1678,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif ch:
             # Null chars must not delete the selection.
             self.doPlainChar(action, ch, event, inBrackets, oldSel, stroke, w)
-        else:
-            return
+        #
+        # Common processing.
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
         c.editCommands.setMoveCol(w, spot)
