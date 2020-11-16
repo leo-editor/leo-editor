@@ -711,6 +711,7 @@ if QtWidgets: # NOQA
                 'rest': pc.update_rst,
                 'rst': pc.update_rst,
                 'svg': pc.update_svg,
+                'plantuml': pc.update_plantuml,
                 # 'url': pc.update_url,
                 # 'xml': pc.update_xml,
             }
@@ -1456,10 +1457,27 @@ if QtWidgets: # NOQA
                 if 'SEVERE' in msg or 'FATAL' in msg:
                     s = 'RST error:\n%s\n\n%s' % (msg, s)
             return s
+
+        def update_plantuml(self, s, keywords):
+            pc = self
+            w = pc.ensure_text_widget()
+            path = self.c.p.h[9:].strip()
+            print("Plantuml output file name: ", path)
+            with open("temp.plantuml", "w") as f:
+                f.write(s)
+            pth_plantuml_jar = "~/.leo"
+            os.system("cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path))
+            template = image_template % (path)
+            # Only works in Python 3.x.
+            template = g.adjustTripleString(template, pc.c.tab_width).strip()
+            pc.show()
+            w.setReadOnly(False)
+            w.setHtml(template)
+            w.setReadOnly(True)
+
         #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
-
         def update_svg(self, s, keywords):
             pc = self
             if pc.must_change_widget(QtSvg.QSvgWidget):
