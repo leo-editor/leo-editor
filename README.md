@@ -1,5 +1,3 @@
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=PAGE+VIEWS&edge_flat=false)](https://hits.seeyoufarm.com)
-
 Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
