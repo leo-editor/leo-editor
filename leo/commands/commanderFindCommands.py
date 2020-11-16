@@ -69,7 +69,7 @@ def cloneFindParents(self, event=None):
             b = u.beforeCloneNode(parent)
             clone = parent.clone()
             clone.moveToLastChildOf(found)
-            u.afterCloneNode(clone, 'clone', b, dirtyVnodeList=[])
+            u.afterCloneNode(clone, 'clone', b)
     u.afterChangeGroup(p0, undoType)
     c.selectPosition(found)
     c.setChanged(True)

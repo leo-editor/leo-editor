@@ -16861,7 +16861,8 @@ corresponding position properties are much slower. Nevertheless, scripts
 should usually use *position* properties rather than *vnode* properties
 because the position properties handle recoloring and other details.
 Scripts should use *vnode* properties only when making batch changes to
-vnodes.</t>
+vnodes.
+</t>
 <t tx="ekr.20131019061259.16691">**Properties**::
 
     p.b: same as p.v.b.  *Warning*: p.b = s is expensive.
@@ -26660,7 +26661,7 @@ The open-theme-file command will show you the effect of a theme file without cha
 
 To enable a theme, put the following setting in myLeoSettings.leo::
 
-    @string theme-name &lt;name of theme file&gt;
+    @string theme-name = &lt;name of theme file&gt;
 
 **Important**: When using themes, it's best to disable all other theme-related settings in myLeoSettings.leo.
 

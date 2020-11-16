@@ -2934,9 +2934,10 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         """The master key handler for almost all key bindings."""
+        trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         c, k = self.c, self
         # Setup...
-        if 'keys' in g.app.debug:
+        if trace:
             g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
         k.checkKeyEvent(event)
         k.setEventWidget(event)
@@ -2959,6 +2960,7 @@ class KeyHandlerClass:
         # Handle abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
             return
+        # Handle the character given by event *without* executing any command that might be bound to it.
         c.insertCharFromEvent(event)
     #@+node:ekr.20200524151214.1: *5* Setup...
     #@+node:ekr.20180418040158.1: *6* k.checkKeyEvent
@@ -3308,6 +3310,7 @@ class KeyHandlerClass:
         If found, execute the command and return True
         Otherwise, return False
         """
+        trace = 'keys' in g.app.debug
         c, k = self.c, self
         #
         # Use getPaneBindings for *all* keys.
@@ -3319,6 +3322,8 @@ class KeyHandlerClass:
         #
         # Execute the command if the binding exists.
         if bi:
+            # A superb trace. !s gives shorter trace.
+            if trace: g.trace(f"{event.stroke!s} {bi.commandName}")
             c.doCommandByName(bi.commandName, event)
             return True
         #
