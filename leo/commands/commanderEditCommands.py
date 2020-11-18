@@ -641,30 +641,21 @@ def goToPrevHistory(self, event=None):
     """Go to the previous node in the history list."""
     c = self
     c.nodeHistory.goPrev()
-#@+node:ekr.20171123135625.30: ** c_ec.indentBody (indent-region)
-@g.commander_command('indent-region')
-def indentBody(self, event=None):
+#@+node:ekr.20171123135625.30: ** c_ec.always/indentBody (indent-region & always-indent-region)
+@g.commander_command('always-indent-region')
+def alwaysIndentBody(self, event=None):
     """
     The indent-region command indents each line of the selected body text,
     or each line of a node if there is no selected text. The @tabwidth directive
-    in effect determines amount of indentation. (not yet) A numeric argument
-    specifies the column to indent to.
+    in effect determines amount of indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
-    # # 1739. Special case for a *plain* tab bound to indent-region.
-    sel_1, sel_2 = w.getSelectionRange()
-    if sel_1 == sel_2:
-        char = getattr(event, 'char', None)
-        stroke = getattr(event, 'stroke', None)
-        if char == '\t' and stroke and stroke.isPlainKey():
-            c.editCommands.selfInsertCommand(event)  # Handles undo.
-            return
     #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     #
     # Initial data.
+    sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     #
@@ -699,6 +690,25 @@ def indentBody(self, event=None):
     #
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
+
+@g.commander_command('indent-region')
+def indentBody(self, event=None):
+    """
+    The indent-region command indents each line of the selected body text,
+    or each line of a node if there is no selected text. The @tabwidth directive
+    in effect determines amount of indentation. (not yet) A numeric argument
+    specifies the column to indent to.
+    """
+    c, w = self, self.frame.body.wrapper
+    # # 1739. Special case for a *plain* tab bound to indent-region.
+    sel_1, sel_2 = w.getSelectionRange()
+    if sel_1 == sel_2:
+        char = getattr(event, 'char', None)
+        stroke = getattr(event, 'stroke', None)
+        if char == '\t' and stroke and stroke.isPlainKey():
+            c.editCommands.selfInsertCommand(event)  # Handles undo.
+            return
+    c.alwaysIndentBody(event)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
