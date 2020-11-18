@@ -658,8 +658,7 @@ def indentBody(self, event=None):
         char = getattr(event, 'char', None)
         stroke = getattr(event, 'stroke', None)
         if char == '\t' and stroke and stroke.isPlainKey():
-            # c.editCommands.selfInsertCommand(event)
-            c.editCommands.updateTab(p, w, smartTab=True)
+            c.editCommands.selfInsertCommand(event)  # Handles undo.
             return
     #
     # "Before" snapshot.
