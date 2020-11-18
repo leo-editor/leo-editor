@@ -1079,8 +1079,7 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
     body, w = c.frame.body, c.frame.body.wrapper
     s = head + result + tail
-    i = len(head)
-    j = ins = max(i, len(head) + len(result) - 1)
+    ins = max(len(head), len(head) + len(result) - 1)
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
