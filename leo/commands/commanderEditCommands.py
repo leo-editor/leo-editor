@@ -652,11 +652,20 @@ def indentBody(self, event=None):
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
+    # # 1739. Special case for a *plain* tab bound to indent-region.
+    sel_1, sel_2 = w.getSelectionRange()
+    if sel_1 == sel_2:
+        char = getattr(event, 'char', None)
+        stroke = getattr(event, 'stroke', None)
+        if char == '\t' and stroke and stroke.isPlainKey():
+            # c.editCommands.selfInsertCommand(event)
+            c.editCommands.updateTab(p, w, smartTab=True)
+            return
+    #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     #
     # Initial data.
-    sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     #
