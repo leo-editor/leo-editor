@@ -136,24 +136,8 @@ class QTextMixin:
         oldSel = (i, i + j)
         oldYview = None
         undoType = 'Typing'
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText,
-            oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        # Update the VNode.
-        p.v.setBodyString(newText)
-        if True:
-            p.v.insertSpot = newInsert
-            i, j = newSel
-            i, j = self.toPythonIndex(i), self.toPythonIndex(j)
-            if i > j: i, j = j, i
-            p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        # No need to redraw the screen.
-        if not self.useScintilla:
-            c.recolor()
-        if not c.changed and c.frame.initComplete:
-            c.setChanged()
-        c.frame.body.updateEditors()
-        c.frame.tree.updateIcon(p)
+        c.undoer.setUndoTypingParams(p, undoType, oldText, newText,
+            oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable

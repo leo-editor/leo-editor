@@ -2404,6 +2404,7 @@ class VNode:
                 self.unicode_warning_given = True
                 g.internalError(s)
                 g.es_exception()
+        self.contentModified()  # #1413.
         sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
@@ -2415,6 +2416,7 @@ class VNode:
             return
         s = g.toUnicode(s, reportErrors=True)
         v._headString = s.replace('\n', '')
+        self.contentModified()  # #1413.
 
     initBodyString = setBodyString
     initHeadString = setHeadString

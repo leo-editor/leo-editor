@@ -23553,6 +23553,157 @@ def raise_dock(self, widget):
         if not hasattr(widget, 'parent'):
             return
         widget = widget.parent()
+#@+node:ekr.20201114072346.1: ** ----- Undo code
+#@+node:ekr.20171123135625.51: *3* c.updateBodyPane (Not used)
+def updateBodyPane(self, head, middle, tail, undoType, oldSel, oldYview):
+    """
+    Handle changed text in the body pane.
+    
+    This method is deprecated.  Please use u.before/afterChangeBody instead.
+    
+    Neither Leo's core nor any of Leo's official plugins use this method.
+    """
+    c, p = self, self.p
+    body = c.frame.body
+    # Update the text and notify the event handler.
+    body.setSelectionAreas(head, middle, tail)
+    # Expand the selection.
+    head = head or ''
+    middle = middle or ''
+    tail = tail or ''
+    # 
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    newSel = i, j
+    body.wrapper.setSelectionRange(i, j)
+    # This handles the undo.
+    body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
+    # Update the changed mark and icon.
+    p.setDirty()
+    c.setChanged()
+    c.redraw_after_icons_changed()
+    # Scroll as necessary.
+    if oldYview:
+        body.wrapper.setYScrollPosition(oldYview)
+    else:
+        body.wrapper.seeInsertPoint()
+    body.wrapper.setFocus()
+    c.recolor()
+#@+node:ekr.20031218072017.4037: *3* LeoBody.setSelectionAreas (Not used)
+def setSelectionAreas(self, head, middle='', tail=''):
+    """
+    This method is deprecated and no longer used.
+    
+    Replace the body text by before + middle + after.
+
+    Select all the text, preserving the y scroll value.
+    """
+    w = self.wrapper
+    # Save/restore Yscroll position.
+    pos = w.getYScrollPosition()
+    i = len(head)
+    j = max(i, len(head) + len(middle) - 1)
+    w.setAllText(head + middle + tail)
+    w.setSelectionRange(i, j, insert=j)
+    w.setYScrollPosition(pos)
+    return i, j
+#@+node:ekr.20031218072017.3981: *3* LeoFrame.abortEditLabelCommand
+@cmd('abort-edit-headline')
+def abortEditLabelCommand(self, event=None):
+    """End editing of a headline and revert to its previous value."""
+    frame = self; c = frame.c; tree = frame.tree
+    p = c.p
+    if g.app.batchMode:
+        c.notValidInBatchMode("Abort Edit Headline")
+        return
+    # Revert the headline text.
+    # Calling c.setHeadString is required.
+    # Otherwise c.redraw would undo the change!
+    c.setHeadString(p, tree.revertHeadline)
+    c.redraw(p)
+#@+node:ekr.20110605121601.18417: *3* qtree.closeEditorHelper (not used)
+def closeEditorHelper(self, e, item):
+    'End editing of the underlying QLineEdit widget for the headline.' ''
+    w = self.treeWidget
+    if e:
+        w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
+        try:
+            # work around https://bugs.launchpad.net/leo-editor/+bug/1041906
+            # underlying C/C++ object has been deleted
+            w.setItemWidget(item, 0, None)
+                # Make sure e is never referenced again.
+            w.setCurrentItem(item)
+        except RuntimeError:
+            if 1:  # Testing.
+                g.es_exception()
+            else:
+                # Recover silently even if there is a problem.
+                pass
+#@+node:ekr.20110605121601.17912: *3* qtree.onHeadChanged
+# Tricky code: do not change without careful thought and testing.
+
+def onHeadChanged(self, p, undoType='Typing'):
+    """
+    Officially change a headline:
+    - Get the text from the headline editor.
+    - Close the Qt headline editor.
+    """
+    c, u = self.c, self.c.undoer
+    if not p:
+        return
+    item = self.getCurrentItem()
+    if not item:
+        return
+    e = self.getTreeEditorForItem(item)
+    if not e:
+        return
+    s = e.text()
+    self.closeEditorHelper(e, item)
+    changed = s != p.h
+    if not changed:
+        return  # Leo 6.4. Only call hooks if the head
+    if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
+        return
+    # New in Leo 4.10.1.
+    << truncate s if it has multiple lines >>
+    item.setText(0, s)  # Required to avoid full redraw.
+    # #1310: update the tooltip.
+    item.setToolTip(0, s)  ### was p.h
+    undoData = u.beforeChangeHeadline(p)
+    p.v.setHeadString(s)  # Set v.h *after* calling the undoer's before method.
+    if not c.changed:
+        c.setChanged()
+    # We must recolor the body because
+    # the headline may contain directives.
+    c.frame.body.recolor(p)
+    p.setDirty()
+    u.afterChangeHeadline(p, undoType, undoData)
+    g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
+    # This is a crucial shortcut.
+    if g.unitTesting:
+        return
+    self.redraw_after_head_changed()
+    # Don't change focus: it interferes with clicks, and is not needed.
+        # if self.stayInTree:
+            # c.treeWantsFocus()
+        # else:
+            # c.bodyWantsFocus()
+    c.outerUpdate()
+#@+node:ekr.20120409185504.10028: *4* << truncate s if it has multiple lines >>
+# Remove trailing newlines before warning of truncation.
+while s and s[-1] == '\n':
+    s = s[:-1]
+# Warn if there are multiple lines.
+i = s.find('\n')
+if i > -1:
+    s = s[:i]
+    if s != p.h:
+        g.warning("truncating headline to one line")
+limit = 1000
+if len(s) > limit:
+    s = s[:limit]
+    if s != p.h:
+        g.warning("truncating headline to", limit, "characters")
 #@-all
 #@@nosearch
 #@-leo

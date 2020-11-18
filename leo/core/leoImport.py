@@ -1336,17 +1336,19 @@ class LeoImportCommands:
             p.b = p.b + g.toUnicode(s, self.encoding)
 
     def setBodyString(self, p, s):
-        """Similar to c.setBodyString,
-        but does not recolor the text or redraw the screen."""
-        c = self.c; v = p.v
-        if not c or not p: return
+        """
+        Similar to c.setBodyString, but does not recolor the text or
+        redraw the screen.
+        """
+        c, v = self.c, p.v
+        if not c or not p:
+            return
         s = g.toUnicode(s, self.encoding)
-        current = c.p
-        if current and p.v == current.v:
-            c.frame.body.setSelectionAreas(s, None, None)
+        if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
-            i = w.getInsertPoint()
-            w.setSelectionRange(i, i)
+            i = len(s)
+            w.setAllText(s)
+            w.setSelectionRange(i, i, insert=i)
         # Keep the body text up-to-date.
         if v.b != s:
             v.setBodyString(s)

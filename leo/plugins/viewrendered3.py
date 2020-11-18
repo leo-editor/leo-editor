@@ -2066,7 +2066,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
         c = self.c
-        # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
         template = g.adjustTripleString(template, c.tab_width).strip()

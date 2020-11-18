@@ -609,78 +609,57 @@ class LeoBody:
         sel = g.checkUnicode(s[i:j])
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
-    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged
+    #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         """
-        Handle undo, recoloring, etc. after the body has been changed.
+        Update Leo after the body has been changed.
         
-        The new text is wrapper.getAllText. The old text is oldText or p.b.
+        This method is deprecated. New Leo commands and scripts should
+        call u.before/afterChangeBody instead.
         """
-        c = self.c
-        body, w = self, self.wrapper
-        p = c.p
-        insert = w.getInsertPoint()
-        ch = '' if insert == 0 else w.get(insert - 1)
-        ch = g.checkUnicode(ch)
-        newText = w.getAllText()  # Note: getAllText converts to unicode.
-        newSel = w.getSelectionRange()
-        if not oldText:
+        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        #
+        # Init data.
+        newText = w.getAllText()  # getAllText converts to unicode.
+        if oldText:
+            p.v.b = oldText
+            changed = oldText != newText
+        else:
             oldText = p.b
             changed = True
-        else:
-            changed = oldText != newText
         if not changed:
             return
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        p.v.setBodyString(newText)
+        #
+        # "Before" snapshot.
+        bunch = u.beforeChangeBody(p)
+        #
+        # Careful. Don't redraw unless necessary.
+        p.v.b = newText  # p.b would cause a redraw.
         p.v.insertSpot = w.getInsertPoint()
-        #@+<< recolor the body >>
-        #@+node:ekr.20051026083733.6: *5* << recolor the body >>
+        if p.isDirty():
+            redraw_flag = False
+        else:
+            p.setDirty()
+            redraw_flag = True
+        #
+        # "after" snapshot.
+        u.afterChangeBody(p, undoType, bunch)
+        #
+        # Recolor the body.
         c.frame.scanForTabWidth(p)
         body.recolor(p)
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        #@-<< recolor the body >>
-        if not c.changed: c.setChanged()
+        if not c.changed:
+            c.setChanged()
+        # Update editors.
         self.updateEditors()
-        p.v.contentModified()
-        #@+<< update icons if necessary >>
-        #@+node:ekr.20051026083733.7: *5* << update icons if necessary >>
-        redraw_flag = False
-        # Update dirty bits.
-        if not p.isDirty():
-            p.setDirty()
-            redraw_flag = True
-        # Update icons. p.v.iconVal may not exist during unit tests.
+        # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-            redraw_flag = True
         if redraw_flag:
             c.redraw_after_icons_changed()
-        #@-<< update icons if necessary >>
-    #@+node:ekr.20031218072017.4037: *4* LeoBody.setSelectionAreas
-    def setSelectionAreas(self, before, sel, after):
-        """
-        Replace the body text by before + sel + after and
-        set the selection so that the sel text is selected.
-        """
-        body = self
-        w = body.wrapper
-        # 2012/02/05: save/restore Yscroll position.
-        pos = w.getYScrollPosition()
-        s = w.getAllText()
-        before = before or ''
-        sel = sel or ''
-        after = after or ''
-        w.delete(0, len(s))
-        w.insert(0, before + sel + after)
-        i = len(before)
-        j = max(i, len(before) + len(sel) - 1)
-        w.setSelectionRange(i, j, insert=j)
-        w.setYScrollPosition(pos)
-        return i, j
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
@@ -1051,20 +1030,6 @@ class LeoFrame:
     def OnPaste(self, event=None):
         return self.pasteText(event=event, middleButton=True)
     #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
-    #@+node:ekr.20031218072017.3981: *5* LeoFrame.abortEditLabelCommand
-    @cmd('abort-edit-headline')
-    def abortEditLabelCommand(self, event=None):
-        """End editing of a headline and revert to its previous value."""
-        frame = self; c = frame.c; tree = frame.tree
-        p = c.p
-        if g.app.batchMode:
-            c.notValidInBatchMode("Abort Edit Headline")
-            return
-        # Revert the headline text.
-        # Calling c.setHeadString is required.
-        # Otherwise c.redraw would undo the change!
-        c.setHeadString(p, tree.revertHeadline)
-        c.redraw(p)
     #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
@@ -1074,7 +1039,7 @@ class LeoFrame:
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
             return
-        w = c.get_focus()
+        w = event and event.w or c.get_focus()  # #1413.
         w_name = g.app.gui.widget_name(w)
         if w_name.startswith('head'):
             c.endEditing()
@@ -1283,7 +1248,6 @@ class LeoTree:
             # Leo 5.6: low-level vnode methods increment
             # this count whenever the tree changes.
         self.redrawCount = 0  # For traces
-        self.revertHeadline = None
         self.use_chapters = False  # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
@@ -1309,25 +1273,23 @@ class LeoTree:
 
     def redraw_after_select(self, p=None):
         self.c.redraw()
-    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (Used by the leoBridge module)
+    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
-    # See also, nativeTree.onHeadChanged.
-
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
-        # e used in qt_tree.py.
+    def onHeadChanged(self, p, undoType='Typing'):
         """
         Officially change a headline.
         Set the old undo text to the previous revert point.
         """
-        c = self.c; u = c.undoer
-        w = self.edit_widget(p)
+        c, u, w = self.c, self.c.undoer, self.edit_widget(p)
         if c.suppressHeadChanged:
+            g.trace('suppressHeadChanged')
             return
         if not w:
+            g.trace('no w')
             return
         ch = '\n'  # We only report the final keystroke.
-        if s is None: s = w.getAllText()
+        s = w.getAllText()
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
@@ -1345,39 +1307,36 @@ class LeoTree:
         s = g.checkUnicode(s or '')
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
-        oldRevert = self.revertHeadline
-        changed = s != oldRevert
-        self.revertHeadline = s
-        p.initHeadString(s)
+        changed = s != p.h
+        if not changed:
+            return  # Leo 6.4: only call the hooks if the headline has actually changed.
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return  # The hook claims to have handled the event.
-        if changed:
-            undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
-            if not c.changed: c.setChanged()
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-            c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p)
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
-        if changed:
-            c.redraw_after_head_changed()
+        # Handle undo.
+        undoData = u.beforeChangeHeadline(p)
+        p.initHeadString(s)  # change p.h *after* calling undoer's before method.
+        if not c.changed:
+            c.setChanged()
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+        c.frame.scanForTabWidth(p)
+        c.frame.body.recolor(p)
+        p.setDirty()
+        u.afterChangeHeadline(p, undoType, undoData)
+        c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
         """End editing of a headline and update p.h."""
-        c = self.c; k = c.k; p = c.p
         # Important: this will redraw if necessary.
-        self.onHeadChanged(p)
-        if 0:
-            # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-            k.setDefaultInputState()
-            k.showStateAndMode()
-        if 0:
-            # This interferes with the find command and interferes with focus generally!
-            c.bodyWantsFocus()
+        self.onHeadChanged(self.c.p)
+        # Do *not* call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+            # k.setDefaultInputState()
+            # k.showStateAndMode()
+        # This interferes with the find command and interferes with focus generally!
+            # c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v):
         # New in 4.2: the default is an empty list.
@@ -1398,9 +1357,11 @@ class LeoTree:
         pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event, w):
-        """Update a headline from an event.
+        """
+        Update a headline from an event.
 
-        The headline officially changes only when editing ends."""
+        The headline officially changes only when editing ends.
+        """
         k = self.c.k
         ch = event.char if event else ''
         i, j = w.getSelectionRange()
@@ -1431,7 +1392,7 @@ class LeoTree:
         # 2011/11/14: Not used at present.
             # w.setWidth(self.headWidth(s=s))
         if ch in ('\n', '\r'):
-            self.endEditLabel()  # Now calls self.onHeadChanged.
+            self.endEditLabel()
     #@+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
     # Drawing & scrolling.
 
@@ -1462,11 +1423,10 @@ class LeoTree:
         if g.app.killed or self.tree_select_lockout:  # Essential.
             return
         if trace:
-            if 1:
-                print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
-            else:
-                # Format matches traces in leoflexx.py
-                print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
+            print(f"----- {tag}: {p.h}")
+            # print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
+            # Format matches traces in leoflexx.py
+                # print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
         try:
             self.tree_select_lockout = True
             self.prev_v = c.p.v
@@ -1552,7 +1512,6 @@ class LeoTree:
             if 'select' in g.app.debug:
                 g.trace('select1 override')
             return
-        self.revertHeadline = p.h
         c.frame.setWrap(p)
             # Not that expensive
         self.set_body_text_after_select(p, old_p)
@@ -2012,8 +1971,6 @@ class NullTree(LeoTree):
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
-            self.revertHeadline = p.h
-                # New in 4.4b2: helps undo.
             wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
             e = None
             return e, wrapper
@@ -2042,13 +1999,19 @@ class NullTree(LeoTree):
     def redraw_after_expand(self, p):
         self.redraw()
 
-    def redraw_after_head_changed(self): self.redraw()
+    def redraw_after_head_changed(self):
+        self.redraw()
 
-    def redraw_after_icons_changed(self): self.redraw()
+    def redraw_after_icons_changed(self):
+        self.redraw()
 
-    def redraw_after_select(self, p=None): self.redraw()
+    def redraw_after_select(self, p=None):
+        self.redraw()
 
     def scrollTo(self, p):
+        pass
+        
+    def updateIcon(self, p, force=False):
         pass
     #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
@@ -2061,7 +2024,6 @@ class NullTree(LeoTree):
             if s.endswith('\n') or s.endswith('\r'):
                 s = s[:-1]
             w.insert(0, s)
-            self.revertHeadline = s
         else:
             g.trace('-' * 20, 'oops')
     #@-others

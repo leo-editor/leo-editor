@@ -3250,7 +3250,12 @@ class KeyHandlerClass:
             assert m  # edit-shortcut was invoked on a malformed body line
             sel = f"{m.group(0)} {stroke.s}"
             udata = c.undoer.beforeChangeNodeContents(p)
-            w.setSelectionAreas(before, sel, after)
+            pos = w.getYScrollPosition()
+            i = len(before)
+            j = max(i, len(before) + len(sel) - 1)
+            w.setAllText(before + sel + after)
+            w.setSelectionRange(i, j, insert=j)
+            w.setYScrollPosition(pos)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
             w.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')

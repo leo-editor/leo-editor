@@ -991,7 +991,7 @@ class Commands:
             else: break
         return p
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
-    def getBodyLines(self, expandSelection=False):
+    def getBodyLines(self):
         """
         Return head,lines,tail where:
 
@@ -1006,19 +1006,13 @@ class Commands:
         body = c.frame.body
         w = body.wrapper
         oldVview = w.getYScrollPosition()
-        if expandSelection:
-            s = w.getAllText()
-            head = tail = ''
-            oldSel = 0, len(s)
-            lines = g.splitLines(s)  # Retain the newlines of each line.
-        else:
-            # Note: lines is the entire line containing the insert point if no selection.
-            head, s, tail = body.getSelectionLines()
-            lines = g.splitLines(s)  # Retain the newlines of each line.
-            # Expand the selection.
-            i = len(head)
-            j = max(i, len(head) + len(s) - 1)
-            oldSel = i, j
+        # Note: lines is the entire line containing the insert point if no selection.
+        head, s, tail = body.getSelectionLines()
+        lines = g.splitLines(s)  # Retain the newlines of each line.
+        # Expand the selection.
+        i = len(head)
+        j = max(i, len(head) + len(s) - 1)
+        oldSel = i, j
         return head, lines, tail, oldSel, oldVview  # string,list,string,tuple.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
     def getTabWidth(self, p):
@@ -1286,12 +1280,9 @@ class Commands:
         # This worked because commands work on the presently selected node.
         # But setRecentFiles may change a _clone_ of the selected node!
         if current and p.v == current.v:
-            # Revert to previous code, but force an empty selection.
-            c.frame.body.setSelectionAreas(s, None, None)
             w = c.frame.body.wrapper
-            i = w.getInsertPoint()
-            w.setSelectionRange(i, i)
-            # This code destoys all tags, so we must recolor.
+            w.setAllText(s)
+            v.setSelection(0,0)
             c.recolor()
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
@@ -3645,20 +3636,13 @@ class Commands:
                 return True
         return False
     #@+node:ekr.20031218072017.2990: *4* c.Selecting
-    #@+node:ekr.20031218072017.2992: *5* c.endEditing (calls tree.endEditLabel)
-    # Ends the editing in the outline.
-
+    #@+node:ekr.20031218072017.2992: *5* c.endEditing
     def endEditing(self):
+        """End the editing of a headline."""
         c = self
         p = c.p
         if p:
             c.frame.tree.endEditLabel()
-        # The following code would be wrong; c.endEditing is a utility method.
-        # k = c.k
-        # if k:
-            # k.setDefaultInputState()
-            # # Recolor the *body* text, **not** the headline.
-            # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ville.20090525205736.12325: *5* c.getSelectedPositions
     def getSelectedPositions(self):
         """ Get list (PosList) of currently selected positions
@@ -3751,39 +3735,6 @@ class Commands:
             c.redraw_after_select(p)
         c.treeFocusHelper()
             # This is essential.
-    #@+node:ekr.20171123135625.51: *4* c.updateBodyPane
-    def updateBodyPane(
-        self, head, middle, tail, undoType, oldSel, oldYview, preserveSel=False):
-        """Handle changed text in the body pane."""
-        c, p = self, self.p
-        body = c.frame.body
-        # Update the text and notify the event handler.
-        body.setSelectionAreas(head, middle, tail)
-        # Expand the selection.
-        head = head or ''
-        middle = middle or ''
-        tail = tail or ''
-        if preserveSel:
-            # Leo 5.6: just use the computed oldSel.
-            i, j = oldSel
-        else:
-            i = len(head)
-            j = max(i, len(head) + len(middle) - 1)
-            newSel = i, j
-        body.wrapper.setSelectionRange(i, j)
-        # This handles the undo.
-        body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
-        # Update the changed mark and icon.
-        p.setDirty()
-        c.setChanged()
-        c.redraw_after_icons_changed()
-        # Scroll as necessary.
-        if oldYview:
-            body.wrapper.setYScrollPosition(oldYview)
-        else:
-            body.wrapper.seeInsertPoint()
-        body.wrapper.setFocus()
-        c.recolor()
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
         add_context=None,  # Override setting only if True/False

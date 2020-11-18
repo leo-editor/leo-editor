@@ -2323,7 +2323,7 @@ class CoreFrame (leoFrame.LeoFrame):
     def getFocus(self):
 
         return g.app.gui.get_focus()
-    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText
+    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (cursesGui2)
     @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         '''
@@ -2475,7 +2475,6 @@ class CoreTree (leoFrame.LeoTree):
             # Init the base class.
         assert self.c
         assert not hasattr(self, 'widget')
-        self.revertVnode = None # A hack for onHeadChanged.
         self.redrawCount = 0 # For unit tests.
         self.widget = None
             # A LeoMLTree set by CGui.createCursesTree.
@@ -2543,7 +2542,7 @@ class CoreTree (leoFrame.LeoTree):
         kinds = ','.join([z for z in table if getattr(self, z)])
         if kinds and trace: g.trace(kinds)
         return kinds # Return the string for debugging
-    #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged
+    #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged (cursesGui2)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged(self, p, s=None, undoType='Typing'):
@@ -2556,10 +2555,6 @@ class CoreTree (leoFrame.LeoTree):
         if not c.frame.body.wrapper:
             if trace: g.trace('NO wrapper')
             return # Startup.
-        if not self.revertVnode:
-            if trace: g.trace('no headline ever edited')
-            self.revertHeadline = ''
-                # Fix #1238: A hack to force an update.
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
@@ -2589,23 +2584,24 @@ class CoreTree (leoFrame.LeoTree):
                 # g.warning("truncating headline to", limit, "characters")
         #@-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
-        oldRevert = self.revertHeadline
-        changed = s != oldRevert
-        self.revertHeadline = s
-        p.initHeadString(s)
+        changed = s != p.h
+        if not changed:
+            return  # Leo 6.4: only call hooks if the headline has changed.
         if trace: g.trace('changed', changed, 'new', repr(s))
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return # The hook claims to have handled the event.
-        if changed:
-            undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
-            if not c.changed:
-                c.setChanged()
-            # New in Leo 4.4.5: we must recolor the body because
-            # the headline may contain directives.
-                # c.frame.scanForTabWidth(p)
-                # c.frame.body.recolor(p)
-            p.setDirty()
-            u.afterChangeNodeContents(p, undoType, undoData, inHead=True)
+        #
+        # Handle undo
+        undoData = u.beforeChangeHeadline(p)
+        p.initHeadString(s)  # Change p.h *after* calling the undoer's before method.
+        if not c.changed:
+            c.setChanged()
+        # New in Leo 4.4.5: we must recolor the body because
+        # the headline may contain directives.
+            # c.frame.scanForTabWidth(p)
+            # c.frame.body.recolor(p)
+        p.setDirty()
+        u.afterChangeHeadline(p, undoType, undoData)
         # if changed:
         #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
@@ -2633,12 +2629,11 @@ class CoreTree (leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         wrapper = HeadWrapper(c=self.c, name='head', p=p)
         return wrapper
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (not used)
+    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        self.revertHeadline = p.h
         return None, None
-    #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
+    #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
         End editing of the presently-selected headline.
@@ -2838,7 +2833,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         if trace and trace_widgets:
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
-    #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
+    #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged (npyscreen)
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         '''
         Update Leo after the body has been changed.
@@ -2846,29 +2841,49 @@ class LeoBody (npyscreen.MultiLineEditable):
         '''
         trace = False and not g.unitTesting
         c = self.leo_c
-        wrapper = self.leo_wrapper
+        u = c.undoer
+        w = self.leo_wrapper
         p = c.p
-        insert = wrapper.getInsertPoint()
-        ch = '' if insert == 0 else wrapper.get(insert - 1)
-        ch = g.toUnicode(ch)
-        newText = wrapper.getAllText() # Note: getAllText converts to unicode.
-        newSel = wrapper.getSelectionRange()
-        if not oldText:
+        #
+        # Init data.
+        newText = w.getAllText()  # getAllText converts to unicode.
+        if oldText:
+            p.v.b = oldText
+            changed = oldText != newText
+        else:
             oldText = p.b
-        if oldText == newText:
+            changed = True
+        if not changed:
             return
-        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        p.v.setBodyString(newText)
-        p.v.insertSpot = wrapper.getInsertPoint()
-        # Don't recolor the body.
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
+        #
+        # "Before" snapshot.
+        bunch = u.beforeChangeBody(p)
+        #
+        # Careful. Don't redraw unless necessary.
+        p.v.b = newText  # p.b would cause a redraw.
+        p.v.insertSpot = w.getInsertPoint()
+        if not p.isDirty():
+            p.setDirty()
         if not c.changed:
             c.setChanged()
+        insert = w.getInsertPoint()
+        ch = '' if insert == 0 else w.get(insert - 1)
+        ch = g.toUnicode(ch)
+        newText = w.getAllText() # Note: getAllText converts to unicode.
+        if trace:
+            newSel = w.getSelectionRange()
+            g.trace('oldSel', oldSel, 'newSel', newSel)
+        p.v.setBodyString(newText)
+        p.v.insertSpot = w.getInsertPoint()
+        #
+        # "after" snapshot.
+        u.afterChangeBody(p, undoType, bunch)
+        #
+        # Don't recolor the body, but pretend we did.
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        
         # self.updateEditors()
-        p.v.contentModified()
         # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
@@ -2902,7 +2917,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # self.dump_handlers()
-    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body
+    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
     def update_body(self, ins, s):
         '''
         Update self.values and p.b and vnode ivars after the present line changes.
@@ -3237,14 +3252,19 @@ class LeoMiniBuffer(npyscreen.Textfield):
             g.app.gui.repeatComplexCommand(c)
         else:
             # All other alt-x command
-            k.masterCommand(
-                commandName=commandName,
-                event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                func=None,
-                stroke=None,
-            )
+            event=KeyEvent(c,char='',event='',shortcut='',w=None)
+            c.doCommandByName(commandName, event)
+            ###
+                # g.trace(k)
+                # k.masterCommand(
+                    # commandName=commandName,
+                    # event=KeyEvent(c,char='',event='',shortcut='',w=None),
+                    # func=None,
+                    # stroke=None,
+                # )
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
+            c.redraw()
         # Do a full redraw, with c.p as the first visible node.
         # g.trace('----- after command')
         g.app.gui.redraw_in_context(c)
@@ -3584,11 +3604,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
         '''Called when the user types "h".'''
-        c = self.leo_c
         # Remember the starting headline, for CTree.onHeadChanged.
-        tree = c.frame.tree # CTree
-        tree.revertVnode = c.p.v
-        tree.revertHeadline = c.p.h
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):

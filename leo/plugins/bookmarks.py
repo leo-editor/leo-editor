@@ -225,7 +225,7 @@ import hashlib
 
 #@-<< imports >>
 #@+others
-#@+node:ekr.20100128073941.5371: ** init
+#@+node:ekr.20100128073941.5371: ** init (bookmarks.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     if g.unitTesting:

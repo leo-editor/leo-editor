@@ -1562,7 +1562,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins += tab_width
         w.setSelectionRange(ins, ins, insert=ins)
         self.endCommand()
-    #@+node:ekr.20150514063305.266: *4* ec.removeBlankLines
+    #@+node:ekr.20150514063305.266: *4* ec.removeBlankLines (remove-blank-lines)
     @cmd('remove-blank-lines')
     def removeBlankLines(self, event):
         """
@@ -1570,21 +1570,35 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Select all lines if there is no existing selection.
         """
-        c = self.c
-        w = self.editWidget(event)
-        expandSelection = not w.hasSelection()
-        head, lines, tail, oldSel, oldYview = c.getBodyLines(
-            expandSelection=expandSelection)
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
+        #
+        # "Before" snapshot.
+        bunch = u.beforeChangeBody(p)
+        #
+        # Initial data.
+        oldYview = w.getYScrollPosition()
+        lines = g.splitLines(w.getAllText())
+        #
+        # Calculate the result.
         changed, result = False, []
         for line in lines:
             if line.strip():
                 result.append(line)
             else:
                 changed = True
+        if not changed:
+            return
+        #
+        # Set p.b and w's text first.
         result = ''.join(result)
-        if changed:
-            oldSel, undoType = None, 'remove-blank-lines'
-            c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview)
+        p.b = result
+        w.setAllText(result)
+        i, j = 0, max(0, len(result) - 1)
+        w.setSelectionRange(i, j, insert=j)
+        w.setYScrollPosition(oldYview)
+        #
+        # "after" snapshot.
+        c.undoer.afterChangeBody(p, 'remove-blank-lines', bunch)
     #@+node:ekr.20150514063305.267: *4* ec.replaceCurrentCharacter
     @cmd('replace-current-character')
     def replaceCurrentCharacter(self, event):
@@ -1624,8 +1638,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         """
         trace = 'keys' in g.app.debug
-        c, p = self.c, self.c.p
-        w = self.editWidget(event)
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
+        undoType = 'Typing'
         if not w:
             return
         #@+<< set local vars >>
@@ -1639,10 +1653,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         name = c.widget_name(w)
         oldSel = w.getSelectionRange() if name.startswith('body') else (None, None)
         oldText = p.b if name.startswith('body') else ''
-        undoType = 'Typing'
+        oldYview = w.getYScrollPosition()
         brackets = self.openBracketsList + self.closeBracketsList
         inBrackets = ch and g.checkUnicode(ch) in brackets
         #@-<< set local vars >>
+        if not ch:
+            return
         if trace: g.trace('ch', repr(ch)) # and ch in '\n\r\t'
         assert g.isStrokeOrNone(stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
@@ -1662,17 +1678,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif ch:
             # Null chars must not delete the selection.
             self.doPlainChar(action, ch, event, inBrackets, oldSel, stroke, w)
-        else:
-            return
+        #
+        # Common processing.
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
         c.editCommands.setMoveCol(w, spot)
+        #
         # Update the text and handle undo.
         newText = w.getAllText()
-        changed = newText != oldText
-        if changed:
-            c.frame.body.onBodyChanged(undoType=undoType,
-                oldSel=oldSel, oldText=oldText, oldYview=None)
+        if newText != oldText:
+            # Call setUndoTypingParams to honor the user's undo granularity.
+            newSel = w.getSelectionRange()
+            newInsert = w.getInsertPoint()
+            newSel = w.getSelectionRange()
+            newText = w.getAllText()  # Converts to unicode.
+            u.setUndoTypingParams(p, undoType, oldText, newText,
+                oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
+
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):

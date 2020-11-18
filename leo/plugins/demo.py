@@ -400,7 +400,7 @@ class Demo:
         g.trace('does not exist: %s' % (path))
         return None
     #@+node:ekr.20170211045726.1: *3* demo.Keys
-    #@+node:ekr.20170128213103.11: *4* demo.body_keys
+    #@+node:ekr.20170128213103.11: *4* demo.body_keys (demo.py)
     def body_keys(self, s, speed=None, undo=False):
         '''Undoably simulate typing in the body pane.'''
         c = self.c
@@ -408,8 +408,9 @@ class Demo:
         p = c.p
         w = c.frame.body.wrapper.widget
         if undo:
-            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
-                # oldSel=None, newSel=None, oldYview=None)
+            bunch = c.undoer.beforeChangeBody(p)
+            p.b = p.b + s
+            c.undoer.afterChangeBody(p, 'Typing', bunch)
         for ch in s:
             p.b = p.b + ch
             w.repaint()
@@ -419,13 +420,12 @@ class Demo:
         '''Undoably simulates typing in the headline.'''
         c, p = self.c, self.c.p
         undoType = 'Typing'
-        oldHead = p.h
         tree = c.frame.tree
         p.h = ''
         c.editHeadline()
         w = tree.edit_widget(p)
         if undo:
-            undoData = c.undoer.beforeChangeNodeContents(p, oldHead=oldHead)
+            undoData = c.undoer.beforeChangeNodeContents(p)
             p.setDirty()
             c.undoer.afterChangeNodeContents(p, undoType, undoData)
         for ch in s:
@@ -445,15 +445,17 @@ class Demo:
         event = self.new_key_event(ch, w)
         k.masterKeyHandler(event)
         w.repaint() # Make the character visible immediately.
-    #@+node:ekr.20170128213103.23: *4* demo.keys
+    #@+node:ekr.20170128213103.23: *4* demo.keys (demo.py)
     def keys(self, s, undo=False):
         '''
         Simulate typing a string of *plain* keys.
         Use demo.key(ch) to type any other characters.
         '''
-        c, p = self.c, self.c.p
+        p, u = self.c.p, self.c.undoer
         if undo:
-            c.undoer.setUndoTypingParams(p, 'typing', oldText=p.b, newText=p.b + s)
+            bunch = u.beforeChangeBody(p)
+            p.b = p.b + s
+            u.afterChangeBody(p, 'Typing', bunch)
         for ch in s:
             self.key(ch)
     #@+node:ekr.20170128213103.39: *4* demo.new_key_event
