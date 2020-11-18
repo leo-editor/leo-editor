@@ -648,9 +648,9 @@ def goToPrevHistory(self, event=None):
 @g.commander_command('always-indent-region')
 def alwaysIndentBody(self, event=None):
     """
-    The indent-region command indents each line of the selected body text,
-    or each line of a node if there is no selected text. The @tabwidth directive
-    in effect determines amount of indentation.
+    The always-indent-region command indents each line of the selected body
+    text. The @tabwidth directive in effect determines amount of
+    indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
@@ -700,10 +700,11 @@ def alwaysIndentBody(self, event=None):
 @g.commander_command('indent-region')
 def indentBody(self, event=None):
     """
-    The indent-region command indents each line of the selected body text,
-    or each line of a node if there is no selected text. The @tabwidth directive
-    in effect determines amount of indentation. (not yet) A numeric argument
-    specifies the column to indent to.
+    The indent-region command indents each line of the selected body text.
+    Unlike the always-indent-region command, this command inserts a tab
+    (soft or hard) when there is no selected text.
+    
+    The @tabwidth directive in effect determines amount of indentation.
     """
     c, w = self, self.frame.body.wrapper
     # # 1739. Special case for a *plain* tab bound to indent-region.
@@ -836,7 +837,7 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
         indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
         result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
         rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.43: *3* def ends_paragraph & single_line_paragraph
+#@+node:ekr.20171123135625.43: *3* function: ends_paragraph & single_line_paragraph
 def ends_paragraph(s):
     """Return True if s is a blank line."""
     return not s.strip()
@@ -844,7 +845,7 @@ def ends_paragraph(s):
 def single_line_paragraph(s):
     """Return True if s is a single-line paragraph."""
     return s.startswith('@') or s.strip() in ('"""', "'''")
-#@+node:ekr.20171123135625.42: *3* def find_bound_paragraph
+#@+node:ekr.20171123135625.42: *3* function: find_bound_paragraph
 def find_bound_paragraph(c):
     """
     Return the lines of a paragraph to be reformatted.
@@ -893,7 +894,7 @@ def find_bound_paragraph(c):
         tail = g.joinLines(tail_lines)
         return head, result, tail  # string, list, string
     return None, None, None
-#@+node:ekr.20171123135625.45: *3* def rp_get_args
+#@+node:ekr.20171123135625.45: *3* function: rp_get_args
 def rp_get_args(c):
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
@@ -908,7 +909,7 @@ def rp_get_args(c):
     oldSel = w.getSelectionRange()
     oldYview = w.getYScrollPosition()
     return oldSel, oldYview, original, pageWidth, tabWidth
-#@+node:ekr.20171123135625.46: *3* def rp_get_leading_ws
+#@+node:ekr.20171123135625.46: *3* function: rp_get_leading_ws
 def rp_get_leading_ws(c, lines, tabWidth):
     """Compute and return indents and leading_ws."""
     # c = self
@@ -937,7 +938,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         if not tail and ins < len(s):
             ins += 1
         # Stay in the paragraph.
-        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+        body.onBodyChanged(undoType)
     else:
         # Advance to the next paragraph.
         ins += 1  # Move past the selection.
@@ -956,7 +957,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         # w.see(ins)
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
-#@+node:ekr.20171123135625.48: *3* def rp_wrap_all_lines
+#@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
     trailingNL = lines and lines[-1].endswith('\n')
@@ -995,7 +996,7 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     result = '\n'.join(paddedResult)
     if trailingNL: result = result + '\n'
     return result
-#@+node:ekr.20171123135625.44: *3* def startsParagraph
+#@+node:ekr.20171123135625.44: *3* function: startsParagraph
 def startsParagraph(s):
     """Return True if line s starts a paragraph."""
     if not s.strip():
