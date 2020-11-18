@@ -12,13 +12,15 @@ Usage:
 Create headline like this:
 @anki <card title>
 
-- Create three children called @anki front, @anki back, @anki deck
+- Create three children called `@anki front`, `@anki back`, `@anki deck`
 
-- @anki front contains the front of the flash card
+- `@anki front` contains the front of the flash card
 
-- @anki back contains the back of the flash card
+- `@anki back` contains the back of the flash card
 
-- @anki deck specifies the deck for this flash card
+- `@anki deck` specifies the deck for this flash card
+
+- [OPTIONAL] `@anki tag` contains the tags for the card, comma separated
 
 Select any of these nodes (@anki, @anki front, @anki back), do `alt-x act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child to `@anki` called `@anki error` is populated with the relevant error details.
 '''
