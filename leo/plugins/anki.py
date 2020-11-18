@@ -104,6 +104,7 @@ def anki_act_on_node(c, p, event):
     deck = None
     front = None
     back = None
+    tag = None
     for child in p.children():
         if child.h.strip() == '@anki deck':
             deck = child.b 
@@ -116,6 +117,9 @@ def anki_act_on_node(c, p, event):
         
         elif child.h.strip() == '@anki id':
             card_id = int(child.b)
+
+        elif child.h.strip() == '@anki tag':
+            tag = child.b
             
     # new card to be added
     if card_id is None:
@@ -125,7 +129,15 @@ def anki_act_on_node(c, p, event):
         # check if deck needs to be created
         anki_deck_check(deck)
  
-        result = _invoke('addNote', note={'deckName': deck, 'modelName' : 'Basic', 'fields': {'Front' : front, 'Back' : back}})
+        result = _invoke('addNote', note={
+            'deckName': deck, 
+            'modelName' : 'Basic', 
+            'fields': {
+                'Front' : front, 
+                'Back' : back
+            },
+            'tags' : tag.split(",")
+        })
         # result id needs to be stored for future updates
         card_id_node = p.insertAsLastChild() 
         card_id_node.h = '@anki id'
@@ -137,4 +149,13 @@ def anki_act_on_node(c, p, event):
         
         # front, back, deck all available
         # deck also will be present
-        result = _invoke('updateNoteFields', note={'deckName': deck, 'modelName' : 'Basic', "id" : int(card_id), 'fields': {'Front' : front, 'Back' : back}})
+        result = _invoke('updateNoteFields', note={
+            'deckName': deck, 
+            'modelName' : 'Basic', 
+            'id' : int(card_id), 
+            'fields': {
+                'Front' : front, 
+                'Back' : back
+            },
+            'tags' : tag.split(",")
+        })
