@@ -19134,8 +19134,10 @@ The @string undo_granularity setting controls the granularity of undo. There are
     Select all text in the text pane.
 
 These commands work with either headline or body text.</t>
-<t tx="ekr.20150318110552.22">``indent-region (Tab)`` 
-    Shift selected lines right one tab position. Inserts one unit of indentation if no text is selected.
+<t tx="ekr.20150318110552.22">``always-indent-region``
+     Shift selected lines right one tab position. Inserts one unit of indentation if no text is selected.
+``indent-region (Tab)`` 
+    Shift selected lines right one tab position. Inserts a tab (or spaces) if no text is selected.
 ``unindent-region (Shift-Tab)``
     Shifts selected lines left one tab position. Deletes one unit of indentation if no text is selected.
     
