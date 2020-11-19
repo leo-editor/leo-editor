@@ -623,6 +623,8 @@ class LeoBody:
         body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
         #
         # Init data.
+        newSel = w.getSelectionRange()
+        newInsert = w.getInsertPoint()
         newText = w.getAllText()  # getAllText converts to unicode.
         if oldText:
             p.v.b = oldText
@@ -634,11 +636,21 @@ class LeoBody:
             return
         #
         # "Before" snapshot.
+        #
+        # #1743: Restore oldSel for u.beforeChangeBody
+        if oldSel and newSel and oldSel != newSel:
+            i, j = oldSel
+            w.setSelectionRange(i, j, insert=j)
         bunch = u.beforeChangeBody(p)
+        #
+        # #1743: Restore newSel if necessary.
+        if oldSel and newSel and oldSel != newSel:
+            i, j = newSel
+            w.setSelectionRange(i, j, insert=newInsert)
         #
         # Careful. Don't redraw unless necessary.
         p.v.b = newText  # p.b would cause a redraw.
-        p.v.insertSpot = w.getInsertPoint()
+        p.v.insertSpot = newInsert
         if p.isDirty():
             redraw_flag = False
         else:

@@ -440,7 +440,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
-            # Huh?
             oldSel = i, j
             c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
         return val, do_placeholder
