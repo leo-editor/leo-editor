@@ -294,11 +294,9 @@ def dedentBody(self, event=None):
         i = j = len(head) + ins
     else:
         i = len(head)
-        ### j = ins = max(i, len(head) + len(middle) - 1)
         j = len(head) + len(middle)
         if middle.endswith('\n'): # #1742.
             j -= 1
-        ### ins = j
     #
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
@@ -687,7 +685,6 @@ def indentBody(self, event=None):
         i = j = len(head) + i
     else:
         i = len(head)
-        ### j = max(i, len(head) + len(middle) - 1)
         j = len(head) + len(middle)
         if middle.endswith('\n'):  # #1742.
             j -= 1
