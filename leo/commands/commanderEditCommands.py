@@ -290,14 +290,18 @@ def dedentBody(self, event=None):
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
-        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        i = j = ins = len(head) + i
+        ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        i = j = len(head) + ins
     else:
         i = len(head)
-        j = ins = max(i, len(head) + len(middle) - 1)
+        ### j = ins = max(i, len(head) + len(middle) - 1)
+        j = len(head) + len(middle)
+        if middle.endswith('\n'): # #1742.
+            j -= 1
+        ### ins = j
     #
     # Set the selection range and scroll position.
-    w.setSelectionRange(i, j, insert=ins)
+    w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
     u.afterChangeBody(p, 'Unindent Region', bunch)
 #@+node:ekr.20171123135625.36: ** c_ec.deleteComments
@@ -680,13 +684,16 @@ def indentBody(self, event=None):
     if sel_1 == sel_2:
         line = result[0]
         i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        i = j = ins = len(head) + i
+        i = j = len(head) + i
     else:
         i = len(head)
-        j = ins = max(i, len(head) + len(middle) - 1)
+        ### j = max(i, len(head) + len(middle) - 1)
+        j = len(head) + len(middle)
+        if middle.endswith('\n'):  # #1742.
+            j -= 1
     #
     # Set the selection range and scroll position.
-    w.setSelectionRange(i, j, insert=ins)
+    w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
     #
     # "after" snapshot.

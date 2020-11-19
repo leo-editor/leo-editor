@@ -993,14 +993,16 @@ class Commands:
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self):
         """
-        Return head,lines,tail where:
+        Return (head, lines, tail, oldSel, oldYview).
 
-        before is string containg all the lines before the selected text
-        (or the text before the insert point if no selection) lines is a
-        list of lines containing the selected text (or the line containing
-        the insert point if no selection) after is a string all lines
-        after the selected text (or the text after the insert point if no
-        selection)
+        - head: string containg all the lines before the selected text (or the
+          text before the insert point if no selection)
+        - lines: list of lines containing the selected text
+          (or the line containing the insert point if no selection)
+        - after: string containing all lines after the selected text
+          (or the text after the insert point if no  selection)
+        - oldSel: tuple containing the old selection range, or None.
+        - oldYview: int containing the old y-scroll value, or None.
         """
         c = self
         body = c.frame.body
@@ -1011,9 +1013,9 @@ class Commands:
         lines = g.splitLines(s)  # Retain the newlines of each line.
         # Expand the selection.
         i = len(head)
-        j = max(i, len(head) + len(s) - 1)
+        j = len(head) + len(s)
         oldSel = i, j
-        return head, lines, tail, oldSel, oldVview  # string,list,string,tuple.
+        return head, lines, tail, oldSel, oldVview  # string,list,string,tuple,int.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
     def getTabWidth(self, p):
         """Return the tab width in effect at p."""
