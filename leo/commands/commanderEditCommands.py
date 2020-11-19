@@ -291,12 +291,12 @@ def dedentBody(self, event=None):
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
-        i, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
-        i = j = len(head) + i
+        ins, width = g.skip_leading_ws_with_indent(line, 0, tab_width)
+        i = j = len(head) + ins
     else:
         i = len(head)
         j = len(head) + len(middle)
-        if middle.endswith('\n'):
+        if middle.endswith('\n'): # #1742.
             j -= 1
     #
     # Set the selection range and scroll position.
@@ -687,7 +687,7 @@ def alwaysIndentBody(self, event=None):
     else:
         i = len(head)
         j = len(head) + len(middle)
-        if middle.endswith('\n'):
+        if middle.endswith('\n'):  # #1742.
             j -= 1
     #
     # Set the selection range and scroll position.
