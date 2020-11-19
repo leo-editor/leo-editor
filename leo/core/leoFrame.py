@@ -603,6 +603,9 @@ class LeoBody:
         if i == j:
             i, j = g.getLine(s, i)
         else:
+            # #1742: Move j back if it is at the start of a line.
+            if j > i and j > 0 and s[j-1] == '\n':
+                j -= 1
             i, junk = g.getLine(s, i)
             junk, j = g.getLine(s, j)
         before = g.checkUnicode(s[0:i])
