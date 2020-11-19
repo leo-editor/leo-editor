@@ -687,11 +687,7 @@ def alwaysIndentBody(self, event=None):
     else:
         i = len(head)
         j = len(head) + len(middle)
-<<<<<<< HEAD
         if middle.endswith('\n'):  # #1742.
-=======
-        if middle.endswith('\n'):
->>>>>>> devel
             j -= 1
     #
     # Set the selection range and scroll position.
