@@ -284,8 +284,9 @@ def dedentBody(self, event=None):
     #
     # Set p.b and w's text first.
     middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
+    all = head + middle + tail
+    p.b = all # Sets dirty and changed bits.
+    w.setAllText(all)
     #
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
@@ -643,14 +644,13 @@ def goToPrevHistory(self, event=None):
     """Go to the previous node in the history list."""
     c = self
     c.nodeHistory.goPrev()
-#@+node:ekr.20171123135625.30: ** c_ec.indentBody (indent-region)
-@g.commander_command('indent-region')
-def indentBody(self, event=None):
+#@+node:ekr.20171123135625.30: ** c_ec.always/indentBody (indent-region & always-indent-region)
+@g.commander_command('always-indent-region')
+def alwaysIndentBody(self, event=None):
     """
-    The indent-region command indents each line of the selected body text,
-    or each line of a node if there is no selected text. The @tabwidth directive
-    in effect determines amount of indentation. (not yet) A numeric argument
-    specifies the column to indent to.
+    The always-indent-region command indents each line of the selected body
+    text. The @tabwidth directive in effect determines amount of
+    indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
@@ -675,8 +675,9 @@ def indentBody(self, event=None):
     #
     # Set p.b and w's text first.
     middle = ''.join(result)
-    p.b = head + middle + tail  # Sets dirty and changed bits.
-    w.setAllText(head + middle + tail)
+    all = head + middle + tail
+    p.b = all # Sets dirty and changed bits.
+    w.setAllText(all)
     #
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
@@ -686,7 +687,11 @@ def indentBody(self, event=None):
     else:
         i = len(head)
         j = len(head) + len(middle)
+<<<<<<< HEAD
         if middle.endswith('\n'):  # #1742.
+=======
+        if middle.endswith('\n'):
+>>>>>>> devel
             j -= 1
     #
     # Set the selection range and scroll position.
@@ -695,6 +700,26 @@ def indentBody(self, event=None):
     #
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
+
+@g.commander_command('indent-region')
+def indentBody(self, event=None):
+    """
+    The indent-region command indents each line of the selected body text.
+    Unlike the always-indent-region command, this command inserts a tab
+    (soft or hard) when there is no selected text.
+    
+    The @tabwidth directive in effect determines amount of indentation.
+    """
+    c, w = self, self.frame.body.wrapper
+    # # 1739. Special case for a *plain* tab bound to indent-region.
+    sel_1, sel_2 = w.getSelectionRange()
+    if sel_1 == sel_2:
+        char = getattr(event, 'char', None)
+        stroke = getattr(event, 'stroke', None)
+        if char == '\t' and stroke and stroke.isPlainKey():
+            c.editCommands.selfInsertCommand(event)  # Handles undo.
+            return
+    c.alwaysIndentBody(event)
 #@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
@@ -816,7 +841,7 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
         indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
         result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
         rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.43: *3* def ends_paragraph & single_line_paragraph
+#@+node:ekr.20171123135625.43: *3* function: ends_paragraph & single_line_paragraph
 def ends_paragraph(s):
     """Return True if s is a blank line."""
     return not s.strip()
@@ -824,7 +849,7 @@ def ends_paragraph(s):
 def single_line_paragraph(s):
     """Return True if s is a single-line paragraph."""
     return s.startswith('@') or s.strip() in ('"""', "'''")
-#@+node:ekr.20171123135625.42: *3* def find_bound_paragraph
+#@+node:ekr.20171123135625.42: *3* function: find_bound_paragraph
 def find_bound_paragraph(c):
     """
     Return the lines of a paragraph to be reformatted.
@@ -873,7 +898,7 @@ def find_bound_paragraph(c):
         tail = g.joinLines(tail_lines)
         return head, result, tail  # string, list, string
     return None, None, None
-#@+node:ekr.20171123135625.45: *3* def rp_get_args
+#@+node:ekr.20171123135625.45: *3* function: rp_get_args
 def rp_get_args(c):
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
@@ -888,7 +913,7 @@ def rp_get_args(c):
     oldSel = w.getSelectionRange()
     oldYview = w.getYScrollPosition()
     return oldSel, oldYview, original, pageWidth, tabWidth
-#@+node:ekr.20171123135625.46: *3* def rp_get_leading_ws
+#@+node:ekr.20171123135625.46: *3* function: rp_get_leading_ws
 def rp_get_leading_ws(c, lines, tabWidth):
     """Compute and return indents and leading_ws."""
     # c = self
@@ -917,7 +942,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         if not tail and ins < len(s):
             ins += 1
         # Stay in the paragraph.
-        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+        body.onBodyChanged(undoType)
     else:
         # Advance to the next paragraph.
         ins += 1  # Move past the selection.
@@ -936,7 +961,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         # w.see(ins)
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
-#@+node:ekr.20171123135625.48: *3* def rp_wrap_all_lines
+#@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
     trailingNL = lines and lines[-1].endswith('\n')
@@ -975,7 +1000,7 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     result = '\n'.join(paddedResult)
     if trailingNL: result = result + '\n'
     return result
-#@+node:ekr.20171123135625.44: *3* def startsParagraph
+#@+node:ekr.20171123135625.44: *3* function: startsParagraph
 def startsParagraph(s):
     """Return True if line s starts a paragraph."""
     if not s.strip():
