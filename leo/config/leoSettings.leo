@@ -1192,6 +1192,7 @@
 <v t="ekr.20131213135427.22212"><vh>@item rectangle-&amp;yank</vh></v>
 </v>
 <v t="ekr.20180403104732.1"><vh>@menu &amp;Indent Text</vh>
+<v t="ekr.20201118060235.1"><vh>@item &amp;always-indent-region</vh></v>
 <v t="ekr.20131213135427.22282"><vh>@item indent-ri&amp;gidly</vh></v>
 <v t="ekr.20131213135427.22280"><vh>@item &amp;indent-region</vh></v>
 <v t="ekr.20131213135427.22281"><vh>@item indent-r&amp;elative</vh></v>
@@ -1589,6 +1590,7 @@
 <v t="ekr.20080515053412.6"><vh>@item &amp;</vh></v>
 <v t="ekr.20080515053412.7"><vh>@item -</vh></v>
 <v t="ekr.20080515053412.8"><vh>@menu Block Operations</vh>
+<v t="ekr.20201118055941.1"><vh>@item always-indent-region</vh></v>
 <v t="ekr.20080515053412.9"><vh>@item indent-region</vh></v>
 <v t="ekr.20080515053412.10"><vh>@item dedent-region</vh></v>
 <v t="ekr.20080515053412.11"><vh>@item -</vh></v>
@@ -2327,6 +2329,13 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20070224073109.1"></v>
+<v t="ekr.20201118060153.1"><vh>Found:indent-region</vh>
+<v t="ekr.20131213135427.22280"></v>
+<v t="ekr.20201118055941.1"></v>
+<v t="ekr.20080515053412.9"></v>
+<v t="ekr.20131213135427.22283"></v>
+<v t="ekr.20060925060533.4"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3602,6 +3611,7 @@ paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
 promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
+always-indent-region                = None
 backward-delete-char                !text = BackSpace
 backward-delete-char                = Shift-BackSpace
 backward-delete-word                = Ctrl-BackSpace
@@ -4374,7 +4384,7 @@ probably find that your bindings are much easier to understand.
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
-<t tx="ekr.20080515053412.10">Dedent</t>
+<t tx="ekr.20080515053412.10"></t>
 <t tx="ekr.20080515053412.11"></t>
 <t tx="ekr.20080515053412.12"></t>
 <t tx="ekr.20080515053412.13"></t>
@@ -4459,7 +4469,7 @@ right clicks in the body pane.
 # This will include the contents of @popup edit-text </t>
 <t tx="ekr.20080515053412.7"></t>
 <t tx="ekr.20080515053412.8"></t>
-<t tx="ekr.20080515053412.9">Indent</t>
+<t tx="ekr.20080515053412.9"></t>
 <t tx="ekr.20080703111151.12"># bold words in forth
 
 forth_keyword3_family = None
@@ -6556,6 +6566,7 @@ add-comments                        = None
 add-editor                          = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
+always-indent-region                = None
 auto-complete                       = None
 auto-complete-force                 = None
 back-char                           = None
@@ -11930,6 +11941,13 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201021110839.1">Name of external asciidoctor processor program
 </t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
+<t tx="ekr.20201118055941.1"></t>
+<t tx="ekr.20201118060153.1">@nosearch
+
+# flattened, ignore-case, head, body
+
+# found 5 nodes</t>
+<t tx="ekr.20201118060235.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
