@@ -1684,6 +1684,7 @@ class NullFrame(LeoFrame):
         assert self.c
         self.wrapper = None
         self.iconBar = NullIconBarClass(self.c, self)
+        self.initComplete = True
         self.isNullFrame = True
         self.outerFrame = None
         self.ratio = self.secondary_ratio = 0.5
