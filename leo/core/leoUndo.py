@@ -421,6 +421,11 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
+        # #1749.
+        if not p.isDirty():
+            p.setDirty()  # Do not call p.v.setDirty!
+        if not c.isChanged():
+            c.setChanged()
         # Do *not* recolor or redraw here!
         w.setFocus()
         
@@ -1158,10 +1163,18 @@ class Undoer:
                 i, j = j, i
             p.v.selectionStart, p.v.selectionLength = (i, j - i)
         c.recolor()
-        if not c.changed and c.frame.initComplete:
-            c.setChanged()
+        # #1749.
+        redraw_flag = False
+        if c.frame.initComplete:
+            if not p.isDirty():
+                p.setDirty()  # Do not call p.v.setDirty!
+                redraw_flag = True
+            if not c.isChanged():
+                c.setChanged()
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
+        if redraw_flag:
+            c.redraw()
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(self,
         old_lines, old_row, old_col, old_ch,
