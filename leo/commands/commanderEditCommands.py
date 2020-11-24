@@ -938,8 +938,10 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         if not tail and ins < len(s):
             ins += 1
         # Stay in the paragraph.
-        body.onBodyChanged(undoType)
-    else:
+        body.onBodyChanged(undoType,
+            oldSel=oldSel, oldText=original, oldYview=oldYview)
+    ### else:
+    if 1:
         # Advance to the next paragraph.
         ins += 1  # Move past the selection.
         while ins < len(s):
