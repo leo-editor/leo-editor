@@ -1694,7 +1694,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             newText = w.getAllText()  # Converts to unicode.
             u.setUndoTypingParams(p, undoType, oldText, newText,
                 oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
-
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):

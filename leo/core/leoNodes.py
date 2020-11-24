@@ -2262,7 +2262,12 @@ class VNode:
         v.statusBits &= ~v.dirtyBit
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self):
-        """Set the vnode dirty bit."""
+        """
+        Set the vnode dirty bit.
+        
+        This method is fast, but dangerous. Unlike p.setDirty, this method does
+        not call v.setAllAncestorAtFileNodesDirty.
+        """
         self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit

@@ -245,22 +245,24 @@ class backlinkController:
 
         if dir_ == 'url':
             self.linkUrl()
+        
         elif not self.linkMark or not self.c.positionExists(self.linkMark):
             self.showMessage('Link mark not specified or no longer valid', color='red')
             return
 
-        if dir_ == "from":
+        else: # dir_ in ['from', 'to', 'undirected']
             p = self.linkMark
+            
             if newChild:
                 p = self.linkMark.insertAsLastChild()
                 p.h = self.c.p.h
-            self.link(self.c.p, p)
-        elif dir_ == 'to':
-            p = self.linkMark
-            if newChild:
-                p = self.linkMark.insertAsLastChild()
-                p.h = self.c.p.h
-            self.link(p, self.c.p)
+
+            if dir_ == 'from':
+                self.link(self.c.p, p)
+            elif dir_ == 'to':
+                self.link(p, self.c.p)
+            else:
+                self.link(p, self.c.p, 'undirected')
 
         self.updateTabInt()
         self.c.redraw()
@@ -687,7 +689,10 @@ class backlinkController:
                 self.showMessage('Click a link to follow it', optional=True)
                 # pylint: disable=cell-var-from-loop
                 for i in dests:
-                    
+
+                    if i[1] is None: # destination node is deleted
+                        continue
+
                     def goThere(where = i[1]):
                         c.selectPosition(where)
 

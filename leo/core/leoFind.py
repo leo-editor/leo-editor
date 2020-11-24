@@ -547,7 +547,8 @@ class LeoFind:
         # Set ancestor @<file> nodes by brute force.
         for p in c.all_positions():
             if (
-                p.anyAtFileNodeName() and not p.v.isDirty()
+                p.anyAtFileNodeName()
+                and not p.v.isDirty()
                 and any([p2.v.isDirty() for p2 in p.subtree()])
             ):
                 p.setDirty()
@@ -1193,7 +1194,8 @@ class LeoFind:
                     return
             else:
                 # Switch to the replace command.
-                if self.findAllFlag: self.changeAllFlag = True
+                if self.findAllFlag:
+                    self.changeAllFlag = True
                 k.getArgEscapeFlag = False
                 self.setupSearchPattern(k.arg)
                 self.setReplaceString1(event=None)
@@ -1419,8 +1421,8 @@ class LeoFind:
     #@+node:ekr.20031218072017.3069: *4* find.changeAll & helpers
     def changeAll(self):
 
-        c = self.c; u = c.undoer; undoType = 'Replace All'
-        current = c.p
+        c, current, u = self.c, self.c.p, self.c.undoer
+        undoType = 'Replace All'
         t1 = time.process_time()
         if not self.checkArgs():
             return
@@ -1433,13 +1435,13 @@ class LeoFind:
         # indicated as \n in target string.
         if not self.find_text:
             return
+        if not self.search_headline and not self.search_body:
+            return
         self.change_text = self.replaceBackSlashes(self.change_text)
         if self.pattern_match:
             ok = self.precompilePattern()
             if not ok:
                 return
-        if not self.search_headline and not self.search_body:
-            return
         # #1428: Honor limiters in replace-all.
         if self.node_only:
             positions = [c.p]
@@ -1491,7 +1493,7 @@ class LeoFind:
         if self.whole_word:
             return self.batchWordReplace(s)
         return self.batchPlainReplace(s)
-    #@+node:ekr.20190602151043.4: *6* batchPlainReplace
+    #@+node:ekr.20190602151043.4: *6* find.batchPlainReplace
     def batchPlainReplace(self, s):
         """
         Perform all plain find/replace on s.\
@@ -1518,7 +1520,7 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20190602151043.2: *6* batchRegexReplace
+    #@+node:ekr.20190602151043.2: *6* find.batchRegexReplace
     def batchRegexReplace(self, s):
         """
         Perform all regex find/replace on s.
@@ -1533,13 +1535,19 @@ class LeoFind:
             count += 1
             i = m.start()
             result.append(s[prev_i:i])
-            result.append(self.change_text)
+            # #1748.
+            groups = m.groups()
+            if groups:
+                change_text = self.makeRegexSubs(self.change_text, groups)
+            else:
+                change_text = self.change_text
+            result.append(change_text)
             prev_i = m.end()
         # Compute the result.
         result.append(s[prev_i:])
         s = ''.join(result)
         return count, s
-    #@+node:ekr.20190602155933.1: *6* batchWordReplace
+    #@+node:ekr.20190602155933.1: *6* find.batchWordReplace
     def batchWordReplace(self, s):
         """
         Perform all whole word find/replace on s.
@@ -1569,7 +1577,7 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20031218072017.3070: *4* find.changeSelection
+    #@+node:ekr.20031218072017.3070: *4* find.changeSelection & helper
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
 
