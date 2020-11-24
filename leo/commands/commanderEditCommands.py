@@ -933,32 +933,35 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     j = ins = max(i, len(head) + len(result) - 1)
     w.setAllText(s)  # Destroys coloring.
     changed = original != head + result + tail
+    #
+    # #1748: Always advance to the next paragraph.
+    ins += 1
+    while ins < len(s):
+        i, j = g.getLine(s, ins)
+        line = s[i:j]
+        # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+        if line.isspace():
+            ins = j + 1
+        else:
+            ins = i
+            break
+    ins = min(ins, len(s))
+    w.setSelectionRange(ins, ins, insert=ins)
+    #
+    # Show more lines, if they exist.
+    for z in range(4):
+        if ins >= len(s):
+            break
+        i, j = g.getLine(s, ins)
+        ins = j
+    w.see(min(ins, len(s)))  # New in 6.4. w.see works!
+    #
+    # Finish.
     if changed:
-        # Adjust when newline follows the reformatted paragraph.
-        if not tail and ins < len(s):
-            ins += 1
-        # Stay in the paragraph.
         body.onBodyChanged(undoType,
             oldSel=oldSel, oldText=original, oldYview=oldYview)
-    ### else:
-    if 1:
-        # Advance to the next paragraph.
-        ins += 1  # Move past the selection.
-        while ins < len(s):
-            i, j = g.getLine(s, ins)
-            line = s[i:j]
-            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace():
-                ins = j + 1
-            else:
-                ins = i
-                break
-        c.recolor()
-    w.setSelectionRange(ins, ins, insert=ins)
-    # 2011/10/26: Calling see does more harm than good.
-        # w.see(ins)
-    # Make sure we never scroll horizontally.
-    w.setXScrollPosition(0)
+    w.setXScrollPosition(0)  # Never scroll horizontally.
+    c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""

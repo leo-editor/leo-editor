@@ -90,6 +90,11 @@
 <v t="ekr.20191215093835.15"></v>
 </v>
 </v>
+<v t="ekr.20201124161941.1"><vh>No longer used</vh>
+<v t="ekr.20100830114008.5967"><vh>##@common leoEditCommands test code</vh>
+<v t="ekr.20100830114008.5968"><vh>runEditCommandTest</vh></v>
+</v>
+</v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -209,7 +214,6 @@
 <v t="ekr.20110118082508.3800"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20110118082508.3803"><vh>after sel=4.0,4.0</vh></v>
 </v>
-<v t="ekr.20201123191053.1"><vh>-- after sel=2.21,2.21</vh></v>
 <v t="ekr.20110118082508.3808"><vh>@test reformat-paragraph list 2 of 5</vh>
 <v t="ekr.20110118082508.3809"><vh>work</vh></v>
 <v t="ekr.20110118082508.3810"><vh>before sel=4.0,4.0</vh></v>
@@ -220,19 +224,16 @@
 <v t="ekr.20110118082508.3818"><vh>before sel=7.0,7.0</vh></v>
 <v t="ekr.20110118082508.3819"><vh>after sel=10.0,10.0</vh></v>
 </v>
-<v t="ekr.20201123191236.1"><vh>-- after sel=8.29,8.29</vh></v>
 <v t="ekr.20110118082508.3824"><vh>@test reformat-paragraph list 4 of 5</vh>
 <v t="ekr.20110118082508.3825"><vh>work</vh></v>
 <v t="ekr.20110118082508.3826"><vh>before sel=10.0,10.0</vh></v>
 <v t="ekr.20201123191334.1"><vh>after sel=13.0,13.0</vh></v>
 </v>
-<v t="ekr.20110118082508.3827"><vh>-- after sel=11.28,11.28</vh></v>
-<v t="ekr.20110118082508.3832"><vh>###@test reformat-paragraph list 5 of 5</vh>
+<v t="ekr.20110118082508.3832"><vh>@test reformat-paragraph list 5 of 5</vh>
 <v t="ekr.20110118082508.3833"><vh>work</vh></v>
 <v t="ekr.20110118082508.3834"><vh>before sel=13.0,13.0</vh></v>
 <v t="ekr.20110118082508.3835"><vh>after sel=15.1,15.1</vh></v>
 </v>
-<v t="ekr.20201123191608.1"><vh>-- after sel=14.19,14.19</vh></v>
 <v t="ekr.20131103084038.4274"><vh>@test reformat-paragraph new code 1 of 8</vh>
 <v t="ekr.20131103084038.4275"><vh>work</vh></v>
 <v t="ekr.20131103084038.4276"><vh>before sel=1.0,1.0</vh></v>
@@ -248,21 +249,20 @@
 <v t="ekr.20131103084038.4292"><vh>before sel=3.1,4.1</vh></v>
 <v t="ekr.20131103084038.4293"><vh>after sel=4.0,4.0</vh></v>
 </v>
-<v t="ekr.20201123192211.1"><vh>-- after sel=3.26,3.26</vh></v>
 <v t="ekr.20131103084038.4298"><vh>@test reformat-paragraph new code 4 of 8</vh>
 <v t="ekr.20131103084038.4299"><vh>work</vh></v>
 <v t="ekr.20131103084038.4300"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4301"><vh>after sel=2.10,2.10</vh></v>
+<v t="ekr.20131103084038.4301"><vh>after sel=3.0,3.0</vh></v>
 </v>
 <v t="ekr.20131103084038.4306"><vh>@test reformat-paragraph new code 5 of 8</vh>
 <v t="ekr.20131103084038.4307"><vh>work</vh></v>
 <v t="ekr.20131103084038.4308"><vh>before sel=1.0,2.0</vh></v>
-<v t="ekr.20131103084038.4309"><vh>after sel=2.11,2.11</vh></v>
+<v t="ekr.20131103084038.4309"><vh>after sel=3.0,3.0</vh></v>
 </v>
 <v t="ekr.20131103084038.4314"><vh>@test reformat-paragraph new code 6 of 8</vh>
 <v t="ekr.20131103084038.4315"><vh>work</vh></v>
 <v t="ekr.20131103084038.4316"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4317"><vh>after sel=2.11,2.11</vh></v>
+<v t="ekr.20131103084038.4317"><vh>after sel=4.0,4.0</vh></v>
 </v>
 <v t="ekr.20131103084038.4322"><vh>@test reformat-paragraph new code 7 of 8</vh>
 <v t="ekr.20131103084038.4323"><vh>work</vh></v>
@@ -277,35 +277,34 @@
 <v t="ekr.20110118082508.3766"><vh>@test reformat-paragraph paragraph 1 of 3</vh>
 <v t="ekr.20110118082508.3772"><vh>work</vh></v>
 <v t="ekr.20110118082508.3773"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3792"><vh>after sel=11.14,11.14</vh></v>
+<v t="ekr.20110118082508.3792"><vh>after sel=13.0,13.0</vh></v>
 </v>
 <v t="ekr.20110118082508.3779"><vh>@test reformat-paragraph paragraph 2 of 3</vh>
 <v t="ekr.20110118082508.3780"><vh>work</vh></v>
 <v t="ekr.20110118082508.3781"><vh>before sel=13.0,13.0</vh></v>
-<v t="ekr.20110118082508.3782"><vh>after sel=23.33,23.33</vh></v>
+<v t="ekr.20110118082508.3782"><vh>after sel=25.0,25.0</vh></v>
 </v>
 <v t="ekr.20110118082508.3787"><vh>@test reformat-paragraph paragraph 3 of 3</vh>
 <v t="ekr.20110118082508.3788"><vh>work</vh></v>
 <v t="ekr.20110118082508.3789"><vh>before sel=25.10,25.10</vh></v>
-<v t="ekr.20110118082508.3790"><vh>after sel=32.11,32.11</vh></v>
+<v t="ekr.20110118082508.3790"><vh>after sel=34.0,34.0</vh></v>
 </v>
 <v t="ekr.20110118082508.3730"><vh>@test reformat-paragraph simple hanging indent</vh>
 <v t="ekr.20110118082508.3745"><vh>work</vh></v>
 <v t="ekr.20110118082508.3746"><vh>before sel= 1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3747"><vh>after sel= 5.8,5.8</vh></v>
+<v t="ekr.20110118082508.3747"><vh>after sel= 7.0,7.0</vh></v>
 </v>
 <v t="ekr.20110118082508.3748"><vh>@test reformat-paragraph simple hanging indent 2</vh>
 <v t="ekr.20110118082508.3754"><vh>work</vh></v>
 <v t="ekr.20110118082508.3755"><vh>before sel=2.0,2.0</vh></v>
-<v t="ekr.20110118082508.3756"><vh>after sel=5.8,5.8</vh></v>
+<v t="ekr.20110118082508.3756"><vh>after sel=7.0,7.0</vh></v>
 </v>
 <v t="ekr.20110118082508.3757"><vh>@test reformat-paragraph simple hanging indent 3</vh>
 <v t="ekr.20110118082508.3763"><vh>work</vh></v>
 <v t="ekr.20110118082508.3764"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3765"><vh>after sel=5.8,5.8</vh></v>
+<v t="ekr.20110118082508.3765"><vh>after sel=7.0,7.0</vh></v>
 </v>
 </v>
-<v t="ekr.20061101121602.221"><vh>xxx after sel=8.33,8.33</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -768,17 +767,6 @@ emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20061101121602.221">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property--before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -1212,6 +1200,109 @@ for obj,ivar,command in table:
 if not result:
     self.skipTest('no settings')
 assert result.strip().lower()=='f1', repr(result)
+</t>
+<t tx="ekr.20100830114008.5967">@others
+</t>
+<t tx="ekr.20100830114008.5968">@
+This is an updated version of c.testManager.runEditCommandTest,
+moved here to take advantage of EKR's new common-test-code-sharing
+mechanism. It should be okay to delete the old code and replace
+all uses with:
+
+    exec(g.findTestScript(c,'@common leoEditCommands test code'))
+    runEditCommandTest(c,p)
+@c
+
+def runEditCommandTest (c,p,inHeadline=False):
+    '''
+    This is a helper for testing edit commands. It takes the name of the
+    command from the title of the test and the before and after conditions
+    from child nodes.
+
+    :param inHeadline: if True, tests the command in the headline; if False,
+    tests the command in the body.
+    '''
+    assert False, p and p.h  ###
+    tm = c.testManager
+    atTest = p.copy()
+
+    h = atTest.h
+    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+    commandName = h[6:].strip()
+    # Ignore everything after the actual command name.
+    i = g.skip_id(commandName, 0, chars='-')
+    commandName = commandName[:i]
+    assert commandName, 'empty command name'
+    command = c.commandsDict.get(commandName)
+    assert command, 'no command: %s' % (commandName)
+
+    work,before,after = tm.findChildrenOf(atTest)
+    before_h = 'before sel='
+    after_h = 'after sel='
+    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+        h2 = node.h
+        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+
+    sels = []
+    for node,h in ((before,before_h),(after,after_h)):
+        sel = node.h[len(h):].strip()
+        aList = [str(z) for z in sel.split(',')]
+        sels.append(tuple(aList))
+    sel1,sel2 = sels
+    #g.trace(repr(sels))
+
+    c.selectPosition(work)
+
+    if inHeadline:
+        c.setHeadString(work,before.b)
+        # To make the node visible, and edit the label
+        c.redrawAndEdit(work)
+        w = c.edit_widget(work)
+        g.app.gui.set_focus(c,w)
+    else:
+        w = c.frame.body.wrapper
+        c.setBodyString(work,before.b)
+
+    try:
+        #g.trace(repr(sel1[0]),repr(sel1[1]))
+        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+        if inHeadline:
+            # simulateCommand doesn't seem to work when editing a headline
+            c.k.manufactureKeyPressForCommandName(w,commandName)
+        else:
+            c.k.simulateCommand(commandName)
+
+        # Exit headline-editing mode
+        if inHeadline:
+            g.app.gui.event_generate(c,'\n','Return',w)
+
+        location = 'headline' if inHeadline else 'body'
+        s1 = work.h if inHeadline else work.b
+        s2 = after.b
+        
+        # Strip '\n' from 'before' headline, as is now done in Leo.
+        if inHeadline and s2.endswith('\n'):
+            s2 = s2[:-1]
+
+        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
+        sel3 = w.getSelectionRange()
+        ins = w.toPythonIndex(w.getInsertPoint())
+        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
+        # Convert both selection ranges to gui indices.
+        sel2_orig = sel2
+        # g.trace(w)
+        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
+        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+        c.selectPosition(atTest)
+        atTest.contract()
+        # Don't redraw.
+    finally:
+        # Make sure to restore the headline so it can be used for future tests
+        if inHeadline:
+            c.setHeadString(work,'work')
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 2016: 878 tests.
 # Nov. 2017: 916 tests, 25 skipped.
@@ -1737,21 +1828,6 @@ the "lead" paragraph.
 
   3. This is item 
      number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3827">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
@@ -2532,36 +2608,6 @@ strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 </t>
-<t tx="ekr.20201123191053.1">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20201123191236.1">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
 <t tx="ekr.20201123191334.1">This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -2577,25 +2623,6 @@ the "lead" paragraph.
 This paragraph ends the test.  It is the "final"
 paragraph.
 </t>
-<t tx="ekr.20201123191608.1">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-</t>
-<t tx="ekr.20201123192211.1">@pagewidth 40
-'''
-docstring. more docstring.
-'''
-</t>
+<t tx="ekr.20201124161941.1"></t>
 </tnodes>
 </leo_file>

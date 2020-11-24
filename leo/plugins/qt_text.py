@@ -1504,7 +1504,16 @@ class QTextEditWrapper(QTextMixin):
     def see(self, i):
         """Make sure position i is visible."""
         w = self.widget
-        w.ensureCursorVisible()
+        if 1:  # New in Leo 6.4: Honor i!
+            tc = w.textCursor()
+            old = tc.position()
+            tc.setPosition(i)
+            w.setTextCursor(tc)
+            w.ensureCursorVisible()
+            tc.setPosition(old)
+            w.setTextCursor(tc)
+        else:
+            w.ensureCursorVisible()
 
     def seeInsertPoint(self):
         """Make sure the insert point is visible."""

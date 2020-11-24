@@ -67,109 +67,6 @@ test\\unittest\\output\\outlineToNoweb.txt
 #@+node:ekr.20090529141856.4697: *5* dialog
 saveFileDialog
 test\\unittest\\output\\outlineToCweb.txt
-#@+node:ekr.20100830114008.5967: *3* @common leoEditCommands test code
-@others
-#@+node:ekr.20100830114008.5968: *4* runEditCommandTest
-@
-This is an updated version of c.testManager.runEditCommandTest,
-moved here to take advantage of EKR's new common-test-code-sharing
-mechanism. It should be okay to delete the old code and replace
-all uses with:
-
-    exec(g.findTestScript(c,'@common leoEditCommands test code'))
-    runEditCommandTest(c,p)
-@c
-
-def runEditCommandTest (c,p,inHeadline=False):
-    '''
-    This is a helper for testing edit commands. It takes the name of the
-    command from the title of the test and the before and after conditions
-    from child nodes.
-
-    :param inHeadline: if True, tests the command in the headline; if False,
-    tests the command in the body.
-    '''
-
-    tm = c.testManager
-    atTest = p.copy()
-
-    h = atTest.h
-    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
-    commandName = h[6:].strip()
-    # Ignore everything after the actual command name.
-    i = g.skip_id(commandName, 0, chars='-')
-    commandName = commandName[:i]
-    assert commandName, 'empty command name'
-    command = c.commandsDict.get(commandName)
-    assert command, 'no command: %s' % (commandName)
-
-    work,before,after = tm.findChildrenOf(atTest)
-    before_h = 'before sel='
-    after_h = 'after sel='
-    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-        h2 = node.h
-        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-
-    sels = []
-    for node,h in ((before,before_h),(after,after_h)):
-        sel = node.h[len(h):].strip()
-        aList = [str(z) for z in sel.split(',')]
-        sels.append(tuple(aList))
-    sel1,sel2 = sels
-    #g.trace(repr(sels))
-
-    c.selectPosition(work)
-
-    if inHeadline:
-        c.setHeadString(work,before.b)
-        # To make the node visible, and edit the label
-        c.redrawAndEdit(work)
-        w = c.edit_widget(work)
-        g.app.gui.set_focus(c,w)
-    else:
-        w = c.frame.body.wrapper
-        c.setBodyString(work,before.b)
-
-    try:
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        if inHeadline:
-            # simulateCommand doesn't seem to work when editing a headline
-            c.k.manufactureKeyPressForCommandName(w,commandName)
-        else:
-            c.k.simulateCommand(commandName)
-
-        # Exit headline-editing mode
-        if inHeadline:
-            g.app.gui.event_generate(c,'\n','Return',w)
-
-        location = 'headline' if inHeadline else 'body'
-        s1 = work.h if inHeadline else work.b
-        s2 = after.b
-        
-        # Strip '\n' from 'before' headline, as is now done in Leo.
-        if inHeadline and s2.endswith('\n'):
-            s2 = s2[:-1]
-
-        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        ins = w.toPythonIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        # g.trace(w)
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-        # Don't redraw.
-    finally:
-        # Make sure to restore the headline so it can be used for future tests
-        if inHeadline:
-            c.setHeadString(work,'work')
 #@+node:ekr.20111006072734.3640: *3* @common x-marked-nodes test code
 @others
 #@+node:ekr.20111006072734.3641: *4* setup_test
@@ -10521,21 +10418,6 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20201123191053.1: *6* -- after sel=2.21,2.21
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
 #@+node:ekr.20110118082508.3808: *6* @test reformat-paragraph list 2 of 5
 # Required when running tests externally
 @language plain
@@ -10640,21 +10522,6 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20201123191236.1: *6* -- after sel=8.29,8.29
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
 #@+node:ekr.20110118082508.3824: *6* @test reformat-paragraph list 4 of 5
 # Required when running tests externally
 @language plain
@@ -10707,22 +10574,7 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3827: *6* -- after sel=11.28,11.28
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-#@+node:ekr.20110118082508.3832: *6* ###@test reformat-paragraph list 5 of 5
+#@+node:ekr.20110118082508.3832: *6* @test reformat-paragraph list 5 of 5
 # Required when running tests externally
 @language plain
 @pagewidth 40
@@ -10760,21 +10612,6 @@ the "lead" paragraph.
 This paragraph ends the test.  It is the "final"
 paragraph.
 #@+node:ekr.20110118082508.3835: *7* after sel=15.1,15.1
-This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-#@+node:ekr.20201123191608.1: *6* -- after sel=14.19,14.19
 This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -10856,11 +10693,6 @@ more docstring.
 '''
 docstring. more docstring.
 '''
-#@+node:ekr.20201123192211.1: *6* -- after sel=3.26,3.26
-@pagewidth 40
-'''
-docstring. more docstring.
-'''
 #@+node:ekr.20131103084038.4298: *6* @test reformat-paragraph new code 4 of 8
 # Required when running tests externally
 @language plain
@@ -10876,7 +10708,7 @@ A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Line 11.
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4301: *7* after sel=2.10,2.10
+#@+node:ekr.20131103084038.4301: *7* after sel=3.0,3.0
 - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
   Line 11.
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -10895,7 +10727,7 @@ A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
   Line 22.
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4309: *7* after sel=2.11,2.11
+#@+node:ekr.20131103084038.4309: *7* after sel=3.0,3.0
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
    Line 22.
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -10916,7 +10748,7 @@ c.testManager.runEditCommandTest(p)
 Line 32.
 
 2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4317: *7* after sel=2.11,2.11
+#@+node:ekr.20131103084038.4317: *7* after sel=4.0,4.0
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
    Line 32.
 
@@ -10995,7 +10827,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3792: *7* after sel=11.14,11.14
+#@+node:ekr.20110118082508.3792: *7* after sel=13.0,13.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11066,7 +10898,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3782: *7* after sel=23.33,23.33
+#@+node:ekr.20110118082508.3782: *7* after sel=25.0,25.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11164,7 +10996,7 @@ strengthen local safety programs.
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3790: *7* after sel=32.11,32.11
+#@+node:ekr.20110118082508.3790: *7* after sel=34.0,34.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11219,7 +11051,7 @@ Honor this line that has a hanging indentation, please.  Hanging
   indentation is valuable for lists of all kinds.  But it is tricky to get right.
 
 Next paragraph.
-#@+node:ekr.20110118082508.3747: *7* after sel= 5.8,5.8
+#@+node:ekr.20110118082508.3747: *7* after sel= 7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
@@ -11248,7 +11080,7 @@ Honor this line that has
     indentation is valuable for lists of all kinds.  But it is tricky to get right.
 
 Next paragraph.
-#@+node:ekr.20110118082508.3756: *7* after sel=5.8,5.8
+#@+node:ekr.20110118082508.3756: *7* after sel=7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
@@ -11280,7 +11112,7 @@ Honor this line that
     it is tricky to get right.
 
 Next Paragraph.
-#@+node:ekr.20110118082508.3765: *7* after sel=5.8,5.8
+#@+node:ekr.20110118082508.3765: *7* after sel=7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
