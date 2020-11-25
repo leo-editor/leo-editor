@@ -1014,8 +1014,7 @@ class LeoFrame:
         if i != j:
             w.delete(i, j)
         w.insert(i, s)
-        # #1754:
-        w.see(min(len(w.getAllText()), i + len(s) + 2))
+        w.see(i + len(s) + 2)
         if wname.startswith('body'):
             if self.cursorStay:
                 if tCurPosition == j:
