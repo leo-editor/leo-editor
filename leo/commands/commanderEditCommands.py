@@ -1022,6 +1022,40 @@ def startsParagraph(s):
     else:
         val = s.startswith('@') or s.startswith('-')
     return val
+#@+node:ekr.20201124191844.1: ** c_ec.reformatSelection
+@g.commander_command('reformat-selection')
+def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
+    """
+    Reformat the selected text, as in reformat-paragraph, but without
+    expanding the selection past the selected lines.
+    """
+    body, c, w = self.frame.body, self, self.frame.body.wrapper
+    undoType = 'reformat-selection'
+    if g.app.batchMode:
+        c.notValidInBatchMode(undoType)
+        return
+    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
+    head, middle, tail = c.frame.body.getSelectionLines()
+    lines = g.splitLines(middle)
+    if not lines:
+        return
+    indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+    result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+    s = head + result + tail
+    if s == original:
+        return
+    #
+    # Update the text and the selection.
+    w.setAllText(s)  # Destroys coloring.
+    i = len(head)
+    j = max(i, len(head) + len(result) - 1)
+    j = min(j, len(s))
+    w.setSelectionRange(i, j, insert=j)
+    #
+    # Finish.
+    body.onBodyChanged(undoType, oldSel=oldSel, oldText=original, oldYview=oldYview)
+    w.setXScrollPosition(0)  # Never scroll horizontally.
+    c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):
