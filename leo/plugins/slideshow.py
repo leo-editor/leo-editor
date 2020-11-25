@@ -208,7 +208,7 @@ class slideshowController:
         #c.expandAllAncestors(p)
         #c.selectPosition(p)
         c.redraw(p)
-        w.see('1.0')
+        w.see(0)
         if h.startswith('@slideshow'):
             self.slideShowRoot = p.copy()
         self.slide = p.copy()
