@@ -963,7 +963,7 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     if not changed:
         return
     p.v.b = s  # p.b would cause a redraw.
-    if 1:
+    if 0:
         c.frame.body.onBodyChanged2(undoType, oldText=original)
             ### oldSel=oldSel, oldYview=oldYview)
     else: ### Still fails.
