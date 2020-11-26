@@ -1034,11 +1034,13 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     Reformat the selected text, as in reformat-paragraph, but without
     expanding the selection past the selected lines.
     """
-    body, c, w = self.frame.body, self, self.frame.body.wrapper
-    undoType = 'reformat-selection'
+    c, undoType = self, 'reformat-selection'
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
+    ### body = c.frame.body
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
+    bunch = u.beforeChangeBody(p)
     oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
     head, middle, tail = c.frame.body.getSelectionLines()
     lines = g.splitLines(middle)
@@ -1058,7 +1060,9 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     w.setSelectionRange(i, j, insert=j)
     #
     # Finish.
-    body.onBodyChanged(undoType, oldSel=oldSel, oldText=original, oldYview=oldYview)
+    p.v.b = s  # p.b would cause a redraw.
+    u.afterChangeBody(p, undoType, bunch)
+    c.updateAfterBodyChanged(p, redraw_flag=True)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
