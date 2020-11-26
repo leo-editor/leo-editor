@@ -680,39 +680,32 @@ class LeoBody:
         """
         Update Leo after the body has been changed.
         
-        This method is deprecated. New Leo commands and scripts should
-        call u.before/afterChangeBody instead.
+        ***This is a shim, for use in refactoring.***
+        
+        - Caller must set c.p.v = newText *before* calling this method.
+        - Caller must set p.v.insertSpot = newInsert *before* calling this method.
         """
         body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
         assert oldText is not None ###
         assert p.b != oldText  ###
-        if 1:
+        if 0:
             #
             # Init data.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newText = w.getAllText()  # getAllText converts to unicode.
-            if 0:
-                if oldText:
-                    p.v.b = oldText
-                    changed = oldText != newText
-                else:
-                    oldText = p.b
-                    changed = True
-                if not changed:
-                    return
         #
         # "Before" snapshot.
         #
         # #1743: Restore oldSel for u.beforeChangeBody
-        if 1:  ### To be removed.
+        if 0:  ### To be removed.
             if oldSel and newSel and oldSel != newSel:
                 i, j = oldSel
                 w.setSelectionRange(i, j, insert=j)
         bunch = u.beforeChangeBody(p)
         #
         # #1743: Restore newSel if necessary.
-        if 1:
+        if 0:
             if oldSel and newSel and oldSel != newSel:
                 i, j = newSel
                 w.setSelectionRange(i, j, insert=newInsert)
