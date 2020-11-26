@@ -620,7 +620,8 @@ class LeoBody:
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
-        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.wrapper
+        ### body = self
         #
         # Init data.
         newSel = w.getSelectionRange()
@@ -661,10 +662,11 @@ class LeoBody:
         u.afterChangeBody(p, undoType, bunch)
         #
         # Recolor the body.
-        c.frame.scanForTabWidth(p)
-        body.recolor(p)
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
+        ### Now done in afterChangeBody.
+            # c.frame.scanForTabWidth(p)
+            # body.recolor(p)
+            # if g.app.unitTesting:
+                # g.app.unitTestDict['colorized'] = True
         if not c.changed:
             c.setChanged()
         # Update editors.

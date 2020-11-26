@@ -965,7 +965,6 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
     w.setXScrollPosition(0)  # Never scroll horizontally.
-    c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
@@ -1061,7 +1060,7 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
     w.setXScrollPosition(0)  # Never scroll horizontally.
-    c.recolor()
+    ### c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):

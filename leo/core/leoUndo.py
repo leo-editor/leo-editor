@@ -446,11 +446,15 @@ class Undoer:
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-        # Prepare to recolor the body, but do *not* actually do so.
+        #
+        # Recolor the body.
+        # This is "safe" because u.setUndoTypingParams does *not* call this method.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        # Do *not* recolor or redraw here!
+        c.recolor()
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        # Do *not* redraw here!
         w.setFocus()
-
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
         """
