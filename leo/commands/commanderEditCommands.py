@@ -956,14 +956,14 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
             break
         i, j = g.getLine(s, ins)
         ins = j
+    p.v.insertSpot = ins
     w.see(min(ins, len(s)))  # New in 6.4. w.see works!
     #
     # Finish.
     if not changed:
         return
+    p.v.b = s  # p.b would cause a redraw.
     if 1:
-        p.v.b = s  # p.b would cause a redraw.
-        p.v.insertSpot = ins
         c.frame.body.onBodyChanged2(undoType, oldText=original)
             ### oldSel=oldSel, oldYview=oldYview)
     else: ### Still fails.
