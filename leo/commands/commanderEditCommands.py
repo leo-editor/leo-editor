@@ -828,15 +828,17 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
     if g.app.batchMode:
         c.notValidInBatchMode("reformat-paragraph")
         return
+    # Set the insertion point for find_bound_paragraph.
     if w.hasSelection():
         i, j = w.getSelectionRange()
         w.setInsertPoint(i)
-    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
     head, lines, tail = find_bound_paragraph(c)
-    if lines:
-        indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
-        result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
-        rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
+    if not lines:
+        return
+    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
+    indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+    result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+    rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
 #@+node:ekr.20171123135625.43: *3* function: ends_paragraph & single_line_paragraph
 def ends_paragraph(s):
     """Return True if s is a blank line."""
