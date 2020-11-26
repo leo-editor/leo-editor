@@ -2339,7 +2339,6 @@ class CoreFrame (leoFrame.LeoFrame):
         wname = c.widget_name(w)
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        ### oldText = w.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))

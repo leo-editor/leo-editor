@@ -939,7 +939,6 @@ class LeoFrame:
             w.see(i)  # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            assert oldText == c.p.b
             c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
@@ -967,7 +966,7 @@ class LeoFrame:
             tCurPosition = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
+        ### oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
             s = w.getAllText()
@@ -997,7 +996,6 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            assert oldText == c.p.b
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif singleLine:
             s = w.getAllText()

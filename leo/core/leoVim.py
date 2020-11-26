@@ -2371,9 +2371,8 @@ class VimCommands:
         if w and name.startswith('body'):
             # Similar to selfInsertCommand.
             oldSel = self.old_sel or w.getSelectionRange()
-            oldText = c.p.b
             newText = w.getAllText()
-            if newText != oldText:
+            if c.p.b != newText:
                 # To do: set undoType to the command spelling?
                 # undoType = ''.join(self.command_list) or 'Typing'
                 c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
