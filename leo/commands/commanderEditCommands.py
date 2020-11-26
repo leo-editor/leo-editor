@@ -435,6 +435,7 @@ def extract(self, event=None):
     #@-<< docstring for extract command >>
     c, undoType = self, 'Extract'
     body, current, u, w = c.frame.body, c.p, c.undoer, c.frame.body.wrapper
+    NEW = True
     #
     # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
@@ -460,28 +461,44 @@ def extract(self, event=None):
     p = createLastChildNode(c, current, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
     #
+    # Start inner undo.
+    if NEW:
+        assert oldSel
+        i, j = oldSel
+        w.setSelectionRange(i, j, insert=j)
+        bunch = u.beforeChangeBody(current)  # Not p.
+    #
     # Update the text and selection
     w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
-    newSel = i, j
+    ### newSel = i, j ; assert newSel ###
     w.setSelectionRange(i, j, insert=j)
     #
     # Handle the inner undo.
-    body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
-    #
-    # Update the changed mark and icon.
-    p.setDirty()
-    c.setChanged()
-    c.redraw_after_icons_changed()
+    if NEW:
+        current.v.b = head + middle + tail # No redraw.
+        ### newSel = i, j ; assert newSel ###
+        u.afterChangeBody(current, undoType, bunch)  ### Not p ???
+    else:
+        ### body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
+        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+        #
+        # Update the changed mark and icon.
+        p.setDirty()
+        c.setChanged()
+        c.redraw_after_icons_changed()
     #
     # Scroll as necessary.
     if oldYview:
         w.setYScrollPosition(oldYview)
     else:
         w.seeInsertPoint()
-    w.setFocus()
-    c.recolor()
+    if NEW:
+        pass
+    else:
+        w.setFocus()
+        c.recolor()
     #
     # Add the changes to the outer undo group.
     u.afterChangeGroup(current, undoType=undoType)

@@ -625,6 +625,7 @@ class LeoBody:
         # Shortcut.
         newText = w.getAllText()
         if p.b == newText:
+            ### g.trace('SAME', p.h)
             return
         #
         # Init data.
