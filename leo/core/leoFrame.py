@@ -676,7 +676,7 @@ class LeoBody:
         if redraw_flag:
             c.redraw_after_icons_changed()
     #@+node:ekr.20201126044550.1: *4* LeoBody.onBodyChanged2 (temporary)
-    def onBodyChanged2(self, undoType, oldSel=None, oldText=None, oldYview=None):
+    def onBodyChanged2(self, undoType, oldText, oldSel=None, oldYview=None):
         """
         Update Leo after the body has been changed.
         
@@ -702,6 +702,8 @@ class LeoBody:
             if oldSel and newSel and oldSel != newSel:
                 i, j = oldSel
                 w.setSelectionRange(i, j, insert=j)
+        #
+        # The "Before" snapshot.
         bunch = u.beforeChangeBody(p)
         #
         # #1743: Restore newSel if necessary.
