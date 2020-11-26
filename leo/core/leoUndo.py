@@ -436,6 +436,22 @@ class Undoer:
             p.setDirty()  # Do not call p.v.setDirty!
         if not c.isChanged():
             c.setChanged()
+        ###
+        # Prepare to recolor the body, but do *not* actually do so
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        
+        ### body.recolor(p)
+        ### if g.app.unitTesting:
+        ###    g.app.unitTestDict['colorized'] = True
+        ### if not c.changed:
+        ###    c.setChanged()
+        
+        # Update editors.
+        c.frame.body.updateEditors()
+        # Update icons.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
         # Do *not* recolor or redraw here!
         w.setFocus()
         
