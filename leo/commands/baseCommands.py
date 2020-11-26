@@ -25,14 +25,14 @@ class BaseEditCommandsClass:
         c, p = self.c, self.c.p
         name = c.widget_name(w)
         if name.startswith('body'):
-            oldSel = w.getSelectionRange()
-            oldText = p.b
+            ### oldSel = w.getSelectionRange()
+            ### oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
             b.ch = ''
             b.name = name
-            b.oldSel = oldSel
-            b.oldText = oldText
+            b.oldSel = w.getSelectionRange()
+            b.oldText = p.b
             b.w = w
             b.undoType = undoType
         else:
@@ -47,8 +47,9 @@ class BaseEditCommandsClass:
         c, k = self.c, self.c.k
         b = self.undoData
         if b and b.name.startswith('body') and changed:
+            ### assert b.oldText == c.p.b ###
             c.frame.body.onBodyChanged(undoType=b.undoType,
-                oldSel=b.oldSel, oldText=b.oldText, oldYview=None)
+                oldSel=b.oldSel, oldYview=None)  ### oldText=b.oldText, 
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

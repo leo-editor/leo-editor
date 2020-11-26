@@ -2352,9 +2352,10 @@ class CoreFrame (leoFrame.LeoFrame):
         if i != j:
             w.delete(i, j)
         w.insert(i, s)
-        w.see(i + len(s) + 2)
+        ### w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+            assert c.p.b == oldText ###
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel) ###, oldText=oldText)
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.

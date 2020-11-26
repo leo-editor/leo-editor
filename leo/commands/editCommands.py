@@ -1147,7 +1147,10 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.delete(i2, j2)
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
-            c.frame.body.onBodyChanged(undoType, oldSel=oldSel, oldText=s, oldYview=oldYview)
+            ### c.p.v.b = s
+            ### b = self.undoData
+            ### b.oldText = s
+            c.frame.body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)  ### oldText=s, 
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info

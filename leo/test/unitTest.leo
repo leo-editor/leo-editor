@@ -295,6 +295,11 @@
 <v t="ekr.20110118082508.3765"><vh>after sel=7.0,7.0</vh></v>
 </v>
 </v>
+<v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
+<v t="ekr.20061101121602.267"><vh>work</vh></v>
+<v t="ekr.20061101121602.268"><vh>before sel=5.0,5.0</vh></v>
+<v t="ekr.20061101121602.269"><vh>after sel=5.8,5.8</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -723,6 +728,29 @@ elif sys.platform== 'darwin':
     assert(not win32)
     assert(darwin)
 
+</t>
+<t tx="ekr.20061101121602.266">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20061101121602.267">first line
+line 1
+    line a
+        line b
+        line c
+last line
+</t>
+<t tx="ekr.20061101121602.268">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20061101121602.269">first line
+line 1
+    line a
+        line b
+        line c
+last line
 </t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
