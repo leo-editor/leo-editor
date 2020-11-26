@@ -1060,7 +1060,6 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
     w.setXScrollPosition(0)  # Never scroll horizontally.
-    ### c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):

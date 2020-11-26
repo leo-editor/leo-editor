@@ -621,7 +621,6 @@ class LeoBody:
         call u.before/afterChangeBody instead.
         """
         c, p, u, w = self.c, self.c.p, self.c.undoer, self.wrapper
-        ### body = self
         #
         # Init data.
         newSel = w.getSelectionRange()
@@ -660,21 +659,15 @@ class LeoBody:
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Recolor the body.
-        ### Now done in afterChangeBody.
-            # c.frame.scanForTabWidth(p)
-            # body.recolor(p)
-            # if g.app.unitTesting:
-                # g.app.unitTestDict['colorized'] = True
-        if not c.changed:
-            c.setChanged()
-        # Update editors.
-        self.updateEditors()
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
+            ### Now done in afterChangeBody.
+            # if not c.changed:
+                # c.setChanged()
+            # # Update editors.
+            # self.updateEditors()
+            # # Update icons.
+            # val = p.computeIcon()
+            # if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                # p.v.iconVal = val
         if redraw_flag:
             c.redraw_after_icons_changed()
     #@-others
