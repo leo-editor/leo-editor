@@ -959,13 +959,16 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.see(min(ins, len(s)))  # New in 6.4. w.see works!
     #
     # Finish.
-    if changed:
-        if 1:
-            c.frame.body.onBodyChanged2(undoType,
-                oldSel=oldSel, oldText=original, oldYview=oldYview)
-        else: ### Still fails.
-            u.afterChangeBody(p, undoType, bunch)
-            c.updateAfterBodyChanged(p, redraw_flag=True)
+    if not changed:
+        return
+    if 1:
+        p.v.b = s  # p.b would cause a redraw.
+        p.v.insertSpot = ins
+        c.frame.body.onBodyChanged2(undoType,
+            oldSel=oldSel, oldText=original, oldYview=oldYview)
+    else: ### Still fails.
+        u.afterChangeBody(p, undoType, bunch)
+        c.updateAfterBodyChanged(p, redraw_flag=True)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
