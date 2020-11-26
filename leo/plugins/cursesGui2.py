@@ -2339,7 +2339,7 @@ class CoreFrame (leoFrame.LeoFrame):
         wname = c.widget_name(w)
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
+        ### oldText = w.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))
@@ -2352,10 +2352,8 @@ class CoreFrame (leoFrame.LeoFrame):
         if i != j:
             w.delete(i, j)
         w.insert(i, s)
-        ### w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            assert c.p.b == oldText ###
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel) ###, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.

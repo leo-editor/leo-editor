@@ -613,7 +613,7 @@ class LeoBody:
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None, oldYview=None): ### oldText=None, 
+    def onBodyChanged(self, undoType, oldSel=None, oldYview=None):
         """
         Update Leo after the body has been changed.
         
@@ -626,21 +626,10 @@ class LeoBody:
         newSel = w.getSelectionRange()
         newInsert = w.getInsertPoint()
         newText = w.getAllText()  # getAllText converts to unicode.
-        ### Experimental
-        ### assert not oldText=
         if p.b == newText:
             return
-        ###
-            # if oldText:
-                # p.v.b = oldText
-                # changed = oldText != newText
-            # else:
-                # oldText = p.b
-                # changed = True
-            # if not changed:
-                # return
         #
-        # "Before" snapshot.
+        # Recreate the "Before" snapshot.
         #
         # #1743: Restore oldSel for u.beforeChangeBody
         if oldSel and newSel and oldSel != newSel:
@@ -951,7 +940,7 @@ class LeoFrame:
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
             assert oldText == c.p.b
-            c.frame.body.onBodyChanged('Cut', oldSel=oldSel) ###, oldText=oldText)
+            c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
             # p.initHeadString(s)
@@ -1009,7 +998,7 @@ class LeoFrame:
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
             assert oldText == c.p.b
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel) ###, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
