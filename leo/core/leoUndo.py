@@ -403,13 +403,10 @@ class Undoer:
         """
         Create an undo node using d created by beforeChangeNode.
         
-        *Important*: Before calling this method, call must:
-        - Set p.v.b.
-        - Set the selection range and insert point.
+        *Important*: Before calling this method, caller must:
+        - Set p.v.b. (Setting p.b would cause a redraw).
+        - Set the desired selection range and insert point.
         - Set the y-scroll position, if desired.
-        - Call c.setChanged() as needed.
-        - Call p.v.setDirty() or p.setDirty as needed.
-        - This method *never* calls c.redraw().
         """
         c = self.c
         u, w = self, c.frame.body.wrapper

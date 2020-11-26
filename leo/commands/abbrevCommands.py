@@ -546,7 +546,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
-            c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
+            c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence

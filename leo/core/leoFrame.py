@@ -631,7 +631,7 @@ class LeoBody:
         newSel = w.getSelectionRange()
         newInsert = w.getInsertPoint()
         #
-        # Recreate the "Before" snapshot.
+        # The "Before" snapshot.
         #
         # #1743: Restore oldSel for u.beforeChangeBody
         if oldSel and newSel and oldSel != newSel:

@@ -321,7 +321,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.deleteTextSelection()
                 w.insert(i, arg)
                 if g.app.gui.widget_name(w) == 'body':
-                    c.frame.body.onBodyChanged(undoType='Typing')
+                    c.frame.body.onBodyChanged('Typing')
 
             # see if the widget already contains the start of a path
 
