@@ -435,6 +435,8 @@ class Undoer:
         # Finish. This is ad-hoc code, but it must be done somewhere,
         #         and it must be done uniformly.
         #
+        p.v.insertSpot = bunch.newIns
+        #
         # #1749.
         if p.isDirty():
             redraw_flag = False

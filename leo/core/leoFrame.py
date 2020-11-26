@@ -644,7 +644,6 @@ class LeoBody:
         #
         # Careful. Don't redraw unless necessary.
         p.v.b = newText  # p.b would cause a redraw.
-        p.v.insertSpot = newInsert
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
