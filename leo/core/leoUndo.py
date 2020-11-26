@@ -400,7 +400,17 @@ class Undoer:
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20201109075104.1: *5* u.afterChangeBody
     def afterChangeBody(self, p, command, bunch):
-        """Create an undo node using d created by beforeChangeNode."""
+        """
+        Create an undo node using d created by beforeChangeNode.
+        
+        *Important*: Before calling this method, call must:
+        - Set p.v.b.
+        - Set the selection range and insert point.
+        - Set the y-scroll position, if desired.
+        - Call c.setChanged() as needed.
+        - Call p.v.setDirty() or p.setDirty as needed.
+        - This method *never* calls c.redraw().
+        """
         c = self.c
         u, w = self, c.frame.body.wrapper
         if u.redoing or u.undoing:
