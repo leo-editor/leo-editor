@@ -931,8 +931,9 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     s = head + result + tail
     i = len(head)
     j = ins = max(i, len(head) + len(result) - 1)
-    w.setAllText(s)  # Destroys coloring.
-    changed = original != head + result + tail
+    changed = original != s
+    if changed:
+        w.setAllText(s)  # Destroys coloring.
     #
     # #1748: Always advance to the next paragraph.
     ins += 1

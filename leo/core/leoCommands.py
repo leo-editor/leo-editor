@@ -2447,10 +2447,15 @@ class Commands:
     universallCallback = universalCallback
     #@+node:ekr.20201126044747.1: *4* c.updateAfterBodyChanged (new)
     def updateAfterBodyChanged(self, p, redraw_flag):
-        """Common processing after calls to u.afterChangeBody."""
+        """
+        Common processing after calls to u.afterChangeBody.
+        
+        Recolor the body, compute icons, update editors and redraw if
+        necessary.    
+        """
         body, c, frame = self.frame.body, self, self.frame
         # Recolor the body.
-        frame.scanForTabWidth(p)
+        frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         body.recolor(p)
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
