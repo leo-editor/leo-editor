@@ -659,17 +659,9 @@ class LeoBody:
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-            ### Now done in afterChangeBody.
-            # if not c.changed:
-                # c.setChanged()
-            # # Update editors.
-            # self.updateEditors()
-            # # Update icons.
-            # val = p.computeIcon()
-            # if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-                # p.v.iconVal = val
         if redraw_flag:
-            c.redraw_after_icons_changed()
+            if 0: ### Now done in u.afterChangeBody.
+                c.redraw_after_icons_changed()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:

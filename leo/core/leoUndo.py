@@ -436,8 +436,11 @@ class Undoer:
         #         and it must be done uniformly.
         #
         # #1749.
-        if not p.isDirty():
-            p.setDirty()  # Do not call p.v.setDirty!
+        if p.isDirty():
+            redraw_flag = False
+        else:
+            p.setDirty() # Do not call p.v.setDirty!
+            redraw_flag = True
         if not c.isChanged():
             c.setChanged()
         # Update editors.
@@ -453,7 +456,11 @@ class Undoer:
         c.recolor()
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        # Do *not* redraw here!
+        if 1:  ### Experimental.
+            if redraw_flag:
+                c.redraw_after_icons_changed()
+        else:
+            pass  # Do *not* redraw here!
         w.setFocus()
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
