@@ -929,19 +929,19 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     s = head + result + tail
-    i = len(head)
-    j = ins = max(i, len(head) + len(result) - 1)
     changed = original != s
     bunch = u.beforeChangeBody(p)
     if changed:
         w.setAllText(s)  # Destroys coloring.
     #
     # #1748: Always advance to the next paragraph.
-    ins += 1
+    i = len(head)
+    j = max(i, len(head) + len(result) - 1)
+    ins = j + 1
     while ins < len(s):
         i, j = g.getLine(s, ins)
         line = s[i:j]
-        # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+        # It's annoying, imo, to treat @ lines differently.
         if line.isspace():
             ins = j + 1
         else:
@@ -958,17 +958,13 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
         ins = j
     p.v.insertSpot = ins
     w.see(min(ins, len(s)))  # New in 6.4. w.see works!
-    #
-    # Finish.
     if not changed:
         return
+    #
+    # Finish.
     p.v.b = s  # p.b would cause a redraw.
-    if 0:
-        c.frame.body.onBodyChanged2(undoType, oldText=original)
-            ### oldSel=oldSel, oldYview=oldYview)
-    else: ### Still fails.
-        u.afterChangeBody(p, undoType, bunch)
-        c.updateAfterBodyChanged(p, redraw_flag=True)
+    u.afterChangeBody(p, undoType, bunch)
+    c.updateAfterBodyChanged(p, redraw_flag=True)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
