@@ -675,6 +675,71 @@ class LeoBody:
             p.v.iconVal = val
         if redraw_flag:
             c.redraw_after_icons_changed()
+    #@+node:ekr.20201126044550.1: *4* LeoBody.onBodyChanged2 (temporary)
+    def onBodyChanged2(self, undoType, oldSel=None, oldText=None, oldYview=None):
+        """
+        Update Leo after the body has been changed.
+        
+        This method is deprecated. New Leo commands and scripts should
+        call u.before/afterChangeBody instead.
+        """
+        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        #
+        # Init data.
+        newSel = w.getSelectionRange()
+        newInsert = w.getInsertPoint()
+        newText = w.getAllText()  # getAllText converts to unicode.
+        if oldText:
+            p.v.b = oldText
+            changed = oldText != newText
+        else:
+            oldText = p.b
+            changed = True
+        if not changed:
+            return
+        #
+        # "Before" snapshot.
+        #
+        # #1743: Restore oldSel for u.beforeChangeBody
+        if oldSel and newSel and oldSel != newSel:
+            i, j = oldSel
+            w.setSelectionRange(i, j, insert=j)
+        bunch = u.beforeChangeBody(p)
+        #
+        # #1743: Restore newSel if necessary.
+        if oldSel and newSel and oldSel != newSel:
+            i, j = newSel
+            w.setSelectionRange(i, j, insert=newInsert)
+        #
+        # Careful. Don't redraw unless necessary.
+        p.v.b = newText  # p.b would cause a redraw.
+        p.v.insertSpot = newInsert
+        if p.isDirty():
+            redraw_flag = False
+        else:
+            p.setDirty()
+            redraw_flag = True
+        #
+        # "after" snapshot.
+        u.afterChangeBody(p, undoType, bunch)
+        if 0: ### In c.updateAfterBodyChanged(p)
+            #
+            # Recolor the body.
+            c.frame.scanForTabWidth(p)
+            body.recolor(p)
+            if g.app.unitTesting:
+                g.app.unitTestDict['colorized'] = True
+            if not c.changed:
+                c.setChanged()
+            # Update editors.
+            self.updateEditors()
+            # Update icons.
+            val = p.computeIcon()
+            if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                p.v.iconVal = val
+            if redraw_flag:
+                c.redraw_after_icons_changed()
+        return redraw_flag
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:

@@ -927,7 +927,7 @@ def rp_get_leading_ws(c, lines, tabWidth):
 #@+node:ekr.20171123135625.47: *3* function: rp_reformat
 def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
-    body, w = c.frame.body, c.frame.body.wrapper
+    body, p, w = c.frame.body, c.p, c.frame.body.wrapper
     s = head + result + tail
     i = len(head)
     j = ins = max(i, len(head) + len(result) - 1)
@@ -958,8 +958,9 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     #
     # Finish.
     if changed:
-        body.onBodyChanged(undoType,
+        redraw_flag = body.onBodyChanged2(undoType,
             oldSel=oldSel, oldText=original, oldYview=oldYview)
+        c.updateAfterBodyChanged(p, redraw_flag)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines

@@ -2445,6 +2445,25 @@ class Commands:
     #fix bobjack's spelling error
 
     universallCallback = universalCallback
+    #@+node:ekr.20201126044747.1: *4* c.updateAfterBodyChanged (new)
+    def updateAfterBodyChanged(self, p, redraw_flag):
+        """Common processing after calls to u.afterChangeBody."""
+        body, c, frame = self.frame.body, self, self.frame
+        # Recolor the body.
+        frame.scanForTabWidth(p)
+        body.recolor(p)
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        if not c.changed:
+            c.setChanged()
+        # Update editors.
+        body.updateEditors()
+        # Update icons.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+        if redraw_flag:
+            c.redraw_after_icons_changed()
     #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
     def writeScriptFile(self, script):
 
