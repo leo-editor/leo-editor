@@ -1149,7 +1149,7 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.setAllText(s)  # Destroys coloring.
     changed = original != s
     if changed:
-        body.onBodyChanged(undoType, oldSel=oldSel) ###, oldYview=oldYview)
+        body.onBodyChanged(undoType, oldSel=oldSel)
     # Advance to the next paragraph.
     ins += 1  # Move past the selection.
     while ins < len(s):
