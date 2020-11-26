@@ -422,7 +422,7 @@ class Undoer:
         bunch.redoHelper = u.redoChangeBody
         bunch.newBody = p.b
         bunch.newHead = p.h
-        bunch.oldIns = w.getInsertPoint()
+        bunch.newIns = w.getInsertPoint()
         bunch.newMarked = p.isMarked()
         # Careful: don't use ternary operator.
         if w:
