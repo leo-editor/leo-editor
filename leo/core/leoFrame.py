@@ -622,12 +622,14 @@ class LeoBody:
         """
         p, u, w = self.c.p, self.c.undoer, self.wrapper
         #
+        # Shortcut.
+        newText = w.getAllText()
+        if p.b == newText:
+            return
+        #
         # Init data.
         newSel = w.getSelectionRange()
         newInsert = w.getInsertPoint()
-        newText = w.getAllText()  # getAllText converts to unicode.
-        if p.b == newText:
-            return
         #
         # Recreate the "Before" snapshot.
         #
