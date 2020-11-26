@@ -1129,7 +1129,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         oldSel = w.getSelectionRange()
-        oldYview = w.getYScrollPosition()
+        ### oldYview = w.getYScrollPosition()
         # Find the previous non-blank line
         i, j = g.getLine(s, ins)
         while 1:
@@ -1147,7 +1147,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.delete(i2, j2)
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
-            c.frame.body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+            c.frame.body.onBodyChanged(undoType, oldSel=oldSel) ###, oldYview=oldYview)
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info

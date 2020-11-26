@@ -613,7 +613,7 @@ class LeoBody:
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None, oldYview=None):
+    def onBodyChanged(self, undoType, oldSel=None): ###, oldYview=None):
         """
         Update Leo after the body has been changed.
         
