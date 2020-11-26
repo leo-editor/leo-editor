@@ -449,7 +449,7 @@ class Undoer:
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
-            redraw_flag = True  ### Experimental.
+            redraw_flag = True
         #
         # Recolor the body.
         # This is "safe" because u.setUndoTypingParams does *not* call this method.

@@ -966,7 +966,6 @@ class LeoFrame:
             tCurPosition = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        ### oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
             s = w.getAllText()
