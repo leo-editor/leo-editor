@@ -449,6 +449,7 @@ class Undoer:
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
+            redraw_flag = True  ### Experimental.
         #
         # Recolor the body.
         # This is "safe" because u.setUndoTypingParams does *not* call this method.
@@ -456,11 +457,8 @@ class Undoer:
         c.recolor()
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        if 1:  ### Experimental.
-            if redraw_flag:
-                c.redraw_after_icons_changed()
-        else:
-            pass  # Do *not* redraw here!
+        if redraw_flag:
+            c.redraw_after_icons_changed()
         w.setFocus()
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):

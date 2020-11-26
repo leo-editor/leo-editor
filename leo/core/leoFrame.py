@@ -620,7 +620,8 @@ class LeoBody:
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
-        c, p, u, w = self.c, self.c.p, self.c.undoer, self.wrapper
+        ### c = self.c
+        p, u, w = self.c.p, self.c.undoer, self.wrapper
         #
         # Init data.
         newSel = w.getSelectionRange()
@@ -651,17 +652,15 @@ class LeoBody:
         # Careful. Don't redraw unless necessary.
         p.v.b = newText  # p.b would cause a redraw.
         p.v.insertSpot = newInsert
-        if p.isDirty():
-            redraw_flag = False
-        else:
-            p.setDirty()
-            redraw_flag = True
+        ###
+            # if p.isDirty():
+                # redraw_flag = False
+            # else:
+                # p.setDirty()
+                # redraw_flag = True
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        if redraw_flag:
-            if 0: ### Now done in u.afterChangeBody.
-                c.redraw_after_icons_changed()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
