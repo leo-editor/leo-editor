@@ -822,9 +822,7 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
     Paragraph is bound by start of body, end of body and blank lines. Paragraph is
     selected by position of current insertion cursor.
     """
-    c = self
-    body = c.frame.body
-    w = body.wrapper
+    c, w = self, self.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode("reformat-paragraph")
         return
@@ -966,7 +964,6 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
-    ### c.updateAfterBodyChanged(p, redraw_flag=True)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
@@ -1038,7 +1035,6 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     """
     c, undoType = self, 'reformat-selection'
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
-    ### body = c.frame.body
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
@@ -1064,7 +1060,6 @@ def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
-    ### c.updateAfterBodyChanged(p, redraw_flag=True)
     w.setXScrollPosition(0)  # Never scroll horizontally.
     c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles

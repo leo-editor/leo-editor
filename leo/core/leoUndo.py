@@ -431,30 +431,26 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
+        #
+        # Finish. This is ad-hoc code, but it must be done somewhere,
+        #         and it must be done uniformly.
+        #
         # #1749.
         if not p.isDirty():
             p.setDirty()  # Do not call p.v.setDirty!
         if not c.isChanged():
             c.setChanged()
-        ###
-        # Prepare to recolor the body, but do *not* actually do so
-        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        
-        ### body.recolor(p)
-        ### if g.app.unitTesting:
-        ###    g.app.unitTestDict['colorized'] = True
-        ### if not c.changed:
-        ###    c.setChanged()
-        
         # Update editors.
         c.frame.body.updateEditors()
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
             p.v.iconVal = val
+        # Prepare to recolor the body, but do *not* actually do so.
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         # Do *not* recolor or redraw here!
         w.setFocus()
-        
+
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
         """
