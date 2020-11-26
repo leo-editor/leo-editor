@@ -1094,7 +1094,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050417201845"></v>
 </vnodes>
 <tnodes>
 <t tx="btheado.20190926182937.1">c.testManager.runEditCommandTest(p)

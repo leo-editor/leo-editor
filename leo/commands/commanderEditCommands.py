@@ -433,10 +433,8 @@ def extract(self, event=None):
        selected lines become the child's body text.
     """
     #@-<< docstring for extract command >>
-    c, undoType = self, 'Extract'
-    body, current, u, w = c.frame.body, c.p, c.undoer, c.frame.body.wrapper
-    NEW = True
-    #
+    c, u, w = self, self.undoer, self.frame.body.wrapper
+    undoType = 'Extract'
     # Set data.
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
@@ -456,52 +454,35 @@ def extract(self, event=None):
         h, b, middle = lines[0].strip(), lines[1:], ''
     #
     # Start the outer undo group.
-    u.beforeChangeGroup(current, undoType)
-    undoData = u.beforeInsertNode(current)
-    p = createLastChildNode(c, current, h, ''.join(b))
+    u.beforeChangeGroup(c.p, undoType)
+    undoData = u.beforeInsertNode(c.p)
+    p = createLastChildNode(c, c.p, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
     #
     # Start inner undo.
-    if NEW:
-        assert oldSel
+    if oldSel:
         i, j = oldSel
         w.setSelectionRange(i, j, insert=j)
-        bunch = u.beforeChangeBody(current)  # Not p.
+    bunch = u.beforeChangeBody(c.p)  # Not p.
     #
     # Update the text and selection
+    c.p.v.b = head + middle + tail # Don't redraw.
     w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
-    ### newSel = i, j ; assert newSel ###
     w.setSelectionRange(i, j, insert=j)
     #
-    # Handle the inner undo.
-    if NEW:
-        current.v.b = head + middle + tail # No redraw.
-        ### newSel = i, j ; assert newSel ###
-        u.afterChangeBody(current, undoType, bunch)  ### Not p ???
-    else:
-        ### body.onBodyChanged(undoType, oldSel=oldSel or newSel, oldYview=oldYview)
-        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
-        #
-        # Update the changed mark and icon.
-        p.setDirty()
-        c.setChanged()
-        c.redraw_after_icons_changed()
+    # End the inner undo.
+    u.afterChangeBody(c.p, undoType, bunch)
     #
     # Scroll as necessary.
     if oldYview:
         w.setYScrollPosition(oldYview)
     else:
         w.seeInsertPoint()
-    if NEW:
-        pass
-    else:
-        w.setFocus()
-        c.recolor()
     #
     # Add the changes to the outer undo group.
-    u.afterChangeGroup(current, undoType=undoType)
+    u.afterChangeGroup(c.p, undoType=undoType)
     p.parent().expand()
     c.redraw(p.parent())  # A bit more convenient than p.
     c.bodyWantsFocus()
