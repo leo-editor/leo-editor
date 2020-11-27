@@ -302,7 +302,7 @@ class AutoCompleterClass:
         i, j = w.getSelectionRange()
         w.setSelectionRange(i, j, insert=j)
         # Was in finish.
-        c.frame.body.onBodyChanged('Typing')
+        c.frame.body.onBodyChanged('end-auto-completer')
         c.recolor()
 
     finish = exit
@@ -873,12 +873,12 @@ class AutoCompleterClass:
         
         Leo 6.4. This *part* of auto-completion is no longer undoable.
         """
-        c, w = self.c, self.w
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.w
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
+        #
         # Don't make this undoable.
-            # p, u = c.p, c.undoer
             # oldText = w.getAllText()
             # oldSel = w.getSelectionRange()
             # bunch = u.beforeChangeBody(p)
@@ -887,7 +887,8 @@ class AutoCompleterClass:
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
-        # Don't make this undoable. It's clumsy.
+        #
+        # Don't make this undoable.
             # if 0:
                 # u.doTyping(p, 'Typing',
                     # oldSel=oldSel,
@@ -897,6 +898,9 @@ class AutoCompleterClass:
                     # newSel=w.getSelectionRange())
             # else:
                 # u.afterChangeBody(p, 'auto-complete', bunch)
+        #
+        # Do perform the common update functions.
+        u.updateAfterTyping(p, w)
         if self.use_qcompleter and self.qw:
             c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file

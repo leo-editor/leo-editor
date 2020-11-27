@@ -1078,7 +1078,7 @@ class LeoBrowserApp(flx.PyComponent):
         w = self.root.main_window
         # Undoably set the head. Like leoTree.onHeadChanged.
         p.v.setHeadString(h)
-        undoType = 'Typing'
+        undoType = 'set-headline'
         undoData = u.beforeChangeNodeContents(p)
         if not c.changed:
             c.setChanged()

@@ -134,10 +134,8 @@ class QTextMixin:
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
-        oldYview = None
-        undoType = 'Typing'
-        c.undoer.doTyping(p, undoType, oldText, newText,
-            oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
+        c.undoer.doTyping(p, 'Typing', oldText, newText,
+            oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
@@ -529,9 +527,6 @@ if QtWidgets:
             def select_callback(self):
                 """
                 Called when user selects an item in the QListWidget.
-                
-                This is part of the auto-completer logic, so 'Typing'
-                is an appropriate undo type.
                 """
                 c = self.leo_c
                 p = c.p

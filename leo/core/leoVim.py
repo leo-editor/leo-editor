@@ -2375,7 +2375,7 @@ class VimCommands:
             if c.p.b != newText:
                 # To do: set undoType to the command spelling?
                 # undoType = ''.join(self.command_list) or 'Typing'
-                c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+                c.frame.body.onBodyChanged(undoType='vc-save-body', oldSel=oldSel)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(self, kind=None, w=None, activeFlag=None):
         """
