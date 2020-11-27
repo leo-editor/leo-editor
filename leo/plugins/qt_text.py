@@ -527,9 +527,17 @@ if QtWidgets:
                     w.ev_filter.eventFilter(obj=self, event=event)
             #@+node:ekr.20110605121601.18014: *5* lqlw.select_callback
             def select_callback(self):
-                """Called when user selects an item in the QListWidget."""
+                """
+                Called when user selects an item in the QListWidget.
+                
+                This is part of the auto-completer logic, so 'Typing'
+                is an appropriate undo type.
+                """
                 c = self.leo_c
-                w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
+                p = c.p
+                w = c.k.autoCompleter.w or c.frame.body.wrapper
+                oldSel = w.getSelectionRange()
+                oldText = w.getAllText()
                 # Replace the tail of the prefix with the completion.
                 completion = self.currentItem().text()
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
@@ -546,7 +554,12 @@ if QtWidgets:
                     j = i + len(completion)
                     c.setChanged()
                     w.setInsertPoint(j)
-                    c.frame.body.onBodyChanged('Typing')
+                    c.undoer.doTyping(p, 'Typing', oldText,
+                        newText=w.getAllText(),
+                        newInsert=w.getInsertPoint(),
+                        newSel=w.getSelectionRange(),
+                        oldSel=oldSel,
+                    )
                 self.end_completer()
             #@+node:tbrown.20111011094944.27031: *5* lqlw.tab_callback
             def tab_callback(self):
