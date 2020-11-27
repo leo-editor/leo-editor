@@ -52,7 +52,7 @@ def newPut (self,s,*args,**keys):
     w = body.wrapper
     if w:
         w.insert("end",s)
-        body.onBodyChanged("Typing")
+        body.onBodyChanged('Typing')
     # else: g.pr(s,newline=False)
 
 # Same as frame.putnl except sends output to the end of the body text.
