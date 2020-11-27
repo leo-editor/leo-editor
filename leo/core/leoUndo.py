@@ -963,6 +963,9 @@ class Undoer:
         scripts should call u.before/afterChangeBody.
         """
         c, u = self.c, self
+        # Leo 6.4: undo_type must be 'Typing'.
+        undo_type = undo_type.capitalize()
+        assert undo_type == 'Typing', (repr(undo_type), g.callers())
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
         if u.redoing or u.undoing:
