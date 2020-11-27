@@ -621,6 +621,12 @@ class LeoBody:
         call u.before/afterChangeBody instead.
         """
         p, u, w = self.c.p, self.c.undoer, self.wrapper
+        if g.unitTesting:
+            assert undoType.lower() != 'typing', g.callers()
+        elif undoType.lower() == 'typing':
+            g.trace(
+                'Error: undoType should not be "Typing"'
+                'Call u.doTyping instead')
         #
         # Shortcut.
         newText = w.getAllText()
