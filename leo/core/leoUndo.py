@@ -916,6 +916,9 @@ class Undoer:
             u.setUndoTypes()  # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
+        if 'undo' in g.app.debug:
+            g.trace()
+            
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         u.clearOptionalIvars()
@@ -1196,16 +1199,17 @@ class Undoer:
             if g.unitTesting:
                 assert p.b == all, g.callers()
             elif p.b != all:
-                g.trace("\nError:p.b != w.getAllText()\n")
-                g.printObj(p.b.splitLines(), tag='p.b')
-                g.printObj(g.splitLines(all), tag='getAllText')
+                g.trace(f"\nError:p.b != w.getAllText() p:{p.h} {g.callers()}\n")
+                # g.printObj(g.splitLines(p.b), tag='p.b')
+                # g.printObj(g.splitLines(all), tag='getAllText')
             p.v.insertSpot = ins = w.getInsertPoint()
-            newSel = w.getSelectionRange()
-            if newSel is None:
-                p.v.selectionStart, p.v.selectionLength = (ins, 0)
-            else:
-                i, j = newSel
-                p.v.selectionStart, p.v.selectionLength = (i, j - i)
+            if 1:  # Experimental. Was in u.doTyping.
+                newSel = w.getSelectionRange()
+                if newSel is None:
+                    p.v.selectionStart, p.v.selectionLength = (ins, 0)
+                else:
+                    i, j = newSel
+                    p.v.selectionStart, p.v.selectionLength = (i, j - i)
         else:
             if g.unitTesting:
                 assert False, f"Not a text wrapper: {g.callers()}"
