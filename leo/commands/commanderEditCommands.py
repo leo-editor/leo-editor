@@ -750,9 +750,9 @@ def line_to_headline(self, event=None):
     
     Cut the selected line and make it the new node's headline
     """
-    c, p, w = self, self.p, self.frame.body.wrapper
+    c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    undoType = 'line-to-headline'
     ins, s = w.getInsertPoint(), p.b
-    u, undoType = c.undoer, 'Extract Line'
     i = g.find_line_start(s, ins)
     j = g.skip_line(s, i)
     line = s[i:j].strip()
@@ -774,7 +774,7 @@ def line_to_headline(self, event=None):
     c.setChanged()
     #
     # "after" snapshot.
-    u.afterChangeBody(p, 'Typing', bunch)
+    u.afterChangeBody(p, undoType, bunch)
     #
     # Finish outer undo.
     u.afterChangeGroup(p, undoType=undoType)
