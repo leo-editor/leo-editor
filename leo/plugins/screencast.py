@@ -306,7 +306,7 @@ class ScreenCastController:
         c.bodyWantsFocusNow()
         bunch = u.beforeChangeBody(p)
         p.b = p.b + s
-        u.afterChangeBody(p, 'Typing', bunch)
+        u.afterChangeBody(p, 'simulate-typing', bunch)
         for ch in s:
             p.b = p.b + ch
             w.repaint()

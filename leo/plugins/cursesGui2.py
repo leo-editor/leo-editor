@@ -2876,13 +2876,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Don't recolor the body, but pretend we did.
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        
-        # self.updateEditors()
-        # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
         '''Update the title of the Form surrounding the Leo Body.'''

@@ -1208,13 +1208,13 @@ class Undoer:
                 # g.printObj(g.splitLines(p.b), tag='p.b')
                 # g.printObj(g.splitLines(all), tag='getAllText')
             p.v.insertSpot = ins = w.getInsertPoint()
-            if 1:  # Experimental. Was in u.doTyping.
-                newSel = w.getSelectionRange()
-                if newSel is None:
-                    p.v.selectionStart, p.v.selectionLength = (ins, 0)
-                else:
-                    i, j = newSel
-                    p.v.selectionStart, p.v.selectionLength = (i, j - i)
+            # From u.doTyping.
+            newSel = w.getSelectionRange()
+            if newSel is None:
+                p.v.selectionStart, p.v.selectionLength = (ins, 0)
+            else:
+                i, j = newSel
+                p.v.selectionStart, p.v.selectionLength = (i, j - i)
         else:
             if g.unitTesting:
                 assert False, f"Not a text wrapper: {g.callers()}"
