@@ -868,18 +868,35 @@ class AutoCompleterClass:
             self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
-        """Insert s at the insertion point."""
-        c, p, u, w = self.c, self.c.p, self.c.undoer, self.w
-        if not g.isTextWrapper(w):  # Bug fix: 2016/10/29.
+        """
+        Insert an auto-completion string s at the insertion point.
+        
+        Leo 6.4. This *part* of auto-completion is no longer undoable.
+        """
+        c, w = self.c, self.w
+        if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
-        bunch = u.beforeChangeBody(p)
+        # Don't make this undoable.
+            # p, u = c.p, c.undoer
+            # oldText = w.getAllText()
+            # oldSel = w.getSelectionRange()
+            # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
-        u.afterChangeBody(p, 'Typing', bunch)
+        # Don't make this undoable. It's clumsy.
+            # if 0:
+                # u.doTyping(p, 'Typing',
+                    # oldSel=oldSel,
+                    # oldText=oldText,
+                    # newText=w.getAllText(),
+                    # newInsert=w.getInsertPoint(), 
+                    # newSel=w.getSelectionRange())
+            # else:
+                # u.afterChangeBody(p, 'auto-complete', bunch)
         if self.use_qcompleter and self.qw:
             c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
