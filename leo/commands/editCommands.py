@@ -1252,7 +1252,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w)
+            self.beginCommand(w, undoType='Typing')
             try:
                 tab_width = c.getTabWidth(c.p)
                 changed = True
