@@ -146,6 +146,8 @@ class Undoer:
                 # g.trace('Cutting undo stack to %d entries' % (n))
             u.beads = u.beads[-n :]
             u.bead = n - 1
+        if 'undo' in g.app.debug and 'verbose' in g.app.debug:
+            print(f"u.cutStack: {len(u.beads):3}")
     #@+node:ekr.20080623083646.10: *4* u.dumpBead
     def dumpBead(self, n):
         u = self
@@ -173,6 +175,8 @@ class Undoer:
             return None
         bunch = u.beads[n]
         self.setIvarsFromBunch(bunch)
+        if 'undo' in g.app.debug:
+            print(f" u.getBead: {n:3} of {len(u.beads)}")
         return bunch
     #@+node:EKR.20040526150818.1: *4* u.peekBead
     def peekBead(self, n):
@@ -195,6 +199,8 @@ class Undoer:
             u.beads[u.bead:] = [bunch]
             # Recalculate the menu labels.
             u.setUndoTypes()
+        if 'undo' in g.app.debug:
+            print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
     #@+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name):
         if name == "Can't Redo":
@@ -916,9 +922,6 @@ class Undoer:
             u.setUndoTypes()  # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
-        if 'undo' in g.app.debug:
-            g.trace()
-            
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         u.clearOptionalIvars()
@@ -1114,6 +1117,8 @@ class Undoer:
         bunch.newText = u.newText
         bunch.yview = u.yview
         #@-<< adjust the undo stack, clearing all forward entries >>
+        if 'undo' in g.app.debug and 'verbose' in g.app.debug:
+            print(f"u.doTyping: {len(oldText)} => {len(newText)}")
         if u.per_node_undo:
             u.putIvarsToVnode(p)
         #
