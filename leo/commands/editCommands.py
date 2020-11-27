@@ -1686,12 +1686,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call setUndoTypingParams to honor the user's undo granularity.
+            # Call u.doTyping to honor the user's undo granularity.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()
             newText = w.getAllText()  # Converts to unicode.
-            u.setUndoTypingParams(p, undoType, oldText, newText,
+            u.doTyping(p, undoType, oldText, newText,
                 oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar

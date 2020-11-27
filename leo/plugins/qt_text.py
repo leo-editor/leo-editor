@@ -136,7 +136,7 @@ class QTextMixin:
         oldSel = (i, i + j)
         oldYview = None
         undoType = 'Typing'
-        c.undoer.setUndoTypingParams(p, undoType, oldText, newText,
+        c.undoer.doTyping(p, undoType, oldText, newText,
             oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.

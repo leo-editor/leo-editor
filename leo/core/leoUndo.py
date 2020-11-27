@@ -451,7 +451,7 @@ class Undoer:
             redraw_flag = True
         #
         # Recolor the body.
-        # This is "safe" because u.setUndoTypingParams does *not* call this method.
+        # This is "safe" because u.doTyping does *not* call this method.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor()
         if g.app.unitTesting:
@@ -946,8 +946,8 @@ class Undoer:
         u.clearUndoState()
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
-    #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams & helper
-    def setUndoTypingParams(self, p, undo_type, oldText, newText,
+    #@+node:ekr.20031218072017.1490: *4* u.doTyping & helper
+    def doTyping(self, p, undo_type, oldText, newText,
         newInsert=None, oldSel=None, newSel=None, oldYview=None,
     ):
         """
@@ -1150,8 +1150,8 @@ class Undoer:
             # Push params on undo stack, clearing all forward entries.
             bunch = g.Bunch(
                 p=p.copy(),
-                kind='typing',
-                undoType=undo_type,
+                kind='typing',  # lowercase.
+                undoType=undo_type,  # capitalized.
                 undoHelper=u.undoTyping,
                 redoHelper=u.redoTyping,
                 oldMarked=old_p.isMarked() if old_p else p.isMarked(), # #1694
@@ -1205,6 +1205,10 @@ class Undoer:
         c.frame.tree.updateIcon(p)
         if redraw_flag:
             c.redraw()
+            
+    # Compatibility
+
+    setUndoTypingParams = doTyping
     #@+node:ekr.20050126081529: *5* u.recognizeStartOfTypingWord
     def recognizeStartOfTypingWord(self,
         old_lines, old_row, old_col, old_ch,
@@ -1216,7 +1220,7 @@ class Undoer:
         typing indicated by the params starts a new 'word' for the purposes of
         undo with 'word' granularity.
 
-        u.setUndoTypingParams calls this method only when the typing could possibly
+        u.doTyping calls this method only when the typing could possibly
         continue a previous word. In other words, undo will work safely regardless
         of the value returned here.
 
