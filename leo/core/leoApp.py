@@ -2761,7 +2761,7 @@ class LoadManager:
         )
         trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,
           importers,ipython,keys,layouts,plugins,save,select,
-          shutdown,size,startup,themes,verbose,zoom'''
+          shutdown,size,startup,themes,undo,verbose,zoom'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
@@ -2937,7 +2937,6 @@ class LoadManager:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
             for val in values.split(','):
                 if val in valid:
-                    # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
                     g.es_print(f"unknown --trace value: {val}")
