@@ -673,6 +673,8 @@ class AutoCompleterClass:
         # Get local line
         lines = g.splitLines(body_s)
         row, column = g.convertPythonIndexToRowCol(body_s, i)
+        if row >= len(lines):  # 2020/11/27
+            return []
         line = lines[row]
         #
         # Find the global line, and compute offsets.
@@ -873,7 +875,7 @@ class AutoCompleterClass:
         
         Leo 6.4. This *part* of auto-completion is no longer undoable.
         """
-        c, p, u, w = self.c, self.c.p, self.c.undoer, self.w
+        c, w = self.c, self.w
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -898,9 +900,6 @@ class AutoCompleterClass:
                     # newSel=w.getSelectionRange())
             # else:
                 # u.afterChangeBody(p, 'auto-complete', bunch)
-        #
-        # Do perform the common update functions.
-        u.updateAfterTyping(p, w)
         if self.use_qcompleter and self.qw:
             c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
