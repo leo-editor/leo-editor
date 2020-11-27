@@ -892,10 +892,11 @@ class Undoer:
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
         
-        Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
+        **Important**: Code should call this method *only* when the user has
+        actually typed something. Commands should use u.beforeChangeBody and
+        u.afterChangeBody.
         
-        **All other uses of this methods are deprecated.** New Leo commands and
-        scripts should call u.before/afterChangeBody.
+        Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # Leo 6.4: undo_type must be 'Typing'.
@@ -1113,7 +1114,7 @@ class Undoer:
         if u.per_node_undo:
             u.putIvarsToVnode(p)
         #
-        # 2020/11/14: Finish updating the text.
+        # Finish updating the text.
         p.v.setBodyString(newText)
         u.updateAfterTyping(p, w)
             
