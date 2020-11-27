@@ -1199,7 +1199,9 @@ class Undoer:
                 i, j = newSel
                 p.v.selectionStart, p.v.selectionLength = (i, j - i)
         else:
-            g.trace('not a text wrapper')
+            if g.unitTesting:
+                assert False, f"Not a text wrapper: {g.callers()}"
+            g.trace('Not a text wrapper')
             p.v.insertSpot = 0
             p.v.selectionStart, p.v.selectionLength = (0, 0)
         #
@@ -1220,7 +1222,6 @@ class Undoer:
             redraw_flag = True
         #
         # Recolor the body.
-        # This is "safe" because u.doTyping does *not* call this method.
         c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
         c.recolor()
         if g.app.unitTesting:
