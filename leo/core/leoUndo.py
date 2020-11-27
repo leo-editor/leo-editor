@@ -428,37 +428,7 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
-        #
-        # Finish. This is ad-hoc code, but it must be done somewhere,
-        #         and it must be done uniformly.
-        #
-        p.v.insertSpot = bunch.newIns
-        #
-        # #1749.
-        if p.isDirty():
-            redraw_flag = False
-        else:
-            p.setDirty() # Do not call p.v.setDirty!
-            redraw_flag = True
-        if not c.isChanged():
-            c.setChanged()
-        # Update editors.
-        c.frame.body.updateEditors()
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-            redraw_flag = True
-        #
-        # Recolor the body.
-        # This is "safe" because u.doTyping does *not* call this method.
-        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
-        c.recolor()
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        if redraw_flag:
-            c.redraw_after_icons_changed()
-        w.setFocus()
+        u.updateAfterTyping(p, w)
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
         """
@@ -911,41 +881,6 @@ class Undoer:
         u.setUndoType("Can't Undo")
         u.beads = []  # List of undo nodes.
         u.bead = -1  # Index of the present bead: -1:len(beads)
-    #@+node:ekr.20031218072017.3611: *4* u.enableMenuItems
-    def enableMenuItems(self):
-        u = self; frame = u.c.frame
-        menu = frame.menu.getMenu("Edit")
-        if menu:
-            frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
-            frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
-    #@+node:ekr.20110519074734.6094: *4* u.onSelect & helpers
-    def onSelect(self, old_p, p):
-
-        u = self
-        if u.per_node_undo:
-            if old_p and u.beads:
-                u.putIvarsToVnode(old_p)
-            u.setIvarsFromVnode(p)
-            u.setUndoTypes()
-    #@+node:ekr.20110519074734.6096: *5* u.putIvarsToVnode
-    def putIvarsToVnode(self, p):
-
-        u, v = self, p.v
-        assert self.per_node_undo
-        bunch = g.bunch()
-        for key in self.optionalIvars:
-            bunch[key] = getattr(u, key)
-        # Put these ivars by hand.
-        for key in ('bead', 'beads', 'undoType',):
-            bunch[key] = getattr(u, key)
-        v.undo_info = bunch
-    #@+node:ekr.20110519074734.6095: *5* u.setIvarsFromVnode
-    def setIvarsFromVnode(self, p):
-        u = self; v = p.v
-        assert self.per_node_undo
-        u.clearUndoState()
-        if hasattr(v, 'undo_info'):
-            u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* u.doTyping & helper
     def doTyping(self, p, undo_type, oldText, newText,
         newInsert=None, oldSel=None, newSel=None, oldYview=None,
@@ -962,7 +897,7 @@ class Undoer:
         **All other uses of this methods are deprecated.** New Leo commands and
         scripts should call u.before/afterChangeBody.
         """
-        c, u = self.c, self
+        c, u, w = self.c, self, self.c.frame.body.wrapper
         # Leo 6.4: undo_type must be 'Typing'.
         undo_type = undo_type.capitalize()
         assert undo_type == 'Typing', (repr(undo_type), g.callers())
@@ -1179,35 +1114,8 @@ class Undoer:
             u.putIvarsToVnode(p)
         #
         # 2020/11/14: Finish updating the text.
-        #
-        # Update the VNode.
         p.v.setBodyString(newText)
-        if True:
-            p.v.insertSpot = newInsert
-            if newSel is None:
-                if newInsert is None:
-                    i = j = 0
-                else:
-                    i, j = newInsert
-            else:
-                i, j = newSel
-            i, j = g.toPythonIndex(newText, i), g.toPythonIndex(newText, j)
-            if i > j:
-                i, j = j, i
-            p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        c.recolor()
-        # #1749.
-        redraw_flag = False
-        if c.frame.initComplete:
-            if not p.isDirty():
-                p.setDirty()  # Do not call p.v.setDirty!
-                redraw_flag = True
-            if not c.isChanged():
-                c.setChanged()
-        c.frame.body.updateEditors()
-        c.frame.tree.updateIcon(p)
-        if redraw_flag:
-            c.redraw()
+        u.updateAfterTyping(p, w)
             
     # Compatibility
 
@@ -1238,6 +1146,87 @@ class Undoer:
         # Start a word if the cursor has been moved since the last change
         moved_cursor = new_row != prev_row or new_col != prev_col + 1
         return new_word_started or moved_cursor
+    #@+node:ekr.20031218072017.3611: *4* u.enableMenuItems
+    def enableMenuItems(self):
+        u = self; frame = u.c.frame
+        menu = frame.menu.getMenu("Edit")
+        if menu:
+            frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
+            frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
+    #@+node:ekr.20110519074734.6094: *4* u.onSelect & helpers
+    def onSelect(self, old_p, p):
+
+        u = self
+        if u.per_node_undo:
+            if old_p and u.beads:
+                u.putIvarsToVnode(old_p)
+            u.setIvarsFromVnode(p)
+            u.setUndoTypes()
+    #@+node:ekr.20110519074734.6096: *5* u.putIvarsToVnode
+    def putIvarsToVnode(self, p):
+
+        u, v = self, p.v
+        assert self.per_node_undo
+        bunch = g.bunch()
+        for key in self.optionalIvars:
+            bunch[key] = getattr(u, key)
+        # Put these ivars by hand.
+        for key in ('bead', 'beads', 'undoType',):
+            bunch[key] = getattr(u, key)
+        v.undo_info = bunch
+    #@+node:ekr.20110519074734.6095: *5* u.setIvarsFromVnode
+    def setIvarsFromVnode(self, p):
+        u = self; v = p.v
+        assert self.per_node_undo
+        u.clearUndoState()
+        if hasattr(v, 'undo_info'):
+            u.setIvarsFromBunch(v.undo_info)
+    #@+node:ekr.20201127035748.1: *4* u.updateAfterTyping
+    def updateAfterTyping(self, p, w):
+        """
+        Perform all update tasks after changing body text.
+        
+        This is ugly, ad-hoc code, but should be done uniformly.
+        """
+        c = self.c
+        if g.isTextWrapper(w):
+            p.v.insertSpot = ins = w.getInsertPoint()
+            newSel = w.getSelectionRange()
+            if newSel is None:
+                p.v.selectionStart, p.v.selectionLength = (ins, 0)
+            else:
+                i, j = newSel
+                p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        else:
+            g.trace('not a text wrapper')
+            p.v.insertSpot = 0
+            p.v.selectionStart, p.v.selectionLength = (0, 0)
+        #
+        # #1749.
+        if p.isDirty():
+            redraw_flag = False
+        else:
+            p.setDirty() # Do not call p.v.setDirty!
+            redraw_flag = True
+        if not c.isChanged():
+            c.setChanged()
+        # Update editors.
+        c.frame.body.updateEditors()
+        # Update icons.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+            redraw_flag = True
+        #
+        # Recolor the body.
+        # This is "safe" because u.doTyping does *not* call this method.
+        c.frame.scanForTabWidth(p)  # Calls frame.setTabWidth()
+        c.recolor()
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        if redraw_flag:
+            c.redraw_after_icons_changed()
+        w.setFocus()
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
     def redo(self, event=None):
