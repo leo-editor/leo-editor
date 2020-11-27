@@ -869,20 +869,19 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
         """Insert s at the insertion point."""
-        c = self.c
-        w = self.w
+        c, p, u, w = self.c, self.c.p, self.c.undoer, self.w
         if not g.isTextWrapper(w):  # Bug fix: 2016/10/29.
             return
         c.widgetWantsFocusNow(w)
+        bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
-        c.frame.body.onBodyChanged('Typing')
-        if self.use_qcompleter:
-            if self.qw:
-                c.widgetWantsFocusNow(self.qw.leo_qc)
+        u.afterChangeBody(p, 'Typing', bunch)
+        if self.use_qcompleter and self.qw:
+            c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
     def is_leo_source_file(self):
         """Return True if this is one of Leo's source files."""
