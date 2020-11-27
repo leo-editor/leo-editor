@@ -179,6 +179,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e332e31322e3471017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e332e31382e333571057d710658090000006d795f706c7567696e7107580300000076616c710873752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20201018144248.1"><vh>@test restore marked bits</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1312,6 +1313,31 @@ nodeB
     pass</t>
 <t tx="ekr.20200205065723.3">def eggs():
     pass
+</t>
+<t tx="ekr.20201018144248.1"># Test of #1694.
+u, w = c.undoer, c.frame.body.wrapper
+oldText = p.b
+newText = p.b + '\n#changed'
+try:
+    for marked in (True, False):
+        c.undoer.clearUndoState()  # Required.
+        p.setMarked() if marked else p.clearMarked()
+        oldMarked = p.isMarked()
+        w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
+        u.setUndoTypingParams(p,
+            undo_type = 'typing',
+            oldText = oldText,
+            newText = newText,
+        )
+        u.undo()
+        assert p.b == oldText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 1', p.isMarked(), oldMarked)
+        u.redo()
+        assert p.b == newText, repr(p.b)
+        assert p.isMarked() == oldMarked, ('fail 2', p.isMarked(), oldMarked)
+finally:
+    p.b = oldText
+    p.clearMarked()
 </t>
 </tnodes>
 </leo_file>
