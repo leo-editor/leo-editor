@@ -4588,6 +4588,19 @@ def scanf(s, pat):
         if part and len(result) < count:
             result.append(part)
     return result
+#@+node:ekr.20201127143342.1: *3* g.see_more_lines
+def see_more_lines(s, ins, n=4):
+    """
+    Extend index i within string s to include n more lines.
+    """
+    # Show more lines, if they exist.
+    if n > 0:
+        for z in range(n):
+            if ins >= len(s):
+                break
+            i, j = g.getLine(s, ins)
+            ins = j
+    return max(0, min(ins, len(s)))
 #@+node:ekr.20031218072017.3195: *3* g.splitLines & g.joinLines
 def splitLines(s):
     """Split s into lines, preserving the number of lines and

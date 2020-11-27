@@ -949,13 +949,9 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.setSelectionRange(ins, ins, insert=ins)
     #
     # Show more lines, if they exist.
-    for z in range(4):
-        if ins >= len(s):
-            break
-        i, j = g.getLine(s, ins)
-        ins = j
+    k = g.see_more_lines(s, ins, 4)
     p.v.insertSpot = ins
-    w.see(min(ins, len(s)))  # New in 6.4. w.see works!
+    w.see(k)  # New in 6.4. w.see works!
     if not changed:
         return
     #

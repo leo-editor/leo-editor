@@ -2622,7 +2622,8 @@ class LeoFind:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
-            w.see(insert)
+            k = g.see_more_lines(w.getAllText(), insert, 4)
+            w.see(k)
                 # #78: find-next match not always scrolled into view.
             c.outerUpdate()
                 # Set the focus immediately.
