@@ -405,7 +405,7 @@ class ScreenCastController:
             m.repaint(pane)
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20120913110135.10583: *4* sc.head_keys
+    #@+node:ekr.20120913110135.10583: *4* sc.head_keys (screencast.py)
     def head_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.

@@ -44,7 +44,7 @@ def onCreate (tag, keys):
         # Override c.executeScript.
         g.funcToMethod(newExecuteScript,c.__class__,'executeScript')
         c.k.overrideCommand('execute-script',c.executeScript)
-#@+node:edream.110203113231.928: ** newPut and newPutNl
+#@+node:edream.110203113231.928: ** newPut and newPutNl (script_io_to_body.py)
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
