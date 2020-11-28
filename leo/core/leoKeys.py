@@ -287,8 +287,9 @@ class AutoCompleterClass:
     #@+node:ekr.20110512212836.14469: *4* ac.exit
     def exit(self):
 
-        c = self.c
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
+        g.trace(p.h) ###
         c.k.keyboardQuit()
         if self.use_qcompleter:
             if self.qw:
@@ -301,9 +302,12 @@ class AutoCompleterClass:
         c.widgetWantsFocusNow(w)
         i, j = w.getSelectionRange()
         w.setSelectionRange(i, j, insert=j)
-        # Was in finish.
-        c.frame.body.onBodyChanged('end-auto-completer')
-        c.recolor()
+        newText = w.getAllText()
+        if p.b == newText:
+            return
+        bunch = u.beforeChangeBody(p)
+        p.v.b = newText  # p.b would cause a redraw.
+        u.afterChangeBody(p, 'auto-completer', bunch)
 
     finish = exit
     abort = exit
