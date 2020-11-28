@@ -2918,6 +2918,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         c = self.leo_c
         p = c.p
         v = p.v
+        undoType = 'update-body'
         i = self.cursor_line
         wrapper = c.frame.body.wrapper
         assert isinstance(wrapper, BodyWrapper), repr(wrapper)
@@ -2935,7 +2936,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         elif i == len(lines):
             aList = head + [s]
             self.values = aList
@@ -2944,7 +2945,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         else:
             g.trace('Can not happen', i, len(lines), repr(s))
             v.selectionLength = 0
