@@ -780,7 +780,8 @@ class SpellTabHandler:
                     c.invalidateFocus()
                     c.bodyWantsFocus()
                     w.setSelectionRange(i, j, insert=j)
-                    w.see(j)
+                    k = g.see_more_lines(s, j, 4)
+                    w.see(k)
                     return
                 self.seen.add(word)
             # No more misspellings in p

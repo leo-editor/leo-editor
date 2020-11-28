@@ -613,29 +613,25 @@ class LeoBody:
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
+    def onBodyChanged(self, undoType, oldSel=None):
         """
         Update Leo after the body has been changed.
         
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
-        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        p, u, w = self.c.p, self.c.undoer, self.wrapper
+        #
+        # Shortcut.
+        newText = w.getAllText()
+        if p.b == newText:
+            return
         #
         # Init data.
         newSel = w.getSelectionRange()
         newInsert = w.getInsertPoint()
-        newText = w.getAllText()  # getAllText converts to unicode.
-        if oldText:
-            p.v.b = oldText
-            changed = oldText != newText
-        else:
-            oldText = p.b
-            changed = True
-        if not changed:
-            return
         #
-        # "Before" snapshot.
+        # The "Before" snapshot.
         #
         # #1743: Restore oldSel for u.beforeChangeBody
         if oldSel and newSel and oldSel != newSel:
@@ -650,31 +646,9 @@ class LeoBody:
         #
         # Careful. Don't redraw unless necessary.
         p.v.b = newText  # p.b would cause a redraw.
-        p.v.insertSpot = newInsert
-        if p.isDirty():
-            redraw_flag = False
-        else:
-            p.setDirty()
-            redraw_flag = True
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Recolor the body.
-        c.frame.scanForTabWidth(p)
-        body.recolor(p)
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        if not c.changed:
-            c.setChanged()
-        # Update editors.
-        self.updateEditors()
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-        if redraw_flag:
-            c.redraw_after_icons_changed()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
@@ -966,7 +940,7 @@ class LeoFrame:
             w.see(i)  # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
             # p.initHeadString(s)
@@ -993,7 +967,6 @@ class LeoFrame:
             tCurPosition = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
             s = w.getAllText()
@@ -1023,7 +996,7 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):

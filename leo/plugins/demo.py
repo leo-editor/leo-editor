@@ -410,7 +410,7 @@ class Demo:
         if undo:
             bunch = c.undoer.beforeChangeBody(p)
             p.b = p.b + s
-            c.undoer.afterChangeBody(p, 'Typing', bunch)
+            c.undoer.afterChangeBody(p, 'simulate-keys', bunch)
         for ch in s:
             p.b = p.b + ch
             w.repaint()

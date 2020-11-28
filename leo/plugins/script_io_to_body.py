@@ -44,7 +44,7 @@ def onCreate (tag, keys):
         # Override c.executeScript.
         g.funcToMethod(newExecuteScript,c.__class__,'executeScript')
         c.k.overrideCommand('execute-script',c.executeScript)
-#@+node:edream.110203113231.928: ** newPut and newPutNl
+#@+node:edream.110203113231.928: ** newPut and newPutNl (script_io_to_body.py)
 # Same as frame.put except sends output to the end of the body text.
 def newPut (self,s,*args,**keys):
 
@@ -52,7 +52,7 @@ def newPut (self,s,*args,**keys):
     w = body.wrapper
     if w:
         w.insert("end",s)
-        body.onBodyChanged("Typing")
+        body.onBodyChanged('put-to-body-text')
     # else: g.pr(s,newline=False)
 
 # Same as frame.putnl except sends output to the end of the body text.

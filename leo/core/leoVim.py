@@ -2371,13 +2371,11 @@ class VimCommands:
         if w and name.startswith('body'):
             # Similar to selfInsertCommand.
             oldSel = self.old_sel or w.getSelectionRange()
-            oldText = c.p.b
             newText = w.getAllText()
-            # To do: set undoType to the command spelling?
-            if newText != oldText:
+            if c.p.b != newText:
+                # To do: set undoType to the command spelling?
                 # undoType = ''.join(self.command_list) or 'Typing'
-                c.frame.body.onBodyChanged(undoType='Typing',
-                    oldSel=oldSel, oldText=oldText, oldYview=None)
+                c.frame.body.onBodyChanged(undoType='vc-save-body', oldSel=oldSel)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(self, kind=None, w=None, activeFlag=None):
         """
