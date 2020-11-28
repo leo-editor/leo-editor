@@ -434,6 +434,13 @@ class Undoer:
             bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
+        # 
+        if g.unitTesting:
+            assert command.lower() != 'typing', g.callers()
+        elif command.lower() == 'typing':
+            g.trace(
+                'Error: undoType should not be "Typing"\n'
+                'Call u.doTyping instead')
         u.updateAfterTyping(p, w)
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False):
