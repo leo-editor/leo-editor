@@ -3280,7 +3280,6 @@ class KeyHandlerClass:
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(pos)
             u.afterChangeNodeContents(p, 'change shortcut', udata)
-            c.frame.body.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
