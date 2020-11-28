@@ -3259,32 +3259,32 @@ class KeyHandlerClass:
         return 'found'
     #@+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
-        c, k, p = self.c, self, self.c.p
+        c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
-            w = c.frame.body
+            w = c.frame.body.wrapper
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
             assert m  # edit-shortcut was invoked on a malformed body line
             sel = f"{m.group(0)} {stroke.s}"
-            udata = c.undoer.beforeChangeNodeContents(p)
+            udata = u.beforeChangeNodeContents(p)
             pos = w.getYScrollPosition()
             i = len(before)
             j = max(i, len(before) + len(sel) - 1)
             w.setAllText(before + sel + after)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(pos)
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-            w.onBodyChanged('change shortcut')
+            u.afterChangeNodeContents(p, 'change shortcut', udata)
+            c.frame.body.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
         if p.h.startswith(('@command', '@button')):
-            udata = c.undoer.beforeChangeNodeContents(p)
+            udata = u.beforeChangeNodeContents(p)
             cmd = p.h.split('@key', 1)[0]
             p.h = f"{cmd} @key={stroke.s}"
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            u.afterChangeNodeContents(p, 'change shortcut', udata)
             try:
                 cmdname = cmd.split(' ', 1)[1].strip()
                 k.editShortcut_do_bind_helper(stroke, cmdname)
