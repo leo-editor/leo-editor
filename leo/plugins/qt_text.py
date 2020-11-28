@@ -1501,10 +1501,21 @@ class QTextEditWrapper(QTextMixin):
         vScroll.setValue(val + (delta * lineSpacing))
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18090: *4* qtew.see & seeInsertPoint
-    def see(self, i):
-        """Make sure position i is visible."""
+    def see(self, see_i):
+        """Scroll so that position see_i is visible."""
         w = self.widget
+        tc = w.textCursor()
+        # Put see_i in range.
+        s = self.getAllText()
+        see_i = max(0, min(see_i, len(s)))
+        # Remember the old cursor
+        old_cursor = QtGui.QTextCursor(tc)
+        # Scroll so that see_i is visible.
+        tc.setPosition(see_i)
+        w.setTextCursor(tc)
         w.ensureCursorVisible()
+        # Restore the old cursor
+        w.setTextCursor(old_cursor)
 
     def seeInsertPoint(self):
         """Make sure the insert point is visible."""

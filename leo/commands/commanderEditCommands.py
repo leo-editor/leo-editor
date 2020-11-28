@@ -933,30 +933,35 @@ def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     j = ins = max(i, len(head) + len(result) - 1)
     w.setAllText(s)  # Destroys coloring.
     changed = original != head + result + tail
-    if changed:
-        # Adjust when newline follows the reformatted paragraph.
-        if not tail and ins < len(s):
-            ins += 1
-        # Stay in the paragraph.
-        body.onBodyChanged(undoType)
-    else:
-        # Advance to the next paragraph.
-        ins += 1  # Move past the selection.
-        while ins < len(s):
-            i, j = g.getLine(s, ins)
-            line = s[i:j]
-            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-            if line.isspace():
-                ins = j + 1
-            else:
-                ins = i
-                break
-        c.recolor()
+    #
+    # #1748: Always advance to the next paragraph.
+    ins += 1
+    while ins < len(s):
+        i, j = g.getLine(s, ins)
+        line = s[i:j]
+        # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+        if line.isspace():
+            ins = j + 1
+        else:
+            ins = i
+            break
+    ins = min(ins, len(s))
     w.setSelectionRange(ins, ins, insert=ins)
-    # 2011/10/26: Calling see does more harm than good.
-        # w.see(ins)
-    # Make sure we never scroll horizontally.
-    w.setXScrollPosition(0)
+    #
+    # Show more lines, if they exist.
+    for z in range(4):
+        if ins >= len(s):
+            break
+        i, j = g.getLine(s, ins)
+        ins = j
+    w.see(min(ins, len(s)))  # New in 6.4. w.see works!
+    #
+    # Finish.
+    if changed:
+        body.onBodyChanged(undoType,
+            oldSel=oldSel, oldText=original, oldYview=oldYview)
+    w.setXScrollPosition(0)  # Never scroll horizontally.
+    c.recolor()
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     """Compute the result of wrapping all lines."""
@@ -1017,6 +1022,40 @@ def startsParagraph(s):
     else:
         val = s.startswith('@') or s.startswith('-')
     return val
+#@+node:ekr.20201124191844.1: ** c_ec.reformatSelection
+@g.commander_command('reformat-selection')
+def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
+    """
+    Reformat the selected text, as in reformat-paragraph, but without
+    expanding the selection past the selected lines.
+    """
+    body, c, w = self.frame.body, self, self.frame.body.wrapper
+    undoType = 'reformat-selection'
+    if g.app.batchMode:
+        c.notValidInBatchMode(undoType)
+        return
+    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
+    head, middle, tail = c.frame.body.getSelectionLines()
+    lines = g.splitLines(middle)
+    if not lines:
+        return
+    indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+    result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+    s = head + result + tail
+    if s == original:
+        return
+    #
+    # Update the text and the selection.
+    w.setAllText(s)  # Destroys coloring.
+    i = len(head)
+    j = max(i, len(head) + len(result) - 1)
+    j = min(j, len(s))
+    w.setSelectionRange(i, j, insert=j)
+    #
+    # Finish.
+    body.onBodyChanged(undoType, oldSel=oldSel, oldText=original, oldYview=oldYview)
+    w.setXScrollPosition(0)  # Never scroll horizontally.
+    c.recolor()
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):

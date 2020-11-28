@@ -714,11 +714,9 @@ class QuickSearchController:
     def onSelectItem(self, it, it_prev=None):
 
         c = self.c
-
         tgt = self.its.get(it and id(it))
-
-        if not tgt: return
-
+        if not tgt:
+            return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
         modifiers = QtWidgets.QApplication.keyboardModifiers()
@@ -730,13 +728,16 @@ class QuickSearchController:
                 self.lw.item(row).setHidden(True)
                 row += 1
                 cur = self.lw.item(row)
-                indent = len(cur.text()) - len(str(cur.text()).lstrip())
+                # #1751.
+                if not cur:
+                    break
+                s = cur.text() or ''
+                indent = len(s) - len(str(s).lstrip())
                 if indent <= init_indent:
                     break
             self.lw.setCurrentRow(row)
             self.lw.blockSignals(False)
             return
-
         # generic callable
         if callable(tgt):
             tgt()
@@ -744,10 +745,8 @@ class QuickSearchController:
             p, pos = tgt
             if hasattr(p,'v'): #p might be "Root"
                 if not c.positionExists(p):
-                    g.es(
-                        "Node moved or deleted.\nMaybe re-do search.",
-                        color='red'
-                    )
+                    g.es("Node moved or deleted.\nMaybe re-do search.",
+                        color='red')
                     return
                 c.selectPosition(p)
                 if pos is not None:
@@ -755,7 +754,6 @@ class QuickSearchController:
                     w = c.frame.body.wrapper
                     w.setSelectionRange(st,en)
                     w.seeInsertPoint()
-
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
     def onActivated (self,event):
