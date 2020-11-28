@@ -317,8 +317,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
 
         def callback(arg, w=w):
-            p = c.p
             i = w.getSelectionRange()[0]
+            p = c.p
             w.deleteTextSelection()
             w.insert(i, arg)
             newText = w.getAllText()
