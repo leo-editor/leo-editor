@@ -66,20 +66,7 @@ import tokenize
         # tabnanny = None
 #@-<< imports >>
 #@+others
-#@+node:ekr.20201129132455.1: ** Top-level (leoTest2.py)
-#@+node:ekr.20201129133424.5: *3* function: compare_lists
-def compare_lists(list1, list2):
-    """
-    Compare two lists of strings, showing the first mismatch.
-
-    Return the index of the first mismatched lines, or None if identical.
-    """
-    import itertools
-    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
-    for i, (s1, s2) in enumerate(it):
-        if s1 != s2:
-            return i
-    return None
+#@+node:ekr.20201129132455.1: ** Top-level
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
@@ -114,7 +101,6 @@ def get_time():
 #@+node:ekr.20201129132511.1: *3* function: pytest_main
 def pytest_main():
     g.trace()
-#@+node:ekr.20201129133324.1: *3* stub functions (To be deleted)
 #@+node:ekr.20201129134336.1: ** From leoAst.py
 #@+node:ekr.20201129131324.214: *3*  class BaseTest (TestCase)
 class BaseTest(unittest.TestCase):
