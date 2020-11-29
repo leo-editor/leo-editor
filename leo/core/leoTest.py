@@ -1,8 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20051104075904: * @file leoTest.py
-"""Classes for Leo's unit testing.
+"""
+Support for Leo's *legacy* unit testing framework, based on unitTest.leo.
 
-Run the unit tests in test.leo using the Execute Script command.
+leoTest2.py supports Leo's *new* testing framework, based on coverage
+tests embedded in Leo's source code files themselves.
 """
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
