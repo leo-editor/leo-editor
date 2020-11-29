@@ -68,7 +68,6 @@ def get_time():
 def pytest_main():
     """Run selected unit tests with pytest-cov"""
     try:
-        # pylint: disable=unused-import
         import pytest
     except Exception:
         print('pytest not found')
