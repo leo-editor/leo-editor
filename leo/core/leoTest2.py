@@ -14,11 +14,6 @@ Full unit tests for x.py can be run from the command line:
     
     python -m leo.core.x
 """
-### Huh?
-    # if g.app:  # Make sure we can import this module stand-alone.
-        # newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
-    # else:
-        # newAtFile = False
 #@+<< imports >>
 #@+node:ekr.20201129131605.1: ** << imports >> (leoTest2.py)
 import leo.core.leoGlobals as g
