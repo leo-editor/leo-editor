@@ -70,9 +70,18 @@ def pytest_main():
     try:
         # pylint: disable=unused-import
         import pytest
-        assert pytest  ### for pyflakes
     except Exception:
-        pytest = None
+        print('pytest not found')
+        return
+    if '--py-cov' in sys.argv:
+        sys.argv.remove('--py-cov')
+    pycov_args = sys.argv + [
+        '--cov-report=html',
+        '--cov-report=term-missing',
+        '--cov=leo.core.leoAst',
+        'leo/core/leoAst.py',
+    ]
+    pytest.main(args=pycov_args)
 #@+node:ekr.20201129131324.214: **  class BaseTest (unittest.TestCase)
 class BaseTest(unittest.TestCase):
     """
