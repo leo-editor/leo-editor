@@ -22,28 +22,17 @@ import leo.core.leoGui as leoGui  # For UnitTestGui.
 import logging
 import cProfile as profile
 import os
-try:
-    # pylint: disable=unused-import
-    import pytest
-except Exception:
-    pytest = None
 # import re
 import sys
+import tabnanny
 import time
 import timeit
+import tokenize
 # import traceback
 import unittest
-#
-# Temporary imports...
-import doctest
-try:
-    import tabnanny  # Does not exist in jython.
-except ImportError:
-    tabnanny = None
-import tokenize
 #@-<< imports >>
 #@+others
-#@+node:ekr.20201129132455.1: ** Top-level
+#@+node:ekr.20201129132455.1: ** Top-level functions...
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
@@ -77,8 +66,14 @@ def get_time():
     return time.process_time()
 #@+node:ekr.20201129132511.1: *3* function: pytest_main
 def pytest_main():
-    g.trace()
-#@+node:ekr.20201129131324.214: **  class BaseTest (TestCase)
+    """Run selected unit tests with pytest-cov"""
+    try:
+        # pylint: disable=unused-import
+        import pytest
+        assert pytest  ### for pyflakes
+    except Exception:
+        pytest = None
+#@+node:ekr.20201129131324.214: **  class BaseTest (unittest.TestCase)
 class BaseTest(unittest.TestCase):
     """
     The base class of all tests of leoAst.py.
@@ -131,12 +126,11 @@ class BaseTest(unittest.TestCase):
         old_t = self.times.get(key, 0.0)
         self.times[key] = old_t + t
     #@-others
-#@+node:ekr.20201129131454.1: ** From leoTest.py
-#@+node:ekr.20201129131454.11: *3* class EditBodyTestCase
+#@+node:ekr.20201129131454.11: ** class EditBodyTestCase
 class EditBodyTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
     #@+others
-    #@+node:ekr.20201129131454.12: *4*  __init__(EditBodyTestCase)
+    #@+node:ekr.20201129131454.12: *3*  __init__(EditBodyTestCase)
     def __init__(self, c, parent, before, after, sel, ins, tempNode):
 
         super().__init__()
@@ -150,13 +144,13 @@ class EditBodyTestCase(unittest.TestCase):
         self.ins = ins and ins.copy()
             # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
-    #@+node:ekr.20201129131454.13: *4*  fail (EditBodyTestCase)
+    #@+node:ekr.20201129131454.13: *3*  fail (EditBodyTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         self.failFlag = True
-    #@+node:ekr.20201129131454.14: *4* editBody
+    #@+node:ekr.20201129131454.14: *3* editBody
     def editBody(self):
         c = self.c
         tm = self.c.testManager
@@ -194,10 +188,10 @@ class EditBodyTestCase(unittest.TestCase):
         except Exception:
             self.fail()
             raise
-    #@+node:ekr.20201129131454.15: *4* runTest
+    #@+node:ekr.20201129131454.15: *3* runTest
     def runTest(self):
         self.editBody()
-    #@+node:ekr.20201129131454.16: *4* setUp
+    #@+node:ekr.20201129131454.16: *3* setUp
     def setUp(self):
         c = self.c; tempNode = self.tempNode
         c.undoer.clearUndoState()
@@ -220,14 +214,14 @@ class EditBodyTestCase(unittest.TestCase):
         if not self.sel and not self.ins:  # self.sel is a **tk** index.
             w.setInsertPoint(0)
             w.setSelectionRange(0, 0)
-    #@+node:ekr.20201129131454.17: *4* shortDescription
+    #@+node:ekr.20201129131454.17: *3* shortDescription
     def shortDescription(self):
         try:
             return f"EditBodyTestCase: {self.parent.h}"
         except Exception:
             g.es_print_exception()
             return "EditBodyTestCase"
-    #@+node:ekr.20201129131454.18: *4* tearDown
+    #@+node:ekr.20201129131454.18: *3* tearDown
     def tearDown(self):
         c = self.c; tempNode = self.tempNode
         c.selectPosition(tempNode)
@@ -239,36 +233,36 @@ class EditBodyTestCase(unittest.TestCase):
         tempNode.clearDirty()
         c.undoer.clearUndoState()
     #@-others
-#@+node:ekr.20201129131454.19: *3* class GeneralTestCase
+#@+node:ekr.20201129131454.19: ** class GeneralTestCase
 class GeneralTestCase(unittest.TestCase):
     """Create a unit test from a snippet of code."""
     #@+others
-    #@+node:ekr.20201129131454.20: *4* __init__ (GeneralTestCase)
+    #@+node:ekr.20201129131454.20: *3* __init__ (GeneralTestCase)
     def __init__(self, c, p, setup_script=None):
         """Ctor for the GeneralTestCase class."""
         super().__init__()
         self.c = c
         self.p = p.copy()
         self.setup_script = setup_script
-    #@+node:ekr.20201129131454.21: *4*  fail (GeneralTestCase)
+    #@+node:ekr.20201129131454.21: *3*  fail (GeneralTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         raise self.failureException(msg)
             # Fix # 1002. Raise an exception, as in TestCase.fail()
-    #@+node:ekr.20201129131454.22: *4* tearDown (GeneralTestCase)
+    #@+node:ekr.20201129131454.22: *3* tearDown (GeneralTestCase)
     def tearDown(self):
         # Restore the outline.
         self.c.outerUpdate()
-    #@+node:ekr.20201129131454.23: *4* setUp (GeneralTestCase)
+    #@+node:ekr.20201129131454.23: *3* setUp (GeneralTestCase)
     def setUp(self):
         c = self.c
         oldChanged = c.changed
         c.selectPosition(self.p.copy())
         if not oldChanged:
             c.clearChanged()
-    #@+node:ekr.20201129131454.24: *4* runTest (generalTestCase)
+    #@+node:ekr.20201129131454.24: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         """Run a Leo GeneralTestCase test."""
         trace_time = False
@@ -301,21 +295,21 @@ class GeneralTestCase(unittest.TestCase):
             t2 = time.process_time()
             if t2 - t1 > 3.0:
                 g.trace(f"\nEXCESSIVE TIME: {t2 - t1:5.2f} sec. in {self.p.h}")
-    #@+node:ekr.20201129131454.25: *4* shortDescription
+    #@+node:ekr.20201129131454.25: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
         return s + '\n'
     #@-others
-#@+node:ekr.20201129131454.26: *3* class ImportExportTestCase
+#@+node:ekr.20201129131454.26: ** class ImportExportTestCase
 class ImportExportTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
     #@+others
-    #@+node:ekr.20201129131454.27: *4*  fail (ImportExportTestCase)
+    #@+node:ekr.20201129131454.27: *3*  fail (ImportExportTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
-    #@+node:ekr.20201129131454.28: *4* __init__ (ImportExportTestCase)
+    #@+node:ekr.20201129131454.28: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
 
         super().__init__()
@@ -329,7 +323,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
         self.old_p = c.p
-    #@+node:ekr.20201129131454.29: *4* importExport (ImportExportTestCase)
+    #@+node:ekr.20201129131454.29: *3* importExport (ImportExportTestCase)
     def importExport(self):
         c = self.c; p = self.p
         g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
@@ -338,11 +332,11 @@ class ImportExportTestCase(unittest.TestCase):
         command(event=None)
         failedMethod = g.app.unitTestDict.get("fail")
         self.assertFalse(failedMethod, failedMethod)
-    #@+node:ekr.20201129131454.30: *4* runTest (ImportExportTestCase)
+    #@+node:ekr.20201129131454.30: *3* runTest (ImportExportTestCase)
     def runTest(self):
         # """Import Export Test Case"""
         self.importExport()
-    #@+node:ekr.20201129131454.31: *4* setUp (ImportExportTestCase)
+    #@+node:ekr.20201129131454.31: *3* setUp (ImportExportTestCase)
     def setUp(self):
 
         c = self.c; temp_p = self.temp_p
@@ -371,13 +365,13 @@ class ImportExportTestCase(unittest.TestCase):
             theDict = {name: fileName}
         self.oldGui = g.app.gui
         self.gui = leoGui.UnitTestGui(theDict)
-    #@+node:ekr.20201129131454.32: *4* shortDescription (ImportExportTestCase)
+    #@+node:ekr.20201129131454.32: *3* shortDescription (ImportExportTestCase)
     def shortDescription(self):
         try:
             return f"ImportExportTestCase: {self.p.h} {self.fileName}"
         except Exception:
             return "ImportExportTestCase"
-    #@+node:ekr.20201129131454.33: *4* tearDown (ImportExportTestCase)
+    #@+node:ekr.20201129131454.33: *3* tearDown (ImportExportTestCase)
     def tearDown(self):
         c = self.c; temp_p = self.temp_p
         if self.gui:
@@ -391,18 +385,18 @@ class ImportExportTestCase(unittest.TestCase):
         g.app.gui = self.oldGui
         c.selectPosition(self.old_p)
     #@-others
-#@+node:ekr.20201129131454.51: *3* class TestManager
+#@+node:ekr.20201129131454.51: ** class TestManager (to be deleted)
 class TestManager:
     """A controller class to encapuslate test-runners."""
     #@+others
-    #@+node:ekr.20201129131454.52: *4*  ctor (TestManager)
+    #@+node:ekr.20201129131454.52: *3*  ctor (TestManager)
     def __init__(self, c):
         self.c = c
-    #@+node:ekr.20201129131454.53: *4* TM.Factories
+    #@+node:ekr.20201129131454.53: *3* TM.Factories
     def generalTestCase(self, p):
         return GeneralTestCase(self.c, p)
-    #@+node:ekr.20201129131454.54: *4* TM.Top-level
-    #@+node:ekr.20201129131454.55: *5* TM.doTests & helpers (local tests)
+    #@+node:ekr.20201129131454.54: *3* TM.Top-level
+    #@+node:ekr.20201129131454.55: *4* TM.doTests & helpers (local tests)
     def doTests(self, all=None, marked=None, verbosity=1):
         """
         Run any kind of local unit test.
@@ -431,7 +425,7 @@ class TestManager:
             g.unitTesting = g.app.unitTesting = False
             c.contractAllHeadlines()
             c.redraw(p1)
-    #@+node:ekr.20201129131454.56: *6* class LoggingLog
+    #@+node:ekr.20201129131454.56: *5* class LoggingLog
     class LoggingStream:
         """A class that can searve as a logging stream."""
 
@@ -456,7 +450,7 @@ class TestManager:
 
         def flush(self):
             pass
-    #@+node:ekr.20201129131454.57: *6* tm.create_logging_stream
+    #@+node:ekr.20201129131454.57: *5* tm.create_logging_stream
     def create_logging_stream(self):
 
         logger = logging.getLogger()
@@ -474,7 +468,7 @@ class TestManager:
             logger.addHandler(handler)
         stream = self.LoggingStream(logger)
         return logger, handler, stream
-    #@+node:ekr.20201129131454.58: *6* tm.do_tests_helper
+    #@+node:ekr.20201129131454.58: *5* tm.do_tests_helper
     def do_tests_helper(self, all, marked, verbosity):
 
         c = self.c
@@ -541,7 +535,7 @@ class TestManager:
             key = 'unittest/cur/fail'
             archive = [(t.p.gnx, trace2) for (t, trace2) in result.errors]
             c.db[key] = archive
-    #@+node:ekr.20201129131454.59: *6* tm.get_suite_script
+    #@+node:ekr.20201129131454.59: *5* tm.get_suite_script
     def get_suite_script(self):
         s = '''
 
@@ -552,7 +546,7 @@ class TestManager:
 
     '''
         return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20201129131454.60: *6* tm.get_test_class_script
+    #@+node:ekr.20201129131454.60: *5* tm.get_test_class_script
     def get_test_class_script(self):
         s = '''
 
@@ -563,13 +557,13 @@ class TestManager:
 
     '''
         return g.adjustTripleString(s, self.c.tab_width)
-    #@+node:ekr.20201129131454.61: *6* tm.instantiate_gui
+    #@+node:ekr.20201129131454.61: *5* tm.instantiate_gui
     def instantiate_gui(self):
         """
         Subclasses may override to provide a "live" gui instance.
         """
         return leoGui.NullGui()
-    #@+node:ekr.20201129131454.62: *6* tm.make_test_suite
+    #@+node:ekr.20201129131454.62: *5* tm.make_test_suite
     def make_test_suite(self, all, marked):
         """Return the test suite or None."""
         c, tm = self.c, self
@@ -599,14 +593,14 @@ class TestManager:
                 suite.addTest(test)
                 found = True
         return suite if found else None
-    #@+node:ekr.20201129131454.63: *6* tm.makeTestCase
+    #@+node:ekr.20201129131454.63: *5* tm.makeTestCase
     def makeTestCase(self, p, setup_script):
         c = self.c
         p = p.copy()
         if p.b.strip():
             return GeneralTestCase(c, p, setup_script)
         return None
-    #@+node:ekr.20201129131454.64: *6* tm.makeTestClass
+    #@+node:ekr.20201129131454.64: *5* tm.makeTestClass
     def makeTestClass(self, p):
         """Create a subclass of unittest.TestCase"""
         c, tm = self.c, self
@@ -642,7 +636,7 @@ class TestManager:
             g.es_print_exception()
             return None
         return None
-    #@+node:ekr.20201129131454.65: *6* tm.makeTestSuite
+    #@+node:ekr.20201129131454.65: *5* tm.makeTestSuite
     # This code executes the script in an @suite node.
     # This code assumes that the script sets the 'suite' var to the test suite.
 
@@ -673,7 +667,7 @@ class TestManager:
             print(f"\n{fname}: exception creating test cases for {p.h}")
             g.es_print_exception()
             return None
-    #@+node:ekr.20201129131454.67: *5* TM.runProfileOnNode
+    #@+node:ekr.20201129131454.67: *4* TM.runProfileOnNode
     # Called from @button profile in unitTest.leo.
 
     def runProfileOnNode(self, p, outputPath=None):
@@ -695,7 +689,7 @@ class TestManager:
         stats.strip_dirs()
         stats.sort_stats('cum', 'file', 'name')
         stats.print_stats()
-    #@+node:ekr.20201129131454.68: *5* TM.runTimerOnNode
+    #@+node:ekr.20201129131454.68: *4* TM.runTimerOnNode
     # Called from @button timeit in unitTest.leo.
 
     def runTimerOnNode(self, p, count):
@@ -718,27 +712,10 @@ class TestManager:
             g.es_print("count:", count, "time/count:", ratio, '', p.h)
         except Exception:
             t.print_exc()
-    #@+node:ekr.20201129131454.69: *4* TM.Test wrappers...
+    #@+node:ekr.20201129131454.69: *3* TM.Test wrappers...
     # These are entry points for specific unit tests.
     # It would be better, perhaps, to use @common nodes in unitTest.leo.
-    #@+node:ekr.20201129131454.70: *5* TM.createUnitTestsFromDoctests
-    def createUnitTestsFromDoctests(self, modules, verbose=True):
-        created = False  # True if suite is non-empty.
-        suite = unittest.makeSuite(unittest.TestCase)
-        for module in list(modules):
-            # New in Python 4.2: n may be zero.
-            try:
-                test = doctest.DocTestSuite(module)
-                n = test.countTestCases()
-                if n > 0:
-                    suite.addTest(test)
-                    created = True
-                    if verbose:
-                        g.pr(f"found {n:2d} doctests for {module.__name__}")
-            except ValueError:
-                g.pr(f"no doctests in {module.__name__}")
-        return suite if created else None
-    #@+node:ekr.20201129131454.71: *5* TM.makeEditBodySuite
+    #@+node:ekr.20201129131454.71: *4* TM.makeEditBodySuite
     def makeEditBodySuite(self, p):
         """Create an Edit Body test for every descendant of testParentHeadline.."""
         tm = self
@@ -762,7 +739,7 @@ class TestManager:
             else:
                 g.pr('missing "before" or "after" for', p.h)
         return suite
-    #@+node:ekr.20201129131454.72: *5* TM.makeImportExportSuite
+    #@+node:ekr.20201129131454.72: *4* TM.makeImportExportSuite
     def makeImportExportSuite(self, parentHeadline, doImport):
         """Create an Import/Export test for every descendant of testParentHeadline.."""
         tm = self
@@ -782,7 +759,7 @@ class TestManager:
                 test = ImportExportTestCase(c, p2, dialog, temp, doImport)
                 suite.addTest(test)
         return suite
-    #@+node:ekr.20201129131454.73: *5* TM.runAtFileTest
+    #@+node:ekr.20201129131454.73: *4* TM.runAtFileTest
     def runAtFileTest(self, p):
         """Common code for testing output of @file, @thin, etc."""
         c = self.c
@@ -812,7 +789,7 @@ class TestManager:
             assert result == expected
         except AssertionError:
             #@+<< dump result and expected >>
-            #@+node:ekr.20201129131454.74: *6* << dump result and expected >>
+            #@+node:ekr.20201129131454.74: *5* << dump result and expected >>
             print('\n', '-' * 20)
             print("result...")
             for line in g.splitLines(result):
@@ -824,7 +801,7 @@ class TestManager:
             print('-' * 20)
             #@-<< dump result and expected >>
             raise
-    #@+node:ekr.20201129131454.75: *5* TM.runEditCommandTest
+    #@+node:ekr.20201129131454.75: *4* TM.runEditCommandTest
     def runEditCommandTest(self, p):
         tm = self
         c = self.c
@@ -877,7 +854,7 @@ class TestManager:
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
-    #@+node:ekr.20201129131454.76: *5* TM.runLeoTest
+    #@+node:ekr.20201129131454.76: *4* TM.runLeoTest
     def runLeoTest(self, path):
         """Run a unit test that opens a .leo file."""
         c = self.c
@@ -896,7 +873,7 @@ class TestManager:
                 c2.clearChanged()  # Clears all dirty bits.
                 g.app.closeLeoWindow(c2.frame)
             c.frame.update()  # Restored in Leo 4.4.8.
-    #@+node:ekr.20201129131454.77: *5* TM.runRootFileTangleTest
+    #@+node:ekr.20201129131454.77: *4* TM.runRootFileTangleTest
     def runRootFileTangleTest(self, p):
         """Code for testing tangle of @root.  The first child is the top node of the
         outline to be processed; the remaining siblings have headlines corresponding to
@@ -919,7 +896,7 @@ class TestManager:
             assert(expectList == resultList)
         except AssertionError:
             #@+<< dump result file names and expected >>
-            #@+node:ekr.20201129131454.78: *6* << dump result file names and expected >>
+            #@+node:ekr.20201129131454.78: *5* << dump result file names and expected >>
             print('\n', '-' * 20)
             print("expected files:")
             for n in expectList:
@@ -948,7 +925,7 @@ class TestManager:
                 # report produced by compareOutlines() if appropriate
         finally:
             rootTestAfterP.doDelete()
-    #@+node:ekr.20201129131454.79: *5* TM.runRootFileUntangleTest
+    #@+node:ekr.20201129131454.79: *4* TM.runRootFileUntangleTest
     def runRootFileUntangleTest(self, p):
         """Code for testing untangle into @root.  The first child is the top node of the
         outline to be processed; it gets copied to a sibling that gets modified by the
@@ -1017,7 +994,7 @@ class TestManager:
                     f"Expected {t} with content {inputSet[t]}, got {result}")
         finally:
             rootTestToChangeP.doDelete()
-    #@+node:ekr.20201129131454.80: *5* TM.runVimTest
+    #@+node:ekr.20201129131454.80: *4* TM.runVimTest
     # Similar to runEditCommandTest.
 
     def runVimTest(self, p):
@@ -1074,8 +1051,8 @@ class TestManager:
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
-    #@+node:ekr.20201129131454.81: *4* TM.Utils
-    #@+node:ekr.20201129131454.82: *5* TM.checkFileSyntax
+    #@+node:ekr.20201129131454.81: *3* TM.Utils
+    #@+node:ekr.20201129131454.82: *4* TM.checkFileSyntax
     def checkFileSyntax(self, fileName, s, reraise=True, suppress=False):
         """Called by a unit test to check the syntax of a file."""
         try:
@@ -1096,7 +1073,7 @@ class TestManager:
                 # g.es_print_exception(full=False,color="black")
             if reraise: raise
             return False
-    #@+node:ekr.20201129131454.83: *5* TM.checkFileTabs
+    #@+node:ekr.20201129131454.83: *4* TM.checkFileTabs
     def checkFileTabs(self, fileName, s):
         if not tabnanny:
             return
@@ -1120,7 +1097,7 @@ class TestManager:
             g.trace("unexpected exception")
             g.es_print_exception()
             assert 0, "test failed"
-    #@+node:ekr.20201129131454.84: *5* TM.compareIgnoringNodeNames
+    #@+node:ekr.20201129131454.84: *4* TM.compareIgnoringNodeNames
     def compareIgnoringNodeNames(self, s1, s2, delims, verbose=False):
         # Compare text containing sentinels, but ignore differences in @+-nodes.
         delim1, delim2, delim3 = delims
@@ -1155,7 +1132,7 @@ class TestManager:
                 g.trace("line2:", repr(line2))
             return False
         return True
-    #@+node:ekr.20201129131454.85: *5* TM.compareOutlines
+    #@+node:ekr.20201129131454.85: *4* TM.compareOutlines
     def compareOutlines(self, root1, root2, compareHeadlines=True, tag='', report=True):
         """Compares two outlines, making sure that their topologies,
         content and join lists are equivalent"""
@@ -1189,25 +1166,12 @@ class TestManager:
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
         return ok
-    #@+node:ekr.20201129131454.86: *5* TM.fail
+    #@+node:ekr.20201129131454.86: *4* TM.fail
     def fail(self):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
-    #@+node:ekr.20201129131454.87: *5* TM.findAllAtFileNodes (not used here)
-    def findAllAtFileNodes(self):
-        c = self.c
-        paths = []
-        for p in c.all_unique_positions():
-            name = p.anyAtFileNodeName()
-            if name:
-                head, tail = g.os_path_split(name)
-                filename, ext = g.os_path_splitext(tail)
-                if ext == ".py":
-                    path = g.os_path_finalize_join(g.app.loadDir, name)
-                    paths.append(path)
-        return paths
-    #@+node:ekr.20201129131454.88: *5* TM.findAllUnitTestNodes
+    #@+node:ekr.20201129131454.88: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self, all, marked):
 
         c, tm = self.c, self
@@ -1296,7 +1260,7 @@ class TestManager:
                 seen2.append(p.v)
                 result2.append(p)
         return result2
-    #@+node:ekr.20201129131454.89: *5* TM.findMarkForUnitTestNodes
+    #@+node:ekr.20201129131454.89: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
         """return the position of *all* non-ignored @mark-for-unit-test nodes."""
         c = self.c
@@ -1314,10 +1278,10 @@ class TestManager:
                 else:
                     p.moveToThreadNext()
         return result
-    #@+node:ekr.20201129131454.90: *5* TM.findChildrenOf
+    #@+node:ekr.20201129131454.90: *4* TM.findChildrenOf
     def findChildrenOf(self, root):
         return list(root.children())
-    #@+node:ekr.20201129131454.91: *5* TM.findNodeAnywhere
+    #@+node:ekr.20201129131454.91: *4* TM.findNodeAnywhere
     def findNodeAnywhere(self, headline, breakOnError=False):
         # tm = self
         c = self.c
@@ -1329,13 +1293,13 @@ class TestManager:
             aList = [repr(z.copy()) for z in c.p.parent().self_and_siblings()]
             print('\n'.join(aList))
         return None
-    #@+node:ekr.20201129131454.92: *5* TM.findNodeInRootTree
+    #@+node:ekr.20201129131454.92: *4* TM.findNodeInRootTree
     def findRootNode(self, p):
         """Return the root of p's tree."""
         while p and p.hasParent():
             p.moveToParent()
         return p
-    #@+node:ekr.20201129131454.93: *5* TM.findNodeInTree
+    #@+node:ekr.20201129131454.93: *4* TM.findNodeInTree
     def findNodeInTree(self, p, headline, startswith=False):
         """Search for a node in p's tree matching the given headline."""
         # tm = self
@@ -1346,17 +1310,17 @@ class TestManager:
             if h2 == h or startswith and h2.startswith(h):
                 return p.copy()
         return None
-    #@+node:ekr.20201129131454.94: *5* TM.findSubnodesOf
+    #@+node:ekr.20201129131454.94: *4* TM.findSubnodesOf
     def findSubnodesOf(self, root):
         return list(root.subtree())
-    #@+node:ekr.20201129131454.95: *5* TM.getAllPluginFilenames
+    #@+node:ekr.20201129131454.95: *4* TM.getAllPluginFilenames
     def getAllPluginFilenames(self):
         path = g.os_path_join(g.app.loadDir, "..", "plugins")
         files = g.glob_glob(g.os_path_join(path, "*.py"))
         files = [g.os_path_finalize(f) for f in files]
         files.sort()
         return files
-    #@+node:ekr.20201129131454.96: *5* TM.importAllModulesInPath
+    #@+node:ekr.20201129131454.96: *4* TM.importAllModulesInPath
     def importAllModulesInPath(self, path, exclude=None):
         tm = self
         if exclude is None: exclude = []
@@ -1379,7 +1343,7 @@ class TestManager:
             if module:
                 modules.append(module)
         return modules
-    #@+node:ekr.20201129131454.97: *5* TM.importAllModulesInPathList
+    #@+node:ekr.20201129131454.97: *4* TM.importAllModulesInPathList
     def importAllModulesInPathList(self, paths):
         tm = self
         paths = list(paths)
@@ -1389,7 +1353,7 @@ class TestManager:
             if module:
                 modules.append(module)
         return modules
-    #@+node:ekr.20201129131454.98: *5* TM.is/Suite/Test/TestClass/TestSetup/Node
+    #@+node:ekr.20201129131454.98: *4* TM.is/Suite/Test/TestClass/TestSetup/Node
     def isSuiteNode(self, p):
         return g.match_word(p.h.lower(), 0, "@suite")
 
@@ -1404,7 +1368,7 @@ class TestManager:
     def isTestSetupNode(self, p):
         """Return True if p is an @test-setup node"""
         return g.match_word(p.h.lower(), 0, "@testsetup")
-    #@+node:ekr.20201129131454.99: *5* TM.numberOfClonesInOutline
+    #@+node:ekr.20201129131454.99: *4* TM.numberOfClonesInOutline
     def numberOfClonesInOutline(self):
         """Returns the number of cloned nodes in an outline"""
         c = self.c; n = 0
@@ -1412,11 +1376,11 @@ class TestManager:
             if p.isCloned():
                 n += 1
         return n
-    #@+node:ekr.20201129131454.100: *5* TM.numberOfNodesInOutline
+    #@+node:ekr.20201129131454.100: *4* TM.numberOfNodesInOutline
     def numberOfNodesInOutline(self):
         """Returns the total number of nodes in an outline"""
         return len([p for p in self.c.all_positions()])
-    #@+node:ekr.20201129131454.101: *5* TM.safeImportModule
+    #@+node:ekr.20201129131454.101: *4* TM.safeImportModule
     def safeImportModule(self, fileName):
         """
         Safely import the given module name.
@@ -1442,7 +1406,7 @@ class TestManager:
         else:
             g.pr("Not a .py file:", fileName)
             return None
-    #@+node:ekr.20201129131454.102: *5* TM.showTwoBodies
+    #@+node:ekr.20201129131454.102: *4* TM.showTwoBodies
     def showTwoBodies(self, t, b1, b2):
         print('\n', '-' * 20)
         print(f"expected for {t}...")
@@ -1453,10 +1417,10 @@ class TestManager:
         for line in g.splitLines(b2):
             print(f"{len(line):3d}", repr(line))
         print('-' * 20)
-    #@+node:ekr.20201129131454.103: *5* TM.throwAssertionError
+    #@+node:ekr.20201129131454.103: *4* TM.throwAssertionError
     def throwAssertionError(self):
         assert 0, 'assert(0) as a test of catching assertions'
-    #@+node:ekr.20201129131454.104: *5* TM.writeNodesToNode
+    #@+node:ekr.20201129131454.104: *4* TM.writeNodesToNode
     def writeNodesToNode(self, c, p, output, sentinels=True):
         result = []
         for p2 in p.self_and_subtree():
@@ -1464,12 +1428,12 @@ class TestManager:
             result.append(s)
         result = ''.join(result)
         output.scriptSetBodyString(result)
-    #@+node:ekr.20201129131454.105: *5* TM.writeNodeToNode
+    #@+node:ekr.20201129131454.105: *4* TM.writeNodeToNode
     def writeNodeToNode(self, c, p, output, sentinels=True):
         """Write the p's tree to the body text of the output node."""
         s = self.writeNodeToString(c, p, sentinels)
         output.scriptSetBodyString(s)
-    #@+node:ekr.20201129131454.106: *5* TM.writeNodeToString
+    #@+node:ekr.20201129131454.106: *4* TM.writeNodeToString
     def writeNodeToString(self, c, p, sentinels):
         """Return an AtFile.write of p's tree to a string."""
         at = c.atFileCommands
