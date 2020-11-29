@@ -41,24 +41,6 @@ try:
 except ImportError:
     tabnanny = None
 import tokenize
-#
-### From leoAst.py
-    # import argparse
-    # import ast
-    # import codecs
-    # import difflib
-    # import glob
-    # import io
-    # import re
-#
-### From leoTest.py
-    # import gc
-    # import logging.handlers
-    # import timeit
-    # try:
-        # import tabnanny  # Does not exist in jython.
-    # except ImportError:
-        # tabnanny = None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20201129132455.1: ** Top-level
@@ -96,8 +78,7 @@ def get_time():
 #@+node:ekr.20201129132511.1: *3* function: pytest_main
 def pytest_main():
     g.trace()
-#@+node:ekr.20201129134336.1: ** From leoAst.py
-#@+node:ekr.20201129131324.214: *3*  class BaseTest (TestCase)
+#@+node:ekr.20201129131324.214: **  class BaseTest (TestCase)
 class BaseTest(unittest.TestCase):
     """
     The base class of all tests of leoAst.py.
@@ -108,14 +89,14 @@ class BaseTest(unittest.TestCase):
     # Statistics.
     counts, times = {}, {}
     #@+others
-    #@+node:ekr.20201129131324.215: *4* BaseTest.adjust_expected
+    #@+node:ekr.20201129131324.215: *3* BaseTest.adjust_expected
     def adjust_expected(self, s):
         """Adjust leading indentation in the expected string s."""
         s2 = s.lstrip('\\\n')
         return g.adjustTripleString(s2, tab_width=-4).rstrip() + '\n'
-    #@+node:ekr.20201129131324.226: *4* BaseTest: stats...
+    #@+node:ekr.20201129131324.226: *3* BaseTest: stats...
     # Actions should fail by throwing an exception.
-    #@+node:ekr.20201129131324.227: *5* BaseTest.dump_stats & helpers
+    #@+node:ekr.20201129131324.227: *4* BaseTest.dump_stats & helpers
     def dump_stats(self):  # pragma: no cover.
         """Show all calculated statistics."""
         if self.counts or self.times:
@@ -123,12 +104,12 @@ class BaseTest(unittest.TestCase):
             self.dump_counts()
             self.dump_times()
             print('')
-    #@+node:ekr.20201129131324.228: *6* BaseTest.dump_counts
+    #@+node:ekr.20201129131324.228: *5* BaseTest.dump_counts
     def dump_counts(self):  # pragma: no cover.
         """Show all calculated counts."""
         for key, n in self.counts.items():
             print(f"{key:>16}: {n:>6}")
-    #@+node:ekr.20201129131324.229: *6* BaseTest.dump_times
+    #@+node:ekr.20201129131324.229: *5* BaseTest.dump_times
     def dump_times(self):  # pragma: no cover.
         """
         Show all calculated times.
@@ -139,7 +120,7 @@ class BaseTest(unittest.TestCase):
             t = self.times.get(key)
             key2 = key[3:]
             print(f"{key2:>16}: {t:6.3f} sec.")
-    #@+node:ekr.20201129131324.230: *5* BaseTest.update_counts & update_times
+    #@+node:ekr.20201129131324.230: *4* BaseTest.update_counts & update_times
     def update_counts(self, key, n):
         """Update the count statistic given by key, n."""
         old_n = self.counts.get(key, 0)
@@ -151,7 +132,6 @@ class BaseTest(unittest.TestCase):
         self.times[key] = old_t + t
     #@-others
 #@+node:ekr.20201129131454.1: ** From leoTest.py
-#@+node:ekr.20201129131454.3: *3* Top-level functions
 #@+node:ekr.20201129131454.11: *3* class EditBodyTestCase
 class EditBodyTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
@@ -410,266 +390,6 @@ class ImportExportTestCase(unittest.TestCase):
                 temp_p.firstChild().doDelete()
         g.app.gui = self.oldGui
         c.selectPosition(self.old_p)
-    #@-others
-#@+node:ekr.20201129131454.34: *3* class LinterTable
-class LinterTable():
-    """A class to encapsulate lists of leo modules under test."""
-
-    def __init__(self):
-        """Ctor for LinterTable class."""
-        # Define self. relative to leo.core.leoGlobals
-        self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-    #@+others
-    #@+node:ekr.20201129131454.35: *4* commands
-    def commands(self):
-        """Return list of all command modules in leo/commands."""
-        pattern = g.os_path_finalize_join(self.loadDir, 'commands', '*.py')
-        return self.get_files(pattern)
-    #@+node:ekr.20201129131454.36: *4* core
-    def core(self):
-        """Return list of all of Leo's core files."""
-        pattern = g.os_path_finalize_join(self.loadDir, 'core', 'leo*.py')
-        aList = self.get_files(pattern)
-        for fn in ['runLeo.py',]:
-            aList.append(g.os_path_finalize_join(self.loadDir, 'core', fn))
-        return sorted(aList)
-    #@+node:ekr.20201129131454.37: *4* external
-    def external(self):
-        """Return list of files in leo/external"""
-        pattern = g.os_path_finalize_join(self.loadDir, 'external', 'leo*.py')
-        aList = self.get_files(pattern)
-        remove = [
-            'leoSAGlobals.py',
-            'leoftsindex.py',
-        ]
-        remove = [g.os_path_finalize_join(self.loadDir, 'external', fn) for fn in remove]
-        return sorted([z for z in aList if z not in remove])
-    #@+node:ekr.20201129131454.38: *4* gui_plugins
-    def gui_plugins(self):
-        """Return list of all of Leo's gui-related files."""
-        pattern = g.os_path_finalize_join(self.loadDir, 'plugins', 'qt_*.py')
-        aList = self.get_files(pattern)
-        # These are not included, because they don't start with 'qt_':
-        add = ['free_layout.py', 'nested_splitter.py',]
-        remove = [
-            'qt_main.py',  # auto-generated file.
-        ]
-        for fn in add:
-            aList.append(g.os_path_finalize_join(self.loadDir, 'plugins', fn))
-        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
-        return sorted(set([z for z in aList if z not in remove]))
-    #@+node:ekr.20201129131454.39: *4* modes
-    def modes(self):
-        """Return list of all files in leo/modes"""
-        pattern = g.os_path_finalize_join(self.loadDir, 'modes', '*.py')
-        return self.get_files(pattern)
-    #@+node:ekr.20201129131454.40: *4* ignores (not used!)
-    def ignores(self):
-        return (
-            '__init__', 'FileActions',
-            # 'UNL', # in plugins table.
-            'active_path', 'add_directives', 'attrib_edit',
-            'backlink', 'base64Packager', 'baseNativeTree', 'bibtex', 'bookmarks',
-            'codewisecompleter', 'colorize_headlines', 'contextmenu',
-            'ctagscompleter', 'cursesGui', 'datenodes', 'debugger_pudb',
-            'detect_urls', 'dtest', 'empty_leo_file', 'enable_gc', 'initinclass',
-            'leo_to_html', 'leo_interface', 'leo_pdf', 'leo_to_rtf',
-            'leoOPML', 'leoremote', 'lineNumbers',
-            'macros', 'mime', 'mod_autosave', 'mod_framesize', 'mod_leo2ascd',
-            # 'mod_scripting', # in plugins table.
-            'mod_speedups', 'mod_timestamp',
-            'nav_buttons', 'nav_qt', 'niceNosent', 'nodeActions', 'nodebar',
-            'open_shell', 'open_with', 'outline_export', 'quit_leo',
-            'paste_as_headlines', 'plugins_menu', 'pretty_print', 'projectwizard',
-            'qt_main', 'qt_quicksearch', 'qt_commands',
-            'quickMove', 'quicksearch', 'redirect_to_log', 'rClickBasePluginClasses',
-            'run_nodes',  # Changed thread.allocate_lock to threading.lock().acquire()
-            'rst3',
-            # 'scrolledmessage', # No longer exists.
-            'setHomeDirectory', 'slideshow', 'spydershell', 'startfile',
-            'testRegisterCommand', 'todo',
-            # 'toolbar', # in plugins table.
-            'trace_gc_plugin', 'trace_keys', 'trace_tags',
-            'vim', 'xemacs',
-        )
-    #@+node:ekr.20201129131454.41: *4* plugins (LinterTable)
-    def plugins(self):
-        """Return a list of all important plugins."""
-        aList = []
-        for theDir in ('', 'importers', 'writers'):
-            pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
-            aList.extend(self.get_files(pattern))
-            # Don't use get_files here.
-            # for fn in g.glob_glob(pattern):
-                # sfn = g.shortFileName(fn)
-                # if sfn != '__init__.py':
-                    # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
-                    # aList.append(sfn)
-        remove = [
-            # 2016/05/20: *do* include gui-related plugins.
-            # This allows the -a option not to doubly-include gui-related plugins.
-                # 'free_layout.py', # Gui-related.
-                # 'nested_splitter.py', # Gui-related.
-            'gtkDialogs.py',  # Many errors, not important.
-            'leofts.py',  # Not (yet) in leoPlugins.leo.
-            'qtGui.py',  # Dummy file
-            'qt_main.py',  # Created automatically.
-            'viewrendered2.py', # To be removed.
-            'rst3.py',  # Obsolete
-        ]
-        remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
-        aList = sorted([z for z in aList if z not in remove])
-        return sorted(set(aList))
-    #@+node:ekr.20201129131454.42: *4* get_files (LinterTable)
-    def get_files(self, pattern):
-        """Return the list of absolute file names matching the pattern."""
-        aList = sorted([
-            fn for fn in g.glob_glob(pattern)
-                if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
-        return aList
-    #@+node:ekr.20201129131454.43: *4* get_files_for_scope
-    def get_files_for_scope(self, scope, fn):
-        """Return a list of absolute filenames for external linters."""
-        d = {
-            'all': [self.core, self.commands, self.external, self.plugins],
-            'commands': [self.commands],
-            'core': [self.core, self.commands, self.external, self.gui_plugins],
-            'external': [self.external],
-            'file': [fn],
-            'gui': [self.gui_plugins],
-            'modes': [self.modes],
-            'plugins': [self.plugins],
-        }
-        functions = d.get(scope)
-        paths = []
-        if functions:
-            for func in functions:
-                files = [func] if isinstance(func, str) else func()
-                    # Bug fix: 2016/10/15
-                for fn in files:
-                    fn = g.os_path_abspath(fn)
-                    if g.os_path_exists(fn):
-                        if g.os_path_isfile(fn):
-                            paths.append(fn)
-                    else:
-                        print(f"does not exist: {fn}")
-            paths = sorted(set(paths))
-            return paths
-        print('LinterTable.get_table: bad scope', scope)
-        return []
-    #@-others
-#@+node:ekr.20201129131454.44: *3* class RunTestExternallyHelperClass
-class RunTestExternallyHelperClass:
-    """A helper class to run tests externally."""
-    #@+others
-    #@+node:ekr.20201129131454.45: *4*  ctor: RunTestExternallyHelperClass
-    def __init__(self, c, all, marked):
-        """Ctor for RunTextExternallyHelperClass class."""
-        self.c = c
-        self.all = all
-        self.copyRoot = None  # The root of copied tree.
-        self.fileName = 'dynamicUnitTest.leo'
-        self.marked = marked
-        self.root = None  # The root of the tree to copy when self.all is False.
-        self.tags = ('@test', '@suite', '@unittests', '@unit-tests')
-    #@+node:ekr.20201129131454.46: *4* runTests & helpers
-    def runTests(self):
-        # 2010/09/09: removed the gui arg: there is no way to set it.
-        """
-        Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
-        in a separate process.
-        """
-        c = self.c; p = c.p
-        old_silent_mode = g.app.silentMode
-        g.app.silentMode = True
-        c2 = c.new(gui=g.app.nullGui)
-        g.app.silentMode = old_silent_mode
-        found = self.createOutline(c2)
-        if found:
-            self.createFileFromOutline(c2)
-            # 2010/09/09: allow a way to specify the gui.
-            gui = g.app.unitTestGui or 'nullGui'
-            self.runUnitTestLeoFile(gui=gui, path='dynamicUnitTest.leo')
-                # Let runUitTestLeoFile determine most defaults.
-            c.selectPosition(p.copy())
-        else:
-            g.es_print(
-                f"no {'marked ' if self.marked else ''}"
-                f"@test or @suite nodes in "
-                f"{'entire' if self.all else 'selected'} outline"
-            )
-    #@+node:ekr.20201129131454.47: *5* createFileFromOutline (RunTestExternallyHelperClass)
-    def createFileFromOutline(self, c2):
-        """Write c's outline to test/dynamicUnitTest.leo."""
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', self.fileName)
-        c2.selectPosition(c2.rootPosition())
-        c2.mFileName = path
-        c2.fileCommands.save(path, silent=True)
-        c2.close(new_c=self.c)  # Bug fix: 2013/01/11: Retain previously-selected tab.
-    #@+node:ekr.20201129131454.48: *5* createOutline & helpers (RunTestExternallyHelperClass)
-    def createOutline(self, c2):
-        """
-        Create a unit test ouline containing:
-        - all children of any @mark-for-unit-tests node anywhere in the outline.
-        - all @test and @suite nodes in p's outline.
-        """
-        c = self.c
-        self.copyRoot = root = c2.rootPosition()
-        c2.suppressHeadChanged = True  # Suppress all onHeadChanged logic.
-        root.expand()
-        root.initHeadString(f"{'All' if self.all else 'Selected'} unit tests")
-        if self.all:
-            last = root
-            for p in c.rootPosition().self_and_siblings():
-                # Last is in c2, so there is no problem.
-                last = self.addNode(p, last)
-            return True
-        last = root
-        current = c.p
-        aList = c.testManager.findMarkForUnitTestNodes()
-        for p in aList: last = self.addNode(p, last)
-        self.addNode(current, last)
-        return True
-    #@+node:ekr.20201129131454.49: *6* addNode
-    def addNode(self, p, last):
-        """
-        Copy p's tree as the last child of root.
-        Warning: p is a position in self.c, **not** c2.
-        """
-        p2 = last.insertAfter()
-        p.copyTreeFromSelfTo(p2)
-        return p2
-    #@+node:ekr.20201129131454.50: *5* runUnitTestLeoFile (RunTestExternallyHelperClass)
-    def runUnitTestLeoFile(self,
-        # Except for the path arg, these are the arguments to the leoBridge.
-        gui='qt',
-        path='unitTest.leo',
-        loadPlugins=False,  # Plugins probably should not be enable by default.
-        readSettings=True,
-        silent=True,
-        tracePlugins=False,  # This is a bit too much.
-        verbose=True,
-    ):
-        """Run all unit tests in path (a .leo file) in a pristine environment."""
-        # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', path)
-        leo = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoDynamicTest.py')
-        if sys.platform.startswith('win'):
-            if ' ' in leo: leo = '"' + leo + '"'
-            if ' ' in path: path = '"' + path + '"'
-        args = [sys.executable, leo]
-        args.append(f"--gui={gui}")
-        args.append(f"--path={path}")
-        if loadPlugins: args.append('--load-plugins')
-        if readSettings: args.append('--read-settings')
-        if silent: args.append('--silent')
-        if tracePlugins: args.append('--trace-plugins')
-        if verbose: args.append('--verbose')
-        # Set the current directory so that importing leo.core.whatever works.
-        leoDir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-        env = dict(os.environ)
-        env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
-        os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20201129131454.51: *3* class TestManager
 class TestManager:
@@ -953,15 +673,6 @@ class TestManager:
             print(f"\n{fname}: exception creating test cases for {p.h}")
             g.es_print_exception()
             return None
-    #@+node:ekr.20201129131454.66: *5* TM.runTestsExternally (external tests)
-    def runTestsExternally(self, all, marked):
-        """Run any kind of external unit test."""
-        c = self.c
-        if c.isChanged():
-            c.save()  # Eliminate the need for ctrl-s.
-        runner = RunTestExternallyHelperClass(c, all, marked)
-        runner.runTests()
-        c.bodyWantsFocusNow()
     #@+node:ekr.20201129131454.67: *5* TM.runProfileOnNode
     # Called from @button profile in unitTest.leo.
 
