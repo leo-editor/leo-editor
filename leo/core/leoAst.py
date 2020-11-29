@@ -394,7 +394,7 @@ if 1:  # pragma: no cover
         ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-        group = parser.add_mutually_exclusive_group(required=False) ###
+        group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
         add = group.add_argument
         add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
