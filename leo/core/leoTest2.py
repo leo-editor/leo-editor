@@ -163,7 +163,7 @@ def pytest_main(path, module):
     if 0:
         # Pytest.
         pytest.main(args=sys.argv)
-    elif 1: # unittest
+    elif 0: # unittest
         unittest.main()
     else: # Full coverage test.
         pycov_args = sys.argv + [

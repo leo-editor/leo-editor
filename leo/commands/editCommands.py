@@ -290,13 +290,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')
     @cmd('clear-cache')
-    def clearAllCaches(self, event=None):
+    def clearAllCaches(self, event=None):  # pragma: no cover
         """Clear all of Leo's file caches."""
         g.app.global_cacher.clear()
         g.app.commander_cacher.clear()
 
     @cmd('dump-caches')
-    def dumpCaches(self, event=None):
+    def dumpCaches(self, event=None):  # pragma: no cover
         """Dump, all of Leo's file caches."""
         g.app.global_cacher.dump()
         g.app.commander_cacher.dump()
@@ -462,13 +462,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     def capitalizeHelper(self, event, which, undoType):
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getWord(s, ins)
         word = s[i:j]
         if not word.strip():
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType=undoType)
         if which == 'cap': word2 = word.capitalize()
         elif which == 'low': word2 = word.lower()
@@ -483,46 +483,46 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.195: *3* ec: clicks and focus
     #@+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
     @cmd('activate-cmds-menu')
-    def activateCmdsMenu(self, event=None):
+    def activateCmdsMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Cmnds menu."""
         self.activateMenu('Cmds')
 
     @cmd('activate-edit-menu')
-    def activateEditMenu(self, event=None):
+    def activateEditMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Edit menu."""
         self.activateMenu('Edit')
 
     @cmd('activate-file-menu')
-    def activateFileMenu(self, event=None):
+    def activateFileMenu(self, event=None):  # pragma: no cover
         """Activate Leo's File menu."""
         self.activateMenu('File')
 
     @cmd('activate-help-menu')
-    def activateHelpMenu(self, event=None):
+    def activateHelpMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Help menu."""
         self.activateMenu('Help')
 
     @cmd('activate-outline-menu')
-    def activateOutlineMenu(self, event=None):
+    def activateOutlineMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Outline menu."""
         self.activateMenu('Outline')
 
     @cmd('activate-plugins-menu')
-    def activatePluginsMenu(self, event=None):
+    def activatePluginsMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Plugins menu."""
         self.activateMenu('Plugins')
 
     @cmd('activate-window-menu')
-    def activateWindowMenu(self, event=None):
+    def activateWindowMenu(self, event=None):  # pragma: no cover
         """Activate Leo's Window menu."""
         self.activateMenu('Window')
 
-    def activateMenu(self, menuName):
+    def activateMenu(self, menuName):  # pragma: no cover
         c = self.c
         c.frame.menu.activateMenu(menuName)
     #@+node:ekr.20150514063305.199: *4* ec.focusTo...
     @cmd('focus-to-body')
-    def focusToBody(self, event=None):
+    def focusToBody(self, event=None):  # pragma: no cover
         """Put the keyboard focus in Leo's body pane."""
         c, k = self.c, self.c.k
         c.bodyWantsFocus()
@@ -531,49 +531,49 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.showStateAndMode()
 
     @cmd('focus-to-log')
-    def focusToLog(self, event=None):
+    def focusToLog(self, event=None):  # pragma: no cover
         """Put the keyboard focus in Leo's log pane."""
         self.c.logWantsFocus()
 
     @cmd('focus-to-minibuffer')
-    def focusToMinibuffer(self, event=None):
+    def focusToMinibuffer(self, event=None):  # pragma: no cover
         """Put the keyboard focus in Leo's minibuffer."""
         self.c.minibufferWantsFocus()
 
     @cmd('focus-to-tree')
-    def focusToTree(self, event=None):
+    def focusToTree(self, event=None):  # pragma: no cover
         """Put the keyboard focus in Leo's outline pane."""
         self.c.treeWantsFocus()
     #@+node:ekr.20150514063305.201: *4* ec.clicks in the icon box
     # These call the actual event handlers so as to trigger hooks.
 
     @cmd('ctrl-click-icon')
-    def ctrlClickIconBox(self, event=None):
+    def ctrlClickIconBox(self, event=None):  # pragma: no cover
         """Simulate a ctrl-click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.OnIconCtrlClick(c.p)
             # Calls the base LeoTree method.
 
     @cmd('click-icon-box')
-    def clickIconBox(self, event=None):
+    def clickIconBox(self, event=None):  # pragma: no cover
         """Simulate a click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxClick(event, p=c.p)
 
     @cmd('double-click-icon-box')
-    def doubleClickIconBox(self, event=None):
+    def doubleClickIconBox(self, event=None):  # pragma: no cover
         """Simulate a double-click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxDoubleClick(event, p=c.p)
 
     @cmd('right-click-icon')
-    def rightClickIconBox(self, event=None):
+    def rightClickIconBox(self, event=None):  # pragma: no cover
         """Simulate a right click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxRightClick(event, p=c.p)
     #@+node:ekr.20150514063305.202: *4* ec.clickClickBox
     @cmd('click-click-box')
-    def clickClickBox(self, event=None):
+    def clickClickBox(self, event=None):  # pragma: no cover
         """
         Simulate a click in the click box (+- box) of the presently selected node.
 
@@ -587,11 +587,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setCommentColumn(self, event):
         """Set the comment column for the indent-to-comment-column command."""
         w = self.editWidget(event)
-        if w:
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            row, col = g.convertPythonIndexToRowCol(s, ins)
-            self.ccolumn = col
+        if not w:
+            return  # pragma: no cover (defensive)
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        row, col = g.convertPythonIndexToRowCol(s, ins)
+        self.ccolumn = col
     #@+node:ekr.20150514063305.209: *4* ec.indentToCommentColumn
     @cmd('indent-to-comment-column')
     def indentToCommentColumn(self, event):
@@ -601,7 +602,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='indent-to-comment-column')
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -633,13 +634,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     #                              zaaaaaaaaap
     #
     # after an center-region command via Alt-x.
+    #@@language python
     #@+node:ekr.20150514063305.215: *4* ec.centerLine
     @cmd('center-line')
     def centerLine(self, event):
         """Centers line within current fill column"""
         c, k, w = self.c, self.c.k, self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
@@ -663,9 +665,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Set the fill column used by the center-line and center-region commands."""
         k = self.c.k
         self.w = self.editWidget(event)
-        if self.w:
-            k.setLabelBlue('Set Fill Column: ')
-            k.get1Arg(event, handler=self.setFillColumn1)
+        if not self.w:
+            return  # pragma: no cover (defensive)
+        k.setLabelBlue('Set Fill Column: ')
+        k.get1Arg(event, handler=self.setFillColumn1)
 
     def setFillColumn1(self, event):
         c, k, w = self.c, self.c.k, self.w
@@ -675,7 +678,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.fillColumn = n = int(k.arg)
             k.setLabelGrey(f"fill column is: {n:d}")
         except ValueError:
-            k.resetLabel()
+            k.resetLabel()  # pragma: no cover (defensive)
         c.widgetWantsFocus(w)
     #@+node:ekr.20150514063305.217: *4* ec.centerRegion
     @cmd('center-region')
@@ -683,7 +686,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Centers the selected text within the fill column"""
         c, k, w = self.c, self.c.k, self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         ind, junk = g.getLine(s, sel_1)
@@ -716,9 +719,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Make the selected text the fill prefix."""
         w = self.editWidget(event)
         if w:
-            s = w.getAllText()
-            i, j = w.getSelectionRange()
-            self.fillPrefix = s[i:j]
+            return  # pragma: no cover (defensive)
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
+        self.fillPrefix = s[i:j]
     #@+node:ekr.20150514063305.219: *4* ec._addPrefix
     def _addPrefix(self, ntxt):
         ntxt = ntxt.split('.')
@@ -1096,7 +1100,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete indentation in the presently line."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -1129,7 +1133,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         undoType = 'indent-relative'
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
         oldSel = w.getSelectionRange()
@@ -1161,7 +1165,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         i = w.getInsertPoint()
         row, col = g.convertPythonIndexToRowCol(s, i)
@@ -1251,7 +1255,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         wname = c.widget_name(w)
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
@@ -1343,7 +1347,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         if w.hasSelection():
             s = w.getSelectedText()
         else:
@@ -1447,7 +1451,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete all whitespace surrounding the cursor."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         undoType = 'insert-space' if insertspace else 'delete-spaces'
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -1500,9 +1504,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, k = self.c, self.c.k
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         if not g.isTextWrapper(w):
-            return
+            return  # pragma: no cover (defensive)
         name = c.widget_name(w)
         if name.startswith('head'):
             return
@@ -1590,7 +1594,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:
                 changed = True
         if not changed:
-            return
+            return  # pragma: no cover (defensive)
         #
         # Set p.b and w's text first.
         result = ''.join(result)
@@ -1644,7 +1648,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, p, u, w = self.c, self.c.p, self.c.undoer, self.editWidget(event)
         undoType = 'Typing'
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         #@+<< set local vars >>
         #@+node:ekr.20150514063305.269: *5* << set local vars >> (selfInsertCommand)
         stroke = event.stroke if event else None
@@ -1971,7 +1975,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def linesHelper(self, event, pattern, which):
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType=which + '-lines')
         if w.hasSelection():
             i, end = w.getSelectionRange()
@@ -2151,7 +2155,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
         n = len(s)
@@ -2286,7 +2290,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Position the point at the first non-blank character on the line."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
@@ -2352,7 +2356,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         ins = w.getInsertPoint()
         s = w.getAllText()
         w.seeInsertPoint()
@@ -2396,7 +2400,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def moveToBufferHelper(self, event, spot, extend):
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot, extend=extend)
@@ -2407,7 +2411,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 s = w.getAllText()
                 self.moveToHelper(event, len(s), extend=extend)
             else:
-                g.trace('can not happen: bad spot', spot)
+                g.trace('can not happen: bad spot', spot)  # pragma: no cover (defensive)
     #@+node:ekr.20150514063305.296: *4* ec.characters & helper
     @cmd('back-char')
     def backCharacter(self, event):
@@ -2525,7 +2529,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Select the line at the cursor."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         n = len(s)
         i = w.getInsertPoint()
@@ -2540,7 +2544,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             w = self.editWidget(event)
         if not w:
-            return 0, 0
+            return 0, 0  # pragma: no cover (defensive)
         s = w.getAllText()
         n = len(s)
         i = i1 = w.getInsertPoint()
@@ -2624,7 +2628,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -2724,7 +2728,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardParagraphHelper(self, event, extend):
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         i, j = w.getSelectionRange()
         # A hack for wx gui: set the insertion point to the end of the selection range.
@@ -2833,7 +2837,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         c.widgetWantsFocusNow(w)
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -2974,7 +2978,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='backward-kill-paragraph')
         try:
             self.backwardParagraphHelper(event, extend=True)
@@ -3010,7 +3014,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Fill the selected text."""
         w = self.editWidget(event)
         if not w or not self._chckSel(event):
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='fill-region-as-paragraph')
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.323: *4* ec.fillParagraph
@@ -3018,11 +3022,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     def fillParagraph(self, event):
         """Fill the selected paragraph"""
         w = self.editWidget(event)
-        if w:
-            # Clear the selection range.
-            i, j = w.getSelectionRange()
-            w.setSelectionRange(i, i, insert=i)
-            self.c.reformatParagraph(event)
+        if not w:
+            return  # pragma: no cover (defensive)
+        # Clear the selection range.
+        i, j = w.getSelectionRange()
+        w.setSelectionRange(i, i, insert=i)
+        self.c.reformatParagraph(event)
     #@+node:ekr.20150514063305.324: *4* ec.killParagraph
     @cmd('kill-paragraph')
     def killParagraph(self, event):
@@ -3085,7 +3090,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Insert a hard tab at the start of each line of the selected text."""
         w = self.editWidget(event)
         if not w or not self._chckSel(event):
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='indent-rigidly')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3106,7 +3111,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         txt = w.getSelectedText()
         lines = 1
         chars = 0
@@ -3170,7 +3175,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         s = w.getAllText()
         sel_1, sel_2 = w.getSelectionRange()
         insert_pt = w.getInsertPoint()  # 2011/04/01
@@ -3207,7 +3212,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Reverse the order of lines in the selected text."""
         w = self.editWidget(event)
         if not w or not self._chckSel(event):
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='reverse-region')
         s = w.getAllText()
         i1, j1 = w.getSelectionRange()
@@ -3240,7 +3245,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def caseHelper(self, event, way, undoType):
         w = self.editWidget(event)
         if not w or not w.hasSelection():
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType=undoType)
         s = w.getAllText()
         i, j = w.getSelectionRange()
@@ -3459,6 +3464,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # and the mark, except that the text on each line to the left or right of
     # the rectangle moves along with the text inside the rectangle.  *Note
     # Rectangles::.
+    #@@language python
     #@+node:ekr.20150514063305.340: *4* ec.sortLines commands
     @cmd('reverse-sort-lines-ignoring-case')
     def reverseSortLinesIgnoringCase(self, event):
@@ -3515,7 +3521,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         w = self.editWidget(event)
         if not self._chckSel(event):
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='sort-columns')
         try:
             s = w.getAllText()
@@ -3590,11 +3596,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Transpose the line containing the cursor with the preceding line."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         ins = w.getInsertPoint()
         s = w.getAllText()
         if not s.strip():
-            return
+            return  # pragma: no cover (defensive)
         i, j = g.getLine(s, ins)
         line1 = s[i:j]
         self.beginCommand(w, undoType='transpose-lines')
@@ -3646,7 +3652,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Swap the characters at the cursor."""
         w = self.editWidget(event)
         if not w:
-            return
+            return  # pragma: no cover (defensive)
         self.beginCommand(w, undoType='swap-characters')
         s = w.getAllText()
         i = w.getInsertPoint()
@@ -7601,5 +7607,4 @@ class EditCommandTest(CommanderTest):
 #@-others
 if __name__ == '__main__':
     pytest_main(__file__, 'leo.commands.editCommands')
-
 #@-leo
