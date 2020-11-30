@@ -111,11 +111,11 @@ class BaseUnitTest(unittest.TestCase):
             if p2.h.endswith('@nonl') and b2.endswith('\n'):
                 b2 = b2[:-1]
             ok = (
-                p1 and p2 and
-                p1.numberOfChildren() == p2.numberOfChildren() and
-                (not compareHeadlines or (p1.h == p2.h)) and
-                b1 == b2 and
-                p1.isCloned() == p2.isCloned()
+                p1 and p2
+                and p1.numberOfChildren() == p2.numberOfChildren()
+                and (not compareHeadlines or (p1.h == p2.h))
+                and b1 == b2
+                and p1.isCloned() == p2.isCloned()
             )
             if not ok: break
             p2.moveToThreadNext()
@@ -130,15 +130,29 @@ class BaseUnitTest(unittest.TestCase):
             if p1.isCloned() != p2.isCloned():
                 g.pr('p1.isCloned() == p2.isCloned()')
         return ok
+    #@+node:ekr.20201129204348.1: *3* BaseUnitTest.showTwoBodies
+    def showTwoBodies(self, t, b1, b2):
+        print('\n', '-' * 20)
+        print(f"expected for {t}...")
+        for line in g.splitLines(b1):
+            print(f"{len(line):3d}", repr(line))
+        print('-' * 20)
+        print(f"result for {t}...")
+        for line in g.splitLines(b2):
+            print(f"{len(line):3d}", repr(line))
+        print('-' * 20)
     #@-others
 #@+node:ekr.20201129162020.1: **  class CommanderTest(BaseUnitTest)
 class CommanderTest(BaseUnitTest):
     """The base class of all tests that require a Commander object."""
     #@+others
+    #@+node:ekr.20201129205031.1: *3* CommanderTest.adjustTripleString
+    def adjustTripleString(self, s):
+        return g.adjustTripleString(s, tab_width=-4)
     #@+node:ekr.20201129174457.1: *3* CommanderTest.setUp
     def setUp(self):
         # Similar to leoBridge.py
-        print('CommanderTest.setUp')  ###
+        # print('CommanderTest.setUp')
         import leo.core.leoGlobals as g
         import leo.core.leoApp as leoApp
         import leo.core.leoConfig as leoConfig
@@ -161,18 +175,7 @@ class CommanderTest(BaseUnitTest):
         self.c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     #@+node:ekr.20201129161726.8: *3* CommanderTest.tearDown (do nothing)
     def tearDown(self):
-        # c = self.c
-        print('CommanderTest.tearDown')
-        ###
-            # tempNode = self.tempNode
-            # c.selectPosition(tempNode)
-            # if not self.failFlag:
-                # tempNode.setBodyString("")
-                # # Delete all children of temp node.
-                # while tempNode.firstChild():
-                    # tempNode.firstChild().doDelete()
-            # tempNode.clearDirty()
-            # c.undoer.clearUndoState()
+        pass
     #@-others
 #@-others
 if False and __name__ == '__main__':  # Not ready yet.

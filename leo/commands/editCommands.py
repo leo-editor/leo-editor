@@ -6,7 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import leo.core.leoGlobals as g
-import leo.core.leoTest2 as leoTest2
+from leo.core.leoTest2 import CommanderTest, pytest_main
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import re
@@ -3730,23 +3730,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
-#@+node:ekr.20201129161502.1: ** class EditCommandTest(leoTest2.CommanderTest)
-class EditCommandTest(leoTest2.CommanderTest):
+#@+node:ekr.20201129161502.1: ** class EditCommandTest(CommanderTest)
+class EditCommandTest(CommanderTest):
     """The base class of all tests of of Leo's edit commands."""
     command_name = 'no command name!'
     
     # For pylint.
-    before = None
-    after = None
+    before_p = None
+    after_p = None
     tempNode = None
     
     #@+others
-    #@+node:ekr.20201129194022.1: *3*  EditCommandTest.setUp
-    def xxx_setUp(self):
-        ### To do: set up the test node.
-        print('EditCommandTest.setUp')  ###
-        ### super().setup()
-    #@+node:ekr.20201129161726.5: *3*  EditCommandTest.run_test
+    #@+node:ekr.20201129202910.1: *3*  EditCommandTest boilerplate
+    #@+node:ekr.20201129161726.5: *4* EditCommandTest.run_test
     def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
         
         c, u = self.c, self.c.undoer
@@ -3755,30 +3751,100 @@ class EditCommandTest(leoTest2.CommanderTest):
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
+        
+        # Set the text.
+        before_b = self.adjustTripleString(before_b)
+        after_b = self.adjustTripleString(after_b)
+        self.tempNode.b = before_b
+        self.before_p.b = before_b
+        self.after_p.b = after_b
+        # From setUp in leoTest.py
+        # Delete all children of temp node.
+        while self.tempNode.firstChild():
+            self.tempNode.firstChild().doDelete()
+        ### text = self.before.b
+        ### tempNode.setBodyString(text)
+        c.selectPosition(self.tempNode)
+        w = c.frame.body.wrapper
+        i, j = before_sel
+        i = g.toPythonIndex(before_b, i)
+        j = g.toPythonIndex(before_b, j)
+        w.setSelectionRange(i, j, insert=j)
+        ###
+            # if self.sel:
+                # s = str(self.sel.b)  # Can't be unicode.
+                # lines = s.split('\n')
+                # w.setSelectionRange(lines[0], lines[1])
+        ###
+            # if self.ins:
+                # s = str(self.ins.b)  # Can't be unicode.
+                # lines = s.split('\n')
+                # g.trace(lines)
+                # w.setInsertPoint(lines[0])
+        ###
+            # if not self.sel and not self.ins:  # self.sel is a **tk** index.
+                # w.setInsertPoint(0)
+                # w.setSelectionRange(0, 0)
+        
+        if 0:
+            g.printObj(g.splitLines(self.tempNode.b), tag='tempNode')
+            g.printObj(g.splitLines(self.before_p.b), tag='before')
+            g.printObj(g.splitLines(self.after_p.b), tag='after')
+        
         c.k.simulateCommand(command_name)
         
+        if 0:
+            g.printObj(g.splitLines(self.tempNode.b), tag='tempNode')
+            g.printObj(g.splitLines(self.before_p.b), tag='before')
+            g.printObj(g.splitLines(self.after_p.b), tag='after')
+        
         def compare(before, after, report):
-            return self.compareOutlines(before, after, report=report)
+            return self.compareOutlines(before, after, compareHeadlines=False, report=report)
 
-        ok = compare(self.before, self.after, False)
-        if ok:
-            return
         # Call the undoer only if we expect a change.
-        ok = compare(self.tempNode, self.after, True)
+        same = compare(self.before_p, self.after_p, False)
+        if same:
+            return
+        ok = compare(self.tempNode, self.after_p, True)
         assert ok, f"{command_name}: before undo1"
         u.undo()
-        ok = compare(self.tempNode, self.before, True)
+        ok = compare(self.tempNode, self.before_p, True)
         assert ok, f"{command_name}: after undo1"
         u.redo()
-        ok = compare(self.tempNode, self.after, True)
+        ok = compare(self.tempNode, self.after_p, True)
         assert ok, f"{command_name}: after redo1"
         u.undo()
-        ok = compare(self.tempNode, self.before, True)
+        ok = compare(self.tempNode, self.before_p, True)
         assert ok, f"{command_name}: after undo2"
-    #@+node:ekr.20201129161726.7: *3*  EditCommandTest.shortDescription
+    #@+node:ekr.20201129194022.1: *4* EditCommandTest.setUp
+    def setUp(self):
+        
+        # print('EditCommandTest.setUp')
+        CommanderTest.setUp(self)
+        c = self.c
+        assert c
+        root = c.rootPosition()
+        self.tempNode = root.insertAsLastChild()
+        self.before_p = root.insertAsLastChild()
+        self.after_p = root.insertAsLastChild()
+        self.tempNode.h = 'tempNode'
+        self.before_p.h = 'before'
+        self.after_p.h = 'after'
+    #@+node:ekr.20201129161726.7: *4* EditCommandTest.shortDescription
     def shortDescription(self):
         return f"EditCommandTest: {self.command_name}"
         
+    #@+node:ekr.20201129203012.1: *4* EditCommandTest.tearDown
+    def tearDown(self):
+        # print('EditCommandTest.tearDown')
+        c = self.c
+        # Delete in reverse order.
+        self.after_p.doDelete()
+        self.before_p.doDelete()
+        self.tempNode.doDelete()
+        c.undoer.clearUndoState()
+        # General tearDown last.
+        CommanderTest.tearDown(self)
     #@+node:ekr.20201129164023.1: *3* test_add_space_to_lines
     ### class TestAddSpaceToLines:(EditCommandsTest)
     def test_add_space_to_lines(self):
@@ -3800,13 +3866,13 @@ class EditCommandTest(leoTest2.CommanderTest):
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=(2.0, 4.6),
-            after_sel=(2.0, 4.7),
+            before_sel=("2.0", "4.6"),
+            after_sel=("2.0", "4.7"),
             command_name='add-space-to-lines',
         )
     #@-others
 #@-others
 if __name__ == '__main__':
-    leoTest2.pytest_main(__file__, 'leo.commands.editCommands')
+    pytest_main(__file__, 'leo.commands.editCommands')
 
 #@-leo
