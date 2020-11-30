@@ -718,7 +718,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def setFillPrefix(self, event):
         """Make the selected text the fill prefix."""
         w = self.editWidget(event)
-        if w:
+        if not w:
             return  # pragma: no cover (defensive)
         s = w.getAllText()
         i, j = w.getSelectionRange()
