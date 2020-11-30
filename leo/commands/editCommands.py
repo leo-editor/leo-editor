@@ -3734,6 +3734,12 @@ class EditCommandsClass(BaseEditCommandsClass):
 class EditCommandTest(leoTest2.CommanderTest):
     """The base class of all tests of of Leo's edit commands."""
     command_name = 'no command name!'
+    
+    # For pylint.
+    before = None
+    after = None
+    tempNode = None
+    
     #@+others
     #@+node:ekr.20201129194022.1: *3*  EditCommandTest.setUp
     def xxx_setUp(self):
@@ -3743,46 +3749,37 @@ class EditCommandTest(leoTest2.CommanderTest):
     #@+node:ekr.20201129161726.5: *3*  EditCommandTest.run_test
     def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
         
-        c = self.c
-        self.command_name = command_name  # For shortDescription().
+        c, u = self.c, self.c.undoer
+        # For shortDescription().
+        self.command_name = command_name
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
-        ### command(event=event)
         c.k.simulateCommand(command_name)
-        ### not yet.
-            # u = c.undoer
-            # try:
-                # # Don't call the Undoer if we expect no change.
-                # if not tm.compareOutlines(
-                    # self.before, self.after, compareHeadlines=False, report=False):
-                    # assert tm.compareOutlines(
-                        # self.tempNode,
-                        # self.after,
-                        # compareHeadlines=False), f"{commandName}: before undo1"
-                    # c.undoer.undo()
-                    # assert tm.compareOutlines(
-                        # self.tempNode,
-                        # self.before,
-                        # compareHeadlines=False), f"{commandName}: after undo1"
-                    # c.undoer.redo()
-                    # assert tm.compareOutlines(
-                        # self.tempNode,
-                        # self.after,
-                        # compareHeadlines=False), f"{commandName}: after redo"
-                    # c.undoer.undo()
-                    # assert tm.compareOutlines(
-                        # self.tempNode,
-                        # self.before,
-                        # compareHeadlines=False), f"{commandName}: after undo2"
-            # except Exception:
-                # self.fail()
-                # raise
+        
+        def compare(before, after, report):
+            return self.compareOutlines(before, after, report=report)
+
+        ok = compare(self.before, self.after, False)
+        if ok:
+            return
+        # Call the undoer only if we expect a change.
+        ok = compare(self.tempNode, self.after, True)
+        assert ok, f"{command_name}: before undo1"
+        u.undo()
+        ok = compare(self.tempNode, self.before, True)
+        assert ok, f"{command_name}: after undo1"
+        u.redo()
+        ok = compare(self.tempNode, self.after, True)
+        assert ok, f"{command_name}: after redo1"
+        u.undo()
+        ok = compare(self.tempNode, self.before, True)
+        assert ok, f"{command_name}: after undo2"
     #@+node:ekr.20201129161726.7: *3*  EditCommandTest.shortDescription
     def shortDescription(self):
         return f"EditCommandTest: {self.command_name}"
         
-    #@+node:ekr.20201129164023.1: *3* add-space-to-lines
+    #@+node:ekr.20201129164023.1: *3* test_add_space_to_lines
     ### class TestAddSpaceToLines:(EditCommandsTest)
     def test_add_space_to_lines(self):
         """Test add-space-to-lines"""
