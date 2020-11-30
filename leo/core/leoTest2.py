@@ -92,7 +92,11 @@ def pytest_main(path, module):
         pytest.main(args=pycov_args)
 #@+node:ekr.20201129161531.1: **  class BaseUnitTest(unittest.TestCase)
 class BaseUnitTest(unittest.TestCase):
-    """The base of all new-style unit tests."""
+    """
+    The base of all new-style unit tests.
+    
+    This class consists only of utilities.
+    """
     #@+others
     #@+node:ekr.20201129195238.1: *3* BaseUnitTest.compareOutlines
     def compareOutlines(self, root1, root2, compareHeadlines=True, tag='', report=True):
@@ -141,16 +145,19 @@ class BaseUnitTest(unittest.TestCase):
         for line in g.splitLines(b2):
             print(f"{len(line):3d}", repr(line))
         print('-' * 20)
+    #@+node:ekr.20201129205031.1: *3* BaseUnitTest.adjustTripleString
+    def adjustTripleString(self, s):
+        return g.adjustTripleString(s, tab_width=-4)
     #@-others
 #@+node:ekr.20201129162020.1: **  class CommanderTest(BaseUnitTest)
 class CommanderTest(BaseUnitTest):
     """The base class of all tests that require a Commander object."""
     #@+others
-    #@+node:ekr.20201129205031.1: *3* CommanderTest.adjustTripleString
-    def adjustTripleString(self, s):
-        return g.adjustTripleString(s, tab_width=-4)
     #@+node:ekr.20201129174457.1: *3* CommanderTest.setUp
     def setUp(self):
+        """
+        Create the Leo application, g.app, the Gui, g.app.gui, and a commander, self.c.
+        """
         # Similar to leoBridge.py
         # print('CommanderTest.setUp')
         import leo.core.leoGlobals as g

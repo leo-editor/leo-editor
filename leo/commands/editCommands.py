@@ -3741,8 +3741,7 @@ class EditCommandTest(CommanderTest):
     tempNode = None
     
     #@+others
-    #@+node:ekr.20201129202910.1: *3*  EditCommandTest boilerplate
-    #@+node:ekr.20201129161726.5: *4* EditCommandTest.run_test
+    #@+node:ekr.20201129161726.5: *3* EditCommandTest.run_test
     def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
         
         c, u = self.c, self.c.undoer
@@ -3751,52 +3750,20 @@ class EditCommandTest(CommanderTest):
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
-        
         # Set the text.
         before_b = self.adjustTripleString(before_b)
         after_b = self.adjustTripleString(after_b)
         self.tempNode.b = before_b
         self.before_p.b = before_b
         self.after_p.b = after_b
-        # From setUp in leoTest.py
-        # Delete all children of temp node.
-        while self.tempNode.firstChild():
-            self.tempNode.firstChild().doDelete()
-        ### text = self.before.b
-        ### tempNode.setBodyString(text)
-        c.selectPosition(self.tempNode)
+        # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
         i = g.toPythonIndex(before_b, i)
         j = g.toPythonIndex(before_b, j)
         w.setSelectionRange(i, j, insert=j)
-        ###
-            # if self.sel:
-                # s = str(self.sel.b)  # Can't be unicode.
-                # lines = s.split('\n')
-                # w.setSelectionRange(lines[0], lines[1])
-        ###
-            # if self.ins:
-                # s = str(self.ins.b)  # Can't be unicode.
-                # lines = s.split('\n')
-                # g.trace(lines)
-                # w.setInsertPoint(lines[0])
-        ###
-            # if not self.sel and not self.ins:  # self.sel is a **tk** index.
-                # w.setInsertPoint(0)
-                # w.setSelectionRange(0, 0)
-        
-        if 0:
-            g.printObj(g.splitLines(self.tempNode.b), tag='tempNode')
-            g.printObj(g.splitLines(self.before_p.b), tag='before')
-            g.printObj(g.splitLines(self.after_p.b), tag='after')
-        
+        # Run the command!
         c.k.simulateCommand(command_name)
-        
-        if 0:
-            g.printObj(g.splitLines(self.tempNode.b), tag='tempNode')
-            g.printObj(g.splitLines(self.before_p.b), tag='before')
-            g.printObj(g.splitLines(self.after_p.b), tag='after')
         
         def compare(before, after, report):
             return self.compareOutlines(before, after, compareHeadlines=False, report=report)
@@ -3805,6 +3772,7 @@ class EditCommandTest(CommanderTest):
         same = compare(self.before_p, self.after_p, False)
         if same:
             return
+        # These never test the resulting selection range or insert point.
         ok = compare(self.tempNode, self.after_p, True)
         assert ok, f"{command_name}: before undo1"
         u.undo()
@@ -3816,13 +3784,14 @@ class EditCommandTest(CommanderTest):
         u.undo()
         ok = compare(self.tempNode, self.before_p, True)
         assert ok, f"{command_name}: after undo2"
-    #@+node:ekr.20201129194022.1: *4* EditCommandTest.setUp
+    #@+node:ekr.20201129194022.1: *3* EditCommandTest.setUp
     def setUp(self):
-        
-        # print('EditCommandTest.setUp')
+        """Create the nodes in the commander."""
+        # First create the commander.
         CommanderTest.setUp(self)
         c = self.c
         assert c
+        # Create top-level nodes.
         root = c.rootPosition()
         self.tempNode = root.insertAsLastChild()
         self.before_p = root.insertAsLastChild()
@@ -3830,11 +3799,16 @@ class EditCommandTest(CommanderTest):
         self.tempNode.h = 'tempNode'
         self.before_p.h = 'before'
         self.after_p.h = 'after'
-    #@+node:ekr.20201129161726.7: *4* EditCommandTest.shortDescription
+        # # Delete all children of temp node.
+        # while self.tempNode.firstChild():
+            # self.tempNode.firstChild().doDelete()
+        # Set c.p.
+        c.selectPosition(self.tempNode)
+    #@+node:ekr.20201129161726.7: *3* EditCommandTest.shortDescription
     def shortDescription(self):
         return f"EditCommandTest: {self.command_name}"
         
-    #@+node:ekr.20201129203012.1: *4* EditCommandTest.tearDown
+    #@+node:ekr.20201129203012.1: *3* EditCommandTest.tearDown
     def tearDown(self):
         # print('EditCommandTest.tearDown')
         c = self.c
@@ -3846,7 +3820,6 @@ class EditCommandTest(CommanderTest):
         # General tearDown last.
         CommanderTest.tearDown(self)
     #@+node:ekr.20201129164023.1: *3* test_add_space_to_lines
-    ### class TestAddSpaceToLines:(EditCommandsTest)
     def test_add_space_to_lines(self):
         """Test add-space-to-lines"""
         before_b = """\
@@ -3868,7 +3841,7 @@ class EditCommandTest(CommanderTest):
             after_b=after_b,
             before_sel=("2.0", "4.6"),
             after_sel=("2.0", "4.7"),
-            command_name='add-space-to-lines',
+            command_name='add-space-to-lines',  # Calls ec.AddRemoveHeler.
         )
     #@-others
 #@-others
