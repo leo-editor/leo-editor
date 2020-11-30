@@ -5,10 +5,13 @@
 """Leo's general editing commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
+import leo.core.leoGlobals as g
+import leo.core.leoTest2 as leoTest2
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import re
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+# import sys
+# import unittest
 #@-<< imports >>
 
 def cmd(name):
@@ -17,7 +20,7 @@ def cmd(name):
 
 #@+others
 #@+node:ekr.20180504180844.1: **  Top-level helper functions
-#@+node:ekr.20180504180247.2: *3* find_next_trace
+#@+node:ekr.20180504180247.2: *3* function: find_next_trace
 if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
     # Will not find in comments, which is fine.
 
@@ -43,7 +46,7 @@ def find_next_trace(ins, p):
         p.moveToThreadNext()
         ins = 0
     return None, None, p
-#@+node:ekr.20180504180247.3: *3* find_trace_block
+#@+node:ekr.20180504180247.3: *3* function: find_trace_block
 def find_trace_block(i, j, s):
     """Find the statement or block starting at i."""
     assert s[i] != '\n'
@@ -59,7 +62,7 @@ def find_trace_block(i, j, s):
     assert n >= 1
     result_lines = lines[:n]
     return i + len(''.join(result_lines))
-#@+node:ekr.20190926103141.1: *3* lineScrollHelper
+#@+node:ekr.20190926103141.1: *3* function: lineScrollHelper
 # by Brian Theado.
 
 def lineScrollHelper(c, prefix1, prefix2, suffix):
@@ -71,7 +74,8 @@ def lineScrollHelper(c, prefix1, prefix2, suffix):
     # If the cursor didn't change, then go to beginning/end of line
     if ins == ins2:
         c.k.simulateCommand(prefix2 + 'of-line' + suffix)
-#@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
+#@+node:ekr.20201129164455.1: **  Top-level commands
+#@+node:ekr.20180504180134.1: *3* @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
 def delete_trace_statements(event=None):
     """
@@ -100,7 +104,7 @@ def delete_trace_statements(event=None):
             g.es_print('Changed:', p.h)
         ins = 0  # Rescanning is essential.
         p.b = s[:i] + s[k:]
-#@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
+#@+node:ekr.20180210160930.1: *3* @g.command('mark-first-parents')
 @g.command('mark-first-parents')
 def mark_first_parents(event):
     """Mark the node and all its parents."""
@@ -118,31 +122,31 @@ def mark_first_parents(event):
         c.setChanged()
         c.redraw()
     return changed
-#@+node:ekr.20190926103245.1: ** @g.command('next-or-end-of-line')
+#@+node:ekr.20190926103245.1: *3* @g.command('next-or-end-of-line')
 # by Brian Theado.
 
 @g.command('next-or-end-of-line')
 def nextOrEndOfLine(event):
     lineScrollHelper(event['c'], 'next-', 'end-', '')
-#@+node:ekr.20190926103246.2: ** @g.command('next-or-end-of-line-extend-selection')
+#@+node:ekr.20190926103246.2: *3* @g.command('next-or-end-of-line-extend-selection')
 # by Brian Theado.
 
 @g.command('next-or-end-of-line-extend-selection')
 def nextOrEndOfLineExtendSelection(event):
     lineScrollHelper(event['c'], 'next-', 'end-', '-extend-selection')
-#@+node:ekr.20190926103246.1: ** @g.command('previous-or-beginning-of-line')
+#@+node:ekr.20190926103246.1: *3* @g.command('previous-or-beginning-of-line')
 # by Brian Theado.
 
 @g.command('previous-or-beginning-of-line')
 def previousOrBeginningOfLine(event):
     lineScrollHelper(event['c'], 'previous-', 'beginning-', '')
-#@+node:ekr.20190926103246.3: ** @g.command('previous-or-beginning-of-line-extend-selection')
+#@+node:ekr.20190926103246.3: *3* @g.command('previous-or-beginning-of-line-extend-selection')
 # by Brian Theado.
 
 @g.command('previous-or-beginning-of-line-extend-selection')
 def previousOrBeginningOfLineExtendSelection(event):
     lineScrollHelper(event['c'], 'previous-', 'beginning-', '-extend-selection')
-#@+node:ekr.20190323084957.1: ** @g.command('promote-bodies')
+#@+node:ekr.20190323084957.1: *3* @g.command('promote-bodies')
 @g.command('promote-bodies')
 def promoteBodies(event):
     """Copy the body text of all descendants to the parent's body text."""
@@ -165,7 +169,7 @@ def promoteBodies(event):
         result.append('')
     p.b = '\n'.join(result)
     c.undoer.afterChangeNodeContents(p, 'promote-bodies', b)
-#@+node:ekr.20190323085410.1: ** @g.command('promote-headlines')
+#@+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
 @g.command('promote-headlines')
 def promoteHeadlines(event):
     """Copy the headlines of all descendants to the parent's body text."""
@@ -178,7 +182,7 @@ def promoteHeadlines(event):
     if result:
         p.b = p.b.lstrip() + '\n' + result
         c.undoer.afterChangeNodeContents(p, 'promote-headlines', b)
-#@+node:ekr.20180504180647.1: ** @g.command('select-next-trace-statement')
+#@+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
 @g.command('select-next-trace-statement')
 def select_next_trace_statement(event=None):
     """Select the next statement/block enabled by `if trace...:`"""
@@ -195,7 +199,7 @@ def select_next_trace_statement(event=None):
     else:
         g.es_print('done')
     c.bodyWantsFocus()
-#@+node:ekr.20191010112910.1: ** @g.command('show-clone-ancestors')
+#@+node:ekr.20191010112910.1: *3* @g.command('show-clone-ancestors')
 @g.command('show-clone-ancestors')
 def show_clone_ancestors(event=None):
     """Display links to all ancestor nodes of the node c.p."""
@@ -211,7 +215,7 @@ def show_clone_ancestors(event=None):
                 # reverse and drop first
             g.es("  ", newline=False)
             g.es_clickable_link(c, clone, 1, runl + "\n")
-#@+node:ekr.20191007034723.1: ** @g.command('show-clone-parents')
+#@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event=None):
     """Display links to all parent nodes of the node c.p."""
@@ -224,7 +228,7 @@ def show_clones(event=None):
         if parent and parent not in seen:
             seen.append(parent)
             g.es_clickable_link(c, clone, 1, f"{parent.h} -> {clone.h}\n")
-#@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
+#@+node:ekr.20180210161001.1: *3* @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):
     """Mark the node and all its parents."""
@@ -3726,5 +3730,86 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
+#@+node:ekr.20201129161502.1: ** class EditCommandTest(leoTest2.CommanderTest)
+class EditCommandTest(leoTest2.CommanderTest):
+    """The base class of all tests of of Leo's edit commands."""
+    command_name = 'no command name!'
+    #@+others
+    #@+node:ekr.20201129194022.1: *3*  EditCommandTest.setUp
+    def xxx_setUp(self):
+        ### To do: set up the test node.
+        print('EditCommandTest.setUp')  ###
+        ### super().setup()
+    #@+node:ekr.20201129161726.5: *3*  EditCommandTest.run_test
+    def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
+        
+        c = self.c
+        self.command_name = command_name  # For shortDescription().
+        # Compute the result in tempNode.b
+        command = c.commandsDict.get(command_name)
+        assert command, f"no command: {command_name}"
+        ### command(event=event)
+        c.k.simulateCommand(command_name)
+        ### not yet.
+            # u = c.undoer
+            # try:
+                # # Don't call the Undoer if we expect no change.
+                # if not tm.compareOutlines(
+                    # self.before, self.after, compareHeadlines=False, report=False):
+                    # assert tm.compareOutlines(
+                        # self.tempNode,
+                        # self.after,
+                        # compareHeadlines=False), f"{commandName}: before undo1"
+                    # c.undoer.undo()
+                    # assert tm.compareOutlines(
+                        # self.tempNode,
+                        # self.before,
+                        # compareHeadlines=False), f"{commandName}: after undo1"
+                    # c.undoer.redo()
+                    # assert tm.compareOutlines(
+                        # self.tempNode,
+                        # self.after,
+                        # compareHeadlines=False), f"{commandName}: after redo"
+                    # c.undoer.undo()
+                    # assert tm.compareOutlines(
+                        # self.tempNode,
+                        # self.before,
+                        # compareHeadlines=False), f"{commandName}: after undo2"
+            # except Exception:
+                # self.fail()
+                # raise
+    #@+node:ekr.20201129161726.7: *3*  EditCommandTest.shortDescription
+    def shortDescription(self):
+        return f"EditCommandTest: {self.command_name}"
+        
+    #@+node:ekr.20201129164023.1: *3* add-space-to-lines
+    ### class TestAddSpaceToLines:(EditCommandsTest)
+    def test_add_space_to_lines(self):
+        """Test add-space-to-lines"""
+        before_b = """\
+    first line
+    line 1
+        line a
+    line b
+    last line
+    """
+        after_b = """\
+    first line
+     line 1
+         line a
+     line b
+    last line
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=(2.0, 4.6),
+            after_sel=(2.0, 4.7),
+            command_name='add-space-to-lines',
+        )
+    #@-others
 #@-others
+if __name__ == '__main__':
+    leoTest2.pytest_main(__file__, 'leo.commands.editCommands')
+
 #@-leo
