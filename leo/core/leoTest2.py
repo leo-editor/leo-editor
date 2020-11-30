@@ -47,22 +47,25 @@ def convert_leoEditCommands_tests(c):
     #@+node:ekr.20201130075024.2: *4* body
     def body(after_p, after_sel, before_p, before_sel, command_name):
         """Return the body of the test"""
+        real_command_name = command_name.split(' ')[0]
         sel11, sel12 = before_sel.split(',')
         sel21, sel22 = after_sel.split(',')
+        delim = "'''" if '"""' in before_p.b else '"""'
         return (
-            f"def test_{function_name(command_name)}:\n" # (EditCommandsTestCase)\n"
+            f"def test_{function_name(command_name)}(self):\n"
             f'    """Test case for {command_name}"""\n'
-            f'    before_b = """\\\n'
+            f'    before_b = {delim}\\\n'
             f"{before_p.b}"
-            f'"""\n'
-            f'    after_b = """\\\n'
+            f'{delim}\n'
+            f'    after_b = {delim}\\\n'
             f"{after_p.b}"
-            f'"""\n'
+            f'{delim}\n'
             f"    self.run_test(\n"
             f"        before_b=before_b,\n"
             f"        after_b=after_b,\n"
             f'        before_sel=("{sel11}", "{sel12}"),\n'
             f'        after_sel=("{sel21}", "{sel22}"),\n'
+            f'        command_name="{real_command_name}",\n'
             f"    )\n"
         )
     #@+node:ekr.20201130075024.3: *4* class_name (not used)
