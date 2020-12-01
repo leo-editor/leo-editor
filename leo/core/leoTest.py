@@ -1135,6 +1135,8 @@ class TestManager:
         c.selectPosition(work)
         work.b = before.b
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
+        ### g.trace(commandName, sel1[0], sel1[1])
+        ### g.printObj(g.splitLines(w.getSelectedText()))
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
         assert s1 == s2, (

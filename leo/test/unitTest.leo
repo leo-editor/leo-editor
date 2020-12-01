@@ -999,6 +999,7 @@
 </v>
 <v t="ekr.20070306091949"><vh>@test zz end of leoEditCommands tests</vh></v>
 </v>
+<v t="ekr.20061101121602.154"></v>
 </vnodes>
 <tnodes>
 <t tx="btheado.20190926182937.1">c.testManager.runEditCommandTest(p)

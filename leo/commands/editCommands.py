@@ -6,7 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import leo.core.leoGlobals as g
-from leo.core.leoTest2 import CommanderTest, pytest_main
+from leo.core.leoTest2 import EditCommandTest, pytest_main
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import re
@@ -691,17 +691,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         sel_1, sel_2 = w.getSelectionRange()
         ind, junk = g.getLine(s, sel_1)
         junk, end = g.getLine(s, sel_2)
+        ### g.trace('ind', ind, 'end', end)
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
             d = c.scanAllDirectives()
             fillColumn = d.get("pagewidth")
+        ### g.trace('fillColumn', self.fillColumn, fillColumn)
         self.beginCommand(w, undoType='center-region')
         inserted = 0
         while ind < end:
             s = w.getAllText()
             i, j = g.getLine(s, ind)
             line = s[i:j].strip()
+            ### g.trace(len(line), repr(line))
             if len(line) >= fillColumn:
                 ind = j
             else:
@@ -711,6 +714,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if k > i: w.delete(i, k - i)
                 w.insert(i, ' ' * n)
                 ind = j + n - (k - i)
+        ### g.trace('inserted', inserted)
+        ### g.printObj(g.splitlines(w.getAllText()), tag='all text')
         w.setSelectionRange(sel_1, sel_2 + inserted)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.218: *4* ec.setFillPrefix
@@ -3736,21 +3741,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
-#@+node:ekr.20201129161502.1: ** class EditCommandTest(CommanderTest)
-class EditCommandTest(CommanderTest):
+#@+node:ekr.20201129161502.1: ** class FileTest (EditCommandTest)
+class FileTest(EditCommandTest):
     """The base class of all tests of of Leo's edit commands."""
-    command_name = 'no command name!'
-    
-    # For pylint.
-    before_p = None
-    after_p = None
-    tempNode = None
-    
+  
     #@+others
     #@+node:ekr.20201129161726.5: *3* EditCommandTest.run_test
     def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
         
-        c, u = self.c, self.c.undoer
+        c = self.c
         # For shortDescription().
         self.command_name = command_name
         # Compute the result in tempNode.b
@@ -3765,66 +3764,67 @@ class EditCommandTest(CommanderTest):
         # Set the selection range and insert point.
         w = c.frame.body.wrapper
         i, j = before_sel
+        ### g.trace(i, j)
         i = g.toPythonIndex(before_b, i)
         j = g.toPythonIndex(before_b, j)
         w.setSelectionRange(i, j, insert=j)
+        ### g.trace(command_name, i,j)
+        ### g.printObj(g.splitLines(w.getSelectedText()))
         # Run the command!
+        ### HACK. This makes center-region work, but causes other failures.
+        ### c.editCommands.fillColumn = 70 ###
         c.k.simulateCommand(command_name)
         
-        def compare(before, after, report):
-            return self.compareOutlines(before, after, compareHeadlines=False, report=report)
-
-        # Call the undoer only if we expect a change.
-        same = compare(self.before_p, self.after_p, False)
-        if same:
-            return
-        # These never test the resulting selection range or insert point.
-        ok = compare(self.tempNode, self.after_p, True)
-        assert ok, f"{command_name}: before undo1"
-        u.undo()
-        ok = compare(self.tempNode, self.before_p, True)
-        assert ok, f"{command_name}: after undo1"
-        u.redo()
-        ok = compare(self.tempNode, self.after_p, True)
-        assert ok, f"{command_name}: after redo1"
-        u.undo()
-        ok = compare(self.tempNode, self.before_p, True)
-        assert ok, f"{command_name}: after undo2"
-    #@+node:ekr.20201129194022.1: *3* EditCommandTest.setUp
-    def setUp(self):
-        """Create the nodes in the commander."""
-        # First create the commander.
-        CommanderTest.setUp(self)
-        c = self.c
-        assert c
-        # Create top-level nodes.
-        root = c.rootPosition()
-        self.tempNode = root.insertAsLastChild()
-        self.before_p = root.insertAsLastChild()
-        self.after_p = root.insertAsLastChild()
-        self.tempNode.h = 'tempNode'
-        self.before_p.h = 'before'
-        self.after_p.h = 'after'
-        # # Delete all children of temp node.
-        # while self.tempNode.firstChild():
-            # self.tempNode.firstChild().doDelete()
-        # Set c.p.
-        c.selectPosition(self.tempNode)
-    #@+node:ekr.20201129161726.7: *3* EditCommandTest.shortDescription
-    def shortDescription(self):
-        return f"EditCommandTest: {self.command_name}"
+        s1 = self.tempNode.b
+        s2 = self.after_p.b
+        if s1 != s2:
+            print('mismatch in body')
+            g.printObj(g.splitLines(s2), tag='expected')
+            g.printObj(g.splitLines(s1), tag='got')
+        assert s1 == s2
+        if 0:  ### Not ready yet.
+            sel3 = w.getSelectionRange()
+            # Convert both selection ranges to gui indices.
+            ### sel1 = before_sel
+            sel2 = after_sel
+            sel2_orig = sel2
+            assert len(sel2) == 2, f"Bad headline index.  Expected index,index.  got: {sel2}"
+            i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
+            assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
+            i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
+            if 0:  # Be more permissive.
+                if sel2 != sel3:
+                    print(f"\n{c.p.h}\nexpected: {sel2_orig} = {sel2}, got: {sel3}")
+            else:
+                message = f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
+                assert sel2 == sel3, message
         
-    #@+node:ekr.20201129203012.1: *3* EditCommandTest.tearDown
-    def tearDown(self):
-        # print('EditCommandTest.tearDown')
-        c = self.c
-        # Delete in reverse order.
-        self.after_p.doDelete()
-        self.before_p.doDelete()
-        self.tempNode.doDelete()
-        c.undoer.clearUndoState()
-        # General tearDown last.
-        CommanderTest.tearDown(self)
+            # c.selectPosition(atTest)
+            # atTest.contract()
+            # Don't redraw.
+            
+                
+            # if 0: # Not correct!
+            
+                # def compare(before, after, report):
+                    # return self.compareOutlines(before, after, compareHeadlines=False, report=report)
+            
+                # # Call the undoer only if we expect a change.
+                # same = compare(self.before_p, self.after_p, False)
+                # if same:
+                    # return
+                # # These never test the resulting selection range or insert point.
+                # ok = compare(self.tempNode, self.after_p, True)
+                # assert ok, f"{command_name}: before undo1"
+                # u.undo()
+                # ok = compare(self.tempNode, self.before_p, True)
+                # assert ok, f"{command_name}: after undo1"
+                # u.redo()
+                # ok = compare(self.tempNode, self.after_p, True)
+                # assert ok, f"{command_name}: after redo1"
+                # u.undo()
+                # ok = compare(self.tempNode, self.before_p, True)
+                # assert ok, f"{command_name}: after undo2"
     #@+node:ekr.20201130091020.1: *3* EditCommandTest: test cases...
     #@+node:ekr.20201130090918.1: *4* add-space-to-lines
     def test_add_space_to_lines(self):
@@ -4570,6 +4570,7 @@ class EditCommandTest(CommanderTest):
             before_sel=("1.0", "7.0"),
             after_sel=("1.0", "7.0"),
             command_name="center-region",
+            ### page_width=70,
         )
     #@+node:ekr.20201130090918.30: *4* clean-lines
     def test_clean_lines(self):

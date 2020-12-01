@@ -121,6 +121,36 @@ def convert_leoEditCommands_tests(c):
         print(f"converted {count} @test nodes")
     else:
         print('Error: root and target nodes must be top-level nodes.')
+#@+node:ekr.20201130195111.1: *3* function: create_app
+def create_app():
+    """
+    Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
+    
+    Return the commander.
+    """
+    # Similar to leoBridge.py
+    # print('CommanderTest.setUp')
+    import leo.core.leoGlobals as g
+    import leo.core.leoApp as leoApp
+    import leo.core.leoConfig as leoConfig
+    import leo.core.leoNodes as leoNodes
+    g.app = leoApp.LeoApp()
+    g.app.recentFilesManager = leoApp.RecentFilesManager()
+    g.app.loadManager = leoApp.LoadManager()
+    g.app.loadManager.computeStandardDirectories()
+    if not g.app.setLeoID(useDialog=False, verbose=True):
+        raise ValueError("unable to set LeoID.")
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
+    g.app.config = leoConfig.GlobalConfigManager()
+    g.app.db = g.TracingNullObject('g.app.db')
+    g.app.pluginsController = g.NullObject('g.app.pluginsController')
+    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
+    # Always allocate a new commander...
+    import leo.core.leoCommands as leoCommands
+    import leo.core.leoGui as leoGui
+    g.app.gui=leoGui.NullGui()
+    c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+    return c
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
@@ -163,7 +193,7 @@ def pytest_main(path, module):
     if 0:
         # Pytest.
         pytest.main(args=sys.argv)
-    elif 0: # unittest
+    elif 1: # unittest
         unittest.main()
     else: # Full coverage test.
         pycov_args = sys.argv + [
@@ -173,8 +203,8 @@ def pytest_main(path, module):
             __file__,
         ]
         pytest.main(args=pycov_args)
-#@+node:ekr.20201129161531.1: **  class BaseUnitTest(unittest.TestCase)
-class BaseUnitTest(unittest.TestCase):
+#@+node:ekr.20201129161531.1: ** 1. class BaseTest(unittest.TestCase)
+class BaseTest(unittest.TestCase):
     """
     The base of all new-style unit tests.
     
@@ -232,42 +262,48 @@ class BaseUnitTest(unittest.TestCase):
     def adjustTripleString(self, s):
         return g.adjustTripleString(s, tab_width=-4)
     #@-others
-#@+node:ekr.20201129162020.1: **  class CommanderTest(BaseUnitTest)
-class CommanderTest(BaseUnitTest):
-    """The base class of all tests that require a Commander object."""
+#@+node:ekr.20201130195326.1: ** 2. class EditCommandTest(BaseTest)
+class EditCommandTest(BaseTest):
+    """The base class of all tests of of Leo's edit commands."""
+    command_name = 'no command name!'
+    
+    # For pylint.
+    before_p = None
+    after_p = None
+    tempNode = None
+    
     #@+others
-    #@+node:ekr.20201129174457.1: *3* CommanderTest.setUp
+    #@+node:ekr.20201130195326.3: *3* EditCommandTest.setUp
     def setUp(self):
-        """
-        Create the Leo application, g.app, the Gui, g.app.gui, and a commander, self.c.
-        """
-        # Similar to leoBridge.py
-        # print('CommanderTest.setUp')
-        import leo.core.leoGlobals as g
-        import leo.core.leoApp as leoApp
-        import leo.core.leoConfig as leoConfig
-        import leo.core.leoNodes as leoNodes
-        g.app = leoApp.LeoApp()
-        g.app.recentFilesManager = leoApp.RecentFilesManager()
-        g.app.loadManager = leoApp.LoadManager()
-        g.app.loadManager.computeStandardDirectories()
-        if not g.app.setLeoID(useDialog=False, verbose=True):
-            raise ValueError("unable to set LeoID.")
-        g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
-        g.app.config = leoConfig.GlobalConfigManager()
-        g.app.db = g.TracingNullObject('g.app.db')
-        g.app.pluginsController = g.NullObject('g.app.pluginsController')
-        g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
-        # Always allocate a new commander...
-        import leo.core.leoCommands as leoCommands
-        import leo.core.leoGui as leoGui
-        g.app.gui=leoGui.NullGui()
-        self.c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-    #@+node:ekr.20201129161726.8: *3* CommanderTest.tearDown (do nothing)
+        """Create the nodes in the commander."""
+        # First create the commander.
+        c = self.c = create_app()
+        # Create top-level nodes.
+        root = c.rootPosition()
+        self.tempNode = root.insertAsLastChild()
+        self.before_p = root.insertAsLastChild()
+        self.after_p = root.insertAsLastChild()
+        self.tempNode.h = 'tempNode'
+        self.before_p.h = 'before'
+        self.after_p.h = 'after'
+        # # Delete all children of temp node.
+        # while self.tempNode.firstChild():
+            # self.tempNode.firstChild().doDelete()
+        # Set c.p.
+        c.selectPosition(self.tempNode)
+    #@+node:ekr.20201130195326.4: *3* EditCommandTest.shortDescription
+    def shortDescription(self):
+        return f"EditCommandTest: {self.command_name}"
+        
+    #@+node:ekr.20201130195326.5: *3* EditCommandTest.tearDown
     def tearDown(self):
-        pass
+        # print('EditCommandTest.tearDown')
+        c = self.c
+        # Delete in reverse order.
+        self.after_p.doDelete()
+        self.before_p.doDelete()
+        self.tempNode.doDelete()
+        c.undoer.clearUndoState()
     #@-others
 #@-others
-if False and __name__ == '__main__':  # Not ready yet.
-    pytest_main()
 #@-leo
