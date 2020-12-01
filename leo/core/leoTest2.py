@@ -134,7 +134,7 @@ def create_app():
     # Similar to leoBridge.py
     # print('CommanderTest.setUp')
     import time
-    ### dump_leo_modules()
+    dump_leo_modules()
     t1 = time.process_time()
     import leo.core.leoGlobals as g
     import leo.core.leoApp as leoApp
