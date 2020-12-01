@@ -72,7 +72,7 @@ def insertBodystamp (c,v):
     stamp = mnOKstamp() + '\n'
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
-    c.frame.body.onBodyChanged("Typing")
+    c.frame.body.onBodyChanged('insert-timestamp')
 #@+node:ekr.20040205071616.6: ** is_subnodesOK
 def is_subnodesOK(v):
 
@@ -113,7 +113,7 @@ def insertUser (self,event=None):
     stamp = mnstamp()
     i = w.getInsertPoint()
     w.insert(i,stamp)
-    c.frame.body.onBodyChanged("Typing",oldSel=oldSel)
+    c.frame.body.onBodyChanged('insert-user',oldSel=oldSel)
 #@+node:ekr.20040205071616.10: ** create_UserMenu (mnplugins.py)
 def create_UserMenu (tag,keywords):
 

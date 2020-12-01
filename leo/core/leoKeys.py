@@ -302,7 +302,7 @@ class AutoCompleterClass:
         i, j = w.getSelectionRange()
         w.setSelectionRange(i, j, insert=j)
         # Was in finish.
-        c.frame.body.onBodyChanged('Typing')
+        c.frame.body.onBodyChanged('end-auto-completer')
         c.recolor()
 
     finish = exit
@@ -673,6 +673,8 @@ class AutoCompleterClass:
         # Get local line
         lines = g.splitLines(body_s)
         row, column = g.convertPythonIndexToRowCol(body_s, i)
+        if row >= len(lines):  # 2020/11/27
+            return []
         line = lines[row]
         #
         # Find the global line, and compute offsets.
@@ -868,21 +870,38 @@ class AutoCompleterClass:
             self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
     def insert_string(self, s, select=False):
-        """Insert s at the insertion point."""
-        c = self.c
-        w = self.w
-        if not g.isTextWrapper(w):  # Bug fix: 2016/10/29.
+        """
+        Insert an auto-completion string s at the insertion point.
+        
+        Leo 6.4. This *part* of auto-completion is no longer undoable.
+        """
+        c, w = self.c, self.w
+        if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
+        #
+        # Don't make this undoable.
+            # oldText = w.getAllText()
+            # oldSel = w.getSelectionRange()
+            # bunch = u.beforeChangeBody(p)
         i = w.getInsertPoint()
         w.insert(i, s)
         if select:
             j = i + len(s)
             w.setSelectionRange(i, j, insert=j)
-        c.frame.body.onBodyChanged('Typing')
-        if self.use_qcompleter:
-            if self.qw:
-                c.widgetWantsFocusNow(self.qw.leo_qc)
+        #
+        # Don't make this undoable.
+            # if 0:
+                # u.doTyping(p, 'Typing',
+                    # oldSel=oldSel,
+                    # oldText=oldText,
+                    # newText=w.getAllText(),
+                    # newInsert=w.getInsertPoint(), 
+                    # newSel=w.getSelectionRange())
+            # else:
+                # u.afterChangeBody(p, 'auto-complete', bunch)
+        if self.use_qcompleter and self.qw:
+            c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
     def is_leo_source_file(self):
         """Return True if this is one of Leo's source files."""
@@ -3240,32 +3259,32 @@ class KeyHandlerClass:
         return 'found'
     #@+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
-        c, k, p = self.c, self, self.c.p
+        c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
-            w = c.frame.body
+            w = c.frame.body.wrapper
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
             assert m  # edit-shortcut was invoked on a malformed body line
             sel = f"{m.group(0)} {stroke.s}"
-            udata = c.undoer.beforeChangeNodeContents(p)
+            udata = u.beforeChangeNodeContents(p)
             pos = w.getYScrollPosition()
             i = len(before)
             j = max(i, len(before) + len(sel) - 1)
             w.setAllText(before + sel + after)
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(pos)
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
-            w.onBodyChanged('change shortcut')
+            u.afterChangeNodeContents(p, 'change shortcut', udata)
+            c.frame.body.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
         if p.h.startswith(('@command', '@button')):
-            udata = c.undoer.beforeChangeNodeContents(p)
+            udata = u.beforeChangeNodeContents(p)
             cmd = p.h.split('@key', 1)[0]
             p.h = f"{cmd} @key={stroke.s}"
-            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            u.afterChangeNodeContents(p, 'change shortcut', udata)
             try:
                 cmdname = cmd.split(' ', 1)[1].strip()
                 k.editShortcut_do_bind_helper(stroke, cmdname)

@@ -312,37 +312,37 @@ class EditCommandsClass(BaseEditCommandsClass):
         text, if there is any, or any path like text immediately preceding the
         cursor.
         """
-        c = self.c
-        w = self.editWidget(event)
-        if w:
+        c, w = self.c, self.editWidget(event)
+        if not w:
+            return
 
-            def callback(arg, w=w):
-                i = w.getSelectionRange()[0]
-                w.deleteTextSelection()
-                w.insert(i, arg)
-                if g.app.gui.widget_name(w) == 'body':
-                    c.frame.body.onBodyChanged(undoType='Typing')
+        def callback(arg, w=w):
+            i = w.getSelectionRange()[0]
+            w.deleteTextSelection()
+            w.insert(i, arg)
+            if g.app.gui.widget_name(w) == 'body':
+                c.frame.body.onBodyChanged('insert-file-name')
 
-            # see if the widget already contains the start of a path
+        # see if the widget already contains the start of a path
 
-            start_text = w.getSelectedText()
-            if not start_text:  # look at text preceeding insert point
-                start_text = w.getAllText()[: w.getInsertPoint()]
-                if start_text:
-                    # make non-path characters whitespace
-                    start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
-                                         for i in start_text)
-                    if start_text[-1].isspace():  # use node path if nothing typed
-                        start_text = ''
-                    else:
-                        start_text = start_text.rsplit(None, 1)[-1]
-                        # set selection range so w.deleteTextSelection() works in the callback
-                        w.setSelectionRange(
-                            w.getInsertPoint() - len(start_text), w.getInsertPoint())
+        start_text = w.getSelectedText()
+        if not start_text:  # look at text preceeding insert point
+            start_text = w.getAllText()[: w.getInsertPoint()]
+            if start_text:
+                # make non-path characters whitespace
+                start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
+                                     for i in start_text)
+                if start_text[-1].isspace():  # use node path if nothing typed
+                    start_text = ''
+                else:
+                    start_text = start_text.rsplit(None, 1)[-1]
+                    # set selection range so w.deleteTextSelection() works in the callback
+                    w.setSelectionRange(
+                        w.getInsertPoint() - len(start_text), w.getInsertPoint())
 
-            c.k.functionTail = g.os_path_finalize_join(
-                self.path_for_p(c, c.p), start_text or '')
-            c.k.getFileName(event, callback=callback)
+        c.k.functionTail = g.os_path_finalize_join(
+            self.path_for_p(c, c.p), start_text or '')
+        c.k.getFileName(event, callback=callback)
     #@+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
     @cmd('insert-headline-time')
     def insertHeadlineTime(self, event=None):
@@ -1129,7 +1129,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         oldSel = w.getSelectionRange()
-        oldYview = w.getYScrollPosition()
         # Find the previous non-blank line
         i, j = g.getLine(s, ins)
         while 1:
@@ -1147,7 +1146,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.delete(i2, j2)
             w.insert(i2, line)
             w.setInsertPoint(i2 + len(ws))
-            c.frame.body.onBodyChanged(undoType, oldSel=oldSel, oldText=s, oldYview=oldYview)
+            c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info
@@ -1253,7 +1252,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if wname.startswith('body'):
-            self.beginCommand(w)
+            self.beginCommand(w, undoType='Typing')
             try:
                 tab_width = c.getTabWidth(c.p)
                 changed = True
@@ -1687,12 +1686,12 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
-            # Call setUndoTypingParams to honor the user's undo granularity.
+            # Call u.doTyping to honor the user's undo granularity.
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()
             newText = w.getAllText()  # Converts to unicode.
-            u.setUndoTypingParams(p, undoType, oldText, newText,
+            u.doTyping(p, 'Typing', oldText, newText,
                 oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
         g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar

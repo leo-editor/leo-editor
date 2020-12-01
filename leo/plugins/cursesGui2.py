@@ -2339,7 +2339,6 @@ class CoreFrame (leoFrame.LeoFrame):
         wname = c.widget_name(w)
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))
@@ -2352,9 +2351,8 @@ class CoreFrame (leoFrame.LeoFrame):
         if i != j:
             w.delete(i, j)
         w.insert(i, s)
-        w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.
@@ -2878,13 +2876,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Don't recolor the body, but pretend we did.
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        
-        # self.updateEditors()
-        # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
         '''Update the title of the Form surrounding the Leo Body.'''
@@ -2927,6 +2918,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         c = self.leo_c
         p = c.p
         v = p.v
+        undoType = 'update-body'
         i = self.cursor_line
         wrapper = c.frame.body.wrapper
         assert isinstance(wrapper, BodyWrapper), repr(wrapper)
@@ -2944,7 +2936,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         elif i == len(lines):
             aList = head + [s]
             self.values = aList
@@ -2953,7 +2945,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         else:
             g.trace('Can not happen', i, len(lines), repr(s))
             v.selectionLength = 0

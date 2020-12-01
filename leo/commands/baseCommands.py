@@ -25,14 +25,12 @@ class BaseEditCommandsClass:
         c, p = self.c, self.c.p
         name = c.widget_name(w)
         if name.startswith('body'):
-            oldSel = w.getSelectionRange()
-            oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
             b.ch = ''
             b.name = name
-            b.oldSel = oldSel
-            b.oldText = oldText
+            b.oldSel = w.getSelectionRange()
+            b.oldText = p.b
             b.w = w
             b.undoType = undoType
         else:
@@ -44,11 +42,13 @@ class BaseEditCommandsClass:
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
         """
-        c, k = self.c, self.c.k
+        c, k, p, u, w = self.c, self.c.k, self.c.p, self.c.undoer, self.editWidget(event=None)
         b = self.undoData
         if b and b.name.startswith('body') and changed:
-            c.frame.body.onBodyChanged(undoType=b.undoType,
-                oldSel=b.oldSel, oldText=b.oldText, oldYview=None)
+            if b.undoType.capitalize() == 'Typing':
+                u.doTyping(p, 'Typing', oldText=b.oldText, newText=w.getAllText(), oldSel=b.oldSel)
+            else:
+                c.frame.body.onBodyChanged(undoType=b.undoType, oldSel=b.oldSel)
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

@@ -382,7 +382,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 scroll = w.getYScrollPosition()
             oldSel = w.getSelectionRange()
             w.setAllText(new_s)
-            c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+            c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
             c.p.b = new_s
             if switch:
                 c.redraw()
@@ -441,7 +441,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             do_placeholder = False
             oldSel = i, j
-            c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+            c.frame.body.onBodyChanged(undoType='make-script-substitution', oldSel=oldSel)
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
@@ -546,7 +546,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
-            c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
+            c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence
