@@ -6,7 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import leo.core.leoGlobals as g
-from leo.core.leoTest2 import EditCommandTest, pytest_main
+import leo.core.leoTest2 as leoTest2
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import re
@@ -3741,12 +3741,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
-#@+node:ekr.20201129161502.1: ** class FileTest (EditCommandTest)
-class FileTest(EditCommandTest):
-    """The base class of all tests of of Leo's edit commands."""
-  
+#@+node:ekr.20201129161502.1: ** class FileTest (TestUtils)
+class FileTest(leoTest2.TestUtils):
+    """Unit tests for leo/commands/editCommands.py."""
+    
+    # For pylint.
+    parent_p = None
+    before_p = None
+    after_p = None
+    tempNode = None
+
     #@+others
-    #@+node:ekr.20201129161726.5: *3* EditCommandTest.run_test
+    #@+node:ekr.20201129161726.5: *3* FileTest.run_test (editCommands.py)
     def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
         
         c = self.c
@@ -3825,6 +3831,29 @@ class FileTest(EditCommandTest):
                 # u.undo()
                 # ok = compare(self.tempNode, self.before_p, True)
                 # assert ok, f"{command_name}: after undo2"
+    #@+node:ekr.20201201084621.1: *3* FileTest.setUp & tearDown
+    def setUp(self):
+        """Create the nodes in the commander."""
+        # Create a new commander for each test.
+        # This is fast, because setUpClass has done all the imports.
+        import leo.core.leoCommands as leoCommands
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        # Create top-level nodes.
+        root = c.rootPosition()
+        self.tempNode = root.insertAsLastChild()
+        self.before_p = root.insertAsLastChild()
+        self.after_p = root.insertAsLastChild()
+        self.tempNode.h = 'tempNode'
+        self.before_p.h = 'before'
+        self.after_p.h = 'after'
+        c.selectPosition(self.tempNode)
+        
+    def tearDown(self):
+        self.c = None
+    #@+node:ekr.20201201084702.1: *3* FileTest.setUpClass
+    @classmethod
+    def setUpClass(cls):
+        leoTest2.create_app()
     #@+node:ekr.20201130091020.1: *3* EditCommandTest: test cases...
     #@+node:ekr.20201130090918.1: *4* add-space-to-lines
     def test_add_space_to_lines(self):
@@ -7607,5 +7636,5 @@ class FileTest(EditCommandTest):
     #@-others
 #@-others
 if __name__ == '__main__':
-    pytest_main(__file__, 'leo.commands.editCommands')
+    leoTest2.pytest_main(__file__, 'leo.commands.editCommands')
 #@-leo

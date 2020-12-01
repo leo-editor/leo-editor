@@ -26,7 +26,7 @@ import leo.core.leoGlobals as g
 # import difflib
 # import logging
 # import cProfile as profile
-# import os
+import os
 # import re
 import sys
 # import tabnanny
@@ -157,7 +157,7 @@ def create_app():
     # Create a dummy commander, to do the imports in c.initObjects.
     leoCommands.Commands(fileName=None, gui=g.app.gui)
     t4 = time.process_time()
-    if 0:
+    if t4 - t3 > 0.1:
         print('create_app\n'
             f"  imports: {(t2-t1):.3f}\n"
             f"      gui: {(t3-t2):.3f}\n"
@@ -220,12 +220,62 @@ def pytest_main(path, module):
 def run_all_tests():
     pass
     
-#@+node:ekr.20201129161531.1: ** 1. class BaseTest(unittest.TestCase)
-class BaseTest(unittest.TestCase):
-    """
-    The base of all new-style unit tests.
+#@+node:ekr.20201201085828.1: ** class RunAllLeoTests(unittest.TestCase)
+class RunAllLeoTests(unittest.TestCase):
     
-    This class consists only of utilities.
+    @classmethod
+    def setUpClass(cls):
+        print('RunAllLeoTests.setUpClass', cls)
+        create_app()
+        
+    def setUp(self):
+        self._leo_dir = os.path.join(os.path.dirname(__file__), '..')
+        # import leo.core.leoCommands as leoCommands
+        # self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        
+    def test_all_core_files(self):
+        import glob
+        files = glob.glob(os.path.join(self._leo_dir, 'core', '*.py'))
+        for fn in ('__init__.py', 'leoAst_ns.py', 'leoTest.py', 'leoTest2.py'):
+            path = os.path.join(self._leo_dir, 'core', fn)
+            if path in files:
+                files.remove(path)
+        for z in files:
+            fn = os.path.basename(z)
+            suite = unittest.TestLoader().discover(
+                start_dir=self._leo_dir, pattern=fn)
+            result = unittest.TestResult()
+            suite.run(result)
+            if result.testsRun:
+                run = result.testsRun
+                errors = result.errors
+                failures = result.failures
+                skipped = result.skipped
+                g.trace(
+                    f"{fn:>20} "
+                    f"run: {run:>3}, "
+                    f"errors: {len(errors):>2}, "
+                    f"failures: {len(failures):>2}, "
+                    f"skipped: {len(skipped):>2}"
+                )
+
+    def test_all_commands_files(self):
+        suite = unittest.TestLoader().discover(
+            start_dir=os.path.join(self._leo_dir, 'commands'),
+            pattern='editCommands.py',
+        )
+        # g.trace(f"{suite.countTestCases()} tests in leo/commands")
+        result = unittest.TestResult()
+        suite.run(result)
+        if result.testsRun:
+            g.trace(result)
+#@+node:ekr.20201129161531.1: ** class TestUtils(unittest.TestCase)
+class TestUtils(unittest.TestCase):
+    """
+    Utilities for test class.
+    
+    This class has no "organizational" consequences because it contains no
+    setUp/tearDown methods.
     """
     #@+others
     #@+node:ekr.20201129195238.1: *3* BaseUnitTest.compareOutlines
@@ -279,55 +329,7 @@ class BaseTest(unittest.TestCase):
     def adjustTripleString(self, s):
         return g.adjustTripleString(s, tab_width=-4)
     #@-others
-#@+node:ekr.20201130195326.1: ** 2. class EditCommandTest(BaseTest)
-class EditCommandTest(BaseTest):
-    """The base class of all tests of of Leo's edit commands."""
-    command_name = 'no command name!'
-    
-    # For pylint.
-    before_p = None
-    after_p = None
-    tempNode = None
-    
-    #@+others
-    #@+node:ekr.20201130215637.1: *3* EditCommandTest.setUpClass
-    @classmethod
-    def setUpClass(cls):
-        # Create the app and the commander
-        import time
-        t1 = time.process_time()
-        create_app()
-        t2 = time.process_time()
-        g.trace(f"create_app: {(t2-t1):.2f} sec.\n")
-    #@+node:ekr.20201130195326.3: *3* EditCommandTest.setUp
-    def setUp(self):
-        """Create the nodes in the commander."""
-        # Create a new commander for each test.
-        # This is fast, because setUpClass has done all the imports.
-        import leo.core.leoCommands as leoCommands
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-        # Create top-level nodes.
-        root = c.rootPosition()
-        self.tempNode = root.insertAsLastChild()
-        self.before_p = root.insertAsLastChild()
-        self.after_p = root.insertAsLastChild()
-        self.tempNode.h = 'tempNode'
-        self.before_p.h = 'before'
-        self.after_p.h = 'after'
-        c.selectPosition(self.tempNode)
-    #@+node:ekr.20201130195326.4: *3* EditCommandTest.shortDescription
-    def shortDescription(self):
-        return f"EditCommandTest: {self.command_name}"
-        
-    #@+node:ekr.20201130195326.5: *3* EditCommandTest.tearDown
-    def tearDown(self):
-        # print('EditCommandTest.tearDown')
-        c = self.c
-        # Delete in reverse order.
-        self.after_p.doDelete()
-        self.before_p.doDelete()
-        self.tempNode.doDelete()
-        c.undoer.clearUndoState()
-    #@-others
 #@-others
+if __name__ == '__main__':
+    pytest_main(__file__, 'leo.core.leoTest2')
 #@-leo
