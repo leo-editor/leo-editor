@@ -127,13 +127,20 @@ def create_app():
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
     
     Return the commander.
+    
+    This method is expensive (about 1 sec) only the first time it is called.
     """
     # Similar to leoBridge.py
     # print('CommanderTest.setUp')
+    import time
+    t1 = time.process_time()
     import leo.core.leoGlobals as g
     import leo.core.leoApp as leoApp
     import leo.core.leoConfig as leoConfig
     import leo.core.leoNodes as leoNodes
+    import leo.core.leoCommands as leoCommands
+    import leo.core.leoGui as leoGui
+    t2 = time.process_time()
     g.app = leoApp.LeoApp()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = leoApp.LoadManager()
@@ -145,12 +152,17 @@ def create_app():
     g.app.db = g.TracingNullObject('g.app.db')
     g.app.pluginsController = g.NullObject('g.app.pluginsController')
     g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
-    # Always allocate a new commander...
-    import leo.core.leoCommands as leoCommands
-    import leo.core.leoGui as leoGui
     g.app.gui=leoGui.NullGui()
-    c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-    return c
+    t3 = time.process_time()
+    # Create a dummy commander, to do the imports in c.initObjects.
+    leoCommands.Commands(fileName=None, gui=g.app.gui)
+    t4 = time.process_time()
+    if 0:
+        print('create_app\n'
+            f"  imports: {(t2-t1):.3f}\n"
+            f"      gui: {(t3-t2):.3f}\n"
+            f"commander: {(t4-t2):.3f}\n"
+            f"    total: {(t4-t1):.3f}\n")
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
@@ -182,9 +194,10 @@ def expected_got(expected, got):
 #@+node:ekr.20201129133502.1: *3* function: get_time
 def get_time():
     return time.process_time()
-#@+node:ekr.20201129132511.1: *3* function: pytest_main (leoTest2.py)
+#@+node:ekr.20201129132511.1: *3* function: pytest_main
 def pytest_main(path, module):
     """Run selected unit tests with pytest-cov"""
+    g.cls()
     try:
         import pytest
     except Exception:
@@ -203,6 +216,10 @@ def pytest_main(path, module):
             __file__,
         ]
         pytest.main(args=pycov_args)
+#@+node:ekr.20201130215055.1: *3* function: run_all_tests
+def run_all_tests():
+    pass
+    
 #@+node:ekr.20201129161531.1: ** 1. class BaseTest(unittest.TestCase)
 class BaseTest(unittest.TestCase):
     """
@@ -273,11 +290,22 @@ class EditCommandTest(BaseTest):
     tempNode = None
     
     #@+others
+    #@+node:ekr.20201130215637.1: *3* EditCommandTest.setUpClass
+    @classmethod
+    def setUpClass(cls):
+        # Create the app and the commander
+        import time
+        t1 = time.process_time()
+        create_app()
+        t2 = time.process_time()
+        g.trace(f"create_app: {(t2-t1):.2f} sec.\n")
     #@+node:ekr.20201130195326.3: *3* EditCommandTest.setUp
     def setUp(self):
         """Create the nodes in the commander."""
-        # First create the commander.
-        c = self.c = create_app()
+        # Create a new commander for each test.
+        # This is fast, because setUpClass has done all the imports.
+        import leo.core.leoCommands as leoCommands
+        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
         # Create top-level nodes.
         root = c.rootPosition()
         self.tempNode = root.insertAsLastChild()
@@ -286,10 +314,6 @@ class EditCommandTest(BaseTest):
         self.tempNode.h = 'tempNode'
         self.before_p.h = 'before'
         self.after_p.h = 'after'
-        # # Delete all children of temp node.
-        # while self.tempNode.firstChild():
-            # self.tempNode.firstChild().doDelete()
-        # Set c.p.
         c.selectPosition(self.tempNode)
     #@+node:ekr.20201130195326.4: *3* EditCommandTest.shortDescription
     def shortDescription(self):
