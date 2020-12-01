@@ -26,6 +26,7 @@ import leo.core.leoGlobals as g
 # import difflib
 # import logging
 # import cProfile as profile
+import glob
 import os
 # import re
 import sys
@@ -133,6 +134,7 @@ def create_app():
     # Similar to leoBridge.py
     # print('CommanderTest.setUp')
     import time
+    ### dump_leo_modules()
     t1 = time.process_time()
     import leo.core.leoGlobals as g
     import leo.core.leoApp as leoApp
@@ -156,6 +158,7 @@ def create_app():
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
     leoCommands.Commands(fileName=None, gui=g.app.gui)
+    # dump_leo_modules()
     t4 = time.process_time()
     if t4 - t3 > 0.1:
         print('create_app\n'
@@ -163,6 +166,22 @@ def create_app():
             f"      gui: {(t3-t2):.3f}\n"
             f"commander: {(t4-t2):.3f}\n"
             f"    total: {(t4-t1):.3f}\n")
+#@+node:ekr.20201201144934.1: *3* function: dump_leo_modules
+def dump_leo_modules():
+    
+    core     = [z for z in sys.modules if z.startswith('leo.core')]
+    commands = [z for z in sys.modules if z.startswith('leo.commands')]
+    plugins  = [z for z in sys.modules if z.startswith('leo.plugins')]
+    
+    print(f"{len(core)} leo.core modules...\n")
+    for key in sorted(core):
+        print(key)
+    print(f"\n{len(commands)} leo.command modules...\n")
+    for key in sorted(commands):
+        print(key)
+    print(f"\n{len(plugins)} leo.plugins modules...\n")
+    for key in sorted(plugins):
+        print(key)
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
@@ -225,7 +244,7 @@ class RunAllLeoTests(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        print('RunAllLeoTests.setUpClass', cls)
+        # print('RunAllLeoTests.setUpClass', cls)
         create_app()
         
     def setUp(self):
@@ -233,42 +252,44 @@ class RunAllLeoTests(unittest.TestCase):
         # import leo.core.leoCommands as leoCommands
         # self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
         
+    def dump_result(self, file_name, result):
+        if result.testsRun:
+            run = result.testsRun
+            errors = result.errors
+            failures = result.failures
+            skipped = result.skipped
+            print('')
+            g.trace(
+                f"{file_name:>20} "
+                f"run: {run:>3}, "
+                f"errors: {len(errors):>2}, "
+                f"failures: {len(failures):>2}, "
+                f"skipped: {len(skipped):>2}")
+        
     def test_all_core_files(self):
-        import glob
         files = glob.glob(os.path.join(self._leo_dir, 'core', '*.py'))
+        # Remove special files, especially this file.
+        # We can *not* include this file, because the tests would never end :-)
         for fn in ('__init__.py', 'leoAst_ns.py', 'leoTest.py', 'leoTest2.py'):
             path = os.path.join(self._leo_dir, 'core', fn)
             if path in files:
                 files.remove(path)
         for z in files:
-            fn = os.path.basename(z)
+            file_name = os.path.basename(z)
             suite = unittest.TestLoader().discover(
-                start_dir=self._leo_dir, pattern=fn)
+                start_dir=self._leo_dir, pattern=file_name)
             result = unittest.TestResult()
             suite.run(result)
-            if result.testsRun:
-                run = result.testsRun
-                errors = result.errors
-                failures = result.failures
-                skipped = result.skipped
-                g.trace(
-                    f"{fn:>20} "
-                    f"run: {run:>3}, "
-                    f"errors: {len(errors):>2}, "
-                    f"failures: {len(failures):>2}, "
-                    f"skipped: {len(skipped):>2}"
-                )
+            self.dump_result(file_name, result)
 
     def test_all_commands_files(self):
+        base_dir = os.path.join(self._leo_dir, 'commands')
+        file_name = 'editCommands.py'
         suite = unittest.TestLoader().discover(
-            start_dir=os.path.join(self._leo_dir, 'commands'),
-            pattern='editCommands.py',
-        )
-        # g.trace(f"{suite.countTestCases()} tests in leo/commands")
+            start_dir=base_dir, pattern=file_name)
         result = unittest.TestResult()
         suite.run(result)
-        if result.testsRun:
-            g.trace(result)
+        self.dump_result(file_name, result)
 #@+node:ekr.20201129161531.1: ** class TestUtils(unittest.TestCase)
 class TestUtils(unittest.TestCase):
     """
