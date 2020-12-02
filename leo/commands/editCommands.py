@@ -3775,14 +3775,12 @@ class FileTest(leoTest2.TestUtils):
         i = g.toPythonIndex(before_b, i)
         j = g.toPythonIndex(before_b, j)
         w.setSelectionRange(i, j, insert=j)
-        ### g.trace(command_name, i,j)
-        ### g.printObj(g.splitLines(w.getSelectedText()))
         # Run the command!
         c.k.simulateCommand(command_name)
         
         s1 = self.tempNode.b
         s2 = self.after_p.b
-        if s1 != s2:
+        if s1 != s2:  # pragma: no cover
             print('mismatch in body')
             g.printObj(g.splitLines(s2), tag='expected')
             g.printObj(g.splitLines(s1), tag='got')
@@ -7667,6 +7665,6 @@ class FileTest(leoTest2.TestUtils):
         )
     #@-others
 #@-others
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     leoTest2.pytest_main(__file__, 'leo.commands.editCommands')
 #@-leo

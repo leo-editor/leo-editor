@@ -225,14 +225,15 @@ def pytest_main(path, module):
     if 0:
         # Pytest.
         pytest.main(args=sys.argv)
-    elif 1: # unittest
+    elif 0: # unittest
         unittest.main()
     else: # Full coverage test.
+        print('path', path, 'module', module)
         pycov_args = sys.argv + [
             '--cov-report=html',
             '--cov-report=term-missing',
             f'--cov={module}',
-            __file__,
+            path,
         ]
         pytest.main(args=pycov_args)
 #@+node:ekr.20201130215055.1: *3* function: run_all_tests
