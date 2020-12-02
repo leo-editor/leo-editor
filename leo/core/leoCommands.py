@@ -264,9 +264,11 @@ class Commands:
         # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
-        import leo.core.leoBeautify as leoBeautify # So decorators are executed.
-        assert leoBeautify # for pyflakes.
+        import leo.core.leoBeautify as leoBeautify  # So decorators are executed.
+        assert leoBeautify  # for pyflakes.
         import leo.core.leoChapters as leoChapters
+        import leo.core.leoTest2 as leoTest2  # So decorators are executed.
+        assert leoTest2  # For pyflakes.
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
         import leo.commands.bufferCommands as bufferCommands

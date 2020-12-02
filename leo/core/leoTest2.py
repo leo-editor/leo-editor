@@ -172,6 +172,12 @@ def leo_test_main(path, module, kind='py-cov'):
     else: # Default to unittest.
         g.trace(f"Unknown 'kind' kwarg: {kind!r}")
         unittest.main()
+#@+node:ekr.20201202171222.1: *3* function: 'run-all-tests'
+@g.command('run-all-tests')
+def run_all_unit_tests(event):
+    c = event.get('c')
+    if c:
+        RunAllLeoTests().run_all_tests()
 #@+node:ekr.20201202083003.1: ** class ConvertTests
 class ConvertTests:
     """
@@ -263,17 +269,23 @@ class ConvertEditCommandsTests (ConvertTests):
     #@-others
 #@+node:ekr.20201201085828.1: ** class RunAllLeoTests(unittest.TestCase)
 class RunAllLeoTests(unittest.TestCase):
-    
+    """
+    A class to run all unit tests.
+    """
+    #@+others
+    #@+node:ekr.20201202173544.1: *3* RunAllLeoTests.setUpClass
     @classmethod
     def setUpClass(cls):
         # print('RunAllLeoTests.setUpClass', cls)
         create_app()
         
+    #@+node:ekr.20201202173547.1: *3* RunAllLeoTests.test_all_core_files
     def setUp(self):
         self._leo_dir = os.path.join(os.path.dirname(__file__), '..')
         # import leo.core.leoCommands as leoCommands
         # self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
         
+    #@+node:ekr.20201202173547.2: *3* RunAllLeoTests.test_all_core_files
     def dump_result(self, file_name, result):
         if result.testsRun:
             run = result.testsRun
@@ -287,7 +299,7 @@ class RunAllLeoTests(unittest.TestCase):
                 f"errors: {len(errors):>2}, "
                 f"failures: {len(failures):>2}, "
                 f"skipped: {len(skipped):>2}")
-        
+    #@+node:ekr.20201202173548.1: *3* RunAllLeoTests.test_all_core_files
     def test_all_core_files(self):
         files = glob.glob(os.path.join(self._leo_dir, 'core', '*.py'))
         # Remove special files, especially this file.
@@ -304,6 +316,7 @@ class RunAllLeoTests(unittest.TestCase):
             suite.run(result)
             self.dump_result(file_name, result)
 
+    #@+node:ekr.20201202173704.1: *3* RunAllLeoTests.test_all_commands_files
     def test_all_commands_files(self):
         base_dir = os.path.join(self._leo_dir, 'commands')
         file_name = 'editCommands.py'
@@ -312,6 +325,11 @@ class RunAllLeoTests(unittest.TestCase):
         result = unittest.TestResult()
         suite.run(result)
         self.dump_result(file_name, result)
+    #@+node:ekr.20201202173743.1: *3* RunAllLeoTests.run_all_tests
+    def run_all_tests(self):
+        g.trace('Not ready yet')
+    #@-others
+    
 #@+node:ekr.20201129161531.1: ** class TestUtils(unittest.TestCase)
 class TestUtils(unittest.TestCase):
     """
