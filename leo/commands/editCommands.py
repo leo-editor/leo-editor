@@ -3778,8 +3778,6 @@ class FileTest(leoTest2.TestUtils):
         ### g.trace(command_name, i,j)
         ### g.printObj(g.splitLines(w.getSelectedText()))
         # Run the command!
-        ### HACK. This makes center-region work, but causes other failures.
-        ### c.editCommands.fillColumn = 70 ###
         c.k.simulateCommand(command_name)
         
         s1 = self.tempNode.b
@@ -6432,13 +6430,18 @@ class FileTest(leoTest2.TestUtils):
     aaas...sbbb
     after
     """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.3", "5.6"),
-            after_sel=("2.3", "5.8"),
-            command_name="rectangle-string",
-        )
+        # A hack, contained in unitTest.leo
+        g.app.unitTesting = True
+        try:
+            self.run_test(
+                before_b=before_b,
+                after_b=after_b,
+                before_sel=("2.3", "5.6"),
+                after_sel=("2.3", "5.8"),
+                command_name="rectangle-string",
+            )
+        finally:
+            g.app.unitTesting = False
     #@+node:ekr.20201130090918.100: *4* rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
