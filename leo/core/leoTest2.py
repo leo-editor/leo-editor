@@ -40,10 +40,14 @@ import unittest
 #@+others
 #@+node:ekr.20201129132455.1: ** Top-level functions...
 #@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
-def convert_leoEditCommands_tests(c):
-    """Convert old-style tests to new-style tests"""
-    root = g.findTopLevelNode(c, 'unit-tests: leoEditCommands')
-    target = g.findTopLevelNode(c, 'new-tests')
+def convert_leoEditCommands_tests(c, root, target):
+    """
+    Convert old-style tests to new-style tests.
+    
+    root: A node containing (a copy of) tests from unitTest.leo.
+    target: A node whose children will be the resulting tests.
+            These nodes can then be copied to be children of a test class.
+    """
     #@+others
     #@+node:ekr.20201130075024.2: *4* body
     def body(after_p, after_sel, before_p, before_sel, command_name):
