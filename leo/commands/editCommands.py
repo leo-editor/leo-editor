@@ -7,7 +7,6 @@
 #@+node:ekr.20150514050149.1: **  << imports >> (editCommands.py)
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-import leo.core.leoTest2 as leoTest2
 import os
 import re
 # import sys
@@ -3737,7 +3736,4 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.showStateAndMode()
     #@-others
 #@-others
-
-if __name__ == '__main__':  # pragma: no cover
-    leoTest2.leo_test_main(__file__, 'leo.commands.editCommands')
 #@-leo

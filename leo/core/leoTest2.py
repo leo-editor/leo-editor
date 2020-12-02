@@ -19,24 +19,14 @@ Full unit tests for x.py can be run from the command line:
     python -m leo.core.x
 """
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:ekr.20201129131605.1: ** << imports >> (leoTest2.py)
+
 import leo.core.leoGlobals as g
-# import leo.core.leoGui as leoGui  # For UnitTestGui.
-# import difflib
-# import logging
-# import cProfile as profile
 import glob
 import os
-# import re
 import sys
-# import tabnanny
 import time
-# import timeit
-# import tokenize
-# import traceback
 import unittest
-#@-<< imports >>
+
 #@+others
 #@+node:ekr.20201129132455.1: ** Top-level functions...
 #@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
@@ -156,13 +146,18 @@ def get_time():
     return time.process_time()
 #@+node:ekr.20201129132511.1: *3* function: leo_test_main
 def leo_test_main(path, module):
-    """Run selected unit tests with pytest-cov"""
+    """
+    Run selected unit tests with pytest-cov.
+    
+    The report will go to 
+    """
     # g.cls()
     try:
         import pytest
     except Exception:
         print('pytest not found')
         return
+    path = os.path.abspath(path)
     if 0:
         # Pytest.
         pytest.main(args=sys.argv)
@@ -378,6 +373,4 @@ class TestUtils(unittest.TestCase):
         return g.adjustTripleString(s, tab_width=-4)
     #@-others
 #@-others
-if __name__ == '__main__':
-    leo_test_main(__file__, 'leo.core.leoTest2')
 #@-leo

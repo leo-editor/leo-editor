@@ -3934,4 +3934,9 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="upcase-word",
         )
     #@-others
+
+if __name__ == '__main__':  # pragma: no cover
+    import os
+    path = os.path.join(__file__, '..', '..', '..', 'commands')
+    leoTest2.leo_test_main(path, 'leo.commands.editCommands')
 #@-leo
