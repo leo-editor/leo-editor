@@ -4109,6 +4109,60 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("3.143", "3.208"),
             command_name="back-sentence-extend-selection",
         )
+    #@+node:ekr.20201130090918.12: *4* back-to-home (at end of line)
+    def test_back_to_home_at_end_of_line(self):
+        """Test case for back-to-home (at end of line)"""
+        before_b = """\
+    if a:
+        b = 'xyz'
+    """
+        after_b = """\
+    if a:
+        b = 'xyz'
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.12", "2.12"),
+            after_sel=("2.4", "2.4"),
+            command_name="back-to-home",
+        )
+    #@+node:ekr.20201130090918.11: *4* back-to-home (at indentation
+    def test_back_to_home_at_indentation(self):
+        """Test case for back-to-home (at indentation"""
+        before_b = """\
+    if a:
+        b = 'xyz'
+    """
+        after_b = """\
+    if a:
+        b = 'xyz'
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.4", "2.4"),
+            after_sel=("2.0", "2.0"),
+            command_name="back-to-home",
+        )
+    #@+node:ekr.20201130090918.10: *4* back-to-home (at start of line)
+    def test_back_to_home_at_start_of_line(self):
+        """Test case for back-to-home (at start of line)"""
+        before_b = """\
+    if a:
+        b = 'xyz'
+    """
+        after_b = """\
+    if a:
+        b = 'xyz'
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.0", "2.0"),
+            after_sel=("2.4", "2.4"),
+            command_name="back-to-home",
+        )
     #@+node:ekr.20201130090918.9: *4* back-to-indentation
     def test_back_to_indentation(self):
         """Test case for back-to-indentation"""
@@ -4134,60 +4188,6 @@ class FileTest(leoTest2.TestUtils):
             before_sel=("4.13", "4.13"),
             after_sel=("4.8", "4.8"),
             command_name="back-to-indentation",
-        )
-    #@+node:ekr.20201130090918.10: *4* back-to-home (at start of line)
-    def test_back_to_home_at_start_of_line(self):
-        """Test case for back-to-home (at start of line)"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.0", "2.0"),
-            after_sel=("2.4", "2.4"),
-            command_name="back-to-home",
-        )
-    #@+node:ekr.20201130090918.11: *4* back-to-home (at indentation
-    def test_back_to_home_at_indentation(self):
-        """Test case for back-to-home (at indentation"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.4", "2.4"),
-            after_sel=("2.0", "2.0"),
-            command_name="back-to-home",
-        )
-    #@+node:ekr.20201130090918.12: *4* back-to-home (at end of line)
-    def test_back_to_home_at_end_of_line(self):
-        """Test case for back-to-home (at end of line)"""
-        before_b = """\
-    if a:
-        b = 'xyz'
-    """
-        after_b = """\
-    if a:
-        b = 'xyz'
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.12", "2.12"),
-            after_sel=("2.4", "2.4"),
-            command_name="back-to-home",
         )
     #@+node:ekr.20201130090918.13: *4* back-word
     def test_back_word(self):
@@ -4913,16 +4913,16 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("1.10", "1.10"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.42: *4* end-of-line 2
-    def test_end_of_line_2(self):
-        """Test case for end-of-line 2"""
+    #@+node:ekr.20201130090918.44: *4* end-of-line (blank last line)
+    def test_end_of_line_blank_last_line(self):
+        """Test case for end-of-line (blank last line)"""
         before_b = """\
     first line
     line 1
         line a
             line b
     line c
-    last line
+    last non-blank line
     """
         after_b = """\
     first line
@@ -4930,13 +4930,13 @@ class FileTest(leoTest2.TestUtils):
         line a
             line b
     line c
-    last line
+    last non-blank line
     """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=("6.0", "6.0"),
-            after_sel=("6.9", "6.9"),
+            before_sel=("7.0", "7.0"),
+            after_sel=("7.0", "7.0"),
             command_name="end-of-line",
         )
     #@+node:ekr.20201130090918.43: *4* end-of-line (internal blank line)
@@ -4967,32 +4967,6 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.44: *4* end-of-line (blank last line)
-    def test_end_of_line_blank_last_line(self):
-        """Test case for end-of-line (blank last line)"""
-        before_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
-        after_b = """\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last non-blank line
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("7.0", "7.0"),
-            after_sel=("7.0", "7.0"),
-            command_name="end-of-line",
-        )
     #@+node:ekr.20201130090918.45: *4* end-of-line (single char last line)
     def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
@@ -5019,6 +4993,32 @@ class FileTest(leoTest2.TestUtils):
             after_b=after_b,
             before_sel=("7.0", "7.0"),
             after_sel=("7.1", "7.1"),
+            command_name="end-of-line",
+        )
+    #@+node:ekr.20201130090918.42: *4* end-of-line 2
+    def test_end_of_line_2(self):
+        """Test case for end-of-line 2"""
+        before_b = """\
+    first line
+    line 1
+        line a
+            line b
+    line c
+    last line
+    """
+        after_b = """\
+    first line
+    line 1
+        line a
+            line b
+    line c
+    last line
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("6.0", "6.0"),
+            after_sel=("6.9", "6.9"),
             command_name="end-of-line",
         )
     #@+node:ekr.20201130090918.46: *4* end-of-line-extend-selection
@@ -5225,6 +5225,47 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.12"),
             command_name="extend-to-word",
         )
+    #@+node:ekr.20201130090918.56: *4* fill-paragraph
+    def test_fill_paragraph(self):
+        """Test case for fill-paragraph"""
+        before_b = """\
+    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
+
+    Some 90% of all presidentially
+    declared disasters are weather related,
+    leading to around 500 deaths per year
+    and nearly $14 billion in damage.
+    StormReady, a program
+    started in 1999 in Tulsa, OK,
+    helps arm America's
+    communities with the communication and
+    safety skills needed to save lives and
+    property--before and during the event.
+    StormReady helps community leaders and
+    emergency managers strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    """
+        after_b = """\
+    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
+
+    Some 90% of all presidentially declared disasters are weather related, leading
+    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
+    program started in 1999 in Tulsa, OK, helps arm America's communities with the
+    communication and safety skills needed to save lives and property--before and
+    during the event. StormReady helps community leaders and emergency managers
+    strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.0", "3.7"),
+            after_sel=("10.0", " 10.0"),
+            command_name="fill-paragraph",
+            directives="@pagewidth 80",
+        )
     #@+node:ekr.20201130090918.53: *4* finish-of-line
     def test_finish_of_line(self):
         """Test case for finish-of-line"""
@@ -5302,46 +5343,6 @@ class FileTest(leoTest2.TestUtils):
             before_sel=("3.1", "3.1"),
             after_sel=("3.1", "3.9"),
             command_name="finish-of-line-extend-selection",
-        )
-    #@+node:ekr.20201130090918.56: *4* fill-paragraph
-    def test_fill_paragraph(self):
-        """Test case for fill-paragraph"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially
-    declared disasters are weather related,
-    leading to around 500 deaths per year
-    and nearly $14 billion in damage.
-    StormReady, a program
-    started in 1999 in Tulsa, OK,
-    helps arm America's
-    communities with the communication and
-    safety skills needed to save lives and
-    property--before and during the event.
-    StormReady helps community leaders and
-    emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        after_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading
-    to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK, helps arm America's communities with the
-    communication and safety skills needed to save lives and property--before and
-    during the event. StormReady helps community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("3.0", "3.7"),
-            after_sel=("10.0", " 10.0"),
-            command_name="fill-paragraph",
         )
     #@+node:ekr.20201130090918.57: *4* forward-char
     def test_forward_char(self):
@@ -5788,6 +5789,89 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("1.6", "1.6"),
             command_name="insert-parentheses",
         )
+    #@+node:ekr.20201130090918.76: *4* kill-line end-body-text
+    def test_kill_line_end_body_text(self):
+        """Test case for kill-line end-body-text"""
+        before_b = """\
+    line 1
+    line 2
+    line 3
+    """
+        after_b = """\
+    line 1
+    line 2
+    line 3
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("4.1", "4.1"),
+            after_sel=("3.6", "3.6"),
+            command_name="kill-line",
+        )
+    #@+node:ekr.20201130090918.77: *4* kill-line end-line-text
+    def test_kill_line_end_line_text(self):
+        """Test case for kill-line end-line-text"""
+        before_b = """\
+    line 1
+    line 2
+    line 3
+    """
+        after_b = """\
+    line 1
+    line 2
+
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.5", "3.5"),
+            after_sel=("3.0", "3.0"),
+            command_name="kill-line",
+        )
+    #@+node:ekr.20201130090918.79: *4* kill-line start-blank-line
+    def test_kill_line_start_blank_line(self):
+        """Test case for kill-line start-blank-line"""
+        before_b = """\
+    line 1
+    line 2
+
+    line 4
+    """
+        after_b = """\
+    line 1
+    line 2
+    line 4
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.0", "3.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="kill-line",
+        )
+    #@+node:ekr.20201130090918.78: *4* kill-line start-line
+    def test_kill_line_start_line(self):
+        """Test case for kill-line start-line"""
+        before_b = """\
+    line 1
+    line 2
+    line 3
+    line 4
+    """
+        after_b = """\
+    line 1
+    line 2
+
+    line 4
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.0", "3.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="kill-line",
+        )
     #@+node:ekr.20201130090918.73: *4* kill-paragraph
     def test_kill_paragraph(self):
         """Test case for kill-paragraph"""
@@ -5852,108 +5936,26 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("1.27", "1.27"),
             command_name="kill-sentence",
         )
-    #@+node:ekr.20201130090918.75: *4* kill-word
-    def test_kill_word(self):
-        """Test case for kill-word"""
+    #@+node:ekr.20201130090918.82: *4* kill-to-end-of-line after last visible char
+    def test_kill_to_end_of_line_after_last_visible_char(self):
+        """Test case for kill-to-end-of-line after last visible char"""
         before_b = """\
-    This is the first sentence.  This
-    is the second sentence.  And
-    this is the last sentence.
+    line 1
+    # The next line contains two trailing blanks.
+    line 3  
+    line 4
     """
         after_b = """\
-    This is the first sentence.  This
-    is the  sentence.  And
-    this is the last sentence.
+    line 1
+    # The next line contains two trailing blanks.
+    line 3line 4
     """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=("2.6", "2.6"),
-            after_sel=("2.7", "2.7"),
-            command_name="kill-word",
-        )
-    #@+node:ekr.20201130090918.76: *4* kill-line end-body-text
-    def test_kill_line_end_body_text(self):
-        """Test case for kill-line end-body-text"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("4.1", "4.1"),
+            before_sel=("3.6", "3.6"),
             after_sel=("3.6", "3.6"),
-            command_name="kill-line",
-        )
-    #@+node:ekr.20201130090918.77: *4* kill-line end-line-text
-    def test_kill_line_end_line_text(self):
-        """Test case for kill-line end-line-text"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    line 2
-
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("3.5", "3.5"),
-            after_sel=("3.0", "3.0"),
-            command_name="kill-line",
-        )
-    #@+node:ekr.20201130090918.78: *4* kill-line start-line
-    def test_kill_line_start_line(self):
-        """Test case for kill-line start-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
-
-    line 4
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("3.0", "3.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="kill-line",
-        )
-    #@+node:ekr.20201130090918.79: *4* kill-line start-blank-line
-    def test_kill_line_start_blank_line(self):
-        """Test case for kill-line start-blank-line"""
-        before_b = """\
-    line 1
-    line 2
-
-    line 4
-    """
-        after_b = """\
-    line 1
-    line 2
-    line 4
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("3.0", "3.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="kill-line",
+            command_name="kill-to-end-of-line",
         )
     #@+node:ekr.20201130090918.80: *4* kill-to-end-of-line end-body-text
     def test_kill_to_end_of_line_end_body_text(self):
@@ -5994,25 +5996,45 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("2.6", "2.6"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.82: *4* kill-to-end-of-line after last visible char
-    def test_kill_to_end_of_line_after_last_visible_char(self):
-        """Test case for kill-to-end-of-line after last visible char"""
+    #@+node:ekr.20201130090918.85: *4* kill-to-end-of-line middle-line
+    def test_kill_to_end_of_line_middle_line(self):
+        """Test case for kill-to-end-of-line middle-line"""
         before_b = """\
     line 1
-    # The next line contains two trailing blanks.
-    line 3  
-    line 4
+    line 2
+    line 3
     """
         after_b = """\
     line 1
-    # The next line contains two trailing blanks.
-    line 3line 4
+    li
+    line 3
     """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=("3.6", "3.6"),
-            after_sel=("3.6", "3.6"),
+            before_sel=("2.2", "2.2"),
+            after_sel=("2.2", "2.2"),
+            command_name="kill-to-end-of-line",
+        )
+    #@+node:ekr.20201130090918.84: *4* kill-to-end-of-line start-blank-line
+    def test_kill_to_end_of_line_start_blank_line(self):
+        """Test case for kill-to-end-of-line start-blank-line"""
+        before_b = """\
+    line 1
+    line 2
+
+    line 4
+    """
+        after_b = """\
+    line 1
+    line 2
+    line 4
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.0", "3.0"),
+            after_sel=("3.0", "3.0"),
             command_name="kill-to-end-of-line",
         )
     #@+node:ekr.20201130090918.83: *4* kill-to-end-of-line start-line
@@ -6037,46 +6059,25 @@ class FileTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.84: *4* kill-to-end-of-line start-blank-line
-    def test_kill_to_end_of_line_start_blank_line(self):
-        """Test case for kill-to-end-of-line start-blank-line"""
+    #@+node:ekr.20201130090918.75: *4* kill-word
+    def test_kill_word(self):
+        """Test case for kill-word"""
         before_b = """\
-    line 1
-    line 2
-
-    line 4
+    This is the first sentence.  This
+    is the second sentence.  And
+    this is the last sentence.
     """
         after_b = """\
-    line 1
-    line 2
-    line 4
+    This is the first sentence.  This
+    is the  sentence.  And
+    this is the last sentence.
     """
         self.run_test(
             before_b=before_b,
             after_b=after_b,
-            before_sel=("3.0", "3.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="kill-to-end-of-line",
-        )
-    #@+node:ekr.20201130090918.85: *4* kill-to-end-of-line middle-line
-    def test_kill_to_end_of_line_middle_line(self):
-        """Test case for kill-to-end-of-line middle-line"""
-        before_b = """\
-    line 1
-    line 2
-    line 3
-    """
-        after_b = """\
-    line 1
-    li
-    line 3
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.2", "2.2"),
-            after_sel=("2.2", "2.2"),
-            command_name="kill-to-end-of-line",
+            before_sel=("2.6", "2.6"),
+            after_sel=("2.7", "2.7"),
+            command_name="kill-word",
         )
     #@+node:ekr.20201130090918.86: *4* move-lines-down
     def test_move_lines_down(self):
@@ -6462,6 +6463,658 @@ class FileTest(leoTest2.TestUtils):
             before_sel=("2.3", "5.6"),
             after_sel=("2.3", "5.6"),
             command_name="rectangle-yank",
+        )
+    #@+node:ekr.20201201201052.1: *4* reformat-paragraph tests
+    #@+node:ekr.20201130090918.122: *5* reformat-paragraph list 1 of 5
+    def test_reformat_paragraph_list_1_of_5(self):
+        """Test case for reformat-paragraph list 1 of 5"""
+        before_b = """\
+    This paragraph leads of this test.  It is the "lead"
+    paragraph.
+
+      1. This is item 
+         number 1.  It is the first item in the list.
+
+      2. This is item 
+         number 2.  It is the second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        after_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item 
+         number 1.  It is the first item in the list.
+
+      2. This is item 
+         number 2.  It is the second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("4.0", "4.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.123: *5* reformat-paragraph list 2 of 5
+    def test_reformat_paragraph_list_2_of_5(self):
+        """Test case for reformat-paragraph list 2 of 5"""
+        before_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item 
+         number 2.  It is the second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        after_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item 
+         number 2.  It is the second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("4.0", "4.0"),
+            after_sel=("7.0", "7.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.124: *5* reformat-paragraph list 3 of 5
+    def test_reformat_paragraph_list_3_of_5(self):
+        """Test case for reformat-paragraph list 3 of 5"""
+        before_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item 
+         number 2.  It is the second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        after_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item number 2. It is the
+         second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("7.0", "7.0"),
+            after_sel=("10.0", "10.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.125: *5* reformat-paragraph list 4 of 5
+    def test_reformat_paragraph_list_4_of_5(self):
+        """Test case for reformat-paragraph list 4 of 5"""
+        before_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item number 2. It is the
+         second item in the list.
+
+      3. This is item 
+         number 3.  It is the third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        after_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item number 2. It is the
+         second item in the list.
+
+      3. This is item number 3. It is the
+         third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("10.0", "10.0"),
+            after_sel=("13.0", "13.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.126: *5* reformat-paragraph list 5 of 5
+    def test_reformat_paragraph_list_5_of_5(self):
+        """Test case for reformat-paragraph list 5 of 5"""
+        before_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item number 2. It is the
+         second item in the list.
+
+      3. This is item number 3. It is the
+         third item in the list.
+
+    This paragraph ends the test.  It is the "final"
+    paragraph.
+    """
+        after_b = """\
+    This paragraph leads of this test. It is
+    the "lead" paragraph.
+
+      1. This is item number 1. It is the
+         first item in the list.
+
+      2. This is item number 2. It is the
+         second item in the list.
+
+      3. This is item number 3. It is the
+         third item in the list.
+
+    This paragraph ends the test. It is the
+    "final" paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("13.0", "13.0"),
+            after_sel=("15.1", "15.1"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.127: *5* reformat-paragraph new code 1 of 8
+    def test_reformat_paragraph_new_code_1_of_8(self):
+        """Test case for reformat-paragraph new code 1 of 8"""
+        before_b = """\
+    #@@pagewidth 40
+    '''
+    docstring.
+    '''
+    """
+        after_b = """\
+    #@@pagewidth 40
+    '''
+    docstring.
+    '''
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("2.0", "2.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.128: *5* reformat-paragraph new code 2 of 8
+    def test_reformat_paragraph_new_code_2_of_8(self):
+        """Test case for reformat-paragraph new code 2 of 8"""
+        before_b = """\
+    #@@pagewidth 40
+    '''
+    docstring.
+    '''
+    """
+        after_b = """\
+    #@@pagewidth 40
+    '''
+    docstring.
+    '''
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.0", "2.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.129: *5* reformat-paragraph new code 3 of 8
+    def test_reformat_paragraph_new_code_3_of_8(self):
+        """Test case for reformat-paragraph new code 3 of 8"""
+        before_b = """\
+    #@@pagewidth 40
+    '''
+    docstring.
+    more docstring.
+    '''
+    """
+        after_b = """\
+    #@@pagewidth 40
+    '''
+    docstring. more docstring.
+    '''
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("3.1", "4.1"),
+            after_sel=("4.0", "4.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.130: *5* reformat-paragraph new code 4 of 8
+    def test_reformat_paragraph_new_code_4_of_8(self):
+        """Test case for reformat-paragraph new code 4 of 8"""
+        before_b = """\
+    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    Line 11.
+    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        after_b = """\
+    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      Line 11.
+    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.131: *5* reformat-paragraph new code 5 of 8
+    def test_reformat_paragraph_new_code_5_of_8(self):
+        """Test case for reformat-paragraph new code 5 of 8"""
+        before_b = """\
+    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+      Line 22.
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        after_b = """\
+    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+       Line 22.
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "2.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.132: *5* reformat-paragraph new code 6 of 8
+    def test_reformat_paragraph_new_code_6_of_8(self):
+        """Test case for reformat-paragraph new code 6 of 8"""
+        before_b = """\
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    Line 32.
+
+    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        after_b = """\
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+       Line 32.
+
+    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("4.0", "4.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.133: *5* reformat-paragraph new code 7 of 8
+    def test_reformat_paragraph_new_code_7_of_8(self):
+        """Test case for reformat-paragraph new code 7 of 8"""
+        before_b = """\
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+       Line 32.
+
+    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+            Line 41.
+    """
+        after_b = """\
+    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+       Line 32.
+
+    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+            Line 41.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.11", "2.11"),
+            after_sel=("3.1", "3.1"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.134: *5* reformat-paragraph new code 8 of 8
+    def test_reformat_paragraph_new_code_8_of_8(self):
+        """Test case for reformat-paragraph new code 8 of 8"""
+        before_b = """\
+    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+            Line 41.
+    """
+        after_b = """\
+    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+            Line 41.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("3.0", "3.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.135: *5* reformat-paragraph paragraph 1 of 3
+    def test_reformat_paragraph_paragraph_1_of_3(self):
+        """Test case for reformat-paragraph paragraph 1 of 3"""
+        before_b = """\
+    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+    Last paragraph.
+    """
+        after_b = """\
+    Americans live in the most severe
+    weather-prone country on Earth. Each
+    year, Americans cope with an average of
+    10,000 thunderstorms, 2,500 floods,
+    1,000 tornadoes, as well as an average
+    of 6 deadly hurricanes. Potentially
+    deadly weather impacts every American.
+    Communities can now rely on the National
+    Weather Service’s StormReady program to
+    help them guard against the ravages of
+    Mother Nature.
+
+    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+    Last paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("13.0", "13.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.136: *5* reformat-paragraph paragraph 2 of 3
+    def test_reformat_paragraph_paragraph_2_of_3(self):
+        """Test case for reformat-paragraph paragraph 2 of 3"""
+        before_b = """\
+    Americans live in the most severe
+    weather-prone country on Earth. Each
+    year, Americans cope with an average of
+    10,000 thunderstorms, 2,500 floods,
+    1,000 tornadoes, as well as an average
+    of 6 deadly hurricanes. Potentially
+    deadly weather impacts every American.
+    Communities can now rely on the National
+    Weather Service’s StormReady program to
+    help them guard against the ravages of
+    Mother Nature.
+
+    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+    Last paragraph.
+    """
+        after_b = """\
+    Americans live in the most severe
+    weather-prone country on Earth. Each
+    year, Americans cope with an average of
+    10,000 thunderstorms, 2,500 floods,
+    1,000 tornadoes, as well as an average
+    of 6 deadly hurricanes. Potentially
+    deadly weather impacts every American.
+    Communities can now rely on the National
+    Weather Service’s StormReady program to
+    help them guard against the ravages of
+    Mother Nature.
+
+    Some 90% of all presidentially declared
+    disasters are weather related, leading
+    to around 500 deaths per year and nearly
+    $14 billion in damage. StormReady, a
+    program started in 1999 in Tulsa, OK,
+    helps arm America's communities with the
+    communication and safety skills needed
+    to save lives and property– before and
+    during the event. StormReady helps
+    community leaders and emergency managers
+    strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+    Last paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("13.0", "13.0"),
+            after_sel=("25.0", "25.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.137: *5* reformat-paragraph paragraph 3 of 3
+    def test_reformat_paragraph_paragraph_3_of_3(self):
+        """Test case for reformat-paragraph paragraph 3 of 3"""
+        before_b = """\
+    Americans live in the most severe
+    weather-prone country on Earth. Each
+    year, Americans cope with an average of
+    10,000 thunderstorms, 2,500 floods,
+    1,000 tornadoes, as well as an average
+    of 6 deadly hurricanes. Potentially
+    deadly weather impacts every American.
+    Communities can now rely on the National
+    Weather Service’s StormReady program to
+    help them guard against the ravages of
+    Mother Nature.
+
+    Some 90% of all presidentially declared
+    disasters are weather related, leading
+    to around 500 deaths per year and nearly
+    $14 billion in damage. StormReady, a
+    program started in 1999 in Tulsa, OK,
+    helps arm America's communities with the
+    communication and safety skills needed
+    to save lives and property– before and
+    during the event. StormReady helps
+    community leaders and emergency managers
+    strengthen local safety programs.
+
+    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+    Last paragraph.
+    """
+        after_b = """\
+    Americans live in the most severe
+    weather-prone country on Earth. Each
+    year, Americans cope with an average of
+    10,000 thunderstorms, 2,500 floods,
+    1,000 tornadoes, as well as an average
+    of 6 deadly hurricanes. Potentially
+    deadly weather impacts every American.
+    Communities can now rely on the National
+    Weather Service’s StormReady program to
+    help them guard against the ravages of
+    Mother Nature.
+
+    Some 90% of all presidentially declared
+    disasters are weather related, leading
+    to around 500 deaths per year and nearly
+    $14 billion in damage. StormReady, a
+    program started in 1999 in Tulsa, OK,
+    helps arm America's communities with the
+    communication and safety skills needed
+    to save lives and property– before and
+    during the event. StormReady helps
+    community leaders and emergency managers
+    strengthen local safety programs.
+
+    StormReady communities are better
+    prepared to save lives from the
+    onslaught of severe weather through
+    better planning, education, and
+    awareness. No community is storm proof,
+    but StormReady can help communities save
+    lives. Does StormReady make a
+    difference?
+
+    Last paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("25.10", "25.10"),
+            after_sel=("34.0", "34.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.138: *5* reformat-paragraph simple hanging indent
+    def test_reformat_paragraph_simple_hanging_indent(self):
+        """Test case for reformat-paragraph simple hanging indent"""
+        before_b = """\
+    Honor this line that has a hanging indentation, please.  Hanging
+      indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+    Next paragraph.
+    """
+        after_b = """\
+    Honor this line that has a hanging
+      indentation, please. Hanging
+      indentation is valuable for lists of
+      all kinds. But it is tricky to get
+      right.
+
+    Next paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("7.0", "7.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.139: *5* reformat-paragraph simple hanging indent 2
+    def test_reformat_paragraph_simple_hanging_indent_2(self):
+        """Test case for reformat-paragraph simple hanging indent 2"""
+        before_b = """\
+    Honor this line that has
+      a hanging indentation, please.  Hanging
+        indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+    Next paragraph.
+    """
+        after_b = """\
+    Honor this line that has a hanging
+      indentation, please. Hanging
+      indentation is valuable for lists of
+      all kinds. But it is tricky to get
+      right.
+
+    Next paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("2.0", "2.0"),
+            after_sel=("7.0", "7.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
+        )
+    #@+node:ekr.20201130090918.140: *5* reformat-paragraph simple hanging indent 3
+    def test_reformat_paragraph_simple_hanging_indent_3(self):
+        """Test case for reformat-paragraph simple hanging indent 3"""
+        before_b = """\
+    Honor this line that 
+      has a hanging indentation, 
+      please.  Hanging
+       indentation is valuable
+        for lists of all kinds.  But 
+        it is tricky to get right.
+
+    Next Paragraph.
+    """
+        after_b = """\
+    Honor this line that has a hanging
+      indentation, please. Hanging
+      indentation is valuable for lists of
+      all kinds. But it is tricky to get
+      right.
+
+    Next Paragraph.
+    """
+        self.run_test(
+            before_b=before_b,
+            after_b=after_b,
+            before_sel=("1.0", "1.0"),
+            after_sel=("7.0", "7.0"),
+            command_name="reformat-paragraph",
+            directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
     #@+node:ekr.20201130090918.101: *4* remove-blank-lines
     def test_remove_blank_lines(self):
@@ -7004,638 +7657,6 @@ class FileTest(leoTest2.TestUtils):
             before_sel=("3.7", "3.7"),
             after_sel=("3.7", "3.7"),
             command_name="upcase-word",
-        )
-    #@+node:ekr.20201130090918.122: *4* reformat-paragraph list 1 of 5
-    def test_reformat_paragraph_list_1_of_5(self):
-        """Test case for reformat-paragraph list 1 of 5"""
-        before_b = """\
-    This paragraph leads of this test.  It is the "lead"
-    paragraph.
-
-      1. This is item 
-         number 1.  It is the first item in the list.
-
-      2. This is item 
-         number 2.  It is the second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item 
-         number 1.  It is the first item in the list.
-
-      2. This is item 
-         number 2.  It is the second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("4.0", "4.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.123: *4* reformat-paragraph list 2 of 5
-    def test_reformat_paragraph_list_2_of_5(self):
-        """Test case for reformat-paragraph list 2 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item 
-         number 2.  It is the second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item 
-         number 2.  It is the second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("4.0", "4.0"),
-            after_sel=("7.0", "7.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.124: *4* reformat-paragraph list 3 of 5
-    def test_reformat_paragraph_list_3_of_5(self):
-        """Test case for reformat-paragraph list 3 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item 
-         number 2.  It is the second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("7.0", "7.0"),
-            after_sel=("10.0", "10.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.125: *4* reformat-paragraph list 4 of 5
-    def test_reformat_paragraph_list_4_of_5(self):
-        """Test case for reformat-paragraph list 4 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item 
-         number 3.  It is the third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("10.0", "10.0"),
-            after_sel=("13.0", "13.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.126: *4* reformat-paragraph list 5 of 5
-    def test_reformat_paragraph_list_5_of_5(self):
-        """Test case for reformat-paragraph list 5 of 5"""
-        before_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test.  It is the "final"
-    paragraph.
-    """
-        after_b = """\
-    This paragraph leads of this test. It is
-    the "lead" paragraph.
-
-      1. This is item number 1. It is the
-         first item in the list.
-
-      2. This is item number 2. It is the
-         second item in the list.
-
-      3. This is item number 3. It is the
-         third item in the list.
-
-    This paragraph ends the test. It is the
-    "final" paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("13.0", "13.0"),
-            after_sel=("15.1", "15.1"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.127: *4* reformat-paragraph new code 1 of 8
-    def test_reformat_paragraph_new_code_1_of_8(self):
-        """Test case for reformat-paragraph new code 1 of 8"""
-        before_b = """\
-    #@@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        after_b = """\
-    #@@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("2.0", "2.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.128: *4* reformat-paragraph new code 2 of 8
-    def test_reformat_paragraph_new_code_2_of_8(self):
-        """Test case for reformat-paragraph new code 2 of 8"""
-        before_b = """\
-    #@@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        after_b = """\
-    #@@pagewidth 40
-    '''
-    docstring.
-    '''
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.0", "2.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.129: *4* reformat-paragraph new code 3 of 8
-    def test_reformat_paragraph_new_code_3_of_8(self):
-        """Test case for reformat-paragraph new code 3 of 8"""
-        before_b = """\
-    #@@pagewidth 40
-    '''
-    docstring.
-    more docstring.
-    '''
-    """
-        after_b = """\
-    #@@pagewidth 40
-    '''
-    docstring. more docstring.
-    '''
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("3.1", "4.1"),
-            after_sel=("4.0", "4.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.130: *4* reformat-paragraph new code 4 of 8
-    def test_reformat_paragraph_new_code_4_of_8(self):
-        """Test case for reformat-paragraph new code 4 of 8"""
-        before_b = """\
-    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    Line 11.
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      Line 11.
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.131: *4* reformat-paragraph new code 5 of 8
-    def test_reformat_paragraph_new_code_5_of_8(self):
-        """Test case for reformat-paragraph new code 5 of 8"""
-        before_b = """\
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-      Line 22.
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 22.
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "2.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.132: *4* reformat-paragraph new code 6 of 8
-    def test_reformat_paragraph_new_code_6_of_8(self):
-        """Test case for reformat-paragraph new code 6 of 8"""
-        before_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    Line 32.
-
-    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        after_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
-
-    2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("4.0", "4.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.133: *4* reformat-paragraph new code 7 of 8
-    def test_reformat_paragraph_new_code_7_of_8(self):
-        """Test case for reformat-paragraph new code 7 of 8"""
-        before_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
-
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        after_b = """\
-    1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-       Line 32.
-
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.11", "2.11"),
-            after_sel=("3.1", "3.1"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.134: *4* reformat-paragraph new code 8 of 8
-    def test_reformat_paragraph_new_code_8_of_8(self):
-        """Test case for reformat-paragraph new code 8 of 8"""
-        before_b = """\
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        after_b = """\
-    2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-            Line 41.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("3.0", "3.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.135: *4* reformat-paragraph paragraph 1 of 3
-    def test_reformat_paragraph_paragraph_1_of_3(self):
-        """Test case for reformat-paragraph paragraph 1 of 3"""
-        before_b = """\
-    Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("13.0", "13.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.136: *4* reformat-paragraph paragraph 2 of 3
-    def test_reformat_paragraph_paragraph_2_of_3(self):
-        """Test case for reformat-paragraph paragraph 2 of 3"""
-        before_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("13.0", "13.0"),
-            after_sel=("25.0", "25.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.137: *4* reformat-paragraph paragraph 3 of 3
-    def test_reformat_paragraph_paragraph_3_of_3(self):
-        """Test case for reformat-paragraph paragraph 3 of 3"""
-        before_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-    Last paragraph.
-    """
-        after_b = """\
-    Americans live in the most severe
-    weather-prone country on Earth. Each
-    year, Americans cope with an average of
-    10,000 thunderstorms, 2,500 floods,
-    1,000 tornadoes, as well as an average
-    of 6 deadly hurricanes. Potentially
-    deadly weather impacts every American.
-    Communities can now rely on the National
-    Weather Service’s StormReady program to
-    help them guard against the ravages of
-    Mother Nature.
-
-    Some 90% of all presidentially declared
-    disasters are weather related, leading
-    to around 500 deaths per year and nearly
-    $14 billion in damage. StormReady, a
-    program started in 1999 in Tulsa, OK,
-    helps arm America's communities with the
-    communication and safety skills needed
-    to save lives and property– before and
-    during the event. StormReady helps
-    community leaders and emergency managers
-    strengthen local safety programs.
-
-    StormReady communities are better
-    prepared to save lives from the
-    onslaught of severe weather through
-    better planning, education, and
-    awareness. No community is storm proof,
-    but StormReady can help communities save
-    lives. Does StormReady make a
-    difference?
-
-    Last paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("25.10", "25.10"),
-            after_sel=("34.0", "34.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.138: *4* reformat-paragraph simple hanging indent
-    def test_reformat_paragraph_simple_hanging_indent(self):
-        """Test case for reformat-paragraph simple hanging indent"""
-        before_b = """\
-    Honor this line that has a hanging indentation, please.  Hanging
-      indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-    Next paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
-
-    Next paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("7.0", "7.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.139: *4* reformat-paragraph simple hanging indent 2
-    def test_reformat_paragraph_simple_hanging_indent_2(self):
-        """Test case for reformat-paragraph simple hanging indent 2"""
-        before_b = """\
-    Honor this line that has
-      a hanging indentation, please.  Hanging
-        indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-    Next paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
-
-    Next paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.0", "2.0"),
-            after_sel=("7.0", "7.0"),
-            command_name="reformat-paragraph",
-        )
-    #@+node:ekr.20201130090918.140: *4* reformat-paragraph simple hanging indent 3
-    def test_reformat_paragraph_simple_hanging_indent_3(self):
-        """Test case for reformat-paragraph simple hanging indent 3"""
-        before_b = """\
-    Honor this line that 
-      has a hanging indentation, 
-      please.  Hanging
-       indentation is valuable
-        for lists of all kinds.  But 
-        it is tricky to get right.
-
-    Next Paragraph.
-    """
-        after_b = """\
-    Honor this line that has a hanging
-      indentation, please. Hanging
-      indentation is valuable for lists of
-      all kinds. But it is tricky to get
-      right.
-
-    Next Paragraph.
-    """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("1.0", "1.0"),
-            after_sel=("7.0", "7.0"),
-            command_name="reformat-paragraph",
         )
     #@-others
 #@-others

@@ -216,7 +216,7 @@ def get_time():
 #@+node:ekr.20201129132511.1: *3* function: pytest_main
 def pytest_main(path, module):
     """Run selected unit tests with pytest-cov"""
-    g.cls()
+    # g.cls()
     try:
         import pytest
     except Exception:
