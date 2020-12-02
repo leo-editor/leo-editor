@@ -5799,8 +5799,7 @@ class FileTest(leoTest2.TestUtils):
         after_b = """\
     line 1
     line 2
-    line 3
-    """
+    line 3"""
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -5967,8 +5966,7 @@ class FileTest(leoTest2.TestUtils):
         after_b = """\
     line 1
     line 2
-    line 3
-    """
+    line 3"""
         self.run_test(
             before_b=before_b,
             after_b=after_b,
