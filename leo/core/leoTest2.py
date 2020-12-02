@@ -154,8 +154,8 @@ def expected_got(expected, got):
 #@+node:ekr.20201129133502.1: *3* function: get_time
 def get_time():
     return time.process_time()
-#@+node:ekr.20201129132511.1: *3* function: pytest_main
-def pytest_main(path, module):
+#@+node:ekr.20201129132511.1: *3* function: leo_test_main
+def leo_test_main(path, module):
     """Run selected unit tests with pytest-cov"""
     # g.cls()
     try:
@@ -379,5 +379,5 @@ class TestUtils(unittest.TestCase):
     #@-others
 #@-others
 if __name__ == '__main__':
-    pytest_main(__file__, 'leo.core.leoTest2')
+    leo_test_main(__file__, 'leo.core.leoTest2')
 #@-leo
