@@ -145,26 +145,21 @@ def expected_got(expected, got):
 def get_time():
     return time.process_time()
 #@+node:ekr.20201129132511.1: *3* function: leo_test_main
-def leo_test_main(path, module):
+def leo_test_main(path, module, kind='py-cov'):
     """
-    Run selected unit tests with pytest-cov.
+    Run selected unit tests of the given kind.
     
-    The report will go to the path/htmlcov directory.
+    The coverage report will go to the path/htmlcov directory.
     """
     # g.cls()
     try:
         import pytest
     except Exception:
-        print('pytest not found')
-        return
-    path = os.path.abspath(path)
-    # print('path', path, 'module', module)
-    if 0:
-        # Pytest.
+        pytest = None
+   
+    if kind == 'pytest':
         pytest.main(args=sys.argv)
-    elif 0: # unittest
-        unittest.main()
-    else: # Full coverage test.
+    elif kind in ('coverage', 'py-cov'): # Full coverage test.
         pycov_args = sys.argv + [
             '--cov-report=html',
             '--cov-report=term-missing',
@@ -172,6 +167,11 @@ def leo_test_main(path, module):
             path,
         ]
         pytest.main(args=pycov_args)
+    elif kind == 'unittest':
+        unittest.main()
+    else: # Default to unittest.
+        g.trace(f"Unknown 'kind' kwarg: {kind!r}")
+        unittest.main()
 #@+node:ekr.20201202083003.1: ** class ConvertTests
 class ConvertTests:
     """
