@@ -5729,6 +5729,7 @@ class FileTest(leoTest2.TestUtils):
         line b
     last line
     """
+        self.c.editCommands.ccolumn = 4 # Set the comment column
         self.run_test(
             before_b=before_b,
             after_b=after_b,
