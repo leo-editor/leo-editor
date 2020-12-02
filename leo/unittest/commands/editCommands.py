@@ -9,15 +9,10 @@ import leo.core.leoTest2 as leoTest2
 
 class EditCommandsTest(leoTest2.TestUtils):
     """Unit tests for leo/commands/editCommands.py."""
-    
     # For pylint.
-    parent_p = None
-    before_p = None
-    after_p = None
-    tempNode = None
-
+    before_p = after_p = parent_p = tempNode = None
     #@+others
-    #@+node:ekr.20201129161726.5: ** FileTest.run_test (editCommands.py)
+    #@+node:ekr.20201129161726.5: ** EditCommandsTest.run_test
     def run_test(self,
             before_b, after_b,  # before/after body text.
             before_sel, after_sel,  # before and after selection ranges.
@@ -99,7 +94,7 @@ class EditCommandsTest(leoTest2.TestUtils):
                 # u.undo()
                 # ok = compare(self.tempNode, self.before_p, True)
                 # assert ok, f"{command_name}: after undo2"
-    #@+node:ekr.20201201084621.1: ** FileTest.setUp & tearDown
+    #@+node:ekr.20201201084621.1: ** EditCommandsTest.setUp & tearDown
     def setUp(self):
         """Create the nodes in the commander."""
         # Create a new commander for each test.
@@ -120,7 +115,7 @@ class EditCommandsTest(leoTest2.TestUtils):
         
     def tearDown(self):
         self.c = None
-    #@+node:ekr.20201201084702.1: ** FileTest.setUpClass
+    #@+node:ekr.20201201084702.1: ** EditCommandsTest.setUpClass
     @classmethod
     def setUpClass(cls):
         leoTest2.create_app()

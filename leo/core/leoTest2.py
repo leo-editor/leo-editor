@@ -149,7 +149,7 @@ def leo_test_main(path, module):
     """
     Run selected unit tests with pytest-cov.
     
-    The report will go to 
+    The report will go to the path/htmlcov directory.
     """
     # g.cls()
     try:
@@ -158,13 +158,13 @@ def leo_test_main(path, module):
         print('pytest not found')
         return
     path = os.path.abspath(path)
+    # print('path', path, 'module', module)
     if 0:
         # Pytest.
         pytest.main(args=sys.argv)
     elif 0: # unittest
         unittest.main()
     else: # Full coverage test.
-        print('path', path, 'module', module)
         pycov_args = sys.argv + [
             '--cov-report=html',
             '--cov-report=term-missing',
