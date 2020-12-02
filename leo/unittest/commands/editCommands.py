@@ -8,8 +8,8 @@ import leo.core.leoGlobals as g
 import leo.core.leoTest2 as leoTest2
 
 #@+others
-#@+node:ekr.20201129161502.1: ** class EditCommandsFileTest (TestUtils)
-class EditCommandsFileTest(leoTest2.TestUtils):
+#@+node:ekr.20201129161502.1: ** class EditCommandsTest (TestUtils)
+class EditCommandsTest(leoTest2.TestUtils):
     """Unit tests for leo/commands/editCommands.py."""
     
     # For pylint.
