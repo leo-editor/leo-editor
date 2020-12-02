@@ -6430,7 +6430,7 @@ class FileTest(leoTest2.TestUtils):
     aaas...sbbb
     after
     """
-        # A hack, contained in unitTest.leo
+        # A hack. The command tests for g.app.unitTesting.
         g.app.unitTesting = True
         try:
             self.run_test(
@@ -6461,13 +6461,18 @@ class FileTest(leoTest2.TestUtils):
     aaaY4Ybbb
     after
     """
-        self.run_test(
-            before_b=before_b,
-            after_b=after_b,
-            before_sel=("2.3", "5.6"),
-            after_sel=("2.3", "5.6"),
-            command_name="rectangle-yank",
-        )
+        # A hack. The command tests for g.app.unitTesting.
+        g.app.unitTesting = True
+        try:
+            self.run_test(
+                before_b=before_b,
+                after_b=after_b,
+                before_sel=("2.3", "5.6"),
+                after_sel=("2.3", "5.6"),
+                command_name="rectangle-yank",
+            )
+        finally:
+            g.app.unitTesting = False
     #@+node:ekr.20201201201052.1: *4* reformat-paragraph tests
     #@+node:ekr.20201130090918.122: *5* reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
