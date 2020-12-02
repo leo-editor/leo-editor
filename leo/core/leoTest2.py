@@ -163,10 +163,10 @@ def leo_test_main(path, module):
     except Exception:
         print('pytest not found')
         return
-    if 1:
+    if 0:
         # Pytest.
         pytest.main(args=sys.argv)
-    elif 1: # unittest
+    elif 0: # unittest
         unittest.main()
     else: # Full coverage test.
         print('path', path, 'module', module)

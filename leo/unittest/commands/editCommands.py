@@ -7,8 +7,6 @@
 import leo.core.leoGlobals as g
 import leo.core.leoTest2 as leoTest2
 
-#@+others
-#@+node:ekr.20201129161502.1: ** class EditCommandsTest (TestUtils)
 class EditCommandsTest(leoTest2.TestUtils):
     """Unit tests for leo/commands/editCommands.py."""
     
@@ -19,7 +17,7 @@ class EditCommandsTest(leoTest2.TestUtils):
     tempNode = None
 
     #@+others
-    #@+node:ekr.20201129161726.5: *3* FileTest.run_test (editCommands.py)
+    #@+node:ekr.20201129161726.5: ** FileTest.run_test (editCommands.py)
     def run_test(self,
             before_b, after_b,  # before/after body text.
             before_sel, after_sel,  # before and after selection ranges.
@@ -101,7 +99,7 @@ class EditCommandsTest(leoTest2.TestUtils):
                 # u.undo()
                 # ok = compare(self.tempNode, self.before_p, True)
                 # assert ok, f"{command_name}: after undo2"
-    #@+node:ekr.20201201084621.1: *3* FileTest.setUp & tearDown
+    #@+node:ekr.20201201084621.1: ** FileTest.setUp & tearDown
     def setUp(self):
         """Create the nodes in the commander."""
         # Create a new commander for each test.
@@ -122,12 +120,12 @@ class EditCommandsTest(leoTest2.TestUtils):
         
     def tearDown(self):
         self.c = None
-    #@+node:ekr.20201201084702.1: *3* FileTest.setUpClass
+    #@+node:ekr.20201201084702.1: ** FileTest.setUpClass
     @classmethod
     def setUpClass(cls):
         leoTest2.create_app()
-    #@+node:ekr.20201130091020.1: *3* EditCommandTest: test cases...
-    #@+node:ekr.20201130090918.1: *4* add-space-to-lines
+    #@+node:ekr.20201130091020.1: ** EditCommandTest: test cases...
+    #@+node:ekr.20201130090918.1: *3* add-space-to-lines
     def test_add_space_to_lines(self):
         """Test case for add-space-to-lines"""
         before_b = """\
@@ -151,7 +149,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "4.7"),
             command_name="add-space-to-lines",
         )
-    #@+node:ekr.20201130090918.2: *4* add-tab-to-lines
+    #@+node:ekr.20201130090918.2: *3* add-tab-to-lines
     def test_add_tab_to_lines(self):
         """Test case for add-tab-to-lines"""
         before_b = """\
@@ -177,7 +175,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "5.10"),
             command_name="add-tab-to-lines",
         )
-    #@+node:ekr.20201130090918.3: *4* back-char
+    #@+node:ekr.20201130090918.3: *3* back-char
     def test_back_char(self):
         """Test case for back-char"""
         before_b = """\
@@ -203,7 +201,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.7", "3.7"),
             command_name="back-char",
         )
-    #@+node:ekr.20201130090918.4: *4* back-char-extend-selection
+    #@+node:ekr.20201130090918.4: *3* back-char-extend-selection
     def test_back_char_extend_selection(self):
         """Test case for back-char-extend-selection"""
         before_b = """\
@@ -229,7 +227,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("4.11", "4.12"),
             command_name="back-char-extend-selection",
         )
-    #@+node:ekr.20201130090918.5: *4* back-paragraph
+    #@+node:ekr.20201130090918.5: *3* back-paragraph
     def test_back_paragraph(self):
         """Test case for back-paragraph"""
         before_b = """\
@@ -279,7 +277,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("6.7", "6.7"),
             command_name="back-paragraph",
         )
-    #@+node:ekr.20201130090918.6: *4* back-paragraph-extend-selection
+    #@+node:ekr.20201130090918.6: *3* back-paragraph-extend-selection
     def test_back_paragraph_extend_selection(self):
         """Test case for back-paragraph-extend-selection"""
         before_b = """\
@@ -329,7 +327,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("6.7", "9.5"),
             command_name="back-paragraph-extend-selection",
         )
-    #@+node:ekr.20201130090918.7: *4* back-sentence
+    #@+node:ekr.20201130090918.7: *3* back-sentence
     def test_back_sentence(self):
         """Test case for back-sentence"""
         before_b = """\
@@ -353,7 +351,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.143", "3.143"),
             command_name="back-sentence",
         )
-    #@+node:ekr.20201130090918.8: *4* back-sentence-extend-selection
+    #@+node:ekr.20201130090918.8: *3* back-sentence-extend-selection
     def test_back_sentence_extend_selection(self):
         """Test case for back-sentence-extend-selection"""
         before_b = """\
@@ -377,7 +375,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.143", "3.208"),
             command_name="back-sentence-extend-selection",
         )
-    #@+node:ekr.20201130090918.12: *4* back-to-home (at end of line)
+    #@+node:ekr.20201130090918.12: *3* back-to-home (at end of line)
     def test_back_to_home_at_end_of_line(self):
         """Test case for back-to-home (at end of line)"""
         before_b = """\
@@ -395,7 +393,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "2.4"),
             command_name="back-to-home",
         )
-    #@+node:ekr.20201130090918.11: *4* back-to-home (at indentation
+    #@+node:ekr.20201130090918.11: *3* back-to-home (at indentation
     def test_back_to_home_at_indentation(self):
         """Test case for back-to-home (at indentation"""
         before_b = """\
@@ -413,7 +411,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="back-to-home",
         )
-    #@+node:ekr.20201130090918.10: *4* back-to-home (at start of line)
+    #@+node:ekr.20201130090918.10: *3* back-to-home (at start of line)
     def test_back_to_home_at_start_of_line(self):
         """Test case for back-to-home (at start of line)"""
         before_b = """\
@@ -431,7 +429,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "2.4"),
             command_name="back-to-home",
         )
-    #@+node:ekr.20201130090918.9: *4* back-to-indentation
+    #@+node:ekr.20201130090918.9: *3* back-to-indentation
     def test_back_to_indentation(self):
         """Test case for back-to-indentation"""
         before_b = """\
@@ -457,7 +455,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("4.8", "4.8"),
             command_name="back-to-indentation",
         )
-    #@+node:ekr.20201130090918.13: *4* back-word
+    #@+node:ekr.20201130090918.13: *3* back-word
     def test_back_word(self):
         """Test case for back-word"""
         before_b = """\
@@ -481,7 +479,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.178", "1.178"),
             command_name="back-word",
         )
-    #@+node:ekr.20201130090918.14: *4* back-word-extend-selection
+    #@+node:ekr.20201130090918.14: *3* back-word-extend-selection
     def test_back_word_extend_selection(self):
         """Test case for back-word-extend-selection"""
         before_b = """\
@@ -505,7 +503,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.332", "3.342"),
             command_name="back-word-extend-selection",
         )
-    #@+node:ekr.20201130090918.15: *4* backward-delete-char
+    #@+node:ekr.20201130090918.15: *3* backward-delete-char
     def test_backward_delete_char(self):
         """Test case for backward-delete-char"""
         before_b = """\
@@ -531,7 +529,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.8", "1.8"),
             command_name="backward-delete-char",
         )
-    #@+node:ekr.20201130090918.16: *4* backward-delete-char  (middle of line)
+    #@+node:ekr.20201130090918.16: *3* backward-delete-char  (middle of line)
     def test_backward_delete_char__middle_of_line(self):
         """Test case for backward-delete-char  (middle of line)"""
         before_b = """\
@@ -549,7 +547,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.5", "1.5"),
             command_name="backward-delete-char",
         )
-    #@+node:ekr.20201130090918.17: *4* backward-delete-char (last char)
+    #@+node:ekr.20201130090918.17: *3* backward-delete-char (last char)
     def test_backward_delete_char_last_char(self):
         """Test case for backward-delete-char (last char)"""
         before_b = """\
@@ -567,7 +565,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.8", "2.8"),
             command_name="backward-delete-char",
         )
-    #@+node:ekr.20201130090918.18: *4* backward-delete-word (no selection)
+    #@+node:ekr.20201130090918.18: *3* backward-delete-word (no selection)
     def test_backward_delete_word_no_selection(self):
         """Test case for backward-delete-word (no selection)"""
         before_b = """\
@@ -583,7 +581,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.5", "1.5"),
             command_name="backward-delete-word",
         )
-    #@+node:ekr.20201130090918.19: *4* backward-delete-word (selection)
+    #@+node:ekr.20201130090918.19: *3* backward-delete-word (selection)
     def test_backward_delete_word_selection(self):
         """Test case for backward-delete-word (selection)"""
         before_b = """\
@@ -599,7 +597,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.7", "1.7"),
             command_name="backward-delete-word",
         )
-    #@+node:ekr.20201130090918.20: *4* backward-kill-paragraph
+    #@+node:ekr.20201130090918.20: *3* backward-kill-paragraph
     def test_backward_kill_paragraph(self):
         """Test case for backward-kill-paragraph"""
         before_b = """\
@@ -647,7 +645,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="backward-kill-paragraph",
         )
-    #@+node:ekr.20201130090918.21: *4* backward-kill-sentence
+    #@+node:ekr.20201130090918.21: *3* backward-kill-sentence
     def test_backward_kill_sentence(self):
         """Test case for backward-kill-sentence"""
         before_b = """\
@@ -666,7 +664,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.23", "2.23"),
             command_name="backward-kill-sentence",
         )
-    #@+node:ekr.20201130090918.22: *4* backward-kill-word
+    #@+node:ekr.20201130090918.22: *3* backward-kill-word
     def test_backward_kill_word(self):
         """Test case for backward-kill-word"""
         before_b = """\
@@ -686,7 +684,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.5", "3.5"),
             command_name="backward-kill-word",
         )
-    #@+node:ekr.20201130090918.23: *4* beginning-of-buffer
+    #@+node:ekr.20201130090918.23: *3* beginning-of-buffer
     def test_beginning_of_buffer(self):
         """Test case for beginning-of-buffer"""
         before_b = """\
@@ -710,7 +708,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "1.0"),
             command_name="beginning-of-buffer",
         )
-    #@+node:ekr.20201130090918.24: *4* beginning-of-buffer-extend-selection
+    #@+node:ekr.20201130090918.24: *3* beginning-of-buffer-extend-selection
     def test_beginning_of_buffer_extend_selection(self):
         """Test case for beginning-of-buffer-extend-selection"""
         before_b = """\
@@ -734,7 +732,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "3.423"),
             command_name="beginning-of-buffer-extend-selection",
         )
-    #@+node:ekr.20201130090918.25: *4* beginning-of-line
+    #@+node:ekr.20201130090918.25: *3* beginning-of-line
     def test_beginning_of_line(self):
         """Test case for beginning-of-line"""
         before_b = """\
@@ -760,7 +758,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="beginning-of-line",
         )
-    #@+node:ekr.20201130090918.26: *4* beginning-of-line-extend-selection
+    #@+node:ekr.20201130090918.26: *3* beginning-of-line-extend-selection
     def test_beginning_of_line_extend_selection(self):
         """Test case for beginning-of-line-extend-selection"""
         before_b = """\
@@ -786,7 +784,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("4.0", "4.10"),
             command_name="beginning-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.27: *4* capitalize-word
+    #@+node:ekr.20201130090918.27: *3* capitalize-word
     def test_capitalize_word(self):
         """Test case for capitalize-word"""
         before_b = """\
@@ -812,7 +810,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.6", "3.6"),
             command_name="capitalize-word",
         )
-    #@+node:ekr.20201130090918.28: *4* center-line
+    #@+node:ekr.20201130090918.28: *3* center-line
     def test_center_line(self):
         """Test case for center-line"""
         before_b = """\
@@ -846,7 +844,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "9.0"),
             command_name="center-line",
         )
-    #@+node:ekr.20201130090918.29: *4* center-region
+    #@+node:ekr.20201130090918.29: *3* center-region
     def test_center_region(self):
         """Test case for center-region"""
         before_b = """\
@@ -873,7 +871,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="center-region",
             directives = "@pagewidth 70",
         )
-    #@+node:ekr.20201130090918.30: *4* clean-lines
+    #@+node:ekr.20201130090918.30: *3* clean-lines
     def test_clean_lines(self):
         """Test case for clean-lines"""
         before_b = """\
@@ -905,7 +903,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "1.0"),
             command_name="clean-lines",
         )
-    #@+node:ekr.20201130090918.31: *4* clear-selected-text
+    #@+node:ekr.20201130090918.31: *3* clear-selected-text
     def test_clear_selected_text(self):
         """Test case for clear-selected-text"""
         before_b = """\
@@ -929,7 +927,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "2.4"),
             command_name="clear-selected-text",
         )
-    #@+node:ekr.20201130090918.32: *4* count-region
+    #@+node:ekr.20201130090918.32: *3* count-region
     def test_count_region(self):
         """Test case for count-region"""
         before_b = """\
@@ -955,7 +953,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "4.8"),
             command_name="count-region",
         )
-    #@+node:ekr.20201130090918.33: *4* delete-char
+    #@+node:ekr.20201130090918.33: *3* delete-char
     def test_delete_char(self):
         """Test case for delete-char"""
         before_b = """\
@@ -981,7 +979,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.5", "1.5"),
             command_name="delete-char",
         )
-    #@+node:ekr.20201130090918.34: *4* delete-indentation
+    #@+node:ekr.20201130090918.34: *3* delete-indentation
     def test_delete_indentation(self):
         """Test case for delete-indentation"""
         before_b = """\
@@ -1001,7 +999,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "2.4"),
             command_name="delete-indentation",
         )
-    #@+node:ekr.20201130090918.35: *4* delete-spaces
+    #@+node:ekr.20201130090918.35: *3* delete-spaces
     def test_delete_spaces(self):
         """Test case for delete-spaces"""
         before_b = """\
@@ -1027,7 +1025,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="delete-spaces",
         )
-    #@+node:ekr.20201130090918.36: *4* do-nothing
+    #@+node:ekr.20201130090918.36: *3* do-nothing
     def test_do_nothing(self):
         """Test case for do-nothing"""
         before_b = """\
@@ -1053,7 +1051,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "1.0"),
             command_name="do-nothing",
         )
-    #@+node:ekr.20201130090918.37: *4* downcase-region
+    #@+node:ekr.20201130090918.37: *3* downcase-region
     def test_downcase_region(self):
         """Test case for downcase-region"""
         before_b = """\
@@ -1077,7 +1075,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "4.0"),
             command_name="downcase-region",
         )
-    #@+node:ekr.20201130090918.38: *4* downcase-word
+    #@+node:ekr.20201130090918.38: *3* downcase-word
     def test_downcase_word(self):
         """Test case for downcase-word"""
         before_b = """\
@@ -1103,7 +1101,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.4", "1.4"),
             command_name="downcase-word",
         )
-    #@+node:ekr.20201130090918.39: *4* end-of-buffer
+    #@+node:ekr.20201130090918.39: *3* end-of-buffer
     def test_end_of_buffer(self):
         """Test case for end-of-buffer"""
         before_b = """\
@@ -1129,7 +1127,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="end-of-buffer",
         )
-    #@+node:ekr.20201130090918.40: *4* end-of-buffer-extend-selection
+    #@+node:ekr.20201130090918.40: *3* end-of-buffer-extend-selection
     def test_end_of_buffer_extend_selection(self):
         """Test case for end-of-buffer-extend-selection"""
         before_b = """\
@@ -1155,7 +1153,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "7.0"),
             command_name="end-of-buffer-extend-selection",
         )
-    #@+node:ekr.20201130090918.41: *4* end-of-line
+    #@+node:ekr.20201130090918.41: *3* end-of-line
     def test_end_of_line(self):
         """Test case for end-of-line"""
         before_b = """\
@@ -1181,7 +1179,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.10", "1.10"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.44: *4* end-of-line (blank last line)
+    #@+node:ekr.20201130090918.44: *3* end-of-line (blank last line)
     def test_end_of_line_blank_last_line(self):
         """Test case for end-of-line (blank last line)"""
         before_b = """\
@@ -1207,7 +1205,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.43: *4* end-of-line (internal blank line)
+    #@+node:ekr.20201130090918.43: *3* end-of-line (internal blank line)
     def test_end_of_line_internal_blank_line(self):
         """Test case for end-of-line (internal blank line)"""
         before_b = """\
@@ -1235,7 +1233,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.45: *4* end-of-line (single char last line)
+    #@+node:ekr.20201130090918.45: *3* end-of-line (single char last line)
     def test_end_of_line_single_char_last_line(self):
         """Test case for end-of-line (single char last line)"""
         before_b = """\
@@ -1263,7 +1261,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.1", "7.1"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.42: *4* end-of-line 2
+    #@+node:ekr.20201130090918.42: *3* end-of-line 2
     def test_end_of_line_2(self):
         """Test case for end-of-line 2"""
         before_b = """\
@@ -1289,7 +1287,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("6.9", "6.9"),
             command_name="end-of-line",
         )
-    #@+node:ekr.20201130090918.46: *4* end-of-line-extend-selection
+    #@+node:ekr.20201130090918.46: *3* end-of-line-extend-selection
     def test_end_of_line_extend_selection(self):
         """Test case for end-of-line-extend-selection"""
         before_b = """\
@@ -1315,7 +1313,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.10"),
             command_name="end-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.47: *4* end-of-line-extend-selection (blank last line)
+    #@+node:ekr.20201130090918.47: *3* end-of-line-extend-selection (blank last line)
     def test_end_of_line_extend_selection_blank_last_line(self):
         """Test case for end-of-line-extend-selection (blank last line)"""
         before_b = """\
@@ -1341,7 +1339,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="end-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.48: *4* exchange-point-mark
+    #@+node:ekr.20201130090918.48: *3* exchange-point-mark
     def test_exchange_point_mark(self):
         """Test case for exchange-point-mark"""
         before_b = """\
@@ -1367,7 +1365,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "1.10"),
             command_name="exchange-point-mark",
         )
-    #@+node:ekr.20201130090918.49: *4* extend-to-line
+    #@+node:ekr.20201130090918.49: *3* extend-to-line
     def test_extend_to_line(self):
         """Test case for extend-to-line"""
         before_b = """\
@@ -1393,7 +1391,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.10"),
             command_name="extend-to-line",
         )
-    #@+node:ekr.20201130090918.50: *4* extend-to-paragraph
+    #@+node:ekr.20201130090918.50: *3* extend-to-paragraph
     def test_extend_to_paragraph(self):
         """Test case for extend-to-paragraph"""
         before_b = """\
@@ -1443,7 +1441,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("8.0", "13.33"),
             command_name="extend-to-paragraph",
         )
-    #@+node:ekr.20201130090918.51: *4* extend-to-sentence
+    #@+node:ekr.20201130090918.51: *3* extend-to-sentence
     def test_extend_to_sentence(self):
         """Test case for extend-to-sentence"""
         before_b = """\
@@ -1467,7 +1465,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.395", "3.142"),
             command_name="extend-to-sentence",
         )
-    #@+node:ekr.20201130090918.52: *4* extend-to-word
+    #@+node:ekr.20201130090918.52: *3* extend-to-word
     def test_extend_to_word(self):
         """Test case for extend-to-word"""
         before_b = """\
@@ -1493,7 +1491,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.12"),
             command_name="extend-to-word",
         )
-    #@+node:ekr.20201130090918.56: *4* fill-paragraph
+    #@+node:ekr.20201130090918.56: *3* fill-paragraph
     def test_fill_paragraph(self):
         """Test case for fill-paragraph"""
         before_b = """\
@@ -1534,7 +1532,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="fill-paragraph",
             directives="@pagewidth 80",
         )
-    #@+node:ekr.20201130090918.53: *4* finish-of-line
+    #@+node:ekr.20201130090918.53: *3* finish-of-line
     def test_finish_of_line(self):
         """Test case for finish-of-line"""
         before_b = """\
@@ -1560,7 +1558,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.9", "3.9"),
             command_name="finish-of-line",
         )
-    #@+node:ekr.20201130090918.54: *4* finish-of-line (2)
+    #@+node:ekr.20201130090918.54: *3* finish-of-line (2)
     def test_finish_of_line_2(self):
         """Test case for finish-of-line (2)"""
         before_b = """\
@@ -1586,7 +1584,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.9", "3.9"),
             command_name="finish-of-line",
         )
-    #@+node:ekr.20201130090918.55: *4* finish-of-line-extend-selection
+    #@+node:ekr.20201130090918.55: *3* finish-of-line-extend-selection
     def test_finish_of_line_extend_selection(self):
         """Test case for finish-of-line-extend-selection"""
         before_b = """\
@@ -1612,7 +1610,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.1", "3.9"),
             command_name="finish-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.57: *4* forward-char
+    #@+node:ekr.20201130090918.57: *3* forward-char
     def test_forward_char(self):
         """Test case for forward-char"""
         before_b = """\
@@ -1638,7 +1636,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.3", "1.3"),
             command_name="forward-char",
         )
-    #@+node:ekr.20201130090918.58: *4* forward-char-extend-selection
+    #@+node:ekr.20201130090918.58: *3* forward-char-extend-selection
     def test_forward_char_extend_selection(self):
         """Test case for forward-char-extend-selection"""
         before_b = """\
@@ -1664,7 +1662,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.1", "1.2"),
             command_name="forward-char-extend-selection",
         )
-    #@+node:ekr.20201130090918.59: *4* forward-end-word (end of line)
+    #@+node:ekr.20201130090918.59: *3* forward-end-word (end of line)
     def test_forward_end_word_end_of_line(self):
         """Test case for forward-end-word (end of line)"""
         before_b = """\
@@ -1688,7 +1686,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.4"),
             command_name="forward-end-word",
         )
-    #@+node:ekr.20201130090918.60: *4* forward-end-word (start of word)
+    #@+node:ekr.20201130090918.60: *3* forward-end-word (start of word)
     def test_forward_end_word_start_of_word(self):
         """Test case for forward-end-word (start of word)"""
         before_b = """\
@@ -1712,7 +1710,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.317", "1.317"),
             command_name="forward-end-word",
         )
-    #@+node:ekr.20201130090918.61: *4* forward-end-word-extend-selection
+    #@+node:ekr.20201130090918.61: *3* forward-end-word-extend-selection
     def test_forward_end_word_extend_selection(self):
         """Test case for forward-end-word-extend-selection"""
         before_b = """\
@@ -1736,7 +1734,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.20", "3.30"),
             command_name="forward-end-word-extend-selection",
         )
-    #@+node:ekr.20201130090918.62: *4* forward-paragraph
+    #@+node:ekr.20201130090918.62: *3* forward-paragraph
     def test_forward_paragraph(self):
         """Test case for forward-paragraph"""
         before_b = """\
@@ -1786,7 +1784,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("15.0", "15.0"),
             command_name="forward-paragraph",
         )
-    #@+node:ekr.20201130090918.63: *4* forward-paragraph-extend-selection
+    #@+node:ekr.20201130090918.63: *3* forward-paragraph-extend-selection
     def test_forward_paragraph_extend_selection(self):
         """Test case for forward-paragraph-extend-selection"""
         before_b = """\
@@ -1836,7 +1834,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("10.0", "15.0"),
             command_name="forward-paragraph-extend-selection",
         )
-    #@+node:ekr.20201130090918.64: *4* forward-sentence
+    #@+node:ekr.20201130090918.64: *3* forward-sentence
     def test_forward_sentence(self):
         """Test case for forward-sentence"""
         before_b = """\
@@ -1860,7 +1858,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.142", "3.142"),
             command_name="forward-sentence",
         )
-    #@+node:ekr.20201130090918.65: *4* forward-sentence-extend-selection
+    #@+node:ekr.20201130090918.65: *3* forward-sentence-extend-selection
     def test_forward_sentence_extend_selection(self):
         """Test case for forward-sentence-extend-selection"""
         before_b = """\
@@ -1884,7 +1882,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.264", "1.395"),
             command_name="forward-sentence-extend-selection",
         )
-    #@+node:ekr.20201130090918.66: *4* forward-word
+    #@+node:ekr.20201130090918.66: *3* forward-word
     def test_forward_word(self):
         """Test case for forward-word"""
         before_b = """\
@@ -1908,7 +1906,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.272", "1.272"),
             command_name="forward-word",
         )
-    #@+node:ekr.20201130090918.67: *4* forward-word-extend-selection
+    #@+node:ekr.20201130090918.67: *3* forward-word-extend-selection
     def test_forward_word_extend_selection(self):
         """Test case for forward-word-extend-selection"""
         before_b = """\
@@ -1932,7 +1930,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.395", "3.4"),
             command_name="forward-word-extend-selection",
         )
-    #@+node:ekr.20201130090918.68: *4* indent-relative
+    #@+node:ekr.20201130090918.68: *3* indent-relative
     def test_indent_relative(self):
         """Test case for indent-relative"""
         before_b = """\
@@ -1958,7 +1956,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("5.8", "5.8"),
             command_name="indent-relative",
         )
-    #@+node:ekr.20201130090918.69: *4* indent-rigidly
+    #@+node:ekr.20201130090918.69: *3* indent-rigidly
     def test_indent_rigidly(self):
         """Test case for indent-rigidly"""
         before_b = """\
@@ -1984,7 +1982,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "5.1"),
             command_name="indent-rigidly",
         )
-    #@+node:ekr.20201130090918.70: *4* indent-to-comment-column
+    #@+node:ekr.20201130090918.70: *3* indent-to-comment-column
     def test_indent_to_comment_column(self):
         """Test case for indent-to-comment-column"""
         before_b = """\
@@ -2005,7 +2003,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.4", "2.4"),
             command_name="indent-to-comment-column",
         )
-    #@+node:ekr.20201130090918.71: *4* insert-newline
+    #@+node:ekr.20201130090918.71: *3* insert-newline
     def test_insert_newline(self):
         """Test case for insert-newline"""
         before_b = """\
@@ -2032,7 +2030,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="insert-newline",
         )
-    #@+node:ekr.20201130090918.72: *4* insert-parentheses
+    #@+node:ekr.20201130090918.72: *3* insert-parentheses
     def test_insert_parentheses(self):
         """Test case for insert-parentheses"""
         before_b = """\
@@ -2058,7 +2056,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.6", "1.6"),
             command_name="insert-parentheses",
         )
-    #@+node:ekr.20201130090918.76: *4* kill-line end-body-text
+    #@+node:ekr.20201130090918.76: *3* kill-line end-body-text
     def test_kill_line_end_body_text(self):
         """Test case for kill-line end-body-text"""
         before_b = """\
@@ -2077,7 +2075,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.6", "3.6"),
             command_name="kill-line",
         )
-    #@+node:ekr.20201130090918.77: *4* kill-line end-line-text
+    #@+node:ekr.20201130090918.77: *3* kill-line end-line-text
     def test_kill_line_end_line_text(self):
         """Test case for kill-line end-line-text"""
         before_b = """\
@@ -2097,7 +2095,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-line",
         )
-    #@+node:ekr.20201130090918.79: *4* kill-line start-blank-line
+    #@+node:ekr.20201130090918.79: *3* kill-line start-blank-line
     def test_kill_line_start_blank_line(self):
         """Test case for kill-line start-blank-line"""
         before_b = """\
@@ -2118,7 +2116,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-line",
         )
-    #@+node:ekr.20201130090918.78: *4* kill-line start-line
+    #@+node:ekr.20201130090918.78: *3* kill-line start-line
     def test_kill_line_start_line(self):
         """Test case for kill-line start-line"""
         before_b = """\
@@ -2140,7 +2138,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-line",
         )
-    #@+node:ekr.20201130090918.73: *4* kill-paragraph
+    #@+node:ekr.20201130090918.73: *3* kill-paragraph
     def test_kill_paragraph(self):
         """Test case for kill-paragraph"""
         before_b = """\
@@ -2185,7 +2183,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("8.0", "8.0"),
             command_name="kill-paragraph",
         )
-    #@+node:ekr.20201130090918.74: *4* kill-sentence
+    #@+node:ekr.20201130090918.74: *3* kill-sentence
     def test_kill_sentence(self):
         """Test case for kill-sentence"""
         before_b = """\
@@ -2204,7 +2202,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.27", "1.27"),
             command_name="kill-sentence",
         )
-    #@+node:ekr.20201130090918.82: *4* kill-to-end-of-line after last visible char
+    #@+node:ekr.20201130090918.82: *3* kill-to-end-of-line after last visible char
     def test_kill_to_end_of_line_after_last_visible_char(self):
         """Test case for kill-to-end-of-line after last visible char"""
         before_b = """\
@@ -2225,7 +2223,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.6", "3.6"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.80: *4* kill-to-end-of-line end-body-text
+    #@+node:ekr.20201130090918.80: *3* kill-to-end-of-line end-body-text
     def test_kill_to_end_of_line_end_body_text(self):
         """Test case for kill-to-end-of-line end-body-text"""
         before_b = """\
@@ -2244,7 +2242,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.6", "3.6"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.81: *4* kill-to-end-of-line end-line
+    #@+node:ekr.20201130090918.81: *3* kill-to-end-of-line end-line
     def test_kill_to_end_of_line_end_line(self):
         """Test case for kill-to-end-of-line end-line"""
         before_b = """\
@@ -2263,7 +2261,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.6", "2.6"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.85: *4* kill-to-end-of-line middle-line
+    #@+node:ekr.20201130090918.85: *3* kill-to-end-of-line middle-line
     def test_kill_to_end_of_line_middle_line(self):
         """Test case for kill-to-end-of-line middle-line"""
         before_b = """\
@@ -2283,7 +2281,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.2", "2.2"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.84: *4* kill-to-end-of-line start-blank-line
+    #@+node:ekr.20201130090918.84: *3* kill-to-end-of-line start-blank-line
     def test_kill_to_end_of_line_start_blank_line(self):
         """Test case for kill-to-end-of-line start-blank-line"""
         before_b = """\
@@ -2304,7 +2302,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.83: *4* kill-to-end-of-line start-line
+    #@+node:ekr.20201130090918.83: *3* kill-to-end-of-line start-line
     def test_kill_to_end_of_line_start_line(self):
         """Test case for kill-to-end-of-line start-line"""
         before_b = """\
@@ -2326,7 +2324,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "3.0"),
             command_name="kill-to-end-of-line",
         )
-    #@+node:ekr.20201130090918.75: *4* kill-word
+    #@+node:ekr.20201130090918.75: *3* kill-word
     def test_kill_word(self):
         """Test case for kill-word"""
         before_b = """\
@@ -2346,7 +2344,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.7", "2.7"),
             command_name="kill-word",
         )
-    #@+node:ekr.20201130090918.86: *4* move-lines-down
+    #@+node:ekr.20201130090918.86: *3* move-lines-down
     def test_move_lines_down(self):
         """Test case for move-lines-down"""
         before_b = """\
@@ -2372,7 +2370,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("4.3", "5.3"),
             command_name="move-lines-down",
         )
-    #@+node:ekr.20201130090918.87: *4* move-lines-up
+    #@+node:ekr.20201130090918.87: *3* move-lines-up
     def test_move_lines_up(self):
         """Test case for move-lines-up"""
         before_b = """\
@@ -2398,7 +2396,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.2", "1.2"),
             command_name="move-lines-up",
         )
-    #@+node:ekr.20201130090918.88: *4* move-lines-up (into docstring)
+    #@+node:ekr.20201130090918.88: *3* move-lines-up (into docstring)
     def test_move_lines_up_into_docstring(self):
         """Test case for move-lines-up (into docstring)"""
         before_b = '''\
@@ -2430,7 +2428,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("6.1", "6.1"),
             command_name="move-lines-up",
         )
-    #@+node:ekr.20201130090918.89: *4* move-past-close
+    #@+node:ekr.20201130090918.89: *3* move-past-close
     def test_move_past_close(self):
         """Test case for move-past-close"""
         before_b = """\
@@ -2456,7 +2454,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.12", "1.12"),
             command_name="move-past-close",
         )
-    #@+node:ekr.20201130090918.90: *4* move-past-close-extend-selection
+    #@+node:ekr.20201130090918.90: *3* move-past-close-extend-selection
     def test_move_past_close_extend_selection(self):
         """Test case for move-past-close-extend-selection"""
         before_b = """\
@@ -2482,7 +2480,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.7", "3.11"),
             command_name="move-past-close-extend-selection",
         )
-    #@+node:ekr.20201130090918.91: *4* newline-and-indent
+    #@+node:ekr.20201130090918.91: *3* newline-and-indent
     def test_newline_and_indent(self):
         """Test case for newline-and-indent"""
         before_b = """\
@@ -2509,7 +2507,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.4"),
             command_name="newline-and-indent",
         )
-    #@+node:ekr.20201130090918.92: *4* next-line
+    #@+node:ekr.20201130090918.92: *3* next-line
     def test_next_line(self):
         """Test case for next-line"""
         before_b = """\
@@ -2529,7 +2527,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="next-line",
         )
-    #@+node:ekr.20201130090918.93: *4* previous-line
+    #@+node:ekr.20201130090918.93: *3* previous-line
     def test_previous_line(self):
         """Test case for previous-line"""
         before_b = """\
@@ -2549,7 +2547,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="previous-line",
         )
-    #@+node:ekr.20201130090918.94: *4* rectangle-clear
+    #@+node:ekr.20201130090918.94: *3* rectangle-clear
     def test_rectangle_clear(self):
         """Test case for rectangle-clear"""
         before_b = """\
@@ -2575,7 +2573,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.3", "5.6"),
             command_name="rectangle-clear",
         )
-    #@+node:ekr.20201130090918.95: *4* rectangle-close
+    #@+node:ekr.20201130090918.95: *3* rectangle-close
     def test_rectangle_close(self):
         """Test case for rectangle-close"""
         before_b = """\
@@ -2601,7 +2599,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.3", "5.3"),
             command_name="rectangle-close",
         )
-    #@+node:ekr.20201130090918.96: *4* rectangle-delete
+    #@+node:ekr.20201130090918.96: *3* rectangle-delete
     def test_rectangle_delete(self):
         """Test case for rectangle-delete"""
         before_b = """\
@@ -2627,7 +2625,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.3", "5.3"),
             command_name="rectangle-delete",
         )
-    #@+node:ekr.20201130090918.97: *4* rectangle-kill
+    #@+node:ekr.20201130090918.97: *3* rectangle-kill
     def test_rectangle_kill(self):
         """Test case for rectangle-kill"""
         before_b = """\
@@ -2653,7 +2651,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("5.3", "5.3"),
             command_name="rectangle-kill",
         )
-    #@+node:ekr.20201130090918.98: *4* rectangle-open
+    #@+node:ekr.20201130090918.98: *3* rectangle-open
     def test_rectangle_open(self):
         """Test case for rectangle-open"""
         before_b = """\
@@ -2679,7 +2677,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.3", "5.6"),
             command_name="rectangle-open",
         )
-    #@+node:ekr.20201130090918.99: *4* rectangle-string
+    #@+node:ekr.20201130090918.99: *3* rectangle-string
     def test_rectangle_string(self):
         """Test case for rectangle-string"""
         before_b = """\
@@ -2710,7 +2708,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             )
         finally:
             g.app.unitTesting = False
-    #@+node:ekr.20201130090918.100: *4* rectangle-yank
+    #@+node:ekr.20201130090918.100: *3* rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
         before_b = """\
@@ -2741,8 +2739,8 @@ class EditCommandsTest(leoTest2.TestUtils):
             )
         finally:
             g.app.unitTesting = False
-    #@+node:ekr.20201201201052.1: *4* reformat-paragraph tests
-    #@+node:ekr.20201130090918.122: *5* reformat-paragraph list 1 of 5
+    #@+node:ekr.20201201201052.1: *3* reformat-paragraph tests
+    #@+node:ekr.20201130090918.122: *4* reformat-paragraph list 1 of 5
     def test_reformat_paragraph_list_1_of_5(self):
         """Test case for reformat-paragraph list 1 of 5"""
         before_b = """\
@@ -2785,7 +2783,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.123: *5* reformat-paragraph list 2 of 5
+    #@+node:ekr.20201130090918.123: *4* reformat-paragraph list 2 of 5
     def test_reformat_paragraph_list_2_of_5(self):
         """Test case for reformat-paragraph list 2 of 5"""
         before_b = """\
@@ -2828,7 +2826,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.124: *5* reformat-paragraph list 3 of 5
+    #@+node:ekr.20201130090918.124: *4* reformat-paragraph list 3 of 5
     def test_reformat_paragraph_list_3_of_5(self):
         """Test case for reformat-paragraph list 3 of 5"""
         before_b = """\
@@ -2871,7 +2869,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.125: *5* reformat-paragraph list 4 of 5
+    #@+node:ekr.20201130090918.125: *4* reformat-paragraph list 4 of 5
     def test_reformat_paragraph_list_4_of_5(self):
         """Test case for reformat-paragraph list 4 of 5"""
         before_b = """\
@@ -2914,7 +2912,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.126: *5* reformat-paragraph list 5 of 5
+    #@+node:ekr.20201130090918.126: *4* reformat-paragraph list 5 of 5
     def test_reformat_paragraph_list_5_of_5(self):
         """Test case for reformat-paragraph list 5 of 5"""
         before_b = """\
@@ -2957,7 +2955,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.127: *5* reformat-paragraph new code 1 of 8
+    #@+node:ekr.20201130090918.127: *4* reformat-paragraph new code 1 of 8
     def test_reformat_paragraph_new_code_1_of_8(self):
         """Test case for reformat-paragraph new code 1 of 8"""
         before_b = """\
@@ -2980,7 +2978,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.128: *5* reformat-paragraph new code 2 of 8
+    #@+node:ekr.20201130090918.128: *4* reformat-paragraph new code 2 of 8
     def test_reformat_paragraph_new_code_2_of_8(self):
         """Test case for reformat-paragraph new code 2 of 8"""
         before_b = """\
@@ -3003,7 +3001,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.129: *5* reformat-paragraph new code 3 of 8
+    #@+node:ekr.20201130090918.129: *4* reformat-paragraph new code 3 of 8
     def test_reformat_paragraph_new_code_3_of_8(self):
         """Test case for reformat-paragraph new code 3 of 8"""
         before_b = """\
@@ -3027,7 +3025,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.130: *5* reformat-paragraph new code 4 of 8
+    #@+node:ekr.20201130090918.130: *4* reformat-paragraph new code 4 of 8
     def test_reformat_paragraph_new_code_4_of_8(self):
         """Test case for reformat-paragraph new code 4 of 8"""
         before_b = """\
@@ -3048,7 +3046,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.131: *5* reformat-paragraph new code 5 of 8
+    #@+node:ekr.20201130090918.131: *4* reformat-paragraph new code 5 of 8
     def test_reformat_paragraph_new_code_5_of_8(self):
         """Test case for reformat-paragraph new code 5 of 8"""
         before_b = """\
@@ -3069,7 +3067,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.132: *5* reformat-paragraph new code 6 of 8
+    #@+node:ekr.20201130090918.132: *4* reformat-paragraph new code 6 of 8
     def test_reformat_paragraph_new_code_6_of_8(self):
         """Test case for reformat-paragraph new code 6 of 8"""
         before_b = """\
@@ -3092,7 +3090,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.133: *5* reformat-paragraph new code 7 of 8
+    #@+node:ekr.20201130090918.133: *4* reformat-paragraph new code 7 of 8
     def test_reformat_paragraph_new_code_7_of_8(self):
         """Test case for reformat-paragraph new code 7 of 8"""
         before_b = """\
@@ -3117,7 +3115,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.134: *5* reformat-paragraph new code 8 of 8
+    #@+node:ekr.20201130090918.134: *4* reformat-paragraph new code 8 of 8
     def test_reformat_paragraph_new_code_8_of_8(self):
         """Test case for reformat-paragraph new code 8 of 8"""
         before_b = """\
@@ -3136,7 +3134,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.135: *5* reformat-paragraph paragraph 1 of 3
+    #@+node:ekr.20201130090918.135: *4* reformat-paragraph paragraph 1 of 3
     def test_reformat_paragraph_paragraph_1_of_3(self):
         """Test case for reformat-paragraph paragraph 1 of 3"""
         before_b = """\
@@ -3175,7 +3173,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.136: *5* reformat-paragraph paragraph 2 of 3
+    #@+node:ekr.20201130090918.136: *4* reformat-paragraph paragraph 2 of 3
     def test_reformat_paragraph_paragraph_2_of_3(self):
         """Test case for reformat-paragraph paragraph 2 of 3"""
         before_b = """\
@@ -3234,7 +3232,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.137: *5* reformat-paragraph paragraph 3 of 3
+    #@+node:ekr.20201130090918.137: *4* reformat-paragraph paragraph 3 of 3
     def test_reformat_paragraph_paragraph_3_of_3(self):
         """Test case for reformat-paragraph paragraph 3 of 3"""
         before_b = """\
@@ -3310,7 +3308,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.138: *5* reformat-paragraph simple hanging indent
+    #@+node:ekr.20201130090918.138: *4* reformat-paragraph simple hanging indent
     def test_reformat_paragraph_simple_hanging_indent(self):
         """Test case for reformat-paragraph simple hanging indent"""
         before_b = """\
@@ -3336,7 +3334,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.139: *5* reformat-paragraph simple hanging indent 2
+    #@+node:ekr.20201130090918.139: *4* reformat-paragraph simple hanging indent 2
     def test_reformat_paragraph_simple_hanging_indent_2(self):
         """Test case for reformat-paragraph simple hanging indent 2"""
         before_b = """\
@@ -3363,7 +3361,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.140: *5* reformat-paragraph simple hanging indent 3
+    #@+node:ekr.20201130090918.140: *4* reformat-paragraph simple hanging indent 3
     def test_reformat_paragraph_simple_hanging_indent_3(self):
         """Test case for reformat-paragraph simple hanging indent 3"""
         before_b = """\
@@ -3393,7 +3391,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="reformat-paragraph",
             directives="@language plain\n@pagewidth 40\n@tabwidth 8",
         )
-    #@+node:ekr.20201130090918.101: *4* remove-blank-lines
+    #@+node:ekr.20201130090918.101: *3* remove-blank-lines
     def test_remove_blank_lines(self):
         """Test case for remove-blank-lines"""
         before_b = """\
@@ -3421,7 +3419,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "6.9"),
             command_name="remove-blank-lines",
         )
-    #@+node:ekr.20201130090918.102: *4* remove-space-from-lines
+    #@+node:ekr.20201130090918.102: *3* remove-space-from-lines
     def test_remove_space_from_lines(self):
         """Test case for remove-space-from-lines"""
         before_b = """\
@@ -3451,7 +3449,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "9.0"),
             command_name="remove-space-from-lines",
         )
-    #@+node:ekr.20201130090918.103: *4* remove-tab-from-lines
+    #@+node:ekr.20201130090918.103: *3* remove-tab-from-lines
     def test_remove_tab_from_lines(self):
         """Test case for remove-tab-from-lines"""
         before_b = """\
@@ -3477,7 +3475,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "7.0"),
             command_name="remove-tab-from-lines",
         )
-    #@+node:ekr.20201130090918.104: *4* reverse-region
+    #@+node:ekr.20201130090918.104: *3* reverse-region
     def test_reverse_region(self):
         """Test case for reverse-region"""
         before_b = """\
@@ -3504,7 +3502,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.10", "7.10"),
             command_name="reverse-region",
         )
-    #@+node:ekr.20201130090918.105: *4* reverse-sort-lines
+    #@+node:ekr.20201130090918.105: *3* reverse-sort-lines
     def test_reverse_sort_lines(self):
         """Test case for reverse-sort-lines"""
         before_b = """\
@@ -3528,7 +3526,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "5.1"),
             command_name="reverse-sort-lines",
         )
-    #@+node:ekr.20201130090918.106: *4* reverse-sort-lines-ignoring-case
+    #@+node:ekr.20201130090918.106: *3* reverse-sort-lines-ignoring-case
     def test_reverse_sort_lines_ignoring_case(self):
         """Test case for reverse-sort-lines-ignoring-case"""
         before_b = """\
@@ -3554,7 +3552,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "6.1"),
             command_name="reverse-sort-lines-ignoring-case",
         )
-    #@+node:ekr.20201130090918.107: *4* sort-columns
+    #@+node:ekr.20201130090918.107: *3* sort-columns
     def test_sort_columns(self):
         """Test case for sort-columns"""
         before_b = """\
@@ -3580,7 +3578,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "7.0"),
             command_name="sort-columns",
         )
-    #@+node:ekr.20201130090918.108: *4* sort-lines
+    #@+node:ekr.20201130090918.108: *3* sort-lines
     def test_sort_lines(self):
         """Test case for sort-lines"""
         before_b = """\
@@ -3606,7 +3604,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "5.6"),
             command_name="sort-lines",
         )
-    #@+node:ekr.20201130090918.109: *4* sort-lines-ignoring-case
+    #@+node:ekr.20201130090918.109: *3* sort-lines-ignoring-case
     def test_sort_lines_ignoring_case(self):
         """Test case for sort-lines-ignoring-case"""
         before_b = """\
@@ -3630,7 +3628,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.0", "5.1"),
             command_name="sort-lines-ignoring-case",
         )
-    #@+node:ekr.20201130090918.110: *4* split-line
+    #@+node:ekr.20201130090918.110: *3* split-line
     def test_split_line(self):
         """Test case for split-line"""
         before_b = """\
@@ -3657,7 +3655,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.0", "2.0"),
             command_name="split-line",
         )
-    #@+node:ekr.20201130090918.111: *4* start-of-line
+    #@+node:ekr.20201130090918.111: *3* start-of-line
     def test_start_of_line(self):
         """Test case for start-of-line"""
         before_b = """\
@@ -3683,7 +3681,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.4"),
             command_name="start-of-line",
         )
-    #@+node:ekr.20201130090918.112: *4* start-of-line (2)
+    #@+node:ekr.20201130090918.112: *3* start-of-line (2)
     def test_start_of_line_2(self):
         """Test case for start-of-line (2)"""
         before_b = """\
@@ -3709,7 +3707,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.4"),
             command_name="start-of-line",
         )
-    #@+node:ekr.20201130090918.113: *4* start-of-line-extend-selection
+    #@+node:ekr.20201130090918.113: *3* start-of-line-extend-selection
     def test_start_of_line_extend_selection(self):
         """Test case for start-of-line-extend-selection"""
         before_b = """\
@@ -3735,7 +3733,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.4", "3.10"),
             command_name="start-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.114: *4* start-of-line-extend-selection (2)
+    #@+node:ekr.20201130090918.114: *3* start-of-line-extend-selection (2)
     def test_start_of_line_extend_selection_2(self):
         """Test case for start-of-line-extend-selection (2)"""
         before_b = """\
@@ -3761,7 +3759,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.1", "3.4"),
             command_name="start-of-line-extend-selection",
         )
-    #@+node:ekr.20201130090918.115: *4* tabify
+    #@+node:ekr.20201130090918.115: *3* tabify
     def test_tabify(self):
         """Test case for tabify"""
         before_b = """\
@@ -3787,7 +3785,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="tabify",
         )
-    #@+node:ekr.20201130090918.116: *4* transpose-chars
+    #@+node:ekr.20201130090918.116: *3* transpose-chars
     def test_transpose_chars(self):
         """Test case for transpose-chars"""
         before_b = """\
@@ -3813,7 +3811,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("1.2", "1.2"),
             command_name="transpose-chars",
         )
-    #@+node:ekr.20201130090918.117: *4* transpose-lines
+    #@+node:ekr.20201130090918.117: *3* transpose-lines
     def test_transpose_lines(self):
         """Test case for transpose-lines"""
         before_b = """\
@@ -3839,7 +3837,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.10", "2.10"),
             command_name="transpose-lines",
         )
-    #@+node:ekr.20201130090918.118: *4* transpose-words
+    #@+node:ekr.20201130090918.118: *3* transpose-words
     def test_transpose_words(self):
         """Test case for transpose-words"""
         before_b = """\
@@ -3859,7 +3857,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("2.11", "2.11"),
             command_name="transpose-words",
         )
-    #@+node:ekr.20201130090918.119: *4* untabify
+    #@+node:ekr.20201130090918.119: *3* untabify
     def test_untabify(self):
         """Test case for untabify"""
         before_b = """\
@@ -3885,7 +3883,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("7.0", "7.0"),
             command_name="untabify",
         )
-    #@+node:ekr.20201130090918.120: *4* upcase-region
+    #@+node:ekr.20201130090918.120: *3* upcase-region
     def test_upcase_region(self):
         """Test case for upcase-region"""
         before_b = """\
@@ -3909,7 +3907,7 @@ class EditCommandsTest(leoTest2.TestUtils):
             after_sel=("3.0", "4.0"),
             command_name="upcase-region",
         )
-    #@+node:ekr.20201130090918.121: *4* upcase-word
+    #@+node:ekr.20201130090918.121: *3* upcase-word
     def test_upcase_word(self):
         """Test case for upcase-word"""
         before_b = """\
@@ -3936,7 +3934,4 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="upcase-word",
         )
     #@-others
-#@-others
-if __name__ == '__main__':  # pragma: no cover
-    leoTest2.leo_test_main(__file__, 'leo.unittest.commands.editCommands')
 #@-leo
