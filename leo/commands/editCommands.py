@@ -691,20 +691,17 @@ class EditCommandsClass(BaseEditCommandsClass):
         sel_1, sel_2 = w.getSelectionRange()
         ind, junk = g.getLine(s, sel_1)
         junk, end = g.getLine(s, sel_2)
-        ### g.trace('ind', ind, 'end', end)
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
             d = c.scanAllDirectives()
             fillColumn = d.get("pagewidth")
-        ### g.trace('fillColumn', self.fillColumn, fillColumn)
         self.beginCommand(w, undoType='center-region')
         inserted = 0
         while ind < end:
             s = w.getAllText()
             i, j = g.getLine(s, ind)
             line = s[i:j].strip()
-            ### g.trace(len(line), repr(line))
             if len(line) >= fillColumn:
                 ind = j
             else:
@@ -714,8 +711,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 if k > i: w.delete(i, k - i)
                 w.insert(i, ' ' * n)
                 ind = j + n - (k - i)
-        ### g.trace('inserted', inserted)
-        ### g.printObj(g.splitlines(w.getAllText()), tag='all text')
         w.setSelectionRange(sel_1, sel_2 + inserted)
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.218: *4* ec.setFillPrefix
@@ -3753,8 +3748,12 @@ class FileTest(leoTest2.TestUtils):
 
     #@+others
     #@+node:ekr.20201129161726.5: *3* FileTest.run_test (editCommands.py)
-    def run_test(self, before_b, after_b, before_sel, after_sel, command_name):
-        
+    def run_test(self,
+            before_b, after_b,  # before/after body text.
+            before_sel, after_sel,  # before and after selection ranges.
+            command_name,
+            directives=''
+        ):
         c = self.c
         # For shortDescription().
         self.command_name = command_name
@@ -3762,8 +3761,10 @@ class FileTest(leoTest2.TestUtils):
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
+        parent_b = self.adjustTripleString(directives)
         before_b = self.adjustTripleString(before_b)
         after_b = self.adjustTripleString(after_b)
+        self.parent_p.b = parent_b
         self.tempNode.b = before_b
         self.before_p.b = before_b
         self.after_p.b = after_b
@@ -3787,7 +3788,8 @@ class FileTest(leoTest2.TestUtils):
             print('mismatch in body')
             g.printObj(g.splitLines(s2), tag='expected')
             g.printObj(g.splitLines(s1), tag='got')
-        assert s1 == s2
+            print('parent_p.b', repr(self.parent_p.b))
+            assert False
         if 0:  ### Not ready yet.
             sel3 = w.getSelectionRange()
             # Convert both selection ranges to gui indices.
@@ -3838,11 +3840,13 @@ class FileTest(leoTest2.TestUtils):
         # This is fast, because setUpClass has done all the imports.
         import leo.core.leoCommands as leoCommands
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-        # Create top-level nodes.
+        # Create top-level parent node.
         root = c.rootPosition()
-        self.tempNode = root.insertAsLastChild()
-        self.before_p = root.insertAsLastChild()
-        self.after_p = root.insertAsLastChild()
+        self.parent_p = root.insertAsLastChild()
+        # Create children of the parent node.
+        self.tempNode = self.parent_p.insertAsLastChild()
+        self.before_p = self.parent_p.insertAsLastChild()
+        self.after_p = self.parent_p.insertAsLastChild()
         self.tempNode.h = 'tempNode'
         self.before_p.h = 'before'
         self.after_p.h = 'after'
@@ -4599,7 +4603,7 @@ class FileTest(leoTest2.TestUtils):
             before_sel=("1.0", "7.0"),
             after_sel=("1.0", "7.0"),
             command_name="center-region",
-            ### page_width=70,
+            directives = "@pagewidth 70",
         )
     #@+node:ekr.20201130090918.30: *4* clean-lines
     def test_clean_lines(self):

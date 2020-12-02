@@ -134,7 +134,7 @@ def create_app():
     # Similar to leoBridge.py
     # print('CommanderTest.setUp')
     import time
-    dump_leo_modules()
+    # dump_leo_modules()
     t1 = time.process_time()
     import leo.core.leoGlobals as g
     import leo.core.leoApp as leoApp
@@ -160,7 +160,7 @@ def create_app():
     leoCommands.Commands(fileName=None, gui=g.app.gui)
     # dump_leo_modules()
     t4 = time.process_time()
-    if t4 - t3 > 0.1:
+    if False and t4 - t3 > 0.1:
         print('create_app\n'
             f"  imports: {(t2-t1):.3f}\n"
             f"      gui: {(t3-t2):.3f}\n"
