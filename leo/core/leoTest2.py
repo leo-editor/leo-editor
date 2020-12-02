@@ -163,10 +163,10 @@ def pytest_main(path, module):
     except Exception:
         print('pytest not found')
         return
-    if 0:
+    if 1:
         # Pytest.
         pytest.main(args=sys.argv)
-    elif 0: # unittest
+    elif 1: # unittest
         unittest.main()
     else: # Full coverage test.
         print('path', path, 'module', module)
