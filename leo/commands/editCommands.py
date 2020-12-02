@@ -1292,8 +1292,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     # Necessary to make text changes stick.
         else:
             # No undo in this widget.
-            # Make sure we actually delete something if we can.
             s = w.getAllText()
+            # Delete something if we can.
             if i != j:
                 j = max(i, min(j, len(s)))
                 w.delete(i, j)
@@ -1422,21 +1422,35 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-char')
     def deleteNextChar(self, event):
         """Delete the character to the right of the cursor."""
-        w = self.editWidget(event)
-        if not w: return
-        s = w.getAllText()
-        i, j = w.getSelectionRange()
-        self.beginCommand(w, undoType='delete-char')
-        changed = True
-        if i != j:
-            w.delete(i, j)
-            w.setInsertPoint(i)
-        elif j < len(s):
-            w.delete(i)
-            w.setInsertPoint(i)
+        c, w = self.c, self.editWidget(event)
+        if not w:
+            return
+        wname = c.widget_name(w)
+        if wname.startswith('body'):
+            s = w.getAllText()
+            i, j = w.getSelectionRange()
+            self.beginCommand(w, undoType='delete-char')
+            changed = True
+            if i != j:
+                w.delete(i, j)
+                w.setInsertPoint(i)
+            elif j < len(s):
+                w.delete(i)
+                w.setInsertPoint(i)
+            else:
+                changed = False
+            self.endCommand(changed=changed, setLabel=False)
         else:
-            changed = False
-        self.endCommand(changed=changed, setLabel=False)
+            # No undo in this widget.
+            s = w.getAllText()
+            i, j = w.getSelectionRange()
+            # Delete something if we can.
+            if i != j:
+                w.delete(i, j)
+                w.setInsertPoint(i)
+            elif j < len(s):
+                w.delete(i)
+                w.setInsertPoint(i)
     #@+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
     def deleteSpaces(self, event, insertspace=False):
