@@ -315,16 +315,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         text, if there is any, or any path like text immediately preceding the
         cursor.
         """
-        c, w = self.c, self.editWidget(event)
+        c, u, w = self.c, self.c.undoer, self.editWidget(event)
         if not w:
             return
 
         def callback(arg, w=w):
             i = w.getSelectionRange()[0]
+            p = c.p
             w.deleteTextSelection()
             w.insert(i, arg)
-            if g.app.gui.widget_name(w) == 'body':
-                c.frame.body.onBodyChanged('insert-file-name')
+            newText = w.getAllText()
+            if g.app.gui.widget_name(w) == 'body' and p.b != newText:
+                bunch = u.beforeChangeBody(p)
+                p.v.b = newText  # p.b would cause a redraw.
+                u.afterChangeBody(p, 'insert-file-name', bunch)
 
         # see if the widget already contains the start of a path
 

@@ -672,13 +672,14 @@ class FileCommands:
             g.error("read only:", fileName)
     #@+node:ekr.20031218072017.3029: *5* fc.readAtFileNodes
     def readAtFileNodes(self):
+        
         c, p = self.c, self.c.p
         c.endEditing()
         c.atFileCommands.readAll(p, force=True)
         c.redraw()
         # Force an update of the body pane.
         c.setBodyString(p, p.b)  # Not a do-nothing!
-        c.frame.body.onBodyChanged(undoType=None)
+        
     #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
     def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
         """Open a Leo file."""
