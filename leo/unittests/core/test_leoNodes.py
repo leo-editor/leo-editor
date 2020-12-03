@@ -22,17 +22,7 @@ class LeoNodesTest(unittest.TestCase):
         # This is fast, because setUpClass has done all the imports.
         import leo.core.leoCommands as leoCommands
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
-        # Create top-level parent node.
-        root = c.rootPosition()
-        self.parent_p = root.insertAsLastChild()
-        # Create children of the parent node.
-        self.tempNode = self.parent_p.insertAsLastChild()
-        self.before_p = self.parent_p.insertAsLastChild()
-        self.after_p = self.parent_p.insertAsLastChild()
-        self.tempNode.h = 'tempNode'
-        self.before_p.h = 'before'
-        self.after_p.h = 'after'
-        c.selectPosition(self.tempNode)
+        c.selectPosition(c.rootPosition())
         
     def tearDown(self):
         self.c = None

@@ -179,7 +179,7 @@ def showTwoBodies(t, b1, b2):
     print('-' * 20)
 #@+node:ekr.20201203081125.1: *3* function: splitLines
 def splitLines(s):
-    """Same as g.splitLines(s0"""
+    """Same as g.splitLines(s)"""
     return s.splitlines(True) if s else []
 #@+node:ekr.20201202083003.1: ** class ConvertTests
 class ConvertTests:
