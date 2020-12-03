@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20201202144422.1: * @file ../unittest/commands/editCommands.py
+#@+node:ekr.20201202144422.1: * @file ../unittest/commands/test_editCommands.py
 #@@first
 """Tests for leo.commands.editCommands"""
 
@@ -3930,8 +3930,9 @@ class EditCommandsTest(leoTest2.TestUtils):
         )
     #@-others
 
-if __name__ == '__main__':  # pragma: no cover
-    import os
-    path = os.path.join(__file__, '..', '..', '..', 'commands')
-    leoTest2.leo_test_main(path, 'leo.commands.editCommands')
+###
+# if __name__ == '__main__':  # pragma: no cover
+    # import os
+    # path = os.path.join(__file__, '..', '..', '..', 'commands')
+    # leoTest2.leo_test_main(path, 'leo.commands.editCommands')
 #@-leo
