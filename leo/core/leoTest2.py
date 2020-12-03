@@ -187,6 +187,10 @@ class ConvertTests:
     A class that converts @test nodes to proper unit tests.
     
     Subclasses specialize the convert method.
+    
+    These scripts know nothing about the unit tests they create. They just
+    pass the data from the old tests to the new tests using args in the
+    run_test method.
     """
     #@+others
     #@+node:ekr.20201130075024.2: *3* ConvertTests.body
