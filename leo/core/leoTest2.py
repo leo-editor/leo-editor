@@ -2,25 +2,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20201129023817.1: * @file leoTest2.py
 #@@first
-#@+<< docstring >>
-#@+node:ekr.20201129162306.1: ** << docstring >>
 """
-Support for coverage tests embedded in Leo's source files.
+Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
-The general pattern is inspired by the coverage tests in leoAst.py.
+These tests are intended to be run by unittest or pytest from the command line.
 
-Each of Leo's source files will end with:
-    
-    if __name__ == '__main__':
-        run_unit_tests()
-        
-Full unit tests for x.py can be run from the command line:
-    
-    python -m leo.core.x
+This file also contains two classes that convert nodes in unitTest.leo to
+tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-#@-<< docstring >>
 
-import leo.core.leoGlobals as g
 import sys
 import time
 
@@ -52,15 +42,15 @@ def compareOutlines(root1, root2, compareHeadlines=True, tag='', report=True):
         if not ok: break
         p2.moveToThreadNext()
     if report and not ok:
-        g.pr('\ncompareOutlines failed: tag:', (tag or ''))
-        g.pr('p1.h:', p1 and p1.h or '<no p1>')
-        g.pr('p2.h:', p2 and p2.h or '<no p2>')
-        g.pr(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
-        g.pr(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
+        print('\ncompareOutlines failed: tag:', (tag or ''))
+        print('p1.h:', p1 and p1.h or '<no p1>')
+        print('p2.h:', p2 and p2.h or '<no p2>')
+        print(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
+        print(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
         if b1 != b2:
             showTwoBodies(p1.h, p1.b, p2.b)
         if p1.isCloned() != p2.isCloned():
-            g.pr('p1.isCloned() == p2.isCloned()')
+            print('p1.isCloned() == p2.isCloned()')
     return ok
 #@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
 def convert_leoEditCommands_tests(c, root, target):
@@ -72,11 +62,11 @@ def convert_leoEditCommands_tests(c, root, target):
             These nodes can then be copied to be children of a test class.
     """
     if not root or not target:
-        g.es_print('Error: root and target nodes must be top-level nodes.', color='red')
+        print('Error: root and target nodes must be top-level nodes.', color='red')
         return
     # Be safe.
     if target.hasChildren():
-        g.es_print('Please delete children of ', target.h, color='red')
+        print('Please delete children of ', target.h, color='red')
         return
     converter = ConvertEditCommandsTests()
     count = 0
@@ -85,7 +75,7 @@ def convert_leoEditCommands_tests(c, root, target):
             converter.convert(p, target)
             count += 1
     c.redraw()
-    g.es_print(f"converted {count} @test nodes", color='blue')
+    print(f"converted {count} @test nodes", color='blue')
 #@+node:ekr.20201130195111.1: *3* function: create_app
 def create_app():
     """
@@ -95,8 +85,6 @@ def create_app():
     
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
-    # Similar to leoBridge.py
-    # print('CommanderTest.setUp')
     import time
     # dump_leo_modules()
     t1 = time.process_time()
@@ -149,6 +137,7 @@ def dump_leo_modules():
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
+    import leo.core.leoGlobals as g
     #
     # Let block.
     e_lines = g.splitLines(expected)
@@ -181,13 +170,17 @@ def get_time():
 def showTwoBodies(t, b1, b2):
     print('\n', '-' * 20)
     print(f"expected for {t}...")
-    for line in g.splitLines(b1):
+    for line in splitLines(b1):
         print(f"{len(line):3d}", repr(line))
     print('-' * 20)
     print(f"result for {t}...")
-    for line in g.splitLines(b2):
+    for line in splitLines(b2):
         print(f"{len(line):3d}", repr(line))
     print('-' * 20)
+#@+node:ekr.20201203081125.1: *3* function: splitLines
+def splitLines(s):
+    """Same as g.splitLines(s0"""
+    return s.splitlines(True) if s else []
 #@+node:ekr.20201202083003.1: ** class ConvertTests
 class ConvertTests:
     """
@@ -238,7 +231,7 @@ class ConvertTests:
         
         Must be overridden in subclasses.
         """
-        g.trace('Must be overridden')
+        print('ConvertTests.convert: Must be overridden')
     #@+node:ekr.20201130075024.5: *3* ConvertTests.function_name
     def function_name(self, command_name):
         """Convert a command name into a test function."""
