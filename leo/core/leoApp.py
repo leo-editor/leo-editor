@@ -1617,6 +1617,7 @@ class LeoApp:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
+        # Timeit reports 0.0175 sec when using a nullGui.
         import leo.core.leoCommands as leoCommands
         c = leoCommands.Commands(fileName,
             gui=gui,
