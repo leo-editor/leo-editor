@@ -26,6 +26,42 @@ import time
 
 #@+others
 #@+node:ekr.20201129132455.1: ** Top-level functions...
+#@+node:ekr.20201129195238.1: *3* function: compareOutlines
+def compareOutlines(root1, root2, compareHeadlines=True, tag='', report=True):
+    """
+    Compares two outlines, making sure that their topologies, content and
+    join lists are equivalent
+    """
+    p2 = root2.copy()
+    ok = True
+    p1 = None
+    for p1 in root1.self_and_subtree():
+        b1 = p1.b
+        b2 = p2.b
+        if p1.h.endswith('@nonl') and b1.endswith('\n'):
+            b1 = b1[:-1]
+        if p2.h.endswith('@nonl') and b2.endswith('\n'):
+            b2 = b2[:-1]
+        ok = (
+            p1 and p2
+            and p1.numberOfChildren() == p2.numberOfChildren()
+            and (not compareHeadlines or (p1.h == p2.h))
+            and b1 == b2
+            and p1.isCloned() == p2.isCloned()
+        )
+        if not ok: break
+        p2.moveToThreadNext()
+    if report and not ok:
+        g.pr('\ncompareOutlines failed: tag:', (tag or ''))
+        g.pr('p1.h:', p1 and p1.h or '<no p1>')
+        g.pr('p2.h:', p2 and p2.h or '<no p2>')
+        g.pr(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
+        g.pr(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
+        if b1 != b2:
+            showTwoBodies(p1.h, p1.b, p2.b)
+        if p1.isCloned() != p2.isCloned():
+            g.pr('p1.isCloned() == p2.isCloned()')
+    return ok
 #@+node:ekr.20201130074836.1: *3* function: convert_leoEditCommands_tests
 def convert_leoEditCommands_tests(c, root, target):
     """
@@ -141,6 +177,17 @@ def expected_got(expected, got):
 #@+node:ekr.20201129133502.1: *3* function: get_time
 def get_time():
     return time.process_time()
+#@+node:ekr.20201129204348.1: *3* function: showTwoBodies
+def showTwoBodies(t, b1, b2):
+    print('\n', '-' * 20)
+    print(f"expected for {t}...")
+    for line in g.splitLines(b1):
+        print(f"{len(line):3d}", repr(line))
+    print('-' * 20)
+    print(f"result for {t}...")
+    for line in g.splitLines(b2):
+        print(f"{len(line):3d}", repr(line))
+    print('-' * 20)
 #@+node:ekr.20201202083003.1: ** class ConvertTests
 class ConvertTests:
     """
@@ -229,66 +276,6 @@ class ConvertEditCommandsTests (ConvertTests):
         new_child.h = command_name
         new_child.b = self.body(after_p, after_sel, before_p, before_sel, command_name)
             
-    #@-others
-#@+node:ekr.20201129161531.1: ** class Utils
-class Utils:
-    """
-    Utilities for test classes.
-    
-    This class has no "organizational" consequences because it contains no
-    setUp/tearDown methods.
-    """
-    #@+others
-    #@+node:ekr.20201129195238.1: *3* BaseUnitTest.compareOutlines
-    def compareOutlines(self, root1, root2, compareHeadlines=True, tag='', report=True):
-        """
-        Compares two outlines, making sure that their topologies, content and
-        join lists are equivalent
-        """
-        p2 = root2.copy()
-        ok = True
-        p1 = None
-        for p1 in root1.self_and_subtree():
-            b1 = p1.b
-            b2 = p2.b
-            if p1.h.endswith('@nonl') and b1.endswith('\n'):
-                b1 = b1[:-1]
-            if p2.h.endswith('@nonl') and b2.endswith('\n'):
-                b2 = b2[:-1]
-            ok = (
-                p1 and p2
-                and p1.numberOfChildren() == p2.numberOfChildren()
-                and (not compareHeadlines or (p1.h == p2.h))
-                and b1 == b2
-                and p1.isCloned() == p2.isCloned()
-            )
-            if not ok: break
-            p2.moveToThreadNext()
-        if report and not ok:
-            g.pr('\ncompareOutlines failed: tag:', (tag or ''))
-            g.pr('p1.h:', p1 and p1.h or '<no p1>')
-            g.pr('p2.h:', p2 and p2.h or '<no p2>')
-            g.pr(f"p1.numberOfChildren(): {p1.numberOfChildren()}")
-            g.pr(f"p2.numberOfChildren(): {p2.numberOfChildren()}")
-            if b1 != b2:
-                self.showTwoBodies(p1.h, p1.b, p2.b)
-            if p1.isCloned() != p2.isCloned():
-                g.pr('p1.isCloned() == p2.isCloned()')
-        return ok
-    #@+node:ekr.20201129204348.1: *3* BaseUnitTest.showTwoBodies
-    def showTwoBodies(self, t, b1, b2):
-        print('\n', '-' * 20)
-        print(f"expected for {t}...")
-        for line in g.splitLines(b1):
-            print(f"{len(line):3d}", repr(line))
-        print('-' * 20)
-        print(f"result for {t}...")
-        for line in g.splitLines(b2):
-            print(f"{len(line):3d}", repr(line))
-        print('-' * 20)
-    #@+node:ekr.20201129205031.1: *3* BaseUnitTest.adjustTripleString
-    def adjustTripleString(self, s):
-        return g.adjustTripleString(s, tab_width=-4)
     #@-others
 #@-others
 #@-leo

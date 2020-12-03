@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20201202144422.1: * @file ../unittest/commands/test_editCommands.py
+#@+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
 #@@first
 """Tests for leo.commands.editCommands"""
 
@@ -20,16 +20,16 @@ class EditCommandsTest(unittest.TestCase):
             command_name,
             directives=''
         ):
-        c, utils = self.c, leoTest2.Utils()
+        c = self.c
         # For shortDescription().
         self.command_name = command_name
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
-        parent_b = utils.adjustTripleString(directives)
-        before_b = utils.adjustTripleString(before_b)
-        after_b = utils.adjustTripleString(after_b)
+        parent_b = g.adjustTripleString(directives, tab_width=-4)
+        before_b = g.adjustTripleString(before_b, tab_width=-4)
+        after_b = g.adjustTripleString(after_b, tab_width=-4)
         self.parent_p.b = parent_b
         self.tempNode.b = before_b
         self.before_p.b = before_b
