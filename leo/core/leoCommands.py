@@ -267,8 +267,8 @@ class Commands:
         import leo.core.leoBeautify as leoBeautify  # So decorators are executed.
         assert leoBeautify  # for pyflakes.
         import leo.core.leoChapters as leoChapters
-        import leo.core.leoTest2 as leoTest2  # So decorators are executed.
-        assert leoTest2  # For pyflakes.
+        # import leo.core.leoTest2 as leoTest2  # So decorators are executed.
+        # assert leoTest2  # For pyflakes.
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
         import leo.commands.bufferCommands as bufferCommands

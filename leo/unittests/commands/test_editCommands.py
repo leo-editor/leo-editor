@@ -6,8 +6,9 @@
 
 import leo.core.leoGlobals as g
 import leo.core.leoTest2 as leoTest2
+import unittest
 
-class EditCommandsTest(leoTest2.TestUtils):
+class EditCommandsTest(unittest.TestCase):
     """Unit tests for leo/commands/editCommands.py."""
     # For pylint.
     before_p = after_p = parent_p = tempNode = None
@@ -19,16 +20,16 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name,
             directives=''
         ):
-        c = self.c
+        c, utils = self.c, leoTest2.Utils()
         # For shortDescription().
         self.command_name = command_name
         # Compute the result in tempNode.b
         command = c.commandsDict.get(command_name)
         assert command, f"no command: {command_name}"
         # Set the text.
-        parent_b = self.adjustTripleString(directives)
-        before_b = self.adjustTripleString(before_b)
-        after_b = self.adjustTripleString(after_b)
+        parent_b = utils.adjustTripleString(directives)
+        before_b = utils.adjustTripleString(before_b)
+        after_b = utils.adjustTripleString(after_b)
         self.parent_p.b = parent_b
         self.tempNode.b = before_b
         self.before_p.b = before_b
@@ -3929,10 +3930,4 @@ class EditCommandsTest(leoTest2.TestUtils):
             command_name="upcase-word",
         )
     #@-others
-
-###
-# if __name__ == '__main__':  # pragma: no cover
-    # import os
-    # path = os.path.join(__file__, '..', '..', '..', 'commands')
-    # leoTest2.leo_test_main(path, 'leo.commands.editCommands')
 #@-leo
