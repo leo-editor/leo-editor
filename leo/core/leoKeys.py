@@ -3359,8 +3359,13 @@ class KeyHandlerClass:
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, stroke, w):
 
-        k = self
+        k, state = self, self.unboundKeyAction
+        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         if not g.assert_is(stroke, g.KeyStroke):
+            return None
+        # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
+        #        Valid because mode bindings have already been handled.
+        if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
             return None
         for key, name in (
             # Order here is similar to bindtags order.
@@ -3377,14 +3382,15 @@ class KeyHandlerClass:
             ('text', None),
             ('all', None),
         ):
-            val = k.getBindingHelper(key, name, stroke, w)
-            if val:
-                return val
+            bi = k.getBindingHelper(key, name, stroke, w)
+            if bi:
+                return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper
     def getBindingHelper(self, key, name, stroke, w):
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
+        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         #
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction
