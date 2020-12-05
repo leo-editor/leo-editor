@@ -734,7 +734,9 @@ if QtWidgets:
             
              New in Leo 6.4: Draw a box around the cursor in command mode.
             """
-            c, r, w = self.leo_c, self.cursorRect(), self
+            c, w = self.leo_c, self
+            #
+            # First, call the base class paintEvent.
             QtWidgets.QTextBrowser.paintEvent(self, event)
             
             def set_cursor_width(width):
@@ -753,12 +755,13 @@ if QtWidgets:
             #
             # Set the width of the cursor.
             font = w.currentFont()
-            set_cursor_width(QtGui.QFontMetrics(font).averageCharWidth())
+            cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
+            set_cursor_width(cursor_width)
             #
             # Draw a box around the cursor.
             qp = QtGui.QPainter()
             qp.begin(self.viewport())
-            qp.drawRect(r)
+            qp.drawRect(w.cursorRect())
             qp.end()
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
