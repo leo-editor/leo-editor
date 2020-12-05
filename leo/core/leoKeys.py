@@ -287,9 +287,10 @@ class AutoCompleterClass:
     #@+node:ekr.20110512212836.14469: *4* ac.exit
     def exit(self):
 
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
+        if trace: g.trace('(AutoCompleterClass)')
         c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
-        g.trace(p.h) ###
         c.k.keyboardQuit()
         if self.use_qcompleter:
             if self.qw:
@@ -851,8 +852,10 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.39: *4* ac.insert_general_char
     def insert_general_char(self, ch):
 
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         k, w = self.k, self.w
         if g.isWordChar(ch):
+            if trace: g.trace('ch', repr(ch))
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
             if not aList:
@@ -864,12 +867,14 @@ class AutoCompleterClass:
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix) :]
                 ins = w.getInsertPoint()
+                if trace: g.trace('extend', repr(extend))
                 w.insert(ins, extend)
             return
         if ch == '(' and k.enable_calltips:
             # This calls self.exit if the '(' is valid.
             self.calltip()
         else:
+            if trace: g.trace('ch', repr(ch))
             self.insert_string(ch)
             self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
@@ -932,7 +937,10 @@ class AutoCompleterClass:
             g.es(*args, **keys)
     #@+node:ekr.20110511133940.14561: *4* ac.show_completion_list & helpers
     def show_completion_list(self, common_prefix, prefix, tabList):
+
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         c = self.c
+        if trace: g.trace('k.show_completion_list')
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
         # "!" toggles self.verbose.
@@ -3141,7 +3149,8 @@ class KeyHandlerClass:
                 # Do the default state action.
                 # Calls end-command.
             if val != 'do-standard-keys':
-                if trace: g.trace(state, 'k.callStateFunction', stroke)
+                handler = k.state.handler and k.state.handler.__name__ or '<no handler>'
+                if trace: g.trace(state, 'k.callStateFunction:', handler, stroke)
                 return True
             return False
         #
