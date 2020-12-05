@@ -728,6 +728,8 @@ if QtWidgets:
         #@+node:ekr.20201204172235.1: *3* lqtb.paintEvent
         leo_cursor_width = 0
 
+        leo_vim_mode = None
+
         def paintEvent(self, event):
             """
             LeoQTextBrowser.paintEvent.
@@ -735,7 +737,7 @@ if QtWidgets:
             New in Leo 6.4: Draw a box around the cursor in command mode.
                             This is as close as possible to vim's look.
             """
-            c, w = self.leo_c, self
+            c, vc, w = self.leo_c, self.leo_c.vimCommands, self
             #
             # First, call the base class paintEvent.
             QtWidgets.QTextBrowser.paintEvent(self, event)
@@ -745,9 +747,21 @@ if QtWidgets:
                 if self.leo_cursor_width != width:
                     self.leo_cursor_width = width
                     w.setCursorWidth(width)
-
+            
+            #
+            # Return if there we shouldn't draw the box.
+            if self.leo_vim_mode is None:
+                self.leo_vim_mode = c.config.getBool('vim-mode')
+            #
+            # Are we in command mode?
+            if self.leo_vim_mode:
+                in_command = vc and vc.state == 'normal'  # vim mode.
+            else:
+                in_command = c.k.unboundKeyAction == 'insert'  # vim emulation.
+            #
+            # Draw the box only in command mode, when w is the body pane, with focus.
             if (
-                c.k.unboundKeyAction != 'command'
+                not in_command
                 or w != c.frame.body.widget
                 or w != g.app.gui.get_focus()
             ):
