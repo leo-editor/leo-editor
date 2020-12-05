@@ -3381,7 +3381,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
+    #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper (changed)
     def getPaneBinding(self, stroke, w):
 
         k, state = self, self.unboundKeyAction
@@ -3390,9 +3390,10 @@ class KeyHandlerClass:
             return None
         # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
         #        Valid because mode bindings have already been handled.
-        if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
-            if trace: g.trace('KILL binding', stroke)
-            return None
+        if 0:  # For abbrevs...
+            if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
+                if trace: g.trace('KILL binding', stroke)
+                return None
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
