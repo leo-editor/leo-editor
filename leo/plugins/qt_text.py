@@ -97,13 +97,15 @@ class QTextMixin:
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
+        
         c = self.c
         name = c.widget_name(self)
         # Apparently, this does not cause problems
         # because it generates no events in the body pane.
-        if name.startswith('body'):
-            if hasattr(c.frame, 'statusLine'):
-                c.frame.statusLine.update()
+        if not name.startswith('body'):
+            return
+        if hasattr(c.frame, 'statusLine'):
+            c.frame.statusLine.update()
     #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
     def onTextChanged(self):
         """
@@ -446,6 +448,7 @@ if QtWidgets:
             self.htmlFlag = True
             super().__init__(parent)
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
+            
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
                 self.textChanged.connect(self.onTextChanged)
@@ -722,6 +725,45 @@ if QtWidgets:
                 return
             if p:
                 p.v.scrollBarSpot = arg
+        #@+node:ekr.20201204172235.1: *3* lqtb.paintEvent
+        leo_cursor_width = 0
+
+        def paintEvent(self, event):
+            """
+            LeoQTextBrowser.paintEvent.
+            
+            New in Leo 6.4: Draw a box around the cursor in command mode.
+                            This is as close as possible to vim's look.
+            """
+            c, w = self.leo_c, self
+            #
+            # First, call the base class paintEvent.
+            QtWidgets.QTextBrowser.paintEvent(self, event)
+            
+            def set_cursor_width(width):
+                """Set the cursor width, but only if necessary."""
+                if self.leo_cursor_width != width:
+                    self.leo_cursor_width = width
+                    w.setCursorWidth(width)
+
+            if (
+                c.k.unboundKeyAction != 'command'
+                or w != c.frame.body.widget
+                or w != g.app.gui.get_focus()
+            ):
+                set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
+                return
+            #
+            # Set the width of the cursor.
+            font = w.currentFont()
+            cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
+            set_cursor_width(cursor_width)
+            #
+            # Draw a box around the cursor.
+            qp = QtGui.QPainter()
+            qp.begin(self.viewport())
+            qp.drawRect(w.cursorRect())
+            qp.end()
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
