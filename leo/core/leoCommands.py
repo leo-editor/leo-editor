@@ -2312,9 +2312,11 @@ class Commands:
         - Body: ec.selfInsertCommand
         - Log: log_w.insert
         """
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
         stroke = event.stroke
+        if trace: g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
         if not stroke:
             return
         #

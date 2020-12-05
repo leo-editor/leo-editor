@@ -3097,6 +3097,10 @@ class KeyHandlerClass:
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
         """
+        #
+        # #1757: Leo's default vim bindings make heavy use of modes.
+        #        Retain these traces!
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         k = self
         state = k.state.kind
         stroke = event.stroke
@@ -3106,11 +3110,13 @@ class KeyHandlerClass:
         # First, honor minibuffer bindings for all except user modes.
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
+            if trace: g.trace(state, 'k.handleInputShortcut', stroke)
             return True
         if state in (
             'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'
         ):
             if k.handleMiniBindings(event, state, stroke):
+                if trace: g.trace(state, 'k.handleMiniBindings', stroke)
                 return True
         #
         # Second, honor general modes.
@@ -3119,19 +3125,25 @@ class KeyHandlerClass:
             # New in Leo 5.8: Only call k.getArg for keys it can handle.
             if k.isPlainKey(stroke):
                 k.getArg(event, stroke=stroke)
+                if trace: g.trace(state, 'k.isPlain: getArg', stroke)
                 return True
             if stroke.s in ('Escape', 'Tab', 'BackSpace'):
                 k.getArg(event, stroke=stroke)
+                if trace: g.trace(state, f"{stroke.s!r}: getArg", stroke)
                 return True
             return False
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
+            if trace: g.trace(state, 'k.getFileName', stroke)
             return True
         if state in ('full-command', 'auto-complete'):
             val = k.callStateFunction(event)
                 # Do the default state action.
                 # Calls end-command.
-            return val != 'do-standard-keys'
+            if val != 'do-standard-keys':
+                if trace: g.trace(state, 'k.callStateFunction', stroke)
+                return True
+            return False
         #
         # Third, pass keys to user modes.
         #
@@ -3146,6 +3158,7 @@ class KeyHandlerClass:
                     func=bi.func,
                     modeName=state,
                     nextMode=bi.nextMode)
+                if trace: g.trace(state, 'k.generalModeHandler', stroke)
                 return True
             # Unbound keys end mode.
             k.endMode()
@@ -3156,6 +3169,9 @@ class KeyHandlerClass:
         handler = k.getStateHandler()
         if handler:
             handler(event)
+        if trace:
+            handler_name = handler and handler.__name__ or '<no handler>'
+        g.trace(state, 'handler:', handler_name, stroke)
         return True
     #@+node:ekr.20061031131434.108: *6* k.callStateFunction
     def callStateFunction(self, event):
@@ -3360,12 +3376,13 @@ class KeyHandlerClass:
     def getPaneBinding(self, stroke, w):
 
         k, state = self, self.unboundKeyAction
-        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         if not g.assert_is(stroke, g.KeyStroke):
             return None
         # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
         #        Valid because mode bindings have already been handled.
         if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
+            if trace: g.trace('KILL binding', stroke)
             return None
         for key, name in (
             # Order here is similar to bindtags order.
