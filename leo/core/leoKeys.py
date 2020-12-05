@@ -3379,11 +3379,12 @@ class KeyHandlerClass:
         trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         if not g.assert_is(stroke, g.KeyStroke):
             return None
-        # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
-        #        Valid because mode bindings have already been handled.
-        if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
-            if trace: g.trace('KILL binding', stroke)
-            return None
+        if 0:
+            # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
+            #        Valid because mode bindings have already been handled.
+            if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
+                if trace: g.trace('KILL binding', stroke)
+                return None
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
