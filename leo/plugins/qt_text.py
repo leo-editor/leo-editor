@@ -749,16 +749,15 @@ if QtWidgets:
                     w.setCursorWidth(width)
             
             #
-            # Return if there we shouldn't draw the box.
+            # Are we in vim mode?
             if self.leo_vim_mode is None:
                 self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
-                g.trace(self.leo_vim_mode)
             #
             # Are we in command mode?
             if self.leo_vim_mode:
                 in_command = vc and vc.state == 'normal'  # vim mode.
             else:
-                in_command = c.k.unboundKeyAction == 'insert'  # vim emulation.
+                in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
             #
             # Draw the box only in command mode, when w is the body pane, with focus.
             if (
