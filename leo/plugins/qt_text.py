@@ -732,7 +732,7 @@ if QtWidgets:
             """
             LeoQTextBrowser.paintEvent.
             
-             New in Leo 6.4: Draw a box around the cursor in command mode.
+            New in Leo 6.4: Draw a box around the cursor in command mode.
             """
             c, w = self.leo_c, self
             #
