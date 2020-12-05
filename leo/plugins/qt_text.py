@@ -751,7 +751,8 @@ if QtWidgets:
             #
             # Return if there we shouldn't draw the box.
             if self.leo_vim_mode is None:
-                self.leo_vim_mode = c.config.getBool('vim-mode')
+                self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
+                g.trace(self.leo_vim_mode)
             #
             # Are we in command mode?
             if self.leo_vim_mode:
