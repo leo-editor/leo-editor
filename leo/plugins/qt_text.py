@@ -733,6 +733,7 @@ if QtWidgets:
             LeoQTextBrowser.paintEvent.
             
             New in Leo 6.4: Draw a box around the cursor in command mode.
+                            This is as close as possible to vim's look.
             """
             c, w = self.leo_c, self
             #
