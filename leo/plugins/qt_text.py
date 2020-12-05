@@ -96,10 +96,9 @@ class QTextMixin:
     #@+node:ekr.20140901122110.18733: *3* qtm.Event handlers
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
-    cursor_timer = None
-
     def onCursorPositionChanged(self, event=None):
-        c, w = self.c, self.widget
+        
+        c = self.c
         name = c.widget_name(self)
         # Apparently, this does not cause problems
         # because it generates no events in the body pane.
@@ -107,19 +106,6 @@ class QTextMixin:
             return
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
-        #
-        # Set a timer for the cursor.
-        if self.cursor_timer:
-            return
-
-        def cursor_handler(timer):
-            """Handler that repaints the cursor."""
-            w.update()
-
-        # Execute handler at idle time.
-        timer = g.IdleTime(cursor_handler,delay=600)
-        self.cursor_timer = timer
-        if timer: timer.start()
     #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
     def onTextChanged(self):
         """
@@ -741,23 +727,23 @@ if QtWidgets:
                 p.v.scrollBarSpot = arg
         #@+node:ekr.20201204172235.1: *3* lqtb.paintEvent (NEW)
         def paintEvent(self, event):
-            """LeoQTextBrowser.paintEvent."""
-            c, w = self.leo_c, self
-            r = w.cursorRect()
-            state = c.k.unboundKeyAction
+            """
+            LeoQTextBrowser.paintEvent.
+            
+            Draw a box around the cursor in command mode.
+            """
+            c, r, w = self.leo_c, self.cursorRect(), self
             QtWidgets.QTextBrowser.paintEvent(self, event)
-            if w != c.frame.body.widget:
-                self.setCursorWidth(1)
-                return
-            if state != 'command':
-                self.setCursorWidth(1)
+            if (
+                c.k.unboundKeyAction != 'command'
+                or w != c.frame.body.widget
+                or w != g.app.gui.get_focus()
+            ):
+                self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
                 return
             self.setCursorWidth(10)
             qp = QtGui.QPainter()
             qp.begin(self.viewport())
-            # pen = QtGui.QPen()
-            # pen.setWidth(2)
-            # qp.setPen(pen)
             qp.drawRect(r)
             qp.end()
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
