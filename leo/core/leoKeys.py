@@ -3350,9 +3350,14 @@ class KeyHandlerClass:
         Handle vim mode.
         Return True if k.masterKeyHandler should return.
         """
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c = self.c
         if c.vim_mode and c.vimCommands:
+            # The "acceptance methods" in leoVim.py return True
+            # if vim node has completely handled the key.
+            # Otherwise, processing in k.masterKeyHandler continues.
             ok = c.vimCommands.do_key(event)
+            if trace: g.trace('do_key returns', ok, repr(event and event.stroke))
             return ok
         return False
     #@+node:ekr.20180418033838.1: *5* 7. k.doBinding & helpers
