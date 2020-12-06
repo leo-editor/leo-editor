@@ -239,6 +239,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
+        g.trace(w_name, stroke, event)  ###
         if not w:
             if trace and verbose: g.trace('no w')
             return False
@@ -247,6 +248,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if trace and verbose: g.trace('no ch')
             return False
         s, i, j, prefixes = self.get_prefixes(w)
+        g.printObj(prefixes, tag="prefixes") ###
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
             if word:

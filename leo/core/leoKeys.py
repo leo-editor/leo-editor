@@ -3390,7 +3390,9 @@ class KeyHandlerClass:
             return None
         # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
         #        Valid because mode bindings have already been handled.
-        if 0:  # For abbrevs...
+        
+        ### '.' is bound to repeat-complex-command, except in insert mode.
+        if 1:  # For abbrevs...
             if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
                 if trace: g.trace('KILL binding', stroke)
                 return None
