@@ -3366,7 +3366,7 @@ class KeyHandlerClass:
         c, k = self.c, self
         #
         # Experimental special case:
-        # Inserting a '.' always invokes auto-completer.
+        # Inserting a '.' always invokes the auto-completer.
         # The auto-completer just inserts a '.' if it isn't enabled.
         stroke = event.stroke
         if (
