@@ -16,6 +16,7 @@ k.masterKeyHandler dispatches keys to vim mode before
 doing the normal key handling that vim emulation uses.
 """
 import leo.core.leoGlobals as g
+from leo.core.leoGui import LeoKeyEvent
 import os
 import string
 #@+others
@@ -1012,15 +1013,16 @@ class VimCommands:
             # Copy the list so it can't change in the loop.
             for event in self.dot_list[:]:
                 # Only k.masterKeyHandler can insert characters!
-                # Create an event satisfying both k.masterKeyHandler and self.do_key.
-                self.k.masterKeyHandler(g.Bunch(
-                    # for do_key()...
-                    w=self.w,
-                    # for k.masterKeyHandler...
-                    widget=self.w,
+                #
+                # #1757: Create a LeoKeyEvent.
+                event = LeoKeyEvent(
+                    binding=g.KeyStroke(event.stroke),
+                    c = self.c,
                     char=event.char,
-                    stroke=g.KeyStroke(event.stroke)),
+                    event=event,
+                    w=self.w,
                 )
+                self.k.masterKeyHandler(event)
             # For the dot list to be the old dot list, whatever happens.
             self.command_list = self.old_dot_list[:]
             self.dot_list = self.old_dot_list[:]
