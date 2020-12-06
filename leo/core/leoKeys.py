@@ -3393,7 +3393,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         return False
-    #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper (changed)
+    #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, event):
 
         c, k, state = self.c, self, self.unboundKeyAction
