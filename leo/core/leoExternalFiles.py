@@ -171,18 +171,18 @@ class ExternalFilesController:
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
         path = g.fullPath(c, p)
-        has_changed = self.has_changed(path)
-        if has_changed:
-            if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                # Fix #1081: issue a warning.
-                self.warn(c, path, p=p)
-            elif self.ask(c, path, p=p):
-                c.redraw(p=p)
-                c.refreshFromDisk(p)
-                c.redraw()
-            # Always update the path & time to prevent future warnings.
-            self.set_time(path)
-            self.checksum_d[path] = self.checksum(path)
+        if not self.has_changed(path):
+            return
+        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+            # Fix #1081: issue a warning.
+            self.warn(c, path, p=p)
+        elif self.ask(c, path, p=p):
+            c.redraw(p=p)
+            c.refreshFromDisk(p)
+            c.redraw()
+        # Always update the path & time to prevent future warnings.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c):
         """Check c's .leo file for external changes."""
