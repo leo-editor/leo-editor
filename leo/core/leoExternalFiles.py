@@ -92,7 +92,7 @@ class ExternalFilesController:
             # so no need to check its timestamp. It is modified through
             # sqlite methods.
             return True
-        if self.has_changed(c, path):
+        if self.has_changed(path):
             return self.ask(c, path)
         return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
@@ -135,41 +135,33 @@ class ExternalFilesController:
             c = g.app.log and g.app.log.c
             if c:
                 c.outerUpdate()
-        if 1:
-            # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
-            if self.unchecked_files:
-                # Check all external files.
-                for ef in self.unchecked_files:
-                    self.idle_check_open_with_file(ef)
-                self.unchecked_files = []
-            elif self.unchecked_commanders:
-                # Check the next commander for which
-                # @bool check_for_changed_external_file is True.
-                c = self.unchecked_commanders.pop()
-                self.idle_check_commander(c)
-            else:
-                # Add all commanders for which
-                # @bool check_for_changed_external_file is True.
-                self.unchecked_commanders = [
-                    z for z in g.app.commanders() if self.is_enabled(z)
-                ]
-                self.unchecked_files = [z for z in self.files if z.exists()]
-        else:
-            # First, check all existing open-with files.
-            for ef in self.files:  # A list of ExternalFile instances.
-                if ef.exists():
-                    self.idle_check_open_with_file(ef)
-            # Next, check all commanders for which
+        # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
+        if self.unchecked_files:
+            # Check all external files.
+            for ef in self.unchecked_files:
+                self.idle_check_open_with_file(ef)
+            self.unchecked_files = []
+        elif self.unchecked_commanders:
+            # Check the next commander for which
             # @bool check_for_changed_external_file is True.
-            for c in g.app.commanders():
-                if self.is_enabled(c):
-                    self.idle_check_commander(c)
+            c = self.unchecked_commanders.pop()
+            self.idle_check_commander(c)
+        else:
+            # Add all commanders for which
+            # @bool check_for_changed_external_file is True.
+            self.unchecked_commanders = [
+                z for z in g.app.commanders() if self.is_enabled(z)
+            ]
+            self.unchecked_files = [z for z in self.files if z.exists()]
     #@+node:ekr.20150404045115.1: *5* efc.idle_check_commander
     def idle_check_commander(self, c):
         '''
         Check all external files corresponding to @<file> nodes in c for
         changes.
         '''
+        # #1240: Check the .leo file itself.
+        self.idle_check_leo_file(c)
+        #
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         for p in c.all_unique_positions():
@@ -178,13 +170,8 @@ class ExternalFilesController:
     #@+node:ekr.20150403044823.1: *5* efc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
         '''Check the @<file> node at p for external changes.'''
-        trace = False
-            # Matt, set this to True, but only for the file that interests you.\
-            # trace = p.h == '@file unregister-leo.leox'
         path = g.fullPath(c, p)
-        has_changed = self.has_changed(c, path)
-        if trace:
-            g.trace('changed', has_changed, p.h)
+        has_changed = self.has_changed(path)
         if has_changed:
             if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
                 # Fix #1081: issue a warning.
@@ -196,6 +183,20 @@ class ExternalFilesController:
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)
+    #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
+    def idle_check_leo_file(self, c):
+        """Check c's .leo file for external changes."""
+        path = c.fileName()
+        if not self.has_changed(path):
+            return
+        #
+        # Always update the path & time to prevent future warnings.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
+        if self.ask(c, path):
+            # Do a complete restart of Leo.
+            g.es_print('restarting Leo...')
+            c.restartLeo()
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, ef):
         '''Update the open-with node given by ef.'''
@@ -531,8 +532,10 @@ class ExternalFilesController:
         '''
         return self._time_d.get(g.os_path_realpath(path))
     #@+node:ekr.20150403045207.1: *4* efc.has_changed
-    def has_changed(self, c, path):
-        '''Return True if p's external file has changed outside of Leo.'''
+    def has_changed(self, path):
+        '''Return True if the file at path has changed outside of Leo.'''
+        if not path:
+            return False
         if not g.os_path_exists(path):
             return False
         if g.os_path_isdir(path):
@@ -560,11 +563,6 @@ class ExternalFilesController:
             return False
         # The file has really changed.
         assert old_time, path
-        # #208: external change overwrite protection only works once.
-        # If the Leo version is changed (dirtied) again,
-        # overwrite will occur without warning.
-            # self.set_time(path, new_time)
-            # self.checksum_d[path] = new_sum
         return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c):
