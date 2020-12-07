@@ -495,7 +495,7 @@ class notetextedit(QTextEdit):
             elif what == notetextedit.Save:
                 self.save()
 
-    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent
+    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes.py)
     def mouseMoveEvent(self, event):
         #print "mouseMoveEvent"
         pos = event.pos()

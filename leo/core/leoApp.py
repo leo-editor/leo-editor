@@ -1617,6 +1617,7 @@ class LeoApp:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
+        # Timeit reports 0.0175 sec when using a nullGui.
         import leo.core.leoCommands as leoCommands
         c = leoCommands.Commands(fileName,
             gui=gui,
@@ -2759,9 +2760,9 @@ class LoadManager:
             '--session-save',
             '--use-docks',
         )
-        trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,
-          importers,ipython,keys,layouts,plugins,save,select,
-          shutdown,size,startup,themes,undo,verbose,zoom'''
+        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,
+          git,gnx,importers,ipython,keys,layouts,plugins,save,
+          select,shutdown,size,startup,themes,undo,verbose,zoom'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)

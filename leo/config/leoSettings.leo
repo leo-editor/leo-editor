@@ -9109,7 +9109,7 @@ delete-editor        = q   #Close current window (if more than one)
 <t tx="ekr.20140721165014.19313">This node and its descendants contains settings that make Leo work somewhat
 like vim.
 
-To enable vim emulation, place a copy this "@keys Vim bindings" node and
+To enable vim emulation, place a copy the "@keys Vim bindings" node and
 its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 </t>
 <t tx="ekr.20140912072521.19153"></t>

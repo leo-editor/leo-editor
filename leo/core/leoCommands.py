@@ -264,9 +264,11 @@ class Commands:
         # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
-        import leo.core.leoBeautify as leoBeautify # So decorators are executed.
-        assert leoBeautify # for pyflakes.
+        import leo.core.leoBeautify as leoBeautify  # So decorators are executed.
+        assert leoBeautify  # for pyflakes.
         import leo.core.leoChapters as leoChapters
+        # import leo.core.leoTest2 as leoTest2  # So decorators are executed.
+        # assert leoTest2  # For pyflakes.
         # User commands...
         import leo.commands.abbrevCommands as abbrevCommands
         import leo.commands.bufferCommands as bufferCommands
@@ -2310,9 +2312,11 @@ class Commands:
         - Body: ec.selfInsertCommand
         - Log: log_w.insert
         """
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
         stroke = event.stroke
+        if trace: g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
         if not stroke:
             return
         #

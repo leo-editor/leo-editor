@@ -22,7 +22,7 @@ class BaseEditCommandsClass:
     #@+node:ekr.20150514043714.4: *4* BaseEdit.beginCommand
     def beginCommand(self, w, undoType='Typing'):
         """Do the common processing at the start of each command."""
-        c, p = self.c, self.c.p
+        c, p, u = self.c, self.c.p, self.c.undoer
         name = c.widget_name(w)
         if name.startswith('body'):
             self.undoData = b = g.Bunch()
@@ -33,6 +33,7 @@ class BaseEditCommandsClass:
             b.oldText = p.b
             b.w = w
             b.undoType = undoType
+            b.undoer_bunch = u.beforeChangeBody(p)  # #1733.
         else:
             self.undoData = None
         return w
@@ -46,10 +47,13 @@ class BaseEditCommandsClass:
         w = self.editWidget(event=None)
         b = self.undoData
         if b and b.name.startswith('body') and changed:
+            newText = w.getAllText()
             if b.undoType.capitalize() == 'Typing':
-                u.doTyping(p, 'Typing', oldText=b.oldText, newText=w.getAllText(), oldSel=b.oldSel)
+                u.doTyping(p, 'Typing', oldText=b.oldText, newText=newText, oldSel=b.oldSel)
             else:
-                c.frame.body.onBodyChanged(undoType=b.undoType, oldSel=b.oldSel)
+                p.v.b = newText  # p.b would cause a redraw.
+                u.afterChangeBody(p, b.undoType, b.undoer_bunch)
+                
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

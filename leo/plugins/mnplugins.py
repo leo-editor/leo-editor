@@ -68,11 +68,13 @@ def setHeadOK(c,v):
 #@+node:ekr.20040205071616.5: ** mnplugins.insertBodystamp
 def insertBodystamp (c,v):
 
-    w = c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     stamp = mnOKstamp() + '\n'
+    bunch = u.beforeChangeBody(p)
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
-    c.frame.body.onBodyChanged('insert-timestamp')
+    p.v.b = w.getAllText()  # p.b would cause a redraw.
+    u.afterChangeBody(p, 'insert-timestamp', bunch)
 #@+node:ekr.20040205071616.6: ** is_subnodesOK
 def is_subnodesOK(v):
 

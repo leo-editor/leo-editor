@@ -287,7 +287,9 @@ class AutoCompleterClass:
     #@+node:ekr.20110512212836.14469: *4* ac.exit
     def exit(self):
 
-        c = self.c
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
+        if trace: g.trace('(AutoCompleterClass)')
+        c, p, u = self.c, self.c.p, self.c.undoer
         w = self.w or c.frame.body.wrapper
         c.k.keyboardQuit()
         if self.use_qcompleter:
@@ -301,9 +303,12 @@ class AutoCompleterClass:
         c.widgetWantsFocusNow(w)
         i, j = w.getSelectionRange()
         w.setSelectionRange(i, j, insert=j)
-        # Was in finish.
-        c.frame.body.onBodyChanged('end-auto-completer')
-        c.recolor()
+        newText = w.getAllText()
+        if p.b == newText:
+            return
+        bunch = u.beforeChangeBody(p)
+        p.v.b = newText  # p.b would cause a redraw.
+        u.afterChangeBody(p, 'auto-completer', bunch)
 
     finish = exit
     abort = exit
@@ -847,8 +852,10 @@ class AutoCompleterClass:
     #@+node:ekr.20061031131434.39: *4* ac.insert_general_char
     def insert_general_char(self, ch):
 
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         k, w = self.k, self.w
         if g.isWordChar(ch):
+            if trace: g.trace('ch', repr(ch))
             self.insert_string(ch)
             common_prefix, prefix, aList = self.compute_completion_list()
             if not aList:
@@ -860,12 +867,14 @@ class AutoCompleterClass:
             elif self.auto_tab and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix) :]
                 ins = w.getInsertPoint()
+                if trace: g.trace('extend', repr(extend))
                 w.insert(ins, extend)
             return
         if ch == '(' and k.enable_calltips:
             # This calls self.exit if the '(' is valid.
             self.calltip()
         else:
+            if trace: g.trace('ch', repr(ch))
             self.insert_string(ch)
             self.exit()
     #@+node:ekr.20061031131434.31: *4* ac.insert_string
@@ -928,7 +937,10 @@ class AutoCompleterClass:
             g.es(*args, **keys)
     #@+node:ekr.20110511133940.14561: *4* ac.show_completion_list & helpers
     def show_completion_list(self, common_prefix, prefix, tabList):
+
+        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         c = self.c
+        if trace: g.trace('k.show_completion_list')
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
         # "!" toggles self.verbose.
@@ -3093,6 +3105,10 @@ class KeyHandlerClass:
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
         """
+        #
+        # #1757: Leo's default vim bindings make heavy use of modes.
+        #        Retain these traces!
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         k = self
         state = k.state.kind
         stroke = event.stroke
@@ -3102,11 +3118,13 @@ class KeyHandlerClass:
         # First, honor minibuffer bindings for all except user modes.
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
+            if trace: g.trace(state, 'k.handleInputShortcut', stroke)
             return True
         if state in (
             'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'
         ):
             if k.handleMiniBindings(event, state, stroke):
+                if trace: g.trace(state, 'k.handleMiniBindings', stroke)
                 return True
         #
         # Second, honor general modes.
@@ -3115,19 +3133,26 @@ class KeyHandlerClass:
             # New in Leo 5.8: Only call k.getArg for keys it can handle.
             if k.isPlainKey(stroke):
                 k.getArg(event, stroke=stroke)
+                if trace: g.trace(state, 'k.isPlain: getArg', stroke)
                 return True
             if stroke.s in ('Escape', 'Tab', 'BackSpace'):
                 k.getArg(event, stroke=stroke)
+                if trace: g.trace(state, f"{stroke.s!r}: getArg", stroke)
                 return True
             return False
         if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
+            if trace: g.trace(state, 'k.getFileName', stroke)
             return True
         if state in ('full-command', 'auto-complete'):
             val = k.callStateFunction(event)
                 # Do the default state action.
                 # Calls end-command.
-            return val != 'do-standard-keys'
+            if val != 'do-standard-keys':
+                handler = k.state.handler and k.state.handler.__name__ or '<no handler>'
+                if trace: g.trace(state, 'k.callStateFunction:', handler, stroke)
+                return True
+            return False
         #
         # Third, pass keys to user modes.
         #
@@ -3142,6 +3167,7 @@ class KeyHandlerClass:
                     func=bi.func,
                     modeName=state,
                     nextMode=bi.nextMode)
+                if trace: g.trace(state, 'k.generalModeHandler', stroke)
                 return True
             # Unbound keys end mode.
             k.endMode()
@@ -3152,6 +3178,9 @@ class KeyHandlerClass:
         handler = k.getStateHandler()
         if handler:
             handler(event)
+        if trace:
+            handler_name = handler and handler.__name__ or '<no handler>'
+        g.trace(state, 'handler:', handler_name, stroke)
         return True
     #@+node:ekr.20061031131434.108: *6* k.callStateFunction
     def callStateFunction(self, event):
@@ -3276,7 +3305,6 @@ class KeyHandlerClass:
             w.setSelectionRange(i, j, insert=j)
             w.setYScrollPosition(pos)
             u.afterChangeNodeContents(p, 'change shortcut', udata)
-            c.frame.body.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')
             k.editShortcut_do_bind_helper(stroke, cmdname)
             return
@@ -3356,9 +3384,16 @@ class KeyHandlerClass:
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, stroke, w):
 
-        k = self
+        k, state = self, self.unboundKeyAction
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         if not g.assert_is(stroke, g.KeyStroke):
             return None
+        if 0:
+            # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
+            #        Valid because mode bindings have already been handled.
+            if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
+                if trace: g.trace('KILL binding', stroke)
+                return None
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
@@ -3374,14 +3409,15 @@ class KeyHandlerClass:
             ('text', None),
             ('all', None),
         ):
-            val = k.getBindingHelper(key, name, stroke, w)
-            if val:
-                return val
+            bi = k.getBindingHelper(key, name, stroke, w)
+            if bi:
+                return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper
     def getBindingHelper(self, key, name, stroke, w):
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
+        # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
         #
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction

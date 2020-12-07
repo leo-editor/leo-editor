@@ -458,8 +458,6 @@ class VimCommands:
         self.j_changed = True
             # False if the .leo file's change indicator should be
             # cleared after doing the j,j abbreviation.
-    #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
-    # Called from command handlers or the ctor.
     #@+node:ekr.20150509040011.1: *3*  vc.cmd (decorator)
     def cmd(name):
         """Command decorator for the VimCommands class."""
