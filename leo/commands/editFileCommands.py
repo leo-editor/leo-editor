@@ -511,86 +511,6 @@ class GitDiffController:
         self.root = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
-    #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
-    def diff_two_branches(self, branch1, branch2, fn, directory=None):
-        """Create an outline describing the git diffs for fn."""
-        c = self.c
-        if not self.set_directory(directory):
-            return
-        self.root = p = c.lastTopLevel().insertAfter()
-        p.h = f"git-diff-branches {branch1} {branch2}"
-        s1 = self.get_file_from_branch(branch1, fn)
-        s2 = self.get_file_from_branch(branch2, fn)
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        diff_list = list(difflib.unified_diff(lines1, lines2, branch1, branch2,))
-        diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
-        self.file_node = self.create_file_node(diff_list, fn)
-        if c.looksLikeDerivedFile(fn):
-            c1 = self.make_at_file_outline(fn, s1, branch1)
-            c2 = self.make_at_file_outline(fn, s2, branch2)
-        else:
-            root = self.find_file(fn)
-            if root:
-                c1 = self.make_at_clean_outline(fn, root, s1, branch1)
-                c2 = self.make_at_clean_outline(fn, root, s2, branch2)
-            else:
-                c1 = c2 = None
-        if c1 and c2:
-            self.make_diff_outlines(c1, c2, fn)
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-        self.finish()
-    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
-        """
-        Create an outline describing the git diffs for all files changed
-        between rev1 and rev2.
-        """
-        c = self.c
-        if not self.set_directory(directory):
-            return
-        # Get list of changed files.
-        files = self.get_files(rev1, rev2)
-        g.es_print(f"diffing {len(files)} files. This may take awhile")
-        # Create the root node.
-        self.root = c.lastTopLevel().insertAfter()
-        self.root.h = f"git diff revs: {rev1} {rev2}"
-        self.root.b = '@ignore\n@nosearch\n'
-        # Create diffs of all files.
-        for fn in files:
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-        self.finish()
-    #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
-    def git_diff(self, directory=None, rev1='HEAD', rev2=''):
-        """The main line of the git diff command."""
-        if not self.set_directory(directory):
-            return
-        #
-        # Diff the given revs.
-        ok = self.diff_revs(rev1, rev2)
-        if ok: return
-        #
-        # Go back at most 5 revs...
-        n1, n2 = 1, 0
-        while n1 <= 5:
-            ok = self.diff_revs(
-                # Clearer w/o f-strings.
-                rev1=f"HEAD@{{{n1}}}",
-                rev2=f"HEAD@{{{n2}}}")
-            if ok: return
-            n1, n2 = n1 + 1, n2 + 1
-        if not ok:
-            g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
-    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
-    def diff_revs(self, rev1, rev2):
-        """Diff all files given by rev1 and rev2."""
-        files = self.get_files(rev1, rev2)
-        if files:
-            self.root = self.create_root(rev1, rev2)
-            for fn in files:
-                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-            self.finish()
-        return bool(files)
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file & helpers
     def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
         """
@@ -809,6 +729,105 @@ class GitDiffController:
                 root=hidden_root,
             )
         return hidden_c
+    #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
+    def diff_pull_request(self, branch_name, base_branch_name='devel', directory=None):
+        """
+        Create a Leonine version of the diffs that would be
+        produced by a pull request between two branches.
+        """
+        if not directory:
+            directory = os.path.join(g.app.loadDir, '..', '..')
+        aList = g.execGitCommand(f"git rev-parse devel", directory)
+        if aList:
+            devel_rev = aList[0]
+            devel_rev = devel_rev[:8]
+            self.diff_two_revs(
+                rev1=devel_rev,  # Before: Latest devel commit.
+                rev2='HEAD',     # After: Lastest branch commit
+                directory=directory,
+            )
+        else:
+            g.es_print('FAIL: git rev-parse devel')
+    #@+node:ekr.20180506064102.10: *4* gdc.diff_two_branches
+    def diff_two_branches(self, branch1, branch2, fn, directory=None):
+        """Create an outline describing the git diffs for fn."""
+        c = self.c
+        if not self.set_directory(directory):
+            return
+        self.root = p = c.lastTopLevel().insertAfter()
+        p.h = f"git-diff-branches {branch1} {branch2}"
+        s1 = self.get_file_from_branch(branch1, fn)
+        s2 = self.get_file_from_branch(branch2, fn)
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        diff_list = list(difflib.unified_diff(lines1, lines2, branch1, branch2,))
+        diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+        self.file_node = self.create_file_node(diff_list, fn)
+        if c.looksLikeDerivedFile(fn):
+            c1 = self.make_at_file_outline(fn, s1, branch1)
+            c2 = self.make_at_file_outline(fn, s2, branch2)
+        else:
+            root = self.find_file(fn)
+            if root:
+                c1 = self.make_at_clean_outline(fn, root, s1, branch1)
+                c2 = self.make_at_clean_outline(fn, root, s2, branch2)
+            else:
+                c1 = c2 = None
+        if c1 and c2:
+            self.make_diff_outlines(c1, c2, fn)
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+        self.finish()
+    #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
+    def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
+        """
+        Create an outline describing the git diffs for all files changed
+        between rev1 and rev2.
+        """
+        c = self.c
+        if not self.set_directory(directory):
+            return
+        # Get list of changed files.
+        files = self.get_files(rev1, rev2)
+        g.es_print(f"diffing {len(files)} files. This may take awhile")
+        # Create the root node.
+        self.root = c.lastTopLevel().insertAfter()
+        self.root.h = f"git diff revs: {rev1} {rev2}"
+        self.root.b = '@ignore\n@nosearch\n'
+        # Create diffs of all files.
+        for fn in files:
+            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+        self.finish()
+    #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
+    def git_diff(self, directory=None, rev1='HEAD', rev2=''):
+        """The main line of the git diff command."""
+        if not self.set_directory(directory):
+            return
+        #
+        # Diff the given revs.
+        ok = self.diff_revs(rev1, rev2)
+        if ok: return
+        #
+        # Go back at most 5 revs...
+        n1, n2 = 1, 0
+        while n1 <= 5:
+            ok = self.diff_revs(
+                # Clearer w/o f-strings.
+                rev1=f"HEAD@{{{n1}}}",
+                rev2=f"HEAD@{{{n2}}}")
+            if ok: return
+            n1, n2 = n1 + 1, n2 + 1
+        if not ok:
+            g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
+    #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
+    def diff_revs(self, rev1, rev2):
+        """Diff all files given by rev1 and rev2."""
+        files = self.get_files(rev1, rev2)
+        if files:
+            self.root = self.create_root(rev1, rev2)
+            for fn in files:
+                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+            self.finish()
+        return bool(files)
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1, rev2):
