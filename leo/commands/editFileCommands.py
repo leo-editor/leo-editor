@@ -729,7 +729,7 @@ class GitDiffController:
                 root=hidden_root,
             )
         return hidden_c
-    #@+node:ekr.20201208114431.1: *4* gdc.diff_pull_request
+    #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, branch_name, base_branch_name='devel', directory=None):
         """
         Create a Leonine version of the diffs that would be
