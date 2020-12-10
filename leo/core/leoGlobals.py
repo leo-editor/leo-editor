@@ -5133,16 +5133,21 @@ def execGitCommand(command, directory=None):
     if '\n' in command:
         g.trace('removing newline from', command)
         command = command.replace('\n', '')
+    # #1777: Save/restore os.curdir
+    old_dir = os.path.normpath(os.path.abspath(os.curdir))
     if directory:
         os.chdir(directory)
-    p = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.PIPE,
-        stderr=None,  # Shows error traces.
-        shell=False,
-    )
-    out, err = p.communicate()
-    lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    try:
+        p = subprocess.Popen(
+            shlex.split(command),
+            stdout=subprocess.PIPE,
+            stderr=None,  # Shows error traces.
+            shell=False,
+        )
+        out, err = p.communicate()
+        lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    finally:
+        os.chdir(old_dir)
     return lines
 #@+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(c,
