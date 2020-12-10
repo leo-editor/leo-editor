@@ -488,7 +488,7 @@ class ExternalFilesController:
         if _is_leo:
             s = '\n'.join([
                 f"{g.splitLongFileName(path)} has changed outside Leo.",
-                'Overwrite it?'
+                'Reload it?'
             ])
         else:
             s = '\n'.join([
