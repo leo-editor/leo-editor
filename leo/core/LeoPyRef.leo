@@ -124,6 +124,7 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
+<v t="ekr.20201208114843.1"><vh>script: diff-pr</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
 <v t="ekr.20200222083959.1"><vh>script: start loggin</vh></v>
@@ -159,6 +160,7 @@
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
+<v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
 <v t="ekr.20180212072657.2"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
@@ -1674,13 +1676,14 @@ def openMyLeoSettings(self, event=None):
     return createMyLeoSettings(c)
 </t>
 <t tx="ekr.20031218072017.3029">def readAtFileNodes(self):
+    
     c, p = self.c, self.c.p
     c.endEditing()
     c.atFileCommands.readAll(p, force=True)
     c.redraw()
     # Force an update of the body pane.
     c.setBodyString(p, p.b)  # Not a do-nothing!
-    c.frame.body.onBodyChanged(undoType=None)
+    
 </t>
 <t tx="ekr.20031218072017.3043">def saveAs(self, fileName):
     c = self.c
@@ -2080,11 +2083,13 @@ def canonicalizeTranslatedMenuName(self, name):
 </t>
 <t tx="ekr.20040205071616.5">def insertBodystamp (c,v):
 
-    w = c.frame.body.wrapper
+    p, u, w = c.p, c.undoer, c.frame.body.wrapper
     stamp = mnOKstamp() + '\n'
+    bunch = u.beforeChangeBody(p)
     ins = w.getInsertPoint()
     w.insert(ins,stamp)
-    c.frame.body.onBodyChanged('insert-timestamp')
+    p.v.b = w.getAllText()  # p.b would cause a redraw.
+    u.afterChangeBody(p, 'insert-timestamp', bunch)
 </t>
 <t tx="ekr.20040205071616.9">def insertUser (self,event=None):
     """Handle the Insert User command."""
@@ -5635,6 +5640,11 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     atTest.contract()
     # Don't redraw.
 </t>
+<t tx="ekr.20061031131434.10">@cmd('auto-complete-force')
+def autoCompleteForce(self, event=None):
+    """Show autocompletion, even if autocompletion is not presently enabled."""
+    return self.autoComplete(event, force=True)
+</t>
 <t tx="ekr.20061031131434.100">def addModeCommands(self):
     """Add commands created by @mode settings to c.commandsDict."""
     k = self; c = k.c
@@ -5758,6 +5768,64 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     # Call the state handler.
     val = k.state.handler(event)
     return val
+</t>
+<t tx="ekr.20061031131434.11">def auto_completer_state_handler(self, event):
+    """Handle all keys while autocompleting."""
+    c, k, tag = self.c, self.k, 'auto-complete'
+    state = k.getState(tag)
+    ch = event.char if event else ''
+    stroke = event.stroke if event else ''
+    is_plain = k.isPlainKey(stroke)
+    if state == 0:
+        c.frame.log.clearTab(self.tabName)
+        common_prefix, prefix, tabList = self.compute_completion_list()
+        if tabList:
+            k.setState(tag, 1, handler=self.auto_completer_state_handler)
+        else:
+            self.exit()
+    elif ch in ('\n', 'Return'):
+        self.exit()
+    elif ch == 'Escape':
+        self.exit()
+    elif ch in ('\t', 'Tab'):
+        self.compute_completion_list()
+    elif ch in ('\b', 'BackSpace'):
+        self.do_backspace()
+    elif ch == '.':
+        self.insert_string('.')
+        self.compute_completion_list()
+    elif ch == '?':
+        self.info()
+    elif ch == '!':
+        # Toggle between verbose and brief listing.
+        self.verbose = not self.verbose
+        kind = 'ON' if self.verbose else 'OFF'
+        message = f"verbose completions {kind}"
+        g.es_print(message)
+        # This doesn't work because compute_completion_list clears the autocomplete tab.
+        # self.put('', message, tabName=self.tabName)
+        # This is almost invisible: the fg='red' is not honored.
+        c.frame.putStatusLine(message, fg='red')
+        self.compute_completion_list()
+    # elif ch == 'Down' and hasattr(self,'onDown'):
+        # self.onDown()
+    # elif ch == 'Up' and hasattr(self,'onUp'):
+        # self.onUp()
+    elif is_plain and ch and ch in string.printable:
+        self.insert_general_char(ch)
+    elif stroke == k.autoCompleteForceKey:
+        # This is probably redundant because completions will exist.
+        # However, it doesn't hurt, and it may be useful rarely.
+        common_prefix, prefix, tabList = self.compute_completion_list()
+        if tabList:
+            self.show_completion_list(common_prefix, prefix, tabList)
+        else:
+            g.warning('No completions')
+            self.exit()
+    else:
+        self.abort()
+        return 'do-standard-keys'
+    return None
 </t>
 <t tx="ekr.20061031131434.111">@cmd('full-command')
 def fullCommand(
@@ -5933,6 +6001,42 @@ legend:
     k.showStateAndMode()
     return result  # for unit test.
 </t>
+<t tx="ekr.20061031131434.12">@cmd('disable-autocompleter')
+def disableAutocompleter(self, event=None):
+    """Disable the autocompleter."""
+    self.k.enable_autocompleter = False
+    self.showAutocompleterStatus()
+
+@cmd('disable-calltips')
+def disableCalltips(self, event=None):
+    """Disable calltips."""
+    self.k.enable_calltips = False
+    self.showCalltipsStatus()
+
+@cmd('enable-autocompleter')
+def enableAutocompleter(self, event=None):
+    """Enable the autocompleter."""
+    self.k.enable_autocompleter = True
+    self.showAutocompleterStatus()
+
+@cmd('enable-calltips')
+def enableCalltips(self, event=None):
+    """Enable calltips."""
+    self.k.enable_calltips = True
+    self.showCalltipsStatus()
+
+@cmd('toggle-autocompleter')
+def toggleAutocompleter(self, event=None):
+    """Toggle whether the autocompleter is enabled."""
+    self.k.enable_autocompleter = not self.k.enable_autocompleter
+    self.showAutocompleterStatus()
+
+@cmd('toggle-calltips')
+def toggleCalltips(self, event=None):
+    """Toggle whether calltips are enabled."""
+    self.k.enable_calltips = not self.k.enable_calltips
+    self.showCalltipsStatus()
+</t>
 <t tx="ekr.20061031131434.120">def printBindingsHelper(self, result, data, prefix):
     """Helper for k.printBindings"""
     c, lm = self.c, g.app.loadManager
@@ -6053,6 +6157,21 @@ def toggleInputState(self, event=None):
         event = g.app.gui.create_key_event(c)
     c.doCommandByName(commandName, event)
 </t>
+<t tx="ekr.20061031131434.13">@cmd('show-calltips')
+def showCalltips(self, event=None, force=False):
+    """Show the calltips at the cursor."""
+    c, k = self.c, self.c.k
+    w = event and event.w
+    if not w:
+        return
+    is_headline = c.widget_name(w).startswith('head')
+    # Insert the calltip if possible, but not in headlines.
+    if (k.enable_calltips or force) and not is_headline:
+        self.w = w
+        self.calltip()
+    else:
+        c.insertCharFromEvent(event)
+</t>
 <t tx="ekr.20061031131434.130">@cmd('keyboard-quit')
 def keyboardQuit(self, event=None, setFocus=True):
     """Clears the state and the minibuffer label."""
@@ -6133,6 +6252,11 @@ def keyboardQuit(self, event=None, setFocus=True):
     # c = self.c
     # c.widgetWantsFocus(c.miniBufferWidget)
 </t>
+<t tx="ekr.20061031131434.14">@cmd('show-calltips-force')
+def showCalltipsForce(self, event=None):
+    """Show the calltips at the cursor, even if calltips are not presently enabled."""
+    return self.showCalltips(event, force=True)
+</t>
 <t tx="ekr.20061031131434.145"></t>
 <t tx="ekr.20061031131434.146">def masterKeyHandler(self, event):
     """The master key handler for almost all key bindings."""
@@ -6164,6 +6288,20 @@ def keyboardQuit(self, event=None, setFocus=True):
         return
     # Handle the character given by event *without* executing any command that might be bound to it.
     c.insertCharFromEvent(event)
+</t>
+<t tx="ekr.20061031131434.15">def showAutocompleterStatus(self):
+    """Show the autocompleter status."""
+    k = self.k
+    if not g.unitTesting:
+        s = f"autocompleter {'On' if k.enable_autocompleter else 'Off'}"
+        g.red(s)
+
+def showCalltipsStatus(self):
+    """Show the autocompleter status."""
+    k = self.k
+    if not g.unitTesting:
+        s = f"calltips {'On'}" if k.enable_calltips else 'Off'
+        g.red(s)
 </t>
 <t tx="ekr.20061031131434.152">def handleMiniBindings(self, event, state, stroke):
     """Find and execute commands bound to the event."""
@@ -6245,6 +6383,7 @@ def keyboardQuit(self, event=None, setFocus=True):
                     stroke=stroke)
                 k.masterBindingsDict[modeName] = d2
 </t>
+<t tx="ekr.20061031131434.16"></t>
 <t tx="ekr.20061031131434.160">def enterNamedMode(self, event, commandName):
     k = self; c = k.c
     modeName = commandName[6:]
@@ -6377,6 +6516,30 @@ def modeHelp(self, event):
                     return stroke
     return None
 </t>
+<t tx="ekr.20061031131434.18">def appendTabName(self, word):
+    self.setTabName(self.tabName + '.' + word)
+
+def beginTabName(self, word):
+    self.setTabName('AutoComplete ' + word)
+
+def clearTabName(self):
+    self.setTabName('AutoComplete ')
+
+def popTabName(self):
+    s = self.tabName
+    i = s.rfind('.', 0, -1)
+    if i &gt; -1:
+        self.setTabName(s[0:i])
+
+# Underscores are not valid in Pmw tab names!
+
+def setTabName(self, s):
+    c = self.c
+    if self.tabName:
+        c.frame.log.deleteTab(self.tabName)
+    self.tabName = s.replace('_', '') or ''
+    c.frame.log.clearTab(self.tabName)
+</t>
 <t tx="ekr.20061031131434.181"></t>
 <t tx="ekr.20061031131434.182">def isPlainKey(self, stroke):
     """Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key."""
@@ -6490,6 +6653,202 @@ def modeHelp(self, event):
         k.clearState()
     # k.showStateAndMode()
 </t>
+<t tx="ekr.20061031131434.20">def calltip(self):
+    """Show the calltips for the present prefix.
+    ch is '(' if the user has just typed it.
+    """
+    obj, prefix = self.get_object()
+    if obj:
+        self.calltip_success(prefix, obj)
+    else:
+        self.calltip_fail(prefix)
+    self.exit()
+</t>
+<t tx="ekr.20061031131434.28">def compute_completion_list(self):
+    """Return the autocompleter completion list."""
+    prefix = self.get_autocompleter_prefix()
+    key, options = self.get_cached_options(prefix)
+    if not options:
+        options = self.get_completions(prefix)
+    tabList, common_prefix = g.itemsMatchingPrefixInList(
+        prefix, options, matchEmptyPrefix=False)
+    if not common_prefix:
+        tabList, common_prefix = g.itemsMatchingPrefixInList(
+            prefix, options, matchEmptyPrefix=True)
+    if tabList:
+        self.show_completion_list(common_prefix, prefix, tabList)
+    return common_prefix, prefix, tabList
+</t>
+<t tx="ekr.20061031131434.29">def do_backspace(self):
+    """Delete the character and recompute the completion list."""
+    c, w = self.c, self.w
+    c.bodyWantsFocusNow()
+    i = w.getInsertPoint()
+    if i &lt;= 0:
+        self.exit()
+        return
+    w.delete(i - 1, i)
+    w.setInsertPoint(i - 1)
+    if i &lt;= 1:
+        self.exit()
+    else:
+        # Update the list. Abort if there is no prefix.
+        common_prefix, prefix, tabList = self.compute_completion_list()
+        if not prefix:
+            self.exit()
+</t>
+<t tx="ekr.20061031131434.31">def insert_string(self, s, select=False):
+    """
+    Insert an auto-completion string s at the insertion point.
+    
+    Leo 6.4. This *part* of auto-completion is no longer undoable.
+    """
+    c, w = self.c, self.w
+    if not g.isTextWrapper(w):
+        return
+    c.widgetWantsFocusNow(w)
+    #
+    # Don't make this undoable.
+        # oldText = w.getAllText()
+        # oldSel = w.getSelectionRange()
+        # bunch = u.beforeChangeBody(p)
+    i = w.getInsertPoint()
+    w.insert(i, s)
+    if select:
+        j = i + len(s)
+        w.setSelectionRange(i, j, insert=j)
+    #
+    # Don't make this undoable.
+        # if 0:
+            # u.doTyping(p, 'Typing',
+                # oldSel=oldSel,
+                # oldText=oldText,
+                # newText=w.getAllText(),
+                # newInsert=w.getInsertPoint(), 
+                # newSel=w.getSelectionRange())
+        # else:
+            # u.afterChangeBody(p, 'auto-complete', bunch)
+    if self.use_qcompleter and self.qw:
+        c.widgetWantsFocusNow(self.qw.leo_qc)
+</t>
+<t tx="ekr.20061031131434.38">def info(self):
+    """Show the docstring for the present completion."""
+    c = self.c
+    obj, prefix = self.get_object()
+    c.frame.log.clearTab('Info', wrap='word')
+    put = lambda s: self.put('', s, tabName='Info')
+    put(prefix)
+    try:
+        argspec = inspect.getargspec(obj)
+        # uses None instead of empty list
+        argn = len(argspec.args or [])
+        defn = len(argspec.defaults or [])
+        put("args:")
+        simple_args = argspec.args[: argn - defn]
+        if not simple_args:
+            put('    (none)')
+        else:
+            put('    ' + ', '.join(' ' + i for i in simple_args))
+        put("keyword args:")
+        if not argspec.defaults:
+            put('    (none)')
+        for i in range(defn):
+            arg = argspec.args[-defn + i]
+            put(f"    {arg} = {repr(argspec.defaults[i])}")
+        if argspec.varargs:
+            put("varargs: *" + argspec.varargs)
+        if argspec.keywords:
+            put("keywords: **" + argspec.keywords)
+        put('\n')  # separate docstring
+    except TypeError:
+        put('\n')  # not a callable
+    doc = inspect.getdoc(obj)
+    put(doc if doc else "No docstring for " + repr(prefix))
+</t>
+<t tx="ekr.20061031131434.39">def insert_general_char(self, ch):
+
+    trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
+    k, w = self.k, self.w
+    if g.isWordChar(ch):
+        if trace: g.trace('ch', repr(ch))
+        self.insert_string(ch)
+        common_prefix, prefix, aList = self.compute_completion_list()
+        if not aList:
+            if self.forbid_invalid:
+                # Delete the character we just inserted.
+                self.do_backspace()
+        # @bool auto_tab_complete is deprecated.
+        # Auto-completion makes no sense if it is False.
+        elif self.auto_tab and len(common_prefix) &gt; len(prefix):
+            extend = common_prefix[len(prefix) :]
+            ins = w.getInsertPoint()
+            if trace: g.trace('extend', repr(extend))
+            w.insert(ins, extend)
+        return
+    if ch == '(' and k.enable_calltips:
+        # This calls self.exit if the '(' is valid.
+        self.calltip()
+    else:
+        if trace: g.trace('ch', repr(ch))
+        self.insert_string(ch)
+        self.exit()
+</t>
+<t tx="ekr.20061031131434.4">class AutoCompleterClass:
+    """A class that inserts autocompleted and calltip text in text widgets.
+    This class shows alternatives in the tabbed log pane.
+
+    The keyHandler class contains hooks to support these characters:
+    invoke-autocompleter-character (default binding is '.')
+    invoke-calltips-character (default binding is '(')
+    """
+    @others
+</t>
+<t tx="ekr.20061031131434.46">def start(self, event):
+    # We don't need to clear this now that we don't use ContextSniffer.
+    c = self.c
+    if c.config.getBool('use-jedi', default=True):
+        self.completionsDict = {}
+    if self.use_qcompleter:
+        self.init_qcompleter(event)
+    else:
+        self.init_tabcompleter(event)
+</t>
+<t tx="ekr.20061031131434.5">def __init__(self, k):
+    """Ctor for AutoCompleterClass class."""
+    # Ivars...
+    self.c = k.c
+    self.k = k
+    self.force = None
+    self.language = None
+    self.namespaces = []
+        # additional namespaces to search for objects, other code
+        # can append namespaces to this to extend scope of search
+    self.qw = None
+        # The object that supports qcompletion methods.
+    self.tabName = None
+        # The name of the main completion tab.
+    self.verbose = False
+        # True: print all members, regardless of how many there are.
+    self.w = None
+        # The widget that gets focus after autocomplete is done.
+    self.warnings = {}
+        # Keys are language names.
+    # Codewise pre-computes...
+    self.codewiseSelfList = []
+        # The (global) completions for "self."
+    self.completionsDict = {}
+        # Keys are prefixes, values are completion lists.
+    self.reloadSettings()
+
+def reloadSettings(self):
+    c = self.c
+    self.auto_tab = c.config.getBool('auto-tab-complete', True)
+    self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
+    self.use_jedi = c.config.getBool('use-jedi', False)
+    self.use_qcompleter = c.config.getBool('use-qcompleter', False)
+        # True: show results in autocompleter tab.
+        # False: show results in a QCompleter widget.
+</t>
 <t tx="ekr.20061031131434.74">class KeyHandlerClass:
     """
     A class to support emacs-style commands.
@@ -6590,6 +6949,7 @@ def modeHelp(self, event):
     self.modeWidget = None
     self.silentMode = False
 </t>
+<t tx="ekr.20061031131434.8"></t>
 <t tx="ekr.20061031131434.80">def finishCreate(self):
     """
     Complete the construction of the keyHandler class.
@@ -6678,6 +7038,29 @@ def modeHelp(self, event):
         return False
 
 bindShortcut = bindKey  # For compatibility
+</t>
+<t tx="ekr.20061031131434.9">@cmd('auto-complete')
+def autoComplete(self, event=None, force=False):
+    """An event handler for autocompletion."""
+    c, k = self.c, self.k
+    # pylint: disable=consider-using-ternary
+    w = event and event.w or c.get_focus()
+    self.force = force
+    if k.unboundKeyAction not in ('insert', 'overwrite'):
+        return
+    if not force:
+        # Ctrl-period does *not* insert a period,
+        # but plain periods *must* be inserted!
+        c.insertCharFromEvent(event)
+    if c.exists:
+        c.frame.updateStatusLine()
+    # Allow autocompletion only in the body pane.
+    if not c.widget_name(w).lower().startswith('body'):
+        return
+    self.language = g.scanForAtLanguage(c, c.p)
+    if w and (k.enable_autocompleter or force):
+        self.w = w
+        self.start(event)
 </t>
 <t tx="ekr.20061031131434.92">def remove_conflicting_definitions(self, aList, commandName, pane, shortcut):
 
@@ -8438,9 +8821,16 @@ gnx = property(
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20091230094319.6240">def getPaneBinding(self, stroke, w):
 
-    k = self
+    k, state = self, self.unboundKeyAction
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
     if not g.assert_is(stroke, g.KeyStroke):
         return None
+    if 0:
+        # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
+        #        Valid because mode bindings have already been handled.
+        if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
+            if trace: g.trace('KILL binding', stroke)
+            return None
     for key, name in (
         # Order here is similar to bindtags order.
         ('command', None),
@@ -8456,9 +8846,9 @@ gnx = property(
         ('text', None),
         ('all', None),
     ):
-        val = k.getBindingHelper(key, name, stroke, w)
-        if val:
-            return val
+        bi = k.getBindingHelper(key, name, stroke, w)
+        if bi:
+            return bi
     return None
 </t>
 <t tx="ekr.20091230094319.6244">def doMode(self, event):
@@ -8466,6 +8856,10 @@ gnx = property(
     Handle mode bindings.
     Return True if k.masterKeyHandler should return.
     """
+    #
+    # #1757: Leo's default vim bindings make heavy use of modes.
+    #        Retain these traces!
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
     k = self
     state = k.state.kind
     stroke = event.stroke
@@ -8475,11 +8869,13 @@ gnx = property(
     # First, honor minibuffer bindings for all except user modes.
     if state == 'input-shortcut':
         k.handleInputShortcut(event, stroke)
+        if trace: g.trace(state, 'k.handleInputShortcut', stroke)
         return True
     if state in (
         'getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'
     ):
         if k.handleMiniBindings(event, state, stroke):
+            if trace: g.trace(state, 'k.handleMiniBindings', stroke)
             return True
     #
     # Second, honor general modes.
@@ -8488,19 +8884,26 @@ gnx = property(
         # New in Leo 5.8: Only call k.getArg for keys it can handle.
         if k.isPlainKey(stroke):
             k.getArg(event, stroke=stroke)
+            if trace: g.trace(state, 'k.isPlain: getArg', stroke)
             return True
         if stroke.s in ('Escape', 'Tab', 'BackSpace'):
             k.getArg(event, stroke=stroke)
+            if trace: g.trace(state, f"{stroke.s!r}: getArg", stroke)
             return True
         return False
     if state in ('getFileName', 'get-file-name'):
         k.getFileName(event)
+        if trace: g.trace(state, 'k.getFileName', stroke)
         return True
     if state in ('full-command', 'auto-complete'):
         val = k.callStateFunction(event)
             # Do the default state action.
             # Calls end-command.
-        return val != 'do-standard-keys'
+        if val != 'do-standard-keys':
+            handler = k.state.handler and k.state.handler.__name__ or '&lt;no handler&gt;'
+            if trace: g.trace(state, 'k.callStateFunction:', handler, stroke)
+            return True
+        return False
     #
     # Third, pass keys to user modes.
     #
@@ -8515,6 +8918,7 @@ gnx = property(
                 func=bi.func,
                 modeName=state,
                 nextMode=bi.nextMode)
+            if trace: g.trace(state, 'k.generalModeHandler', stroke)
             return True
         # Unbound keys end mode.
         k.endMode()
@@ -8525,6 +8929,9 @@ gnx = property(
     handler = k.getStateHandler()
     if handler:
         handler(event)
+    if trace:
+        handler_name = handler and handler.__name__ or '&lt;no handler&gt;'
+    g.trace(state, 'handler:', handler_name, stroke)
     return True
 </t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.
@@ -8586,6 +8993,16 @@ gnx = property(
     return result
 </t>
 <t tx="ekr.20101004082701.5674"></t>
+<t tx="ekr.20101101175644.5891">def put(self, *args, **keys):
+    """Put s to the given tab.
+
+    May be overridden in subclasses."""
+    # print('autoCompleter.put',args,keys)
+    if g.unitTesting:
+        pass
+    else:
+        g.es(*args, **keys)
+</t>
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
 </t>
 <t tx="ekr.20101110150056.9457"></t>
@@ -8656,6 +9073,20 @@ def update(self, tag, keywords):
         g.trace(f"ignoring default_editing_state: {action}")
         action = 'insert'
     self.defaultEditingAction = action
+</t>
+<t tx="ekr.20110314115639.14269">def is_leo_source_file(self):
+    """Return True if this is one of Leo's source files."""
+    c = self.c
+    table = (z.lower() for z in (
+        'leoDocs.leo',
+        'LeoGui.leo', 'LeoGuiPluginsRef.leo',
+        # 'leoPlugins.leo', 'leoPluginsRef.leo',
+        'leoPy.leo', 'leoPyRef.leo',
+        'myLeoSettings.leo', 'leoSettings.leo',
+        'ekr.leo',
+        # 'test.leo',
+    ))
+    return c.shortFileName().lower() in table
 </t>
 <t tx="ekr.20110320120020.14476">def must_update(self, keywords):
     '''Return True if we must update the rendering pane.'''
@@ -9025,9 +9456,266 @@ def update_html(self, s, keywords):
     return pc.w
 </t>
 <t tx="ekr.20110322031455.5765"></t>
+<t tx="ekr.20110509064011.14556">def attr_matches(self, s, namespace):
+    """Compute matches when string s is of the form name.name....name.
+
+    Evaluates s using eval(s,namespace)
+
+    Assuming the text is of the form NAME.NAME....[NAME], and is evaluatable in
+    the namespace, it will be evaluated and its attributes (as revealed by
+    dir()) are used as possible completions.
+
+    For class instances, class members are are also considered.)
+
+    **Warning**: this can still invoke arbitrary C code, if an object
+    with a __getattr__ hook is evaluated.
+
+    """
+    # Seems to work great. Catches things like ''.&lt;tab&gt;
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", s)
+    if not m:
+        return []
+    expr, attr = m.group(1, 3)
+    try:
+        safe_expr = self.strip_brackets(expr)
+        obj = eval(safe_expr, namespace)
+    except Exception:
+        return []
+    # Build the result.
+    words = dir(obj)
+    n = len(attr)
+    result = [f"{expr}.{w}" for w in words if w[:n] == attr]
+    return result
+</t>
+<t tx="ekr.20110509064011.14557">def get_leo_completions(self, prefix):
+    """Return completions in an environment defining c, g and p."""
+    aList = []
+    for d in self.namespaces + [self.get_leo_namespace(prefix)]:
+        aList.extend(self.attr_matches(prefix, d))
+    aList.sort()
+    return aList
+</t>
+<t tx="ekr.20110509064011.14561">def get_autocompleter_prefix(self):
+    # Only the body pane supports auto-completion.
+    w = self.c.frame.body.wrapper
+    s = w.getAllText()
+    if not s: return ''
+    i = w.getInsertPoint() - 1
+    i = j = max(0, i)
+    while i &gt;= 0 and (s[i].isalnum() or s[i] in '._'):
+        i -= 1
+    i += 1
+    j += 1
+    prefix = s[i:j]
+    return prefix
+</t>
+<t tx="ekr.20110510071925.14586">def init_qcompleter(self, event=None):
+
+    # Compute the prefix and the list of options.
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
+    w = self.c.frame.body.wrapper.widget
+        # A LeoQTextBrowser.  May be none for unit tests.
+    if w and options:
+        self.qw = w
+        self.qcompleter = w.init_completer(options)
+        self.auto_completer_state_handler(event)
+    else:
+        if not g.unitTesting:
+            g.warning('No completions')
+        self.exit()
+</t>
+<t tx="ekr.20110510120621.14539">def get_codewise_completions(self, prefix):
+    """Use codewise to generate a list of hits."""
+    c = self.c
+    m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix)
+    if m:
+        varname = m.group(1)
+        ivar = m.group(3)
+        kind, aList = self.guess_class(c, varname)
+    else:
+        kind, aList = 'none', []
+        varname, ivar = None, None
+    if aList:
+        if kind == 'class':
+            hits = self.lookup_methods(aList, ivar)
+            hits.extend(self.codewiseSelfList)
+        elif kind == 'module':
+            hits = self.lookup_modules(aList, ivar)
+    else:
+        aList2 = prefix.split('.')
+        if aList2:
+            func = aList2[-1]
+            hits = self.lookup_functions(func)
+        else:
+            hits = []
+    if 1:  # A kludge: add the prefix to each hit.
+        hits = [f"{varname}.{z}" for z in hits]
+    return hits
+</t>
+<t tx="ekr.20110510120621.14540">def clean(self, hits):
+    """Clean up hits, a list of ctags patterns, for use in completion lists."""
+    # Just take the function name: ignore the signature &amp; file.
+    aList = list(set([z[0] for z in hits]))
+    aList.sort()
+    return aList
+</t>
+<t tx="ekr.20110510120621.14542">def guess_class(self, c, varname):
+    """Return kind, class_list"""
+    # if varname == 'g':
+        # return 'module',['leoGlobals']
+    if varname == 'p':
+        return 'class', ['position']
+    if varname == 'c':
+        return 'class', ['Commands']
+    if varname == 'self':
+        # Return the nearest enclosing class.
+        for p in c.p.parents():
+            h = p.h
+            m = re.search(r'class\s+(\w+)', h)
+            if m:
+                return 'class', [m.group(1)]
+    if 1:
+        aList = []
+    else:
+        # This is not needed now that we add the completions for 'self'.
+        aList = ContextSniffer().get_classes(c.p.b, varname)
+    return 'class', aList
+</t>
+<t tx="ekr.20110510120621.14543">def lookup_functions(self, prefix):
+    aList = codewise.cmd_functions([prefix])
+    hits = [z.split(None, 1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_methods(self, aList, prefix):  # prefix not used, only aList[0] used.
+    aList = codewise.cmd_members([aList[0]])
+    hits = [z.split(None, 1) for z in aList if z.strip()]
+    return self.clean(hits)
+
+def lookup_modules(self, aList, prefix):  # prefix not used, only aList[0] used.
+    aList = codewise.cmd_functions([aList[0]])
+    hits = [z.split(None, 1) for z in aList if z.strip()]
+    return self.clean(hits)
+</t>
+<t tx="ekr.20110510133719.14548">def do_qcompleter_tab(self, prefix, options):
+    """Return the longest common prefix of all the options."""
+    matches, common_prefix = g.itemsMatchingPrefixInList(
+        prefix, options, matchEmptyPrefix=False)
+    return common_prefix
+</t>
+<t tx="ekr.20110511133940.14552">def init_tabcompleter(self, event=None):
+    # Compute the prefix and the list of options.
+    prefix = self.get_autocompleter_prefix()
+    options = self.get_completions(prefix)
+    if options:
+        self.clearTabName()  # Creates the tabbed pane.
+        self.auto_completer_state_handler(event)
+    else:
+        g.warning('No completions')
+        self.exit()
+</t>
+<t tx="ekr.20110511133940.14561">def show_completion_list(self, common_prefix, prefix, tabList):
+
+    trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
+    c = self.c
+    if trace: g.trace('k.show_completion_list')
+    aList = common_prefix.split('.')
+    header = '.'.join(aList[:-1])
+    # "!" toggles self.verbose.
+    if self.verbose or self.use_qcompleter or len(tabList) &lt; 20:
+        tabList = self.clean_completion_list(header, tabList,)
+    else:
+        tabList = self.get_summary_list(header, tabList)
+    if self.use_qcompleter:
+        # Put the completions in the QListView.
+        if self.qw:
+            self.qw.show_completions(tabList)
+    else:
+        # Update the tab name, creating the tab if necessary.
+        c.widgetWantsFocus(self.w)
+        c.frame.log.clearTab(self.tabName)
+        self.beginTabName(header + '.' if header else '')
+        s = '\n'.join(tabList)
+        self.put('', s, tabName=self.tabName)
+</t>
+<t tx="ekr.20110512090917.14466">def get_leo_namespace(self, prefix):
+    """
+    Return an environment in which to evaluate prefix.
+    Add some common standard library modules as needed.
+    """
+    k = self.k
+    d = {'c': k.c, 'p': k.c.p, 'g': g}
+    aList = prefix.split('.')
+    if len(aList) &gt; 1:
+        name = aList[0]
+        m = sys.modules.get(name)
+        if m:
+            d[name] = m
+    return d
+</t>
+<t tx="ekr.20110512090917.14468">def calltip_fail(self, prefix):
+    """Evaluation of prefix failed."""
+    self.insert_string('(')
+</t>
+<t tx="ekr.20110512090917.14469">def calltip_success(self, prefix, obj):
+    try:
+        # Get the parenthesized argument list.
+        s1, s2, s3, s4 = inspect.getargspec(obj)
+        s = inspect.formatargspec(s1, s2, s3, s4)
+    except Exception:
+        self.insert_string('(')
+        return
+    # Clean s and insert it: don't include the opening "(".
+    if g.match(s, 1, 'self,'):
+        s = s[6:].strip()
+    elif g.match_word(s, 1, 'self'):
+        s = s[5:].strip()
+    else:
+        s = s[1:].strip()
+    self.insert_string("(", select=False)
+    self.insert_string(s, select=True)
+</t>
+<t tx="ekr.20110512170111.14471">def strip_brackets(self, s):
+    """Return s with all brackets removed.
+
+    This (mostly) ensures that eval will not execute function calls, etc.
+    """
+    for ch in '[]{}()':
+        s = s.replace(ch, '')
+    return s
+</t>
+<t tx="ekr.20110512170111.14472">def get_object(self):
+    """Return the object corresponding to the current prefix."""
+    common_prefix, prefix1, aList = self.compute_completion_list()
+    if not aList:
+        return None, prefix1
+    if len(aList) == 1:
+        prefix = aList[0]
+    else:
+        prefix = common_prefix
+    if prefix.endswith('.') and self.use_qcompleter:
+        prefix += self.qcompleter.get_selection()
+    safe_prefix = self.strip_brackets(prefix)
+    for d in self.namespaces + [self.get_leo_namespace(prefix)]:
+        try:
+            obj = eval(safe_prefix, d)
+            break  # only reached if none of the exceptions below occur
+        except AttributeError:
+            obj = None
+        except NameError:
+            obj = None
+        except SyntaxError:
+            obj = None
+        except Exception:
+            g.es_exception()
+            obj = None
+    return obj, prefix
+</t>
 <t tx="ekr.20110512212836.14469">def exit(self):
 
-    c = self.c
+    trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
+    if trace: g.trace('(AutoCompleterClass)')
+    c, p, u = self.c, self.c.p, self.c.undoer
     w = self.w or c.frame.body.wrapper
     c.k.keyboardQuit()
     if self.use_qcompleter:
@@ -9041,12 +9729,110 @@ def update_html(self, s, keywords):
     c.widgetWantsFocusNow(w)
     i, j = w.getSelectionRange()
     w.setSelectionRange(i, j, insert=j)
-    # Was in finish.
-    c.frame.body.onBodyChanged('end-auto-completer')
-    c.recolor()
+    newText = w.getAllText()
+    if p.b == newText:
+        return
+    bunch = u.beforeChangeBody(p)
+    p.v.b = newText  # p.b would cause a redraw.
+    u.afterChangeBody(p, 'auto-completer', bunch)
 
 finish = exit
 abort = exit
+</t>
+<t tx="ekr.20110512212836.14471">jedi_warning = False
+
+def get_completions(self, prefix):
+    """Return jedi or codewise completions."""
+    d = self.completionsDict
+    if self.use_jedi:
+        try:
+            import jedi
+        except ImportError:
+            if not self.jedi_warning:
+                self.jedi_warning = False
+                g.es_print('can not import jedi')
+                g.es_print('ignoring @bool use_jedi = True')
+        if jedi:
+            aList = (
+                self.get_jedi_completions(prefix) or
+                    # Prefer the jedi completions.
+                self.get_leo_completions(prefix))
+            d[prefix] = aList
+            return aList
+    #
+    # Not jedi. Use codewise.
+    # Precompute the codewise completions for '.self'.
+    if not self.codewiseSelfList:
+        aList = self.get_codewise_completions('self.')
+        self.codewiseSelfList = [z[5:] for z in aList]
+        d['self.'] = self.codewiseSelfList
+    # Use the cached list if it exists.
+    aList = d.get(prefix)
+    if aList:
+        return aList
+    aList = (
+        self.get_leo_completions(prefix) or
+            # Prefer the Leo completions.
+        self.get_codewise_completions(prefix)
+    )
+    d[prefix] = aList
+    return aList
+</t>
+<t tx="ekr.20110512232915.14481">def clean_for_display(self, hits):
+    """Clean up hits, a list of ctags patterns, for display purposes."""
+    aList = []
+    for h in hits:
+        s = h[0]
+        # Display oriented: no good for completion list.
+        fn = h[1].strip()
+        if fn.startswith('/'):
+            sig = fn[2:-4].strip()
+        else:
+            sig = fn
+        aList.append(f"{s}: {sig}")
+    aList = list(set(aList))
+    aList.sort()
+    return aList
+</t>
+<t tx="ekr.20110513104728.14453">def clean_completion_list(self, header, tabList):
+    """Return aList with header removed from the start of each list item."""
+    return [
+        z[len(header) + 1 :] if z.startswith(header) else z
+            for z in tabList]
+</t>
+<t tx="ekr.20110513104728.14454">def get_summary_list(self, header, tabList):
+    """Show the possible starting letters,
+    but only if there are more than one.
+    """
+    d = {}
+    for z in tabList:
+        tail = z[len(header) :] if z else ''
+        if tail.startswith('.'): tail = tail[1:]
+        ch = tail[0] if tail else ''
+        if ch:
+            n = d.get(ch, 0)
+            d[ch] = n + 1
+    aList = [f"{ch2} {d.get(ch2)}" for ch2 in sorted(d)]
+    if len(aList) &gt; 1:
+        tabList = aList
+    else:
+        tabList = self.clean_completion_list(header, tabList)
+    return tabList
+</t>
+<t tx="ekr.20110514051607.14524">def get_cached_options(self, prefix):
+    d = self.completionsDict
+    # Search the completions Dict for shorter and shorter prefixes.
+    i = len(prefix)
+    while i &gt; 0:
+        key = prefix[:i]
+        i -= 1
+        # Make sure we report hits only of real objects.
+        if key.endswith('.'):
+            return key, []
+        options = d.get(key)
+        if options:
+            return key, options
+    return None, []
 </t>
 <t tx="ekr.20110530124245.18245">@g.commander_command('import-file')
 def importAnyFile(self, event=None):
@@ -9221,6 +10007,7 @@ g.command_alias('importTabFiles', importAnyFile)
     self.htmlFlag = True
     super().__init__(parent)
     self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
+    
     # Connect event handlers...
     if 0:  # Not a good idea: it will complicate delayed loading of body text.
         self.textChanged.connect(self.onTextChanged)
@@ -11648,9 +12435,9 @@ def __str__(self):
         '--session-save',
         '--use-docks',
     )
-    trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,
-      importers,ipython,keys,layouts,plugins,save,select,
-      shutdown,size,startup,themes,undo,verbose,zoom'''
+    trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,
+      git,gnx,importers,ipython,keys,layouts,plugins,save,
+      select,shutdown,size,startup,themes,undo,verbose,zoom'''
     for bad_option in table:
         if bad_option in sys.argv:
             sys.argv.remove(bad_option)
@@ -12532,6 +13319,33 @@ run-selected-unit-tests-locally = Alt-4
 do-nothing = Alt-5
 run-marked-unit-tests-locally = Alt-6
 </t>
+<t tx="ekr.20131111105746.16544">def vim_dot(self):
+    """Repeat the last command."""
+    if self.in_dot:
+        return
+    try:
+        self.in_dot = True
+        # Save the dot list.
+        self.old_dot_list = self.dot_list[:]
+        # Copy the list so it can't change in the loop.
+        for event in self.dot_list[:]:
+            # Only k.masterKeyHandler can insert characters!
+            # Create an event satisfying both k.masterKeyHandler and self.do_key.
+            self.k.masterKeyHandler(g.Bunch(
+                # for do_key()...
+                w=self.w,
+                # for k.masterKeyHandler...
+                widget=self.w,
+                char=event.char,
+                stroke=g.KeyStroke(event.stroke)),
+            )
+        # For the dot list to be the old dot list, whatever happens.
+        self.command_list = self.old_dot_list[:]
+        self.dot_list = self.old_dot_list[:]
+    finally:
+        self.in_dot = False
+    self.done()
+</t>
 <t tx="ekr.20131111140646.16544"># Similar to runEditCommandTest.
 
 def runVimTest(self, p):
@@ -12867,6 +13681,30 @@ script = property(
 nosentinels = property(
     __get_nosentinels,  # __set_nosentinels
     doc="position property returning the body text without sentinels")
+</t>
+<t tx="ekr.20140221085636.16685">def do_key(self, event):
+    """
+    Handle the next key in vim mode:
+    - Set event, w, stroke and ch ivars for *all* handlers.
+    - Call handler().
+    Return True if k.masterKeyHandler should handle this key.
+    """
+    try:
+        self.init_scanner_vars(event)
+        self.do_trace(blank_line=True)
+        self.return_value = None
+        if not self.handle_specials():
+            self.handler()
+        if self.return_value not in (True, False):
+            # It looks like no acceptance method has been called.
+            self.oops(
+                f"bad return_value: {repr(self.return_value)} "
+                f"{self.state} {self.next_func}")
+            self.done()  # Sets self.return_value to True.
+    except Exception:
+        g.es_exception()
+        self.quit()
+    return self.return_value
 </t>
 <t tx="ekr.20140613141207.17667">def openfolder_rclick_cb():
     
@@ -13282,6 +14120,33 @@ def refreshFromDisk(self, event=None):
             # To do: set undoType to the command spelling?
             # undoType = ''.join(self.command_list) or 'Typing'
             c.frame.body.onBodyChanged(undoType='vc-save-body', oldSel=oldSel)
+</t>
+<t tx="ekr.20140802120757.18003">def init_scanner_vars(self, event):
+    """Init all ivars used by the scanner."""
+    assert event
+    self.event = event
+    stroke = event.stroke
+    self.ch = event.char  # Required for f,F,t,T.
+    self.stroke = stroke.s if g.isStroke(stroke) else stroke
+    self.w = event and event.w
+    if not self.in_command:
+        self.in_command = True  # May be cleared later.
+        if self.is_text_wrapper(self.w):
+            self.old_sel = self.w.getSelectionRange()
+</t>
+<t tx="ekr.20140802225657.18021">def handle_specials(self):
+    """Return True self.stroke is an Escape or a Return in the outline pane."""
+    if self.stroke == 'Escape':
+        # k.masterKeyHandler handles Ctrl-G.
+        # Escape will end insert mode.
+        self.vim_esc()
+        return True
+    if self.stroke == '\n' and self.in_headline(self.w):
+        # End headline editing and enter normal mode.
+        self.c.endEditing()
+        self.done()
+        return True
+    return False
 </t>
 <t tx="ekr.20140805064952.18153">def on_idle(self, tag, keys):
     """The idle-time handler for the VimCommands class."""
@@ -13721,6 +14586,17 @@ There is, however, a back door for (hopefully rare!) special cases. All wrapper 
     oldSel = (i, i + j)
     c.undoer.doTyping(p, 'Typing', oldText, newText,
         oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
+</t>
+<t tx="ekr.20140901062324.18716">def onCursorPositionChanged(self, event=None):
+    
+    c = self.c
+    name = c.widget_name(self)
+    # Apparently, this does not cause problems
+    # because it generates no events in the body pane.
+    if not name.startswith('body'):
+        return
+    if hasattr(c.frame, 'statusLine'):
+        c.frame.statusLine.update()
 </t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
@@ -14722,6 +15598,27 @@ def createDefiningWordRule(self, word):
         k.commandIndex = i
         k.setLabel(k.mb_prefix + commandName)
 </t>
+<t tx="ekr.20150403044823.1">def idle_check_at_file_node(self, c, p):
+    '''Check the @&lt;file&gt; node at p for external changes.'''
+    trace = False
+        # Matt, set this to True, but only for the file that interests you.\
+        # trace = p.h == '@file unregister-leo.leox'
+    path = g.fullPath(c, p)
+    has_changed = self.has_changed(c, path)
+    if trace:
+        g.trace('changed', has_changed, p.h)
+    if has_changed:
+        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+            # Fix #1081: issue a warning.
+            self.warn(c, path, p=p)
+        elif self.ask(c, path, p=p):
+            c.redraw(p=p)
+            c.refreshFromDisk(p)
+            c.redraw()
+        # Always update the path &amp; time to prevent future warnings.
+        self.set_time(path)
+        self.checksum_d[path] = self.checksum(path)
+</t>
 <t tx="ekr.20150403045207.1">def has_changed(self, c, path):
     '''Return True if p's external file has changed outside of Leo.'''
     if not g.os_path_exists(path):
@@ -14793,6 +15690,46 @@ def createDefiningWordRule(self, word):
     with open(path, 'rb') as f:
         s = f.read()
     return hashlib.md5(s).hexdigest()
+</t>
+<t tx="ekr.20150405200212.1">def ask(self, c, path, p=None):
+    '''
+    Ask user whether to overwrite an @&lt;file&gt; tree.
+    Return True if the user agrees.
+    '''
+    if g.unitTesting:
+        return False
+    if c not in g.app.commanders():
+        return False
+    if self.yesno_all_time + 3 &gt;= time.time() and self.yesno_all_answer:
+        self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+        return bool('yes' in self.yesno_all_answer.lower())
+    if not p:
+        for ef in self.files:
+            if ef.path == path:
+                where = ef.p.h
+                break
+        else:
+            where = 'the outline node'
+    else:
+        where = p.h
+    _is_leo = path.endswith(('.leo', '.db'))
+    if _is_leo:
+        s = '\n'.join([
+            f"{g.splitLongFileName(path)} has changed outside Leo.",
+            'Overwrite it?'
+        ])
+    else:
+        s = '\n'.join([
+            f"{g.splitLongFileName(path)} has changed outside Leo.",
+            f"Reload {where} in Leo?",
+        ])
+    result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
+        yes_all=not _is_leo, no_all=not _is_leo)
+    if result and "-all" in result.lower():
+        self.yesno_all_time = time.time()
+        self.yesno_all_answer = result.lower()
+    return bool(result and 'yes' in result.lower())
+        # Careful: may be unit testing.
 </t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
@@ -15038,6 +15975,11 @@ CreateDecorators(c,make_changes=False).run()
     # pylint: disable=no-self-argument
     return g.new_cmd_decorator(name, ['c', 'k',])
 </t>
+<t tx="ekr.20150509035140.1">def cmd(name):
+    """Command decorator for the AutoCompleter class."""
+    # pylint: disable=no-self-argument
+    return g.new_cmd_decorator(name, ['c', 'k', 'autoCompleter'])
+</t>
 <t tx="ekr.20150509183433.1">g.cls()
 
 # Changed files:
@@ -15158,7 +16100,7 @@ CreateDecorators().run()
 <t tx="ekr.20150514043714.3"></t>
 <t tx="ekr.20150514043714.4">def beginCommand(self, w, undoType='Typing'):
     """Do the common processing at the start of each command."""
-    c, p = self.c, self.c.p
+    c, p, u = self.c, self.c.p, self.c.undoer
     name = c.widget_name(w)
     if name.startswith('body'):
         self.undoData = b = g.Bunch()
@@ -15169,6 +16111,7 @@ CreateDecorators().run()
         b.oldText = p.b
         b.w = w
         b.undoType = undoType
+        b.undoer_bunch = u.beforeChangeBody(p)  # #1733.
     else:
         self.undoData = None
     return w
@@ -15178,13 +16121,17 @@ CreateDecorators().run()
     Do the common processing at the end of each command.
     Handles undo only if we are in the body pane.
     """
-    c, k, p, u, w = self.c, self.c.k, self.c.p, self.c.undoer, self.editWidget(event=None)
+    c, k, p, u= self.c, self.c.k, self.c.p, self.c.undoer
+    w = self.editWidget(event=None)
     b = self.undoData
     if b and b.name.startswith('body') and changed:
+        newText = w.getAllText()
         if b.undoType.capitalize() == 'Typing':
-            u.doTyping(p, 'Typing', oldText=b.oldText, newText=w.getAllText(), oldSel=b.oldSel)
+            u.doTyping(p, 'Typing', oldText=b.oldText, newText=newText, oldSel=b.oldSel)
         else:
-            c.frame.body.onBodyChanged(undoType=b.undoType, oldSel=b.oldSel)
+            p.v.b = newText  # p.b would cause a redraw.
+            u.afterChangeBody(p, b.undoType, b.undoer_bunch)
+            
     self.undoData = None
     k.clearState()
     # Warning: basic editing commands **must not** set the label.
@@ -15577,8 +16524,8 @@ def backwardDeleteCharacter(self, event=None):
                 # Necessary to make text changes stick.
     else:
         # No undo in this widget.
-        # Make sure we actually delete something if we can.
         s = w.getAllText()
+        # Delete something if we can.
         if i != j:
             j = max(i, min(j, len(s)))
             w.delete(i, j)
@@ -15612,21 +16559,35 @@ w.setSelectionRange(i, i, insert=i)
 <t tx="ekr.20150514063305.259">@cmd('delete-char')
 def deleteNextChar(self, event):
     """Delete the character to the right of the cursor."""
-    w = self.editWidget(event)
-    if not w: return
-    s = w.getAllText()
-    i, j = w.getSelectionRange()
-    self.beginCommand(w, undoType='delete-char')
-    changed = True
-    if i != j:
-        w.delete(i, j)
-        w.setInsertPoint(i)
-    elif j &lt; len(s):
-        w.delete(i)
-        w.setInsertPoint(i)
+    c, w = self.c, self.editWidget(event)
+    if not w:
+        return
+    wname = c.widget_name(w)
+    if wname.startswith('body'):
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
+        self.beginCommand(w, undoType='delete-char')
+        changed = True
+        if i != j:
+            w.delete(i, j)
+            w.setInsertPoint(i)
+        elif j &lt; len(s):
+            w.delete(i)
+            w.setInsertPoint(i)
+        else:
+            changed = False
+        self.endCommand(changed=changed, setLabel=False)
     else:
-        changed = False
-    self.endCommand(changed=changed, setLabel=False)
+        # No undo in this widget.
+        s = w.getAllText()
+        i, j = w.getSelectionRange()
+        # Delete something if we can.
+        if i != j:
+            w.delete(i, j)
+            w.setInsertPoint(i)
+        elif j &lt; len(s):
+            w.delete(i)
+            w.setInsertPoint(i)
 </t>
 <t tx="ekr.20150514063305.262">@cmd('insert-newline')
 def insertNewLine(self, event):
@@ -15961,16 +16922,20 @@ def insertFileName(self, event=None):
     text, if there is any, or any path like text immediately preceding the
     cursor.
     """
-    c, w = self.c, self.editWidget(event)
+    c, u, w = self.c, self.c.undoer, self.editWidget(event)
     if not w:
         return
 
     def callback(arg, w=w):
         i = w.getSelectionRange()[0]
+        p = c.p
         w.deleteTextSelection()
         w.insert(i, arg)
-        if g.app.gui.widget_name(w) == 'body':
-            c.frame.body.onBodyChanged('insert-file-name')
+        newText = w.getAllText()
+        if g.app.gui.widget_name(w) == 'body' and p.b != newText:
+            bunch = u.beforeChangeBody(p)
+            p.v.b = newText  # p.b would cause a redraw.
+            u.afterChangeBody(p, 'insert-file-name', bunch)
 
     # see if the widget already contains the start of a path
 
@@ -20005,6 +20970,283 @@ def forwardWordSmartExtendSelection(self, event):
     or the beginning of the next word."""
     self.moveWordHelper(event, extend=True, forward=True, smart=True)
 </t>
+<t tx="ekr.20170806094320.12">def git_diff(self, directory=None, rev1='HEAD', rev2=''):
+    """The main line of the git diff command."""
+    if not self.set_directory(directory):
+        return
+    #
+    # Diff the given revs.
+    ok = self.diff_revs(rev1, rev2)
+    if ok: return
+    #
+    # Go back at most 5 revs...
+    n1, n2 = 1, 0
+    while n1 &lt;= 5:
+        ok = self.diff_revs(
+            # Clearer w/o f-strings.
+            rev1=f"HEAD@{{{n1}}}",
+            rev2=f"HEAD@{{{n2}}}")
+        if ok: return
+        n1, n2 = n1 + 1, n2 + 1
+    if not ok:
+        g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
+</t>
+<t tx="ekr.20170806094320.13">class GitDiffController:
+    """A class to do git diffs."""
+
+    def __init__(self, c, repo_dir=None):
+        self.c = c
+        self.file_node = None
+        self.old_dir = g.os_path_abspath('.')
+        self.repo_dir = repo_dir
+        self.root = None
+    @others
+</t>
+<t tx="ekr.20170806094320.15">def get_file_from_rev(self, rev, fn):
+    """Get the file from the given rev, or the working directory if None."""
+    if rev:
+        # Get the file using git.
+        command = f"git show {rev}:{fn}"
+        lines = g.execGitCommand(command, self.repo_dir)
+        s = ''.join(lines)
+    else:
+        # Get the file from the working directory.
+        path = g.os_path_finalize_join(self.repo_dir, fn)
+        if g.os_path_exists(path):
+            try:
+                with open(path, 'rb') as f:  # Was 'r'
+                    s = f.read()
+            except Exception:
+                g.es_print('Can not read', path)
+                g.es_exception()
+                s = ''
+        else:
+            g.trace('not found:', path)
+            s = ''
+    return g.toUnicode(s).replace('\r', '')
+</t>
+<t tx="ekr.20170806094320.18">def create_root(self, rev1, rev2):
+    """Create the top-level organizer node describing the git diff."""
+    c = self.c
+    r1, r2 = rev1 or '', rev2 or ''
+    p = c.lastTopLevel().insertAfter()
+    p.h = f"git diff {r1} {r2}"
+    p.b = '@ignore\n@nosearch\n'
+    if r1 and r2:
+        p.b += (
+            f"{r1}={self.get_revno(r1)}\n"
+            f"{r2}={self.get_revno(r2)}")
+    else:
+        p.b += f"{r1}={self.get_revno(r1)}"
+    return p
+</t>
+<t tx="ekr.20170806094320.6">def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
+    """
+    Create an outline describing the git diffs for fn.
+    """
+    if not self.set_directory(directory):
+        return
+    c = self.c
+    s1 = self.get_file_from_rev(rev1, fn)
+    s2 = self.get_file_from_rev(rev2, fn)
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+    diff_list = list(difflib.unified_diff(
+        lines1,
+        lines2,
+        rev1 or 'uncommitted',
+        rev2 or 'uncommitted',
+    ))
+    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+    self.file_node = self.create_file_node(diff_list, fn)
+    if c.looksLikeDerivedFile(fn):
+        c1 = self.make_at_file_outline(fn, s1, rev1)
+        c2 = self.make_at_file_outline(fn, s2, rev2)
+    else:
+        root = self.find_file(fn)
+        if root:
+            c1 = self.make_at_clean_outline(fn, root, s1, rev1)
+            c2 = self.make_at_clean_outline(fn, root, s2, rev2)
+        else:
+            # This warning is silly.
+            # g.es_print('No outline for', fn)
+            c1 = c2 = None
+    if c1 and c2:
+        self.make_diff_outlines(c1, c2, fn, rev1, rev2)
+        self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+</t>
+<t tx="ekr.20170806094320.7">def find_file(self, fn):
+    """Return the @&lt;file&gt; node matching fn."""
+    c = self.c
+    fn = g.os_path_basename(fn)
+    for p in c.all_unique_positions():
+        if p.isAnyAtFileNode():
+            fn2 = p.anyAtFileNodeName()
+            if fn2.endswith(fn):
+                return p
+    return None
+</t>
+<t tx="ekr.20170806094320.9">def get_files(self, rev1, rev2):
+    """Return a list of changed files."""
+
+    def readable(fn):
+        for suffix in ('.db', '.leo', '.zip',):  # 'commit_timestamp.json',
+            if fn.strip().endswith(suffix):
+                return False
+        return True
+
+    command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
+    files = [
+        z.strip() for z in g.execGitCommand(command, self.repo_dir)
+            if readable(z)
+    ]
+    return files
+</t>
+<t tx="ekr.20170806094321.1">def create_file_node(self, diff_list, fn):
+    """Create an organizer node for the file."""
+    p = self.root.insertAsLastChild()
+    p.h = fn.strip()
+    p.b = ''.join(diff_list)
+    return p
+</t>
+<t tx="ekr.20170806094321.3">def find_git_working_directory(self, directory):
+    """Return the git working directory, starting at directory."""
+    while directory:
+        if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
+            return directory
+        path2 = g.os_path_finalize_join(directory, '..')
+        if path2 == directory:
+            break
+        directory = path2
+    return None
+</t>
+<t tx="ekr.20170806094321.5">def finish(self):
+    """Finish execution of this command."""
+    c = self.c
+    os.chdir(self.old_dir)
+    c.contractAllHeadlines(redrawFlag=False)
+    self.root.expand()
+    c.selectPosition(self.root)
+    c.redraw()
+    c.treeWantsFocusNow()
+</t>
+<t tx="ekr.20170806094321.7">def make_at_file_outline(self, fn, s, rev):
+    """Create a hidden temp outline from lines."""
+    # A specialized version of atFileCommands.read.
+    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+    at = hidden_c.atFileCommands
+    hidden_c.frame.createFirstTreeNode()
+    root = hidden_c.rootPosition()
+    root.h = fn + ':' + rev if rev else fn
+    at.initReadIvars(root, fn, importFileName=None, atShadow=None)
+    if at.errors &gt; 0:
+        g.trace('***** errors')
+        return None
+    at.fast_read_into_root(
+        c=hidden_c,
+        contents=s,
+        gnx2vnode={},
+        path=fn,
+        root=root,
+    )
+    return hidden_c
+</t>
+<t tx="ekr.20170806125535.1">def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
+    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+    added, deleted, changed = self.compute_dicts(c1, c2)
+    table = (
+        (added, 'Added'),
+        (deleted, 'Deleted'),
+        (changed, 'Changed'))
+    for d, kind in table:
+        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+</t>
+<t tx="ekr.20170806191707.1">def compute_dicts(self, c1, c2):
+    """Compute inserted, deleted, changed dictionaries."""
+    # Special case the root: only compare the body text.
+    root1, root2 = c1.rootPosition().v, c2.rootPosition().v
+    root1.h = root2.h
+    if 0:
+        g.trace('c1...')
+        for p in c1.all_positions():
+            print(f"{len(p.b):4} {p.h}")
+        g.trace('c2...')
+        for p in c2.all_positions():
+            print(f"{len(p.b):4} {p.h}")
+    d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
+    d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
+    added = {key: d2.get(key) for key in d2 if not d1.get(key)}
+    deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+    # Remove the root from the added and deleted dicts.
+    if root2.fileIndex in added:
+        del added[root2.fileIndex]
+    if root1.fileIndex in deleted:
+        del deleted[root1.fileIndex]
+    changed = {}
+    for key in d1:
+        if key in d2:
+            v1 = d1.get(key)
+            v2 = d2.get(key)
+            assert v1 and v2
+            assert v1.context != v2.context
+            if v1.h != v2.h or v1.b != v2.b:
+                changed[key] = (v1, v2)
+    return added, deleted, changed
+</t>
+<t tx="ekr.20170806191942.2">def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
+    """Create nodes describing the changes."""
+    if not d:
+        return
+    parent = self.file_node.insertAsLastChild()
+    parent.setHeadString(kind)
+    for key in d:
+        if kind.lower() == 'changed':
+            v1, v2 = d.get(key)
+            # Organizer node: contains diff
+            organizer = parent.insertAsLastChild()
+            organizer.h = v2.h
+            body = list(difflib.unified_diff(
+                g.splitLines(v1.b),
+                g.splitLines(v2.b),
+                rev1 or 'uncommitted',
+                rev2 or 'uncommitted',
+            ))
+            if ''.join(body).strip():
+                body.insert(0, '@ignore\n@nosearch\n@language patch\n')
+                body.append(f"@language {c2.target_language}\n")
+            else:
+                body = ['Only headline has changed']
+            organizer.b = ''.join(body)
+            # Node 2: Old node
+            p2 = organizer.insertAsLastChild()
+            p2.h = 'Old:' + v1.h
+            p2.b = v1.b
+            # Node 3: New node
+            assert v1.fileIndex == v2.fileIndex
+            p_in_c = self.find_gnx(self.c, v1.fileIndex)
+            if p_in_c:  # Make a clone, if possible.
+                p3 = p_in_c.clone()
+                p3.moveToLastChildOf(organizer)
+            else:
+                p3 = organizer.insertAsLastChild()
+                p3.h = 'New:' + v2.h
+                p3.b = v2.b
+        elif kind.lower() == 'added':
+            v = d.get(key)
+            new_p = self.find_gnx(self.c, v.fileIndex)
+            if new_p:  # Make a clone, if possible.
+                p = new_p.clone()
+                p.moveToLastChildOf(parent)
+            else:
+                p = parent.insertAsLastChild()
+            p.h = v.h
+            p.b = v.b
+        else:
+            v = d.get(key)
+            p = parent.insertAsLastChild()
+            p.h = v.h
+            p.b = v.b
+</t>
 <t tx="ekr.20170811173924.1">@language python
 import os
 import subprocess
@@ -20030,6 +21272,71 @@ proc = subprocess.Popen(bundle_command, shell=True)
 proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
+</t>
+<t tx="ekr.20170819132219.1">def find_gnx(self, c, gnx):
+    """Return a position in c having the given gnx."""
+    for p in c.all_unique_positions():
+        if p.v.fileIndex == gnx:
+            return p
+    return None
+</t>
+<t tx="ekr.20170820082125.1">def diff_revs(self, rev1, rev2):
+    """Diff all files given by rev1 and rev2."""
+    files = self.get_files(rev1, rev2)
+    if files:
+        self.root = self.create_root(rev1, rev2)
+        for fn in files:
+            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+        self.finish()
+    return bool(files)
+</t>
+<t tx="ekr.20170820084258.1">def make_at_clean_outline(self, fn, root, s, rev):
+    """
+    Create a hidden temp outline from lines without sentinels.
+    root is the @&lt;file&gt; node for fn.
+    s is the contents of the (public) file, without sentinels.
+    """
+    # A specialized version of at.readOneAtCleanNode.
+    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+    at = hidden_c.atFileCommands
+    x = hidden_c.shadowController
+    hidden_c.frame.createFirstTreeNode()
+    hidden_root = hidden_c.rootPosition()
+    # copy root to hidden root, including gnxs.
+    root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
+    hidden_root.h = fn + ':' + rev if rev else fn
+    # Set at.encoding first.
+    at.initReadIvars(hidden_root, fn)
+        # Must be called before at.scanAllDirectives.
+    at.scanAllDirectives(hidden_root)
+        # Sets at.startSentinelComment/endSentinelComment.
+    new_public_lines = g.splitLines(s)
+    old_private_lines = at.write_at_clean_sentinels(hidden_root)
+    marker = x.markerFromFileLines(old_private_lines, fn)
+    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+    if old_public_lines:
+        # Fix #1136: The old lines might not exist.
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines, old_private_lines, marker, p=hidden_root)
+        at.fast_read_into_root(
+            c=hidden_c,
+            contents=''.join(new_private_lines),
+            gnx2vnode={},
+            path=fn,
+            root=hidden_root,
+        )
+    return hidden_c
+</t>
+<t tx="ekr.20170821052348.1">def get_revno(self, revspec, abbreviated=True):
+    """Return the abbreviated hash the given revision spec."""
+    if revspec:
+        # Return only the abbreviated hash for the revspec.
+        command = 'git show --format=%%%s --no-patch %s' % (
+            'h' if abbreviated else 'H',
+            revspec)
+        lines = g.execGitCommand(command, self.repo_dir)
+        return ''.join(lines).strip()
+    return 'uncommitted'
 </t>
 <t tx="ekr.20171031111403.1"></t>
 <t tx="ekr.20171123135625.12">@g.commander_command('hide-invisibles')
@@ -21432,6 +22739,7 @@ else:
 <t tx="ekr.20180418105228.1">def getBindingHelper(self, key, name, stroke, w):
     """Find a binding for the widget with the given name."""
     c, k = self.c, self
+    # trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
     #
     # Return if the pane's name doesn't match the event's widget.
     state = k.unboundKeyAction
@@ -21628,6 +22936,85 @@ self.specialChars = [
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
+<t tx="ekr.20180506064102.10">def diff_two_branches(self, branch1, branch2, fn, directory=None):
+    """Create an outline describing the git diffs for fn."""
+    c = self.c
+    if not self.set_directory(directory):
+        return
+    self.root = p = c.lastTopLevel().insertAfter()
+    p.h = f"git-diff-branches {branch1} {branch2}"
+    s1 = self.get_file_from_branch(branch1, fn)
+    s2 = self.get_file_from_branch(branch2, fn)
+    lines1 = g.splitLines(s1)
+    lines2 = g.splitLines(s2)
+    diff_list = list(difflib.unified_diff(lines1, lines2, branch1, branch2,))
+    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+    self.file_node = self.create_file_node(diff_list, fn)
+    if c.looksLikeDerivedFile(fn):
+        c1 = self.make_at_file_outline(fn, s1, branch1)
+        c2 = self.make_at_file_outline(fn, s2, branch2)
+    else:
+        root = self.find_file(fn)
+        if root:
+            c1 = self.make_at_clean_outline(fn, root, s1, branch1)
+            c2 = self.make_at_clean_outline(fn, root, s2, branch2)
+        else:
+            c1 = c2 = None
+    if c1 and c2:
+        self.make_diff_outlines(c1, c2, fn)
+        self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+    self.finish()
+</t>
+<t tx="ekr.20180506064102.11">def get_file_from_branch(self, branch, fn):
+    """Get the file from the hed of the given branch."""
+    # Get the file using git.
+    command = f"git show {branch}:{fn}"
+    directory = self.repo_dir
+    lines = g.execGitCommand(command, directory)
+    s = ''.join(lines)
+    return g.toUnicode(s).replace('\r', '')
+</t>
+<t tx="ekr.20180507212821.1">def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
+    """
+    Create an outline describing the git diffs for all files changed
+    between rev1 and rev2.
+    """
+    c = self.c
+    if not self.set_directory(directory):
+        return
+    # Get list of changed files.
+    files = self.get_files(rev1, rev2)
+    g.es_print(f"diffing {len(files)} files. This may take awhile")
+    # Create the root node.
+    self.root = c.lastTopLevel().insertAfter()
+    self.root.h = f"git diff revs: {rev1} {rev2}"
+    self.root.b = '@ignore\n@nosearch\n'
+    # Create diffs of all files.
+    for fn in files:
+        self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+    self.finish()
+</t>
+<t tx="ekr.20180510095544.1"></t>
+<t tx="ekr.20180510095801.1"></t>
+<t tx="ekr.20180510095807.1">def set_directory(self, directory):
+    """
+    Handle directory inits.
+    Return True if the .git directory has been found.
+    """
+    if not directory:
+        if self.repo_dir:
+            # Use previously-computed result.
+            return self.repo_dir
+        directory = g.os_path_abspath(os.curdir)
+    #
+    # Change to the new directory.
+    self.repo_dir = self.find_git_working_directory(directory)
+    if self.repo_dir:
+        os.chdir(directory)
+    else:
+        g.es_print(f"no .git directory found in {directory!r}")
+    return self.repo_dir
+</t>
 <t tx="ekr.20180511045458.1">def switchStyle(self, word):
     """
     Switch between camelCase and underscore_style function defintiions.
@@ -25187,9 +26574,11 @@ def restartLeo(self, event=None):
     - Body: ec.selfInsertCommand
     - Log: log_w.insert
     """
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
     c, k, w = self, self.k, event.widget
     name = c.widget_name(w)
     stroke = event.stroke
+    if trace: g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
     if not stroke:
         return
     #
@@ -32989,41 +34378,19 @@ https://github.com/leo-editor/leo-editor/issues/1734
         c.frame.updateStatusLine()
     return None
 </t>
-<t tx="ekr.20201114160816.1" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">@language rest
-@wrap
-@nosearch
+<t tx="ekr.20201114160816.1" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">**Move More.  Notice impatience &amp; procrastination.**
 
-**Move More**
-
-Merge ekr-unit-tests into devel:
-- update LeoPyRef.leo.
-
------
-
-- Make last donations: Amnesty, UW Foundation.
-- Review docs re PR's and reducing diffs.
-- Send picture of George cat to Phil.
-- Get Obama on audible.
-- Call Nature Magazine.
-- Buy Sou Vide machine, with accessories?
-
-Later:
-- Merge ekr-unit-test into devel. Do *not* delete ekr-unit-test branch.
-- Merge devel into ekr-undo.
-- Never would have confidence to do Leo in Js.
-- Fix lamp.
+- Work on rrhandwovens.
+- Watch Phil's tribute.
 
 Promises:
-- Work on Rebecca's website.
-- Work on Phil's portrait.
-- Discuss sou vit machine with Rebecca. Joule machine.
+- [MTW    ] Do the necessaries before noon each day.
+- [ T     ] Work on RR's web site 20 min/day.
+- [MT     ] Work on Phil's portrait 20 min/day.
 
-rrhandwovens.
-- New picture and email addresses on front page.
-- Second test purchase.
-- Sign in to stripe.
-- Batch upload products to Wordpress.
-</t>
+@language rest
+@wrap
+@nosearch`</t>
 <t tx="ekr.20201114160816.10">+-- node-inspect@2.0.0</t>
 <t tx="ekr.20201114160816.11">+-- npm@6.14.8
 | +-- abbrev@1.1.1
@@ -36259,15 +37626,6 @@ npm ERR! invalid: @jupyterlab/toc@4.0.0 C:\Users\edreamleo\Python\Python37\share
 | | `-- @lumino/widgets@1.14.0 deduped
 | +-- @lumino/signaling@1.4.3 deduped
 | `-- @lumino/widgets@1.14.0 deduped</t>
-<t tx="ekr.20201114160816.3">@nosearch
-@language rest
-@wrap
-
-Clean up leoPy.leo:
-- Change headlines: def x to function: x
-- Copy to LeoPyRef.leo
-
-- What about gh-pages?</t>
 <t tx="ekr.20201114160816.5">- Colorize and import .tsx like .ts.
 
 - Read the Jupyter docs! Good first issue.
@@ -36456,7 +37814,13 @@ C:\Users\edreamleo\AppData\Roaming\npm
 | | `-- inherits@2.0.3 deduped
 | `-- which@1.3.1
 |   `-- isexe@2.0.0</t>
-<t tx="ekr.20201117043352.1">- Test purchase.
+<t tx="ekr.20201117043352.1">- Create new items for uploaded videos.
+- Take pictures of RR at her loom, and of yarns.
+- New picture and email addresses on front page.
+
+- Second test purchase.
+- Sign in to stripe.
+- Batch upload products to Wordpress.
 
 - Group purchases.
 - Add contact page.
@@ -36929,7 +38293,9 @@ https://github.com/leo-editor/leo-editor/issues/1759
 
 https://github.com/leo-editor/leo-editor/issues/1757
 
-I can not type char in insert mode. The same problem with checkout master branch.
+k.doBinding and k.getPaneBinding fix the primary issue.
+
+vc.vim_dot fixes a secondary issue, described in #1757.
 
 @language python
 @nosearch
@@ -42041,12 +43407,12 @@ else:
 - Hello world vs-code plugin. 
 - Hello world vue.js app.
 - Find out why noscript is interfering with leoflexx.py.
-</t>
-<t tx="ekr.20201129130301.1">@language rest
-@wrap
 
-- Numlock must be on.
-- Hold down Alt, type 0233</t>
+- How does flexx work?
+
+- Figure out how to build Leovue.
+
+</t>
 <t tx="ekr.20201129132149.1"></t>
 <t tx="ekr.20201130074836.1">def convert_leoEditCommands_tests(c, root, target):
     """
@@ -45864,6 +47230,226 @@ cwd = os.getcwd()
 os.system('leo-unittest')
 os.chdir(cwd)</t>
 <t tx="ekr.20201203081649.1"></t>
+<t tx="ekr.20201203114411.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1766
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201204104619.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1768
+
+@language python
+@nosearch
+
+</t>
+<t tx="ekr.20201204172235.1">leo_cursor_width = 0
+
+leo_vim_mode = None
+
+def paintEvent(self, event):
+    """
+    LeoQTextBrowser.paintEvent.
+    
+    New in Leo 6.4: Draw a box around the cursor in command mode.
+                    This is as close as possible to vim's look.
+    """
+    c, vc, w = self.leo_c, self.leo_c.vimCommands, self
+    #
+    # First, call the base class paintEvent.
+    QtWidgets.QTextBrowser.paintEvent(self, event)
+    
+    def set_cursor_width(width):
+        """Set the cursor width, but only if necessary."""
+        if self.leo_cursor_width != width:
+            self.leo_cursor_width = width
+            w.setCursorWidth(width)
+    
+    #
+    # Are we in vim mode?
+    if self.leo_vim_mode is None:
+        self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
+    #
+    # Are we in command mode?
+    if self.leo_vim_mode:
+        in_command = vc and vc.state == 'normal'  # vim mode.
+    else:
+        in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
+    #
+    # Draw the box only in command mode, when w is the body pane, with focus.
+    if (
+        not in_command
+        or w != c.frame.body.widget
+        or w != g.app.gui.get_focus()
+    ):
+        set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
+        return
+    #
+    # Set the width of the cursor.
+    font = w.currentFont()
+    cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
+    set_cursor_width(cursor_width)
+    #
+    # Draw a box around the cursor.
+    qp = QtGui.QPainter()
+    qp.begin(self.viewport())
+    qp.drawRect(w.cursorRect())
+    qp.end()
+</t>
+<t tx="ekr.20201205113000.1">- Fix Tea Pot.
+- Find fill light.
+- Fix lamp: watch YouTube vids.
+
+- Buy Sou Vide machine, with accessories?
+- Get Obama on audible.
+
+
+</t>
+<t tx="ekr.20201205182226.1"></t>
+<t tx="ekr.20201205203155.1"></t>
+<t tx="ekr.20201207053751.1">@language rest
+@wrap
+
+My first recommendation for building good vscode extension development knowledge is to 'git clone' this repo on your pc : https://github.com/microsoft/vscode-extension-samples
+
+tip: do not open the whole thing in vscode, instead, right click one of the subfolders for a particular extension example, choose "open with vscode" and try out or look at the code for a project 'individually'. (to actually run and try a sample instead of just looking at its source code, in each case, a simple "npm install" in the terminal will install all dependencies for any particular example, and then hitting F5 will start the sample in its own window. But you know that already for finishing the basics tutorials ;)  hehe)
+
+It gives good examples for distinct and precise aspects of vscode without overwhelming aspects of a full-blown extension which tries to do a dozen things at once.</t>
+<t tx="ekr.20201207055200.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1240
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201207055713.1">def idle_check_leo_file(self, c):
+    """Check c's .leo file for external changes."""
+    path = c.fileName()
+    if not self.has_changed(path):
+        return
+    #
+    # Always update the path &amp; time to prevent future warnings.
+    self.set_time(path)
+    self.checksum_d[path] = self.checksum(path)
+    if self.ask(c, path):
+        # Do a complete restart of Leo.
+        g.es_print('restarting Leo...')
+        c.restartLeo()
+</t>
+<t tx="ekr.20201207061240.1"></t>
+<t tx="ekr.20201207084531.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1772
+
+Added gdc.diff_pull_request.
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201208114431.1">def diff_pull_request(self, branch_name, base_branch_name='devel', directory=None):
+    """
+    Create a Leonine version of the diffs that would be
+    produced by a pull request between two branches.
+    """
+    if not directory:
+        directory = os.path.join(g.app.loadDir, '..', '..')
+    aList = g.execGitCommand(f"git rev-parse devel", directory)
+    if aList:
+        devel_rev = aList[0]
+        devel_rev = devel_rev[:8]
+        self.diff_two_revs(
+            rev1=devel_rev,  # Before: Latest devel commit.
+            rev2='HEAD',     # After: Lastest branch commit
+            directory=directory,
+        )
+    else:
+        g.es_print('FAIL: git rev-parse devel')
+</t>
+<t tx="ekr.20201208114843.1">import leo.commands.editFileCommands as efc
+x = efc.GitDiffController(c)
+x.diff_pull_request()
+</t>
+<t tx="ekr.20201208115447.1">def diff_pull_request(self, base_branch_name='devel', directory=None):
+    """
+    Create a Leonine version of the diffs that would be
+    produced by a pull request between two branches.
+    """
+    if not directory:
+        directory = os.path.join(g.app.loadDir, '..', '..')
+    aList = g.execGitCommand(f"git rev-parse devel", directory)
+    if aList:
+        devel_rev = aList[0]
+        devel_rev = devel_rev[:8]
+        self.diff_two_revs(
+            rev1=devel_rev,  # Before: Latest devel commit.
+            rev2='HEAD',     # After: Lastest branch commit
+            directory=directory,
+        )
+    else:
+        g.es_print('FAIL: git rev-parse devel')
+</t>
+<t tx="ekr.20201209091828.1">@language rest
+@wrap
+
+- diff_pr: branch arg should default to current branch.
+
+- Email: potential conflicts in leojs.leo.
+
+- Finish scripts in leo.js.
+  
+- Upload c:\StudyOutlines\LeoVue.leo to leo-editor-contrib.
+
+First project:
+- Start with .leo file chooser.
+
+Study:
+- Study: Typing composition system in typescript.
+  (how to define types for objects and variables etc.)
+- Look at github actions and projects.
+- Learn about vs-code unit testing.</t>
+<t tx="ekr.20201210030607.1">When running this in leointegration.ts:
+
+
+public test(p_fromOutline?: boolean): Thenable&lt;unknown&gt; {
+    // return this.statusBarOnClick();
+    let a = 2;
+    console.log("initial test call");
+    eval("console.log(a)");
+
+
+I see:
+
+    initial test call 
+    2 
+
+in the console! :)</t>
+<t tx="ekr.20201210040636.1">c:\leo.repo\leojs&gt;c:\apps\Git\bin\git.exe push
+Counting objects: 2, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 304 bytes | 304.00 KiB/s, done.
+Total 2 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+remote: error: GH006: Protected branch update failed for refs/heads/devel.
+remote: error: At least 1 approving review is required by reviewers with write access.
+To https://github.com/boltex/leojs.git
+   34e049d..6b293e0  package.json -&gt; package.json
+ ! [remote rejected] devel -&gt; devel (protected branch hook declined)
+error: failed to push some refs to 'https://github.com/boltex/leojs.git'</t>
+<t tx="ekr.20201210081319.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1775
+
+@language python
+@nosearch
+</t>
 <t tx="ktenney.20041211072654.14">def processDirectory(self, path, node):
 
     """
@@ -46746,7 +48332,6 @@ def project_wizard(event):
         w.setSelectionRange(i, j, insert=j)
         w.setYScrollPosition(pos)
         u.afterChangeNodeContents(p, 'change shortcut', udata)
-        c.frame.body.onBodyChanged('change shortcut')
         cmdname = m.group(0).rstrip('= ')
         k.editShortcut_do_bind_helper(stroke, cmdname)
         return
