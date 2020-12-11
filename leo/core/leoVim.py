@@ -2,8 +2,21 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
 #@@first
-"""Leo's vim emulator."""
+"""
+Leo's vim mode.
+
+**Important**
+
+`@bool vim-mode` enables vim *mode*.
+
+`@keys Vim bindings` enables vim *emulation*.
+         
+Vim *mode* is independent of vim *emulation* because
+k.masterKeyHandler dispatches keys to vim mode before
+doing the normal key handling that vim emulation uses.
+"""
 import leo.core.leoGlobals as g
+from leo.core.leoGui import LeoKeyEvent
 import os
 import string
 #@+others
@@ -48,7 +61,12 @@ class VimEvent:
     __str__ = __repr__
 #@+node:ekr.20131113045621.16547: ** class VimCommands
 class VimCommands:
-    """A class that handles vim simulation in Leo."""
+    """
+    A class that handles vim mode in Leo.
+    
+    In vim mode, k.masterKeyHandler calls
+    
+    """
     #@+others
     #@+node:ekr.20131109170017.16507: *3*  vc.ctor & helpers
     def __init__(self, c):
@@ -464,8 +482,16 @@ class VimCommands:
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'vimCommands',])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
-    # All acceptance methods must set the return_value ivar.
     # All key handlers must end with a call to an acceptance method.
+    #
+    # Acceptance methods set the return_value ivar, which becomes the value
+    # returned to k.masterKeyHandler by c.vimCommands.do_key:
+    #
+    # - True:  k.masterKeyHandler returns.
+    #          Vim mode has completely handled the key.
+    #
+    # - False: k.masterKeyHander handles the key.
+
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(self, add_to_dot=True, handler=None):
@@ -987,15 +1013,16 @@ class VimCommands:
             # Copy the list so it can't change in the loop.
             for event in self.dot_list[:]:
                 # Only k.masterKeyHandler can insert characters!
-                # Create an event satisfying both k.masterKeyHandler and self.do_key.
-                self.k.masterKeyHandler(g.Bunch(
-                    # for do_key()...
-                    w=self.w,
-                    # for k.masterKeyHandler...
-                    widget=self.w,
+                #
+                # #1757: Create a LeoKeyEvent.
+                event = LeoKeyEvent(
+                    binding=g.KeyStroke(event.stroke),
+                    c = self.c,
                     char=event.char,
-                    stroke=g.KeyStroke(event.stroke)),
+                    event=event,
+                    w=self.w,
                 )
+                self.k.masterKeyHandler(event)
             # For the dot list to be the old dot list, whatever happens.
             self.command_list = self.old_dot_list[:]
             self.dot_list = self.old_dot_list[:]

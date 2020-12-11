@@ -938,9 +938,7 @@ class AutoCompleterClass:
     #@+node:ekr.20110511133940.14561: *4* ac.show_completion_list & helpers
     def show_completion_list(self, common_prefix, prefix, tabList):
 
-        trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         c = self.c
-        if trace: g.trace('k.show_completion_list')
         aList = common_prefix.split('.')
         header = '.'.join(aList[:-1])
         # "!" toggles self.verbose.
@@ -986,6 +984,7 @@ class AutoCompleterClass:
         return tabList
     #@+node:ekr.20061031131434.46: *4* ac.start
     def start(self, event):
+        """Init the completer and start the state handler."""
         # We don't need to clear this now that we don't use ContextSniffer.
         c = self.c
         if c.config.getBool('use-jedi', default=True):
@@ -2965,7 +2964,7 @@ class KeyHandlerClass:
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         """The master key handler for almost all key bindings."""
-        trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c, k = self.c, self
         # Setup...
         if trace:
@@ -2991,7 +2990,8 @@ class KeyHandlerClass:
         # Handle abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
             return
-        # Handle the character given by event *without* executing any command that might be bound to it.
+        # Handle the character given by event *without*
+        # executing any command that might be bound to it.
         c.insertCharFromEvent(event)
     #@+node:ekr.20200524151214.1: *5* Setup...
     #@+node:ekr.20180418040158.1: *6* k.checkKeyEvent
@@ -3350,9 +3350,14 @@ class KeyHandlerClass:
         Handle vim mode.
         Return True if k.masterKeyHandler should return.
         """
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c = self.c
         if c.vim_mode and c.vimCommands:
+            # The "acceptance methods" in leoVim.py return True
+            # if vim node has completely handled the key.
+            # Otherwise, processing in k.masterKeyHandler continues.
             ok = c.vimCommands.do_key(event)
+            if trace: g.trace('do_key returns', ok, repr(event and event.stroke))
             return ok
         return False
     #@+node:ekr.20180418033838.1: *5* 7. k.doBinding & helpers
@@ -3365,10 +3370,22 @@ class KeyHandlerClass:
         trace = 'keys' in g.app.debug
         c, k = self.c, self
         #
-        # Use getPaneBindings for *all* keys.
-        bi = k.getPaneBinding(event.stroke, event.w)
+        # Experimental special case:
+        # Inserting a '.' always invokes the auto-completer.
+        # The auto-completer just inserts a '.' if it isn't enabled.
+        stroke = event.stroke
+        if (
+            stroke.s == '.'
+            and k.isPlainKey(stroke)
+            and self.unboundKeyAction in ('insert', 'overwrite')
+        ):
+            c.doCommandByName('auto-complete', event)
+            return True
         #
-        # #327: ignore killed bindings.
+        # Use getPaneBindings for *all* keys.
+        bi = k.getPaneBinding(event)
+        #
+        # #327: Ignore killed bindings.
         if bi and bi.commandName in k.killedBindings:
             return False  
         #
@@ -3382,18 +3399,21 @@ class KeyHandlerClass:
         # No binding exists.
         return False
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, stroke, w):
+    def getPaneBinding(self, event):
 
-        k, state = self, self.unboundKeyAction
-        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+        c, k, state = self.c, self, self.unboundKeyAction
+        stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
             return None
-        if 0:
-            # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
-            #        Valid because mode bindings have already been handled.
-            if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
-                if trace: g.trace('KILL binding', stroke)
-                return None
+        #
+        # #1757: Always insert plain keys in the body.
+        #        Valid because mode bindings have already been handled.
+        if (
+            k.isPlainKey(stroke)
+            and w == c.frame.body.widget
+            and state in ('insert', 'overwrite')
+        ):
+            return None
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
