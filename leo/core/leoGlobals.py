@@ -5394,25 +5394,10 @@ def gitCommitNumber(path=None):
 #@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
 def gitInfoForFile(filename):
     """
-    return the git (branch, commit) info associated for the given file.
-    
-    Look for a .git directory in the file's directory, and parent directories.
+    Return the git (branch, commit) info associated for the given file.
     """
-    from pathlib import Path
-    branch, commit = '', ''
-    if filename:
-        parent = Path(filename)
-        while parent:
-            git_dir = os.path.join(parent, '.git')
-            if os.path.exists(git_dir) and os.path.isdir(git_dir):
-                head = os.path.join(git_dir, 'HEAD')
-                if os.path.exists(head):
-                    branch, commit = g.gitInfo(head)
-                    break
-            if parent == parent.parent:
-                break
-            parent = parent.parent
-    return branch, commit
+    # g.gitInfo and g.gitHeadPath now do all the work.
+    return g.gitInfo(filename)
 #@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
 def gitInfoForOutline(c):
     """
@@ -5440,31 +5425,34 @@ def gitHeadPath(path):
     """
     Compute the path to the .git/HEAD directory given the path to another
     directory.
-    
-    # #1780: Look up the directory tree, looking for a directory containing
-    the .git directory.
     """
-    ###if not path:
-    ###    path = g.os_path_dirname(__file__)
-    if not g.os.path.exists(path):
-        return None
-
-    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
-    exists = g.os_path_exists(head)
-    return head if exists else None
+    # #1780: Look up the directory tree, looking the .git directory.
+    path = os.path.abspath(path)
+    while os.path.exists(path):
+        git_dir = os.path.join(path, '.git', 'HEAD')
+        if os.path.exists(git_dir):
+            return git_dir
+        new_path = os.path.abspath(os.path.join(path, '..'))
+        if new_path == path:
+            break
+        path = new_path
+    return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
     """
-    Path is a .git/HEAD directory, or None.
+    Path must be a directory.
 
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
     if path is None:
-        path = __file__ # A hack.
+        # Default to leo/core.
+        path = os.path.dirname(__file__)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
     # Does path/../ref exist?
     path = g.gitHeadPath(path)
-    if not path or not g.os_path_exists(path):
+    if not path:
         return branch, commit
     try:
         with open(path) as f:
