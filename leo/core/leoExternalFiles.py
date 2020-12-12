@@ -469,7 +469,6 @@ class ExternalFilesController:
         Return True if the user agrees.
         '''
         if g.app.restarting:
-            g.trace('===== g.app.restarting')
             return True
         if g.unitTesting:
             return False
