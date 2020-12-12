@@ -7,7 +7,7 @@ import getpass
 import os
 import subprocess
 import tempfile
-import time
+### import time
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:
@@ -20,7 +20,7 @@ class ExternalFile:
         self.p = p and p.copy()
             # The nearest @<file> node.
         self.path = path
-        self.time = time
+        self.time = time  # Used to inhibit endless dialog loop.
 
     def __repr__(self):
         return f"<ExternalFile: {self.time:20} {g.shortFilename(self.path)}>"
@@ -468,13 +468,18 @@ class ExternalFilesController:
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
+        if g.app.restarting:
+            g.trace('===== g.app.restarting')
+            return True
         if g.unitTesting:
             return False
         if c not in g.app.commanders():
             return False
-        if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
-            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
-            return bool('yes' in self.yesno_all_answer.lower())
+        ###
+        ### I have no idea what this is supposed to do.
+            # if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
+                # self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+                # return bool('yes' in self.yesno_all_answer.lower())
         if not p:
             for ef in self.files:
                 if ef.path == path:
@@ -497,9 +502,11 @@ class ExternalFilesController:
             ])
         result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
             yes_all=not _is_leo, no_all=not _is_leo)
-        if result and "-all" in result.lower():
-            self.yesno_all_time = time.time()
-            self.yesno_all_answer = result.lower()
+        ###
+        ### I have no idea what this is supposed to do.
+            # if result and "-all" in result.lower():
+                # self.yesno_all_time = time.time()
+                # self.yesno_all_answer = result.lower()
         return bool(result and 'yes' in result.lower())
             # Careful: may be unit testing.
     #@+node:ekr.20150404052819.1: *4* efc.checksum
