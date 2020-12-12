@@ -5423,24 +5423,23 @@ def gitDescribe(path=None):
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
 def gitHeadPath(path):
     """
-    Compute the path to the .git/HEAD directory given the path to another
-    directory.
+    Compute the path to .git/HEAD given the path.
     """
+    from pathlib import Path
+    path = Path(path)
     # #1780: Look up the directory tree, looking the .git directory.
-    path = os.path.abspath(path)
     while os.path.exists(path):
-        git_dir = os.path.join(path, '.git', 'HEAD')
-        if os.path.exists(git_dir):
-            return git_dir
-        new_path = os.path.abspath(os.path.join(path, '..'))
-        if new_path == path:
+        head = os.path.join(path, '.git', 'HEAD')
+        if os.path.exists(head):
+            return head
+        if path == path.parent:
             break
-        path = new_path
+        path = path.parent
     return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
     """
-    Path must be a directory.
+    Path may be a directory or file.
 
     Return the branch and commit number or ('', '').
     """
