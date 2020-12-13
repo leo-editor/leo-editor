@@ -286,7 +286,7 @@ class LeoApp:
         self.quitting = False
             # True: quitting.  Locks out some events.
         self.restarting = False
-            # True: restarting all of Leo.
+            # True: restarting all of Leo. #1240.
         self.reverting = False
             # True: executing the revert command.
         self.syntax_error_files = []

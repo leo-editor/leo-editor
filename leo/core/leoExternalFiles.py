@@ -75,7 +75,6 @@ class ExternalFilesController:
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
             # get_time(path), see set_time() for notes.
-        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
         self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20150405105938.1: *3* efc.entries
@@ -127,7 +126,10 @@ class ExternalFilesController:
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
         '''
-        if not g.app or g.app.killed:
+        #
+        # #1240: Note: The "asking" dialog prevents idle time.
+        #
+        if not g.app or g.app.killed or g.app.restarting:  # #1240.
             return
         self.on_idle_count += 1
         # New in Leo 5.7: always handle delayed requests.
@@ -468,34 +470,34 @@ class ExternalFilesController:
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
-        if g.app.restarting:
-            return True
         if g.unitTesting:
             return False
         if c not in g.app.commanders():
             return False
-        if not p:
+        is_leo = path.endswith(('.leo', '.db'))
+        is_external_file = not is_leo
+        #
+        # Create the message.
+        message1 = f"{g.splitLongFileName(path)} has changed outside Leo.\n"
+        if is_leo:
+            message2 = 'Restart Leo?'
+        elif p:
+            message2 = f"Reload {p.h}?"
+        else:
             for ef in self.files:
                 if ef.path == path:
-                    where = ef.p.h
+                    message2 = f"Reload {ef.p.h}?"
                     break
             else:
-                where = 'the outline node'
-        else:
-            where = p.h
-        _is_leo = path.endswith(('.leo', '.db'))
-        if _is_leo:
-            s = '\n'.join([
-                f"{g.splitLongFileName(path)} has changed outside Leo.",
-                'Reload it?'
-            ])
-        else:
-            s = '\n'.join([
-                f"{g.splitLongFileName(path)} has changed outside Leo.",
-                f"Reload {where} in Leo?",
-            ])
-        result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-            yes_all=not _is_leo, no_all=not _is_leo)
+                message2 = f"Reload {path}?"
+        #
+        # #1240: Note: This dialog prevents idle time.
+        result = g.app.gui.runAskYesNoDialog(c,
+            'Overwrite the version in Leo?',
+            message1 + message2,
+            yes_all=is_external_file,
+            no_all=is_external_file,
+        )
         return bool(result and 'yes' in result.lower())
             # Careful: may be unit testing.
     #@+node:ekr.20150404052819.1: *4* efc.checksum

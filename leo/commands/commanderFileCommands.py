@@ -67,7 +67,7 @@ def restartLeo(self, event=None):
                 g.es_print('Cancelling restart-leo command')
                 return
     # 3. Officially begin the restart process. A flag for efc.ask.
-    g.app.restarting = True
+    g.app.restarting = True  # #1240.
     # 4. Save session data.
     if g.app.sessionManager:
         g.app.sessionManager.save_snapshot()
