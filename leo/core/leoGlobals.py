@@ -332,6 +332,43 @@ app = None  # The singleton app object. Set by runLeo.py.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
+#@+node:ekr.20201211182722.1: ** g.Backup
+#@+node:ekr.20201211182659.1: *3* g.standard_timestamp
+def standard_timestamp():
+    """Return a reasonable timestamp."""
+    return time.strftime("%Y%m%d-%H%M%S")
+#@+node:ekr.20201211183100.1: *3* g.get_backup_directory
+def get_backup_path(sub_directory):
+    """
+    Return the full path to the subdirectory of the main backup directory.
+    
+    The main backup directory is computed as follows:
+        
+    1. os.environ['LEO_BACKUP']
+    2. ~/Backup
+    """
+    from pathlib import Path
+    # Compute the main backup directory.
+    # First, try the LEO_BACKUP directory.
+    backup = None
+    try:
+        backup = os.environ['LEO_BACKUP']
+        if not os.path.exists(backup):
+            backup = None
+    except KeyError:
+        pass
+    except Exception:
+        g.es_exception()
+    # Second, try ~/Backup.
+    if not backup:
+        backup = os.path.join(str(Path.home()), 'Backup')
+        if not os.path.exists(backup):
+            backup = None
+    if not backup:
+        return None
+    # Compute the path to backup/sub_directory
+    directory = os.path.join(backup, sub_directory)
+    return directory if os.path.exists(directory) else None
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
 #@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
 class BindingInfo:
@@ -5357,25 +5394,10 @@ def gitCommitNumber(path=None):
 #@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
 def gitInfoForFile(filename):
     """
-    return the git (branch, commit) info associated for the given file.
-    
-    Look for a .git directory in the file's directory, and parent directories.
+    Return the git (branch, commit) info associated for the given file.
     """
-    from pathlib import Path
-    branch, commit = '', ''
-    if filename:
-        parent = Path(filename)
-        while parent:
-            git_dir = os.path.join(parent, '.git')
-            if os.path.exists(git_dir) and os.path.isdir(git_dir):
-                head = os.path.join(git_dir, 'HEAD')
-                if os.path.exists(head):
-                    branch, commit = g.gitInfo(head)
-                    break
-            if parent == parent.parent:
-                break
-            parent = parent.parent
-    return branch, commit
+    # g.gitInfo and g.gitHeadPath now do all the work.
+    return g.gitInfo(filename)
 #@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
 def gitInfoForOutline(c):
     """
@@ -5399,29 +5421,37 @@ def gitDescribe(path=None):
     commit = commit.rstrip()
     return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
-def gitHeadPath(path=None):
+def gitHeadPath(path):
     """
-    Compute the path to the .git/HEAD directory given the path to another
-    directory. If no path is given, use the path to *this* file. This code
-    can *not* use g.app.loadDir because it is called too early in Leo's
-    startup code.
+    Compute the path to .git/HEAD given the path.
     """
-    if not path:
-        path = g.os_path_dirname(__file__)
-    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
-    exists = g.os_path_exists(head)
-    return head if exists else None
+    from pathlib import Path
+    path = Path(path)
+    # #1780: Look up the directory tree, looking the .git directory.
+    while os.path.exists(path):
+        head = os.path.join(path, '.git', 'HEAD')
+        if os.path.exists(head):
+            return head
+        if path == path.parent:
+            break
+        path = path.parent
+    return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
     """
-    Path is a .git/HEAD directory, or None.
+    Path may be a directory or file.
 
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
+    if path is None:
+        # Default to leo/core.
+        path = os.path.dirname(__file__)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
     # Does path/../ref exist?
     path = g.gitHeadPath(path)
-    if not path or not g.os_path_exists(path):
+    if not path:
         return branch, commit
     try:
         with open(path) as f:
