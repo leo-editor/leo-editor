@@ -233,9 +233,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Words start with '@'.
         """
         # Trace for *either* 'abbrev' or 'keys'
-        trace = 'abbrev' in g.app.debug or 'keys' in g.app.debug
-        # Verbose only for *both* 'abbrev' and 'keys.
-        verbose = 'abbrev' in g.app.debug and 'verbose' in g.app.debug
+        trace = any(z in g.app.debug for z in ('abbrev', 'keys'))
+        # Verbose only for *both* 'abbrev' and 'verbose'.
+        verbose = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)

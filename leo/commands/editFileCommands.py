@@ -531,7 +531,14 @@ class GitDiffController:
         ))
         diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
-        if c.looksLikeDerivedFile(fn):
+        # #1777: The file node will contain the entire added/deleted file.
+        if not s1:
+            self.file_node.h = f"Added: {self.file_node.h}"
+            c1 = c2 = None
+        elif not s2:
+            self.file_node.h = f"Deleted: {self.file_node.h}"
+            c1 = c2 = None
+        elif c.looksLikeDerivedFile(fn):
             c1 = self.make_at_file_outline(fn, s1, rev1)
             c2 = self.make_at_file_outline(fn, s2, rev2)
         else:
@@ -730,7 +737,7 @@ class GitDiffController:
             )
         return hidden_c
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
-    def diff_pull_request(self, branch_name, base_branch_name='devel', directory=None):
+    def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
@@ -788,7 +795,11 @@ class GitDiffController:
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
-        g.es_print(f"diffing {len(files)} files. This may take awhile")
+        n = len(files)
+        message = f"diffing {n} file{g.plural(n)}"
+        if n > 5:
+            message += ". This may take awhile..."
+        g.es_print(message)
         # Create the root node.
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = f"git diff revs: {rev1} {rev2}"
