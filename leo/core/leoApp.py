@@ -269,8 +269,6 @@ class LeoApp:
             # copy of Leo.
         self.dragging = False
             # True: dragging.
-        # self.allow_delayed_see = False
-            # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
         self.inBridge = False
             # True: running from leoBridge module.
         self.inScript = False
@@ -287,6 +285,8 @@ class LeoApp:
             # True: we are pre-reading a settings file.
         self.quitting = False
             # True: quitting.  Locks out some events.
+        self.restarting = False
+            # True: restarting all of Leo. #1240.
         self.reverting = False
             # True: executing the revert command.
         self.syntax_error_files = []
