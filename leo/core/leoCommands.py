@@ -2706,12 +2706,13 @@ class Commands:
         between rev1 and rev2.
         """
         import leo.commands.editFileCommands as efc
-        efc.GitDiffController(c=self).diff_file(
-            directory=directory,
-            fn=fn,
-            rev1=rev1,
-            rev2=rev2,
-        )
+        x = efc.GitDiffController(c=self)
+        if fn.endswith('.leo'):  # #1781.
+            x.diff_leo_file(
+                directory=directory, fn=fn, rev1=rev1, rev2=rev2)
+        else:
+            x.diff_file(
+                directory=directory, fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='', rev2=''):
         """

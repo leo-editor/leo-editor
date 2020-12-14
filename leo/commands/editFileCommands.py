@@ -736,6 +736,10 @@ class GitDiffController:
                 root=hidden_root,
             )
         return hidden_c
+    #@+node:ekr.20201214173915.1: *4* gdc.diff_leo_file (new)
+    def diff_leo_file(self, fn, directory=None, rev1='HEAD', rev2=''):
+        """Show a leonine diff of a .leo file."""
+        g.trace('Not ready yet', fn)
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
@@ -806,7 +810,10 @@ class GitDiffController:
         self.root.b = '@ignore\n@nosearch\n'
         # Create diffs of all files.
         for fn in files:
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+            if fn.endswith('.leo'):
+                self.diff_leo_file(fn=fn, rev1=rev1, rev2=rev2)  # #1781.
+            else:
+                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, directory=None, rev1='HEAD', rev2=''):
@@ -836,7 +843,10 @@ class GitDiffController:
         if files:
             self.root = self.create_root(rev1, rev2)
             for fn in files:
-                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+                if fn.endswith('.leo'):  # #1781.
+                    self.diff_leo_file(fn=fn, rev1=rev1, rev2=rev2)
+                else:
+                    self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
             self.finish()
         return bool(files)
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
