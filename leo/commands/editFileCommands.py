@@ -907,17 +907,11 @@ class GitDiffController:
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self, rev1, rev2):
         """Return a list of changed files."""
-
-        def readable(fn):
-            for suffix in ('.db', '.leo', '.zip',):  # 'commit_timestamp.json',
-                if fn.strip().endswith(suffix):
-                    return False
-            return True
-
         command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
         files = [
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
-                if readable(z)
+                if not z.strip().endswith(('.db', '.zip'))
+                    # #1781: Allow diffs of .leo files.
         ]
         return files
     #@+node:ekr.20180510095807.1: *4* gdc.set_directory & helper
