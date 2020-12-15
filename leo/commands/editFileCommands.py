@@ -518,9 +518,32 @@ class GitDiffController:
         """
         if not self.set_directory(directory):
             return
-        c = self.c
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
+        if fn.endswith('.leo'):
+            self.diff_leo_file(fn, rev1, rev2, s1, s2)
+        else:
+            self.diff_external_file(fn, rev1, rev2, s1, s2)
+        
+    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file (new)
+    def diff_leo_file(self, fn, rev1, rev2, s1, s2):
+        """Create an outline describing the git diffs for a .leo file."""
+        if 1:
+            g.trace(len(s1), len(s2))
+        else:
+            g.printObj(g.splitLines(s1), tag=rev1)  ###
+            g.printObj(g.splitLines(s2), tag=rev2)  ###
+        ### To do: Load c1 and c2.
+        c1 = c2 = None
+        if c1 and c2:
+            self.make_diff_outlines(c1, c2, fn, rev1, rev2)
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+    #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file (new)
+    def diff_external_file(self, fn, rev1, rev2, s1, s2):
+        """
+        Create an outline describing the git diffs for an external file.
+        """
+        c = self.c
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
         diff_list = list(difflib.unified_diff(
@@ -553,199 +576,6 @@ class GitDiffController:
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-    #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
-    def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
-        """Create nodes describing the changes."""
-        if not d:
-            return
-        parent = self.file_node.insertAsLastChild()
-        parent.setHeadString(kind)
-        for key in d:
-            if kind.lower() == 'changed':
-                v1, v2 = d.get(key)
-                # Organizer node: contains diff
-                organizer = parent.insertAsLastChild()
-                organizer.h = v2.h
-                body = list(difflib.unified_diff(
-                    g.splitLines(v1.b),
-                    g.splitLines(v2.b),
-                    rev1 or 'uncommitted',
-                    rev2 or 'uncommitted',
-                ))
-                if ''.join(body).strip():
-                    body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    body.append(f"@language {c2.target_language}\n")
-                else:
-                    body = ['Only headline has changed']
-                organizer.b = ''.join(body)
-                # Node 2: Old node
-                p2 = organizer.insertAsLastChild()
-                p2.h = 'Old:' + v1.h
-                p2.b = v1.b
-                # Node 3: New node
-                assert v1.fileIndex == v2.fileIndex
-                p_in_c = self.find_gnx(self.c, v1.fileIndex)
-                if p_in_c:  # Make a clone, if possible.
-                    p3 = p_in_c.clone()
-                    p3.moveToLastChildOf(organizer)
-                else:
-                    p3 = organizer.insertAsLastChild()
-                    p3.h = 'New:' + v2.h
-                    p3.b = v2.b
-            elif kind.lower() == 'added':
-                v = d.get(key)
-                new_p = self.find_gnx(self.c, v.fileIndex)
-                if new_p:  # Make a clone, if possible.
-                    p = new_p.clone()
-                    p.moveToLastChildOf(parent)
-                else:
-                    p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
-            else:
-                v = d.get(key)
-                p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
-    #@+node:ekr.20170806094321.1: *5* gdc.create_file_node
-    def create_file_node(self, diff_list, fn):
-        """Create an organizer node for the file."""
-        p = self.root.insertAsLastChild()
-        p.h = fn.strip()
-        p.b = ''.join(diff_list)
-        return p
-    #@+node:ekr.20170806094320.7: *5* gdc.find_file
-    def find_file(self, fn):
-        """Return the @<file> node matching fn."""
-        c = self.c
-        fn = g.os_path_basename(fn)
-        for p in c.all_unique_positions():
-            if p.isAnyAtFileNode():
-                fn2 = p.anyAtFileNodeName()
-                if fn2.endswith(fn):
-                    return p
-        return None
-    #@+node:ekr.20170806094321.7: *5* gdc.make_at_file_outline
-    def make_at_file_outline(self, fn, s, rev):
-        """Create a hidden temp outline from lines."""
-        # A specialized version of atFileCommands.read.
-        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        at = hidden_c.atFileCommands
-        hidden_c.frame.createFirstTreeNode()
-        root = hidden_c.rootPosition()
-        root.h = fn + ':' + rev if rev else fn
-        at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        if at.errors > 0:
-            g.trace('***** errors')
-            return None
-        at.fast_read_into_root(
-            c=hidden_c,
-            contents=s,
-            gnx2vnode={},
-            path=fn,
-            root=root,
-        )
-        return hidden_c
-    #@+node:ekr.20170806125535.1: *5* gdc.make_diff_outlines & helper
-    def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
-        """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
-        added, deleted, changed = self.compute_dicts(c1, c2)
-        table = (
-            (added, 'Added'),
-            (deleted, 'Deleted'),
-            (changed, 'Changed'))
-        for d, kind in table:
-            self.create_compare_node(c1, c2, d, kind, rev1, rev2)
-    #@+node:ekr.20170806191707.1: *6* gdc.compute_dicts
-    def compute_dicts(self, c1, c2):
-        """Compute inserted, deleted, changed dictionaries."""
-        # Special case the root: only compare the body text.
-        root1, root2 = c1.rootPosition().v, c2.rootPosition().v
-        root1.h = root2.h
-        if 0:
-            g.trace('c1...')
-            for p in c1.all_positions():
-                print(f"{len(p.b):4} {p.h}")
-            g.trace('c2...')
-            for p in c2.all_positions():
-                print(f"{len(p.b):4} {p.h}")
-        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
-        d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
-        added = {key: d2.get(key) for key in d2 if not d1.get(key)}
-        deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
-        # Remove the root from the added and deleted dicts.
-        if root2.fileIndex in added:
-            del added[root2.fileIndex]
-        if root1.fileIndex in deleted:
-            del deleted[root1.fileIndex]
-        changed = {}
-        for key in d1:
-            if key in d2:
-                v1 = d1.get(key)
-                v2 = d2.get(key)
-                assert v1 and v2
-                assert v1.context != v2.context
-                if v1.h != v2.h or v1.b != v2.b:
-                    changed[key] = (v1, v2)
-        return added, deleted, changed
-    #@+node:ekr.20170821052348.1: *5* gdc.get_revno
-    def get_revno(self, revspec, abbreviated=True):
-        """Return the abbreviated hash the given revision spec."""
-        if revspec:
-            # Return only the abbreviated hash for the revspec.
-            command = 'git show --format=%%%s --no-patch %s' % (
-                'h' if abbreviated else 'H',
-                revspec)
-            lines = g.execGitCommand(command, self.repo_dir)
-            return ''.join(lines).strip()
-        return 'uncommitted'
-    #@+node:ekr.20170820084258.1: *5* gdc.make_at_clean_outline
-    def make_at_clean_outline(self, fn, root, s, rev):
-        """
-        Create a hidden temp outline from lines without sentinels.
-        root is the @<file> node for fn.
-        s is the contents of the (public) file, without sentinels.
-        """
-        # A specialized version of at.readOneAtCleanNode.
-        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        at = hidden_c.atFileCommands
-        x = hidden_c.shadowController
-        hidden_c.frame.createFirstTreeNode()
-        hidden_root = hidden_c.rootPosition()
-        # copy root to hidden root, including gnxs.
-        root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
-        hidden_root.h = fn + ':' + rev if rev else fn
-        # Set at.encoding first.
-        at.initReadIvars(hidden_root, fn)
-            # Must be called before at.scanAllDirectives.
-        at.scanAllDirectives(hidden_root)
-            # Sets at.startSentinelComment/endSentinelComment.
-        new_public_lines = g.splitLines(s)
-        old_private_lines = at.write_at_clean_sentinels(hidden_root)
-        marker = x.markerFromFileLines(old_private_lines, fn)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-        if old_public_lines:
-            # Fix #1136: The old lines might not exist.
-            new_private_lines = x.propagate_changed_lines(
-                new_public_lines, old_private_lines, marker, p=hidden_root)
-            at.fast_read_into_root(
-                c=hidden_c,
-                contents=''.join(new_private_lines),
-                gnx2vnode={},
-                path=fn,
-                root=hidden_root,
-            )
-        return hidden_c
-    #@+node:ekr.20201214173915.1: *4* gdc.diff_leo_file (new)
-    def diff_leo_file(self, fn, directory=None, rev1='HEAD', rev2=''):
-        """Show a leonine diff of a .leo file."""
-        s1 = self.get_file_from_rev(rev1, fn)
-        s2 = self.get_file_from_rev(rev2, fn)
-        g.trace(len(s1), len(s2))
-
-        # if c1 and c2:
-            # self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            # self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
@@ -816,10 +646,7 @@ class GitDiffController:
         self.root.b = '@ignore\n@nosearch\n'
         # Create diffs of all files.
         for fn in files:
-            if fn.endswith('.leo'):
-                self.diff_leo_file(fn=fn, rev1=rev1, rev2=rev2)  # #1781.
-            else:
-                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, directory=None, rev1='HEAD', rev2=''):
@@ -849,13 +676,71 @@ class GitDiffController:
         if files:
             self.root = self.create_root(rev1, rev2)
             for fn in files:
-                if fn.endswith('.leo'):  # #1781.
-                    self.diff_leo_file(fn=fn, rev1=rev1, rev2=rev2)
-                else:
-                    self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
             self.finish()
         return bool(files)
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
+    #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
+    def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
+        """Create nodes describing the changes."""
+        if not d:
+            return
+        parent = self.file_node.insertAsLastChild()
+        parent.setHeadString(kind)
+        for key in d:
+            if kind.lower() == 'changed':
+                v1, v2 = d.get(key)
+                # Organizer node: contains diff
+                organizer = parent.insertAsLastChild()
+                organizer.h = v2.h
+                body = list(difflib.unified_diff(
+                    g.splitLines(v1.b),
+                    g.splitLines(v2.b),
+                    rev1 or 'uncommitted',
+                    rev2 or 'uncommitted',
+                ))
+                if ''.join(body).strip():
+                    body.insert(0, '@ignore\n@nosearch\n@language patch\n')
+                    body.append(f"@language {c2.target_language}\n")
+                else:
+                    body = ['Only headline has changed']
+                organizer.b = ''.join(body)
+                # Node 2: Old node
+                p2 = organizer.insertAsLastChild()
+                p2.h = 'Old:' + v1.h
+                p2.b = v1.b
+                # Node 3: New node
+                assert v1.fileIndex == v2.fileIndex
+                p_in_c = self.find_gnx(self.c, v1.fileIndex)
+                if p_in_c:  # Make a clone, if possible.
+                    p3 = p_in_c.clone()
+                    p3.moveToLastChildOf(organizer)
+                else:
+                    p3 = organizer.insertAsLastChild()
+                    p3.h = 'New:' + v2.h
+                    p3.b = v2.b
+            elif kind.lower() == 'added':
+                v = d.get(key)
+                new_p = self.find_gnx(self.c, v.fileIndex)
+                if new_p:  # Make a clone, if possible.
+                    p = new_p.clone()
+                    p.moveToLastChildOf(parent)
+                else:
+                    p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
+            else:
+                v = d.get(key)
+                p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
+    #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
+    def create_file_node(self, diff_list, fn):
+        """Create an organizer node for the file."""
+        p = self.root.insertAsLastChild()
+        p.h = fn.strip()
+        p.b = ''.join(diff_list)
+        return p
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1, rev2):
         """Create the top-level organizer node describing the git diff."""
@@ -871,6 +756,17 @@ class GitDiffController:
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
         return p
+    #@+node:ekr.20170806094320.7: *4* gdc.find_file
+    def find_file(self, fn):
+        """Return the @<file> node matching fn."""
+        c = self.c
+        fn = g.os_path_basename(fn)
+        for p in c.all_unique_positions():
+            if p.isAnyAtFileNode():
+                fn2 = p.anyAtFileNodeName()
+                if fn2.endswith(fn):
+                    return p
+        return None
     #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
     def find_gnx(self, c, gnx):
         """Return a position in c having the given gnx."""
@@ -930,11 +826,122 @@ class GitDiffController:
                     # #1781: Allow diffs of .leo files.
         ]
         return files
+    #@+node:ekr.20170821052348.1: *4* gdc.get_revno
+    def get_revno(self, revspec, abbreviated=True):
+        """Return the abbreviated hash the given revision spec."""
+        if revspec:
+            # Return only the abbreviated hash for the revspec.
+            command = 'git show --format=%%%s --no-patch %s' % (
+                'h' if abbreviated else 'H',
+                revspec)
+            lines = g.execGitCommand(command, self.repo_dir)
+            return ''.join(lines).strip()
+        return 'uncommitted'
+    #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
+    def make_at_clean_outline(self, fn, root, s, rev):
+        """
+        Create a hidden temp outline from lines without sentinels.
+        root is the @<file> node for fn.
+        s is the contents of the (public) file, without sentinels.
+        """
+        # A specialized version of at.readOneAtCleanNode.
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        at = hidden_c.atFileCommands
+        x = hidden_c.shadowController
+        hidden_c.frame.createFirstTreeNode()
+        hidden_root = hidden_c.rootPosition()
+        # copy root to hidden root, including gnxs.
+        root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
+        hidden_root.h = fn + ':' + rev if rev else fn
+        # Set at.encoding first.
+        at.initReadIvars(hidden_root, fn)
+            # Must be called before at.scanAllDirectives.
+        at.scanAllDirectives(hidden_root)
+            # Sets at.startSentinelComment/endSentinelComment.
+        new_public_lines = g.splitLines(s)
+        old_private_lines = at.write_at_clean_sentinels(hidden_root)
+        marker = x.markerFromFileLines(old_private_lines, fn)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        if old_public_lines:
+            # Fix #1136: The old lines might not exist.
+            new_private_lines = x.propagate_changed_lines(
+                new_public_lines, old_private_lines, marker, p=hidden_root)
+            at.fast_read_into_root(
+                c=hidden_c,
+                contents=''.join(new_private_lines),
+                gnx2vnode={},
+                path=fn,
+                root=hidden_root,
+            )
+        return hidden_c
+    #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
+    def make_at_file_outline(self, fn, s, rev):
+        """Create a hidden temp outline from lines."""
+        # A specialized version of atFileCommands.read.
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        at = hidden_c.atFileCommands
+        hidden_c.frame.createFirstTreeNode()
+        root = hidden_c.rootPosition()
+        root.h = fn + ':' + rev if rev else fn
+        at.initReadIvars(root, fn, importFileName=None, atShadow=None)
+        if at.errors > 0:
+            g.trace('***** errors')
+            return None
+        at.fast_read_into_root(
+            c=hidden_c,
+            contents=s,
+            gnx2vnode={},
+            path=fn,
+            root=root,
+        )
+        return hidden_c
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helper
+    def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
+        """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
+        for d, kind in table:
+            self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+    #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
+    def compute_dicts(self, c1, c2):
+        """Compute inserted, deleted, changed dictionaries."""
+        # Special case the root: only compare the body text.
+        root1, root2 = c1.rootPosition().v, c2.rootPosition().v
+        root1.h = root2.h
+        if 0:
+            g.trace('c1...')
+            for p in c1.all_positions():
+                print(f"{len(p.b):4} {p.h}")
+            g.trace('c2...')
+            for p in c2.all_positions():
+                print(f"{len(p.b):4} {p.h}")
+        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
+        d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
+        added = {key: d2.get(key) for key in d2 if not d1.get(key)}
+        deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+        # Remove the root from the added and deleted dicts.
+        if root2.fileIndex in added:
+            del added[root2.fileIndex]
+        if root1.fileIndex in deleted:
+            del deleted[root1.fileIndex]
+        changed = {}
+        for key in d1:
+            if key in d2:
+                v1 = d1.get(key)
+                v2 = d2.get(key)
+                assert v1 and v2
+                assert v1.context != v2.context
+                if v1.h != v2.h or v1.b != v2.b:
+                    changed[key] = (v1, v2)
+        return added, deleted, changed
     #@+node:ekr.20180510095807.1: *4* gdc.set_directory & helper
     def set_directory(self, directory):
         """
         Handle directory inits.
-        Return True if the .git directory has been found.
+        Return self.repo_dir if the .git directory has been found.
         """
         if not directory:
             if self.repo_dir:
