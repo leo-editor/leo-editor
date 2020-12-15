@@ -521,6 +521,7 @@ class GitDiffController:
             return
         path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
         if not g.os_path_exists(path):
+            g.trace('NOT FOUND', path)
             return ''
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
@@ -566,14 +567,6 @@ class GitDiffController:
         Create an outline describing the git diffs for an external file.
         """
         c = self.c
-        # #1777: The file node will contain the entire added/deleted file.
-        ###
-        # if not s1:
-            # self.file_node.h = f"Added: {self.file_node.h}"
-            # c1 = c2 = None
-        # elif not s2:
-            # self.file_node.h = f"Deleted: {self.file_node.h}"
-            # c1 = c2 = None
         c1 = c2 = None
         if c.looksLikeDerivedFile(path):
             c1 = self.make_at_file_outline(fn, s1, rev1)
@@ -954,6 +947,7 @@ class GitDiffController:
         if not directory:
             if self.repo_dir:
                 # Use previously-computed result.
+                g.trace('EXISTS', self.repo_dir)  ###
                 return self.repo_dir
             directory = g.os_path_abspath(os.curdir)
         #
@@ -963,6 +957,7 @@ class GitDiffController:
             os.chdir(directory)
         else:
             g.es_print(f"no .git directory found in {directory!r}")
+        g.trace('CREATE', self.repo_dir)  ###
         return self.repo_dir
     #@+node:ekr.20170806094321.3: *5* gdc.find_git_working_directory
     def find_git_working_directory(self, directory):
