@@ -841,7 +841,7 @@ class GitDiffController:
             if ok: return
             n1, n2 = n1 + 1, n2 + 1
         if not ok:
-            g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
+            g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
     #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
     def diff_revs(self, rev1, rev2):
         """Diff all files given by rev1 and rev2."""

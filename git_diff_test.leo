@@ -8,11 +8,11 @@
 <vnodes>
 <v t="ekr.20201214185419.1"><vh>git_diff_test.leo</vh></v>
 <v t="ekr.20201214185435.1"><vh>node 1</vh></v>
-<v t="ekr.20201214185445.1"><vh>node 2</vh></v>
+<v t="ekr.20201214185703.1"><vh>new node 1</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20201214185419.1"></t>
 <t tx="ekr.20201214185435.1"></t>
-<t tx="ekr.20201214185445.1"></t>
+<t tx="ekr.20201214185703.1"></t>
 </tnodes>
 </leo_file>
