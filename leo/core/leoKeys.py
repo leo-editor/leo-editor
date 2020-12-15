@@ -3180,7 +3180,7 @@ class KeyHandlerClass:
             handler(event)
         if trace:
             handler_name = handler and handler.__name__ or '<no handler>'
-        g.trace(state, 'handler:', handler_name, stroke)
+            g.trace(state, 'handler:', handler_name, stroke)
         return True
     #@+node:ekr.20061031131434.108: *6* k.callStateFunction
     def callStateFunction(self, event):
