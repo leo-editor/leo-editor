@@ -331,12 +331,20 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")
         return fn
-    #@+node:ekr.20170819035801.90: *3* efc.gitDiff (git-diff)
+    #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
     def gitDiff(self, event=None):  # 2020/07/18, for leoInteg.
-
+        """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
+    #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
+    @cmd('git-diff-pull-request')
+    @cmd('git-diff-pr')
+    def gitDiffPullRequest(self, event=None):
+        """
+        Produce a Leonine diff of pull request in the current branch.
+        """
+        GitDiffController(c=self.c).diff_pull_request()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
