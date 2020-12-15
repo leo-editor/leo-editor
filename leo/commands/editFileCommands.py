@@ -796,24 +796,22 @@ class GitDiffController:
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         """Get the file from the given rev, or the working directory if None."""
+        path = g.os_path_finalize_join(self.repo_dir, fn)
+        if not g.os_path_exists(path):
+            g.trace('not found:', path)
+            return ''
         if rev:
             # Get the file using git.
-            command = f"git show {rev}:{fn}"
+            command = f"git show {rev}:{path}"
             lines = g.execGitCommand(command, self.repo_dir)
             s = ''.join(lines)
         else:
-            # Get the file from the working directory.
-            path = g.os_path_finalize_join(self.repo_dir, fn)
-            if g.os_path_exists(path):
-                try:
-                    with open(path, 'rb') as f:  # Was 'r'
-                        s = f.read()
-                except Exception:
-                    g.es_print('Can not read', path)
-                    g.es_exception()
-                    s = ''
-            else:
-                g.trace('not found:', path)
+            try:
+                with open(path, 'rb') as f:  # Was 'r'
+                    s = f.read()
+            except Exception:
+                g.es_print('Can not read', path)
+                g.es_exception()
                 s = ''
         return g.toUnicode(s).replace('\r', '')
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
