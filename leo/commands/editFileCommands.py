@@ -554,13 +554,16 @@ class GitDiffController:
         if 1:
             g.trace(rev1, rev2, len(s1), len(s2))
         else:
-            g.printObj(g.splitLines(s1), tag=rev1)  ###
-            g.printObj(g.splitLines(s2), tag=rev2)  ###
-        ### To do: Load c1 and c2.
-        c1 = c2 = None
+            g.printObj(g.splitLines(s1), tag=rev1)
+            g.printObj(g.splitLines(s2), tag=rev2)
+        # Create the hidden commanders.
+        c1 = self.make_leo_outline(fn, s1, rev1)
+        c2 = self.make_leo_outline(fn, s2, rev2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+            self.file_node.b = (
+                f"{self.file_node.b.rstrip()}\n"
+                f"@language {c2.target_language}\n")
     #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file
     def diff_external_file(self, fn, path, rev1, rev2, s1, s2):
         """
@@ -898,6 +901,28 @@ class GitDiffController:
             path=fn,
             root=root,
         )
+        return hidden_c
+    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline (to do)
+    def make_leo_outline(self, fn, s, rev):
+        """Create a hidden temp outline for the .leo file in s."""
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        hidden_c.frame.createFirstTreeNode()
+        root = hidden_c.rootPosition()
+        root.h = fn + ':' + rev if rev else fn
+        ###
+            # A specialized version of atFileCommands.read.
+            # at = hidden_c.atFileCommands
+            # at.initReadIvars(root, fn, importFileName=None, atShadow=None)
+            # if at.errors > 0:
+                # g.trace('***** errors')
+                # return None
+            # at.fast_read_into_root(
+                # c=hidden_c,
+                # contents=s,
+                # gnx2vnode={},
+                # path=fn,
+                # root=root,
+            # )
         return hidden_c
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
