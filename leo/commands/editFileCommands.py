@@ -516,38 +516,14 @@ class GitDiffController:
         """
         Create an outline describing the git diffs for fn.
         """
+        # Common code.
         if not self.set_directory(directory):
             return
-        s1 = self.get_file_from_rev(rev1, fn)
-        s2 = self.get_file_from_rev(rev2, fn)
-        if fn.endswith('.leo'):
-            self.diff_leo_file(fn, rev1, rev2, s1, s2)
-        else:
-            self.diff_external_file(fn, rev1, rev2, s1, s2)
-        
-    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file (new)
-    def diff_leo_file(self, fn, rev1, rev2, s1, s2):
-        """Create an outline describing the git diffs for a .leo file."""
-        if 1:
-            g.trace(len(s1), len(s2))
-        else:
-            g.printObj(g.splitLines(s1), tag=rev1)  ###
-            g.printObj(g.splitLines(s2), tag=rev2)  ###
-        ### To do: Load c1 and c2.
-        c1 = c2 = None
-        if c1 and c2:
-            self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-    #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file (new)
-    def diff_external_file(self, fn, rev1, rev2, s1, s2):
-        """
-        Create an outline describing the git diffs for an external file.
-        """
-        c = self.c
         path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
         if not g.os_path_exists(path):
-            g.trace('not found:', path)
             return ''
+        s1 = self.get_file_from_rev(rev1, fn)
+        s2 = self.get_file_from_rev(rev2, fn)
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
         diff_list = list(difflib.unified_diff(
@@ -561,11 +537,45 @@ class GitDiffController:
         # #1777: The file node will contain the entire added/deleted file.
         if not s1:
             self.file_node.h = f"Added: {self.file_node.h}"
-            c1 = c2 = None
+            return
         elif not s2:
             self.file_node.h = f"Deleted: {self.file_node.h}"
-            c1 = c2 = None
-        elif c.looksLikeDerivedFile(path):
+            return
+        # Finish.
+        if fn.endswith('.leo'):
+            self.diff_leo_file(fn, path, rev1, rev2, s1, s2)
+        else:
+            self.diff_external_file(fn, path, rev1, rev2, s1, s2)
+        
+    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file (new)
+    def diff_leo_file(self, fn, path, rev1, rev2, s1, s2):
+        """Create an outline describing the git diffs for a .leo file."""
+        if 1:
+            g.trace(rev1, rev2, len(s1), len(s2))
+        else:
+            g.printObj(g.splitLines(s1), tag=rev1)  ###
+            g.printObj(g.splitLines(s2), tag=rev2)  ###
+        ### To do: Load c1 and c2.
+        c1 = c2 = None
+        if c1 and c2:
+            self.make_diff_outlines(c1, c2, fn, rev1, rev2)
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+    #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file
+    def diff_external_file(self, path, fn, rev1, rev2, s1, s2):
+        """
+        Create an outline describing the git diffs for an external file.
+        """
+        c = self.c
+        # #1777: The file node will contain the entire added/deleted file.
+        ###
+        # if not s1:
+            # self.file_node.h = f"Added: {self.file_node.h}"
+            # c1 = c2 = None
+        # elif not s2:
+            # self.file_node.h = f"Deleted: {self.file_node.h}"
+            # c1 = c2 = None
+        c1 = c2 = None
+        if c.looksLikeDerivedFile(path):
             c1 = self.make_at_file_outline(fn, s1, rev1)
             c2 = self.make_at_file_outline(fn, s2, rev2)
         else:
@@ -573,10 +583,6 @@ class GitDiffController:
             if root:
                 c1 = self.make_at_clean_outline(fn, root, s1, rev1)
                 c2 = self.make_at_clean_outline(fn, root, s2, rev2)
-            else:
-                # This warning is silly.
-                # g.es_print('No outline for', fn)
-                c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
