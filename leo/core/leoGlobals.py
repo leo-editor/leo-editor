@@ -5165,7 +5165,7 @@ def execGitCommand(command, directory=None):
     """Execute the given git command in the given directory."""
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
-        g.trace('not found:', git_dir)
+        g.trace('not found:', git_dir, g.callers())
         return []
     if '\n' in command:
         g.trace('removing newline from', command)

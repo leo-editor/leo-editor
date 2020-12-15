@@ -520,7 +520,7 @@ class GitDiffController:
         if not self.set_directory(directory):
             return
         path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
-        if not g.os_path_exists(path):
+        if not os.path.exists(path):
             g.trace('NOT FOUND', path)
             return ''
         s1 = self.get_file_from_rev(rev1, fn)
@@ -562,7 +562,7 @@ class GitDiffController:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
     #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file
-    def diff_external_file(self, path, fn, rev1, rev2, s1, s2):
+    def diff_external_file(self, fn, path, rev1, rev2, s1, s2):
         """
         Create an outline describing the git diffs for an external file.
         """
@@ -947,7 +947,7 @@ class GitDiffController:
         if not directory:
             if self.repo_dir:
                 # Use previously-computed result.
-                g.trace('EXISTS', self.repo_dir)  ###
+                # g.trace('EXISTS', self.repo_dir)
                 return self.repo_dir
             directory = g.os_path_abspath(os.curdir)
         #
@@ -957,7 +957,7 @@ class GitDiffController:
             os.chdir(directory)
         else:
             g.es_print(f"no .git directory found in {directory!r}")
-        g.trace('CREATE', self.repo_dir)  ###
+        # g.trace('CREATE', self.repo_dir)
         return self.repo_dir
     #@+node:ekr.20170806094321.3: *5* gdc.find_git_working_directory
     def find_git_working_directory(self, directory):
