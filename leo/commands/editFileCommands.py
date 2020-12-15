@@ -739,7 +739,13 @@ class GitDiffController:
     #@+node:ekr.20201214173915.1: *4* gdc.diff_leo_file (new)
     def diff_leo_file(self, fn, directory=None, rev1='HEAD', rev2=''):
         """Show a leonine diff of a .leo file."""
-        g.trace('Not ready yet', fn)
+        s1 = self.get_file_from_rev(rev1, fn)
+        s2 = self.get_file_from_rev(rev2, fn)
+        g.trace(len(s1), len(s2))
+
+        # if c1 and c2:
+            # self.make_diff_outlines(c1, c2, fn, rev1, rev2)
+            # self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
