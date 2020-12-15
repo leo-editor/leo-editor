@@ -511,18 +511,19 @@ class GitDiffController:
         self.root = None
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
-    #@+node:ekr.20170806094320.6: *4* gdc.diff_file & helpers
+    #@+node:ekr.20170806094320.6: *4* gdc.diff_file
     def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
         """
         Create an outline describing the git diffs for fn.
         """
         # Common code.
+        c = self.c
         if not self.set_directory(directory):
             return
         path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
         if not os.path.exists(path):
             g.trace('NOT FOUND', path)
-            return ''
+            return
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
         lines1 = g.splitLines(s1)
@@ -539,52 +540,27 @@ class GitDiffController:
         if not s1:
             self.file_node.h = f"Added: {self.file_node.h}"
             return
-        elif not s2:
+        if not s2:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             return
         # Finish.
-        if fn.endswith('.leo'):
-            self.diff_leo_file(fn, path, rev1, rev2, s1, s2)
-        else:
-            self.diff_external_file(fn, path, rev1, rev2, s1, s2)
-        
-    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file
-    def diff_leo_file(self, fn, path, rev1, rev2, s1, s2):
-        """Create an outline describing the git diffs for a .leo file."""
-        if 1:
-            g.trace(rev1, rev2, len(s1), len(s2))
-        else:
-            g.printObj(g.splitLines(s1), tag=rev1)
-            g.printObj(g.splitLines(s2), tag=rev2)
-        # Create the hidden commanders.
-        c1 = self.make_leo_outline(fn, path, s1, rev1)
-        c2 = self.make_leo_outline(fn, path, s2, rev2)
-        if c1 and c2:
-            self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = (
-                f"{self.file_node.b.rstrip()}\n"
-                f"@language {c2.target_language}\n")
-    #@+node:ekr.20201215025842.1: *5* gdc.diff_external_file
-    def diff_external_file(self, fn, path, rev1, rev2, s1, s2):
-        """
-        Create an outline describing the git diffs for an external file.
-        """
-        c = self.c
         c1 = c2 = None
-        if c.looksLikeDerivedFile(path):
-            c1 = self.make_at_file_outline(fn, s1, rev1)
-            c2 = self.make_at_file_outline(fn, s2, rev2)
+        if fn.endswith('.leo'):
+            c1 = self.make_leo_outline(fn, path, s1, rev1)
+            c2 = self.make_leo_outline(fn, path, s2, rev2)
         else:
             root = self.find_file(fn)
-            if root:
+            if c.looksLikeDerivedFile(path):
+                c1 = self.make_at_file_outline(fn, s1, rev1)
+                c2 = self.make_at_file_outline(fn, s2, rev2)
+            elif root:
                 c1 = self.make_at_clean_outline(fn, root, s1, rev1)
                 c2 = self.make_at_clean_outline(fn, root, s2, rev2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = (
                 f"{self.file_node.b.rstrip()}\n"
-                f"@language {c2.target_language}\n"
-            )
+                f"@language {c2.target_language}\n")
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
