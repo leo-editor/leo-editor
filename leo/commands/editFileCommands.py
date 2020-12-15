@@ -548,7 +548,7 @@ class GitDiffController:
         else:
             self.diff_external_file(fn, path, rev1, rev2, s1, s2)
         
-    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file (new)
+    #@+node:ekr.20201214173915.1: *5* gdc.diff_leo_file
     def diff_leo_file(self, fn, path, rev1, rev2, s1, s2):
         """Create an outline describing the git diffs for a .leo file."""
         if 1:
