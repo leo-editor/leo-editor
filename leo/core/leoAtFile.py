@@ -3098,7 +3098,7 @@ class AtFile:
                 # sqlite database file is never actually overwriten by Leo,
                 # so do *not* check its timestamp.
                 pass
-            elif efc.has_changed(c, fn):
+            elif efc.has_changed(fn):
                 if trace: g.trace('Return True: changed:', sfn)
                 return True
         if hasattr(p.v, 'at_read'):

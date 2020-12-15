@@ -53,10 +53,9 @@ class FastRead:
         self.gnx2vnode = gnx2vnode
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
-    def readFile(self, path):
+    def readFile(self, theFile, path):
         """Read the file, change splitter ratiors, and return its hidden vnode."""
-        with open(path, 'rb') as f:
-            s = f.read()
+        s = theFile.read()
         v, g_element = self.readWithElementTree(path, s)
         if not v:  # #1510.
             return None
@@ -555,7 +554,7 @@ class FileCommands:
             if fileName.endswith('.db'):
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             else:
-                v = FastRead(c, self.gnxDict).readFile(fileName)
+                v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
                     c.hiddenRootNode = v
             if v:
