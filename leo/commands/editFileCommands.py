@@ -557,8 +557,8 @@ class GitDiffController:
             g.printObj(g.splitLines(s1), tag=rev1)
             g.printObj(g.splitLines(s2), tag=rev2)
         # Create the hidden commanders.
-        c1 = self.make_leo_outline(fn, s1, rev1)
-        c2 = self.make_leo_outline(fn, s2, rev2)
+        c1 = self.make_leo_outline(fn, path, s1, rev1)
+        c2 = self.make_leo_outline(fn, path, s2, rev2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = (
@@ -902,27 +902,20 @@ class GitDiffController:
             root=root,
         )
         return hidden_c
-    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline (to do)
-    def make_leo_outline(self, fn, s, rev):
+    #@+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
+    def make_leo_outline(self, fn, path, s, rev):
         """Create a hidden temp outline for the .leo file in s."""
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
-        ###
-            # A specialized version of atFileCommands.read.
-            # at = hidden_c.atFileCommands
-            # at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-            # if at.errors > 0:
-                # g.trace('***** errors')
-                # return None
-            # at.fast_read_into_root(
-                # c=hidden_c,
-                # contents=s,
-                # gnx2vnode={},
-                # path=fn,
-                # root=root,
-            # )
+        hidden_c.fileCommands.getLeoFile(
+            theFile=g.FileLikeObject(fromString=s),
+            fileName=path,
+            readAtFileNodesFlag=False,
+            silent=False,
+            checkOpenFiles=False,
+        )
         return hidden_c
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helper
     def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
