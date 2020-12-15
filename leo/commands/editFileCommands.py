@@ -578,7 +578,10 @@ class GitDiffController:
                 c2 = self.make_at_clean_outline(fn, root, s2, rev2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+            self.file_node.b = (
+                f"{self.file_node.b.rstrip()}\n"
+                f"@language {c2.target_language}\n"
+            )
     #@+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self, base_branch_name='devel', directory=None):
         """
