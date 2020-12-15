@@ -544,6 +544,10 @@ class GitDiffController:
         Create an outline describing the git diffs for an external file.
         """
         c = self.c
+        path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
+        if not g.os_path_exists(path):
+            g.trace('not found:', path)
+            return ''
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
         diff_list = list(difflib.unified_diff(
@@ -561,7 +565,7 @@ class GitDiffController:
         elif not s2:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             c1 = c2 = None
-        elif c.looksLikeDerivedFile(fn):
+        elif c.looksLikeDerivedFile(path):
             c1 = self.make_at_file_outline(fn, s1, rev1)
             c2 = self.make_at_file_outline(fn, s2, rev2)
         else:
@@ -798,11 +802,11 @@ class GitDiffController:
         """Get the file from the given rev, or the working directory if None."""
         path = g.os_path_finalize_join(self.repo_dir, fn)
         if not g.os_path_exists(path):
-            g.trace('not found:', path)
             return ''
         if rev:
             # Get the file using git.
-            command = f"git show {rev}:{path}"
+            # Use the file name, not the path.
+            command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, self.repo_dir)
             s = ''.join(lines)
         else:
