@@ -410,6 +410,7 @@ class BaseLeoCompare:
         self.show("printMismatches:" + str(self.printMismatches))
         self.show("printTrailingMismatches:" + str(self.printTrailingMismatches))
     #@-others
+
 class LeoCompare(BaseLeoCompare):
     """
     A class containing Leo's compare code.
@@ -537,13 +538,6 @@ class CompareLeoOutlines:
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
         return p
-    #@+node:ekr.20180211170333.9: *4* loc.find_gnx (no longer used)
-    def find_gnx(self, c, gnx):
-        """Return a position in c having the given gnx."""
-        for p in c.all_unique_positions():
-            if p.v.fileIndex == gnx:
-                return p
-        return None
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self):
         """Finish execution of this command."""
