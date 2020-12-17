@@ -15,6 +15,9 @@ leo/.vscode/
 /build/
 /dist/
 
+# Transcrypt folder.
+__target__
+
 # .db files
 *.db
 
