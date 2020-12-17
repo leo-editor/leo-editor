@@ -3246,14 +3246,6 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # All other alt-x command
             event=KeyEvent(c,char='',event='',shortcut='',w=None)
             c.doCommandByName(commandName, event)
-            ###
-                # g.trace(k)
-                # k.masterCommand(
-                    # commandName=commandName,
-                    # event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                    # func=None,
-                    # stroke=None,
-                # )
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
             c.redraw()

@@ -207,7 +207,7 @@ command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
 def command_alias(alias, func):
     """Create an alias for the *already defined* method in the Commands class."""
-    import leo.core.leoCommands as leoCommands
+    from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
     funcToMethod(func, leoCommands.Commands, alias)
 #@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
@@ -246,7 +246,7 @@ class CommanderCommand:
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
         if app:
-            import leo.core.leoCommands as leoCommands
+            from leo.core import leoCommands
             funcToMethod(func, leoCommands.Commands)
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
@@ -2573,8 +2573,8 @@ class TestLeoGlobals(unittest.TestCase):
     def test_comment_delims_from_extension(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
-        import leo.core.leoApp as leoApp
+        from leo.core import leoGlobals as leo_g
+        from leo.core import leoApp
         leo_g.app = leoApp.LeoApp()
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
@@ -2583,7 +2583,7 @@ class TestLeoGlobals(unittest.TestCase):
     def test_is_sentinel(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g
         # Python.
         py_delims = leo_g.comment_delims_from_extension('.py')
         assert leo_g.is_sentinel("#@+node", py_delims)
