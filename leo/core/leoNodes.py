@@ -9,8 +9,10 @@ import copy
 import itertools
 import time
 import re
-import leo.core.leoGlobals as g
-import leo.core.signal_manager as sig
+### import leo.core.leoGlobals as g
+from ..core import leoGlobals as g
+### import leo.core.signal_manager as sig
+from ..core import signal_manager as sig
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
