@@ -7994,6 +7994,9 @@ def handleUrlHelper(url, c, p):
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
+        #Transcrypt does not support Python's webbrowser module.
+        # __pragma__ ('skip')
+
         import webbrowser
         if g.unitTesting:
             g.app.unitTestDict['browser'] = url
@@ -8003,6 +8006,8 @@ def handleUrlHelper(url, c, p):
                 webbrowser.open(url)
             except Exception:
                 pass
+
+        # __pragma__ ('noskip')
 #@+node:ekr.20170226060816.1: *4* g.traceUrl
 def traceUrl(c, path, parsed, url):
 
