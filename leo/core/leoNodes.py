@@ -8,7 +8,6 @@
 #Transcrypt does not support Python's copy module.
 # __pragma__ ('skip')
 import copy
-    
 # __pragma__ ('noskip')
 import itertools
 import time
