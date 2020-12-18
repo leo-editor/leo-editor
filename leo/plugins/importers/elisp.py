@@ -4,7 +4,7 @@
 import re
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer
 class Elisp_Importer(Importer):

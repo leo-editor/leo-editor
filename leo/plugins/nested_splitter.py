@@ -4,7 +4,7 @@
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
 try:
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
 except ImportError:
     g = None
         # This will fail when run from main function.

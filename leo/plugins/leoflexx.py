@@ -48,7 +48,7 @@ import time
 path = os.getcwd()
 if path not in sys.path:
     sys.path.append(path)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
     # JS code can *not* use g.trace, g.callers or g.pdb.
 # import leo.core.leoBridge as leoBridge
 import leo.core.leoFastRedraw as leoFastRedraw

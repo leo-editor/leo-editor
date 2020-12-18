@@ -142,7 +142,7 @@ __version__ = '0.3'
 
 #@+<< imports >>
 #@+node:peckj.20131002201824.5541: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import time
 
 # Whatever other imports your plugins uses.

@@ -4,7 +4,7 @@
 #@@first
 #@+<< leoRope imports >>
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import time
 import importlib
 try:

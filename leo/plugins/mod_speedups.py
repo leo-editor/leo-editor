@@ -9,7 +9,7 @@ If stuff breaks, disable this plugin before reporting bugs.
 '''
 
 # By VMV.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os.path
 
 #@+others

@@ -20,7 +20,7 @@ set to c:\ so you may need to modify it depending on your system.
 
 # leoToRTF 1.0 plugin by Dan Rahmel
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import configparser as ConfigParser
 
 #@+others

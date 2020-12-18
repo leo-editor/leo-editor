@@ -18,7 +18,7 @@ the left side of toolbar.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')

@@ -51,7 +51,7 @@ with some modifications made for Leo embedding.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20150428142729.2: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 # import os
 import re

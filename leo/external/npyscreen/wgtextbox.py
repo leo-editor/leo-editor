@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
 #!/usr/bin/python
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 import curses
 import curses.ascii

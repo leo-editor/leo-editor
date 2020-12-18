@@ -5,7 +5,7 @@
 """Leo's qt frame classes."""
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoColorizer as leoColorizer
 import leo.core.leoFrame as leoFrame

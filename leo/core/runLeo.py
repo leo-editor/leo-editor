@@ -21,8 +21,8 @@ if path not in sys.path:
     sys.path.append(path)
 try:
     # #1472: bind to g immediately.
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
+    from leo.core import leoGlobals as g
+    from leo.core import leoApp
     g.app = leoApp.LeoApp()
 except Exception as e:
     print(e)
@@ -51,7 +51,7 @@ def profile_leo():
         g.es_print('try installing pstats yourself')
         return
     import cProfile as profile
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
     import os
     theDir = os.getcwd()
     # On Windows, name must be a plain string.

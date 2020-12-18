@@ -6,7 +6,7 @@ Edit several nodes at once, in a pannable "notebook" view.
 
 Use <Alt-x>nb-<tab> to see the list of commands.
 '''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import isQt5, QtCore, QtDeclarative, QtGui

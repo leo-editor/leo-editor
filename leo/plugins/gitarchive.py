@@ -2,7 +2,7 @@
 #@+node:ekr.20110125103904.12504: * @file ../plugins/gitarchive.py
 ''' Store snapshots of outline in git.'''
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import codecs
 import hashlib
 import os

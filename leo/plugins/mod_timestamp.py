@@ -6,7 +6,7 @@
 #@@tabwidth -4
 
 # By Paul Paterson.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import time
 

@@ -5,7 +5,7 @@
 """Leo's rectangle commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050446.1: ** << imports >> (rectangleCommands.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 

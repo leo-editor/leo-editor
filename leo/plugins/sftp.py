@@ -108,7 +108,7 @@ __version__ = '0.2'
 
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 from leo.core.leoQt import QtWidgets #, QtCore
 

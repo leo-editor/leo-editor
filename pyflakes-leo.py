@@ -13,7 +13,7 @@ On Ubuntu, the following alias runs this file::
 #@@tabwidth -4
 # pylint: disable=invalid-name
     # pyflakes-leo isn't a valid module name, but it isn't a module.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoTest as leoTest
 from pyflakes import api, reporter
 import optparse

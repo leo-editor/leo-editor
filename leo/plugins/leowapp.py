@@ -10,7 +10,7 @@ leoflexx.py implements LeoWapp using flexx.
 '''
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import sys

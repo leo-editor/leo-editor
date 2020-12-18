@@ -243,7 +243,7 @@ __docformat__ = 'reStructuredText'
 import sys
 sys.path.append(r'c:\reportlab_1_20')
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     import docutils
 except ImportError:

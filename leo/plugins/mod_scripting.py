@@ -221,7 +221,7 @@ most brilliant idea in Leo's history.
 #@-<< mod_scripting docstring >>
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
 import pprint
@@ -485,7 +485,7 @@ class ScriptingController:
                         f.write('  rpdb2.start_embedded_debugger(pwd="",fAllowUnencrypted=True) # Hard breakpoint.\n')
                     # f.write('# Remove all previous variables.\n')
                     f.write('# Predefine c, g and p.\n')
-                    f.write('import leo.core.leoGlobals as g\n')
+                    f.write('from leo.core import leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
                     f.write('script_gnx = g.app.scriptDict.get("script_gnx")\n')
                     f.write('p = c.p\n')

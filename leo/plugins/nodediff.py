@@ -93,7 +93,7 @@ __version__ = '0.1'
 
 #@+<< imports >>
 #@+node:peckj.20140113131037.5794: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import difflib
 
 # for VCS diff

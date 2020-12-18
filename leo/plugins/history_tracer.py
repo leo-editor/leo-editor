@@ -31,7 +31,7 @@
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vitalije.20190928154420.3: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 import datetime
 import time

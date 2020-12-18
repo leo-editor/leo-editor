@@ -12,7 +12,7 @@ The livecode pane shows the results of each line.
 
 # By TNB
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 import ast
 from collections import namedtuple

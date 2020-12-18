@@ -30,7 +30,7 @@ under the existing Paste option.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:danr7.20060912105041.4: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@-<< imports >>
 

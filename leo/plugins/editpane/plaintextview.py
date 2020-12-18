@@ -2,7 +2,7 @@
 #@+node:tbrown.20171028115144.1: * @file ../plugins/editpane/plaintextview.py
 #@+<< plaintextview.py declarations >>
 #@+node:tbrown.20171028115502.1: ** << plaintextview.py declarations >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  # QtCore, QtGui, QtConst
 #@-<< plaintextview.py declarations >>

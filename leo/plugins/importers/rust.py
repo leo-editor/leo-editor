@@ -2,7 +2,7 @@
 #@+node:ekr.20200316100818.1: * @file ../plugins/importers/rust.py
 '''The @auto importer for rust.'''
 import leo.plugins.importers.linescanner as linescanner
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g ###
 import re
 Importer = linescanner.Importer

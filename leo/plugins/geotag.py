@@ -7,7 +7,7 @@
 
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 from leo.plugins.pygeotag import pygeotag
 

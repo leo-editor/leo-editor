@@ -3,7 +3,7 @@
 """Classes that manage chapters in Leo's core."""
 import re
 import string
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20070317085437: ** class ChapterController
 class ChapterController:

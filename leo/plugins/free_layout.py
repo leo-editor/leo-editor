@@ -27,7 +27,7 @@ free-layout-zoom
 # Written by Terry Brown.
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >> (free_layout.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets, QtCore
 if QtWidgets:
     from leo.plugins.nested_splitter import NestedSplitter

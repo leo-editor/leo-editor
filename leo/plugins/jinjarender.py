@@ -34,7 +34,7 @@ __version__ = '0.1'
 
 #@+<< imports >>
 #@+node:ville.20110409151021.5702: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 
 from leo.core import leoPlugins

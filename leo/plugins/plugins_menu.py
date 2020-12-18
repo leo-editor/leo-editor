@@ -57,7 +57,7 @@ __plugin_priority__
 # **Important**: this plugin is gui-independent.
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import configparser as ConfigParser
 import os
 #@-<< imports >>

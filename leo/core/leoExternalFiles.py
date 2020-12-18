@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
 #@@first
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import getpass
 import os
 import subprocess

@@ -39,7 +39,7 @@ Requires `pexpect` module.
 #@@tabwidth -4
 
 # By Terry Brown, 2009-05-12
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # pylint: disable=import-error
     # It's ok to raise ImportError if this does not exist.

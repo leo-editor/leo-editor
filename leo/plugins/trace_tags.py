@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.738: * @file ../plugins/trace_tags.py
 ''' Trace most common hooks, but not key, drag or idle hooks.'''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 tagCount = 0
 #@+others
 #@+node:ekr.20050303073056.1: ** init

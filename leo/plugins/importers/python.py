@@ -3,7 +3,7 @@
 '''The new, line-based, @auto importer for Python.'''
 # Legacy version of this file is in the attic.
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target

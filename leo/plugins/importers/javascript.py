@@ -3,7 +3,7 @@
 '''The @auto importer for JavaScript.'''
 import re
 import unittest
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target

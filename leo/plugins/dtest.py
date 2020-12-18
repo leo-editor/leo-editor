@@ -35,7 +35,7 @@ from leo.core.leoPlugins import BaseLeoPlugin
 
 import doctest
 import os
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20070119094733.3: ** << version history >>
@@ -88,7 +88,7 @@ class DT(BaseLeoPlugin):
         """The handler for dtest
         """
 
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
 
 
         # get a valid temporary filename

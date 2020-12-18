@@ -3,7 +3,7 @@
 #@+<<leotextedit.py imports >>
 #@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
 # import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter

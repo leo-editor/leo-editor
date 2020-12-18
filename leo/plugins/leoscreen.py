@@ -141,7 +141,7 @@ stdout is ignored, Popen() needs to ensure it's not just inherited.
 
 #@+<< imports >>
 #@+node:tbrown.20100226095909.12779: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import subprocess
 import os

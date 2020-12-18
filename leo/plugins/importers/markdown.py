@@ -2,7 +2,7 @@
 #@+node:ekr.20140725190808.18066: * @file ../plugins/importers/markdown.py
 '''The @auto importer for the markdown language.'''
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 #@+others

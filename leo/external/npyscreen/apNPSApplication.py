@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.3: * @file ../external/npyscreen/apNPSApplication.py
 #!/usr/bin/env python
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.4: ** Declarations

@@ -5,7 +5,7 @@
 """Commands that invoke external checkers"""
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
@@ -535,7 +535,7 @@ class PylintCommand:
         # Old code: Invoke g.run_pylint.
             # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
             # # When shell is True, it's recommended to pass a string, not a sequence.
-            # command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+            # command = '%s -c "from leo.core import leoGlobals as g; g.run_pylint(%s)"' % (
                 # sys.executable, ','.join(args))
     #@-others
 #@-others

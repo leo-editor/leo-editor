@@ -9,11 +9,12 @@ big_text_buttons = True
     # True: show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
-import leo.core.leoGlobals as g
-import leo.core.leoColorizer as leoColorizer
+from leo.core import leoGlobals as g
+from leo.core import leoColorizer
     # NullColorizer is a subclass of ColorizerMixin
-import leo.core.leoMenu as LeoMenu
-import leo.core.leoNodes as leoNodes
+### from leo.core.leoMenu import LeoMenu
+from leo.core import leoMenu
+from leo.core import leoNodes
 import time
 assert time
 #@-<< imports >>
@@ -1667,7 +1668,7 @@ class NullFrame(LeoFrame):
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
-        self.menu = LeoMenu.NullMenu(frame=self)
+        self.menu = leoMenu.NullMenu(frame=self)
         self.tree = NullTree(frame=self)
         # Default window position.
         self.w = 600

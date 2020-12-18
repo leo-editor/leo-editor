@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoConfig as leoConfig
 from leo.core.leoQt import QtGui, QtWidgets

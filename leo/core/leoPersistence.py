@@ -4,7 +4,7 @@
 #@@first
 """Support for persistent clones, gnx's and uA's using @persistence trees."""
 from __future__ import print_function
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import binascii
 import pickle
 #@+others

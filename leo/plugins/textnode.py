@@ -20,7 +20,7 @@ node.
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import os.path
 __version__ = "1.1"

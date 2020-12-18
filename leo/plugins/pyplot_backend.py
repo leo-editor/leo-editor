@@ -6,7 +6,7 @@
 '''
 #@+<< pyplot_backend imports >>
 #@+node:ekr.20160928074801.1: ** << pyplot_backend imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.viewrendered as vr
 from leo.core.leoQt import isQt5, QtCore, QtWidgets
 try:

@@ -54,7 +54,7 @@ process for each one.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')

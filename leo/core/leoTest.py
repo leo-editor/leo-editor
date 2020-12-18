@@ -8,7 +8,7 @@ tests embedded in Leo's source code files themselves.
 """
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoGui as leoGui  # For UnitTestGui.
 import cProfile as profile
 import doctest
@@ -164,7 +164,7 @@ class EditBodyTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         self.failFlag = True
     #@+node:ekr.20051104075904.73: *3* editBody
@@ -264,7 +264,7 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.7: *3*  fail (GeneralTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         raise self.failureException(msg)
             # Fix # 1002. Raise an exception, as in TestCase.fail()
@@ -324,7 +324,7 @@ class ImportExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.81: *3*  fail (ImportExportTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.80: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
@@ -985,7 +985,7 @@ class TestManager:
         g.app.unitTestDict = {'c': c, 'p': p and p.copy()}
         # This looks like the best we can do.
         setup = (
-            'import leo.core.leoGlobals as g; ' +
+            'from leo.core import leoGlobals as g; ' +
             'c = g.app.unitTestDict.get("c"); ' +
             'p = g.app.unitTestDict.get("p")'
         )
@@ -1474,7 +1474,7 @@ class TestManager:
     #@+node:ekr.20051104075904.41: *4* TM.fail
     def fail(self):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.100: *4* TM.findAllAtFileNodes (not used here)
     def findAllAtFileNodes(self):

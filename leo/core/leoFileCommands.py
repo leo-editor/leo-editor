@@ -10,8 +10,8 @@ try:
     import xml.sax.saxutils
 except Exception:
     pass
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
 import binascii
 from collections import defaultdict
 import difflib

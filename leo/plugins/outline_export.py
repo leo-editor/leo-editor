@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 __version__ = "1.2" # Set version for the plugin handler.
 

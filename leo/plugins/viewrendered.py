@@ -213,7 +213,7 @@ trace = False
     # This global trace is convenient.
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout

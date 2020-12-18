@@ -25,7 +25,7 @@ Leo commanders.
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 import sys
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 def import_fail(s):
     if not g.unitTesting:

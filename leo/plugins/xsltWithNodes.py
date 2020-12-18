@@ -24,7 +24,7 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 #@+<< imports >>
 #@+node:mork.20041025113509: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 from xml.dom import minidom
 import io
@@ -315,7 +315,7 @@ import io
 StringIO = io.StringIO
 import Tkinter as Tk
 import tktable as tktab
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import csv
 import weakref
 import Pmw

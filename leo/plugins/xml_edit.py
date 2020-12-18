@@ -99,7 +99,7 @@ These commands attempt to deal with all of this.
 # import time
 import os
 import traceback  # for XML parse error display
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from lxml import etree
 
 # top level entry in uA

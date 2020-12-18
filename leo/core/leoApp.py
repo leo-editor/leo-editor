@@ -4,8 +4,8 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
-import leo.core.leoGlobals as g
-import leo.core.leoExternalFiles as leoExternalFiles
+from leo.core import leoGlobals as g
+from leo.core import leoExternalFiles
 import importlib
 import io
 StringIO = io.StringIO
@@ -323,8 +323,8 @@ class LeoApp:
         #@-<< LeoApp: global theme data >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
-        import leo.core.leoFrame as leoFrame
-        import leo.core.leoGui as leoGui
+        from leo.core import leoFrame
+        from leo.core import leoGui
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
         #@-<< LeoApp: global types >>
@@ -949,7 +949,7 @@ class LeoApp:
         return g.new_cmd_decorator(name, ['g', 'app'])
     #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
-        import leo.core.leoVersion as leoVersion
+        from leo.core import leoVersion
         app = self
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
@@ -1012,7 +1012,7 @@ class LeoApp:
                 print('Windows: pip install windows-curses')
             sys.exit()
         try:
-            import leo.plugins.cursesGui2 as cursesGui2
+            from leo.plugins import cursesGui2 as cursesGui2
             ok = cursesGui2.init()
             if ok:
                 g.app.gui = cursesGui2.LeoCursesGui()
@@ -1031,7 +1031,7 @@ class LeoApp:
             print('can not import flexx')
             sys.exit(1)
         try:
-            import leo.plugins.leoflexx as leoflexx
+            from leo.plugins import leoflexx
             assert leoflexx
         except Exception:
             g.es_exception()
@@ -1086,7 +1086,7 @@ class LeoApp:
                 g.es_exception()
             sys.exit(1)
         try:
-            import leo.plugins.qt_gui as qt_gui
+            from leo.plugins import qt_gui
         except Exception:
             g.es_exception()
             print('can not import leo.plugins.qt_gui')
@@ -1124,7 +1124,7 @@ class LeoApp:
 
         """
         # Fixes bug 670108.
-        import leo.core.leoCache as leoCache
+        from leo.core import leoCache
         g.app.global_cacher = leoCache.GlobalCacher()
         g.app.db = g.app.global_cacher.db
         g.app.commander_cacher = leoCache.CommanderCacher()
@@ -1618,7 +1618,7 @@ class LeoApp:
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         # Timeit reports 0.0175 sec when using a nullGui.
-        import leo.core.leoCommands as leoCommands
+        from leo.core import leoCommands
         c = leoCommands.Commands(fileName,
             gui=gui,
             parentFrame=parentFrame,
@@ -2024,7 +2024,7 @@ class LoadManager:
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
-        import leo.core.leoConfig as leoConfig
+        from leo.core import leoConfig
         if c:
             parser = leoConfig.SettingsTreeParser(c, localFlag)
                 # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
@@ -2721,15 +2721,15 @@ class LoadManager:
         self.createAllImporterData()
             # Can be done early. Uses only g.app.loadDir
         assert g.app.loadManager
-        import leo.core.leoBackground as leoBackground
-        import leo.core.leoConfig as leoConfig
-        import leo.core.leoNodes as leoNodes
-        import leo.core.leoPlugins as leoPlugins
-        import leo.core.leoSessions as leoSessions
+        from leo.core import leoBackground
+        from leo.core import leoConfig
+        from leo.core import leoNodes
+        from leo.core import leoPlugins
+        from leo.core import leoSessions
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
-            import leo.core.leoIPython as leoIPython
+            from leo.core import leoIPython
                 # This launches the IPython Qt Console.  It *is* required.
             assert leoIPython  # suppress pyflakes/flake8 warning.
         # Make sure we call the new leoPlugins.init top-level function.
@@ -2986,7 +2986,7 @@ class LoadManager:
         # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
         # import pdb ; pdb.set_trace()
         import sys
-        import leo.core.leoGlobals as g
+        from leo.core import leoGlobals as g
 
         # Define class LeoStdOut
         #@+others

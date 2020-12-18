@@ -78,7 +78,7 @@ need to do so.
 import io
 StringIO = io.StringIO
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer

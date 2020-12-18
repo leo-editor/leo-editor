@@ -21,11 +21,9 @@ in_bridge = False
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
-# This is now done in run.
-    # import leo.core.leoGlobals as g # So code can use g below.
 #
 # Don't import leoTest here: it messes up Leo's startup code.
-    # import leo.core.leoTest as leoTest
+    # from leo.core import leoTest
 
 import inspect
 import re

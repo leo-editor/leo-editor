@@ -13,7 +13,7 @@ Revised by EKR February 6-7, 2017.
 #@+<< demo.py imports >>
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.qt_events as qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>

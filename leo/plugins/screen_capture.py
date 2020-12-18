@@ -31,7 +31,7 @@ Settings
 Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 """
 #@-<< docstring >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui
 import os
 import time

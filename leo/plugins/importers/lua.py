@@ -6,7 +6,7 @@ The @auto importer for the lua language.
 Created 2017/05/30 by the `importer;;` abbreviation.
 '''
 delete_blank_lines = True
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import re
 Importer = linescanner.Importer

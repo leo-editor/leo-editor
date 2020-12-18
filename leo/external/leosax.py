@@ -12,7 +12,7 @@ multiple .leo files quickly.
 
 from __future__ import print_function
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 from pickle import loads

@@ -5,7 +5,7 @@
 """Leo's Qt tree class."""
 #@+<< imports >>
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 import leo.core.leoPlugins as leoPlugins  # Uses leoPlugins.TryNext.

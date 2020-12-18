@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084208.68: * @file ../external/npyscreen/wgmultiline.py
 #!/usr/bin/python
 # pylint: disable=no-member
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 import copy
 from . import wgwidget       as widget

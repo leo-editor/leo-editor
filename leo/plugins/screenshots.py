@@ -316,7 +316,7 @@ the @slideshow tree whose sanitized name is
 __version__ = '1.0.3'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import copy
 import glob
 import os

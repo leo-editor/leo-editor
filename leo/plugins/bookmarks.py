@@ -215,7 +215,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 #@+<< imports >>
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')

@@ -24,14 +24,14 @@ These are::
 
 Use these functions as follows::
 
-    import leo.core.leoColor as leoColor
+    from leo.core import leoColor
     leoColor.getRGB(name, default)
 
 If neither 'name' nor 'default' can be translated then accessor functions
 will return None.
 """
 #@-<< docstring >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 # import re
 # import string

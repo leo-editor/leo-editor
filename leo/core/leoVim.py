@@ -15,7 +15,7 @@ Vim *mode* is independent of vim *emulation* because
 k.masterKeyHandler dispatches keys to vim mode before
 doing the normal key handling that vim emulation uses.
 """
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 import os
 import string

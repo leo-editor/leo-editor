@@ -16,7 +16,7 @@ On Ubuntu, the following alias runs this file::
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
 from __future__ import print_function
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoTest as leoTest
 import shlex
 import optparse
@@ -86,7 +86,7 @@ def run(fn, verbose):
     else:
         # Use g.run_pylint.
         args = ','.join([f"fn=r'{fn}'", f"rc=r'{rc_fn}'"])
-        command = f'{sys.executable} -c "import leo.core.leoGlobals as g; g.run_pylint({args})"'
+        command = f'{sys.executable} -c "from leo.core import leoGlobals as g; g.run_pylint({args})"'
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()

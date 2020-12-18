@@ -102,7 +102,7 @@ sub-folders more automatically.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20140612210500.17669: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import leo.core.leoPlugins as leoPlugins
     # uses leoPlugins.TryNext

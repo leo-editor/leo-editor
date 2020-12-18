@@ -57,7 +57,7 @@ Davide Salomoni
 
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import io
 StringIO = io.StringIO

@@ -4,8 +4,8 @@
 #@+<< leoBeautify imports >>
 #@+node:ekr.20150530081336.1: **   << leoBeautify imports >>
 try:
-    import leo.core.leoGlobals as g
-    import leo.core.leoAst as leoAst
+    from leo.core import leoGlobals as g
+    from leo.core import leoAst
 except ImportError:
     # Allow main() to run in any folder containing leoGlobals.py
     import leoGlobals as g
@@ -46,7 +46,7 @@ def orange_diff_files(event):
     Show the diffs that would result from beautifying the external files at
     c.p.
     """
-    import leo.core.leoAst as leoAst
+    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return
@@ -183,7 +183,7 @@ def fstringify_diff_files(event):
     Show the diffs that would result from fstringifying the external files at
     c.p.
     """
-    import leo.core.leoAst as leoAst
+    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return
@@ -211,7 +211,7 @@ def fstringify_diff_files(event):
 @g.command('fstringify-files-silent')
 def fstringify_files_silent(event):
     """Silently fstringifying the external files at c.p."""
-    import leo.core.leoAst as leoAst
+    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return

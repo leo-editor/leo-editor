@@ -78,7 +78,7 @@ This plugin defines the following commands that can be bound to keys:
 # Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import itertools
 from collections import OrderedDict
 # Fail gracefully if the gui is not qt.

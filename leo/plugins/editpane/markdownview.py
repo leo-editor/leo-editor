@@ -2,7 +2,7 @@
 #@+node:tbrown.20171028115144.4: * @file ../plugins/editpane/markdownview.py
 #@+<< markdownview.py imports >>
 #@+node:tbrown.20171028115507.1: ** << markdownview.py imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 # from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 

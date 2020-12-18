@@ -2,7 +2,7 @@
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 '''The @auto importer for Perl.'''
 import leo.plugins.importers.linescanner as linescanner
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import re
 Importer = linescanner.Importer
 #@+others

@@ -4,7 +4,7 @@
 #@@first
 """Tests for leo.core.leoNodes"""
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoTest2 as leoTest2
 import unittest
 

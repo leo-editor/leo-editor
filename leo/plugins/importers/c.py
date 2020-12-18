@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file ../plugins/importers/c.py
 '''The @auto importer for the C language and other related languages.'''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 import leo.plugins.importers.linescanner as linescanner
 import re

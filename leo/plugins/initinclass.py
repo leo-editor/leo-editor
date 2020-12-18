@@ -20,7 +20,7 @@ __version__ = "0.1"
 __plugin_name__ = "__init__ in class"
 
 import leo.core.leoPlugins as leoPlugins
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@@language python
 #@@tabwidth -4

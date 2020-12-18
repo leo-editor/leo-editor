@@ -65,7 +65,7 @@ todo_calendar_cols
 
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import os
 import re

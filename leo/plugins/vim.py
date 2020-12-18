@@ -158,7 +158,7 @@ Settings
 #@-<< documentation from Jim Sizelove >>
 #@+<< imports >>
 #@+node:ekr.20050226184411.2: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import subprocess
 import sys

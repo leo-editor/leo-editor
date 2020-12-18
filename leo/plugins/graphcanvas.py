@@ -23,7 +23,7 @@ make sense to focus on pydot.
 
 #@+<< imports >>
 #@+node:bob.20110119123023.7392: ** << imports >> graphcanvas
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 
 from math import atan2, sin, cos

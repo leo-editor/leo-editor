@@ -9,7 +9,7 @@
 # By Kent Tenney
 
 import time
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@@language python
 #@@tabwidth -4

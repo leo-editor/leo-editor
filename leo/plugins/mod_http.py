@@ -215,7 +215,7 @@ which node is selected.
 #@+node:EKR.20040517080250.3: ** << imports >>
 # pylint: disable=deprecated-method
     # parse_qs
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import asynchat
 import asyncore
 import json

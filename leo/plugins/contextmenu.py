@@ -43,7 +43,7 @@ And call this in your plugin *once*::
 # Original version by Ville M. Vainio.
 
 # Imports.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import subprocess
 from leo.core.leoQt import QtCore

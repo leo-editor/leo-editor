@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084207.399: * @file ../external/npyscreen/npysTree.py
 import weakref
 import collections
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.401: ** class TreeData (object)

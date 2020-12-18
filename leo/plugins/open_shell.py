@@ -21,7 +21,7 @@ Current limitations:
 #@-<< docstring >>
 
 # Written by Ed Taekema.  Modified by EKR
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import sys
 

@@ -164,7 +164,7 @@ systems.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:danr7.20060902215215.4: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 import configparser as ConfigParser
 import os

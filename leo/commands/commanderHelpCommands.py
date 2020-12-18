@@ -3,7 +3,7 @@
 #@+node:ekr.20171124073126.1: * @file ../commands/commanderHelpCommands.py
 #@@first
 """Help commands that used to be defined in leoCommands.py"""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import sys
 import time

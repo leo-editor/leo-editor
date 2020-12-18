@@ -45,7 +45,7 @@ __version__ = '0.4'
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20060831165845.3: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060831165845.4: ** init

@@ -13,7 +13,7 @@ leo/plugins/cursesGui2.py is a typical broadcaster.
 '''
 #@+<< log_listener imports >>
 #@+node:ekr.20170429153432.1: ** << log_listener imports >>
-# import leo.core.leoGlobals as g
+# from leo.core import leoGlobals as g
 import logging
 import logging.handlers
 import pickle

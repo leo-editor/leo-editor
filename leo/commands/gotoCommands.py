@@ -3,7 +3,7 @@
 #@+node:ekr.20150624112334.1: * @file ../commands/gotoCommands.py
 #@@first
 """Leo's goto commands."""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import re
 #@+others
 #@+node:ekr.20150625050355.1: ** class GoToCommands

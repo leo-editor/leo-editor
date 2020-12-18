@@ -15,7 +15,7 @@ Usage:
 
 #@+<< imports >>
 #@+node:ville.20090503124249.4: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import xml.etree.ElementTree as ET
 import html.parser as HTMLParser
 

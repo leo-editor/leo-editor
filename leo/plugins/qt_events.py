@@ -35,7 +35,7 @@
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 #@-<< about internal bindings >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@+others

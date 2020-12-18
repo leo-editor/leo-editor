@@ -7,7 +7,7 @@
 from leo.core.leoQt import QtCore, QtWidgets # QtGui,
 import logging
 import time
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from collections import deque
 #@-<< threadutils imports >>
 if 1:

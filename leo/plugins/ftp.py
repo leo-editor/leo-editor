@@ -5,7 +5,7 @@
 # 0.1 05.01.2011 by Ivanov Dmitriy.
 #@+<< ftp imports >>
 #@+node:ekr.20161223150819.1: ** << ftp imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoPlugins as leoPlugins
 from leo.core.leoQt import isQt5,QtGui,QtWidgets
 if 1:

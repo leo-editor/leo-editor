@@ -18,7 +18,7 @@ Do alt-x act-on-node on that node to populate the subtree from the feed data. Re
 # By Ville M. Vainio.
 #@+<< imports >>
 #@+node:ville.20110206142055.10643: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 import feedparser

@@ -16,7 +16,7 @@ appear in Leo.
 #@@tabwidth -4
 #@+<< imports >>
 #@+node:ekr.20050218024153: ** << imports >> (xemacs.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import sys
 #@-<< imports >>

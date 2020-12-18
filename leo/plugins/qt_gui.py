@@ -4,7 +4,7 @@
 #@+<< imports >>
 #@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
 import leo.core.leoColor as leoColor
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.

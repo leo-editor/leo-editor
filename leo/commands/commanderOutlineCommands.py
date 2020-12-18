@@ -3,10 +3,10 @@
 #@+node:ekr.20171124080430.1: * @file ../commands/commanderOutlineCommands.py
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import xml.etree.ElementTree as ElementTree
-import leo.core.leoNodes as leoNodes
-import leo.core.leoFileCommands as leoFileCommands
+from leo.core import leoNodes
+from leo.core import leoFileCommands
 #@+others
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline

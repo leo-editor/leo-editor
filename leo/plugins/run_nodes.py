@@ -65,7 +65,7 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import subprocess
 import threading

@@ -2,7 +2,7 @@
 #@+node:ville.20110304230157.6513: * @file ../plugins/systray.py
 ''' systray'''
 __version__ = '0.2'
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 g.assertUi('qt')
 from leo.core.leoQt import QtGui, QtWidgets
 #@+others

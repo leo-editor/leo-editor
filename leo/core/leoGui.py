@@ -10,8 +10,8 @@ Leo's core calls this class to allocate all gui objects.
 
 Plugins may define their own gui classes by setting g.app.gui.
 """
-import leo.core.leoGlobals as g
-import leo.core.leoFrame as leoFrame
+from leo.core import leoGlobals as g
+from leo.core import leoFrame
     # for NullGui and StringTextWrapper.
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui (object)

@@ -37,7 +37,7 @@ try:
 except ImportError:
     print('cursesGui.py: Tk required for clipboard handling.')
     Tk = None
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu

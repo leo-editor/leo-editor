@@ -7,9 +7,9 @@
 # pylint: disable=deprecated-method
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
-import leo.core.leoGlobals as g
-import leo.commands.gotoCommands as gotoCommands
-import leo.external.codewise as codewise
+from leo.core import leoGlobals as g
+from leo.commands import gotoCommands
+from leo.external import codewise
 import inspect
 import os
 import re

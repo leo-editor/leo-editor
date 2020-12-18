@@ -4,7 +4,7 @@
 #
 # This module must **not** be named json, to avoid conflicts with the json standard library.
 import json
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoNodes as leoNodes
 #@+others
 #@+node:ekr.20160504080826.2: ** class JSON_Scanner

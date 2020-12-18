@@ -4,7 +4,7 @@
 # pylint: disable=no-member,access-member-before-definition
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 # import leo.plugins.cursesGui2 as cursesGui2
 assert g
 

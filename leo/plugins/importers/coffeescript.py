@@ -2,7 +2,7 @@
 #@+node:ekr.20160505094722.1: * @file ../plugins/importers/coffeescript.py
 '''The @auto importer for coffeescript.'''
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target

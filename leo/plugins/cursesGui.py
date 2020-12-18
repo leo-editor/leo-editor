@@ -10,7 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 # pylint: disable=wrong-import-order
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoChapters as leoChapters
 import leo.core.leoGui as leoGui
 import leo.core.leoKeys as leoKeys

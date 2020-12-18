@@ -3,7 +3,7 @@
 """A module encapsulating Leo's file caching"""
 #@+<< imports >>
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import fnmatch
 import os
 import pickle

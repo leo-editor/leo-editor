@@ -2,7 +2,7 @@
 #@+node:ekr.20140723122936.18143: * @file ../plugins/importers/java.py
 '''The @auto importer for the java language.'''
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer

@@ -27,7 +27,7 @@ Manager's Plugin Load Order pane.
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import os.path
 import configparser as ConfigParser

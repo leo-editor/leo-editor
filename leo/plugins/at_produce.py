@@ -32,7 +32,7 @@ simple substitute when that machinery is overkill.
 # - Creates at-produce-all and at-produce-selected commands.
 # - Adds the log node and redraws in the main thread after the separate thread completes.
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import os
 import subprocess
 import threading

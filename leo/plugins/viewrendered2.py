@@ -210,7 +210,7 @@ __version__ = '1.2' # tbp: added "Code Only" option to emit only code.
 
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >> (VR2)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets

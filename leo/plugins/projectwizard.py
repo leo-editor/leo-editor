@@ -8,7 +8,7 @@ where the selected file is (the selected file itself doesn't matter.)
 '''
 # Written by VMV.
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')

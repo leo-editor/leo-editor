@@ -9,7 +9,7 @@ http://pypi.python.org/pypi/pudb
 
 # By VMV.
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     import pudb
 except ImportError:

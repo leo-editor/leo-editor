@@ -5,7 +5,7 @@
 """Leo's control commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050127.1: ** << imports >> (controlCommands.py)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import shlex
 import subprocess

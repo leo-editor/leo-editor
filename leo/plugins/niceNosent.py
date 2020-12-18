@@ -28,7 +28,7 @@ __version__ = "0.3"
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040909122647.1: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@-<< imports >>
 

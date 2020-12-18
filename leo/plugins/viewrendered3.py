@@ -521,7 +521,7 @@ from urllib.request import urlopen
 #@@c
 
 # Leo imports...
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     import leo.plugins.qt_text as qt_text
     import leo.plugins.free_layout as free_layout

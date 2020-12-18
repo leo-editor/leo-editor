@@ -5,7 +5,7 @@
 """Per-commander debugging class."""
 #@+<< debugCommands.py imports >>
 #@+node:ekr.20181006100818.1: ** << debugCommands.py imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import os
 import subprocess

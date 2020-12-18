@@ -47,7 +47,7 @@ beginning of the line and by themselves.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.core.leoAtFile as leoAtFile
 
 import os.path

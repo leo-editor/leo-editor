@@ -16,7 +16,7 @@ available."""
 # for SilverCity
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 verbose = 'plugins' in g.app.debug
 try:
     import docutils
@@ -40,7 +40,7 @@ if docutils:
         docutils = None
 import html.parser as HTMLParser
 try:
-    import leo.plugins.mod_http as mod_http
+    from leo.plugins import mod_http
 except ImportError:
     mod_http = None
 except Exception:

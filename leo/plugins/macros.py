@@ -83,7 +83,7 @@ __version__ = "2.0" # BobS & EKR.
 # 1.9 BobS: Revised self.pattern & added traces.
 # 2.0 EKR: Many code cleanups & fixed several crashers.
 #@-<< version history >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import re
 #@+others
 #@+node:ekr.20070302121133: ** init
