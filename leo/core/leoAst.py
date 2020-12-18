@@ -3831,7 +3831,6 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
-        import ast
         import token as token_module
         try:
             # pylint: disable=import-error

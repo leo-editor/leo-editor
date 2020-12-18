@@ -7,18 +7,6 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
-import sys
-isPython3 = sys.version_info >= (3, 0, 0)
-minimum_python_version = '3.6'
-    # #1215.
-isMac = sys.platform.startswith('darwin')
-isWindows = sys.platform.startswith('win')
-#@+<< global switches >>
-#@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-in_bridge = False
-    # Set to True in leoBridge.py just before importing leo.core.leoApp.
-    # This tells leoApp to load a null Gui.
-#@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
 #
@@ -27,6 +15,7 @@ in_bridge = False
 
 import inspect
 import re
+import sys
 import time
 
 # Transcrypt does not support these modules
@@ -35,17 +24,8 @@ import time
 import binascii
 import codecs
 from functools import reduce
-try:
-    import gc
-except ImportError:
-    gc = None
-try:
-    import gettext
-except ImportError:  # does not exist in jython.
-    gettext = None
 import glob
 import io
-StringIO = io.StringIO
 import importlib
 import operator
 import os
@@ -63,8 +43,26 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 
+try:
+    import gc
+except ImportError:
+    gc = None
+try:
+    import gettext
+except ImportError:  # does not exist in jython.
+    gettext = None
+
+StringIO = io.StringIO
+
 # __pragma__ ('noskip')
 #@-<< imports >>
+in_bridge = False
+    # Set to True in leoBridge.py just before importing leo.core.leoApp.
+    # This tells leoApp to load a null Gui.
+minimum_python_version = '3.6'  # #1215.
+isPython3 = sys.version_info >= (3, 0, 0)
+isMac = sys.platform.startswith('darwin')
+isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
@@ -1862,7 +1860,6 @@ class SherlockTracer:
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
-        import os
         code = frame.f_code
         fn = code.co_filename
         locals_ = frame.f_locals
@@ -2064,7 +2061,6 @@ class SherlockTracer:
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
-        import sys
         print(f"SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
@@ -2109,7 +2105,6 @@ class SherlockTracer:
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self):
         """Stop all tracing."""
-        import sys
         sys.settrace(None)
     #@-others
 
@@ -2280,8 +2275,8 @@ class Tracer:
         # Update the total counts.
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
+
 def startTracer(limit=0, trace=False, verbose=False):
-    import sys
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
@@ -5188,8 +5183,6 @@ def skip_ws_and_nl(s, i):
 #@+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c, base_url=None):
     """Get a list of issues from Leo's GitHub site."""
-    import time
-
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
@@ -6060,7 +6053,6 @@ def isValidEncoding(encoding):
     #Transcrypt does not support Python's codecs module.
     # __pragma__ ('skip')
 
-    import codecs
     try:
         codecs.lookup(encoding)
         return True
@@ -6981,18 +6973,11 @@ def choose(cond, a, b):  # warning: evaluates all arguments
         return a
     return b
 #@+node:ekr.20111103205308.9657: *3* g.cls
-#Transcrypt does not support Python's os module.
-# __pragma__ ('skip')
-
 @command('cls')
 def cls(event=None):
     """Clear the screen."""
-    import os
-    import sys
     if sys.platform.lower().startswith('win'):
         os.system('cls')
-
-# __pragma__ ('noskip')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
 def createScratchCommander(fileName=None):
     c = g.app.newCommander(fileName)
