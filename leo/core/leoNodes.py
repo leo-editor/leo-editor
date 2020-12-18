@@ -13,7 +13,7 @@ import itertools
 import time
 import re
 from leo.core import leoGlobals as g
-from leo.core import signal_manager as sig
+from leo.core import signal_manager
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -2425,7 +2425,7 @@ class VNode:
                 g.internalError(s)
                 g.es_exception()
         self.contentModified()  # #1413.
-        sig.emit(self.context, 'body_changed', self)
+        signal_manager.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
