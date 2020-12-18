@@ -23,6 +23,7 @@ if 1:
     # pylint: disable=unused-import
     from leo.plugins import qt_commands
     assert qt_commands
+qt = QtCore.Qt
 #@-<< imports >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -1092,7 +1093,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
     def insertKeyEvent(self, event, i):
         """Insert the key given by event in location i of widget event.w."""
-        from leo.core import leoGui
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
         assert isinstance(qevent, QtGui.QKeyEvent)
@@ -1391,8 +1391,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
         """Put up a splash screen with the Leo logo."""
-        from leo.core.leoQt import QtCore
-        qt = QtCore.Qt
         splash = None
         if sys.platform.startswith('win'):
             table = ('SplashScreen.jpg', 'SplashScreen.png', 'SplashScreen.ico')

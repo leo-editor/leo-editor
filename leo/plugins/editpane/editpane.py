@@ -7,17 +7,18 @@ from collections import defaultdict
 from importlib import import_module
 import os
 try:
+    # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
     assert GL  # To keep pyflakes happy.
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import QtCore, QtWidgets, QtConst  # QtGui
-if QtCore is not None:
-    from leo.plugins.editpane.clicky_splitter import ClickySplitter
+from leo.core.leoQt import QtCore, QtWidgets, QtConst
 from leo.core import leoGlobals as g
 from leo.core import signal_manager as sig
+if QtCore is not None:
+    from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
