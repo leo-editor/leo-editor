@@ -6,7 +6,10 @@
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import time
 import importlib
+from leo.core import leoGlobals as g
+# Third-party imports.
 try:
+    # pylint: disable=import-error
     import rope.base.project as project
     import rope.base.simplify as simplify
     import rope.refactor as refactor
@@ -17,7 +20,6 @@ if has_rope:
     importlib.reload(project)
     importlib.reload(simplify)
     importlib.reload(refactor)
-from leo.core import leoGlobals as g
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController

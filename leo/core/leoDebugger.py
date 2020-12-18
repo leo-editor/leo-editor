@@ -218,7 +218,6 @@ class Xdb(pdb.Pdb, threading.Thread):
         first ask confirmation).  With a filename:lineno argument,
         clear all breaks at that line in that file.
         """
-        import bdb
         # Same as pdb.do_clear except uses self.stdin.readline (as it should).
         if not arg:
             bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
@@ -287,7 +286,6 @@ class Xdb(pdb.Pdb, threading.Thread):
     #@+node:ekr.20180701050839.10: *4* xdb.set_continue (overrides Bdb)
     def set_continue(self):
         """ override Bdb.set_continue"""
-        import sys
         # Don't stop except at breakpoints or when finished
         self._set_stopinfo(self.botframe, None, -1)
         if not self.breaks:

@@ -415,7 +415,6 @@ class AtFile:
 
         def callback(p, r=r.copy(), root=root):
             """The resurrected nodes callback."""
-            from leo.core import leoNodes
             child = r.insertAsLastChild()
             child.h = f"From {root.h}"
             v = p.v
@@ -3758,7 +3757,6 @@ class TestAtFile(unittest.TestCase):
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
     def test_save_after_external_file_rename(self):
         """Test #1469."""
-        import os
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         temp_dir = self.temp_dir()

@@ -10,7 +10,7 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
 """
-# pylint: disable=unused-import, no-member
+# pylint: disable=unused-import,no-member,ungrouped-imports,wrong-import-order
 
 # Define...
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl

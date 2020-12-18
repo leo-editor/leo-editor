@@ -570,7 +570,6 @@ class ShadowController:
         #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
         def fail(self, msg=None):
             """Mark an AtShadowTestCase as having failed."""
-            from leo.core import leoGlobals as g
             g.app.unitTestDict["fail"] = g.callers()
         #@+node:ekr.20080709062932.8: *4* setUp & helpers (AtShadowTestCase)
         def setUp(self):

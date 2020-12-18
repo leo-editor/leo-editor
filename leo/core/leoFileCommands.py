@@ -7,25 +7,22 @@ import binascii
 from collections import defaultdict
 from contextlib import contextmanager
 import difflib
-import time
+import hashlib
 import io
-StringIO = io.StringIO
-BytesIO = io.BytesIO
 import os
 import pickle
-import tempfile
-import zipfile
 import sqlite3
-import hashlib
+import tempfile
+import time
+import zipfile
 import xml.etree.ElementTree as ElementTree
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
+import xml.sax
+import xml.sax.saxutils
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
+# Abbreviations
+StringIO = io.StringIO
+BytesIO = io.BytesIO
 #@-<< imports >>
 PRIVAREA = '---begin-private-area---'
 #@+others
