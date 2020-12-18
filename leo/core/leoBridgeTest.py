@@ -7,9 +7,9 @@ All options come from sys.argv.  See scan_options for the available options.
 
 **Important**: Leo's core does not use this module in any way.
 """
-from leo.core import leoBridge
 import optparse
 import sys
+from leo.core import leoBridge
 # Do not define g here.  Use the g returned by the bridge.
 #@+others
 #@+node:ekr.20080730161153.3: ** main & helpers

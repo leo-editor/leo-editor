@@ -16,9 +16,13 @@ On Ubuntu, the following alias runs this file::
 import optparse
 import sys
 import time
+try:
+    # pylint: disable=import-error
+    from pyflakes import api, reporter
+except ImportError:
+    api = reporter = None
 from leo.core import leoGlobals as g
 from leo.core import leoTest
-from pyflakes import api, reporter
 #@+others
 #@+node:ekr.20160518000549.10: ** main (pyflakes-leo.py)
 def main(files):
@@ -38,8 +42,8 @@ def main(files):
 #@+node:ekr.20160518000549.14: ** report_version
 def report_version():
     try:
+        # pylint: disable=import-error
         import flake8
-
         print(f"flake8 version: {flake8.__version__}")
     except Exception:
         g.trace('can not import flake8')

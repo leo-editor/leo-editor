@@ -85,7 +85,6 @@ def create_app():
     
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
-    import time
     # dump_leo_modules()
     t1 = time.process_time()
     from leo.core import leoGlobals as g

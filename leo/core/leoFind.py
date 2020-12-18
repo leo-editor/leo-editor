@@ -4,13 +4,14 @@
 import re
 import sys
 import time
-from leo.core import leoGlobals as g
 
 # Transcrypt does not support Python's copy or keyword module.
 # __pragma__ ('skip')
 import keyword
 import unittest
 # __pragma__ ('noskip')
+
+from leo.core import leoGlobals as g
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>

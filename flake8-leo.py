@@ -23,6 +23,7 @@ from leo.core import leoTest
 def main(files):
     """Call run on all tables in tables_table."""
     try:
+        # pylint: disable=import-error
         from flake8 import engine
     except Exception:
         print(f"{g.shortFileName(__file__)}: can not import flake8")
@@ -73,6 +74,7 @@ def get_flake8_config():
 #@+node:ekr.20160517222332.1: *3* check_all
 def check_all(files, style):
     """Run flake8 on all paths."""
+    # pylint: disable=import-error
     from flake8 import main
 
     report = style.check_files(paths=files)
