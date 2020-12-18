@@ -5,16 +5,14 @@ The base classes for all Leo Windows, their body, log and tree panes, key bindin
 
 These classes should be overridden to create frames for a particular gui.
 """
-big_text_buttons = True
-    # True: show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
 import time
-assert time
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
 from leo.core import leoMenu
 from leo.core import leoNodes
+assert time
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
