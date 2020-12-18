@@ -42,7 +42,6 @@ def profile_leo():
     python profileLeo.py <list of .leo files> > profile.txt
     """
     # Work around a Python distro bug: can fail on Ubuntu.
-    import os
     try:
         import pstats
     except ImportError:
@@ -76,7 +75,6 @@ def run(fileName=None, pymacs=None, *args, **keywords):
 #@+node:maphew.20180110221247.1: ** run console (runLeo.py)
 def run_console(*args, **keywords):
     """Initialize and run Leo in console mode gui"""
-    import sys
     sys.argv.append('--gui=console')
     run(*args, **keywords)
 #@-others
