@@ -113,7 +113,7 @@
 <v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.1"><vh>@data:@auto leo_cloud.py</vh>
-<v t="ekr.20201012142922.1"><vh>@gnxs</vh></v>
+<v t="ekr.20201217205859.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
 <v t="ekr.20201012142922.2"><vh>@gnxs</vh></v>
@@ -168,7 +168,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31372e3071057d71065808000000616e6e6f7461746571077d7108735806000000302e31392e3171097d710a5808000000616e6e6f74617465710b7d710c735806000000302e32302e31710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d71065808000000616e6e6f7461746571077d7108735806000000302e32302e3171097d710a5808000000616e6e6f74617465710b7d710c735806000000302e32312e31710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -206,6 +206,7 @@
 <v t="ekr.20150514040140.1"><vh>@file ../commands/keyCommands.py</vh></v>
 <v t="ekr.20150514040142.1"><vh>@file ../commands/killBufferCommands.py</vh></v>
 <v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
+<v t="ekr.20150514040236.1"><vh>@file ../commands/searchCommands.py</vh></v>
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
@@ -1436,11 +1437,86 @@ u.newMiddleLines = new_middle_lines
 u.oldNewlines = old_newlines
 u.newNewlines = new_newlines
 </t>
+<t tx="ekr.20031218072017.1553">def getLeoFile(self,
+    theFile,
+    fileName,
+    readAtFileNodesFlag=True,
+    silent=False,
+    checkOpenFiles=True,
+):
+    """
+        Read a .leo file.
+        The caller should follow this with a call to c.redraw().
+    """
+    fc, c = self, self.c
+    t1 = time.time()
+    c.clearChanged()  # May be set when reading @file nodes.
+    fc.warnOnReadOnlyFiles(fileName)
+    fc.checking = False
+    fc.mFileName = c.mFileName
+    fc.initReadIvars()
+    recoveryNode = None
+    try:
+        c.loading = True  # disable c.changed
+        if not silent and checkOpenFiles:
+            # Don't check for open file when reverting.
+            g.app.checkForOpenFile(c, fileName)
+        #
+        # Read the .leo file and create the outline.
+        if fileName.endswith('.db'):
+            v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
+        else:
+            v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
+            if v:
+                c.hiddenRootNode = v
+        if v:
+            fc.resolveTnodeLists()
+                # Do this before reading external files.
+            c.setFileTimeStamp(fileName)
+            if readAtFileNodesFlag:
+                # c.redraw()
+                    # Does not work.
+                    # Redraw before reading the @file nodes so the screen isn't blank.
+                    # This is important for big files like LeoPy.leo.
+                recoveryNode = fc.readExternalFiles(fileName)
+    finally:
+        p = recoveryNode or c.p or c.lastTopLevel()
+            # lastTopLevel is a better fallback, imo.
+        c.selectPosition(p)
+        c.redraw_later()
+            # Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
+        c.checkOutline()
+            # Must be called *after* ni.end_holding.
+        c.loading = False
+            # reenable c.changed
+        if not isinstance(theFile, sqlite3.Connection):
+            theFile.close()
+            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
+            # Leo holding directory/file handles after file close?
+    if c.changed:
+        fc.propegateDirtyNodes()
+    fc.initReadIvars()
+    t2 = time.time()
+    g.es(f"read outline in {t2 - t1:2.2f} seconds")
+    return v, c.frame.ratio
+</t>
+<t tx="ekr.20031218072017.1554">def warnOnReadOnlyFiles(self, fileName):
+    # os.access may not exist on all platforms.
+    try:
+        self.read_only = not os.access(fileName, os.W_OK)
+    except AttributeError:
+        self.read_only = False
+    except UnicodeError:
+        self.read_only = False
+    if self.read_only and not g.unitTesting:
+        g.error("read only:", fileName)
+</t>
 <t tx="ekr.20031218072017.1623">@g.commander_command('file-new')
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     """Create a new Leo window."""
-    import leo.core.leoApp as leoApp
+    from leo.core import leoApp
     lm = g.app.loadManager
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.
@@ -2238,7 +2314,7 @@ bunch.yview = u.yview
     # Create the component objects.
     self.body = NullBody(frame=self, parentFrame=None)
     self.log = NullLog(frame=self, parentFrame=None)
-    self.menu = LeoMenu.NullMenu(frame=self)
+    self.menu = leoMenu.NullMenu(frame=self)
     self.tree = NullTree(frame=self)
     # Default window position.
     self.w = 600
@@ -2295,10 +2371,10 @@ it is included in "pluginsManager.txt" in that directory.
 @code
 """Create menu for Open With command and handle the resulting commands"""
 
-import leo.core.leoGlobals as g
+import os
+from leo.core import leoGlobals as g
 Tk = g.import_module('tkinter')
 
-import os
 
 if Tk: # Register the handlers...
 
@@ -3310,7 +3386,7 @@ else:
 </t>
 <t tx="ekr.20050130120433">'''A plugin to test import problems.'''
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 def onStart(tag,keywords):
     pass
@@ -3339,7 +3415,7 @@ If it's long, you might put it in a separate section.
 @language python
 @tabwidth-4
 </t>
-<t tx="ekr.20050303051035.5">import leo.core.leoGlobals as g
+<t tx="ekr.20050303051035.5">from leo.core import leoGlobals as g
 
 # Whatever other imports your plugins uses.
 </t>
@@ -3389,7 +3465,7 @@ If it's long, you might put it in a separate section.
 what the plugin does and how to use it.
 '''
 </t>
-<t tx="ekr.20050306071629.3">import leo.core.leoGlobals as g
+<t tx="ekr.20050306071629.3">from leo.core import leoGlobals as g
 
 # Whatever other imports your plugins uses.
 </t>
@@ -3848,7 +3924,7 @@ self.source = None # The written source as a string.
     n = max(4,len(s))
     return ch * n + '\n'
 </t>
-<t tx="ekr.20050805162550.2">import leo.core.leoGlobals as g
+<t tx="ekr.20050805162550.2">from leo.core import leoGlobals as g
 
 import html.parser as HTMLParser
 import os
@@ -3862,7 +3938,7 @@ dir,junk = os.path.split(__file__)
 if dir not in sys.path: sys.path.append(dir)
 
 try:
-    import leo.plugins.mod_http as mod_http
+    from leo.plugins import mod_http
 except ImportError:
     mod_http = None
 
@@ -6260,7 +6336,7 @@ def showCalltipsForce(self, event=None):
 <t tx="ekr.20061031131434.145"></t>
 <t tx="ekr.20061031131434.146">def masterKeyHandler(self, event):
     """The master key handler for almost all key bindings."""
-    trace = 'keys' in g.app.debug and 'verbose' in g.app.debug
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
     c, k = self.c, self
     # Setup...
     if trace:
@@ -6286,7 +6362,8 @@ def showCalltipsForce(self, event=None):
     # Handle abbreviations.
     if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, event.stroke):
         return
-    # Handle the character given by event *without* executing any command that might be bound to it.
+    # Handle the character given by event *without*
+    # executing any command that might be bound to it.
     c.insertCharFromEvent(event)
 </t>
 <t tx="ekr.20061031131434.15">def showAutocompleterStatus(self):
@@ -6804,6 +6881,7 @@ def setTabName(self, s):
     @others
 </t>
 <t tx="ekr.20061031131434.46">def start(self, event):
+    """Init the completer and start the state handler."""
     # We don't need to clear this now that we don't use ContextSniffer.
     c = self.c
     if c.config.getBool('use-jedi', default=True):
@@ -7410,7 +7488,7 @@ OnPasteFromMenu = pasteText
 </t>
 <t tx="ekr.20070227093629.1">try:
     # #1472: Simplify import of g
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
     self.g = g
 except ImportError:
     print("Error importing leoGlobals.py")
@@ -7420,7 +7498,7 @@ try:
     g.in_bridge = True
         # Tell leoApp.createDefaultGui not to create a gui.
         # This module will create the gui later.
-    import leo.core.leoApp as leoApp
+    from leo.core import leoApp
     g.app = leoApp.LeoApp()
 except ImportError:
     print("Error importing leoApp.py")
@@ -7430,15 +7508,15 @@ if self.tracePlugins:
 g.app.silentMode = self.silentMode
 #
 # Create the g.app.pluginsController here.
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
 leoPlugins.init()  # Necessary. Sets g.app.pluginsController.
 try:
-    import leo.core.leoNodes as leoNodes
+    from leo.core import leoNodes
 except ImportError:
     print("Error importing leoNodes.py")
     import traceback; traceback.print_exc()
 try:
-    import leo.core.leoConfig as leoConfig
+    from leo.core import leoConfig
 except ImportError:
     print("Error importing leoConfig.py")
     import traceback; traceback.print_exc()
@@ -8161,8 +8239,8 @@ if path not in sys.path:
     sys.path.append(path)
 try:
     # #1472: bind to g immediately.
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
+    from leo.core import leoGlobals as g
+    from leo.core import leoApp
     g.app = leoApp.LeoApp()
 except Exception as e:
     print(e)
@@ -8343,7 +8421,7 @@ h = property(
             g.es_exception()
         sys.exit(1)
     try:
-        import leo.plugins.qt_gui as qt_gui
+        from leo.plugins import qt_gui
     except Exception:
         g.es_exception()
         print('can not import leo.plugins.qt_gui')
@@ -8819,18 +8897,21 @@ gnx = property(
     return s.startswith('f') and len(s) &lt;= 3 and s[1:].isdigit()
 </t>
 <t tx="ekr.20090802181029.5988"></t>
-<t tx="ekr.20091230094319.6240">def getPaneBinding(self, stroke, w):
+<t tx="ekr.20091230094319.6240">def getPaneBinding(self, event):
 
-    k, state = self, self.unboundKeyAction
-    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+    c, k, state = self.c, self, self.unboundKeyAction
+    stroke, w = event.stroke, event.w
     if not g.assert_is(stroke, g.KeyStroke):
         return None
-    if 0:
-        # #1757: Never bind plain keys in 'insert' or 'overwrite' state.
-        #        Valid because mode bindings have already been handled.
-        if k.isPlainKey(stroke) and state in ('insert', 'overwrite'):
-            if trace: g.trace('KILL binding', stroke)
-            return None
+    #
+    # #1757: Always insert plain keys in the body.
+    #        Valid because mode bindings have already been handled.
+    if (
+        k.isPlainKey(stroke)
+        and w == c.frame.body.widget
+        and state in ('insert', 'overwrite')
+    ):
+        return None
     for key, name in (
         # Order here is similar to bindtags order.
         ('command', None),
@@ -8931,10 +9012,68 @@ gnx = property(
         handler(event)
     if trace:
         handler_name = handler and handler.__name__ or '&lt;no handler&gt;'
-    g.trace(state, 'handler:', handler_name, stroke)
+        g.trace(state, 'handler:', handler_name, stroke)
     return True
 </t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.
+</t>
+<t tx="ekr.20100124110832.6212">def propegateDirtyNodes(self):
+    fc = self; c = fc.c
+    aList = [z for z in c.all_positions() if z.isDirty()]
+    for p in aList:
+        p.setAllAncestorAtFileNodesDirty()
+</t>
+<t tx="ekr.20100205060712.8314">def handleNodeConflicts(self):
+    """Create a 'Recovered Nodes' node for each entry in c.nodeConflictList."""
+    c = self.c
+    if not c.nodeConflictList:
+        return None
+    if not c.make_node_conflicts_node:
+        s = f"suppressed {len(c.nodeConflictList)} node conflicts"
+        g.es(s, color='red')
+        g.pr('\n' + s + '\n')
+        return None
+    # Create the 'Recovered Nodes' node.
+    last = c.lastTopLevel()
+    root = last.insertAfter()
+    root.setHeadString('Recovered Nodes')
+    root.expand()
+    # For each conflict, create one child and two grandchildren.
+    for bunch in c.nodeConflictList:
+        tag = bunch.get('tag') or ''
+        gnx = bunch.get('gnx') or ''
+        fn = bunch.get('fileName') or ''
+        b1, h1 = bunch.get('b_old'), bunch.get('h_old')
+        b2, h2 = bunch.get('b_new'), bunch.get('h_new')
+        root_v = bunch.get('root_v') or ''
+        child = root.insertAsLastChild()
+        h = f'Recovered node "{h1}" from {g.shortFileName(fn)}'
+        child.setHeadString(h)
+        if b1 == b2:
+            lines = [
+                'Headline changed...',
+                f"{tag} gnx: {gnx} root: {(root_v and root.v)!r}",
+                f"old headline: {h1}",
+                f"new headline: {h2}",
+            ]
+            child.setBodyString('\n'.join(lines))
+        else:
+            line1 = f"{tag} gnx: {gnx} root: {root_v and root.v!r}\nDiff...\n"
+            d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
+                # 2017/06/19: reverse comparison order.
+            diffLines = [z for z in d]
+            lines = [line1]
+            lines.extend(diffLines)
+            # There is less need to show trailing newlines because
+            # we don't report changes involving only trailing newlines.
+            child.setBodyString(''.join(lines))
+            n1 = child.insertAsNthChild(0)
+            n2 = child.insertAsNthChild(1)
+            n1.setHeadString('old:' + h1)
+            n1.setBodyString(b1)
+            n2.setHeadString('new:' + h2)
+            n2.setBodyString(b2)
+    return root
 </t>
 <t tx="ekr.20100908125007.6024">def loadOnePlugin(self, moduleOrFileName, tag='open0', verbose=False):
     """
@@ -9438,7 +9577,7 @@ def update_html(self, s, keywords):
         w.customContextMenuRequested.connect(self.onContextMenuCallback)
 
         def handleClick(url, w=w):
-            import leo.plugins.qt_text as qt_text
+            from leo.plugins import qt_text
             wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
             event = g.Bunch(c=c, w=wrapper)
             g.openUrlOnClick(event, url=url)
@@ -9616,9 +9755,7 @@ def lookup_modules(self, aList, prefix):  # prefix not used, only aList[0] used.
 </t>
 <t tx="ekr.20110511133940.14561">def show_completion_list(self, common_prefix, prefix, tabList):
 
-    trace = all(z in g.app.debug for z in ('abbrev', 'verbose'))
     c = self.c
-    if trace: g.trace('k.show_completion_list')
     aList = common_prefix.split('.')
     header = '.'.join(aList[:-1])
     # "!" toggles self.verbose.
@@ -10902,6 +11039,28 @@ def seeInsertPoint(self):
             s = s[i + 1 :]
     return fn, s
 </t>
+<t tx="ekr.20110605121601.18411">def getIcon(self, p):
+    """Return the proper icon for position p."""
+    if self.use_declutter:
+        item = self.position2item(p)
+        return item and self.declutter_node(self.c, p, item)
+    p.v.iconVal = iv = p.v.computeIcon()
+    return self.getCompositeIconImage(p, iv)
+
+
+</t>
+<t tx="ekr.20110605121601.18412">def getCompositeIconImage(self, p, val):
+    """Get the icon at position p."""
+    fnames = self.icon_filenames_for_node(p, val)
+    h = ':'.join(fnames)
+    icon = g.app.gui.iconimages.get(h)
+    loaded_images = self.loaded_images
+    images = list(map(loaded_images.get, fnames))
+    if not icon:
+        icon = self.make_composite_icon(images)
+        g.app.gui.iconimages[h] = icon
+    return icon
+</t>
 <t tx="ekr.20110605121601.18418">def connectEditorWidget(self, e, item):
     """
     Connect QLineEdit e to QTreeItem item.
@@ -11838,7 +11997,7 @@ def setYScrollPosition(self, pos):
             # sqlite database file is never actually overwriten by Leo,
             # so do *not* check its timestamp.
             pass
-        elif efc.has_changed(c, fn):
+        elif efc.has_changed(fn):
             if trace: g.trace('Return True: changed:', sfn)
             return True
     if hasattr(p.v, 'at_read'):
@@ -12046,6 +12205,18 @@ def __str__(self):
     directory = g.os_path_finalize(os.path.dirname(fn))
     # #1415.
     return fn if os.path.exists(directory) else None
+</t>
+<t tx="ekr.20120212220616.10537">def readExternalFiles(self, fileName):
+    """Read all external files."""
+    c, fc = self.c, self
+    c.atFileCommands.readAll(c.rootPosition(), force=False)
+    recoveryNode = fc.handleNodeConflicts()
+    # Do this after reading external files.
+    # The descendent nodes won't exist unless we have read
+    # the @thin nodes!
+    fc.restoreDescendentAttributes()
+    fc.setPositionsFromVnodes()
+    return recoveryNode
 </t>
 <t tx="ekr.20120214060149.15851">def __init__(self):
 
@@ -12396,15 +12567,15 @@ def __str__(self):
     self.createAllImporterData()
         # Can be done early. Uses only g.app.loadDir
     assert g.app.loadManager
-    import leo.core.leoBackground as leoBackground
-    import leo.core.leoConfig as leoConfig
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoPlugins as leoPlugins
-    import leo.core.leoSessions as leoSessions
+    from leo.core import leoBackground
+    from leo.core import leoConfig
+    from leo.core import leoNodes
+    from leo.core import leoPlugins
+    from leo.core import leoSessions
     # Import leoIPython only if requested.  The import is quite slow.
     self.setStdStreams()
     if g.app.useIpython:
-        import leo.core.leoIPython as leoIPython
+        from leo.core import leoIPython
             # This launches the IPython Qt Console.  It *is* required.
         assert leoIPython  # suppress pyflakes/flake8 warning.
     # Make sure we call the new leoPlugins.init top-level function.
@@ -13330,15 +13501,16 @@ run-marked-unit-tests-locally = Alt-6
         # Copy the list so it can't change in the loop.
         for event in self.dot_list[:]:
             # Only k.masterKeyHandler can insert characters!
-            # Create an event satisfying both k.masterKeyHandler and self.do_key.
-            self.k.masterKeyHandler(g.Bunch(
-                # for do_key()...
-                w=self.w,
-                # for k.masterKeyHandler...
-                widget=self.w,
+            #
+            # #1757: Create a LeoKeyEvent.
+            event = LeoKeyEvent(
+                binding=g.KeyStroke(event.stroke),
+                c = self.c,
                 char=event.char,
-                stroke=g.KeyStroke(event.stroke)),
+                event=event,
+                w=self.w,
             )
+            self.k.masterKeyHandler(event)
         # For the dot list to be the old dot list, whatever happens.
         self.command_list = self.old_dot_list[:]
         self.dot_list = self.old_dot_list[:]
@@ -15141,7 +15313,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
 <t tx="ekr.20150326145530.1"># Hand-written Leo colorizer control file for forth mode.
 # This file is in the public domain.
 @killbeautify
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 &lt;&lt; define mode rules &gt;&gt;
 &lt;&lt; define mode data &gt;&gt;
 &lt;&lt; define extendForth class &gt;&gt;
@@ -15546,6 +15718,43 @@ def createDefiningWordRule(self, word):
         g.es_print(command)
         g.es_exception()
 </t>
+<t tx="ekr.20150330033306.1">on_idle_count = 0
+
+def on_idle(self):
+    '''
+    Check for changed open-with files and all external files in commanders
+    for which @bool check_for_changed_external_file is True.
+    '''
+    #
+    # #1240: Note: The "asking" dialog prevents idle time.
+    #
+    if not g.app or g.app.killed or g.app.restarting:  # #1240.
+        return
+    self.on_idle_count += 1
+    # New in Leo 5.7: always handle delayed requests.
+    if g.app.windowList:
+        c = g.app.log and g.app.log.c
+        if c:
+            c.outerUpdate()
+    # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
+    if self.unchecked_files:
+        # Check all external files.
+        for ef in self.unchecked_files:
+            self.idle_check_open_with_file(ef)
+        self.unchecked_files = []
+    elif self.unchecked_commanders:
+        # Check the next commander for which
+        # @bool check_for_changed_external_file is True.
+        c = self.unchecked_commanders.pop()
+        self.idle_check_commander(c)
+    else:
+        # Add all commanders for which
+        # @bool check_for_changed_external_file is True.
+        self.unchecked_commanders = [
+            z for z in g.app.commanders() if self.is_enabled(z)
+        ]
+        self.unchecked_files = [z for z in self.files if z.exists()]
+</t>
 <t tx="ekr.20150402111403.1"></t>
 <t tx="ekr.20150402111413.1">def addToCommandHistory(self, commandName):
     """Add a name to the command history."""
@@ -15600,27 +15809,24 @@ def createDefiningWordRule(self, word):
 </t>
 <t tx="ekr.20150403044823.1">def idle_check_at_file_node(self, c, p):
     '''Check the @&lt;file&gt; node at p for external changes.'''
-    trace = False
-        # Matt, set this to True, but only for the file that interests you.\
-        # trace = p.h == '@file unregister-leo.leox'
     path = g.fullPath(c, p)
-    has_changed = self.has_changed(c, path)
-    if trace:
-        g.trace('changed', has_changed, p.h)
-    if has_changed:
-        if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            # Fix #1081: issue a warning.
-            self.warn(c, path, p=p)
-        elif self.ask(c, path, p=p):
-            c.redraw(p=p)
-            c.refreshFromDisk(p)
-            c.redraw()
-        # Always update the path &amp; time to prevent future warnings.
-        self.set_time(path)
-        self.checksum_d[path] = self.checksum(path)
+    if not self.has_changed(path):
+        return
+    if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
+        # Fix #1081: issue a warning.
+        self.warn(c, path, p=p)
+    elif self.ask(c, path, p=p):
+        c.redraw(p=p)
+        c.refreshFromDisk(p)
+        c.redraw()
+    # Always update the path &amp; time to prevent future warnings.
+    self.set_time(path)
+    self.checksum_d[path] = self.checksum(path)
 </t>
-<t tx="ekr.20150403045207.1">def has_changed(self, c, path):
-    '''Return True if p's external file has changed outside of Leo.'''
+<t tx="ekr.20150403045207.1">def has_changed(self, path):
+    '''Return True if the file at path has changed outside of Leo.'''
+    if not path:
+        return False
     if not g.os_path_exists(path):
         return False
     if g.os_path_isdir(path):
@@ -15648,11 +15854,6 @@ def createDefiningWordRule(self, word):
         return False
     # The file has really changed.
     assert old_time, path
-    # #208: external change overwrite protection only works once.
-    # If the Leo version is changed (dirtied) again,
-    # overwrite will occur without warning.
-        # self.set_time(path, new_time)
-        # self.checksum_d[path] = new_sum
     return True
 </t>
 <t tx="ekr.20150403150655.1">def fullPath(c, p, simulate=False):
@@ -15677,6 +15878,9 @@ def createDefiningWordRule(self, word):
     Check all external files corresponding to @&lt;file&gt; nodes in c for
     changes.
     '''
+    # #1240: Check the .leo file itself.
+    self.idle_check_leo_file(c)
+    #
     # #1100: always scan the entire file for @&lt;file&gt; nodes.
     # #1134: Nested @&lt;file&gt; nodes are no longer valid, but this will do no harm.
     for p in c.all_unique_positions():
@@ -15700,36 +15904,58 @@ def createDefiningWordRule(self, word):
         return False
     if c not in g.app.commanders():
         return False
-    if self.yesno_all_time + 3 &gt;= time.time() and self.yesno_all_answer:
-        self.yesno_all_time = time.time()  # Still reloading?  Extend time.
-        return bool('yes' in self.yesno_all_answer.lower())
-    if not p:
+    is_leo = path.endswith(('.leo', '.db'))
+    is_external_file = not is_leo
+    #
+    # Create the message.
+    message1 = f"{g.splitLongFileName(path)} has changed outside Leo.\n"
+    if is_leo:
+        message2 = 'Restart Leo?'
+    elif p:
+        message2 = f"Reload {p.h}?"
+    else:
         for ef in self.files:
             if ef.path == path:
-                where = ef.p.h
+                message2 = f"Reload {ef.p.h}?"
                 break
         else:
-            where = 'the outline node'
-    else:
-        where = p.h
-    _is_leo = path.endswith(('.leo', '.db'))
-    if _is_leo:
-        s = '\n'.join([
-            f"{g.splitLongFileName(path)} has changed outside Leo.",
-            'Overwrite it?'
-        ])
-    else:
-        s = '\n'.join([
-            f"{g.splitLongFileName(path)} has changed outside Leo.",
-            f"Reload {where} in Leo?",
-        ])
-    result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-        yes_all=not _is_leo, no_all=not _is_leo)
-    if result and "-all" in result.lower():
-        self.yesno_all_time = time.time()
-        self.yesno_all_answer = result.lower()
+            message2 = f"Reload {path}?"
+    #
+    # #1240: Note: This dialog prevents idle time.
+    result = g.app.gui.runAskYesNoDialog(c,
+        'Overwrite the version in Leo?',
+        message1 + message2,
+        yes_all=is_external_file,
+        no_all=is_external_file,
+    )
     return bool(result and 'yes' in result.lower())
         # Careful: may be unit testing.
+</t>
+<t tx="ekr.20150407124259.1">def idle_check_open_with_file(self, ef):
+    '''Update the open-with node given by ef.'''
+    assert isinstance(ef, ExternalFile), ef
+    if ef.path and os.path.exists(ef.path):
+        time = self.get_mtime(ef.path)
+        if time and time != ef.time:
+            ef.time = time  # inhibit endless dialog loop.
+            self.update_open_with_node(ef)
+</t>
+<t tx="ekr.20150407205631.1">def update_open_with_node(self, ef):
+    '''Update the body text of ef.p to the contents of ef.path.'''
+    assert isinstance(ef, ExternalFile), ef
+    c, p = ef.c, ef.p.copy()
+    # Ask the user how to resolve the conflict.
+    if self.ask(c, ef.path, p=p):
+        g.blue(f"updated {p.h}")
+        s, e = g.readFileIntoString(ef.path)
+        p.b = s
+        if c.config.getBool('open-with-goto-node-on-update'):
+            c.selectPosition(p)
+        if c.config.getBool('open-with-save-on-update'):
+            c.save()
+        else:
+            p.setDirty()
+            c.setChanged()
 </t>
 <t tx="ekr.20150413091056.1">"""Warn if leoProjects.txt or leoToDo.txt contain any clones."""
 
@@ -16121,7 +16347,7 @@ CreateDecorators().run()
     Do the common processing at the end of each command.
     Handles undo only if we are in the body pane.
     """
-    c, k, p, u= self.c, self.c.k, self.c.p, self.c.undoer
+    k, p, u= self.c.k, self.c.p, self.c.undoer
     w = self.editWidget(event=None)
     b = self.undoData
     if b and b.name.startswith('body') and changed:
@@ -16303,7 +16529,6 @@ CreateDecorators().run()
                 script.append(z)
         script = ''.join(script)
         # Allow Leo directives in @data abbreviations-subst-env trees.
-        import leo.core.leoNodes as leoNodes
         # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
         root = c.rootPosition()
         if root:
@@ -17907,8 +18132,12 @@ def clearAllUas(self, event=None):
     word = w.getSelectedText().strip()
     if not word:
         return None
+    # Transcrypt does not support Python's keyword module.
+    # __pragma__ ('skip')
     if keyword.iskeyword(word):
         return None
+    # __pragma__ ('noskip')
+    
     # Return word, stripped of preceding class or def.
     for tag in ('class ', 'def '):
         found = word.startswith(tag) and len(word) &gt; len(tag)
@@ -18276,7 +18505,7 @@ unl: class Ui_MainWindow--&gt;retranslateUi
     #       on headline and Alt+Tab, Alt+Tab
     #
     # #276: Focus lost...in Nav text input
-    import leo.plugins.qt_frame as qt_frame
+    from leo.plugins import qt_frame
     return isinstance(w, qt_frame.QtTabBarWrapper)
 </t>
 <t tx="ekr.20160504092347.1">def run(self, s, parent, parse_body=False):
@@ -18385,7 +18614,7 @@ unl: class Ui_MainWindow--&gt;retranslateUi
     # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
     # import pdb ; pdb.set_trace()
     import sys
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
 
     # Define class LeoStdOut
     @others
@@ -18679,7 +18908,7 @@ useMinibuffer=True: True: put focus in the minibuffer while accumulating argumen
 <t tx="ekr.20161021084954.1">def runPyflakes(self, root, pyflakes_errors_only):
     """Run pyflakes on the selected node."""
     try:
-        import leo.commands.checkerCommands as checkerCommands
+        from leo.commands import checkerCommands
         if checkerCommands.pyflakes:
             x = checkerCommands.PyflakesCommand(self.c)
             ok = x.run(p=root, pyflakes_errors_only=pyflakes_errors_only)
@@ -18687,6 +18916,33 @@ useMinibuffer=True: True: put focus in the minibuffer while accumulating argumen
         return True  # Suppress error if pyflakes can not be imported.
     except Exception:
         g.es_exception()
+</t>
+<t tx="ekr.20161028040054.1">self.already_open_files = []
+    # A list of file names that *might* be open in another
+    # copy of Leo.
+self.dragging = False
+    # True: dragging.
+self.inBridge = False
+    # True: running from leoBridge module.
+self.inScript = False
+    # True: executing a script.
+self.initing = True
+    # True: we are initiing the app.
+self.initComplete = False
+    # True: late bindings are not allowed.
+self.killed = False
+    # True: we are about to destroy the root window.
+self.openingSettingsFile = False
+    # True, opening a settings file.
+self.preReadFlag = False
+    # True: we are pre-reading a settings file.
+self.quitting = False
+    # True: quitting.  Locks out some events.
+self.restarting = False
+    # True: restarting all of Leo. #1240.
+self.reverting = False
+    # True: executing the revert command.
+self.syntax_error_files = []
 </t>
 <t tx="ekr.20161029103615.1">class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
@@ -20555,6 +20811,76 @@ def starts_decorator(self, i, lines, prev_state):
     p.h = f"@url file://{fileName}"
     return p
 </t>
+<t tx="ekr.20170414034616.3">def gitInfo(path=None):
+    """
+    Path may be a directory or file.
+
+    Return the branch and commit number or ('', '').
+    """
+    branch, commit = '', ''  # Set defaults.
+    if path is None:
+        # Default to leo/core.
+        path = os.path.dirname(__file__)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    # Does path/../ref exist?
+    path = g.gitHeadPath(path)
+    if not path:
+        return branch, commit
+    try:
+        with open(path) as f:
+            s = f.read()
+            if not s.startswith('ref'):
+                branch = 'None'
+                commit = s[:7]
+                return branch, commit
+        # On a proper branch
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+    except IOError:
+        g.trace('can not open:', path)
+        return branch, commit
+    # Try to get a better commit number.
+    git_dir = g.os_path_finalize_join(path, '..')
+    try:
+        path = g.os_path_finalize_join(git_dir, pointer)
+        with open(path) as f:
+            s = f.read()
+        commit = s.strip()[0:12]
+        # shorten the hash to a unique shortname
+    except IOError:
+        try:
+            path = g.os_path_finalize_join(git_dir, 'packed-refs')
+            with open(path) as f:
+                for line in f:
+                    if line.strip().endswith(' ' + pointer):
+                        commit = line.split()[0][0:12]
+                        break
+        except IOError:
+            pass
+    return branch, commit
+</t>
+<t tx="ekr.20170414034616.6">def gitHeadPath(path):
+    """
+    Compute the path to .git/HEAD given the path.
+    """
+    #Transcrypt does not support Python's pathlib module.
+    # __pragma__ ('skip')
+    from pathlib import Path
+    path = Path(path)
+    # #1780: Look up the directory tree, looking the .git directory.
+    while os.path.exists(path):
+        head = os.path.join(path, '.git', 'HEAD')
+        if os.path.exists(head):
+            return head
+        if path == path.parent:
+            break
+        path = path.parent
+    # __pragma__ ('noskip')
+
+    return None
+</t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
@@ -20745,14 +21071,6 @@ from .eveventhandler import Event
         # All other alt-x command
         event=KeyEvent(c,char='',event='',shortcut='',w=None)
         c.doCommandByName(commandName, event)
-        ###
-            # g.trace(k)
-            # k.masterCommand(
-                # commandName=commandName,
-                # event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                # func=None,
-                # stroke=None,
-            # )
         # Support repeat-complex-command.
         c.setComplexCommand(commandName=commandName)
         c.redraw()
@@ -20850,6 +21168,32 @@ OnPasteFromMenu = pasteText
         g.printList(self.values)
         g.trace('g.splitLines(c.p.b)')
         g.printList(g.splitLines(c.p.b))
+</t>
+<t tx="ekr.20170616102324.1">def execGitCommand(command, directory=None):
+    """Execute the given git command in the given directory."""
+    git_dir = g.os_path_finalize_join(directory, '.git')
+    if not g.os_path_exists(git_dir):
+        g.trace('not found:', git_dir, g.callers())
+        return []
+    if '\n' in command:
+        g.trace('removing newline from', command)
+        command = command.replace('\n', '')
+    # #1777: Save/restore os.curdir
+    old_dir = os.path.normpath(os.path.abspath(os.curdir))
+    if directory:
+        os.chdir(directory)
+    try:
+        p = subprocess.Popen(
+            shlex.split(command),
+            stdout=subprocess.PIPE,
+            stderr=None,  # Shows error traces.
+            shell=False,
+        )
+        out, err = p.communicate()
+        lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    finally:
+        os.chdir(old_dir)
+    return lines
 </t>
 <t tx="ekr.20170617125213.1">def clean_all_headlines(self, parent):
     '''
@@ -20970,83 +21314,39 @@ def forwardWordSmartExtendSelection(self, event):
     or the beginning of the next word."""
     self.moveWordHelper(event, extend=True, forward=True, smart=True)
 </t>
-<t tx="ekr.20170806094320.12">def git_diff(self, directory=None, rev1='HEAD', rev2=''):
-    """The main line of the git diff command."""
-    if not self.set_directory(directory):
-        return
-    #
-    # Diff the given revs.
-    ok = self.diff_revs(rev1, rev2)
-    if ok: return
-    #
-    # Go back at most 5 revs...
-    n1, n2 = 1, 0
-    while n1 &lt;= 5:
-        ok = self.diff_revs(
-            # Clearer w/o f-strings.
-            rev1=f"HEAD@{{{n1}}}",
-            rev2=f"HEAD@{{{n2}}}")
-        if ok: return
-        n1, n2 = n1 + 1, n2 + 1
-    if not ok:
-        g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
-</t>
-<t tx="ekr.20170806094320.13">class GitDiffController:
-    """A class to do git diffs."""
-
-    def __init__(self, c, repo_dir=None):
-        self.c = c
-        self.file_node = None
-        self.old_dir = g.os_path_abspath('.')
-        self.repo_dir = repo_dir
-        self.root = None
-    @others
-</t>
 <t tx="ekr.20170806094320.15">def get_file_from_rev(self, rev, fn):
     """Get the file from the given rev, or the working directory if None."""
+    path = g.os_path_finalize_join(self.repo_dir, fn)
+    if not g.os_path_exists(path):
+        return ''
     if rev:
         # Get the file using git.
+        # Use the file name, not the path.
         command = f"git show {rev}:{fn}"
         lines = g.execGitCommand(command, self.repo_dir)
         s = ''.join(lines)
     else:
-        # Get the file from the working directory.
-        path = g.os_path_finalize_join(self.repo_dir, fn)
-        if g.os_path_exists(path):
-            try:
-                with open(path, 'rb') as f:  # Was 'r'
-                    s = f.read()
-            except Exception:
-                g.es_print('Can not read', path)
-                g.es_exception()
-                s = ''
-        else:
-            g.trace('not found:', path)
+        try:
+            with open(path, 'rb') as f:  # Was 'r'
+                s = f.read()
+        except Exception:
+            g.es_print('Can not read', path)
+            g.es_exception()
             s = ''
     return g.toUnicode(s).replace('\r', '')
-</t>
-<t tx="ekr.20170806094320.18">def create_root(self, rev1, rev2):
-    """Create the top-level organizer node describing the git diff."""
-    c = self.c
-    r1, r2 = rev1 or '', rev2 or ''
-    p = c.lastTopLevel().insertAfter()
-    p.h = f"git diff {r1} {r2}"
-    p.b = '@ignore\n@nosearch\n'
-    if r1 and r2:
-        p.b += (
-            f"{r1}={self.get_revno(r1)}\n"
-            f"{r2}={self.get_revno(r2)}")
-    else:
-        p.b += f"{r1}={self.get_revno(r1)}"
-    return p
 </t>
 <t tx="ekr.20170806094320.6">def diff_file(self, fn, directory=None, rev1='HEAD', rev2=''):
     """
     Create an outline describing the git diffs for fn.
     """
+    # Common code.
+    c = self.c
     if not self.set_directory(directory):
         return
-    c = self.c
+    path = g.os_path_finalize_join(self.repo_dir, fn)  # #1781: bug fix.
+    if not os.path.exists(path):
+        g.trace('NOT FOUND', path)
+        return
     s1 = self.get_file_from_rev(rev1, fn)
     s2 = self.get_file_from_rev(rev2, fn)
     lines1 = g.splitLines(s1)
@@ -21059,193 +21359,41 @@ def forwardWordSmartExtendSelection(self, event):
     ))
     diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
     self.file_node = self.create_file_node(diff_list, fn)
-    if c.looksLikeDerivedFile(fn):
-        c1 = self.make_at_file_outline(fn, s1, rev1)
-        c2 = self.make_at_file_outline(fn, s2, rev2)
+    # #1777: The file node will contain the entire added/deleted file.
+    if not s1:
+        self.file_node.h = f"Added: {self.file_node.h}"
+        return
+    if not s2:
+        self.file_node.h = f"Deleted: {self.file_node.h}"
+        return
+    # Finish.
+    c1 = c2 = None
+    if fn.endswith('.leo'):
+        c1 = self.make_leo_outline(fn, path, s1, rev1)
+        c2 = self.make_leo_outline(fn, path, s2, rev2)
     else:
         root = self.find_file(fn)
-        if root:
+        if c.looksLikeDerivedFile(path):
+            c1 = self.make_at_file_outline(fn, s1, rev1)
+            c2 = self.make_at_file_outline(fn, s2, rev2)
+        elif root:
             c1 = self.make_at_clean_outline(fn, root, s1, rev1)
             c2 = self.make_at_clean_outline(fn, root, s2, rev2)
-        else:
-            # This warning is silly.
-            # g.es_print('No outline for', fn)
-            c1 = c2 = None
     if c1 and c2:
         self.make_diff_outlines(c1, c2, fn, rev1, rev2)
-        self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-</t>
-<t tx="ekr.20170806094320.7">def find_file(self, fn):
-    """Return the @&lt;file&gt; node matching fn."""
-    c = self.c
-    fn = g.os_path_basename(fn)
-    for p in c.all_unique_positions():
-        if p.isAnyAtFileNode():
-            fn2 = p.anyAtFileNodeName()
-            if fn2.endswith(fn):
-                return p
-    return None
+        self.file_node.b = (
+            f"{self.file_node.b.rstrip()}\n"
+            f"@language {c2.target_language}\n")
 </t>
 <t tx="ekr.20170806094320.9">def get_files(self, rev1, rev2):
     """Return a list of changed files."""
-
-    def readable(fn):
-        for suffix in ('.db', '.leo', '.zip',):  # 'commit_timestamp.json',
-            if fn.strip().endswith(suffix):
-                return False
-        return True
-
     command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
     files = [
         z.strip() for z in g.execGitCommand(command, self.repo_dir)
-            if readable(z)
+            if not z.strip().endswith(('.db', '.zip'))
+                # #1781: Allow diffs of .leo files.
     ]
     return files
-</t>
-<t tx="ekr.20170806094321.1">def create_file_node(self, diff_list, fn):
-    """Create an organizer node for the file."""
-    p = self.root.insertAsLastChild()
-    p.h = fn.strip()
-    p.b = ''.join(diff_list)
-    return p
-</t>
-<t tx="ekr.20170806094321.3">def find_git_working_directory(self, directory):
-    """Return the git working directory, starting at directory."""
-    while directory:
-        if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
-            return directory
-        path2 = g.os_path_finalize_join(directory, '..')
-        if path2 == directory:
-            break
-        directory = path2
-    return None
-</t>
-<t tx="ekr.20170806094321.5">def finish(self):
-    """Finish execution of this command."""
-    c = self.c
-    os.chdir(self.old_dir)
-    c.contractAllHeadlines(redrawFlag=False)
-    self.root.expand()
-    c.selectPosition(self.root)
-    c.redraw()
-    c.treeWantsFocusNow()
-</t>
-<t tx="ekr.20170806094321.7">def make_at_file_outline(self, fn, s, rev):
-    """Create a hidden temp outline from lines."""
-    # A specialized version of atFileCommands.read.
-    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-    at = hidden_c.atFileCommands
-    hidden_c.frame.createFirstTreeNode()
-    root = hidden_c.rootPosition()
-    root.h = fn + ':' + rev if rev else fn
-    at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-    if at.errors &gt; 0:
-        g.trace('***** errors')
-        return None
-    at.fast_read_into_root(
-        c=hidden_c,
-        contents=s,
-        gnx2vnode={},
-        path=fn,
-        root=root,
-    )
-    return hidden_c
-</t>
-<t tx="ekr.20170806125535.1">def make_diff_outlines(self, c1, c2, fn, rev1='', rev2=''):
-    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
-    added, deleted, changed = self.compute_dicts(c1, c2)
-    table = (
-        (added, 'Added'),
-        (deleted, 'Deleted'),
-        (changed, 'Changed'))
-    for d, kind in table:
-        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
-</t>
-<t tx="ekr.20170806191707.1">def compute_dicts(self, c1, c2):
-    """Compute inserted, deleted, changed dictionaries."""
-    # Special case the root: only compare the body text.
-    root1, root2 = c1.rootPosition().v, c2.rootPosition().v
-    root1.h = root2.h
-    if 0:
-        g.trace('c1...')
-        for p in c1.all_positions():
-            print(f"{len(p.b):4} {p.h}")
-        g.trace('c2...')
-        for p in c2.all_positions():
-            print(f"{len(p.b):4} {p.h}")
-    d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
-    d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
-    added = {key: d2.get(key) for key in d2 if not d1.get(key)}
-    deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
-    # Remove the root from the added and deleted dicts.
-    if root2.fileIndex in added:
-        del added[root2.fileIndex]
-    if root1.fileIndex in deleted:
-        del deleted[root1.fileIndex]
-    changed = {}
-    for key in d1:
-        if key in d2:
-            v1 = d1.get(key)
-            v2 = d2.get(key)
-            assert v1 and v2
-            assert v1.context != v2.context
-            if v1.h != v2.h or v1.b != v2.b:
-                changed[key] = (v1, v2)
-    return added, deleted, changed
-</t>
-<t tx="ekr.20170806191942.2">def create_compare_node(self, c1, c2, d, kind, rev1, rev2):
-    """Create nodes describing the changes."""
-    if not d:
-        return
-    parent = self.file_node.insertAsLastChild()
-    parent.setHeadString(kind)
-    for key in d:
-        if kind.lower() == 'changed':
-            v1, v2 = d.get(key)
-            # Organizer node: contains diff
-            organizer = parent.insertAsLastChild()
-            organizer.h = v2.h
-            body = list(difflib.unified_diff(
-                g.splitLines(v1.b),
-                g.splitLines(v2.b),
-                rev1 or 'uncommitted',
-                rev2 or 'uncommitted',
-            ))
-            if ''.join(body).strip():
-                body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                body.append(f"@language {c2.target_language}\n")
-            else:
-                body = ['Only headline has changed']
-            organizer.b = ''.join(body)
-            # Node 2: Old node
-            p2 = organizer.insertAsLastChild()
-            p2.h = 'Old:' + v1.h
-            p2.b = v1.b
-            # Node 3: New node
-            assert v1.fileIndex == v2.fileIndex
-            p_in_c = self.find_gnx(self.c, v1.fileIndex)
-            if p_in_c:  # Make a clone, if possible.
-                p3 = p_in_c.clone()
-                p3.moveToLastChildOf(organizer)
-            else:
-                p3 = organizer.insertAsLastChild()
-                p3.h = 'New:' + v2.h
-                p3.b = v2.b
-        elif kind.lower() == 'added':
-            v = d.get(key)
-            new_p = self.find_gnx(self.c, v.fileIndex)
-            if new_p:  # Make a clone, if possible.
-                p = new_p.clone()
-                p.moveToLastChildOf(parent)
-            else:
-                p = parent.insertAsLastChild()
-            p.h = v.h
-            p.b = v.b
-        else:
-            v = d.get(key)
-            p = parent.insertAsLastChild()
-            p.h = v.h
-            p.b = v.b
 </t>
 <t tx="ekr.20170811173924.1">@language python
 import os
@@ -21273,72 +21421,59 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
-<t tx="ekr.20170819132219.1">def find_gnx(self, c, gnx):
-    """Return a position in c having the given gnx."""
-    for p in c.all_unique_positions():
-        if p.v.fileIndex == gnx:
-            return p
-    return None
-</t>
-<t tx="ekr.20170820082125.1">def diff_revs(self, rev1, rev2):
-    """Diff all files given by rev1 and rev2."""
-    files = self.get_files(rev1, rev2)
-    if files:
-        self.root = self.create_root(rev1, rev2)
-        for fn in files:
-            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-        self.finish()
-    return bool(files)
-</t>
-<t tx="ekr.20170820084258.1">def make_at_clean_outline(self, fn, root, s, rev):
-    """
-    Create a hidden temp outline from lines without sentinels.
-    root is the @&lt;file&gt; node for fn.
-    s is the contents of the (public) file, without sentinels.
-    """
-    # A specialized version of at.readOneAtCleanNode.
-    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-    at = hidden_c.atFileCommands
-    x = hidden_c.shadowController
-    hidden_c.frame.createFirstTreeNode()
-    hidden_root = hidden_c.rootPosition()
-    # copy root to hidden root, including gnxs.
-    root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
-    hidden_root.h = fn + ':' + rev if rev else fn
-    # Set at.encoding first.
-    at.initReadIvars(hidden_root, fn)
-        # Must be called before at.scanAllDirectives.
-    at.scanAllDirectives(hidden_root)
-        # Sets at.startSentinelComment/endSentinelComment.
-    new_public_lines = g.splitLines(s)
-    old_private_lines = at.write_at_clean_sentinels(hidden_root)
-    marker = x.markerFromFileLines(old_private_lines, fn)
-    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-    if old_public_lines:
-        # Fix #1136: The old lines might not exist.
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines, old_private_lines, marker, p=hidden_root)
-        at.fast_read_into_root(
-            c=hidden_c,
-            contents=''.join(new_private_lines),
-            gnx2vnode={},
-            path=fn,
-            root=hidden_root,
-        )
-    return hidden_c
-</t>
-<t tx="ekr.20170821052348.1">def get_revno(self, revspec, abbreviated=True):
-    """Return the abbreviated hash the given revision spec."""
-    if revspec:
-        # Return only the abbreviated hash for the revspec.
-        command = 'git show --format=%%%s --no-patch %s' % (
-            'h' if abbreviated else 'H',
-            revspec)
-        lines = g.execGitCommand(command, self.repo_dir)
-        return ''.join(lines).strip()
-    return 'uncommitted'
-</t>
 <t tx="ekr.20171031111403.1"></t>
+<t tx="ekr.20171122055719.1">def declutter_style(arg, cmd):
+    """Handle style options."""
+    arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
+    if cmd == 'ICON':
+        new_icons.append(arg)
+    elif cmd == 'BG':
+        item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
+    elif cmd == 'FG':
+        item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
+    elif cmd == 'FONT':
+        item.setFont(0, QtGui.QFont(arg))
+    elif cmd == 'ITALIC':
+        font = item.font(0)
+        font.setItalic(bool(int(arg)))
+        item.setFont(0, font)
+    elif cmd == 'WEIGHT':
+        arg = getattr(QtGui.QFont, arg, 75)
+        font = item.font(0)
+        font.setWeight(arg)
+        item.setFont(0, font)
+    elif cmd == 'PX':
+        font = item.font(0)
+        font.setPixelSize(int(arg))
+        item.setFont(0, font)
+    elif cmd == 'PT':
+        font = item.font(0)
+        font.setPointSize(int(arg))
+        item.setFont(0, font)
+</t>
+<t tx="ekr.20171122064635.1">def declutter_replace(arg, cmd):
+    """
+    Execute cmd and return True if cmd is any replace command.
+    """
+    # pylint: disable=undefined-loop-variable
+    if cmd == 'REPLACE':
+        s = pattern.sub(arg, text)
+        item.setText(0, s)
+        return True
+    if cmd == 'REPLACE-HEAD':
+        s = text[: m.start()]
+        item.setText(0, s.rstrip())
+        return True
+    if cmd == 'REPLACE-TAIL':
+        s = text[m.end() :]
+        item.setText(0, s.lstrip())
+        return True
+    if cmd == 'REPLACE-REST':
+        s = text[:m.start] + text[m.end() :]
+        item.setText(0, s.strip())
+        return True
+    return False
+</t>
 <t tx="ekr.20171123135625.12">@g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):
     """Hide invisible (whitespace) characters."""
@@ -21811,7 +21946,7 @@ def executeScript(self, event=None,
         # Only for error reporting below.
     # #532: check all scripts with pyflakes.
     if run_pyflakes and not g.unitTesting:
-        import leo.commands.checkerCommands as cc
+        from leo.commands import checkerCommands as cc
         # at = c.atFileCommands
         prefix = ('c,g,p,script_gnx=None,None,None,None;'
                   'assert c and g and p and script_gnx;\n')
@@ -22096,6 +22231,49 @@ def toggleAngleBrackets(self, event=None):
     except Exception:
         g.es_print(f"can not open {kind} dictionary: {fn}")
     return words
+</t>
+<t tx="ekr.20180210092235.1">def backup_helper(self,
+    base_dir=None,
+    env_key='LEO_BACKUP',
+    sub_dir=None,
+    use_git_prefix=True,
+):
+    """
+    A helper for scripts that back up a .leo file.
+    Use os.environ[env_key] as the base_dir only if base_dir is not given.
+    Backup to base_dir or join(base_dir, sub_dir).
+    """
+    c = self
+    old_cwd = os.getcwd()
+    join = g.os_path_finalize_join
+    if not base_dir:
+        if env_key:
+            try:
+                base_dir = os.environ[env_key]
+            except KeyError:
+                print(f"No environment var: {env_key}")
+                base_dir = None
+    if base_dir and g.os_path_exists(base_dir):
+        if use_git_prefix:
+            git_branch, junk = g.gitInfo()
+        else:
+            git_branch = None
+        theDir, fn = g.os_path_split(c.fileName())
+        backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
+        path = join(backup_dir, fn)
+        if g.os_path_exists(backup_dir):
+            written_fn = c.backup(
+                path,
+                prefix=git_branch,
+                silent=True,
+                useTimeStamp=True,
+            )
+            g.es_print(f"wrote: {written_fn}")
+        else:
+            g.es_print(f"backup_dir not found: {backup_dir!r}")
+    else:
+        g.es_print(f"base_dir not found: {base_dir!r}")
+    os.chdir(old_cwd)
 </t>
 <t tx="ekr.20180225010644.1">@nobeautify</t>
 <t tx="ekr.20180225010707.1"></t>
@@ -22647,9 +22825,14 @@ else:
     Handle vim mode.
     Return True if k.masterKeyHandler should return.
     """
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
     c = self.c
     if c.vim_mode and c.vimCommands:
+        # The "acceptance methods" in leoVim.py return True
+        # if vim node has completely handled the key.
+        # Otherwise, processing in k.masterKeyHandler continues.
         ok = c.vimCommands.do_key(event)
+        if trace: g.trace('do_key returns', ok, repr(event and event.stroke))
         return ok
     return False
 </t>
@@ -22693,10 +22876,22 @@ else:
     trace = 'keys' in g.app.debug
     c, k = self.c, self
     #
-    # Use getPaneBindings for *all* keys.
-    bi = k.getPaneBinding(event.stroke, event.w)
+    # Experimental special case:
+    # Inserting a '.' always invokes the auto-completer.
+    # The auto-completer just inserts a '.' if it isn't enabled.
+    stroke = event.stroke
+    if (
+        stroke.s == '.'
+        and k.isPlainKey(stroke)
+        and self.unboundKeyAction in ('insert', 'overwrite')
+    ):
+        c.doCommandByName('auto-complete', event)
+        return True
     #
-    # #327: ignore killed bindings.
+    # Use getPaneBindings for *all* keys.
+    bi = k.getPaneBinding(event)
+    #
+    # #327: Ignore killed bindings.
     if bi and bi.commandName in k.killedBindings:
         return False  
     #
@@ -22936,44 +23131,6 @@ self.specialChars = [
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180506064102.10">def diff_two_branches(self, branch1, branch2, fn, directory=None):
-    """Create an outline describing the git diffs for fn."""
-    c = self.c
-    if not self.set_directory(directory):
-        return
-    self.root = p = c.lastTopLevel().insertAfter()
-    p.h = f"git-diff-branches {branch1} {branch2}"
-    s1 = self.get_file_from_branch(branch1, fn)
-    s2 = self.get_file_from_branch(branch2, fn)
-    lines1 = g.splitLines(s1)
-    lines2 = g.splitLines(s2)
-    diff_list = list(difflib.unified_diff(lines1, lines2, branch1, branch2,))
-    diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
-    self.file_node = self.create_file_node(diff_list, fn)
-    if c.looksLikeDerivedFile(fn):
-        c1 = self.make_at_file_outline(fn, s1, branch1)
-        c2 = self.make_at_file_outline(fn, s2, branch2)
-    else:
-        root = self.find_file(fn)
-        if root:
-            c1 = self.make_at_clean_outline(fn, root, s1, branch1)
-            c2 = self.make_at_clean_outline(fn, root, s2, branch2)
-        else:
-            c1 = c2 = None
-    if c1 and c2:
-        self.make_diff_outlines(c1, c2, fn)
-        self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
-    self.finish()
-</t>
-<t tx="ekr.20180506064102.11">def get_file_from_branch(self, branch, fn):
-    """Get the file from the hed of the given branch."""
-    # Get the file using git.
-    command = f"git show {branch}:{fn}"
-    directory = self.repo_dir
-    lines = g.execGitCommand(command, directory)
-    s = ''.join(lines)
-    return g.toUnicode(s).replace('\r', '')
-</t>
 <t tx="ekr.20180507212821.1">def diff_two_revs(self, directory=None, rev1='HEAD', rev2=''):
     """
     Create an outline describing the git diffs for all files changed
@@ -22984,7 +23141,11 @@ self.specialChars = [
         return
     # Get list of changed files.
     files = self.get_files(rev1, rev2)
-    g.es_print(f"diffing {len(files)} files. This may take awhile")
+    n = len(files)
+    message = f"diffing {n} file{g.plural(n)}"
+    if n &gt; 5:
+        message += ". This may take awhile..."
+    g.es_print(message)
     # Create the root node.
     self.root = c.lastTopLevel().insertAfter()
     self.root.h = f"git diff revs: {rev1} {rev2}"
@@ -22993,27 +23154,6 @@ self.specialChars = [
     for fn in files:
         self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     self.finish()
-</t>
-<t tx="ekr.20180510095544.1"></t>
-<t tx="ekr.20180510095801.1"></t>
-<t tx="ekr.20180510095807.1">def set_directory(self, directory):
-    """
-    Handle directory inits.
-    Return True if the .git directory has been found.
-    """
-    if not directory:
-        if self.repo_dir:
-            # Use previously-computed result.
-            return self.repo_dir
-        directory = g.os_path_abspath(os.curdir)
-    #
-    # Change to the new directory.
-    self.repo_dir = self.find_git_working_directory(directory)
-    if self.repo_dir:
-        os.chdir(directory)
-    else:
-        g.es_print(f"no .git directory found in {directory!r}")
-    return self.repo_dir
 </t>
 <t tx="ekr.20180511045458.1">def switchStyle(self, word):
     """
@@ -23409,10 +23549,9 @@ if m:
         gnx, indent, body = stack.pop()
         continue
 </t>
-<t tx="ekr.20180604110143.1">def readFile(self, path):
+<t tx="ekr.20180604110143.1">def readFile(self, theFile, path):
     """Read the file, change splitter ratiors, and return its hidden vnode."""
-    with open(path, 'rb') as f:
-        s = f.read()
+    s = theFile.read()
     v, g_element = self.readWithElementTree(path, s)
     if not v:  # #1510.
         return None
@@ -23882,11 +24021,10 @@ efc.GitDiffController(c).diff_two_branches(
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
 <t tx="ekr.20181009072707.1"># -*- coding: utf-8 -*-
-import leo.core.leoBridge as leoBridge
 import os
 import sys
-# import pdb ; pdb.set_trace()
 import unittest
+from leo.core import leoBridge
 
 load_dir = os.path.abspath(os.path.dirname(__file__))
 test_dir = os.path.join(load_dir, 'leo', 'test')
@@ -24655,7 +24793,7 @@ viewrendered.py
 pyzo_support.py: Will probably be deleted.
 '''
 &lt;&lt; copyright &gt;&gt;
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 @others
 </t>
@@ -24755,6 +24893,9 @@ https://github.com/leo-editor/leo-editor/issues/1132
 </t>
 <t tx="ekr.20190506060857.1"></t>
 <t tx="ekr.20190506061636.1"></t>
+<t tx="ekr.20190522093202.1">def placate_pyflakes(*args):
+    """A do-nothing method that suppresses pyflakes warnings."""
+</t>
 <t tx="ekr.20190602134414.1">def batchSearchAndReplace(self, s):
     """
     Search s for self.find_text and replace with self.change_text.
@@ -24933,18 +25074,17 @@ https://github.com/leo-editor/leo-editor/issues/1132
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20190809093446.1">import leo.core.leoGlobals as g
+<t tx="ekr.20190809093446.1">import sys
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 #
 # Must patch sys.path here.
-import sys
 plugins_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
 sys.path.insert(0, plugins_dir)
 #
 # Start pyzo, de-fanged.
 import pyzo
 # pylint: disable=no-member
-
 </t>
 <t tx="ekr.20190809093459.1"></t>
 <t tx="ekr.20190809093459.3">init_warning_given = False
@@ -24984,12 +25124,12 @@ def init(): # pyzo_file_browser.py
 """pyzo_in_leo.py: Experimental plugin that adds all of pyzo's features to Leo."""
 #
 # Easy imports...
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import locale
 import os
 import sys
 import threading
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 
 # pylint: disable=import-error
     # pylint doesn't know about the additions to sys.path.
@@ -25517,7 +25657,6 @@ def set_main_window_style_sheet(self):
 </t>
 <t tx="ekr.20190905091614.5">def new_commander(self):
     """Create the new commander, and load all settings files."""
-    # import leo.core.leoApp as leoApp
     lm = g.app.loadManager
     old_c = self.c
     # Save any changes so they can be seen.
@@ -26514,10 +26653,12 @@ def restartLeo(self, event=None):
             if veto:
                 g.es_print('Cancelling restart-leo command')
                 return
-    # 3. Save session data.
+    # 3. Officially begin the restart process. A flag for efc.ask.
+    g.app.restarting = True  # #1240.
+    # 4. Save session data.
     if g.app.sessionManager:
         g.app.sessionManager.save_snapshot()
-    # 4. Close all unsaved outlines.
+    # 5. Close all unsaved outlines.
     g.app.setLog(None)  # Kill the log.
     for c in g.app.commanders():
         frame = c.frame
@@ -26532,9 +26673,9 @@ def restartLeo(self, event=None):
         else:
             # #69.
             g.app.forgetOpenFile(fn=c.fileName(), force=True)
-    # 5. Complete the shutdown.
+    # 6. Complete the shutdown.
     g.app.finishQuit()
-    # 6. Restart, restoring the original command line.
+    # 7. Restart, restoring the original command line.
     args = ['-c'] + [z for z in lm.old_argv]
     if trace: g.trace('restarting with args', args)
     sys.stdout.flush()
@@ -27072,89 +27213,6 @@ def paintEvent(self,event):
 <t tx="ekr.20201012111649.3">gnx: ekr.20170925083853.1
 </t>
 <t tx="ekr.20201012114516.1">@nosearch</t>
-<t tx="ekr.20201012142922.1">gnx: ekr.20201012111338.2
-unl: Declarations (leo_cloud.py)
-gnx: ekr.20201012111338.3
-unl: init (leo_cloud.py)
-gnx: ekr.20201012111338.4
-unl: onCreate (leo_cloud.py)
-gnx: ekr.20201012111338.5
-unl: onSave (leo_cloud.py)
-gnx: ekr.20201012111338.6
-unl: lc_read_current (leo_cloud.py)
-gnx: ekr.20201012111338.7
-unl: lc_write_current (leo_cloud.py)
-gnx: ekr.20201012111338.8
-unl: class LeoCloudIOBase
-gnx: ekr.20201012111338.9
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.__init__
-gnx: ekr.20201012111338.10
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.get_subtree
-gnx: ekr.20201012111338.11
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.put_subtree
-gnx: ekr.20201012111338.12
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)
-gnx: ekr.20201012111338.13
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.14
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.15
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.16
-unl: class LeoCloudIOGit(LeoCloudIOBase)
-gnx: ekr.20201012111338.17
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.18
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase)._run_git
-gnx: ekr.20201012111338.19
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.20
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.21
-unl: class LeoCloud
-gnx: ekr.20201012111338.22
-unl: class LeoCloud--&gt;LeoCloud.__init__
-gnx: ekr.20201012111338.23
-unl: class LeoCloud--&gt;LeoCloud.bg_check
-gnx: ekr.20201012111338.24
-unl: class LeoCloud--&gt;LeoCloud.bg_post_process
-gnx: ekr.20201012111338.25
-unl: class LeoCloud--&gt;LeoCloud.find_at_leo_cloud
-gnx: ekr.20201012111338.26
-unl: class LeoCloud--&gt;LeoCloud._find_clouds_recursive
-gnx: ekr.20201012111338.27
-unl: class LeoCloud--&gt;LeoCloud.find_clouds
-gnx: ekr.20201012111338.28
-unl: class LeoCloud--&gt;LeoCloud._from_dict_recursive
-gnx: ekr.20201012111338.29
-unl: class LeoCloud--&gt;LeoCloud.from_dict
-gnx: ekr.20201012111338.30
-unl: class LeoCloud--&gt;LeoCloud.io_from_node
-gnx: ekr.20201012111338.31
-unl: class LeoCloud--&gt;LeoCloud.kw_from_node
-gnx: ekr.20201012111338.32
-unl: class LeoCloud--&gt;LeoCloud.load_clouds
-gnx: ekr.20201012111338.33
-unl: class LeoCloud--&gt;LeoCloud.read_current
-gnx: ekr.20201012111338.34
-unl: class LeoCloud--&gt;LeoCloud.recursive_hash
-gnx: ekr.20201012111338.35
-unl: class LeoCloud--&gt;LeoCloud.save_clouds
-gnx: ekr.20201012111338.36
-unl: class LeoCloud--&gt;LeoCloud.subtree_changed
-gnx: ekr.20201012111338.37
-unl: class LeoCloud--&gt;LeoCloud._to_json_serial
-gnx: ekr.20201012111338.38
-unl: class LeoCloud--&gt;LeoCloud.to_json
-gnx: ekr.20201012111338.39
-unl: class LeoCloud--&gt;LeoCloud._to_dict_recursive
-gnx: ekr.20201012111338.40
-unl: class LeoCloud--&gt;LeoCloud.to_dict
-gnx: ekr.20201012111338.41
-unl: class LeoCloud--&gt;LeoCloud._ua_clean
-gnx: ekr.20201012111338.42
-unl: class LeoCloud--&gt;LeoCloud.write_current
-</t>
 <t tx="ekr.20201012142922.2">gnx: ekr.20201012111338.43
 unl: Declarations (leo_cloud_server.py)
 </t>
@@ -34378,19 +34436,22 @@ https://github.com/leo-editor/leo-editor/issues/1734
         c.frame.updateStatusLine()
     return None
 </t>
-<t tx="ekr.20201114160816.1" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">**Move More.  Notice impatience &amp; procrastination.**
+<t tx="ekr.20201114160816.1" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">**Move More.  Focus on balance in my life..**
 
-- Work on rrhandwovens.
-- Watch Phil's tribute.
+Post: Transcrypt is very cool :-)
+
+rrhandwovens:
+- Create products using csv.
+- Add new products.
 
 Promises:
-- [MTW    ] Do the necessaries before noon each day.
-- [ T     ] Work on RR's web site 20 min/day.
-- [MT     ] Work on Phil's portrait 20 min/day.
+- Complete values in Phil's portrait.
+- Keep Rebecca's web site up to date each day.
+- Exercise/stretch each day.
 
 @language rest
 @wrap
-@nosearch`</t>
+@nosearch</t>
 <t tx="ekr.20201114160816.10">+-- node-inspect@2.0.0</t>
 <t tx="ekr.20201114160816.11">+-- npm@6.14.8
 | +-- abbrev@1.1.1
@@ -38501,8 +38562,8 @@ last line
 if not vr:
     self.skipTest('no vr plugin')
 </t>
-<t tx="ekr.20201128164717.110">import leo.core.leoBeautify as leoBeautify
-import leo.commands.convertCommands as convertCommands
+<t tx="ekr.20201128164717.110">from leo.core import leoBeautify
+from leo.commands import convertCommands
 cpp = leoBeautify.CPrettyPrinter(c)
 # c2p = convertCommands.C_To_Python(c)
 fn = 'c tokenize test'
@@ -41657,7 +41718,7 @@ last line
 </t>
 <t tx="ekr.20201128164717.53">c.testManager.runEditCommandTest(p)
 </t>
-<t tx="ekr.20201128164717.530">import leo.core.leoBeautify as leoBeautify
+<t tx="ekr.20201128164717.530">from leo.core import leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
 # ts2p = c.convertCommands.TS_To_Python(c)
 fn = 'typescript tokenize test'
@@ -43393,7 +43454,7 @@ StormReady communities are better prepared to save lives from the onslaught of s
 <t tx="ekr.20201128165500.1">"""Convert old-style tests to new-style tests"""
 g.cls()
 import importlib
-import leo.core.leoTest2 as leoTest2
+from leo.core import leoTest2
 importlib.reload(leoTest2)
 
 root = g.findTopLevelNode(c, 'unit-tests: leoEditCommands')
@@ -43403,15 +43464,9 @@ if root and target:
 else:
     print('Error: root and target nodes must be top-level nodes.')</t>
 <t tx="ekr.20201128171127.1"></t>
-<t tx="ekr.20201129092548.1">Learn build processes:
-- Hello world vs-code plugin. 
-- Hello world vue.js app.
-- Find out why noscript is interfering with leoflexx.py.
-
-- How does flexx work?
+<t tx="ekr.20201129092548.1">- Find out why noscript is interfering with leoflexx.py.
 
 - Figure out how to build Leovue.
-
 </t>
 <t tx="ekr.20201129132149.1"></t>
 <t tx="ekr.20201130074836.1">def convert_leoEditCommands_tests(c, root, target):
@@ -47311,14 +47366,6 @@ def paintEvent(self, event):
 </t>
 <t tx="ekr.20201205182226.1"></t>
 <t tx="ekr.20201205203155.1"></t>
-<t tx="ekr.20201207053751.1">@language rest
-@wrap
-
-My first recommendation for building good vscode extension development knowledge is to 'git clone' this repo on your pc : https://github.com/microsoft/vscode-extension-samples
-
-tip: do not open the whole thing in vscode, instead, right click one of the subfolders for a particular extension example, choose "open with vscode" and try out or look at the code for a project 'individually'. (to actually run and try a sample instead of just looking at its source code, in each case, a simple "npm install" in the terminal will install all dependencies for any particular example, and then hitting F5 will start the sample in its own window. But you know that already for finishing the basics tutorials ;)  hehe)
-
-It gives good examples for distinct and precise aspects of vscode without overwhelming aspects of a full-blown extension which tries to do a dozen things at once.</t>
 <t tx="ekr.20201207055200.1">@language rest
 @wrap
 
@@ -47341,7 +47388,6 @@ https://github.com/leo-editor/leo-editor/issues/1240
         g.es_print('restarting Leo...')
         c.restartLeo()
 </t>
-<t tx="ekr.20201207061240.1"></t>
 <t tx="ekr.20201207084531.1">@language rest
 @wrap
 
@@ -47371,84 +47417,284 @@ Added gdc.diff_pull_request.
     else:
         g.es_print('FAIL: git rev-parse devel')
 </t>
-<t tx="ekr.20201208114843.1">import leo.commands.editFileCommands as efc
+<t tx="ekr.20201208114843.1"># No longer needed. Use the git-diff-pr command.
+import leo.commands.editFileCommands as efc
 x = efc.GitDiffController(c)
 x.diff_pull_request()
 </t>
-<t tx="ekr.20201208115447.1">def diff_pull_request(self, base_branch_name='devel', directory=None):
-    """
-    Create a Leonine version of the diffs that would be
-    produced by a pull request between two branches.
-    """
-    if not directory:
-        directory = os.path.join(g.app.loadDir, '..', '..')
-    aList = g.execGitCommand(f"git rev-parse devel", directory)
-    if aList:
-        devel_rev = aList[0]
-        devel_rev = devel_rev[:8]
-        self.diff_two_revs(
-            rev1=devel_rev,  # Before: Latest devel commit.
-            rev2='HEAD',     # After: Lastest branch commit
-            directory=directory,
-        )
-    else:
-        g.es_print('FAIL: git rev-parse devel')
-</t>
-<t tx="ekr.20201209091828.1">@language rest
-@wrap
-
-- diff_pr: branch arg should default to current branch.
-
-- Email: potential conflicts in leojs.leo.
-
-- Finish scripts in leo.js.
-  
-- Upload c:\StudyOutlines\LeoVue.leo to leo-editor-contrib.
-
-First project:
-- Start with .leo file chooser.
-
-Study:
-- Study: Typing composition system in typescript.
-  (how to define types for objects and variables etc.)
-- Look at github actions and projects.
-- Learn about vs-code unit testing.</t>
-<t tx="ekr.20201210030607.1">When running this in leointegration.ts:
-
-
-public test(p_fromOutline?: boolean): Thenable&lt;unknown&gt; {
-    // return this.statusBarOnClick();
-    let a = 2;
-    console.log("initial test call");
-    eval("console.log(a)");
-
-
-I see:
-
-    initial test call 
-    2 
-
-in the console! :)</t>
-<t tx="ekr.20201210040636.1">c:\leo.repo\leojs&gt;c:\apps\Git\bin\git.exe push
-Counting objects: 2, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (2/2), done.
-Writing objects: 100% (2/2), 304 bytes | 304.00 KiB/s, done.
-Total 2 (delta 1), reused 0 (delta 0)
-remote: Resolving deltas: 100% (1/1), completed with 1 local object.
-remote: error: GH006: Protected branch update failed for refs/heads/devel.
-remote: error: At least 1 approving review is required by reviewers with write access.
-To https://github.com/boltex/leojs.git
-   34e049d..6b293e0  package.json -&gt; package.json
- ! [remote rejected] devel -&gt; devel (protected branch hook declined)
-error: failed to push some refs to 'https://github.com/boltex/leojs.git'</t>
 <t tx="ekr.20201210081319.1">@language rest
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/1775
 
+Just remove the branch_name arg to gdc.diff_pull_request
+
 @language python
 @nosearch
+</t>
+<t tx="ekr.20201210120346.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1777
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201210123153.1"></t>
+<t tx="ekr.20201211164320.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1780
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201211182659.1">def standard_timestamp():
+    """Return a reasonable timestamp."""
+    return time.strftime("%Y%m%d-%H%M%S")
+</t>
+<t tx="ekr.20201211182722.1"></t>
+<t tx="ekr.20201211183100.1">def get_backup_path(sub_directory):
+    """
+    Return the full path to the subdirectory of the main backup directory.
+    
+    The main backup directory is computed as follows:
+        
+    1. os.environ['LEO_BACKUP']
+    2. ~/Backup
+    """
+    # Transcrypt does not support Python's pathlib module.
+    # __pragma__ ('skip')
+
+    from pathlib import Path
+    # Compute the main backup directory.
+    # First, try the LEO_BACKUP directory.
+    backup = None
+    try:
+        backup = os.environ['LEO_BACKUP']
+        if not os.path.exists(backup):
+            backup = None
+    except KeyError:
+        pass
+    except Exception:
+        g.es_exception()
+    # Second, try ~/Backup.
+    if not backup:
+        backup = os.path.join(str(Path.home()), 'Backup')
+        if not os.path.exists(backup):
+            backup = None
+    if not backup:
+        return None
+    # Compute the path to backup/sub_directory
+    directory = os.path.join(backup, sub_directory)
+    return directory if os.path.exists(directory) else None
+</t>
+<t tx="ekr.20201212090129.1"></t>
+<t tx="ekr.20201212091359.1">@language rest
+@wrap
+
+Leonine diffs of .leo files
+https://github.com/leo-editor/leo-editor/issues/1781
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201212175532.1"></t>
+<t tx="ekr.20201213055506.1">@nosearch
+
+# flattened, word, ignore-case, head, body
+
+# found 5 nodes</t>
+<t tx="ekr.20201213172138.1">@language rest
+@wrap
+
+https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging
+
+Stage 1 is the common ancestor,
+stage 2 is your version 
+stage 3 is from the MERGE_HEAD, the version you’re merging in (“theirs”).
+
+You can extract a copy of each of these versions of the conflicted file with the git show command:
+
+$ git show :1:hello.rb &gt; hello.common.rb
+$ git show :2:hello.rb &gt; hello.ours.rb
+$ git show :3:hello.rb &gt; hello.theirs.rb
+
+</t>
+<t tx="ekr.20201214173524.1"></t>
+<t tx="ekr.20201214185152.1"># https://github.com/leo-editor/leo-editor/issues/1781
+# g.cls()
+from leo.commands import editFileCommands
+import importlib
+importlib.reload(efc)
+fn = 'git_diff_test.leo'
+rev1, rev2 = '1ae08a66', 'HEAD'  # 'HEAD@{1}', 'HEAD@{0}'
+x = efc.GitDiffController(c)
+x.set_directory(None)
+x.root = x.create_root(rev1, rev2)
+x.diff_file(fn, rev1=rev1, rev2=rev2)
+c.redraw()
+</t>
+<t tx="ekr.20201215050832.1">def make_leo_outline(self, fn, path, s, rev):
+    """Create a hidden temp outline for the .leo file in s."""
+    hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+    hidden_c.frame.createFirstTreeNode()
+    root = hidden_c.rootPosition()
+    root.h = fn + ':' + rev if rev else fn
+    hidden_c.fileCommands.getLeoFile(
+        theFile=g.FileLikeObject(fromString=s),
+        fileName=path,
+        readAtFileNodesFlag=False,
+        silent=False,
+        checkOpenFiles=False,
+    )
+    return hidden_c
+</t>
+<t tx="ekr.20201215093414.1">@cmd('git-diff-pull-request')
+@cmd('git-diff-pr')
+def gitDiffPullRequest(self, event=None):
+    """
+    Produce a Leonine diff of pull request in the current branch.
+    """
+    GitDiffController(c=self.c).diff_pull_request()
+</t>
+<t tx="ekr.20201215145115.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1783
+
+@font-size-tree
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201216061006.1">@nosearch
+
+# flattened, ignore-case, head, body
+
+# found 4 nodes</t>
+<t tx="ekr.20201216061211.1"></t>
+<t tx="ekr.20201216080221.1">- Finish documentation for vim changes.
+  https://github.com/leo-editor/leo-editor/issues/1757</t>
+<t tx="ekr.20201216114709.1">@language rest
+@wrap
+
+FAIL: javaScripthon: (pj -h)
+- Created ekr-no-fstrings branch for this.
+- Doesn't handle f-strings.
+- Assertion fails in leoNodes.py without explanation.
+
+rapydscript: npm package. Command-line shell.
+
+transcrypt:  (note spelling) pip install transcript.
+- -a annotated code.
+- -m Source maps.
+- -n Suppresses minimization.
+- Fails on Python's copy module. There are workarounds.
+- Produces good error messages.
+
+@language python
+
+# Transcrypt does not support Python's copy module.
+# __pragma__ ('skip')
+
+
+# __pragma__ ('noskip')
+</t>
+<t tx="ekr.20201217144708.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1788
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201217195428.1">from leo\.(\w+)\. import (\w+) as \w+
+
+import leo\.(\w+)\.(\w+) as \w+
+from leo.\1 import \2</t>
+<t tx="ekr.20201217205859.1">gnx: ekr.20201012111338.2
+unl: Declarations (leo_cloud.py)
+gnx: ekr.20201012111338.3
+unl: init (leo_cloud.py)
+gnx: ekr.20201012111338.4
+unl: onCreate (leo_cloud.py)
+gnx: ekr.20201012111338.5
+unl: onSave (leo_cloud.py)
+gnx: ekr.20201012111338.6
+unl: lc_read_current (leo_cloud.py)
+gnx: ekr.20201012111338.7
+unl: lc_write_current (leo_cloud.py)
+gnx: ekr.20201012111338.8
+unl: class LeoCloudIOBase
+gnx: ekr.20201012111338.9
+unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.__init__
+gnx: ekr.20201012111338.10
+unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.get_subtree
+gnx: ekr.20201012111338.11
+unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.put_subtree
+gnx: ekr.20201012111338.12
+unl: class LeoCloudIOFileSystem(LeoCloudIOBase)
+gnx: ekr.20201012111338.13
+unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).__init__
+gnx: ekr.20201012111338.14
+unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).get_data
+gnx: ekr.20201012111338.15
+unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).put_data
+gnx: ekr.20201012111338.16
+unl: class LeoCloudIOGit(LeoCloudIOBase)
+gnx: ekr.20201012111338.17
+unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).__init__
+gnx: ekr.20201012111338.18
+unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase)._run_git
+gnx: ekr.20201012111338.19
+unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).get_data
+gnx: ekr.20201012111338.20
+unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).put_data
+gnx: ekr.20201012111338.21
+unl: class LeoCloud
+gnx: ekr.20201012111338.22
+unl: class LeoCloud--&gt;LeoCloud.__init__
+gnx: ekr.20201012111338.23
+unl: class LeoCloud--&gt;LeoCloud.bg_check
+gnx: ekr.20201012111338.24
+unl: class LeoCloud--&gt;LeoCloud.bg_post_process
+gnx: ekr.20201012111338.25
+unl: class LeoCloud--&gt;LeoCloud.find_at_leo_cloud
+gnx: ekr.20201012111338.26
+unl: class LeoCloud--&gt;LeoCloud._find_clouds_recursive
+gnx: ekr.20201012111338.27
+unl: class LeoCloud--&gt;LeoCloud.find_clouds
+gnx: ekr.20201012111338.28
+unl: class LeoCloud--&gt;LeoCloud._from_dict_recursive
+gnx: ekr.20201012111338.29
+unl: class LeoCloud--&gt;LeoCloud.from_dict
+gnx: ekr.20201012111338.30
+unl: class LeoCloud--&gt;LeoCloud.io_from_node
+gnx: ekr.20201012111338.31
+unl: class LeoCloud--&gt;LeoCloud.kw_from_node
+gnx: ekr.20201012111338.32
+unl: class LeoCloud--&gt;LeoCloud.load_clouds
+gnx: ekr.20201012111338.33
+unl: class LeoCloud--&gt;LeoCloud.read_current
+gnx: ekr.20201012111338.34
+unl: class LeoCloud--&gt;LeoCloud.recursive_hash
+gnx: ekr.20201012111338.35
+unl: class LeoCloud--&gt;LeoCloud.save_clouds
+gnx: ekr.20201012111338.36
+unl: class LeoCloud--&gt;LeoCloud.subtree_changed
+gnx: ekr.20201012111338.37
+unl: class LeoCloud--&gt;LeoCloud._to_json_serial
+gnx: ekr.20201012111338.38
+unl: class LeoCloud--&gt;LeoCloud.to_json
+gnx: ekr.20201012111338.39
+unl: class LeoCloud--&gt;LeoCloud._to_dict_recursive
+gnx: ekr.20201012111338.40
+unl: class LeoCloud--&gt;LeoCloud.to_dict
+gnx: ekr.20201012111338.41
+unl: class LeoCloud--&gt;LeoCloud._ua_clean
+gnx: ekr.20201012111338.42
+unl: class LeoCloud--&gt;LeoCloud.write_current
 </t>
 <t tx="ktenney.20041211072654.14">def processDirectory(self, path, node):
 
@@ -48218,6 +48464,44 @@ def show_times(self, p=None, show=False):
             # c.clearChanged()
     return True
 </t>
+<t tx="tbrown.20150807090639.1">def declutter_node(self, c, p, item):
+    """declutter_node - change the appearance of a node
+
+    :param commander c: commander containing node
+    :param position p: position of node
+    :param QWidgetItem item: tree node widget item
+    
+    returns composite icon for this node
+    """
+    dd = self.declutter_data
+    iconVal = p.v.computeIcon()
+    iconName = f'box{iconVal:02d}.png'
+    loaded_images = self.loaded_images
+    @others
+    if (p.h, iconVal) in dd:
+        text, new_icons = dd[(p.h, iconVal)]
+        item.setText(0, text)
+        new_icons = sorted_icons(p) + new_icons
+    else:
+        text = p.h
+        new_icons = []
+        for pattern, cmds in self.get_declutter_patterns():
+            m = pattern.match(text) or pattern.search(text)
+            if m:
+                apply_declutter_rules(cmds)
+        dd[(p.h, iconVal)] = item.text(0), new_icons
+        new_icons = sorted_icons(p) + new_icons
+        preload_images()
+    self.nodeIconsDict[p.gnx] = new_icons
+    h = ':'.join(new_icons)
+    icon = g.app.gui.iconimages.get(h)
+    if not icon:
+        preload_images()
+        images = [loaded_images.get(x) for x in new_icons]
+        icon = self.make_composite_icon(images)
+        g.app.gui.iconimages[h] = icon
+    return icon
+</t>
 <t tx="tbrown.20150818161651.4">def build_menu(self):
     """build_menu - build the menu of settings, called from handleSpecialMenus()
     """
@@ -48390,6 +48674,72 @@ def isInShortcutBodyLine(self):
         for t in self.get_tags(p):
             if regex.match(t):
                 yield p.v.gnx
+</t>
+<t tx="vitalije.20200327163522.1">def apply_declutter_rules(cmds):
+    """Applies all commands for the matched rule."""
+    for cmd, arg in cmds:
+        if not declutter_replace(arg, cmd):
+            declutter_style(arg, cmd)
+</t>
+<t tx="vitalije.20200329153148.1">def icon_filenames_for_node(self, p, val):
+    '''Prepares and returns a list of icon filenames
+       related to this node.
+    '''
+    nicon = f'box{val:02d}.png'
+    fnames = self.nodeIconsDict.get(p.gnx)
+    if not fnames:
+        icons = self.c.editCommands.getIconList(p)
+        fnames = [x['file'] for x in icons if x['where'] == 'beforeIcon']
+        fnames.append(nicon)
+        fnames.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+        self.nodeIconsDict[p.gnx] = fnames
+    pat = re.compile(r'^box\d\d\.png$')
+    loaded_images = self.loaded_images
+    for i, f in enumerate(fnames):
+        if pat.match(f):
+            fnames[i] = nicon
+            self.nodeIconsDict[p.gnx] = fnames
+            f = nicon
+        if f not in loaded_images:
+            loaded_images[f] = g.app.gui.getImageImage(f)
+    return fnames
+</t>
+<t tx="vitalije.20200329153154.1">def make_composite_icon(self, images):
+    hsep = self.c.config.getInt('tree-icon-separation') or 0
+    images = [x for x in images if x]
+    height = max([i.height() for i in images])
+    images = [i.scaledToHeight(height) for i in images]
+    width = sum([i.width() for i in images]) + hsep * (len(images) - 1)
+    pix = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+    pix.fill(QtGui.QColor(0, 0, 0, 0).rgba())  # transparent fill, rgbA
+    # .rgba() call required for Qt4.7, later versions work with straight color
+    painter = QtGui.QPainter()
+    if not painter.begin(pix):
+        print("Failed to init. painter for icon")
+        # don't return, the code still makes an icon for the cache
+        # which stops this being called again and again
+    x = 0
+    for i in images:
+        painter.drawPixmap(x, 0, i)
+        x += i.width() + hsep
+    painter.end()
+    return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
+</t>
+<t tx="vitalije.20200329153544.1">def sorted_icons(p):
+    '''
+    Returns a list of icon filenames for this node.
+    The list is sorted to owner the 'where' key of image dicts.
+    '''
+    icons = c.editCommands.getIconList(p)
+    a = [x['file'] for x in icons if x['where'] == 'beforeIcon']
+    a.append(iconName)
+    a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+    return a
+</t>
+<t tx="vitalije.20200329162015.1">def preload_images():
+    for f in new_icons:
+        if f not in loaded_images:
+            loaded_images[f] = g.app.gui.getImageImage(f)
 </t>
 </tnodes>
 </leo_file>

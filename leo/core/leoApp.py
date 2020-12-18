@@ -6,7 +6,6 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import importlib
 import io
-StringIO = io.StringIO
 import optparse
 import os
 import sqlite3
@@ -19,6 +18,7 @@ import zipfile
 import platform
 from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
+StringIO = io.StringIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -1012,7 +1012,7 @@ class LeoApp:
                 print('Windows: pip install windows-curses')
             sys.exit()
         try:
-            from leo.plugins import cursesGui2 as cursesGui2
+            from leo.plugins import cursesGui2
             ok = cursesGui2.init()
             if ok:
                 g.app.gui = cursesGui2.LeoCursesGui()
@@ -1794,7 +1794,6 @@ class LoadManager:
     #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
     def computeLoadDir(self):
         """Returns the directory containing leo.py."""
-        import sys
         try:
             # Fix a hangnail: on Windows the drive letter returned by
             # __file__ is randomly upper or lower case!
@@ -1840,7 +1839,6 @@ class LoadManager:
         # to give the machine-specific setting name.
         # How can this be worth doing??
         try:
-            import os
             name = os.getenv('HOSTNAME')
             if not name:
                 name = os.getenv('COMPUTERNAME')
@@ -2983,11 +2981,6 @@ class LoadManager:
         Make sure that stdout and stderr exist.
         This is an issue when running Leo with pythonw.exe.
         """
-        # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
-        # import pdb ; pdb.set_trace()
-        import sys
-        from leo.core import leoGlobals as g
-
         # Define class LeoStdOut
         #@+others
         #@+node:ekr.20160718091844.1: *6* class LeoStdOut

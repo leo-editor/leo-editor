@@ -7,7 +7,7 @@
 #@+node:ekr.20161023150723.1: ** << imports >>
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.commands.baseCommands import BaseEditCommandsClass
 # import re
 # import sys
 #@-<< imports >>

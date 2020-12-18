@@ -12,7 +12,7 @@ try:
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
 #@-<< imports >>
 

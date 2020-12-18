@@ -9,7 +9,8 @@ import functools
 import re
 import string
 from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoNodes
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -123,7 +124,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     script.append(z)
             script = ''.join(script)
             # Allow Leo directives in @data abbreviations-subst-env trees.
-            from leo.core import leoNodes
             # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
             root = c.rootPosition()
             if root:
