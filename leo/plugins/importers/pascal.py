@@ -3,7 +3,7 @@
 '''The @auto importer for the pascal language.'''
 import re
 from leo.core import leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161126171035.2: ** class Pascal_Importer

@@ -78,18 +78,17 @@ This plugin defines the following commands that can be bound to keys:
 # Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
-import itertools
 from collections import OrderedDict
 import fnmatch
+import itertools
 import re
-# Fail gracefully if the gui is not qt.
 from leo.core import leoGlobals as g
-g.assertUi('qt')
-from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
+from leo.core.leoQt import QtCore, QtConst, QtWidgets
 from leo.core import leoNodes
 from leo.plugins import threadutil
-    # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
+# Fail gracefully if the gui is not qt.
+g.assertUi('qt')
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level

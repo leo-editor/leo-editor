@@ -24,18 +24,21 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 #@+<< imports >>
 #@+node:mork.20041025113509: ** << imports >>
+import io
+import weakref
+from xml.dom import minidom
 from leo.core import leoGlobals as g
+# Third-part imports
 try:
+    # pylint: disable=import-error
     import Ft
     from Ft.Xml import InputSource
     from Ft.Xml.Xslt.Processor import Processor
 except ImportError:
     g.cantImport("Ft",__name__)
     Ft = None
-import io
+# Abbreviation.
 StringIO = io.StringIO
-import weakref
-from xml.dom import minidom
 #@-<< imports >>
 #@+<<parser problems>>
 #@+node:mork.20041024091024: ** <<parser problems>>

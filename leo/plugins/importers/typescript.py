@@ -3,8 +3,8 @@
 '''The @auto importer for TypeScript.'''
 import re
 from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 assert g
-import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)

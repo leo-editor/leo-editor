@@ -34,9 +34,8 @@ import os
 
 from leo.core import leoBridge
 from leo.core import leoGlobals as leoG
+from leo.plugins.leo_babel.tests import idle_time, lib_test
 
-from leo_babel.tests import idle_time
-from leo_babel.tests import lib_test
 #@-<< imports >>
 #@+<< version >>
 #@+node:bob.20180125160847.1: ** << version >>

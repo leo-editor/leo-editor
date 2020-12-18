@@ -210,13 +210,18 @@ __version__ = '1.2' # tbp: added "Code Only" option to emit only code.
 
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >> (VR2)
+import os
+import sys
+from io import StringIO
+
 from leo.core import leoGlobals as g
 from leo.plugins import qt_text
 from leo.plugins import free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
-import_ok = not isQt5
-    # for now, no commands should work when Qt5 is enabled.
+
+# pylint: disable=import-error
+# Third-party tools.
 try:
     import docutils
     import docutils.core
@@ -246,11 +251,9 @@ try:
     import pygments
 except ImportError:
     pygments = None
-import os
-from io import StringIO
-import sys
-# import traceback
 
+# for now, no commands should work when Qt5 is enabled.
+import_ok = not isQt5
 #@-<< imports >>
 # pylint: disable=fixme
 #@+at

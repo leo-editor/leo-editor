@@ -3,7 +3,7 @@
 '''The @auto importer for vim-outline files.'''
 import re
 from leo.core import leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161124034614.2: ** class Otl_Importer

@@ -3,7 +3,7 @@
 '''The @auto importer for the org language.'''
 import re
 from leo.core import leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20140723122936.18072: ** class Org_Importer

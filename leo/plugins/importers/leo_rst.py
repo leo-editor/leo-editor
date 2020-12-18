@@ -6,7 +6,7 @@ The @auto importer for restructured text.
 This module must **not** be named rst, so as not to conflict with docutils.
 '''
 from leo.core import leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 # Used by writers.leo_rst as well as in this file.
 underlines = '*=-^~"\'+!$%&(),./:;<>?@[\\]_`{|}#'

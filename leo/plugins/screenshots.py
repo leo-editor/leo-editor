@@ -319,20 +319,24 @@ __version__ = '1.0.3'
 import copy
 import glob
 import os
-# Warnings are given later.
-try:
-    from PIL import Image, ImageChops
-    got_pil = True
-except ImportError:
-    got_pil = False
-from leo.core.leoQt import isQt5, QtGui
-got_qt = QtGui is not None
 import shutil
 import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as etree
+
 from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt5, QtGui
+# Third-party imports.
+# Warnings are given later.
+try:
+    # pylint: disable=import-error
+    from PIL import Image, ImageChops
+    got_pil = True
+except ImportError:
+    got_pil = False
+# Alias.
+got_qt = QtGui is not None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
@@ -416,7 +420,6 @@ class ScreenShotController:
             self.got_pil = True
         except ImportError:
             self.got_pil = False
-        from leo.core.leoQt import QtGui
         self.got_qt = QtGui is not None
         # Defaults.
         self.default_screenshot_height = 700

@@ -219,10 +219,7 @@ import asynchat
 import asyncore
 import http.server
 import json
-SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
-StringIO = io.StringIO
-BytesIO = io.BytesIO
 import os
 import select
 import shutil
@@ -231,6 +228,10 @@ import time
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
+# Aliases.
+SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
+StringIO = io.StringIO
+BytesIO = io.BytesIO
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>

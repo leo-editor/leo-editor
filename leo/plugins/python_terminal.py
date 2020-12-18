@@ -9,10 +9,6 @@
 # This code from http://stackoverflow.com/questions/12431555
 # with modifications from Jake Peck and EKR.
 
-use_rlcompleter = False
-    # A workaround for #1212: segfaults at startup when importing this file.
-    # True: enable tab completion, at the risk of segfaults.
-
 #@+<< docstring >>
 #@+node:peckj.20150428142633.2: ** << docstring >>
 '''Provides an interactive python terminal in the log pane.
@@ -55,13 +51,18 @@ import re
 import sys
 import code
 
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets,QtCore
+
+use_rlcompleter = False
+    # A workaround for #1212: segfaults at startup when importing this file.
+    # True: enable tab completion, at the risk of segfaults.
+
+# Third-party imports.
 if use_rlcompleter:
     from rlcompleter import Completer
 else:
     Completer = None
-
-from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets,QtCore
 #@-<< imports >>
 
 #@+others

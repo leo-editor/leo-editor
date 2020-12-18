@@ -7,7 +7,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 '''
 import re
 from leo.core import leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 delete_blank_lines = True

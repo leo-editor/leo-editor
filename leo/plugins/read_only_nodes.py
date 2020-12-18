@@ -61,12 +61,13 @@ from formatter import AbstractFormatter, DumbWriter
 import ftplib
 import html.parser as HTMLParser
 import io
-StringIO = io.StringIO
 import os
 import sys
 import urllib.parse as urlparse
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
+# Abbreviation.
+StringIO = io.StringIO
 #@-<< imports >>
 insertOnTime = None
 insertOffTime = None

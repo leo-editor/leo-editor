@@ -38,14 +38,16 @@ Requires `pexpect` module.
 #@@language python
 #@@tabwidth -4
 
-import pexpect
 import os
 import time
 # By Terry Brown, 2009-05-12
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
-# pylint: disable=import-error
-    # It's ok to raise ImportError if this does not exist.
+try:
+    # pylint: disable=import-error
+    import pexpect
+except ImportError:
+    pass
 
 #@+others
 #@+node:tbrown.20090603104805.4938: ** init

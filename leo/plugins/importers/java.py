@@ -3,8 +3,8 @@
 '''The @auto importer for the java language.'''
 import re
 from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 assert g
-import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others

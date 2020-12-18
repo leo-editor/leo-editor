@@ -84,9 +84,6 @@ class DT(BaseLeoPlugin):
     def dtest(self, event):
         """The handler for dtest
         """
-
-        from leo.core import leoGlobals as g
-
         # get a valid temporary filename
         createfile, tempfilename = g.create_temp_file()
         createfile.close()

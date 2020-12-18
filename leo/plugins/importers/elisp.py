@@ -2,9 +2,9 @@
 #@+node:ekr.20140723122936.18141: * @file ../plugins/importers/elisp.py
 '''The @auto importer for the elisp language.'''
 import re
-import leo.plugins.importers.linescanner as linescanner
-Importer = linescanner.Importer
 from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
+Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161127184128.2: ** class Elisp_Importer
 class Elisp_Importer(Importer):

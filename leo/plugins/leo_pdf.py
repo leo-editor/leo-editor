@@ -240,18 +240,20 @@ __docformat__ = 'reStructuredText'
 
 #@+<< imports >>
 #@+node:ekr.20090704103932.5162: ** << imports >>
-import sys
-sys.path.append(r'c:\reportlab_1_20')
+import io
+import operator
 
 from leo.core import leoGlobals as g
+# Third-party imports
 try:
+    # pylint: disable=import-error
     import docutils
 except ImportError:
     print('leo_pdf.py: can not import docutils')
     docutils = None
     raise
-import operator
 try:
+    # pylint: disable=import-error
     import reportlab.platypus
     import reportlab.platypus.para
 except ImportError:
@@ -259,6 +261,7 @@ except ImportError:
     reportlab = None
     # raise
 try:
+    # pylint: disable=import-error
     #copyright ReportLab Inc. 2000
     #see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
@@ -270,9 +273,8 @@ except ImportError:
     stylesheet = None
     StyleSheet1 = ParagraphStyle = None
     # raise
-import io
+# Abbreviation.
 StringIO = io.StringIO
-
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140920145803.17996: ** top-level functions

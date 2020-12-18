@@ -1189,7 +1189,6 @@ class KeyHandler:
                 if trace: g.trace('caps-lock')
                 binding = ch
         if trace: g.trace('ch: %r, binding: %r' % (ch, binding))
-        from leo.core import leoGui
         return leoGui.LeoKeyEvent(
             c=c,
             char=ch,

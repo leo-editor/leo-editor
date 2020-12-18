@@ -208,12 +208,14 @@ Jacob Peck added markdown support to this plugin.
 # - Support uA's that indicate the kind of rendering desired.
 # - (Failed) Make viewrendered-big work.
 #@-<< to do >>
-#pylint: disable=no-member
-trace = False
-    # This global trace is convenient.
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
+from distutils.spawn import find_executable
+import json
+import os
+from urllib.request import urlopen
 from leo.core import leoGlobals as g
+
 try:
     from leo.plugins import qt_text
     from leo.plugins import free_layout
@@ -221,8 +223,9 @@ try:
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
     QtWidgets = False
-from distutils.spawn import find_executable
+# Third-party imports
 try:
+    # pylint: disable=import-error
     import docutils
     import docutils.core
 except ImportError:
@@ -242,21 +245,24 @@ else:
     got_docutils = False
 # markdown support, non-vital
 try:
+    # pylint: disable=import-error
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-import os
 # nbformat (@jupyter) support, non-vital.
 try:
+    # pylint: disable=import-error
     import nbformat
     from nbconvert import HTMLExporter
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
-import json
-from urllib.request import urlopen
+
 #@-<< imports >>
+#pylint: disable=no-member
+trace = False
+    # This global trace is convenient.
 asciidoctor_exec = find_executable('asciidoctor')
 asciidoc3_exec = find_executable('asciidoc3')
 pandoc_exec = find_executable('pandoc')
