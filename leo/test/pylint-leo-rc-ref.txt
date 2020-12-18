@@ -42,6 +42,7 @@ disable=
     # Always disable these. Imo, they cause more harm than good.
     #
         design,import,format,similarities, # Make work.
+    
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
@@ -53,7 +54,6 @@ disable=
         exec-used,
         global-statement, #  Assume we know what we are doing.
         global-variable-not-assigned, # not helpful.
-        import-error,
         import-outside-toplevel, # Requires substantial code changes.
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
         misplaced-comparison-constant, # pedantic.
@@ -67,16 +67,11 @@ disable=
         redefined-builtin, # all, next, etc. so what?
         redefined-outer-name,
         redefined-variable-type,
-        reimported,
         too-few-public-methods,
-        ungrouped-imports,
         unnecessary-comprehension,
         unnecessary-pass, # Can be pedantic in some situations.
         unused-argument,
-        useless-import-alias, # the "as" keeps pyflakes happy.
         using-constant-test,
-        wrong-import-position,
-        wrong-import-order,
         unused-variable, # way too many false positives, esp. tuple unpacking.
     #
     # Good warnings. Don't suppress these.
