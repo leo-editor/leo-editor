@@ -11,10 +11,9 @@ Despite this, some Linux users might prefer it to the
 tk dialogs.
 
 '''
-import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-# import os
 import subprocess
+from leo.core import leoGlobals as g
+from leo.core import leoPlugins
 trace = False
 #@+others
 #@+node:ekr.20101110095557.5886: ** testForZenity

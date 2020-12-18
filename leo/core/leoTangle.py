@@ -5,8 +5,8 @@ Support for @root and Leo's tangle and untangle commands.
 
 Everything in this file is deprecated, but will remain "forever".
 '''
-import leo.core.leoGlobals as g
 import os
+import leo.core.leoGlobals as g
 #@+<< about Tangle and Untangle >>
 #@+node:ekr.20031218072017.2411: ** << About Tangle and Untangle >>
 #@@root directive. The stack never becomes empty because of the entry
@@ -18,14 +18,14 @@ import os
 # command. The Tangle command creates a derived file from an @root tree;
 # the Untangle command incorporates changes made to derived files back
 # into the @root tree.
-# 
+#
 # The Tangle command operates in two passes. The first pass discovers
 # the complete definitions of all sections and places these definitions
 # in a Tangle Symbol Table. The first pass also makes a list of root
 # sections. Definitions can appear in any order, so we must scan the
 # entire input file to know whether any particular definition has been
 # completed.
-# 
+#
 # Tangle's second pass creates one file for each @root node. Tangle
 # rescans each section in the list of roots, copying the root text to
 # the output and replacing each section reference by the section's
@@ -36,13 +36,13 @@ import os
 # class. Tangle indicates where sections begin and end using comment
 # lines called sentinel lines. The sentinels used predate the formats
 # described in the "Format of external files" appendix.
-# 
+#
 # The key design principle of the Tangle command is this: Tangle must
 # output newlines in a context-free manner. That is, Tangle must never
 # output conditional newlines, either directly or indirectly. Without
 # this rule Untangle could not determine whether to skip or copy
 # newlines.
-# 
+#
 # The Tangle command increases the indentation level of a section
 # expansion the minimum necessary to align the section expansion with
 # the surrounding code. In essence, this scheme aligns all section
@@ -51,7 +51,7 @@ import os
 # the same indentation level. This can occur, for example, when a
 # section reference in an outline occurs at the left margin of the
 # outline.
-# 
+#
 # This scheme is probably better than more obvious schemes that indent
 # more "consistently." Such schemes would produce too much indentation
 # for deeply nested outlines. The present scheme is clear enough and
@@ -59,13 +59,13 @@ import os
 # End sentinel lines make this scheme work by making clear where the
 # expansion of one section ends and the expansion of a containing
 # section resumes.
-# 
+#
 # Tangle increases indentation if the section reference does not start a
 # line. Untangle is aware of this hack and adjusts accordingly. This
 # extra indentation handles several common code idioms, which otherwise
 # would create under-indented code. In short, Tangle produces highly
 # readable, given the necessity of preserving newlines for Untangle.
-# 
+#
 # Untangle is inherently complex. It must do a perfect job of updating
 # the outline, especially whitespace, from expansions of section
 # definitions created by the Tangle command. Such expansions need not be
@@ -80,7 +80,7 @@ import os
 # code at all. Also, an outline may define a section in several ways:
 # with an @c or @code directive or with a section definition line. To be
 # useful, Untangle must handle all these complications flawlessly.
-# 
+#
 # Untangle operates in three passes. The first pass builds a symbol
 # table in the same way that Tangle does. The key information there
 # informs how the second pass finds definitions in the derived file: to
@@ -99,7 +99,7 @@ import os
 # match--otherwise there is an inconsistent definition. This pass uses a
 # forgiving compare routine that ignores differences that do not affect
 # the meaning of a program.
-# 
+#
 # Untangle's third pass enters definitions from the outline into a
 # second Tangle Symbol Table, or TST. The third pass simultaneously
 # updates all sections in the outline whose definition in the new TST
@@ -652,7 +652,7 @@ class BaseTangleCommands:
     # untangleTree. The second pass creates the UST by scanning the derived
     # file. The third pass updates the outline using the UST and a new TST
     # that is created during the pass.
-    # 
+    #
     # We assume that all sections from root to end are contained in the
     # derived file, and we attempt to update all such sections. The
     # begin/end params indicate the range of nodes to be scanned when
@@ -818,7 +818,7 @@ class BaseTangleCommands:
     # definition that terminates the present code section. On entry: i
     # should point to the first character of a line. This routine scans past
     # a line only if it could not contain a section reference.
-    # 
+    #
     # Returns (i, done)
     #@@c
 
@@ -1135,7 +1135,7 @@ class BaseTangleCommands:
     # This function sets ivars that keep track of the indentation level. We
     # also remember where the next line starts because it is assumed to be
     # the first line of a documentation section.
-    # 
+    #
     # A headline can contain a leading section name. If it does, we
     # substitute the section name if we see an @c directive in the body
     # text.
@@ -1285,7 +1285,7 @@ class BaseTangleCommands:
     # This method outputs a code section, expanding section references by
     # their definition. We should see no @directives or section definitions
     # that would end the code section.
-    # 
+    #
     # Most of the differences bewteen noweb mode and CWEB mode are handled
     # by token_type(called from put_newline). Here, the only difference is
     # that noweb handles double-@ signs only at the start of a line.
@@ -1621,7 +1621,7 @@ class BaseTangleCommands:
                             self.os("-- end -- "); self.os(name)
                             self.oblank(); self.os(section.delims[2])
                         #@+at The following code sets a flag for untangle.
-                        # 
+                        #
                         # If something follows the section reference we must add a newline,
                         # otherwise the "something" would become part of the comment. Any
                         # whitespace following the (!newline) should follow the section
@@ -1661,7 +1661,7 @@ class BaseTangleCommands:
     #@+at
     # We can not allow a section to be defined in terms of itself, either
     # directly or indirectly.
-    # 
+    #
     # We push an entry on the section stack whenever beginning to expand a
     # section and pop the section stack at the end of each section. This
     # method checks whether the given name appears in the stack. If so, the
@@ -1861,7 +1861,7 @@ class BaseTangleCommands:
                 #@+node:ekr.20031218072017.3546: *5* << Check both parts for @ comment conventions >>
                 #@+at
                 # This code is used in forgiving_compare()and in compare_comments().
-                # 
+                #
                 # In noweb mode we allow / * @ * /  (without the spaces)to be equal to @.
                 # We must be careful not to run afoul of this very convention here!
                 #@@c
@@ -1915,7 +1915,7 @@ class BaseTangleCommands:
                 #@+node:ekr.20140630110727.16727: *5* << Check both parts for @ comment conventions >>
                 #@+at
                 # This code is used in forgiving_compare()and in compare_comments().
-                # 
+                #
                 # In noweb mode we allow / * @ * /  (without the spaces)to be equal to @.
                 # We must be careful not to run afoul of this very convention here!
                 #@@c
@@ -2148,21 +2148,21 @@ class BaseTangleCommands:
         self.message = message
     #@+node:ekr.20031218072017.3563: *4* scan_derived_file (pass 2)
     #@+at
-    # 
+    #
     # This function scans an entire derived file in s, discovering section or part
     # definitions.
-    # 
+    #
     # This is the easiest place to delete leading whitespace from each line: we simply
     # don't copy it. We also ignore leading blank lines and trailing blank lines. The
     # resulting definition must compare equal using the "forgiving" compare to any
     # other definitions of that section or part.
-    # 
+    #
     # We use a stack to handle nested expansions. The outermost level of expansion
     # corresponds to the @root directive that created the file. When the stack is
     # popped, the indent variable is restored.
-    # 
+    #
     # self.root_name is the name of the file mentioned in the @root directive.
-    # 
+    #
     # The caller has deleted all body_ignored_newlines from the text.
     #@@c
 
@@ -2228,7 +2228,7 @@ class BaseTangleCommands:
                 # the start of each line. We do this by setting the 'indent' variable to
                 # the leading whitespace of the first _non-blank_ line following the
                 # opening sentinel.
-                # 
+                #
                 # Tangle increases the indentation by one tab if the section reference
                 # is not the first non-whitespace item on the line,so self code must do
                 # the same.
@@ -2442,12 +2442,12 @@ class BaseTangleCommands:
     #@+at
     # This function handles the actual updating of section definitions in the web.
     # Only code parts are updated, never doc parts.
-    # 
+    #
     # During pass 2 of Untangle, skip_body() calls this routine when it discovers the
     # definition of a section in the outline. We look up the name in the ust. If an
     # entry exists, we compare the code (the code part of an outline node) with the
     # code part in the ust. We update the code part if necessary.
-    # 
+    #
     # We use the forgiving_compare() to compare code parts. It's not possible to
     # change only trivial whitespace using Untangle because forgiving_compare()
     # ignores trivial whitespace.
@@ -2471,9 +2471,9 @@ class BaseTangleCommands:
         # We formerly assumed that any leading comments came from an @doc part, which might
         # be the case if self.output_doc_flag were true.  For now, we treat leading comments
         # as "code".
-        # 
+        #
         # Elsewhere in the code is a comment that "we never update doc parts" when untangling.
-        # 
+        #
         # Needs to be dealt with.
         #@@c
         i = g.skip_blank_lines(ucode, 0)
@@ -2618,24 +2618,24 @@ class BaseTangleCommands:
     #@+at
     # This function returns True if i points to a line a sentinel line of
     # one of the following forms:
-    # 
+    #
     # start_sentinel <<section name>> end_sentinel
     # start_sentinel <<section name>> (n of m) end_sentinel
     # start_sentinel -- end -- <<section name>> end_sentinel
     # start_sentinel -- end -- <<section name>> (n of m) end_sentinel
-    # 
+    #
     # start_sentinel: the string that signals the start of sentinel lines\
     # end_sentinel:   the string that signals the endof sentinel lines.
-    # 
+    #
     # end_sentinel may be None,indicating that sentinel lines end with a newline.
-    # 
+    #
     # Any of these forms may end with (!newline), indicating that the
     # section reference was not followed by a newline in the orignal text.
     # We set nl_flag to False if such a string is seen. The name argument
     # contains the section name.
-    # 
+    #
     # The valid values of kind param are:
-    # 
+    #
     # non_sentinel_line,   # not a sentinel line.
     # start_sentinel_line, #   /// <section name> or /// <section name>(n of m)
     # end_sentinel_line  //  /// -- end -- <section name> or /// -- end -- <section name>(n of m).
@@ -2827,7 +2827,7 @@ class BaseTangleCommands:
                 # st_enter_root_name(self.root, False, False)
     #@+node:ekr.20031218072017.1259: *4* setRootFromText
     #@+at This code skips the file name used in @root directives.
-    # 
+    #
     # File names may be enclosed in < and > characters, or in double quotes.
     # If a file name is not enclosed be these delimiters it continues until
     # the next newline.
@@ -2860,9 +2860,9 @@ class BaseTangleCommands:
     # This function skips past a section name that starts with < < and might
     # end with > > or > > =. The entire section name must appear on the same
     # line.
-    # 
+    #
     # Note: this code no longer supports extended noweb mode.
-    # 
+    #
     # Returns (i, kind, end),
     #     end indicates the end of the section name itself (not counting the =).
     #     kind is one of:

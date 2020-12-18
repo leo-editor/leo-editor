@@ -71,19 +71,20 @@ If True, when expanding as above, skip blank dict entries.
 #@-<< docstring >>
 # 2014/10/21: support Android outliner by treating _note attributes as body text.
 # To do: read/write uA's.
-printElements = [] # ['all','outline','head','body',]
-    # For traces.
 #@+<< imports >>
 #@+node:ekr.20060904103412.3: ** << imports >>
-import leo.core.leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-import leo.core.leoNodes as leoNodes
+import io
 import xml.sax
 import xml.sax.saxutils
-import io
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.core import leoPlugins
+# Abbreviations.
 StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports >>
+printElements = [] # ['all','outline','head','body',]
+    # For traces.
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init

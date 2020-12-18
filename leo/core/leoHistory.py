@@ -2,7 +2,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory

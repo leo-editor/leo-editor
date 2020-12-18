@@ -6,14 +6,12 @@ Pudb is a full-screen Python debugger:
 http://pypi.python.org/pypi/pudb
 
 '''
-
 # By VMV.
-
-import leo.core.leoGlobals as g
 try:
     import pudb
 except ImportError:
     pudb = None
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20090712141419.5253: ** init

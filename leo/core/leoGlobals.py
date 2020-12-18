@@ -7,28 +7,42 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
-import sys
-isPython3 = sys.version_info >= (3, 0, 0)
-minimum_python_version = '3.6'
-    # #1215.
-isMac = sys.platform.startswith('darwin')
-isWindows = sys.platform.startswith('win')
-#@+<< global switches >>
-#@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-in_bridge = False
-    # Set to True in leoBridge.py just before importing leo.core.leoApp.
-    # This tells leoApp to load a null Gui.
-#@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
-# This is now done in run.
-    # import leo.core.leoGlobals as g # So code can use g below.
 #
 # Don't import leoTest here: it messes up Leo's startup code.
-    # import leo.core.leoTest as leoTest
+    # from leo.core import leoTest
+
+import inspect
+import re
+import sys
+import time
+
+# Transcrypt does not support these modules
+# __pragma__ ('skip')
+
 import binascii
 import codecs
 from functools import reduce
+import glob
+import io
+import importlib
+import operator
+import os
+#
+# Do NOT import pdb here!  We shall define pdb as a _function_ below.
+    # import pdb
+import shlex
+import shutil
+import string
+import subprocess
+import tempfile
+import traceback
+import types
+import unittest
+import urllib
+import urllib.parse as urlparse
+
 try:
     import gc
 except ImportError:
@@ -37,29 +51,18 @@ try:
     import gettext
 except ImportError:  # does not exist in jython.
     gettext = None
-import glob
-import io
+
 StringIO = io.StringIO
-import importlib
-import inspect
-import operator
-import os
-#
-# Do NOT import pdb here!  We shall define pdb as a _function_ below.
-    # import pdb
-import re
-import shlex
-import shutil
-import string
-import subprocess
-import tempfile
-import time
-import traceback
-import types
-import unittest
-import urllib
-import urllib.parse as urlparse
+
+# __pragma__ ('noskip')
 #@-<< imports >>
+in_bridge = False
+    # Set to True in leoBridge.py just before importing leo.core.leoApp.
+    # This tells leoApp to load a null Gui.
+minimum_python_version = '3.6'  # #1215.
+isPython3 = sys.version_info >= (3, 0, 0)
+isMac = sys.platform.startswith('darwin')
+isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
@@ -207,7 +210,7 @@ command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
 def command_alias(alias, func):
     """Create an alias for the *already defined* method in the Commands class."""
-    import leo.core.leoCommands as leoCommands
+    from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
     funcToMethod(func, leoCommands.Commands, alias)
 #@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
@@ -246,7 +249,7 @@ class CommanderCommand:
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
         if app:
-            import leo.core.leoCommands as leoCommands
+            from leo.core import leoCommands
             funcToMethod(func, leoCommands.Commands)
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
@@ -347,6 +350,9 @@ def get_backup_path(sub_directory):
     1. os.environ['LEO_BACKUP']
     2. ~/Backup
     """
+    # Transcrypt does not support Python's pathlib module.
+    # __pragma__ ('skip')
+
     from pathlib import Path
     # Compute the main backup directory.
     # First, try the LEO_BACKUP directory.
@@ -497,6 +503,10 @@ bunch = Bunch
 #@+node:ekr.20120219154958.10492: *3* class g.EmergencyDialog
 class EmergencyDialog:
     """A class that creates an tkinter dialog with a single OK button."""
+    
+    # Transcrypt does not support Python's tkinter module.
+    # __pragma__ ('skip')
+    
     #@+others
     #@+node:ekr.20120219154958.10493: *4* emergencyDialog.__init__
     def __init__(self, title, message):
@@ -576,6 +586,8 @@ class EmergencyDialog:
         self.top.grab_set()  # Make the dialog a modal dialog.
         self.root.wait_window(self.top)
     #@-others
+
+    # __pragma__ ('noskip')
 #@+node:ekr.20040331083824.1: *3* class g.FileLikeObject
 # Note: we could use StringIo for this.
 
@@ -1695,6 +1707,9 @@ class SherlockTracer:
         
     g.SherlockTracer(patterns).run()
     """
+    # Transcrypt does not support Python's os module.
+    # __pragma__ ('skip')
+
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(
@@ -1845,7 +1860,6 @@ class SherlockTracer:
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
-        import os
         code = frame.f_code
         fn = code.co_filename
         locals_ = frame.f_locals
@@ -2047,7 +2061,6 @@ class SherlockTracer:
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
-        import sys
         print(f"SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
@@ -2092,9 +2105,10 @@ class SherlockTracer:
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self):
         """Stop all tracing."""
-        import sys
         sys.settrace(None)
     #@-others
+
+    # __pragma__ ('noskip')
 #@+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
 class TkIDDialog(EmergencyDialog):
     """A class that creates an tkinter dialog to get the Leo ID."""
@@ -2112,6 +2126,10 @@ class TkIDDialog(EmergencyDialog):
     def __init__(self):
         super().__init__(self.title, self.message)
         self.val = ''
+        
+    # Transcrypt does not support Python's tkinter module.
+    # __pragma__ ('skip')
+
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
     def onKey(self, event):
@@ -2141,6 +2159,8 @@ class TkIDDialog(EmergencyDialog):
         self.top.destroy()
         self.top = None
     #@-others
+
+    # __pragma__ ('noskip')
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
 class Tracer:
     """A "debugger" that computes a call graph.
@@ -2255,8 +2275,8 @@ class Tracer:
         # Update the total counts.
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
+
 def startTracer(limit=0, trace=False, verbose=False):
-    import sys
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
@@ -2520,6 +2540,9 @@ class TypedDict:
     #@+node:ekr.20120223062418.10422: *4* td.copy
     def copy(self, name=None):
         """Return a new dict with the same contents."""
+        # Transcrypt does not support Python's copy module.
+        # __pragma__ ('skip')
+
         import copy
         return copy.deepcopy(self)
     #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
@@ -2573,8 +2596,8 @@ class TestLeoGlobals(unittest.TestCase):
     def test_comment_delims_from_extension(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
-        import leo.core.leoApp as leoApp
+        from leo.core import leoGlobals as leo_g
+        from leo.core import leoApp
         leo_g.app = leoApp.LeoApp()
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
@@ -2583,7 +2606,7 @@ class TestLeoGlobals(unittest.TestCase):
     def test_is_sentinel(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g
         # Python.
         py_delims = leo_g.comment_delims_from_extension('.py')
         assert leo_g.is_sentinel("#@+node", py_delims)
@@ -2803,6 +2826,9 @@ def pause(s):
 #@+node:ekr.20041105091148: *4* g.pdb
 def pdb(message=''):
     """Fall into pdb."""
+    # Transcrypt does not support Python's pdb or QtCore modules.
+    # __pragma__ ('skip')
+
     import pdb  # Required: we have just defined pdb as a function!
     if app and not app.useIpython:
         # from leo.core.leoQt import QtCore
@@ -2910,6 +2936,9 @@ def run_pylint(fn, rc,
 
     run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
     """
+    #Transcrypt does not support Python's 'lint' module.
+    # __pragma__ ('skip')
+
     try:
         from pylint import lint
     except ImportError:
@@ -3996,11 +4025,18 @@ def get_files_in_directory(directory, kinds=None, recursive=True):
             kinds = ['*.py']
         if recursive:
             # Works for all versions of Python.
+            
+            # Transcrypt does not support Python's copy module.
+            # __pragma__ ('skip')
+        
             import fnmatch
             for root, dirnames, filenames in os.walk(directory):
                 for kind in kinds:
                     for filename in fnmatch.filter(filenames, kind):
                         files.append(os.path.join(root, filename))
+
+            # __pragma__ ('noskip')
+
         else:
             for kind in kinds:
                 files.extend(glob.glob(directory + sep + kind))
@@ -5147,8 +5183,6 @@ def skip_ws_and_nl(s, i):
 #@+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c, base_url=None):
     """Get a list of issues from Leo's GitHub site."""
-    import time
-
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
@@ -5236,6 +5270,8 @@ class GitIssueController:
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, label_list, root, state, limit=100):
         """Get all issues for the base url."""
+        # Transcrypt does not support Python's 'requests' module.
+        # __pragma__ ('skip')
         import requests
         label = None
         assert state in ('open', 'closed')
@@ -5425,6 +5461,8 @@ def gitHeadPath(path):
     """
     Compute the path to .git/HEAD given the path.
     """
+    #Transcrypt does not support Python's pathlib module.
+    # __pragma__ ('skip')
     from pathlib import Path
     path = Path(path)
     # #1780: Look up the directory tree, looking the .git directory.
@@ -5435,6 +5473,8 @@ def gitHeadPath(path):
         if path == path.parent:
             break
         path = path.parent
+    # __pragma__ ('noskip')
+
     return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
@@ -6009,7 +6049,10 @@ def isValidEncoding(encoding):
         return False
     if sys.platform == 'cli':
         return True
-    import codecs
+        
+    #Transcrypt does not support Python's codecs module.
+    # __pragma__ ('skip')
+
     try:
         codecs.lookup(encoding)
         return True
@@ -6022,6 +6065,8 @@ def isValidEncoding(encoding):
         g.es_print('Please report the following error')
         g.es_exception()
         return False
+
+    # __pragma__ ('noskip')
 #@+node:ekr.20061006152327: *4* g.isWordChar & g.isWordChar1
 def isWordChar(ch):
     """Return True if ch should be considered a letter."""
@@ -6931,8 +6976,6 @@ def choose(cond, a, b):  # warning: evaluates all arguments
 @command('cls')
 def cls(event=None):
     """Clear the screen."""
-    import os
-    import sys
     if sys.platform.lower().startswith('win'):
         os.system('cls')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
@@ -6977,6 +7020,9 @@ def init_zodb(pathToZodbStorage, verbose=True):
     if init_zodb_import_failed: return None
     failed = init_zodb_failed.get(pathToZodbStorage)
     if failed: return None
+    
+    #Transcrypt does not support Python's ZODB module.
+    # __pragma__ ('skip')
     try:
         import ZODB
     except ImportError:
@@ -6985,6 +7031,8 @@ def init_zodb(pathToZodbStorage, verbose=True):
             g.es_exception()
         init_zodb_import_failed = True
         return None
+    # __pragma__ ('noskip')
+
     try:
         storage = ZODB.FileStorage.FileStorage(pathToZodbStorage)
         init_zodb_db[pathToZodbStorage] = db = ZODB.DB(storage)
@@ -6996,6 +7044,9 @@ def init_zodb(pathToZodbStorage, verbose=True):
         init_zodb_failed[pathToZodbStorage] = True
         return None
 #@+node:ekr.20170206080908.1: *3* g.input_
+# Transcrypt does not support Qt.
+# __pragma__ ('skip')
+
 def input_(message='', c=None):
     """
     Safely execute python's input statement.
@@ -7010,6 +7061,8 @@ def input_(message='', c=None):
     from leo.core.leoQt import QtCore
     QtCore.pyqtRemoveInputHook()
     return input(message)
+
+# __pragma__ ('noskip')
 #@+node:ekr.20110609125359.16493: *3* g.isMacOS
 def isMacOS():
     return sys.platform == 'darwin'
@@ -7045,9 +7098,6 @@ if 0:  # Testing:
     )
     for s in aList:
         print(pep8_class_name(s))
-#@+node:ekr.20190522093202.1: *3* g.placate_pyflakes
-def placate_pyflakes(*args):
-    """A do-nothing method that suppresses pyflakes warnings."""
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj):
     """Return "s" or "" depending on n."""
@@ -7994,6 +8044,9 @@ def handleUrlHelper(url, c, p):
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
+        #Transcrypt does not support Python's webbrowser module.
+        # __pragma__ ('skip')
+
         import webbrowser
         if g.unitTesting:
             g.app.unitTestDict['browser'] = url
@@ -8003,6 +8056,8 @@ def handleUrlHelper(url, c, p):
                 webbrowser.open(url)
             except Exception:
                 pass
+
+        # __pragma__ ('noskip')
 #@+node:ekr.20170226060816.1: *4* g.traceUrl
 def traceUrl(c, path, parsed, url):
 

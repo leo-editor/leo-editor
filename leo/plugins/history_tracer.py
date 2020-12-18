@@ -31,13 +31,13 @@
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vitalije.20190928154420.3: ** << imports >>
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore
 import datetime
 import time
+import threading
 from urllib.request import urlopen
 from urllib.error import URLError
-import threading
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore
 #@-<< imports >>
 #@afterref
  # history_tracer.py

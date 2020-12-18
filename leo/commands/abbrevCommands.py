@@ -5,11 +5,12 @@
 """Leo's abbreviations commands."""
 #@+<< imports >>
 #@+node:ekr.20150514045700.1: ** << imports >> (abbrevCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import functools
 import re
 import string
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -123,7 +124,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     script.append(z)
             script = ''.join(script)
             # Allow Leo directives in @data abbreviations-subst-env trees.
-            import leo.core.leoNodes as leoNodes
             # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
             root = c.rootPosition()
             if root:

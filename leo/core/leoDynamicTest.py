@@ -4,6 +4,18 @@
 A module to run unit tests with the leoBridge module.
 Leo's unit test code uses this module when running unit tests externally.
 """
+#@+<< imports >>
+#@+node:ekr.20120220125945.10419: ** << imports >> (leoDynamicTest.py)
+import optparse
+import os
+import sys
+import time
+from leo.core import leoBridge
+# Make sure the current directory is on sys.path.
+cwd = os.getcwd()
+if cwd not in sys.path:
+    sys.path.append(cwd)
+#@-<< imports >>
 g_trace = False
     # Enables the trace in main.
 trace_argv = False
@@ -12,18 +24,6 @@ trace_main = False
     # Enable trace of options in main().
 trace_time = False
     # Enables tracing of the overhead take to run tests externally.
-#@+<< imports >>
-#@+node:ekr.20120220125945.10419: ** << imports >> (leoDynamicTest.py)
-import optparse
-import os
-import sys
-import time
-# Make sure the current directory is on sys.path.
-cwd = os.getcwd()
-if cwd not in sys.path:
-    sys.path.append(cwd)
-import leo.core.leoBridge as leoBridge
-#@-<< imports >>
 # Do not define g here. Use the g returned by the bridge.
 #@+others
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)

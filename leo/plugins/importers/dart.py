@@ -2,7 +2,7 @@
 #@+node:ekr.20141116100154.1: * @file ../plugins/importers/dart.py
 '''The @auto importer for the dart language.'''
 import re
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161123120245.2: ** class Dart_Importer

@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 def init():
     '''Return True if the plugin has loaded successfully.'''

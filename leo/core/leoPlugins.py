@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3439: * @file leoPlugins.py
 """Classes relating to Leo's plugin architecture."""
-import leo.core.leoGlobals as g
 import sys
+from leo.core import leoGlobals as g
 # Define modules that may be enabled by default
 # but that mignt not load because imports may fail.
 optional_modules = [
@@ -95,7 +95,7 @@ class BaseLeoPlugin:
 
     - import the base class::
 
-        from leoPlugins import leo.core.leoBasePlugin as leoBasePlugin
+        from leoPlugins from leo.core import leoBasePlugin
 
     - create a class which inherits from leoBasePlugin::
 

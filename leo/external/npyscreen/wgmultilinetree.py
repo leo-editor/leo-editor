@@ -11,7 +11,7 @@ from . import wgtextbox      as textbox
 from . compatibility_code import npysNPSTree as NPSTree
 from .npysTree import TreeData
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 
 #@-<< wgmultilinetree imports >>

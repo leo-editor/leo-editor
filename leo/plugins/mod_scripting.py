@@ -221,14 +221,13 @@ most brilliant idea in Leo's history.
 #@-<< mod_scripting docstring >>
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
-import leo.core.leoGlobals as g
-import leo.core.leoColor as leoColor
-import leo.core.leoGui as leoGui
 import pprint
 import re
-# import string
 import sys
 import textwrap
+from leo.core import leoGlobals as g
+from leo.core import leoColor
+from leo.core import leoGui
 #@-<< imports >>
 __version__ = '3.0' # Added EvalController class.
 
@@ -485,7 +484,7 @@ class ScriptingController:
                         f.write('  rpdb2.start_embedded_debugger(pwd="",fAllowUnencrypted=True) # Hard breakpoint.\n')
                     # f.write('# Remove all previous variables.\n')
                     f.write('# Predefine c, g and p.\n')
-                    f.write('import leo.core.leoGlobals as g\n')
+                    f.write('from leo.core import leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
                     f.write('script_gnx = g.app.scriptDict.get("script_gnx")\n')
                     f.write('p = c.p\n')
@@ -501,7 +500,7 @@ class ScriptingController:
                     del sys.modules['leoScriptModule'] # Essential.
                 # pylint: disable=import-error
                     # This *will* exist.
-                import leo.core.leoScriptModule as leoScriptModule
+                from leo.core import leoScriptModule
                 assert leoScriptModule # for pyflakes.
             else:
                 g.error('No debugger active')

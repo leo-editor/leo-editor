@@ -76,9 +76,9 @@ need to do so.
 #@+<< linescanner imports >>
 #@+node:ekr.20161108130715.1: ** << linescanner imports >>
 import io
-StringIO = io.StringIO
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
+StringIO = io.StringIO
 #@-<< linescanner imports >>
 #@+others
 #@+node:ekr.20161108155730.1: ** class Importer

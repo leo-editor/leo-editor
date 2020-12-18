@@ -5,12 +5,15 @@
 """Leo's fundamental data classes."""
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
+#Transcrypt does not support Python's copy module.
+# __pragma__ ('skip')
 import copy
+# __pragma__ ('noskip')
 import itertools
 import time
 import re
-import leo.core.leoGlobals as g
-import leo.core.signal_manager as sig
+from leo.core import leoGlobals as g
+from leo.core import signal_manager
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -1368,14 +1371,20 @@ class Position:
         p2 = p.insertAfter()
         p.copyTreeFromSelfTo(p2, copyGnxs=copyGnxs)
         return p2
+        
 
     def copyTreeFromSelfTo(self, p2, copyGnxs=False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
-        # Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        #
+        # #1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        #
+        # Transcrypt doesn't support Python's copy module.
+        # __pragma__ ('skip')
         p2.v.u = copy.deepcopy(p.v.u)
-        # 2017/08/20: Add support for copyGnx's keyword arg.
+        # __pragma__ ('noskip')
+        #
         if copyGnxs:
             p2.v.fileIndex = p.v.fileIndex
         # 2009/10/02: no need to copy arg to iter
@@ -2128,6 +2137,7 @@ class VNode:
         pattern = pattern.lower().replace(' ', '').replace('\t', '')
         return h.startswith(pattern)
     #@+node:ekr.20160502100151.1: *3* v.copyTree
+
     def copyTree(self, copyMarked=False):
         """
         Return an all-new tree of vnodes that are copies of self and all its
@@ -2143,9 +2153,14 @@ class VNode:
         assert v2.gnx
         assert v.gnx != v2.gnx
         # Copy vnode fields. Do **not** set v2.parents.
-        v2._headString = g.toUnicode(v._headString, reportErrors=True)  # 2017/01/24
-        v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True)  # 2017/01/24
+        v2._headString = g.toUnicode(v._headString, reportErrors=True)
+        v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True)
+        #
+        # Transcrypt doesn't support Python's copy module.
+        # __pragma__ ('skip')
         v2.u = copy.deepcopy(v.u)
+        # __pragma__ ('noskip')
+        #
         if copyMarked and v.isMarked():
             v2.setMarked()
         # Recursively copy all descendant vnodes.
@@ -2410,7 +2425,7 @@ class VNode:
                 g.internalError(s)
                 g.es_exception()
         self.contentModified()  # #1413.
-        sig.emit(self.context, 'body_changed', self)
+        signal_manager.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535

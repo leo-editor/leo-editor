@@ -16,9 +16,9 @@ Replies to the original messages become children of that message.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20110125222411.10539: ** << imports >>
-import leo.core.leoGlobals as g
-import mailbox
 from html.parser import HTMLParser
+import mailbox
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 #@+others

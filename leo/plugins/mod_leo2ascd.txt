@@ -2181,10 +2181,10 @@ it is included in "pluginsManager.txt" in that directory.
 @code
 """Create menu for Open With command and handle the resulting commands"""
 
-import leo.core.leoGlobals as g
+import os
+from leo.core import leoGlobals as g
 Tk = g.import_module('tkinter')
 
-import os
 
 if Tk: # Register the handlers...
 
@@ -2324,7 +2324,7 @@ have OpenTreeInXEmacs visibly traverse the tree.
 @code
 
 def OpenTreeInXEmacs (c):
-    import leo.core.leoCommands as leoCommands
+    from leo.core import leoCommands
     #XEmacsCommand = "/usr/bin/gnuclient -q "
     XEmacsCommand = "/mrc2/linux-bin/gnuclient-noshow "
     vnode = c.currentVnode() # get the current vnode.
@@ -2398,11 +2398,11 @@ located in a 'username_Leo' subdirectory of the temporary
 directory. The 'LeoTemp' prefix is omitted.  This makes it easier to
 see which temporary file is related to which outline node.""" #'
 
-import leo.core.leoGlobals as g
-import leo.core.leoCommands as leoCommands
 import getpass
 import os
 import tempfile
+from leo.core import leoGlobals as g
+from leo.core import leoCommands
 
 def onStart (tag,keywords):
 

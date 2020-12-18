@@ -72,14 +72,14 @@ def init():
         sys.path.append(theDir)
     # Create the dummy app
     try:
-        import leo.core.runLeo as leo
+        from leo.core import runLeo as leo
     except ImportError:
         print('leoPymacs.init: can not import runLeo')
         print('leoPymacs.init: sys.path:')
         for z in sys.path: print(z)
     leo.run(pymacs=True)
     try:
-        import leo.core.leoGlobals as leoGlobals
+        from leo.core import leoGlobals
     except ImportError:
         print('leoPymacs.init: can not import leoGlobals')
     global g; g = leoGlobals

@@ -5,8 +5,8 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
 import os
+from leo.core import leoGlobals as g
 
 __version__ = "1.2"
 

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import leo.core.leoBridge as leoBridge
 import os
 import sys
-# import pdb ; pdb.set_trace()
 import unittest
+from leo.core import leoBridge
 
 load_dir = os.path.abspath(os.path.dirname(__file__))
 test_dir = os.path.join(load_dir, 'leo', 'test')

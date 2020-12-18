@@ -11,15 +11,12 @@ alt-x stickynote to pop out current node as a note.
 # Disable Qt warnings.
 #@+<< imports >>
 #@+node:ekr.20100103100944.5391: ** << imports >> (stickynotes_plus.py)
-import leo.core.leoGlobals as g
-
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
-
-# import sys
 import webbrowser
-
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets
+# Third-party tools.
 try:
+    # pylint: disable=import-error
     import markdown
 except ImportError:
     print('stickynotes_plus.py: can not import markdown')
@@ -27,8 +24,10 @@ except ImportError:
 except SyntaxError:
     print('stickynotes_plus.py: syntax error in markdown')
     markdown = None
-
-from leo.core.leoQt import QString, QtCore, QtGui, QtWidgets # isQt5,
+# Fail gracefully if the gui is not qt.
+g.assertUi('qt')
+#
+# Abbreviations...
 Qt = QtCore.Qt
 # Widgets
 QAction = QtWidgets.QAction

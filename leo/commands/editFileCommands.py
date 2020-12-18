@@ -7,9 +7,9 @@
 #@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
 import difflib
 import os
-import leo.core.leoGlobals as g
-import leo.core.leoCommands as leoCommands
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoGlobals as g
+from leo.core import leoCommands
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -192,7 +192,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094317.15: *4* efc.createHiddenCommander
     def createHiddenCommander(self, fn):
         """Read the file into a hidden commander (Similar to g.openWithFileName)."""
-        import leo.core.leoCommands as leoCommands
         lm = g.app.loadManager
         c2 = leoCommands.Commands(fn, gui=g.app.nullGui)
         theFile = lm.openLeoOrZipFile(fn)

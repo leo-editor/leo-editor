@@ -65,11 +65,11 @@ By Alexis Gendron Paquette. Please send comments to the Leo forums.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040910070811.4: ** << imports >>
-import leo.core.leoGlobals as g
 import os
 import subprocess
 import threading
 import time
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< globals >>
 #@+node:ekr.20040910070811.5: ** << globals >>

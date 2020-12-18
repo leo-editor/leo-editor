@@ -7,9 +7,6 @@
 # pylint: disable=deprecated-method
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
-import leo.core.leoGlobals as g
-import leo.commands.gotoCommands as gotoCommands
-import leo.external.codewise as codewise
 import inspect
 import os
 import re
@@ -17,6 +14,9 @@ import string
 import sys
 import time
 assert time
+from leo.core import leoGlobals as g
+from leo.commands import gotoCommands
+from leo.external import codewise
 #@-<< imports >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>

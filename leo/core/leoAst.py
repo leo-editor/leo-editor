@@ -3831,9 +3831,9 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
-        import ast
         import token as token_module
         try:
+            # pylint: disable=import-error
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
@@ -5740,6 +5740,7 @@ class TestTokens(BaseTest):
         - Inject parent/child links into ast nodes. 
         - Inject many-to-many links between tokens and ast nodes.
         """
+        # pylint: disable=import-error,reimported
         import ast
         import asttokens
         import token as token_module

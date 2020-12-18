@@ -6,9 +6,9 @@ The @auto importer for the tcl language.
 Created 2017/06/15 by the `importer;;` abbreviation.
 '''
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 assert g
-import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others

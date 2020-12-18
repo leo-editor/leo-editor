@@ -8,7 +8,7 @@
 A Stand-alone prototype for Leo using flexx.
 '''
 from flexx import flx
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20181110170337.1: **  init

@@ -3,12 +3,8 @@
 """Support for sessions in Leo."""
 #@+<< imports >>
 #@+node:ekr.20120420054855.14344: ** <<imports>> (leoSessions.py)
-import leo.core.leoGlobals as g
-#import config
-#import dnode
 import json
-# import os
-# import sys
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< exception classes>>
 #@+node:ekr.20120420054855.14357: ** <<exception classes>>

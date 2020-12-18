@@ -9,7 +9,7 @@ languages, but this just does markdown.
 """
 from subprocess import Popen, PIPE
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 # from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 

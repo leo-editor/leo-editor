@@ -9,8 +9,8 @@ If stuff breaks, disable this plugin before reporting bugs.
 '''
 
 # By VMV.
-import leo.core.leoGlobals as g
 import os.path
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ville.20090804155017.7594: ** init

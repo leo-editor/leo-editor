@@ -211,13 +211,10 @@ __version__ = "0.5"
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040915110738.1: ** << imports >>
-import leo.core.leoGlobals as g
-
 import fnmatch
 import os
 import re
-# import sys
-# import tempfile
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 #@+others

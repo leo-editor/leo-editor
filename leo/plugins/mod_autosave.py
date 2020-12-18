@@ -13,10 +13,9 @@ This plugin is active only if::
 """
 
 # By Paul Paterson. Rewritten by EKR.
-import leo.core.leoGlobals as g
-# import leo.plugins.qt_text as qt_text
-from leo.core.leoQt import QtWidgets
 import time
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets
 # The global settings dict.
 gDict = {} # Keys are commanders, values are settings dicts.
 

@@ -11,10 +11,9 @@
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import re
 import string
-# import sys
 import time
 assert time
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
 from leo.core.leoColor import leo_color_database
 #

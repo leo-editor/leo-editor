@@ -4,7 +4,7 @@
 Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import printsupport, QtGui
 #@+others
 #@+node:ekr.20150420120520.1: ** class PrintingController

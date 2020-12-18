@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084207.174: * @file ../external/npyscreen/fmForm.py
 #!/usr/bin/python
 # pylint: disable=no-member
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.175: ** Declarations

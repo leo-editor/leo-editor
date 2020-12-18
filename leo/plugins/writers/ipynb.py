@@ -4,7 +4,7 @@
 import json
 import re
 import sys
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 
 #@+others

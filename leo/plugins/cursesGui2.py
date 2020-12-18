@@ -37,16 +37,16 @@ try:
 except ImportError:
     print('cursesGui.py: Tk required for clipboard handling.')
     Tk = None
-import leo.core.leoGlobals as g
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
-import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
+from leo.core import leoGlobals as g
+from leo.core import leoFrame
+from leo.core import leoGui
+from leo.core import leoMenu
+from leo.core import leoNodes
 try:
     import curses
 except ImportError:
     curses = None
-import leo.external.npyscreen as npyscreen
+from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
 from leo.external.npyscreen.wgwidget import (
     EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
@@ -1189,7 +1189,6 @@ class KeyHandler:
                 if trace: g.trace('caps-lock')
                 binding = ch
         if trace: g.trace('ch: %r, binding: %r' % (ch, binding))
-        import leo.core.leoGui as leoGui
         return leoGui.LeoKeyEvent(
             c=c,
             char=ch,
@@ -3138,8 +3137,6 @@ class LeoMiniBuffer(npyscreen.Textfield):
         '''Perform tab completion.'''
         trace = False and not g.unitTesting
         c = self.leo_c
-        # import leo.core.leoKeys as leoKeys
-        # ga = leoKeys.GetArg()
         command = self.value
         i = self.leo_completion_index
         if trace: g.trace('command: %r prefix: %r' % (command, self.leo_completion_prefix))
@@ -3246,14 +3243,6 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # All other alt-x command
             event=KeyEvent(c,char='',event='',shortcut='',w=None)
             c.doCommandByName(commandName, event)
-            ###
-                # g.trace(k)
-                # k.masterCommand(
-                    # commandName=commandName,
-                    # event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                    # func=None,
-                    # stroke=None,
-                # )
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
             c.redraw()

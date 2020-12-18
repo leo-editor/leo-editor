@@ -2,17 +2,17 @@
 #@+node:ekr.20170428084208.68: * @file ../external/npyscreen/wgmultiline.py
 #!/usr/bin/python
 # pylint: disable=no-member
-import leo.core.leoGlobals as g
-assert g
+import collections
 import copy
+import curses
+import textwrap
+import weakref
 from . import wgwidget       as widget
 from . import wgtextbox      as textbox
-import textwrap
-import curses
 from . import wgtitlefield   as titlefield
 from . import fmPopup        as Popup
-import weakref
-import collections
+from leo.core import leoGlobals as g
+assert g
 MORE_LABEL = "- more -" # string to tell user there are more options
 #@+others
 #@+node:ekr.20170428084208.69: ** Declarations

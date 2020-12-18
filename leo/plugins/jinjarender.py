@@ -34,16 +34,14 @@ __version__ = '0.1'
 
 #@+<< imports >>
 #@+node:ville.20110409151021.5702: ** << imports >>
-import leo.core.leoGlobals as g
-
-
-from leo.core import leoPlugins
-    # Uses leoPlugins.TryNext
-
 try:
     from jinja2 import Template
 except ImportError:
     Template = None
+
+from leo.core import leoGlobals as g
+from leo.core import leoPlugins
+    # Uses leoPlugins.TryNext
 #@-<< imports >>
 
 #@+others

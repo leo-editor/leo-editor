@@ -57,18 +57,17 @@ Davide Salomoni
 
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
-import leo.core.leoGlobals as g
-
-import io
-StringIO = io.StringIO
+from formatter import AbstractFormatter, DumbWriter
 import ftplib
+import html.parser as HTMLParser
+import io
 import os
 import sys
-
 import urllib.parse as urlparse
 from urllib.request import urlopen
-from formatter import AbstractFormatter, DumbWriter
-import html.parser as HTMLParser
+from leo.core import leoGlobals as g
+# Abbreviation.
+StringIO = io.StringIO
 #@-<< imports >>
 insertOnTime = None
 insertOffTime = None

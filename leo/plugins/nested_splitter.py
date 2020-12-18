@@ -3,14 +3,14 @@
 """Nested splitter classes."""
 #@+<< imports >>
 #@+node:ekr.20110605121601.17955: ** << imports >> (nested_splitter.py)
+import sys
 try:
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
 except ImportError:
     g = None
         # This will fail when run from main function.
         # this import should be removed anyway
 from leo.core.leoQt import Qt, QtCore, QtConst, QtGui, QtWidgets
-import sys
 # from inspect import isclass
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop

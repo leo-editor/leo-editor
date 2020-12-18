@@ -4,9 +4,9 @@
 #@@first
 """Tests for leo.commands.editCommands"""
 
-import leo.core.leoGlobals as g
-import leo.core.leoTest2 as leoTest2
 import unittest
+from leo.core import leoGlobals as g
+from leo.core import leoTest2
 
 class EditCommandsTest(unittest.TestCase):
     """Unit tests for leo/commands/editCommands.py."""
@@ -100,7 +100,7 @@ class EditCommandsTest(unittest.TestCase):
         """Create the nodes in the commander."""
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        import leo.core.leoCommands as leoCommands
+        from leo.core import leoCommands
         self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
         # Create top-level parent node.
         root = c.rootPosition()

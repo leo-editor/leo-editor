@@ -4,7 +4,7 @@
 #@@first
 """Save and show tips to the user."""
 import random
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 
 # Define constant strings for use in f-strings.

@@ -35,7 +35,9 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@-<<  notes >>
 #@+<< imports >>
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
-import leo.core.leoGlobals as g
+import os
+import sys
+from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5,QtCore,QtWidgets,QtWebKitWidgets # QtGui
 # This code no longer uses leo.plugins.leofts.
 try:
@@ -48,8 +50,6 @@ try:
     from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 except ImportError:
     whoosh = None
-import os
-import sys
 #@-<< imports >>
 index_error_given = False
 #@+others

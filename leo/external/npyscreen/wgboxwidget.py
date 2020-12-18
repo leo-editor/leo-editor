@@ -4,7 +4,7 @@ import curses
 import weakref
 from .wgwidget import Widget
 from .wgmultiline import MultiLine
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 # pylint: disable=no-member
 #@+others

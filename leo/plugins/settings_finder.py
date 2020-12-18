@@ -4,9 +4,9 @@
 Let the user pick settings from a menu, find the relevant @settings nodes and open them.
 """
 # This plugin can be dangerous. It is not recommended.
-import leo.core.leoGlobals as g
-from leo.core.leoNodes import VNode
 from copy import deepcopy
+from leo.core import leoGlobals as g
+from leo.core.leoNodes import VNode
 
 #@+others
 #@+node:ekr.20170313021118.1: ** init

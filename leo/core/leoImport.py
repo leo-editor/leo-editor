@@ -4,10 +4,17 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
-# Required so the unit test that simulates an @auto leoImport.py will work!
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
 import csv
+import io
+import json
+import os
+import re
+import time
+import urllib
+# Required so the unit test that simulates an @auto leoImport.py will work!
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+# Third-party imports.
 try:
     import docutils
     import docutils.core
@@ -15,17 +22,12 @@ try:
 except ImportError:
     docutils = None
     # print('leoImport.py: can not import docutils')
-import io
-StringIO = io.StringIO
-import json
 try:
     import lxml.html
 except ImportError:
     lxml = None
-import os
-import re
-import time
-import urllib
+# Abbreviation.
+StringIO = io.StringIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
