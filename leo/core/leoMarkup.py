@@ -5,13 +5,14 @@
 """Supports @adoc, @pandoc and @sphinx nodes and related commands."""
 #@+<< leoMarkup imports >>
 #@+node:ekr.20190515070742.3: ** << leoMarkup imports >>
-from shutil import which
 import io
-StringIO = io.StringIO
+from shutil import which
 import os
 import re
 import time
 import leo.core.leoGlobals as g
+# Abbreviation.
+StringIO = io.StringIO
 
 #@-<< leoMarkup imports >>
 asciidoctor_exec = which('asciidoctor')

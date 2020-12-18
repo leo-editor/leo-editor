@@ -28,7 +28,7 @@ activate the command.
 
 # Word Count plugin by Dan Rahmel
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 __version__ = "1.2"
 

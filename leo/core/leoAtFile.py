@@ -6,13 +6,13 @@
 """Classes to read and write @file nodes."""
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
 import os
 import re
 import sys
 import time
 import unittest
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -418,19 +418,16 @@ class AtFile:
             child = r.insertAsLastChild()
             child.h = f"From {root.h}"
             v = p.v
-            if 1:  # new code: based on vnodes.
-                import leo.core.leoNodes as leoNodes
-                for parent_v in v.parents:
-                    assert isinstance(parent_v, leoNodes.VNode), parent_v
-                    if v in parent_v.children:
-                        childIndex = parent_v.children.index(v)
-                        v._cutLink(childIndex, parent_v)
-                        v._addLink(len(child.v.children), child.v)
-                    else:
-                        # This would be surprising.
-                        g.trace('**already deleted**', parent_v, v)
-            else:  # old code, based on positions.
-                p.moveToLastChildOf(child)
+            # new code: based on vnodes.
+            for parent_v in v.parents:
+                assert isinstance(parent_v, leoNodes.VNode), parent_v
+                if v in parent_v.children:
+                    childIndex = parent_v.children.index(v)
+                    v._cutLink(childIndex, parent_v)
+                    v._addLink(len(child.v.children), child.v)
+                else:
+                    # This would be surprising.
+                    g.trace('**already deleted**', parent_v, v)
             if not g.unitTesting:
                 g.error('resurrected node:', v.h)
                 g.blue('in file:', root.h)
@@ -2326,7 +2323,7 @@ class AtFile:
     def runPyflakes(self, root, pyflakes_errors_only):
         """Run pyflakes on the selected node."""
         try:
-            import leo.commands.checkerCommands as checkerCommands
+            from leo.commands import checkerCommands
             if checkerCommands.pyflakes:
                 x = checkerCommands.PyflakesCommand(self.c)
                 ok = x.run(p=root, pyflakes_errors_only=pyflakes_errors_only)
@@ -3736,7 +3733,7 @@ class TestAtFile(unittest.TestCase):
     #@+node:ekr.20200204095726.1: *4* TestAtFile.bridge
     def bridge(self):
         """Return an instance of Leo's bridge."""
-        import leo.core.leoBridge as leoBridge
+        from leo.core import leoBridge
         return leoBridge.controller(gui='nullGui',
             loadPlugins=False,
             readSettings=False,
@@ -3760,7 +3757,6 @@ class TestAtFile(unittest.TestCase):
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_save_after_external_file_rename
     def test_save_after_external_file_rename(self):
         """Test #1469."""
-        import os
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         temp_dir = self.temp_dir()

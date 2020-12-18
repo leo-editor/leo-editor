@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.223: * @file ../external/npyscreen/fmFormMultiPage.py
 ## Very, very experimental. Do NOT USE.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.224: ** Declarations

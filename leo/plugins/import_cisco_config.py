@@ -27,7 +27,7 @@ All created sections are alphabetically ordered.
 
 '''
 #@-<< docstring >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20050311102853.1: ** init

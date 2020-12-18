@@ -59,14 +59,12 @@ To make a button to toggle the editor on and off, use::
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
-if QtWebKit:
-    real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
-else:
-    real_webkit = False
 import time
 from urllib.parse import unquote
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+# Alias.
+real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
 #@-<< imports >>
 #@+others
 #@+node:tbrown.20130813134319.14337: ** init (richtext.py)

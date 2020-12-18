@@ -4,11 +4,11 @@
 #@@tabwidth -4
 #@+<< threadutils imports >>
 #@+node:ekr.20161223141850.1: ** << threadutils imports >>
-from leo.core.leoQt import QtCore, QtWidgets # QtGui,
+from collections import deque
 import logging
 import time
-import leo.core.leoGlobals as g
-from collections import deque
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtWidgets
 #@-<< threadutils imports >>
 if 1:
     log = None

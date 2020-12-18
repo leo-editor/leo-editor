@@ -29,13 +29,10 @@ http://tinyurl.com/pxhlq - Jim Fulton's presentation::
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20070119094733.2: ** <<imports>>
-# import leo.core.leoPlugins as leoPlugins
-    # Uses BaseLeoPlugin.
-from leo.core.leoPlugins import BaseLeoPlugin
-
 import doctest
 import os
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
+from leo.core.leoPlugins import BaseLeoPlugin
 #@-<< imports >>
 #@+<< version history >>
 #@+node:ekr.20070119094733.3: ** << version history >>
@@ -87,10 +84,6 @@ class DT(BaseLeoPlugin):
     def dtest(self, event):
         """The handler for dtest
         """
-
-        import leo.core.leoGlobals as g
-
-
         # get a valid temporary filename
         createfile, tempfilename = g.create_temp_file()
         createfile.close()

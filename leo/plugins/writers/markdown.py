@@ -2,7 +2,7 @@
 #@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
 '''The @auto write code for markdown.'''
 # pylint: disable=unused-import
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
 #@+others
 #@+node:ekr.20140726091031.18075: ** class MarkdownWriter

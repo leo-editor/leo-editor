@@ -29,11 +29,11 @@ Settings:
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20080708094444.52: ** << imports >> (leoShadow)
-import leo.core.leoGlobals as g
 import difflib
 import os
 import pprint
 import unittest
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
@@ -570,7 +570,6 @@ class ShadowController:
         #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
         def fail(self, msg=None):
             """Mark an AtShadowTestCase as having failed."""
-            import leo.core.leoGlobals as g
             g.app.unitTestDict["fail"] = g.callers()
         #@+node:ekr.20080709062932.8: *4* setUp & helpers (AtShadowTestCase)
         def setUp(self):

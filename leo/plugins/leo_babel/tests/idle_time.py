@@ -13,7 +13,7 @@ import os
 import time
 # import traceback
 
-import leo.core.leoGlobals as leoG
+from leo.core import leoGlobals as leoG
 assert leoG
 #@-<< imports >>
 #@+<< version >>

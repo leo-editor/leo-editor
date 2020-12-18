@@ -7,23 +7,22 @@ The -r option no longer exists. Instead, use Leo's pylint command to run
 pylint on all Python @<file> nodes in a given tree.
 
 On windows, the following .bat file runs this file::
-    python2 pylint-leo.py %*
+    python pylint-leo.py %*
 
 On Ubuntu, the following alias runs this file::
-    pylint="python2 pylint-leo.py"
+    pylint="python pylint-leo.py"
 """
 #@@language python
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
-from __future__ import print_function
-import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
 import shlex
 import optparse
 import os
 import subprocess
 import sys
 import time
+from leo.core import leoGlobals as g
+from leo.core import leoTest
 #@+others
 #@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):
@@ -86,7 +85,7 @@ def run(fn, verbose):
     else:
         # Use g.run_pylint.
         args = ','.join([f"fn=r'{fn}'", f"rc=r'{rc_fn}'"])
-        command = f'{sys.executable} -c "import leo.core.leoGlobals as g; g.run_pylint({args})"'
+        command = f'{sys.executable} -c "from leo.core import leoGlobals as g; g.run_pylint({args})"'
     # If shell is True, it is recommended to pass args as a string rather than as a sequence.
     proc = subprocess.Popen(command, shell=False)
     proc.communicate()

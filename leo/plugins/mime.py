@@ -40,12 +40,12 @@ filename string as its only argument and set as open_func.
 
 # By Dan White <etihwnad _at_ gmail _dot_ com>.
 
-import leo.core.leoGlobals as g
 import mailcap
 import mimetypes
 import os
 import subprocess
 import sys
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:dan.20090210183435.1: ** exec_full_cmd

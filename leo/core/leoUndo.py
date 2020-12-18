@@ -40,7 +40,7 @@
 #
 # I first saw this model of unlimited undo in the documentation for Apple's Yellow Box classes.
 #@-<< How Leo implements unlimited undo >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 # pylint: disable=unpacking-non-sequence
 #@+others
 #@+node:ekr.20031218072017.3605: ** class Undoer

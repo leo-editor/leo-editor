@@ -8,10 +8,10 @@ Gui-independent fast-redraw code.
 For an explanation, see this thread:
 https://groups.google.com/forum/#!topic/leo-editor/hpHyHU2sWtM
 """
-import leo.core.leoGlobals as g
 import difflib
 import re
 import time
+from leo.core import leoGlobals as g
 
 class FastRedraw:
     #@+others

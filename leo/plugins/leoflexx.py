@@ -35,28 +35,31 @@ you see is real, and most of it is "live".
 #@-<< leoflexx: docstring >>
 #@+<< leoflexx: imports >>
 #@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
-try:
-    from flexx import flx
-    from pscript import RawJS
-except Exception:
-    flx = None
 import os
 import re
 import sys
 import time
+
 # This is what Leo typically does.
+# pylint: disable=wrong-import-position
 path = os.getcwd()
 if path not in sys.path:
     sys.path.append(path)
-import leo.core.leoGlobals as g
-    # JS code can *not* use g.trace, g.callers or g.pdb.
-# import leo.core.leoBridge as leoBridge
-import leo.core.leoFastRedraw as leoFastRedraw
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
-import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
-import leo.core.leoTest as leoTest
+# JS code can *not* use g.trace, g.callers or g.pdb.
+from leo.core import leoGlobals as g
+from leo.core import leoFastRedraw
+from leo.core import leoFrame
+from leo.core import leoGui
+from leo.core import leoMenu
+from leo.core import leoNodes
+from leo.core import leoTest
+# Third-party imports.
+try:
+    # pylint: disable=import-error
+    from flexx import flx
+    from pscript import RawJS
+except Exception:
+    flx = None
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: assets >>
 #@+node:ekr.20181111074958.1: ** << leoflexx: assets >>

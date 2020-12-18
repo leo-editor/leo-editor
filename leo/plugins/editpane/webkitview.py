@@ -3,7 +3,7 @@
 #@+<< webkitview.py imports >>
 #@+node:tbrown.20171028115457.1: ** << webkitview.py imports >>
 import os
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWebKit, QtWebKitWidgets
 if not QtWebKitWidgets or 'engine' in g.os_path_basename(

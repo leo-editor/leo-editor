@@ -91,18 +91,12 @@ This can be much slower if you have a huge database.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20110310091639.14293: ** << imports >>
-import sys
-# pylint: disable=unidiomatic-typecheck
-isPython3 = sys.version_info >= (3, 0, 0)
-try:
-    import builtins  # Python 3
-except ImportError:
-    import __builtin__ as builtins  # Python 2.
 import os
+import sys
 import sqlite3
 from sqlite3 import ProgrammingError
 import traceback
-# import types
+
 #@-<< imports >>
 consoleEncoding = None
 #@+<< define usage >>
@@ -334,10 +328,9 @@ def pr(*args, **keys):  # (codewise!)
         encoding = 'utf-8'
     s = translateArgs(args, d)
         # Translates everything to unicode.
-    func = toUnicode if isPython3 else toEncodedString
-    s = func(s, encoding=encoding, reportErrors=False)
+    s = toUnicode(s, encoding=encoding, reportErrors=False)
     if newline:
-        s += u('\n') if isPython3 else '\n'
+        s += u('\n')
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
     sys.stdout.write(s)
@@ -476,21 +469,11 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
             error("Error converting %s from %s encoding to unicode" % (s, encoding))
     return s
 #@+node:ekr.20110310093050.14288: *5* u & ue (codewise)
-if isPython3:
+def u(s):
+    return s
 
-    def u(s):
-        return s
-
-    def ue(s, encoding):
-        return s if isUnicode(s) else str(s, encoding)
-
-else:
-
-    def u(s):
-        return builtins.unicode(s)
-
-    def ue(s, encoding):
-        return builtins.unicode(s, encoding)
+def ue(s, encoding):
+    return s if isUnicode(s) else str(s, encoding)
 #@+node:ekr.20110310091639.14290: *3* main
 def main():
 
@@ -662,8 +645,6 @@ class CodeWise:
         qt.QApplication.style?4() -> QStyle
         """
         for l in apifile_obj:
-            if not isPython3:
-                l = builtins.unicode(l, 'utf8', 'replace')
             parts = l.split('?')
             fullsym = parts[0].rsplit('.', 1)
             klass, func = fullsym
@@ -680,9 +661,6 @@ class CodeWise:
     #@+node:ekr.20110310091639.14268: *3* feed_ctags
     def feed_ctags(self, tagsfile_obj):
         for l in tagsfile_obj:
-            #print l
-            if not isPython3:
-                l = builtins.unicode(l, 'utf8', 'replace')
             if l.startswith('!'):
                 continue
             fields = l.split('\t')

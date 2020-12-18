@@ -5,7 +5,7 @@ from . import wgwidget
 from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #pylint: disable=no-member
 #@+others

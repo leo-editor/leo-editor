@@ -13,16 +13,17 @@ On Ubuntu, the following alias runs this file::
 #@@tabwidth -4
 # pylint: disable=invalid-name
     # flake8-leo isn't a valid module name, but it isn't a module.
-import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
 import optparse
 import os
 import time
+from leo.core import leoGlobals as g
+from leo.core import leoTest
 #@+others
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
     """Call run on all tables in tables_table."""
     try:
+        # pylint: disable=import-error
         from flake8 import engine
     except Exception:
         print(f"{g.shortFileName(__file__)}: can not import flake8")
@@ -73,6 +74,7 @@ def get_flake8_config():
 #@+node:ekr.20160517222332.1: *3* check_all
 def check_all(files, style):
     """Run flake8 on all paths."""
+    # pylint: disable=import-error
     from flake8 import main
 
     report = style.check_files(paths=files)

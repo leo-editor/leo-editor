@@ -19,7 +19,7 @@ Translate a few menu items into Simplified Chinese
 # entry. Another bug in Tk?
 # Note 2 (EKR):  The menu names themselves did not translate on my XP machine.
 # All the headlines appear as "??".
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 __version__ = "1.1" # Set version for the plugin handler.
 #@+others
 #@+node:ekr.20111104210837.9689: ** init

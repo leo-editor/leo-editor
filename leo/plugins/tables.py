@@ -7,7 +7,7 @@ A plugin that inserts tables, inspired by org mode tables:
 
 Written by Edward K. Ream, February 17, 2017.
 '''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20170217164709.1: ** top level

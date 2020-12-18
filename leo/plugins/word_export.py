@@ -28,8 +28,9 @@ __version__ = "0.8"
 #@-<< version history >>
 #@+<< imports >>
 #@+node:ekr.20040909105522: ** << imports >>
-import leo.core.leoGlobals as g
-
+import configparser as ConfigParser
+import sys
+from leo.core import leoGlobals as g
 try:
     # From win32 extensions: http://www.python.org/windows/win32/
     import win32com.client
@@ -37,9 +38,6 @@ try:
 except ImportError:
     g.cantImport('win32com.client')
     client = None
-
-import configparser as ConfigParser
-import sys
 #@-<< imports >>
 
 #@+others

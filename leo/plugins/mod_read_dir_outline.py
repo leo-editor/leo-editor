@@ -24,8 +24,8 @@ Feedback on this plugin can be sent to::
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
 import os
+from leo.core import leoGlobals as g
 
 __version__ = '2.0'
 #@+<< version history >>

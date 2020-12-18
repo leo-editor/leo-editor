@@ -21,10 +21,9 @@ insertUser : Shift-F6
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050101090717.1: ** << imports >>
-import leo.core.leoGlobals as g
-
-import leo.core.leoCommands as leoCommands
 import time
+from leo.core import leoGlobals as g
+from leo.core import leoCommands
 #@-<< imports >>
 
 OKFLAG='OK '  # Space required.

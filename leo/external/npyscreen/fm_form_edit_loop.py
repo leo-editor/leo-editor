@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084207.311: * @file ../external/npyscreen/fm_form_edit_loop.py
 #!/usr/bin/env python
 # encoding: utf-8
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.312: ** Declarations

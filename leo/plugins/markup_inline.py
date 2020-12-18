@@ -14,7 +14,7 @@ Key bindings would be something like::
 
 """
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 def init():
     g.plugin_signon(__name__)

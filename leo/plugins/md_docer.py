@@ -35,7 +35,7 @@
 """
 __version__ = "0.1"
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 pat = re.compile(r'^(\s*)LEOGNX:(.+)$')
 def init():
     '''Return True if the plugin has loaded successfully.'''

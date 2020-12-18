@@ -15,23 +15,15 @@ Written by Edward K. Ream.
 #@+node:ekr.20160317054700.2: **  << imports >> (make_stub_files.py)
 import ast
 from collections import OrderedDict
-    # Requires Python 2.7 or above. Without OrderedDict
-    # the configparser will give random order for patterns.
-try:
-    import ConfigParser as configparser  # Python 2
-except ImportError:
-    import configparser  # Python 3
+import configparser
 import glob
+import io
 import optparse
 import os
 import re
 import sys
 import time
 import types
-try:
-    import StringIO as io  # Python 2
-except ImportError:
-    import io  # Python 3
 #@-<< imports >>
 isPython3 = sys.version_info >= (3, 0, 0)
 # pylint: disable=no-else-return
@@ -104,7 +96,7 @@ def main():
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
-    import leo.core.leoAst as leoAst
+    from leo.core import leoAst
     # Compute all fields to test.
     aList = sorted(dir(_ast))
     remove = [
@@ -154,7 +146,7 @@ def unit_test(raise_on_fail=True):
 def pdb(self):
     '''Invoke a debugger during unit testing.'''
     try:
-        import leo.core.leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g
         leo_g.pdb()
     except ImportError:
         import pdb
@@ -487,12 +479,6 @@ class AstFormatter:
     #@+node:ekr.20160317055215.32: *4* f.Num
     def do_Num(self, node):
         return repr(node.n)
-
-    #@+node:ekr.20160317055215.33: *4* f.Repr
-    # Python 2.x only
-
-    def do_Repr(self, node):
-        return 'repr(%s)' % self.visit(node.value)
 
     #@+node:ekr.20160317055215.34: *4* f.Slice
     def do_Slice(self, node):
@@ -1139,7 +1125,7 @@ class LeoGlobals:
     #@+node:ekr.20160317054700.91: *3* g.pdb
     def pdb(self):
         try:
-            import leo.core.leoGlobals as leo_g
+            from leo.core import leoGlobals as leo_g
             leo_g.pdb()
         except ImportError:
             import pdb
@@ -1158,7 +1144,7 @@ class LeoGlobals:
     #@+node:ekr.20160317054700.94: *3* g.trace
     def trace(self, *args, **keys):
         try:
-            import leo.core.leoGlobals as leo_g
+            from leo.core import leoGlobals as leo_g
             leo_g.trace(caller_level=2, *args, **keys)
         except ImportError:
             print(args, keys)

@@ -4,10 +4,6 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
-    # The leoCommands ctor now does most leo.core.leo* imports.
-    # This breaks circular dependencies.
 import itertools
 import os
 import re
@@ -18,6 +14,10 @@ try:
     import tabnanny  # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+    # The leoCommands ctor now does most leo.core.leo* imports.
+    # This breaks circular dependencies.
 #@-<< imports >>
 
 def cmd(name):
@@ -257,65 +257,65 @@ class Commands:
         self.frame = gui.createLeoFrame(c, title)
         assert self.frame
         assert self.frame.c == c
-        import leo.core.leoHistory as leoHistory
+        from leo.core import leoHistory
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
         # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
-        import leo.core.leoAtFile as leoAtFile
-        import leo.core.leoBeautify as leoBeautify  # So decorators are executed.
+        from leo.core import leoAtFile
+        from leo.core import leoBeautify  # So decorators are executed.
         assert leoBeautify  # for pyflakes.
-        import leo.core.leoChapters as leoChapters
-        # import leo.core.leoTest2 as leoTest2  # So decorators are executed.
+        from leo.core import leoChapters
+        # from leo.core import leoTest2  # So decorators are executed.
         # assert leoTest2  # For pyflakes.
         # User commands...
-        import leo.commands.abbrevCommands as abbrevCommands
-        import leo.commands.bufferCommands as bufferCommands
-        import leo.commands.checkerCommands as checkerCommands
+        from leo.commands import abbrevCommands
+        from leo.commands import bufferCommands
+        from leo.commands import checkerCommands
         assert checkerCommands
             # To suppress a pyflakes warning.
             # The import *is* required to define commands.
-        import leo.commands.controlCommands as controlCommands
-        import leo.commands.convertCommands as convertCommands
-        import leo.commands.debugCommands as debugCommands
-        import leo.commands.editCommands as editCommands
-        import leo.commands.editFileCommands as editFileCommands
-        import leo.commands.gotoCommands as gotoCommands
-        import leo.commands.helpCommands as helpCommands
-        import leo.commands.keyCommands as keyCommands
-        import leo.commands.killBufferCommands as killBufferCommands
-        import leo.commands.rectangleCommands as rectangleCommands
-        import leo.commands.spellCommands as spellCommands
+        from leo.commands import controlCommands
+        from leo.commands import convertCommands
+        from leo.commands import debugCommands
+        from leo.commands import editCommands
+        from leo.commands import editFileCommands
+        from leo.commands import gotoCommands
+        from leo.commands import helpCommands
+        from leo.commands import keyCommands
+        from leo.commands import killBufferCommands
+        from leo.commands import rectangleCommands
+        from leo.commands import spellCommands
         # Import files to execute @g.commander_command decorators
-        import leo.core.leoCompare as leoCompare
+        from leo.core import leoCompare
         assert leoCompare
-        import leo.core.leoDebugger as leoDebugger
+        from leo.core import leoDebugger
         assert leoDebugger
-        import leo.commands.commanderEditCommands as commanderEditCommands
+        from leo.commands import commanderEditCommands
         assert commanderEditCommands
-        import leo.commands.commanderFileCommands as commanderFileCommands
+        from leo.commands import commanderFileCommands
         assert commanderFileCommands
-        import leo.commands.commanderFindCommands as commanderFindCommands
+        from leo.commands import commanderFindCommands
         assert commanderFindCommands
-        import leo.commands.commanderHelpCommands as commanderHelpCommands
+        from leo.commands import commanderHelpCommands
         assert commanderHelpCommands
-        import leo.commands.commanderOutlineCommands as commanderOutlineCommands
+        from leo.commands import commanderOutlineCommands
         assert commanderOutlineCommands
         # Other subcommanders.
-        import leo.core.leoFind as leoFind # Leo 4.11.1
-        import leo.core.leoKeys as leoKeys
-        import leo.core.leoFileCommands as leoFileCommands
-        import leo.core.leoImport as leoImport
-        import leo.core.leoMarkup as leoMarkup
-        import leo.core.leoPersistence as leoPersistence
-        import leo.core.leoPrinting as leoPrinting
-        import leo.core.leoRst as leoRst
-        import leo.core.leoShadow as leoShadow
-        import leo.core.leoTangle as leoTangle
-        import leo.core.leoTest as leoTest
-        import leo.core.leoUndo as leoUndo
-        import leo.core.leoVim as leoVim
+        from leo.core import leoFind # Leo 4.11.1
+        from leo.core import leoKeys
+        from leo.core import leoFileCommands
+        from leo.core import leoImport
+        from leo.core import leoMarkup
+        from leo.core import leoPersistence
+        from leo.core import leoPrinting
+        from leo.core import leoRst
+        from leo.core import leoShadow
+        from leo.core import leoTangle
+        from leo.core import leoTest
+        from leo.core import leoUndo
+        from leo.core import leoVim
         # Define the subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
@@ -380,7 +380,7 @@ class Commands:
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
         c.db = g.app.commander_cacher.get_wrapper(c)
-        import leo.plugins.free_layout as free_layout
+        from leo.plugins import free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
@@ -391,7 +391,7 @@ class Commands:
     def initSettings(self, previousSettings):
         """Init the settings *before* initing the objects."""
         c = self
-        import leo.core.leoConfig as leoConfig
+        from leo.core import leoConfig
         c.config = leoConfig.LocalConfigManager(c, previousSettings)
         g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
@@ -501,7 +501,7 @@ class Commands:
         #       on headline and Alt+Tab, Alt+Tab
         #
         # #276: Focus lost...in Nav text input
-        import leo.plugins.qt_frame as qt_frame
+        from leo.plugins import qt_frame
         return isinstance(w, qt_frame.QtTabBarWrapper)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
     last_unusual_focus = None
@@ -510,7 +510,7 @@ class Commands:
     def trace_idle_focus(self, w):
         """Trace the focus for w, minimizing chatter."""
         from leo.core.leoQt import QtWidgets
-        import leo.plugins.qt_frame as qt_frame
+        from leo.plugins import qt_frame
         trace = 'focus' in g.app.debug
         trace_known = False
         c = self
@@ -617,7 +617,7 @@ class Commands:
             # Only for error reporting below.
         # #532: check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
-            import leo.commands.checkerCommands as cc
+            from leo.commands import checkerCommands as cc
             # at = c.atFileCommands
             prefix = ('c,g,p,script_gnx=None,None,None,None;'
                       'assert c and g and p and script_gnx;\n')
@@ -2197,7 +2197,7 @@ class Commands:
     def check_event(self, event):
         """Check an event object."""
         # c = self
-        import leo.core.leoGui as leoGui
+        from leo.core import leoGui
 
         if not event:
             return
@@ -2705,7 +2705,7 @@ class Commands:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         x = efc.GitDiffController(c=self)
         x.diff_file(directory=directory, fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
@@ -2714,7 +2714,7 @@ class Commands:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_revs(
             directory=directory,
             rev1=rev1,
@@ -2726,7 +2726,7 @@ class Commands:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_branches(
             branch1=branch1,
             branch2=branch2,
@@ -2736,7 +2736,7 @@ class Commands:
     #@+node:ekr.20180510105125.1: *4* c.git_diff
     def git_diff(self, rev1='HEAD', rev2='', directory=None):
 
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).git_diff(
             directory=directory,
             rev1=rev1,
@@ -3778,7 +3778,7 @@ class Commands:
         if g.os_path_exists(dir_):
             # Import all files in dir_ after c.p.
             try:
-                import leo.core.leoImport as leoImport
+                from leo.core import leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
                     add_context=add_context,
                     add_file_context=add_file_context,

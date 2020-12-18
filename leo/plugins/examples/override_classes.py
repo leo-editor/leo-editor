@@ -3,9 +3,9 @@
 """A plugin showing how to override Leo's core classes."""
 #@@language python
 #@@tabwidth -4
-import leo.core.leoGlobals as g
-import leo.core.leoApp as leoApp
-import leo.core.leoFrame as leoFrame
+from leo.core import leoGlobals as g
+from leo.core import leoApp
+from leo.core import leoFrame
 __version__ = "1.2"
 #@+others
 #@+node:ekr.20111104210837.9692: ** init

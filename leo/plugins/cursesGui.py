@@ -9,15 +9,14 @@
 # pylint: disable=arguments-differ
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
-# pylint: disable=wrong-import-order
-import leo.core.leoGlobals as g
-import leo.core.leoChapters as leoChapters
-import leo.core.leoGui as leoGui
-import leo.core.leoKeys as leoKeys
-import leo.core.leoFrame as leoFrame
-import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
 import os
+from leo.core import leoGlobals as g
+from leo.core import leoChapters
+from leo.core import leoGui
+from leo.core import leoKeys
+from leo.core import leoFrame
+from leo.core import leoMenu
+from leo.core import leoNodes
 get_input = input
 #@-<< imports >>
 #@+<< TODO >>
@@ -73,8 +72,7 @@ class textGui(leoGui.LeoGui):
         # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
     #@+node:ekr.20150107090324.8: *3* createKeyHandlerClass
     def createKeyHandlerClass(self, c):
-        # import leo.core.leoKeys as leoKeys
-            # Do this here to break a circular dependency.
+
         return leoKeys.KeyHandlerClass(c)
     #@+node:ekr.20150107090324.9: *3* createLeoFrame
     def createLeoFrame(self, c, title=None):

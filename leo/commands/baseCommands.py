@@ -3,7 +3,7 @@
 #@+node:ekr.20150514035943.1: * @file ../commands/baseCommands.py
 #@@first
 """The base class for all of Leo's user commands."""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:
@@ -43,7 +43,7 @@ class BaseEditCommandsClass:
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
         """
-        c, k, p, u= self.c, self.c.k, self.c.p, self.c.undoer
+        k, p, u= self.c.k, self.c.p, self.c.undoer
         w = self.editWidget(event=None)
         b = self.undoData
         if b and b.name.startswith('body') and changed:

@@ -24,7 +24,7 @@ __version__ = '0.2'
 
 #@+<< imports >>
 #@+node:ville.20110115234843.8745: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 g.assertUi('qt')
 

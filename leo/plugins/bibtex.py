@@ -62,7 +62,7 @@ BibTeX file.
 
 '''
 #@-<< docstring >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 # 2017/02/23: Rewritten by EKR
 #@+<< define templates dict>>

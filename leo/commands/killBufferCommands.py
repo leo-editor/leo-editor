@@ -5,8 +5,8 @@
 """Leo's kill-buffer commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050411.1: ** << imports >> (killBufferCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):

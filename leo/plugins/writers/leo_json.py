@@ -5,8 +5,8 @@
 # This module must **not** be named json, to avoid conflicts with the json standard library.
 import copy
 import json
-# import leo.core.leoGlobals as g
 import leo.plugins.writers.basewriter as basewriter
+
 #@+others
 #@+node:ekr.20160504083330.2: ** class JSON_Writer
 class JSON_Writer(basewriter.BaseWriter):

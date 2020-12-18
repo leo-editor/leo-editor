@@ -8,7 +8,7 @@ import os
 import sys
 import re
 from leo.plugins.mod_scripting import build_rclick_tree
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
@@ -986,7 +986,6 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190905091614.5: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
-        # import leo.core.leoApp as leoApp
         lm = g.app.loadManager
         old_c = self.c
         # Save any changes so they can be seen.

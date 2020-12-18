@@ -14,7 +14,7 @@ document)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     from leo.core import leoGlobals as g
-    import leo.plugins.qt_frame as qt_frame
+    from leo.plugins import qt_frame
     ok = g.app.gui.guiName() == "qt"
     if ok:
         setattr(qt_frame.LeoQtFrame,'setTopGeometry',setTopGeometry_mod_framesize)

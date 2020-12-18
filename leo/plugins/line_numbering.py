@@ -12,10 +12,11 @@
 """
 __version__ = "0.2"
 #@+node:vitalije.20170727201931.1: ** imports
-import re
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets
 from contextlib import contextmanager
+import re
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtWidgets
+
 LNT = 'line_number_translation'
 LNR = 'line_numbering_root'
 LNOFF = 'line_numbering_off'

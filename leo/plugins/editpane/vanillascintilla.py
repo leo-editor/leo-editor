@@ -8,9 +8,9 @@ Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 """
 #@+<< vanillascintilla.py imports >>
 #@+node:tbrown.20171028115501.1: ** << vanillascintilla.py imports >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
-from leo.core.leoQt import QtGui, QtWidgets, Qsci  # QtCore, QtConst
+from leo.core.leoQt import QtGui, QtWidgets, Qsci
 
 if Qsci is None:  # leo.core.leoQt eats ImportErrors
     raise ImportError

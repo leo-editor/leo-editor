@@ -85,15 +85,14 @@ def create_app():
     
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
-    import time
     # dump_leo_modules()
     t1 = time.process_time()
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
-    import leo.core.leoConfig as leoConfig
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoCommands as leoCommands
-    import leo.core.leoGui as leoGui
+    from leo.core import leoGlobals as g
+    from leo.core import leoApp
+    from leo.core import leoConfig
+    from leo.core import leoNodes
+    from leo.core import leoCommands
+    from leo.core import leoGui
     t2 = time.process_time()
     g.app = leoApp.LeoApp()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
@@ -137,7 +136,7 @@ def dump_leo_modules():
 #@+node:ekr.20201129133424.6: *3* function: expected_got
 def expected_got(expected, got):
     """Return a message, mostly for unit tests."""
-    import leo.core.leoGlobals as g
+    from leo.core import leoGlobals as g
     #
     # Let block.
     e_lines = g.splitLines(expected)

@@ -21,8 +21,8 @@ if path not in sys.path:
     sys.path.append(path)
 try:
     # #1472: bind to g immediately.
-    import leo.core.leoGlobals as g
-    import leo.core.leoApp as leoApp
+    from leo.core import leoGlobals as g
+    from leo.core import leoApp
     g.app = leoApp.LeoApp()
 except Exception as e:
     print(e)
@@ -51,8 +51,7 @@ def profile_leo():
         g.es_print('try installing pstats yourself')
         return
     import cProfile as profile
-    import leo.core.leoGlobals as g
-    import os
+    from leo.core import leoGlobals as g
     theDir = os.getcwd()
     # On Windows, name must be a plain string.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))
@@ -76,7 +75,6 @@ def run(fileName=None, pymacs=None, *args, **keywords):
 #@+node:maphew.20180110221247.1: ** run console (runLeo.py)
 def run_console(*args, **keywords):
     """Initialize and run Leo in console mode gui"""
-    import sys
     sys.argv.append('--gui=console')
     run(*args, **keywords)
 #@-others

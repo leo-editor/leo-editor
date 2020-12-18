@@ -5,10 +5,10 @@
 """Leo's help commands."""
 #@+<< imports >>
 #@+node:ekr.20150514050337.1: ** << imports >> (helpCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import re
 import sys
+from leo.core import leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):

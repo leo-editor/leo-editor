@@ -18,12 +18,10 @@ the left side of toolbar.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20090518182905.5422: ** << imports >>
-import leo.core.leoGlobals as g
-
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-
-from leo.core.leoQt import QtWidgets
 #@-<< imports >>
 controllers = {}
     # keys are c.hash(), values are NavControllers

@@ -79,9 +79,8 @@ from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoNodes import vnode
-
 from leo.core.leoQt import QtCore  # see QTimer in LeoCloud.__init__
 
 # for 'key: value' lines in body text

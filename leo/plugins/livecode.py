@@ -12,14 +12,14 @@ The livecode pane shows the results of each line.
 
 # By TNB
 
-import leo.core.leoGlobals as g
-from leo.core.leoQt import QtWidgets
 import ast
 from collections import namedtuple
 try:
     from meta import asttools
 except ImportError:
     asttools = None
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets
 
 #@+others
 #@+node:tbrown.20140806084727.30178: ** init
