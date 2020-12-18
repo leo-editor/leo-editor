@@ -23704,6 +23704,9 @@ if len(s) > limit:
     s = s[:limit]
     if s != p.h:
         g.warning("truncating headline to", limit, "characters")
+#@+node:ekr.20190522093202.1: ** g.placate_pyflakes
+def placate_pyflakes(*args):
+    """A do-nothing method that suppresses pyflakes warnings."""
 #@-all
 #@@nosearch
 #@-leo

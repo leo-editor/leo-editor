@@ -467,8 +467,9 @@ class PylintCommand:
     def import_lint(self):
         """Make sure lint can be imported."""
         try:
+            # pylint: disable=import-error
             from pylint import lint
-            g.placate_pyflakes(lint)
+            assert lint
             return True
         except ImportError:
             g.es_print('pylint is not installed')

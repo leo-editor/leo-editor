@@ -7098,9 +7098,6 @@ if 0:  # Testing:
     )
     for s in aList:
         print(pep8_class_name(s))
-#@+node:ekr.20190522093202.1: *3* g.placate_pyflakes
-def placate_pyflakes(*args):
-    """A do-nothing method that suppresses pyflakes warnings."""
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj):
     """Return "s" or "" depending on n."""
