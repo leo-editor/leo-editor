@@ -168,10 +168,11 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31372e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31382e3071057d71065808000000616e6e6f7461746571077d7108735806000000302e32302e3171097d710a5808000000616e6e6f74617465710b7d710c735806000000302e32312e31710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31372e3071057d71065808000000616e6e6f7461746571077d7108735806000000302e31392e3171097d710a5808000000616e6e6f74617465710b7d710c735806000000302e32302e31710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
+<v t="ekr.20190515070742.1"><vh>@file leoMarkup.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
@@ -14165,7 +14166,7 @@ def refreshFromDisk(self, event=None):
 </t>
 <t tx="ekr.20140726091031.18071"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
 
-# These plugins now contain the write code for all kinds special @auto nodes.
+# These plugins contain the write code for all kinds of special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.
 @language python
 </t>
@@ -18611,11 +18612,6 @@ unl: class Ui_MainWindow--&gt;retranslateUi
     Make sure that stdout and stderr exist.
     This is an issue when running Leo with pythonw.exe.
     """
-    # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
-    # import pdb ; pdb.set_trace()
-    import sys
-    from leo.core import leoGlobals as g
-
     # Define class LeoStdOut
     @others
     if not sys.stdout:
@@ -47605,6 +47601,10 @@ transcrypt:  (note spelling) pip install transcript.
 @wrap
 
 https://github.com/leo-editor/leo-editor/issues/1788
+
+*** Commit new pylint-leo-rc.txt.
+*** Replace "as sig"
+*** Remove placate_pyflakes.
 
 @language python
 @nosearch
