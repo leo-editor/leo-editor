@@ -11,7 +11,7 @@ Usage:
     - You need to create ctags file to ~/.leo/tags. Example::
 
         cd ~/.leo
-        ctags -R /usr/lib/python2.5 ~/leo-editor ~/my-project
+        ctags -R /usr/lib/python2.7 ~/leo-editor ~/my-project
 
     - Enter text you want to complete and press alt+0 to show completions
       (or bind/execute ctags-complete command yourself).

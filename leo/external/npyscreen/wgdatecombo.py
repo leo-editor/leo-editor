@@ -36,8 +36,6 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
     def display_value(self, vl):
         if self.value:
             try:
-                # in python 2.4 this will raise ValueError if date is before 1900
-                #return self.value.strftime("%a, %d %B, %Y")
                 return self.value.strftime("%d %B, %Y")
             except ValueError:
                 return self.value.isoformat()

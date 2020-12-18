@@ -7,10 +7,10 @@ The -r option no longer exists. Instead, use Leo's pylint command to run
 pylint on all Python @<file> nodes in a given tree.
 
 On windows, the following .bat file runs this file::
-    python2 pylint-leo.py %*
+    python pylint-leo.py %*
 
 On Ubuntu, the following alias runs this file::
-    pylint="python2 pylint-leo.py"
+    pylint="python pylint-leo.py"
 """
 #@@language python
 # pylint: disable=invalid-name

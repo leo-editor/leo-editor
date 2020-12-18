@@ -3593,7 +3593,7 @@ if g.isPython3:
     from functools import reduce
 import shlex
 import string
-import subprocess # Always exists in Python 2.6 and above.
+import subprocess
 import sys
 #@+node:ekr.20050920084036.1: *4* << define class BaseEditCommandsClass >>
 class BaseEditCommandsClass:
@@ -20406,8 +20406,6 @@ def fail(self, node, *args, **kwargs):
     print('')
     
 def log_line(self, node=None, *args, **kwargs):
-    # pylint: disable=keyword-arg-before-vararg
-        # putting *args first is invalid in Python 2.x.
     return 'line: %s file: %s: %s' % (
         getattr(node, 'lineno', '??'),
         self.file_name or '<string>',
@@ -20940,7 +20938,7 @@ def global_name(self, name):
     """Handle a global name in this context."""
     self.global_names.add(name)
     # Not yet.
-        # Both Python 2 and 3 generate SyntaxWarnings when a name
+        # Python generates SyntaxWarnings when a name
         # is used before the corresponding global declarations.
         # We can make the same assumpution here:
         # give an *error* if an STE appears in this context for the name.
@@ -22219,8 +22217,6 @@ def importFlattenedOutline(self, files):  # Not a command, so no event arg.
 #@+node:ekr.20200219073706.1: ** From leoTest.py
 #@+node:ekr.20120220070422.10420: *3* Top-level functions (leoTest)
 #@+node:ekr.20051104075904.97: *4* leoTest.py: factorial (a test of doctests)
-# Some of these will fail now for Python 2.x.
-
 def factorial(n):
     """Return the factorial of n, an exact integer >= 0.
 

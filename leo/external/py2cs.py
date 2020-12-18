@@ -568,12 +568,6 @@ class CoffeeScriptTraverser:
     #@+node:ekr.20160316091132.41: *4* cv.Num
     def do_Num(self, node):
         return repr(node.n)
-    #@+node:ekr.20160316091132.42: *4* cv.Repr
-
-    # Python 2.x only
-
-    def do_Repr(self, node):
-        return 'repr(%s)' % self.visit(node.value)
     #@+node:ekr.20160523135819.4: *4* cv.Set (new)
     # Set(expr* elts)
 
@@ -770,25 +764,6 @@ class CoffeeScriptTraverser:
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-    #@+node:ekr.20160316091132.62: *4* cv.Exec
-
-    # Python 2.x only
-
-    def do_Exec(self, node):
-
-        head = self.leading_string(node)
-        tail = self.trailing_comment(node)
-        body = self.visit(node.body)
-        args = []  # Globals before locals.
-        if getattr(node, 'globals', None):
-            args.append(self.visit(node.globals))
-        if getattr(node, 'locals', None):
-            args.append(self.visit(node.locals))
-        if args:
-            s = 'exec %s in %s' % (body, ','.join(args))
-        else:
-            s = 'exec %s' % body
-        return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.63: *4* cv.Expr (outer statement)
     def do_Expr(self, node):
         '''An outer expression: must be indented.'''
@@ -882,7 +857,7 @@ class CoffeeScriptTraverser:
                 names.append(fn)
         s = 'pass # from %s import %s' % (node.module, ','.join(names))
         return head + self.indent(s) + tail
-    #@+node:ekr.20160316151014.1: *4* cv.Nonlocal (Python3)
+    #@+node:ekr.20160316151014.1: *4* cv.Nonlocal
 
     # 3: Nonlocal(identifier* names)
 
@@ -899,24 +874,6 @@ class CoffeeScriptTraverser:
         head = self.leading_string(node)
         tail = self.trailing_comment(node)
         return head + self.indent('pass') + tail
-    #@+node:ekr.20160316091132.71: *4* cv.Print (Python2)
-
-    # Python 2.x only
-
-    def do_Print(self, node):
-
-        head = self.leading_string(node)
-        tail = self.trailing_comment(node)
-        vals = []
-        for z in node.values:
-            vals.append(self.visit(z))
-        if getattr(node, 'dest', None) is not None:
-            vals.append('dest=%s' % self.visit(node.dest))
-        if getattr(node, 'nl', None) is not None:
-            if node.nl == 'False':
-                vals.append('nl=%s' % node.nl)
-        s = 'print(%s)' % ','.join(vals)
-        return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.72: *4* cv.Raise
     # Raise(expr? exc, expr? cause)
 
@@ -940,7 +897,7 @@ class CoffeeScriptTraverser:
         else:
             s = 'return'
         return head + self.indent(s) + tail
-    #@+node:ekr.20160317040520.1: *4* cv.Starred (Python3)
+    #@+node:ekr.20160317040520.1: *4* cv.Starred
 
     # Starred(expr value, expr_context ctx)
 
@@ -948,7 +905,7 @@ class CoffeeScriptTraverser:
 
         # https://www.python.org/dev/peps/pep-3132/
         return '*' + self.visit(node.value)
-    #@+node:ekr.20160316091132.74: *4* cv.Try (Python3)
+    #@+node:ekr.20160316091132.74: *4* cv.Try
 
     # 3: Try(stmt* body, excepthandler* handlers, stmt* orelse, stmt* finalbody)
 
@@ -1041,7 +998,7 @@ class CoffeeScriptTraverser:
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-    #@+node:ekr.20160316091132.78: *4* cv.With & AsyncWith (Python 3)
+    #@+node:ekr.20160316091132.78: *4* cv.With & AsyncWith
 
     # 2:  With(expr context_expr, expr? optional_vars,
     #          stmt* body)
@@ -1093,7 +1050,7 @@ class CoffeeScriptTraverser:
         else:
             s = 'yield'
         return head + self.indent(s) + tail
-    #@+node:ekr.20160317043739.1: *4* cv.YieldFrom (Python3)
+    #@+node:ekr.20160317043739.1: *4* cv.YieldFrom
 
     # 3: YieldFrom(expr value)
 

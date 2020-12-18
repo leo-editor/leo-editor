@@ -15,23 +15,15 @@ Written by Edward K. Ream.
 #@+node:ekr.20160317054700.2: **  << imports >> (make_stub_files.py)
 import ast
 from collections import OrderedDict
-    # Requires Python 2.7 or above. Without OrderedDict
-    # the configparser will give random order for patterns.
-try:
-    import ConfigParser as configparser  # Python 2
-except ImportError:
-    import configparser  # Python 3
+import configparser
 import glob
+import io
 import optparse
 import os
 import re
 import sys
 import time
 import types
-try:
-    import StringIO as io  # Python 2
-except ImportError:
-    import io  # Python 3
 #@-<< imports >>
 isPython3 = sys.version_info >= (3, 0, 0)
 # pylint: disable=no-else-return
@@ -487,12 +479,6 @@ class AstFormatter:
     #@+node:ekr.20160317055215.32: *4* f.Num
     def do_Num(self, node):
         return repr(node.n)
-
-    #@+node:ekr.20160317055215.33: *4* f.Repr
-    # Python 2.x only
-
-    def do_Repr(self, node):
-        return 'repr(%s)' % self.visit(node.value)
 
     #@+node:ekr.20160317055215.34: *4* f.Slice
     def do_Slice(self, node):
