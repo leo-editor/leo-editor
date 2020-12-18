@@ -2,7 +2,6 @@
 #@+node:ekr.20200619141135.1: * @file ../plugins/importers/cython.py
 '''@auto importer for cython.'''
 import re
-# from leo.core import leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 import leo.plugins.importers.python as py_importer
 Importer = linescanner.Importer

@@ -2,11 +2,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160306114544.1: * @file leoExternalFiles.py
 #@@first
-from leo.core import leoGlobals as g
 import getpass
 import os
 import subprocess
 import tempfile
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20160306110233.1: ** class ExternalFile
 class ExternalFile:

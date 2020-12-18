@@ -4,9 +4,9 @@
 #@@first
 """Tests for leo.commands.editCommands"""
 
+import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoTest2
-import unittest
 
 class EditCommandsTest(unittest.TestCase):
     """Unit tests for leo/commands/editCommands.py."""

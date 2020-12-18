@@ -15,7 +15,6 @@ the order of declarations if other methods are declared before __init__.
 """
 #@-<< docstring >>
 
-
 __version__ = "0.1"
 __plugin_name__ = "__init__ in class"
 

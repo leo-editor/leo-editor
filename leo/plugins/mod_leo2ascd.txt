@@ -2181,10 +2181,10 @@ it is included in "pluginsManager.txt" in that directory.
 @code
 """Create menu for Open With command and handle the resulting commands"""
 
+import os
 from leo.core import leoGlobals as g
 Tk = g.import_module('tkinter')
 
-import os
 
 if Tk: # Register the handlers...
 
@@ -2398,11 +2398,11 @@ located in a 'username_Leo' subdirectory of the temporary
 directory. The 'LeoTemp' prefix is omitted.  This makes it easier to
 see which temporary file is related to which outline node.""" #'
 
-from leo.core import leoGlobals as g
-from leo.core import leoCommands
 import getpass
 import os
 import tempfile
+from leo.core import leoGlobals as g
+from leo.core import leoCommands
 
 def onStart (tag,keywords):
 

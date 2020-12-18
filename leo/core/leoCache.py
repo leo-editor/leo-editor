@@ -3,13 +3,13 @@
 """A module encapsulating Leo's file caching"""
 #@+<< imports >>
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
-from leo.core import leoGlobals as g
 import fnmatch
 import os
 import pickle
 import sqlite3
 import stat
 import zlib
+from leo.core import leoGlobals as g
 #@-<< imports >>
 # Abbreviations used throughout.
 abspath = g.os_path_abspath

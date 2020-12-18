@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060123151617: * @file leoFind.py
 """Leo's gui-independent find classes."""
-from leo.core import leoGlobals as g
 import re
 import sys
 import time
+from leo.core import leoGlobals as g
 
 # Transcrypt does not support Python's copy or keyword module.
 # __pragma__ ('skip')

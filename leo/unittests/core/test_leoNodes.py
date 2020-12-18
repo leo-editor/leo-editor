@@ -4,9 +4,9 @@
 #@@first
 """Tests for leo.core.leoNodes"""
 
+import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoTest2
-import unittest
 
 class LeoNodesTest(unittest.TestCase):
     """Unit tests for leo/core/leoNodes.py."""

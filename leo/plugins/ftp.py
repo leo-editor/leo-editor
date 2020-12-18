@@ -5,15 +5,15 @@
 # 0.1 05.01.2011 by Ivanov Dmitriy.
 #@+<< ftp imports >>
 #@+node:ekr.20161223150819.1: ** << ftp imports >>
+import json
+import os
+from ftplib import FTP
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 from leo.core.leoQt import isQt5, QtGui, QtWidgets
 if 1:
      # pylint: disable=no-name-in-module,no-member
     QAction = QtWidgets.QAction if isQt5 else QtGui.QAction
-import json
-import os
-from ftplib import FTP
 #@-<< ftp imports >>
 #@+others
 #@+node:ekr.20110110105526.5467: ** init

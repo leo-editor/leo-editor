@@ -3,8 +3,8 @@
 #@+node:ekr.20171124080430.1: * @file ../commands/commanderOutlineCommands.py
 #@@first
 """Outline commands that used to be defined in leoCommands.py"""
-from leo.core import leoGlobals as g
 import xml.etree.ElementTree as ElementTree
+from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
 #@+others

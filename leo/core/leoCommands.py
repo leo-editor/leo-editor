@@ -4,10 +4,6 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
-from leo.core import leoGlobals as g
-from leo.core import leoNodes
-    # The leoCommands ctor now does most leo.core.leo* imports.
-    # This breaks circular dependencies.
 import itertools
 import os
 import re
@@ -18,6 +14,10 @@ try:
     import tabnanny  # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+    # The leoCommands ctor now does most leo.core.leo* imports.
+    # This breaks circular dependencies.
 #@-<< imports >>
 
 def cmd(name):

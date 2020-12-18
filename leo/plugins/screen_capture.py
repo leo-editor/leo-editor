@@ -31,10 +31,10 @@ Settings
 Terry Brown, Terry_N_Brown@yahoo.com, Fri Apr 19 16:33:45 2013
 """
 #@-<< docstring >>
-from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui
 import os
 import time
+from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt5, QtCore, QtGui
 #@+others
 #@+node:tbrown.20130419143128.29676: ** init
 def init():

@@ -99,7 +99,6 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 #@+<< imports >>
 #@+node:peckj.20131101132841.6447: ** << imports >>
 from leo.core import leoGlobals as g
-#from PyQt4 import QtGui, QtCore
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 #@+others

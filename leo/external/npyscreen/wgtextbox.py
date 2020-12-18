@@ -1,15 +1,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
 #!/usr/bin/python
-from leo.core import leoGlobals as g
-assert g
 import curses
 import curses.ascii
 import sys
 import locale
-#import curses.wrapper
 from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
+from leo.core import leoGlobals as g
+assert g
 
 # pylint: disable=no-member
 #@+others

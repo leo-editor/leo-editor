@@ -5,11 +5,11 @@
 """Leo's abbreviations commands."""
 #@+<< imports >>
 #@+node:ekr.20150514045700.1: ** << imports >> (abbrevCommands.py)
-from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import functools
 import re
 import string
+from leo.core import leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):

@@ -11,7 +11,6 @@
 #@+node:ekr.20140827092102.18575: ** << imports >> (leoColorizer.py)
 import re
 import string
-# import sys
 import time
 assert time
 from leo.core import leoGlobals as g

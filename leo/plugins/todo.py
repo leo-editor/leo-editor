@@ -65,12 +65,11 @@ todo_calendar_cols
 
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
-from leo.core import leoGlobals as g
-
 import os
 import re
 import datetime
 import time
+from leo.core import leoGlobals as g
 
 NO_TIME = datetime.date(3000, 1, 1)
 

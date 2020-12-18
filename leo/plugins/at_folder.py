@@ -14,8 +14,8 @@ folder. You can logically group it in leo (or even clone it to many groups),
 while keep every files in a flat/single directory on your computer.
 '''
 
-from leo.core import leoGlobals as g
 import os
+from leo.core import leoGlobals as g
 __version__ = "1.4"
 #@+others
 #@+node:ekr.20140920173002.17961: ** init

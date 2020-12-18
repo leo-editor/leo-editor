@@ -3,10 +3,10 @@
 #@+node:ekr.20171123095353.1: * @file ../commands/commanderFileCommands.py
 #@@first
 """File commands that used to be defined in leoCommands.py"""
-from leo.core import leoGlobals as g
-from leo.core import leoImport
 import os
 import sys
+from leo.core import leoGlobals as g
+from leo.core import leoImport
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')

@@ -98,9 +98,9 @@ These commands attempt to deal with all of this.
 
 # import time
 import os
+from lxml import etree
 import traceback  # for XML parse error display
 from leo.core import leoGlobals as g
-from lxml import etree
 
 # top level entry in uA
 uAxml = '_XML'

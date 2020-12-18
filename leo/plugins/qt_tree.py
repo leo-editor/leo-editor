@@ -5,15 +5,15 @@
 """Leo's Qt tree class."""
 #@+<< imports >>
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
+import re
+import time
+assert time
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoNodes
 from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
 from leo.plugins import qt_text
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
-import re
-import time
-assert time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree

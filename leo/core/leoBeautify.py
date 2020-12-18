@@ -4,6 +4,15 @@
 #@+<< leoBeautify imports >>
 #@+node:ekr.20150530081336.1: **   << leoBeautify imports >>
 try:
+    # pylint: disable=import-error
+        # We can't assume the user has this.
+    import black
+except Exception:
+    black = None
+import os
+import time
+
+try:
     from leo.core import leoGlobals as g
     from leo.core import leoAst
 except ImportError:
@@ -17,15 +26,6 @@ except ImportError:
 
     g.command = command
 
-import os
-import time
-
-try:
-    # pylint: disable=import-error
-        # We can't assume the user has this.
-    import black
-except Exception:
-    black = None
 #@-<< leoBeautify imports >>
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)

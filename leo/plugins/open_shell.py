@@ -21,9 +21,9 @@ Current limitations:
 #@-<< docstring >>
 
 # Written by Ed Taekema.  Modified by EKR
-from leo.core import leoGlobals as g
 import os
 import sys
+from leo.core import leoGlobals as g
 
 # Changes these as required.
 if sys.platform == "win32":

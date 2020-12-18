@@ -164,13 +164,12 @@ systems.
 #@-<< version history >>
 #@+<< imports >>
 #@+node:danr7.20060902215215.4: ** << imports >>
-from leo.core import leoGlobals as g
-
 import configparser as ConfigParser
 import os
 import subprocess
 import tempfile
 import webbrowser
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 __version__ = '2.3'

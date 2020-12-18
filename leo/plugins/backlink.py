@@ -73,13 +73,8 @@ where the extra information is the name of the linked node's parent.
 #     - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB
-
 # **Important**: this plugin is gui-independent.
 from leo.core import leoGlobals as g
-# try:
-    # from leo.core.leoQt import QtCore
-# except ImportError:
-    # pass
 Tk = None
 Qt = None
 #@+others

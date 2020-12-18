@@ -15,15 +15,14 @@ On Ubuntu, the following alias runs this file::
 #@@language python
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
-from __future__ import print_function
-from leo.core import leoGlobals as g
-from leo.core import leoTest
 import shlex
 import optparse
 import os
 import subprocess
 import sys
 import time
+from leo.core import leoGlobals as g
+from leo.core import leoTest
 #@+others
 #@+node:ekr.20140331201252.16859: ** main (pylint-leo.py)
 def main(files, verbose):

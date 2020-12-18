@@ -42,6 +42,7 @@ def profile_leo():
     python profileLeo.py <list of .leo files> > profile.txt
     """
     # Work around a Python distro bug: can fail on Ubuntu.
+    import os
     try:
         import pstats
     except ImportError:
@@ -52,7 +53,6 @@ def profile_leo():
         return
     import cProfile as profile
     from leo.core import leoGlobals as g
-    import os
     theDir = os.getcwd()
     # On Windows, name must be a plain string.
     name = str(g.os_path_normpath(g.os_path_join(theDir, 'leoProfile')))

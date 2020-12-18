@@ -42,10 +42,9 @@ And call this in your plugin *once*::
 #@-<< docstring >>
 # Original version by Ville M. Vainio.
 
-# Imports.
-from leo.core import leoGlobals as g
 import os
 import subprocess
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
 

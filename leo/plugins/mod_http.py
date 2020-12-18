@@ -215,23 +215,22 @@ which node is selected.
 #@+node:EKR.20040517080250.3: ** << imports >>
 # pylint: disable=deprecated-method
     # parse_qs
-from leo.core import leoGlobals as g
 import asynchat
 import asyncore
-import json
 import http.server
+import json
 SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
-# import urllib
-import urllib.parse as urlparse
 import os
 import select
 import shutil
 import socket
 import time
+import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>

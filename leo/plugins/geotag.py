@@ -7,11 +7,10 @@
 
 #@+<< imports >>
 #@+node:tbrown.20091214233510.5349: ** << imports >>
+import socket
 from leo.core import leoGlobals as g
-
 from leo.plugins.pygeotag import pygeotag
 
-import socket
 #@-<< imports >>
 __version__ = "0.1"
 

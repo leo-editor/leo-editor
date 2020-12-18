@@ -2,10 +2,10 @@
 #@+node:ekr.20101110093449.5822: * @file ../plugins/mod_leo2ascd.py
 __version__ = ".7" # Set version for the plugin handler.
 
-from leo.core import leoGlobals as g
-from leo.core import leoPlugins
 import re
 import os
+from leo.core import leoGlobals as g
+from leo.core import leoPlugins
 #@+<< define classes >>
 #@+node:ekr.20141110071911.17: ** << define classes >>
 #@+others

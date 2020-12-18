@@ -5,7 +5,6 @@
 """Commands that invoke external checkers"""
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
-from leo.core import leoGlobals as g
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
@@ -19,6 +18,7 @@ except ImportError:
 import shlex
 import sys
 import time
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands

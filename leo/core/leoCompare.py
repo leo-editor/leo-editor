@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20180212072657.2: * @file leoCompare.py
 """Leo's base compare class."""
-from leo.core import leoGlobals as g
 import difflib
 import filecmp
 import os
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare:

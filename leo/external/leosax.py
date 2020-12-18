@@ -10,13 +10,11 @@ Clones and derived files are ignored.  Useful for scanning
 multiple .leo files quickly.
 """
 
-from __future__ import print_function
-
-from leo.core import leoGlobals as g
+from binascii import unhexlify
+from pickle import loads
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
-from pickle import loads
-from binascii import unhexlify
+from leo.core import leoGlobals as g
 
 #@+node:ekr.20120519121124.9921: ** class LeoNode
 class LeoNode:

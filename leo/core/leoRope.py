@@ -4,7 +4,6 @@
 #@@first
 #@+<< leoRope imports >>
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
-from leo.core import leoGlobals as g
 import time
 import importlib
 try:
@@ -18,6 +17,7 @@ if has_rope:
     importlib.reload(project)
     importlib.reload(simplify)
     importlib.reload(refactor)
+from leo.core import leoGlobals as g
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController

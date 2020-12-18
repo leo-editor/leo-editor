@@ -142,17 +142,13 @@ __version__ = '0.3'
 
 #@+<< imports >>
 #@+node:peckj.20131002201824.5541: ** << imports >>
-from leo.core import leoGlobals as g
-import time
-
-# Whatever other imports your plugins uses.
-# feedparser = g.importExtension('feedparser',pluginName='rss.py',verbose=False)
-
 try:
     import feedparser
 except ImportError:
     feedparser = None
     print('rss.py: can not import feedparser')
+import time
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 #@+others

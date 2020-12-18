@@ -316,7 +316,6 @@ the @slideshow tree whose sanitized name is
 __version__ = '1.0.3'
 #@+<< imports >>
 #@+node:ekr.20100908110845.5604: ** << imports >>
-from leo.core import leoGlobals as g
 import copy
 import glob
 import os
@@ -333,6 +332,7 @@ import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as etree
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level

@@ -4,13 +4,12 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
-from leo.core import leoGlobals as g
-from leo.core import leoExternalFiles
 import importlib
 import io
 StringIO = io.StringIO
-import os
 import optparse
+import os
+import sqlite3
 import subprocess
 import string
 import sys
@@ -18,7 +17,8 @@ import time
 import traceback
 import zipfile
 import platform
-import sqlite3
+from leo.core import leoGlobals as g
+from leo.core import leoExternalFiles
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager

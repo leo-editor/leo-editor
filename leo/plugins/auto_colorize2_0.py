@@ -8,16 +8,10 @@ By Adrian Calvin.
 '''
 #@+<< imports auto_colorize2_0.py >>
 #@+node:ekr.20170619151859.3: ** << imports auto_colorize2_0.py >>
-# import sys
-from leo.core import leoGlobals as g
-# from leo.core import leoPlugins
-from PyQt5.QtGui import QColor
-from PyQt5.QtGui import QBrush
-# from PyQt5.QtGui import QIcon
-# from PyQt5.QtGui import QPixmap
 import yaml
-# import time
-# import datetime
+from leo.core import leoGlobals as g
+from PyQt5.QtGui import QBrush
+from PyQt5.QtGui import QColor
 
 #@-<< imports auto_colorize2_0.py >>
 #@+others

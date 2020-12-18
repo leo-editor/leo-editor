@@ -96,9 +96,9 @@ whitespace (calling .strip()).
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20140804103733.9241: ** << imports >>
+import re
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-import re
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 #@+others

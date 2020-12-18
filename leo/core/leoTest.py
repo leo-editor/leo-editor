@@ -8,8 +8,6 @@ tests embedded in Leo's source code files themselves.
 """
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
-from leo.core import leoGlobals as g
-from leo.core import leoGui  # For UnitTestGui.
 import cProfile as profile
 import doctest
 import gc
@@ -25,6 +23,8 @@ try:
     import tabnanny  # Does not exist in jython.
 except ImportError:
     tabnanny = None
+from leo.core import leoGlobals as g
+from leo.core import leoGui  # For UnitTestGui.
 #@-<< imports >>
 if g.app:  # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")

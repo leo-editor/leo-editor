@@ -3,17 +3,9 @@
 """Classes relating to reading and writing .leo files."""
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
-import xml.etree.ElementTree as ElementTree
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
-from leo.core import leoGlobals as g
-from leo.core import leoNodes
 import binascii
 from collections import defaultdict
+from contextlib import contextmanager
 import difflib
 import time
 import io
@@ -25,7 +17,15 @@ import tempfile
 import zipfile
 import sqlite3
 import hashlib
-from contextlib import contextmanager
+import xml.etree.ElementTree as ElementTree
+try:
+    # IronPython has problems with this.
+    import xml.sax
+    import xml.sax.saxutils
+except Exception:
+    pass
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
 #@-<< imports >>
 PRIVAREA = '---begin-private-area---'
 #@+others

@@ -221,14 +221,13 @@ most brilliant idea in Leo's history.
 #@-<< mod_scripting docstring >>
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
+import pprint
+import re
+import sys
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
-import pprint
-import re
-# import string
-import sys
-import textwrap
 #@-<< imports >>
 __version__ = '3.0' # Added EvalController class.
 

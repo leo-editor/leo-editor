@@ -51,9 +51,6 @@ with some modifications made for Leo embedding.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20150428142729.2: ** << imports >>
-from leo.core import leoGlobals as g
-
-# import os
 import re
 import sys
 import code
@@ -63,6 +60,7 @@ if use_rlcompleter:
 else:
     Completer = None
 
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets,QtCore
 #@-<< imports >>
 

@@ -6,14 +6,14 @@
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
 import re
-from leo.core import leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
+from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 def cmd(name):

@@ -75,14 +75,14 @@ printElements = [] # ['all','outline','head','body',]
     # For traces.
 #@+<< imports >>
 #@+node:ekr.20060904103412.3: ** << imports >>
-from leo.core import leoGlobals as g
-from leo.core import leoPlugins
-from leo.core import leoNodes
 import xml.sax
 import xml.sax.saxutils
 import io
 StringIO = io.StringIO
 BytesIO = io.BytesIO
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.core import leoPlugins
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level

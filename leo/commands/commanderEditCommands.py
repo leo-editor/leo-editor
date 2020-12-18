@@ -3,8 +3,8 @@
 #@+node:ekr.20171123135539.1: * @file ../commands/commanderEditCommands.py
 #@@first
 """Edit commands that used to be defined in leoCommands.py"""
-from leo.core import leoGlobals as g
 import re
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
 @g.commander_command('add-comments')

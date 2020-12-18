@@ -57,9 +57,9 @@ __plugin_priority__
 # **Important**: this plugin is gui-independent.
 #@+<< imports >>
 #@+node:ekr.20050101090207.10: ** << imports >>
-from leo.core import leoGlobals as g
 import configparser as ConfigParser
 import os
+from leo.core import leoGlobals as g
 #@-<< imports >>
 __version__ = "2.3"
 __plugin_name__ = "Plugins Menu"

@@ -71,7 +71,6 @@ The xdb_pane plugin creates the Debug pane in the Log window.
 #@-<< leoDebugger.py docstring >>
 #@+<< leoDebugger.py imports >>
 #@+node:ekr.20181006100604.1: ** << leoDebugger.py imports >>
-from leo.core import leoGlobals as g
 import bdb
 import queue
 import os
@@ -79,6 +78,7 @@ import pdb
 import re
 import sys
 import threading
+from leo.core import leoGlobals as g
 #@-<< leoDebugger.py imports >>
 #@+others
 #@+node:ekr.20180701050839.5: ** class Xdb (pdb.Pdb, threading.Thread)

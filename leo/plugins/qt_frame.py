@@ -5,6 +5,11 @@
 """Leo's qt frame classes."""
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
+from collections import defaultdict
+import os
+import platform
+import sys
+
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -17,10 +22,7 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
-import os
-import sys
-import platform
-from collections import defaultdict
+
 try:
     from leo.plugins import nested_splitter
     splitter_class = nested_splitter.NestedSplitter

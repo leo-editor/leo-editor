@@ -6,9 +6,8 @@
 #@@tabwidth -4
 
 # By Paul Paterson.
-from leo.core import leoGlobals as g
-
 import time
+from leo.core import leoGlobals as g
 
 __version__ = "0.1"
 

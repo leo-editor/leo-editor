@@ -11,15 +11,15 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 #@+<< imports >>
 #@+node:ville.20091009234538.1373: ** << imports >>
 # todo remove dependency on Qt.
+import os
+import socket
+import struct
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore
 if isQt5:
     from PyQt5 import QtNetwork
 else:
     from PyQt4 import QtNetwork
-import os
-import socket
-import struct
 
 
 

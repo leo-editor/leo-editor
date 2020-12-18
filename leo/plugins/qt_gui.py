@@ -3,6 +3,11 @@
 """This file contains the gui wrapper for Qt: g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
+import datetime
+import functools
+import re
+import sys
+
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -13,10 +18,6 @@ from leo.plugins import qt_events
 from leo.plugins import qt_frame
 from leo.plugins import qt_idle_time
 from leo.plugins import qt_text
-import datetime
-import functools
-import re
-import sys
 if 1:
     # This defines the commands defined by @g.command.
     # pylint: disable=unused-import

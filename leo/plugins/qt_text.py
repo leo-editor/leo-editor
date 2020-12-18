@@ -3,9 +3,9 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 """Text classes for the Qt version of Leo"""
-from leo.core import leoGlobals as g
 import time
 assert time
+from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands

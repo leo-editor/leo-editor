@@ -15,10 +15,9 @@ node name rather than the filename. Currently supports only perl and perlpod.
 
 #@+<< imports >>
 #@+node:ekr.20050105150253: ** << imports >>
+import re
 from leo.core import leoGlobals as g
 from leo.core import leoAtFile
-
-import re
 #@-<< imports >>
 __version__ = "0.3"
 #@+<< version history >>

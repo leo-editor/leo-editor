@@ -12,7 +12,6 @@ if it was closed before.
 #@+<< imports >>
 #@+node:ville.20090815203828.5238: ** << imports >>
 import sys
-
 from leo.core import leoGlobals as g
 
 # Fail gracefully if the gui is not qt.

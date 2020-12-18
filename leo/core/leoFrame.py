@@ -9,14 +9,12 @@ big_text_buttons = True
     # True: show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
-from leo.core import leoGlobals as g
-from leo.core import leoColorizer
-    # NullColorizer is a subclass of ColorizerMixin
-### from leo.core.leoMenu import LeoMenu
-from leo.core import leoMenu
-from leo.core import leoNodes
 import time
 assert time
+from leo.core import leoGlobals as g
+from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
+from leo.core import leoMenu
+from leo.core import leoNodes
 #@-<< imports >>
 #@+<< About handling events >>
 #@+node:ekr.20031218072017.2410: ** << About handling events >>

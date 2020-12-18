@@ -47,10 +47,8 @@ __version__ = "0.1"
 #@+<< imports >>
 #@+node:tbrown.20141101114322.3: ** << imports >>
 import re
-
 from leo.core import leoGlobals as g
-
-from leo.core.leoQt import QtGui # ,QtWidgets
+from leo.core.leoQt import QtGui
 #@-<< imports >>
 
 #@+others

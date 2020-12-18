@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.399: * @file ../external/npyscreen/npysTree.py
-import weakref
 import collections
+import weakref
 from leo.core import leoGlobals as g
 assert g
 #@+others

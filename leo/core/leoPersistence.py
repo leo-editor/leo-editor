@@ -3,10 +3,10 @@
 #@+node:ekr.20140821055201.18331: * @file leoPersistence.py
 #@@first
 """Support for persistent clones, gnx's and uA's using @persistence trees."""
-from __future__ import print_function
-from leo.core import leoGlobals as g
+### from __future__ import print_function
 import binascii
 import pickle
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 @g.command('at-file-to-at-auto')
