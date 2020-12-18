@@ -222,8 +222,8 @@ most brilliant idea in Leo's history.
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoColor as leoColor
-import leo.core.leoGui as leoGui
+from leo.core import leoColor
+from leo.core import leoGui
 import pprint
 import re
 # import string
@@ -501,7 +501,7 @@ class ScriptingController:
                     del sys.modules['leoScriptModule'] # Essential.
                 # pylint: disable=import-error
                     # This *will* exist.
-                import leo.core.leoScriptModule as leoScriptModule
+                from leo.core import leoScriptModule
                 assert leoScriptModule # for pyflakes.
             else:
                 g.error('No debugger active')

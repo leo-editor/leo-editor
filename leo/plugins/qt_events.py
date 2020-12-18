@@ -36,7 +36,7 @@
 # rules.
 #@-<< about internal bindings >>
 from leo.core import leoGlobals as g
-import leo.core.leoGui as leoGui
+from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter

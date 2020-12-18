@@ -17,7 +17,7 @@ On Ubuntu, the following alias runs this file::
     # pylint-leo isn't a valid module name, but it isn't a module.
 from __future__ import print_function
 from leo.core import leoGlobals as g
-import leo.core.leoTest as leoTest
+from leo.core import leoTest
 import shlex
 import optparse
 import os

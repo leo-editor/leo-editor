@@ -127,7 +127,7 @@ different namespaces, while keeping namespaces generally separate.
 #@+<< imports >>
 #@+node:ville.20110403115003.10351: ** << imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
 from leo.external.stringlist import SList
     # Uses leoPlugins.TryNext.
 

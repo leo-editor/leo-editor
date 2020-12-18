@@ -76,8 +76,8 @@ printElements = [] # ['all','outline','head','body',]
 #@+<< imports >>
 #@+node:ekr.20060904103412.3: ** << imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-import leo.core.leoNodes as leoNodes
+from leo.core import leoPlugins
+from leo.core import leoNodes
 import xml.sax
 import xml.sax.saxutils
 import io

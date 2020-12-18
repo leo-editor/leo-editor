@@ -22,7 +22,7 @@ import time
 cwd = os.getcwd()
 if cwd not in sys.path:
     sys.path.append(cwd)
-import leo.core.leoBridge as leoBridge
+from leo.core import leoBridge
 #@-<< imports >>
 # Do not define g here. Use the g returned by the bridge.
 #@+others

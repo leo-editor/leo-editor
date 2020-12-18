@@ -12,7 +12,7 @@ tk dialogs.
 
 '''
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
 # import os
 import subprocess
 trace = False

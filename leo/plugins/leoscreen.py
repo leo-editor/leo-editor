@@ -150,7 +150,7 @@ import tempfile
 import difflib
 
 try:
-    import leo.plugins.stickynotes as stickynotes
+    from leo.plugins import stickynotes
 except ImportError:
     stickynotes = None
 

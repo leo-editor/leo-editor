@@ -31,9 +31,9 @@ if trace_sys_path:
     print('sys.argv: %s %s' % (len(sys.argv), '\n'.join(sys.argv)))
 if gui == 'qt':
     # Do this here to bypass leoQt g.in_bridge logic.
-    import leo.core.leoQt as leoQt
+    from leo.core import leoQt
     assert leoQt
-import leo.core.leoBridge as leoBridge
+from leo.core import leoBridge
 
 controller = leoBridge.controller(
     gui=gui,

@@ -47,12 +47,11 @@ beginning of the line and by themselves.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20050226114732.1: ** << imports >>
-from leo.core import leoGlobals as g
-import leo.core.leoAtFile as leoAtFile
-
 import os.path
 import shutil
 import weakref
+from leo.core import leoGlobals as g
+from leo.core import leoAtFile
 #@-<< imports >>
 multiprefix = '@multiprefix'
 multipath = '@multipath'

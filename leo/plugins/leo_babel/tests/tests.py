@@ -32,8 +32,8 @@ import argparse
 import codecs
 import os
 
-import leo.core.leoBridge as leoBridge
-import leo.core.leoGlobals as leoG
+from leo.core import leoBridge
+from leo.core import leoGlobals as leoG
 
 from leo_babel.tests import idle_time
 from leo_babel.tests import lib_test

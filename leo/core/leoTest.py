@@ -9,7 +9,7 @@ tests embedded in Leo's source code files themselves.
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 from leo.core import leoGlobals as g
-import leo.core.leoGui as leoGui  # For UnitTestGui.
+from leo.core import leoGui  # For UnitTestGui.
 import cProfile as profile
 import doctest
 import gc
@@ -786,7 +786,7 @@ class TestManager:
         old_frame = c.frame
         old_k_w = c.k.w
         try:
-            import leo.core.leoFrame as leoFrame
+            from leo.core import leoFrame
             g.app.gui = new_gui
             c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
             c.frame.openDirectory = old_frame.openDirectory

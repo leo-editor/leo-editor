@@ -103,8 +103,7 @@ sub-folders more automatically.
 #@+<< imports >>
 #@+node:ekr.20140612210500.17669: ** << imports >>
 from leo.core import leoGlobals as g
-
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
     # uses leoPlugins.TryNext
 
 import ast # for docstring loading
@@ -112,11 +111,6 @@ import os
 import re
 import shutil
 import time # for recursion bailout
-
-# from leo.plugins.plugins_menu import PlugIn
-
-# if g.app.gui.guiName() == "qt":
-#    from leo.core.leoQt import isQt5,QtCore
 #@-<< imports >>
 testing = False
 #@+others

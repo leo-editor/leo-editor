@@ -6,8 +6,8 @@
 #@+<< ftp imports >>
 #@+node:ekr.20161223150819.1: ** << ftp imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
-from leo.core.leoQt import isQt5,QtGui,QtWidgets
+from leo.core import leoPlugins
+from leo.core.leoQt import isQt5, QtGui, QtWidgets
 if 1:
      # pylint: disable=no-name-in-module,no-member
     QAction = QtWidgets.QAction if isQt5 else QtGui.QAction

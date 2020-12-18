@@ -16,7 +16,7 @@ import sys
 # required for pip >v10 and pyproject.toml
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from leo.core import leoGlobals as g
-import leo.core.leoVersion as leoVersion
+from leo.core import leoVersion
 
 #@+node:maphew.20181010203342.385: ** get_version & helper (setup.py)
 def get_version(file, version=None):

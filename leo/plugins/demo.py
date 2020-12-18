@@ -14,7 +14,7 @@ Revised by EKR February 6-7, 2017.
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
 from leo.core import leoGlobals as g
-import leo.plugins.qt_events as qt_events
+from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< demo.py imports >>
 #@@language python
@@ -63,7 +63,7 @@ class Demo:
         '''Ctor for the Demo class.'''
         self.c = c
         # pylint: disable=import-self
-        import leo.plugins.demo as module
+        from leo.plugins import demo as module
         #
         self.auto_run = False
             # True: start calls next until finished.
@@ -250,7 +250,7 @@ class Demo:
     #@+node:ekr.20170128213103.33: *4* demo.start & helpers
     def start(self, script_tree, auto_run=False, delim='###', root=None):
         '''Start a demo. script_tree contains the demo scripts.'''
-        import leo.core.leoNodes as leoNodes
+        from leo.core import leoNodes
         p = script_tree
         self.root = root and root.copy()
         self.script_root = script_tree and script_tree.copy()

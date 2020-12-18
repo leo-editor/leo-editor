@@ -12,7 +12,7 @@
 import datetime
 # import time
 
-import leo.core.leoGlobals as leoG
+from leo.core import leoGlobals as leoG
 #@-<< imports >>
 #@+<< version >>
 #@+node:bob.20180205135712.1: ** << version >>

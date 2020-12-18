@@ -40,7 +40,7 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
 #@+node:ekr.20100128073941.5376: ** onStart
 def onStart (tag,keywords):
 
-    import leo.core.leoNodes as leoNodes
+    from leo.core import leoNodes
 
     g.funcToMethod(newMoreHead,leoNodes.VNode,"moreHead")
 #@-others

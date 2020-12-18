@@ -104,7 +104,7 @@ def main():
 def unit_test(raise_on_fail=True):
     '''Run basic unit tests for this file.'''
     import _ast
-    import leo.core.leoAst as leoAst
+    from leo.core import leoAst
     # Compute all fields to test.
     aList = sorted(dir(_ast))
     remove = [
@@ -154,7 +154,7 @@ def unit_test(raise_on_fail=True):
 def pdb(self):
     '''Invoke a debugger during unit testing.'''
     try:
-        import leo.core.leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g
         leo_g.pdb()
     except ImportError:
         import pdb
@@ -1139,7 +1139,7 @@ class LeoGlobals:
     #@+node:ekr.20160317054700.91: *3* g.pdb
     def pdb(self):
         try:
-            import leo.core.leoGlobals as leo_g
+            from leo.core import leoGlobals as leo_g
             leo_g.pdb()
         except ImportError:
             import pdb
@@ -1158,7 +1158,7 @@ class LeoGlobals:
     #@+node:ekr.20160317054700.94: *3* g.trace
     def trace(self, *args, **keys):
         try:
-            import leo.core.leoGlobals as leo_g
+            from leo.core import leoGlobals as leo_g
             leo_g.trace(caller_level=2, *args, **keys)
         except ImportError:
             print(args, keys)

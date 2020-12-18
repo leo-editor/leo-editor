@@ -7,7 +7,7 @@ from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtWidgets  #  QtConst, QtCore, QtGui
 from leo.core.leoColorizer import JEditColorizer  # LeoHighlighter
-import leo.plugins.qt_text as qt_text
+from leo.plugins import qt_text
 
 # import time  # temporary for debugging
 

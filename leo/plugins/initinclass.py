@@ -19,8 +19,8 @@ the order of declarations if other methods are declared before __init__.
 __version__ = "0.1"
 __plugin_name__ = "__init__ in class"
 
-import leo.core.leoPlugins as leoPlugins
 from leo.core import leoGlobals as g
+from leo.core import leoPlugins
 
 #@@language python
 #@@tabwidth -4

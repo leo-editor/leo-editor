@@ -215,8 +215,8 @@ trace = False
 #@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
 from leo.core import leoGlobals as g
 try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
+    from leo.plugins import qt_text
+    from leo.plugins import free_layout
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
@@ -1537,7 +1537,7 @@ if QtWidgets: # NOQA
                 w.customContextMenuRequested.connect(self.onContextMenuCallback)
 
                 def handleClick(url, w=w):
-                    import leo.plugins.qt_text as qt_text
+                    from leo.plugins import qt_text
                     wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                     event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)

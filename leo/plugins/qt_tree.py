@@ -6,10 +6,10 @@
 #@+<< imports >>
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
 from leo.core import leoGlobals as g
-import leo.core.leoFrame as leoFrame
-import leo.core.leoNodes as leoNodes
-import leo.core.leoPlugins as leoPlugins  # Uses leoPlugins.TryNext.
-import leo.plugins.qt_text as qt_text
+from leo.core import leoFrame
+from leo.core import leoNodes
+from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
+from leo.plugins import qt_text
 from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
 import re
 import time

@@ -218,7 +218,7 @@ You will find this stylesheet in the node @data
 #@+node:ekr.20120913110135.10590: ** << imports >>
 import random
 from leo.core import leoGlobals as g
-import leo.core.leoGui as leoGui # for LeoKeyEvents.
+from leo.core import leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< imports >>
 #@+at

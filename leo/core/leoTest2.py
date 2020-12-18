@@ -89,11 +89,11 @@ def create_app():
     # dump_leo_modules()
     t1 = time.process_time()
     from leo.core import leoGlobals as g
-    import leo.core.leoApp as leoApp
-    import leo.core.leoConfig as leoConfig
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoCommands as leoCommands
-    import leo.core.leoGui as leoGui
+    from leo.core import leoApp
+    from leo.core import leoConfig
+    from leo.core import leoNodes
+    from leo.core import leoCommands
+    from leo.core import leoGui
     t2 = time.process_time()
     g.app = leoApp.LeoApp()
     g.app.recentFilesManager = leoApp.RecentFilesManager()

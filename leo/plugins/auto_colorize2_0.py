@@ -10,7 +10,7 @@ By Adrian Calvin.
 #@+node:ekr.20170619151859.3: ** << imports auto_colorize2_0.py >>
 # import sys
 from leo.core import leoGlobals as g
-# import leo.core.leoPlugins as leoPlugins
+# from leo.core import leoPlugins
 from PyQt5.QtGui import QColor
 from PyQt5.QtGui import QBrush
 # from PyQt5.QtGui import QIcon

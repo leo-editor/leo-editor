@@ -6,23 +6,23 @@
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qt_frame.py)
 from leo.core import leoGlobals as g
-import leo.core.leoColor as leoColor
-import leo.core.leoColorizer as leoColorizer
-import leo.core.leoFrame as leoFrame
-import leo.core.leoMenu as leoMenu
-import leo.commands.gotoCommands as gotoCommands
+from leo.core import leoColor
+from leo.core import leoColorizer
+from leo.core import leoFrame
+from leo.core import leoMenu
+from leo.commands import gotoCommands
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Qsci
-import leo.plugins.qt_events as qt_events
-import leo.plugins.qt_text as qt_text
-import leo.plugins.qt_tree as qt_tree
+from leo.plugins import qt_events
+from leo.plugins import qt_text
+from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
 import os
 import sys
 import platform
 from collections import defaultdict
 try:
-    import leo.plugins.nested_splitter as nested_splitter
+    from leo.plugins import nested_splitter
     splitter_class = nested_splitter.NestedSplitter
     nested_splitter.NestedSplitter.enabled = False
         # Disable special behavior, turned back on by associated plugin.

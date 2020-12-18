@@ -523,8 +523,8 @@ from urllib.request import urlopen
 # Leo imports...
 from leo.core import leoGlobals as g
 try:
-    import leo.plugins.qt_text as qt_text
-    import leo.plugins.free_layout as free_layout
+    from leo.plugins import qt_text
+    from leo.plugins import free_layout
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except ImportError:

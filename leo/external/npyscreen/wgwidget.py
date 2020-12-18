@@ -5,7 +5,6 @@
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 from leo.core import leoGlobals as g
-# import leo.plugins.cursesGui2 as cursesGui2
 assert g
 
 # import codecs

@@ -11,7 +11,7 @@ nodes in bold.
 #@+<< imports >>
 #@+node:ville.20090310191936.13: ** << imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
     # Uses leoPlugins.TryNext.
 #@-<< imports >>
 #@+others

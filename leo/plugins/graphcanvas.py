@@ -24,10 +24,9 @@ make sense to focus on pydot.
 #@+<< imports >>
 #@+node:bob.20110119123023.7392: ** << imports >> graphcanvas
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
 
 from math import atan2, sin, cos
-# import time
 import os
 import tempfile
 import urllib.request as urllib

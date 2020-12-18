@@ -3,7 +3,7 @@
 __version__ = ".7" # Set version for the plugin handler.
 
 from leo.core import leoGlobals as g
-import leo.core.leoPlugins as leoPlugins
+from leo.core import leoPlugins
 import re
 import os
 #@+<< define classes >>

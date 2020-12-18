@@ -11,8 +11,8 @@ leoflexx.py implements LeoWapp using flexx.
 #@+<< imports >>
 #@+node:ekr.20181028052650.3: ** << imports >>
 from leo.core import leoGlobals as g
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
+from leo.core import leoFrame
+from leo.core import leoGui
 import sys
 try:
     import websockets

@@ -3,16 +3,16 @@
 """This file contains the gui wrapper for Qt: g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20140918102920.17891: ** << imports >> (qt_gui.py)
-import leo.core.leoColor as leoColor
+from leo.core import leoColor
 from leo.core import leoGlobals as g
-import leo.core.leoGui as leoGui
+from leo.core import leoGui
 from leo.core.leoQt import isQt5, Qsci, QString, QtCore, QtGui, QtWidgets
     # This import causes pylint to fail on this file and on leoBridge.py.
     # The failure is in astroid: raw_building.py.
-import leo.plugins.qt_events as qt_events
-import leo.plugins.qt_frame as qt_frame
-import leo.plugins.qt_idle_time as qt_idle_time
-import leo.plugins.qt_text as qt_text
+from leo.plugins import qt_events
+from leo.plugins import qt_frame
+from leo.plugins import qt_idle_time
+from leo.plugins import qt_text
 import datetime
 import functools
 import re
@@ -20,7 +20,7 @@ import sys
 if 1:
     # This defines the commands defined by @g.command.
     # pylint: disable=unused-import
-    import leo.plugins.qt_commands as qt_commands
+    from leo.plugins import qt_commands
     assert qt_commands
 #@-<< imports >>
 #@+others
@@ -1091,7 +1091,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
     def insertKeyEvent(self, event, i):
         """Insert the key given by event in location i of widget event.w."""
-        import leo.core.leoGui as leoGui
+        from leo.core import leoGui
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
         assert isinstance(qevent, QtGui.QKeyEvent)
@@ -1265,7 +1265,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runWithIpythonKernel(self):
         """Init Leo to run in an IPython shell."""
         try:
-            import leo.core.leoIPython as leoIPython
+            from leo.core import leoIPython
             g.app.ipk = leoIPython.InternalIPKernel()
             g.app.ipk.run()
         except Exception:
@@ -1345,7 +1345,7 @@ class LeoQtGui(leoGui.LeoGui):
                     layout.addItem(vSpacer)
 
     def show_tips(self, force=False):
-        import leo.core.leoTips as leoTips
+        from leo.core import leoTips
         if g.app.unitTesting:
             return
         c = g.app.log and g.app.log.c

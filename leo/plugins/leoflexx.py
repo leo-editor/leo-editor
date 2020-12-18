@@ -50,13 +50,12 @@ if path not in sys.path:
     sys.path.append(path)
 from leo.core import leoGlobals as g
     # JS code can *not* use g.trace, g.callers or g.pdb.
-# import leo.core.leoBridge as leoBridge
-import leo.core.leoFastRedraw as leoFastRedraw
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
-import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
-import leo.core.leoTest as leoTest
+from leo.core import leoFastRedraw
+from leo.core import leoFrame
+from leo.core import leoGui
+from leo.core import leoMenu
+from leo.core import leoNodes
+from leo.core import leoTest
 #@-<< leoflexx: imports >>
 #@+<< leoflexx: assets >>
 #@+node:ekr.20181111074958.1: ** << leoflexx: assets >>
