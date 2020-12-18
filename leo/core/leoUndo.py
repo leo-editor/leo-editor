@@ -1047,11 +1047,14 @@ class Undoer:
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
                     # Fix #653: undoer problem: be wary of the ternary operator here.
                     old_start = old_end = new_start = new_end = 0
-                    if oldSel:
+                    if oldSel is not None:
                         old_start, old_end = oldSel
-                    if newSel:
+                    if newSel is not None:
                         new_start, new_end = newSel
-                    prev_start, prev_end = u.prevSel
+                    if u.prevSel is None:
+                        prev_start, prev_end = 0, 0
+                    else:
+                        prev_start, prev_end = u.prevSel
                     if old_start != old_end or new_start != new_end:
                         # The new and old characters are not contiguous.
                         newBead = True
