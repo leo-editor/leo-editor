@@ -3659,6 +3659,7 @@ Leo owes much of its visual design to MORE, possibly the most elegant computer p
 **Leo's VIPs**
 
 ::
+
     When, in disgrace with fortune and men’s eyes,
     I all alone beweep my outcast state,
     And trouble deaf heaven with my bootless cries,
@@ -3673,6 +3674,7 @@ Leo owes much of its visual design to MORE, possibly the most elegant computer p
     From sullen earth) sings hymns at heaven’s gate;
            For thy sweet love remembered such wealth brings
            That then I scorn to change my state with kings.
+
     —William Shakespeare, Sonnet 29.
 
 Leo's very important people:
