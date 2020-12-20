@@ -2398,6 +2398,7 @@
 </v>
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
+<v t="ekr.20040414172218.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3655,40 +3656,56 @@ From the movie, My Cousin Vinny::
 
 Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. Leo's clone nodes are inspired by MORE.
 
-The following deserve special thanks:
+**Leo's VIPs**
+
+::
+    When, in disgrace with fortune and men’s eyes,
+    I all alone beweep my outcast state,
+    And trouble deaf heaven with my bootless cries,
+    And look upon myself and curse my fate,
+    Wishing me like to one more rich in hope,
+    Featured like him, like him with friends possessed,
+    Desiring this man’s art and that man’s scope,
+    With what I most enjoy contented least;
+    Yet in these thoughts myself almost despising,
+    Haply I think on thee, and then my state,
+    (Like to the lark at break of day arising
+    From sullen earth) sings hymns at heaven’s gate;
+           For thy sweet love remembered such wealth brings
+           That then I scorn to change my state with kings.
+    —William Shakespeare, Sonnet 29.
+
+Leo's very important people:
 
 - David Brock wrote TSyntaxMemo, used in early versions of Leo.
-- Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py. He also pushes back against my foolish ideas.
-- e inspired @button nodes, a truly brilliant idea.
+- Terry Brown wrote important plugins, including Leo's user-modifiable panes.
+- e inspired @button nodes, a brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
 - The Jupyter development team taught me how to support pygments colorizing.
-- Almar Klein wrote pyzo, yoton and flexx.
-  Flexx is the basis of LeoWapp (--gui=browser).
-  Leo will (soon) use various excellent features of pyzo.
+- Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
+- Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
 - Donald Knuth invented the CWEB language and literate programming.
-- LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
-- The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
-- Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
+- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean.
+  Bernhard also inspired Leo's generators and position class.
+- Joe Orr created LeoVue and XSLT stylesheets for Leo.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code,
-  thereby allowing Leo to do without file caching.
+- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
-- François Pinard wrote pymacs.
+- François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
 - Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
+- Edward K. Ream is Leo's project leader and chief programmer.
 - Rich Ries has contributed a huge number of suggestions.
+- Guido van Rossum created Python.
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney lobbies constantly to make Leo easier to use and understand.
-  His comment opened the door to the one-node world.
-- Guido van Rossum created Python.
-- Dave Winer created MORE.
-- Ville M. Vainio made invaluable contributions, including the one-node world,
-  the IPython bridge code and the contextmenu.py and valuespace.py plugins.
+- Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
+- Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
+- Dave Winer created MORE, the foundation of Leo's visual design.
 - Dan Winkler helped support Leo on the Mac.
 
 Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
