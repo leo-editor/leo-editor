@@ -131,7 +131,7 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20201010141557.1"><vh>@string theme-name = DefaultTheme</vh></v>
+<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -2326,15 +2326,6 @@
 </v>
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
-</v>
-<v t="ekr.20060603215208"></v>
-<v t="ekr.20070224073109.1"></v>
-<v t="ekr.20201118060153.1"><vh>Found:indent-region</vh>
-<v t="ekr.20131213135427.22280"></v>
-<v t="ekr.20201118055941.1"></v>
-<v t="ekr.20080515053412.9"></v>
-<v t="ekr.20131213135427.22283"></v>
-<v t="ekr.20060925060533.4"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -11793,7 +11784,24 @@ useful if you've cloned the node so its origin is not obvious from context.
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
-<t tx="ekr.20201010141557.1"></t>
+<t tx="ekr.20201010141557.1">The name of Leo's active theme, or None, which gives Leo's legacy (light) theme.
+
+Valid theme names are the name of .leo file in leo/themes folder, (without the .leo suffix).
+
+Theme .leo files may also appear in 
+
+Examples:
+
+BreezeDarkTheme
+BreezeDark2Theme
+DefaultTheme
+EKRDark
+EKRLight
+LeoBlackSolarized
+PaperLightTheme
+ZephyrDarkTheme
+
+</t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
 </t>
 <t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.
@@ -11942,11 +11950,6 @@ False: Use ``asciidoc``</t>
 </t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
-<t tx="ekr.20201118060153.1">@nosearch
-
-# flattened, ignore-case, head, body
-
-# found 5 nodes</t>
 <t tx="ekr.20201118060235.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
