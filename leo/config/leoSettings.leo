@@ -11791,11 +11791,9 @@ want the visual clutter of repeated class / file names.</t>
 
 To enable a theme, put the following setting in myLeoSettings.leo:
 
-@string theme-name
+@string theme-name = &lt;name of .leo file&gt;
 
-Theme names are the name of a .leo file, without the ".leo" suffix.
-
-Leo looks for the named .leo file in the following order:
+The .leo suffix is optional. Leo looks for the named .leo file in this order:
 
 ~  (The user's home directory)
 ~/themes
@@ -11803,26 +11801,16 @@ Leo looks for the named .leo file in the following order:
 ~/.leo/themes
 leo/themes
 
-The .leo file in leo/themes folder are (without the ".leo" suffix):
+The .leo file in the leo/themes folder are:
 
-BreezeDarkTheme
-BreezeDark2Theme
-DefaultTheme
-EKRDark
-EKRLight
-LeoBlackSolarized
-PaperLightTheme
-ZephyrDarkTheme
-
-Theme files should contain three settings that describe the theme:
-
-@bool color_theme_is_dark # True for dark themes
-@string color_theme = name # Used to find icons
-@string theme_name # Used to find other graphics elements.
-
-Important: When using themes, it’s best to disable all other theme-related
-settings in myLeoSettings.leo.
-</t>
+BreezeDarkTheme.leo
+BreezeDark2Theme.leo
+DefaultTheme.leo
+EKRDark.leo
+EKRLight.leo
+LeoBlackSolarized.leo
+PaperLightTheme.leo
+ZephyrDarkTheme.leo</t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
 </t>
 <t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.

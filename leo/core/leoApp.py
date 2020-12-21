@@ -1914,7 +1914,7 @@ class LoadManager:
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         """Search theme directories for the given .leo file."""
-        if not fn:
+        if not fn or fn.lower().strip() == 'none':
             return None
         if not fn.endswith('.leo'):
             fn += '.leo'
