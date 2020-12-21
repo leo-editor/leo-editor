@@ -15,25 +15,23 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20201220220156.1"><vh>@string target_language = python</vh></v>
-<v t="ekr.20180318145515.704"><vh>@theme Default</vh>
-<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
-<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="ekr.20180318145515.812"><vh>@string color_theme = ekr_dark</vh></v>
-<v t="ekr.20180319081014.1"><vh>@string theme-name = EKRDark</vh></v>
-</v>
-<v t="ekr.20180318145515.178"><vh>Appearance</vh>
+<v t="ekr.20180318145515.178"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
 <v t="ekr.20180318145515.181"><vh>@bool use-focus-border = True</vh></v>
 <v t="ekr.20180318145515.182"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180318145515.183"><vh>@int gutter-w-adjust = 30</vh></v>
-<v t="ekr.20180318145515.184"><vh>@color flash_brackets_background_color = red</vh></v>
-<v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20180318145515.186"><vh>@color trailing_whitespace_color = black</vh></v>
 <v t="ekr.20180318145515.187"><vh>@int qt-cursor-width = 5</vh></v>
+<v t="ekr.20180318145515.805"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180318145515.806"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
 <v t="ekr.20180318145515.188"><vh>@string focused-border-width = 1px</vh></v>
-<v t="ekr.20180318145515.711"><vh>Colors...</vh>
+<v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20180318145515.711"><vh>Colors</vh>
+<v t="ekr.20180318145515.186"><vh>@color trailing_whitespace_color = black</vh></v>
+<v t="ekr.20180318145515.184"><vh>@color flash_brackets_background_color = red</vh></v>
 <v t="ekr.20180318145515.712"><vh>Base colors: not all are solarized colors</vh>
 <v t="ekr.20180318145515.713"><vh>@color dark-base0 = #fdffdd</vh></v>
 <v t="ekr.20180318145515.714"><vh>@color dark-base00 = #657b83</vh></v>
@@ -57,7 +55,7 @@
 <v t="ekr.20180318145515.732"><vh>@color solarized-white = #fdf6e3 </vh></v>
 <v t="ekr.20180318145515.733"><vh>@color solarized-yellow = #b58900</vh></v>
 </v>
-<v t="ekr.20180318145515.734"><vh>Colors: Logical colors</vh>
+<v t="ekr.20180318145515.734"><vh>Color definitions</vh>
 <v t="ekr.20180318145515.735"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
 <v t="ekr.20180318145515.736"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20180318145515.737"><vh>@color LeoYellow = @LightYellow</vh></v>
@@ -128,6 +126,7 @@
 <v t="ekr.20180318145515.795"><vh>@color button-hover-fg =@dark-base03</vh></v>
 <v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
 <v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
+<v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
@@ -143,15 +142,10 @@
 <v t="ekr.20180318145515.200"><vh>@string small-font-size = 10pt</vh></v>
 <v t="ekr.20180318145515.196"><vh>@string status-font-size = 12pt</vh></v>
 </v>
-<v t="ekr.20180318145515.804"><vh>Gradients</vh>
-<v t="ekr.20180318145515.805"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20180318145515.806"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="ekr.20201221080030.1"><vh>Plugins</vh>
+<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
 </v>
-<v t="ekr.20180318145515.807"><vh>Outline indicators</vh>
-<v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-</v>
+<v t="ekr.20201221075820.1"><vh>Style sheet</vh>
 <v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20180318145515.814"><vh> Widgets: general</vh></v>
 <v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
@@ -196,8 +190,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0,3">A dark theme based on LeoBlackSolarized.leo.
-</t>
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0,3">This is Leo's default theme.</t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
 1. The '@' sign itself is colored with @color leokeyword constant.
@@ -250,9 +243,11 @@ def spam():
 <t tx="ekr.20180314052441.2"></t>
 <t tx="ekr.20180318145515.1">@language rest
 @wrap
-@tabwidth -2
 
-</t>
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="ekr.20180318145515.178"></t>
 <t tx="ekr.20180318145515.179">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
@@ -275,8 +270,6 @@ DejaVu Sans Mono</t>
 <t tx="ekr.20180318145515.200">A small font size used by default in the status area.</t>
 <t tx="ekr.20180318145515.202"></t>
 <t tx="ekr.20180318145515.203">@LeoYellow</t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">This is Leo's default theme.
-</t>
 <t tx="ekr.20180318145515.711"></t>
 <t tx="ekr.20180318145515.712"></t>
 <t tx="ekr.20180318145515.713">@language md
@@ -683,27 +676,15 @@ div#bg {background:#000005}
 something to see)</t>
 <t tx="ekr.20180318145515.802"></t>
 <t tx="ekr.20180318145515.803"></t>
-<t tx="ekr.20180318145515.804">Utility constants.</t>
 <t tx="ekr.20180318145515.805"></t>
 <t tx="ekr.20180318145515.806"></t>
-<t tx="ekr.20180318145515.807">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="ekr.20180318145515.808">Must be relative to either the users home directory or leo/Icons directory.
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180318145515.810"></t>
 <t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme, used to find icon files:
+<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Used to find icon files:
 
 leo_dark_0
 ekr_dark</t>
@@ -964,7 +945,6 @@ QTreeView QLineEdit {
   padding: 0px;
 }
 </t>
-<t tx="ekr.20180319081014.1"></t>
 <t tx="ekr.20180320125351.1">#84c805: good enough.
 
 #94e507: better, but a tad too bright.
@@ -993,11 +973,7 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
-<t tx="ekr.20201220220156.1">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20201221075820.1"></t>
+<t tx="ekr.20201221080030.1"></t>
 </tnodes>
 </leo_file>

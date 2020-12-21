@@ -1872,7 +1872,7 @@ class LoadManager:
         3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
            Load the file if setting exists.  Otherwise return None.
         """
-        trace = True or 'themes' in g.app.db
+        trace = 'themes' in g.app.db
         lm = self
         resolve = self.resolve_theme_path
         #

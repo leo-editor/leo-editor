@@ -15,24 +15,7 @@
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
-<v t="ekr.20180309185230.105"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20180309185230.118"><vh> Widgets: general</vh></v>
-<v t="ekr.20180309185230.106"><vh>Body &amp; other text</vh></v>
-<v t="ekr.20180309185230.107"><vh>Borders</vh></v>
-<v t="ekr.20180309185230.108"><vh>Buttons</vh></v>
-<v t="ekr.20190531140811.1"><vh>Dock</vh></v>
-<v t="ekr.20180309185230.109"><vh>Log</vh></v>
-<v t="ekr.20180309185230.110"><vh>Menus</vh></v>
-<v t="ekr.20180309185230.111"><vh>Minibuffer &amp; label</vh></v>
-<v t="ekr.20180309203214.1"><vh>Plugins</vh></v>
-<v t="ekr.20180309185230.113"><vh>Scroll bars</vh></v>
-<v t="ekr.20180309185230.114"><vh>Splitters</vh></v>
-<v t="ekr.20180309185230.115"><vh>Status area</vh></v>
-<v t="ekr.20180309185230.116"><vh>Tab bar</vh></v>
-<v t="ekr.20180309185230.117"><vh>Tree</vh></v>
-<v t="ekr.20190106114202.1"><vh>zz must be last</vh></v>
-</v>
-<v t="ekr.20180309185230.104"><vh>@string theme-name = generic</vh></v>
+<v t="ekr.20201221074355.1"><vh>@string color-theme = generic</vh></v>
 <v t="ekr.20201221063741.1"><vh>Colors</vh>
 <v t="ekr.20180309185230.3"><vh>Colors Definitions</vh>
 <v t="ekr.20180309191121.1"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -119,7 +102,7 @@
 <v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
 <v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
 </v>
-<v t="ekr.20180309185230.66"><vh>Plugins settings</vh>
+<v t="ekr.20180309185230.66"><vh>Plugins</vh>
 <v t="ekr.20180309185230.103"><vh>@bool color-theme-is-dark = False</vh></v>
 <v t="ekr.20180309185230.67"><vh>bookmarks</vh>
 <v t="ekr.20180309185230.68"><vh>@color bookmarks-current-color = orange</vh></v>
@@ -159,8 +142,24 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
-<v t="ekr.20180319081051.1"><vh>@string theme-name = EKRLight</vh></v>
+<v t="ekr.20201221072803.1"><vh>Style sheet</vh>
+<v t="ekr.20180309185230.105"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20180309185230.118"><vh> Widgets: general</vh></v>
+<v t="ekr.20180309185230.106"><vh>Body &amp; other text</vh></v>
+<v t="ekr.20180309185230.107"><vh>Borders</vh></v>
+<v t="ekr.20180309185230.108"><vh>Buttons</vh></v>
+<v t="ekr.20190531140811.1"><vh>Dock</vh></v>
+<v t="ekr.20180309185230.109"><vh>Log</vh></v>
+<v t="ekr.20180309185230.110"><vh>Menus</vh></v>
+<v t="ekr.20180309185230.111"><vh>Minibuffer &amp; label</vh></v>
+<v t="ekr.20180309203214.1"><vh>Plugins</vh></v>
+<v t="ekr.20180309185230.113"><vh>Scroll bars</vh></v>
+<v t="ekr.20180309185230.114"><vh>Splitters</vh></v>
+<v t="ekr.20180309185230.115"><vh>Status area</vh></v>
+<v t="ekr.20180309185230.116"><vh>Tab bar</vh></v>
+<v t="ekr.20180309185230.117"><vh>Tree</vh></v>
+<v t="ekr.20190106114202.1"><vh>zz must be last</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20180309185230.55"></v>
@@ -168,9 +167,11 @@
 <tnodes>
 <t tx="ekr.20180307205349.2">@language rest
 @wrap
-@tabwidth -2
 
-A Light theme with solarized colors.</t>
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="ekr.20180307205426.1">table = (
     # g.actualColor calls 
     'error', 'info', 'warning',
@@ -202,9 +203,7 @@ transparent/icons/nodes/triangles/black/closed.png</t>
 
 nodes-light/triangles/open.png
 transparent/icons/nodes/triangles/black/open.png</t>
-<t tx="ekr.20180309185230.102"></t>
 <t tx="ekr.20180309185230.103" lineYOffset="4b002e">Used by bookmarks and graphcanvas plugins.</t>
-<t tx="ekr.20180309185230.104" lineYOffset="4b002e">The path to a folder containing icons.</t>
 <t tx="ekr.20180309185230.105">/*
 @language css
 
@@ -693,7 +692,6 @@ def spam():
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052351.2"></t>
-<t tx="ekr.20180319081051.1"></t>
 <t tx="ekr.20190106114202.1">QLineEdit#status1[style_class ~= 'info'],
 QLineEdit#status2[style_class ~= 'info'] {
     background: @LeoBlue;
@@ -725,5 +723,7 @@ QLineEdit#editorLabel {
 }
 </t>
 <t tx="ekr.20201221063741.1"></t>
+<t tx="ekr.20201221072803.1"></t>
+<t tx="ekr.20201221074355.1">The path to the icon folder.</t>
 </tnodes>
 </leo_file>
