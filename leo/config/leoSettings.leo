@@ -131,7 +131,6 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -236,6 +235,7 @@
 <v t="tbrown.20151114110207.1"><vh>@string abbreviations-next-placeholder = ,,</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
+<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
@@ -335,7 +335,7 @@
 </v>
 <v t="ekr.20140912075503.19262"><vh>Fonts</vh>
 <v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
-<v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19263"><vh>@string font-family = DejaVu Sans Mono, Droid Sans Mono</vh></v>
 <v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
 <v t="ekr.20140915194122.23413"><vh>@string medium-font-size = 10pt</vh></v>
 <v t="ekr.20140915194122.21837"><vh>@string small-font-size = 10pt</vh></v>
@@ -2327,6 +2327,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20140912075503.19263"></v>
+<v t="ekr.20201010141557.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11786,11 +11789,21 @@ If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
 <t tx="ekr.20201010141557.1">The name of Leo's active theme, or None, which gives Leo's legacy (light) theme.
 
-Valid theme names are the name of .leo file in leo/themes folder, (without the .leo suffix).
+To enable a theme, put the following setting in myLeoSettings.leo:
 
-Theme .leo files may also appear in 
+@string theme-name
 
-Examples:
+Theme names are the name of a .leo file, without the ".leo" suffix.
+
+Leo looks for the named .leo file in the following order:
+
+~  (The user's home directory)
+~/themes
+~/.leo
+~/.leo/themes
+leo/themes
+
+The .leo file in leo/themes folder are (without the ".leo" suffix):
 
 BreezeDarkTheme
 BreezeDark2Theme
@@ -11801,6 +11814,14 @@ LeoBlackSolarized
 PaperLightTheme
 ZephyrDarkTheme
 
+Theme files should contain three settings that describe the theme:
+
+@bool color_theme_is_dark # True for dark themes
+@string color_theme = name # Used to find icons
+@string theme_name # Used to find other graphics elements.
+
+Important: When using themes, it’s best to disable all other theme-related
+settings in myLeoSettings.leo.
 </t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
 </t>

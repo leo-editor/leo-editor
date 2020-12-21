@@ -15,6 +15,7 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
+<v t="ekr.20201220220118.1"><vh>@string target-language = python</vh></v>
 <v t="ekr.20180318145515.704"><vh>@theme EKR Black Solarized</vh>
 <v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
 <v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
@@ -26,34 +27,14 @@
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
 <v t="ekr.20180318145515.181"><vh>@bool use-focus-border = True</vh></v>
 <v t="ekr.20180318145515.182"><vh>@bool use-gutter = False</vh></v>
-<v t="ekr.20180318145515.183"><vh>@int gutter-w-adjust = 30</vh></v>
 <v t="ekr.20180318145515.184"><vh>@color flash_brackets_background_color = red</vh></v>
 <v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20180318145515.186"><vh>@color trailing_whitespace_color = black</vh></v>
+<v t="ekr.20180318145515.183"><vh>@int gutter-w-adjust = 30</vh></v>
 <v t="ekr.20180318145515.187"><vh>@int qt-cursor-width = 5</vh></v>
 <v t="ekr.20180318145515.188"><vh>@string focused-border-width = 1px</vh></v>
 <v t="ekr.20180318145515.189"><vh>@string target_language = python</vh></v>
-<v t="ekr.20180318145515.190"><vh>Basic Fonts</vh>
-<v t="ekr.20180318145515.191"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20180318145515.192"><vh>@ignore font sizes for unmagnified windows</vh>
-<v t="ekr.20180318145515.193"><vh>@string font-size = 14pt </vh></v>
-<v t="ekr.20180318145515.194"><vh>@string medium-font-size = 12pt</vh></v>
-<v t="ekr.20180318145515.195"><vh>@string small-font-size = 10pt</vh></v>
-</v>
-<v t="ekr.20180318145515.196"><vh>@string status-font-size = 12pt</vh></v>
-<v t="ekr.20180318145515.197"><vh>font sizes for magnified windows</vh>
-<v t="ekr.20180318145515.198"><vh>@string font-size = 14pt </vh></v>
-<v t="ekr.20180318145515.199"><vh>@string medium-font-size = 14pt</vh></v>
-<v t="ekr.20180318145515.200"><vh>@string small-font-size = 14pt</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.201"><vh>Basic outline colors</vh>
-<v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
-<v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.710"><vh>Settings for Leo Solarized Dark theme</vh>
-<v t="ekr.20180318145515.711"><vh>Colors...</vh>
+<v t="ekr.20180318145515.711"><vh>Colors</vh>
 <v t="ekr.20180318145515.712"><vh>Base colors: not all are solarized colors</vh>
 <v t="ekr.20180318145515.713"><vh>@color dark-base0 = #fdffdd</vh></v>
 <v t="ekr.20180318145515.714"><vh>@color dark-base00 = #657b83</vh></v>
@@ -77,6 +58,10 @@
 <v t="ekr.20180318145515.732"><vh>@color solarized-white = #fdf6e3 </vh></v>
 <v t="ekr.20180318145515.733"><vh>@color solarized-yellow = #b58900</vh></v>
 </v>
+<v t="ekr.20180318145515.201"><vh>Basic outline colors</vh>
+<v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
+<v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
+</v>
 <v t="ekr.20180318145515.734"><vh>Colors: Logical colors</vh>
 <v t="ekr.20180318145515.735"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
 <v t="ekr.20180318145515.736"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -95,6 +80,12 @@
 <v t="ekr.20180318145515.749"><vh>@color log_warning_color = @solarized-red</vh></v>
 <v t="ekr.20180318145515.750"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="ekr.20180318145515.751"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
+</v>
+<v t="ekr.20201220213006.1"><vh>Colors: Status area</vh>
+<v t="ekr.20201220213006.2"><vh>@color status-bg = @dark-base03</vh></v>
+<v t="ekr.20201220213006.3"><vh>@color status-fg = @dark-base1</vh></v>
+<v t="ekr.20201220213006.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20201220213006.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
 </v>
 <v t="ekr.20180318145515.752"><vh>Colors: Syntax coloring</vh>
 <v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
@@ -153,9 +144,9 @@
 <v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180318145515.801"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20180318145515.802"><vh>@string font-size-log = 16pt</vh></v>
-<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 16pt</vh></v>
+<v t="ekr.20180318145515.801"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20180318145515.802"><vh>@string font-size-log = 12pt</vh></v>
+<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 12pt</vh></v>
 </v>
 <v t="ekr.20180318145515.804"><vh>Gradients</vh>
 <v t="ekr.20180318145515.805"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
@@ -185,7 +176,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180318145515.822"></v>
+<v t="ekr.20180318145515.796"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -286,20 +277,6 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20180318145515.190"># All other fonts are defined in terms of these basic fonts.
-# Changing the basic fonts are all that most users will want to do.</t>
-<t tx="ekr.20180318145515.191">Droid Sans Mono,
-DejaVu Sans Mono</t>
-<t tx="ekr.20180318145515.192"></t>
-<t tx="ekr.20180318145515.193">**Important**: This should be set by each user.</t>
-<t tx="ekr.20180318145515.194">A small font size used by default in the check boxes in the Find tab.</t>
-<t tx="ekr.20180318145515.195">A small font size used by default in the status area.</t>
-<t tx="ekr.20180318145515.196">
-    </t>
-<t tx="ekr.20180318145515.197"></t>
-<t tx="ekr.20180318145515.198">**Important**: This should be set by each user.</t>
-<t tx="ekr.20180318145515.199">A small font size used by default in the check boxes in the Find tab.</t>
-<t tx="ekr.20180318145515.200">A small font size used by default in the status area.</t>
 <t tx="ekr.20180318145515.201"></t>
 <t tx="ekr.20180318145515.202"></t>
 <t tx="ekr.20180318145515.203">@LeoYellow</t>
@@ -309,7 +286,6 @@ DejaVu Sans Mono</t>
 
 Same as Leo Black Solarized except it uses 19px for the body pane.
 </t>
-<t tx="ekr.20180318145515.710" lineYOffset="4b002e"></t>
 <t tx="ekr.20180318145515.711"></t>
 <t tx="ekr.20180318145515.712"></t>
 <t tx="ekr.20180318145515.713">@language md
@@ -708,7 +684,7 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="ekr.20180318145515.796"></t>
+<t tx="ekr.20180318145515.796"># Most users will want to change these settings first.</t>
 <t tx="ekr.20180318145515.797"></t>
 <t tx="ekr.20180318145515.798"></t>
 <t tx="ekr.20180318145515.799"></t>
@@ -1027,5 +1003,16 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
+<t tx="ekr.20201220213006.1"></t>
+<t tx="ekr.20201220213006.2"></t>
+<t tx="ekr.20201220213006.3"></t>
+<t tx="ekr.20201220213006.4"></t>
+<t tx="ekr.20201220213006.5"></t>
+<t tx="ekr.20201220220118.1">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 </tnodes>
 </leo_file>
