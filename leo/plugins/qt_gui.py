@@ -1063,17 +1063,6 @@ class LeoQtGui(leoGui.LeoGui):
             for sub in bare_subs:
                 paths.append(join(root, sub))
         table = [z for z in paths if exists(z)]
-        if False and trace and not self.dump_given:
-            self.dump_given = True
-            getString = g.app.config.getString
-            g.trace('\n...')
-            # dump('g.app.theme_color', g.app.theme_color)
-            dump('@string color-theme', getString('color-theme'))
-            # dump('g.app.theme_name', g.app.theme_name)
-            dump('@string theme-name', getString('theme-name'))
-            print('directory table...')
-            g.printObj(table)
-            print('')
         for base_dir in table:
             path = join(base_dir, name)
             if exists(path):

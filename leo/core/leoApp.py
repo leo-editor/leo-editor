@@ -2268,9 +2268,8 @@ class LoadManager:
                     # Used by the StyleSheetManager.
                 if trace:
                     if trace:
-                        g.trace('\n=====\n')
+                        g.trace('\n')
                         print(f" g.app.theme_path: {g.app.theme_directory}")
-                        print(f" g.app.theme_name: {g.app.theme_name}")
                         print(f"g.app.theme_color: {g.app.theme_color}")
                         print('')
         # Clear the cache entries for the commanders.
