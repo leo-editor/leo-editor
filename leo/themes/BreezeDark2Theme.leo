@@ -14,15 +14,9 @@
 <v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
+<v t="chris.20180313181652.3"><vh>Notes</vh></v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="chris.20180313181652.2"><vh>@theme Breeze Dark 2</vh>
-<v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
-<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
-<v t="chris.20180322154730.1"><vh>@string theme-name = BreezeDark2Theme</vh></v>
-</v>
-<v t="chris.20180313181652.14"><vh>Settings for Leo Breeze Dark 2</vh>
 <v t="chris.20180322072943.1"><vh>Colors...</vh>
 <v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20190620151807.1"><vh>@color dark-base0 = #eff0f1</vh></v>
@@ -52,7 +46,21 @@
 <v t="chris.20180313181652.28"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="chris.20180313181652.29"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
-<v t="chris.20180313181652.30"><vh>Colors: Syntax coloring</vh>
+<v t="chris.20180313181652.59"><vh>Colors: Text</vh>
+<v t="chris.20180313181652.60"><vh>@color log_text_background_color = @dark-base3</vh></v>
+<v t="chris.20180313181652.61"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
+<v t="chris.20180313181652.62"><vh>@color text-background = @dark-base3</vh></v>
+<v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base5</vh></v>
+<v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base4</vh></v>
+<v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
+<v t="chris.20190621145932.1"><vh>@color status-bg = @dark-base3</vh></v>
+<v t="chris.20190621145935.1"><vh>@color status-fg = @dark-base0</vh></v>
+</v>
+<v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
+<v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
+</v>
+</v>
+<v t="chris.20180313181652.30"><vh>Syntax coloring</vh>
 <v t="chris.20180313181652.31"><vh>Colors: defaults</vh>
 <v t="chris.20180313181652.32"><vh>@color blank_color = grey</vh></v>
 <v t="chris.20180313181652.33"><vh>@color tab_color = red</vh></v>
@@ -84,33 +92,20 @@
 <v t="chris.20180313181652.58"><vh>@color url_color = #f21eec</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.59"><vh>Colors: Text</vh>
-<v t="chris.20180313181652.60"><vh>@color log_text_background_color = @dark-base3</vh></v>
-<v t="chris.20180313181652.61"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="chris.20180313181652.62"><vh>@color text-background = @dark-base3</vh></v>
-<v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base5</vh></v>
-<v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base4</vh></v>
-<v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
-<v t="chris.20190621145932.1"><vh>@color status-bg = @dark-base3</vh></v>
-<v t="chris.20190621145935.1"><vh>@color status-fg = @dark-base0</vh></v>
-</v>
-<v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
-<v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
-</v>
-</v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
 <v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180313181652.73"><vh>@string font-size-body = 18px</vh></v>
-<v t="chris.20180313181652.74"><vh>@string font-size-log = 17px</vh></v>
-<v t="chris.20180313181652.75"><vh>@string font-size-tree = 18px</vh></v>
-<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 16px</vh></v>
-<v t="chris.20180315130317.1"><vh>@string font-size-menu = 16px</vh></v>
-<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 16px</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 12pt</vh></v>
+<v t="chris.20180313181652.74"><vh>@string font-size-log = 12pt</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 12pt</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 12pt</vh></v>
+<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 12pt</vh></v>
 </v>
 <v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.80"><vh>bookmarks</vh>
 <v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="chris.20180313181652.82"><vh>bookmarks base</vh>
@@ -149,7 +144,7 @@
 </v>
 </v>
 </v>
-</v>
+<v t="ekr.20201221104656.1"><vh>Stylesheet</vh>
 <v t="chris.20190619152603.1"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20190619152603.2"><vh>Universal Style</vh></v>
 <v t="chris.20190619152603.3"><vh>Body &amp; Text</vh></v>
@@ -171,9 +166,11 @@
 </v>
 </v>
 </v>
+<v t="chris.20180313181652.68"></v>
 </vnodes>
 <tnodes>
-<t tx="chris.20180313181652.1"></t>
+<t tx="chris.20180313181652.1">@language rest
+@wrap</t>
 <t tx="chris.20180313181652.100"></t>
 <t tx="chris.20180313181652.101">none or underline</t>
 <t tx="chris.20180313181652.102"></t>
@@ -186,21 +183,16 @@
 <t tx="chris.20180313181652.109"></t>
 <t tx="chris.20180313181652.110">bold or regular</t>
 <t tx="chris.20180313181652.111"></t>
-<t tx="chris.20180313181652.115"></t>
 <t tx="chris.20180313181652.116" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
 used to find icon files</t>
-<t tx="chris.20180313181652.14" lineYOffset="4b002e"></t>
 <t tx="chris.20180313181652.15"></t>
 <t tx="chris.20180313181652.16">Use a light color, not black!
 @solarized-white</t>
 <t tx="chris.20180313181652.17"></t>
 <t tx="chris.20180313181652.18"></t>
 <t tx="chris.20180313181652.19"></t>
-<t tx="chris.20180313181652.2" lineYOffset="4b002e">@language rest
-@wrap
-@tabwidth -2</t>
 <t tx="chris.20180313181652.20"></t>
 <t tx="chris.20180313181652.21"></t>
 <t tx="chris.20180313181652.22"></t>
@@ -1943,8 +1935,10 @@ gray90: #E5E5E5
 
 Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.67"></t>
-<t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
-<t tx="chris.20180313181652.69"></t>
+<t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
+<t tx="chris.20180313181652.69">Inconsolata, Droid Sans Mono </t>
 <t tx="chris.20180313181652.70"></t>
 <t tx="chris.20180313181652.71"></t>
 <t tx="chris.20180313181652.72"></t>
@@ -2053,7 +2047,6 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
 <t tx="chris.20180322072943.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
-<t tx="chris.20180322154730.1"></t>
 <t tx="chris.20190619135732.1"></t>
 <t tx="chris.20190619152603.1">/*
 
@@ -2860,5 +2853,6 @@ border-radius: 5px;
 
 
 </t>
+<t tx="ekr.20201221104656.1"></t>
 </tnodes>
 </leo_file>

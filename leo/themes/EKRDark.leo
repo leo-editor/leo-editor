@@ -15,7 +15,6 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20201221075212.1"><vh>@string color-theme = EKRDark</vh></v>
 <v t="ekr.20201221073843.1"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20180318145515.181"><vh>@bool use-focus-border = True</vh></v>
 <v t="ekr.20180318145515.182"><vh>@bool use-gutter = False</vh></v>
@@ -23,6 +22,7 @@
 <v t="ekr.20180318145515.187"><vh>@int qt-cursor-width = 5</vh></v>
 <v t="ekr.20180318145515.805"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="ekr.20180318145515.806"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="ekr.20201221075212.1"><vh>@string color-theme = EKRDark</vh></v>
 <v t="ekr.20180318145515.188"><vh>@string focused-border-width = 1px</vh></v>
 <v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
 <v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
@@ -78,46 +78,6 @@
 <v t="ekr.20201220213006.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
 <v t="ekr.20201220213006.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
 </v>
-<v t="ekr.20180318145515.752"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
-<v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
-<v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20180318145515.756"><vh>@color label_color = red</vh></v>
-<v t="ekr.20180318145515.757"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.758"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.759"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.760"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.761"><vh>@color literal1_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.762"><vh>@color literal2_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.763"><vh>@color literal3_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.764"><vh>@color literal4_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.765"><vh>@color markup_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.766"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20180318145515.767"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20180318145515.768"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20180318145515.769"><vh>@color comment4_color = #d33682</vh></v>
-</v>
-<v t="ekr.20180318145515.770"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180318145515.771"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.772"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20180318145515.773"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20180318145515.774"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @literal1_color</vh></v>
-<v t="ekr.20180318145515.776"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
-</v>
-<v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
-</v>
-</v>
 <v t="ekr.20180318145515.787"><vh>Colors: Text</vh>
 <v t="ekr.20180318145515.788"><vh>@color log_text_background_color = #000005</vh></v>
 <v t="ekr.20180318145515.789"><vh>@color log_text_foreground_color = #ffffff</vh></v>
@@ -162,6 +122,46 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+</v>
+</v>
+<v t="ekr.20201221102453.1"><vh>Syntax coloring</vh>
+<v t="ekr.20180318145515.753"><vh>Color names for syntax coloring</vh>
+<v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
+<v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20180318145515.756"><vh>@color label_color = red</vh></v>
+<v t="ekr.20180318145515.757"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.758"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.759"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.760"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.761"><vh>@color literal1_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.762"><vh>@color literal2_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.763"><vh>@color literal3_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.764"><vh>@color literal4_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.765"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.766"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20180318145515.767"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20180318145515.768"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20180318145515.769"><vh>@color comment4_color = #d33682</vh></v>
+</v>
+<v t="ekr.20180318145515.770"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180318145515.771"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.772"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20180318145515.773"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20180318145515.774"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @literal1_color</vh></v>
+<v t="ekr.20180318145515.776"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
 </v>
 </v>
 </v>
@@ -483,7 +483,6 @@ Terry: #dc322f</t>
 Terry: #268bd2</t>
 <t tx="ekr.20180318145515.750"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180318145515.751"></t>
-<t tx="ekr.20180318145515.752" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
 <t tx="ekr.20180318145515.753">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
 There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
@@ -658,7 +657,9 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="ekr.20180318145515.796"># Most users will want to change these settings first.</t>
+<t tx="ekr.20180318145515.796">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
 <t tx="ekr.20180318145515.797"></t>
 <t tx="ekr.20180318145515.798"></t>
 <t tx="ekr.20180318145515.799"></t>
@@ -969,5 +970,6 @@ QLineEdit#editorLabel {
 <t tx="ekr.20201221073050.1"></t>
 <t tx="ekr.20201221073843.1"></t>
 <t tx="ekr.20201221075212.1">The path to the icon folder.</t>
+<t tx="ekr.20201221102453.1">These settings must exist because they are *not* used in the css.</t>
 </tnodes>
 </leo_file>

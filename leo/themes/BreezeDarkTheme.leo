@@ -14,16 +14,14 @@
 <v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
+<v t="chris.20180313181652.3"><vh>Notes</vh></v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
-<v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
-<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="chris.20180313181652.115"><vh>Appearance (miscellaneous)</vh>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
-<v t="chris.20180322154730.1"><vh>@string theme-name = BreezeDarkTheme</vh></v>
+<v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
+<v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
-<v t="chris.20180313181652.14"><vh>Settings for Leo Breeze Dark</vh>
-<v t="chris.20180322072943.1"><vh>Colors...</vh>
+<v t="chris.20180322072943.1"><vh>Colors</vh>
 <v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
@@ -98,18 +96,19 @@
 </v>
 </v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
 <v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180313181652.73"><vh>@string font-size-body = 22px</vh></v>
-<v t="chris.20180313181652.74"><vh>@string font-size-log = 17px</vh></v>
-<v t="chris.20180313181652.75"><vh>@string font-size-tree = 20px</vh></v>
-<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 18px</vh></v>
-<v t="chris.20180315130317.1"><vh>@string font-size-menu = 17px</vh></v>
-<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 18px</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 12pt</vh></v>
+<v t="chris.20180313181652.74"><vh>@string font-size-log = 12pt</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 12pt</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 12pt</vh></v>
+<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 12pt</vh></v>
 </v>
 <v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.80"><vh>bookmarks</vh>
 <v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="chris.20180313181652.82"><vh>bookmarks base</vh>
@@ -148,11 +147,7 @@
 </v>
 </v>
 </v>
-<v t="chris.20180313181652.112"><vh>Outline indicators</vh>
-<v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
-<v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
-</v>
-</v>
+<v t="ekr.20201221104051.1"><vh>Stylesheet</vh>
 <v t="chris.20180313181652.118"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180313181652.119"><vh>General Widgets</vh></v>
 <v t="chris.20180313181652.120"><vh>Body &amp; other text</vh></v>
@@ -171,9 +166,16 @@
 </v>
 </v>
 </v>
+<v t="chris.20180313181652.68"></v>
 </vnodes>
 <tnodes>
-<t tx="chris.20180313181652.1"></t>
+<t tx="chris.20180313181652.1">@language rest
+@wrap
+
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="chris.20180313181652.10"></t>
 <t tx="chris.20180313181652.100"></t>
 <t tx="chris.20180313181652.101">none or underline</t>
@@ -188,16 +190,6 @@
 <t tx="chris.20180313181652.11"></t>
 <t tx="chris.20180313181652.110">bold or regular</t>
 <t tx="chris.20180313181652.111"></t>
-<t tx="chris.20180313181652.112" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="chris.20180313181652.113">Must be relative to either the users home directory or leo/Icons directory.
 
 </t>
@@ -786,16 +778,12 @@ QLineEdit#status2[style_class ~= 'fail'] {
     color:      @dark-base0;
 }
 */</t>
-<t tx="chris.20180313181652.14" lineYOffset="4b002e"></t>
 <t tx="chris.20180313181652.15"></t>
 <t tx="chris.20180313181652.16">Use a light color, not black!
 @solarized-white</t>
 <t tx="chris.20180313181652.17"></t>
 <t tx="chris.20180313181652.18"></t>
 <t tx="chris.20180313181652.19"></t>
-<t tx="chris.20180313181652.2" lineYOffset="4b002e">@language rest
-@wrap
-@tabwidth -2</t>
 <t tx="chris.20180313181652.20"></t>
 <t tx="chris.20180313181652.21"></t>
 <t tx="chris.20180313181652.22"></t>
@@ -2533,8 +2521,10 @@ gray90: #E5E5E5
 
 Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.67"></t>
-<t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
-<t tx="chris.20180313181652.69"></t>
+<t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
+<t tx="chris.20180313181652.69">Inconsolata, Droid Sans Mono</t>
 <t tx="chris.20180313181652.7"></t>
 <t tx="chris.20180313181652.70"></t>
 <t tx="chris.20180313181652.71"></t>
@@ -2645,7 +2635,6 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
 <t tx="chris.20180322072943.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e"></t>
-<t tx="chris.20180322154730.1"></t>
 <t tx="chris.20190621150105.1"></t>
 <t tx="chris.20190621150110.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
@@ -2669,5 +2658,6 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
+<t tx="ekr.20201221104051.1"></t>
 </tnodes>
 </leo_file>

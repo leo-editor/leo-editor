@@ -74,46 +74,6 @@
 <v t="ekr.20180318145515.750"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="ekr.20180318145515.751"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
-<v t="ekr.20180318145515.752"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
-<v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
-<v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20180318145515.756"><vh>@color label_color = red</vh></v>
-<v t="ekr.20180318145515.757"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.758"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.759"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.760"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.761"><vh>@color literal1_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.762"><vh>@color literal2_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.763"><vh>@color literal3_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.764"><vh>@color literal4_color = @alt-solarized-green</vh></v>
-<v t="ekr.20180318145515.765"><vh>@color markup_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.766"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20180318145515.767"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20180318145515.768"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20180318145515.769"><vh>@color comment4_color = #d33682</vh></v>
-</v>
-<v t="ekr.20180318145515.770"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180318145515.771"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.772"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20180318145515.773"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20180318145515.774"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @literal1_color</vh></v>
-<v t="ekr.20180318145515.776"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
-</v>
-<v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
-</v>
-</v>
 <v t="ekr.20180318145515.787"><vh>Colors: Text</vh>
 <v t="ekr.20180318145515.788"><vh>@color log_text_background_color = #000005</vh></v>
 <v t="ekr.20180318145515.789"><vh>@color log_text_foreground_color = #ffffff</vh></v>
@@ -162,6 +122,46 @@
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
 <v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
 <v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+</v>
+</v>
+<v t="ekr.20180318145515.752"><vh>Syntax coloring</vh>
+<v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
+<v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
+<v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20180318145515.756"><vh>@color label_color = red</vh></v>
+<v t="ekr.20180318145515.757"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.758"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.759"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.760"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.761"><vh>@color literal1_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.762"><vh>@color literal2_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.763"><vh>@color literal3_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.764"><vh>@color literal4_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.765"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20180318145515.766"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20180318145515.767"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20180318145515.768"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20180318145515.769"><vh>@color comment4_color = #d33682</vh></v>
+</v>
+<v t="ekr.20180318145515.770"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180318145515.771"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.772"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20180318145515.773"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20180318145515.774"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @literal1_color</vh></v>
+<v t="ekr.20180318145515.776"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
 </v>
 </v>
 </v>

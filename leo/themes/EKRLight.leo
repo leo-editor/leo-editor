@@ -15,9 +15,13 @@
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
+<v t="ekr.20201221102717.1"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20201221074355.1"><vh>@string color-theme = generic</vh></v>
+<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
+<v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
+</v>
 <v t="ekr.20201221063741.1"><vh>Colors</vh>
-<v t="ekr.20180309185230.3"><vh>Colors Definitions</vh>
+<v t="ekr.20180309185230.3"><vh>Color Definitions</vh>
 <v t="ekr.20180309191121.1"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20180309191129.1"><vh>@color LeoYellow = @LightYellow</vh></v>
 <v t="ekr.20180309191953.1"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
@@ -45,38 +49,6 @@
 <v t="ekr.20180309201328.5"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
 <v t="ekr.20180309201328.4"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
 </v>
-<v t="ekr.20180309185230.17"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180309185230.18"><vh>Colors: defaults</vh>
-<v t="ekr.20180309185230.19"><vh>@color blank-color = grey</vh></v>
-<v t="ekr.20180309185230.20"><vh>@color tab-color = red</vh></v>
-<v t="ekr.20180309185230.21"><vh>@color label-color = red</vh></v>
-<v t="ekr.20180309185230.22"><vh>@color keyword1-color = blue</vh></v>
-<v t="ekr.20180309185230.23"><vh>@color keyword2-color = blue</vh></v>
-<v t="ekr.20180309185230.24"><vh>@color keyword3-color = blue</vh></v>
-<v t="ekr.20180309185230.25"><vh>@color keyword4-color = blue</vh></v>
-<v t="ekr.20180309185230.26"><vh>@color literal1-color = #00aa00</vh></v>
-<v t="ekr.20180309185230.27"><vh>@color literal2-color = #00aa00</vh></v>
-<v t="ekr.20180309185230.28"><vh>@color literal3-color = #00aa00</vh></v>
-<v t="ekr.20180309185230.29"><vh>@color literal4-color = ##00aa00</vh></v>
-<v t="ekr.20180309185230.30"><vh>@color markup-color =black</vh></v>
-<v t="ekr.20180309185230.31"><vh>@color comment1-color = firebrick3</vh></v>
-<v t="ekr.20180309185230.32"><vh>@color comment2-color = firebrick3</vh></v>
-<v t="ekr.20180309185230.33"><vh>@color comment3-color = firebrick3</vh></v>
-<v t="ekr.20180309185230.34"><vh>@color comment4-color = firebrick3</vh></v>
-</v>
-<v t="ekr.20180309185230.35"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180309185230.36"><vh>@color section-name-brackets-color = blue</vh></v>
-<v t="ekr.20180309185230.37"><vh>@color null-color = #6c71c4</vh></v>
-<v t="ekr.20180309185230.38"><vh>@color operator-color = #6c71c4</vh></v>
-<v t="ekr.20180309185230.39"><vh>@color doc-part-color = firebrick3</vh></v>
-<v t="ekr.20180309185230.40"><vh>@color leo-keyword-color = #00aa00</vh></v>
-<v t="ekr.20180309185230.41"><vh>@color section-name-color = red</vh></v>
-<v t="ekr.20180309185230.42"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
-<v t="ekr.20180309185230.43"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
-<v t="ekr.20180309185230.44"><vh>@color undefined-section-name-color = red</vh></v>
-<v t="ekr.20180309185230.45"><vh>@color url-color = purple</vh></v>
-</v>
-</v>
 <v t="ekr.20180309185230.46"><vh>Colors: Text</vh>
 <v t="ekr.20180309185230.47"><vh>@color log-text-background-color =LeoYellow</vh></v>
 <v t="ekr.20180309185230.48"><vh>@color log-text-foreground-color =black</vh></v>
@@ -90,17 +62,13 @@
 </v>
 </v>
 <v t="ekr.20180309185230.55"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180309185230.56"><vh>@string font-family =DejaVu Sans Mono</vh></v>
+<v t="ekr.20180309185230.56"><vh>@string font-family = DejaVu Sans Mono</vh></v>
 <v t="ekr.20180309185230.57"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180309185230.58"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180309185230.59"><vh>@string font-family-tree =@font-family</vh></v>
 <v t="ekr.20180309185230.60"><vh>@string font-size-body = 12pt</vh></v>
 <v t="ekr.20180309185230.61"><vh>@string font-size-log = 12pt</vh></v>
 <v t="ekr.20180309185230.62"><vh>@string font-size-tree = 12pt</vh></v>
-</v>
-<v t="ekr.20180309185230.99"><vh>Outline indicators</vh>
-<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
-<v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
 </v>
 <v t="ekr.20180309185230.66"><vh>Plugins</vh>
 <v t="ekr.20180309185230.103"><vh>@bool color-theme-is-dark = False</vh></v>
@@ -159,6 +127,38 @@
 <v t="ekr.20180309185230.116"><vh>Tab bar</vh></v>
 <v t="ekr.20180309185230.117"><vh>Tree</vh></v>
 <v t="ekr.20190106114202.1"><vh>zz must be last</vh></v>
+</v>
+</v>
+<v t="ekr.20180309185230.17"><vh>Syntax coloring</vh>
+<v t="ekr.20180309185230.18"><vh>Colors: defaults</vh>
+<v t="ekr.20180309185230.19"><vh>@color blank-color = grey</vh></v>
+<v t="ekr.20180309185230.20"><vh>@color tab-color = red</vh></v>
+<v t="ekr.20180309185230.21"><vh>@color label-color = red</vh></v>
+<v t="ekr.20180309185230.22"><vh>@color keyword1-color = blue</vh></v>
+<v t="ekr.20180309185230.23"><vh>@color keyword2-color = blue</vh></v>
+<v t="ekr.20180309185230.24"><vh>@color keyword3-color = blue</vh></v>
+<v t="ekr.20180309185230.25"><vh>@color keyword4-color = blue</vh></v>
+<v t="ekr.20180309185230.26"><vh>@color literal1-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.27"><vh>@color literal2-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.28"><vh>@color literal3-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.29"><vh>@color literal4-color = ##00aa00</vh></v>
+<v t="ekr.20180309185230.30"><vh>@color markup-color =black</vh></v>
+<v t="ekr.20180309185230.31"><vh>@color comment1-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.32"><vh>@color comment2-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.33"><vh>@color comment3-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.34"><vh>@color comment4-color = firebrick3</vh></v>
+</v>
+<v t="ekr.20180309185230.35"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180309185230.36"><vh>@color section-name-brackets-color = blue</vh></v>
+<v t="ekr.20180309185230.37"><vh>@color null-color = #6c71c4</vh></v>
+<v t="ekr.20180309185230.38"><vh>@color operator-color = #6c71c4</vh></v>
+<v t="ekr.20180309185230.39"><vh>@color doc-part-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.40"><vh>@color leo-keyword-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.41"><vh>@color section-name-color = red</vh></v>
+<v t="ekr.20180309185230.42"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
+<v t="ekr.20180309185230.43"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
+<v t="ekr.20180309185230.44"><vh>@color undefined-section-name-color = red</vh></v>
+<v t="ekr.20180309185230.45"><vh>@color url-color = purple</vh></v>
 </v>
 </v>
 </v>
@@ -368,7 +368,7 @@ QLineEdit#status2 {
   background: @LeoBlue;
   color: black;
   show-decoration-selected: 1; /* Extend the selection */
-  padding: 2px solid @LeoBlue;
+  /*padding: 2px solid @LeoBlue; */
   border-color: @LeoBlue;
 }
 QTreeView::item:selected, QTreeView::item:active:selected {
@@ -394,6 +394,7 @@ QTreeView QLineEdit {
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal, italic,oblique */
   padding: 0px;
+  border: none;
 }
 
 QTreeWidget {
@@ -409,7 +410,7 @@ QTreeWidget {
 }
 QTreeWidget::selected {
   background: @LeoBlue;
-  color: black; 
+  color: black;
 }
 </t>
 <t tx="ekr.20180309185230.118">QDockWidget {
@@ -536,9 +537,11 @@ Only colors appearing in several places are given here.
     '@run-script-btn-bg',
     '@script-button-btn-bg',
     '@script-button-button-btn-bg'</t>
-<t tx="ekr.20180309185230.55">Most users will want to change these settings first.</t>
+<t tx="ekr.20180309185230.55">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
 <t tx="ekr.20180309185230.56"> Inconsolata
- Droid Sans Mono, </t>
+ Droid Sans Mono</t>
 <t tx="ekr.20180309185230.57"></t>
 <t tx="ekr.20180309185230.58"></t>
 <t tx="ekr.20180309185230.59"></t>
@@ -585,16 +588,6 @@ valid values are: normal,bold,100,..,900
 <t tx="ekr.20180309185230.96"></t>
 <t tx="ekr.20180309185230.97">bold or regular</t>
 <t tx="ekr.20180309185230.98"></t>
-<t tx="ekr.20180309185230.99">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="ekr.20180309190723.1"></t>
 <t tx="ekr.20180309191121.1"></t>
 <t tx="ekr.20180309191129.1">#ffffec Leo's traditional tree color.</t>
@@ -725,5 +718,6 @@ QLineEdit#editorLabel {
 <t tx="ekr.20201221063741.1"></t>
 <t tx="ekr.20201221072803.1"></t>
 <t tx="ekr.20201221074355.1">The path to the icon folder.</t>
+<t tx="ekr.20201221102717.1"></t>
 </tnodes>
 </leo_file>

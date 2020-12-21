@@ -7,6 +7,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="chris.20180313181652.3"><vh>Notes</vh></v>
 <v t="chris.20180314054143.1"><vh>Tests</vh>
 <v t="chris.20180314054143.2"><vh>Syntax coloring template</vh>
 <v t="chris.20180314054143.3"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -15,16 +16,9 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="chris.20180313181652.2"><vh>@theme Zephyr Dark</vh>
-<v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
-<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
-<v t="chris.20180322154730.1"><vh>@string theme-name = ZephyrDarkTheme</vh></v>
-</v>
-<v t="chris.20180313181652.14"><vh>Settings for Leo Zephyr Dark</vh>
 <v t="chris.20180322072943.1"><vh>Colors...</vh>
-<v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
+<v t="chris.20180313181652.4"><vh>Base color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #EFEBE9</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #A1887F</vh></v>
 <v t="chris.20180313181652.7"><vh>@color dark-base2 = #ffffff</vh></v>
@@ -36,7 +30,7 @@
 <v t="chris.20180313181652.13"><vh>@color dark-base8 = #8D6E63</vh></v>
 <v t="chris.20190619135732.1"><vh>@color dark-base9 = #6D4C41</vh></v>
 </v>
-<v t="chris.20180313181652.15"><vh>Colors: Logical colors</vh>
+<v t="chris.20180313181652.15"><vh>Color definitions</vh>
 <v t="chris.20180313181652.16"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="chris.20180313181652.17"><vh>@color log_blue_color = @solarized-blue</vh></v>
 <v t="chris.20180313181652.18"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
@@ -51,38 +45,6 @@
 <v t="chris.20180313181652.27"><vh>@color log_warning_color_= @solarized-red</vh></v>
 <v t="chris.20180313181652.28"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="chris.20180313181652.29"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
-</v>
-<v t="chris.20180313181652.30"><vh>Colors: Syntax coloring</vh>
-<v t="chris.20180313181652.31"><vh>Colors: defaults</vh>
-<v t="chris.20180313181652.32"><vh>@color blank_color = grey</vh></v>
-<v t="chris.20180313181652.33"><vh>@color tab_color = red</vh></v>
-<v t="chris.20180313181652.34"><vh>@color label_color = red</vh></v>
-<v t="chris.20180313181652.35"><vh>@color keyword1_color = #65ffff</vh></v>
-<v t="chris.20180313181652.36"><vh>@color keyword2_color = #3875db</vh></v>
-<v t="chris.20180313181652.37"><vh>@color keyword3_color = #f21eec</vh></v>
-<v t="chris.20180313181652.38"><vh>@color keyword4_color = #e4bcff</vh></v>
-<v t="chris.20180313181652.39"><vh>@color literal1_color = #00c200</vh></v>
-<v t="chris.20180313181652.40"><vh>@color literal2_color = #beff00</vh></v>
-<v t="chris.20180313181652.41"><vh>@color literal3_color = #a5ffc1</vh></v>
-<v t="chris.20180313181652.42"><vh>@color literal4_color = #f7f6cd</vh></v>
-<v t="chris.20180313181652.43"><vh>@color markup_color = #ffffff</vh></v>
-<v t="chris.20180313181652.44"><vh>@color comment1_color = #ff9a00</vh></v>
-<v t="chris.20180313181652.45"><vh>@color comment2_color = #ffec00</vh></v>
-<v t="chris.20180313181652.46"><vh>@color comment3_color = #ffc9de</vh></v>
-<v t="chris.20180313181652.47"><vh>@color comment4_color = #ffd9ae</vh></v>
-</v>
-<v t="chris.20180313181652.48"><vh>Colors: Leo constructs</vh>
-<v t="chris.20180313181652.49"><vh>@color section_name_brackets_color = #65ffff</vh></v>
-<v t="chris.20180313181652.50"><vh>@color null_color = #3875db</vh></v>
-<v t="chris.20180313181652.51"><vh>@color operator_color = #3875db</vh></v>
-<v t="chris.20180313181652.52"><vh>@color doc_part_color = #ff0000</vh></v>
-<v t="chris.20180313181652.53"><vh>@color leo_keyword_color = #00c200</vh></v>
-<v t="chris.20180313181652.54"><vh>@color section_name_color = #a26b22</vh></v>
-<v t="chris.20180313181652.55"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="chris.20180313181652.56"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="chris.20180313181652.57"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="chris.20180313181652.58"><vh>@color url_color = #f21eec</vh></v>
-</v>
 </v>
 <v t="chris.20180313181652.59"><vh>Colors: Text</vh>
 <v t="chris.20180313181652.60"><vh>@color log_text_background_color = @dark-base3</vh></v>
@@ -99,18 +61,19 @@
 </v>
 </v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
-<v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
-<v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180313181652.73"><vh>@string font-size-body = 17px</vh></v>
-<v t="chris.20180313181652.74"><vh>@string font-size-log = 16px</vh></v>
-<v t="chris.20180313181652.75"><vh>@string font-size-tree = 16px</vh></v>
-<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 15px</vh></v>
-<v t="chris.20180315130317.1"><vh>@string font-size-menu = 15px</vh></v>
-<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 15px</vh></v>
+<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="chris.20180313181652.70"><vh>@string font-family-body = @font-family</vh></v>
+<v t="chris.20180313181652.71"><vh>@string font-family-log = @font-family</vh></v>
+<v t="chris.20180313181652.72"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 12pt</vh></v>
+<v t="chris.20180313181652.74"><vh>@string font-size-log = 12pt</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 12pt</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 12pt</vh></v>
+<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 12pt</vh></v>
 </v>
-<v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.79"><vh>Plugins</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.80"><vh>bookmarks</vh>
 <v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="chris.20180313181652.82"><vh>bookmarks base</vh>
@@ -149,7 +112,7 @@
 </v>
 </v>
 </v>
-</v>
+<v t="ekr.20201221111820.1"><vh>Stylesheet</vh>
 <v t="chris.20190619152603.1"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20190619152603.2"><vh>Universal Style</vh></v>
 <v t="chris.20190619152603.3"><vh>Body &amp; Text</vh></v>
@@ -171,10 +134,49 @@
 <v t="chris.20190619152603.15"><vh>Status area</vh></v>
 </v>
 </v>
+<v t="chris.20180313181652.30"><vh>Syntax coloring</vh>
+<v t="chris.20180313181652.31"><vh>Colors: defaults</vh>
+<v t="chris.20180313181652.32"><vh>@color blank_color = grey</vh></v>
+<v t="chris.20180313181652.33"><vh>@color tab_color = red</vh></v>
+<v t="chris.20180313181652.34"><vh>@color label_color = red</vh></v>
+<v t="chris.20180313181652.35"><vh>@color keyword1_color = #65ffff</vh></v>
+<v t="chris.20180313181652.36"><vh>@color keyword2_color = #3875db</vh></v>
+<v t="chris.20180313181652.37"><vh>@color keyword3_color = #f21eec</vh></v>
+<v t="chris.20180313181652.38"><vh>@color keyword4_color = #e4bcff</vh></v>
+<v t="chris.20180313181652.39"><vh>@color literal1_color = #00c200</vh></v>
+<v t="chris.20180313181652.40"><vh>@color literal2_color = #beff00</vh></v>
+<v t="chris.20180313181652.41"><vh>@color literal3_color = #a5ffc1</vh></v>
+<v t="chris.20180313181652.42"><vh>@color literal4_color = #f7f6cd</vh></v>
+<v t="chris.20180313181652.43"><vh>@color markup_color = #ffffff</vh></v>
+<v t="chris.20180313181652.44"><vh>@color comment1_color = #ff9a00</vh></v>
+<v t="chris.20180313181652.45"><vh>@color comment2_color = #ffec00</vh></v>
+<v t="chris.20180313181652.46"><vh>@color comment3_color = #ffc9de</vh></v>
+<v t="chris.20180313181652.47"><vh>@color comment4_color = #ffd9ae</vh></v>
 </v>
+<v t="chris.20180313181652.48"><vh>Colors: Leo constructs</vh>
+<v t="chris.20180313181652.49"><vh>@color section_name_brackets_color = #65ffff</vh></v>
+<v t="chris.20180313181652.50"><vh>@color null_color = #3875db</vh></v>
+<v t="chris.20180313181652.51"><vh>@color operator_color = #3875db</vh></v>
+<v t="chris.20180313181652.52"><vh>@color doc_part_color = #ff0000</vh></v>
+<v t="chris.20180313181652.53"><vh>@color leo_keyword_color = #00c200</vh></v>
+<v t="chris.20180313181652.54"><vh>@color section_name_color = #a26b22</vh></v>
+<v t="chris.20180313181652.55"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="chris.20180313181652.56"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="chris.20180313181652.57"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="chris.20180313181652.58"><vh>@color url_color = #f21eec</vh></v>
+</v>
+</v>
+</v>
+<v t="chris.20180313181652.68"></v>
 </vnodes>
 <tnodes>
-<t tx="chris.20180313181652.1"></t>
+<t tx="chris.20180313181652.1">@language rest
+@wrap
+
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="chris.20180313181652.10"></t>
 <t tx="chris.20180313181652.100"></t>
 <t tx="chris.20180313181652.101">none or underline</t>
@@ -189,23 +191,18 @@
 <t tx="chris.20180313181652.11"></t>
 <t tx="chris.20180313181652.110">bold or regular</t>
 <t tx="chris.20180313181652.111"></t>
-<t tx="chris.20180313181652.115"></t>
 <t tx="chris.20180313181652.116" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
 used to find icon files</t>
 <t tx="chris.20180313181652.12"></t>
 <t tx="chris.20180313181652.13"></t>
-<t tx="chris.20180313181652.14" lineYOffset="4b002e"></t>
 <t tx="chris.20180313181652.15"></t>
 <t tx="chris.20180313181652.16">Use a light color, not black!
 @solarized-white</t>
 <t tx="chris.20180313181652.17"></t>
 <t tx="chris.20180313181652.18"></t>
 <t tx="chris.20180313181652.19"></t>
-<t tx="chris.20180313181652.2" lineYOffset="4b002e">@language rest
-@wrap
-@tabwidth -2</t>
 <t tx="chris.20180313181652.20"></t>
 <t tx="chris.20180313181652.21"></t>
 <t tx="chris.20180313181652.22"></t>
@@ -1971,8 +1968,10 @@ gray90: #E5E5E5
 
 Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.67"></t>
-<t tx="chris.20180313181652.68"></t>
-<t tx="chris.20180313181652.69"></t>
+<t tx="chris.20180313181652.68">Most users will want to change these first.
+
+The stylesheet uses these settings.</t>
+<t tx="chris.20180313181652.69">Inconsolata, Droid Sans Mono</t>
 <t tx="chris.20180313181652.7"></t>
 <t tx="chris.20180313181652.70"></t>
 <t tx="chris.20180313181652.71"></t>
@@ -2084,7 +2083,6 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
 <t tx="chris.20180322072943.1"></t>
-<t tx="chris.20180322154730.1"></t>
 <t tx="chris.20190619135732.1"></t>
 <t tx="chris.20190619152603.1">/*
 
@@ -2959,5 +2957,6 @@ color: @dark-base0;
 
 
 </t>
+<t tx="ekr.20201221111820.1"></t>
 </tnodes>
 </leo_file>
