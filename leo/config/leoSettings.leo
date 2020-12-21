@@ -131,10 +131,10 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20180308050150.1"><vh>Logical colors</vh>
 <v t="ekr.20180308050150.2"><vh>@color log-black-color = black</vh></v>
 <v t="ekr.20180308050150.3"><vh>@color log-blue-color = blue</vh></v>
 <v t="ekr.20180308050150.15"><vh>@color log-cyan-color = cyan</vh></v>
@@ -149,7 +149,6 @@
 <v t="ekr.20180306155628.1"><vh>@color log-warning-color = red</vh></v>
 <v t="ekr.20180308050150.13"><vh>@color log-white-color = white</vh></v>
 <v t="ekr.20180308050150.14"><vh>@color log-yellow-color = yellow</vh></v>
-</v>
 <v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
 <v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
 <v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
@@ -235,7 +234,6 @@
 <v t="tbrown.20151114110207.1"><vh>@string abbreviations-next-placeholder = ,,</vh></v>
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
-<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
@@ -11341,9 +11339,6 @@ Use different names instead.</t>
 <t tx="ekr.20180307005648.9"></t>
 <t tx="ekr.20180307030430.1"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180307030442.1"># Not an official solarized color.  Same as dark-base-03</t>
-<t tx="ekr.20180308050150.1">These defaults settings ensure that legacy themes continue to work as before.
-
-May be overridden by themes.</t>
 <t tx="ekr.20180308050150.10"></t>
 <t tx="ekr.20180308050150.11"></t>
 <t tx="ekr.20180308050150.13"></t>
