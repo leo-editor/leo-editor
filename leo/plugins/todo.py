@@ -104,7 +104,7 @@ def popup_entry(c,p,menu):
 if g.app.gui.guiName() == "qt":
     class todoQtUI(QtWidgets.QWidget):
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor
+        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
         def __init__(self, owner, logTab=True):
 
             self.owner = owner

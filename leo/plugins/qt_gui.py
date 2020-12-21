@@ -1041,7 +1041,7 @@ class LeoQtGui(leoGui.LeoGui):
         # "Just works" for --theme and theme .leo files *provided* that
         # theme .leo files actually contain these settings!
         #
-        theme_name1 = getString('color-theme')
+        theme_name1 = getString('color-theme')  # Deprecated.
         theme_name2 = getString('theme-name')
         roots = [
             g.os_path_join(g.computeHomeDir(), '.leo'),
