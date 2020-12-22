@@ -62,7 +62,7 @@
 </v>
 </v>
 <v t="ekr.20180309185230.55"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180309185230.56"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20180309185230.56"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180309185230.57"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180309185230.58"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180309185230.59"><vh>@string font-family-tree =@font-family</vh></v>
@@ -171,7 +171,7 @@
 Notes:
 
 1. This file should *not* contain @string theme-name.
-2. This file should contain *only* appearance-related settings.</t>
+2. This file should contain *only* appearance-related settings. </t>
 <t tx="ekr.20180307205426.1">table = (
     # g.actualColor calls 
     'error', 'info', 'warning',
@@ -540,8 +540,7 @@ Only colors appearing in several places are given here.
 <t tx="ekr.20180309185230.55">Most users will want to change these settings first.
 
 The stylesheet uses these settings.</t>
-<t tx="ekr.20180309185230.56"> Inconsolata
- Droid Sans Mono</t>
+<t tx="ekr.20180309185230.56"></t>
 <t tx="ekr.20180309185230.57"></t>
 <t tx="ekr.20180309185230.58"></t>
 <t tx="ekr.20180309185230.59"></t>

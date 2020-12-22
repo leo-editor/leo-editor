@@ -94,7 +94,7 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>

@@ -90,7 +90,7 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.191"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20180318145515.191"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180318145515.798"><vh>@string font-family-body = @font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log = @font-family</vh></v>
 <v t="ekr.20180318145515.800"><vh>@string font-family-tree = @font-family</vh></v>
@@ -261,8 +261,7 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20180318145515.186"></t>
 <t tx="ekr.20180318145515.187"></t>
 <t tx="ekr.20180318145515.188"></t>
-<t tx="ekr.20180318145515.191">Droid Sans Mono,
-DejaVu Sans Mono</t>
+<t tx="ekr.20180318145515.191"></t>
 <t tx="ekr.20180318145515.196">
     </t>
 <t tx="ekr.20180318145515.198">**Important**: This should be set by each user.</t>

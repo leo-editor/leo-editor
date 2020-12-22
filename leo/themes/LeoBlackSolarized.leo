@@ -19,8 +19,8 @@
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
 <v t="ekr.20201221105203.1"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
-<v t="ekr.20180307010409.64"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20180307010409.65"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="ekr.20180307010409.64"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180307010409.65"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
 <v t="ekr.20180307010409.104"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="ekr.20180307010409.100"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
 <v t="ekr.20180307010409.101"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
@@ -77,7 +77,7 @@
 </v>
 </v>
 <v t="ekr.20180307010409.55"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180307010409.56"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20180307010409.56"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180307010409.57"><vh>@string font-family-body = @font-family</vh></v>
 <v t="ekr.20180307010409.58"><vh>@string font-family-log = @font-family</vh></v>
 <v t="ekr.20180307010409.59"><vh>@string font-family-tree = @font-family</vh></v>
@@ -601,9 +601,7 @@ Only colors appearing in several places are given here.</t>
 <t tx="ekr.20180307010409.55">Most users will want to change these settings first.
 
 The stylesheet uses these settings.</t>
-<t tx="ekr.20180307010409.56">Inconsolata
-Droid Sans Mono
-DejaVu Sans Mono</t>
+<t tx="ekr.20180307010409.56"></t>
 <t tx="ekr.20180307010409.57"></t>
 <t tx="ekr.20180307010409.58"></t>
 <t tx="ekr.20180307010409.59"></t>

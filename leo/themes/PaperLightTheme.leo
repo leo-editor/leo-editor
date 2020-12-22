@@ -54,7 +54,7 @@
 </v>
 </v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
 <v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>

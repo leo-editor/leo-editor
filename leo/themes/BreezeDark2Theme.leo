@@ -93,10 +93,10 @@
 </v>
 </v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
-<v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
-<v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
+<v t="chris.20180313181652.70"><vh>@string font-family-body = @font-family</vh></v>
+<v t="chris.20180313181652.71"><vh>@string font-family-log = @font-family</vh></v>
+<v t="chris.20180313181652.72"><vh>@string font-family-tree = @font-family</vh></v>
 <v t="chris.20180313181652.73"><vh>@string font-size-body = 12pt</vh></v>
 <v t="chris.20180313181652.74"><vh>@string font-size-log = 12pt</vh></v>
 <v t="chris.20180313181652.75"><vh>@string font-size-tree = 12pt</vh></v>
@@ -1938,7 +1938,7 @@ Only colors appearing in several places are given here.</t>
 <t tx="chris.20180313181652.68" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Most users will want to change these settings first.
 
 The stylesheet uses these settings.</t>
-<t tx="chris.20180313181652.69">Inconsolata, Droid Sans Mono </t>
+<t tx="chris.20180313181652.69"></t>
 <t tx="chris.20180313181652.70"></t>
 <t tx="chris.20180313181652.71"></t>
 <t tx="chris.20180313181652.72"></t>
