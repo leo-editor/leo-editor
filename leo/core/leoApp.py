@@ -2020,12 +2020,13 @@ class LoadManager:
         )
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c, localFlag, theme=False):
+    def createSettingsDicts(self, c, localFlag):
+
         from leo.core import leoConfig
         if c:
             parser = leoConfig.SettingsTreeParser(c, localFlag)
                 # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            shortcutsDict, settingsDict = parser.traverse()
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
