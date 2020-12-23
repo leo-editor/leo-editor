@@ -2267,12 +2267,7 @@ class LoadManager:
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
-                if trace:
-                    if trace:
-                        g.trace('\n')
-                        print(f" g.app.theme_path: {g.app.theme_directory}")
-                        print(f"g.app.theme_color: {g.app.theme_color}")
-                        print('')
+                if trace: g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
