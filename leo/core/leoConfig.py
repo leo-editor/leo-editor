@@ -1822,13 +1822,16 @@ class LocalConfigManager:
         """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
+            # #1792: Allow comments after @settings.
+            if p.h.rstrip().startswith("@settings"):
                 if not theme:
                     return p.copy()
-                # Look for an inner @theme node
-                for p2 in p.subtree():
-                    if g.match_word(p2.h, 0, '@theme'):
-                        return p2.copy()
+                # #1792: Remove support for '@theme'.
+                # Use theme files instead.
+                    # # Look for an inner @theme node
+                    # for p2 in p.subtree():
+                        # if g.match_word(p2.h, 0, '@theme'):
+                            # return p2.copy()
         return None
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
