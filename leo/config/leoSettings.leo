@@ -7,25 +7,6 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
-<v t="ekr.20111017082630.16086"><vh>Disabled buttons</vh>
-<v t="ekr.20140912073148.19150"><vh>@@button body2settings</vh></v>
-<v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
-<v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
-<v t="ekr.20111017082630.16082"><vh>doSet</vh></v>
-<v t="ekr.20111017082630.16083"><vh>doShortcuts</vh></v>
-<v t="ekr.20111017082630.16084"><vh>checkSets</vh></v>
-<v t="ekr.20111017082630.16085"><vh>main</vh></v>
-</v>
-<v t="ekr.20110612074140.16414"><vh>@@button check-core-settings (OlD)</vh>
-<v t="ekr.20110612074140.16417"><vh>ctor</vh></v>
-<v t="ekr.20110612074140.16419"><vh>get_settings</vh></v>
-<v t="ekr.20110612074140.16478"><vh>get_settings_nodes</vh></v>
-<v t="ekr.20110612074140.16416"><vh>init</vh></v>
-<v t="ekr.20110612074140.16415"><vh>run</vh></v>
-</v>
-<v t="tbrown.20140609102412.32426"><vh>@@button pick-date</vh></v>
-<v t="ekr.20140912105440.19376"><vh>@@button reload-styles</vh></v>
-</v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
 <v t="ekr.20060112103537.17"><vh>@button check-bindings</vh>
 <v t="ekr.20060112104119"><vh>defineSetNames</vh></v>
@@ -117,17 +98,6 @@
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
-<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
-<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
-<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
-<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
-<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
-</v>
-</v>
-<v t="ekr.20200226102108.1"><vh>New settings</vh>
-<v t="ekr.20200226173056.1"><vh>@int auto-justify = 0</vh></v>
-<v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
-<v t="ekr.20200226173425.1"><vh>@string http-bookmark-unl = None</vh></v>
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
@@ -519,7 +489,7 @@
 </v>
 </v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
-<v t="ekr.20200226173056.1"></v>
+<v t="ekr.20200226173056.1"><vh>@int auto-justify = 0</vh></v>
 <v t="ekr.20110512085854.14461"><vh>@bool auto-tab-complete = True</vh></v>
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
@@ -673,7 +643,7 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
-<v t="ekr.20200226102131.1"></v>
+<v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
@@ -1992,7 +1962,7 @@
 <v t="ekr.20111003085631.15490"><vh>@int http-port = 8130</vh></v>
 <v t="btheado.20131124162237.2493"><vh>@string http-ip = 127.0.0.1</vh></v>
 <v t="ekr.20181018113243.1"><vh>@string rst2-http-attributename = None</vh></v>
-<v t="ekr.20200226173425.1"></v>
+<v t="ekr.20200226173425.1"><vh>@string http-bookmark-unl = None</vh></v>
 <v t="ekr.20161003141448.1"><vh>mod_http script</vh>
 <v t="ekr.20161003141448.2"><vh>@data http-script</vh></v>
 </v>
@@ -2060,6 +2030,12 @@
 </v>
 <v t="peckj.20140218151502.4819"><vh>sftp plugin</vh>
 <v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
+</v>
+<v t="ekr.20191023140453.1"><vh>sphinx settings</vh>
+<v t="ekr.20191023140453.2"><vh>@string sphinx-command-directory = None</vh></v>
+<v t="ekr.20191023140453.3"><vh>@string sphinx-default-command = make html</vh></v>
+<v t="ekr.20191023140453.4"><vh>@string sphinx-input-directory = None</vh></v>
+<v t="ekr.20191023140453.5"><vh>@string sphinx-output-directory = None</vh></v>
 </v>
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
 <v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
@@ -2326,8 +2302,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20140912075503.19263"></v>
-<v t="ekr.20201010141557.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4792,149 +4766,6 @@ Instead, enable the codewisecompleter.py plugin.</t>
 <t tx="ekr.20110611092035.16489"></t>
 <t tx="ekr.20110611092035.16491"></t>
 <t tx="ekr.20110611092035.16492"></t>
-<t tx="ekr.20110612074140.16414">'''Check that all settings in leoPy.leo are defined here, and vice versa.'''
-
-import os
-
-class CheckSettings:
-    @others
-
-CheckSettings(c).run()
-</t>
-<t tx="ekr.20110612074140.16415">def run (self):
-
-    verbose = False
-    settings_node = g.findNodeAnywhere(self.c,'@settings')
-
-    if not self.core_c:
-        return g.error('leoPy.leo must be open')
-
-    if not settings_node:
-        return g.error('no @settings node in leoPy.leo')
-
-    # Step 1: compute aList1, the list of all settings in Leo's core.
-    aList1 = []
-    for p in self.core_c.all_positions():
-        self.get_settings(aList1,p)
-        aList1 = list(set(aList1))
-        aList1.sort()
-
-    # Step 2: compute aList2, the list of all settings nodes in leoSettings.leo.
-    aList2 = []
-    for p in settings_node.subtree():
-        self.get_settings_nodes(aList2,p)
-        aList2 = list(set(aList2))
-        aList2.sort()
-
-    if verbose:
-        os.system('cls')
-    else:
-        print('-'*10)
-
-    for aList,tag in ((aList1,'leoPy.leo'),(aList2,'leoSettings.leo')):
-        nl = g.choose(verbose,'\n','')
-        end = g.choose(verbose,'...','')
-        print('%s%s unique settings in %s%s%s' % (
-            nl,len(aList),tag,end,nl))
-        if verbose:
-            for z in aList:
-                print(z.strip())
-
-    if verbose: g.es_print('done')</t>
-<t tx="ekr.20110612074140.16416">def init (self):
-
-    # leoPy.leo must be available.
-    for f in g.app.windowList:
-        c = f.c
-        fn = c.shortFileName()
-        if fn == 'leoPy.leo':
-            self.core_c = c
-            return
-    else:
-        self.core_c = None
-</t>
-<t tx="ekr.20110612074140.16417">def __init__ (self,c):
-
-    self.c = c
-    self.core_c = None
-    self.settingsNames =  (
-        # 'getAbbrevDict','getCommonCommands',
-        # 'getDirectory',
-        # 'getEnabledPlugins','getLanguage',
-        # 'getMenusList','getOpenWith',
-        # 'getRecentFiles','getShortcut',
-        'getBool','getColor','getData',
-        'getFloat','getFontFromParams',
-        'getInt','getRatio','getString',
-    )
-    self.settingsAtNames = (
-        '@bool','@color','@data','@float',
-        '@int','@ratio','@strings','@string',
-    )
-
-    self.init()
-</t>
-<t tx="ekr.20110612074140.16419">def get_settings (self,aList,p):
-
-    '''Append all settings names in position p to aList'''
-
-    names = self.settingsNames
-    for s in g.splitLines(p.b):
-        for s2 in names:
-            pat = 'config.%s' % (s2)
-            i = s.find(pat)
-            if i &gt; -1:
-                i = g.skip_ws(s,i+len(pat))
-                if g.match(s,i,'('):
-                    i += 1
-                    s3 = s[i:].strip()
-                    for delim in ('"',"'"):
-                        if s3.startswith(delim):
-                            j = s3.find(delim,1)
-                            if j &gt; -1:
-                                s4 = s3[1:j]
-                                if not s4.startswith('%'):
-                                    aList.append(s4)
-                                    break
-                break
-            i = s.find('config.get(')
-            if i &gt; -1:
-                break # Ignore this.
-            i = s.find('config.get(')
-            if i &gt; -1:
-                aList.append('*** %s' % (s))
-                break
-</t>
-<t tx="ekr.20110612074140.16478">def get_settings_nodes (self,aList,p):
-
-    '''Append all settings names in position p to aList'''
-
-    s = p.h
-    for s2 in self.settingsAtNames:
-        if s.startswith(s2):
-            i = g.skip_ws(s,len(s2))
-            if s2 == '@strings':
-                j = s.find('=')
-                if j &gt; -1:
-                    aList.append(s[:j].strip().replace(' ',''))
-            else:
-                j = g.skip_id(s,i)
-                if j &gt; 0:
-                    word = s[i:j]
-                    # aList.append(word)
-                    # aList.append(s.strip())
-                    if word:
-                        aList.append(s[:j].strip())
-                    break
-            break
-        i = s.find('config.get(')
-        if i &gt; -1:
-            break # Ignore this.
-        i = s.find('config.get(')
-        if i &gt; -1:
-            aList.append('*** %s' % (s))
-            break
-</t>
 <t tx="ekr.20110617081407.14760">True: Don't add characters during autocompletion that are not part of any computed completion.</t>
 <t tx="ekr.20110917104720.9414"></t>
 <t tx="ekr.20110917104720.9415"># The names of your classes, one per line.
@@ -5251,7 +5082,8 @@ Controller(c).run()
     c = self.user_settings if user else self.settings  # #1511.
     d = {}
     print('scanning: %s' % c.shortFileName())
-    settings_node = g.findNodeAnywhere(c, '@settings')
+    # #1792: Allow comments after @settings.
+    settings_node = g.findNodeAnywhere(c, '@settings', exact=False)
     if not settings_node:
         return self.error('no @settings node')
     for p in settings_node.subtree():
@@ -5313,183 +5145,6 @@ Controller(c).run()
     g.app.gui.frameFactory.setTabForCommander(self.settings)
     g.trace('done')
 </t>
-<t tx="ekr.20111017082630.16080">'''This script reports commands that exist in some but not all key- binding
-sets. setNames is a list of the roots of all such sets.'''
-
-import leoConfig
-import leoTest
-
-parser = leoConfig.SettingsTreeParser(c)
-
-# Add these as required to handle commands defined by plugins.
-optionalCommandPrefixes = ['group-operations']
-optionalCommandNames = [
-    # These are the command names as defined by plugins.
-    # LeoSlideShows.leo defines buttons whose commands do not end in '-command'.
-    'next-slide-command','next-slide-show-command',
-    'prev-slide-command','prev-slide-show-command',
-    # The ipython plugin.
-    'start-ipython','get-ipython-results','push-to-ipython',
-]
-
-setNames = []
-setsDict = {} # keys are set names, values are dicts of command names.
-shortcutsDict = {}
-
-@others
-
-main()
-</t>
-<t tx="ekr.20111017082630.16081">def defineSetNames():
-
-    global setNames
-
-    if 1:
-        setNames = []
-        for p in c.allNodes_iter():
-            h = p.headString()
-            if h.startswith('@keys'):
-                h = h[5:].strip()
-                if h not in setNames:
-                    setNames.append(h)
-        g.es('Found these sets...')
-        for setName in setNames:
-            g.es_print('  %s' % str(setName))
-    else:
-        setNames = [
-            'Default Emacs shortcuts',
-            'Legacy Leo bindings',
-            'Legacy Leo shortcuts with important Emacs bindings',
-            'No bindings',
-            'EKR bindings: a mix',
-            'EKR bindings: Mode-oriented',
-        ]
-
-    setNames.sort()
-</t>
-<t tx="ekr.20111017082630.16082">def doSet(p,name):
-
-    global shortcutsDict
-
-    shortcutsDict = {}
-
-    for p in p.subtree_iter():
-        if p.headString().startswith('@shortcuts'):
-            doShortcuts(p,name)
-</t>
-<t tx="ekr.20111017082630.16083">def doShortcuts(p,setName):
-
-    global parser,setsDict,shortcutsDict
-
-    d = setsDict.get(setName,{})
-    s = p.bodyString()
-    lines = g.splitLines(s)
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('#'):
-            commandName,bunch = parser.parseShortcutLine('test',line)
-            if not bunch:
-                g.es_print('In %s:\nmissing "=" in shortcut line:%s' % (
-                    p.headString(),repr(line)),color='red')
-            else:
-                # Having multiple shortcuts for a command if fine,
-                # But having multiple commands for a shortcut is not.
-                shortcut = bunch and bunch.val
-                pane = bunch and bunch.pane
-                if shortcut not in (None,'None','none'):
-                    aList = shortcutsDict.get(shortcut,[])
-                    if aList:
-                        for commandName2,pane2 in aList:
-                            if pane == pane2:
-                                g.es_print('duplicate shortcut %s in set %s: previous command: %s' % (
-                                    shortcut,setName,commandName2),color='red')
-                        else:
-                            aList.append((commandName,pane),)
-                    else:
-                        shortcutsDict [shortcut] = [(commandName,pane),]
-
-                data = d.get(commandName)
-                if data:
-                    shortcut2,pane2 = data
-                    if shortcut == shortcut2 and pane == pane2:
-                        g.es_print('duplicate %s in set %s' % (
-                            commandName,setName),color='red')
-                else:
-                    data = shortcut,pane
-                    d[commandName] = data
-
-    setsDict[setName] = d
-</t>
-<t tx="ekr.20111017082630.16084">def checkSets():
-
-    global setNames, optionalCommandPrefixes, optionalCommandNames
-
-    # Compute the union of all the command names.
-    allNames = {}
-    for setName in setNames:
-        d = setsDict.get(setName)
-        if d:
-            for key in d.keys():
-                allNames[key] = key
-        else:
-            g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-
-    k = c.keyHandler
-    keys = allNames.keys()
-    keys.sort()
-
-    # Warn about missing names.
-    for setName in ('No bindings',): # setNames:
-        d = setsDict.get(setName)
-        if not d:
-            g.es_print("'@keys No bindings' not found",color='red')
-        for key in keys:
-            if key not in ('none','None',None) and key not in d.keys():
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if (
-                    not (key.startswith('enter-') and key.endswith('-mode')) and
-                    not (key.startswith('press-') and key.endswith('-button'))
-                ):
-                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
-
-    # Warn about undefined commands.
-    for key in keys:
-        if not c.commandsDict.get(key):
-            ok = False
-            # full-command and quick command are weird special cases.
-            if key not in ('None',None,'full-command','quick-command'):
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if key.startswith('enter-') and key.endswith('-mode'):
-                    ok = True
-                elif key.startswith('press-') and key.endswith('-button'):
-                    ok = True
-                for prefix in optionalCommandPrefixes:
-                    if key.startswith(prefix):
-                        ok = True
-                for optionalCommand in optionalCommandNames:
-                    if key == optionalCommand:
-                        ok = True
-                if not ok:
-                    g.es_print('Undefined command name: %s' % (key))
-</t>
-<t tx="ekr.20111017082630.16085">def main ():
-
-    global setNames
-    defineSetNames()
-
-    g.es_print('-' * 40)
-    seen = {}
-    for p in c.allNodes_iter():
-        h = p.headString()
-        if h.startswith('@keys'):
-            h = h[5:].strip()
-            if not seen.get(h):
-                seen[h] = True
-                doSet(p,h)
-    checkSets()
-    g.es('Check Bindings done')
-</t>
-<t tx="ekr.20111017082630.16086"></t>
 <t tx="ekr.20111024091133.16650"></t>
 <t tx="ekr.20111024091133.16651">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
@@ -9123,28 +8778,6 @@ its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
 */
 
 </t>
-<t tx="ekr.20140912073148.19150">'''Converts p.b, that is, "New/Changed selectors" to settings and organizer nodes.'''
-g.cls()
-safe = False
-for s in g.splitLines(p.b):
-    if s.strip() and not s.startswith(' '):
-        for tag in ('#','@color','@string'):
-            if s.startswith(tag):
-                if tag == '#':
-                    h = s[1:].strip().rstrip('.')
-                else:
-                    h = tag + ' ' + s[len(tag):].strip()
-                if safe:
-                    print('create: %s' % h)
-                else:
-                    p2 = p.insertAsLastChild()
-                    p2.h = h
-                break
-        else:
-            print('unexpected line: %s' % s)
-c.redraw()
-@color
-@language python</t>
 <t tx="ekr.20140912075503.19262">Important: changing the Basic Font settings below should be all you need to
 do at first. All other font settings are defined in terms of the basic fonts.</t>
 <t tx="ekr.20140912075503.19263"></t>
@@ -9273,8 +8906,6 @@ Many users will want to change the settings in the Fonts section, especially the
 - @string small-font-size:
   A small font size used in buttons.
 </t>
-<t tx="ekr.20140912105440.19376">'''Execute style-reload'''
-c.k.simulateCommand('style-reload')</t>
 <t tx="ekr.20140915194122.19458">/* ========== Body pane ========== */
 
 QTextEdit#richTextEdit {
@@ -11719,7 +11350,7 @@ Zero suppresses all line joining.</t>
 <t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
 <t tx="ekr.20190926110217.1"></t>
 <t tx="ekr.20191008030417.1"></t>
-<t tx="ekr.20191023140453.1"># Not ready yet.</t>
+<t tx="ekr.20191023140453.1"></t>
 <t tx="ekr.20191023140453.2">If given, the sphinx command will cd to this directory.
 
 Otherwise, the sphinx command will cd to the directory containing the input file.</t>
@@ -11736,7 +11367,6 @@ The output_dir directory specified in the command:
 sphinx-build {input_dir} {output_dir} {i_path}</t>
 <t tx="ekr.20200210045434.1">True:  allow joined lines to contain strings.
 False: (Recommended by EKR): Retain alignment of strings.</t>
-<t tx="ekr.20200226102108.1"></t>
 <t tx="ekr.20200226102131.1">True: report unchanged files when saving a .leo file.</t>
 <t tx="ekr.20200226103829.1"></t>
 <t tx="ekr.20200226104131.1"></t>
@@ -12246,17 +11876,6 @@ redundant 'X'</t>
 <t tx="tbrown.20140514191846.42170"></t>
 <t tx="tbrown.20140514191846.42171"></t>
 <t tx="tbrown.20140514191846.42173"></t>
-<t tx="tbrown.20140609102412.32426">from leo.core.leoQt import QtWidgets
-
-date = g.app.gui.runAskDateTimeDialog(
-    c, "Select date, will be copied to clipboard")
-if date:
-    text = date.strftime("%Y-%m-%d %I:%M:%S %p")
-    QtWidgets.QApplication.clipboard().setText(text)
-    g.es("%s\ncopied to clipboard"%text)
-else:
-    g.es("No date selected")
-</t>
 <t tx="tbrown.20140609102412.32428">'''
 Create a combo box in the icon area that shows color names.
 It writes the selected color name to the clipboard.
