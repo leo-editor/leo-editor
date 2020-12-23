@@ -889,7 +889,7 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
             unl=(p and p.get_UNL(with_proto=True)))
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
-    def traverse(self, theme=False):
+    def traverse(self):
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(
@@ -901,7 +901,7 @@ class ParserBaseClass:
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
-        p = c.config.settingsRoot(theme=theme)
+        p = c.config.settingsRoot()
         if not p:
             # c.rootPosition() doesn't exist yet.
             # This is not an error.
@@ -1818,17 +1818,13 @@ class LocalConfigManager:
                 return p.copy()
         return None
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
-    def settingsRoot(self, theme=False):
+    def settingsRoot(self):
         """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
-                if not theme:
-                    return p.copy()
-                # Look for an inner @theme node
-                for p2 in p.subtree():
-                    if g.match_word(p2.h, 0, '@theme'):
-                        return p2.copy()
+            # #1792: Allow comments after @settings.
+            if g.match_word(p.h.rstrip(), 0, "@settings"):
+                return p.copy()
         return None
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node

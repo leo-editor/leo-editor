@@ -1063,25 +1063,13 @@ class LeoQtGui(leoGui.LeoGui):
             for sub in bare_subs:
                 paths.append(join(root, sub))
         table = [z for z in paths if exists(z)]
-        if trace and not self.dump_given:
-            self.dump_given = True
-            getString = g.app.config.getString
-            g.trace('\n...')
-            # dump('g.app.theme_color', g.app.theme_color)
-            dump('@string color_theme', getString('color-theme'))
-            # dump('g.app.theme_name', g.app.theme_name)
-            dump('@string theme_name', getString('theme-name'))
-            print('directory table...')
-            g.printObj(table)
-            print('')
         for base_dir in table:
             path = join(base_dir, name)
             if exists(path):
-                if trace: g.trace(f"{name} is  in {base_dir}\n")
+                if trace: g.trace(f"Found {name} in {base_dir}")
                 return path
-            if trace:
-                g.trace(name, 'not in', base_dir)
-        g.trace('not found:', name)
+            # if trace: g.trace(name, 'not in', base_dir)
+        if trace: g.trace('not found:', name)
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     @functools.lru_cache(maxsize=128)
