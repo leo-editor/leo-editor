@@ -2020,12 +2020,13 @@ class LoadManager:
         )
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c, localFlag, theme=False):
+    def createSettingsDicts(self, c, localFlag):
+
         from leo.core import leoConfig
         if c:
             parser = leoConfig.SettingsTreeParser(c, localFlag)
                 # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            shortcutsDict, settingsDict = parser.traverse()
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
@@ -2266,12 +2267,7 @@ class LoadManager:
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
-                if trace:
-                    if trace:
-                        g.trace('\n')
-                        print(f" g.app.theme_path: {g.app.theme_directory}")
-                        print(f"g.app.theme_color: {g.app.theme_color}")
-                        print('')
+                if trace: g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:

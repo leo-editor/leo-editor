@@ -131,11 +131,10 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="ekr.20201010141557.1"><vh>@string theme-name = DefaultTheme</vh></v>
+<v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20180308050150.1"><vh>Logical colors</vh>
 <v t="ekr.20180308050150.2"><vh>@color log-black-color = black</vh></v>
 <v t="ekr.20180308050150.3"><vh>@color log-blue-color = blue</vh></v>
 <v t="ekr.20180308050150.15"><vh>@color log-cyan-color = cyan</vh></v>
@@ -150,7 +149,6 @@
 <v t="ekr.20180306155628.1"><vh>@color log-warning-color = red</vh></v>
 <v t="ekr.20180308050150.13"><vh>@color log-white-color = white</vh></v>
 <v t="ekr.20180308050150.14"><vh>@color log-yellow-color = yellow</vh></v>
-</v>
 <v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
 <v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
 <v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
@@ -335,7 +333,7 @@
 </v>
 <v t="ekr.20140912075503.19262"><vh>Fonts</vh>
 <v t="ekr.20140915194122.23428"><vh>Basic Fonts (change these first)</vh>
-<v t="ekr.20140912075503.19263"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20140912075503.19263"><vh>@string font-family = DejaVu Sans Mono, Droid Sans Mono</vh></v>
 <v t="ekr.20140912075503.19264"><vh>@string font-size = 12pt </vh></v>
 <v t="ekr.20140915194122.23413"><vh>@string medium-font-size = 10pt</vh></v>
 <v t="ekr.20140915194122.21837"><vh>@string small-font-size = 10pt</vh></v>
@@ -2327,15 +2325,9 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline-tabs-show-close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
-<v t="ekr.20070224073109.1"></v>
-<v t="ekr.20201118060153.1"><vh>Found:indent-region</vh>
-<v t="ekr.20131213135427.22280"></v>
-<v t="ekr.20201118055941.1"></v>
-<v t="ekr.20080515053412.9"></v>
-<v t="ekr.20131213135427.22283"></v>
-<v t="ekr.20060925060533.4"></v>
-</v>
+<v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20140912075503.19263"></v>
+<v t="ekr.20201010141557.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11347,9 +11339,6 @@ Use different names instead.</t>
 <t tx="ekr.20180307005648.9"></t>
 <t tx="ekr.20180307030430.1"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180307030442.1"># Not an official solarized color.  Same as dark-base-03</t>
-<t tx="ekr.20180308050150.1">These defaults settings ensure that legacy themes continue to work as before.
-
-May be overridden by themes.</t>
 <t tx="ekr.20180308050150.10"></t>
 <t tx="ekr.20180308050150.11"></t>
 <t tx="ekr.20180308050150.13"></t>
@@ -11793,7 +11782,30 @@ useful if you've cloned the node so its origin is not obvious from context.
 
 If False, does not do the above, useful if you don't use clones and don't
 want the visual clutter of repeated class / file names.</t>
-<t tx="ekr.20201010141557.1"></t>
+<t tx="ekr.20201010141557.1">The name of Leo's active theme, or None, which gives Leo's legacy (light) theme.
+
+To enable a theme, put the following setting in myLeoSettings.leo:
+
+@string theme-name = &lt;name of .leo file&gt;
+
+The .leo suffix is optional. Leo looks for the named .leo file in this order:
+
+~  (The user's home directory)
+~/themes
+~/.leo
+~/.leo/themes
+leo/themes
+
+The .leo file in the leo/themes folder are:
+
+BreezeDarkTheme.leo
+BreezeDark2Theme.leo
+DefaultTheme.leo
+EKRDark.leo
+EKRLight.leo
+LeoBlackSolarized.leo
+PaperLightTheme.leo
+ZephyrDarkTheme.leo</t>
 <t tx="ekr.20201013105810.1">leoPy&amp;Ref.leo
 </t>
 <t tx="ekr.20201016081718.1"># These plugins are experimental, broken or not recommended.
@@ -11942,11 +11954,6 @@ False: Use ``asciidoc``</t>
 </t>
 <t tx="ekr.20201021110940.1">URL for RsT Stylesheet</t>
 <t tx="ekr.20201118055941.1"></t>
-<t tx="ekr.20201118060153.1">@nosearch
-
-# flattened, ignore-case, head, body
-
-# found 5 nodes</t>
 <t tx="ekr.20201118060235.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
