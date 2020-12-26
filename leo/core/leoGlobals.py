@@ -375,6 +375,8 @@ def get_backup_path(sub_directory):
     # Compute the path to backup/sub_directory
     directory = os.path.join(backup, sub_directory)
     return directory if os.path.exists(directory) else None
+    
+    # __pragma__ ('noskip')
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
 #@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
 class BindingInfo:
@@ -2545,6 +2547,8 @@ class TypedDict:
 
         import copy
         return copy.deepcopy(self)
+        
+        # __pragma__ ('noskip')
     #@+node:ekr.20120205022040.17771: *4* td.get & keys & values
     def get(self, key, default=None):
         return self.d.get(key, default)
@@ -2846,6 +2850,8 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
+    
+    # __pragma__ ('noskip')
 #@+node:ekr.20041224080039: *4* g.dictToString
 def dictToString(d, indent='', tag=None):
     """Pretty print a Python dict to a string."""
@@ -2975,6 +2981,8 @@ def run_pylint(fn, rc,
             # Printing does not work well here.
             # When not waiting, printing from severl process can be interspersed.
             pass
+            
+    # __pragma__ ('noskip')
 #@+node:ekr.20120912153732.10597: *4* g.wait
 def sleep(n):
     """Wait about n milliseconds."""
@@ -5296,6 +5304,7 @@ class GitIssueController:
             if page > limit:
                 g.trace('too many pages')
                 break
+        # __pragma__ ('noskip')
     #@+node:ekr.20180126044850.1: *5* git.get_issues
     def get_issues(self, base_url, label_list, milestone, root, state):
         """Create a list of issues for each label in label_list."""
