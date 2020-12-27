@@ -4,6 +4,7 @@
 #@@first
 """Global classes and functions, for use by leoInteg."""
 import os
+import re
 import sys
 #@+others
 #@+node:ekr.20201227040845.31: ** class g.FileLikeObject (coreGlobals.py)
@@ -62,6 +63,17 @@ def angleBrackets(s):
 def caller(i=1):
     """Return the caller name i levels up the stack."""
     return callers(i + 1).split(',')[0]
+#@+node:ekr.20201227070747.1: ** g.match
+# Warning: this code makes no assumptions about what follows pattern.
+
+def match(s, i, pattern):
+    return s and pattern and s.find(pattern, i, i + len(pattern)) == i
+#@+node:ekr.20201227070623.1: ** g.skip_to_char    (coreGlobals.py)
+def skip_to_char(s, i, ch):
+    j = s.find(ch, i)
+    if j == -1:
+        return len(s), s[i:]
+    return j, s[i:j]
 #@+node:ekr.20201227044712.1: ** g.callers         (coreGlobals.py)
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     """
@@ -91,6 +103,9 @@ def callers(n=4, count=0, excludeCaller=True, verbose=False):
     return ','.join(result)
 #@+node:ekr.20201227044712.2: *3* g._callerName   (coreGlobals.py)
 def _callerName(n, verbose=False):
+    
+    ### This won't work on Transcrypt, or vs-code.
+
     try:
         # get the function name from the call stack.
         f1 = sys._getframe(n)  # The stack frame, n levels up.
@@ -131,6 +146,26 @@ def doKeywordArgs(keys, d=None):
         else:
             result[key] = val
     return result
+#@+node:ekr.20201227070823.1: ** g.match_word      (coreGlobals.py)
+def match_word(s, i, pattern):
+
+    pat = fr"\b{pattern}\b"
+    return bool(re.search(pat, s[i:]))
+    ### Old code.
+        # # Using a regex is surprisingly tricky.
+        # if pattern is None:
+            # return False
+        # if i > 0 and g.isWordChar(s[i - 1]):
+            # return False
+        # j = len(pattern)
+        # if j == 0:
+            # return False
+        # if s.find(pattern, i, i + j) != i:
+            # return False
+        # if i + j >= len(s):
+            # return True
+        # ch = s[i + j]
+        # return not g.isWordChar(ch)
 #@+node:ekr.20201227044135.1: ** g.error           (coreGlobals.py)
 def error(*args, **keys):
 
