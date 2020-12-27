@@ -63,17 +63,6 @@ def angleBrackets(s):
 def caller(i=1):
     """Return the caller name i levels up the stack."""
     return callers(i + 1).split(',')[0]
-#@+node:ekr.20201227070747.1: ** g.match
-# Warning: this code makes no assumptions about what follows pattern.
-
-def match(s, i, pattern):
-    return s and pattern and s.find(pattern, i, i + len(pattern)) == i
-#@+node:ekr.20201227070623.1: ** g.skip_to_char    (coreGlobals.py)
-def skip_to_char(s, i, ch):
-    j = s.find(ch, i)
-    if j == -1:
-        return len(s), s[i:]
-    return j, s[i:j]
 #@+node:ekr.20201227044712.1: ** g.callers         (coreGlobals.py)
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     """
@@ -146,26 +135,6 @@ def doKeywordArgs(keys, d=None):
         else:
             result[key] = val
     return result
-#@+node:ekr.20201227070823.1: ** g.match_word      (coreGlobals.py)
-def match_word(s, i, pattern):
-
-    pat = fr"\b{pattern}\b"
-    return bool(re.search(pat, s[i:]))
-    ### Old code.
-        # # Using a regex is surprisingly tricky.
-        # if pattern is None:
-            # return False
-        # if i > 0 and g.isWordChar(s[i - 1]):
-            # return False
-        # j = len(pattern)
-        # if j == 0:
-            # return False
-        # if s.find(pattern, i, i + j) != i:
-            # return False
-        # if i + j >= len(s):
-            # return True
-        # ch = s[i + j]
-        # return not g.isWordChar(ch)
 #@+node:ekr.20201227044135.1: ** g.error           (coreGlobals.py)
 def error(*args, **keys):
 
@@ -201,6 +170,43 @@ def es_print(*args, **keys):
     """Print all non-keyword args, and put them to the log pane."""
     pr(*args, **keys)
     es(*args, **keys)
+#@+node:ekr.20201227072502.1: ** g.is_special
+def is_special(s, directive):
+    """Return True if the body text contains the @ directive."""
+    assert(directive and directive[0] == '@')
+    lws = directive in ("@others", "@all")
+        # Most directives must start the line.
+    pattern = r'^\s*(%s\b)' if lws else r'^(%s\b)'
+    pattern = re.compile(pattern % directive, re.MULTILINE)
+    m = re.search(pattern, s)
+    if m:
+        return True, m.start(1)
+    return False, -1
+#@+node:ekr.20201227070747.1: ** g.match
+# Warning: this code makes no assumptions about what follows pattern.
+
+def match(s, i, pattern):
+    return s and pattern and s.find(pattern, i, i + len(pattern)) == i
+#@+node:ekr.20201227070823.1: ** g.match_word      (coreGlobals.py)
+def match_word(s, i, pattern):
+
+    pat = fr"\b{pattern}\b"
+    return bool(re.search(pat, s[i:]))
+    ### Old code.
+        # # Using a regex is surprisingly tricky.
+        # if pattern is None:
+            # return False
+        # if i > 0 and g.isWordChar(s[i - 1]):
+            # return False
+        # j = len(pattern)
+        # if j == 0:
+            # return False
+        # if s.find(pattern, i, i + j) != i:
+            # return False
+        # if i + j >= len(s):
+            # return True
+        # ch = s[i + j]
+        # return not g.isWordChar(ch)
 #@+node:ekr.20201227040845.163: ** g.objToSTring     (coreGlobals.py)
 def objToString(obj, indent='', printCaller=False, tag=None):
     """Pretty print any Python object to a string."""
@@ -320,6 +326,24 @@ def shortFileName(fileName):
     return os.path.basename(fileName) if fileName else ''
 
 shortFilename = shortFileName
+#@+node:ekr.20201227070623.1: ** g.skip_to_char    (coreGlobals.py)
+def skip_to_char(s, i, ch):
+    j = s.find(ch, i)
+    if j == -1:
+        return len(s), s[i:]
+    return j, s[i:j]
+#@+node:ekr.20201227072555.1: ** g.skip_ws*        (coreGlobals.py)
+def skip_ws(s, i):
+    n = len(s)
+    while i < n and s[i] in '\t ':
+        i += 1
+    return i
+
+def skip_ws_and_nl(s, i):
+    n = len(s)
+    while i < n and s[i] in ' \t\n\r':
+        i += 1
+    return i
 #@+node:ekr.20201227043815.1: ** g.splitLines      (coreGlobals.py)
 def splitLines(s):
     """
