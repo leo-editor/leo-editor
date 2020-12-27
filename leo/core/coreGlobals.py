@@ -138,7 +138,11 @@ def error(*args, **keys):
 #@+node:ekr.20201227042250.1: ** g.es              (coreGlobals.py)
 def es(*args, **keys):
     """Put all non-keyword args to the log pane."""
-    ### Not ready yet.
+    result = []
+    for arg in args:
+        result.append(arg if isinstance(arg, str) else repr(arg))
+    print(','.join(result))
+
 #@+node:ekr.20201227045227.1: ** g.es_exception    (coreGlobals.py)
 def es_exception(full=True, c=None, color="red"):
     
@@ -162,9 +166,6 @@ def es_print(*args, **keys):
     """Print all non-keyword args, and put them to the log pane."""
     pr(*args, **keys)
     es(*args, **keys)
-#@+node:ekr.20201227043643.1: ** g.is_nl           (coreGlobals.py)
-def is_nl(s, i):
-    return i < len(s) and (s[i] == '\n' or s[i] == '\r')
 #@+node:ekr.20201227040845.163: ** g.objToSTring     (coreGlobals.py)
 def objToString(obj, indent='', printCaller=False, tag=None):
     """Pretty print any Python object to a string."""
@@ -264,35 +265,15 @@ def plural(obj):
         n = obj
     return '' if n == 1 else 's'
 #@+node:ekr.20201227042305.1: ** g.pr              (coreGlobals.py)
-# see: http://www.diveintopython.org/xml_processing/unicode.html
-
 def pr(*args, **keys):
-    """
-    Print all non-keyword args. This is a wrapper for the print statement.
-    """
-    # Compute the effective args.
-    d = {'commas': False, 'newline': True, 'spaces': True}
-    d = doKeywordArgs(keys, d)
-    newline = d.get('newline')
-    stdout = sys.__stdout__
-    if getattr(stdout, 'encoding', None):
-        # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = stdout.encoding
-    else:
-        encoding = 'utf-8'
-    s = ','.join(args)
-    s = translateArgs(args, d)
-    s = toUnicode(s, encoding=encoding, reportErrors=False)
-    if newline:
-        s += '\n'
-    #
-    # Python's print statement *can* handle unicode, but
-    # sitecustomize.py must have sys.setdefaultencoding('utf-8')
-    try:
-        # #783: print-* commands fail under pythonw.
-        stdout.write(s)
-    except Exception:
-        pass
+    """ Print all non-keyword args."""
+    result = []
+    for arg in args:
+        if isinstance(arg, str):
+            result.append(arg)
+        else:
+            result.append(repr(arg))
+    print(','.join(result))
 #@+node:ekr.20201227040845.166: ** g.printObj        (coreGlobals.py)
 def printObj(obj, indent='', printCaller=False, tag=None):
     """Pretty print any Python object using pr."""
@@ -414,28 +395,6 @@ def trace(*args, **keys):
         prefix = prefix[1:]  # One less newline.
         pr(prefix)
     pr(s, newline=newline)
-#@+node:ekr.20201227045703.1: ** g.translateArgs   (coreGlobals.py)
-def translateArgs(args, d):
-    """
-    Return the concatenation of s and all args, with odd args translated.
-    """
-    n, result = 0, []
-    spaces = d.get('spaces')
-    for arg in args:
-        n += 1
-        # Now translate.
-        if not isinstance(arg, str):
-            arg = repr(arg)
-        elif (n % 2) == 1:
-            pass
-            ### Transcrypt does not support gettext.
-            ### arg = translateString(arg)
-        else:
-            pass  # The arg is an untranslated string.
-        if arg:
-            if result and spaces: result.append(' ')
-            result.append(arg)
-    return ''.join(result)
 #@-others
 #@@language python
 #@@tabwidth -4
