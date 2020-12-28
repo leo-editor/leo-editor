@@ -4001,7 +4001,6 @@ def fullPath(c, p, simulate=False):
     for p in p.self_and_parents(copy=False):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
-        if trace: g.trace('path', path, p.h)
         fn = p.h if simulate else p.anyAtFileNodeName()
             # Use p.h for unit tests.
         if fn:
