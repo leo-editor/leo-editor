@@ -272,7 +272,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
         return c
-    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper (bug fix)
+    #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString=False):
         """
         Open the file given by at.root.
@@ -345,6 +345,9 @@ class AtFile:
         if at.errors:
             return False
         fileName, file_s = at.openFileForReading(fromString=fromString)
+        # #1798:
+        if file_s is None:
+            return False
         #
         # Set the time stamp.
         if fileName:
@@ -443,6 +446,8 @@ class AtFile:
         elif importFileName:
             fileName = importFileName
         elif root.isAnyAtFileNode():
+            # #1798: It's not possible to honor the @path directive in @file nodes!
+            #        @file nodes have empty bodies here, before Leo reads the outline.
             fileName = root.anyAtFileNodeName()
             # #102, #1341: expand user expression.
             fileName = c.expand_path_expression(fileName)  # #1341:
@@ -698,9 +703,13 @@ class AtFile:
         s = at.openFileHelper(fn)
             # Use the standard helper. Better error reporting.
             # Important: uses 'rb' to open the file.
-        s = g.toUnicode(s, encoding=at.encoding)
-        s = s.replace('\r\n', '\n')
-            # Suppress meaningless "node changed" messages.
+        # #1798.
+        if s is None:
+            s = ''
+        else:
+            s = g.toUnicode(s, encoding=at.encoding)
+            s = s.replace('\r\n', '\n')
+                # Suppress meaningless "node changed" messages.
         return g.splitLines(s)
     #@+node:ekr.20150204165040.9: *6* at.write_at_clean_sentinels
     def write_at_clean_sentinels(self, root):
@@ -850,6 +859,7 @@ class AtFile:
         at = self
         s = at.openFileHelper(fileName)
             # Catches all exceptions.
+        # #1798.
         if s is None:
             return None
         e, s = g.stripBOM(s)
@@ -869,7 +879,8 @@ class AtFile:
     def openFileHelper(self, fileName):
         """Open a file, reporting all exceptions."""
         at = self
-        s = ''
+        # #1798: return None as a flag on any error.
+        s = None 
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
@@ -887,7 +898,7 @@ class AtFile:
         """
         at = self
         if at.errors:
-            g.trace('can not happen: at.errors > 0')
+            g.trace('can not happen: at.errors > 0', g.callers())
             e = at.encoding
             if g.unitTesting: assert False, g.callers()
                 # This can happen when the showTree command in a unit test is left on.
