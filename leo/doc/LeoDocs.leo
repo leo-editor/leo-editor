@@ -8901,7 +8901,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
    Sets the **path prefix** for relative filenames for all @&lt;file&gt; tree.
 
    This directive may appear in headlines or body text, and may
-   appear in top-level @&lt;file&gt; nodes.
+   appear in top-level @&lt;file&gt; nodes *except* @file nodes.
 
    The path is an **absolute path** if it begins with c:\\ or /,
    otherwise the path is a **relative** paths.
