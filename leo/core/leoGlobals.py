@@ -3997,10 +3997,12 @@ def fullPath(c, p, simulate=False):
     Return the full path (including fileName) in effect at p. Neither the
     path nor the fileName will be created if it does not exist.
     """
+    trace = False and p.h.endswith(('coreNodes.py', 'coreGlobals.py'))
     # Search p and p's parents.
     for p in p.self_and_parents(copy=False):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
+        if trace: g.trace('path', path, p.h)
         fn = p.h if simulate else p.anyAtFileNodeName()
             # Use p.h for unit tests.
         if fn:
