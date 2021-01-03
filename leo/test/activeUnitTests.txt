@@ -27652,7 +27652,7 @@ except IndentationError:
     pass
 #@+node:ekr.20100205235740.5391: *3* @test c.checkPythonCode
 c.checkPythonCode(event=None,
-    unittest=True,ignoreAtIgnore=False,
+    unittestFlag=True,ignoreAtIgnore=False,
     suppressErrors=True,checkOnSave=False)
 #@+node:ekr.20100205223124.5378: *3* @test c.checkPythonNode
 table = (
@@ -27663,7 +27663,7 @@ for h,expected in table:
     p2 = g.findNodeInTree(c,p,h)
     assert p2,'node not found: %s' % h
     result = c.checkPythonCode(event=None,
-        unittest=True,ignoreAtIgnore=True,
+        unittestFlag=True,ignoreAtIgnore=True,
         suppressErrors=True,checkOnSave=False)
     assert result==expected, 'expected %s got %s' % (
         expected,result)
@@ -27679,7 +27679,7 @@ def spam():
     pass
 '''
 
-c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+c.tabNannyNode(p,headline=p.h,body=s,unittestFlag=True,suppressErrors=True)
 
 s2 = '''
 # syntax error
@@ -27689,7 +27689,7 @@ def spam:
 '''
 
 try:
-    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+    c.tabNannyNode(p,headline=p.h,body=s2,unittestFlag=True,suppressErrors=True)
 except IndentationError:
     pass
 #@+node:ekr.20100206002004.5397: *3* @test g.es_exception

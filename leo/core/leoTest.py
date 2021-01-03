@@ -699,7 +699,7 @@ class TestManager:
             g.unitTesting = g.app.unitTesting = False
             c.contractAllHeadlines()
             c.redraw(p1)
-    #@+node:ekr.20170504130531.1: *5* class LoggingLog
+    #@+node:ekr.20170504130531.1: *5* class LoggingLog (leoTest.py)
     class LoggingStream:
         """A class that can searve as a logging stream."""
 
