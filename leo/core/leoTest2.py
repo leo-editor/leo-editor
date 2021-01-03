@@ -250,7 +250,7 @@ class ConvertTests:
 class ConvertEditCommandsTests (ConvertTests):
     
     #@+others
-    #@+node:ekr.20201130075024.4: *3* ConvertTests.convert
+    #@+node:ekr.20201130075024.4: *3* ConvertEditCommandsTests.convert
     def convert(self, p, target):
         """Convert one @test node, creating a new node."""
         after_p, before_p = None, None
