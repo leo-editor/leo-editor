@@ -2588,7 +2588,7 @@ class UiTypeException(Exception):
 def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
-#@+node:ekr.20200219071828.1: *3* class TestLeoGlobals
+#@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
     #@+others

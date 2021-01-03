@@ -2669,7 +2669,7 @@ class LeoFind:
             s = s[:-1]
         self.change_text = s
     #@-others
-#@+node:ekr.20200216063538.1: ** class TestFind
+#@+node:ekr.20200216063538.1: ** class TestFind (LeoFind.py)
 # Transcrypt does not support Python's unittest module.
 # __pragma__ ('skip')
 
