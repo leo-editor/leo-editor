@@ -658,9 +658,6 @@ class Position:
 
     def headString(self):
         return self.v.headString()
-
-    def cleanHeadString(self):
-        return self.v.cleanHeadString()
     #@+node:ekr.20040306214401: *5* p.Status bits
     def isDirty(self): return self.v.isDirty()
 
