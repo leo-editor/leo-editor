@@ -705,7 +705,11 @@ def indentBody(self, event=None):
     
     The @tabwidth directive in effect determines amount of indentation.
     """
-    c, w = self, self.frame.body.wrapper
+    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    # #1801: Don't rely on bindings to ensure that we are editing the body.
+    if event_w != w:
+        c.insertCharFromEvent(event)
+        return
     # # 1739. Special case for a *plain* tab bound to indent-region.
     sel_1, sel_2 = w.getSelectionRange()
     if sel_1 == sel_2:

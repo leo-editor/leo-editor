@@ -2302,6 +2302,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20060925060533.4"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3592,7 +3593,10 @@ delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-word                         = Keypad+Ctrl+Delete
 delete-spaces                       = None
-indent-region                       !text = Tab
+### Fix #1801.
+### Legacy: wrong.
+indent-region                   !text = Tab
+### indent-region                       !body = Tab
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
