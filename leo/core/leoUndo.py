@@ -1210,7 +1210,6 @@ class Undoer:
         c = self.c
         if g.isTextWrapper(w):
             # An important, ever-present unit test.
-            # #1801: Careful.
             all = w.getAllText()
             if g.unitTesting:
                 assert p.b == all, (w, g.callers())
