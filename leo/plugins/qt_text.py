@@ -330,6 +330,9 @@ class QLineEditWrapper(QTextMixin):
                 i = j = w.cursorPosition()
             return i, j
         return 0, 0
+    #@+node:ekr.20210104122029.1: *4* qlew.getYScrollPosition
+    def getYScrollPosition(self):
+        return 0  # #1801.
     #@+node:ekr.20110605121601.18123: *4* qlew.hasSelection
     def hasSelection(self):
         """QHeadlineWrapper."""

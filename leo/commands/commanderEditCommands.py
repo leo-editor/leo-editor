@@ -642,7 +642,7 @@ def goToPrevHistory(self, event=None):
     """Go to the previous node in the history list."""
     c = self
     c.nodeHistory.goPrev()
-#@+node:ekr.20171123135625.30: ** c_ec.always/indentBody (indent-region & always-indent-region)
+#@+node:ekr.20171123135625.30: ** c_ec.alwaysIndentBody (always-indent-region)
 @g.commander_command('always-indent-region')
 def alwaysIndentBody(self, event=None):
     """
@@ -695,6 +695,7 @@ def alwaysIndentBody(self, event=None):
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 
+#@+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
 def indentBody(self, event=None):
     """

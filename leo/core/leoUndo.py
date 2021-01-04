@@ -1210,11 +1210,14 @@ class Undoer:
         c = self.c
         if g.isTextWrapper(w):
             # An important, ever-present unit test.
+            # #1801: Careful.
             all = w.getAllText()
             if g.unitTesting:
-                assert p.b == all, g.callers()
+                assert p.b == all, (w, g.callers())
             elif p.b != all:
-                g.trace(f"\nError:p.b != w.getAllText() p:{p.h} {g.callers()}\n")
+                g.trace(
+                    f"\np.b != w.getAllText() p: {p.h} \n"
+                    f"w: {w!r} \n{g.callers()}\n")
                 # g.printObj(g.splitLines(p.b), tag='p.b')
                 # g.printObj(g.splitLines(all), tag='getAllText')
             p.v.insertSpot = ins = w.getInsertPoint()
