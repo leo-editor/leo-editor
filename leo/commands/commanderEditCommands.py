@@ -651,6 +651,7 @@ def alwaysIndentBody(self, event=None):
     indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
     if event_w != w:
