@@ -436,27 +436,20 @@ class BindingInfo:
 def isBindingInfo(obj):
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
-#@@language rest
-#@+at
-# From The Python Cookbook:
-#
-# Create a Bunch whenever you want to group a few variables:
-#
-#     point = Bunch(datum=y, squared=y*y, coord=x)
-#
-# You can read/write the named attributes you just created, add others,
-# del some of them, etc::
-#
-#     if point.squared > threshold:
-#         point.isok = True
-#@@c
-#@@language python
-
-
 class Bunch:
-    """A class that represents a colection of things.
+    """
+    From The Python Cookbook:
 
-    Especially useful for representing a collection of related variables."""
+        Create a Bunch whenever you want to group a few variables:
+        
+            point = Bunch(datum=y, squared=y*y, coord=x)
+        
+        You can read/write the named attributes you just created, add others,
+        del some of them, etc::
+        
+            if point.squared > threshold:
+                point.isok = True
+    """
 
     def __init__(self, **keywords):
         self.__dict__.update(keywords)
