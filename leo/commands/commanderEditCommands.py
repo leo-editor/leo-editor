@@ -642,7 +642,7 @@ def goToPrevHistory(self, event=None):
     """Go to the previous node in the history list."""
     c = self
     c.nodeHistory.goPrev()
-#@+node:ekr.20171123135625.30: ** c_ec.always/indentBody (indent-region & always-indent-region)
+#@+node:ekr.20171123135625.30: ** c_ec.alwaysIndentBody (always-indent-region)
 @g.commander_command('always-indent-region')
 def alwaysIndentBody(self, event=None):
     """
@@ -651,6 +651,12 @@ def alwaysIndentBody(self, event=None):
     indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
+    #
+    # #1801: Don't rely on bindings to ensure that we are editing the body.
+    event_w = event and event.w
+    if event_w != w:
+        c.insertCharFromEvent(event)
+        return
     #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
@@ -695,6 +701,7 @@ def alwaysIndentBody(self, event=None):
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 
+#@+node:ekr.20210104123442.1: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
 def indentBody(self, event=None):
     """
@@ -704,7 +711,11 @@ def indentBody(self, event=None):
     
     The @tabwidth directive in effect determines amount of indentation.
     """
-    c, w = self, self.frame.body.wrapper
+    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    # #1801: Don't rely on bindings to ensure that we are editing the body.
+    if event_w != w:
+        c.insertCharFromEvent(event)
+        return
     # # 1739. Special case for a *plain* tab bound to indent-region.
     sel_1, sel_2 = w.getSelectionRange()
     if sel_1 == sel_2:
