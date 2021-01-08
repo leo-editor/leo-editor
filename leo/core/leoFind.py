@@ -1,16 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060123151617: * @file leoFind.py
 """Leo's gui-independent find classes."""
+import keyword
 import re
 import sys
 import time
-
-# Transcrypt does not support Python's copy or keyword module.
-# __pragma__ ('skip')
-import keyword
 import unittest
-# __pragma__ ('noskip')
-
 from leo.core import leoGlobals as g
 
 #@+<< Theory of operation of find/change >>
@@ -453,12 +448,8 @@ class LeoFind:
         word = w.getSelectedText().strip()
         if not word:
             return None
-        # Transcrypt does not support Python's keyword module.
-        # __pragma__ ('skip')
         if keyword.iskeyword(word):
             return None
-        # __pragma__ ('noskip')
-        
         # Return word, stripped of preceding class or def.
         for tag in ('class ', 'def '):
             found = word.startswith(tag) and len(word) > len(tag)
@@ -2670,9 +2661,6 @@ class LeoFind:
         self.change_text = s
     #@-others
 #@+node:ekr.20200216063538.1: ** class TestFind (LeoFind.py)
-# Transcrypt does not support Python's unittest module.
-# __pragma__ ('skip')
-
 class TestFind(unittest.TestCase):
     """Test cases for leoFind.py"""
     #@+others
@@ -2686,15 +2674,9 @@ class TestFind(unittest.TestCase):
         result = x.makeRegexSubs(change_text, groups)
         assert result == expected, (expected, result)
     #@-others
-
-# __pragma__ ('noskip')
 #@-others
-
-# __pragma__ ('skip')
 if __name__ == '__main__':
     unittest.main()
-# __pragma__ ('noskip')
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

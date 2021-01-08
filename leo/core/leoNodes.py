@@ -6,9 +6,7 @@
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes.py)
 #Transcrypt does not support Python's copy module.
-# __pragma__ ('skip')
 import copy
-# __pragma__ ('noskip')
 import itertools
 import time
 import re
@@ -1376,12 +1374,7 @@ class Position:
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
         #
         # #1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
-        #
-        # Transcrypt doesn't support Python's copy module.
-        # __pragma__ ('skip')
         p2.v.u = copy.deepcopy(p.v.u)
-        # __pragma__ ('noskip')
-        #
         if copyGnxs:
             p2.v.fileIndex = p.v.fileIndex
         # 2009/10/02: no need to copy arg to iter
@@ -2152,12 +2145,7 @@ class VNode:
         # Copy vnode fields. Do **not** set v2.parents.
         v2._headString = g.toUnicode(v._headString, reportErrors=True)
         v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True)
-        #
-        # Transcrypt doesn't support Python's copy module.
-        # __pragma__ ('skip')
         v2.u = copy.deepcopy(v.u)
-        # __pragma__ ('noskip')
-        #
         if copyMarked and v.isMarked():
             v2.setMarked()
         # Recursively copy all descendant vnodes.
