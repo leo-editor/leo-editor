@@ -39,7 +39,10 @@ import urllib
 import urllib.parse as urlparse
 import webbrowser
 # User imports last.
-import requests
+try:
+    import requests
+except Exception:
+    requests = None
 try:
     import gc
 except ImportError:
@@ -5221,6 +5224,9 @@ class GitIssueController:
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, label_list, root, state, limit=100):
         """Get all issues for the base url."""
+        if not requests:
+            g.trace('requests not found: `pip install requests`')
+            return
         label = None
         assert state in ('open', 'closed')
         page_url = self.base_url + '?&state=%s&page=%s'
@@ -5255,6 +5261,9 @@ class GitIssueController:
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
     def get_one_issue(self, label, state, limit=20):
         """Create a list of issues with the given label."""
+        if not requests:
+            g.trace('requests not found: `pip install requests`')
+            return
         root = self.root.insertAsLastChild()
         page, total = 1, 0
         page_url = self.base_url + '?labels=%s&state=%s&page=%s'
