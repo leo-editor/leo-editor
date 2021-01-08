@@ -1410,6 +1410,82 @@ class LeoFind:
     #@+node:ekr.20131117164142.16991: *4* LeoFind.setupSearchPattern
     def setupSearchPattern(self, pattern):
         self.ftm.setFindText(pattern)
+    #@+node:ekr.20210108084340.1: *3* LeoFind.Script entries
+    #@+node:ekr.20210108053422.1: *4* find.batch_change & helper
+    def batch_change(self, root, replacements, settings=None):
+        """
+        Support batch change scripts.
+        
+        replacement: a list of tuples (find_string, change_string).
+        settings: a dict or g.Bunch containing find/change settings.
+        
+        Example:
+            
+            h = '@file src/ekr/coreFind.py'
+            root = g.findNodeAnywhere(c, h)
+            assert root
+            replacements = (
+                ('clone_find_all', 'clone_find_all_cmd'),
+                ('clone_find_all_flattened', 'clone_find_all_flattened_cmd'),
+            )
+            settings = dict(suboutline_only=True)
+            count = c.findCommands.batch_change(c, root, replacements, settings)
+            if count:
+                c.save()
+        """
+        try:
+            self.init_from_dict(settings or {})
+            count = 0
+            for find, change in replacements:
+                count += self.batch_change_helper(root, find, change)
+            return count
+        except Exception:
+            g.es_exception()
+            return 0
+    #@+node:ekr.20210108070948.1: *5* find.batch_change_helper
+    def batch_change_helper(self, p, find_text, change_text):
+
+        c, p1, u = self.c, p.copy(), self.c.undoer
+        undoType = 'Batch Change All'
+        # Check...
+        if not find_text:
+            return 0
+        if not self.search_headline and not self.search_body:
+            return 0
+        if self.pattern_match:
+            ok = self.precompilePattern()
+            if not ok:
+                return 0
+        # Init...
+        self.find_text = find_text
+        self.change_text = self.replaceBackSlashes(change_text)
+        if self.node_only:
+            positions = [p1]
+        elif self.suboutline_only:
+            positions = p1.self_and_subtree()
+        else:
+            positions = c.all_unique_positions()
+        self.initBatchText()
+        u.beforeChangeGroup(p1, undoType)
+        count = 0
+        for p in positions:
+            count_h, count_b = 0, 0
+            undoData = u.beforeChangeNodeContents(p)
+            if self.search_headline:
+                count_h, new_h = self.batchSearchAndReplace(p.h)
+                if count_h:
+                    count += count_h
+                    p.h = new_h
+            if self.search_body:
+                count_b, new_b = self.batchSearchAndReplace(p.b)
+                if count_b:
+                    count += count_b
+                    p.b = new_b
+            if count_h or count_b:
+                u.afterChangeNodeContents(p1, 'Replace All', undoData)
+        u.afterChangeGroup(p1, undoType, reportFlag=True)
+        print(f"{count:3}: {find_text:>30} => {change_text}")
+        return count
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20031218072017.3068: *4* find.change
     @cmd('replace')
@@ -2111,6 +2187,37 @@ class LeoFind:
             self.search_headline and self.search_body and (
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
+    #@+node:ekr.20210108083003.1: *4* find.init_from_dict
+    def init_from_dict(self, settings):
+        """Initialize ivars from settings (a dict or g.Bunch)."""
+        # The valid ivars and reasonable defaults.
+        valid = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=True,  # Seems safest.
+            whole_word=True,
+        )
+        # Set ivars to reasonable defaults.
+        for ivar in valid:
+            setattr(self, ivar, valid.get(ivar))
+        # Override ivars from settings.
+        errors = 0
+        for ivar in settings.keys():
+            if ivar in valid:
+                val = settings.get(ivar)
+                if val in (True, False):
+                    setattr(self, ivar, val)
+                else:
+                    g.trace("bad value: {ivar!r} = {val!r}")
+                    errors += 1
+            else:
+                g.trace(f"ignoring {ivar!r} setting")
+                errors += 1
+        if errors:
+            g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap(self, event=None):
         self.wrapPosition = None
@@ -2674,6 +2781,81 @@ class TestFind(unittest.TestCase):
         result = x.makeRegexSubs(change_text, groups)
         assert result == expected, (expected, result)
     #@-others
+#@+node:ekr.20210108053422.1: ** find.batch_change & helper
+def batch_change(self, root, replacements, settings=None):
+    """
+    Support batch change scripts.
+    
+    replacement: a list of tuples (find_string, change_string).
+    settings: a dict or g.Bunch containing find/change settings.
+    
+    Example:
+        
+        h = '@file src/ekr/coreFind.py'
+        root = g.findNodeAnywhere(c, h)
+        assert root
+        replacements = (
+            ('clone_find_all', 'clone_find_all_cmd'),
+            ('clone_find_all_flattened', 'clone_find_all_flattened_cmd'),
+        )
+        settings = dict(suboutline_only=True)
+        count = c.findCommands.batch_change(c, root, replacements, settings)
+        if count:
+            c.save()
+    """
+    try:
+        self.init_from_dict(settings or {})
+        count = 0
+        for find, change in replacements:
+            count += self.batch_change_helper(root, find, change)
+        return count
+    except Exception:
+        g.es_exception()
+        return 0
+#@+node:ekr.20210108070948.1: *3* find.batch_change_helper
+def batch_change_helper(self, p, find_text, change_text):
+
+    c, p1, u = self.c, p.copy(), self.c.undoer
+    undoType = 'Batch Change All'
+    # Check...
+    if not find_text:
+        return 0
+    if not self.search_headline and not self.search_body:
+        return 0
+    if self.pattern_match:
+        ok = self.precompilePattern()
+        if not ok:
+            return 0
+    # Init...
+    self.find_text = find_text
+    self.change_text = self.replaceBackSlashes(change_text)
+    if self.node_only:
+        positions = [p1]
+    elif self.suboutline_only:
+        positions = p1.self_and_subtree()
+    else:
+        positions = c.all_unique_positions()
+    self.initBatchText()
+    u.beforeChangeGroup(p1, undoType)
+    count = 0
+    for p in positions:
+        count_h, count_b = 0, 0
+        undoData = u.beforeChangeNodeContents(p)
+        if self.search_headline:
+            count_h, new_h = self.batchSearchAndReplace(p.h)
+            if count_h:
+                count += count_h
+                p.h = new_h
+        if self.search_body:
+            count_b, new_b = self.batchSearchAndReplace(p.b)
+            if count_b:
+                count += count_b
+                p.b = new_b
+        if count_h or count_b:
+            u.afterChangeNodeContents(p1, 'Replace All', undoData)
+    u.afterChangeGroup(p1, undoType, reportFlag=True)
+    print(f"{count:3}: {find_text:>30} => {change_text}")
+    return count
 #@-others
 if __name__ == '__main__':
     unittest.main()
