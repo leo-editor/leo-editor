@@ -1486,32 +1486,6 @@ class LeoFind:
         u.afterChangeGroup(p1, undoType, reportFlag=True)
         print(f"{count:3}: {find_text:>30} => {change_text}")
         return count
-    #@+node:ekr.20210108083003.1: *4* find.init_from_dict
-    def init_from_dict(self, settings):
-        """Initialize ivars from settings (a dict or g.Bunch)."""
-        # The valid ivars and reasonable defaults.
-        valid = dict(
-            ignore_case=False,
-            node_only=False,
-            pattern_match=False,
-            search_body=True,
-            search_headline=True,
-            suboutline_only=True,  # Seems safest.
-            whole_word=True,
-        )
-        # Set ivars to reasonable defaults.
-        for ivar in valid:
-            setattr(self, ivar, valid.get(ivar))
-        # Override ivars from settings.
-        for ivar in settings.keys():
-            if ivar in valid:
-                val = settings.get(ivar)
-                if val in (True, False):
-                    setattr(self, ivar, val)
-                else:
-                    g.trace("bad value: {ivar!r} = {val!r}")
-            else:
-                g.trace(f"ignoring {ivar!r} setting")
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20031218072017.3068: *4* find.change
     @cmd('replace')
@@ -2213,6 +2187,37 @@ class LeoFind:
             self.search_headline and self.search_body and (
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
+    #@+node:ekr.20210108083003.1: *4* find.init_from_dict
+    def init_from_dict(self, settings):
+        """Initialize ivars from settings (a dict or g.Bunch)."""
+        # The valid ivars and reasonable defaults.
+        valid = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=True,  # Seems safest.
+            whole_word=True,
+        )
+        # Set ivars to reasonable defaults.
+        for ivar in valid:
+            setattr(self, ivar, valid.get(ivar))
+        # Override ivars from settings.
+        errors = 0
+        for ivar in settings.keys():
+            if ivar in valid:
+                val = settings.get(ivar)
+                if val in (True, False):
+                    setattr(self, ivar, val)
+                else:
+                    g.trace("bad value: {ivar!r} = {val!r}")
+                    errors += 1
+            else:
+                g.trace(f"ignoring {ivar!r} setting")
+                errors += 1
+        if errors:
+            g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap(self, event=None):
         self.wrapPosition = None
