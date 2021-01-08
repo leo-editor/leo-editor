@@ -294,6 +294,50 @@ class LeoFind:
             c.endEditing()
         self.update_ivars()
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
+    #@+node:ekr.20210108070948.1: *4* find.batch_change_all (new)
+    def batch_change_all(self, p, find_text, change_text):
+
+        c, p1, u = self.c, p.copy(), self.c.undoer
+        undoType = 'Batch Change All'
+        # Check...
+        if not find_text:
+            return 0
+        if not self.search_headline and not self.search_body:
+            return 0
+        if self.pattern_match:
+            ok = self.precompilePattern()
+            if not ok:
+                return 0
+        # Init...
+        self.find_text = find_text
+        self.change_text = self.replaceBackSlashes(change_text)
+        if self.node_only:
+            positions = [p1]
+        elif self.suboutline_only:
+            positions = p1.self_and_subtree()
+        else:
+            positions = c.all_unique_positions()
+        self.initBatchText()
+        u.beforeChangeGroup(p1, undoType)
+        count = 0
+        for p in positions:
+            count_h, count_b = 0, 0
+            undoData = u.beforeChangeNodeContents(p)
+            if self.search_headline:
+                count_h, new_h = self.batchSearchAndReplace(p.h)
+                if count_h:
+                    count += count_h
+                    p.h = new_h
+            if self.search_body:
+                count_b, new_b = self.batchSearchAndReplace(p.b)
+                if count_b:
+                    count += count_b
+                    p.b = new_b
+            if count_h or count_b:
+                u.afterChangeNodeContents(p1, 'Replace All', undoData)
+        u.afterChangeGroup(p1, undoType, reportFlag=True)
+        print(f"{count:3}: {find_text:>30} => {change_text}")
+        return count
     #@+node:ekr.20031218072017.3061: *4* find.changeCommand
     def changeCommand(self, event=None):
         """Handle replace command."""
@@ -2111,6 +2155,32 @@ class LeoFind:
             self.search_headline and self.search_body and (
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
+    #@+node:ekr.20210108083003.1: *4* find.init_from_dict (new)
+    def init_from_dict(self, settings):
+        """Initialize ivars from settings, a dict or g.Bunch"""
+        # The valid ivars and reasonable defaults.
+        valid = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=True,  # Seems safest.
+            whole_word=True,
+        )
+        # Set ivars to reasonable defaults.
+        for ivar in valid:
+            setattr(self, ivar, valid.get(ivar))
+        # Override ivars from settings.
+        for ivar in settings.keys():
+            if ivar in valid:
+                val = settings.get(ivar)
+                if val in (True, False):
+                    setattr(self, ivar, val)
+                else:
+                    g.trace("bad value: {ivar!r} = {val!r}")
+            else:
+                g.trace(f"ignoring {ivar!r} setting")
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap(self, event=None):
         self.wrapPosition = None
@@ -2674,6 +2744,20 @@ class TestFind(unittest.TestCase):
         result = x.makeRegexSubs(change_text, groups)
         assert result == expected, (expected, result)
     #@-others
+#@+node:ekr.20210108053422.1: ** function: batch_change
+def batch_change(c, root, replacements, settings):
+    """
+    New in Leo 6.4. Perform a batch change.
+    
+    replacement: a list of tuples (find_string, change_string).
+    settings: a dict (including g.Bunch) find/change settings.
+    """
+    x = LeoFind(c)
+    x.init_from_dict(settings or {})
+    count = 0
+    for find, change in replacements:
+        count += x.batch_change_all(root, find, change)
+    return count
 #@-others
 if __name__ == '__main__':
     unittest.main()
