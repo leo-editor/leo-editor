@@ -1412,7 +1412,7 @@ class LeoFind:
         self.ftm.setFindText(pattern)
     #@+node:ekr.20210108084340.1: *3* LeoFind.Script entries
     #@+node:ekr.20210108053422.1: *4* find.batch_change & helper
-    def batch_change(self, c, root, replacements, settings=None):
+    def batch_change(self, root, replacements, settings=None):
         """
         Support batch change scripts.
         
@@ -2777,7 +2777,7 @@ class TestFind(unittest.TestCase):
         assert result == expected, (expected, result)
     #@-others
 #@+node:ekr.20210108053422.1: ** find.batch_change & helper
-def batch_change(self, c, root, replacements, settings=None):
+def batch_change(self, root, replacements, settings=None):
     """
     Support batch change scripts.
     
