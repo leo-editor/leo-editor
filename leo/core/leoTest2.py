@@ -108,7 +108,7 @@ def create_app():
     g.app.gui=leoGui.NullGui()
     t3 = time.process_time()
     # Create a dummy commander, to do the imports in c.initObjects.
-    leoCommands.Commands(fileName=None, gui=g.app.gui)
+    c = leoCommands.Commands(fileName=None, gui=g.app.gui)
     # dump_leo_modules()
     t4 = time.process_time()
     if False and t4 - t3 > 0.1:
@@ -117,6 +117,7 @@ def create_app():
             f"      gui: {(t3-t2):.3f}\n"
             f"commander: {(t4-t2):.3f}\n"
             f"    total: {(t4-t1):.3f}\n")
+    return c
 #@+node:ekr.20201201144934.1: *3* function: dump_leo_modules
 def dump_leo_modules():
     
