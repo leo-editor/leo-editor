@@ -1217,21 +1217,6 @@ class LeoFind:
         ###
         settings = self.get_settings()
         return self.clone_find_all_cmd(settings)
-
-    # A stand-alone method for unit testing.
-    def clone_find_all_cmd(self, settings):
-        """Do the clone-all-find commands from settings."""
-        c = self.c
-        self.init(settings)
-        count = 0
-        if self.check_args('clone-find-all'):
-            count = self.clone_find_all_helper(settings, flatten=False)
-        if count:
-            c.redraw()
-            c.treeWantsFocus()
-        return count
-        
-
     #@+node:ekr.20131117164142.16996: *5* find.clone-find-all-flattened (Changed)
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
@@ -1270,20 +1255,6 @@ class LeoFind:
         self.p = c.p
         settings = self.get_settings()
         return self.clone_find_all_cmd(settings)
-        
-    # A stand-alone method for unit testing.
-    def clone_find_all_flattened_cmd(self, settings):
-        """Do the clone-find-all-flattened command from the settings."""
-        c = self.c
-        self.init(settings)
-        count = 0
-        if self.check_args('clone-find-all-flattened'):
-            count = self.clone_find_all_helper(settings, flatten=True)
-        if count:
-            c.redraw()
-            c.treeWantsFocus()
-        return count
-        
     #@+node:ekr.20210110073117.9: *5* new: find.clone_find_all_helper & helper
     def clone_find_all_helper(self, settings, flatten):
         """
@@ -1347,6 +1318,33 @@ class LeoFind:
             if pos != -1:
                 return True
         return False
+    #@+node:ekr.20210110153617.1: *5* new: find.clone_find_all_cmd
+    # A stand-alone method for unit testing.
+    def clone_find_all_cmd(self, settings):
+        """Do the clone-all-find commands from settings."""
+        c = self.c
+        self.init(settings)
+        count = 0
+        if self.check_args('clone-find-all'):
+            count = self.clone_find_all_helper(settings, flatten=False)
+        if count:
+            c.redraw()
+            c.treeWantsFocus()
+        return count
+    #@+node:ekr.20210110153653.1: *5* new: find.clone_find_all_flattened_cmd
+    # A stand-alone method for unit testing.
+    def clone_find_all_flattened_cmd(self, settings):
+        """Do the clone-find-all-flattened command from the settings."""
+        c = self.c
+        self.init(settings)
+        count = 0
+        if self.check_args('clone-find-all-flattened'):
+            count = self.clone_find_all_helper(settings, flatten=True)
+        if count:
+            c.redraw()
+            c.treeWantsFocus()
+        return count
+        
     #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag (clone-find-tag)
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
