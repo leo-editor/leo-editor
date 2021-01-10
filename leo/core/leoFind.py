@@ -610,7 +610,7 @@ class LeoFind:
         # Fix bug
         self.buttonFlag = False
         self.update_ivars()
-    #@+node:ekr.20131119060731.22452: *4* find.startSearch
+    #@+node:ekr.20131119060731.22452: *4* find.startSearch (start-search) (Ctrl-F)
     @cmd('start-search')
     def startSearch(self, event):
         w = self.editWidget(event)
@@ -626,7 +626,7 @@ class LeoFind:
         else:
             self.openFindTab(event)
             self.ftm.init_focus()
-    #@+node:vitalije.20170712162056.1: *4* find.returnToOrigin
+    #@+node:vitalije.20170712162056.1: *4* find.returnToOrigin (search-return-to-origin)
     @cmd('search-return-to-origin')
     def returnToOrigin(self, event):
         data = self.state_on_start_of_search
@@ -891,7 +891,7 @@ class LeoFind:
         k.setState('isearch', 1, handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
-    #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
+    #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll (find-all)
     @cmd('clone-find-all')
     @cmd('find-clone-all')
     @cmd('cfa')
@@ -920,7 +920,7 @@ class LeoFind:
         k.showStateAndMode()
         self.generalSearchHelper(k.arg, cloneFindAll=True)
         c.treeWantsFocus()
-    #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened
+    #@+node:ekr.20131117164142.16996: *4* find.minibufferCloneFindAllFlattened (clone-find-all)
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
     @cmd('cff')
@@ -950,7 +950,7 @@ class LeoFind:
         k.showStateAndMode()
         self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
         c.treeWantsFocus()
-    #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag
+    #@+node:ekr.20160920110324.1: *4* find.minibufferCloneFindTag (clone-find-tag)
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
     @cmd('cft')
@@ -978,7 +978,7 @@ class LeoFind:
         self.find_text = k.arg
         self.cloneFindTag(k.arg)
         c.treeWantsFocus()
-    #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
+    #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll (find-all)
     @cmd('find-all')
     def minibufferFindAll(self, event=None):
         """
@@ -987,7 +987,7 @@ class LeoFind:
         """
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, findAllFlag=True)
-    #@+node:ekr.20171226140643.1: *4* find.minibufferFindAllUnique
+    #@+node:ekr.20171226140643.1: *4* find.minibufferFindAllUnique (find-all-unique-regex)
     @cmd('find-all-unique-regex')
     def minibufferFindAllUniqueRegex(self, event=None):
         """
@@ -998,13 +998,13 @@ class LeoFind:
         self.match_obj = None
         self.unique_matches = set()
         self.searchWithPresentOptions(event, findAllFlag=True, findAllUniqueFlag=True)
-    #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll
+    #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll (replace-all)
     @cmd('replace-all')
     def minibufferReplaceAll(self, event=None):
         """Replace all instances of the search string with the replacement string."""
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, changeAllFlag=True)
-    #@+node:ekr.20160920164418.2: *4* find.minibufferTagChildren & helper
+    #@+node:ekr.20160920164418.2: *4* find.minibufferTagChildren & helper (tag-children)
     @cmd('tag-children')
     def minibufferTagChildren(self, event=None):
         """tag-children: prompt for a tag and add it to all children of c.p."""
@@ -1108,7 +1108,7 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-    #@+node:ekr.20131117164142.17003: *4* find.reSearchBackward/Forward
+    #@+node:ekr.20131117164142.17003: *4* find.reSearchBackward/Forward (re-search*)
     @cmd('re-search-backward')
     def reSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=True, word=None)
@@ -1132,7 +1132,7 @@ class LeoFind:
             self.updateFindList(k.arg)
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20131117164142.17004: *4* find.seachForward/Backward
+    #@+node:ekr.20131117164142.17004: *4* find.seachForward/Backward (search-*)
     @cmd('search-backward')
     def searchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=False)
@@ -1183,7 +1183,7 @@ class LeoFind:
         self.updateChangeList(k.arg)
         self.lastStateHelper()
         self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
-    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers
+    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers (set-search-string)
     @cmd('set-search-string')
     def searchWithPresentOptions(self, event,
     findAllFlag=False,
@@ -1285,7 +1285,7 @@ class LeoFind:
     def updateFindList(self, s):
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward (test)
+    #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=True)
@@ -1305,7 +1305,7 @@ class LeoFind:
         self.lastStateHelper()
         self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
-    #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle-find-*-option commands
+    #@+node:ekr.20131117164142.16919: *4* find.toggle-find-*-option commands
     @cmd('toggle-find-collapses-nodes')
     def toggleFindCollapesNodes(self, event):
         """Toggle the 'Collapse Nodes' checkbox in the find tab."""
@@ -1359,7 +1359,7 @@ class LeoFind:
         self.ftm.toggle_checkbox(checkbox_name)
         options = fc.computeFindOptionsInStatusArea()
         c.frame.statusLine.put(options)
-    #@+node:ekr.20131117164142.17019: *4* LeoFind.set-find-* commands
+    #@+node:ekr.20131117164142.17019: *4* find.set-find-* commands
     @cmd('set-find-everywhere')
     def setFindScopeEveryWhere(self, event=None):
         """Set the 'Entire Outline' radio button in the Find tab."""
@@ -1381,7 +1381,7 @@ class LeoFind:
         self.ftm.set_radio_button(where)
         options = fc.computeFindOptionsInStatusArea()
         c.frame.statusLine.put(options)
-    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions & helper
+    #@+node:ekr.20131117164142.16989: *4* find.showFindOptions & helper
     @cmd('show-find-options')
     def showFindOptions(self, event=None):
         """
@@ -1429,10 +1429,10 @@ class LeoFind:
             if val: z.append(s)
         part2 = ' '.join(z)
         return part1, part2
-    #@+node:ekr.20131117164142.16990: *4* LeoFind.setupChangePattern
+    #@+node:ekr.20131117164142.16990: *4* find.setupChangePattern
     def setupChangePattern(self, pattern):
         self.ftm.setChangeText(pattern)
-    #@+node:ekr.20131117164142.16991: *4* LeoFind.setupSearchPattern
+    #@+node:ekr.20131117164142.16991: *4* find.setupSearchPattern
     def setupSearchPattern(self, pattern):
         self.ftm.setFindText(pattern)
     #@+node:ekr.20210108084340.1: *3* LeoFind.Script entries
