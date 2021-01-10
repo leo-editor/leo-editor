@@ -124,31 +124,7 @@ class LeoFind:
     """The base class for Leo's Find commands."""
     #@+others
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
-    #@+node:ekr.20210110073117.6: *4* find.default_settings
-    def default_settings(self):
-        """Return a dict representing all default settings."""
-        c = self.c
-        return g.Bunch(
-            # State...
-            in_headline = False,
-            p = c.rootPosition(),
-            # Find/change strings...
-            find_text = '',
-            change_text = '',
-            # Find options...
-            ignore_case = False,
-            node_only = False,
-            pattern_match = False,
-            reverse = False,
-            search_body = True,
-            search_headline = True,
-            suboutline_only = False,
-            whole_word = False,
-            wrapping = False,
-            # User options.
-            use_cff = False,  # For find-def.
-        )
-    #@+node:ekr.20031218072017.3053: *4* find.__init__
+    #@+node:ekr.20031218072017.3053: *4*  find.__init__
     #@@nobeautify
 
     def __init__(self, c):
@@ -225,6 +201,30 @@ class LeoFind:
             # Persists between calls.
         self.state_on_start_of_search = None
             # keeps all state data that should be restored once the search is exhausted
+    #@+node:ekr.20210110073117.6: *4* find.default_settings
+    def default_settings(self):
+        """Return a dict representing all default settings."""
+        c = self.c
+        return g.Bunch(
+            # State...
+            in_headline = False,
+            p = c.rootPosition(),
+            # Find/change strings...
+            find_text = '',
+            change_text = '',
+            # Find options...
+            ignore_case = False,
+            node_only = False,
+            pattern_match = False,
+            reverse = False,
+            search_body = True,
+            search_headline = True,
+            suboutline_only = False,
+            whole_word = False,
+            wrapping = False,
+            # User options.
+            use_cff = False,  # For find-def.
+        )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
     def finishCreate(self):
         # New in 4.11.1.
@@ -235,6 +235,17 @@ class LeoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
+    #@+node:ekr.20210110145821.1: *4* find.get_settings
+    def get_settings(self):
+        
+        c = self.c
+        self.initInHeadline()
+        settings = self.ftm.get_settings()
+        settings.in_headline = self.in_headline
+        settings.p = c.p
+        ### settings.use_cff = False  ### user setting?
+        return settings
+        
     #@+node:ekr.20171113164709.1: *4* find.reloadSettings
     def reloadSettings(self):
         """LeoFind.reloadSettings."""
@@ -1191,25 +1202,33 @@ class LeoFind:
                 handler=self.interactive_cfa1)
 
     def interactive_cfa1(self, event):
-        c, k = self.c, self.k
+        c, k, w = self.c, self.k, self.w
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
         ### self.generalSearchHelper(k.arg, cloneFindAll=True)
-        settings = self.ftm.get_settings()
-        self.init(settings)
-        count = 0
-        if self.check_args('clone-find-all'):
-            count = self.clone_find_all_cmd(settings)
-        c.treeWantsFocus()
-        return count
-        
+        pattern = k.arg
+        self.setupSearchPattern(pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_before_search(
+                find_pattern=pattern, change_pattern=None)
+        c.widgetWantsFocusNow(w)
+        self.p = c.p
+        ###
+        settings = self.get_settings()
+        return self.clone_find_all_cmd(settings)
+
     # A stand-alone method for unit testing.
     def clone_find_all_cmd(self, settings):
+        """Do the clone-all-find commands from settings."""
+        c = self.c
         self.init(settings)
         count = 0
         if self.check_args('clone-find-all'):
             count = self.clone_find_all_helper(settings, flatten=False)
+        if count:
+            c.redraw()
+            c.treeWantsFocus()
         return count
         
 
@@ -1237,22 +1256,32 @@ class LeoFind:
                 handler=self.interactive_cff1)
 
     def interactive_cff1(self, event):
-        c, k = self.c, self.k
+        c, k, w = self.c, self.k, self.w
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
         ### self.generalSearchHelper(k.arg, cloneFindAllFlattened=True)
-        settings = self.ftm.get_settings()
-        count = self.clone_find_all_cmd(settings)
-        c.treeWantsFocus()
-        return count
+        pattern = k.arg
+        self.setupSearchPattern(pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_before_search(
+                find_pattern=pattern, change_pattern=None)
+        c.widgetWantsFocusNow(w)
+        self.p = c.p
+        settings = self.get_settings()
+        return self.clone_find_all_cmd(settings)
         
     # A stand-alone method for unit testing.
     def clone_find_all_flattened_cmd(self, settings):
+        """Do the clone-find-all-flattened command from the settings."""
+        c = self.c
         self.init(settings)
         count = 0
         if self.check_args('clone-find-all-flattened'):
             count = self.clone_find_all_helper(settings, flatten=True)
+        if count:
+            c.redraw()
+            c.treeWantsFocus()
         return count
         
     #@+node:ekr.20210110073117.9: *5* new: find.clone_find_all_helper & helper
@@ -1263,6 +1292,7 @@ class LeoFind:
         Return the number of found nodes.
         """
         c, u = self.c, self.c.undoer
+        ### g.printObj(settings, tag='settings')
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok: return 0

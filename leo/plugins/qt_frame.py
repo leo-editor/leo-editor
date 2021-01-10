@@ -1137,20 +1137,20 @@ class FindTabManager:
         """
         return g.Bunch(
             # Find/change strings...
-            find_text = self.getFindText(),
-            change_text = self.getReplaceText(),
+            find_text = self.find_findbox.text(),
+            change_text = self.find_replacebox.text(),
             # Find options...
-            ignore_case = self.check_box_ignore_case,
-            mark_changes = self.check_box_mark_changes,  ### Add to default_settings.
-            mark_finds = self.check_box_mark_finds,  ### Add to default_settings.
-            node_only = self.radio_button_node_only,
-            pattern_match = self.check_box_regexp,
+            ignore_case = self.check_box_ignore_case.isChecked(),
+            mark_changes = self.check_box_mark_changes.isChecked(),  ### Add to default_settings.
+            mark_finds = self.check_box_mark_finds.isChecked(),  ### Add to default_settings.
+            node_only = self.radio_button_node_only.isChecked(),
+            pattern_match = self.check_box_regexp.isChecked(),
             reverse = False,  ### Delete?
-            search_body =  self.check_box_search_body,
-            search_headline = self.check_box_search_headline,
-            suboutline_only = self.radio_button_suboutline_only,
-            whole_word = self.check_box_whole_word,
-            wrapping = self.check_box_wrap_around,
+            search_body =  self.check_box_search_body.isChecked(),
+            search_headline = self.check_box_search_headline.isChecked(),
+            suboutline_only = self.radio_button_suboutline_only.isChecked(),
+            whole_word = self.check_box_whole_word.isChecked(),
+            wrapping = self.check_box_wrap_around.isChecked(),
         )
     #@+node:ekr.20131119185305.16478: *3* ftm.clear_focus & init_focus & set_entry_focus
     def clear_focus(self):
