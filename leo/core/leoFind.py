@@ -217,6 +217,30 @@ class LeoFind:
         c = self.c
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+    #@+node:ekr.20210110073117.6: *4* find.default_settings
+    def default_settings(self):
+        """Return a dict representing all default settings."""
+        c = self.c
+        return g.Bunch(
+            # State...
+            in_headline = False,
+            p = c.rootPosition(),
+            # Find/change strings...
+            find_text = '',
+            change_text = '',
+            # Find options...
+            ignore_case = False,
+            node_only = False,
+            pattern_match = False,
+            reverse = False,
+            search_body = True,
+            search_headline = True,
+            suboutline_only = False,
+            whole_word = False,
+            wrapping = False,
+            # User options.
+            use_cff = False,  # For find-def.
+        )
     #@+node:ekr.20060123065756.1: *3* LeoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* find.changeAllButton
     def changeAllButton(self, event=None):
@@ -2810,6 +2834,7 @@ class TestFind(unittest.TestCase):
         from leo.core import leoFind
         g.unitTesting = True
         self.c = leoTest2.create_app()
+        # self.c.k = g.TracingNullObject(tag='c.k')
         self.x = leoFind.LeoFind(self.c)
         self.settings = self.x.default_settings()
         self.make_test_tree()
