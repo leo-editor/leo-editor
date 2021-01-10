@@ -11872,7 +11872,7 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
-#@+node:ekr.20200219070324.1: *4* @test python -m leo.core.leoFind
+#@+node:ekr.20200219070324.1: *4* @@@test python -m leo.core.leoFind
 #1498: Run per-file unit tests from unitTest.leo.
 command = 'python3 -m unittest leo.core.leoFind'
 g.run_unit_test_in_separate_process(command)
