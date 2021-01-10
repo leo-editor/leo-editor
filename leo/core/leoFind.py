@@ -235,9 +235,9 @@ class LeoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
-    #@+node:ekr.20210110145821.1: *4* find.get_settings
+    #@+node:ekr.20210110145821.1: *4* find.get_settings (new)
     def get_settings(self):
-        
+        """Return all settings in a g.Bunch."""
         c = self.c
         self.initInHeadline()
         settings = self.ftm.get_settings()
