@@ -252,12 +252,43 @@ class LeoFind:
         c = self.c
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
-    #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
-    #@+node:ekr.20031218072017.3061: *4* find.changeCommand
-    def changeCommand(self, event=None):
-        """Handle replace command."""
+    #@+node:ekr.20210110213529.1: *3* LeoFind.(To be removed)
+    #@+node:ekr.20131117164142.17000: *4* find.generalSearchHelper
+    def generalSearchHelper(self, pattern,
+        cloneFindAll=False,
+        cloneFindAllFlattened=False,
+        findAll=False,
+    ):
+        c = self.c
+        self.setupSearchPattern(pattern)
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_dot_before_search(
+                find_pattern=pattern,
+                change_pattern=None)  # A flag indicating not a change command.
+        c.widgetWantsFocusNow(self.w)
+        self.p = c.p
+        if findAll:
+            self.findAllCommand()
+        elif cloneFindAll:
+            self.cloneFindAllCommand()
+        elif cloneFindAllFlattened:
+            self.cloneFindAllFlattenedCommand()
+        else:
+            # This handles the reverse option.
+            self.findNextCommand()
+    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
+    def findAllCommand(self, event=None):
         self.setup_command()
-        self.change()
+        self.findAll()
+    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand
+    def cloneFindAllCommand(self, event=None):
+        self.setup_command()
+        self.findAll(clone_find_all=True)
+    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand
+    def cloneFindAllFlattenedCommand(self, event=None):
+        self.setup_command()
+        self.findAll(clone_find_all=True, clone_find_all_flattened=True)
+    #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20031218072017.3062: *4* find.replace-then-find & helper
     @cmd('replace-then-find')
     def changeThenFindCommand(self, event=None):
@@ -277,8 +308,35 @@ class LeoFind:
                 # self.findNext(False)  # don't reinitialize
 
         self.p = self.c.p
+        self.initInHeadline()
         settings = self.get_settings()
-        self.do_replace_then_find(settings)
+        data = self.save()
+        p, pos, newpos = self.do_replace_then_find(settings)
+        if pos is None:
+            self.restore(data)
+            self.showStatus(False)
+            return False  # for vim-mode find commands.
+        self.showSuccess(pos, newpos)
+        self.showStatus(True)
+        return True  # for vim-mode find commands.
+
+        ### from findNext(False)
+        # # initFlag is False for change-then-find.
+        # if initFlag:
+            # self.initInHeadline()
+            # data = self.save()
+            # self.initInteractiveCommands()
+        # else:
+            # data = self.save()
+        # pos, newpos = self.findNextMatch()
+        # if pos is None:
+            # self.restore(data)
+            # self.showStatus(False)
+            # return False  # for vim-mode find commands.
+        # self.showSuccess(pos, newpos)
+        # self.showStatus(True)
+        # return True  # for vim-mode find commands.
+
     #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find
     def do_replace_then_find(self, settings):
         """
@@ -295,63 +353,6 @@ class LeoFind:
             p, pos, newpos = self.find_next_match(p)
             return p, pos, newpos
         return None, None, None
-    #@+node:ekr.20210110073117.28: *6* NEW:find.change_selection (gui code)
-    def change_selection(self):
-        """
-        Replace selection with self.change_text.
-        If no selection, insert self.change_text at the cursor.
-        """
-        c, p = self.c, self.p
-        wrapper = c.frame.body.wrapper
-        w = c.edit_widget(p) if self.in_headline else wrapper
-        ### For vs-code?
-            # if not w:
-                # self.in_headline = False
-                # w = wrapper
-        oldSel = sel = w.getSelectionRange()
-        start, end = sel
-        if start > end:  # pragma: no cover (depends on the widget)
-            start, end = end, start
-        if start == end:
-            g.es("no text selected")
-            return False
-        # Replace the selection in _both_ controls.
-        start, end = oldSel
-        change_text = self.change_text
-        # Perform regex substitutions of \1, \2, ...\9 in the change text.
-        if self.pattern_match and self.match_obj:
-            groups = self.match_obj.groups()
-            if groups:
-                change_text = self.make_regex_subs(change_text, groups)
-        change_text = self.replace_back_slashes(change_text)
-        for w2 in (w, self.s_ctrl):
-            if start != end:
-                w2.delete(start, end)
-            w2.insert(start, change_text)
-            w2.setInsertPoint(start if self.reverse else start + len(change_text))
-        # Update the selection for the next match.
-        w.setSelectionRange(start, start + len(change_text))
-        ### For vs-code?
-            # c.widgetWantsFocus(w)
-            # # No redraws here: they would destroy the headline selection.
-            # if self.in_headline:
-                # pass
-            # else:
-                # c.frame.body.onBodyChanged('Change', oldSel=oldSel)
-            # c.frame.tree.updateIcon(p)  # redraw only the icon.
-        return True
-    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand
-    def cloneFindAllCommand(self, event=None):
-        self.setup_command()
-        self.findAll(clone_find_all=True)
-    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand
-    def cloneFindAllFlattenedCommand(self, event=None):
-        self.setup_command()
-        self.findAll(clone_find_all=True, clone_find_all_flattened=True)
-    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
-    def findAllCommand(self, event=None):
-        self.setup_command()
-        self.findAll()
     #@+node:ekr.20150629084204.1: *4* find.find-def, find-var & helpers
     @cmd('find-def')
     def findDef(self, event=None):
@@ -528,7 +529,7 @@ class LeoFind:
             self.search_headline = b.search_headline
             self.whole_word = b.whole_word
             self.find_def_data = None
-    #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
+    #@+node:ekr.20031218072017.3063: *4* find.find-next
     @cmd('find-next')
     def findNextCommand(self, event=None):
         """The find-next command."""
@@ -1502,29 +1503,6 @@ class LeoFind:
         else:
             # This handles the reverse option.
             self.findNextCommand()
-    #@+node:ekr.20131117164142.17000: *4* find.generalSearchHelper
-    def generalSearchHelper(self, pattern,
-        cloneFindAll=False,
-        cloneFindAllFlattened=False,
-        findAll=False,
-    ):
-        c = self.c
-        self.setupSearchPattern(pattern)
-        if c.vim_mode and c.vimCommands:
-            c.vimCommands.update_dot_before_search(
-                find_pattern=pattern,
-                change_pattern=None)  # A flag indicating not a change command.
-        c.widgetWantsFocusNow(self.w)
-        self.p = c.p
-        if findAll:
-            self.findAllCommand()
-        elif cloneFindAll:
-            self.cloneFindAllCommand()
-        elif cloneFindAllFlattened:
-            self.cloneFindAllFlattenedCommand()
-        else:
-            # This handles the reverse option.
-            self.findNextCommand()
     #@+node:ekr.20131117164142.17001: *4* find.lastStateHelper
     def lastStateHelper(self):
         k = self.k
@@ -1940,7 +1918,7 @@ class LeoFind:
     def change(self, event=None):
         if self.checkArgs():
             self.initInHeadline()
-            self.changeSelection()
+            self.change_selection()
 
     replace = change
     #@+node:ekr.20031218072017.3069: *4* find.changeAll & helpers
@@ -2102,11 +2080,11 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20031218072017.3070: *4* find.changeSelection & helper
+    #@+node:ekr.20031218072017.3070: *4* find.change_selection & helper
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
 
-    def changeSelection(self):
+    def change_selection(self):
         c = self.c
         p = self.p or c.p  # 2015/06/22
         wrapper = c.frame.body and c.frame.body.wrapper
@@ -2147,7 +2125,7 @@ class LeoFind:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
-    #@+node:ekr.20060526201951: *5* makeRegexSubs
+    #@+node:ekr.20060526201951: *5* find.makeRegexSubs
     def makeRegexSubs(self, change_text, groups):
         """
         Substitute group[i-1] for \\i strings in change_text.
@@ -2951,9 +2929,8 @@ class LeoFind:
                 n = found.numberOfChildren()
                 p2._linkCopiedAsNthChild(found, n)
             return found
-        #@+node:ekr.20210110073117.13: *5* NEW:find-all
-        ### @cmd('find-all')
-        def find_all(self, settings):
+        #@+node:ekr.20210110073117.13: *5* NEW:do_find_all
+        def do_find_all(self, settings):
             """find-all"""
             c, p, u, w = self.c, self.p, self.c.undoer, self.s_ctrl
             if settings:
@@ -3904,15 +3881,15 @@ class TestFind(unittest.TestCase):
         # Test 1.
         settings.find_text = r'^def\b'
         settings.pattern_match = True
-        x.find_all(settings)
+        x.do_find_all(settings)
         # Test 2.
         settings.suboutline_only = True
-        x.find_all(settings)
+        x.do_find_all(settings)
         # Test 3.
         settings.suboutline_only = False
         settings.search_headline = False
         settings.p.setVisited()
-        x.find_all(settings)
+        x.do_find_all(settings)
     #@+node:ekr.20210110073117.64: *4* TestFind.find-next & find-prev
     def test_find_next(self):
         c, settings, x = self.c, self.settings, self.x
@@ -4167,7 +4144,7 @@ class TestFind(unittest.TestCase):
         settings.find_text = ''
         x.do_clone_find_all(settings)
         x.do_clone_find_all_flattened(settings)
-        x.find_all(settings)
+        x.do_find_all(settings)
         x.find_def(settings)
         x.find_var(settings)
         x.find_next(settings)

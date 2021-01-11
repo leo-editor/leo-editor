@@ -983,26 +983,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
         EventWrapper(
             c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
-
-        if 0:  # #1342: These are no longer needed, because there are no buttons.
-            table = (
-                ('findNextCommand', 'find-next'),
-                ('findPrevCommand', 'find-prev'),
-                ('findAll', 'find-all'),
-                ('changeCommand', 'replace'),
-                ('changeThenFind', 'replace-then-find'),
-                ('changeAll', 'replace-all'),
-            )
-            for func_name, cmd_name in table:
-                ivar = f"{cmd_name}-{'button'}"
-                ivar = ivar.replace('-', '_')
-                w = getattr(ftm, ivar, None)
-                func = getattr(fc, func_name, None)
-                if w and func:
-                    next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
-                    EventWrapper(c, w=w, next_w=next_w, func=func)
-                else:
-                    g.trace('**oops**')
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
