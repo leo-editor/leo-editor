@@ -843,14 +843,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0, 2, 'findButton', 'find-next'),
-            (1, 2, 'findPreviousButton', 'find-prev'),
-            (2, 2, 'findAllButton', 'find-all'),
-            (3, 2, 'changeButton', 'replace'),
-            (4, 2, 'changeThenFindButton', 'replace-then-find'),
-            (5, 2, 'changeAllButton', 'replace-all'),
+            (0, 2, 'find-next'),  # 'findButton', 
+            (1, 2, 'find-prev'),  # 'findPreviousButton', 
+            (2, 2, 'find-all'),   # 'findAllButton', 
+            (3, 2, 'replace'),    # 'changeButton', 
+            (4, 2, 'replace-then-find'), # 'changeThenFindButton', 
+            (5, 2, 'replace-all'), # 'changeAllButton', 
         )
-        for row2, col, func_name, cmd_name in table:
+        for row2, col, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
                 label = f"{cmd_name}:  {k.prettyPrintKey(stroke)}"
