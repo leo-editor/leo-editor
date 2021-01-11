@@ -1044,7 +1044,7 @@ class LeoFind:
         if w:
             if not preloaded:
                 self.preloadFindPattern(w)
-            self.stateZeroHelper(event,
+            self.state_zero_helper(event,
                 prefix='Clone Find All: ',
                 handler=self.interactive_cfa1)
 
@@ -1097,7 +1097,7 @@ class LeoFind:
         if w:
             if not preloaded:
                 self.preloadFindPattern(w)
-            self.stateZeroHelper(event,
+            self.state_zero_helper(event,
                 prefix='Clone Find All Flattened: ',
                 handler=self.interactive_cff1)
 
@@ -1206,7 +1206,7 @@ class LeoFind:
         descendant of another cloned node.
         """
         if self.editWidget(event):  # sets self.w
-            self.stateZeroHelper(event,
+            self.state_zero_helper(event,
                 prefix='Clone Find Tag: ',
                 handler=self.minibufferCloneFindTag1)
 
@@ -1263,7 +1263,7 @@ class LeoFind:
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
-        self.stateZeroHelper(event, 'Search: ',
+        self.state_zero_helper(event, 'Search: ',
             handler=self.find_all1,
             escapes=escapes,  # The Tab Easter Egg.
             escape_handler=self.find_all_escape_handler,
@@ -1328,7 +1328,7 @@ class LeoFind:
     def minibufferTagChildren(self, event=None):
         """tag-children: prompt for a tag and add it to all children of c.p."""
         if self.editWidget(event):  # sets self.w
-            self.stateZeroHelper(event,
+            self.state_zero_helper(event,
                 prefix='Tag Children: ',
                 handler=self.minibufferTagChildren1)
     def minibufferTagChildren1(self, event):
@@ -1364,55 +1364,70 @@ class LeoFind:
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
-        self.stateZeroHelper(event,
-            'Search: ', self.searchWithPresentOptions1,
-            escapes=escapes)  # The Tab Easter Egg.
+        self.state_zero_helper(event,
+            prefix='Search: ',
+            handler=self.searchWithPresentOptions1,
+            escapes=escapes,  # The Tab Easter Egg.
+            escape_handler = self.change_with_present_options,
+        )
 
     def searchWithPresentOptions1(self, event):
 
         c, k = self.c, self.k
-        if k.getArgEscapeFlag:
-            # 2015/06/30: Special cases for F2/F3 to the escapes
-            if event.stroke in self.findEscapes():
-                command = self.escapeCommand(event)
-                func = c.commandsDict.get(command)
-                k.clearState()
-                k.resetLabel()
-                k.showStateAndMode()
-                if func:
-                    func(event)
-                else:
-                    g.trace('unknown command', command)
-                    return
-            else:
-                # Switch to the replace command.
-                if self.findAllFlag:
-                    self.changeAllFlag = True
-                k.getArgEscapeFlag = False
-                pattern = k.arg
-                # self.setupSearchPattern(k.arg)
-                self.ftm.setFindText(pattern)
-                self.setReplaceString1(event=None)
+        ### 
+            # if k.getArgEscapeFlag:
+                # # 2015/06/30: Special cases for F2/F3 to the escapes
+                # if event.stroke in self.findEscapes():
+                    # command = self.escapeCommand(event)
+                    # func = c.commandsDict.get(command)
+                    # k.clearState()
+                    # k.resetLabel()
+                    # k.showStateAndMode()
+                    # if func:
+                        # func(event)
+                    # else:
+                        # g.trace('unknown command', command)
+                        # return
+                # else:
+                    # # Switch to the replace command.
+                    # if self.findAllFlag:
+                        # self.changeAllFlag = True
+                    # k.getArgEscapeFlag = False
+                    # pattern = k.arg
+                    # # self.setupSearchPattern(k.arg)
+                    # self.ftm.setFindText(pattern)
+                    # self.setReplaceString1(event=None)
+            # else:
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        pattern = k.arg
+        if self.findAllFlag:
+            # self.setupSearchPattern(pattern)
+            self.ftm.setFindText(pattern)
+            # was self.findAllCommand
+            self.setup_command()
+            self.findAll()
         else:
-            self.updateFindList(k.arg)
-            k.clearState()
-            k.resetLabel()
-            k.showStateAndMode()
-            pattern = k.arg
-            if self.findAllFlag:
-                # self.setupSearchPattern(pattern)
-                self.ftm.setFindText(pattern)
-                # was self.findAllCommand
-                self.setup_command()
-                self.findAll()
-            else:
-                # Was generalSearchHelper
-                # self.setupSearchPattern(pattern)
-                self.ftm.setFindText(pattern)
-                self.init_vim_search(pattern)
-                c.widgetWantsFocusNow(self.w)
-                self.p = c.p
-                self.findNextCommand()
+            # Was generalSearchHelper
+            # self.setupSearchPattern(pattern)
+            self.ftm.setFindText(pattern)
+            self.init_vim_search(pattern)
+            c.widgetWantsFocusNow(self.w)
+            self.p = c.p
+            self.findNextCommand()
+                
+    def change_with_present_options(self, event=None):
+        k = self.k
+         # Switch to the replace command.
+        if self.findAllFlag:
+            self.changeAllFlag = True
+        k.getArgEscapeFlag = False
+        pattern = k.arg
+        # self.setupSearchPattern(k.arg)
+        self.ftm.setFindText(pattern)
+        self.setReplaceString1(event=None)
     #@+node:ekr.20150630072025.1: *5* find.findEscapes
     def findEscapes(self):
         """Return the keystrokes corresponding to find-next & find-prev commands."""
@@ -2011,7 +2026,7 @@ class LeoFind:
     @cmd('re-search-backward')
     def reSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=True, word=None)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             'Regexp Search Backward:', self.reSearch1,
             escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.setReplaceString1,  # Was handled in reSearch1.
@@ -2020,7 +2035,7 @@ class LeoFind:
     @cmd('re-search-forward')
     def reSearchForward(self, event):
         self.setupArgs(forward=True, regexp=True, word=None)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix='Regexp Search:',
             handler=self.reSearch1,
             escapes=['\t'], # The Tab Easter Egg.
@@ -2048,7 +2063,7 @@ class LeoFind:
     @cmd('search-backward')
     def searchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=False)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix='Search Backward: ',
             handler=self.search1,
             escapes=['\t'],  # The Tab Easter Egg.
@@ -2057,7 +2072,7 @@ class LeoFind:
     @cmd('search-forward')
     def searchForward(self, event):
         self.setupArgs(forward=True, regexp=False, word=False)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix='Search: ',
             handler=self.search1,
             escapes=['\t'],  # The Tab Easter Egg.
@@ -2086,7 +2101,7 @@ class LeoFind:
         """A state handler to get the replacement string."""
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         prefix = f"{prompt}: "
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix=prefix,
             handler=self.setReplaceString1)
 
@@ -2105,8 +2120,8 @@ class LeoFind:
         self.updateChangeList(k.arg)
         self.lastStateHelper()
         self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
-    #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
-    def stateZeroHelper(self, event, prefix, handler, escapes=None, escape_handler=None):
+    #@+node:ekr.20131117164142.17007: *4* find.state_zero_helper
+    def state_zero_helper(self, event, prefix, handler, escapes=None, escape_handler=None):
 
         c, k = self.c, self.k
         self.w = self.editWidget(event)
@@ -2168,14 +2183,14 @@ class LeoFind:
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=True)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix='Word Search Backward: ',
             handler=self.wordSearch1)
 
     @cmd('word-search-forward')
     def wordSearchForward(self, event):
         self.setupArgs(forward=True, regexp=False, word=True)
-        self.stateZeroHelper(event,
+        self.state_zero_helper(event,
             prefix='Word Search: ',
             handler=self.wordSearch1)
 
