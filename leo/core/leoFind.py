@@ -2636,7 +2636,7 @@ class LeoFind:
         if self.pattern_match and self.match_obj:
             groups = self.match_obj.groups()
             if groups:
-                change_text = self.makeRegexSubs(change_text, groups)
+                change_text = self.make_regex_subs(change_text, groups)
         # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
         change_text = self.replaceBackSlashes(change_text)
         for w2 in (w, self.s_ctrl):
@@ -2776,7 +2776,7 @@ class LeoFind:
             # #1748.
             groups = m.groups()
             if groups:
-                change_text = self.makeRegexSubs(self.change_text, groups)
+                change_text = self.make_regex_subs(self.change_text, groups)
             else:
                 change_text = self.change_text
             result.append(change_text)
