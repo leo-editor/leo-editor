@@ -541,6 +541,14 @@ class LeoFind:
     @cmd('replace-then-find')
     def changeThenFindCommand(self, event=None):
         """Handle the replace-then-find command."""
+        if 1: #### Legacy code:
+            if not self.checkArgs():
+                return False
+            self.initInHeadline()
+            if self.change_selection():  ### Was changeSelection
+                self.findNext(False)  # don't reinitialize
+            return True
+
         ### self.setup_command()
             # if 0:  # We _must_ retain the editing status for incremental searches!
                 # self.c.endEditing()
@@ -1042,7 +1050,7 @@ class LeoFind:
         if w:
             if not preloaded:
                 self.preloadFindPattern(w)
-            self.state_zero_helper(event,
+            self.start_state_machine(event,
                 prefix='Clone Find All: ',
                 handler=self.interactive_cfa1)
 
@@ -1095,7 +1103,7 @@ class LeoFind:
         if w:
             if not preloaded:
                 self.preloadFindPattern(w)
-            self.state_zero_helper(event,
+            self.start_state_machine(event,
                 prefix='Clone Find All Flattened: ',
                 handler=self.interactive_cff1)
 
@@ -1204,7 +1212,7 @@ class LeoFind:
         descendant of another cloned node.
         """
         if self.editWidget(event):  # sets self.w
-            self.state_zero_helper(event,
+            self.start_state_machine(event,
                 prefix='Clone Find Tag: ',
                 handler=self.minibufferCloneFindTag1)
 
@@ -1261,7 +1269,7 @@ class LeoFind:
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
-        self.state_zero_helper(event, 'Search: ',
+        self.start_state_machine(event, 'Search: ',
             handler=self.find_all1,
             escapes=escapes,  # The Tab Easter Egg.
             escape_handler=self.find_all_escape_handler,
@@ -1326,7 +1334,7 @@ class LeoFind:
     def minibufferTagChildren(self, event=None):
         """tag-children: prompt for a tag and add it to all children of c.p."""
         if self.editWidget(event):  # sets self.w
-            self.state_zero_helper(event,
+            self.start_state_machine(event,
                 prefix='Tag Children: ',
                 handler=self.minibufferTagChildren1)
     def minibufferTagChildren1(self, event):
@@ -1362,7 +1370,7 @@ class LeoFind:
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Search: ',
             handler=self.searchWithPresentOptions1,
             escapes=escapes,  # The Tab Easter Egg.
@@ -1994,7 +2002,7 @@ class LeoFind:
     @cmd('re-search-backward')
     def reSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=True, word=None)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             'Regexp Search Backward:', self.reSearch1,
             escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.setReplaceString1,  # Was handled in reSearch1.
@@ -2003,7 +2011,7 @@ class LeoFind:
     @cmd('re-search-forward')
     def reSearchForward(self, event):
         self.setupArgs(forward=True, regexp=True, word=None)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Regexp Search:',
             handler=self.reSearch1,
             escapes=['\t'], # The Tab Easter Egg.
@@ -2031,7 +2039,7 @@ class LeoFind:
     @cmd('search-backward')
     def searchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=False)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Search Backward: ',
             handler=self.search1,
             escapes=['\t'],  # The Tab Easter Egg.
@@ -2040,7 +2048,7 @@ class LeoFind:
     @cmd('search-forward')
     def searchForward(self, event):
         self.setupArgs(forward=True, regexp=False, word=False)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Search: ',
             handler=self.search1,
             escapes=['\t'],  # The Tab Easter Egg.
@@ -2069,7 +2077,7 @@ class LeoFind:
         """A state handler to get the replacement string."""
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         prefix = f"{prompt}: "
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix=prefix,
             handler=self.setReplaceString1)
 
@@ -2088,8 +2096,8 @@ class LeoFind:
         self.updateChangeList(k.arg)
         self.lastStateHelper()
         self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
-    #@+node:ekr.20131117164142.17007: *4* find.state_zero_helper
-    def state_zero_helper(self, event, prefix, handler, escapes=None, escape_handler=None):
+    #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
+    def start_state_machine(self, event, prefix, handler, escapes=None, escape_handler=None):
 
         c, k = self.c, self.k
         self.w = self.editWidget(event)
@@ -2151,14 +2159,14 @@ class LeoFind:
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
         self.setupArgs(forward=False, regexp=False, word=True)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Word Search Backward: ',
             handler=self.wordSearch1)
 
     @cmd('word-search-forward')
     def wordSearchForward(self, event):
         self.setupArgs(forward=True, regexp=False, word=True)
-        self.state_zero_helper(event,
+        self.start_state_machine(event,
             prefix='Word Search: ',
             handler=self.wordSearch1)
 
@@ -2600,6 +2608,54 @@ class LeoFind:
             ):
                 p.setDirty()
         c.redraw()
+    #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
+    def findNext(self, initFlag=True):
+        """Find the next instance of the pattern."""
+        if not self.checkArgs():
+            return False  # for vim-mode find commands.
+        # initFlag is False for change-then-find.
+        if initFlag:
+            self.initInHeadline()
+            data = self.save()
+            self.initInteractiveCommands()
+        else:
+            data = self.save()
+        pos, newpos = self.findNextMatch()
+        if pos is None:
+            self.restore(data)
+            self.showStatus(False)
+            return False  # for vim-mode find commands.
+        self.showSuccess(pos, newpos)
+        self.showStatus(True)
+        return True  # for vim-mode find commands.
+    #@+node:ekr.20150622095118.1: *5* find.getFindResultStatus
+    def getFindResultStatus(self, find_all=False):
+        """Return the status to be shown in the status line after a find command completes."""
+        status = []
+        if self.whole_word:
+            status.append('word' if find_all else 'word-only')
+        if self.ignore_case:
+            status.append('ignore-case')
+        if self.pattern_match:
+            status.append('regex')
+        if find_all:
+            if self.search_headline:
+                status.append('head')
+            if self.search_body:
+                status.append('body')
+        else:
+            if not self.search_headline:
+                status.append('body-only')
+            elif not self.search_body:
+                status.append('headline-only')
+        if not find_all:
+            if self.wrapping:
+                status.append('wrapping')
+            if self.suboutline_only:
+                status.append('[outline-only]')
+            elif self.node_only:
+                status.append('[node-only]')
+        return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20031218072017.3070: *4* find.change_selection & helper
     # Replace selection with self.change_text.
@@ -2833,54 +2889,6 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20031218072017.3074: *4* find.findNext & helper
-    def findNext(self, initFlag=True):
-        """Find the next instance of the pattern."""
-        if not self.checkArgs():
-            return False  # for vim-mode find commands.
-        # initFlag is False for change-then-find.
-        if initFlag:
-            self.initInHeadline()
-            data = self.save()
-            self.initInteractiveCommands()
-        else:
-            data = self.save()
-        pos, newpos = self.findNextMatch()
-        if pos is None:
-            self.restore(data)
-            self.showStatus(False)
-            return False  # for vim-mode find commands.
-        self.showSuccess(pos, newpos)
-        self.showStatus(True)
-        return True  # for vim-mode find commands.
-    #@+node:ekr.20150622095118.1: *5* find.getFindResultStatus
-    def getFindResultStatus(self, find_all=False):
-        """Return the status to be shown in the status line after a find command completes."""
-        status = []
-        if self.whole_word:
-            status.append('word' if find_all else 'word-only')
-        if self.ignore_case:
-            status.append('ignore-case')
-        if self.pattern_match:
-            status.append('regex')
-        if find_all:
-            if self.search_headline:
-                status.append('head')
-            if self.search_body:
-                status.append('body')
-        else:
-            if not self.search_headline:
-                status.append('body-only')
-            elif not self.search_body:
-                status.append('headline-only')
-        if not find_all:
-            if self.wrapping:
-                status.append('wrapping')
-            if self.suboutline_only:
-                status.append('[outline-only]')
-            elif self.node_only:
-                status.append('[node-only]')
-        return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         """Resume the search where it left off."""
