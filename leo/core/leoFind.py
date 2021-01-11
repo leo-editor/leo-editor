@@ -541,58 +541,12 @@ class LeoFind:
     @cmd('replace-then-find')
     def changeThenFindCommand(self, event=None):
         """Handle the replace-then-find command."""
-        if 1: #### Legacy code:
-            if not self.checkArgs():
-                return False
-            self.initInHeadline()
-            if self.change_selection():  ### Was changeSelection
-                self.findNext(False)  # don't reinitialize
-            return True
-
-        ### self.setup_command()
-            # if 0:  # We _must_ retain the editing status for incremental searches!
-                # self.c.endEditing()
-            # # Fix bug
-            # self.buttonFlag = False
-            # self.update_ivars()
-
-        ### self.changeThenFind()
-            # if not self.checkArgs():
-                # return
-            # self.initInHeadline()
-            # if self.changeSelection():
-                # self.findNext(False)  # don't reinitialize
-
-        self.p = self.c.p
+        if not self.checkArgs():
+            return False
         self.initInHeadline()
-        settings = self.get_settings()
-        data = self.save()
-        p, pos, newpos = self.do_replace_then_find(settings)
-        if pos is None:
-            self.restore(data)
-            self.showStatus(False)
-            return False  # for vim-mode find commands.
-        self.showSuccess(pos, newpos)
-        self.showStatus(True)
-        return True  # for vim-mode find commands.
-
-        ### from findNext(False)
-        # # initFlag is False for change-then-find.
-        # if initFlag:
-            # self.initInHeadline()
-            # data = self.save()
-            # self.initInteractiveCommands()
-        # else:
-            # data = self.save()
-        # pos, newpos = self.findNextMatch()
-        # if pos is None:
-            # self.restore(data)
-            # self.showStatus(False)
-            # return False  # for vim-mode find commands.
-        # self.showSuccess(pos, newpos)
-        # self.showStatus(True)
-        # return True  # for vim-mode find commands.
-
+        if self.change_selection():  ### Was changeSelection
+            self.findNext(False)  # don't reinitialize
+        return True
     #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find
     def do_replace_then_find(self, settings):
         """
@@ -2702,34 +2656,6 @@ class LeoFind:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
-    #@+node:ekr.20060526201951: *5* find.makeRegexSubs
-    def makeRegexSubs(self, change_text, groups):
-        """
-        Substitute group[i-1] for \\i strings in change_text.
-        """
-
-        def repl(match_object):
-            # # 1494...
-            n = int(match_object.group(1)) - 1
-            if 0 <= n < len(groups):
-                return (
-                    groups[n].
-                        replace(r'\b', r'\\b').
-                        replace(r'\f', r'\\f').
-                        replace(r'\n', r'\\n').
-                        replace(r'\r', r'\\r').
-                        replace(r'\t', r'\\t').
-                        replace(r'\v', r'\\v'))
-            # No replacement.
-            return match_object.group(0)
-
-        result = re.sub(r'\\([0-9])', repl, change_text)
-        # print(
-            # f"makeRegexSubs:\n"
-            # f"change_text: {change_text!s}\n"
-            # f"     groups: {groups!s}\n"
-            # f"     result: {result!s}")
-        return result
     #@+node:ekr.20031218072017.3069: *4* find.changeAll & helpers
     def changeAll(self):
 
