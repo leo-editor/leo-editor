@@ -174,7 +174,6 @@ class LeoFind:
             # Set of vnodes.
         #
         # Ivars containing internal state...
-        self.buttonFlag = False
         self.changeAllFlag = False
         self.findAllFlag = False
         self.findAllUniqueFlag = False
@@ -615,8 +614,7 @@ class LeoFind:
     def setup_command(self):
         if 0:  # We _must_ retain the editing status for incremental searches!
             self.c.endEditing()
-        # Fix bug
-        self.buttonFlag = False
+        ### self.buttonFlag = False
         self.update_ivars()
     #@+node:ekr.20131119060731.22452: *4* find.startSearch (start-search) (Ctrl-F)
     @cmd('start-search')
@@ -1372,32 +1370,7 @@ class LeoFind:
         )
 
     def searchWithPresentOptions1(self, event):
-
         c, k = self.c, self.k
-        ### 
-            # if k.getArgEscapeFlag:
-                # # 2015/06/30: Special cases for F2/F3 to the escapes
-                # if event.stroke in self.findEscapes():
-                    # command = self.escapeCommand(event)
-                    # func = c.commandsDict.get(command)
-                    # k.clearState()
-                    # k.resetLabel()
-                    # k.showStateAndMode()
-                    # if func:
-                        # func(event)
-                    # else:
-                        # g.trace('unknown command', command)
-                        # return
-                # else:
-                    # # Switch to the replace command.
-                    # if self.findAllFlag:
-                        # self.changeAllFlag = True
-                    # k.getArgEscapeFlag = False
-                    # pattern = k.arg
-                    # # self.setupSearchPattern(k.arg)
-                    # self.ftm.setFindText(pattern)
-                    # self.setReplaceString1(event=None)
-            # else:
         self.updateFindList(k.arg)
         k.clearState()
         k.resetLabel()
@@ -1524,12 +1497,7 @@ class LeoFind:
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
         ftm.entry_focus = None  # Only use this focus widget once!
         w_name = c.widget_name(w)
-        if self.buttonFlag and self.was_in_headline in (True, False):
-            # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-            self.in_headline = self.was_in_headline
-            val = self.was_in_headline
-        # Easy case: focus in body.
-        elif w == c.frame.body.wrapper:
+        if w == c.frame.body.wrapper:
             val = False
         elif w == c.frame.tree.treeWidget:
             val = True
