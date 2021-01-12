@@ -1301,7 +1301,7 @@ class VimCommands:
     def vim_n(self):
         """Repeat last search N times."""
         fc = self.c.findCommands
-        fc.setup_command()
+        fc.setup_ivars()
         old_node_only = fc.node_only
         fc.node_only = True
         for z in range(self.n1 * self.n):
@@ -1313,7 +1313,7 @@ class VimCommands:
     def vim_N(self):
         """Repeat last search N times (reversed)."""
         fc = self.c.findCommands
-        fc.setup_command()
+        fc.setup_ivars()
         old_node_only = fc.node_only
         old_reverse = fc.reverse
         fc.node_only = True
@@ -1421,7 +1421,6 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            ### fc.searchWithPresentOptions(self.event)
             fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls update_selection_after_search().
@@ -1462,7 +1461,6 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            ### fc.searchWithPresentOptions(self.event)
             fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls update_selection_after_search().
@@ -2010,7 +2008,6 @@ class VimCommands:
                 fc.ftm.clear_focus()
                 fc.node_only = True
                     # Doesn't work.
-                ### fc.searchWithPresentOptions(vc.event)
                 fc.start_search1(vc.event)
                     # This returns immediately, before the actual search.
                     # leoFind.showSuccess calls vc.update_selection_after_search.
