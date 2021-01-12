@@ -173,6 +173,10 @@ class LeoFind:
         self.find_seen = set()
             # Set of vnodes.
         #
+        # State machine...
+        self.escape_handler = None
+        self.handler = None
+        #
         # Ivars containing internal state...
         self.changeAllFlag = False
         self.findAllFlag = False
@@ -603,12 +607,12 @@ class LeoFind:
         self.findAllFlag = False
         self.findAllUniqueFlag = False
         self.ftm.set_entry_focus()
-        escapes = ['\t']
-        escapes.extend(self.findEscapes())
+        ### escapes = ['\t']
+        ### escapes.extend(self.findEscapes())
         self.start_state_machine(event,
             prefix='Search: ',
             handler=self.start_search2,
-            escapes=escapes,  # The Tab Easter Egg.
+            ### escapes=escapes,  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,
         )
 
@@ -1285,11 +1289,11 @@ class LeoFind:
         
         # Remember the entry focus, just as when using the find pane.
         self.ftm.set_entry_focus()
-        escapes = ['\t']
-        escapes.extend(self.findEscapes())
+        ### escapes = ['\t']
+        ### escapes.extend(self.findEscapes())
         self.start_state_machine(event, 'Search: ',
             handler=self.interactive_find_all1,
-            escapes=escapes,  # The Tab Easter Egg.
+            ### escapes=escapes,  # The Tab Easter Egg.
             escape_handler=self.find_all_escape_handler,
         )
 
@@ -1347,12 +1351,12 @@ class LeoFind:
         self.findAllFlag = True
         self.findAllUniqueFlag = True
         self.ftm.set_entry_focus()
-        escapes = ['\t']
-        escapes.extend(self.findEscapes())
+        ### escapes = ['\t']
+        ### escapes.extend(self.findEscapes())
         self.start_state_machine(event,
             prefix='Search: ',
             handler=self.interactive_find_all_unique_regex1,
-            escapes=escapes,  # The Tab Easter Egg.
+            ### escapes=escapes,  # The Tab Easter Egg.
             escape_handler = self.interactive_change_all_unique_regex1,
         )
         
@@ -1466,7 +1470,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Regexp Search Backward:',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
 
@@ -1505,7 +1509,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Regexp Search: ',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
 
@@ -1556,7 +1560,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Search Backward: ',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
 
@@ -1604,7 +1608,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Search: ',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
 
@@ -1658,7 +1662,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Word Search Backward: ',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20210112050845.1: *4* find.word-search-forward (test)
@@ -1671,7 +1675,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Word Search: ',
             handler=self.start_search1,  # See start-search
-            escapes=['\t'],  # The Tab Easter Egg.
+            ### escapes=['\t'],  # The Tab Easter Egg.
             escape_handler = self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
@@ -2243,16 +2247,17 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
     #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
-    def start_state_machine(self, event, prefix, handler, escapes=None, escape_handler=None):
+    def start_state_machine(self, event, prefix, handler, escape_handler=None):  ### escapes=None, 
 
         c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
             g.trace('no self.w')
             return
-        if escapes and not escape_handler:
-            g.trace('escape_handler required', g.callers())
-            return
+        ###
+            # if escapes and not escape_handler:
+                # g.trace('escape_handler required', g.callers())
+                # return
         k.setLabelBlue(prefix)
         # New in Leo 5.2: minibuffer modes shows options in status area.
         if self.minibuffer_mode:
@@ -2262,37 +2267,39 @@ class LeoFind:
         else:
             c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
-        if escapes is None: escapes = []
-        k.getArgEscapes = escapes
-        k.getArgEscapeFlag = False  # k.getArg may set this.
+        ### if escapes is None: escapes = []
+        ### k.getArgEscapes = escapes
+        ### k.getArgEscapeFlag = False  # k.getArg may set this.
         ### k.get1Arg(event, handler=handler, tabList=self.findTextList, completion=True)
         
         ### New: come back to stateZero1 after setting ivars.
         self.handler = handler
         self.escape_handler = escape_handler
-        k.get1Arg(event, handler=self.stateZero1, tabList=self.findTextList, completion=True)
+        k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
         
-    def stateZero1(self, event):  ### Was searchWithPresentOptions1
+    def state0(self, event):  ### Was searchWithPresentOptions1
         """Dispatch the next handler."""
-        c, k = self.c, self.k
-        if k.getArgEscapeFlag:
-            if event.stroke in self.findEscapes():
-                # Call the command bound to the escaped key.
-                command = self.escapeCommand(event)
-                func = c.commandsDict.get(command)
-                k.clearState()
-                k.resetLabel()
-                k.showStateAndMode()
-                if func:
-                    func(event)
-                else:
-                    g.trace('unknown command', command)
-            else:
-                # Use the default escape handler.
-                self.escape_handler(event=None)
+        ### c, k = self.c, self.k
+        if self.escape_handler: ###k.getArgEscapeFlag:
+            self.escape_handler(event)
+            ### 
+                # if event.stroke in self.findEscapes():
+                    # # Call the command bound to the escaped key.
+                    # command = self.escapeCommand(event)
+                    # func = c.commandsDict.get(command)
+                    # k.clearState()
+                    # k.resetLabel()
+                    # k.showStateAndMode()
+                    # if func:
+                        # func(event)
+                    # else:
+                        # g.trace('unknown command', command)
+                # else:
+                    # # Use the default escape handler.
+                    # self.escape_handler(event=None)
         else:
             # Use the default handler.
-            self.handler(event=None)
+            self.handler(event)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
     def updateChangeList(self, s):
         if s not in self.changeTextList:
@@ -2975,18 +2982,6 @@ class LeoFind:
             if bi.stroke == event.stroke:
                 return bi.commandName
         return None
-    #@+node:ekr.20150630072025.1: *4* find.findEscapes
-    def findEscapes(self):
-        """Return the keystrokes corresponding to find-next & find-prev commands."""
-        d = self.c.k.computeInverseBindingDict()
-        results = []
-        for command in ('find-def', 'find-next', 'find-prev', 'find-var',):
-            aList = d.get(command, [])
-            for data in aList:
-                pane, stroke = data
-                if pane.startswith('all'):
-                    results.append(stroke)
-        return results
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         """Resume the search where it left off."""
