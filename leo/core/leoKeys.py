@@ -2683,7 +2683,6 @@ class KeyHandlerClass:
     # New in Leo 5.4
 
     def get1Arg(self, event, handler,
-        # returnKind=None, returnState=None,
         prefix=None, tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):

@@ -473,13 +473,13 @@ class LeoFind:
     @cmd('find-next')
     def findNextCommand(self, event=None):
         """The find-next command."""
-        self.setup_ivars()
+        self.update_ivars()
         self.findNext()
     #@+node:ekr.20031218072017.3064: *4* find.find-prev
     @cmd('find-prev')
     def findPrevCommand(self, event=None):
         """Handle F2 (find-previous)"""
-        self.setup_ivars()
+        self.update_ivars()
         self.reverse = True
         try:
             self.findNext()
@@ -595,6 +595,7 @@ class LeoFind:
         
     def start_search1(self, event=None):
         """Common handler for use by vim commands and other find commands."""
+        g.trace()
         self.changeAllFlag = False
         self.findAllFlag = False
         self.findAllUniqueFlag = False
@@ -1282,7 +1283,7 @@ class LeoFind:
         k.showStateAndMode()
         pattern = k.arg
         self.ftm.setFindText(pattern)
-        self.setup_ivars()
+        self.update_ivars()
         self.findAll()
         
     def find_all_escape_handler(self, event):
@@ -1339,7 +1340,7 @@ class LeoFind:
         k.showStateAndMode()
         self.updateFindList(find_pattern)
         self.ftm.setFindText(find_pattern)
-        self.setup_ivars()
+        self.update_ivars()
         return self.findAll()
         
     def interactive_change_all_unique_regex1(self, event):
@@ -2075,13 +2076,16 @@ class LeoFind:
         else:
             c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
+        k.getArgEscapes = ['\t'] if escape_handler else []
         self.handler = handler
         self.escape_handler = escape_handler
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
         
     def state0(self, event):
         """Dispatch the next handler."""
-        if self.escape_handler:
+        k = self.k
+        if k.getArgEscapeFlag:
+            k.getArgEscapeFlag = False
             self.escape_handler(event)
         else:
             self.handler(event)
@@ -2493,7 +2497,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (called from generalChangeHelper)
     def changeAllCommand(self, event=None):
         c = self.c
-        self.setup_ivars()
+        self.update_ivars()
         self.changeAll()
         # Bugs #947, #880 and #722:
         # Set ancestor @<file> nodes by brute force.
