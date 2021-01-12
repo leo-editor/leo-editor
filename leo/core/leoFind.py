@@ -578,22 +578,87 @@ class LeoFind:
             self.c.endEditing()
         ### self.buttonFlag = False
         self.update_ivars()
-    #@+node:ekr.20131119060731.22452: *4* find.startSearch (start-search) (Ctrl-F)
+    #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) (test)
     @cmd('start-search')
-    def startSearch(self, event):
+    def start_search(self, event):
         """
-        The default binding of Ctrl-F
+        The default binding of Ctrl-F.
+        
+        Also contains default state-machine entries for find/change commands.
         """
         w = self.editWidget(event)
         if w:
             self.preloadFindPattern(w)
         self.find_seen = set()
-        if self.minibuffer_mode:
-            self.ftm.clear_focus()
-            self.searchWithPresentOptions(event)
-        else:
+        if not self.minibuffer_mode:
             self.openFindTab(event)
             self.ftm.init_focus()
+            return
+        self.ftm.clear_focus()
+        self.start_search1(event)
+        
+    def start_search1(self, event=None):
+        """Common handler for use by vim commands and other find commands."""
+        self.changeAllFlag = False
+        self.findAllFlag = False
+        self.findAllUniqueFlag = False
+        self.ftm.set_entry_focus()
+        escapes = ['\t']
+        escapes.extend(self.findEscapes())
+        self.start_state_machine(event,
+            prefix='Search: ',
+            handler=self.start_search2,
+            escapes=escapes,  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,
+        )
+
+    def start_search2(self, event=None):
+        c, k = self.c, self.k
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        pattern = k.arg
+        # Was generalSearchHelper
+        # self.setupSearchPattern(pattern)
+        self.ftm.setFindText(pattern)
+        self.init_vim_search(pattern)
+        c.widgetWantsFocusNow(self.w)
+        self.p = c.p
+        self.findNextCommand()
+        
+    def start_search_escape1(self, event=None):
+        """Common escape handler for use by find commands."""
+        k = self.k
+        # Switch to the replace command.
+        k.getArgEscapeFlag = False
+        # self.setupSearchPattern(k.arg)
+        find_pattern = k.arg
+        self.ftm.setFindText(find_pattern)
+        self._sString = find_pattern = k.arg
+        self.updateFindList(find_pattern)
+        regex = ' Regex' if self.pattern_match else ''
+        backward = ' Backward' if self.reverse else ''
+        prompt = f"Replace{regex}{backward}: {find_pattern} With: "
+        k.setLabelBlue(prompt)
+        self.addChangeStringToLabel()
+        k.getNextArg(self.start_search_escape2)
+
+    def start_search_escape2(self, event):
+        c, k = self.c, self.k
+        find_pattern = self._sString
+        change_pattern = k.arg
+        self.updateChangeList(change_pattern)
+        self.lastStateHelper()
+        
+        ### self.generalChangeHelper(find_pattern, change_pattern, changeAll=self.changeAllFlag)
+        self.ftm.setFindText(find_pattern)
+        self.ftm.setChangeText(change_pattern)
+        self.init_vim_search(find_pattern)
+        c.widgetWantsFocusNow(self.w)
+        self.p = c.p
+        self.findNextCommand()  # Handles reverse.
+
     #@+node:ekr.20210110073117.7: *4* NEW:LeoFind: Commands
     #@+node:ekr.20210110073117.12: *5* NEW:find.create_clone_tag_nodes
     def create_clone_tag_nodes(self, clones):
@@ -1006,9 +1071,9 @@ class LeoFind:
                 self.preloadFindPattern(w)
             self.start_state_machine(event,
                 prefix='Clone Find All: ',
-                handler=self.interactive_cfa1)
+                handler=self.interactive_clone_find_all)
 
-    def interactive_cfa1(self, event):
+    def interactive_clone_find_all1(self, event):
         c, k, w = self.c, self.k, self.w
         k.clearState()
         k.resetLabel()
@@ -1037,7 +1102,6 @@ class LeoFind:
         if self.check_args('clone-find-all'):
             return self.clone_find_all_helper(settings, flatten=False)
         return 0
-
     #@+node:ekr.20131117164142.16996: *5* find.clone-find-all-flattened (Changed)
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
@@ -1154,7 +1218,7 @@ class LeoFind:
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
     @cmd('cft')
-    def minibufferCloneFindTag(self, event=None):
+    def interactive_clone_find_tag(self, event=None):
         """
         clone-find-tag (aka find-clone-tag and cft).
 
@@ -1168,9 +1232,9 @@ class LeoFind:
         if self.editWidget(event):  # sets self.w
             self.start_state_machine(event,
                 prefix='Clone Find Tag: ',
-                handler=self.minibufferCloneFindTag1)
+                handler=self.interactive_clone_find_tag1)
 
-    def minibufferCloneFindTag1(self, event):
+    def interactive_clone_find_tag1(self, event):
         c, k = self.c, self.k
         k.clearState()
         k.resetLabel()
@@ -1207,7 +1271,7 @@ class LeoFind:
         c.selectPosition(found)
         c.redraw()
         return len(clones), found
-    #@+node:ekr.20131117164142.16998: *4* find.find-all
+    #@+node:ekr.20131117164142.16998: *4* find.find-all (test)
     @cmd('find-all')
     def interactive_find_all(self, event=None):
         """
@@ -1224,12 +1288,12 @@ class LeoFind:
         escapes = ['\t']
         escapes.extend(self.findEscapes())
         self.start_state_machine(event, 'Search: ',
-            handler=self.find_all1,
+            handler=self.interactive_find_all1,
             escapes=escapes,  # The Tab Easter Egg.
             escape_handler=self.find_all_escape_handler,
         )
 
-    def find_all1(self, event):
+    def interactive_find_all1(self, event=None):
         k = self.k
         self.updateFindList(k.arg)
         k.clearState()
@@ -1266,9 +1330,9 @@ class LeoFind:
         c.widgetWantsFocusNow(self.w)
         self.p = c.p
         self.changeAllCommand()
-    #@+node:ekr.20171226140643.1: *4* find.minibufferFindAllUnique (find-all-unique-regex)
+    #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex (test)
     @cmd('find-all-unique-regex')
-    def minibufferFindAllUniqueRegex(self, event=None):
+    def interactive_find_all_unique_regex(self, event=None):
         """
         Create a summary node containing all unique matches of the regex search
         string. This command shows only the matched string itself.
@@ -1276,22 +1340,105 @@ class LeoFind:
         self.ftm.clear_focus()
         self.match_obj = None
         self.unique_matches = set()
-        self.searchWithPresentOptions(event, findAllFlag=True, findAllUniqueFlag=True)
-    #@+node:ekr.20131117164142.16994: *4* find.replace-all
+        ### self.searchWithPresentOptions(event, findAllFlag=True, findAllUniqueFlag=True)
+        
+        # Remember the entry focus, just as when using the find pane.
+        self.changeAllFlag = False
+        self.findAllFlag = True
+        self.findAllUniqueFlag = True
+        self.ftm.set_entry_focus()
+        escapes = ['\t']
+        escapes.extend(self.findEscapes())
+        self.start_state_machine(event,
+            prefix='Search: ',
+            handler=self.interactive_find_all_unique_regex1,
+            escapes=escapes,  # The Tab Easter Egg.
+            escape_handler = self.interactive_change_all_unique_regex1,
+        )
+        
+    def interactive_find_all_unique_regex1(self, event=None):
+        k = self.k
+        self.updateFindList(k.arg)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        pattern = k.arg
+        self.ftm.setFindText(pattern)
+        # self.findAllCommand
+        self.setup_command()
+        return self.findAll()
+        
+    def interactive_change_all_unique_regex1(self, event):
+        k = self.k
+        ### self.changeAllFlag = True
+        find_pattern = k.arg
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = f"'Replace All Unique Regex': {find_pattern} With: "
+        k.setLabelBlue(s)
+        self.addChangeStringToLabel()
+        k.getNextArg(self.interactive_change_all_unique_regex2)
+
+    def interactive_change_all_unique_regex2(self, event):
+        c,k = self.c, self.k
+        find_pattern = self._sString
+        change_pattern = k.arg
+        self.updateChangeList(change_pattern)
+        self.lastStateHelper()
+        ### self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
+        self.ftm.setFindText(find_pattern)
+        ### self.setupChangePattern(change_pattern)
+        self.ftm.setChangeText(change_pattern)
+        self.init_vim_search(find_pattern)
+        c.widgetWantsFocusNow(self.w)
+        self.p = c.p
+        self.changeAllCommand()
+    #@+node:ekr.20131117164142.16994: *4* find.replace-all (test)
     @cmd('replace-all')
-    def minibufferReplaceAll(self, event=None):
+    def interactive_replace_all(self, event=None):
         """Replace all instances of the search string with the replacement string."""
         self.ftm.clear_focus()
-        self.searchWithPresentOptions(event, changeAllFlag=True)
-    #@+node:ekr.20160920164418.2: *4* find.minibufferTagChildren & helper (tag-children)
+        ### self.searchWithPresentOptions(event, changeAllFlag=True)
+        # Remember the entry focus, just as when using the find pane.
+        self.ftm.set_entry_focus()
+        prompt = 'Replace Regex:' if self.pattern_match else 'Replace:'
+        self.start_state_machine(event, prompt, handler=self.interactive_replace_all1)
+        
+    def interactive_replace_all1(self, event):
+        k = self.k
+        find_pattern = k.arg
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        regex = ' Regex' if self.pattern_match else ''
+        prompt = f"Replace{regex}: {find_pattern} With: "
+        k.setLabelBlue(prompt)
+        self.addChangeStringToLabel()
+        k.getNextArg(self.interactive_replace_all2)
+
+    def interactive_replace_all2(self, event):
+        c,k = self.c, self.k
+        find_pattern = self._sString
+        change_pattern = k.arg
+        self.updateChangeList(change_pattern)
+        self.lastStateHelper()
+        ### self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
+        self.ftm.setFindText(find_pattern)
+        ### self.setupChangePattern(change_pattern)
+        self.ftm.setChangeText(change_pattern)
+        self.init_vim_search(find_pattern)
+        c.widgetWantsFocusNow(self.w)
+        self.p = c.p
+        self.changeAllCommand()
+    #@+node:ekr.20160920164418.2: *4* find.tag-children
     @cmd('tag-children')
-    def minibufferTagChildren(self, event=None):
+    def interactive_tag_children(self, event=None):
         """tag-children: prompt for a tag and add it to all children of c.p."""
         if self.editWidget(event):  # sets self.w
             self.start_state_machine(event,
                 prefix='Tag Children: ',
-                handler=self.minibufferTagChildren1)
-    def minibufferTagChildren1(self, event):
+                handler=self.interactive_tag_children1)
+
+    def interactive_tag_children1(self, event):
         c, k = self.c, self.k
         k.clearState()
         k.resetLabel()
@@ -1309,81 +1456,224 @@ class LeoFind:
             g.es_print(f"Added {tag} tag to {len(list(c.p.children()))} nodes")
         else:
             g.es_print('nodetags not active')
-    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers (set-search-string)
-    @cmd('set-search-string')
-    def searchWithPresentOptions(self, event,
-    findAllFlag=False,
-    findAllUniqueFlag=False,
-    changeAllFlag=False,
-    ):
-        """Open the search pane and get the search string."""
-        # Remember the entry focus, just as when using the find pane.
-        self.changeAllFlag = changeAllFlag
-        self.findAllFlag = findAllFlag
-        self.findAllUniqueFlag = findAllUniqueFlag
-        self.ftm.set_entry_focus()
-        escapes = ['\t']
-        escapes.extend(self.findEscapes())
+    #@+node:ekr.20210112044303.1: *4* find.re-search-backward (test)
+    @cmd('re-search-backward')
+    def interactive_re_search_backward(self, event):
+        ### self.setupArgs(forward=False, regexp=True, word=None)
+        self.reverse = True
+        self.pattern_match = True
+        self.showFindOptions()
         self.start_state_machine(event,
-            prefix='Search: ',
-            handler=self.searchWithPresentOptions1,
-            escapes=escapes,  # The Tab Easter Egg.
-            escape_handler = self.change_with_present_options,
+            prefix='Regexp Search Backward:',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
         )
 
-    def searchWithPresentOptions1(self, event):
-        c, k = self.c, self.k
-        self.updateFindList(k.arg)
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        pattern = k.arg
-        if self.findAllFlag:
-            # self.setupSearchPattern(pattern)
-            self.ftm.setFindText(pattern)
-            # was self.findAllCommand
-            self.setup_command()
-            self.findAll()
-        else:
-            # Was generalSearchHelper
-            # self.setupSearchPattern(pattern)
-            self.ftm.setFindText(pattern)
-            self.init_vim_search(pattern)
-            c.widgetWantsFocusNow(self.w)
-            self.p = c.p
-            self.findNextCommand()
-                
-    def change_with_present_options(self, event=None):
-        k = self.k
-         # Switch to the replace command.
-        if self.findAllFlag:
-            self.changeAllFlag = True
-        k.getArgEscapeFlag = False
-        pattern = k.arg
-        # self.setupSearchPattern(k.arg)
-        self.ftm.setFindText(pattern)
-        self.setReplaceString1(event=None)
-    #@+node:ekr.20150630072025.1: *5* find.findEscapes
-    def findEscapes(self):
-        """Return the keystrokes corresponding to find-next & find-prev commands."""
-        d = self.c.k.computeInverseBindingDict()
-        results = []
-        for command in ('find-def', 'find-next', 'find-prev', 'find-var',):
-            aList = d.get(command, [])
-            for data in aList:
-                pane, stroke = data
-                if pane.startswith('all'):
-                    results.append(stroke)
-        return results
-    #@+node:ekr.20150630072552.1: *5* find.escapeCommand
-    def escapeCommand(self, event):
-        """Return the escaped command to execute."""
-        d = self.c.k.bindingsDict
-        aList = d.get(event.stroke)
-        for bi in aList:
-            if bi.stroke == event.stroke:
-                return bi.commandName
-        return None
+    ###
+        # def interactive_re_search_backward_escape1(self, event):
+            # k = self.k
+            # self._sString = find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # prompt = f"Replace Regex Backward: {find_pattern} With: "
+            # k.setLabelBlue(prompt)
+            # self.addChangeStringToLabel()
+            # k.getNextArg(self.interactive_re_search_backward_escape2)
+        
+        # def interactive_re_search_backward_escape2(self, event):
+            # c, k = self.c, self.k
+            # self.updateChangeList(k.arg)
+            # self.lastStateHelper()
+            
+            # ### self.generalChangeHelper(self._sString, k.arg, changeAll=False)
+            # find_pattern = self._sString
+            # change_pattern = k.arg
+            # self.ftm.setFindText(find_pattern)
+            # self.ftm.setChangeText(change_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()  # This handles the reverse option.
+        
+    #@+node:ekr.20131117164142.17003: *4* find.re-search-forward (test)
+    @cmd('re-search-forward')
+    def interactive_re_search_forward(self, event):
+        ### self.setupArgs(forward=True, regexp=True, word=None)
+        self.reverse = False
+        self.pattern_match = True
+        self.showFindOptions()
+        self.start_state_machine(event,
+            prefix='Regexp Search: ',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
+        )
+
+    ###
+        # def interactive_re_search_forward1(self, event):
+            # c, k = self.c, self.k
+            # find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # self.lastStateHelper()
+            # # Was generalSearchHelper
+            # # self.setupSearchPattern(pattern)
+            # self.ftm.setFindText(find_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()
+        
+        # def interactive_re_search_forward_escape1(self, event):
+            # k = self.k
+            # self._sString = find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # prompt = f"Replace Regex: {find_pattern} With: "
+            # k.setLabelBlue(prompt)
+            # self.addChangeStringToLabel()
+            # k.getNextArg(self.interactive_re_search_forward_escape2)
+        
+        # def interactive_re_search_forward_escape2(self, event):
+            # c, k = self.c, self.k
+            # self.updateChangeList(k.arg)
+            # self.lastStateHelper()
+        
+            # ### self.generalChangeHelper(self._sString, k.arg, changeAll=False)
+            # find_pattern = self._sString
+            # change_pattern = k.arg
+            # self.ftm.setFindText(find_pattern)
+            # self.ftm.setChangeText(change_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()
+        
+    #@+node:ekr.20131117164142.17004: *4* find.search_backward (test)
+    @cmd('search-backward')
+    def interactive_search_backward(self, event):
+        ### self.setupArgs(forward=False, regexp=False, word=False)
+        self.reverse = True
+        self.pattern_match = False
+        self.start_state_machine(event,
+            prefix='Search Backward: ',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
+        )
+
+    ###
+        # def interactive_search_backward1(self, event):
+            # c, k = self.c, self.k
+            # find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # self.lastStateHelper()
+            # # Was generalSearchHelper
+            # # self.setupSearchPattern(find_pattern)
+            # self.ftm.setFindText(find_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()  # Handles reverse.
+        
+        # def interactive_search_backward_escape1(self, event):
+            # k = self.k
+            # self._sString = find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # prompt = f"Replace Backward: {find_pattern} With: "
+            # k.setLabelBlue(prompt)
+            # self.addChangeStringToLabel()
+            # k.getNextArg(self.interactive_search_backward_escape2)
+        
+        # def interactive_search_backward_escape2(self, event):
+            # c, k = self.c, self.k
+            # self.updateChangeList(k.arg)
+            # self.lastStateHelper()
+        
+            # ### self.generalChangeHelper(self._sString, k.arg, changeAll=False)
+            # find_pattern = self._sString
+            # change_pattern = k.arg
+            # self.ftm.setFindText(find_pattern)
+            # self.ftm.setChangeText(change_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()  # This handles the reverse option.
+    #@+node:ekr.20210112045954.1: *4* find.search_forward (test)
+    @cmd('search-forward')
+    def interactive_search_forward(self, event):
+        self.setupArgs(forward=True, regexp=False, word=False)
+        self.start_state_machine(event,
+            prefix='Search: ',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
+        )
+
+    ###
+        # def interactive_search_forward1(self, event):
+            # c, k = self.c, self.k
+            # pattern = k.arg
+            # self.updateFindList(pattern)
+            # self.lastStateHelper()
+            # # Was generalSearchHelper
+            # # self.setupSearchPattern(pattern)
+            # self.ftm.setFindText(pattern)
+            # self.init_vim_search(pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # self.findNextCommand()
+            
+        # def interactive_search_forward_escape1(self, event):
+            # k = self.k
+            # self._sString = find_pattern = k.arg
+            # self.updateFindList(find_pattern)
+            # prompt = f"Replace: {find_pattern} With: "
+            # k.setLabelBlue(prompt)
+            # self.addChangeStringToLabel()
+            # k.getNextArg(self.interactive_search_forward_escape2)
+        
+        # def interactive_search_forward_escape2(self, event):
+            # c, k = self.c, self.k
+            # self.updateChangeList(k.arg)
+            # self.lastStateHelper()
+            
+            # ### self.generalChangeHelper(self._sString, k.arg, changeAll=False)
+            # find_pattern = self._sString
+            # change_pattern = k.arg
+            # self.ftm.setFindText(find_pattern)
+            # self.ftm.setChangeText(change_pattern)
+            # self.init_vim_search(find_pattern)
+            # c.widgetWantsFocusNow(self.w)
+            # self.p = c.p
+            # # This handles the reverse option.
+            # self.findNextCommand()
+        
+
+    #@+node:ekr.20131117164142.17009: *4* find.word-search-backward (test)
+    @cmd('word-search-backward')
+    def wordSearchBackward(self, event):
+        ### self.setupArgs(forward=False, regexp=False, word=True)
+        self.reverse = True
+        self.pattern_match = False
+        self.whole_world = True
+        self.start_state_machine(event,
+            prefix='Word Search Backward: ',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
+        )
+    #@+node:ekr.20210112050845.1: *4* find.word-search-forward (test)
+    @cmd('word-search-forward')
+    def wordSearchForward(self, event):
+        ### self.setupArgs(forward=True, regexp=False, word=True)
+        self.reverse = False
+        self.pattern_match = False
+        self.whole_world = True
+        self.start_state_machine(event,
+            prefix='Word Search: ',
+            handler=self.start_search1,  # See start-search
+            escapes=['\t'],  # The Tab Easter Egg.
+            escape_handler = self.start_search_escape1,  # See start-search
+        )
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs(self):
@@ -1952,104 +2242,6 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-    #@+node:ekr.20131117164142.17003: *4* find.reSearchBackward/Forward (re-search*)
-    @cmd('re-search-backward')
-    def reSearchBackward(self, event):
-        self.setupArgs(forward=False, regexp=True, word=None)
-        self.start_state_machine(event,
-            'Regexp Search Backward:', self.reSearch1,
-            escapes=['\t'],  # The Tab Easter Egg.
-            escape_handler = self.setReplaceString1,  # Was handled in reSearch1.
-        )
-
-    @cmd('re-search-forward')
-    def reSearchForward(self, event):
-        self.setupArgs(forward=True, regexp=True, word=None)
-        self.start_state_machine(event,
-            prefix='Regexp Search:',
-            handler=self.reSearch1,
-            escapes=['\t'], # The Tab Easter Egg.
-            escape_handler=self.setReplaceString1,  # Was handled in reSearch1.
-        )
-
-    def reSearch1(self, event):
-        c, k = self.c, self.k
-        ###
-        # if k.getArgEscapeFlag:
-            # # Switch to the replace command.
-            # self.setReplaceString1(event=None)
-        # else:
-        pattern = k.arg
-        self.updateFindList(pattern)
-        self.lastStateHelper()
-        # Was generalSearchHelper
-        # self.setupSearchPattern(pattern)
-        self.ftm.setFindText(pattern)
-        self.init_vim_search(pattern)
-        c.widgetWantsFocusNow(self.w)
-        self.p = c.p
-        self.findNextCommand()
-    #@+node:ekr.20131117164142.17004: *4* find.seachForward/Backward (search-*)
-    @cmd('search-backward')
-    def searchBackward(self, event):
-        self.setupArgs(forward=False, regexp=False, word=False)
-        self.start_state_machine(event,
-            prefix='Search Backward: ',
-            handler=self.search1,
-            escapes=['\t'],  # The Tab Easter Egg.
-            escape_handler=self.setReplaceString1)  # Was handled in search1.
-
-    @cmd('search-forward')
-    def searchForward(self, event):
-        self.setupArgs(forward=True, regexp=False, word=False)
-        self.start_state_machine(event,
-            prefix='Search: ',
-            handler=self.search1,
-            escapes=['\t'],  # The Tab Easter Egg.
-            escape_handler=self.setReplaceString1)  # Was handled in search1.
-
-    def search1(self, event):
-        c, k = self.c, self.k
-        ###
-            # if k.getArgEscapeFlag:
-                # # Switch to the replace command.
-                # self.setReplaceString1(event=None)
-            # else:
-        pattern = k.arg
-        self.updateFindList(pattern)
-        self.lastStateHelper()
-        # Was generalSearchHelper
-        # self.setupSearchPattern(pattern)
-        self.ftm.setFindText(pattern)
-        self.init_vim_search(pattern)
-        c.widgetWantsFocusNow(self.w)
-        self.p = c.p
-        self.findNextCommand()
-    #@+node:ekr.20131117164142.17002: *4* find.setReplaceString
-    @cmd('set-replace-string')
-    def setReplaceString(self, event):
-        """A state handler to get the replacement string."""
-        prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
-        prefix = f"{prompt}: "
-        self.start_state_machine(event,
-            prefix=prefix,
-            handler=self.setReplaceString1)
-
-    def setReplaceString1(self, event):
-        k = self.k
-        prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
-        self._sString = k.arg
-        self.updateFindList(k.arg)
-        s = f"{prompt}: {self._sString} With: "
-        k.setLabelBlue(s)
-        self.addChangeStringToLabel()
-        k.getNextArg(self.setReplaceString2)
-
-    def setReplaceString2(self, event):
-        k = self.k
-        self.updateChangeList(k.arg)
-        self.lastStateHelper()
-        self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
     #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
     def start_state_machine(self, event, prefix, handler, escapes=None, escape_handler=None):
 
@@ -2109,32 +2301,6 @@ class LeoFind:
     def updateFindList(self, s):
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@+node:ekr.20131117164142.17009: *4* find.wordSearchBackward/Forward
-    @cmd('word-search-backward')
-    def wordSearchBackward(self, event):
-        self.setupArgs(forward=False, regexp=False, word=True)
-        self.start_state_machine(event,
-            prefix='Word Search Backward: ',
-            handler=self.wordSearch1)
-
-    @cmd('word-search-forward')
-    def wordSearchForward(self, event):
-        self.setupArgs(forward=True, regexp=False, word=True)
-        self.start_state_machine(event,
-            prefix='Word Search: ',
-            handler=self.wordSearch1)
-
-    def wordSearch1(self, event):
-        c, k = self.c, self.k
-        self.lastStateHelper()
-        pattern = k.arg
-        # Was generalSearchHelper
-        # self.setupSearchPattern(pattern)
-        self.ftm.setFindText(pattern)
-        self.init_vim_search(pattern)
-        c.widgetWantsFocusNow(self.w)
-        self.p = c.p
-        self.findNextCommand()
     #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
     #@+node:ekr.20131117164142.16919: *4* find.toggle-find-*-option commands
     @cmd('toggle-find-collapses-nodes')
@@ -2532,21 +2698,6 @@ class LeoFind:
             pos, newpos = self.searchHelper(s, 0, len(s), self.find_text)
             if pos != -1: return True
         return False
-    #@+node:ekr.20131117164142.16999: *4* find.generalChangeHelper
-    def generalChangeHelper(self, find_pattern, change_pattern, changeAll=False):
-        c = self.c
-        # self.setupSearchPattern(find_pattern)
-        self.ftm.setFindText(find_pattern)
-        # self.setupChangePattern(change_pattern)
-        self.ftm.setChangeText(change_pattern)
-        self.init_vim_search(find_pattern)
-        c.widgetWantsFocusNow(self.w)
-        self.p = c.p
-        if changeAll:
-            self.changeAllCommand()
-        else:
-            # This handles the reverse option.
-            self.findNextCommand()
     #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (called from generalChangeHelper)
     def changeAllCommand(self, event=None):
         c = self.c
@@ -2815,6 +2966,27 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
+    #@+node:ekr.20150630072552.1: *4* find.escapeCommand
+    def escapeCommand(self, event):
+        """Return the escaped command to execute."""
+        d = self.c.k.bindingsDict
+        aList = d.get(event.stroke)
+        for bi in aList:
+            if bi.stroke == event.stroke:
+                return bi.commandName
+        return None
+    #@+node:ekr.20150630072025.1: *4* find.findEscapes
+    def findEscapes(self):
+        """Return the keystrokes corresponding to find-next & find-prev commands."""
+        d = self.c.k.computeInverseBindingDict()
+        results = []
+        for command in ('find-def', 'find-next', 'find-prev', 'find-var',):
+            aList = d.get(command, [])
+            for data in aList:
+                pane, stroke = data
+                if pane.startswith('all'):
+                    results.append(stroke)
+        return results
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         """Resume the search where it left off."""

@@ -1421,7 +1421,8 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            fc.searchWithPresentOptions(self.event)
+            ### fc.searchWithPresentOptions(self.event)
+            fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls update_selection_after_search().
             fc.node_only = old_node_only
@@ -1461,7 +1462,8 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            fc.searchWithPresentOptions(self.event)
+            ### fc.searchWithPresentOptions(self.event)
+            fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
                 # leoFind.showSuccess calls update_selection_after_search().
             fc.node_only = old_node_only
@@ -2008,7 +2010,8 @@ class VimCommands:
                 fc.ftm.clear_focus()
                 fc.node_only = True
                     # Doesn't work.
-                fc.searchWithPresentOptions(vc.event)
+                ### fc.searchWithPresentOptions(vc.event)
+                fc.start_search1(vc.event)
                     # This returns immediately, before the actual search.
                     # leoFind.showSuccess calls vc.update_selection_after_search.
                 if c.vim_mode:
