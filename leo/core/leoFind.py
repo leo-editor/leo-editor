@@ -548,7 +548,7 @@ class LeoFind:
         if not self.checkArgs():
             return False
         self.initInHeadline()
-        if self.change_selection():  ### Was changeSelection
+        if self.change_selection():
             self.findNext(False)  # don't reinitialize
         return True
     #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find
@@ -1365,7 +1365,6 @@ class LeoFind:
     def interactive_search_backward(self, event):
         """Same as start-find, but in reverse."""
         self.reverse = True
-        ### self.pattern_match = False
         self.start_state_machine(event,
             prefix='Search Backward: ',
             handler=self.start_search1,  # See start-search
@@ -1407,7 +1406,6 @@ class LeoFind:
         self.p = c.p
         # Settings...
         find_pattern = k.arg
-        ### g.trace('---- k.arg', find_pattern)
         self.updateFindList(find_pattern)
         self.ftm.setFindText(find_pattern)
         self.init_vim_search(find_pattern)
@@ -1416,8 +1414,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
-        ### self.findNextCommand()  # Handles reverse.
-        self.update_ivars()  ### Required for find/change string, but should leave everthing else alone!
+        self.update_ivars()
         self.findNext()  # Handles reverse.
         
     def start_search_escape1(self, event=None):
@@ -1454,8 +1451,6 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
-        ### self.findNextCommand()  # Handles reverse.
-        ### self.update_ivars()  # Don't do this here.
         self.findNext()
     #@+node:ekr.20160920164418.2: *4* find.tag-children
     @cmd('tag-children')
@@ -1775,7 +1770,6 @@ class LeoFind:
             # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
-        ### g.trace('self.find_text', repr(s))
         # Get replacement text.
         s = ftm.getReplaceText()
         s = g.checkUnicode(s)
