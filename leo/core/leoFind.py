@@ -1186,7 +1186,7 @@ class LeoFind:
         c.selectPosition(found)
         c.redraw()
         return len(clones), found
-    #@+node:ekr.20131117164142.16998: *4* find.find-all (test)
+    #@+node:ekr.20131117164142.16998: *4* find.find-all
     @cmd('find-all')
     def interactive_find_all(self, event=None):
         """
@@ -1294,7 +1294,7 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
         self.changeAllCommand()
-    #@+node:ekr.20131117164142.17003: *4* find.re-search (test)
+    #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
     def interactive_re_search_forward(self, event):
@@ -1307,7 +1307,7 @@ class LeoFind:
             handler=self.start_search1,  # See start-search
             escape_handler = self.start_search_escape1,  # See start-search
         )
-    #@+node:ekr.20210112044303.1: *4* find.re-search-backward (test)
+    #@+node:ekr.20210112044303.1: *4* find.re-search-backward
     @cmd('re-search-backward')
     def interactive_re_search_backward(self, event):
         """Same as start-find, but with regex and in reverse."""
@@ -1360,7 +1360,7 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
         self.changeAllCommand()
-    #@+node:ekr.20131117164142.17004: *4* find.search_backward (test)
+    #@+node:ekr.20131117164142.17004: *4* find.search_backward
     @cmd('search-backward')
     def interactive_search_backward(self, event):
         """Same as start-find, but in reverse."""
@@ -1482,7 +1482,7 @@ class LeoFind:
             g.es_print(f"Added {tag} tag to {len(list(c.p.children()))} nodes")
         else:
             g.es_print('nodetags not active')
-    #@+node:ekr.20210112050845.1: *4* find.word-search (test)
+    #@+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
     def wordSearchForward(self, event):
@@ -1495,7 +1495,7 @@ class LeoFind:
             handler=self.start_search1,  # See start-search
             escape_handler = self.start_search_escape1,  # See start-search
         )
-    #@+node:ekr.20131117164142.17009: *4* find.word-search-backward (test)
+    #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
         self.reverse = True
