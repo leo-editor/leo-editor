@@ -1938,6 +1938,7 @@ class NullTree(LeoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
+        self.treeWidget = g.NullObject()
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
