@@ -407,12 +407,11 @@ class LeoFind:
             c.redraw()
             w.setSelectionRange(i, j, insert=ins)
             c.bodyWantsFocusNow()
-    #@+node:ekr.20210112195456.1: *6* find._find_def_cff (NEW)
+    #@+node:ekr.20210112195456.1: *6* find._find_def_cff
     def _find_def_cff(self):
-        ### Was findAll(clone_find_all=False, clone_find_all_flattened=False):
         c = self.c
-        undoType = 'Clone Find All Flattened'
-        if not self.checkArgs():
+        undoType = 'Find Def'
+        if not self.check_args('find-def'):
             return 0
         self.initInHeadline()
         data = self.save()
@@ -596,7 +595,7 @@ class LeoFind:
     #@+node:ekr.20031218072017.3068: *4* find.replace
     @cmd('replace')
     def change(self, event=None):
-        if self.checkArgs():
+        if self.check_args('replace'):
             self.initInHeadline()
             self.change_selection()
 
@@ -605,7 +604,7 @@ class LeoFind:
     @cmd('replace-then-find')
     def changeThenFindCommand(self, event=None):
         """Handle the replace-then-find command."""
-        if not self.checkArgs():
+        if not self.check_args('replace-then-find'):
             return False
         self.initInHeadline()
         if self.change_selection():
@@ -992,9 +991,9 @@ class LeoFind:
         self.do_change_all()
     #@+node:ekr.20031218072017.3073: *5* find.findAll & helper
     def findAll(self):
-
+        """Top-level helper for find-all command."""
         c = self.c
-        if not self.checkArgs():
+        if not self.check_args('find-all'):
             return 0
         self.initInHeadline()
         data = self.save()
@@ -1360,13 +1359,6 @@ class LeoFind:
             escape_handler = self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: top-level helpers
-    ### To do:
-    # - Rename each to do_. These are targets of unit tests.
-    # - Use _ prefix for helpers used in only one place.
-    # - Use "settings" arg.
-    # - Move new local helpers to their proper place.
-    # - Use descriptive prefix for local helpers.
-    # - Update unit tests to us new names.
     #@+node:ekr.20210112192759.1: *4* ===== From coreFind: (to be merged)
     #@+node:ekr.20210110073117.32: *5* new:find.compile_pattern
     def compile_pattern(self):
@@ -1685,6 +1677,18 @@ class LeoFind:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
         c.frame.tree.updateIcon(p)  # redraw only the icon.
         return True
+    #@+node:ekr.20210110073117.31: *4* find.check_args
+    def check_args(self, tag):
+        """Check the user arguments to a command."""
+        if not self.search_headline and not self.search_body:
+            if not g.unitTesting:
+                g.es_print("not searching headline or body")  # pragma: no cover (skip)
+            return False
+        if not self.find_text:
+            if not g.unitTesting:
+                g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
+            return False
+        return True
     #@+node:ekr.20210110073117.9: *4* find.clone_find_all_helper & helpers
     def clone_find_all_helper(self, settings, flatten):
         """
@@ -1910,7 +1914,7 @@ class LeoFind:
         c, current, u = self.c, self.c.p, self.c.undoer
         undoType = 'Replace All'
         t1 = time.process_time()
-        if not self.checkArgs():
+        if not self.check_args('change-all'):
             return
         self.initInHeadline()
         saveData = self.save()
@@ -2263,7 +2267,7 @@ class LeoFind:
     #@+node:ekr.20031218072017.3074: *4* find.findNext
     def findNext(self, initFlag=True):
         """Find the next instance of the pattern."""
-        if not self.checkArgs():
+        if not self.check_args('find-next'):
             return False  # for vim-mode find commands.
         # initFlag is False for change-then-find.
         if initFlag:
@@ -3238,27 +3242,6 @@ class LeoFind:
     def updateFindList(self, s):
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@+node:ekr.20210110073117.31: *4* find.check_args
-    def check_args(self, tag):
-        if not self.search_headline and not self.search_body:
-            if not g.unitTesting:
-                g.es_print("not searching headline or body")  # pragma: no cover (skip)
-            return False
-        if not self.find_text:
-            if not g.unitTesting:
-                g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
-            return False
-        return True
-    #@+node:ekr.20031218072017.3083: *4* find.checkArgs
-    def checkArgs(self):
-        if not self.search_headline and not self.search_body:
-            g.es("not searching headline or body")
-            return False
-        s = self.ftm.getFindText()
-        if not s:
-            g.es("empty find patttern")
-            return False
-        return True
     #@+node:ekr.20210110073117.33: *4* find.compute_result_status
     def compute_result_status(self, find_all_flag=False):
         """Return the status to be shown in the status line after a find command completes."""
