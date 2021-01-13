@@ -135,9 +135,6 @@ class LeoFind:
             # True: searching headline text.
         self.match_obj = None
             # The match object returned for regex or find-all-unique-regex searches.
-        ### self.p = None
-            # The position being searched.
-            # Never saved between searches!
         self.unique_matches = set()
         self.was_in_headline = None
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
@@ -146,9 +143,6 @@ class LeoFind:
         self.wrapping = False
             # True: wrapping is enabled.
             # This must be different from self.wrap, which is set by the checkbox.
-        ### self.wrapPosition = None
-            # The start of wrapped searches.
-            # Persists between calls.
         self.wrapPos = None
             # The starting position of the wrapped search.
             # Persists between calls.
@@ -224,9 +218,8 @@ class LeoFind:
         #
         # Init state.
         self.in_headline = self.was_in_headline = settings.in_headline
-        ### self.p = p = settings.p.copy()
         p = settings.p.copy()
-        self.onlyPosition = p if self.suboutline_only else None  ### was self.p
+        self.onlyPosition = p if self.suboutline_only else None
         self.wrapPos = 0 if self.reverse else len(p.b)
         #
         # Init the search widget.
@@ -624,7 +617,7 @@ class LeoFind:
         
         Return (p, pos, newpos).
         """
-        p = self.c.p  ###
+        p = self.c.p
         if settings:
             self.init(settings)
         if not self.check_args('replace-then-find'):
@@ -790,7 +783,6 @@ class LeoFind:
 
     def interactive_clone_find_all1(self, event):
         c, k, w = self.c, self.k, self.w
-        ### self.p = c.p
         # Settings...
         pattern = k.arg
         self.ftm.setFindText(pattern)
@@ -851,7 +843,6 @@ class LeoFind:
         self.ftm.setFindText(pattern)
         self.init_vim_search(pattern)
         c.widgetWantsFocusNow(w)
-        ### self.p = c.p
         settings = self.get_settings()
         count = self.do_clone_find_all(settings)
         if count:
@@ -983,7 +974,6 @@ class LeoFind:
 
     def find_all_escape_handler2(self, event):
         c,k = self.c, self.k
-        ### self.p = c.p
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
@@ -1039,7 +1029,6 @@ class LeoFind:
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
-            ### if not self.p: self.p = c.p
             if pos is None: break
             count += 1
             s = w.getAllText()
@@ -1054,11 +1043,11 @@ class LeoFind:
                     '-' * 20, p.h,
                     "head: " if self.in_headline else "body: ",
                     line.rstrip() + '\n'))
-            elif p.isVisited():  ### was self.p
+            elif p.isVisited():
                 result.append(line.rstrip() + '\n')
             else:
-                result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))  ### Was self.p.
-                p.setVisited()  ### was self.p
+                result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
+                p.setVisited()
         if result or self.unique_matches:
             undoData = u.beforeInsertNode(c.p)
             if self.findAllUniqueFlag:
@@ -1135,7 +1124,6 @@ class LeoFind:
 
     def interactive_change_all_unique_regex2(self, event):
         c,k = self.c, self.k
-        ### self.p = c.p
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
@@ -1200,7 +1188,6 @@ class LeoFind:
 
     def interactive_replace_all2(self, event):
         c,k = self.c, self.k
-        ### self.p = c.p
         # Settings...
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1257,7 +1244,6 @@ class LeoFind:
     def start_search1(self, event=None):
         """Common handler for use by vim commands and other find commands."""
         c, k, w = self.c, self.k, self.w
-        ### self.p = c.p
         # Settings...
         find_pattern = k.arg
         self.updateFindList(find_pattern)
@@ -1279,7 +1265,6 @@ class LeoFind:
         """
         k = self.k
         self._sString = find_pattern = k.arg
-        ### g.trace('find_pattern', repr(find_pattern))
         # Settings.
         k.getArgEscapeFlag = False
         self.ftm.setFindText(find_pattern)
@@ -1294,11 +1279,8 @@ class LeoFind:
 
     def _start_search_escape2(self, event):
         c, k = self.c, self.k
-        ### self.p = c.p
         find_pattern = self._sString
         change_pattern = k.arg
-        ### g.trace('find_pattern', repr(find_pattern))
-        ### g.trace('change_pattern', repr(change_pattern))
         self.updateChangeList(change_pattern)
         self.ftm.setFindText(find_pattern)
         self.ftm.setChangeText(change_pattern)
@@ -1360,7 +1342,6 @@ class LeoFind:
 
     def change_selection(self, p):
         c = self.c
-        ### p = self.p or c.p  # 2015/06/22
         wrapper = c.frame.body and c.frame.body.wrapper
         w = c.edit_widget(p) if self.in_headline else wrapper
         if not w:
@@ -1850,7 +1831,6 @@ class LeoFind:
         
         Return (p, pos, newpos).
         """
-        ### c, p = self.c, self.p
         c = self.c
         if not self.search_headline and not self.search_body:
             return None, None
@@ -1883,7 +1863,6 @@ class LeoFind:
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
-                ### p = self.p = self._fnm_next_after_fail(p)
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
@@ -1892,26 +1871,13 @@ class LeoFind:
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
-        ### c = self.c
-        # Wrapping is disabled by any limitation of screen or search.
-        ###  wrap = (self.wrapping and not self.node_only and
-        ###    not self.suboutline_only and not c.hoistStack)
-        ###
-            # if wrap and not self.wrapPosition:
-                # self.wrapPosition = p.copy()
-                # self.wrapPos = 0 if self.reverse else len(p.b)
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
         if p and self._fail_outside_range(p):
             return None
-        ###
-        # if not p and wrap:
-            # p = self._fail_do_wrap()
         if not p:
             return None
-        ### if wrap and p == self.wrapPosition:
-        #     return None
         return p
     #@+node:ekr.20131123071505.16468: *6* find._fail_do_wrap
     def _fail_do_wrap(self):
@@ -1971,16 +1937,9 @@ class LeoFind:
         Search s_ctrl for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
         """
-        ### if self.find_text in p.b and not self.in_headline:
-        ###    g.trace('should find', self.find_text, 'in', p.h)
-            # g.pdb()
-        ### c = self.c
-        ### p = self.p or c.p
         if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
-        ###
-        ### Load s_ctrl.
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
@@ -1992,8 +1951,6 @@ class LeoFind:
         if not s:
             return None, None
         stopindex = 0 if self.reverse else len(s)
-        ### pos, newpos = self.searchHelper(s, index, stopindex, self.find_text)
-        ### g.trace(repr(index), repr(stopindex), repr(s))
         pos, newpos = self.inner_search_helper(s, index, stopindex, self.find_text)
         if self.in_headline and not self.search_headline:
             return None, None
@@ -2001,9 +1958,6 @@ class LeoFind:
             return None, None
         if pos == -1:
             return None, None
-        ### if self.passedWrapPoint(p, pos, newpos):
-        ###     self.wrapPosition = None  # Reset.
-        ###    return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
         w.setSelectionRange(pos, newpos, insert=ins)
         if (self.ignore_dups or self.find_def_data):
@@ -2030,9 +1984,7 @@ class LeoFind:
         - self.reverse indicates how to set the insertion point.
         """
         c = self.c
-        ### p = self.p or c.p
         s = p.h if self.in_headline else p.b
-        assert isinstance(s, str), repr(s) ###
         w = self.s_ctrl
         tree = c.frame and c.frame.tree
         if tree and hasattr(tree, 'killEditing'):
@@ -2045,7 +1997,6 @@ class LeoFind:
         elif ins is None:
             ins = 0
         self.init_s_ctrl(s, ins)
-        ### g.trace(len(s))
     #@+node:ekr.20210110073117.43: *4* find.inner_search_helper & helpers
     def inner_search_helper(self, s, i, j, pattern):
         """
@@ -2172,7 +2123,7 @@ class LeoFind:
         # Félix, please don't both with it.
         # I'll re-enable it if it ever makes sense to me :-)
         ###
-            # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())  ###
+            # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())
             # while mo and 0 <= i <= len(s):
                 # if mo.start() == mo.end():
                     # if backwards: 
@@ -2262,13 +2213,11 @@ class LeoFind:
         return s
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap (to be deleted)
     def resetWrap(self, event=None):
-        ### self.wrapPosition = None
         self.onlyPosition = None
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl(self, s, ins):
         """Init the contents of s_ctrl from s and ins."""
-        ### g.trace(repr(ins), g.callers())
         w = self.s_ctrl
         w.setAllText(s)
         if ins is None:  # A flag telling us to search all of w.
@@ -2282,9 +2231,7 @@ class LeoFind:
         self.in_headline = self.search_headline  # Search headlines first.
         # Select the first node.
         if self.suboutline_only or self.node_only:
-            ### self.p = c.p
             # #188: Find/Replace All Suboutline only same as Node only.
-            ### self.onlyPosition = self.p.copy()
             self.onlyPosition = c.p
         else:
             p = c.rootPosition()
@@ -2292,7 +2239,6 @@ class LeoFind:
                 while p and p.next():
                     p = p.next()
                 p = p.lastNode()
-            ### self.p = p
         # Set the insert point.
         self.initBatchText()
         return p  ### New, not used.
@@ -2350,7 +2296,6 @@ class LeoFind:
         end of the headline text.
         """
         c = self.c
-        ### p = self.p = c.p  # *Always* start with the present node.
         p = c.p  # *Always* start with the present node.
         wrapper = c.frame.body and c.frame.body.wrapper
         headCtrl = c.edit_widget(p)
@@ -2366,23 +2311,10 @@ class LeoFind:
         # Init suboutline-only:
         if self.suboutline_only and not self.onlyPosition:
             self.onlyPosition = p.copy()
-        ###
-            # # Wrap does not apply to limited searches.
-            # if (self.wrap and
-                # not self.node_only and
-                # not self.suboutline_only and
-                # self.wrapPosition is None
-            # ):
-                # self.wrapping = True
-                # self.wrapPos = ins
-                # # Do not set self.wrapPosition here: that must be done after the first search.
     #@+node:ekr.20131126174039.16719: *4* find.reset_state_ivars
     def reset_state_ivars(self):
         """Reset ivars related to suboutline-only and wrapped searches."""
         self.onlyPosition = None
-        ### self.wrapping = False
-        ### self.wrapPosition = None
-        ### self.wrapPos = None
     #@+node:ekr.20031218072017.3089: *4* find.restore (headline hack)
     def restore(self, data):
         """Restore the screen and clear state after a search fails."""
@@ -2427,7 +2359,6 @@ class LeoFind:
     def save(self):
         """Save everything needed to restore after a search fails."""
         c = self.c
-        ### p = self.p or c.p
         p = c.p
         # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
         if self.in_headline:
@@ -2454,12 +2385,9 @@ class LeoFind:
     def showSuccess(self, p, pos, newpos, showState=True):
         """Display the result of a successful find operation."""
         c = self.c
-        ### self.p = p = self.p or c.p
         # Set state vars.
         # Ensure progress in backwards searches.
         insert = min(pos, newpos) if self.reverse else max(pos, newpos)
-        ### if self.wrap and not self.wrapPosition:
-        ###     self.wrapPosition = p ### self.p
         if c.sparse_find:
             c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:
@@ -2496,8 +2424,6 @@ class LeoFind:
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars(self):
         """Update ivars from the find panel."""
-        ### c = self.c
-        ### self.p = c.p
         ftm = self.ftm
         # The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
@@ -2618,7 +2544,6 @@ class LeoFind:
     def iSearch(self, again=False):
         """Handle the actual incremental search."""
         c, k, p = self.c, self.k, self.c.p
-        ### self.p = c.p
         reverse = not self.isearch_forward
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
