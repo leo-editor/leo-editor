@@ -174,7 +174,7 @@ class LeoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
-    #@+node:ekr.20210110145821.1: *4* find.get_settings (new)
+    #@+node:ekr.20210110145821.1: *4* find.get_settings
     def get_settings(self):
         """Return all settings in a g.Bunch."""
         c = self.c
@@ -185,7 +185,7 @@ class LeoFind:
         # settings.use_cff = False  ### user setting?
         return settings
         
-    #@+node:ekr.20210110073117.4: *4* find.init (new)
+    #@+node:ekr.20210110073117.4: *4* find.init
     def init(self, settings):
         """Initial all ivars from settings."""
         w = self.s_ctrl
@@ -281,7 +281,9 @@ class LeoFind:
             positions = p1.self_and_subtree()
         else:
             positions = c.all_unique_positions()
-        self.initBatchText()
+        # Init s_ctrl.
+        s = p.h if self.in_headline else p.b
+        self.init_s_ctrl(s, ins=0)
         u.beforeChangeGroup(p1, undoType)
         count = 0
         for p in positions:
@@ -984,7 +986,7 @@ class LeoFind:
         self.initInHeadline()
         data = self.save()
         self.initBatchCommands()
-            # Sets self.p and self.onlyPosition.
+            # Sets self.onlyPosition.
         # Init suboutline-only for clone-find-all commands
         # Much simpler: does not set self.p or any other state.
         if self.pattern_match: ### or self.findAllUniqueFlag:
@@ -2202,9 +2204,6 @@ class LeoFind:
                     i += 1  # Skip the escaped character.
             i += 1
         return s
-    #@+node:ekr.20031218072017.3076: *4* find.resetWrap (to be deleted)
-    def resetWrap(self, event=None):
-        self.onlyPosition = None
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl(self, s, ins):
@@ -2230,15 +2229,9 @@ class LeoFind:
                 while p and p.next():
                     p = p.next()
                 p = p.lastNode()
-        # Set the insert point.
-        self.initBatchText()
-    #@+node:ekr.20031218072017.3085: *4* find.initBatchText
-    def initBatchText(self, ins=None):
-        """Init s_ctrl from self.p and ins at the beginning of a search."""
-        c = self.c
-        p = c.p
+        # Set widget.
         s = p.h if self.in_headline else p.b
-        self.init_s_ctrl(s, ins)
+        self.init_s_ctrl(s, ins=0)
     #@+node:ekr.20031218072017.3086: *4* find.initInHeadline & helper
     def initInHeadline(self):
         """
@@ -2298,19 +2291,12 @@ class LeoFind:
         # Init suboutline-only:
         if self.suboutline_only and not self.onlyPosition:
             self.onlyPosition = p.copy()
-    #@+node:ekr.20131126174039.16719: *4* find.reset_state_ivars
-    def reset_state_ivars(self):
-        """Reset ivars related to suboutline-only and wrapped searches."""
-        self.onlyPosition = None
     #@+node:ekr.20031218072017.3089: *4* find.restore (headline hack)
     def restore(self, data):
         """Restore the screen and clear state after a search fails."""
         c = self.c
         in_headline, editing, p, w, insert, start, end, junk = data
         self.was_in_headline = False  # 2015/03/25
-        if 0:  # Don't do this here.
-            # Reset ivars related to suboutline-only and wrapped searches.
-            self.reset_state_ivars()
         c.frame.bringToFront()  # Needed on the Mac
         # Don't try to reedit headline.
         if p and c.positionExists(p):
@@ -2421,8 +2407,7 @@ class LeoFind:
         if self.radioButtonsChanged or s != self.find_text:
             self.radioButtonsChanged = False
             self.state_on_start_of_search = self.save()
-            # Reset ivars related to suboutline-only and wrapped searches.
-            self.reset_state_ivars()
+            self.onlyPosition = None
         self.find_text = s
         # Get replacement text.
         s = ftm.getReplaceText()
@@ -2552,8 +2537,10 @@ class LeoFind:
         w = self.setWidget()
         s = w.getAllText()
         i, j = w.getSelectionRange()
-        if again: ins = i if reverse else j + len(pattern)
-        else: ins = j + len(pattern) if reverse else i
+        if again:
+            ins = i if reverse else j + len(pattern)
+        else:
+            ins = j + len(pattern) if reverse else i
         self.init_s_ctrl(s, ins)
         # Do the search!
         p, pos, newpos = self.find_next_match(p)
@@ -2867,7 +2854,7 @@ class LeoFind:
             c.frame.putStatusLine(s, bg=bg, fg=fg)
         if not found:  # Fixes: #457
             self.radioButtonsChanged = True
-            self.reset_state_ivars()
+            self.onlyPosition = None
     #@-others
 #@+node:ekr.20070105092022.1: ** class SearchWidget
 class SearchWidget:
