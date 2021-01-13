@@ -1374,7 +1374,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -1390,7 +1390,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -1406,7 +1406,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -1422,7 +1422,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -1439,7 +1439,7 @@ for s, find, change, count, result in regex_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchRegexReplace(s)
+    count2, result2 = fc._change_all_regex(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
