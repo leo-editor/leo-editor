@@ -809,16 +809,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
             ('box', '&Ignore case', 1, 0),
             ('rb', '&Suboutline only', 1, 1),
             # Third row.
-            ('box', 'wrap &Around', 2, 0),
+            ('box', 'rege&Xp', 2, 0),
             ('rb', '&Node only', 2, 1),
             # Fourth row.
-            ('box', 'rege&Xp', 3, 0),
+            ('box', 'mark &Finds', 3, 0),
             ('box', 'search &Headline', 3, 1),
             # Fifth row.
-            ('box', 'mark &Finds', 4, 0),
+            ('box', 'mark &Changes', 4, 0),
             ('box', 'search &Body', 4, 1),
             # Sixth row.
-            ('box', 'mark &Changes', 5, 0),
+            # ('box', 'wrap &Around', 5, 0),
             # a,b,c,e,f,h,i,n,rs,w
         )
         for kind, label, row2, col in table:
@@ -1073,7 +1073,7 @@ class FindTabManager:
         self.check_box_search_body = None
         self.check_box_search_headline = None
         self.check_box_whole_word = None
-        self.check_box_wrap_around = None
+        ### self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
@@ -1130,7 +1130,7 @@ class FindTabManager:
             search_headline = self.check_box_search_headline.isChecked(),
             suboutline_only = self.radio_button_suboutline_only.isChecked(),
             whole_word = self.check_box_whole_word.isChecked(),
-            wrapping = self.check_box_wrap_around.isChecked(),
+            ### wrapping = self.check_box_wrap_around.isChecked(),
         )
     #@+node:ekr.20131119185305.16478: *3* ftm.clear_focus & init_focus & set_entry_focus
     def clear_focus(self):
@@ -1189,7 +1189,7 @@ class FindTabManager:
             ('search_body', self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word', self.check_box_whole_word),
-            ('wrap', self.check_box_wrap_around),
+            ### ('wrap', self.check_box_wrap_around),
         )
         for setting_name, w in table:
             val = c.config.getBool(setting_name, default=False)
@@ -1272,7 +1272,7 @@ class FindTabManager:
             'search_body':     self.check_box_search_body,
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
-            'wrap':            self.check_box_wrap_around,
+            ### 'wrap':            self.check_box_wrap_around,
         }
         w = d.get(checkbox_name)
         assert w

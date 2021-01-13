@@ -8,7 +8,6 @@ import time
 import unittest
 from leo.core import leoGlobals as g
 from leo.core import leoTest2
-assert leoTest2  ### So we can delete tests temporarily.
 
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -99,7 +98,7 @@ class LeoFind:
         self.mark_changes = None
         self.mark_finds = None
         self.reverse = None
-        self.wrap = None
+        ### self.wrap = None
         self.whole_word = None
         # For isearch commands...
         self.stack = [] # Entries are (p,sel)
@@ -140,7 +139,7 @@ class LeoFind:
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
         self.onlyPosition = None
             # The starting node for suboutline-only searches.
-        self.wrapping = False
+        ### self.wrapping = False
             # True: wrapping is enabled.
             # This must be different from self.wrap, which is set by the checkbox.
         self.wrapPos = None
@@ -211,7 +210,7 @@ class LeoFind:
         self.search_headline = settings.search_headline
         self.suboutline_only = settings.suboutline_only
         self.whole_word = settings.whole_word
-        self.wrapping = settings.wrapping
+        ### self.wrapping = settings.wrapping
         #
         # Init user options
         self.use_cff = False  # For find-def
@@ -694,7 +693,7 @@ class LeoFind:
             ('reverse', 'reverse'),
             ('ignore_case', 'noCase'),
             ('whole_word', 'word'),
-            ('wrap', 'wrap'),
+            # ('wrap', 'wrap'),
             ('mark_changes', 'markChg'),
             ('mark_finds', 'markFnd'),
         )
@@ -747,10 +746,11 @@ class LeoFind:
         """Toggle the 'Whole Word' checkbox in the Find tab."""
         return self.toggleOption('whole_word')
 
-    @cmd('toggle-find-wrap-around-option')
-    def toggleWrapSearchOption(self, event):
-        """Toggle the 'Wrap Around' checkbox in the Find tab."""
-        return self.toggleOption('wrap')
+    ###
+    # @cmd('toggle-find-wrap-around-option')
+    # def toggleWrapSearchOption(self, event):
+        # """Toggle the 'Wrap Around' checkbox in the Find tab."""
+        # return self.toggleOption('wrap')
 
     def toggleOption(self, checkbox_name):
         c, fc = self.c, self.c.findCommands
@@ -1240,6 +1240,8 @@ class LeoFind:
             self.openFindTab(event)
             self.ftm.init_focus()
             return
+            
+    startSearch = start_search  # Compatibility. Do not delete.
 
     def start_search1(self, event=None):
         """Common handler for use by vim commands and other find commands."""
@@ -2246,7 +2248,7 @@ class LeoFind:
     def initBatchText(self, ins=None):
         """Init s_ctrl from self.p and ins at the beginning of a search."""
         c = self.c
-        self.wrapping = False
+        ### self.wrapping = False
             # Only interactive commands allow wrapping.
         # p = self.p or c.p
         p = c.p
@@ -2581,9 +2583,9 @@ class LeoFind:
             if w: i, j = w.getSelectionRange(sort=False)
             if not again:
                 self.push(c.p, i, j, self.in_headline)
-        elif self.wrapping:
+        ### elif self.wrapping:
             # g.es("end of wrapped search")
-            k.setLabelRed('end of wrapped search')
+            ###k.setLabelRed('end of wrapped search')
         else:
             g.es(f"not found: {pattern}")
             if not again:
@@ -2778,24 +2780,38 @@ class LeoFind:
     def compute_result_status(self, find_all_flag=False):
         """Return the status to be shown in the status line after a find command completes."""
         status = []
-        if self.whole_word:
-            status.append('word' if find_all_flag else 'word-only')
-        if self.ignore_case:
-            status.append('ignore-case')
-        if self.pattern_match:
-            status.append('regex')
-        if find_all_flag:
-            if self.wrapping:
-                status.append('wrapping')
-        else:
-            if self.suboutline_only:
-                status.append('[outline-only]')
-            if self.node_only:
-                status.append('[node-only]')
-        if self.search_headline:
-            status.append('headline')
-        if self.search_body:
-            status.append('body')
+        table = (
+            ('whole_word', 'Word'),
+            ('ignore_case', 'Ignore Case'),
+            ('pattern_match', 'Regex'),
+            ('suboutline_only', '[Outline Only]'),
+            ('node_only', '[Node Only]'),
+            ('search_headline', 'Head'),
+            ('search_body', 'Body'),
+        )
+        for ivar, val in table:
+            if getattr(self, ivar):
+                status.append(val)
+        ###
+            # if self.whole_word:
+                # status.append('word') ### if find_all_flag else 'word-only')
+            # if self.ignore_case:
+                # status.append('ignore-case')
+            # if self.pattern_match:
+                # status.append('regex')
+            # # if find_all_flag:
+                # # pass
+                # # # if self.wrapping:
+                    # # # status.append('wrapping')
+            # # else:
+            # if self.suboutline_only:
+                # status.append('[outline-only]')
+            # if self.node_only:
+                # status.append('[node-only]')
+            # if self.search_headline:
+                # status.append('headline')
+            # if self.search_body:
+                # status.append('body')
         return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self, event=None):
@@ -2856,7 +2872,7 @@ class LeoFind:
             ('regeXp', ftm.check_box_regexp),
             ('Body', ftm.check_box_search_body),
             ('Head', ftm.check_box_search_headline),
-            ('wrap-Around', ftm.check_box_wrap_around),
+            # ('wrap-Around', ftm.check_box_wrap_around),
             ('mark-Changes', ftm.check_box_mark_changes),
             ('mark-Finds', ftm.check_box_mark_finds),
         )

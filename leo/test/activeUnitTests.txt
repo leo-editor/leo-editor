@@ -11985,7 +11985,7 @@ table = (
     'toggle-find-regex-option',
     # 'toggle-find-reverse-option',
     'toggle-find-word-option',
-    'toggle-find-wrap-around-option',
+    # 'toggle-find-wrap-around-option',
 )
 for command in table:
     c.k.simulateCommand(command)
@@ -11997,8 +11997,8 @@ x = leoFind.LeoFind(c)
 table = (
     'batch', 'ignore_case', 'node_only', 'pattern_match',
     'search_headline', 'search_body', 'suboutline_only',
-    'mark_changes', 'mark_finds', 'reverse',
-    'wrap', 'whole_word',
+    'mark_changes', 'mark_finds', 'reverse', 'whole_word',
+    # 'wrap', 
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
