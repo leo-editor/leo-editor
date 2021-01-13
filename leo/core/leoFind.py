@@ -98,7 +98,6 @@ class LeoFind:
         self.mark_changes = None
         self.mark_finds = None
         self.reverse = None
-        ### self.wrap = None
         self.whole_word = None
         # For isearch commands...
         self.stack = [] # Entries are (p,sel)
@@ -139,12 +138,6 @@ class LeoFind:
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
         self.onlyPosition = None
             # The starting node for suboutline-only searches.
-        ### self.wrapping = False
-            # True: wrapping is enabled.
-            # This must be different from self.wrap, which is set by the checkbox.
-        self.wrapPos = None
-            # The starting position of the wrapped search.
-            # Persists between calls.
         self.state_on_start_of_search = None
             # keeps all state data that should be restored once the search is exhausted
     #@+node:ekr.20210110073117.6: *4* find.default_settings
@@ -210,7 +203,7 @@ class LeoFind:
         self.search_headline = settings.search_headline
         self.suboutline_only = settings.suboutline_only
         self.whole_word = settings.whole_word
-        ### self.wrapping = settings.wrapping
+        # self.wrapping = settings.wrapping
         #
         # Init user options
         self.use_cff = False  # For find-def
@@ -219,7 +212,6 @@ class LeoFind:
         self.in_headline = self.was_in_headline = settings.in_headline
         p = settings.p.copy()
         self.onlyPosition = p if self.suboutline_only else None
-        self.wrapPos = 0 if self.reverse else len(p.b)
         #
         # Init the search widget.
         s = p.h if self.in_headline else p.b
@@ -441,7 +433,6 @@ class LeoFind:
         b = self.find_def_data  # A g.Bunch
         if b:
             self.ignore_case = b.ignore_case
-            ### self.p = b.p
             self.pattern_match = b.pattern_match
             self.reverse = False
             self.search_body = b.search_body
@@ -464,7 +455,6 @@ class LeoFind:
     def setFindDefOptions(self, p):
         """Set the find options needed for the find-def command."""
         self.ignore_case = False
-        ### self.p = p.copy()
         self.pattern_match = False
         self.reverse = False
         self.search_body = True
@@ -746,7 +736,6 @@ class LeoFind:
         """Toggle the 'Whole Word' checkbox in the Find tab."""
         return self.toggleOption('whole_word')
 
-    ###
     # @cmd('toggle-find-wrap-around-option')
     # def toggleWrapSearchOption(self, event):
         # """Toggle the 'Wrap Around' checkbox in the Find tab."""
@@ -1292,7 +1281,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
-        self.update_ivars() ###
+        self.update_ivars()
         self.do_find_next()
     #@+node:ekr.20160920164418.2: *4* find.tag-children
     @cmd('tag-children')
@@ -2133,7 +2122,7 @@ class LeoFind:
                         # i -= 1
                         # while 0 <= i < len(s):
                             # mo = re_obj.match(s, i, j)
-                            # if mo: break  ###???
+                            # if mo: break
                             # i -= 1
                     # else:
                         # i += 1
@@ -2243,14 +2232,10 @@ class LeoFind:
                 p = p.lastNode()
         # Set the insert point.
         self.initBatchText()
-        return p  ### New, not used.
     #@+node:ekr.20031218072017.3085: *4* find.initBatchText
     def initBatchText(self, ins=None):
         """Init s_ctrl from self.p and ins at the beginning of a search."""
         c = self.c
-        ### self.wrapping = False
-            # Only interactive commands allow wrapping.
-        # p = self.p or c.p
         p = c.p
         s = p.h if self.in_headline else p.b
         self.init_s_ctrl(s, ins)
@@ -2583,9 +2568,6 @@ class LeoFind:
             if w: i, j = w.getSelectionRange(sort=False)
             if not again:
                 self.push(c.p, i, j, self.in_headline)
-        ### elif self.wrapping:
-            # g.es("end of wrapped search")
-            ###k.setLabelRed('end of wrapped search')
         else:
             g.es(f"not found: {pattern}")
             if not again:
@@ -2779,6 +2761,7 @@ class LeoFind:
     #@+node:ekr.20210110073117.33: *4* find.compute_result_status
     def compute_result_status(self, find_all_flag=False):
         """Return the status to be shown in the status line after a find command completes."""
+        # Too similar to another method...
         status = []
         table = (
             ('whole_word', 'Word'),
@@ -2792,26 +2775,6 @@ class LeoFind:
         for ivar, val in table:
             if getattr(self, ivar):
                 status.append(val)
-        ###
-            # if self.whole_word:
-                # status.append('word') ### if find_all_flag else 'word-only')
-            # if self.ignore_case:
-                # status.append('ignore-case')
-            # if self.pattern_match:
-                # status.append('regex')
-            # # if find_all_flag:
-                # # pass
-                # # # if self.wrapping:
-                    # # # status.append('wrapping')
-            # # else:
-            # if self.suboutline_only:
-                # status.append('[outline-only]')
-            # if self.node_only:
-                # status.append('[node-only]')
-            # if self.search_headline:
-                # status.append('headline')
-            # if self.search_body:
-                # status.append('body')
         return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self, event=None):
