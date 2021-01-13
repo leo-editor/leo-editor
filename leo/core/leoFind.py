@@ -614,7 +614,7 @@ class LeoFind:
         if self.change_selection():
             self.do_find_next(False)  # don't reinitialize
         return True
-    #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find
+    #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find (not used yet)
     def do_replace_then_find(self, settings):
         """
         Handle the replace-then-find command.
@@ -812,7 +812,7 @@ class LeoFind:
         """
         self.init(settings)
         if self.check_args('clone-find-all'):
-            return self.cfa_helper(settings, flatten=False)
+            return self.do_clone_find_helper(settings, flatten=False)
         return 0
     #@+node:ekr.20131117164142.16996: *4* find.clone-find-all-flattened
     @cmd('clone-find-all-flattened')
@@ -861,7 +861,7 @@ class LeoFind:
         """Do the clone-find-all-flattened command from the settings."""
         self.init(settings)
         if self.check_args('clone-find-all-flattened'):
-            return self.cfa_helper(settings, flatten=True)
+            return self.do_clone_find_helper(settings, flatten=True)
         return 0
     #@+node:ekr.20160920110324.1: *4* find.clone-find-tag & helper
     @cmd('clone-find-tag')
@@ -1350,126 +1350,8 @@ class LeoFind:
             escape_handler = self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: top-level helpers
-    #@+node:ekr.20210112192759.1: *4* ===== From coreFind: (to be merged)
-    #@+node:ekr.20210110073117.35: *5* new:find.create_find_all_node
-    def create_find_all_node(self, result):
-        """Create a "Found All" node as the last node of the outline."""
-        c = self.c
-        found = c.lastTopLevel().insertAfter()
-        assert found
-        found.h = f"Found All:{self.find_text}"
-        status = self.compute_result_status(find_all_flag=True)
-        status = status.strip().lstrip('(').rstrip(')').strip()
-        found.b = f"# {status}\n{''.join(result)}"
-        return found
-    #@+node:ekr.20210110073117.48: *5* new:find.make_regex_subs
-    def make_regex_subs(self, change_text, groups):
-        """
-        Substitute group[i-1] for \\i strings in change_text.
-        
-        Groups is a tuple of strings, one for every matched group.
-        """
-        
-        # g.printObj(list(groups), tag=f"groups in {change_text!r}")
-
-        def repl(match_object):
-            """re.sub calls this function once per group."""
-            # # 1494...
-            n = int(match_object.group(1)) - 1
-            if 0 <= n < len(groups):
-                # Executed only if the change text contains groups that match.
-                return (
-                    groups[n].
-                        replace(r'\b', r'\\b').
-                        replace(r'\f', r'\\f').
-                        replace(r'\n', r'\\n').
-                        replace(r'\r', r'\\r').
-                        replace(r'\t', r'\\t').
-                        replace(r'\v', r'\\v'))
-            # No replacement.
-            return match_object.group(0)
-
-        result = re.sub(r'\\([0-9])', repl, change_text)
-        return result
-    #@+node:ekr.20210110073117.49: *5* new:find.replace_back_slashes
-    def replace_back_slashes(self, s):
-        """Carefully replace backslashes in a search pattern."""
-        # This is NOT the same as:
-        # s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
-        # because there is no rescanning.
-        i = 0
-        while i + 1 < len(s):
-            if s[i] == '\\':
-                ch = s[i + 1]
-                if ch == '\\':
-                    s = s[:i] + s[i + 1 :]  # replace \\ by \
-                elif ch == 'n':
-                    s = s[:i] + '\n' + s[i + 2 :]  # replace the \n by a newline
-                elif ch == 't':
-                    s = s[:i] + '\t' + s[i + 2 :]  # replace \t by a tab
-                else:
-                    i += 1  # Skip the escaped character.
-            i += 1
-        return s
-    #@+node:ekr.20031218072017.3070: *4* find.change_selection
-    # Replace selection with self.change_text.
-    # If no selection, insert self.change_text at the cursor.
-
-    def change_selection(self):
-        c = self.c
-        p = self.p or c.p  # 2015/06/22
-        wrapper = c.frame.body and c.frame.body.wrapper
-        w = c.edit_widget(p) if self.in_headline else wrapper
-        if not w:
-            self.in_headline = False
-            w = wrapper
-        if not w: return False
-        oldSel = sel = w.getSelectionRange()
-        start, end = sel
-        if start > end: start, end = end, start
-        if start == end:
-            g.es("no text selected")
-            return False
-        # Replace the selection in _both_ controls.
-        start, end = oldSel
-        change_text = self.change_text
-        # Perform regex substitutions of \1, \2, ...\9 in the change text.
-        if self.pattern_match and self.match_obj:
-            groups = self.match_obj.groups()
-            if groups:
-                change_text = self.make_regex_subs(change_text, groups)
-        change_text = self.replaceBackSlashes(change_text)
-        for w2 in (w, self.s_ctrl):
-            if start != end: w2.delete(start, end)
-            w2.insert(start, change_text)
-            w2.setInsertPoint(start if self.reverse else start + len(change_text))
-        # Update the selection for the next match.
-        w.setSelectionRange(start, start + len(change_text))
-        c.widgetWantsFocus(w)
-        # No redraws here: they would destroy the headline selection.
-        if self.mark_changes:
-            p.setMarked()
-            p.setDirty()
-        if self.in_headline:
-            pass
-        else:
-            c.frame.body.onBodyChanged('Change', oldSel=oldSel)
-        c.frame.tree.updateIcon(p)  # redraw only the icon.
-        return True
-    #@+node:ekr.20210110073117.31: *4* find.check_args
-    def check_args(self, tag):
-        """Check the user arguments to a command."""
-        if not self.search_headline and not self.search_body:
-            if not g.unitTesting:
-                g.es_print("not searching headline or body")  # pragma: no cover (skip)
-            return False
-        if not self.find_text:
-            if not g.unitTesting:
-                g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
-            return False
-        return True
-    #@+node:ekr.20210110073117.9: *4* find.cfa_helper & helpers
-    def cfa_helper(self, settings, flatten):
+    #@+node:ekr.20210110073117.9: *4* find.do_clone_find_helper & helpers
+    def do_clone_find_helper(self, settings, flatten):
         """
         The common part of the clone-find commands.
         
@@ -1701,6 +1583,63 @@ class LeoFind:
                     # return mo.start(), mo.end()
             # self.match_obj = None
             # return -1, -1
+    #@+node:ekr.20031218072017.3070: *4* find.change_selection
+    # Replace selection with self.change_text.
+    # If no selection, insert self.change_text at the cursor.
+
+    def change_selection(self):
+        c = self.c
+        p = self.p or c.p  # 2015/06/22
+        wrapper = c.frame.body and c.frame.body.wrapper
+        w = c.edit_widget(p) if self.in_headline else wrapper
+        if not w:
+            self.in_headline = False
+            w = wrapper
+        if not w: return False
+        oldSel = sel = w.getSelectionRange()
+        start, end = sel
+        if start > end: start, end = end, start
+        if start == end:
+            g.es("no text selected")
+            return False
+        # Replace the selection in _both_ controls.
+        start, end = oldSel
+        change_text = self.change_text
+        # Perform regex substitutions of \1, \2, ...\9 in the change text.
+        if self.pattern_match and self.match_obj:
+            groups = self.match_obj.groups()
+            if groups:
+                change_text = self.make_regex_subs(change_text, groups)
+        change_text = self.replaceBackSlashes(change_text)
+        for w2 in (w, self.s_ctrl):
+            if start != end: w2.delete(start, end)
+            w2.insert(start, change_text)
+            w2.setInsertPoint(start if self.reverse else start + len(change_text))
+        # Update the selection for the next match.
+        w.setSelectionRange(start, start + len(change_text))
+        c.widgetWantsFocus(w)
+        # No redraws here: they would destroy the headline selection.
+        if self.mark_changes:
+            p.setMarked()
+            p.setDirty()
+        if self.in_headline:
+            pass
+        else:
+            c.frame.body.onBodyChanged('Change', oldSel=oldSel)
+        c.frame.tree.updateIcon(p)  # redraw only the icon.
+        return True
+    #@+node:ekr.20210110073117.31: *4* find.check_args
+    def check_args(self, tag):
+        """Check the user arguments to a command."""
+        if not self.search_headline and not self.search_body:
+            if not g.unitTesting:
+                g.es_print("not searching headline or body")  # pragma: no cover (skip)
+            return False
+        if not self.find_text:
+            if not g.unitTesting:
+                g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
+            return False
+        return True
     #@+node:ekr.20031218072017.3074: *4* find.do_find_next (convert to settings)
     def do_find_next(self, initFlag=True):
         """Find the next instance of the pattern."""
@@ -2196,6 +2135,35 @@ class LeoFind:
             self.search_headline and self.search_body and (
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
+    #@+node:ekr.20210110073117.48: *4* find.make_regex_subs
+    def make_regex_subs(self, change_text, groups):
+        """
+        Substitute group[i-1] for \\i strings in change_text.
+        
+        Groups is a tuple of strings, one for every matched group.
+        """
+        
+        # g.printObj(list(groups), tag=f"groups in {change_text!r}")
+
+        def repl(match_object):
+            """re.sub calls this function once per group."""
+            # # 1494...
+            n = int(match_object.group(1)) - 1
+            if 0 <= n < len(groups):
+                # Executed only if the change text contains groups that match.
+                return (
+                    groups[n].
+                        replace(r'\b', r'\\b').
+                        replace(r'\f', r'\\f').
+                        replace(r'\n', r'\\n').
+                        replace(r'\r', r'\\r').
+                        replace(r'\t', r'\\t').
+                        replace(r'\v', r'\\v'))
+            # No replacement.
+            return match_object.group(0)
+
+        result = re.sub(r'\\([0-9])', repl, change_text)
+        return result
     #@+node:ekr.20031218072017.3077: *4* find.search & helpers
     def search(self):
         """
@@ -2414,6 +2382,26 @@ class LeoFind:
             if not g.unitTesting:  # pragma: no cover (skip)
                 g.warning('invalid regular expression:', self.find_text)
             return False
+    #@+node:ekr.20210110073117.49: *4* new:find.replace_back_slashes
+    def replace_back_slashes(self, s):
+        """Carefully replace backslashes in a search pattern."""
+        # This is NOT the same as:
+        # s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+        # because there is no rescanning.
+        i = 0
+        while i + 1 < len(s):
+            if s[i] == '\\':
+                ch = s[i + 1]
+                if ch == '\\':
+                    s = s[:i] + s[i + 1 :]  # replace \\ by \
+                elif ch == 'n':
+                    s = s[:i] + '\n' + s[i + 2 :]  # replace the \n by a newline
+                elif ch == 't':
+                    s = s[:i] + '\t' + s[i + 2 :]  # replace \t by a tab
+                else:
+                    i += 1  # Skip the escaped character.
+            i += 1
+        return s
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl(self, s, ins):
@@ -3661,7 +3649,7 @@ class TestFind(unittest.TestCase):
         partial_settings.wrapping = True
         x.init(partial_settings)
         x.compute_result_status(find_all_flag=False)
-    #@+node:ekr.20210110073117.78: *4* TestFind.do_wrap
+    #@+node:ekr.20210110073117.78: *4* TestFind._fail_do_wrap
     def test_do_wrap(self):
         settings, x = self.settings, self.x
         for reverse in (True, False):
