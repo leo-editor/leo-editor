@@ -3366,6 +3366,57 @@ class LeoFind:
             self.radioButtonsChanged = True
             self.reset_state_ivars()
     #@-others
+#@+node:ekr.20070105092022.1: ** class SearchWidget
+class SearchWidget:
+    """A class to simulating high-level interface widget."""
+    # This could be a StringTextWrapper, but this code is simple and good.
+
+    def __init__(self, *args, **keys):
+        self.s = ''  # The widget text
+        self.i = 0   # The insert point
+        self.sel = 0, 0  # The selection range
+
+    def __repr__(self):  # pragma: no cover (skip)
+        return f"SearchWidget id: {id(self)}"
+
+    #@+others
+    #@+node:ekr.20070105093138: *3* getters (LeoFind)
+    def getAllText(self):
+        return self.s
+
+    def getInsertPoint(self):
+        return self.i
+
+    def getSelectionRange(self):
+        return self.sel
+    #@+node:ekr.20070105102419: *3* setters (LeoFind)
+    def delete(self, i, j=None):
+        if j is None:
+            j = i + 1
+        self.s = self.s[:i] + self.s[j:]
+        self.i = i
+        self.sel = i, i
+
+    def insert(self, i, s):
+        if not s:
+            return
+        self.s = self.s[:i] + s + self.s[i:]
+        self.i = i
+        self.sel = i, i
+
+    def setAllText(self, s):
+        self.s = s
+        self.i = 0
+        self.sel = 0, 0
+
+    def setInsertPoint(self, i, s=None):
+        self.i = i
+
+    def setSelectionRange(self, i, j, insert=None):
+        self.sel = i, j
+        if insert is not None:
+            self.i = insert
+    #@-others
 #@+node:ekr.20200216063538.1: ** class TestFind (LeoFind.py)
 class TestFind(unittest.TestCase):
     """Test cases for leoFind.py"""
@@ -3928,57 +3979,6 @@ class TestFind(unittest.TestCase):
                 f"       s: {s}\n"
                 f"expected: {expected!r}\n"
                 f"     got: {result!r}")
-    #@-others
-#@+node:ekr.20070105092022.1: ** class SearchWidget
-class SearchWidget:
-    """A class to simulating high-level interface widget."""
-    # This could be a StringTextWrapper, but this code is simple and good.
-
-    def __init__(self, *args, **keys):
-        self.s = ''  # The widget text
-        self.i = 0   # The insert point
-        self.sel = 0, 0  # The selection range
-
-    def __repr__(self):  # pragma: no cover (skip)
-        return f"SearchWidget id: {id(self)}"
-
-    #@+others
-    #@+node:ekr.20070105093138: *3* getters (LeoFind)
-    def getAllText(self):
-        return self.s
-
-    def getInsertPoint(self):
-        return self.i
-
-    def getSelectionRange(self):
-        return self.sel
-    #@+node:ekr.20070105102419: *3* setters (LeoFind)
-    def delete(self, i, j=None):
-        if j is None:
-            j = i + 1
-        self.s = self.s[:i] + self.s[j:]
-        self.i = i
-        self.sel = i, i
-
-    def insert(self, i, s):
-        if not s:
-            return
-        self.s = self.s[:i] + s + self.s[i:]
-        self.i = i
-        self.sel = i, i
-
-    def setAllText(self, s):
-        self.s = s
-        self.i = 0
-        self.sel = 0, 0
-
-    def setInsertPoint(self, i, s=None):
-        self.i = i
-
-    def setSelectionRange(self, i, j, insert=None):
-        self.sel = i, j
-        if insert is not None:
-            self.i = insert
     #@-others
 #@-others
 if __name__ == '__main__':
