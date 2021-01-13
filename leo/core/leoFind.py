@@ -812,7 +812,7 @@ class LeoFind:
         """
         self.init(settings)
         if self.check_args('clone-find-all'):
-            return self.clone_find_all_helper(settings, flatten=False)
+            return self.cfa_helper(settings, flatten=False)
         return 0
     #@+node:ekr.20131117164142.16996: *4* find.clone-find-all-flattened
     @cmd('clone-find-all-flattened')
@@ -861,7 +861,7 @@ class LeoFind:
         """Do the clone-find-all-flattened command from the settings."""
         self.init(settings)
         if self.check_args('clone-find-all-flattened'):
-            return self.clone_find_all_helper(settings, flatten=True)
+            return self.cfa_helper(settings, flatten=True)
         return 0
     #@+node:ekr.20160920110324.1: *4* find.clone-find-tag & helper
     @cmd('clone-find-tag')
@@ -1411,33 +1411,6 @@ class LeoFind:
                     i += 1  # Skip the escaped character.
             i += 1
         return s
-    #@+node:ekr.20210110073117.50: *5* new:find.search_helper & helpers
-    def search_helper(self):
-        """
-        Search s_ctrl for self.find_text with present options.
-        Returns (pos, newpos) or (None,None).
-        """
-        p, w = self.p, self.s_ctrl
-        if self.find_def_data and p.v in self.find_seen:
-            # Don't find defs/vars multiple times.
-            return None, None  # pragma: no cover (minor)
-        index = w.getInsertPoint()
-        s = w.getAllText()
-        if not s:  # pragma: no cover (minor)
-            return None, None
-        stopindex = 0 if self.reverse else len(s)
-        pos, newpos = self.inner_search_helper(s, index, stopindex, self.find_text)
-        if self.in_headline and not self.search_headline:
-            return None, None  # pragma: no cover (minor)
-        if not self.in_headline and not self.search_body:
-            return None, None  # pragma: no cover (minor)
-        if pos == -1:
-            return None, None
-        ins = min(pos, newpos) if self.reverse else max(pos, newpos)
-        w.setSelectionRange(pos, newpos, insert=ins)
-        if self.find_def_data:
-            self.find_seen.add(p.v)
-        return pos, newpos
     #@+node:ekr.20031218072017.3070: *4* find.change_selection
     # Replace selection with self.change_text.
     # If no selection, insert self.change_text at the cursor.
@@ -1495,8 +1468,8 @@ class LeoFind:
                 g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
             return False
         return True
-    #@+node:ekr.20210110073117.9: *4* find.clone_find_all_helper & helpers
-    def clone_find_all_helper(self, settings, flatten):
+    #@+node:ekr.20210110073117.9: *4* find.cfa_helper & helpers
+    def cfa_helper(self, settings, flatten):
         """
         The common part of the clone-find commands.
         
@@ -1520,7 +1493,7 @@ class LeoFind:
                 p.moveToThreadNext()
             elif g.inAtNosearch(p):
                 p.moveToNodeAfterTree()
-            elif self._find_next_match(p):
+            elif self._cfa_find_next_match(p):
                 count += 1
                 if p not in clones:
                     clones.append(p.copy())
@@ -1536,29 +1509,15 @@ class LeoFind:
             assert p != progress
         if clones:
             undoData = u.beforeInsertNode(c.p)
-            found = self.create_clone_find_all_nodes(clones, flattened=False)
+            found = self._cfa_create_nodes(clones, flattened=False)
             u.afterInsertNode(found, 'Clone Find All', undoData)
             assert c.positionExists(found, trace=True), found
             c.setChanged()
             c.selectPosition(found)
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
-    #@+node:ekr.20210110073117.10: *5* find._find_next_match
-    def _find_next_match(self, p):
-        """Find the next batch match at p."""
-        table = []
-        if self.search_headline:
-            table.append(p.h)
-        if self.search_body:
-            table.append(p.b)
-        for s in table:
-            self.reverse = False
-            pos, newpos = self.inner_search_helper(s, 0, len(s), self.find_text)
-            if pos != -1:
-                return True
-        return False
-    #@+node:ekr.20210110073117.34: *5* new:find.create_clone_find_all_nodes
-    def create_clone_find_all_nodes(self, clones, flattened):
+    #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
+    def _cfa_create_nodes(self, clones, flattened):
         """
         Create a "Found" node as the last node of the outline.
         Clone all positions in the clones set a children of found.
@@ -1583,8 +1542,25 @@ class LeoFind:
         # Sort the clones in place, without undo.
         found.v.children.sort(key=lambda v: v.h.lower())
         return found
-    #@+node:ekr.20210110073117.43: *5* find.inner_search_helper & helpers
-    def inner_search_helper(self, s, i, j, pattern):
+    #@+node:ekr.20210110073117.10: *5* find._cfa_find_next_match (for unit tests)
+    def _cfa_find_next_match(self, p):
+        """
+        Find the next batch match at p.
+        """
+        # Called only from unit tests.
+        table = []
+        if self.search_headline:
+            table.append(p.h)
+        if self.search_body:
+            table.append(p.b)
+        for s in table:
+            self.reverse = False
+            pos, newpos = self._cfa_inner_search(s, 0, len(s), self.find_text)
+            if pos != -1:
+                return True
+        return False
+    #@+node:ekr.20210110073117.43: *5* find._cfa_inner_search & helpers
+    def _cfa_inner_search(self, s, i, j, pattern):
         """Dispatch the proper search method based on settings."""
         backwards = self.reverse
         nocase = self.ignore_case
@@ -1595,16 +1571,16 @@ class LeoFind:
         if not s[i:j] or not pattern:
             return -1, -1
         if regexp:
-            pos, newpos = self.regex_helper(s, i, j, pattern, backwards, nocase)
+            pos, newpos = self._cfa_regex_search(s, i, j, pattern, backwards, nocase)
         elif backwards:
-            pos, newpos = self.backwards_helper(s, i, j, pattern, nocase, word)
+            pos, newpos = self._cfa_backwards_search(s, i, j, pattern, nocase, word)
         else:
-            pos, newpos = self.plain_helper(s, i, j, pattern, nocase, word)
+            pos, newpos = self._cfa_plain_search(s, i, j, pattern, nocase, word)
         return pos, newpos
-    #@+node:ekr.20210110073117.44: *6* NEW:find.backwards_helper
+    #@+node:ekr.20210110073117.44: *6* find._cfa_backwards_search
     debugIndices = []
 
-    def backwards_helper(self, s, i, j, pattern, nocase, word):
+    def _cfa_backwards_search(self, s, i, j, pattern, nocase, word):
         """
         rfind(sub [,start [,end]])
 
@@ -1632,7 +1608,7 @@ class LeoFind:
                 k = s.rfind(pattern, i, j)
                 if k == -1:
                     break
-                if self.match_word(s, k, pattern):
+                if self._cfa_match_word(s, k, pattern):
                     return k, k + n
                 j = max(0, k - 1)
             return -1, -1
@@ -1640,8 +1616,8 @@ class LeoFind:
         if k == -1:
             return -1, -1
         return k, k + n
-    #@+node:ekr.20210110073117.45: *6* NEW:find.match_word
-    def match_word(self, s, i, pattern):
+    #@+node:ekr.20210110073117.45: *6* find._cfa_match_word
+    def _cfa_match_word(self, s, i, pattern):
         """Do a whole-word search."""
         pattern = self.replace_back_slashes(pattern)
         if not s or not pattern or not g.match(s, i, pattern):
@@ -1656,8 +1632,8 @@ class LeoFind:
         isWordCh2 = g.isWordChar(ch2)
         inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
         return not inWord
-    #@+node:ekr.20210110073117.46: *6* NEW:find.plain_helper
-    def plain_helper(self, s, i, j, pattern, nocase, word):
+    #@+node:ekr.20210110073117.46: *6* find._cfa_plain_search
+    def _cfa_plain_search(self, s, i, j, pattern, nocase, word):
         """Do a plain search."""
         if nocase:
             s = s.lower()
@@ -1669,7 +1645,7 @@ class LeoFind:
                 k = s.find(pattern, i, j)
                 if k == -1:
                     break
-                if self.match_word(s, k, pattern):
+                if self._cfa_match_word(s, k, pattern):
                     return k, k + n
                 i = k + n
             return -1, -1
@@ -1677,9 +1653,9 @@ class LeoFind:
         if k == -1:
             return -1, -1
         return k, k + n
-    #@+node:ekr.20210110073117.47: *6* NEW:find.regex_helper
-    def regex_helper(self, s, i, j, pattern, backwards, nocase):
-        """Called from inner_search_helper"""
+    #@+node:ekr.20210110073117.47: *6* find._cfa_regex_search
+    def _cfa_regex_search(self, s, i, j, pattern, backwards, nocase):
+        """Called from _cfa_inner_search"""
         re_obj = self.re_obj  # Use the pre-compiled object
         if not re_obj:
             if not g.unitTesting:  # pragma: no cover (skip)
@@ -2085,22 +2061,11 @@ class LeoFind:
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
-                p = self.p = self.nextNodeAfterFail(p)
+                p = self.p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self.firstSearchPane()
                     self.initNextText()
         return None, None, None
-    #@+node:ekr.20131123071505.16468: *5* find.doWrap
-    def doWrap(self):
-        """Return the position resulting from a wrap."""
-        c = self.c
-        if self.reverse:
-            p = c.rootPosition()
-            while p and p.hasNext():
-                p = p.next()
-            p = p.lastNode()
-            return p
-        return c.rootPosition()
     #@+node:ekr.20131124060912.16473: *5* find.firstSearchPane
     def firstSearchPane(self):
         """
@@ -2139,8 +2104,8 @@ class LeoFind:
         elif ins is None:
             ins = 0
         self.init_s_ctrl(s, ins)
-    #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper
-    def nextNodeAfterFail(self, p):
+    #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
+    def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
         c = self.c
         # Wrapping is disabled by any limitation of screen or search.
@@ -2152,17 +2117,28 @@ class LeoFind:
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
-        if p and self.outsideSearchRange(p):
+        if p and self._fail_outside_range(p):
             return None
         if not p and wrap:
-            p = self.doWrap()
+            p = self._fail_do_wrap()
         if not p:
             return None
         if wrap and p == self.wrapPosition:
             return None
         return p
-    #@+node:ekr.20131123071505.16465: *6* find.outsideSearchRange
-    def outsideSearchRange(self, p):
+    #@+node:ekr.20131123071505.16468: *6* find._fail_do_wrap
+    def _fail_do_wrap(self):
+        """Return the position resulting from a wrap."""
+        c = self.c
+        if self.reverse:
+            p = c.rootPosition()
+            while p and p.hasNext():
+                p = p.next()
+            p = p.lastNode()
+            return p
+        return c.rootPosition()
+    #@+node:ekr.20131123071505.16465: *6* find._fail_outside_range
+    def _fail_outside_range(self, p):
         """
         Return True if the search is about to go outside its range, assuming
         both the headline and body text of the present node have been searched.
@@ -2209,144 +2185,6 @@ class LeoFind:
             return False
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode(self, p):
-        """Return True if the find should simply switch panes."""
-        # Errors here cause the find command to fail badly.
-        # Switch only if:
-        #   a) searching both panes and,
-        #   b) this is the first pane of the pair.
-        # There is *no way* this can ever change.
-        # So simple in retrospect, so difficult to see.
-        return (
-            self.search_headline and self.search_body and (
-            (self.reverse and not self.in_headline) or
-            (not self.reverse and self.in_headline)))
-    #@+node:ekr.20210110073117.36: *4* find.find_next_match_NEW & helpers
-    def find_next_match_NEW(self, p):
-        """
-        Resume the search where it left off.
-        
-        Return (p, pos, newpos) or (None, None, None)
-        """
-        attempts = 0
-        if self.pattern_match:
-            ok = self.compile_pattern()
-            if not ok: return None, None, None
-        while p:
-            pos, newpos = self.search_helper()
-            if pos is not None:
-                # Success.
-                return p, pos, newpos
-            # Searching the pane failed: switch to another pane or node.
-            if self.should_stay_in_node(p):
-                # Switching panes is possible.  Do so.
-                self.in_headline = not self.in_headline
-                self.init_next_text(p)
-            else:
-                # Switch to the next/prev node, if possible.
-                attempts += 1
-                p = self.next_node_after_fail(p)
-                if p:  # Found another node: select the proper pane.
-                    self.in_headline = self.first_search_pane()
-                    self.init_next_text(p)
-        return None, None, None
-    #@+node:ekr.20210110073117.37: *5* NEW:find.first_search_pane
-    def first_search_pane(self):
-        """
-        Set return the value of self.in_headline
-        indicating which pane to search first.
-        """
-        if self.search_headline and self.search_body:
-            # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
-            if self.reverse:
-                return False  # Search the body pane first.
-            return True  # Search the headline pane first.
-        if self.search_headline or self.search_body:
-            # Search the only enabled pane.
-            return self.search_headline
-        
-        g.trace('can not happen: no search enabled')  # pragma: no cover (defensive)
-        return False                                  # pragma: no cover (defensive, search body)
-    #@+node:ekr.20210110073117.38: *5* NEW:find.init_next_text (gui code)
-    def init_next_text(self, p):
-        """
-        Init s_ctrl when a search fails. On entry:
-        - self.in_headline indicates what text to use.
-        - self.reverse indicates how to set the insertion point.
-        """
-        w = self.s_ctrl
-        s = p.h if self.in_headline else p.b
-        if self.reverse:
-            i, j = w.sel
-            if i is not None and j is not None and i != j:
-                ins = min(i, j)
-            else:
-                ins = len(s)
-        else:
-            ins = 0
-        ### For vs-code. Also required for tests.
-        w.setAllText(s)
-        w.setInsertPoint(ins)
-        return ins  # For tests.
-    #@+node:ekr.20210110073117.39: *5* NEW:find.next_node_after_fail & helpers
-    def next_node_after_fail(self, p):
-        """Return the next node after a failed search or None."""
-        c = self.c
-        # Wrapping is disabled by any limitation of search.
-        wrap = (
-            self.wrapping
-            and not self.node_only
-            and not self.suboutline_only
-            and not c.hoistStack)
-        # Move to the next position.
-        p = p.threadBack() if self.reverse else p.threadNext()
-        # Check it.
-        if p and self.outside_search_range(p):
-            return None
-        if not p and wrap:
-            # Stateless wrap: Just set wrapPos and p.
-            self.wrapPos = 0 if self.reverse else len(p.b)
-            p = self.do_wrap()
-        if not p:
-            return None
-        return p
-    #@+node:ekr.20210110073117.40: *6* NEW:find.do_wrap
-    def do_wrap(self):
-        """Return the position resulting from a wrap."""
-        c = self.c
-        if self.reverse:
-            p = c.rootPosition()
-            while p and p.hasNext():
-                p = p.next()
-            p = p.lastNode()
-            return p
-        return c.rootPosition()
-    #@+node:ekr.20210110073117.41: *6* NEW:find.outside_search_range
-    def outside_search_range(self, p):
-        """
-        Return True if the search is about to go outside its range, assuming
-        both the headline and body text of the present node have been searched.
-        """
-        c = self.c
-        if not p:
-            return True  # pragma: no cover (minor)
-        if self.node_only:
-            return True  # pragma: no cover (minor)
-        if self.suboutline_only:
-            if self.onlyPosition:
-                if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
-                    return True
-            else:  # pragma: no cover (defensive)
-                g.trace('Can not happen: onlyPosition!', p.h)
-                return True
-        if c.hoistStack:  # pragma: no cover (defensive)
-            bunch = c.hoistStack[-1]
-            if not bunch.p.isAncestorOf(p):
-                g.trace('outside hoist', p.h)
-                g.warning('found match outside of hoisted outline')
-                return True
-        return False  # Within range.
-    #@+node:ekr.20210110073117.42: *5* NEW:find.should_stay_in_node
-    def should_stay_in_node(self, p):
         """Return True if the find should simply switch panes."""
         # Errors here cause the find command to fail badly.
         # Switch only if:
@@ -3407,6 +3245,18 @@ class TestFind(unittest.TestCase):
             assert p.level() == level, (p.level(), level, p.h)
             # print(' '*p.level(), p.h)
             # g.printObj(g.splitLines(p.b), tag=p.h)
+    #@+node:ekr.20210113091851.1: *3* Disabled tests
+    #@+node:ekr.20210110073117.81: *4* TestFind.xx_init_next_text
+    def xx_test_init_next_text(self):
+        settings, x = self.settings, self.x
+        for reverse in (True, False):
+            settings.reverse = reverse
+            for in_head in (True, False):
+                settings.in_headline = in_head
+                x.init(settings)
+                for sel in (0, 0), (0, 2):
+                    x.s_ctrl.sel = sel
+                    ### x.init_next_text(settings.p)
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
     #@+node:ekr.20210110073117.60: *4* TestFind.clone-find-all
     def test_clone_find_all(self):
@@ -3651,8 +3501,8 @@ class TestFind(unittest.TestCase):
         c.theTagController = DummyTagController()
         x.do_tag_children(p, 'test')
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
-    #@+node:ekr.20210110073117.71: *4* TestFind.backwards_helper
-    def test_backwards_helper(self):
+    #@+node:ekr.20210110073117.71: *4* TestFind._cfa_backwards_search
+    def test_cfa_backwards_search(self):
         settings, x = self.settings, self.x
         pattern = 'def'
         for nocase in (True, False):
@@ -3661,8 +3511,62 @@ class TestFind(unittest.TestCase):
                 for s in ('def spam():\n', 'define spam'):
                     settings.whole_word = word
                     x.init(settings)
-                    x.backwards_helper(s, 0, len(s), pattern, nocase, word)
-                    x.backwards_helper(s, 0, 0, pattern, nocase, word)
+                    x._cfa_backwards_search(s, 0, len(s), pattern, nocase, word)
+                    x._cfa_backwards_search(s, 0, 0, pattern, nocase, word)
+    #@+node:ekr.20210110073117.80: *4* TestFind._cfa_find_next_match
+    def test_cfa_find_next_match(self):
+        c, settings, x = self.c, self.settings, self.x
+        p = c.rootPosition()
+        for find in ('xxx', 'def'):
+            settings.find_text = find
+            x._cfa_find_next_match(p)
+    #@+node:ekr.20210110073117.83: *4* TestFind._cfa_match_word
+    def test_cfa_match_word(self):
+        x = self.x
+        x._cfa_match_word("def spam():", 0, "spam")
+        x._cfa_match_word("def spam():", 0, "xxx")
+        
+    #@+node:ekr.20210110073117.85: *4* TestFind._cfa_plain_search
+    def test_cfa_plain_search(self):
+        settings, x = self.settings, self.x
+        pattern = 'def'
+        for nocase in (True, False):
+            settings.ignore_case = nocase
+            for word in (True, False):
+                for s in ('def spam():\n', 'define'):
+                    settings.whole_word = word
+                    x.init(settings)
+                    x._cfa_plain_search(s, 0, len(s), pattern, nocase, word)
+                    x._cfa_plain_search(s, 0, 0, pattern, nocase, word)
+    #@+node:ekr.20210110073117.88: *4* TestFind._cfa_regex_search
+    def test_cfa_regex_search(self):
+        x = self.x
+        pattern = r'(.*)pattern'
+        x.re_obj = re.compile(pattern)
+        table = (
+            'test pattern',  # Match.
+            'xxx',  # No match.
+        )
+        for backwards in (True, False):
+            for nocase in (True, False):
+                for s in table:
+                    if backwards:
+                        i = j = len(s)
+                    else:
+                        i = j = 0
+                    x._cfa_regex_search(s, i, j, pattern, backwards, nocase)
+        # Error test.
+        x.re_obj = None
+        backwards = pattern = nocase = None
+        x._cfa_regex_search("", 0, 0, pattern, backwards, nocase)
+
+        # for change_text, groups, expected in table:
+            # result = x.make_regex_subs(change_text, groups)
+            # assert result == expected, (
+                # f"change_text: {change_text}\n"
+                # f"     groups: {groups}\n"
+                # f"   expected: {expected}\n"
+                # f"        got: {result}")
     #@+node:ekr.20210110073117.72: *4* TestFind.bad compile_pattern
     def test_argument_errors(self):
 
@@ -3673,17 +3577,6 @@ class TestFind(unittest.TestCase):
         x.do_clone_find_all(settings)
         x.find_next_match(p=None)
         x.do_replace_all(settings)
-    #@+node:ekr.20210110073117.73: *4* TestFind.batch_word_replace
-    def test_batch_word_replace(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'b'
-        settings.change_text = 'B'
-        for ignore in (True, False):
-            settings.ignore_case = ignore
-            x.init(settings)
-            s = 'abc b z'
-            count, s2 = x.batch_word_replace(s)
-            assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
     #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
     def test_batch_plain_replace(self):
         settings, x = self.settings, self.x
@@ -3715,6 +3608,17 @@ class TestFind(unittest.TestCase):
                 f"expected count: {count} s: {expected_s}\n"
                 f"     got count: {actual_count} s: {actual_s}")
                
+    #@+node:ekr.20210110073117.73: *4* TestFind.batch_word_replace
+    def test_batch_word_replace(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'b'
+        settings.change_text = 'B'
+        for ignore in (True, False):
+            settings.ignore_case = ignore
+            x.init(settings)
+            s = 'abc b z'
+            count, s2 = x.batch_word_replace(s)
+            assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
     #@+node:ekr.20210110073117.76: *4* TestFind.check_args
     def test_check_args(self):
         # Bad search patterns..
@@ -3763,7 +3667,7 @@ class TestFind(unittest.TestCase):
         for reverse in (True, False):
             settings.reverse = reverse
             x.init(settings)
-            x.do_wrap()
+            x._fail_do_wrap()
 
     #@+node:ekr.20210110073117.79: *4* TestFind.dump_tree
     def dump_tree(self, tag=''):  # pragma: no cover (skip)
@@ -3773,24 +3677,6 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             print(' '*p.level(),  p.h, 'dirty', p.v.isDirty())
             # g.printObj(g.splitLines(p.b), tag=p.h)
-    #@+node:ekr.20210110073117.80: *4* TestFind.find_next_batch_match
-    def test_find_next_batch_match(self):
-        c, settings, x = self.c, self.settings, self.x
-        p = c.rootPosition()
-        for find in ('xxx', 'def'):
-            settings.find_text = find
-            x.find_next_batch_match(p)
-    #@+node:ekr.20210110073117.81: *4* TestFind.init_next_text
-    def test_init_next_text(self):
-        settings, x = self.settings, self.x
-        for reverse in (True, False):
-            settings.reverse = reverse
-            for in_head in (True, False):
-                settings.in_headline = in_head
-                x.init(settings)
-                for sel in (0, 0), (0, 2):
-                    x.s_ctrl.sel = sel
-                    x.init_next_text(settings.p)
     #@+node:ekr.20210110073117.82: *4* TestFind.make_regex_subs (to do)
     def test_make_regex_subs(self):
         x = self.x
@@ -3805,33 +3691,15 @@ class TestFind(unittest.TestCase):
         # expected = r"""f' AA line\\n BB \3'"""
         # result = x.makeRegexSubs(change_text, groups)
         # assert result == expected, (expected, result)
-    #@+node:ekr.20210110073117.83: *4* TestFind.match_word
-    def test_match_word(self):
-        x = self.x
-        x.match_word("def spam():", 0, "spam")
-        x.match_word("def spam():", 0, "xxx")
-        
     #@+node:ekr.20210110073117.84: *4* TestFind.next_node_after_fail
-    def test_next_node_after_fail(self):
+    def test_fnm_next_after_fail(self):
         settings, x = self.settings, self.x
         for reverse in (True, False):
             settings.reverse = reverse
             for wrapping in (True, False):
                 settings.wrapping = wrapping
                 x.init(settings)
-                x.next_node_after_fail(settings.p)
-    #@+node:ekr.20210110073117.85: *4* TestFind.plain_helper
-    def test_plain_helper(self):
-        settings, x = self.settings, self.x
-        pattern = 'def'
-        for nocase in (True, False):
-            settings.ignore_case = nocase
-            for word in (True, False):
-                for s in ('def spam():\n', 'define'):
-                    settings.whole_word = word
-                    x.init(settings)
-                    x.plain_helper(s, 0, len(s), pattern, nocase, word)
-                    x.plain_helper(s, 0, 0, pattern, nocase, word)
+                x._fnm_next_after_fail(settings.p)
     #@+node:ekr.20210110073117.86: *4* TestFind.replace_all_helper
     def test_replace_all_helper(self):
         settings, x = self.settings, self.x
@@ -3857,35 +3725,6 @@ class TestFind(unittest.TestCase):
         for s, expected in table:
             result = x.replace_back_slashes(s)
             assert result == expected, (s, result, expected)
-    #@+node:ekr.20210110073117.88: *4* TestFind.regex_helper
-    def test_regex_helper(self):
-        x = self.x
-        pattern = r'(.*)pattern'
-        x.re_obj = re.compile(pattern)
-        table = (
-            'test pattern',  # Match.
-            'xxx',  # No match.
-        )
-        for backwards in (True, False):
-            for nocase in (True, False):
-                for s in table:
-                    if backwards:
-                        i = j = len(s)
-                    else:
-                        i = j = 0
-                    x.regex_helper(s, i, j, pattern, backwards, nocase)
-        # Error test.
-        x.re_obj = None
-        backwards = pattern = nocase = None
-        x.regex_helper("", 0, 0, pattern, backwards, nocase)
-
-        # for change_text, groups, expected in table:
-            # result = x.make_regex_subs(change_text, groups)
-            # assert result == expected, (
-                # f"change_text: {change_text}\n"
-                # f"     groups: {groups}\n"
-                # f"   expected: {expected}\n"
-                # f"        got: {result}")
     #@+node:ekr.20210110073117.89: *4* TestFind.switch_style
     def test_switch_style(self):
         x = self.x
