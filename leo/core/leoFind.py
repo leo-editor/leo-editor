@@ -783,7 +783,7 @@ class LeoFind:
             self.preloadFindPattern(w)
         self.start_state_machine(event,
             prefix='Clone Find All: ',
-            handler=self.interactive_clone_find_all)
+            handler=self.interactive_clone_find_all1)
 
     def interactive_clone_find_all1(self, event):
         c, k, w = self.c, self.k, self.w
@@ -1351,53 +1351,6 @@ class LeoFind:
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: top-level helpers
     #@+node:ekr.20210112192759.1: *4* ===== From coreFind: (to be merged)
-    #@+node:ekr.20210110073117.32: *5* new:find.compile_pattern
-    def compile_pattern(self):
-        """Precompile the regexp pattern if necessary."""
-        try:  # Precompile the regexp.
-            # pylint: disable=no-member
-            flags = re.MULTILINE
-            if self.ignore_case: flags |= re.IGNORECASE
-            # Escape the search text.
-            # Ignore the whole_word option.
-            s = self.find_text
-            # A bad idea: insert \b automatically.
-                # b, s = '\\b', self.find_text
-                # if self.whole_word:
-                    # if not s.startswith(b): s = b + s
-                    # if not s.endswith(b): s = s + b
-            self.re_obj = re.compile(s, flags)
-            return True
-        except Exception:
-            if not g.unitTesting:  # pragma: no cover (skip)
-                g.warning('invalid regular expression:', self.find_text)
-            return False
-    #@+node:ekr.20210110073117.34: *5* new:find.create_clone_find_all_nodes
-    def create_clone_find_all_nodes(self, clones, flattened):
-        """
-        Create a "Found" node as the last node of the outline.
-        Clone all positions in the clones set a children of found.
-        """
-        c = self.c
-        # Create the found node.
-        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
-        found = c.lastTopLevel().insertAfter()
-        assert found
-        assert c.positionExists(found), found
-        found.h = f"Found:{self.find_text}"
-        status = self.compute_result_status(find_all_flag=True)
-        status = status.strip().lstrip('(').rstrip(')').strip()
-        flat = 'flattened, ' if flattened else ''
-        found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
-        # Clone nodes as children of the found node.
-        for p in clones:
-            # Create the clone directly as a child of found.
-            p2 = p.copy()
-            n = found.numberOfChildren()
-            p2._linkCopiedAsNthChild(found, n)
-        # Sort the clones in place, without undo.
-        found.v.children.sort(key=lambda v: v.h.lower())
-        return found
     #@+node:ekr.20210110073117.35: *5* new:find.create_find_all_node
     def create_find_all_node(self, result):
         """Create a "Found All" node as the last node of the outline."""
@@ -1567,7 +1520,7 @@ class LeoFind:
                 p.moveToThreadNext()
             elif g.inAtNosearch(p):
                 p.moveToNodeAfterTree()
-            elif self.find_next_batch_match(p):
+            elif self._find_next_match(p):
                 count += 1
                 if p not in clones:
                     clones.append(p.copy())
@@ -1590,8 +1543,8 @@ class LeoFind:
             c.selectPosition(found)
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
-    #@+node:ekr.20210110073117.10: *5* find.find_next_batch_match
-    def find_next_batch_match(self, p):
+    #@+node:ekr.20210110073117.10: *5* find._find_next_match
+    def _find_next_match(self, p):
         """Find the next batch match at p."""
         table = []
         if self.search_headline:
@@ -1604,6 +1557,32 @@ class LeoFind:
             if pos != -1:
                 return True
         return False
+    #@+node:ekr.20210110073117.34: *5* new:find.create_clone_find_all_nodes
+    def create_clone_find_all_nodes(self, clones, flattened):
+        """
+        Create a "Found" node as the last node of the outline.
+        Clone all positions in the clones set a children of found.
+        """
+        c = self.c
+        # Create the found node.
+        assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+        found = c.lastTopLevel().insertAfter()
+        assert found
+        assert c.positionExists(found), found
+        found.h = f"Found:{self.find_text}"
+        status = self.compute_result_status(find_all_flag=True)
+        status = status.strip().lstrip('(').rstrip(')').strip()
+        flat = 'flattened, ' if flattened else ''
+        found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
+        # Clone nodes as children of the found node.
+        for p in clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkCopiedAsNthChild(found, n)
+        # Sort the clones in place, without undo.
+        found.v.children.sort(key=lambda v: v.h.lower())
+        return found
     #@+node:ekr.20210110073117.43: *5* find.inner_search_helper & helpers
     def inner_search_helper(self, s, i, j, pattern):
         """Dispatch the proper search method based on settings."""
@@ -1746,6 +1725,27 @@ class LeoFind:
                     # return mo.start(), mo.end()
             # self.match_obj = None
             # return -1, -1
+    #@+node:ekr.20031218072017.3074: *4* find.do_find_next (convert to settings)
+    def do_find_next(self, initFlag=True):
+        """Find the next instance of the pattern."""
+        p = self.c.p
+        if not self.check_args('find-next'):
+            return False  # for vim-mode find commands.
+        # initFlag is False for change-then-find.
+        if initFlag:
+            self.initInHeadline()
+            data = self.save()
+            self.initInteractiveCommands()
+        else:
+            data = self.save()
+        p, pos, newpos = self.find_next_match(p)
+        if pos is None:
+            self.restore(data)
+            self.showStatus(False)
+            return False  # for vim-mode find commands.
+        self.showSuccess(pos, newpos)
+        self.showStatus(True)
+        return True  # for vim-mode find commands.
     #@+node:ekr.20131117164142.17016: *4* find.do_replace_all & helpers
     def do_replace_all(self, settings=None):  ### To do: use settings.
         c = self.c
@@ -2031,27 +2031,6 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20031218072017.3074: *4* find.do_find_next (convert to settings)
-    def do_find_next(self, initFlag=True):
-        """Find the next instance of the pattern."""
-        p = self.c.p
-        if not self.check_args('find-next'):
-            return False  # for vim-mode find commands.
-        # initFlag is False for change-then-find.
-        if initFlag:
-            self.initInHeadline()
-            data = self.save()
-            self.initInteractiveCommands()
-        else:
-            data = self.save()
-        p, pos, newpos = self.find_next_match(p)
-        if pos is None:
-            self.restore(data)
-            self.showStatus(False)
-            return False  # for vim-mode find commands.
-        self.showSuccess(pos, newpos)
-        self.showStatus(True)
-        return True  # for vim-mode find commands.
     #@+node:ekr.20160920164418.4: *4* find.do_tag_children
     def do_tag_children(self, p, tag):
         """Handle the clone-find-tag command."""
@@ -2576,6 +2555,27 @@ class LeoFind:
                     i += 1  # Skip the escaped character.
             i += 1
         return s
+    #@+node:ekr.20210110073117.32: *4* new:find.compile_pattern
+    def compile_pattern(self):
+        """Precompile the regexp pattern if necessary."""
+        try:  # Precompile the regexp.
+            # pylint: disable=no-member
+            flags = re.MULTILINE
+            if self.ignore_case: flags |= re.IGNORECASE
+            # Escape the search text.
+            # Ignore the whole_word option.
+            s = self.find_text
+            # A bad idea: insert \b automatically.
+                # b, s = '\\b', self.find_text
+                # if self.whole_word:
+                    # if not s.startswith(b): s = b + s
+                    # if not s.endswith(b): s = s + b
+            self.re_obj = re.compile(s, flags)
+            return True
+        except Exception:
+            if not g.unitTesting:  # pragma: no cover (skip)
+                g.warning('invalid regular expression:', self.find_text)
+            return False
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl(self, s, ins):
