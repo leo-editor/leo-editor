@@ -59,7 +59,7 @@ assert leoTest2  ### So we can delete tests temporarily.
 # be searched.
 #
 # Searching headline and body text simultaneously is complicated. The
-# findNextMatch() method and its helpers handle the many details
+# find_next_match() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
 #@-<< Theory of operation of find/change >>
 
@@ -366,7 +366,7 @@ class LeoFind:
         else:
             # #1592.  Ignore hits under control of @nosearch
             while True:
-                found = find.findNext(initFlag=False)
+                found = find.do_find_next(initFlag=False)
                 if not found or not g.inAtNosearch(c.p):
                     break
         if not found and defFlag:
@@ -384,7 +384,7 @@ class LeoFind:
                 else:
                     # #1592.  Ignore hits under control of @nosearch
                     while True:
-                        found = find.findNext(initFlag=False)
+                        found = find.do_find_next(initFlag=False)
                         if not found or not g.inAtNosearch(c.p):
                             break
         if found and use_cff:
@@ -393,7 +393,7 @@ class LeoFind:
                 # It's annoying to create a clone in this case.
                 # Undo the clone find and just select the proper node.
                 last.doDelete()
-                find.findNext(initFlag=False)
+                find.do_find_next(initFlag=False)
             else:
                 c.selectPosition(last)
         if found:
@@ -533,7 +533,7 @@ class LeoFind:
     def findNextCommand(self, event=None):
         """The find-next command."""
         self.update_ivars()
-        self.findNext()
+        self.do_find_next()
     #@+node:ekr.20031218072017.3064: *4* find.find-prev
     @cmd('find-prev')
     def findPrevCommand(self, event=None):
@@ -541,7 +541,7 @@ class LeoFind:
         self.update_ivars()
         self.reverse = True
         try:
-            self.findNext()
+            self.do_find_next()
         finally:
             self.reverse = False
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
@@ -608,7 +608,7 @@ class LeoFind:
             return False
         self.initInHeadline()
         if self.change_selection():
-            self.findNext(False)  # don't reinitialize
+            self.do_find_next(False)  # don't reinitialize
         return True
     #@+node:ekr.20210110073117.27: *5* NEW:do_replace_then_find
     def do_replace_then_find(self, settings):
@@ -1015,7 +1015,7 @@ class LeoFind:
         old_sparse_find = c.sparse_find
         try:
             c.sparse_find = False
-            count = self.doFindAll(after, data, p, 'Find All')
+            count = self.do_find_all(after, data, p, 'Find All')
             c.contractAllHeadlines()
         finally:
             c.sparse_find = old_sparse_find
@@ -1023,14 +1023,14 @@ class LeoFind:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
         return count
-    #@+node:ekr.20160422073500.1: *5* find.doFindAll & helpers
+    #@+node:ekr.20160422073500.1: *5* find.do_find_all & helpers
     def doFindAll(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
         c, u, w = self.c, self.c.undoer, self.s_ctrl
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
-            pos, newpos = self.findNextMatch()
+            pos, newpos = self.find_next_match()
             if not self.p: self.p = c.p
             if pos is None: break
             count += 1
@@ -1274,7 +1274,7 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
         self.update_ivars()
-        self.findNext()  # Handles reverse.
+        self.do_find_next()  # Handles reverse.
         
     def start_search_escape1(self, event=None):
         """
@@ -1314,7 +1314,7 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
         self.update_ivars() ###
-        self.findNext()
+        self.do_find_next()
     #@+node:ekr.20160920164418.2: *4* find.tag-children
     @cmd('tag-children')
     def interactive_tag_children(self, event=None):
@@ -1418,144 +1418,6 @@ class LeoFind:
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = f"# {status}\n{''.join(result)}"
         return found
-    #@+node:ekr.20210110073117.36: *5* new:find.find_next_match & helpers
-    def find_next_match(self, p):
-        """
-        Resume the search where it left off.
-        
-        Return (p, pos, newpos) or (None, None, None)
-        """
-        attempts = 0
-        if self.pattern_match:
-            ok = self.compile_pattern()
-            if not ok: return None, None, None
-        while p:
-            pos, newpos = self.search_helper()
-            if pos is not None:
-                # Success.
-                return p, pos, newpos
-            # Searching the pane failed: switch to another pane or node.
-            if self.should_stay_in_node(p):
-                # Switching panes is possible.  Do so.
-                self.in_headline = not self.in_headline
-                self.init_next_text(p)
-            else:
-                # Switch to the next/prev node, if possible.
-                attempts += 1
-                p = self.next_node_after_fail(p)
-                if p:  # Found another node: select the proper pane.
-                    self.in_headline = self.first_search_pane()
-                    self.init_next_text(p)
-        return None, None, None
-    #@+node:ekr.20210110073117.37: *6* NEW:find.first_search_pane
-    def first_search_pane(self):
-        """
-        Set return the value of self.in_headline
-        indicating which pane to search first.
-        """
-        if self.search_headline and self.search_body:
-            # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
-            if self.reverse:
-                return False  # Search the body pane first.
-            return True  # Search the headline pane first.
-        if self.search_headline or self.search_body:
-            # Search the only enabled pane.
-            return self.search_headline
-        
-        g.trace('can not happen: no search enabled')  # pragma: no cover (defensive)
-        return False                                  # pragma: no cover (defensive, search body)
-    #@+node:ekr.20210110073117.38: *6* NEW:find.init_next_text (gui code)
-    def init_next_text(self, p):
-        """
-        Init s_ctrl when a search fails. On entry:
-        - self.in_headline indicates what text to use.
-        - self.reverse indicates how to set the insertion point.
-        """
-        w = self.s_ctrl
-        s = p.h if self.in_headline else p.b
-        if self.reverse:
-            i, j = w.sel
-            if i is not None and j is not None and i != j:
-                ins = min(i, j)
-            else:
-                ins = len(s)
-        else:
-            ins = 0
-        ### For vs-code. Also required for tests.
-        w.setAllText(s)
-        w.setInsertPoint(ins)
-        return ins  # For tests.
-    #@+node:ekr.20210110073117.39: *6* NEW:find.next_node_after_fail & helpers
-    def next_node_after_fail(self, p):
-        """Return the next node after a failed search or None."""
-        c = self.c
-        # Wrapping is disabled by any limitation of search.
-        wrap = (
-            self.wrapping
-            and not self.node_only
-            and not self.suboutline_only
-            and not c.hoistStack)
-        # Move to the next position.
-        p = p.threadBack() if self.reverse else p.threadNext()
-        # Check it.
-        if p and self.outside_search_range(p):
-            return None
-        if not p and wrap:
-            # Stateless wrap: Just set wrapPos and p.
-            self.wrapPos = 0 if self.reverse else len(p.b)
-            p = self.do_wrap()
-        if not p:
-            return None
-        return p
-    #@+node:ekr.20210110073117.40: *7* NEW:find.do_wrap
-    def do_wrap(self):
-        """Return the position resulting from a wrap."""
-        c = self.c
-        if self.reverse:
-            p = c.rootPosition()
-            while p and p.hasNext():
-                p = p.next()
-            p = p.lastNode()
-            return p
-        return c.rootPosition()
-    #@+node:ekr.20210110073117.41: *7* NEW:find.outside_search_range
-    def outside_search_range(self, p):
-        """
-        Return True if the search is about to go outside its range, assuming
-        both the headline and body text of the present node have been searched.
-        """
-        c = self.c
-        if not p:
-            return True  # pragma: no cover (minor)
-        if self.node_only:
-            return True  # pragma: no cover (minor)
-        if self.suboutline_only:
-            if self.onlyPosition:
-                if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
-                    return True
-            else:  # pragma: no cover (defensive)
-                g.trace('Can not happen: onlyPosition!', p.h)
-                return True
-        if c.hoistStack:  # pragma: no cover (defensive)
-            bunch = c.hoistStack[-1]
-            if not bunch.p.isAncestorOf(p):
-                g.trace('outside hoist', p.h)
-                g.warning('found match outside of hoisted outline')
-                return True
-        return False  # Within range.
-    #@+node:ekr.20210110073117.42: *6* NEW:find.should_stay_in_node
-    def should_stay_in_node(self, p):
-        """Return True if the find should simply switch panes."""
-        # Errors here cause the find command to fail badly.
-        # Switch only if:
-        #   a) searching both panes and,
-        #   b) this is the first pane of the pair.
-        # There is *no way* this can ever change.
-        # So simple in retrospect, so difficult to see.
-        return (
-            self.search_headline and self.search_body and (
-            (self.reverse and not self.in_headline) or
-            (not self.reverse and self.in_headline)))
     #@+node:ekr.20210110073117.48: *5* new:find.make_regex_subs
     def make_regex_subs(self, change_text, groups):
         """
@@ -2178,6 +2040,26 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
+    #@+node:ekr.20031218072017.3074: *4* find.do_find_next (convert to settings)
+    def do_find_next(self, initFlag=True):
+        """Find the next instance of the pattern."""
+        if not self.check_args('find-next'):
+            return False  # for vim-mode find commands.
+        # initFlag is False for change-then-find.
+        if initFlag:
+            self.initInHeadline()
+            data = self.save()
+            self.initInteractiveCommands()
+        else:
+            data = self.save()
+        pos, newpos = self.find_next_match()
+        if pos is None:
+            self.restore(data)
+            self.showStatus(False)
+            return False  # for vim-mode find commands.
+        self.showSuccess(pos, newpos)
+        self.showStatus(True)
+        return True  # for vim-mode find commands.
     #@+node:ekr.20160920164418.4: *4* find.do_tag_children
     def do_tag_children(self, p, tag):
         """Handle the clone-find-tag command."""
@@ -2264,28 +2146,8 @@ class LeoFind:
         else:
             p.moveToThreadNext()
         return count
-    #@+node:ekr.20031218072017.3074: *4* find.findNext
-    def findNext(self, initFlag=True):
-        """Find the next instance of the pattern."""
-        if not self.check_args('find-next'):
-            return False  # for vim-mode find commands.
-        # initFlag is False for change-then-find.
-        if initFlag:
-            self.initInHeadline()
-            data = self.save()
-            self.initInteractiveCommands()
-        else:
-            data = self.save()
-        pos, newpos = self.findNextMatch()
-        if pos is None:
-            self.restore(data)
-            self.showStatus(False)
-            return False  # for vim-mode find commands.
-        self.showSuccess(pos, newpos)
-        self.showStatus(True)
-        return True  # for vim-mode find commands.
-    #@+node:ekr.20031218072017.3075: *4* find.findNextMatch
-    def findNextMatch(self):
+    #@+node:ekr.20031218072017.3075: *4* find.find_next_match
+    def find_next_match(self):
         """Resume the search where it left off."""
         c, p = self.c, self.p
         if not self.search_headline and not self.search_body:
@@ -2442,6 +2304,144 @@ class LeoFind:
             return False
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode(self, p):
+        """Return True if the find should simply switch panes."""
+        # Errors here cause the find command to fail badly.
+        # Switch only if:
+        #   a) searching both panes and,
+        #   b) this is the first pane of the pair.
+        # There is *no way* this can ever change.
+        # So simple in retrospect, so difficult to see.
+        return (
+            self.search_headline and self.search_body and (
+            (self.reverse and not self.in_headline) or
+            (not self.reverse and self.in_headline)))
+    #@+node:ekr.20210110073117.36: *4* find.find_next_match_NEW & helpers
+    def find_next_match_NEW(self, p):
+        """
+        Resume the search where it left off.
+        
+        Return (p, pos, newpos) or (None, None, None)
+        """
+        attempts = 0
+        if self.pattern_match:
+            ok = self.compile_pattern()
+            if not ok: return None, None, None
+        while p:
+            pos, newpos = self.search_helper()
+            if pos is not None:
+                # Success.
+                return p, pos, newpos
+            # Searching the pane failed: switch to another pane or node.
+            if self.should_stay_in_node(p):
+                # Switching panes is possible.  Do so.
+                self.in_headline = not self.in_headline
+                self.init_next_text(p)
+            else:
+                # Switch to the next/prev node, if possible.
+                attempts += 1
+                p = self.next_node_after_fail(p)
+                if p:  # Found another node: select the proper pane.
+                    self.in_headline = self.first_search_pane()
+                    self.init_next_text(p)
+        return None, None, None
+    #@+node:ekr.20210110073117.37: *5* NEW:find.first_search_pane
+    def first_search_pane(self):
+        """
+        Set return the value of self.in_headline
+        indicating which pane to search first.
+        """
+        if self.search_headline and self.search_body:
+            # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
+            if self.reverse:
+                return False  # Search the body pane first.
+            return True  # Search the headline pane first.
+        if self.search_headline or self.search_body:
+            # Search the only enabled pane.
+            return self.search_headline
+        
+        g.trace('can not happen: no search enabled')  # pragma: no cover (defensive)
+        return False                                  # pragma: no cover (defensive, search body)
+    #@+node:ekr.20210110073117.38: *5* NEW:find.init_next_text (gui code)
+    def init_next_text(self, p):
+        """
+        Init s_ctrl when a search fails. On entry:
+        - self.in_headline indicates what text to use.
+        - self.reverse indicates how to set the insertion point.
+        """
+        w = self.s_ctrl
+        s = p.h if self.in_headline else p.b
+        if self.reverse:
+            i, j = w.sel
+            if i is not None and j is not None and i != j:
+                ins = min(i, j)
+            else:
+                ins = len(s)
+        else:
+            ins = 0
+        ### For vs-code. Also required for tests.
+        w.setAllText(s)
+        w.setInsertPoint(ins)
+        return ins  # For tests.
+    #@+node:ekr.20210110073117.39: *5* NEW:find.next_node_after_fail & helpers
+    def next_node_after_fail(self, p):
+        """Return the next node after a failed search or None."""
+        c = self.c
+        # Wrapping is disabled by any limitation of search.
+        wrap = (
+            self.wrapping
+            and not self.node_only
+            and not self.suboutline_only
+            and not c.hoistStack)
+        # Move to the next position.
+        p = p.threadBack() if self.reverse else p.threadNext()
+        # Check it.
+        if p and self.outside_search_range(p):
+            return None
+        if not p and wrap:
+            # Stateless wrap: Just set wrapPos and p.
+            self.wrapPos = 0 if self.reverse else len(p.b)
+            p = self.do_wrap()
+        if not p:
+            return None
+        return p
+    #@+node:ekr.20210110073117.40: *6* NEW:find.do_wrap
+    def do_wrap(self):
+        """Return the position resulting from a wrap."""
+        c = self.c
+        if self.reverse:
+            p = c.rootPosition()
+            while p and p.hasNext():
+                p = p.next()
+            p = p.lastNode()
+            return p
+        return c.rootPosition()
+    #@+node:ekr.20210110073117.41: *6* NEW:find.outside_search_range
+    def outside_search_range(self, p):
+        """
+        Return True if the search is about to go outside its range, assuming
+        both the headline and body text of the present node have been searched.
+        """
+        c = self.c
+        if not p:
+            return True  # pragma: no cover (minor)
+        if self.node_only:
+            return True  # pragma: no cover (minor)
+        if self.suboutline_only:
+            if self.onlyPosition:
+                if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
+                    return True
+            else:  # pragma: no cover (defensive)
+                g.trace('Can not happen: onlyPosition!', p.h)
+                return True
+        if c.hoistStack:  # pragma: no cover (defensive)
+            bunch = c.hoistStack[-1]
+            if not bunch.p.isAncestorOf(p):
+                g.trace('outside hoist', p.h)
+                g.warning('found match outside of hoisted outline')
+                return True
+        return False  # Within range.
+    #@+node:ekr.20210110073117.42: *5* NEW:find.should_stay_in_node
+    def should_stay_in_node(self, p):
         """Return True if the find should simply switch panes."""
         # Errors here cause the find command to fail badly.
         # Switch only if:
@@ -3037,7 +3037,7 @@ class LeoFind:
         else: ins = j + len(pattern) if reverse else i
         self.init_s_ctrl(s, ins)
         # Do the search!
-        pos, newpos = self.findNextMatch()
+        pos, newpos = self.find_next_match()
         # Restore.
         self.find_text = oldPattern
         self.pattern_match = oldRegexp
@@ -3253,21 +3253,17 @@ class LeoFind:
         if self.pattern_match:
             status.append('regex')
         if find_all_flag:
-            if self.search_headline:
-                status.append('head')
-            if self.search_body:
-                status.append('body')
             if self.wrapping:
                 status.append('wrapping')
         else:
-            if self.search_headline:
-                status.append('headline-only')
-            if self.search_body:
-                status.append('body-only')
             if self.suboutline_only:
                 status.append('[outline-only]')
             if self.node_only:
                 status.append('[node-only]')
+        if self.search_headline:
+            status.append('headline')
+        if self.search_body:
+            status.append('body')
         return f" ({', '.join(status)})" if status else ''
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self, event=None):
@@ -3558,7 +3554,7 @@ class TestFind(unittest.TestCase):
         c, settings, x = self.c, self.settings, self.x
         settings.find_text = 'def top1'
         # find-next
-        p, pos, newpos = x.find_next(settings)
+        p, pos, newpos = x.do_find_next(settings)
         assert p and p.h == 'Node 1', p.h
         s = p.b[pos:newpos]
         assert s == settings.find_text, repr(s)
@@ -3677,7 +3673,7 @@ class TestFind(unittest.TestCase):
         settings.find_text = 'def top1'
         settings.change_text = 'def top'
         # find-next
-        p, pos, newpos = x.find_next(settings)
+        p, pos, newpos = x.do_find_next(settings)
         assert p and p.h == 'Node 1', p.h
         s = p.b[pos:newpos]
         assert s == settings.find_text, repr(s)
@@ -3694,7 +3690,7 @@ class TestFind(unittest.TestCase):
         settings.change_text = r'\1\1'
         settings.pattern_match = True
         # find-next
-        p, pos, newpos = x.find_next(settings)
+        p, pos, newpos = x.do_find_next(settings)
         s = p.b[pos:newpos]
         assert s == 'def top1', repr(s)
         # replace-then-find
@@ -3708,7 +3704,7 @@ class TestFind(unittest.TestCase):
         settings.change_text = 'Node 1a'
         settings.in_headline = True
         # find-next
-        p, pos, newpos = x.find_next(settings)
+        p, pos, newpos = x.do_find_next(settings)
         assert p and p.h == settings.find_text, p.h
         w = self.c.edit_widget(p)
         assert w
@@ -3810,7 +3806,7 @@ class TestFind(unittest.TestCase):
         x.do_find_all(settings)
         x.find_def(settings)
         x.find_var(settings)
-        x.find_next(settings)
+        x.do_find_next(settings)
         x.find_next_match(None)
         x.find_prev(settings)
         x.replace_all(settings)
