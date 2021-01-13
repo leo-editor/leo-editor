@@ -533,11 +533,16 @@ class LeoFind:
         """The find-next command."""
         self.update_ivars()
         self.do_find_next()
-    #@+node:ekr.20031218072017.3064: *4* find.find-prev
+    #@+node:ekr.20031218072017.3064: *4* find.find-prev (revise)
     @cmd('find-prev')
-    def findPrevCommand(self, event=None):
+    def find_prev(self, event=None):
         """Handle F2 (find-previous)"""
+        ### assert settings
+        ### self.init(settings)
         self.update_ivars()
+        self.do_find_prev(None)  ### To do.
+        
+    def do_find_prev(self, settings): ### To do: use settings.
         self.reverse = True
         try:
             self.do_find_next()
@@ -987,9 +992,9 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
-        self.do_change_all()
+        self.do_replace_all()
     #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
-    def do_find_all(self):
+    def do_find_all(self, settings=None):  ### To do: use settings.
         """Top-level helper for find-all command."""
         c = self.c
         if not self.check_args('find-all'):
@@ -1138,7 +1143,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
-        self.do_change_all()
+        self.do_replace_all()
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
@@ -1204,7 +1209,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(self.w)
-        self.do_change_all()
+        self.do_replace_all()
     #@+node:ekr.20131117164142.17004: *4* find.search_backward
     @cmd('search-backward')
     def interactive_search_backward(self, event):
@@ -1741,8 +1746,8 @@ class LeoFind:
                     # return mo.start(), mo.end()
             # self.match_obj = None
             # return -1, -1
-    #@+node:ekr.20131117164142.17016: *4* find.do_change_all & helpers
-    def do_change_all(self, event=None):
+    #@+node:ekr.20131117164142.17016: *4* find.do_replace_all & helpers
+    def do_replace_all(self, settings=None):  ### To do: use settings.
         c = self.c
         self.update_ivars()
         self._change_all_helper()
@@ -3486,7 +3491,7 @@ class TestFind(unittest.TestCase):
         assert grand_child.h == 'child 6', grand_child.h
         settings.p = grand_child.copy()
         settings.find_text = 'def child2'
-        p, pos, newpos = x.find_prev(settings)
+        p, pos, newpos = x.do_find_prev(settings)
         assert p.h == 'child 2', p.h
         s = p.b[pos:newpos]
         assert s == settings.find_text, repr(s)
@@ -3540,23 +3545,23 @@ class TestFind(unittest.TestCase):
         settings.match_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         # Node only.
         settings.node_only = True
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         settings.node_only = False
         # Suboutline only.
         settings.suboutline_only = True
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         settings.suboutline_only = False
         # Pattern match.
         settings.pattern_match = True
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         # Multiple matches
         root.h = 'abc'
         root.b = 'abc\nxyz abc\n'
         settings.find_text = settings.change_text = 'abc'
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         # Set ancestor @file node dirty.
         root.h = '@file xyzzy'
         settings.find_text = settings.change_text = 'child1'
@@ -3575,7 +3580,7 @@ class TestFind(unittest.TestCase):
         root.b = ''
         root.v.clearDirty()
         assert root.anyAtFileNodeName()
-        x.replace_all(settings)
+        x.do_replace_all(settings)
         assert root.v.isDirty(), root.h
         
     def test_replace_all_headline(self):
@@ -3587,7 +3592,7 @@ class TestFind(unittest.TestCase):
         settings.match_word = True
         settings.pattern_match = False
         settings.suboutline_only = False
-        x.replace_all(settings)
+        x.do_replace_all(settings)
     #@+node:ekr.20210110073117.68: *4* TestFind.replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
@@ -3667,7 +3672,7 @@ class TestFind(unittest.TestCase):
         settings.pattern_match = True
         x.do_clone_find_all(settings)
         x.find_next_match(p=None)
-        x.replace_all(settings)
+        x.do_replace_all(settings)
     #@+node:ekr.20210110073117.73: *4* TestFind.batch_word_replace
     def test_batch_word_replace(self):
         settings, x = self.settings, self.x
@@ -3729,8 +3734,8 @@ class TestFind(unittest.TestCase):
         x.find_var(settings)
         x.do_find_next(settings)
         x.find_next_match(p=None)
-        x.find_prev(settings)
-        x.replace_all(settings)
+        x.do_find_prev(settings)
+        x.do_replace_all(settings)
         x.do_replace_then_find(settings)
     #@+node:ekr.20210110073117.77: *4* TestFind.compute_result_status
     def test_compute_result_status(self):
