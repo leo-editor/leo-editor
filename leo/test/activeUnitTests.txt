@@ -12002,7 +12002,7 @@ table = (
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
-#@+node:ekr.20190608143502.1: *5* @test find.regexHelper
+#@+node:ekr.20190608143502.1: *5* @test find._inner_search_regex
 import re
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
@@ -12011,7 +12011,8 @@ def test(table, table_name, back, nocase):
     for pattern, s, expected in table:
         flags = re.IGNORECASE if nocase else 0
         x.re_obj = re.compile(pattern, flags)
-        pos, new_pos = x.regexHelper(s, 0, len(s), pattern, backwards=back, nocase=nocase)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
         got = s[pos:new_pos]
         assert expected==got, (
             '\n   table: %s'
@@ -12040,7 +12041,7 @@ back_table = (
 test(plain_table,  'plain_table',  back=False, nocase=False)
 test(nocase_table, 'nocase_table', back=False, nocase=True)
 test(back_table,   'back_table',   back=True,  nocase=False)
-#@+node:ekr.20190608143502.2: *5* @test find.backwardsHelper
+#@+node:ekr.20190608143502.2: *5* @test find._inner_search_backward
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12049,7 +12050,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.backwardsHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12082,7 +12084,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143502.3: *5* @test find.plainHelper
+#@+node:ekr.20190608143502.3: *5* @test find._inner_search_plain
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12091,7 +12093,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.plainHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12124,7 +12127,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143503.1: *5* @test find.replaceBackSlashes
+#@+node:ekr.20190608143503.1: *5* @test find.replace_back_slashes
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
@@ -12133,7 +12136,7 @@ table = (
     ('\\t', '\t'),
 )
 for s, expected in table:
-    got = x.replaceBackSlashes(s)
+    got = x.replace_back_slashes(s)
     assert expected==got, (
         '\n         s: %r'
         '\n  expected: %r'

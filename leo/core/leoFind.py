@@ -146,7 +146,7 @@ class LeoFind:
         self.wrapping = False
             # True: wrapping is enabled.
             # This must be different from self.wrap, which is set by the checkbox.
-        self.wrapPosition = None
+        ### self.wrapPosition = None
             # The start of wrapped searches.
             # Persists between calls.
         self.wrapPos = None
@@ -1892,24 +1892,26 @@ class LeoFind:
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
-        c = self.c
+        ### c = self.c
         # Wrapping is disabled by any limitation of screen or search.
-        wrap = (self.wrapping and not self.node_only and
-            not self.suboutline_only and not c.hoistStack)
-        if wrap and not self.wrapPosition:
-            self.wrapPosition = p.copy()
-            self.wrapPos = 0 if self.reverse else len(p.b)
+        ###  wrap = (self.wrapping and not self.node_only and
+        ###    not self.suboutline_only and not c.hoistStack)
+        ###
+            # if wrap and not self.wrapPosition:
+                # self.wrapPosition = p.copy()
+                # self.wrapPos = 0 if self.reverse else len(p.b)
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
         if p and self._fail_outside_range(p):
             return None
-        if not p and wrap:
-            p = self._fail_do_wrap()
+        ###
+        # if not p and wrap:
+            # p = self._fail_do_wrap()
         if not p:
             return None
-        if wrap and p == self.wrapPosition:
-            return None
+        ### if wrap and p == self.wrapPosition:
+        #     return None
         return p
     #@+node:ekr.20131123071505.16468: *6* find._fail_do_wrap
     def _fail_do_wrap(self):
@@ -1963,7 +1965,7 @@ class LeoFind:
             return self.search_headline
         g.trace('can not happen: no search enabled')
         return False  # search the body.
-    #@+node:ekr.20031218072017.3077: *5* find._fnm_search & helpers
+    #@+node:ekr.20031218072017.3077: *5* find._fnm_search
     def _fnm_search(self, p):
         """
         Search s_ctrl for self.find_text with present options.
@@ -2007,16 +2009,6 @@ class LeoFind:
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         return pos, newpos
-    #@+node:ekr.20060526140328: *6* find.passedWrapPoint
-    def passedWrapPoint(self, p, pos, newpos):
-        """Return True if the search has gone beyond the wrap point."""
-        return (
-            self.wrapping and
-            self.wrapPosition is not None and
-            p == self.wrapPosition and
-                (self.reverse and pos < self.wrapPos or
-                not self.reverse and newpos > self.wrapPos)
-        )
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode(self, p):
         """Return True if the find should simply switch panes."""
@@ -2268,6 +2260,10 @@ class LeoFind:
                     i += 1  # Skip the escaped character.
             i += 1
         return s
+    #@+node:ekr.20031218072017.3076: *4* find.resetWrap (to be deleted)
+    def resetWrap(self, event=None):
+        ### self.wrapPosition = None
+        self.onlyPosition = None
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl(self, s, ins):
@@ -2365,26 +2361,28 @@ class LeoFind:
         ins = w.getInsertPoint() if w else None
         self.errors = 0
         self.init_next_text(p, ins=ins)
-        if w: c.widgetWantsFocus(w)
+        if w:
+            c.widgetWantsFocus(w)
         # Init suboutline-only:
         if self.suboutline_only and not self.onlyPosition:
             self.onlyPosition = p.copy()
-        # Wrap does not apply to limited searches.
-        if (self.wrap and
-            not self.node_only and
-            not self.suboutline_only and
-            self.wrapPosition is None
-        ):
-            self.wrapping = True
-            self.wrapPos = ins
-            # Do not set self.wrapPosition here: that must be done after the first search.
+        ###
+            # # Wrap does not apply to limited searches.
+            # if (self.wrap and
+                # not self.node_only and
+                # not self.suboutline_only and
+                # self.wrapPosition is None
+            # ):
+                # self.wrapping = True
+                # self.wrapPos = ins
+                # # Do not set self.wrapPosition here: that must be done after the first search.
     #@+node:ekr.20131126174039.16719: *4* find.reset_state_ivars
     def reset_state_ivars(self):
         """Reset ivars related to suboutline-only and wrapped searches."""
         self.onlyPosition = None
-        self.wrapping = False
-        self.wrapPosition = None
-        self.wrapPos = None
+        ### self.wrapping = False
+        ### self.wrapPosition = None
+        ### self.wrapPos = None
     #@+node:ekr.20031218072017.3089: *4* find.restore (headline hack)
     def restore(self, data):
         """Restore the screen and clear state after a search fails."""
@@ -2917,10 +2915,6 @@ class LeoFind:
             c.vimCommands.update_dot_before_search(
                 find_pattern=pattern,
                 change_pattern=None)  # A flag.
-    #@+node:ekr.20031218072017.3076: *4* find.resetWrap
-    def resetWrap(self, event=None):
-        self.wrapPosition = None
-        self.onlyPosition = None
     #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea & helper
     def showFindOptionsInStatusArea(self):
         """Show find options in the status area."""

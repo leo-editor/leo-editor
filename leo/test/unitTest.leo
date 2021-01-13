@@ -192,14 +192,13 @@
 <v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
 <v t="ekr.20190608143418.1"><vh>New leoFind Tests</vh>
 <v t="ekr.20190608144111.1"><vh>@test leoFind.LeoFind clean init</vh></v>
-<v t="ekr.20190608143502.1"><vh>@test find.regexHelper</vh></v>
-<v t="ekr.20190608143502.2"><vh>@test find.backwardsHelper</vh></v>
-<v t="ekr.20190608143502.3"><vh>@test find.plainHelper</vh></v>
-<v t="ekr.20190608143503.1"><vh>@test find.replaceBackSlashes</vh></v>
+<v t="ekr.20190608143502.1"><vh>@test find._inner_search_regex</vh></v>
+<v t="ekr.20190608143502.2"><vh>@test find._inner_search_backward</vh></v>
+<v t="ekr.20190608143502.3"><vh>@test find._inner_search_plain</vh></v>
+<v t="ekr.20190608143503.1"><vh>@test find.replace_back_slashes</vh></v>
 </v>
 <v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
 </v>
-<v t="ekr.20190608143418.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1454,7 +1453,8 @@ def test(table, table_name, back, nocase):
     for pattern, s, expected in table:
         flags = re.IGNORECASE if nocase else 0
         x.re_obj = re.compile(pattern, flags)
-        pos, new_pos = x.regexHelper(s, 0, len(s), pattern, backwards=back, nocase=nocase)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
         got = s[pos:new_pos]
         assert expected==got, (
             '\n   table: %s'
@@ -1492,7 +1492,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.backwardsHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -1534,7 +1535,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.plainHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -1576,7 +1578,7 @@ table = (
     ('\\t', '\t'),
 )
 for s, expected in table:
-    got = x.replaceBackSlashes(s)
+    got = x.replace_back_slashes(s)
     assert expected==got, (
         '\n         s: %r'
         '\n  expected: %r'
