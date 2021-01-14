@@ -529,7 +529,7 @@ class LeoFind:
         """The find-next command."""
         # Settings...
         self.reverse = False
-        self.init_in_headline()
+        self.init_in_headline()  # Required.
         settings = self.ftm.get_settings()
         # Do the command!
         self.do_find_next(settings)
@@ -1600,9 +1600,7 @@ class LeoFind:
         self.ftm.set_find_text(find_pattern)
         self.updateFindList(find_pattern)
         self.init_vim_search(find_pattern)
-        ### self.find_text = find_pattern
-        ### self.change_text = self.ftm.get_change_text()
-        self.init_in_headline()
+        self.init_in_headline() # Required.
         settings = self.ftm.get_settings()
         # Gui...
         self.initInteractiveCommands()
@@ -1610,6 +1608,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
+        # Do the command!
         self.do_find_next(settings)  # Handles reverse.
         
     def start_search_escape1(self, event=None):
@@ -1643,7 +1642,7 @@ class LeoFind:
         self.ftm.set_change_text(change_pattern)
         self.updateChangeList(change_pattern)
         self.init_vim_search(find_pattern)
-        self.init_in_headline()
+        self.init_in_headline() # Required
         settings = self.ftm.get_settings()
         # Gui...
         self.initInteractiveCommands()
@@ -1899,7 +1898,7 @@ class LeoFind:
             if not ok:
                 return None, None, None
         while p:
-            self.init_next_text(p) ### Experimental
+            ### self.init_next_text(p) ### Experimental
             pos, newpos = self._fnm_search(p)
             if self.errors:
                 g.trace('find errors')
@@ -1916,14 +1915,14 @@ class LeoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                ### self.init_next_text(p)
+                self.init_next_text(p)
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
-                    ### self.init_next_text(p)
+                    self.init_next_text(p)
         return None, None, None
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
@@ -2037,23 +2036,24 @@ class LeoFind:
         - self.in_headline indicates what text to use.
         - self.reverse indicates how to set the insertion point.
         """
-        c, w = self.c, self.s_ctrl
-        i, j = w.sel
+        c = self.c
+        ### c, w = self.c, self.s_ctrl
+        ### i, j = w.sel
         s = p.h if self.in_headline else p.b
         tree = c.frame and c.frame.tree
         if tree and hasattr(tree, 'killEditing'):
             tree.killEditing()
         # Make sure we make progress.
         ###if ins is None:
-        ins = min(i, j) if self.reverse else max(i, j)
-        ### ins = len(s) if self.reverse else 0
-        if 0: # An excellent trace
-            assert self.reverse is not None, g.callers()
-            g.trace(
-                f"reverse? {self.reverse:1} head?: {self.in_headline:1} "
-                f" len(s): {len(s):4} ins: {ins!r:4} i: {i:4} j: {j:4} {p.h}")
-            ### g.trace(g.callers())
+        ### ins = min(i, j) if self.reverse else max(i, j)
+        ins = len(s) if self.reverse else 0
         self.init_s_ctrl(s, ins)
+        if 0: # An excellent trace
+            g.trace(
+                # f"suboutline? {self.suboutline_only:1} node? {self.node_only:1} "
+                f"reverse? {self.reverse:1} head?: {self.in_headline:1} "
+                f" len(s): {len(s):4} ins: {ins!r:4} ") # i: {i:4} j: {j:4} {p.h}")
+            ### g.trace(g.callers())
     #@+node:ekr.20210110073117.43: *4* find.inner_search_helper & helpers
     def inner_search_helper(self, s, i, j, pattern):
         """
@@ -2360,6 +2360,13 @@ class LeoFind:
         ### ins = w.getInsertPoint() if w else None
         ####### self.init_next_text(p) ### Experimental, ins=ins)
         if w:
+            if 1: ### Experimental
+                s = w.getAllText()
+                self.s_ctrl.setAllText(s)
+                ins = w.getInsertPoint()
+                sel = w.getSelectionRange()
+                i, j = sel
+                self.s_ctrl.setSelectionRange(i, j, insert=ins) ### Experimental.
             c.widgetWantsFocus(w)
         # Leo 6.4: suboutline-only and node-only apply only to batch searches.
         self.onlyPosition = None

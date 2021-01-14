@@ -1589,14 +1589,14 @@ for s, expected in table:
 x = leoFind.LeoFind(c)
 table = (
     # 'batch',  # 'wrap', 
-    'ignore_case', 'node_only', 'pattern_match',
-    'reverse', 
+    'ignore_case', 'node_only', 'pattern_match', 
     'search_headline', 'search_body', 'suboutline_only',
     'mark_changes', 'mark_finds', 'whole_word',
    
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
+assert x.reverse is False
 </t>
 <t tx="ekr.20191207060251.1">@language python
 @tabwidth -4

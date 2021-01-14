@@ -11996,14 +11996,14 @@ import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
     # 'batch',  # 'wrap', 
-    'ignore_case', 'node_only', 'pattern_match',
-    'reverse', 
+    'ignore_case', 'node_only', 'pattern_match', 
     'search_headline', 'search_body', 'suboutline_only',
     'mark_changes', 'mark_finds', 'whole_word',
    
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
+assert x.reverse is False
 #@+node:ekr.20190608143502.1: *5* @test find._inner_search_regex
 import re
 import leo.core.leoFind as leoFind
