@@ -103,7 +103,7 @@ class LeoFind:
         self.findTextList = []
         self.changeTextList = []
         #
-        # Find/change...
+        # For find/change...
         self.s_ctrl = SearchWidget()  # A helper widget for searches.
         self.find_text = ""
         self.change_text = ""
@@ -442,7 +442,7 @@ class LeoFind:
         self.search_body = True
         self.search_headline = False
         self.whole_word = True
-    #@+node:ekr.20150629084611.1: *6* initFindDef
+    #@+node:ekr.20150629084611.1: *6* find.initFindDef
     def initFindDef(self, event):
         """Init the find-def command. Return the word to find or None."""
         c = self.c
@@ -463,7 +463,7 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20180511045458.1: *6* switch_style
+    #@+node:ekr.20180511045458.1: *6* find.switch_style
     def switch_style(self, word):
         """
         Switch between camelCase and underscore_style function defintiions.
@@ -1872,11 +1872,7 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
-            if self.onlyPosition:
-                if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
-                    return True
-            else:
-                g.trace('Can not happen: onlyPosition!', p.h)
+            if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
                 return True
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -2275,34 +2271,25 @@ class LeoFind:
         self.node_only = self.suboutline_only = None
     #@+node:ekr.20031218072017.3089: *4* find.restore
     def restore(self, data):
-        """Restore the screen and clear state after a search fails."""
-        c = self.c
-        in_headline, p, insert, start, end = data
+        """
+        Restore Leo's gui and settings from data, a g.Bunch.
+        """
+        c, p = self.c, data.p
         c.frame.bringToFront()  # Needed on the Mac
-        if not p or not c.positionExists(p):
-            p = c.rootPosition()
-        c.selectPosition(p)
         self.restoreAfterFindDef()  # Restore find-settings.
+        if not p or not c.positionExists(p):
+            # Better than selecting the root!
+            return 
+        c.selectPosition(p)
         # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
-        if in_headline:
+        if self.in_headline:
             c.treeWantsFocus()
         else:
             # Looks good and provides clear indication of failure or termination.
             w = c.frame.body.wrapper
-            w.setSelectionRange(start, end, insert=insert)
+            w.setSelectionRange(data.start, data.end, insert=data.insert)
             w.seeInsertPoint()
             c.widgetWantsFocus(w)
-    #@+node:vitalije.20170712102153.1: *4* find.restoreAllExpansionStates
-    def restoreAllExpansionStates(self, expanded, redraw=False):
-        """expanded is a set of gnx of nodes that should be expanded"""
-        c = self.c
-        for gnx, v in c.fileCommands.gnxDict.items():
-            if gnx in expanded:
-                v.expand()
-            else:
-                v.contract()
-        if redraw:
-            c.redraw()
     #@+node:ekr.20031218072017.3090: *4* find.save
     def save(self):
         """Save everything needed to restore after a search fails."""
@@ -2315,7 +2302,14 @@ class LeoFind:
             w = c.frame.body.wrapper
             insert = w.getInsertPoint()
             start, end = w.getSelectionRange()
-        return self.in_headline, c.p.copy(), insert, start, end
+        data = g.Bunch(
+            end=end,
+            in_headline=self.in_headline,
+            insert=insert,
+            p=c.p.copy(),
+            start=start,
+        )
+        return data
     #@+node:ekr.20031218072017.3091: *4* find.showSuccess
     def showSuccess(self, p, pos, newpos, showState=True):
         """Display the result of a successful find operation."""
@@ -2905,6 +2899,7 @@ class TestFind(unittest.TestCase):
         g.unitTesting = True
         self.c = leoTest2.create_app()
         self.x = leoFind.LeoFind(self.c)
+        self.x.ftm = g.TracingNullObject(tag='x.ftm') ###
         self.settings = self.x.default_settings()
         self.make_test_tree()
 
@@ -3037,6 +3032,7 @@ class TestFind(unittest.TestCase):
         settings.find_text = 'def notFound'
         x.find_def(settings)
         
+    #@+node:ekr.20210113221831.1: *4* TestFind.find_def_use_cff
     def test_find_def_use_cff(self):
         settings, x = self.settings, self.x
         settings.find_text = 'child5'
@@ -3249,16 +3245,6 @@ class TestFind(unittest.TestCase):
                 # f"     groups: {groups}\n"
                 # f"   expected: {expected}\n"
                 # f"        got: {result}")
-    #@+node:ekr.20210110073117.72: *4* TestFind.bad compile_pattern
-    def test_argument_errors(self):
-
-        settings, x = self.settings, self.x
-        # Bad search pattern.
-        settings.find_text = r'^def\b(('
-        settings.pattern_match = True
-        x.do_clone_find_all(settings)
-        x.find_next_match(p=None)
-        x.do_replace_all(settings)
     #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
     def test_batch_plain_replace(self):
         settings, x = self.settings, self.x
@@ -3351,6 +3337,17 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             print(' '*p.level(),  p.h, 'dirty', p.v.isDirty())
             # g.printObj(g.splitLines(p.b), tag=p.h)
+    #@+node:ekr.20210110073117.81: *4* TestFind.init_next_text
+    def test_init_next_text(self):
+        settings, x = self.settings, self.x
+        for reverse in (True, False):
+            settings.reverse = reverse
+            for in_head in (True, False):
+                settings.in_headline = in_head
+                x.init(settings)
+                for sel in (0, 0), (0, 2):
+                    x.s_ctrl.sel = sel
+                    x.init_next_text(settings.p)
     #@+node:ekr.20210110073117.82: *4* TestFind.make_regex_subs (to do)
     def test_make_regex_subs(self):
         x = self.x
@@ -3414,17 +3411,16 @@ class TestFind(unittest.TestCase):
                 f"       s: {s}\n"
                 f"expected: {expected!r}\n"
                 f"     got: {result!r}")
-    #@+node:ekr.20210110073117.81: *4* TestFind.init_next_text
-    def test_init_next_text(self):
+    #@+node:ekr.20210110073117.72: *4* TestFind.test_argument_errors
+    def test_argument_errors(self):
+
         settings, x = self.settings, self.x
-        for reverse in (True, False):
-            settings.reverse = reverse
-            for in_head in (True, False):
-                settings.in_headline = in_head
-                x.init(settings)
-                for sel in (0, 0), (0, 2):
-                    x.s_ctrl.sel = sel
-                    x.init_next_text(settings.p)
+        # Bad search pattern.
+        settings.find_text = r'^def\b(('
+        settings.pattern_match = True
+        x.do_clone_find_all(settings)
+        x.find_next_match(p=None)
+        x.do_replace_all(settings)
     #@-others
 #@-others
 if __name__ == '__main__':
