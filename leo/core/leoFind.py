@@ -726,6 +726,46 @@ class LeoFind:
         options = fc.computeFindOptionsInStatusArea()
         c.frame.statusLine.put(options)
     #@+node:ekr.20131117164142.17013: *3* LeoFind.Commands (interactive)
+    #@+node:ekr.20131117164142.16994: *4* find.change-all
+    @cmd('change-all')
+    @cmd('replace-all')
+    def interactive_change_all(self, event=None):
+        """Replace all instances of the search string with the replacement string."""
+        self.ftm.clear_focus()
+        self.ftm.set_entry_focus()
+        prompt = 'Replace Regex: ' if self.pattern_match else 'Replace: '
+        self.start_state_machine(event, prompt,
+            handler = self.interactive_replace_all1,
+            # Allow either '\t' or '\n' to switch to the change text.
+            escape_handler = self.interactive_replace_all1,
+        )
+        
+    def interactive_replace_all1(self, event):
+        k = self.k
+        find_pattern = k.arg
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        regex = ' Regex' if self.pattern_match else ''
+        prompt = f"Replace{regex}: {find_pattern} With: "
+        k.setLabelBlue(prompt)
+        self.addChangeStringToLabel()
+        k.getNextArg(self.interactive_replace_all2)
+
+    def interactive_replace_all2(self, event):
+        c,k = self.c, self.k
+        # Settings...
+        find_pattern = self._sString
+        change_pattern = k.arg
+        self.updateChangeList(change_pattern)
+        self.ftm.setFindText(find_pattern)
+        self.ftm.setChangeText(change_pattern)
+        self.init_vim_search(find_pattern)
+        # Gui...
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        c.widgetWantsFocusNow(self.w)
+        self.do_replace_all()
     #@+node:ekr.20131117164142.17011: *4* find.clone-find-all
     @cmd('clone-find-all')
     @cmd('find-clone-all')
@@ -902,7 +942,7 @@ class LeoFind:
             n = found.numberOfChildren()
             p2._linkCopiedAsNthChild(found, n)
         return found
-    #@+node:ekr.20131117164142.16998: *4* find.find-all & helpers
+    #@+node:ekr.20131117164142.16998: *4* find.find-all & helper
     @cmd('find-all')
     def interactive_find_all(self, event=None):
         """
@@ -1047,7 +1087,7 @@ class LeoFind:
         result = sorted(self.unique_matches)
         found.b = '\n'.join(result)
         return found
-    #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex (test)
+    #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
     def interactive_find_all_unique_regex(self, event=None):
         """
@@ -1126,45 +1166,6 @@ class LeoFind:
             escape_handler = self.start_search_escape1,  # See start-search
         )
 
-    #@+node:ekr.20131117164142.16994: *4* find.replace-all
-    @cmd('replace-all')
-    def interactive_replace_all(self, event=None):
-        """Replace all instances of the search string with the replacement string."""
-        self.ftm.clear_focus()
-        self.ftm.set_entry_focus()
-        prompt = 'Replace Regex: ' if self.pattern_match else 'Replace: '
-        self.start_state_machine(event, prompt,
-            handler = self.interactive_replace_all1,
-            # Allow either '\t' or '\n' to switch to the change text.
-            escape_handler = self.interactive_replace_all1,
-        )
-        
-    def interactive_replace_all1(self, event):
-        k = self.k
-        find_pattern = k.arg
-        self._sString = k.arg
-        self.updateFindList(k.arg)
-        regex = ' Regex' if self.pattern_match else ''
-        prompt = f"Replace{regex}: {find_pattern} With: "
-        k.setLabelBlue(prompt)
-        self.addChangeStringToLabel()
-        k.getNextArg(self.interactive_replace_all2)
-
-    def interactive_replace_all2(self, event):
-        c,k = self.c, self.k
-        # Settings...
-        find_pattern = self._sString
-        change_pattern = k.arg
-        self.updateChangeList(change_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.ftm.setChangeText(change_pattern)
-        self.init_vim_search(find_pattern)
-        # Gui...
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        c.widgetWantsFocusNow(self.w)
-        self.do_replace_all()
     #@+node:ekr.20131117164142.17004: *4* find.search_backward
     @cmd('search-backward')
     def interactive_search_backward(self, event):
@@ -1487,14 +1488,14 @@ class LeoFind:
             return False
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
-        if pos is None:
-            # Failure: restore previous position.
+        found = pos is not None
+        if found:
+            self.show_success(p, pos, newpos)
+        else:
+            # Restore previous position.
             self.restore(data)
-            self.showStatus(False)
-            return False
-        self.showSuccess(p, pos, newpos)
-        self.showStatus(True)
-        return True
+        self.show_status(found)
+        return found
     #@+node:ekr.20131117164142.17016: *4* find.do_replace_all & helpers
     def do_replace_all(self, settings=None):  ### To do: use settings.
         c = self.c
@@ -2310,8 +2311,8 @@ class LeoFind:
             start=start,
         )
         return data
-    #@+node:ekr.20031218072017.3091: *4* find.showSuccess
-    def showSuccess(self, p, pos, newpos, showState=True):
+    #@+node:ekr.20031218072017.3091: *4* find.show_success
+    def show_success(self, p, pos, newpos, showState=True):
         """Display the result of a successful find operation."""
         c = self.c
         # Set state vars.
@@ -2502,7 +2503,7 @@ class LeoFind:
         self.whole_word = oldWord
         # Handle the results of the search.
         if pos is not None:  # success.
-            w = self.showSuccess(p, pos, newpos, showState=False)
+            w = self.show_success(p, pos, newpos, showState=False)
             if w: i, j = w.getSelectionRange(sort=False)
             if not again:
                 self.push(c.p, i, j, self.in_headline)
@@ -2551,7 +2552,7 @@ class LeoFind:
         p, i, j, in_headline = self.pop()
         self.push(p, i, j, in_headline)
         if in_headline:
-            # Like self.showSuccess.
+            # Like self.show_success.
             selection = i, j, i
             c.redrawAndEdit(p, selectAll=False,
                 selection=selection,
@@ -2786,8 +2787,8 @@ class LeoFind:
                 result.append(f"[{option}]")
                 break
         return f"Find: {' '.join(result)}"
-    #@+node:ekr.20150619070602.1: *4* find.showStatus
-    def showStatus(self, found):
+    #@+node:ekr.20150619070602.1: *4* find.show_status
+    def show_status(self, found):
         """Show the find status the Find dialog, if present, and the status line."""
         c = self.c
         status = 'found' if found else 'not found'

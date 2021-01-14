@@ -781,7 +781,7 @@ class VimCommands:
     def update_selection_after_search(self):
         """
         Extend visual mode's selection after a search.
-        Called from leoFind.showSuccess.
+        Called from leoFind.show_success.
         """
         if self.state == 'visual':
             w = self.w
@@ -1423,7 +1423,7 @@ class VimCommands:
             old_node_only = fc.node_only
             fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
-                # leoFind.showSuccess calls update_selection_after_search().
+                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             self.done(add_to_dot=False, set_dot=False)
         else:
@@ -1463,7 +1463,7 @@ class VimCommands:
             old_node_only = fc.node_only
             fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
-                # leoFind.showSuccess calls update_selection_after_search().
+                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             fc.reverse = False
             self.done(add_to_dot=False, set_dot=False)
@@ -2010,7 +2010,7 @@ class VimCommands:
                     # Doesn't work.
                 fc.start_search1(vc.event)
                     # This returns immediately, before the actual search.
-                    # leoFind.showSuccess calls vc.update_selection_after_search.
+                    # leoFind.show_success calls vc.update_selection_after_search.
                 if c.vim_mode:
                     vc.done(add_to_dot=False, set_dot=False)
             elif c.vim_mode:
