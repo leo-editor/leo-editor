@@ -2897,23 +2897,15 @@ class TestFind(unittest.TestCase):
 
     #@+node:ekr.20210110073117.57: *4* TestFind.setUp & tearDown
     def setUp(self):
-        
-        # app.end_find defines another DummyFTM class.
-        class DummyFTM:
-            def __init__(c):
-                self.c = c
-                self.pattern = ''
-            def getFindText(self):
-                return self.pattern
-            def getReplaceText(self):
-                return ''
-        
+
         # pylint: disable=import-self
         from leo.core import leoFind
+        from leo.plugins.qt_frame import FindTabManager
+
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
         self.x = leoFind.LeoFind(c)
-        self.x.ftm = DummyFTM(c)
+        self.x.ftm = FindTabManager(c)
         self.settings = self.x.default_settings()
         self.make_test_tree()
 
