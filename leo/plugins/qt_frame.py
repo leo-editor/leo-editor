@@ -980,9 +980,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@-others
         #@-others
         EventWrapper(
-            c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
+            c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
         EventWrapper(
-            c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
+            c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
@@ -1111,10 +1111,10 @@ class FindTabManager:
         s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
-    #@+node:ekr.20210110143917.1: *3* ftm.get_settings (new)
+    #@+node:ekr.20210110143917.1: *3* ftm.get_settings
     def get_settings(self):
         """
-        Return the value of all settings in a g.bunch.
+        Return a g.bunch representing all widget values.
         
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
@@ -1124,8 +1124,8 @@ class FindTabManager:
             change_text = self.find_replacebox.text(),
             # Find options...
             ignore_case = self.check_box_ignore_case.isChecked(),
-            mark_changes = self.check_box_mark_changes.isChecked(),  ### Add to default_settings.
-            mark_finds = self.check_box_mark_finds.isChecked(),  ### Add to default_settings.
+            mark_changes = self.check_box_mark_changes.isChecked(),
+            mark_finds = self.check_box_mark_finds.isChecked(),
             node_only = self.radio_button_node_only.isChecked(),
             pattern_match = self.check_box_regexp.isChecked(),
             # reverse = False,
