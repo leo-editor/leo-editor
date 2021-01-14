@@ -2895,12 +2895,22 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.57: *4* TestFind.setUp & tearDown
     def setUp(self):
         
+        # app.end_find defines another DummyFTM class.
+        class DummyFTM:
+            def __init__(c):
+                self.c = c
+                self.pattern = ''
+            def getFindText(self):
+                return self.pattern
+            def getReplaceText(self):
+                return ''
+        
         # pylint: disable=import-self
         from leo.core import leoFind
         g.unitTesting = True
-        self.c = leoTest2.create_app()
-        self.x = leoFind.LeoFind(self.c)
-        self.x.ftm = g.TracingNullObject(tag='x.ftm') ###
+        self.c = c = leoTest2.create_app()
+        self.x = leoFind.LeoFind(c)
+        self.x.ftm = DummyFTM(c)
         self.settings = self.x.default_settings()
         self.make_test_tree()
 
@@ -2926,7 +2936,6 @@ class TestFind(unittest.TestCase):
             assert p.level() == level, (p.level(), level, p.h)
             # print(' '*p.level(), p.h)
             # g.printObj(g.splitLines(p.b), tag=p.h)
-    #@+node:ekr.20210113091851.1: *3* Disabled tests
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
     #@+node:ekr.20210110073117.60: *4* TestFind.clone-find-all
     def test_clone_find_all(self):
