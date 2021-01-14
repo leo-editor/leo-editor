@@ -1036,7 +1036,7 @@ class LeoBrowserApp(flx.PyComponent):
             fc.pattern_match = False
             fc.in_headline = False
             fc.search_body = True
-            fc.was_in_headline = False
+            ### fc.was_in_headline = False
             fc.wrapping = False
         # Do the search.
         fc.findNext()
