@@ -970,7 +970,6 @@ class StringFindTabManager:
 
             def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
                 val = w.isChecked()
-                find.radioButtonsChanged = True
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)

@@ -11995,10 +11995,12 @@ for command in table:
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
-    'batch', 'ignore_case', 'node_only', 'pattern_match',
+    # 'batch',  # 'wrap', 
+    'ignore_case', 'node_only', 'pattern_match',
+    'reverse', 
     'search_headline', 'search_body', 'suboutline_only',
-    'mark_changes', 'mark_finds', 'reverse', 'whole_word',
-    # 'wrap', 
+    'mark_changes', 'mark_finds', 'whole_word',
+   
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
