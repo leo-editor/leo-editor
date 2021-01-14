@@ -1644,13 +1644,6 @@ class LeoFind:
         # None is a signal to self.init_next_text()
         self.errors = 0
         if w:
-            if 1: ### Experimental
-                s = w.getAllText()
-                self.s_ctrl.setAllText(s)
-                ins = w.getInsertPoint()
-                sel = w.getSelectionRange()
-                i, j = sel
-                self.s_ctrl.setSelectionRange(i, j, insert=ins)
             c.widgetWantsFocus(w)
         # Leo 6.4: suboutline-only and node-only apply only to batch searches.
         self.onlyPosition = None
