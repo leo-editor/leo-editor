@@ -1426,6 +1426,8 @@ class LeoFind:
             else:
                 p.moveToThreadNext()
             assert p != progress
+        self.ftm.set_radio_button('entire-outline')
+        self.node_only = self.suboutline_only = False
         if clones:
             undoData = u.beforeInsertNode(c.p)
             found = self._cfa_create_nodes(clones, flattened=False)
@@ -1561,6 +1563,8 @@ class LeoFind:
                     p.b = new_b
             if count_h or count_b:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
+        self.ftm.set_radio_button('entire-outline')
+        self.node_only = self.suboutline_only = False
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
@@ -2507,7 +2511,8 @@ class LeoFind:
         # Handle the results of the search.
         if pos is not None:  # success.
             w = self.show_success(p, pos, newpos, showState=False)
-            if w: i, j = w.getSelectionRange(sort=False)
+            if w:
+                i, j = w.getSelectionRange(sort=False)
             if not again:
                 self.push(c.p, i, j, self.in_headline)
         else:
