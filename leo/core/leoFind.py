@@ -1476,19 +1476,25 @@ class LeoFind:
         return False
     #@+node:ekr.20031218072017.3074: *4* find.do_find_next (convert to settings)
     def do_find_next(self):
-        """Find the next instance of the pattern."""
+        """
+        Find the next instance of the pattern.
+        
+        Return True (for vim-mode) if a match was found.
+        
+        """
         p = self.c.p
         if not self.check_args('find-next'):
-            return False  # for vim-mode find commands.
+            return False
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
         if pos is None:
+            # Failure: restore previous position.
             self.restore(data)
             self.showStatus(False)
-            return False  # for vim-mode find commands.
+            return False
         self.showSuccess(p, pos, newpos)
         self.showStatus(True)
-        return True  # for vim-mode find commands.
+        return True
     #@+node:ekr.20131117164142.17016: *4* find.do_replace_all & helpers
     def do_replace_all(self, settings=None):  ### To do: use settings.
         c = self.c
