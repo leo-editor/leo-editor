@@ -321,7 +321,7 @@ class LeoFind:
         else:
             find_pattern = word + ' ='
         find.find_text = find_pattern
-        ftm.setFindText(find_pattern)
+        ftm.set_find_text(find_pattern)
         # Save previous settings.
         find.saveBeforeFindDef(p)
         find.setFindDefOptions(p)
@@ -343,7 +343,7 @@ class LeoFind:
             if word2:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
-                ftm.setFindText(find_pattern)
+                ftm.set_find_text(find_pattern)
                 if use_cff:
                     count = self._find_def_cff()
                     found = count > 0
@@ -496,18 +496,22 @@ class LeoFind:
     @cmd('find-next')
     def findNextCommand(self, event=None):
         """The find-next command."""
-        self.update_ivars()
+        # Setting...
+        self.find_text = self.ftm.get_find_text()
+        self.change_text = self.ftm.get_change_text()
         self.initInHeadline()
+        # Gui...
         self.initInteractiveCommands()
         self.do_find_next()
     #@+node:ekr.20031218072017.3064: *4* find.find-prev (revise)
     @cmd('find-prev')
     def find_prev(self, event=None):
         """Handle F2 (find-previous)"""
-        ### assert settings
-        ### self.init(settings)
-        self.update_ivars()
+        # Settings...
+        self.find_text = self.ftm.get_find_text()
+        self.change_text = self.ftm.get_change_text()
         self.initInHeadline()
+        # Gui...
         self.initInteractiveCommands()
         self.do_find_prev(None)  ### To do.
         
@@ -563,7 +567,7 @@ class LeoFind:
         # #1436: Make make sure there is a significant search pattern.
         s = w.getSelectedText()
         if s.strip():
-            ftm.setFindText(s)
+            ftm.set_find_text(s)
             ftm.init_focus()
     #@+node:ekr.20031218072017.3068: *4* find.replace
     @cmd('replace')
@@ -757,8 +761,8 @@ class LeoFind:
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.ftm.setChangeText(change_pattern)
+        self.ftm.set_find_text(find_pattern)
+        self.ftm.set_change_text(change_pattern)
         self.init_vim_search(find_pattern)
         # Gui...
         k.clearState()
@@ -793,7 +797,7 @@ class LeoFind:
         c, k, w = self.c, self.k, self.w
         # Settings...
         pattern = k.arg
-        self.ftm.setFindText(pattern)
+        self.ftm.set_find_text(pattern)
         self.init_vim_search(pattern)
         settings = self.get_settings()
         # Gui...
@@ -845,7 +849,7 @@ class LeoFind:
         c, k, w = self.c, self.k, self.w
         # Settings...
         pattern = k.arg
-        self.ftm.setFindText(pattern)
+        self.ftm.set_find_text(pattern)
         self.init_vim_search(pattern)
         c.widgetWantsFocusNow(w)
         settings = self.get_settings()
@@ -961,13 +965,16 @@ class LeoFind:
 
     def interactive_find_all1(self, event=None):
         k = self.k
-        self.updateFindList(k.arg)
+        # Settings.
+        find_pattern = k.arg
+        self.ftm.set_find_text(find_pattern)
+        self.find_text = find_pattern
+        self.change_text = self.ftm.get_change_text()
+        self.updateFindList(find_pattern)
+        # Gui...
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-        pattern = k.arg
-        self.ftm.setFindText(pattern)
-        self.update_ivars()
         self.do_find_all()
         
     def find_all_escape_handler(self, event):
@@ -986,8 +993,8 @@ class LeoFind:
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.ftm.setChangeText(change_pattern)
+        self.ftm.set_find_text(find_pattern)
+        self.ftm.set_change_text(change_pattern)
         self.init_vim_search(find_pattern)
         # Gu...
         k.clearState()
@@ -1109,11 +1116,12 @@ class LeoFind:
         
     def interactive_find_all_unique_regex1(self, event=None):
         k = self.k
-        find_pattern = k.arg
         # Settings...
+        find_pattern = k.arg
         self.updateFindList(find_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.update_ivars()
+        self.ftm.set_find_text(find_pattern)
+        self.find_text = find_pattern
+        self.change_text = self.ftm.get_change_text()
         # Gui...
         k.clearState()
         k.resetLabel()
@@ -1134,8 +1142,8 @@ class LeoFind:
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.ftm.setChangeText(change_pattern)
+        self.ftm.set_find_text(find_pattern)
+        self.ftm.set_change_text(change_pattern)
         self.init_vim_search(find_pattern)
         # Gui...
         k.clearState()
@@ -1216,12 +1224,13 @@ class LeoFind:
         # Settings...
         find_pattern = k.arg
         self.updateFindList(find_pattern)
-        self.ftm.setFindText(find_pattern)
+        self.ftm.set_find_text(find_pattern)
         self.init_vim_search(find_pattern)
-        self.update_ivars()
+        self.find_text = find_pattern
+        self.change_text = self.ftm.get_change_text()
         self.initInHeadline()
-        self.initInteractiveCommands()
         # Gui...
+        self.initInteractiveCommands()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
@@ -1238,8 +1247,10 @@ class LeoFind:
         self._sString = find_pattern = k.arg
         # Settings.
         k.getArgEscapeFlag = False
-        self.ftm.setFindText(find_pattern)
+        self.ftm.set_find_text(find_pattern)
         self.updateFindList(find_pattern)
+        self.find_text = find_pattern
+        self.change_text = self.ftm.get_change_text()
         # Gui...
         regex = ' Regex' if self.pattern_match else ''
         backward = ' Backward' if self.reverse else ''
@@ -1254,13 +1265,12 @@ class LeoFind:
         find_pattern = self._sString
         change_pattern = k.arg
         self.updateChangeList(change_pattern)
-        self.ftm.setFindText(find_pattern)
-        self.ftm.setChangeText(change_pattern)
+        self.ftm.set_find_text(find_pattern)
+        self.ftm.set_change_text(change_pattern)
         self.init_vim_search(find_pattern)
-        self.update_ivars()
         self.initInHeadline()
-        self.initInteractiveCommands()
         # Gui...
+        self.initInteractiveCommands()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
@@ -1504,8 +1514,11 @@ class LeoFind:
     #@+node:ekr.20131117164142.17016: *4* find.do_replace_all & helpers
     def do_replace_all(self, settings=None):  ### To do: use settings.
         c = self.c
-        self.update_ivars()
+        # Settings...
+        self.find_text = self.ftm.get_find_text()
+        self.change_text = self.ftm.get_change_text()
         self._change_all_helper()
+        #
         # Bugs #947, #880 and #722:
         # Set ancestor @<file> nodes by brute force.
         for p in c.all_positions():
@@ -2357,23 +2370,6 @@ class LeoFind:
             g.app.gui.show_find_success(c, self.in_headline, insert, p)
         c.frame.bringToFront()
         return w  # Support for isearch.
-    #@+node:ekr.20031218072017.1460: *4* find.update_ivars
-    def update_ivars(self):
-        """Update ivars from the find panel."""
-        ftm = self.ftm
-        # The caller is responsible for removing most trailing cruft.
-        # Among other things, this allows Leo to search for a single trailing space.
-        s = ftm.getFindText()
-        s = g.checkUnicode(s)
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        self.find_text = s
-        # Get replacement text.
-        s = ftm.getReplaceText()
-        s = g.checkUnicode(s)
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        self.change_text = s
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     #@+node:ekr.20131117164142.16941: *5* find.isearchForward
@@ -2480,8 +2476,9 @@ class LeoFind:
         if not pattern:
             self.abortSearch()
             return
-        # Get the base ivars from the find tab.
-        self.update_ivars()
+        # Settings...
+        self.find_text = self.ftm.get_find_text()
+        self.change_text = self.ftm.get_change_text()
         # Save
         oldPattern = self.find_text
         oldRegexp = self.pattern_match
@@ -2647,7 +2644,7 @@ class LeoFind:
     def addFindStringToLabel(self, protect=True):
         c, k = self.c, self.c.k
         ftm = c.findCommands.ftm
-        s = ftm.getFindText()
+        s = ftm.get_find_text()
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]

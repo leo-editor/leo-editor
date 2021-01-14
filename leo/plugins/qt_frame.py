@@ -1087,27 +1087,30 @@ class FindTabManager:
         self.replace_then_find_button = None
         self.replace_all_button = None
     #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
-    def getFindText(self):
-        return self.find_findbox.text()
+    def get_find_text(self):
+        s = self.find_findbox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
 
-    def getReplaceText(self):
-        return self.find_replacebox.text()
+    def get_change_text(self):
+        s = self.find_replacebox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
 
-    getChangeText = getReplaceText
+    getChangeText = get_change_text
 
-    def setFindText(self, s):
+    def set_find_text(self, s):
         w = self.find_findbox
         s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
 
-    def setReplaceText(self, s):
+    def set_change_text(self, s):
         w = self.find_replacebox
         s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
-
-    setChangeText = setReplaceText
     #@+node:ekr.20210110143917.1: *3* ftm.get_settings (new)
     def get_settings(self):
         """
