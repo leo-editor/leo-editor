@@ -843,15 +843,16 @@ class LeoFind:
 
     def interactive_cff1(self, event):
         c, k, w = self.c, self.k, self.w
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
-        # Was self.generalSearchHelper
+        # Settings...
         pattern = k.arg
         self.ftm.setFindText(pattern)
         self.init_vim_search(pattern)
         c.widgetWantsFocusNow(w)
         settings = self.get_settings()
+        # Gui...
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
         count = self.do_clone_find_all(settings)
         if count:
             c.redraw()
@@ -1109,12 +1110,14 @@ class LeoFind:
     def interactive_find_all_unique_regex1(self, event=None):
         k = self.k
         find_pattern = k.arg
-        k.clearState()
-        k.resetLabel()
-        k.showStateAndMode()
+        # Settings...
         self.updateFindList(find_pattern)
         self.ftm.setFindText(find_pattern)
         self.update_ivars()
+        # Gui...
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
         return self.do_find_all()
         
     def interactive_change_all_unique_regex1(self, event):
