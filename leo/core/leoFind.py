@@ -408,10 +408,6 @@ class LeoFind:
         # Check.
         if not w:
             return None, None, None
-        ###
-        # word = self._init_find_def(event)
-        # if not word:
-            # return
         save_sel = w.getSelectionRange()
         ins = w.getInsertPoint()
         # Always start in the root position.
@@ -579,9 +575,20 @@ class LeoFind:
     def find_next(self, event=None):  # pragma: no cover (cmd)
         """The find-next command."""
         # Settings...
+        c, p = self.c, self.c.p
         self.reverse = False
         self.init_in_headline()  # Required.
         settings = self.ftm.get_settings()
+        ### Init s_ctrl.
+        if self.in_headline:
+            ins = 0 ### For now, start searching headline at 0.
+        else:
+            w = event.w or c.frame.body.wrapper
+            ins = w.getInsertPoint()
+        s = p.h if self.in_headline else p.b
+        # g.trace(f"ins: {ins:4} len(s): {len(s)} {p.h}") ###
+            # f"{settings.find_text:>30} "
+        self.init_s_ctrl(s, ins=ins)
         # Do the command!
         self.do_find_next(settings)
     #@+node:ekr.20031218072017.3074: *5* find.do_find_next (test)
@@ -611,10 +618,19 @@ class LeoFind:
     @cmd('find-prev')
     def find_prev(self, event=None):  # pragma: no cover (cmd)
         """Handle F2 (find-previous)"""
+        c, p = self.c, self.c.p
         # Settings...
         self.reverse = True
         self.init_in_headline()
         settings = self.ftm.get_settings()
+        ### Init s_ctrl.
+        if self.in_headline:
+            ins = 0 ### For now, start searching headline at 0.
+        else:
+            w = event.w or c.frame.body.wrapper
+            ins = w.getInsertPoint()
+        s = p.h if self.in_headline else p.b
+        self.init_s_ctrl(s, ins=ins)
         # Do the command!
         self.do_find_prev(settings)
         
@@ -1655,6 +1671,7 @@ class LeoFind:
         self.init_vim_search(find_pattern)
         self.init_in_headline() # Required.
         settings = self.ftm.get_settings()
+        ### g.trace(settings)  ###
         # Gui...
         self._init_interactive_command()
         k.clearState()
@@ -1798,7 +1815,7 @@ class LeoFind:
             ok = self.compile_pattern()
             if not ok: return 0
         if self.suboutline_only:
-            p = settings.p.copy()
+            p = c.p  ### settings.p.copy()
             after = p.nodeAfterTree()
         else:
             p = c.rootPosition()
@@ -2107,7 +2124,7 @@ class LeoFind:
             self.search_headline and self.search_body and (
             (self.reverse and not self.in_headline) or
             (not self.reverse and self.in_headline)))
-    #@+node:ekr.20131123132043.16477: *4* find.init_next_text
+    #@+node:ekr.20131123132043.16477: *4* find.init_next_text (only when search fails)
     def init_next_text(self, p):
         """
         Init s_ctrl when a search fails. On entry:
@@ -2375,7 +2392,7 @@ class LeoFind:
                 p = p.lastNode()
         # Set widget.
         s = p.h if self.in_headline else p.b
-        self.init_s_ctrl(s, ins=0)
+        self.init_s_ctrl(s, ins=0)  # Starting from 0 is correct.
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
     def init_in_headline(self):
         """
