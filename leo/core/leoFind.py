@@ -1815,7 +1815,7 @@ class LeoFind:
             ok = self.compile_pattern()
             if not ok: return 0
         if self.suboutline_only:
-            p = c.p  ### settings.p.copy()
+            p = c.p
             after = p.nodeAfterTree()
         else:
             p = c.rootPosition()
