@@ -333,7 +333,7 @@ class LeoFind:
             ('pattern_match', False),
             ('reverse', False),
             ('search_body', True),
-            ('search_headine', False),
+            ('search_headline', False),
             ('whole_word', True),
         )
         for attr, val in table:
@@ -364,8 +364,8 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20150629125733.1: *5* find._find_def_var & helpers
-    def _find_def_var(self, settings, word, def_flag):
+    #@+node:ekr.20150629125733.1: *5* find._def_var & helpers
+    def _def_var(self, settings, word, def_flag):
         """
         Find the definition of the class, def or var under the cursor.
         
@@ -417,7 +417,7 @@ class LeoFind:
                     while True:
                         p, pos, newpos = self.find_next_match(p)
                         found = pos is not None
-                        if not found or not g.inAtNosearch(c.p):
+                        if not found or not g.inAtNosearch(p):  ### was c.p.
                             break
         if found and self.use_cff:
             last = c.lastTopLevel()
@@ -429,13 +429,19 @@ class LeoFind:
             else:
                 c.selectPosition(last)
         if found:
-            self.find_seen.add(c.p.v)
-            self._restore_after_find_def()  # Avoid massive confusion!
+            self.find_seen.add(p.v)  # Was c.p.v.
+            g.trace('FOUND', word, p.h)
+            ### c.selectPosition(p)
+            c.redraw(p)
+            w.setSelectionRange(pos, newpos, insert=newpos)
+            c.bodyWantsFocusNow()
             return p, pos, newpos
-        c.selectPosition(old_p)
-        self._restore_after_find_def()
+        # 
+        g.trace('NOT FOUND', word)
+        self._restore_after_find_def()  # Avoid massive confusion!
+        ### c.selectPosition(old_p)
         i, j = save_sel
-        c.redraw()
+        c.redraw(old_p)
         w.setSelectionRange(i, j, insert=ins)
         c.bodyWantsFocusNow()
         return None, None, None
@@ -531,11 +537,11 @@ class LeoFind:
     #@+node:ekr.20210114204508.1: *5* find.do_find_def
     def do_find_def(self, settings, word):
         """A standalone helper for unit tests."""
-        return self._find_def_var(settings, word, def_flag=True)
+        return self._def_var(settings, word, def_flag=True)
     #@+node:ekr.20210114204529.1: *5* find.do_find_var
     def do_find_var(self, settings, word):
         """A standalone helper for unit tests."""
-        return self._find_def_var(settings, word, def_flag=False)
+        return self._def_var(settings, word, def_flag=False)
         
     #@+node:ekr.20031218072017.3063: *4* find.find-next & do_find_next
     @cmd('find-next')
@@ -3136,7 +3142,7 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.66: *4* TestFind.find-var
     def test_find_var(self):
         settings, x = self.settings, self.x
-        settings.find_text = r'v5'
+        settings.find_text = r'child5'
         p, pos, newpos = x.do_find_var(settings, word='child5')
         assert p and p.h == 'child 5', repr(p)
         s = p.b[pos:newpos]
