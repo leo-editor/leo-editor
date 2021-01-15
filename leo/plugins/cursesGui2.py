@@ -844,7 +844,7 @@ class StringFindTabManager:
     '''A helper class for the LeoFind class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
-    #@+node:ekr.20171128051435.2: *4*  ftm.ctor
+    #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
         '''Ctor for the FindTabManager class.'''
         self.c = c

@@ -122,6 +122,12 @@ class LeoFind:
         self.onlyPosition = None
         self.reverse = False
         self.unique_matches = set()
+        #
+        # User settings.
+        self.ignore_dups = None
+        self.minibuffer_mode = None
+        self.use_cff = None
+        self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self):
         """Return a dict representing all default settings."""
@@ -153,7 +159,7 @@ class LeoFind:
         # New in 4.11.1.
         # Must be called when config settings are valid.
         c = self.c
-        self.reloadSettings()
+        self.reload_settings()
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
         dw = c.frame.top
@@ -193,12 +199,13 @@ class LeoFind:
     def init_settings(self, settings):
         """Initialize all user settings."""
         
-    #@+node:ekr.20171113164709.1: *4* find.reloadSettings
-    def reloadSettings(self):
-        """LeoFind.reloadSettings."""
+    #@+node:ekr.20171113164709.1: *4* find.reload_settings
+    def reload_settings(self):
+        """LeoFind.reload_settings."""
         c = self.c
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+        self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper)
     def batch_change(self, root, replacements, settings=None):
         """
@@ -281,43 +288,43 @@ class LeoFind:
     @cmd('find-def')
     def find_def(self, event=None):
         """Find the def or class under the cursor."""
-        self.do_find_def(event, defFlag=True)
+        p = self.c.p
+        # Check.
+        word = self._compute_find_def_word(event)
+        if not word:
+            return
+        # Settings...
+        prefix = 'class' if word[0].isupper() else 'def'
+        find_pattern = prefix + ' ' + word
+        self._save_before_find_def(p)  # Save previous settings.
+        self.init_vim_search(find_pattern)
+        self.updateChangeList(self.change_text)  # Optional. An edge case.
+        settings = self._compute_find_def_settings(find_pattern)
+        self.find_seen = set()
+        # Do the command!
+        self.do_find_def(settings, word)
 
     @cmd('find-var')
     def find_var(self, event=None):
         """Find the var under the cursor."""
-        self.do_find_def(event, defFlag=False)
-    #@+node:ekr.20150629125733.1: *5* find.do_find_def & helpers
-    def do_find_def(self, event, defFlag):
-        """Find the definition of the class, def or var under the cursor."""
-        c, find, ftm = self.c, self, self.ftm
-        w = c.frame.body.wrapper
-        # Check.
-        if not w:
-            return
-        word = self._init_find_def(event)
+        p = self.c.p
+        # Check...
+        word = self._compute_find_def_word(event)
         if not word:
             return
-        save_sel = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        # Always start in the root position.
-        old_p = c.p
-        p = c.rootPosition()
-        # Required.
-        c.selectPosition(p)
-        c.redraw()
-        c.bodyWantsFocusNow()
-        # Set up the search.
-        if defFlag:
-            prefix = 'class' if word[0].isupper() else 'def'
-            find_pattern = prefix + ' ' + word
-        else:
-            find_pattern = word + ' ='
-        # Save previous settings.
-        find._save_before_find_def(p)
-        # Update settings data.
+        # Settings...
+        find_pattern = word + ' ='
+        self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.updateChangeList(self.change_text)  # Optional. An edge case.
+        settings = self._compute_find_def_settings(find_pattern)
+        self.find_seen = set()
+        # Do the command!
+        self.do_find_var(settings, word)
+        
+    #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
+    def _compute_find_def_settings(self, find_pattern):
+        
         settings = self.default_settings()
         table = (
             ('change_text', ''),
@@ -336,10 +343,56 @@ class LeoFind:
             # Set the values.
             setattr(self, attr, val)
             settings [attr] = val
-        self.find_seen = set()
-        use_cff = c.config.getBool('find-def-creates-clones', default=False)
+        return settings
+    #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
+    def _compute_find_def_word(self, event):
+        """Init the find-def command. Return the word to find or None."""
+        c = self.c
+        w = c.frame.body.wrapper
+        # First get the word.
+        c.bodyWantsFocusNow()
+        if not w.hasSelection():
+            c.editCommands.extendToWord(event, select=True)
+        word = w.getSelectedText().strip()
+        if not word:
+            return None
+        if keyword.iskeyword(word):
+            return None
+        # Return word, stripped of preceding class or def.
+        for tag in ('class ', 'def '):
+            found = word.startswith(tag) and len(word) > len(tag)
+            if found:
+                return word[len(tag) :].strip()
+        return word
+    #@+node:ekr.20150629125733.1: *5* find._find_def_var & helpers
+    def _find_def_var(self, settings, word, def_flag):
+        """
+        Find the definition of the class, def or var under the cursor.
+        
+        return p, pos, newpos for unit tests.
+        """
+        c, find, ftm = self.c, self, self.ftm
+        prefix = 'class' if word[0].isupper() else 'def'
+        w = c.frame.body.wrapper
+        # Check.
+        if not w:
+            return None, None, None
+        ###
+        # word = self._init_find_def(event)
+        # if not word:
+            # return
+        save_sel = w.getSelectionRange()
+        ins = w.getInsertPoint()
+        # Always start in the root position.
+        old_p = c.p
+        p = c.rootPosition()
+        # Required.
+        c.selectPosition(p)
+        c.redraw()
+        c.bodyWantsFocusNow()
+        ###
         count = 0
-        if use_cff:
+        if self.use_cff:
             count = find._find_def_cff()
             found = count > 0
         else:
@@ -349,14 +402,14 @@ class LeoFind:
                 found = pos is not None
                 if not found or not g.inAtNosearch(c.p):
                     break
-        if not found and defFlag:
+        if not found and def_flag:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
             word2 = self.switch_style(word)
             if word2:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
                 ftm.set_find_text(find_pattern)
-                if use_cff:
+                if self.use_cff:
                     count = self._find_def_cff()
                     found = count > 0
                 else:
@@ -366,7 +419,7 @@ class LeoFind:
                         found = pos is not None
                         if not found or not g.inAtNosearch(c.p):
                             break
-        if found and use_cff:
+        if found and self.use_cff:
             last = c.lastTopLevel()
             if count == 1:
                 # It's annoying to create a clone in this case.
@@ -378,13 +431,14 @@ class LeoFind:
         if found:
             self.find_seen.add(c.p.v)
             self._restore_after_find_def()  # Avoid massive confusion!
-        else:
-            c.selectPosition(old_p)
-            self._restore_after_find_def()
-            i, j = save_sel
-            c.redraw()
-            w.setSelectionRange(i, j, insert=ins)
-            c.bodyWantsFocusNow()
+            return p, pos, newpos
+        c.selectPosition(old_p)
+        self._restore_after_find_def()
+        i, j = save_sel
+        c.redraw()
+        w.setSelectionRange(i, j, insert=ins)
+        c.bodyWantsFocusNow()
+        return None, None, None
     #@+node:ekr.20210112195456.1: *6* find._find_def_cff
     def _find_def_cff(self):
         c = self.c
@@ -445,27 +499,6 @@ class LeoFind:
                 search_headline=self.search_headline,
                 whole_word=self.whole_word,
             )
-    #@+node:ekr.20150629084611.1: *6* find._init_find_def
-    def _init_find_def(self, event):
-        """Init the find-def command. Return the word to find or None."""
-        c = self.c
-        w = c.frame.body.wrapper
-        # First get the word.
-        c.bodyWantsFocusNow()
-        w = c.frame.body.wrapper
-        if not w.hasSelection():
-            c.editCommands.extendToWord(event, select=True)
-        word = w.getSelectedText().strip()
-        if not word:
-            return None
-        if keyword.iskeyword(word):
-            return None
-        # Return word, stripped of preceding class or def.
-        for tag in ('class ', 'def '):
-            found = word.startswith(tag) and len(word) > len(tag)
-            if found:
-                return word[len(tag) :].strip()
-        return word
     #@+node:ekr.20180511045458.1: *6* find.switch_style
     def switch_style(self, word):
         """
@@ -495,6 +528,15 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
+    #@+node:ekr.20210114204508.1: *5* find.do_find_def
+    def do_find_def(self, settings, word):
+        """A standalone helper for unit tests."""
+        return self._find_def_var(settings, word, def_flag=True)
+    #@+node:ekr.20210114204529.1: *5* find.do_find_var
+    def do_find_var(self, settings, word):
+        """A standalone helper for unit tests."""
+        return self._find_def_var(settings, word, def_flag=False)
+        
     #@+node:ekr.20031218072017.3063: *4* find.find-next & do_find_next
     @cmd('find-next')
     def find_next(self, event=None):
@@ -878,7 +920,8 @@ class LeoFind:
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
-        g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
+        if not g.unitTesting:
+            g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -2236,7 +2279,8 @@ class LeoFind:
             self.re_obj = re.compile(s, flags)
             return True
         except Exception:
-            g.warning('invalid regular expression:', self.find_text)
+            if not g.unitTesting:
+                g.warning('invalid regular expression:', self.find_text)
             self.errors += 1  # Abort the search.
             return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
@@ -2281,7 +2325,7 @@ class LeoFind:
         # Select the first node.
         if self.suboutline_only or self.node_only:
             # #188: Find/Replace All Suboutline only same as Node only.
-            self.onlyPosition = c.p
+            self.onlyPosition = p = c.p
         else:
             self.onlyPosition = None
             p = c.rootPosition()
@@ -3062,7 +3106,7 @@ class TestFind(unittest.TestCase):
         root = c.rootPosition()
         settings.find_text = 'child5'
         # Test 1.
-        p, pos, newpos = x.find_def(settings)
+        p, pos, newpos = x.do_find_def(settings, word='child5')
         assert p and p.h == 'child 5'
         s = p.b[pos:newpos]
         assert s == 'def child5', repr(s)
@@ -3079,7 +3123,7 @@ class TestFind(unittest.TestCase):
         settings, x = self.settings, self.x
         settings.find_text = 'child5'
         # Test 1: Set p *without* use_cff.
-        p, pos, newpos = x.find_def(settings)
+        p, pos, newpos = x.do_find_def(settings, 'child5')
         assert p and p.h == 'child 5'
         s = p.b[pos:newpos]
         assert s == 'def child5', repr(s)
@@ -3093,7 +3137,7 @@ class TestFind(unittest.TestCase):
     def test_find_var(self):
         settings, x = self.settings, self.x
         settings.find_text = r'v5'
-        p, pos, newpos = x.find_var(settings)
+        p, pos, newpos = x.do_find_var(settings, word='child5')
         assert p and p.h == 'child 5', repr(p)
         s = p.b[pos:newpos]
         assert s == 'v5 =', repr(s)
@@ -3336,10 +3380,10 @@ class TestFind(unittest.TestCase):
         x.do_clone_find_all(settings)
         x.do_clone_find_all_flattened(settings)
         x.do_find_all(settings)
-        x.find_def(settings)
-        x.find_var(settings)
+        x.do_find_def(settings, word='xyzzy')
+        x.do_find_var(settings, word='xyzzy')
         x.do_find_next(settings)
-        x.find_next_match(p=None)
+        x.do_find_next(settings)
         x.do_find_prev(settings)
         x.do_change_all(settings)
         x.do_change_then_find(settings)
