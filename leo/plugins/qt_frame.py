@@ -1097,6 +1097,7 @@ class FindTabManager:
         s = self.find_replacebox.text()
         if s and s[-1] in ('\r', '\n'):
             s = s[:-1]
+        return s
 
     getChangeText = get_change_text
 

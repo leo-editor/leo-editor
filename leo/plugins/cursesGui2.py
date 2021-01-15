@@ -46,6 +46,7 @@ try:
     import curses
 except ImportError:
     curses = None
+# Third-party imports
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
 from leo.external.npyscreen.wgwidget import (

@@ -206,7 +206,7 @@ class LeoFind:
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
         self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
-    #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper)
+    #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self, root, replacements, settings=None):
         """
         Support batch change scripts.
@@ -229,7 +229,7 @@ class LeoFind:
                 c.save()
         """
         try:
-            self.init_from_dict(settings or {})
+            self._init_from_dict(settings or {})
             count = 0
             for find, change in replacements:
                 count += self._batch_change_helper(root, find, change)
@@ -283,10 +283,41 @@ class LeoFind:
         u.afterChangeGroup(p1, undoType, reportFlag=True)
         print(f"{count:3}: {find_text:>30} => {change_text}")
         return count
+    #@+node:ekr.20210108083003.1: *4* find._init_from_dict
+    def _init_from_dict(self, settings):
+        """Initialize ivars from settings (a dict or g.Bunch)."""
+        # The valid ivars and reasonable defaults.
+        valid = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,  # Seems safest.  ### Was True !!!
+            whole_word=True,
+        )
+        # Set ivars to reasonable defaults.
+        for ivar in valid:
+            setattr(self, ivar, valid.get(ivar))
+        # Override ivars from settings.
+        errors = 0
+        for ivar in settings.keys():
+            if ivar in valid:
+                val = settings.get(ivar)
+                if val in (True, False):
+                    setattr(self, ivar, val)
+                else:
+                    g.trace("bad value: {ivar!r} = {val!r}")
+                    errors += 1
+            else:
+                g.trace(f"ignoring {ivar!r} setting")
+                errors += 1
+        if errors:
+            g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20150629084204.1: *4* find.find-def, find-var & helpers
     @cmd('find-def')
-    def find_def(self, event=None):
+    def find_def(self, event=None):  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
         p = self.c.p
         # Check.
@@ -545,7 +576,7 @@ class LeoFind:
         
     #@+node:ekr.20031218072017.3063: *4* find.find-next & do_find_next
     @cmd('find-next')
-    def find_next(self, event=None):
+    def find_next(self, event=None):  # pragma: no cover (cmd)
         """The find-next command."""
         # Settings...
         self.reverse = False
@@ -578,7 +609,7 @@ class LeoFind:
         return p, pos, newpos
     #@+node:ekr.20031218072017.3064: *4* find.find-prev & helper(test)
     @cmd('find-prev')
-    def find_prev(self, event=None):
+    def find_prev(self, event=None):  # pragma: no cover (cmd)
         """Handle F2 (find-previous)"""
         # Settings...
         self.reverse = True
@@ -605,7 +636,7 @@ class LeoFind:
             self.reverse = False
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
-    def focusToFind(self, event=None):
+    def focusToFind(self, event=None):  # pragma: no cover (cmd)
         c = self.c
         if c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
@@ -1925,7 +1956,7 @@ class LeoFind:
             if not g.unitTesting:  # pragma: no cover (skip)
                 g.warning('invalid regular expression:', self.find_text)
             return False
-    #@+node:ekr.20031218072017.3075: *4* find.find_next_match
+    #@+node:ekr.20031218072017.3075: *4* find.find_next_match & helpers
     def find_next_match(self, p):
         """
         Resume the search where it left off.
@@ -2003,6 +2034,9 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
+            if not self.onlyPosition:
+                g.trace('Can not happen: no onlyPosition', g.callers())
+                return False  # The show must go on.
             if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
                 return True
         if c.hoistStack:
@@ -2719,8 +2753,8 @@ class LeoFind:
     def addChangeStringToLabel(self):
         """Add an unprotected change string to the minibuffer label."""
         c = self.c
-        ftm = c.findCommands.ftm
-        s = ftm.getChangeText()
+        ### ftm = c.findCommands.ftm
+        s = self.ftm.get_change_text()
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]
@@ -2808,37 +2842,6 @@ class LeoFind:
     def helpForFindCommands(self, event=None):
         """Called from Find panel.  Redirect."""
         self.c.helpCommands.helpForFindCommands(event)
-    #@+node:ekr.20210108083003.1: *4* find.init_from_dict
-    def init_from_dict(self, settings):
-        """Initialize ivars from settings (a dict or g.Bunch)."""
-        # The valid ivars and reasonable defaults.
-        valid = dict(
-            ignore_case=False,
-            node_only=False,
-            pattern_match=False,
-            search_body=True,
-            search_headline=True,
-            suboutline_only=True,  # Seems safest.
-            whole_word=True,
-        )
-        # Set ivars to reasonable defaults.
-        for ivar in valid:
-            setattr(self, ivar, valid.get(ivar))
-        # Override ivars from settings.
-        errors = 0
-        for ivar in settings.keys():
-            if ivar in valid:
-                val = settings.get(ivar)
-                if val in (True, False):
-                    setattr(self, ivar, val)
-                else:
-                    g.trace("bad value: {ivar!r} = {val!r}")
-                    errors += 1
-            else:
-                g.trace(f"ignoring {ivar!r} setting")
-                errors += 1
-        if errors:
-            g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20210111082524.1: *4* find.init_vim_search
     def init_vim_search(self, pattern):
         """Initialize searches in vim mode."""
