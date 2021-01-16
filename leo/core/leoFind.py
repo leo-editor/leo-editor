@@ -575,25 +575,11 @@ class LeoFind:
     def find_next(self, event=None):  # pragma: no cover (cmd)
         """The find-next command."""
         # Settings...
-        ### c, p = self.c, self.c.p
         self.reverse = False
         self.init_in_headline()  # Required.
         settings = self.ftm.get_settings()
-        # Init s_ctrl.
-        self.init_interactive_command()
-        
-        ### Not good.
-            # ### Init s_ctrl.
-            # if self.in_headline:
-                # ins = 0 ### For now, start searching headline at 0.
-            # else:
-                # w = event.w or c.frame.body.wrapper
-                # ins = w.getInsertPoint()
-            # s = p.h if self.in_headline else p.b
-            # # g.trace(f"ins: {ins:4} len(s): {len(s)} {p.h}") ###
-                # # f"{settings.find_text:>30} "
-            # self.init_s_ctrl(s, ins=ins)
-            
+        # Init the search, so we don't get stuck.
+        self.init_interactive_command()    
         # Do the command!
         self.do_find_next(settings)
     #@+node:ekr.20031218072017.3074: *5* find.do_find_next (test)
@@ -623,23 +609,13 @@ class LeoFind:
     @cmd('find-prev')
     def find_prev(self, event=None):  # pragma: no cover (cmd)
         """Handle F2 (find-previous)"""
-        ### c, p = self.c, self.c.p
         # Settings...
         self.reverse = True
         self.init_in_headline()
         settings = self.ftm.get_settings()
-        # Init s_ctrl.
+        # Init the search, so we don't get stuck.
         self.init_interactive_command()
         
-        ### Not good.
-            # ### Init s_ctrl.
-            # if self.in_headline:
-                # ins = 0 ### For now, start searching headline at 0.
-            # else:
-                # w = event.w or c.frame.body.wrapper
-                # ins = w.getInsertPoint()
-            # s = p.h if self.in_headline else p.b
-            # self.init_s_ctrl(s, ins=ins)
         # Do the command!
         self.do_find_prev(settings)
         
@@ -2402,27 +2378,17 @@ class LeoFind:
             tree.killEditing()
         #
         # Make sure we make progress. Do not change this code!
+        # This is a lightly modified version of the legacy code.
         if ins is None:
             if self.reverse:
                 # Weird, but correct.
                 if i is not None and j is not None and i != j:
                     ins = min(i, j)
                 else:
-                    ins = len(s) if self.reverse else 0
+                    # Was in legacy init_s_ctrl.
+                    ins = len(s) if self.reverse else 0  
             else:
                 ins = 0
-            
-        ### Works
-            # if self.reverse:
-                # if ins is None:
-                    # # Weird, but correct. Do *not* change it.
-                    # if i is not None and j is not None and i != j:
-                        # ins = min(i, j)
-                    # else:
-                        # ins = len(s) if self.reverse else 0
-            # elif ins is None:
-                # ins = 0
-
         self.init_s_ctrl(s, ins)
         if 0: # An excellent trace
             g.trace(
