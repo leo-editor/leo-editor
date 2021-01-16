@@ -295,7 +295,7 @@ class LeoFind:
             pattern_match=False,
             search_body=True,
             search_headline=True,
-            suboutline_only=False,  # Seems safest.  ### Was True !!!
+            suboutline_only=False,  # Seems safest.  # Was True !!!
             whole_word=True,
         )
         # Set ivars to reasonable defaults.
@@ -419,7 +419,6 @@ class LeoFind:
         c.selectPosition(p)
         c.redraw()
         c.bodyWantsFocusNow()
-        ###
         count = 0
         if self.use_cff:
             count = find._find_def_cff()
@@ -446,7 +445,7 @@ class LeoFind:
                     while True:
                         p, pos, newpos = self.find_next_match(p)
                         found = pos is not None
-                        if not found or not g.inAtNosearch(p):  ### was c.p.
+                        if not found or not g.inAtNosearch(p):
                             break
         if found and self.use_cff:
             last = c.lastTopLevel()
@@ -459,16 +458,13 @@ class LeoFind:
                 c.selectPosition(last)
         if found:
             self.find_seen.add(p.v)  # Was c.p.v.
-            g.trace('FOUND', word, p.h)
-            ### c.selectPosition(p)
+            ### g.trace('FOUND', word, p.h)
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
             c.bodyWantsFocusNow()
             return p, pos, newpos
-        # 
         g.trace('NOT FOUND', word)
         self._restore_after_find_def()  # Avoid massive confusion!
-        ### c.selectPosition(old_p)
         i, j = save_sel
         c.redraw(old_p)
         w.setSelectionRange(i, j, insert=ins)
@@ -592,14 +588,11 @@ class LeoFind:
         """
         c, p = self.c, self.c.p
         work_w = self.s_ctrl
+        #
         # The gui widget may not exist for headlines.
         gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
-
-        # Init the search, so we don't get stuck.
-        
-        ###self.init_interactive_command()
-        
-        # Init the work widget.
+        #
+        # Init the work widgets, so we don't get stuck.
         s = p.h if self.in_headline else p.b
         ins = gui_w.getInsertPoint() if gui_w else 0
         work_w.setAllText(s)
@@ -607,6 +600,7 @@ class LeoFind:
         #
         # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
+        #
         # Leo 6.4: suboutline-only does not apply to interactive searches.
         self.onlyPosition = p if self.node_only else None
         self.suboutline_only = None
@@ -646,15 +640,11 @@ class LeoFind:
         try:
             self.reverse = True
             work_w = self.s_ctrl
+            #
             # The gui widget may not exist for headlines.
             gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
             #
             # Init the work widget, so we don't get stuck!
-            
-            ### Experimental.
-            ### self.init_interactive_command()
-
-            # Init the work widget.
             s = p.h if self.in_headline else p.b
             ins = gui_w.getInsertPoint() if gui_w else len(s)
             work_w.setAllText(s)
@@ -666,6 +656,8 @@ class LeoFind:
             # Leo 6.4: suboutline-only does not apply to interactive searches.
             self.onlyPosition = p if self.node_only else None
             self.suboutline_only = None
+            #
+            # Now check the args.
             if not self.check_args('find-prev'):
                 return None, None
             return self.do_find_next(settings)
@@ -1670,9 +1662,7 @@ class LeoFind:
         self.init_vim_search(find_pattern)
         self.init_in_headline() # Required.
         settings = self.ftm.get_settings()
-        ### g.trace(settings)  ###
         # Gui...
-        ### self.init_interactive_command()
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
@@ -1966,10 +1956,6 @@ class LeoFind:
                 return None, None, None
         while p:
             pos, newpos = self._fnm_search(p)
-            ###
-                # if self.errors:
-                    # g.trace('find errors')
-                    # break  # Abort the search.
             if pos is not None:
                 # Success.
                 if self.mark_finds:
@@ -1982,15 +1968,29 @@ class LeoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                self.init_next_text(p)
+                ### self.init_next_text(p)
+                self._fnm_advance(p)
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
-                    self.init_next_text(p)
+                    ### self.init_next_text(p)
+                    self._fnm_advance(p)
         return None, None, None
+    #@+node:ekr.20210116143126.1: *5* find._fnm_advance
+    def _fnm_advance(self, p):
+        """Init the work widget when a search fails."""
+        work_w = self.s_ctrl
+        s = p.h if self.in_headline else p.b
+        ins = len(s) if self.reverse else 0
+        work_w.setAllText(s)
+        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        if 0: # An excellent trace
+            g.trace(
+                f"head?: {self.in_headline:1} len(s): {len(s):4} ins: {ins!r:4} {p.h}")
+                # reverse? {self.reverse:1} 
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
@@ -2346,45 +2346,6 @@ class LeoFind:
         else:
             val = w_name.startswith('head')
         return val
-    #@+node:ekr.20131123132043.16477: *4* find.init_next_text
-    def init_next_text(self, p, ins=None):
-        """
-        Advance the insert point in s_ctrl past the last match.
-        
-        On entry:
-        - self.in_headline indicates what text to use.
-        - self.reverse indicates how to set the insertion point.
-        """
-        assert ins is None, g.callers() ###
-        work_w = self.s_ctrl
-        i, j = work_w.sel
-        # Use the new text, *not* self.s_ctrl!
-        s = p.h if self.in_headline else p.b
-        
-        ### What is this???
-            # tree = c.frame and c.frame.tree
-            # if tree and hasattr(tree, 'killEditing'):
-                # tree.killEditing()
-        #
-        # Make sure we make progress. Do not change this code!
-        # This is a lightly modified version of the legacy code.
-        ### ins_was_none = ins is None ###
-        if ins is None:
-            if self.reverse:
-                # Weird, but correct.
-                if i is not None and j is not None and i != j:
-                    ins = min(i, j)
-                else:
-                    ins = len(s) if self.reverse else 0  
-            else:
-                ins = 0
-        work_w.setAllText(s)
-        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
-        if False: # An excellent trace
-            g.trace(
-                # f"suboutline? {self.suboutline_only:1} node? {self.node_only:1} "
-                f"reverse? {self.reverse:1} head?: {self.in_headline:1} "
-                f" len(s): {len(s):4} ins: {ins!r:4} {p.h}") # i: {i:4} j: {j:4}
     #@+node:ekr.20031218072017.3084: *4* find.initBatchCommands
     def initBatchCommands(self):
         """
@@ -3452,17 +3413,6 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             print(' '*p.level(),  p.h, 'dirty', p.v.isDirty())
             # g.printObj(g.splitLines(p.b), tag=p.h)
-    #@+node:ekr.20210110073117.81: *4* TestFind.init_next_text
-    def test_init_next_text(self):
-        settings, x = self.settings, self.x
-        for reverse in (True, False):
-            settings.reverse = reverse
-            for in_head in (True, False):
-                settings.in_headline = in_head
-                x.init_ivars_from_settings(settings)
-                for sel in (0, 0), (0, 2):
-                    x.s_ctrl.sel = sel
-                    x.init_next_text(settings.p)
     #@+node:ekr.20210110073117.82: *4* TestFind.make_regex_subs (to do)
     def test_make_regex_subs(self):
         x = self.x
