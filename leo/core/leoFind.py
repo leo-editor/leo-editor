@@ -77,7 +77,6 @@ class LeoFind:
     def __init__(self, c):
         """Ctor for LeoFind class."""
         self.c = c
-        self.errors = 0
         self.expert_mode = False  # Set in finishCreate.
         self.ftm = None  # Created by dw.createFindTab.
         self.frame = None
@@ -593,6 +592,9 @@ class LeoFind:
         self.init_interactive_command()
         # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
+        # Leo 6.4: suboutline-only only applies to batch searches.
+        self.onlyPosition = None
+        self.suboutline_only = None
         if not self.check_args('find-next'):
             return None, None, None
         data = self.save()
@@ -629,6 +631,9 @@ class LeoFind:
             self.init_interactive_command()
             # Set the settings *after* initing the search.
             self.init_ivars_from_settings(settings)
+            # Leo 6.4: suboutline-only only applies to batch searches.
+            self.onlyPosition = None
+            self.suboutline_only = None
             if not self.check_args('find-prev'):
                 return None, None
             return self.do_find_next(settings)
@@ -642,7 +647,7 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
-    #@+node:ekr.20131117164142.17015: *4* find.hideFindTab
+    #@+node:ekr.20131117164142.17015: *4* find.find-tab-hide
     @cmd('find-tab-hide')
     def hideFindTab(self, event=None):
         """Hide the Find tab."""
@@ -651,7 +656,7 @@ class LeoFind:
             c.k.keyboardQuit()
         else:
             self.c.frame.log.selectTab('Log')
-    #@+node:ekr.20131117164142.16916: *4* find.openFindTab
+    #@+node:ekr.20131117164142.16916: *4* find.find-tab-open
     @cmd('find-tab-open')
     def openFindTab(self, event=None, show=True):
         """Open the Find tab in the log pane."""
@@ -660,28 +665,6 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
-    #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
-    def preloadFindPattern(self, w):
-        """Preload the find pattern from the selected text of widget w."""
-        c, ftm = self.c, self.ftm
-        if not c.config.getBool('preload-find-pattern', default=False):
-            # Make *sure* we don't preload the find pattern if it is not wanted.
-            return
-        if not w:
-            return
-        #
-        # #1436: Don't create a selection if there isn't one.
-        #        Leave the search pattern alone!
-        #
-            # if not w.hasSelection():
-            #     c.editCommands.extendToWord(event=None, select=True, w=w)
-        #
-        # #177:  Use selected text as the find string.
-        # #1436: Make make sure there is a significant search pattern.
-        s = w.getSelectedText()
-        if s.strip():
-            ftm.set_find_text(s)
-            ftm.init_focus()
     #@+node:ekr.20031218072017.3068: *4* find.replace
     @cmd('replace')
     @cmd('change')
@@ -1698,8 +1681,6 @@ class LeoFind:
         self.init_vim_search(find_pattern)
         self.init_in_headline() # Required
         settings = self.ftm.get_settings()
-        # Init the work widget.
-        self.init_interactive_command()
         # Gui...
         k.clearState()
         k.resetLabel()
@@ -1946,7 +1927,6 @@ class LeoFind:
             return None, None, None
         if not self.find_text:
             return None, None, None
-        self.errors = 0
         attempts = 0
         if self.pattern_match:
             ok = self.precompile_pattern()
@@ -2278,7 +2258,6 @@ class LeoFind:
         except Exception:
             if not g.unitTesting:
                 g.warning('invalid regular expression:', self.find_text)
-            self.errors += 1  # Abort the search.
             return False
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s):
@@ -2347,22 +2326,18 @@ class LeoFind:
         c, p = self.c, self.c.p  # *Always* start with the present node.
         self.errors = 0
         wrapper = c.frame.body and c.frame.body.wrapper
-        headCtrl = c.edit_widget(p)
         # w is the real widget.  It may not exist for headlines.
-        w = headCtrl if self.in_headline else wrapper
+        w = c.edit_widget(p) if self.in_headline else wrapper
         # We only use the insert point, *never* the selection range.
         # None is a signal to self.init_next_text()
         ins = w.getInsertPoint() if w else None  ### New: As in legacy.
         self.init_next_text(p, ins=ins)          ### New: As in legacy.
         if w:
             c.widgetWantsFocus(w)
-        # Leo 6.4: suboutline-only and node-only apply only to batch searches.
-        self.onlyPosition = None
-        self.node_only = self.suboutline_only = None
     #@+node:ekr.20131123132043.16477: *4* find.init_next_text
     def init_next_text(self, p, ins=None):
         """
-        Init s_ctrl in various situations.
+        Advance the insert point in s_ctrl past the last match.
         
         On entry:
         - self.in_headline indicates what text to use.
@@ -2785,58 +2760,6 @@ class LeoFind:
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]
         k.extendLabel(s, select=True, protect=protect)
-    #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
-    def updateChangeList(self, s):
-        if s not in self.changeTextList:
-            self.changeTextList.append(s)
-
-    def updateFindList(self, s):
-        if s not in self.findTextList:
-            self.findTextList.append(s)
-    #@+node:ekr.20131117164142.16985: *4* find.editWidget
-    def editWidget(self, event, forceFocus=True):
-        """
-        An override of baseEditCommands.editWidget that does *not* set
-        focus when using anything other than the tk gui.
-
-        This prevents this class from caching an edit widget that is about
-        to be deallocated.
-        """
-        c = self.c
-        # Do not cache a pointer to a headline!
-        # It will die when the minibuffer is selected.
-        self.w = c.frame.body.wrapper
-        return self.w
-    #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
-    def start_state_machine(self, event, prefix, handler, escape_handler=None):
-
-        c, k = self.c, self.k
-        self.w = self.editWidget(event)
-        if not self.w:
-            g.trace('no self.w')
-            return
-        k.setLabelBlue(prefix)
-        # New in Leo 5.2: minibuffer modes shows options in status area.
-        if self.minibuffer_mode:
-            self.showFindOptionsInStatusArea()
-        elif c.config.getBool('use-find-dialog', default=True):
-            g.app.gui.openFindDialog(c)
-        else:
-            c.frame.log.selectTab('Find')
-        self.addFindStringToLabel(protect=False)
-        k.getArgEscapes = ['\t'] if escape_handler else []
-        self.handler = handler
-        self.escape_handler = escape_handler
-        k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
-        
-    def state0(self, event):
-        """Dispatch the next handler."""
-        k = self.k
-        if k.getArgEscapeFlag:
-            k.getArgEscapeFlag = False
-            self.escape_handler(event)
-        else:
-            self.handler(event)
     #@+node:ekr.20210110073117.33: *4* find.compute_result_status
     def compute_result_status(self, find_all_flag=False):
         """Return the status to be shown in the status line after a find command completes."""
@@ -2855,6 +2778,20 @@ class LeoFind:
             if getattr(self, ivar):
                 status.append(val)
         return f" ({', '.join(status)})" if status else ''
+    #@+node:ekr.20131117164142.16985: *4* find.editWidget
+    def editWidget(self, event, forceFocus=True):
+        """
+        An override of baseEditCommands.editWidget that does *not* set
+        focus when using anything other than the tk gui.
+
+        This prevents this class from caching an edit widget that is about
+        to be deallocated.
+        """
+        c = self.c
+        # Do not cache a pointer to a headline!
+        # It will die when the minibuffer is selected.
+        self.w = c.frame.body.wrapper
+        return self.w
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self, event=None):
         """Called from Find panel.  Redirect."""
@@ -2867,6 +2804,44 @@ class LeoFind:
             c.vimCommands.update_dot_before_search(
                 find_pattern=pattern,
                 change_pattern=None)  # A flag.
+    #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
+    def preloadFindPattern(self, w):
+        """Preload the find pattern from the selected text of widget w."""
+        c, ftm = self.c, self.ftm
+        if not c.config.getBool('preload-find-pattern', default=False):
+            # Make *sure* we don't preload the find pattern if it is not wanted.
+            return
+        if not w:
+            return
+        #
+        # #1436: Don't create a selection if there isn't one.
+        #        Leave the search pattern alone!
+        #
+            # if not w.hasSelection():
+            #     c.editCommands.extendToWord(event=None, select=True, w=w)
+        #
+        # #177:  Use selected text as the find string.
+        # #1436: Make make sure there is a significant search pattern.
+        s = w.getSelectedText()
+        if s.strip():
+            ftm.set_find_text(s)
+            ftm.init_focus()
+    #@+node:ekr.20150619070602.1: *4* find.show_status
+    def show_status(self, found):
+        """Show the find status the Find dialog, if present, and the status line."""
+        c = self.c
+        status = 'found' if found else 'not found'
+        options = self.compute_result_status()
+        s = f"{status}:{options} {self.find_text}"
+        # Set colors.
+        found_bg = c.config.getColor('find-found-bg') or 'blue'
+        not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
+        found_fg = c.config.getColor('find-found-fg') or 'white'
+        not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
+        bg = found_bg if found else not_found_bg
+        fg = found_fg if found else not_found_fg
+        if c.config.getBool("show-find-result-in-status") is not False:
+            c.frame.putStatusLine(s, bg=bg, fg=fg)
     #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea & helper
     def showFindOptionsInStatusArea(self):
         """Show find options in the status area."""
@@ -2897,22 +2872,44 @@ class LeoFind:
                 result.append(f"[{option}]")
                 break
         return f"Find: {' '.join(result)}"
-    #@+node:ekr.20150619070602.1: *4* find.show_status
-    def show_status(self, found):
-        """Show the find status the Find dialog, if present, and the status line."""
-        c = self.c
-        status = 'found' if found else 'not found'
-        options = self.compute_result_status()
-        s = f"{status}:{options} {self.find_text}"
-        # Set colors.
-        found_bg = c.config.getColor('find-found-bg') or 'blue'
-        not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
-        found_fg = c.config.getColor('find-found-fg') or 'white'
-        not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
-        bg = found_bg if found else not_found_bg
-        fg = found_fg if found else not_found_fg
-        if c.config.getBool("show-find-result-in-status") is not False:
-            c.frame.putStatusLine(s, bg=bg, fg=fg)
+    #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
+    def start_state_machine(self, event, prefix, handler, escape_handler=None):
+
+        c, k = self.c, self.k
+        self.w = self.editWidget(event)
+        if not self.w:
+            g.trace('no self.w')
+            return
+        k.setLabelBlue(prefix)
+        # New in Leo 5.2: minibuffer modes shows options in status area.
+        if self.minibuffer_mode:
+            self.showFindOptionsInStatusArea()
+        elif c.config.getBool('use-find-dialog', default=True):
+            g.app.gui.openFindDialog(c)
+        else:
+            c.frame.log.selectTab('Find')
+        self.addFindStringToLabel(protect=False)
+        k.getArgEscapes = ['\t'] if escape_handler else []
+        self.handler = handler
+        self.escape_handler = escape_handler
+        k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
+        
+    def state0(self, event):
+        """Dispatch the next handler."""
+        k = self.k
+        if k.getArgEscapeFlag:
+            k.getArgEscapeFlag = False
+            self.escape_handler(event)
+        else:
+            self.handler(event)
+    #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList
+    def updateChangeList(self, s):
+        if s not in self.changeTextList:
+            self.changeTextList.append(s)
+
+    def updateFindList(self, s):
+        if s not in self.findTextList:
+            self.findTextList.append(s)
     #@-others
 #@+node:ekr.20070105092022.1: ** class SearchWidget
 class SearchWidget:
