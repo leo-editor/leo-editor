@@ -576,13 +576,11 @@ class LeoFind:
         """The find-next command."""
         # Settings...
         self.reverse = False
-        self.init_in_headline()  # Required.
-        settings = self.ftm.get_settings()
-        # Init the search, so we don't get stuck.
-        self.init_interactive_command()    
+        self.init_in_headline() # Do this *before* creating the settings.
+        settings = self.ftm.get_settings() 
         # Do the command!
         self.do_find_next(settings)
-    #@+node:ekr.20031218072017.3074: *5* find.do_find_next (test)
+    #@+node:ekr.20031218072017.3074: *5* find.do_find_next
     def do_find_next(self, settings):
         """
         Find the next instance of the pattern.
@@ -591,7 +589,9 @@ class LeoFind:
         
         """
         p = self.c.p
-        self.init_in_headline()
+        # Init the search, so we don't get stuck.
+        self.init_interactive_command()
+        # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
         if not self.check_args('find-next'):
             return None, None, None
@@ -605,17 +605,14 @@ class LeoFind:
             self.restore(data)
         self.show_status(found)
         return p, pos, newpos
-    #@+node:ekr.20031218072017.3064: *4* find.find-prev & helper(test)
+    #@+node:ekr.20031218072017.3064: *4* find.find-prev & do_find_prev
     @cmd('find-prev')
     def find_prev(self, event=None):  # pragma: no cover (cmd)
         """Handle F2 (find-previous)"""
         # Settings...
         self.reverse = True
-        self.init_in_headline()
+        self.init_in_headline()  # Do this *before* creating the settings.
         settings = self.ftm.get_settings()
-        # Init the search, so we don't get stuck.
-        self.init_interactive_command()
-        
         # Do the command!
         self.do_find_prev(settings)
         
@@ -628,7 +625,9 @@ class LeoFind:
         """
         try:
             self.reverse = True
-            self.init_in_headline()
+            # Init the search, so we don't get stuck!
+            self.init_interactive_command()
+            # Set the settings *after* initing the search.
             self.init_ivars_from_settings(settings)
             if not self.check_args('find-prev'):
                 return None, None
