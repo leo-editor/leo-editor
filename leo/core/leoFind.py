@@ -1970,24 +1970,23 @@ class LeoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                self._fnm_advance(p)
+                ### self._fnm_advance(p)
+                s = p.h if self.in_headline else p.b
+                ins = len(s) if self.reverse else 0
+                self.work_s = s
+                self.work_sel = (ins, ins, ins)
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
-                    self._fnm_advance(p)
+                    ### self._fnm_advance(p)
+                    s = p.h if self.in_headline else p.b
+                    ins = len(s) if self.reverse else 0
+                    self.work_s = s
+                    self.work_sel = (ins, ins, ins)
         return None, None, None
-    #@+node:ekr.20210116143126.1: *5* find._fnm_advance
-    def _fnm_advance(self, p):
-        """Init the work widget when a search fails."""
-        s = p.h if self.in_headline else p.b
-        ins = len(s) if self.reverse else 0
-        self.work_s = s
-        self.work_sel = (ins, ins, ins)
-        # An excellent trace
-        # g.trace(f"head?: {self.in_headline:1} len(s): {len(s):4} ins: {ins!r:4} {p.h}")
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
@@ -2434,7 +2433,6 @@ class LeoFind:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
-            # g.trace(f"insert: {insert!r:4} {p.h}")
             k = g.see_more_lines(w.getAllText(), insert, 4)
             w.see(k)
                 # #78: find-next match not always scrolled into view.
