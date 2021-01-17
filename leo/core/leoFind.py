@@ -121,7 +121,7 @@ class LeoFind:
         self.changeAllFlag = False
         self.findAllUniqueFlag = False
         self.find_def_data = None
-        self.find_seen = set()  # Set of vnodes.
+        ### self.find_seen = set()  # Set of vnodes.
         self.in_headline = False
         self.match_obj = None
         self.reverse = False
@@ -129,7 +129,7 @@ class LeoFind:
         self.unique_matches = set()
         #
         # User settings.
-        self.ignore_dups = None
+        ### self.ignore_dups = None
         self.minibuffer_mode = None
         self.use_cff = None
         self.reload_settings()
@@ -183,7 +183,7 @@ class LeoFind:
         #
         # Init required defaults.
         self.root = self.c.p.copy()
-        self.reverse = False  ### Experimental.
+        self.reverse = False
         #
         # Init find/change strings.
         self.change_text = settings.change_text
@@ -211,7 +211,7 @@ class LeoFind:
     def reload_settings(self):
         """LeoFind.reload_settings."""
         c = self.c
-        self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
+        ### self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
         self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
@@ -337,12 +337,12 @@ class LeoFind:
         # Settings...
         prefix = 'class' if word[0].isupper() else 'def'
         find_pattern = prefix + ' ' + word
-        ftm.set_find_text(find_pattern)  ### experimental
+        ftm.set_find_text(find_pattern)
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.updateChangeList(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
-        self.find_seen = set()
+        ### self.find_seen = set()
         # Do the command!
         self.do_find_def(settings, word)
 
@@ -356,12 +356,12 @@ class LeoFind:
             return
         # Settings...
         self.find_pattern = find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)  ### experimental
+        ftm.set_find_text(find_pattern)
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.updateChangeList(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
-        self.find_seen = set()
+        ### self.find_seen = set()
         # Do the command!
         self.do_find_var(settings, word)
         
@@ -467,12 +467,11 @@ class LeoFind:
             else:
                 c.selectPosition(last)
         if found:
-            self.find_seen.add(p.v)  # Was c.p.v.
+            ### self.find_seen.add(p.v)  # Was c.p.v.
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
             c.bodyWantsFocusNow()
             return p, pos, newpos
-        g.trace('NOT FOUND', word)
         self._restore_after_find_def()  # Avoid massive confusion!
         i, j = save_sel
         c.redraw(old_p)
@@ -522,7 +521,6 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find._restore_after_find_def
     def _restore_after_find_def(self):
         """Restore find settings in effect before a find-def command."""
-        ### g.trace("-----", self.find_text)
         b = self.find_def_data  # A g.Bunch
         if b:
             self.ignore_case = b.ignore_case
@@ -641,7 +639,7 @@ class LeoFind:
         tag = 'find-prev' if self.reverse else 'find-next'
         if not self.check_args(tag):  # Issues error message.
             return None, None, None
-        ### g.trace(f"head? {self.in_headline:1} ins: {ins:>4} find_text: {self.find_text!r} {p.h}") ###
+        ### g.trace(f"head? {self.in_headline:1} ins: {ins:>4} find_text: {self.find_text!r} {p.h}")
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
         found = pos is not None
@@ -1649,7 +1647,7 @@ class LeoFind:
         w = self.editWidget(event)
         if w:
             self.preloadFindPattern(w)
-        self.find_seen = set()
+        ### self.find_seen = set()
         if self.minibuffer_mode:
             # Set up the state machine.
             self.ftm.clear_focus()
@@ -1673,7 +1671,6 @@ class LeoFind:
         c, k, w = self.c, self.k, self.w
         # Settings...
         find_pattern = k.arg
-        ### g.trace('=====', repr(find_pattern))
         self.ftm.set_find_text(find_pattern)
         self.updateFindList(find_pattern)
         self.init_vim_search(find_pattern)
@@ -1997,7 +1994,6 @@ class LeoFind:
             if self._fnm_should_stay_in_node(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                ### g.trace('switch panes', self.in_headline)
                 s = p.h if self.in_headline else p.b
                 ins = len(s) if self.reverse else 0
                 self.work_s = s
@@ -2047,7 +2043,6 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
-            assert self.root, g.callers() ###
             if p != self.root and not self.root.isAncestorOf(p):
                 return True
         if c.hoistStack:
@@ -2102,8 +2097,9 @@ class LeoFind:
             return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
         self.work_sel = (pos, newpos, ins)
-        if (self.ignore_dups or self.find_def_data):
-            self.find_seen.add(p.v)
+        ###
+            # if (self.ignore_dups or self.find_def_data):
+                # self.find_seen.add(p.v)
         return pos, newpos
     #@+node:ekr.20131124060912.16472: *5* find._fnm_should_stay_in_node
     def _fnm_should_stay_in_node(self, p):
