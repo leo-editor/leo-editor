@@ -121,8 +121,6 @@ class LeoFind:
         self.find_seen = set()  # Set of vnodes.
         self.in_headline = False
         self.match_obj = None
-        ### self.onlyPosition = None
-        self.request_reverse = False
         self.reverse = False
         self.root = None
         self.unique_matches = set()
@@ -484,7 +482,6 @@ class LeoFind:
             return 0
         self.init_in_headline()
         data = self.save()
-        ### self.initBatchCommands()
         self.in_headline = self.search_headline  # Search headlines first.
         # Remember the start of the search.
         p = self.root = c.p.copy()
@@ -581,7 +578,7 @@ class LeoFind:
         """A standalone helper for unit tests."""
         return self._def_var(settings, word, def_flag=False)
         
-    #@+node:ekr.20031218072017.3063: *4* find.find-next & do_find_next
+    #@+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
     def find_next(self, event=None):  # pragma: no cover (cmd)
         """The find-next command."""
@@ -591,10 +588,23 @@ class LeoFind:
         settings = self.ftm.get_settings() 
         # Do the command!
         self.do_find_next(settings)
-    #@+node:ekr.20031218072017.3074: *5* find.do_find_next
-    def do_find_next(self, settings):
+
+    @cmd('find-prev')
+    def find_prev(self, event=None):  # pragma: no cover (cmd)
+        """Handle F2 (find-previous)"""
+        # Settings...
+        self.init_in_headline()  # Do this *before* creating the settings.
+        settings = self.ftm.get_settings()
+        # Delegate to do_find_next!
+        self.do_find_next(settings, reverse_flag=True)
+    #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
+    def do_find_prev(self, settings):
+        """Find the previous instance of self.find_text."""
+        return self.do_find_next(settings, reverse_flag = True)
+
+    def do_find_next(self, settings, reverse_flag=False):
         """
-        Find the next instance of the pattern.
+        Find the next instance of self.find_text.
         
         Return True (for vim-mode) if a match was found.
         
@@ -612,13 +622,14 @@ class LeoFind:
         #
         # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
+        self.reverse = reverse_flag
         #
         # Leo 6.4: suboutline-only does not apply to interactive searches.
-        self.onlyPosition = p if self.node_only else None
         self.suboutline_only = None
         #
         # Now check the args.
-        if not self.check_args('find-next'):
+        tag = 'find-prev' if reverse_flag else 'find-next'
+        if not self.check_args(tag):
             return None, None, None
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
@@ -629,51 +640,8 @@ class LeoFind:
             # Restore previous position.
             self.restore(data)
         self.show_status(found)
+        self.reverse = None  # Defensive.
         return p, pos, newpos
-    #@+node:ekr.20031218072017.3064: *4* find.find-prev & do_find_prev
-    @cmd('find-prev')
-    def find_prev(self, event=None):  # pragma: no cover (cmd)
-        """Handle F2 (find-previous)"""
-        # Settings...
-        self.reverse = True
-        self.init_in_headline()  # Do this *before* creating the settings.
-        settings = self.ftm.get_settings()
-        # Do the command!
-        self.do_find_prev(settings)
-        
-    #@+node:ekr.20210114123259.1: *5* find.do_find_prev
-    def do_find_prev(self, settings):
-        """
-        Do the find-prev command from settings.
-        
-        This is a stand-alone method for unit testing.
-        """
-        c, p = self.c, self.c.p
-        try:
-            self.reverse = True
-            #
-            # The gui widget may not exist for headlines.
-            gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
-            #
-            # Init the work widget, so we don't get stuck!
-            s = p.h if self.in_headline else p.b
-            ins = gui_w.getInsertPoint() if gui_w else len(s)
-            self.work_s = s
-            self.work_sel = (ins, ins, ins)
-            #
-            # Set the settings *after* initing the search.
-            self.init_ivars_from_settings(settings)
-            #
-            # Leo 6.4: suboutline-only does not apply to interactive searches.
-            self.onlyPosition = p if self.node_only else None
-            self.suboutline_only = None
-            #
-            # Now check the args.
-            if not self.check_args('find-prev'):
-                return None, None
-            return self.do_find_next(settings)
-        finally:
-            self.reverse = False
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
     def focusToFind(self, event=None):  # pragma: no cover (cmd)
@@ -933,7 +901,6 @@ class LeoFind:
             return
         self.init_in_headline()
         saveData = self.save()
-        ### self.initBatchCommands()
         self.in_headline = self.search_headline  # Search headlines first.
         # Remember the start of the search.
         p = self.root = c.p.copy()
@@ -1461,7 +1428,6 @@ class LeoFind:
             return count
         self.init_in_headline()
         data = self.save()
-        ### self.initBatchCommands()
         self.in_headline = self.search_headline  # Search headlines first.
         # Remember the start of the search.
         p = self.root = c.p.copy()
@@ -2047,11 +2013,6 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
-            ###
-                # if not self.onlyPosition:
-                    # g.trace('Can not happen: no onlyPosition', g.callers())
-                    # return False  # The show must go on.
-            ### if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
             assert self.root, g.callers() ###
             if p != self.root and not self.root.isAncestorOf(p):
                 return True
