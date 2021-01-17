@@ -107,7 +107,6 @@ class LeoFind:
         self.changeTextList = []
         #
         # For find/change...
-        ### self.s_ctrl = SearchWidget()  # A helper widget for searches.
         self.find_text = ""
         self.change_text = ""
         #
@@ -265,9 +264,6 @@ class LeoFind:
             positions = c.all_unique_positions()
         # Init the work widget.
         s = p.h if self.in_headline else p.b
-        ### work_w = self.s_ctrl
-        ### work_w.setAllText(s)
-        ### work_w.setSelectionRange(0, 0, insert=0)  # Set w.ins *and* w.sel.
         self.work_s = s
         self.work_sel = (0, 0, 0)
         # The main loop.
@@ -464,7 +460,6 @@ class LeoFind:
                 c.selectPosition(last)
         if found:
             self.find_seen.add(p.v)  # Was c.p.v.
-            ### g.trace('FOUND', word, p.h)
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
             c.bodyWantsFocusNow()
@@ -600,9 +595,6 @@ class LeoFind:
         # Init the work widgets, so we don't get stuck.
         s = p.h if self.in_headline else p.b
         ins = gui_w.getInsertPoint() if gui_w else 0
-        ### work_w = self.s_ctrl
-        ### work_w.setAllText(s)
-        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         self.work_s = s
         self.work_sel = (ins, ins, ins)
         #
@@ -654,9 +646,6 @@ class LeoFind:
             # Init the work widget, so we don't get stuck!
             s = p.h if self.in_headline else p.b
             ins = gui_w.getInsertPoint() if gui_w else len(s)
-            ### work_w = self.s_ctrl
-            ### work_w.setAllText(s)
-            ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
             self.work_s = s
             self.work_sel = (ins, ins, ins)
             #
@@ -1480,14 +1469,12 @@ class LeoFind:
     def _find_all_helper(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
         c, u= self.c, self.c.undoer
-        ### w = self.s_ctrl ###
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
             if pos is None: break
             count += 1
-            ### s = w.getAllText()
             s = self.work_s
             i, j = g.getLine(s, pos)
             line = s[i:j]
@@ -1873,10 +1860,8 @@ class LeoFind:
                 return True
         return False
     #@+node:ekr.20031218072017.3070: *4* find.change_selection
-    # Replace selection with self.change_text.
-    # If no selection, insert self.change_text at the cursor.
-
     def change_selection(self, p):
+        """Replace selection with self.change_text."""
         c = self.c
         wrapper = c.frame.body and c.frame.body.wrapper
         gui_w = c.edit_widget(p) if self.in_headline else wrapper
@@ -1892,7 +1877,6 @@ class LeoFind:
         if start == end:
             g.es("no text selected")
             return False
-        # Replace the selection in _both_ controls.
         start, end = oldSel
         change_text = self.change_text
         # Perform regex substitutions of \1, \2, ...\9 in the change text.
@@ -1901,25 +1885,14 @@ class LeoFind:
             if groups:
                 change_text = self.make_regex_subs(change_text, groups)
         change_text = self.replace_back_slashes(change_text)
-        ###
-            # for w2 in (gui_w, self.s_ctrl):
-        #
         # Update both the gui widget and the work "widget"
-        ###
         new_ins = start if self.reverse else start + len(change_text)
         if start != end:
             gui_w.delete(start, end)
-            # This was the only reason for having a real work widget!
             self.work_s = self.work_s[:start] + self.work_s[start + end:]
         gui_w.insert(start, change_text)
         gui_w.setInsertPoint(new_ins)
         self.work_sel = (new_ins, new_ins, new_ins)
-        #
-        # Update work_s and work.ins
-                # if start != end: w2.delete(start, end)
-                # w2.insert(start, change_text)
-                # w2.setInsertPoint(start if self.reverse else start + len(change_text))
-        
         # Update the selection for the next match.
         gui_w.setSelectionRange(start, start + len(change_text))
         c.widgetWantsFocus(gui_w)
@@ -1997,7 +1970,6 @@ class LeoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                ### self.init_next_text(p)
                 self._fnm_advance(p)
             else:
                 # Switch to the next/prev node, if possible.
@@ -2005,7 +1977,6 @@ class LeoFind:
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
-                    ### self.init_next_text(p)
                     self._fnm_advance(p)
         return None, None, None
     #@+node:ekr.20210116143126.1: *5* find._fnm_advance
@@ -2013,15 +1984,10 @@ class LeoFind:
         """Init the work widget when a search fails."""
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
-        ### work_w = self.s_ctrl
-        ### work_w.setAllText(s)
-        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         self.work_s = s
         self.work_sel = (ins, ins, ins)
-        if 0: # An excellent trace
-            g.trace(
-                f"head?: {self.in_headline:1} len(s): {len(s):4} ins: {ins!r:4} {p.h}")
-                # reverse? {self.reverse:1} 
+        # An excellent trace
+        # g.trace(f"head?: {self.in_headline:1} len(s): {len(s):4} ins: {ins!r:4} {p.h}")
     #@+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p):
         """Return the next node after a failed search or None."""
@@ -2093,9 +2059,6 @@ class LeoFind:
         if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
-        ### work_w = self.s_ctrl
-        ### index = work_w.getInsertPoint()  
-        ### s = work_w.getAllText()
         index = self.work_sel[2]
         s = self.work_s
         if sys.platform.lower().startswith('win'):
@@ -2114,7 +2077,6 @@ class LeoFind:
         if pos == -1:
             return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
-        ### work_w.setSelectionRange(pos, newpos, insert=ins)
         self.work_sel = (pos, newpos, ins)
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
@@ -2403,9 +2365,6 @@ class LeoFind:
         # Set the work widget.
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
-        ### work_w = self.s_ctrl
-        ### work_w.setAllText(s)
-        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         self.work_s = s
         self.work_sel = (ins, ins, ins)
     #@+node:ekr.20031218072017.3089: *4* find.restore
@@ -2617,9 +2576,6 @@ class LeoFind:
             ins = i if reverse else j + len(pattern)
         else:
             ins = j + len(pattern) if reverse else i
-        ### work_w = self.s_ctrl
-        ### work_w.setAllText(s)
-        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         self.work_s = s
         self.work_sel = (ins, ins, ins)
         # Do the search!
@@ -2758,7 +2714,6 @@ class LeoFind:
     def addChangeStringToLabel(self):
         """Add an unprotected change string to the minibuffer label."""
         c = self.c
-        ### ftm = c.findCommands.ftm
         s = self.ftm.get_change_text()
         c.minibufferWantsFocus()
         while s.endswith('\n') or s.endswith('\r'):
