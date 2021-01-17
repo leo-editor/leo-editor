@@ -121,8 +121,10 @@ class LeoFind:
         self.find_seen = set()  # Set of vnodes.
         self.in_headline = False
         self.match_obj = None
-        self.onlyPosition = None
+        ### self.onlyPosition = None
+        self.request_reverse = False
         self.reverse = False
+        self.root = None
         self.unique_matches = set()
         #
         # User settings.
@@ -479,8 +481,15 @@ class LeoFind:
             return 0
         self.init_in_headline()
         data = self.save()
-        self.initBatchCommands()
-            # Sets self.onlyPosition.
+        ### self.initBatchCommands()
+        self.in_headline = self.search_headline  # Search headlines first.
+        # Remember the start of the search.
+        p = self.root = c.p.copy()
+        # Set the work widget.
+        s = p.h if self.in_headline else p.b
+        ins = len(s) if self.reverse else 0
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         # Init suboutline-only for clone-find-all commands
         # Much simpler: does not set self.p or any other state.
         if self.pattern_match:
@@ -921,7 +930,15 @@ class LeoFind:
             return
         self.init_in_headline()
         saveData = self.save()
-        self.initBatchCommands()
+        ### self.initBatchCommands()
+        self.in_headline = self.search_headline  # Search headlines first.
+        # Remember the start of the search.
+        p = self.root = c.p.copy()
+        # Set the work widget.
+        s = p.h if self.in_headline else p.b
+        ins = len(s) if self.reverse else 0
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         count = 0
         u.beforeChangeGroup(current, undoType)
         # Fix bug 338172: ReplaceAll will not replace newlines
@@ -1441,7 +1458,15 @@ class LeoFind:
             return count
         self.init_in_headline()
         data = self.save()
-        self.initBatchCommands()
+        ### self.initBatchCommands()
+        self.in_headline = self.search_headline  # Search headlines first.
+        # Remember the start of the search.
+        p = self.root = c.p.copy()
+        # Set the work widget.
+        s = p.h if self.in_headline else p.b
+        ins = len(s) if self.reverse else 0
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         if self.pattern_match:
             ok = self.precompile_pattern()
             if not ok:
@@ -2019,10 +2044,13 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
-            if not self.onlyPosition:
-                g.trace('Can not happen: no onlyPosition', g.callers())
-                return False  # The show must go on.
-            if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
+            ###
+                # if not self.onlyPosition:
+                    # g.trace('Can not happen: no onlyPosition', g.callers())
+                    # return False  # The show must go on.
+            ### if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
+            assert self.root, g.callers() ###
+            if p != self.root and not self.root.isAncestorOf(p):
                 return True
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -2339,31 +2367,6 @@ class LeoFind:
         else:
             val = w_name.startswith('head')
         return val
-    #@+node:ekr.20031218072017.3084: *4* find.initBatchCommands
-    def initBatchCommands(self):
-        """
-        Init for find-all and replace-all commands.
-        
-        Sets self.onlyPosition.
-        """
-        c = self.c
-        self.in_headline = self.search_headline  # Search headlines first.
-        # Select the first node.
-        if self.suboutline_only or self.node_only:
-            # #188: Find/Replace All Suboutline only same as Node only.
-            self.onlyPosition = p = c.p
-        else:
-            self.onlyPosition = None
-            p = c.rootPosition()
-            if self.reverse:
-                while p and p.next():
-                    p = p.next()
-                p = p.lastNode()
-        # Set the work widget.
-        s = p.h if self.in_headline else p.b
-        ins = len(s) if self.reverse else 0
-        self.work_s = s
-        self.work_sel = (ins, ins, ins)
     #@+node:ekr.20031218072017.3089: *4* find.restore
     def restore(self, data):
         """

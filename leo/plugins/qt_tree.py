@@ -731,9 +731,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # enters editing state.
             if auto_edit and self.auto_edit:
                 e, wrapper = self.createTreeEditorForItem(item)
-            # Leo 6.4. No longer needed.
-                # 2014/10/26: Reset find vars.
-                # c.findCommands.onlyPosition = None
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
