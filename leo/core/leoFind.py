@@ -587,7 +587,6 @@ class LeoFind:
         
         """
         c, p = self.c, self.c.p
-        work_w = self.s_ctrl
         #
         # The gui widget may not exist for headlines.
         gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
@@ -595,6 +594,7 @@ class LeoFind:
         # Init the work widgets, so we don't get stuck.
         s = p.h if self.in_headline else p.b
         ins = gui_w.getInsertPoint() if gui_w else 0
+        work_w = self.s_ctrl
         work_w.setAllText(s)
         work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         #
@@ -639,7 +639,6 @@ class LeoFind:
         c, p = self.c, self.c.p
         try:
             self.reverse = True
-            work_w = self.s_ctrl
             #
             # The gui widget may not exist for headlines.
             gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
@@ -647,6 +646,7 @@ class LeoFind:
             # Init the work widget, so we don't get stuck!
             s = p.h if self.in_headline else p.b
             ins = gui_w.getInsertPoint() if gui_w else len(s)
+            work_w = self.s_ctrl
             work_w.setAllText(s)
             work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
             #
@@ -1982,9 +1982,9 @@ class LeoFind:
     #@+node:ekr.20210116143126.1: *5* find._fnm_advance
     def _fnm_advance(self, p):
         """Init the work widget when a search fails."""
-        work_w = self.s_ctrl
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
+        work_w = self.s_ctrl
         work_w.setAllText(s)
         work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
         if 0: # An excellent trace
@@ -2053,7 +2053,7 @@ class LeoFind:
             return self.search_headline
         g.trace('can not happen: no search enabled')
         return False  # search the body.
-    #@+node:ekr.20031218072017.3077: *5* find._fnm_search
+    #@+node:ekr.20031218072017.3077: *5* find._fnm_search (only call got work_w getters)
     def _fnm_search(self, p):
         """
         Search s_ctrl for self.find_text with present options.
@@ -2062,9 +2062,9 @@ class LeoFind:
         if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
-        w = self.s_ctrl
-        index = w.getInsertPoint()
-        s = w.getAllText()
+        work_w = self.s_ctrl
+        index = work_w.getInsertPoint()  
+        s = work_w.getAllText()
         if sys.platform.lower().startswith('win'):
             s = s.replace('\r', '')
                 # Ignore '\r' characters, which may appear in @edit nodes.
@@ -2081,7 +2081,7 @@ class LeoFind:
         if pos == -1:
             return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
-        w.setSelectionRange(pos, newpos, insert=ins)
+        work_w.setSelectionRange(pos, newpos, insert=ins)
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         return pos, newpos
@@ -2353,7 +2353,7 @@ class LeoFind:
         
         Sets self.onlyPosition.
         """
-        c, work_w = self.c, self.s_ctrl
+        c = self.c
         self.in_headline = self.search_headline  # Search headlines first.
         # Select the first node.
         if self.suboutline_only or self.node_only:
@@ -2369,6 +2369,7 @@ class LeoFind:
         # Set the work widget.
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
+        work_w = self.s_ctrl
         work_w.setAllText(s)
         work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
     #@+node:ekr.20031218072017.3089: *4* find.restore
@@ -2580,7 +2581,6 @@ class LeoFind:
             ins = i if reverse else j + len(pattern)
         else:
             ins = j + len(pattern) if reverse else i
-        ### self.init_s_ctrl(s, ins)
         work_w = self.s_ctrl
         work_w.setAllText(s)
         work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
