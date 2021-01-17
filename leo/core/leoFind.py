@@ -169,7 +169,7 @@ class LeoFind:
     #@+node:ekr.20210110073117.4: *4* find.init_ivars_from_settings
     def init_ivars_from_settings(self, settings):
         """
-        Initialize all ivars from settings.
+        Initialize all ivars from settings, including required defaults.
         
         This should be called from the do_ methods as follows:
             
@@ -178,8 +178,9 @@ class LeoFind:
                 return <appropriate error indication>
         """
         #
-        # Init self.root.
+        # Init required defaults.
         self.root = self.c.p.copy()
+        self.reverse = False  ### Experimental.
         #
         # Init find/change strings.
         self.change_text = settings.change_text
@@ -191,7 +192,6 @@ class LeoFind:
         self.mark_finds = settings.mark_finds
         self.node_only = settings.node_only
         self.pattern_match = settings.pattern_match 
-        # self.reverse = False
         self.search_body = settings.search_body
         self.search_headline = settings.search_headline
         self.suboutline_only = settings.suboutline_only
@@ -640,7 +640,6 @@ class LeoFind:
             # Restore previous position.
             self.restore(data)
         self.show_status(found)
-        self.reverse = None  # Defensive.
         return p, pos, newpos
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
