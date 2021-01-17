@@ -1592,9 +1592,12 @@ class LeoFind:
     @cmd('re-search-forward')
     def interactive_re_search_forward(self, event):
         """Same as start-find, with regex."""
-        self.reverse = False
+        # Set flag for showFindOptions.
         self.pattern_match = True
         self.showFindOptions()
+        # Set flag for do_find_next().
+        self.request_pattern_match = True
+        # Go.
         self.start_state_machine(event,
             prefix='Regexp Search: ',
             handler=self.start_search1,  # See start-search
@@ -1604,9 +1607,14 @@ class LeoFind:
     @cmd('re-search-backward')
     def interactive_re_search_backward(self, event):
         """Same as start-find, but with regex and in reverse."""
+        # Set flags for showFindOptions.
         self.reverse = True
         self.pattern_match = True
         self.showFindOptions()
+        # Set flags for do_find_next().
+        self.request_reverse = True
+        self.request_pattern_match = True
+        # Go.
         self.start_state_machine(event,
             prefix='Regexp Search Backward:',
             handler=self.start_search1,  # See start-search
@@ -1617,7 +1625,12 @@ class LeoFind:
     @cmd('search-backward')
     def interactive_search_backward(self, event):
         """Same as start-find, but in reverse."""
+        # Set flag for showFindOptions.
         self.reverse = True
+        self.showFindOptions()
+        # Set flag for do_find_next().
+        self.request_reverse = True
+        # Go.
         self.start_state_machine(event,
             prefix='Search Backward: ',
             handler=self.start_search1,  # See start-search
@@ -1749,9 +1762,12 @@ class LeoFind:
     @cmd('word-search-forward')
     def wordSearchForward(self, event):
         """Same as start-search, with whole_word setting."""
-        self.reverse = False
-        self.pattern_match = False
-        self.whole_world = True
+        # Set flag for showFindOptions.
+        self.whole_word = True
+        self.showFindOptions()
+        # Set flag for do_find_next().
+        self.request_whole_world = True
+        # Go.
         self.start_state_machine(event,
             prefix='Word Search: ',
             handler=self.start_search1,  # See start-search
@@ -1760,9 +1776,14 @@ class LeoFind:
     #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
     def wordSearchBackward(self, event):
-        self.reverse = True
-        self.pattern_match = False
+        # Set flags for showFindOptions.
+        self.reverse = True 
         self.whole_world = True
+        self.showFindOptions()
+        # Set flags for do_find_next().
+        self.request_reverse = True 
+        self.request_whole_world = True
+        # Go
         self.start_state_machine(event,
             prefix='Word Search Backward: ',
             handler=self.start_search1,  # See start-search
