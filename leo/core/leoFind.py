@@ -180,6 +180,9 @@ class LeoFind:
                 return <appropriate error indication>
         """
         #
+        # Init self.root.
+        self.root = self.c.p.copy()
+        #
         # Init find/change strings.
         self.change_text = settings.change_text
         self.find_text = settings.find_text
@@ -2841,12 +2844,15 @@ class LeoFind:
         return f"Find: {' '.join(result)}"
     #@+node:ekr.20131117164142.17007: *4* find.start_state_machine
     def start_state_machine(self, event, prefix, handler, escape_handler=None):
-
+        """
+        Initialize and start the state machine used to get user arguments.
+        """
         c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
             g.trace('no self.w')
             return
+        # Gui...
         k.setLabelBlue(prefix)
         # New in Leo 5.2: minibuffer modes shows options in status area.
         if self.minibuffer_mode:
@@ -2859,6 +2865,7 @@ class LeoFind:
         k.getArgEscapes = ['\t'] if escape_handler else []
         self.handler = handler
         self.escape_handler = escape_handler
+        # Start the state maching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
         
     def state0(self, event):
