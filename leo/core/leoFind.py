@@ -520,13 +520,10 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find._restore_after_find_def
     def _restore_after_find_def(self):
         """Restore find settings in effect before a find-def command."""
-        # pylint: disable=no-member
-            # Bunch has these members
         b = self.find_def_data  # A g.Bunch
         if b:
             self.ignore_case = b.ignore_case
             self.pattern_match = b.pattern_match
-            # self.reverse = False
             self.search_body = b.search_body
             self.search_headline = b.search_headline
             self.whole_word = b.whole_word
