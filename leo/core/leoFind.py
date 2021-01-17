@@ -83,6 +83,10 @@ class LeoFind:
         self.k = c.k
         self.re_obj = None
         #
+        # The work "widget".
+        self.work_s = ''  # p.b or p.c.
+        self.work_sel = (0, 0, 0)  # pos, newpos, insert.
+        #
         # Options ivars: set by FindTabManager.init.
         self.ignore_case = None
         self.node_only = None
@@ -103,7 +107,7 @@ class LeoFind:
         self.changeTextList = []
         #
         # For find/change...
-        self.s_ctrl = SearchWidget()  # A helper widget for searches.
+        ### self.s_ctrl = SearchWidget()  # A helper widget for searches.
         self.find_text = ""
         self.change_text = ""
         #
@@ -261,9 +265,11 @@ class LeoFind:
             positions = c.all_unique_positions()
         # Init the work widget.
         s = p.h if self.in_headline else p.b
-        work_w = self.s_ctrl
-        work_w.setAllText(s)
-        work_w.setSelectionRange(0, 0, insert=0)  # Set w.ins *and* w.sel.
+        ### work_w = self.s_ctrl
+        ### work_w.setAllText(s)
+        ### work_w.setSelectionRange(0, 0, insert=0)  # Set w.ins *and* w.sel.
+        self.work_s = s
+        self.work_sel = (0, 0, 0)
         # The main loop.
         u.beforeChangeGroup(p1, undoType)
         count = 0
@@ -594,9 +600,11 @@ class LeoFind:
         # Init the work widgets, so we don't get stuck.
         s = p.h if self.in_headline else p.b
         ins = gui_w.getInsertPoint() if gui_w else 0
-        work_w = self.s_ctrl
-        work_w.setAllText(s)
-        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        ### work_w = self.s_ctrl
+        ### work_w.setAllText(s)
+        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         #
         # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
@@ -646,9 +654,11 @@ class LeoFind:
             # Init the work widget, so we don't get stuck!
             s = p.h if self.in_headline else p.b
             ins = gui_w.getInsertPoint() if gui_w else len(s)
-            work_w = self.s_ctrl
-            work_w.setAllText(s)
-            work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+            ### work_w = self.s_ctrl
+            ### work_w.setAllText(s)
+            ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+            self.work_s = s
+            self.work_sel = (ins, ins, ins)
             #
             # Set the settings *after* initing the search.
             self.init_ivars_from_settings(settings)
@@ -1469,14 +1479,16 @@ class LeoFind:
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper
     def _find_all_helper(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
-        c, u, w = self.c, self.c.undoer, self.s_ctrl
+        c, u= self.c, self.c.undoer
+        ### w = self.s_ctrl ###
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
             p, pos, newpos = self.find_next_match(p)
             if pos is None: break
             count += 1
-            s = w.getAllText()
+            ### s = w.getAllText()
+            s = self.work_s
             i, j = g.getLine(s, pos)
             line = s[i:j]
             if self.findAllUniqueFlag:
@@ -1867,14 +1879,16 @@ class LeoFind:
     def change_selection(self, p):
         c = self.c
         wrapper = c.frame.body and c.frame.body.wrapper
-        w = c.edit_widget(p) if self.in_headline else wrapper
-        if not w:
+        gui_w = c.edit_widget(p) if self.in_headline else wrapper
+        if not gui_w:
             self.in_headline = False
-            w = wrapper
-        if not w: return False
-        oldSel = sel = w.getSelectionRange()
+            gui_w = wrapper
+        if not gui_w:
+            return False
+        oldSel = sel = gui_w.getSelectionRange()
         start, end = sel
-        if start > end: start, end = end, start
+        if start > end:
+            start, end = end, start
         if start == end:
             g.es("no text selected")
             return False
@@ -1887,13 +1901,28 @@ class LeoFind:
             if groups:
                 change_text = self.make_regex_subs(change_text, groups)
         change_text = self.replace_back_slashes(change_text)
-        for w2 in (w, self.s_ctrl):
-            if start != end: w2.delete(start, end)
-            w2.insert(start, change_text)
-            w2.setInsertPoint(start if self.reverse else start + len(change_text))
+        ###
+            # for w2 in (gui_w, self.s_ctrl):
+        #
+        # Update both the gui widget and the work "widget"
+        ###
+        new_ins = start if self.reverse else start + len(change_text)
+        if start != end:
+            gui_w.delete(start, end)
+            # This was the only reason for having a real work widget!
+            self.work_s = self.work_s[:start] + self.work_s[start + end:]
+        gui_w.insert(start, change_text)
+        gui_w.setInsertPoint(new_ins)
+        self.work_sel = (new_ins, new_ins, new_ins)
+        #
+        # Update work_s and work.ins
+                # if start != end: w2.delete(start, end)
+                # w2.insert(start, change_text)
+                # w2.setInsertPoint(start if self.reverse else start + len(change_text))
+        
         # Update the selection for the next match.
-        w.setSelectionRange(start, start + len(change_text))
-        c.widgetWantsFocus(w)
+        gui_w.setSelectionRange(start, start + len(change_text))
+        c.widgetWantsFocus(gui_w)
         # No redraws here: they would destroy the headline selection.
         if self.mark_changes:
             p.setMarked()
@@ -1984,9 +2013,11 @@ class LeoFind:
         """Init the work widget when a search fails."""
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
-        work_w = self.s_ctrl
-        work_w.setAllText(s)
-        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        ### work_w = self.s_ctrl
+        ### work_w.setAllText(s)
+        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         if 0: # An excellent trace
             g.trace(
                 f"head?: {self.in_headline:1} len(s): {len(s):4} ins: {ins!r:4} {p.h}")
@@ -2056,15 +2087,17 @@ class LeoFind:
     #@+node:ekr.20031218072017.3077: *5* find._fnm_search (only call got work_w getters)
     def _fnm_search(self, p):
         """
-        Search s_ctrl for self.find_text with present options.
+        Search self.work_s for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
         """
         if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
             # Don't find defs/vars multiple times.
             return None, None
-        work_w = self.s_ctrl
-        index = work_w.getInsertPoint()  
-        s = work_w.getAllText()
+        ### work_w = self.s_ctrl
+        ### index = work_w.getInsertPoint()  
+        ### s = work_w.getAllText()
+        index = self.work_sel[2]
+        s = self.work_s
         if sys.platform.lower().startswith('win'):
             s = s.replace('\r', '')
                 # Ignore '\r' characters, which may appear in @edit nodes.
@@ -2081,7 +2114,8 @@ class LeoFind:
         if pos == -1:
             return None, None
         ins = min(pos, newpos) if self.reverse else max(pos, newpos)
-        work_w.setSelectionRange(pos, newpos, insert=ins)
+        ### work_w.setSelectionRange(pos, newpos, insert=ins)
+        self.work_sel = (pos, newpos, ins)
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         return pos, newpos
@@ -2369,9 +2403,11 @@ class LeoFind:
         # Set the work widget.
         s = p.h if self.in_headline else p.b
         ins = len(s) if self.reverse else 0
-        work_w = self.s_ctrl
-        work_w.setAllText(s)
-        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        ### work_w = self.s_ctrl
+        ### work_w.setAllText(s)
+        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
     #@+node:ekr.20031218072017.3089: *4* find.restore
     def restore(self, data):
         """
@@ -2581,9 +2617,11 @@ class LeoFind:
             ins = i if reverse else j + len(pattern)
         else:
             ins = j + len(pattern) if reverse else i
-        work_w = self.s_ctrl
-        work_w.setAllText(s)
-        work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        ### work_w = self.s_ctrl
+        ### work_w.setAllText(s)
+        ### work_w.setSelectionRange(ins, ins, insert=ins)  # Set w.ins *and* w.sel.
+        self.work_s = s
+        self.work_sel = (ins, ins, ins)
         # Do the search!
         p, pos, newpos = self.find_next_match(p)
         # Restore.
@@ -2885,59 +2923,6 @@ class LeoFind:
     def updateFindList(self, s):
         if s not in self.findTextList:
             self.findTextList.append(s)
-    #@-others
-#@+node:ekr.20070105092022.1: ** class SearchWidget
-class SearchWidget:
-    """A class to simulating high-level interface widget."""
-    # This could be a StringTextWrapper, but this code is simple and good.
-
-    def __init__(self, *args, **keys):
-        self.s = ''  # The widget text
-        self.i = 0   # The insert point
-        self.sel = 0, 0  # The selection range
-
-    def __repr__(self):  # pragma: no cover (skip)
-        return f"SearchWidget id: {id(self)}"
-
-    #@+others
-    #@+node:ekr.20070105093138: *3* getters (LeoFind)
-    def getAllText(self):
-        return self.s
-
-    def getInsertPoint(self):
-        return self.i
-
-    def getSelectionRange(self):
-        return self.sel
-    #@+node:ekr.20070105102419: *3* setters (LeoFind)
-    def delete(self, i, j=None):
-        if j is None:
-            j = i + 1
-        self.s = self.s[:i] + self.s[j:]
-        self.i = i
-        self.sel = i, i
-
-    def insert(self, i, s):
-        if not s:
-            return
-        self.s = self.s[:i] + s + self.s[i:]
-        self.i = i
-        self.sel = i, i
-
-    def setAllText(self, s):
-        self.s = s
-        self.i = 0
-        self.sel = 0, 0
-
-    def setInsertPoint(self, i, s=None):
-        ### g.trace(repr(i), g.callers())
-        self.i = i
-
-    def setSelectionRange(self, i, j, insert=None):
-        self.sel = i, j
-        if insert is not None:
-            ### g.trace(repr(insert))
-            self.i = insert
     #@-others
 #@+node:ekr.20200216063538.1: ** class TestFind (LeoFind.py)
 class TestFind(unittest.TestCase):
