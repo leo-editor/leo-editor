@@ -329,7 +329,7 @@ class LeoFind:
     @cmd('find-def')
     def find_def(self, event=None):  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
-        p = self.c.p
+        ftm, p = self.ftm, self.c.p
         # Check.
         word = self._compute_find_def_word(event)
         if not word:
@@ -337,6 +337,7 @@ class LeoFind:
         # Settings...
         prefix = 'class' if word[0].isupper() else 'def'
         find_pattern = prefix + ' ' + word
+        ftm.set_find_text(find_pattern)  ### experimental
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.updateChangeList(self.change_text)  # Optional. An edge case.
@@ -348,13 +349,14 @@ class LeoFind:
     @cmd('find-var')
     def find_var(self, event=None):
         """Find the var under the cursor."""
-        p = self.c.p
+        ftm, p = self.ftm, self.c.p
         # Check...
         word = self._compute_find_def_word(event)
         if not word:
             return
         # Settings...
-        find_pattern = word + ' ='
+        self.find_pattern = find_pattern = word + ' ='
+        ftm.set_find_text(find_pattern)  ### experimental
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.updateChangeList(self.change_text)  # Optional. An edge case.
@@ -520,6 +522,7 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *6* find._restore_after_find_def
     def _restore_after_find_def(self):
         """Restore find settings in effect before a find-def command."""
+        ### g.trace("-----", self.find_text)
         b = self.find_def_data  # A g.Bunch
         if b:
             self.ignore_case = b.ignore_case
@@ -636,8 +639,9 @@ class LeoFind:
         #
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
-        if not self.check_args(tag):
+        if not self.check_args(tag):  # Issues error message.
             return None, None, None
+        ### g.trace(f"head? {self.in_headline:1} ins: {ins:>4} find_text: {self.find_text!r} {p.h}") ###
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
         found = pos is not None
@@ -1633,7 +1637,7 @@ class LeoFind:
             handler=self.start_search1,  # See start-search
             escape_handler = self.start_search_escape1,  # See start-search
         )
-    #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F)
+    #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) & common states
     @cmd('start-search')
     @cmd('search-forward')  # Compatibility.
     def start_search(self, event):
@@ -1663,12 +1667,13 @@ class LeoFind:
             return
             
     startSearch = start_search  # Compatibility. Do not delete.
-
+    #@+node:ekr.20210117143611.1: *5* find.start_search1
     def start_search1(self, event=None):
         """Common handler for use by vim commands and other find commands."""
         c, k, w = self.c, self.k, self.w
         # Settings...
         find_pattern = k.arg
+        ### g.trace('=====', repr(find_pattern))
         self.ftm.set_find_text(find_pattern)
         self.updateFindList(find_pattern)
         self.init_vim_search(find_pattern)
@@ -1681,7 +1686,7 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         # Do the command!
         self.do_find_next(settings)  # Handles reverse.
-        
+    #@+node:ekr.20210117143614.1: *5* find._start_search_escape1
     def start_search_escape1(self, event=None):
         """
         Common escape handler for use by find commands.
@@ -1704,6 +1709,7 @@ class LeoFind:
         self.addChangeStringToLabel()
         k.getNextArg(self._start_search_escape2)
 
+    #@+node:ekr.20210117143615.1: *5* find._start_search_escape2
     def _start_search_escape2(self, event):
         c, k = self.c, self.k
         # Compute settings...
@@ -1988,9 +1994,10 @@ class LeoFind:
                         c.frame.tree.updateIcon(p)  # redraw only the icon.
                 return p, pos, newpos
             # Searching the pane failed: switch to another pane or node.
-            if self.shouldStayInNode(p):
+            if self._fnm_should_stay_in_node(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
+                ### g.trace('switch panes', self.in_headline)
                 s = p.h if self.in_headline else p.b
                 ins = len(s) if self.reverse else 0
                 self.work_s = s
@@ -2072,9 +2079,10 @@ class LeoFind:
         Search self.work_s for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
         """
-        if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
-            # Don't find defs/vars multiple times.
-            return None, None
+        ### Dummest special case ever.
+            # if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
+                # # Don't find defs/vars multiple times.
+                # return None, None
         index = self.work_sel[2]
         s = self.work_s
         if sys.platform.lower().startswith('win'):
@@ -2097,8 +2105,8 @@ class LeoFind:
         if (self.ignore_dups or self.find_def_data):
             self.find_seen.add(p.v)
         return pos, newpos
-    #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
-    def shouldStayInNode(self, p):
+    #@+node:ekr.20131124060912.16472: *5* find._fnm_should_stay_in_node
+    def _fnm_should_stay_in_node(self, p):
         """Return True if the find should simply switch panes."""
         # Errors here cause the find command to fail badly.
         # Switch only if:
