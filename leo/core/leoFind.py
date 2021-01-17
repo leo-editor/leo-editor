@@ -1970,7 +1970,6 @@ class LeoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                ### self._fnm_advance(p)
                 s = p.h if self.in_headline else p.b
                 ins = len(s) if self.reverse else 0
                 self.work_s = s
@@ -1981,7 +1980,6 @@ class LeoFind:
                 p = self._fnm_next_after_fail(p)
                 if p:  # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
-                    ### self._fnm_advance(p)
                     s = p.h if self.in_headline else p.b
                     ins = len(s) if self.reverse else 0
                     self.work_s = s
@@ -2216,7 +2214,7 @@ class LeoFind:
         return -1, -1
         #
         # The following is mysterious.
-        # Félix, please don't both with it.
+        # Félix, please don't bother with it.
         # I'll re-enable it if it ever makes sense to me :-)
         ###
             # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())
