@@ -113,7 +113,10 @@ class LeoFind:
         # State machine...
         self.escape_handler = None
         self.handler = None
-        #
+        # "Delayed" requests for do_find_next.
+        self.request_reverse = False
+        self.request_pattern_match = False
+        self.request_whole_word = False
         # Internal state...
         self.changeAllFlag = False
         self.findAllUniqueFlag = False
@@ -595,14 +598,15 @@ class LeoFind:
         # Settings...
         self.init_in_headline()  # Do this *before* creating the settings.
         settings = self.ftm.get_settings()
-        # Delegate to do_find_next!
-        self.do_find_next(settings, reverse_flag=True)
+        # Do the command!
+        self.do_find_prev(settings)
     #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
     def do_find_prev(self, settings):
         """Find the previous instance of self.find_text."""
-        return self.do_find_next(settings, reverse_flag = True)
+        self.request_reverse = True
+        return self.do_find_next(settings)
 
-    def do_find_next(self, settings, reverse_flag=False):
+    def do_find_next(self, settings):
         """
         Find the next instance of self.find_text.
         
@@ -614,7 +618,7 @@ class LeoFind:
         # The gui widget may not exist for headlines.
         gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
         #
-        # Init the work widgets, so we don't get stuck.
+        # Init the work widget, so we don't get stuck.
         s = p.h if self.in_headline else p.b
         ins = gui_w.getInsertPoint() if gui_w else 0
         self.work_s = s
@@ -622,13 +626,19 @@ class LeoFind:
         #
         # Set the settings *after* initing the search.
         self.init_ivars_from_settings(settings)
-        self.reverse = reverse_flag
+        #
+        # Honor delayed requests.
+        for ivar in ('reverse', 'pattern_match', 'whole_word'):
+            request = 'request_' + ivar
+            val = getattr(self, request)
+            setattr(self, ivar, val)  # Set the ivar.
+            setattr(self, request, False)  # Clear the request!
         #
         # Leo 6.4: suboutline-only does not apply to interactive searches.
         self.suboutline_only = None
         #
         # Now check the args.
-        tag = 'find-prev' if reverse_flag else 'find-next'
+        tag = 'find-prev' if self.reverse else 'find-next'
         if not self.check_args(tag):
             return None, None, None
         data = self.save()
