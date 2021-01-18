@@ -137,25 +137,25 @@ class LeoFind:
         c = self.c
         return g.Bunch(
             # State...
-            in_headline = False,
-            p = c.rootPosition(),
+            in_headline=False,
+            p=c.rootPosition(),
             # Find/change strings...
-            find_text = '',
-            change_text = '',
+            find_text='',
+            change_text='',
             # Find options...
-            ignore_case = False,
-            mark_changes = False,
-            mark_finds = False,
-            node_only = False,
-            pattern_match = False,
-            reverse = False,
-            search_body = True,
-            search_headline = True,
-            suboutline_only = False,
-            whole_word = False,
-            wrapping = False,
+            ignore_case=False,
+            mark_changes=False,
+            mark_finds=False,
+            node_only=False,
+            pattern_match=False,
+            reverse=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,
+            whole_word=False,
+            wrapping=False,
             # User options.
-            use_cff = False,  # For find-def.
+            use_cff=False,  # For find-def.
         )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
     def finishCreate(self):
@@ -191,7 +191,7 @@ class LeoFind:
         self.mark_changes = settings.mark_changes
         self.mark_finds = settings.mark_finds
         self.node_only = settings.node_only
-        self.pattern_match = settings.pattern_match 
+        self.pattern_match = settings.pattern_match
         self.search_body = settings.search_body
         self.search_headline = settings.search_headline
         self.suboutline_only = settings.suboutline_only
@@ -203,7 +203,7 @@ class LeoFind:
     #@+node:ekr.20210110073117.5: *5* NEW:find.init_settings
     def init_settings(self, settings):
         """Initialize all user settings."""
-        
+
     #@+node:ekr.20171113164709.1: *4* find.reload_settings
     def reload_settings(self):
         """LeoFind.reload_settings."""
@@ -340,7 +340,7 @@ class LeoFind:
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
         self.do_find_def(settings, word, strict)
-        
+
     def find_def_strict(self, event=None):  #pragma: no cover (cmd)
         """Same as find_def, but don't call _switch_style."""
         self.find_def(event=event, strict=True)
@@ -348,10 +348,10 @@ class LeoFind:
     def do_find_def(self, settings, word, strict):
         """A standalone helper for unit tests."""
         return self._fd_helper(settings, word, def_flag=True, strict=False)
-        
+
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
     def _compute_find_def_settings(self, find_pattern):
-        
+
         settings = self.default_settings()
         table = (
             ('change_text', ''),
@@ -369,7 +369,7 @@ class LeoFind:
             assert attr in settings.__dict__, attr
             # Set the values.
             setattr(self, attr, val)
-            settings [attr] = val
+            settings[attr] = val
         return settings
     #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
     def _compute_find_def_word(self, event):
@@ -572,7 +572,7 @@ class LeoFind:
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
         self.do_find_var(settings, word)
-        
+
     def do_find_var(self, settings, word):
         """A standalone helper for unit tests."""
         return self._fd_helper(settings, word, def_flag=False, strict=False)
@@ -582,8 +582,8 @@ class LeoFind:
         """The find-next command."""
         # Settings...
         self.reverse = False
-        self.init_in_headline() # Do this *before* creating the settings.
-        settings = self.ftm.get_settings() 
+        self.init_in_headline()  # Do this *before* creating the settings.
+        settings = self.ftm.get_settings()
         # Do the command!
         self.do_find_next(settings)
 
@@ -852,11 +852,11 @@ class LeoFind:
         self.ftm.set_entry_focus()
         prompt = 'Replace Regex: ' if self.pattern_match else 'Replace: '
         self.start_state_machine(event, prompt,
-            handler = self.interactive_replace_all1,
+            handler=self.interactive_replace_all1,
             # Allow either '\t' or '\n' to switch to the change text.
-            escape_handler = self.interactive_replace_all1,
+            escape_handler=self.interactive_replace_all1,
         )
-        
+
     def interactive_replace_all1(self, event):  # pragma: no cover (interactive)
         k = self.k
         find_pattern = k.arg
@@ -869,8 +869,8 @@ class LeoFind:
         k.getNextArg(self.interactive_replace_all2)
 
     def interactive_replace_all2(self, event):  # pragma: no cover (interactive)
-        c,k,w = self.c, self.k, self.c.frame.body.wrapper
-        
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
+
         # Update settings data.
         find_pattern = self._sString
         change_pattern = k.arg
@@ -969,7 +969,9 @@ class LeoFind:
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.process_time()
         if not g.unitTesting:
-            g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
+            g.es_print(
+                f"changed {count} instances{g.plural(count)} "
+                f"in {t2 - t1:4.2f} sec.")
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -1193,7 +1195,8 @@ class LeoFind:
     @cmd('clone-find-all')
     @cmd('find-clone-all')
     @cmd('cfa')
-    def interactive_clone_find_all(self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    def interactive_clone_find_all(
+        self, event=None, preloaded=None):  # pragma: no cover (interactive)
         """
         clone-find-all ( aka find-clone-all and cfa).
 
@@ -1248,7 +1251,8 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    def interactive_cff(
+        self, event=None, preloaded=None):  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 
@@ -1342,12 +1346,12 @@ class LeoFind:
         tc = c.theTagController
         if not tc:
             if not g.unitTesting:  # pragma: no cover (skip)
-                g.es_print('nodetags not active')  
+                g.es_print('nodetags not active')
             return 0, c.p
         clones = tc.get_tagged_nodes(tag)
         if not clones:
-            if not g.unitTesting: # pragma: no cover (skip)
-                g.es_print(f"tag not found: {tag}") 
+            if not g.unitTesting:  # pragma: no cover (skip)
+                g.es_print(f"tag not found: {tag}")
             tc.show_all_tags()
             return 0, c.p
         undoData = u.beforeInsertNode(c.p)
@@ -1409,7 +1413,7 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         self.do_find_all(settings)
-        
+
     def find_all_escape_handler(self, event):  # pragma: no cover (interactive)
         k = self.k
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
@@ -1422,7 +1426,7 @@ class LeoFind:
         k.getNextArg(self.find_all_escape_handler2)
 
     def find_all_escape_handler2(self, event):  # pragma: no cover (interactive)
-        c,k,w = self.c, self.k, self.c.frame.body.wrapper
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -1482,7 +1486,7 @@ class LeoFind:
     #@+node:ekr.20160422073500.1: *6* find._find_all_helper
     def _find_all_helper(self, after, data, p, undoType):
         """Handle the find-all command from p to after."""
-        c, u= self.c, self.c.undoer
+        c, u = self.c, self.c.undoer
         both = self.search_body and self.search_headline
         count, found, result = 0, None, []
         while 1:
@@ -1542,7 +1546,8 @@ class LeoFind:
         return found
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
-    def interactive_find_all_unique_regex(self, event=None):  # pragma: no cover (interactive)
+    def interactive_find_all_unique_regex(
+        self, event=None):  # pragma: no cover (interactive)
         """
         Create a summary node containing all unique matches of the regex search
         string. This command shows only the matched string itself.
@@ -1556,10 +1561,11 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Search Unique Regex: ',
             handler=self.interactive_find_all_unique_regex1,
-            escape_handler = self.interactive_change_all_unique_regex1,
+            escape_handler=self.interactive_change_all_unique_regex1,
         )
-        
-    def interactive_find_all_unique_regex1(self, event=None):  # pragma: no cover (interactive)
+
+    def interactive_find_all_unique_regex1(
+        self, event=None):  # pragma: no cover (interactive)
         k = self.k
         # Settings...
         find_pattern = k.arg
@@ -1572,8 +1578,9 @@ class LeoFind:
         k.resetLabel()
         k.showStateAndMode()
         return self.do_find_all(settings)
-        
-    def interactive_change_all_unique_regex1(self, event):  # pragma: no cover (interactive)
+
+    def interactive_change_all_unique_regex1(
+        self, event):  # pragma: no cover (interactive)
         k = self.k
         find_pattern = self._sString = k.arg
         self.update_find_list(k.arg)
@@ -1582,8 +1589,9 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.interactive_change_all_unique_regex2)
 
-    def interactive_change_all_unique_regex2(self, event):  # pragma: no cover (interactive)
-        c,k,w = self.c, self.k, self.c.frame.body.wrapper
+    def interactive_change_all_unique_regex2(
+        self, event):  # pragma: no cover (interactive)
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -1612,7 +1620,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Regexp Search: ',
             handler=self.start_search1,  # See start-search
-            escape_handler = self.start_search_escape1,  # See start-search
+            escape_handler=self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20210112044303.1: *4* find.re-search-backward
     @cmd('re-search-backward')
@@ -1629,7 +1637,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Regexp Search Backward:',
             handler=self.start_search1,  # See start-search
-            escape_handler = self.start_search_escape1,  # See start-search
+            escape_handler=self.start_search_escape1,  # See start-search
         )
 
     #@+node:ekr.20131117164142.17004: *4* find.search_backward
@@ -1645,7 +1653,7 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Search Backward: ',
             handler=self.start_search1,  # See start-search
-            escape_handler = self.start_search_escape1,  # See start-search
+            escape_handler=self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) & common states
     @cmd('start-search')
@@ -1669,13 +1677,13 @@ class LeoFind:
             self.start_state_machine(event,
                 prefix='Search: ',
                 handler=self.start_search1,
-                escape_handler = self.start_search_escape1,
+                escape_handler=self.start_search_escape1,
             )
         else:
             self.open_find_tab(event)
             self.ftm.init_focus()
             return
-            
+
     startSearch = start_search  # Compatibility. Do not delete.
     #@+node:ekr.20210117143611.1: *5* find.start_search1
     def start_search1(self, event=None):
@@ -1686,7 +1694,7 @@ class LeoFind:
         self.ftm.set_find_text(find_pattern)
         self.update_find_list(find_pattern)
         self.init_vim_search(find_pattern)
-        self.init_in_headline() # Required.
+        self.init_in_headline()  # Required.
         settings = self.ftm.get_settings()
         # Gui...
         k.clearState()
@@ -1728,7 +1736,7 @@ class LeoFind:
         self.ftm.set_change_text(change_pattern)
         self.update_change_list(change_pattern)
         self.init_vim_search(find_pattern)
-        self.init_in_headline() # Required
+        self.init_in_headline()  # Required
         settings = self.ftm.get_settings()
         # Gui...
         k.clearState()
@@ -1785,23 +1793,23 @@ class LeoFind:
         self.start_state_machine(event,
             prefix='Word Search: ',
             handler=self.start_search1,  # See start-search
-            escape_handler = self.start_search_escape1,  # See start-search
+            escape_handler=self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
     def word_search_backward(self, event):
         # Set flags for show_find_options.
-        self.reverse = True 
+        self.reverse = True
         self.whole_world = True
         self.show_find_options()
         # Set flags for do_find_next().
-        self.request_reverse = True 
+        self.request_reverse = True
         self.request_whole_world = True
         # Go
         self.start_state_machine(event,
             prefix='Word Search Backward: ',
             handler=self.start_search1,  # See start-search
-            escape_handler = self.start_search_escape1,  # See start-search
+            escape_handler=self.start_search_escape1,  # See start-search
         )
     #@+node:ekr.20210112192427.1: *3* LeoFind.Commands: helpers
     #@+node:ekr.20210110073117.9: *4* find._cf_helper & helpers
@@ -1929,7 +1937,7 @@ class LeoFind:
         new_ins = start if self.reverse else start + len(change_text)
         if start != end:
             gui_w.delete(start, end)
-            self.work_s = self.work_s[:start] + self.work_s[start + end:]
+            self.work_s = self.work_s[:start] + self.work_s[start + end :]
         gui_w.insert(start, change_text)
         gui_w.setInsertPoint(new_ins)
         self.work_sel = (new_ins, new_ins, new_ins)
@@ -2252,7 +2260,7 @@ class LeoFind:
             # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())
             # while mo and 0 <= i <= len(s):
                 # if mo.start() == mo.end():
-                    # if backwards: 
+                    # if backwards:
                         # # Search backward using match instead of search.
                         # i -= 1
                         # while 0 <= i < len(s):
@@ -2274,7 +2282,7 @@ class LeoFind:
         
         Groups is a tuple of strings, one for every matched group.
         """
-        
+
         # g.printObj(list(groups), tag=f"groups in {change_text!r}")
 
         def repl(match_object):
@@ -2382,7 +2390,7 @@ class LeoFind:
         c.frame.bringToFront()  # Needed on the Mac
         if not p or not c.positionExists(p):
             # Better than selecting the root!
-            return 
+            return
         c.selectPosition(p)
         # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
         if self.in_headline:
@@ -2854,7 +2862,7 @@ class LeoFind:
         self.escape_handler = escape_handler
         # Start the state maching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
-        
+
     def state0(self, event):
         """Dispatch the next handler."""
         k = self.k
@@ -2897,12 +2905,12 @@ class TestFind(unittest.TestCase):
             p.h = f"Node {n}"
             p.b = f"def top{n}():\n    v{n} = 3\n"
             return p
-            
+
         for n in range(0, 4, 3):
-            last = make_top(n+1, last)
-            child = make_child(n+2, last)
-            make_child(n+3, child)
-            
+            last = make_top(n + 1, last)
+            child = make_child(n + 2, last)
+            make_child(n + 3, child)
+
         for p in c.all_positions():
             p.v.clearDirty()
             p.v.clearVisited()
@@ -2978,15 +2986,15 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
     def test_clone_find_tag(self):
         c, x = self.c, self.x
-        
+
         class DummyTagController:
-            
+
             def __init__(self, clones):
                 self.clones = clones
-                
+
             def get_tagged_nodes(self, tag):
                 return self.clones
-                
+
             def show_all_tags(self):
                 pass
 
@@ -3101,7 +3109,7 @@ class TestFind(unittest.TestCase):
         # Set ancestor @file node dirty.
         root.h = '@file xyzzy'
         settings.find_text = settings.change_text = 'child1'
-        
+
     def test_replace_all_with_at_file_node(self):
         c, settings, x = self.c, self.settings, self.x
         root = c.rootPosition().next()  # Must have children.
@@ -3118,7 +3126,7 @@ class TestFind(unittest.TestCase):
         assert root.anyAtFileNodeName()
         x.do_change_all(settings)
         assert root.v.isDirty(), root.h
-        
+
     def test_replace_all_headline(self):
         settings, x = self.settings, self.x
         settings.find_text = 'child'
@@ -3145,7 +3153,7 @@ class TestFind(unittest.TestCase):
         # Failure exit.
         w.setSelectionRange(0, 0)
         x.do_change_then_find(settings)
-        
+
     def test_replace_then_find_regex(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
         settings.find_text = r'(def) top1'
@@ -3158,7 +3166,7 @@ class TestFind(unittest.TestCase):
         # replace-then-find
         w.setSelectionRange(pos, newpos, insert=pos)
         x.do_change_then_find(settings)
-        
+
     def test_replace_then_find_in_headline(self):
         settings, x = self.settings, self.x
         p = settings.p
@@ -3174,9 +3182,9 @@ class TestFind(unittest.TestCase):
         assert s == settings.find_text, repr(s)
     #@+node:ekr.20210110073117.69: *4* TestFind.tag-children
     def test_tag_children(self):
-        
+
         c, x = self.c, self.x
-        
+
         class DummyTagController:
             def add_tag(self, p, tag):
                 pass
@@ -3211,7 +3219,7 @@ class TestFind(unittest.TestCase):
         x = self.x
         x._inner_search_match_word("def spam():", 0, "spam")
         x._inner_search_match_word("def spam():", 0, "xxx")
-        
+
     #@+node:ekr.20210110073117.85: *4* TestFind._inner_search_plain
     def test_cfa_plain_search(self):
         settings, x = self.settings, self.x
@@ -3298,7 +3306,7 @@ class TestFind(unittest.TestCase):
                 f"ignore: {ignore} find: {find} change {change}\n"
                 f"expected count: {count} s: {expected_s}\n"
                 f"     got count: {actual_count} s: {actual_s}")
-               
+
     #@+node:ekr.20210110073117.73: *4* TestFind.batch_word_replace
     def test_batch_word_replace(self):
         settings, x = self.settings, self.x
@@ -3358,7 +3366,7 @@ class TestFind(unittest.TestCase):
         c = self.c
         print('dump_tree', tag)
         for p in c.all_positions():
-            print(' '*p.level(),  p.h, 'dirty', p.v.isDirty())
+            print(' ' * p.level(), p.h, 'dirty', p.v.isDirty())
             # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.82: *4* TestFind.make_regex_subs (to do)
     def test_make_regex_subs(self):
@@ -3402,8 +3410,8 @@ class TestFind(unittest.TestCase):
         table = (
             (r'a\bc', r'a\bc'),
             (r'a\\bc', r'a\bc'),
-            (r'a\tc', 'a\tc'), # Replace \t by a tab.
-            (r'a\nc', 'a\nc'), # Replace \n by a newline.
+            (r'a\tc', 'a\tc'),  # Replace \t by a tab.
+            (r'a\nc', 'a\nc'),  # Replace \n by a newline.
         )
         for s, expected in table:
             result = x.replace_back_slashes(s)
