@@ -101,7 +101,7 @@ class LeoFind:
         # For isearch commands...
         self.stack = []  # Entries are (p, sel)
         self.isearch_ignore_case = None
-        self.isearch_forward = None
+        self.isearch_forward_flag = None
         self.isearch_regexp = None
         self.findTextList = []
         self.changeTextList = []
@@ -2453,9 +2453,9 @@ class LeoFind:
         return w  # Support for isearch.
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
-    #@+node:ekr.20131117164142.16941: *5* find.isearchForward
+    #@+node:ekr.20131117164142.16941: *5* find.isearch_forward
     @cmd('isearch-forward')
-    def isearchForward(self, event):
+    def isearch_forward(self, event):
         """
         Begin a forward incremental search.
 
@@ -2552,7 +2552,7 @@ class LeoFind:
     def iSearch_helper(self, again=False):
         """Handle the actual incremental search."""
         c, k, p = self.c, self.k, self.c.p
-        reverse = not self.isearch_forward
+        reverse = not self.isearch_forward_flag
         pattern = k.getLabel(ignorePrompt=True)
         if not pattern:
             self.abortSearch()
@@ -2692,7 +2692,7 @@ class LeoFind:
         c, k = self.c, self.k
         # None is a signal to get the option from the find tab.
         self.event = event
-        self.isearch_forward = not self.reverse if forward is None else forward
+        self.isearch_forward_flag = not self.reverse if forward is None else forward
         self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
         # Note: the word option can't be used with isearches!
@@ -2705,7 +2705,7 @@ class LeoFind:
         self.iSearchStrokes = self.getStrokes(commandName)
         k.setLabelBlue(
             "Isearch"
-            f"{' Backward' if not self.isearch_forward else ''}"
+            f"{' Backward' if not self.isearch_forward_flag else ''}"
             f"{' Regexp' if self.isearch_regexp else ''}"
             f"{' NoCase' if self.isearch_ignore_case else ''}"
             ": "
