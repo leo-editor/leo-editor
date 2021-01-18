@@ -1259,7 +1259,7 @@ class FindTabManager:
         if not w.isChecked():
             w.toggle()
         if find.minibuffer_mode:
-            find.showFindOptionsInStatusArea()
+            find.show_find_options_in_status_area()
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
     #@@nobeautify
 
@@ -1284,7 +1284,7 @@ class FindTabManager:
         assert hasattr(find,checkbox_name),checkbox_name
         w.toggle() # The checkbox callback toggles the ivar.
         if find.minibuffer_mode:
-            find.showFindOptionsInStatusArea()
+            find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):
