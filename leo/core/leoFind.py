@@ -321,7 +321,7 @@ class LeoFind:
         if errors:
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
-    #@+node:ekr.20150629084204.1: *4* find.find-def & helpers
+    #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
     @cmd('find-def')
     def find_def(self, event=None, strict=False):  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
@@ -554,7 +554,7 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
-    #@+node:ekr.20210118003803.1: *4* find.var-var & helper
+    #@+node:ekr.20210118003803.1: *4* find.var-var & do_find_def
     @cmd('find-var')
     def find_var(self, event=None):
         """Find the var under the cursor."""
