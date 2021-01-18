@@ -2544,8 +2544,8 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
-    #@+node:ekr.20131117164142.16949: *5* find.iSearch
-    def iSearch(self, again=False):
+    #@+node:ekr.20131117164142.16949: *5* find.iSearch_helper
+    def iSearch_helper(self, again=False):
         """Handle the actual incremental search."""
         c, k, p = self.c, self.k, self.c.p
         reverse = not self.isearch_forward
@@ -2609,7 +2609,7 @@ class LeoFind:
         if s in ('Escape', '\n', 'Return'):
             self.endSearch()
         elif stroke in self.iSearchStrokes:
-            self.iSearch(again=True)
+            self.iSearch_helper(again=True)
         elif s in ('\b', 'BackSpace'):
             k.updateLabel(event)
             self.iSearchBackspace()
@@ -2624,7 +2624,7 @@ class LeoFind:
         # Fix bug 1267921: isearch-forward accepts non-alphanumeric keys as input.
         elif k.isPlainKey(stroke):
             k.updateLabel(event)
-            self.iSearch()
+            self.iSearch_helper()
     #@+node:ekr.20131117164142.16951: *5* find.iSearchBackspace
     def iSearchBackspace(self):
 
@@ -2708,7 +2708,6 @@ class LeoFind:
         )
         k.setState('isearch', 1, handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
-    #@+node:ekr.20210108084340.1: *3* LeoFind.Script entries
     #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
     def addChangeStringToLabel(self):
