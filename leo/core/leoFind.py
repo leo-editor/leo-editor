@@ -180,7 +180,6 @@ class LeoFind:
         """
         #
         # Init required defaults.
-        ### self.root = self.c.p.copy()
         self.reverse = False
         #
         # Init find/change strings.
@@ -508,7 +507,7 @@ class LeoFind:
             c.contractAllHeadlines()
         finally:
             c.sparse_find = old_sparse_find
-            self.root = None ###
+            self.root = None
         if count:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
@@ -593,7 +592,7 @@ class LeoFind:
         settings = self.ftm.get_settings()
         # Do the command!
         self.do_find_prev(settings)
-    #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev (changed)
+    #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
     def do_find_prev(self, settings):
         """Find the previous instance of self.find_text."""
         self.request_reverse = True
@@ -626,22 +625,17 @@ class LeoFind:
             val = getattr(self, request)
             setattr(self, ivar, val)  # Set the ivar.
             setattr(self, request, False)  # Clear the request!
-        ###
-            #
-            # Leo 6.4: suboutline-only does not apply to interactive searches.
-            # self.suboutline_only = None
         #
-        # Leo 6.4: clear self.root if c.p is outside it's range.
-        ### g.trace('ROOT:', self.root and self.root.h or '<no root>')
+        # Leo 6.4: set/clear self.root
         if self.root:
             if p != self.root and not self.root.isAncestorOf(p):
-                # End the range.
-                ### g.es_print('clearing suboutline-only')  ###
+                # p is outside of self.root's tree.
+                # Clear suboutline-only.
                 self.root = None
                 self.suboutline_only = False
                 self.setFindScopeEveryWhere()  # Update find-tab & status area.
         elif self.suboutline_only:
-            # Start the range.
+            # Start the range and set suboutline-only.
             self.root = c.p
             self.setFindScopeSuboutlineOnly()  # Update find-tab & status area.
         #
@@ -964,7 +958,7 @@ class LeoFind:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
         self.ftm.set_radio_button('entire-outline')
         # suboutline-only is a one-shot for batch commands.
-        self.root = None ###
+        self.root = None
         self.node_only = self.suboutline_only = False
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
@@ -1474,7 +1468,7 @@ class LeoFind:
             c.contractAllHeadlines()
         finally:
             c.sparse_find = old_sparse_find
-            self.root = None  ###
+            self.root = None
         if count:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
@@ -2057,7 +2051,6 @@ class LeoFind:
             return True
         if self.suboutline_only:
             if self.root and p != self.root and not self.root.isAncestorOf(p):
-                ### g.trace('Outside Range', 'root', self.root.h, p.h)
                 return True
         if c.hoistStack:
             bunch = c.hoistStack[-1]
