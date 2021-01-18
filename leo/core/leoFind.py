@@ -167,7 +167,7 @@ class LeoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
-    #@+node:ekr.20210110073117.4: *4* find.init_ivars_from_settings
+    #@+node:ekr.20210110073117.4: *4* find.init_ivars_from_settings (changed)
     def init_ivars_from_settings(self, settings):
         """
         Initialize all ivars from settings, including required defaults.
@@ -180,7 +180,7 @@ class LeoFind:
         """
         #
         # Init required defaults.
-        self.root = self.c.p.copy()
+        ### self.root = self.c.p.copy()
         self.reverse = False
         #
         # Init find/change strings.
@@ -508,6 +508,7 @@ class LeoFind:
             c.contractAllHeadlines()
         finally:
             c.sparse_find = old_sparse_find
+            self.root = None ###
         if count:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
@@ -592,7 +593,7 @@ class LeoFind:
         settings = self.ftm.get_settings()
         # Do the command!
         self.do_find_prev(settings)
-    #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
+    #@+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev (changed)
     def do_find_prev(self, settings):
         """Find the previous instance of self.find_text."""
         self.request_reverse = True
@@ -625,9 +626,24 @@ class LeoFind:
             val = getattr(self, request)
             setattr(self, ivar, val)  # Set the ivar.
             setattr(self, request, False)  # Clear the request!
+        ###
+            #
+            # Leo 6.4: suboutline-only does not apply to interactive searches.
+            # self.suboutline_only = None
         #
-        # Leo 6.4: suboutline-only does not apply to interactive searches.
-        self.suboutline_only = None
+        # Leo 6.4: clear self.root if c.p is outside it's range.
+        ### g.trace('ROOT:', self.root and self.root.h or '<no root>')
+        if self.root:
+            if p != self.root and not self.root.isAncestorOf(p):
+                # End the range.
+                ### g.es_print('clearing suboutline-only')  ###
+                self.root = None
+                self.suboutline_only = False
+                self.setFindScopeEveryWhere()  # Update find-tab & status area.
+        elif self.suboutline_only:
+            # Start the range.
+            self.root = c.p
+            self.setFindScopeSuboutlineOnly()  # Update find-tab & status area.
         #
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
@@ -947,6 +963,8 @@ class LeoFind:
             if count_h or count_b:
                 u.afterChangeNodeContents(p, 'Replace All', undoData)
         self.ftm.set_radio_button('entire-outline')
+        # suboutline-only is a one-shot for batch commands.
+        self.root = None ###
         self.node_only = self.suboutline_only = False
         p = c.p
         u.afterChangeGroup(p, undoType, reportFlag=True)
@@ -1456,6 +1474,7 @@ class LeoFind:
             c.contractAllHeadlines()
         finally:
             c.sparse_find = old_sparse_find
+            self.root = None  ###
         if count:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
@@ -1822,7 +1841,9 @@ class LeoFind:
                 p.moveToThreadNext()
             assert p != progress
         self.ftm.set_radio_button('entire-outline')
+        # suboutline-only is a one-shot for batch commands.
         self.node_only = self.suboutline_only = False
+        self.root = None
         if clones:
             undoData = u.beforeInsertNode(c.p)
             found = self._cfa_create_nodes(clones, flattened=False)
@@ -2035,7 +2056,8 @@ class LeoFind:
         if self.node_only:
             return True
         if self.suboutline_only:
-            if p != self.root and not self.root.isAncestorOf(p):
+            if self.root and p != self.root and not self.root.isAncestorOf(p):
+                ### g.trace('Outside Range', 'root', self.root.h, p.h)
                 return True
         if c.hoistStack:
             bunch = c.hoistStack[-1]
