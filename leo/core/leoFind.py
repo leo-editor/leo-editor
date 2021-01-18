@@ -846,7 +846,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.16994: *4* find.change-all & helper
     @cmd('change-all')
     @cmd('replace-all')
-    def interactive_change_all(self, event=None):
+    def interactive_change_all(self, event=None):  # pragma: no cover (interactive)
         """Replace all instances of the search string with the replacement string."""
         self.ftm.clear_focus()
         self.ftm.set_entry_focus()
@@ -857,7 +857,7 @@ class LeoFind:
             escape_handler = self.interactive_replace_all1,
         )
         
-    def interactive_replace_all1(self, event):
+    def interactive_replace_all1(self, event):  # pragma: no cover (interactive)
         k = self.k
         find_pattern = k.arg
         self._sString = k.arg
@@ -868,7 +868,7 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.interactive_replace_all2)
 
-    def interactive_replace_all2(self, event):
+    def interactive_replace_all2(self, event):  # pragma: no cover (interactive)
         c,k = self.c, self.k
         # Update settings data.
         find_pattern = self._sString
@@ -1192,7 +1192,7 @@ class LeoFind:
     @cmd('clone-find-all')
     @cmd('find-clone-all')
     @cmd('cfa')
-    def interactive_clone_find_all(self, event=None, preloaded=None):
+    def interactive_clone_find_all(self, event=None, preloaded=None):  # pragma: no cover (interactive)
         """
         clone-find-all ( aka find-clone-all and cfa).
 
@@ -1211,7 +1211,7 @@ class LeoFind:
             prefix='Clone Find All: ',
             handler=self.interactive_clone_find_all1)
 
-    def interactive_clone_find_all1(self, event):
+    def interactive_clone_find_all1(self, event):  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.w
         # Settings...
         pattern = k.arg
@@ -1247,7 +1247,7 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     # @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(self, event=None, preloaded=None):
+    def interactive_cff(self, event=None, preloaded=None):  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 
@@ -1267,7 +1267,7 @@ class LeoFind:
             prefix='Clone Find All Flattened: ',
             handler=self.interactive_cff1)
 
-    def interactive_cff1(self, event):
+    def interactive_cff1(self, event):  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.w
         # Settings...
         pattern = k.arg
@@ -1303,7 +1303,7 @@ class LeoFind:
     @cmd('clone-find-tag')
     @cmd('find-clone-tag')
     @cmd('cft')
-    def interactive_clone_find_tag(self, event=None):
+    def interactive_clone_find_tag(self, event=None):  # pragma: no cover (interactive)
         """
         clone-find-tag (aka find-clone-tag and cft).
 
@@ -1320,7 +1320,7 @@ class LeoFind:
                 prefix='Clone Find Tag: ',
                 handler=self.interactive_clone_find_tag1)
 
-    def interactive_clone_find_tag1(self, event):
+    def interactive_clone_find_tag1(self, event):  # pragma: no cover (interactive)
         c, k = self.c, self.k
         # Settings...
         self.find_text = tag = k.arg
@@ -1379,7 +1379,7 @@ class LeoFind:
         return found
     #@+node:ekr.20131117164142.16998: *4* find.find-all & helper
     @cmd('find-all')
-    def interactive_find_all(self, event=None):
+    def interactive_find_all(self, event=None):  # pragma: no cover (interactive)
         """
         Create a summary node containing descriptions of all matches of the
         search string.
@@ -1393,7 +1393,7 @@ class LeoFind:
             escape_handler=self.find_all_escape_handler,
         )
 
-    def interactive_find_all1(self, event=None):
+    def interactive_find_all1(self, event=None):  # pragma: no cover (interactive)
         k = self.k
         # Settings.
         find_pattern = k.arg
@@ -1409,7 +1409,7 @@ class LeoFind:
         k.showStateAndMode()
         self.do_find_all(settings)
         
-    def find_all_escape_handler(self, event):
+    def find_all_escape_handler(self, event):  # pragma: no cover (interactive)
         k = self.k
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         find_pattern = k.arg
@@ -1420,7 +1420,7 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.find_all_escape_handler2)
 
-    def find_all_escape_handler2(self, event):
+    def find_all_escape_handler2(self, event):  # pragma: no cover (interactive)
         c,k,w = self.c, self.k, self.w
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1541,7 +1541,7 @@ class LeoFind:
         return found
     #@+node:ekr.20171226140643.1: *4* find.find-all-unique-regex
     @cmd('find-all-unique-regex')
-    def interactive_find_all_unique_regex(self, event=None):
+    def interactive_find_all_unique_regex(self, event=None):  # pragma: no cover (interactive)
         """
         Create a summary node containing all unique matches of the regex search
         string. This command shows only the matched string itself.
@@ -1558,7 +1558,7 @@ class LeoFind:
             escape_handler = self.interactive_change_all_unique_regex1,
         )
         
-    def interactive_find_all_unique_regex1(self, event=None):
+    def interactive_find_all_unique_regex1(self, event=None):  # pragma: no cover (interactive)
         k = self.k
         # Settings...
         find_pattern = k.arg
@@ -1572,7 +1572,7 @@ class LeoFind:
         k.showStateAndMode()
         return self.do_find_all(settings)
         
-    def interactive_change_all_unique_regex1(self, event):
+    def interactive_change_all_unique_regex1(self, event):  # pragma: no cover (interactive)
         k = self.k
         find_pattern = self._sString = k.arg
         self.update_find_list(k.arg)
@@ -1581,7 +1581,7 @@ class LeoFind:
         self.add_change_string_to_label()
         k.getNextArg(self.interactive_change_all_unique_regex2)
 
-    def interactive_change_all_unique_regex2(self, event):
+    def interactive_change_all_unique_regex2(self, event):  # pragma: no cover (interactive)
         c,k = self.c, self.k
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1600,7 +1600,7 @@ class LeoFind:
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
-    def interactive_re_search_forward(self, event):
+    def interactive_re_search_forward(self, event):  # pragma: no cover (interactive)
         """Same as start-find, with regex."""
         # Set flag for show_find_options.
         self.pattern_match = True
@@ -1615,7 +1615,7 @@ class LeoFind:
         )
     #@+node:ekr.20210112044303.1: *4* find.re-search-backward
     @cmd('re-search-backward')
-    def interactive_re_search_backward(self, event):
+    def interactive_re_search_backward(self, event):  # pragma: no cover (interactive)
         """Same as start-find, but with regex and in reverse."""
         # Set flags for show_find_options.
         self.reverse = True
@@ -1633,7 +1633,7 @@ class LeoFind:
 
     #@+node:ekr.20131117164142.17004: *4* find.search_backward
     @cmd('search-backward')
-    def interactive_search_backward(self, event):
+    def interactive_search_backward(self, event):  # pragma: no cover (interactive)
         """Same as start-find, but in reverse."""
         # Set flag for show_find_options.
         self.reverse = True
@@ -1649,7 +1649,7 @@ class LeoFind:
     #@+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) & common states
     @cmd('start-search')
     @cmd('search-forward')  # Compatibility.
-    def start_search(self, event):
+    def start_search(self, event):  # pragma: no cover (interactive)
         """
         The default binding of Ctrl-F.
         
@@ -1737,7 +1737,7 @@ class LeoFind:
         self.do_find_next(settings)
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
-    def interactive_tag_children(self, event=None):
+    def interactive_tag_children(self, event=None):  # pragma: no cover (interactive)
         """tag-children: prompt for a tag and add it to all children of c.p."""
         self.w = self.c.frame.body.wrapper
         if not self.w:
@@ -1746,7 +1746,7 @@ class LeoFind:
             prefix='Tag Children: ',
             handler=self.interactive_tag_children1)
 
-    def interactive_tag_children1(self, event):
+    def interactive_tag_children1(self, event):  # pragma: no cover (interactive)
         c, k, p = self.c, self.k, self.c.p
         # Settings...
         tag = k.arg
@@ -1773,7 +1773,7 @@ class LeoFind:
     #@+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
-    def word_search_forward(self, event):
+    def word_search_forward(self, event):  # pragma: no cover (interactive)
         """Same as start-search, with whole_word setting."""
         # Set flag for show_find_options.
         self.whole_word = True
