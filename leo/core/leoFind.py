@@ -1258,7 +1258,6 @@ class LeoFind:
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
         """
-        ### w = self.editWidget(event)  # sets self.w
         self.w = w = self.c.frame.body.wrapper
         if not w:
             return
@@ -1656,10 +1655,9 @@ class LeoFind:
         
         Also contains default state-machine entries for find/change commands.
         """
-        ### w = self.editWidget(event)
         self.w = w = self.c.frame.body.wrapper
         if not w:
-            return ###
+            return
         self.preloadFindPattern(w)
         if self.minibuffer_mode:
             # Set up the state machine.
@@ -2837,7 +2835,6 @@ class LeoFind:
         Initialize and start the state machine used to get user arguments.
         """
         c, k = self.c, self.k
-        ### self.w = self.editWidget(event)
         self.w = c.frame.body.wrapper
         if not self.w:
             return
