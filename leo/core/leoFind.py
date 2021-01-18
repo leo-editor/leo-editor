@@ -869,7 +869,8 @@ class LeoFind:
         k.getNextArg(self.interactive_replace_all2)
 
     def interactive_replace_all2(self, event):  # pragma: no cover (interactive)
-        c,k = self.c, self.k
+        c,k,w = self.c, self.k, self.c.frame.body.wrapper
+        
         # Update settings data.
         find_pattern = self._sString
         change_pattern = k.arg
@@ -883,7 +884,7 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-        c.widgetWantsFocusNow(self.w)
+        c.widgetWantsFocusNow(w)
         # Do the command!
         self.do_change_all(settings)
     #@+node:ekr.20131117164142.17016: *5* find.do_change_all & helpers (test)
@@ -1188,7 +1189,7 @@ class LeoFind:
         # #1166: Complete the result using s0.
         result.append(s0[prev_i:])
         return count, ''.join(result)
-    #@+node:ekr.20131117164142.17011: *4* find.clone-find-all & helper (test)
+    #@+node:ekr.20131117164142.17011: *4* find.clone-find-all & helper
     @cmd('clone-find-all')
     @cmd('find-clone-all')
     @cmd('cfa')
@@ -1202,7 +1203,7 @@ class LeoFind:
         The list is *not* flattened: clones appear only once in the
         descendants of the organizer node.
         """
-        self.w = w = self.c.frame.body.wrapper
+        w = self.c.frame.body.wrapper
         if not w:
             return
         if not preloaded:
@@ -1212,7 +1213,7 @@ class LeoFind:
             handler=self.interactive_clone_find_all1)
 
     def interactive_clone_find_all1(self, event):  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.w
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1258,7 +1259,7 @@ class LeoFind:
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
         """
-        self.w = w = self.c.frame.body.wrapper
+        w = self.c.frame.body.wrapper
         if not w:
             return
         if not preloaded:
@@ -1268,7 +1269,7 @@ class LeoFind:
             handler=self.interactive_cff1)
 
     def interactive_cff1(self, event):  # pragma: no cover (interactive)
-        c, k, w = self.c, self.k, self.w
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
         self.ftm.set_find_text(pattern)
@@ -1314,8 +1315,8 @@ class LeoFind:
         direct child of the organizer node, even if the clone also is a
         descendant of another cloned node.
         """
-        self.w = self.c.frame.body.wrapper
-        if self.w:  # sets self.w
+        w = self.c.frame.body.wrapper
+        if w:
             self.start_state_machine(event,
                 prefix='Clone Find Tag: ',
                 handler=self.interactive_clone_find_tag1)
@@ -1421,7 +1422,7 @@ class LeoFind:
         k.getNextArg(self.find_all_escape_handler2)
 
     def find_all_escape_handler2(self, event):  # pragma: no cover (interactive)
-        c,k,w = self.c, self.k, self.w
+        c,k,w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -1582,7 +1583,7 @@ class LeoFind:
         k.getNextArg(self.interactive_change_all_unique_regex2)
 
     def interactive_change_all_unique_regex2(self, event):  # pragma: no cover (interactive)
-        c,k = self.c, self.k
+        c,k,w = self.c, self.k, self.c.frame.body.wrapper
         find_pattern = self._sString
         change_pattern = k.arg
         self.update_change_list(change_pattern)
@@ -1595,7 +1596,7 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-        c.widgetWantsFocusNow(self.w)
+        c.widgetWantsFocusNow(w)
         self.do_change_all(settings)
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
@@ -1655,7 +1656,7 @@ class LeoFind:
         
         Also contains default state-machine entries for find/change commands.
         """
-        self.w = w = self.c.frame.body.wrapper
+        w = self.c.frame.body.wrapper
         if not w:
             return
         self.preload_find_pattern(w)
@@ -1679,7 +1680,7 @@ class LeoFind:
     #@+node:ekr.20210117143611.1: *5* find.start_search1
     def start_search1(self, event=None):
         """Common handler for use by vim commands and other find commands."""
-        c, k, w = self.c, self.k, self.w
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
@@ -1719,7 +1720,7 @@ class LeoFind:
 
     #@+node:ekr.20210117143615.1: *5* find._start_search_escape2
     def _start_search_escape2(self, event):
-        c, k = self.c, self.k
+        c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
         change_pattern = k.arg
@@ -1733,14 +1734,14 @@ class LeoFind:
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
-        c.widgetWantsFocusNow(self.w)
+        c.widgetWantsFocusNow(w)
         self.do_find_next(settings)
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
     def interactive_tag_children(self, event=None):  # pragma: no cover (interactive)
         """tag-children: prompt for a tag and add it to all children of c.p."""
-        self.w = self.c.frame.body.wrapper
-        if not self.w:
+        w = self.c.frame.body.wrapper
+        if not w:
             return
         self.start_state_machine(event,
             prefix='Tag Children: ',
@@ -2696,7 +2697,7 @@ class LeoFind:
         self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
         # Note: the word option can't be used with isearches!
-        self.w = w = c.frame.body.wrapper
+        w = c.frame.body.wrapper
         self.p1 = c.p
         self.sel1 = w.getSelectionRange(sort=False)
         i, j = self.sel1
@@ -2835,8 +2836,8 @@ class LeoFind:
         Initialize and start the state machine used to get user arguments.
         """
         c, k = self.c, self.k
-        self.w = c.frame.body.wrapper
-        if not self.w:
+        w = c.frame.body.wrapper
+        if not w:
             return
         # Gui...
         k.setLabelBlue(prefix)
