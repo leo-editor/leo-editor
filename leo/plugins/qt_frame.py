@@ -1053,7 +1053,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
     #@-others
-#@+node:ekr.20131117054619.16698: ** class FindTabManager
+#@+node:ekr.20131117054619.16698: ** class FindTabManager (qt_frame.py)
 class FindTabManager:
     """A helper class for the LeoFind class."""
     #@+others

@@ -693,7 +693,7 @@ class LeoFind:
             self.change_selection(p)
 
     replace = change
-    #@+node:ekr.20031218072017.3062: *4* find.change-then-find & helper (test)
+    #@+node:ekr.20031218072017.3062: *4* find.change-then-find & helper
     @cmd('replace-then-find')
     @cmd('change-then-find')
     def change_then_find(self, event=None):
@@ -887,7 +887,7 @@ class LeoFind:
         c.widgetWantsFocusNow(w)
         # Do the command!
         self.do_change_all(settings)
-    #@+node:ekr.20131117164142.17016: *5* find.do_change_all & helpers (test)
+    #@+node:ekr.20131117164142.17016: *5* find.do_change_all & helpers
     def do_change_all(self, settings):
         c = self.c
         # Settings...
@@ -1441,7 +1441,7 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
         self.do_change_all(settings)
-    #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers (test)
+    #@+node:ekr.20031218072017.3073: *5* find.do_find_all & helpers
     def do_find_all(self, settings):
         """Top-level helper for find-all command."""
         c = self.c

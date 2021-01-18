@@ -840,7 +840,7 @@ def method_name(f):
             # Shows actual method: very useful
     return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20171128051435.1: *3* class StringFindTabManager
+#@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
     '''A helper class for the LeoFind class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
