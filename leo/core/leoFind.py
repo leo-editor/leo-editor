@@ -1202,7 +1202,7 @@ class LeoFind:
         The list is *not* flattened: clones appear only once in the
         descendants of the organizer node.
         """
-        w = self.editWidget(event)  # sets self.w
+        self.w = w = self.c.frame.body.wrapper
         if not w:
             return
         if not preloaded:
@@ -1258,7 +1258,8 @@ class LeoFind:
         of the organizer node, even if the clone also is a descendant of
         another cloned node.
         """
-        w = self.editWidget(event)  # sets self.w
+        ### w = self.editWidget(event)  # sets self.w
+        self.w = w = self.c.frame.body.wrapper
         if not w:
             return
         if not preloaded:
@@ -1314,7 +1315,8 @@ class LeoFind:
         direct child of the organizer node, even if the clone also is a
         descendant of another cloned node.
         """
-        if self.editWidget(event):  # sets self.w
+        self.w = self.c.frame.body.wrapper
+        if self.w:  # sets self.w
             self.start_state_machine(event,
                 prefix='Clone Find Tag: ',
                 handler=self.interactive_clone_find_tag1)
@@ -1654,9 +1656,11 @@ class LeoFind:
         
         Also contains default state-machine entries for find/change commands.
         """
-        w = self.editWidget(event)
-        if w:
-            self.preloadFindPattern(w)
+        ### w = self.editWidget(event)
+        self.w = w = self.c.frame.body.wrapper
+        if not w:
+            return ###
+        self.preloadFindPattern(w)
         if self.minibuffer_mode:
             # Set up the state machine.
             self.ftm.clear_focus()
@@ -1737,10 +1741,12 @@ class LeoFind:
     @cmd('tag-children')
     def interactive_tag_children(self, event=None):
         """tag-children: prompt for a tag and add it to all children of c.p."""
-        if self.editWidget(event):  # sets self.w
-            self.start_state_machine(event,
-                prefix='Tag Children: ',
-                handler=self.interactive_tag_children1)
+        self.w = self.c.frame.body.wrapper
+        if not self.w:
+            return
+        self.start_state_machine(event,
+            prefix='Tag Children: ',
+            handler=self.interactive_tag_children1)
 
     def interactive_tag_children1(self, event):
         c, k, p = self.c, self.k, self.c.p
@@ -2745,20 +2751,6 @@ class LeoFind:
             if getattr(self, ivar):
                 status.append(val)
         return f" ({', '.join(status)})" if status else ''
-    #@+node:ekr.20131117164142.16985: *4* find.editWidget
-    def editWidget(self, event, forceFocus=True):
-        """
-        An override of baseEditCommands.editWidget that does *not* set
-        focus when using anything other than the tk gui.
-
-        This prevents this class from caching an edit widget that is about
-        to be deallocated.
-        """
-        c = self.c
-        # Do not cache a pointer to a headline!
-        # It will die when the minibuffer is selected.
-        self.w = c.frame.body.wrapper
-        return self.w
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self, event=None):
         """Called from Find panel.  Redirect."""
@@ -2845,9 +2837,9 @@ class LeoFind:
         Initialize and start the state machine used to get user arguments.
         """
         c, k = self.c, self.k
-        self.w = self.editWidget(event)
+        ### self.w = self.editWidget(event)
+        self.w = c.frame.body.wrapper
         if not self.w:
-            g.trace('no self.w')
             return
         # Gui...
         k.setLabelBlue(prefix)
