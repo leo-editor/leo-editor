@@ -626,8 +626,9 @@ class LeoFind:
         for ivar in ('reverse', 'pattern_match', 'whole_word'):
             request = 'request_' + ivar
             val = getattr(self, request)
-            setattr(self, ivar, val)  # Set the ivar.
-            setattr(self, request, False)  # Clear the request!
+            if val:  # Only *set* the ivar!
+                setattr(self, ivar, val)  # Set the ivar.
+                setattr(self, request, False)  # Clear the request!
         #
         # Leo 6.4: set/clear self.root
         if self.root:
@@ -2078,7 +2079,7 @@ class LeoFind:
             return self.search_headline
         g.trace('can not happen: no search enabled')
         return False  # search the body.
-    #@+node:ekr.20031218072017.3077: *5* find._fnm_search (only call got work_w getters)
+    #@+node:ekr.20031218072017.3077: *5* find._fnm_search
     def _fnm_search(self, p):
         """
         Search self.work_s for self.find_text with present options.
@@ -2315,7 +2316,9 @@ class LeoFind:
     def replace_back_slashes(self, s):
         """Carefully replace backslashes in a search pattern."""
         # This is NOT the same as:
-        # s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+        #
+        #   s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+        #
         # because there is no rescanning.
         i = 0
         while i + 1 < len(s):
