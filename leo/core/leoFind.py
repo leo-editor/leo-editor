@@ -321,9 +321,9 @@ class LeoFind:
         if errors:
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
-    #@+node:ekr.20150629084204.1: *4* find.find-def, find-var & helpers
+    #@+node:ekr.20150629084204.1: *4* find.find-def & helpers
     @cmd('find-def')
-    def find_def(self, event=None):  # pragma: no cover (cmd)
+    def find_def(self, event=None, strict=False):  # pragma: no cover (cmd)
         """Find the def or class under the cursor."""
         ftm, p = self.ftm, self.c.p
         # Check.
@@ -339,25 +339,15 @@ class LeoFind:
         self.updateChangeList(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
-        self.do_find_def(settings, word)
+        self.do_find_def(settings, word, strict)
+        
+    def find_def_strict(self, event=None):  #pragma: no cover (cmd)
+        """Same as find_def, but don't call _switch_style."""
+        self.find_def(event=event, strict=True)
 
-    @cmd('find-var')
-    def find_var(self, event=None):
-        """Find the var under the cursor."""
-        ftm, p = self.ftm, self.c.p
-        # Check...
-        word = self._compute_find_def_word(event)
-        if not word:
-            return
-        # Settings...
-        self.find_pattern = find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)
-        self._save_before_find_def(p)  # Save previous settings.
-        self.init_vim_search(find_pattern)
-        self.updateChangeList(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
-        # Do the command!
-        self.do_find_var(settings, word)
+    def do_find_def(self, settings, word, strict):
+        """A standalone helper for unit tests."""
+        return self._fd_helper(settings, word, def_flag=True, strict=False)
         
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
     def _compute_find_def_settings(self, find_pattern):
@@ -401,8 +391,8 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20150629125733.1: *5* find._def_var & helpers
-    def _def_var(self, settings, word, def_flag):
+    #@+node:ekr.20150629125733.1: *5* find._fd_helper
+    def _fd_helper(self, settings, word, def_flag, strict):
         """
         Find the definition of the class, def or var under the cursor.
         
@@ -434,9 +424,9 @@ class LeoFind:
                 found = pos is not None
                 if not found or not g.inAtNosearch(c.p):
                     break
-        if not found and def_flag:
+        if not found and def_flag and not strict:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
-            word2 = self.switch_style(word)
+            word2 = self._switch_style(word)
             if word2:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
@@ -471,7 +461,7 @@ class LeoFind:
         w.setSelectionRange(i, j, insert=ins)
         c.bodyWantsFocusNow()
         return None, None, None
-    #@+node:ekr.20210112195456.1: *6* find._find_def_cff
+    #@+node:ekr.20210112195456.1: *5* find._find_def_cff
     def _find_def_cff(self):
         c = self.c
         undoType = 'Find Def'
@@ -512,7 +502,7 @@ class LeoFind:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
         return count
-    #@+node:ekr.20150629095511.1: *6* find._restore_after_find_def
+    #@+node:ekr.20150629095511.1: *5* find._restore_after_find_def
     def _restore_after_find_def(self):
         """Restore find settings in effect before a find-def command."""
         b = self.find_def_data  # A g.Bunch
@@ -523,7 +513,7 @@ class LeoFind:
             self.search_headline = b.search_headline
             self.whole_word = b.whole_word
             self.find_def_data = None
-    #@+node:ekr.20150629095633.1: *6* find._save_before_find_def
+    #@+node:ekr.20150629095633.1: *5* find._save_before_find_def
     def _save_before_find_def(self, p):
         """Save the find settings in effect before a find-def command."""
         if not self.find_def_data:
@@ -535,8 +525,8 @@ class LeoFind:
                 search_headline=self.search_headline,
                 whole_word=self.whole_word,
             )
-    #@+node:ekr.20180511045458.1: *6* find.switch_style
-    def switch_style(self, word):
+    #@+node:ekr.20180511045458.1: *5* find._switch_style
+    def _switch_style(self, word):
         """
         Switch between camelCase and underscore_style function defintiions.
         Return None if there would be no change.
@@ -564,15 +554,28 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
-    #@+node:ekr.20210114204508.1: *5* find.do_find_def
-    def do_find_def(self, settings, word):
-        """A standalone helper for unit tests."""
-        return self._def_var(settings, word, def_flag=True)
-    #@+node:ekr.20210114204529.1: *5* find.do_find_var
+    #@+node:ekr.20210118003803.1: *4* find.var-var & helper
+    @cmd('find-var')
+    def find_var(self, event=None):
+        """Find the var under the cursor."""
+        ftm, p = self.ftm, self.c.p
+        # Check...
+        word = self._compute_find_def_word(event)
+        if not word:
+            return
+        # Settings...
+        self.find_pattern = find_pattern = word + ' ='
+        ftm.set_find_text(find_pattern)
+        self._save_before_find_def(p)  # Save previous settings.
+        self.init_vim_search(find_pattern)
+        self.updateChangeList(self.change_text)  # Optional. An edge case.
+        settings = self._compute_find_def_settings(find_pattern)
+        # Do the command!
+        self.do_find_var(settings, word)
+        
     def do_find_var(self, settings, word):
         """A standalone helper for unit tests."""
-        return self._def_var(settings, word, def_flag=False)
-        
+        return self._fd_helper(settings, word, def_flag=False, strict=False)
     #@+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
     def find_next(self, event=None):  # pragma: no cover (cmd)
@@ -3042,7 +3045,7 @@ class TestFind(unittest.TestCase):
         root = c.rootPosition()
         settings.find_text = 'child5'
         # Test 1.
-        p, pos, newpos = x.do_find_def(settings, word='child5')
+        p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
         assert p and p.h == 'child 5'
         s = p.b[pos:newpos]
         assert s == 'def child5', repr(s)
@@ -3053,13 +3056,12 @@ class TestFind(unittest.TestCase):
         settings.p = root.next()
         settings.find_text = 'def notFound'
         x.find_def(settings)
-        
     #@+node:ekr.20210113221831.1: *4* TestFind.find_def_use_cff
     def test_find_def_use_cff(self):
         settings, x = self.settings, self.x
         settings.find_text = 'child5'
         # Test 1: Set p *without* use_cff.
-        p, pos, newpos = x.do_find_def(settings, 'child5')
+        p, pos, newpos = x.do_find_def(settings, 'child5', strict=True)
         assert p and p.h == 'child 5'
         s = p.b[pos:newpos]
         assert s == 'def child5', repr(s)
@@ -3259,6 +3261,21 @@ class TestFind(unittest.TestCase):
                 # f"     groups: {groups}\n"
                 # f"   expected: {expected}\n"
                 # f"        got: {result}")
+    #@+node:ekr.20210110073117.89: *4* TestFind._switch_style
+    def test_switch_style(self):
+        x = self.x
+        table = (
+            ('', None),
+            ('TestClass', None),
+            ('camelCase', 'camel_case'),
+            ('under_score', 'underScore'),
+        )
+        for s, expected in table:
+            result = x._switch_style(s)
+            assert result == expected, (
+                f"       s: {s}\n"
+                f"expected: {expected!r}\n"
+                f"     got: {result!r}")
     #@+node:ekr.20210110073117.74: *4* TestFind.batch_plain_replace
     def test_batch_plain_replace(self):
         settings, x = self.settings, self.x
@@ -3399,21 +3416,6 @@ class TestFind(unittest.TestCase):
         for s, expected in table:
             result = x.replace_back_slashes(s)
             assert result == expected, (s, result, expected)
-    #@+node:ekr.20210110073117.89: *4* TestFind.switch_style
-    def test_switch_style(self):
-        x = self.x
-        table = (
-            ('', None),
-            ('TestClass', None),
-            ('camelCase', 'camel_case'),
-            ('under_score', 'underScore'),
-        )
-        for s, expected in table:
-            result = x.switch_style(s)
-            assert result == expected, (
-                f"       s: {s}\n"
-                f"expected: {expected!r}\n"
-                f"     got: {result!r}")
     #@+node:ekr.20210110073117.72: *4* TestFind.test_argument_errors
     def test_argument_errors(self):
 
