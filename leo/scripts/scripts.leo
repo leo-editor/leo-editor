@@ -431,6 +431,12 @@
 </v>
 <v t="ekr.20201110014825.1"><vh>script: add tags for issues</vh></v>
 <v t="ekr.20201110014834.1"><vh>script: remove all tags</vh></v>
+<v t="ekr.20210118070851.1"><vh>script: convert-LeoFind</vh>
+<v t="ekr.20210118070851.2"><vh>convert</vh></v>
+<v t="ekr.20210118070851.3"><vh>main</vh></v>
+<v t="ekr.20210118070851.4"><vh>new_name</vh></v>
+<v t="ekr.20210118070851.5"><vh>exists</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -5440,6 +5446,74 @@ for p in c.all_unique_positions():
         print(f"remove {tag:10} {p.h}")
         tc.remove_tag(p, tag)
 print('done')</t>
+<t tx="ekr.20210118070851.1">"""
+Convert defs in LeoFind to pep8 names.
+- Don't change defs containing underscores.
+- Check for existing target.
+"""
+# Contains a few hacks related specifically to leoFind.py.
+g.cls()
+import re
+h = 'class LeoFind (LeoFind.py)'
+root = g.findNodeAnywhere(c, h)
+@others
+if root:
+    main(root)
+else:
+    print('not found:', root)</t>
+<t tx="ekr.20210118070851.2">def convert(old_func, new_func, root):
+    print(f"{old_func} =&gt; {new_func}\n")
+    for p in root.subtree():
+        pattern = rf"\b{old_func}\b"
+        p.h = re.sub(pattern, new_func, p.h)
+        p.b = re.sub(pattern, new_func, p.b)
+        # g.printObj(g.splitLines(s2), tag='p.h')
+    print('')</t>
+<t tx="ekr.20210118070851.3">def main(root):
+    pattern = re.compile(r'^def\s+(\w+)', re.MULTILINE)
+    for pass_n in (0, 1):
+        n = 0
+        for p in root.subtree():
+            for m in re.finditer(pattern, p.b):
+                target = m.group(0)
+                old_func = m.group(1)
+                if '_' in target:
+                    continue
+                if target.islower():
+                    continue
+                if old_func == 'finishCreate':  # Special case.
+                    return
+                new_func = new_name(old_func)
+                if new_func == old_func:
+                    continue
+                if pass_n == 0:
+                    if exists(new_func, root):
+                        g.trace(f"already exists: {old_func} {new_func}")
+                        g.trace('aborting')
+                        return
+                else:
+                    n += 1
+                    convert(old_func, new_func, root)
+    g.trace(f"converted {n} function names")
+    c.redraw()
+            </t>
+<t tx="ekr.20210118070851.4">def new_name(s):
+    """Return the new name of s."""
+    assert ' ' not in s
+    # Convert s to underscore style.
+    result = []
+    for i, ch in enumerate(s):
+        if i &gt; 0 and ch.isupper():
+            result.append('_')
+        result.append(ch.lower())
+    return ''.join(result).replace('i_search', 'isearch')
+</t>
+<t tx="ekr.20210118070851.5">def exists(s, root):
+    """Return True if s exists in any of root's nodes."""
+    for p in root.self_and_subtree():
+        if s in p.b:
+            return True
+    return False</t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>

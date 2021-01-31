@@ -8161,7 +8161,7 @@ def openUrlHelper(event, url=None):
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
     if word:
-        c.findCommands.findDef(event)
+        c.findCommands.find_def_strict(event)
     return None
 #@-others
 # set g when the import is about to complete.

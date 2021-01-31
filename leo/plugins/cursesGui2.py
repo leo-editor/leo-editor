@@ -46,6 +46,7 @@ try:
     import curses
 except ImportError:
     curses = None
+# Third-party imports
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
 from leo.external.npyscreen.wgwidget import (
@@ -839,12 +840,12 @@ def method_name(f):
             # Shows actual method: very useful
     return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20171128051435.1: *3* class StringFindTabManager
+#@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
     '''A helper class for the LeoFind class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
-    #@+node:ekr.20171128051435.2: *4*  ftm.ctor
+    #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
         '''Ctor for the FindTabManager class.'''
         self.c = c
@@ -862,7 +863,7 @@ class StringFindTabManager:
         self.check_box_search_body = None
         self.check_box_search_headline = None
         self.check_box_whole_word = None
-        self.check_box_wrap_around = None
+        # self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
@@ -875,29 +876,25 @@ class StringFindTabManager:
         self.replace_button = None
         self.replace_then_find_button = None
         self.replace_all_button = None
-    #@+node:ekr.20171128051435.3: *4* ftm.text getters/setters
-    def getFindText(self):
-        return self.find_findbox.text()
+    #@+node:ekr.20171128051435.3: *4* sftm.text getters/setters
+    def get_find_text(self):
+        return g.toUnicode(self.find_findbox.text())
 
-    def getReplaceText(self):
-        return self.find_replacebox.text()
+    def get_change_text(self):
+        return g.toUnicode(self.find_replacebox.text())
 
-    getChangeText = getReplaceText
-
-    def setFindText(self, s):
+    def set_find_text(self, s):
         w = self.find_findbox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
 
-    def setReplaceText(self, s):
+    def set_change_text(self, s):
         w = self.find_replacebox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
-
-    setChangeText = setReplaceText
-    #@+node:ekr.20171128051435.4: *4* ftm.*_focus
+    #@+node:ekr.20171128051435.4: *4* sftm.*_focus
     def clear_focus(self):
         pass
 
@@ -906,14 +903,14 @@ class StringFindTabManager:
 
     def set_entry_focus(self):
         pass
-    #@+node:ekr.20171128051435.5: *4* ftm.set_ignore_case
+    #@+node:ekr.20171128051435.5: *4* sftm.set_ignore_case
     def set_ignore_case(self, aBool):
         '''Set the ignore-case checkbox to the given value.'''
         c = self.c
         c.findCommands.ignore_case = aBool
         w = self.check_box_ignore_case
         w.setChecked(aBool)
-    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets
+    #@+node:ekr.20171128051435.6: *4* sftm.init_widgets
     def init_widgets(self):
         '''
         Init widgets and ivars from c.config settings.
@@ -939,7 +936,7 @@ class StringFindTabManager:
             ('search_body', self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word', self.check_box_whole_word),
-            ('wrap', self.check_box_wrap_around),
+            ### ('wrap', self.check_box_wrap_around),
         )
         for setting_name, w in table:
             val = c.config.getBool(setting_name, default=False)
@@ -970,7 +967,6 @@ class StringFindTabManager:
 
             def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
                 val = w.isChecked()
-                find.radioButtonsChanged = True
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
@@ -979,7 +975,7 @@ class StringFindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
-    #@+node:ekr.20171128051435.7: *4* ftm.set_radio_button
+    #@+node:ekr.20171128051435.7: *4* sftm.set_radio_button
     #@@nobeautify
 
     def set_radio_button(self, name):
@@ -1003,7 +999,7 @@ class StringFindTabManager:
         if ivar:
             setattr(fc, ivar, True)
        
-    #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
+    #@+node:ekr.20171128051435.8: *4* sftm.toggle_checkbox
     #@@nobeautify
 
     def toggle_checkbox(self,checkbox_name):
@@ -1020,7 +1016,7 @@ class StringFindTabManager:
             'search_body':     self.check_box_search_body,
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
-            'wrap':            self.check_box_wrap_around,
+            # 'wrap':            self.check_box_wrap_around,
         }
         w = d.get(checkbox_name)
         assert w, repr(w)
