@@ -7823,7 +7823,10 @@ def run_unit_test_in_separate_process(command):
     print(err.rstrip())
     # There may be skipped tests...
     err_lines = g.splitLines(err.rstrip())
-    assert err_lines[-1].startswith('OK')
+    if not err_lines[-1].startswith('OK'):
+        g.trace('Test failed')
+        g.printObj(err_lines, tag='err_lines')
+        assert False
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""
