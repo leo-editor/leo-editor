@@ -2459,7 +2459,16 @@ class LeoFind:
         if hasattr(g.app.gui, 'show_find_success'):
             g.app.gui.show_find_success(c, self.in_headline, insert, p)
         c.frame.bringToFront()
-        return w  # Support for isearch.
+        if 0:  ### Not ready yet.
+            # Return a description for unit tests and leoInteg.
+            return {
+                # "node": p_to_ap(p), ### To do: define this in leoGlobals.py.
+                "focus": "headline" if self.in_headline else "body",
+                "selection": [pos, newpos, insert],
+            }
+            
+        return w  # Support for isearch.  ### To do: always return a description.
+        
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     #@+node:ekr.20131117164142.16941: *5* find.isearch_forward
