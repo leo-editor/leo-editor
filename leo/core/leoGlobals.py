@@ -8166,10 +8166,14 @@ def openUrlHelper(event, url=None):
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')
-assert g, sorted(sys.modules.keys())
-
 if __name__ == '__main__':
-    unittest.main()
+    # assert g, sorted(sys.modules.keys())
+    if g:
+        unittest.main()
+    else:
+        print('Error: g not in sys.modules')
+        printObj(sorted(sys.modules.keys()))
+
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
