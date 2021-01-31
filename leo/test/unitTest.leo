@@ -1623,7 +1623,7 @@ assert x.reverse is False
     pass
 </t>
 <t tx="ekr.20200219070324.1">#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoFind'
+command = 'python -m unittest leo.core.leoFind'
 g.run_unit_test_in_separate_process(command)
 </t>
 </tnodes>
