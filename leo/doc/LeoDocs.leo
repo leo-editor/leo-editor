@@ -4861,7 +4861,7 @@ There are two significant problems with the Borland version of Leo. First, it wo
 This version of Leo was the first version to use xml as the format of .leo files. Marc-Antoine Parent urged me to use XML and patiently explained how to use XML properly. </t>
 <t tx="ekr.20050902105852.4">I attended the Python conference in early 2001. In May of 2000 I began work on a wxWindows version of Leo. The wxWindows project failed in a useful way. While adding python scripting, I became familiar with Python and its internals.
 
-I started to 'get' Python in September 2001. In October of 2001 I began work on the leo.py, based on Tk. The rewrite took only two months! leo.py 0.05 alpha went out the door on December 17, 2001.
+I started to 'get' Python in September 2001. In October of 2001 I began work on leo.py, based on Tk. The rewrite took only two months! leo.py 0.05 alpha went out the door on December 17, 2001.
 
 I wrote the white papers around this time. Python solved *all* my programming problems. I was no longer anxious while programming; it simply isn't possible to create hard-to-find bugs in Python.</t>
 <t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. Leo started a new life shortly thereafter. Prior to SourceForge my interest in Leo had been waning.
