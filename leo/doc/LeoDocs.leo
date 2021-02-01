@@ -4859,14 +4859,11 @@ In 1998 I created a version of Leo using Apple's YellowBox environment. Alas, Ap
 There are two significant problems with the Borland version of Leo. First, it works only on Windows. Second, it can never be Open software, because it uses Borland's Delphi classes and a commercial syntax coloring component.
 
 This version of Leo was the first version to use xml as the format of .leo files. Marc-Antoine Parent urged me to use XML and patiently explained how to use XML properly. </t>
-<t tx="ekr.20050902105852.4">I attended the Python conference in early 2001. In May of 2000 I began work on an wxWindows version of Leo. This did not work out, but something good did come from this effort. I spent a lot of time adding Python scripting to the wxWindows code and I became familiar with Python and its internals.
+<t tx="ekr.20050902105852.4">I attended the Python conference in early 2001. In May of 2000 I began work on a wxWindows version of Leo. The wxWindows project failed in a useful way. While adding python scripting, I became familiar with Python and its internals.
 
-I really started to 'get' Python in September 2001. I wrote the white papers at about this time. Python solved *all* my programming problems. I rewrote Leo in Python in about two months! For the first time in my career I was no longer anxious while programming; it simply isn't possible to create bad bugs in Python. The Python version of Leo was the first officially OpenSoftware version of Leo. The first functional version of Leo in Python was 0.05 alpha, December 17, 2001.
+I started to 'get' Python in September 2001. In October of 2001 I began work on the leo.py, based on Tk. The rewrite took only two months! leo.py 0.05 alpha went out the door on December 17, 2001.
 
-In October of 2001 I began work on the leo.py, an Open Software version of leo.py, a version of Leo written in Python and Tk.  At last I have found the proper platform for Leo.  leo.py naturally supports scripting in Python.  The combination of Python and Tk is incredibly powerful, very easy to use, and truly cross platform.  I rewrote Leo in Python in about two months!  For the first time in my career I no longer am anxious while programming; it simply isn't possible to create bad bugs in Python.
-
-Tk was officially retired in June 2011.
-</t>
+I wrote the white papers around this time. Python solved *all* my programming problems. I was no longer anxious while programming; it simply isn't possible to create hard-to-find bugs in Python.</t>
 <t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. Leo started a new life shortly thereafter. Prior to SourceForge my interest in Leo had been waning.
 </t>
 <t tx="ekr.20050902105852.6">In the summer of 2001 I began to consider using sentinel lines in external files. Previously I had thought that outline structure must be 'protected' by remaining inside .leo files. Accepting the possibility that sentinels might be corrupted opened vast new design possibilities. In retrospect, problems with sentinels almost never happen, but that wasn't obvious at the time! The result of this design was known then as Leo2. That terminology is extinct. I think of this version as the first version to support @file and automatic tangling and untangling.
