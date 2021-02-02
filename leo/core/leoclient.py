@@ -3,6 +3,7 @@
 """An example client for leoserver.py."""
 import asyncio
 import json
+import random
 import websockets
 from leo.core import leoGlobals as g
 
@@ -17,14 +18,22 @@ async def asyncInterval(timeout):
         while True:
             n += 1
             await asyncio.sleep(timeout)
-            # "param" is the p_package arg to leoCommand in leoserver.py.
-            p_package = { "action": "test", "param": {"n":n, "node": 1}, "id":n}
+            p_package = {
+                "action": "test",
+                "id":n,
+                # "param" is the p_package arg to leoCommand in leoserver.py.
+                "param": {
+                    "n": n,
+                    "node": 1, 
+                    "random": random.randrange(1, 1000)
+                }
+            }
             request = json.dumps(p_package, separators=(',', ':'))
             await websocket.send(request)
             response = await websocket.recv()
             print('got', g.toUnicode(response))
             
 loop = asyncio.get_event_loop()
-loop.run_until_complete(asyncInterval(5))
+loop.run_until_complete(asyncInterval(2))
 loop.run_forever()
 #@-leo
