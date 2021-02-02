@@ -2,11 +2,16 @@
 #@+node:ekr.20210202110128.1: * @file  leoserver.py
 #@@language python
 #@@tabwidth -4
-"""A language-agnostic server for Leo's bridge."""
+"""
+A language-agnostic server for Leo's bridge,
+based on leoInteg's leobridgeserver.py.
+"""
+g = None  # The bridge's leoGlobals module.
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
 import asyncio
 import getopt
+import hashlib
 import json
 import os.path
 import sys
@@ -90,10 +95,10 @@ class ExternalFilesController:
 
     #@+others
     #@+node:ekr.20210202110128.8: *3* efc.ctor
-    def __init__(self, integController):
+    def __init__(self, controller):
         '''Ctor for ExternalFiles class.'''
         self.on_idle_count = 0
-        self.integController = integController
+        self.controller = controller
         self.checksum_d = {}
         # Keys are full paths, values are file checksums.
         self.enabled_d = {}
@@ -118,12 +123,11 @@ class ExternalFilesController:
         self.infoMessage = None
         # False or "detected", "refreshed" or "ignored"
 
-        self.integController.g.app.idleTimeManager.add_callback(self.on_idle)
+        g.app.idleTimeManager.add_callback(self.on_idle)
 
         self.waitingForAnswer = False
         self.lastPNode = None  # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastCommander = None
-
     #@+node:ekr.20210202110128.9: *3* efc.on_idle
     def on_idle(self):
         '''
@@ -133,9 +137,8 @@ class ExternalFilesController:
         # Fix for flushing the terminal console to traverse
         # python through node.js when using start server in leoInteg
         sys.stdout.flush()
-        
 
-        if not self.integController.g.app or self.integController.g.app.killed:
+        if not g.app or g.app.killed:
             return
         if self.waitingForAnswer:
             return
@@ -154,7 +157,7 @@ class ExternalFilesController:
             # Add all commanders for which
             # @bool check_for_changed_external_file is True.
             self.unchecked_commanders = [
-                z for z in self.integController.g.app.commanders() if self.is_enabled(z)
+                z for z in g.app.commanders() if self.is_enabled(z)
             ]
 
     #@+node:ekr.20210202110128.10: *3* efc.idle_check_commander
@@ -178,7 +181,7 @@ class ExternalFilesController:
         # if yesAll/noAll forced, then just show info message
         if self.infoMessage:
             w_package = {"async": "info", "message": self.infoMessage}
-            self.integController.sendAsyncOutput(w_package)
+            self.controller.sendAsyncOutput(w_package)
 
     #@+node:ekr.20210202110128.11: *3* efc.idle_check_at_file_node
     def idle_check_at_file_node(self, c, p):
@@ -186,10 +189,10 @@ class ExternalFilesController:
         trace = False
         # Matt, set this to True, but only for the file that interests you.\
         # trace = p.h == '@file unregister-leo.leox'
-        path = self.integController.g.fullPath(c, p)
+        path = g.fullPath(c, p)
         has_changed = self.has_changed(c, path)
         if trace:
-            self.integController.g.trace('changed', has_changed, p.h)
+            g.trace('changed', has_changed, p.h)
         if has_changed:
             self.lastPNode = p  # can be set here because its the same process for ask/warn
             if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
@@ -213,7 +216,7 @@ class ExternalFilesController:
         # check if p_resultwas from a warn (ok) or an ask ('yes','yes-all','no','no-all')
         # act accordingly
 
-        path = self.integController.g.fullPath(
+        path = g.fullPath(
             self.lastCommander, self.lastPNode)
 
         # 1- if ok, unblock 'warn'
@@ -247,68 +250,51 @@ class ExternalFilesController:
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["defaultReloadIgnore"].lower(
-            )
-            if not bool('none' in w_check_config):
-                if bool('yes' in w_check_config):
-                    self.infoMessage = "refreshed"
-                    return True
-                else:
-                    self.infoMessage = "ignored"
-                    return False
-        # let original function resolve
+        ###
+            # # check with leoInteg's config first
+            # if self.controller.leoIntegConfig:
+                # w_check_config = self.controller.leoIntegConfig["defaultReloadIgnore"].lower(
+                # )
+                # if not bool('none' in w_check_config):
+                    # if bool('yes' in w_check_config):
+                        # self.infoMessage = "refreshed"
+                        # return True
+                    # else:
+                        # self.infoMessage = "ignored"
+                        # return False
 
+        # Still reloading?  Extend time.
         if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
-            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
-            # if yesAll/noAll forced, then just show info message
-            w_yesno_all_bool = bool('yes' in self.yesno_all_answer.lower())
-
-            return w_yesno_all_bool
-        if not p:
-            where = 'the outline node'
-        else:
-            where = p.h
-
+            self.yesno_all_time = time.time()  
+            # Show info message if yesAll/noAll forced.
+            return 'yes' in self.yesno_all_answer.lower()
+        #
+        # Compute the message.
         _is_leo = path.endswith(('.leo', '.db'))
-
-        if _is_leo:
-            s = '\n'.join([
-                f'{self.integController.g.splitLongFileName(path)} has changed outside Leo.',
-                'Overwrite it?'
-            ])
-        else:
-            s = '\n'.join([
-                f'{self.integController.g.splitLongFileName(path)} has changed outside Leo.',
-                f"Reload {where} in Leo?",
-            ])
-
-        w_package = {"async": "ask", "ask": 'Overwrite the version in Leo?',
-                     "message": s, "yes_all": not _is_leo, "no_all": not _is_leo}
-
-        self.integController.sendAsyncOutput(w_package)
+        where = p.h if p else 'the outline node'
+        s1 = f'{g.splitLongFileName(path)} has changed outside Leo.\n'
+        s2 = 'Overwrite it?' if _is_leo else f"Reload {where} in Leo?"
+        #
+        # Return the result.
+        w_package = {
+            "async": "ask",
+            "ask": 'Overwrite the version in Leo?',
+            "message": s1 + s2,
+            "yes_all": not _is_leo,
+            "no_all": not _is_leo,
+        }
+        self.controller.sendAsyncOutput(w_package)
         self.waitingForAnswer = True
         return False
-        # result = self.integController.g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-        # yes_all=not _is_leo, no_all=not _is_leo)
-
-        # if result and "-all" in result.lower():
-        # self.yesno_all_time = time.time()
-        # self.yesno_all_answer = result.lower()
-
-        # return bool(result and 'yes' in result.lower())
-
     #@+node:ekr.20210202110128.15: *4* efc.checksum
     def checksum(self, path):
         '''Return the checksum of the file at the given path.'''
-        import hashlib
         return hashlib.md5(open(path, 'rb').read()).hexdigest()
 
     #@+node:ekr.20210202110128.16: *4* efc.get_mtime
     def get_mtime(self, path):
         '''Return the modification time for the path.'''
-        return self.integController.g.os_path_getmtime(self.integController.g.os_path_realpath(path))
+        return g.os_path_getmtime(g.os_path_realpath(path))
 
     #@+node:ekr.20210202110128.17: *4* efc.get_time
     def get_time(self, path):
@@ -317,14 +303,14 @@ class ExternalFilesController:
 
         see set_time() for notes
         '''
-        return self._time_d.get(self.integController.g.os_path_realpath(path))
+        return self._time_d.get(g.os_path_realpath(path))
 
     #@+node:ekr.20210202110128.18: *4* efc.has_changed
     def has_changed(self, c, path):
         '''Return True if p's external file has changed outside of Leo.'''
-        if not self.integController.g.os_path_exists(path):
+        if not g.os_path_exists(path):
             return False
-        if self.integController.g.os_path_isdir(path):
+        if g.os_path_isdir(path):
             return False
         #
         # First, check the modification times.
@@ -359,15 +345,17 @@ class ExternalFilesController:
     #@+node:ekr.20210202110128.19: *4* efc.is_enabled
     def is_enabled(self, c):
         '''Return the cached @bool check_for_changed_external_file setting.'''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["checkForChangeExternalFiles"].lower(
-            )
-            if bool('check' in w_check_config):
-                return True
-            if bool('ignore' in w_check_config):
-                return False
-        # let original function resolve
+        ###
+            # # check with leoInteg's config first
+            # if self.controller.leoIntegConfig:
+                # w_check_config = self.controller.leoIntegConfig["checkForChangeExternalFiles"].lower(
+                # )
+                # if bool('check' in w_check_config):
+                    # return True
+                # if bool('ignore' in w_check_config):
+                    # return False
+
+        # Let original function resolve.
         d = self.enabled_d
         val = d.get(c)
         if val is None:
@@ -375,12 +363,10 @@ class ExternalFilesController:
                 'check-for-changed-external-files', default=False)
             d[c] = val
         return val
-
     #@+node:ekr.20210202110128.20: *4* efc.join
-    def join(self, s1, s2):
-        '''Return s1 + ' ' + s2'''
-        return f"{s1} {s2}"
-
+    # def join(self, s1, s2):
+        # '''Return s1 + ' ' + s2'''
+        # return f"{s1} {s2}"
     #@+node:ekr.20210202110128.21: *4* efc.set_time
     def set_time(self, path, new_time=None):
         '''
@@ -393,12 +379,9 @@ class ExternalFilesController:
         probably not Leo's fault but an underlying Python issue.
         Hence the need to call realpath() here.
         '''
-
         # print("called set_time for " + str(path), flush=True)
-
         t = new_time or self.get_mtime(path)
-        self._time_d[self.integController.g.os_path_realpath(path)] = t
-
+        self._time_d[g.os_path_realpath(path)] = t
     #@+node:ekr.20210202110128.22: *4* efc.warn
     def warn(self, c, path, p):
         '''
@@ -406,36 +389,40 @@ class ExternalFilesController:
 
         There is *no way* to update the tree automatically.
         '''
-        # check with leoInteg's config first
-        if self.integController.leoIntegConfig:
-            w_check_config = self.integController.leoIntegConfig["defaultReloadIgnore"].lower(
-            )
+        ###
+            # # check with leoInteg's config first
+            # if self.controller.leoIntegConfig:
+                # w_check_config = self.controller.leoIntegConfig["defaultReloadIgnore"].lower(
+                # )
+        
+                # if w_check_config != "none":
+                    # # if not 'none' then do not warn, just infoMessage 'warn' at most
+                    # if not self.infoMessage:
+                        # self.infoMessage = "warn"
+                    # return
 
-            if w_check_config != "none":
-                # if not 'none' then do not warn, just infoMessage 'warn' at most
-                if not self.infoMessage:
-                    self.infoMessage = "warn"
-                return
-
-        # let original function resolve
-        if self.integController.g.unitTesting or c not in self.integController.g.app.commanders():
+        # Let original function resolve.
+        if g.unitTesting or c not in g.app.commanders():
             return
         if not p:
-            self.integController.g.trace('NO P')
+            g.trace('NO P')
             return
 
-        s = '\n'.join([
-            '%s has changed outside Leo.\n' % self.integController.g.splitLongFileName(
+        message = '\n'.join([
+            f"%s has changed outside Leo.\n" % g.splitLongFileName(
                 path),
             'Leo can not update this file automatically.\n',
             'This file was created from %s.\n' % p.h,
             'Warning: refresh-from-disk will destroy all children.'
         ])
 
-        w_package = {"async": "warn",
-                     "warn": 'External file changed', "message": s}
+        w_package = {
+            "async": "warn",
+            "message": message,
+            "warn": 'External file changed', 
+        }
 
-        self.integController.sendAsyncOutput(w_package)
+        self.controller.sendAsyncOutput(w_package)
         self.waitingForAnswer = True
 
     #@+node:ekr.20210202110128.23: *3* other called methods
@@ -645,14 +632,16 @@ class IntegTextWrapper:
         return i, row, col
 
 
-#@+node:ekr.20210202110128.29: ** class LeoBridgeIntegController
-class LeoBridgeIntegController:
+#@+node:ekr.20210202110128.29: ** class ServerController
+class ServerController:
     '''Leo Bridge Controller'''
     # pylint: disable=no-else-return
     #@+others
-    #@+node:ekr.20210202110128.30: *3* bc.__init__ (load bridge, set self.g)
+    #@+node:ekr.20210202160349.1: *3* sc.Startup
+    #@+node:ekr.20210202110128.30: *4* sc.__init__ (load bridge, set self.g)
     def __init__(self):
         # TODO : @boltex #74 need gnx_to_vnode for each opened file/commander
+        global g
         self.gnx_to_vnode = []  # utility array - see leoflexx.py in leoPluginsRef.leo
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -662,15 +651,11 @@ class LeoBridgeIntegController:
             # True: prints messages that would be sent to the log pane.
             verbose=False,
         )
-        self.g = self.bridge.globals()
+        g = self.bridge.globals()
 
-        # * Trace outputs to pythons stdout, also prints the function call stack
-        # self.g.trace('<LeoBridgeIntegController>')
+        # Send Log pane output to the client's log pane
+        g.es = self.es
 
-        # * Intercept Log Pane output: Sends to client's log pane
-        self.g.es = self.es  # pointer - not a function call
-
-        # print(dir(self.g), flush=True)
         self.currentActionId = 1  # Id of action being processed, STARTS AT 1 = Initial 'ready'
 
         # * Currently Selected Commander (opened from leo.core.leoBridge or chosen via the g.app.windowList 2 list)
@@ -681,25 +666,30 @@ class LeoBridgeIntegController:
         self.loop = None
 
         # * Replacement instances to Leo's codebase : getScript, IdleTime, idleTimeManager and externalFilesController
-        self.g.getScript = self._getScript
-        self.g.IdleTime = self._idleTime
-        self.g.app.idleTimeManager = IdleTimeManager(self.g)
+        g.getScript = self._getScript
+        g.IdleTime = self._idleTime
+        g.app.idleTimeManager = IdleTimeManager(g)
         # attach instance to g.app for calls to set_time, etc.
-        self.g.app.externalFilesController = ExternalFilesController(self)
+        g.app.externalFilesController = ExternalFilesController(self)
+        
         # TODO : Maybe use those yes/no replacement right before actual usage instead of in init. (to allow re-use/switching)
         # override for "revert to file" operation
-        self.g.app.gui.runAskYesNoDialog = self._returnYes
+        g.app.gui.runAskYesNoDialog = self._returnYes
 
         # * setup leoBackground to get messages from leo
         try:
-            self.g.app.idleTimeManager.start()  # To catch derived file changes
+            g.app.idleTimeManager.start()  # To catch derived file changes
         except Exception:
             print('ERROR with idleTimeManager')
 
-    #@+node:ekr.20210202110128.31: *3* _asyncIdleLoop
+    #@+node:ekr.20210202110128.52: *4* sc.initConnection
+    def initConnection(self, p_webSocket):
+        self.webSocket = p_webSocket
+        self.loop = asyncio.get_event_loop()
+
+    #@+node:ekr.20210202110128.31: *4* sc._asyncIdleLoop
     async def _asyncIdleLoop(self, p_seconds, p_fn):
         """Call p_fn every p_seconds"""
-        ### self.g.trace(f"call {p_fn.__name__} every {p_seconds} sec.")  ###
         while True:
             await asyncio.sleep(p_seconds)
             p_fn(self)
@@ -734,14 +724,14 @@ class LeoBridgeIntegController:
             else:
                 s = p.b
             # Remove extra leading whitespace so the user may execute indented code.
-            s = self.g.removeExtraLws(s, c.tab_width)
-            s = self.g.extractExecutableString(c, p, s)
-            script = self.g.composeScript(c, p, s,
+            s = g.removeExtraLws(s, c.tab_width)
+            s = g.extractExecutableString(c, p, s)
+            script = g.composeScript(c, p, s,
                                           forcePythonSentinels=forcePythonSentinels,
                                           useSentinels=useSentinels)
         except Exception:
-            self.g.es_print("unexpected exception in g.getScript")
-            self.g.es_exception()
+            g.es_print("unexpected exception in g.getScript")
+            g.es_exception()
             script = ''
         return script
     #@+node:ekr.20210202110128.36: *4* _idleTime
@@ -753,7 +743,7 @@ class LeoBridgeIntegController:
     def _getTotalOpened(self):
         '''Get total of opened commander (who have closed == false)'''
         w_total = 0
-        for w_commander in self.g.app.commanders():
+        for w_commander in g.app.commanders():
             if not w_commander.closed:
                 w_total = w_total + 1
         return w_total
@@ -761,7 +751,7 @@ class LeoBridgeIntegController:
     #@+node:ekr.20210202110128.38: *3* _getFirstOpenedCommander
     def _getFirstOpenedCommander(self):
         '''Get first opened commander, or False if there are none.'''
-        for w_commander in self.g.app.commanders():
+        for w_commander in g.app.commanders():
             if not w_commander.closed:
                 return w_commander
         return False
@@ -781,7 +771,7 @@ class LeoBridgeIntegController:
     #@+node:ekr.20210202110128.40: *3* askResult
     def askResult(self, p_result):
         '''Got the result to an asked question/warning from client'''
-        self.g.app.externalFilesController.integResult(p_result)
+        g.app.externalFilesController.integResult(p_result)
         return self.sendLeoBridgePackage()  # Just send empty as 'ok'
 
     #@+node:ekr.20210202110128.41: *3* applyConfig
@@ -794,9 +784,9 @@ class LeoBridgeIntegController:
     def logSignon(self):
         '''Simulate the Initial Leo Log Entry'''
         if self.loop:
-            self.g.app.computeSignon()
-            self.g.es(str(self.g.app.signon))
-            self.g.es(str(self.g.app.signon1))
+            g.app.computeSignon()
+            g.es(str(g.app.signon))
+            g.es(str(g.app.signon1))
         else:
             print('no loop in logSignon', flush=True)
 
@@ -804,21 +794,22 @@ class LeoBridgeIntegController:
     def setActionId(self, p_id):
         self.currentActionId = p_id
 
-    #@+node:ekr.20210202110128.44: *3* bc.async def asyncOutput
+    #@+node:ekr.20210202160323.1: *3* sc:Output
+    #@+node:ekr.20210202110128.44: *4* bc.async def asyncOutput
     async def asyncOutput(self, p_json):
         '''Output json string to the websocket'''
         if self.webSocket:
             await self.webSocket.send(bytes(p_json, 'utf-8'))  ###
         else:
-            self.g.trace(f"no web socket. p_json: {p_json}", flush=True)
+            g.trace(f"no web socket. p_json: {p_json}", flush=True)
 
-    #@+node:ekr.20210202110128.45: *3* bc.sendLeoBridgePackage
+    #@+node:ekr.20210202110128.45: *4* bc.sendLeoBridgePackage
     def sendLeoBridgePackage(self, p_key=False, p_any=None):
         w_package = {"id": self.currentActionId}
         if p_key:
             w_package[p_key] = p_any  # add [key]?:any
         return(json.dumps(w_package, separators=(',', ':')))  # send as json
-    #@+node:ekr.20210202110128.46: *3* _outputError
+    #@+node:ekr.20210202110128.46: *4* _outputError
     def _outputError(self, p_message="Unknown Error"):
         # Output to this server's running console
         print("ERROR: " + p_message, flush=True)
@@ -826,15 +817,15 @@ class LeoBridgeIntegController:
         w_package["error"] = p_message
         return p_message
 
-    #@+node:ekr.20210202110128.47: *3* _outputBodyData
+    #@+node:ekr.20210202110128.47: *4* _outputBodyData
     def _outputBodyData(self, p_bodyText=""):
         return self.sendLeoBridgePackage("bodyData", p_bodyText)
 
-    #@+node:ekr.20210202110128.48: *3* _outputSelectionData
+    #@+node:ekr.20210202110128.48: *4* _outputSelectionData
     def _outputSelectionData(self, p_bodySelection):
         return self.sendLeoBridgePackage("bodySelection", p_bodySelection)
 
-    #@+node:ekr.20210202110128.49: *3* _outputPNode
+    #@+node:ekr.20210202110128.49: *4* _outputPNode
     def _outputPNode(self, p_node=False):
         if p_node:
             # Single node, singular
@@ -842,7 +833,7 @@ class LeoBridgeIntegController:
         else:
             return self.sendLeoBridgePackage("node", None)
 
-    #@+node:ekr.20210202110128.50: *3* _outputPNodes
+    #@+node:ekr.20210202110128.50: *4* _outputPNodes
     def _outputPNodes(self, p_pList):
         w_apList = []
         for p in p_pList:
@@ -850,7 +841,7 @@ class LeoBridgeIntegController:
         # Multiple nodes, plural
         return self.sendLeoBridgePackage("nodes", w_apList)
 
-    #@+node:ekr.20210202110128.51: *3* es
+    #@+node:ekr.20210202110128.51: *4* es
     def es(self, * args, **keys):
         '''Output to the Log Pane'''
         d = {
@@ -861,23 +852,14 @@ class LeoBridgeIntegController:
             'tabName': 'Log',
             'nodeLink': None,
         }
-        d = self.g.doKeywordArgs(keys, d)
-        s = self.g.translateArgs(args, d)
+        d = g.doKeywordArgs(keys, d)
+        s = g.translateArgs(args, d)
         w_package = {"async": "log", "log": s}
         self.sendAsyncOutput(w_package)
-
-    #@+node:ekr.20210202110128.52: *3* bc.initConnection
-    def initConnection(self, p_webSocket):
-        
-        ### self.g.trace(f"p_webSocket: {p_webSocket.__class__.__name__}") ###
-
-        self.webSocket = p_webSocket
-        self.loop = asyncio.get_event_loop()
 
     #@+node:ekr.20210202110128.53: *3* _get_commander_method
     def _get_commander_method(self, p_command):
         """ Return the given method (p_command) in the Commands class or subcommanders."""
-        # self.g.trace(p_command)
         #
         # First, try the commands class.
         w_func = getattr(self.commander, p_command, None)
@@ -916,10 +898,7 @@ class LeoBridgeIntegController:
             if subcommander:
                 w_func = getattr(subcommander, p_command, None)
                 if w_func:
-                    ### self.g.trace(f"Found c.{ivar}.{p_command}")
                     return w_func
-            # else:
-                # self.g.trace(f"Not Found: c.{ivar}") # Should never happen.
         return None
 
     #@+node:ekr.20210202110128.54: *3* leoCommand
@@ -935,7 +914,6 @@ class LeoBridgeIntegController:
         p_ap: an archived position.
         p_keepSelection: preserve the current selection, if possible.
         '''
-        ### self.g.pdb()
         w_keepSelection = False  # Set default, optional component of package
         if "keep" in p_package:
             w_keepSelection = p_package["keep"]
@@ -962,128 +940,8 @@ class LeoBridgeIntegController:
             if w_keepSelection and self.commander.positionExists(oldPosition):
                 self.commander.selectPosition(oldPosition)
         return self._outputPNode(self.commander.p)
-    #@+node:ekr.20210202110128.55: *3* getOpenedFiles
-    def getOpenedFiles(self, p_package):
-        '''Return array of opened file path/names to be used as openFile parameters to switch files'''
-        w_files = []
-        w_index = 0
-        w_indexFound = 0
-        for w_commander in self.g.app.commanders():
-            if not w_commander.closed:
-                w_isSelected = False
-                w_isChanged = w_commander.changed
-                if self.commander == w_commander:
-                    w_indexFound = w_index
-                    w_isSelected = True
-                w_entry = {"name": w_commander.mFileName, "index": w_index,
-                           "changed": w_isChanged, "selected": w_isSelected}
-                w_files.append(w_entry)
-                w_index = w_index + 1
-
-        w_openedFiles = {"files": w_files, "index": w_indexFound}
-
-        return self.sendLeoBridgePackage("openedFiles", w_openedFiles)
-
-    #@+node:ekr.20210202110128.56: *3* setOpenedFile
-    def setOpenedFile(self, p_package):
-        '''Choose the new active commander from array of opened file path/names by numeric index'''
-        w_openedCommanders = []
-
-        for w_commander in self.g.app.commanders():
-            if not w_commander.closed:
-                w_openedCommanders.append(w_commander)
-
-        w_index = p_package['index']
-
-        if w_openedCommanders[w_index]:
-            self.commander = w_openedCommanders[w_index]
-
-        if self.commander:
-            self.commander.closed = False
-            self._create_gnx_to_vnode()
-            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
-                        "node": self._p_to_ap(self.commander.p)}
-            # maybe needed for frame wrapper
-            self.commander.selectPosition(self.commander.p)
-            return self.sendLeoBridgePackage("setOpened", w_result)
-        else:
-            return self._outputError('Error in setOpenedFile')
-
-    #@+node:ekr.20210202110128.57: *3* openFile
-    def openFile(self, p_file):
-        """
-        Open a leo file via leoBridge controller, or create a new document if empty string.
-        Returns an object that contains a 'opened' member.
-        """
-        w_found = False
-
-        # If not empty string (asking for New file) then check if already opened
-        if p_file:
-            for w_commander in self.g.app.commanders():
-                if w_commander.fileName() == p_file:
-                    w_found = True
-                    self.commander = w_commander
-
-        if not w_found:
-            self.commander = self.bridge.openLeoFile(
-                p_file)  # create self.commander
-
-        # Leo at this point has done this too: g.app.windowList.append(c.frame)
-        # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
-
-        if self.commander:
-            self.commander.closed = False
-            if not w_found:
-                # is new so also replace wrapper
-                self.commander.frame.body.wrapper = IntegTextWrapper(
-                    self.commander, "integBody", self.g)
-                self.commander.selectPosition(self.commander.p)
-
-            self._create_gnx_to_vnode()
-            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
-                        "node": self._p_to_ap(self.commander.p)}
-            return self.sendLeoBridgePackage("opened", w_result)
-        else:
-            return self._outputError('Error in openFile')
-
-    def openFiles(self, p_package):
-        """
-        Opens an array of leo files
-        Returns an object that contains the last 'opened' member.
-        """
-        w_files = []
-        if "files" in p_package:
-            w_files = p_package["files"]
-
-        for i_file in w_files:
-            w_found = False
-            # If not empty string (asking for New file) then check if already opened
-            if i_file:
-                for w_commander in self.g.app.commanders():
-                    if w_commander.fileName() == i_file:
-                        w_found = True
-                        self.commander = w_commander
-
-            if not w_found:
-                if os.path.isfile(i_file):
-                    self.commander = self.bridge.openLeoFile(
-                        i_file)  # create self.commander
-            if self.commander:
-                self.commander.closed = False
-                self.commander.frame.body.wrapper = IntegTextWrapper(
-                    self.commander, "integBody", self.g)
-                self.commander.selectPosition(self.commander.p)
-
-        # Done with the last one, it's now the selected commander. Check again just in case.
-        if self.commander:
-            self._create_gnx_to_vnode()
-            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
-                        "node": self._p_to_ap(self.commander.p)}
-            return self.sendLeoBridgePackage("opened", w_result)
-        else:
-            return self._outputError('Error in openFiles')
-
-    #@+node:ekr.20210202110128.58: *3* closeFile
+    #@+node:ekr.20210202160143.1: *3* sc:Files...
+    #@+node:ekr.20210202110128.58: *4* sc.closeFile
     def closeFile(self, p_package):
         """
         Closes a leo file. A file can then be opened with "openFile"
@@ -1117,7 +975,103 @@ class LeoBridgeIntegController:
             w_result = {"total": 0}
             return self.sendLeoBridgePackage("closed", w_result)
 
-    #@+node:ekr.20210202110128.59: *3* saveFile
+    #@+node:ekr.20210202110128.55: *4* sc.getOpenedFiles
+    def getOpenedFiles(self, p_package):
+        '''Return array of opened file path/names to be used as openFile parameters to switch files'''
+        w_files = []
+        w_index = 0
+        w_indexFound = 0
+        for w_commander in g.app.commanders():
+            if not w_commander.closed:
+                w_isSelected = False
+                w_isChanged = w_commander.changed
+                if self.commander == w_commander:
+                    w_indexFound = w_index
+                    w_isSelected = True
+                w_entry = {"name": w_commander.mFileName, "index": w_index,
+                           "changed": w_isChanged, "selected": w_isSelected}
+                w_files.append(w_entry)
+                w_index = w_index + 1
+
+        w_openedFiles = {"files": w_files, "index": w_indexFound}
+
+        return self.sendLeoBridgePackage("openedFiles", w_openedFiles)
+
+    #@+node:ekr.20210202110128.57: *4* sc.openFile
+    def openFile(self, p_file):
+        """
+        Open a leo file via leoBridge controller, or create a new document if empty string.
+        Returns an object that contains a 'opened' member.
+        """
+        w_found = False
+
+        # If not empty string (asking for New file) then check if already opened
+        if p_file:
+            for w_commander in g.app.commanders():
+                if w_commander.fileName() == p_file:
+                    w_found = True
+                    self.commander = w_commander
+
+        if not w_found:
+            self.commander = self.bridge.openLeoFile(
+                p_file)  # create self.commander
+
+        # Leo at this point has done this too: g.app.windowList.append(c.frame)
+        # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
+
+        if self.commander:
+            self.commander.closed = False
+            if not w_found:
+                # is new so also replace wrapper
+                self.commander.frame.body.wrapper = IntegTextWrapper(
+                    self.commander, "integBody", g)
+                self.commander.selectPosition(self.commander.p)
+
+            self._create_gnx_to_vnode()
+            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
+                        "node": self._p_to_ap(self.commander.p)}
+            return self.sendLeoBridgePackage("opened", w_result)
+        else:
+            return self._outputError('Error in openFile')
+
+    def openFiles(self, p_package):
+        """
+        Opens an array of leo files
+        Returns an object that contains the last 'opened' member.
+        """
+        w_files = []
+        if "files" in p_package:
+            w_files = p_package["files"]
+
+        for i_file in w_files:
+            w_found = False
+            # If not empty string (asking for New file) then check if already opened
+            if i_file:
+                for w_commander in g.app.commanders():
+                    if w_commander.fileName() == i_file:
+                        w_found = True
+                        self.commander = w_commander
+
+            if not w_found:
+                if os.path.isfile(i_file):
+                    self.commander = self.bridge.openLeoFile(
+                        i_file)  # create self.commander
+            if self.commander:
+                self.commander.closed = False
+                self.commander.frame.body.wrapper = IntegTextWrapper(
+                    self.commander, "integBody", g)
+                self.commander.selectPosition(self.commander.p)
+
+        # Done with the last one, it's now the selected commander. Check again just in case.
+        if self.commander:
+            self._create_gnx_to_vnode()
+            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
+                        "node": self._p_to_ap(self.commander.p)}
+            return self.sendLeoBridgePackage("opened", w_result)
+        else:
+            return self._outputError('Error in openFiles')
+
+    #@+node:ekr.20210202110128.59: *4* sc.saveFile
     def saveFile(self, p_package):
         '''Saves the leo file. New or dirty derived files are rewritten'''
         if self.commander:
@@ -1127,7 +1081,7 @@ class LeoBridgeIntegController:
                 else:
                     self.commander.save()
             except Exception as e:
-                self.g.trace('Error while saving')
+                g.trace('Error while saving')
                 print("Error while saving", flush=True)
                 print(str(e), flush=True)
 
@@ -2410,7 +2364,32 @@ class LeoBridgeIntegController:
         # return selected node when done
         return self._outputPNode(self.commander.p)
 
-    #@+node:ekr.20210202110128.60: *3* test
+    #@+node:ekr.20210202110128.56: *4* sc.setOpenedFile
+    def setOpenedFile(self, p_package):
+        '''Choose the new active commander from array of opened file path/names by numeric index'''
+        w_openedCommanders = []
+
+        for w_commander in g.app.commanders():
+            if not w_commander.closed:
+                w_openedCommanders.append(w_commander)
+
+        w_index = p_package['index']
+
+        if w_openedCommanders[w_index]:
+            self.commander = w_openedCommanders[w_index]
+
+        if self.commander:
+            self.commander.closed = False
+            self._create_gnx_to_vnode()
+            w_result = {"total": self._getTotalOpened(), "filename": self.commander.fileName(),
+                        "node": self._p_to_ap(self.commander.p)}
+            # maybe needed for frame wrapper
+            self.commander.selectPosition(self.commander.p)
+            return self.sendLeoBridgePackage("setOpened", w_result)
+        else:
+            return self._outputError('Error in setOpenedFile')
+
+    #@+node:ekr.20210202110128.60: *3* bc.test
     def test(self, p_package):
         '''Utility test function for debugging'''
         print("Called test: p_package:", p_package)
@@ -2434,7 +2413,7 @@ class LeoBridgeIntegController:
                 w_states["canDehoist"] = self.commander.canDehoist()
 
             except Exception as e:
-                self.g.trace('Error while getting states')
+                g.trace('Error while getting states')
                 print("Error while getting states", flush=True)
                 print(str(e), flush=True)
         else:
@@ -2446,8 +2425,7 @@ class LeoBridgeIntegController:
             w_states["canDehoist"] = False
 
         return self.sendLeoBridgePackage("states", w_states)
-
-    #@+node:ekr.20210202110128.62: *3* JSON Output Functions
+    #@+node:ekr.20210202110128.62: *3* sc:Json
     #@+node:ekr.20210202110128.63: *4* pageUp
     def pageUp(self, p_unused):
         """Selects a node a couple of steps up in the tree to simulate page up"""
@@ -2498,7 +2476,8 @@ class LeoBridgeIntegController:
             }
         }
         if w_p:
-            c, g = self.commander, self.g
+            ### c, g = self.commander, g
+            c = self.commander
             aList = g.get_directives_dict_list(w_p)
             d = g.scanAtCommentAndAtLanguageDirectives(aList)
 
@@ -2676,7 +2655,7 @@ class LeoBridgeIntegController:
             return self._outputPNode(self.commander.p)
 
         w_body = w_v.b
-        f_convert = self.g.convertRowColToPythonIndex
+        f_convert = g.convertRowColToPythonIndex
         w_active = p_package['active']
         w_start = p_package['start']
         w_end = p_package['end']
@@ -2911,7 +2890,7 @@ def main():
         while True:
             await asyncio.sleep(timeout)
             n += 1
-            await integController.asyncOutput(
+            await controller.asyncOutput(
                 f'{{"counter": {n}, "time": {n*timeout}}}')
     #@+node:ekr.20210202110128.90: *3* async def ws_handler (calls websocket.send)
     async def ws_handler(websocket, path):
@@ -2924,10 +2903,10 @@ def main():
         """
         try:
             ### print('ws_handler: websocket:', websocket)
-            integController.initConnection(websocket)
+            controller.initConnection(websocket)
             # * Start by sending empty as 'ok'
-            await websocket.send(integController.sendLeoBridgePackage())
-            integController.logSignon()
+            await websocket.send(controller.sendLeoBridgePackage())
+            controller.logSignon()
             async for w_message in websocket:
                 w_param = json.loads(w_message)
                 if w_param and w_param['action']:
@@ -2935,18 +2914,18 @@ def main():
                     w_actionParam = w_param['param']
                     # printAction(w_param)  # Debug output
                     # * Storing id of action in global var instead of passing as parameter
-                    integController.setActionId(w_param['id'])
+                    controller.setActionId(w_param['id'])
                     # ! functions called this way need to accept at least a parameter other than 'self'
                     # ! See : getSelectedNode and getAllGnx
                     # TODO : Block attempts to call functions starting with underscore or reserved
                     #
-                    w_func = getattr(integController, w_action, None)  # crux
+                    w_func = getattr(controller, w_action, None)  # crux
                     if w_func:
                         # Is Filtered by Leo Bridge Integration Controller
                         w_answer = w_func(w_actionParam)
                     else:
                         # Attempt to execute the command directly on the commander/subcommander
-                        w_answer = integController.leoCommand(
+                        w_answer = controller.leoCommand(
                             w_action, w_actionParam)
                 else:
                     w_answer = "Error in processCommand"
@@ -2989,7 +2968,7 @@ def main():
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon, flush=True)
 
-    integController = LeoBridgeIntegController()
+    controller = ServerController()
     
     # Create a _WindowsSelectorEventLoop object.
     loop = asyncio.get_event_loop()  
@@ -3010,6 +2989,6 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        print("\nKeyboard Interupt: Stopping leobridge server", flush=True)
+        print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)
         sys.exit()
 #@-leo
