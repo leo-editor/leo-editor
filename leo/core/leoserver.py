@@ -22,6 +22,7 @@ import leo.core.leoApp as leoApp
 import leo.core.leoBridge as leoBridge
 import leo.core.leoNodes as leoNodes
 import leo.core.leoExternalFiles as leoExternalFiles
+import leo.core.leoFrame as leoFrame
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module.
 
@@ -233,10 +234,10 @@ class ServerController:
         #
         # Assign self.c
         self.c = c
-        c.closed = False
+        c.closed = False  # Inject open state.
         if not found:
             # is new so also replace wrapper
-            ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
+            c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
             c.selectPosition(c.p)
         self._create_gnx_to_vnode()
         result = {
@@ -255,11 +256,12 @@ class ServerController:
         filename, files = None, []
         if "files" in package:
             files = package["files"]
+        openCommanders = [z for z in g.app.commanders() if not z.closed]
         for filename in files:
             found = False
             # If not empty string (asking for New file) then check if already opened
             if filename:
-                for c in g.app.commanders():
+                for c in openCommanders:
                     if c.fileName() == filename:
                         found = True
             if not found:
@@ -268,9 +270,8 @@ class ServerController:
             if c:
                 c.closed = False
                 self.c = c
-                ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
+                c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
                 c.selectPosition(c.p)
-
         # Done with the last one, it's now the selected commander. Check again just in case.
         if not c:
             return self._outputError(f"file not found: {filename!r}", tag)
@@ -278,7 +279,7 @@ class ServerController:
         result = {
             "filename": c.fileName(),
             "node": self._p_to_ap(c.p),
-            "total": len(g.app.commanders()),  ### Return only open commanders.
+            "total": len(openCommanders),
         }
         return self.send("opened", result)
     #@+node:ekr.20210202110128.58: *5* sc.closeFile
@@ -331,7 +332,7 @@ class ServerController:
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
         c, tag = None, 'setOpenedFile'
-        openedCommanders = [z for z in g.app.commanders() if not z.closed] ###
+        openedCommanders = [z for z in g.app.commanders() if not z.closed]
         index = package['index']
         if index < len(openedCommanders):
             c = openedCommanders[index]
@@ -1542,7 +1543,6 @@ class ServerController:
     def getOpenedFiles(self, package):
         '''Return array of opened file path/names to be used as openFile parameters to switch files'''
         c = self.c
-        ### Removed the 'index entries. They appear to be useless.
         openCommanders = [z for z in g.app.commanders() if not z.closed]
         files = [
             {
@@ -1551,6 +1551,7 @@ class ServerController:
                 "selected": c == commander,
             } for commander in openCommanders
         ]
+        # Removed 'index entries from result and files. They appear to be useless.
         result = {
             "files": files,
         }
@@ -1607,8 +1608,8 @@ class ServerController:
                 print(str(e), flush=True)
         return self.send("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
-    #@+node:ekr.20210202110128.81: *5* sc._findPNodeFromGnx
-    def _findPNodeFromGnx(self, gnx):
+    #@+node:ekr.20210202110128.81: *5* sc._gnx_to_p
+    def _gnx_to_p(self, gnx):
         '''Return first p node with this gnx or None'''
         for p in self.c.all_unique_positions():
             if p.v.gnx == gnx:
@@ -1826,12 +1827,11 @@ class ServerController:
             p = self._ap_to_p(ap)
             if p:
                 if c.positionExists(p):
-                    # set this node as selection
                     c.selectPosition(p)
                 else:
-                    foundPNode = self._findPNodeFromGnx(ap['gnx'])
-                    if foundPNode:
-                        c.selectPosition(foundPNode)
+                    found_p = self._gnx_to_p(ap['gnx'])
+                    if found_p:
+                        c.selectPosition(found_p)
                     else:
                         print("Set Selection node does not exist! ap was:" +
                               json.dumps(ap), flush=True)
@@ -1846,30 +1846,26 @@ class ServerController:
         See BodySelectionInfo interface in types.d.ts
         '''
         c = self.c
-        same = False  # Flag for actually setting values in the wrapper, if same gnx.
+        same = False  # True: set values in the wrapper, if same gnx.
         wrapper = self.c.frame.body.wrapper
         gnx = package['gnx']
         body = ""
         v = None
         if c.p.v.gnx == gnx:
-            # print('Set Selection! OK SAME GNX: ' + self.c.p.v.gnx)
             same = True
             v = c.p.v
         else:
-            # ? When navigating rapidly - Check if this is a bug - how to improve
-            # print('Set Selection! NOT SAME GNX: selected:' +
-            #       self.c.p.v.gnx + ', package:' + gnx)
+            ### Is this a bug?
+            print(f"Set Selection: different gnx: selected: {c.p.v.gnx!r} package: {gnx}")
             v = c.fileCommands.gnxDict.get(gnx)
         if not v:
-            print('ERROR : Set Selection! NOT SAME Leo Document')
-            # ! FAILED (but return as normal)
-            return self._outputPNode(c.p)
+            print('Set Selection: different Leo Document')
+            return self._outputPNode(c.p) # Failed, but return as normal.
         body = v.b
         f_convert = g.convertRowColToPythonIndex
         active = package['active']
         start = package['start']
         end = package['end']
-
         # no convertion necessary, its given back later
         scroll = package['scroll']
         insert = f_convert(body, active['line'], active['col'])
@@ -1885,20 +1881,11 @@ class ServerController:
         v.insertSpot = insert
         v.selectionStart = startSel
         v.selectionLength = abs(endSel - endSel)
-            ###(endSel - startSel) if endSel > startSel else 0
-
-        # When switching nodes, Leo's core saves the insert point, selection,
-        # and vertical scroll position in the old (unselected) vnode. From v.init:
-
-        # self.insertSpot = None
-        #     # Location of previous insert point.
-        # self.scrollBarSpot = None
-        #     # Previous value of scrollbar position.
-        # self.selectionLength = 0
-        #     # The length of the selected body text.
-        # self.selectionStart = 0
-        #         # The start of the selected body text.
-
+        ### From v.init:
+            # self.insertSpot = None
+            # self.scrollBarSpot = None
+            # self.selectionLength = 0
+            # self.selectionStart = 0
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.16: *5* sc.undo
     def undo(self, unused):
