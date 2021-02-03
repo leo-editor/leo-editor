@@ -113,16 +113,16 @@ class ServerController:
         ap: an archived position.
         keepSelection: preserve the current selection, if possible.
         '''
-        c, tag = self.c, 'leoCommand'
+        c = self.c
         g.trace(repr(command), repr(package))  ###
         # Check the args.
-        err, p = self._p_from_package(package, tag)
+        err, p = self._p_from_package(package)
         if err:
             return err
         # Execute the command.
         func = self._get_commander_method(command)
         if not func:
-            return self._outputError(f"command not found: {command!r}", tag)
+            return self._outputError(f"command not found: {command!r}", tag='leoCommand')
         # Easy case: ignore the previous position.
         keep = "keep" in package and package["keep"]  ### Convert to bool ???
         if p == c.p or not keep:
@@ -323,7 +323,7 @@ class ServerController:
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
         tag = 'setOpenedFile'
-        err, p = self._p_from_package(package, tag)
+        err, p = self._p_from_package(package)
         if err:
             return err
         openedCommanders = [z for z in g.app.commanders() if not z.closed]
@@ -378,7 +378,7 @@ class ServerController:
         Also returns the saved cursor position from last time node was accessed.
         """
         c, wrapper = self.c, self.c.frame.body.wrapper
-        err, p = self._p_from_ap(ap, 'getBodyStates')
+        err, p = self._p_from_ap(ap)
         if err:
             return err
         defaultPosition = {"line": 0, "col": 0}
@@ -1557,7 +1557,7 @@ class ServerController:
     def getPNode(self, ap):
         '''EMIT OUT a node, don't select it'''
         c = self.c
-        err, p = self._p_from_ap(ap, 'getPNode')
+        err, p = self._p_from_ap(ap)
         return err if err else self._outputPNode(c.p)  # Don't select p.
     #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
     def getSelectedNode(self, unused):
@@ -1605,7 +1605,7 @@ class ServerController:
     def clonePNode(self, package):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
         c = self.c
-        err, p = self._p_from_package(package, 'clonePNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         if p == c.p:
@@ -1633,7 +1633,7 @@ class ServerController:
         Try to keep selection, then return the selected node that remains
         '''
         c = self.c
-        err, p = self._p_from_package(package, 'cutPNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         if p == c.p:
@@ -1656,7 +1656,7 @@ class ServerController:
     def deletePNode(self, package):
         '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
         c = self.c
-        err, p = self._p_from_package(package, 'deletePNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         if p == c.p:
@@ -1686,7 +1686,7 @@ class ServerController:
     def insertNamedPNode(self, package):
         '''Insert a node at given node, set its headline, select it and finally return it'''
         c, u = self.c, self.c.undoer
-        err, p = self._p_from_package(package, 'insertNamedPNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         newHeadline = package['text']  ### Make sure it exists.
@@ -1701,7 +1701,7 @@ class ServerController:
     def insertPNode(self, package):
         '''Insert and slect a new node.'''
         c, u = self.c, self.c.undoer
-        err, p = self._p_from_package(package, 'insertPNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         bunch = u.beforeInsertNode(p)
@@ -1714,7 +1714,7 @@ class ServerController:
     def markPNode(self, package):
         '''Mark a node, don't select it'''
         c = self.c
-        err, p = self._p_from_package(package, 'markPNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         p.setMarked()
@@ -1774,7 +1774,7 @@ class ServerController:
     def setNewHeadline(self, package):
         '''Change a node's headline.'''
         u = self.c.undoer
-        err, p = self._p_from_package(package, 'setNewHeadline')
+        err, p = self._p_from_package(package)
         if err:
             return err
         headline = package['text']  ###
@@ -1862,7 +1862,7 @@ class ServerController:
     def unmarkPNode(self, package):
         '''Unmark a node, don't select it'''
         c = self.c
-        err, p = self._p_from_package(package, 'unmarkPNode')
+        err, p = self._p_from_package(package)
         if err:
             return err
         p.clearMarked()
@@ -1955,13 +1955,15 @@ class ServerController:
         }
         self._test_round_trip_positions()
     #@+node:ekr.20210203084135.1: *4* sc._p_from_ap
-    def _p_from_ap(self, ap, tag):
+    def _p_from_ap(self, ap):
         """
         Resolve archived position to a position, with error reporting.
         Return (err, p)
         """
         c = self.c
         p = self._ap_to_p(ap)
+        callers = g.callers().split(',')
+        tag = callers[-1]
         if not p:
             err = self._err_no_position(ap, tag)
             return err, None
@@ -1970,12 +1972,14 @@ class ServerController:
             return err, None
         return None, p
     #@+node:ekr.20210203082009.1: *4* sc._p_from_package
-    def _p_from_package(self, package, tag):
+    def _p_from_package(self, package):
         """
         Resolve package["node"] to a position.
         Return (err, p)
         """
         c = self.c
+        callers = g.callers().split(',')
+        tag = callers[-1]
         try:
             ap = package["node"]
         except Exception:
