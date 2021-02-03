@@ -114,29 +114,27 @@ class ServerController:
         keepSelection: preserve the current selection, if possible.
         '''
         c, tag = self.c, 'leoCommand'
-        keep = package["keep"] if "keep" in package else False
-        g.trace('leoCommand', repr(command), repr(package))  ###
-        #
-        # Check the arguments...
-        ap = package["node"]  # At least node parameter is present
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        g.trace(repr(command), repr(package))  ###
+        # Check the args.
+        err, p = self._p_from_package(package, tag)
+        if err:
+            return err
+        # Execute the command.
         func = self._get_commander_method(command)
         if not func:
             return self._outputError(f"command not found: {command!r}", tag)
-        #
-        # Execute the command.
-        if p == c.p:
+        # Easy case: ignore the previous position.
+        keep = "keep" in package and package["keep"]  ### Convert to bool ???
+        if p == c.p or not keep:
             func(event=None)
-        else:
-            oldPosition = c.p
-            c.selectPosition(p)
-            func(event=None)
-            if keep and c.positionExists(oldPosition):
-                c.selectPosition(oldPosition)
+            return self._outputPNode(c.p)
+        # Harder case: try to restore the previous position.
+        oldPosition = c.p
+        c.selectPosition(p)
+        func(event=None)
+        # Careful: the old position might not exist now.
+        if c.positionExists(oldPosition):
+            c.selectPosition(oldPosition)
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
     def _get_commander_method(self, command):
@@ -217,8 +215,6 @@ class ServerController:
         """
         Open a leo file with the given filename. Create a new document if no name.
         """
-        #
-        # If not empty string (asking for New file) then check if already opened
         c, found, tag = None, False, 'openFile'
         openCommanders = [z for z in g.app.commanders() if not c.closed]
         if filename:
@@ -326,14 +322,15 @@ class ServerController:
     #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile (revise)
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
-        c, tag = None, 'setOpenedFile'
+        tag = 'setOpenedFile'
+        err, p = self._p_from_package(package, tag)
+        if err:
+            return err
         openedCommanders = [z for z in g.app.commanders() if not z.closed]
         index = package['index']
-        if index < len(openedCommanders):
-            c = openedCommanders[index]
-        else:
+        if index >= len(openedCommanders):
             return self._outputError(f"invalid index: {index!r}", tag)
-        self.c = c
+        c = self.c = openedCommanders[index]
         c.closed = False
         self._create_gnx_to_vnode()
         c.selectPosition(c.p) # maybe needed for frame wrapper
@@ -380,13 +377,10 @@ class ServerController:
         Finds the language in effect at top of body for position p,
         Also returns the saved cursor position from last time node was accessed.
         """
-        c, tag, wrapper = self.c, 'getBodyStates', self.c.frame.body.wrapper
-        if not ap:
-            return self._outputError(f"no ap", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            print(f"{tag}: position not found. gnx: {ap['gnx']!r}. Using c.p.gnx: {c.p.v.gnx}")
-            p = c.p
+        c, wrapper = self.c, self.c.frame.body.wrapper
+        err, p = self._p_from_ap(ap, 'getBodyStates')
+        if err:
+            return err
         defaultPosition = {"line": 0, "col": 0}
         states = {
             'language': 'plain',
@@ -1562,13 +1556,9 @@ class ServerController:
     #@+node:ekr.20210202110128.67: *5* sc.getPNode
     def getPNode(self, ap):
         '''EMIT OUT a node, don't select it'''
-        tag = 'getPNode'
-        if not ap:
-            return self._outputError(f"no ap", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
-        return self._outputPNode(p)
+        c = self.c
+        err, p = self._p_from_ap(ap, 'getPNode')
+        return err if err else self._outputPNode(c.p)  # Don't select p.
     #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
     def getSelectedNode(self, unused):
         '''EMIT OUT Selected Position as an array, even if unique'''
@@ -1614,14 +1604,10 @@ class ServerController:
     #@+node:ekr.20210202183724.11: *5* sc.clonePNode
     def clonePNode(self, package):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
-        c, tag = self.c, 'clonePNode'
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            # default empty
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        c = self.c
+        err, p = self._p_from_package(package, 'clonePNode')
+        if err:
+            return err
         if p == c.p:
             c.clone()
         else:
@@ -1642,56 +1628,50 @@ class ServerController:
         return self.send("")  # Just send empty as 'ok'
     #@+node:ekr.20210202183724.12: *5* sc.cutPNode
     def cutPNode(self, package):
-        '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        c, tag = self.c, 'cutPNode'
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        '''
+        Cut a node, don't select it.
+        Try to keep selection, then return the selected node that remains
+        '''
+        c = self.c
+        err, p = self._p_from_package(package, 'cutPNode')
+        if err:
+            return err
         if p == c.p:
-            c.cutOutline()  # already on this node, so cut it
-        else:
-            oldPosition = c.p  # not same node, save position to possibly return to
-            c.selectPosition(p)
             c.cutOutline()
+            return self._outputPNode(c.p)
+        oldPosition = c.p  
+        c.selectPosition(p)
+        c.cutOutline()
+        if c.positionExists(oldPosition):
+            # select if old position still valid
+            c.selectPosition(oldPosition)
+        else:
+            oldPosition._childIndex = oldPosition._childIndex-1
+            # Try again with childIndex decremented
             if c.positionExists(oldPosition):
-                # select if old position still valid
+                # additional try with lowered childIndex
                 c.selectPosition(oldPosition)
-            else:
-                oldPosition._childIndex = oldPosition._childIndex-1
-                # Try again with childIndex decremented
-                if c.positionExists(oldPosition):
-                    # additional try with lowered childIndex
-                    c.selectPosition(oldPosition)
-        # in both cases, return selected node
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.13: *5* sc.deletePNode
     def deletePNode(self, package):
         '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        c, tag = self.c, 'deletePNode'
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found: ap: {ap!r}", tag)
+        c = self.c
+        err, p = self._p_from_package(package, 'deletePNode')
+        if err:
+            return err
         if p == c.p:
-            c.deleteOutline()  # already on this node, so delete it
-        else:
-            oldPosition = c.p  # not same node, save position to possibly return to
-            c.selectPosition(p)
             c.deleteOutline()
-            if c.positionExists(oldPosition):
-                # select if old position still valid
-                c.selectPosition(oldPosition)
-            else:
-                oldPosition._childIndex = oldPosition._childIndex-1
-                # Try again with childIndex decremented
-                if c.positionExists(oldPosition):
-                    # additional try with lowered childIndex
-                    c.selectPosition(oldPosition)
+            return self._outputPNode(c.p)
+        oldPosition = c.p  
+        c.selectPosition(p)
+        c.deleteOutline()
+        if c.positionExists(oldPosition):
+            c.selectPosition(oldPosition)
+            return self._outputPNode(c.p)
+        ### Experimental.
+        oldPosition._childIndex = oldPosition._childIndex-1
+        if c.positionExists(oldPosition):
+            c.selectPosition(oldPosition)
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.78: *5* sc.expandNode
     def expandNode(self, ap):
@@ -1705,14 +1685,11 @@ class ServerController:
     #@+node:ekr.20210202183724.15: *5* sc.insertNamedPNode
     def insertNamedPNode(self, package):
         '''Insert a node at given node, set its headline, select it and finally return it'''
-        c, tag, u = self.c, 'insertNamedPNode', self.c.undoer
-        newHeadline = package['text']
-        ap = package['node']
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        c, u = self.c, self.c.undoer
+        err, p = self._p_from_package(package, 'insertNamedPNode')
+        if err:
+            return err
+        newHeadline = package['text']  ### Make sure it exists.
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.h = newHeadline
@@ -1722,32 +1699,26 @@ class ServerController:
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.14: *5* sc.insertPNode
     def insertPNode(self, package):
-        '''Insert a node at given node, then select it once created, and finally return it'''
-        c, tag, u = self.c, 'insertPNode', self.c.undoer
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        '''Insert and slect a new node.'''
+        c, u = self.c, self.c.undoer
+        err, p = self._p_from_package(package, 'insertPNode')
+        if err:
+            return err
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.setDirty()
         u.afterInsertNode(newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
-        return self._outputPNode(c.p)
+        return self._outputPNode(c.p)  # Select the new node.
     #@+node:ekr.20210202183724.9: *5* sc.markPNode
     def markPNode(self, package):
         '''Mark a node, don't select it'''
-        c, tag = self.c, 'markPNode'
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag) 
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        c = self.c
+        err, p = self._p_from_package(package, 'markPNode')
+        if err:
+            return err
         p.setMarked()
-        return self._outputPNode(c.p)
+        return self._outputPNode(c.p)  # Don't select p.
     #@+node:ekr.20210202110128.64: *5* sc.pageDown
     def pageDown(self, unused):
         """Selects a node a couple of steps down in the tree to simulate page down"""
@@ -1801,15 +1772,12 @@ class ServerController:
 
     #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
     def setNewHeadline(self, package):
-        '''Change Headline of a node'''
-        tag, u = 'setNewHeadline', self.c.undoer
-        headline = package['text']
-        ap = package['node']
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        '''Change a node's headline.'''
+        u = self.c.undoer
+        err, p = self._p_from_package(package, 'setNewHeadline')
+        if err:
+            return err
+        headline = package['text']  ###
         bunch = u.beforeChangeNodeContents(p)
         p.h = headline
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
@@ -1893,17 +1861,14 @@ class ServerController:
     #@+node:ekr.20210202183724.10: *5* sc.unmarkPNode
     def unmarkPNode(self, package):
         '''Unmark a node, don't select it'''
-        c, tag = self.c, 'unmarkPNode'
-        ap = package["node"]
-        if not ap:
-            return self._outputError(f"no ap in package: {package!r}", tag)
-        p = self._ap_to_p(ap)
-        if not p:
-            return self._outputError(f"position not found. ap: {ap!r}", tag)
+        c = self.c
+        err, p = self._p_from_package(package, 'unmarkPNode')
+        if err:
+            return err
         p.clearMarked()
-        return self._outputPNode(c.p)  # Return c.p, not p.
+        return self._outputPNode(c.p)  # Don't select p.
     #@+node:ekr.20210202194141.1: *3* sc:Output
-    #@+node:ekr.20210202110128.46: *4* sc._outputError
+    #@+node:ekr.20210203081126.1: *4* sc._outputError
     def _outputError(self, message, tag):
         # Output to this server's running console
         print(f"Error in {tag}: {message}", flush=True)
@@ -1911,6 +1876,9 @@ class ServerController:
             "id": self.currentActionId,
             "error": f"{tag}: {message}",
         }
+    #@+node:ekr.20210203083722.1: *4* sc._err_no_position
+    def _err_no_position(self, ap, tag):
+        return self._outputError(f"position not found. ap: {ap!r}", tag)
     #@+node:ekr.20210202110128.49: *4* sc._outputPNode & _outputPNodes
     def _outputPNode(self, node):
         return self.send("node", self._p_to_ap(node) if node else None)
@@ -1967,7 +1935,7 @@ class ServerController:
     def _ap_to_p(self, ap):
         '''
         (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
-        Return false if no key
+        Return None if no key
         '''
         childIndex = ap['childIndex']
         try:
@@ -1977,7 +1945,7 @@ class ServerController:
                     for d in ap['stack']
             ]
         except Exception:
-            return False
+            return None
         return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
@@ -1986,6 +1954,43 @@ class ServerController:
             v.gnx: v for v in self.c.all_unique_nodes()
         }
         self._test_round_trip_positions()
+    #@+node:ekr.20210203084135.1: *4* sc._p_from_ap
+    def _p_from_ap(self, ap, tag):
+        """
+        Resolve archived position to a position, with error reporting.
+        Return (err, p)
+        """
+        c = self.c
+        p = self._ap_to_p(ap)
+        if not p:
+            err = self._err_no_position(ap, tag)
+            return err, None
+        if not c.positionExists(p):
+            err = self._outputError(f"position does not exist. ap: {ap!r}", tag)
+            return err, None
+        return None, p
+    #@+node:ekr.20210203082009.1: *4* sc._p_from_package
+    def _p_from_package(self, package, tag):
+        """
+        Resolve package["node"] to a position.
+        Return (err, p)
+        """
+        c = self.c
+        try:
+            ap = package["node"]
+        except Exception:
+            ap = None
+        if not ap:
+            err = self._outputError(f"no ap in package: {package!r}", tag)
+            return err, None
+        p = self._ap_to_p(ap)
+        if not p:
+            err = self._err_no_position(ap, tag)
+            return err, None
+        if not c.positionExists(p):
+            err = self._outputError(f"position does not exist. ap: {ap!r}", tag)
+            return err, None
+        return None, p
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
         '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
