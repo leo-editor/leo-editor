@@ -86,8 +86,440 @@ class ServerController:
             g.es(str(g.app.signon1))
         else:
             print('no loop in logSignon', flush=True)
-    #@+node:ekr.20210202191025.1: *3* sc:Command utils
-    #@+node:ekr.20210202183724.6: *4* sc._bad_commands
+    #@+node:ekr.20210202110128.43: *4* sc.setActionId
+    def setActionId(self, p_id):
+        self.currentActionId = p_id
+
+    #@+node:ekr.20210202193210.1: *3* sc:Commands
+    #@+node:ekr.20210202110128.41: *4* sc.applyConfig
+    def applyConfig(self, p_config):
+        '''Got the configuration from client'''
+        self.config = p_config
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+    #@+node:ekr.20210202110128.54: *4* sc.leoCommand & helper (not called yet!)
+    def leoCommand(self, p_command, p_package):
+        '''
+        Generic call to a method in Leo's Commands class or any subcommander class.
+
+        The p_ap position node is to be selected before having the command run,
+        while the p_keepSelection parameter specifies wether the original position should be re-selected.
+        The whole of those operations is to be undoable as one undo step.
+
+        p_command: a method name (a string).
+        p_ap: an archived position.
+        p_keepSelection: preserve the current selection, if possible.
+        '''
+        c = self.c
+        w_keepSelection = False  # Set default, optional component of package
+        if "keep" in p_package:
+            w_keepSelection = p_package["keep"]
+        g.trace('leoCommand', repr(p_command), repr(p_package))  ###
+        w_ap = p_package["node"]  # At least node parameter is present
+        if not w_ap:
+            return self._outputError(f"Error in {p_command}: no param node")
+        w_p = self._ap_to_p(w_ap)
+        if not w_p:
+            return self._outputError(f"Error in {p_command}: no w_p node found")
+        w_func = self._get_commander_method(p_command)
+        if not w_func:
+            return self._outputError(f"Error in {p_command}: no method found")
+        if w_p == c.p:
+            w_func(event=None)
+        else:
+            oldPosition = c.p
+            c.selectPosition(w_p)
+            w_func(event=None)
+            if w_keepSelection and c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+        return self._outputPNode(c.p)
+    #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
+    def _get_commander_method(self, p_command):
+        """ Return the given method (p_command) in the Commands class or subcommanders."""
+        c = self.c
+        # First, try the Commands class.
+        w_func = getattr(c, p_command, None)
+        if w_func:
+            return w_func
+        # Search all subcommanders for the method.
+        table = (
+            # This table comes from c.initObjectIvars.
+            'abbrevCommands',
+            'bufferCommands',
+            'chapterCommands',
+            'controlCommands',
+            'convertCommands',
+            'debugCommands',
+            'editCommands',
+            'editFileCommands',
+            'evalController',
+            'gotoCommands',
+            'helpCommands',
+            'keyHandler',
+            'keyHandlerCommands',
+            'killBufferCommands',
+            'leoCommands',
+            'leoTestManager',
+            'macroCommands',
+            'miniBufferWidget',
+            'printingController',
+            'queryReplaceCommands',
+            'rectangleCommands',
+            'searchCommands',
+            'spellCommands',
+            'vimCommands',  # Not likely to be useful.
+        )
+        for ivar in table:
+            subcommander = getattr(c, ivar, None)
+            if subcommander:
+                w_func = getattr(subcommander, p_command, None)
+                if w_func:
+                    return w_func
+        return None
+    #@+node:ekr.20210202110128.60: *4* sc.test
+    def test(self, p_package):
+        '''Utility test function for debugging'''
+        return self.sendLeoBridgePackage('returned-key', p_package)
+           
+    #@+node:ekr.20210202193709.1: *4* sc:button commands
+    #@+node:ekr.20210202183724.4: *5* sc.clickButton
+    def clickButton(self, p_package):
+        '''Handles buttons clicked in client from the '@button' panel'''
+        c = self.c
+        w_index = p_package['index']
+        w_dict = c.theScriptingController.buttonsDict
+        w_button = None
+        for i_key in w_dict:
+            if(str(i_key) == w_index):
+                w_button = i_key
+        if w_button:
+            w_button.command()  # run clicked button command
+        # return selected node when done
+        return self._outputPNode(c.p)
+
+    #@+node:ekr.20210202183724.3: *5* sc.removeButton
+    def removeButton(self, p_package):
+        '''Removes an entry from the buttonsDict by index string'''
+        c = self.c
+        w_index = p_package['index']
+        w_dict = c.theScriptingController.buttonsDict
+        w_key = None
+        for i_key in w_dict:
+            if(str(i_key) == w_index):
+                w_key = i_key
+        if w_key:
+            del(w_dict[w_key])  # delete object member
+        # return selected node when done
+        return self._outputPNode(c.p)
+
+    #@+node:ekr.20210202193642.1: *4* sc:file commands
+    #@+node:ekr.20210202110128.57: *5* sc.openFile
+    def openFile(self, p_file):
+        """
+        Open a leo file via leoBridge controller, or create a new document if empty string.
+        Returns an object that contains a 'opened' member.
+        """
+        c, w_found = None, False
+        # If not empty string (asking for New file) then check if already opened
+        if p_file:
+            for w_commander in g.app.commanders():
+                if w_commander.fileName() == p_file:
+                    w_found = True
+                    c = self.c = w_commander
+        if not w_found:
+            c = self.c = self.bridge.openLeoFile(p_file)
+        #
+        # Leo at this point has done this too: g.app.windowList.append(c.frame)
+        # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
+        if not c:
+            return self._outputError('Error in openFile')
+        c.closed = False
+        if not w_found:
+            # is new so also replace wrapper
+            ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
+            c.selectPosition(c.p)
+        self._create_gnx_to_vnode()
+        w_result = {
+            "filename": c.fileName(),
+            "node": self._p_to_ap(c.p),
+            "total": len(g.app.commanders),
+        }
+        return self.sendLeoBridgePackage("opened", w_result)
+    #@+node:ekr.20210202182311.1: *5* sc.openFiles
+    def openFiles(self, p_package):
+        """
+        Opens an array of leo files
+        Returns an object that contains the last 'opened' member.
+        """
+        c = None
+        w_files = []
+        if "files" in p_package:
+            w_files = p_package["files"]
+
+        for i_file in w_files:
+            w_found = False
+            # If not empty string (asking for New file) then check if already opened
+            if i_file:
+                for w_commander in g.app.commanders():
+                    if w_commander.fileName() == i_file:
+                        w_found = True
+                        c = self.c = w_commander
+            if not w_found:
+                if os.path.isfile(i_file):
+                    c = self.c = self.bridge.openLeoFile(i_file)  # create self.c
+            if c:
+                c.closed = False
+                ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
+                c.selectPosition(c.p)
+
+        # Done with the last one, it's now the selected commander. Check again just in case.
+        if not c:
+            return self._outputError('Error in openFiles')
+        self._create_gnx_to_vnode()
+        w_result = {
+            "filename": c.fileName(),
+            "node": self._p_to_ap(c.p),
+            "total": len(g.app.commanders()),
+        }
+        return self.sendLeoBridgePackage("opened", w_result)
+    #@+node:ekr.20210202110128.58: *5* sc.closeFile
+    def closeFile(self, p_package):
+        """
+        Closes a leo file. A file can then be opened with "openFile"
+        Returns an object that contains a 'closed' member
+        """
+        c = self.c
+        # TODO : Specify which file to support multiple opened files
+        if c:
+            if p_package["forced"] and c.changed:
+                # return "no" g.app.gui.runAskYesNoDialog  and g.app.gui.runAskYesNoCancelDialog
+                c.revert()
+            if p_package["forced"] or not c.changed:
+                c.closed = True
+                c.close()
+            else:
+                # Cannot close, ask to save, ignore or cancel
+                return self.sendLeoBridgePackage('closed', False)
+
+        # Switch commanders to first available
+        if not g.app.commanders():
+            return self.sendLeoBridgePackage("closed", {"total": 0})
+        self.c = c = g.app.commanders()[0]
+        self._create_gnx_to_vnode()
+        w_result = {
+            "filename": c.fileName(),
+            "node": self._p_to_ap(c.p),
+            "total": len(g.app.commanders()),
+        }
+        return self.sendLeoBridgePackage("closed", w_result)
+    #@+node:ekr.20210202183724.1: *5* sc.saveFile
+    def saveFile(self, p_package):
+        '''Saves the leo file. New or dirty derived files are rewritten'''
+        c = self.c
+        if c:
+            try:
+                if "text" in p_package:
+                    c.save(fileName=p_package['text'])
+                else:
+                    c.save()
+            except Exception as e:
+                g.trace('Error while saving')
+                print("Error while saving", flush=True)
+                print(str(e), flush=True)
+
+        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+
+    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
+    def setOpenedFile(self, p_package):
+        '''Choose the new active commander from array of opened file path/names by numeric index'''
+        c = None
+        w_openedCommanders = []
+        for w_commander in g.app.commanders():
+            if not w_commander.closed:
+                w_openedCommanders.append(w_commander)
+        w_index = p_package['index']
+        if w_openedCommanders[w_index]:
+            c = self.c = w_openedCommanders[w_index]
+        if not c:
+            return self._outputError('Error in setOpenedFile')
+        c.closed = False
+        self._create_gnx_to_vnode()
+        w_result = {
+            "filename": c.fileName(),
+            "node": self._p_to_ap(c.p),
+            "total": len(g.app.commanders()),
+        }
+        # maybe needed for frame wrapper
+        c.selectPosition(c.p)
+        return self.sendLeoBridgePackage("setOpened", w_result)
+    #@+node:ekr.20210202193505.1: *4* sc:getter commands
+    #@+node:ekr.20210202110128.71: *5* sc.getAllGnx
+    def getAllGnx(self, p_unused):
+        '''Get gnx array from all unique nodes'''
+        c = self.c
+        return self.sendLeoBridgePackage(
+            "allGnx",
+            [p.v.gnx for p in c.all_unique_positions(copy=False)])
+
+    #@+node:ekr.20210202110128.72: *5* sc.getBody
+    def getBody(self, p_gnx):
+        '''EMIT OUT body of a node'''
+        #
+        #### TODO : if not found, send code to prevent unresolved promise
+        #           if 'document switch' occurred shortly before
+        if p_gnx:
+            w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
+            if w_v:
+                return self._outputBodyData(w_v.b)
+        #
+        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
+        return self._outputBodyData()
+    #@+node:ekr.20210202110128.73: *5* sc.getBodyLength
+    def getBodyLength(self, p_gnx):
+        '''EMIT OUT body string length of a node'''
+        if p_gnx:
+            w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
+            if w_v and w_v.b:
+                return self.sendLeoBridgePackage("bodyLength", len(w_v.b))
+        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
+        return self.sendLeoBridgePackage("bodyLength", 0)  # empty as default
+
+    #@+node:ekr.20210202110128.66: *5* sc.getBodyStates
+    def getBodyStates(self, p_ap):
+        """
+        Finds the language in effect at top of body for position p,
+        Also returns the saved cursor position from last time node was accessed.
+        """
+        c = self.c
+        if not p_ap:
+            return self._outputError("Error in getLanguage, no param p_ap")
+
+        w_p = self._ap_to_p(p_ap)
+        if not w_p:
+            print(f"in GBS -> P NOT FOUND gnx: {p_ap['gnx']!r} using c.p.gnx: {c.p.v.gnx}")
+            w_p = c.p
+
+        w_wrapper = c.frame.body.wrapper
+        defaultPosition = {"line": 0, "col": 0}
+        states = {
+            'language': 'plain',
+            # See BodySelectionInfo interface in types.d.ts
+            'selection': {
+                "gnx": w_p.v.gnx,
+                "scroll": {
+                    "start": defaultPosition,
+                    "end": defaultPosition
+                },
+                "active": defaultPosition,
+                "start": defaultPosition,
+                "end": defaultPosition
+            }
+        }
+        if w_p:
+            aList = g.get_directives_dict_list(w_p)
+            d = g.scanAtCommentAndAtLanguageDirectives(aList)
+
+            language = (
+                d and d.get('language') or
+                g.getLanguageFromAncestorAtFileNode(w_p) or
+                c.config.getString('target-language') or
+                'plain'
+            )
+
+            w_scroll = w_p.v.scrollBarSpot
+            w_active = w_p.v.insertSpot
+            w_start = w_p.v.selectionStart
+            w_end = w_p.v.selectionStart + w_p.v.selectionLength
+
+            # get selection from wrapper instead if its the selected node
+            if c.p.v.gnx == w_p.v.gnx:
+                # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
+                w_active = w_wrapper.getInsertPoint()
+                w_start, w_end = w_wrapper.getSelectionRange(True)
+                w_scroll = w_wrapper.getYScrollPosition()
+
+            # TODO : This conversion for scroll position may be unneeded (consider as lines only)
+            # w_scrollI, w_scrollRow, w_scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(w_Scroll)
+            # compute line and column for the insertion point, and the start & end of selection
+            w_activeI, w_activeRow, w_activeCol = c.frame.body.wrapper.toPythonIndexRowCol(
+                w_active)
+            w_startI, w_startRow, w_startCol = c.frame.body.wrapper.toPythonIndexRowCol(
+                w_start)
+            w_endI, w_endRow, w_endCol = c.frame.body.wrapper.toPythonIndexRowCol(
+                w_end)
+
+            states = {
+                'language': language.lower(),
+                'selection': {
+                    "gnx": w_p.v.gnx,
+                    "scroll": w_scroll,  # w_scroll was kept as-is
+                    "active": {"line": w_activeRow, "col": w_activeCol},
+                    "start": {"line": w_startRow, "col": w_startCol},
+                    "end": {"line": w_endRow, "col": w_endCol}
+                }
+            }
+        return self.sendLeoBridgePackage("bodyStates", states)
+    #@+node:ekr.20210202183724.2: *5* sc.getButtons
+    def getButtons(self, p_package):
+        '''Gets the currently opened file's @buttons list'''
+        c = self.c
+        w_buttons = []
+        if c and c.theScriptingController and c.theScriptingController.buttonsDict:
+            w_dict = c.theScriptingController.buttonsDict
+            for w_key in w_dict:
+                w_entry = {"name": w_dict[w_key], "index": str(w_key)}
+                w_buttons.append(w_entry)
+        return self.sendLeoBridgePackage("buttons", w_buttons)
+
+    #@+node:ekr.20210202110128.68: *5* sc.getChildren
+    def getChildren(self, p_ap):
+        '''EMIT OUT list of children of a node'''
+        c = self.c
+        if p_ap:
+            p = self._ap_to_p(p_ap)
+            nodes = p and p.children() or []
+        elif c.hoistStack:
+            nodes = [c.hoistStack[-1].p]
+        else:
+            # Output all top-level nodes.
+            nodes = [z for z in c.rootPosition().self_and_siblings()]
+        return self._outputPNodes(nodes)
+    #@+node:ekr.20210202183724.5: *5* sc.getCommands & helpers
+    def getCommands(self, p_package):
+        """Return a list of all Leo commands that make sense in leoInteg."""
+        c = self.c
+        d = c.commandsDict  # keys are command names, values are functions.
+        bad_names = self._bad_commands()  # #92.
+        good_names = self._good_commands()
+        duplicates = set(bad_names).intersection(set(good_names))
+        if duplicates:
+            print('duplicate command names...', flush=True)
+            for z in sorted(duplicates):
+                print(z)
+        result = []
+        for command_name in sorted(d):
+            func = d.get(command_name)
+            if not func:
+                print('no func:', command_name, flush=True)
+                continue
+            if command_name in bad_names:  # #92.
+                continue
+            # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
+            func_name = getattr(func, '__func_name__', func.__name__)
+            if not func_name:
+                print('no name', command_name, flush=True)
+                continue
+            doc = func.__doc__ or ''
+            result.append({
+                "label": command_name,
+                "func":  func_name,
+                "detail": doc,
+            })
+            # This shows up in the bridge log.
+            # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
+            # print(f"{func_name} ", flush=True)
+
+        return self.sendLeoBridgePackage("commands", result)
+    #@+node:ekr.20210202183724.6: *6* sc._bad_commands
     def _bad_commands(self):
         """Return the list of Leo's command names that leoInteg should ignore."""
         c = self.c
@@ -693,83 +1125,7 @@ class ServerController:
         result = list(sorted(bad))
         return result
 
-    #@+node:ekr.20210202110128.81: *4* sc._findPNodeFromGnx
-    def _findPNodeFromGnx(self, p_gnx):
-        '''Return first p node with this gnx or false'''
-        for p in self.c.all_unique_positions():
-            if p.v.gnx == p_gnx:
-                return p
-        return False
-
-    #@+node:ekr.20210202110128.53: *4* sc._get_commander_method
-    def _get_commander_method(self, p_command):
-        """ Return the given method (p_command) in the Commands class or subcommanders."""
-        c = self.c
-        #
-        # First, try the commands class.
-        w_func = getattr(c, p_command, None)
-        if w_func:
-            return w_func
-        #
-        # Search all subcommanders for the method.
-        table = (  # This table comes from c.initObjectIvars.
-            'abbrevCommands',
-            'bufferCommands',
-            'chapterCommands',
-            'controlCommands',
-            'convertCommands',
-            'debugCommands',
-            'editCommands',
-            'editFileCommands',
-            'evalController',
-            'gotoCommands',
-            'helpCommands',
-            'keyHandler',
-            'keyHandlerCommands',
-            'killBufferCommands',
-            'leoCommands',
-            'leoTestManager',
-            'macroCommands',
-            'miniBufferWidget',
-            'printingController',
-            'queryReplaceCommands',
-            'rectangleCommands',
-            'searchCommands',
-            'spellCommands',
-            'vimCommands',  # Not likely to be useful.
-        )
-        for ivar in table:
-            subcommander = getattr(c, ivar, None)
-            if subcommander:
-                w_func = getattr(subcommander, p_command, None)
-                if w_func:
-                    return w_func
-        return None
-
-    #@+node:ekr.20210202183724.8: *4* sc._getDocstringForCommand
-    def _getDocstringForCommand(self, command_name):
-        """get docstring for the given command."""
-        func = self._get_commander_method(command_name)
-        docstring = func.__doc__ if func else ''
-        return docstring
-
-    #@+node:ekr.20210202110128.38: *4* sc._getFirstOpenedCommander
-    def _getFirstOpenedCommander(self):
-        '''Get first opened commander, or False if there are none.'''
-        for c in g.app.commanders():
-            if not c.closed:
-                return c
-        return False
-
-    #@+node:ekr.20210202110128.37: *4* sc._getTotalOpened
-    def _getTotalOpened(self):
-        '''Get total of opened commander (who have closed == false)'''
-        w_total = 0
-        for w_commander in g.app.commanders():
-            if not w_commander.closed:
-                w_total += 1
-        return w_total
-    #@+node:ekr.20210202183724.7: *4* sc._good_commands
+    #@+node:ekr.20210202183724.7: *6* sc._good_commands
     def _good_commands(self):
         """Defined commands that definitely should be included in leoInteg."""
         good_list = [
@@ -1201,66 +1557,51 @@ class ServerController:
         ]
         return good_list
 
-    #@+node:ekr.20210202110128.47: *4* sc._outputBodyData
-    def _outputBodyData(self, p_bodyText=""):
-        return self.sendLeoBridgePackage("bodyData", p_bodyText)
-    #@+node:ekr.20210202110128.46: *4* sc._outputError
-    def _outputError(self, p_message="Unknown Error"):
-        # Output to this server's running console
-        print("ERROR: " + p_message, flush=True)
-        w_package = {"id": self.currentActionId}
-        w_package["error"] = p_message
-        return p_message
-    #@+node:ekr.20210202110128.49: *4* sc._outputPNode
-    def _outputPNode(self, p_node=False):
-        return self.sendLeoBridgePackage("node", self._p_to_ap(p_node) if p_node else None)
-    #@+node:ekr.20210202110128.50: *4* sc._outputPNodes
-    def _outputPNodes(self, p_pList):
-        w_apList = []
-        for p in p_pList:
-            w_apList.append(self._p_to_ap(p))
-        # Multiple nodes, plural
-        return self.sendLeoBridgePackage("nodes", w_apList)
-    #@+node:ekr.20210202110128.48: *4* sc._outputSelectionData
-    def _outputSelectionData(self, p_bodySelection):
-        return self.sendLeoBridgePackage("bodySelection", p_bodySelection)
-    #@+node:ekr.20210202110128.80: *4* sc._yieldAllRootChildren
-    def _yieldAllRootChildren(self):
-        '''Return all root children P nodes'''
+    #@+node:ekr.20210202110128.55: *5* sc.getOpenedFiles
+    def getOpenedFiles(self, p_package):
+        '''Return array of opened file path/names to be used as openFile parameters to switch files'''
         c = self.c
-        p = c.rootPosition()
-        while p:
-            yield p
-            p.moveToNext()
-    #@+node:ekr.20210202110128.41: *4* sc.applyConfig
-    def applyConfig(self, p_config):
-        '''Got the configuration from client'''
-        self.config = p_config
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-    #@+node:ekr.20210202110128.44: *4* sc.async def asyncOutput
-    async def asyncOutput(self, p_json):
-        '''Output json string to the websocket'''
-        if self.webSocket:
-            await self.webSocket.send(bytes(p_json, 'utf-8'))
-        else:
-            g.trace(f"no web socket. p_json: {p_json}", flush=True)
-    #@+node:ekr.20210202110128.51: *4* sc.es
-    def es(self, * args, **keys):
-        '''Output to the Log Pane'''
-        d = {
-            'color': None,
-            'commas': False,
-            'newline': True,
-            'spaces': True,
-            'tabName': 'Log',
-            'nodeLink': None,
-        }
-        d = g.doKeywordArgs(keys, d)
-        s = g.translateArgs(args, d)
-        w_package = {"async": "log", "log": s}
-        self.sendAsyncOutput(w_package)
+        w_files = []
+        w_index = 0
+        w_indexFound = 0
+        for w_commander in g.app.commanders():
+            if not w_commander.closed:
+                w_isSelected = False
+                w_isChanged = w_commander.changed
+                if c == w_commander:
+                    w_indexFound = w_index
+                    w_isSelected = True
+                w_entry = {"name": w_commander.mFileName, "index": w_index,
+                           "changed": w_isChanged, "selected": w_isSelected}
+                w_files.append(w_entry)
+                w_index = w_index + 1
 
-    #@+node:ekr.20210202110128.61: *4* sc.getStates
+        w_openedFiles = {"files": w_files, "index": w_indexFound}
+
+        return self.sendLeoBridgePackage("openedFiles", w_openedFiles)
+
+    #@+node:ekr.20210202110128.69: *5* sc.getParent
+    def getParent(self, p_ap):
+        '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
+        if p_ap:
+            w_p = self._ap_to_p(p_ap)
+            if w_p and w_p.hasParent():
+                return self._outputPNode(w_p.getParent())  # if not root
+        return self._outputPNode()  # default empty for root as default
+    #@+node:ekr.20210202110128.67: *5* sc.getPNode
+    def getPNode(self, p_ap):
+        '''EMIT OUT a node, don't select it'''
+        if not p_ap:
+            return self._outputError("Error in getPNode no param p_ap")
+        w_p = self._ap_to_p(p_ap)
+        if not w_p:
+            return self._outputError("Error in getPNode no w_p node found")
+        return self._outputPNode(w_p)
+    #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
+    def getSelectedNode(self, p_unused):
+        '''EMIT OUT Selected Position as an array, even if unique'''
+        return self._outputPNode(self.c.p)
+    #@+node:ekr.20210202110128.61: *5* sc.getStates
     def getStates(self, p_package):
         """
         Gets the currently opened file's general states for UI enabled/disabled states
@@ -1268,6 +1609,13 @@ class ServerController:
         """
         c = self.c
         w_states = {}
+        # Set the defaults.
+        w_states["changed"] = False
+        w_states["canUndo"] = False
+        w_states["canRedo"] = False
+        w_states["canDemote"] = False
+        w_states["canPromote"] = False
+        w_states["canDehoist"] = False
         if c:
             try:
                 # 'dirty/changed' member
@@ -1277,253 +1625,20 @@ class ServerController:
                 w_states["canDemote"] = c.canDemote()
                 w_states["canPromote"] = c.canPromote()
                 w_states["canDehoist"] = c.canDehoist()
-
             except Exception as e:
                 g.trace('Error while getting states')
                 print("Error while getting states", flush=True)
                 print(str(e), flush=True)
-        else:
-            w_states["changed"] = False
-            w_states["canUndo"] = False
-            w_states["canRedo"] = False
-            w_states["canDemote"] = False
-            w_states["canPromote"] = False
-            w_states["canDehoist"] = False
-
         return self.sendLeoBridgePackage("states", w_states)
-    #@+node:ekr.20210202110128.54: *4* sc.leoCommand
-    def leoCommand(self, p_command, p_package):
-        '''
-        Generic call to a method in Leo's Commands class or any subcommander class.
+    #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
+    #@+node:ekr.20210202110128.81: *5* sc._findPNodeFromGnx
+    def _findPNodeFromGnx(self, p_gnx):
+        '''Return first p node with this gnx or false'''
+        for p in self.c.all_unique_positions():
+            if p.v.gnx == p_gnx:
+                return p
+        return False
 
-        The p_ap position node is to be selected before having the command run,
-        while the p_keepSelection parameter specifies wether the original position should be re-selected.
-        The whole of those operations is to be undoable as one undo step.
-
-        p_command: a method name (a string).
-        p_ap: an archived position.
-        p_keepSelection: preserve the current selection, if possible.
-        '''
-        c = self.c
-        w_keepSelection = False  # Set default, optional component of package
-        if "keep" in p_package:
-            w_keepSelection = p_package["keep"]
-        #     print("have keep! " + str(w_keepSelection), flush=True)
-        # else:
-        #     print("NO keep!", flush=True)
-        print('leoCommand', repr(p_command), repr(p_package))
-        w_ap = p_package["node"]  # At least node parameter is present
-        if not w_ap:
-            return self._outputError(f"Error in {p_command}: no param node")
-        w_p = self._ap_to_p(w_ap)
-        if not w_p:
-            return self._outputError(f"Error in {p_command}: no w_p node found")
-        w_func = self._get_commander_method(p_command)
-        if not w_func:
-            return self._outputError(f"Error in {p_command}: no method found")
-
-        if w_p == c.p:
-            w_func(event=None)
-        else:
-            oldPosition = c.p
-            c.selectPosition(w_p)
-            w_func(event=None)
-            if w_keepSelection and c.positionExists(oldPosition):
-                c.selectPosition(oldPosition)
-        return self._outputPNode(c.p)
-    #@+node:ekr.20210202110128.64: *4* sc.pageDown
-    def pageDown(self, p_unused):
-        """Selects a node a couple of steps down in the tree to simulate page down"""
-        c = self.c
-        c.selectVisNext()
-        c.selectVisNext()
-        c.selectVisNext()
-        return self._outputPNode(c.p)
-
-    #@+node:ekr.20210202110128.63: *4* sc.pageUp
-    def pageUp(self, p_unused):
-        """Selects a node a couple of steps up in the tree to simulate page up"""
-        c = self.c
-        c.selectVisBack()
-        c.selectVisBack()
-        c.selectVisBack()
-        return self._outputPNode(c.p)
-    #@+node:ekr.20210202110128.39: *4* sc.sendAsyncOutput
-    def sendAsyncOutput(self, p_package):
-        if "async" not in p_package:
-            print('[sendAsyncOutput] Error async member missing in package parameter')
-            print(json.dumps(p_package, separators=(',', ':')), flush=True)
-            return
-        if self.loop:
-            self.loop.create_task(self.asyncOutput(
-                json.dumps(p_package, separators=(',', ':'))))
-        else:
-            print('[sendAsyncOutput] Error loop not ready' +
-                  json.dumps(p_package, separators=(',', ':')))
-    #@+node:ekr.20210202110128.45: *4* sc.sendLeoBridgePackage
-    def sendLeoBridgePackage(self, p_key=None, p_any=None):
-        w_package = {
-            "id": self.currentActionId,
-        }
-        if p_key:
-            w_package [p_key] = p_any  # add [key]?:any
-        # Send as json.
-        return json.dumps(w_package, separators=(',', ':')) 
-    #@+node:ekr.20210202110128.43: *4* sc.setActionId
-    def setActionId(self, p_id):
-        self.currentActionId = p_id
-
-    #@+node:ekr.20210202193210.1: *3* sc:Commands
-    #@+node:ekr.20210202110128.60: *4* sc.test
-    def test(self, p_package):
-        '''Utility test function for debugging'''
-        return self.sendLeoBridgePackage('returned-key', p_package)
-           
-    #@+node:ekr.20210202193642.1: *4* sc: file commands
-    #@+node:ekr.20210202110128.57: *5* sc.openFile
-    def openFile(self, p_file):
-        """
-        Open a leo file via leoBridge controller, or create a new document if empty string.
-        Returns an object that contains a 'opened' member.
-        """
-        c = None
-        w_found = False
-
-        # If not empty string (asking for New file) then check if already opened
-        if p_file:
-            for w_commander in g.app.commanders():
-                if w_commander.fileName() == p_file:
-                    w_found = True
-                    c = self.c = w_commander
-        if not w_found:
-            c = self.c = self.bridge.openLeoFile(p_file)
-        #
-        # Leo at this point has done this too: g.app.windowList.append(c.frame)
-        # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
-        if not c:
-            return self._outputError('Error in openFile')
-        c.closed = False
-        if not w_found:
-            # is new so also replace wrapper
-            ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
-            c.selectPosition(c.p)
-
-        self._create_gnx_to_vnode()
-        w_result = {
-            "total": self._getTotalOpened(),
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-        }
-        return self.sendLeoBridgePackage("opened", w_result)
-    #@+node:ekr.20210202182311.1: *5* sc.openFiles
-    def openFiles(self, p_package):
-        """
-        Opens an array of leo files
-        Returns an object that contains the last 'opened' member.
-        """
-        c = None
-        w_files = []
-        if "files" in p_package:
-            w_files = p_package["files"]
-
-        for i_file in w_files:
-            w_found = False
-            # If not empty string (asking for New file) then check if already opened
-            if i_file:
-                for w_commander in g.app.commanders():
-                    if w_commander.fileName() == i_file:
-                        w_found = True
-                        c = self.c = w_commander
-            if not w_found:
-                if os.path.isfile(i_file):
-                    c = self.c = self.bridge.openLeoFile(i_file)  # create self.c
-            if c:
-                c.closed = False
-                ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
-                c.selectPosition(c.p)
-
-        # Done with the last one, it's now the selected commander. Check again just in case.
-        if not c:
-            return self._outputError('Error in openFiles')
-        self._create_gnx_to_vnode()
-        w_result = {
-            "total": self._getTotalOpened(),
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-        }
-        return self.sendLeoBridgePackage("opened", w_result)
-    #@+node:ekr.20210202110128.58: *5* sc.closeFile
-    def closeFile(self, p_package):
-        """
-        Closes a leo file. A file can then be opened with "openFile"
-        Returns an object that contains a 'closed' member
-        """
-        c = self.c
-        # TODO : Specify which file to support multiple opened files
-        if c:
-            if p_package["forced"] and c.changed:
-                # return "no" g.app.gui.runAskYesNoDialog  and g.app.gui.runAskYesNoCancelDialog
-                c.revert()
-            if p_package["forced"] or not c.changed:
-                c.closed = True
-                c.close()
-            else:
-                # Cannot close, ask to save, ignore or cancel
-                return self.sendLeoBridgePackage('closed', False)
-
-        # Switch commanders to first available
-        w_total = self._getTotalOpened()
-        self.c = c = self._getFirstOpenedCommander() if w_total else None
-        if not c:
-            return self.sendLeoBridgePackage("closed", {"total": 0})
-        self._create_gnx_to_vnode()
-        w_result = {
-            "total": self._getTotalOpened(),
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-        }
-        return self.sendLeoBridgePackage("closed", w_result)
-    #@+node:ekr.20210202183724.1: *5* sc.saveFile
-    def saveFile(self, p_package):
-        '''Saves the leo file. New or dirty derived files are rewritten'''
-        c = self.c
-        if c:
-            try:
-                if "text" in p_package:
-                    c.save(fileName=p_package['text'])
-                else:
-                    c.save()
-            except Exception as e:
-                g.trace('Error while saving')
-                print("Error while saving", flush=True)
-                print(str(e), flush=True)
-
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
-
-    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
-    def setOpenedFile(self, p_package):
-        '''Choose the new active commander from array of opened file path/names by numeric index'''
-        c = None
-        w_openedCommanders = []
-        for w_commander in g.app.commanders():
-            if not w_commander.closed:
-                w_openedCommanders.append(w_commander)
-        w_index = p_package['index']
-        if w_openedCommanders[w_index]:
-            c = self.c = w_openedCommanders[w_index]
-        if not c:
-            return self._outputError('Error in setOpenedFile')
-        c.closed = False
-        self._create_gnx_to_vnode()
-        w_result = {
-            "total": self._getTotalOpened(),
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-        }
-        # maybe needed for frame wrapper
-        c.selectPosition(c.p)
-        return self.sendLeoBridgePackage("setOpened", w_result)
-    #@+node:ekr.20210202193540.1: *4* sc: node commands (setters)
     #@+node:ekr.20210202183724.11: *5* sc.clonePNode
     def clonePNode(self, p_package):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
@@ -1666,6 +1781,23 @@ class ServerController:
         if not w_p:
             return self._outputError("Error in markPNode no w_p node found")
         w_p.setMarked()
+        return self._outputPNode(c.p)
+    #@+node:ekr.20210202110128.64: *5* sc.pageDown
+    def pageDown(self, p_unused):
+        """Selects a node a couple of steps down in the tree to simulate page down"""
+        c = self.c
+        c.selectVisNext()
+        c.selectVisNext()
+        c.selectVisNext()
+        return self._outputPNode(c.p)
+
+    #@+node:ekr.20210202110128.63: *5* sc.pageUp
+    def pageUp(self, p_unused):
+        """Selects a node a couple of steps up in the tree to simulate page up"""
+        c = self.c
+        c.selectVisBack()
+        c.selectVisBack()
+        c.selectVisBack()
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.17: *5* sc.redo
     def redo(self, p_paramUnused):
@@ -1833,248 +1965,74 @@ class ServerController:
             return self._outputError("Error in unmarkPNode no w_p node found")
         w_p.clearMarked()
         return self._outputPNode(c.p)
-    #@+node:ekr.20210202193709.1: *4* sc:button commands
-    #@+node:ekr.20210202183724.4: *5* sc.clickButton
-    def clickButton(self, p_package):
-        '''Handles buttons clicked in client from the '@button' panel'''
-        c = self.c
-        w_index = p_package['index']
-        w_dict = c.theScriptingController.buttonsDict
-        w_button = None
-        for i_key in w_dict:
-            if(str(i_key) == w_index):
-                w_button = i_key
-        if w_button:
-            w_button.command()  # run clicked button command
-        # return selected node when done
-        return self._outputPNode(c.p)
-
-    #@+node:ekr.20210202183724.3: *5* sc.removeButton
-    def removeButton(self, p_package):
-        '''Removes an entry from the buttonsDict by index string'''
-        c = self.c
-        w_index = p_package['index']
-        w_dict = c.theScriptingController.buttonsDict
-        w_key = None
-        for i_key in w_dict:
-            if(str(i_key) == w_index):
-                w_key = i_key
-        if w_key:
-            del(w_dict[w_key])  # delete object member
-        # return selected node when done
-        return self._outputPNode(c.p)
-
-    #@+node:ekr.20210202193505.1: *4* sc:getter commands
-    #@+node:ekr.20210202110128.71: *5* sc.getAllGnx
-    def getAllGnx(self, p_unused):
-        '''Get gnx array from all unique nodes'''
-        c = self.c
-        return self.sendLeoBridgePackage(
-            "allGnx",
-            [p.v.gnx for p in c.all_unique_positions(copy=False)])
-
-    #@+node:ekr.20210202110128.72: *5* sc.getBody
-    def getBody(self, p_gnx):
-        '''EMIT OUT body of a node'''
-        #
-        #### TODO : if not found, send code to prevent unresolved promise
-        #           if 'document switch' occurred shortly before
-        if p_gnx:
-            w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
-            if w_v:
-                return self._outputBodyData(w_v.b)
-        #
-        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
-        return self._outputBodyData()
-    #@+node:ekr.20210202110128.73: *5* sc.getBodyLength
-    def getBodyLength(self, p_gnx):
-        '''EMIT OUT body string length of a node'''
-        if p_gnx:
-            w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
-            if w_v and w_v.b:
-                return self.sendLeoBridgePackage("bodyLength", len(w_v.b))
-        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
-        return self.sendLeoBridgePackage("bodyLength", 0)  # empty as default
-
-    #@+node:ekr.20210202110128.66: *5* sc.getBodyStates
-    def getBodyStates(self, p_ap):
-        """
-        Finds the language in effect at top of body for position p,
-        Also returns the saved cursor position from last time node was accessed.
-        """
-        c = self.c
-        if not p_ap:
-            return self._outputError("Error in getLanguage, no param p_ap")
-
-        w_p = self._ap_to_p(p_ap)
-        if not w_p:
-            print(f"in GBS -> P NOT FOUND gnx: {p_ap['gnx']!r} using c.p.gnx: {c.p.v.gnx}")
-            w_p = c.p
-
-        w_wrapper = c.frame.body.wrapper
-        defaultPosition = {"line": 0, "col": 0}
-        states = {
-            'language': 'plain',
-            # See BodySelectionInfo interface in types.d.ts
-            'selection': {
-                "gnx": w_p.v.gnx,
-                "scroll": {
-                    "start": defaultPosition,
-                    "end": defaultPosition
-                },
-                "active": defaultPosition,
-                "start": defaultPosition,
-                "end": defaultPosition
-            }
+    #@+node:ekr.20210202194141.1: *3* sc:Output
+    #@+node:ekr.20210202110128.47: *4* sc._outputBodyData
+    def _outputBodyData(self, p_bodyText=""):
+        return self.sendLeoBridgePackage("bodyData", p_bodyText)
+    #@+node:ekr.20210202110128.46: *4* sc._outputError
+    def _outputError(self, p_message="Unknown Error"):
+        # Output to this server's running console
+        print("ERROR: " + p_message, flush=True)
+        w_package = {"id": self.currentActionId}
+        w_package["error"] = p_message
+        return p_message
+    #@+node:ekr.20210202110128.49: *4* sc._outputPNode
+    def _outputPNode(self, p_node=False):
+        return self.sendLeoBridgePackage("node", self._p_to_ap(p_node) if p_node else None)
+    #@+node:ekr.20210202110128.50: *4* sc._outputPNodes
+    def _outputPNodes(self, p_pList):
+        w_apList = []
+        for p in p_pList:
+            w_apList.append(self._p_to_ap(p))
+        # Multiple nodes, plural
+        return self.sendLeoBridgePackage("nodes", w_apList)
+    #@+node:ekr.20210202110128.48: *4* sc._outputSelectionData
+    def _outputSelectionData(self, p_bodySelection):
+        return self.sendLeoBridgePackage("bodySelection", p_bodySelection)
+    #@+node:ekr.20210202110128.44: *4* sc.async def asyncOutput
+    async def asyncOutput(self, p_json):
+        '''Output json string to the websocket'''
+        if self.webSocket:
+            await self.webSocket.send(bytes(p_json, 'utf-8'))
+        else:
+            g.trace(f"no web socket. p_json: {p_json}", flush=True)
+    #@+node:ekr.20210202110128.51: *4* sc.es
+    def es(self, * args, **keys):
+        '''Output to the Log Pane'''
+        d = {
+            'color': None,
+            'commas': False,
+            'newline': True,
+            'spaces': True,
+            'tabName': 'Log',
+            'nodeLink': None,
         }
-        if w_p:
-            aList = g.get_directives_dict_list(w_p)
-            d = g.scanAtCommentAndAtLanguageDirectives(aList)
+        d = g.doKeywordArgs(keys, d)
+        s = g.translateArgs(args, d)
+        w_package = {"async": "log", "log": s}
+        self.sendAsyncOutput(w_package)
 
-            language = (
-                d and d.get('language') or
-                g.getLanguageFromAncestorAtFileNode(w_p) or
-                c.config.getString('target-language') or
-                'plain'
-            )
-
-            w_scroll = w_p.v.scrollBarSpot
-            w_active = w_p.v.insertSpot
-            w_start = w_p.v.selectionStart
-            w_end = w_p.v.selectionStart + w_p.v.selectionLength
-
-            # get selection from wrapper instead if its the selected node
-            if c.p.v.gnx == w_p.v.gnx:
-                # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
-                w_active = w_wrapper.getInsertPoint()
-                w_start, w_end = w_wrapper.getSelectionRange(True)
-                w_scroll = w_wrapper.getYScrollPosition()
-
-            # TODO : This conversion for scroll position may be unneeded (consider as lines only)
-            # w_scrollI, w_scrollRow, w_scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(w_Scroll)
-            # compute line and column for the insertion point, and the start & end of selection
-            w_activeI, w_activeRow, w_activeCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                w_active)
-            w_startI, w_startRow, w_startCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                w_start)
-            w_endI, w_endRow, w_endCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                w_end)
-
-            states = {
-                'language': language.lower(),
-                'selection': {
-                    "gnx": w_p.v.gnx,
-                    "scroll": w_scroll,  # w_scroll was kept as-is
-                    "active": {"line": w_activeRow, "col": w_activeCol},
-                    "start": {"line": w_startRow, "col": w_startCol},
-                    "end": {"line": w_endRow, "col": w_endCol}
-                }
-            }
-        return self.sendLeoBridgePackage("bodyStates", states)
-    #@+node:ekr.20210202183724.2: *5* sc.getButtons
-    def getButtons(self, p_package):
-        '''Gets the currently opened file's @buttons list'''
-        c = self.c
-        w_buttons = []
-        if c and c.theScriptingController and c.theScriptingController.buttonsDict:
-            w_dict = c.theScriptingController.buttonsDict
-            for w_key in w_dict:
-                w_entry = {"name": w_dict[w_key], "index": str(w_key)}
-                w_buttons.append(w_entry)
-        return self.sendLeoBridgePackage("buttons", w_buttons)
-
-    #@+node:ekr.20210202110128.68: *5* sc.getChildren
-    def getChildren(self, p_ap):
-        '''EMIT OUT list of children of a node'''
-        c = self.c
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
-            return self._outputPNodes(w_p and w_p.children() or [])
-        if c.hoistStack:
-            return self._outputPNodes([c.hoistStack[-1].p])
-        # Output all root children
-        return self._outputPNodes(self._yieldAllRootChildren())
-    #@+node:ekr.20210202183724.5: *5* sc.getCommands
-    def getCommands(self, p_package):
-        """Return a list of all Leo commands that make sense in leoInteg."""
-        c = self.c
-        d = c.commandsDict  # keys are command names, values are functions.
-        bad_names = self._bad_commands()  # #92.
-        good_names = self._good_commands()
-        duplicates = set(bad_names).intersection(set(good_names))
-        if duplicates:
-            print('duplicate command names...', flush=True)
-            for z in sorted(duplicates):
-                print(z)
-        result = []
-        for command_name in sorted(d):
-            func = d.get(command_name)
-            if not func:
-                print('no func:', command_name, flush=True)
-                continue
-            if command_name in bad_names:  # #92.
-                continue
-            # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
-            func_name = getattr(func, '__func_name__', func.__name__)
-            if not func_name:
-                print('no name', command_name, flush=True)
-                continue
-            doc = func.__doc__ or ''
-            result.append({
-                "label": command_name,
-                "func":  func_name,
-                "detail": doc,
-            })
-            # This shows up in the bridge log.
-            # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
-            # print(f"{func_name} ", flush=True)
-
-        return self.sendLeoBridgePackage("commands", result)
-
-    #@+node:ekr.20210202110128.55: *5* sc.getOpenedFiles
-    def getOpenedFiles(self, p_package):
-        '''Return array of opened file path/names to be used as openFile parameters to switch files'''
-        c = self.c
-        w_files = []
-        w_index = 0
-        w_indexFound = 0
-        for w_commander in g.app.commanders():
-            if not w_commander.closed:
-                w_isSelected = False
-                w_isChanged = w_commander.changed
-                if c == w_commander:
-                    w_indexFound = w_index
-                    w_isSelected = True
-                w_entry = {"name": w_commander.mFileName, "index": w_index,
-                           "changed": w_isChanged, "selected": w_isSelected}
-                w_files.append(w_entry)
-                w_index = w_index + 1
-
-        w_openedFiles = {"files": w_files, "index": w_indexFound}
-
-        return self.sendLeoBridgePackage("openedFiles", w_openedFiles)
-
-    #@+node:ekr.20210202110128.69: *5* sc.getParent
-    def getParent(self, p_ap):
-        '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
-        if p_ap:
-            w_p = self._ap_to_p(p_ap)
-            if w_p and w_p.hasParent():
-                return self._outputPNode(w_p.getParent())  # if not root
-        return self._outputPNode()  # default empty for root as default
-    #@+node:ekr.20210202110128.67: *5* sc.getPNode
-    def getPNode(self, p_ap):
-        '''EMIT OUT a node, don't select it'''
-        if not p_ap:
-            return self._outputError("Error in getPNode no param p_ap")
-        w_p = self._ap_to_p(p_ap)
-        if not w_p:
-            return self._outputError("Error in getPNode no w_p node found")
-        return self._outputPNode(w_p)
-    #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
-    def getSelectedNode(self, p_unused):
-        '''EMIT OUT Selected Position as an array, even if unique'''
-        return self._outputPNode(self.c.p)
+    #@+node:ekr.20210202110128.39: *4* sc.sendAsyncOutput
+    def sendAsyncOutput(self, p_package):
+        if "async" not in p_package:
+            print('[sendAsyncOutput] Error async member missing in package parameter')
+            print(json.dumps(p_package, separators=(',', ':')), flush=True)
+            return
+        if self.loop:
+            self.loop.create_task(self.asyncOutput(
+                json.dumps(p_package, separators=(',', ':'))))
+        else:
+            print('[sendAsyncOutput] Error loop not ready' +
+                  json.dumps(p_package, separators=(',', ':')))
+    #@+node:ekr.20210202110128.45: *4* sc.sendLeoBridgePackage
+    def sendLeoBridgePackage(self, p_key=None, p_any=None):
+        w_package = {
+            "id": self.currentActionId,
+        }
+        if p_key:
+            w_package [p_key] = p_any  # add [key]?:any
+        # Send as json.
+        return json.dumps(w_package, separators=(',', ':')) 
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
