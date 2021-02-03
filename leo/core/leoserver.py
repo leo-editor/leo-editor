@@ -266,7 +266,7 @@ class ServerController:
                 if os.path.isfile(filename):
                     c = self.bridge.openLeoFile(filename)  # create self.c
             if c:
-                ### c.closed = False
+                c.closed = False
                 self.c = c
                 ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
                 c.selectPosition(c.p)
@@ -278,7 +278,7 @@ class ServerController:
         result = {
             "filename": c.fileName(),
             "node": self._p_to_ap(c.p),
-            "total": len(g.app.commanders()),
+            "total": len(g.app.commanders()),  ### Return only open commanders.
         }
         return self.send("opened", result)
     #@+node:ekr.20210202110128.58: *5* sc.closeFile
@@ -1927,7 +1927,7 @@ class ServerController:
         print(f"Error in {tag}: {message}", flush=True)
         return {
             "id": self.currentActionId,
-            "error": message,
+            "error": f"{tag}: {message}",
         }
     #@+node:ekr.20210202110128.49: *4* sc._outputPNode & _outputPNodes
     def _outputPNode(self, node):
