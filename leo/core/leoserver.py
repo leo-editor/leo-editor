@@ -319,17 +319,16 @@ class ServerController:
                 print("Error while saving", flush=True)
                 print(e, flush=True)
         return self.send("")  # Send empty as 'ok'
-    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile (revise)
+    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
-        tag = 'setOpenedFile'
         err, p = self._p_from_package(package)
         if err:
             return err
         openedCommanders = [z for z in g.app.commanders() if not z.closed]
         index = package['index']
         if index >= len(openedCommanders):
-            return self._outputError(f"invalid index: {index!r}", tag)
+            return self._outputError(f"invalid index: {index!r}", tag='setOpenedFile')
         c = self.c = openedCommanders[index]
         c.closed = False
         self._create_gnx_to_vnode()
@@ -1610,12 +1609,13 @@ class ServerController:
             return err
         if p == c.p:
             c.clone()
-        else:
-            oldPosition = c.p
-            c.selectPosition(p)
-            c.clone()
-            if c.positionExists(oldPosition):
-                c.selectPosition(oldPosition)
+            return self._outputPNode(c.p)
+        # ??? Retain previous position ???
+        oldPosition = c.p
+        c.selectPosition(p)
+        c.clone()
+        if c.positionExists(oldPosition):
+            c.selectPosition(oldPosition)
         return self._outputPNode(c.p)
 
     #@+node:ekr.20210202110128.79: *5* sc.collapseNode
@@ -1643,14 +1643,12 @@ class ServerController:
         c.selectPosition(p)
         c.cutOutline()
         if c.positionExists(oldPosition):
-            # select if old position still valid
             c.selectPosition(oldPosition)
-        else:
-            oldPosition._childIndex = oldPosition._childIndex-1
-            # Try again with childIndex decremented
-            if c.positionExists(oldPosition):
-                # additional try with lowered childIndex
-                c.selectPosition(oldPosition)
+            return self._outputPNode(c.p)
+        ### Experimental.
+        oldPosition._childIndex = oldPosition._childIndex-1
+        if c.positionExists(oldPosition):
+            c.selectPosition(oldPosition)
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.13: *5* sc.deletePNode
     def deletePNode(self, package):
@@ -1689,7 +1687,7 @@ class ServerController:
         err, p = self._p_from_package(package)
         if err:
             return err
-        newHeadline = package['text']  ### Make sure it exists.
+        newHeadline = 'text' in package and package['text']
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.h = newHeadline
@@ -1777,7 +1775,7 @@ class ServerController:
         err, p = self._p_from_package(package)
         if err:
             return err
-        headline = package['text']  ###
+        headline = 'text' in package and package['text']  ### Check for headline.
         bunch = u.beforeChangeNodeContents(p)
         p.h = headline
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
