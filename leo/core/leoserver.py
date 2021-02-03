@@ -10,7 +10,6 @@ based on leoInteg's leobridgeserver.py.
 #@+node:ekr.20210202110128.2: ** << imports >>
 import asyncio
 import getopt
-### import hashlib
 import json
 import os.path
 import sys
@@ -38,7 +37,7 @@ class ServerController:
     #@+node:ekr.20210202160349.1: *3* sc.Startup
     #@+node:ekr.20210202110128.30: *4* sc.__init__ (load bridge, set self.g)
     def __init__(self):
-        # TODO : @boltex #74 need gnx_to_vnode for each opened file/commander
+        ### TODO : @boltex #74 need gnx_to_vnode for each opened file/commander
         global g
         t1 = time.process_time()
         #
@@ -67,7 +66,6 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-
     #@+node:ekr.20210202110128.52: *4* sc.initConnection
     def initConnection(self, p_webSocket):
         self.webSocket = p_webSocket
@@ -184,7 +182,7 @@ class ServerController:
     async def asyncOutput(self, p_json):
         '''Output json string to the websocket'''
         if self.webSocket:
-            await self.webSocket.send(bytes(p_json, 'utf-8'))  ###
+            await self.webSocket.send(bytes(p_json, 'utf-8'))
         else:
             g.trace(f"no web socket. p_json: {p_json}", flush=True)
 
@@ -213,13 +211,6 @@ class ServerController:
     #@+node:ekr.20210202110128.49: *4* _outputPNode
     def _outputPNode(self, p_node=False):
         return self.sendLeoBridgePackage("node", self._p_to_ap(p_node) if p_node else None)
-        ###
-            # if p_node:
-                # # Single node, singular
-                # return self.sendLeoBridgePackage("node", self._p_to_ap(p_node))
-            # else:
-                # return self.sendLeoBridgePackage("node", None)
-        
     #@+node:ekr.20210202110128.50: *4* _outputPNodes
     def _outputPNodes(self, p_pList):
         w_apList = []
@@ -1921,14 +1912,9 @@ class ServerController:
         if p_ap:
             w_p = self._ap_to_p(p_ap)
             return self._outputPNodes(w_p and w_p.children() or [])
-            ###
-                # if w_p and w_p.hasChildren():
-                    # return self._outputPNodes(w_p.children())
-                # else:
-                    # return self._outputPNodes([])  # default empty array
         if c.hoistStack:
             return self._outputPNodes([c.hoistStack[-1].p])
-        # Output all Root Children
+        # Output all root children
         return self._outputPNodes(self._yieldAllRootChildren())
     #@+node:ekr.20210202110128.69: *4* getParent
     def getParent(self, p_ap):
@@ -1943,11 +1929,6 @@ class ServerController:
     def getSelectedNode(self, p_unused):
         '''EMIT OUT Selected Position as an array, even if unique'''
         return self._outputPNode(self.c.p)
-        ###
-            # if self.c.p:
-                # return self._outputPNode(self.c.p)
-            # else:
-                # return self._outputPNode()
     #@+node:ekr.20210202110128.71: *4* getAllGnx
     def getAllGnx(self, p_unused):
         '''Get gnx array from all unique nodes'''
@@ -1959,20 +1940,16 @@ class ServerController:
     #@+node:ekr.20210202110128.72: *4* getBody
     def getBody(self, p_gnx):
         '''EMIT OUT body of a node'''
-        # TODO : if not found, send code to prevent unresolved promise
-        #        if 'document switch' occurred shortly before
+        #
+        #### TODO : if not found, send code to prevent unresolved promise
+        #           if 'document switch' occurred shortly before
         if p_gnx:
             w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
             if w_v:
                 return self._outputBodyData(w_v.b)
-                ###
-                    # if w_v.b:
-                        # return self._outputBodyData(w_v.b)
-                    # else:
-                        # return self._outputBodyData()  # default "" empty string
+        #
         # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
         return self._outputBodyData()
-        # return self.sendLeoBridgePackage()  # default as inexistent
     #@+node:ekr.20210202110128.73: *4* getBodyLength
     def getBodyLength(self, p_gnx):
         '''EMIT OUT body string length of a node'''
@@ -2118,7 +2095,7 @@ class ServerController:
                         print("Set Selection node does not exist! ap was:" +
                               json.dumps(p_ap), flush=True)
         # Return the finally selected node
-        return self._outputPNode(c.p) ### if c.p else self._outputPNode()
+        return self._outputPNode(c.p)
 
     #@+node:ekr.20210202110128.78: *4* expandNode
     def expandNode(self, p_ap):
@@ -2279,9 +2256,8 @@ def main():
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
         try:
-            ### print('ws_handler: websocket:', websocket)
             controller.initConnection(websocket)
-            # * Start by sending empty as 'ok'
+            # Start by sending empty as 'ok'
             await websocket.send(controller.sendLeoBridgePackage())
             controller.logSignon()
             async for w_message in websocket:
