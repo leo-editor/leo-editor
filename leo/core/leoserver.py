@@ -58,9 +58,11 @@ class ServerController:
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
         g = self.bridge.globals()
-        g.es = self.es  # Send Log pane output to the client's log pane.
         #
-        # Complete the initialization, as done in LeoApp.initApp.
+        # Send Log pane output to the client's log pane.
+        g.es = self.es  
+        #
+        # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
@@ -74,18 +76,19 @@ class ServerController:
             fn(self)
     #@+node:ekr.20210202110128.52: *4* sc.initConnection
     def initConnection(self, webSocket):
+        """Begin the connection."""
         self.webSocket = webSocket
         self.loop = asyncio.get_event_loop()
 
     #@+node:ekr.20210202110128.42: *4* sc.logSignon
     def logSignon(self):
-        '''Simulate the Initial Leo Log Entry'''
+        '''Simulate the initial Leo Log Entry'''
         if self.loop:
             g.app.computeSignon()
-            g.es(str(g.app.signon))
-            g.es(str(g.app.signon1))
+            g.es(g.app.signon)
+            g.es(g.app.signon1)
         else:
-            print('no loop in logSignon', flush=True)
+            print('logSignon: no loop', flush=True)
     #@+node:ekr.20210202110128.43: *4* sc.setActionId
     def setActionId(self, the_id):
         self.currentActionId = the_id
@@ -95,7 +98,7 @@ class ServerController:
     def applyConfig(self, config):
         '''Got the configuration from client'''
         self.config = config
-        return self.send()  # Just send empty as 'ok'
+        return self.send("")  # Send empty as 'ok'
     #@+node:ekr.20210202110128.54: *4* sc.leoCommand & helper (not called yet!)
     def leoCommand(self, command, package):
         '''
@@ -109,27 +112,29 @@ class ServerController:
         ap: an archived position.
         keepSelection: preserve the current selection, if possible.
         '''
-        c = self.c
-        keepSelection = False  # Set default, optional component of package
-        if "keep" in package:
-            keepSelection = package["keep"]
+        c, tag = self.c, 'leoCommand'
+        keep = package["keep"] if "keep" in package else False
         g.trace('leoCommand', repr(command), repr(package))  ###
+        #
+        # Check the arguments...
         ap = package["node"]  # At least node parameter is present
         if not ap:
-            return self._outputError(f"Error in {command}: no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError(f"Error in {command}: no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         func = self._get_commander_method(command)
         if not func:
-            return self._outputError(f"Error in {command}: no method found")
+            return self._outputError(f"command not found: {command!r}", tag)
+        #
+        # Execute the command.
         if p == c.p:
             func(event=None)
         else:
             oldPosition = c.p
             c.selectPosition(p)
             func(event=None)
-            if keepSelection and c.positionExists(oldPosition):
+            if keep and c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
@@ -188,49 +193,46 @@ class ServerController:
         index = package['index']
         d = c.theScriptingController.buttonsDict
         button = None
-        for i_key in d:
-            if(str(i_key) == index):
-                button = i_key
+        for key in d:
+            if(str(key) == index):
+                button = key
         if button:
-            button.command()  # run clicked button command
-        # return selected node when done
+            try:
+                button.command()
+            except Exception():
+                pass
         return self._outputPNode(c.p)
-
     #@+node:ekr.20210202183724.3: *5* sc.removeButton
     def removeButton(self, package):
         '''Removes an entry from the buttonsDict by index string'''
-        c = self.c
+        c, d = self.c, self.c.theScriptingController.buttonsDict
         index = package['index']
-        d = c.theScriptingController.buttonsDict
-        key = None
-        for i_key in d:
-            if(str(i_key) == index):
-                key = i_key
-        if key:
-            del(d[key])  # delete object member
+        if index in d:
+            del d[index]
         return self._outputPNode(c.p)
-
     #@+node:ekr.20210202193642.1: *4* sc:file commands
     #@+node:ekr.20210202110128.57: *5* sc.openFile
     def openFile(self, filename):
         """
-        Open a leo file via leoBridge controller, or create a new document if empty string.
-        Returns an object that contains a 'opened' member.
+        Open a leo file with the given filename. Create a new document if no name.
         """
-        c, found = None, False
+        #
         # If not empty string (asking for New file) then check if already opened
+        c, found, tag = None, False, 'openFile'
         if filename:
-            for commander in g.app.commanders():
-                if commander.fileName() == filename:
+            for c in g.app.commanders():
+                if c.fileName() == filename:
                     found = True
-                    c = self.c = commander
         if not found:
-            c = self.c = self.bridge.openLeoFile(filename)
+            c = self.bridge.openLeoFile(filename)
         #
         # Leo at this point has done this too: g.app.windowList.append(c.frame)
         # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
         if not c:
-            return self._outputError('Error in openFile')
+            return self._outputError(f"can not open {filename!r}", tag)
+        #
+        # Assign self.c
+        self.c = c
         c.closed = False
         if not found:
             # is new so also replace wrapper
@@ -249,30 +251,29 @@ class ServerController:
         Opens an array of leo files
         Returns an object that contains the last 'opened' member.
         """
-        c = None
-        files = []
+        c, tag = None, 'openFiles'
+        filename, files = None, []
         if "files" in package:
             files = package["files"]
-
-        for i_file in files:
+        for filename in files:
             found = False
             # If not empty string (asking for New file) then check if already opened
-            if i_file:
-                for commander in g.app.commanders():
-                    if commander.fileName() == i_file:
+            if filename:
+                for c in g.app.commanders():
+                    if c.fileName() == filename:
                         found = True
-                        c = self.c = commander
             if not found:
-                if os.path.isfile(i_file):
-                    c = self.c = self.bridge.openLeoFile(i_file)  # create self.c
+                if os.path.isfile(filename):
+                    c = self.bridge.openLeoFile(filename)  # create self.c
             if c:
-                c.closed = False
+                ### c.closed = False
+                self.c = c
                 ### c.frame.body.wrapper = IntegTextWrapper(c, "integBody", g)
                 c.selectPosition(c.p)
 
         # Done with the last one, it's now the selected commander. Check again just in case.
         if not c:
-            return self._outputError('Error in openFiles')
+            return self._outputError(f"file not found: {filename!r}", tag)
         self._create_gnx_to_vnode()
         result = {
             "filename": c.fileName(),
@@ -302,11 +303,11 @@ class ServerController:
         # Switch commanders to first available
         if not g.app.commanders():
             return self.send("closed", {"total": 0})
-        self.c = c = g.app.commanders()[0]
+        self.c = g.app.commanders()[0]
         self._create_gnx_to_vnode()
         result = {
             "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
+            "node": self._p_to_ap(self.c.p),
             "total": len(g.app.commanders()),
         }
         return self.send("closed", result)
@@ -323,41 +324,36 @@ class ServerController:
             except Exception as e:
                 g.trace('Error while saving')
                 print("Error while saving", flush=True)
-                print(str(e), flush=True)
+                print(e, flush=True)
+        return self.send("")  # Send empty as 'ok'
 
-        return self.send()  # Just send empty as 'ok'
-
-    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
+    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile (revise)
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
-        c = None
-        openedCommanders = []
-        for commander in g.app.commanders():
-            if not commander.closed:
-                openedCommanders.append(commander)
+        c, tag = None, 'setOpenedFile'
+        openedCommanders = [z for z in g.app.commanders() if not z.closed] ###
         index = package['index']
-        if openedCommanders[index]:
-            c = self.c = openedCommanders[index]
-        if not c:
-            return self._outputError('Error in setOpenedFile')
+        if index < len(openedCommanders):
+            c = openedCommanders[index]
+        else:
+            return self._outputError(f"invalid index: {index!r}", tag)
+        self.c = c
         c.closed = False
         self._create_gnx_to_vnode()
+        c.selectPosition(c.p) # maybe needed for frame wrapper
         result = {
             "filename": c.fileName(),
             "node": self._p_to_ap(c.p),
             "total": len(g.app.commanders()),
         }
-        # maybe needed for frame wrapper
-        c.selectPosition(c.p)
         return self.send("setOpened", result)
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
     #@+node:ekr.20210202110128.71: *5* sc.getAllGnx
     def getAllGnx(self, unused):
         '''Get gnx array from all unique nodes'''
         c = self.c
-        return self.send(
-            "allGnx",
-            [p.v.gnx for p in c.all_unique_positions(copy=False)])
+        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+        return self.send("allGnx", result)
 
     #@+node:ekr.20210202110128.72: *5* sc.getBody
     def getBody(self, gnx):
@@ -368,10 +364,11 @@ class ServerController:
         if gnx:
             v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
             if v:
-                return self._outputBodyData(v.b)
+                return self.send("bodyData", v.b)
         #
         # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
-        return self._outputBodyData()
+        return self.send("bodyData", "")
+
     #@+node:ekr.20210202110128.73: *5* sc.getBodyLength
     def getBodyLength(self, gnx):
         '''EMIT OUT body string length of a node'''
@@ -387,16 +384,13 @@ class ServerController:
         Finds the language in effect at top of body for position p,
         Also returns the saved cursor position from last time node was accessed.
         """
-        c = self.c
+        c, tag, wrapper = self.c, 'getBodyStates', self.c.frame.body.wrapper
         if not ap:
-            return self._outputError("Error in getLanguage, no ap param")
-
+            return self._outputError(f"no ap", tag)
         p = self._ap_to_p(ap)
         if not p:
-            print(f"in GBS -> P NOT FOUND gnx: {ap['gnx']!r} using c.p.gnx: {c.p.v.gnx}")
+            print(f"{tag}: position not found. gnx: {ap['gnx']!r}. Using c.p.gnx: {c.p.v.gnx}")
             p = c.p
-
-        wrapper = c.frame.body.wrapper
         defaultPosition = {"line": 0, "col": 0}
         states = {
             'language': 'plain',
@@ -415,19 +409,16 @@ class ServerController:
         if p:
             aList = g.get_directives_dict_list(p)
             d = g.scanAtCommentAndAtLanguageDirectives(aList)
-
             language = (
                 d and d.get('language') or
                 g.getLanguageFromAncestorAtFileNode(p) or
                 c.config.getString('target-language') or
                 'plain'
             )
-
             scroll = p.v.scrollBarSpot
             active = p.v.insertSpot
             start = p.v.selectionStart
             end = p.v.selectionStart + p.v.selectionLength
-
             # get selection from wrapper instead if its the selected node
             if c.p.v.gnx == p.v.gnx:
                 # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
@@ -438,13 +429,9 @@ class ServerController:
             # TODO : This conversion for scroll position may be unneeded (consider as lines only)
             # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
             # compute line and column for the insertion point, and the start & end of selection
-            activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                active)
-            startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                start)
-            endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(
-                end)
-
+            activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
+            startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
+            endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
             states = {
                 'language': language.lower(),
                 'selection': {
@@ -512,10 +499,6 @@ class ServerController:
                 "func":  func_name,
                 "detail": doc,
             })
-            # This shows up in the bridge log.
-            # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
-            # print(f"{func_name} ", flush=True)
-
         return self.send("commands", result)
     #@+node:ekr.20210202183724.6: *6* sc._bad_commands
     def _bad_commands(self):
@@ -1559,25 +1542,19 @@ class ServerController:
     def getOpenedFiles(self, package):
         '''Return array of opened file path/names to be used as openFile parameters to switch files'''
         c = self.c
-        files = []
-        index = 0
-        indexFound = 0
-        for commander in g.app.commanders():
-            if not commander.closed:
-                isSelected = False
-                isChanged = commander.changed
-                if c == commander:
-                    indexFound = index
-                    isSelected = True
-                entry = {"name": commander.mFileName, "index": index,
-                           "changed": isChanged, "selected": isSelected}
-                files.append(entry)
-                index = index + 1
-
-        openedFiles = {"files": files, "index": indexFound}
-
-        return self.send("openedFiles", openedFiles)
-
+        ### Removed the 'index entries. They appear to be useless.
+        openCommanders = [z for z in g.app.commanders() if not z.closed]
+        files = [
+            {
+                "changed": commander.changed,
+                "name": commander.mFileName,
+                "selected": c == commander,
+            } for commander in openCommanders
+        ]
+        result = {
+            "files": files,
+        }
+        return self.send("openedFiles", result)
     #@+node:ekr.20210202110128.69: *5* sc.getParent
     def getParent(self, ap):
         '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
@@ -1585,15 +1562,16 @@ class ServerController:
             p = self._ap_to_p(ap)
             if p and p.hasParent():
                 return self._outputPNode(p.getParent())  # if not root
-        return self._outputPNode()  # default empty for root as default
+        return self._outputPNode(None)  # root is the default
     #@+node:ekr.20210202110128.67: *5* sc.getPNode
     def getPNode(self, ap):
         '''EMIT OUT a node, don't select it'''
+        tag = 'getPNode'
         if not ap:
-            return self._outputError("Error in getPNode no ap param")
+            return self._outputError(f"no ap", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in getPNode no position found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         return self._outputPNode(p)
     #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
     def getSelectedNode(self, unused):
@@ -1631,23 +1609,23 @@ class ServerController:
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202110128.81: *5* sc._findPNodeFromGnx
     def _findPNodeFromGnx(self, gnx):
-        '''Return first p node with this gnx or false'''
+        '''Return first p node with this gnx or None'''
         for p in self.c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
-        return False
+        return None
 
     #@+node:ekr.20210202183724.11: *5* sc.clonePNode
     def clonePNode(self, package):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
-        c = self.c
+        c, tag = self.c, 'clonePNode'
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in clonePNode function, empty ap param")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
             # default empty
-            return self._outputError("Error in clonePNode function, no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         if p == c.p:
             c.clone()
         else:
@@ -1656,7 +1634,6 @@ class ServerController:
             c.clone()
             if c.positionExists(oldPosition):
                 c.selectPosition(oldPosition)
-        # return selected node either ways
         return self._outputPNode(c.p)
 
     #@+node:ekr.20210202110128.79: *5* sc.collapseNode
@@ -1666,17 +1643,17 @@ class ServerController:
             p = self._ap_to_p(ap)
             if p:
                 p.contract()
-        return self.send()  # Just send empty as 'ok'
+        return self.send("")  # Just send empty as 'ok'
     #@+node:ekr.20210202183724.12: *5* sc.cutPNode
     def cutPNode(self, package):
         '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        c = self.c
+        c, tag = self.c, 'cutPNode'
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in cutPNode no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in cutPNode no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         if p == c.p:
             c.cutOutline()  # already on this node, so cut it
         else:
@@ -1697,13 +1674,13 @@ class ServerController:
     #@+node:ekr.20210202183724.13: *5* sc.deletePNode
     def deletePNode(self, package):
         '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
-        c = self.c
+        c, tag = self.c, 'deletePNode'
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in deletePNode no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in deletePNode no p node found")
+            return self._outputError(f"position not found: ap: {ap!r}", tag)
         if p == c.p:
             c.deleteOutline()  # already on this node, so delete it
         else:
@@ -1719,7 +1696,6 @@ class ServerController:
                 if c.positionExists(oldPosition):
                     # additional try with lowered childIndex
                     c.selectPosition(oldPosition)
-        # in both cases, return selected node
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.78: *5* sc.expandNode
     def expandNode(self, ap):
@@ -1728,19 +1704,19 @@ class ServerController:
             p = self._ap_to_p(ap)
             if p:
                 p.expand()
-        return self.send()  # Just send empty as 'ok'
+        return self.send("")  # Just send empty as 'ok'
 
     #@+node:ekr.20210202183724.15: *5* sc.insertNamedPNode
     def insertNamedPNode(self, package):
         '''Insert a node at given node, set its headline, select it and finally return it'''
-        c, u = self.c, self.c.undoer
+        c, tag, u = self.c, 'insertNamedPNode', self.c.undoer
         newHeadline = package['text']
         ap = package['node']
         if not ap:
-            return self._outputError("Error in insertNamedPNode no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in insertNamedPNode: position not found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.h = newHeadline
@@ -1751,13 +1727,13 @@ class ServerController:
     #@+node:ekr.20210202183724.14: *5* sc.insertPNode
     def insertPNode(self, package):
         '''Insert a node at given node, then select it once created, and finally return it'''
-        c, u = self.c, self.c.undoer
+        c, tag, u = self.c, 'insertPNode', self.c.undoer
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in insertPNode no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in insertPNode no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.setDirty()
@@ -1767,13 +1743,13 @@ class ServerController:
     #@+node:ekr.20210202183724.9: *5* sc.markPNode
     def markPNode(self, package):
         '''Mark a node, don't select it'''
-        c = self.c
+        c, tag = self.c, 'markPNode'
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in markPNode no ap param") 
+            return self._outputError(f"no ap in package: {package!r}", tag) 
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in markPNode no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         p.setMarked()
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.64: *5* sc.pageDown
@@ -1799,7 +1775,6 @@ class ServerController:
         c, u = self.c, self.c.undoer
         if u.canRedo():
             u.redo()
-        # return selected node when done
         return self._outputPNode(c.p)
     #@+node:ekr.20210202110128.74: *5* sc.setBody
     def setBody(self, package):
@@ -1831,14 +1806,14 @@ class ServerController:
     #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
     def setNewHeadline(self, package):
         '''Change Headline of a node'''
-        u = self.c.undoer
+        tag, u = 'setNewHeadline', self.c.undoer
         headline = package['text']
         ap = package['node']
         if not ap:
-            return self._outputError("Error in setNewHeadline: no ap")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in setNewHeadline: no position")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         bunch = u.beforeChangeNodeContents(p)
         p.h = headline
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
@@ -1860,7 +1835,6 @@ class ServerController:
                     else:
                         print("Set Selection node does not exist! ap was:" +
                               json.dumps(ap), flush=True)
-        # Return the finally selected node
         return self._outputPNode(c.p)
 
     #@+node:ekr.20210202110128.75: *5* sc.setSelection
@@ -1871,26 +1845,25 @@ class ServerController:
         Save those values on the commander's body "wrapper"
         See BodySelectionInfo interface in types.d.ts
         '''
+        c = self.c
         same = False  # Flag for actually setting values in the wrapper, if same gnx.
         wrapper = self.c.frame.body.wrapper
         gnx = package['gnx']
         body = ""
         v = None
-        if self.c.p.v.gnx == gnx:
+        if c.p.v.gnx == gnx:
             # print('Set Selection! OK SAME GNX: ' + self.c.p.v.gnx)
             same = True
-            v = self.c.p.v
+            v = c.p.v
         else:
             # ? When navigating rapidly - Check if this is a bug - how to improve
             # print('Set Selection! NOT SAME GNX: selected:' +
             #       self.c.p.v.gnx + ', package:' + gnx)
-            v = self.c.fileCommands.gnxDict.get(gnx)
-
+            v = c.fileCommands.gnxDict.get(gnx)
         if not v:
             print('ERROR : Set Selection! NOT SAME Leo Document')
             # ! FAILED (but return as normal)
-            return self._outputPNode(self.c.p)
-
+            return self._outputPNode(c.p)
         body = v.b
         f_convert = g.convertRowColToPythonIndex
         active = package['active']
@@ -1899,28 +1872,20 @@ class ServerController:
 
         # no convertion necessary, its given back later
         scroll = package['scroll']
-        insert = f_convert(
-            body, active['line'], active['col'])
-        startSel = f_convert(
-            body, start['line'], start['col'])
-        endSel = f_convert(
-            body, end['line'], end['col'])
-
-        # print("setSelection (same as selected): " + str(same) + " insert " + str(insert) +
-        #       " startSel " + str(startSel) + " endSel " + str(endSel))
-
+        insert = f_convert(body, active['line'], active['col'])
+        startSel = f_convert(body, start['line'], start['col'])
+        endSel = f_convert(body, end['line'], end['col'])
         if same:
             wrapper.setSelectionRange(startSel, endSel, insert)
             wrapper.setYScrollPosition(scroll)
         else:
             pass
-
         # Set for v node no matter what
         v.scrollBarSpot = scroll
         v.insertSpot = insert
         v.selectionStart = startSel
-        v.selectionLength = (
-            endSel - startSel) if endSel > startSel else 0
+        v.selectionLength = abs(endSel - endSel)
+            ###(endSel - startSel) if endSel > startSel else 0
 
         # When switching nodes, Leo's core saves the insert point, selection,
         # and vertical scroll position in the old (unselected) vnode. From v.init:
@@ -1934,8 +1899,7 @@ class ServerController:
         # self.selectionStart = 0
         #         # The start of the selected body text.
 
-        # output selected node as 'ok'
-        return self._outputPNode(self.c.p)
+        return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.16: *5* sc.undo
     def undo(self, unused):
         '''Undo last un-doable operation'''
@@ -1947,37 +1911,31 @@ class ServerController:
     #@+node:ekr.20210202183724.10: *5* sc.unmarkPNode
     def unmarkPNode(self, package):
         '''Unmark a node, don't select it'''
-        c = self.c
+        c, tag = self.c, 'unmarkPNode'
         ap = package["node"]
         if not ap:
-            return self._outputError("Error in unmarkPNode no param node")
+            return self._outputError(f"no ap in package: {package!r}", tag)
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in unmarkPNode no p node found")
+            return self._outputError(f"position not found. ap: {ap!r}", tag)
         p.clearMarked()
-        return self._outputPNode(c.p)
+        return self._outputPNode(c.p)  # Return c.p, not p.
     #@+node:ekr.20210202194141.1: *3* sc:Output
-    #@+node:ekr.20210202110128.47: *4* sc._outputBodyData
-    def _outputBodyData(self, bodyText=""):
-        return self.send("bodyData", bodyText)
     #@+node:ekr.20210202110128.46: *4* sc._outputError
-    def _outputError(self, message="Unknown Error"):
+    def _outputError(self, message, tag):
         # Output to this server's running console
-        print(f"ERROR: {message}", flush=True)
+        print(f"Error in {tag}: {message}", flush=True)
         return {
             "id": self.currentActionId,
             "error": message,
         }
-    #@+node:ekr.20210202110128.49: *4* sc._outputPNode
-    def _outputPNode(self, node=False):
+    #@+node:ekr.20210202110128.49: *4* sc._outputPNode & _outputPNodes
+    def _outputPNode(self, node):
         return self.send("node", self._p_to_ap(node) if node else None)
-    #@+node:ekr.20210202110128.50: *4* sc._outputPNodes
-    def _outputPNodes(self, pList):
-        # Multiple nodes, plural
-        return self.send("nodes", [self._p_to_ap(p) for p in pList])
-    #@+node:ekr.20210202110128.48: *4* sc._outputSelectionData
-    def _outputSelectionData(self, bodySelection):
-        return self.send("bodySelection", bodySelection)
+
+    def _outputPNodes(self, position_list):
+        # Multiple nodes, plural.
+        return self.send("nodes", [self._p_to_ap(p) for p in position_list])
     #@+node:ekr.20210202110128.44: *4* sc.async def asyncOutput
     async def asyncOutput(self, json):
         '''Output json string to the websocket'''
@@ -2038,20 +1996,13 @@ class ServerController:
             ]
         except Exception:
             return False
-
         return leoNodes.position(v, childIndex, stack)
-
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
         '''Make the first gnx_to_vnode array with all unique nodes'''
-        t1 = time.process_time()
         self.gnx_to_vnode = {
             v.gnx: v for v in self.c.all_unique_nodes()
         }
-        # This is likely the only data that ever will be needed.
-        if 0:
-            print('app.create_all_data: %5.3f sec. %s entries' % (
-                (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
         self._test_round_trip_positions()
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
@@ -2060,7 +2011,7 @@ class ServerController:
         if not v:
             print(f"ServerController.p_to_ap: no v for position {p!r}", flush=True)
             assert False
-        # * Expand gnx-vnode translation table for any new node encountered
+        # Expand gnx-vnode translation table for any new node encountered
         if v.gnx not in self.gnx_to_vnode:
             self.gnx_to_vnode[v.gnx] = v
         # Necessary properties for outline.
@@ -2111,7 +2062,7 @@ class ServerController:
     #@+node:ekr.20210202110128.84: *4* sc._test_round_trip_positions
     def _test_round_trip_positions(self):
         '''(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p.'''
-        # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+        # Careful: p_to_ap updates app.gnx_to_vnode. Save and restore it.
         old_d = self.gnx_to_vnode.copy()
         old_len = len(list(self.gnx_to_vnode.keys()))
         for p in self.c.all_positions():
@@ -2164,8 +2115,7 @@ def main():
                 if w_param and w_param['action']:
                     w_action = w_param['action']
                     w_actionParam = w_param['param']
-                    # printAction(w_param)  # Debug output
-                    # * Storing id of action in global var instead of passing as parameter
+                    # Storing id of action in global var instead of passing as parameter
                     controller.setActionId(w_param['id'])
                     # ! functions called this way need to accept at least a parameter other than 'self'
                     # ! See : getSelectedNode and getAllGnx
