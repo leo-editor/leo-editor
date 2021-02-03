@@ -95,7 +95,7 @@ class ServerController:
     def applyConfig(self, p_config):
         '''Got the configuration from client'''
         self.config = p_config
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self.send()  # Just send empty as 'ok'
     #@+node:ekr.20210202110128.54: *4* sc.leoCommand & helper (not called yet!)
     def leoCommand(self, p_command, p_package):
         '''
@@ -178,7 +178,7 @@ class ServerController:
     #@+node:ekr.20210202110128.60: *4* sc.test
     def test(self, p_package):
         '''Utility test function for debugging'''
-        return self.sendLeoBridgePackage('returned-key', p_package)
+        return self.send('returned-key', p_package)
            
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210202183724.4: *5* sc.clickButton
@@ -243,7 +243,7 @@ class ServerController:
             "node": self._p_to_ap(c.p),
             "total": len(g.app.commanders),
         }
-        return self.sendLeoBridgePackage("opened", w_result)
+        return self.send("opened", w_result)
     #@+node:ekr.20210202182311.1: *5* sc.openFiles
     def openFiles(self, p_package):
         """
@@ -280,7 +280,7 @@ class ServerController:
             "node": self._p_to_ap(c.p),
             "total": len(g.app.commanders()),
         }
-        return self.sendLeoBridgePackage("opened", w_result)
+        return self.send("opened", w_result)
     #@+node:ekr.20210202110128.58: *5* sc.closeFile
     def closeFile(self, p_package):
         """
@@ -298,11 +298,11 @@ class ServerController:
                 c.close()
             else:
                 # Cannot close, ask to save, ignore or cancel
-                return self.sendLeoBridgePackage('closed', False)
+                return self.send('closed', False)
 
         # Switch commanders to first available
         if not g.app.commanders():
-            return self.sendLeoBridgePackage("closed", {"total": 0})
+            return self.send("closed", {"total": 0})
         self.c = c = g.app.commanders()[0]
         self._create_gnx_to_vnode()
         w_result = {
@@ -310,7 +310,7 @@ class ServerController:
             "node": self._p_to_ap(c.p),
             "total": len(g.app.commanders()),
         }
-        return self.sendLeoBridgePackage("closed", w_result)
+        return self.send("closed", w_result)
     #@+node:ekr.20210202183724.1: *5* sc.saveFile
     def saveFile(self, p_package):
         '''Saves the leo file. New or dirty derived files are rewritten'''
@@ -326,7 +326,7 @@ class ServerController:
                 print("Error while saving", flush=True)
                 print(str(e), flush=True)
 
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self.send()  # Just send empty as 'ok'
 
     #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
     def setOpenedFile(self, p_package):
@@ -350,13 +350,13 @@ class ServerController:
         }
         # maybe needed for frame wrapper
         c.selectPosition(c.p)
-        return self.sendLeoBridgePackage("setOpened", w_result)
+        return self.send("setOpened", w_result)
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
     #@+node:ekr.20210202110128.71: *5* sc.getAllGnx
     def getAllGnx(self, p_unused):
         '''Get gnx array from all unique nodes'''
         c = self.c
-        return self.sendLeoBridgePackage(
+        return self.send(
             "allGnx",
             [p.v.gnx for p in c.all_unique_positions(copy=False)])
 
@@ -379,9 +379,8 @@ class ServerController:
         if p_gnx:
             w_v = self.c.fileCommands.gnxDict.get(p_gnx)  # vitalije
             if w_v and w_v.b:
-                return self.sendLeoBridgePackage("bodyLength", len(w_v.b))
-        # TODO : May need to signal inexistent by self.sendLeoBridgePackage()
-        return self.sendLeoBridgePackage("bodyLength", 0)  # empty as default
+                return self.send("bodyLength", len(w_v.b))
+        return self.send("bodyLength", 0)  # empty as default
 
     #@+node:ekr.20210202110128.66: *5* sc.getBodyStates
     def getBodyStates(self, p_ap):
@@ -457,7 +456,7 @@ class ServerController:
                     "end": {"line": w_endRow, "col": w_endCol}
                 }
             }
-        return self.sendLeoBridgePackage("bodyStates", states)
+        return self.send("bodyStates", states)
     #@+node:ekr.20210202183724.2: *5* sc.getButtons
     def getButtons(self, p_package):
         '''Gets the currently opened file's @buttons list'''
@@ -468,7 +467,7 @@ class ServerController:
             for w_key in w_dict:
                 w_entry = {"name": w_dict[w_key], "index": str(w_key)}
                 w_buttons.append(w_entry)
-        return self.sendLeoBridgePackage("buttons", w_buttons)
+        return self.send("buttons", w_buttons)
 
     #@+node:ekr.20210202110128.68: *5* sc.getChildren
     def getChildren(self, p_ap):
@@ -518,7 +517,7 @@ class ServerController:
             # print(f"__doc__: {len(doc):4} {command_name:40} {func_name} ", flush=True)
             # print(f"{func_name} ", flush=True)
 
-        return self.sendLeoBridgePackage("commands", result)
+        return self.send("commands", result)
     #@+node:ekr.20210202183724.6: *6* sc._bad_commands
     def _bad_commands(self):
         """Return the list of Leo's command names that leoInteg should ignore."""
@@ -1578,7 +1577,7 @@ class ServerController:
 
         w_openedFiles = {"files": w_files, "index": w_indexFound}
 
-        return self.sendLeoBridgePackage("openedFiles", w_openedFiles)
+        return self.send("openedFiles", w_openedFiles)
 
     #@+node:ekr.20210202110128.69: *5* sc.getParent
     def getParent(self, p_ap):
@@ -1629,7 +1628,7 @@ class ServerController:
                 g.trace('Error while getting states')
                 print("Error while getting states", flush=True)
                 print(str(e), flush=True)
-        return self.sendLeoBridgePackage("states", w_states)
+        return self.send("states", w_states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202110128.81: *5* sc._findPNodeFromGnx
     def _findPNodeFromGnx(self, p_gnx):
@@ -1668,7 +1667,7 @@ class ServerController:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.contract()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self.send()  # Just send empty as 'ok'
     #@+node:ekr.20210202183724.12: *5* sc.cutPNode
     def cutPNode(self, p_package):
         '''Cut a node, don't select it. Try to keep selection, then return the selected node that remains'''
@@ -1730,7 +1729,7 @@ class ServerController:
             w_p = self._ap_to_p(p_ap)
             if w_p:
                 w_p.expand()
-        return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        return self.send()  # Just send empty as 'ok'
 
     #@+node:ekr.20210202183724.15: *5* sc.insertNamedPNode
     def insertNamedPNode(self, p_package):
@@ -1833,7 +1832,7 @@ class ServerController:
             if w_v:
                 w_v.b = w_body
         return self._outputPNode(self.c.p)  # return selected node
-        # return self.sendLeoBridgePackage()  # Just send empty as 'ok'
+        # return self.send()  # Just send empty as 'ok'
 
     #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
     def setNewHeadline(self, p_package):
@@ -1968,7 +1967,7 @@ class ServerController:
     #@+node:ekr.20210202194141.1: *3* sc:Output
     #@+node:ekr.20210202110128.47: *4* sc._outputBodyData
     def _outputBodyData(self, p_bodyText=""):
-        return self.sendLeoBridgePackage("bodyData", p_bodyText)
+        return self.send("bodyData", p_bodyText)
     #@+node:ekr.20210202110128.46: *4* sc._outputError
     def _outputError(self, p_message="Unknown Error"):
         # Output to this server's running console
@@ -1979,14 +1978,14 @@ class ServerController:
         }
     #@+node:ekr.20210202110128.49: *4* sc._outputPNode
     def _outputPNode(self, p_node=False):
-        return self.sendLeoBridgePackage("node", self._p_to_ap(p_node) if p_node else None)
+        return self.send("node", self._p_to_ap(p_node) if p_node else None)
     #@+node:ekr.20210202110128.50: *4* sc._outputPNodes
     def _outputPNodes(self, p_pList):
         # Multiple nodes, plural
-        return self.sendLeoBridgePackage("nodes", [self._p_to_ap(p) for p in p_pList])
+        return self.send("nodes", [self._p_to_ap(p) for p in p_pList])
     #@+node:ekr.20210202110128.48: *4* sc._outputSelectionData
     def _outputSelectionData(self, p_bodySelection):
-        return self.sendLeoBridgePackage("bodySelection", p_bodySelection)
+        return self.send("bodySelection", p_bodySelection)
     #@+node:ekr.20210202110128.44: *4* sc.async def asyncOutput
     async def asyncOutput(self, p_json):
         '''Output json string to the websocket'''
@@ -2010,6 +2009,15 @@ class ServerController:
         w_package = {"async": "log", "log": s}
         self.sendAsyncOutput(w_package)
 
+    #@+node:ekr.20210202110128.45: *4* sc.send
+    def send(self, p_key=None, p_any=None):
+        package = {
+            "id": self.currentActionId,
+        }
+        if p_key:
+            package [p_key] = p_any  # add [key]?:any
+        # Send as json.
+        return json.dumps(package, separators=(',', ':')) 
     #@+node:ekr.20210202110128.39: *4* sc.sendAsyncOutput
     def sendAsyncOutput(self, p_package):
         if "async" not in p_package:
@@ -2022,15 +2030,6 @@ class ServerController:
         else:
             print('[sendAsyncOutput] Error loop not ready' +
                 json.dumps(p_package, separators=(',', ':')))
-    #@+node:ekr.20210202110128.45: *4* sc.sendLeoBridgePackage
-    def sendLeoBridgePackage(self, p_key=None, p_any=None):
-        w_package = {
-            "id": self.currentActionId,
-        }
-        if p_key:
-            w_package [p_key] = p_any  # add [key]?:any
-        # Send as json.
-        return json.dumps(w_package, separators=(',', ':')) 
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
@@ -2155,7 +2154,7 @@ def main():
         try:
             controller.initConnection(websocket)
             # Start by sending empty as 'ok'
-            await websocket.send(controller.sendLeoBridgePackage())
+            await websocket.send(controller.send())
             controller.logSignon()
             async for w_message in websocket:
                 w_param = json.loads(w_message)
