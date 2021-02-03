@@ -220,23 +220,19 @@ class ServerController:
         #
         # If not empty string (asking for New file) then check if already opened
         c, found, tag = None, False, 'openFile'
+        openCommanders = [z for z in g.app.commanders() if not c.closed]
         if filename:
-            for c in g.app.commanders():
+            for c in openCommanders:
                 if c.fileName() == filename:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
-        #
-        # Leo at this point has done this too: g.app.windowList.append(c.frame)
-        # and so, now, app.commanders() yields this: return [f.c for f in g.app.windowList]
         if not c:
             return self._outputError(f"can not open {filename!r}", tag)
-        #
         # Assign self.c
         self.c = c
-        c.closed = False  # Inject open state.
+        c.closed = False  # Mark as open *in the server*.
         if not found:
-            # is new so also replace wrapper
             c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
             c.selectPosition(c.p)
         self._create_gnx_to_vnode()
@@ -289,7 +285,7 @@ class ServerController:
         Returns an object that contains a 'closed' member
         """
         c = self.c
-        # TODO : Specify which file to support multiple opened files
+        ### To do: Support multiple opened files
         if c:
             if package["forced"] and c.changed:
                 # return "no" g.app.gui.runAskYesNoDialog  and g.app.gui.runAskYesNoCancelDialog
@@ -298,18 +294,18 @@ class ServerController:
                 c.closed = True
                 c.close()
             else:
-                # Cannot close, ask to save, ignore or cancel
+                # Cannot close immediately. Ask to save, ignore or cancel
                 return self.send('closed', False)
-
-        # Switch commanders to first available
-        if not g.app.commanders():
+        # Select the first open commander.
+        openCommanders = [z for z in g.app.commanders() if not z.closed]
+        if not openCommanders:
             return self.send("closed", {"total": 0})
-        self.c = g.app.commanders()[0]
+        self.c = openCommanders[0]
         self._create_gnx_to_vnode()
         result = {
             "filename": c.fileName(),
             "node": self._p_to_ap(self.c.p),
-            "total": len(g.app.commanders()),
+            "total": len(openCommanders),
         }
         return self.send("closed", result)
     #@+node:ekr.20210202183724.1: *5* sc.saveFile
@@ -327,7 +323,6 @@ class ServerController:
                 print("Error while saving", flush=True)
                 print(e, flush=True)
         return self.send("")  # Send empty as 'ok'
-
     #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile (revise)
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
