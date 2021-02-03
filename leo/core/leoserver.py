@@ -2062,11 +2062,7 @@ class ServerController:
         new_len = len(list(gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
     #@-others
-#@+node:ekr.20210202110128.87: ** printAction
-def printAction(p_param):
-    w_action = p_param["action"]
-    print(f"*ACTION* {w_action}, id {p_param['id']}", flush=True)
-#@+node:ekr.20210202110128.88: ** main (c:\test)
+#@+node:ekr.20210202110128.88: ** function:main
 def main():
     '''python script for leo integration via leoBridge'''
     # from leo.core import leoGlobals as g
@@ -2158,22 +2154,17 @@ def main():
     wsHost, wsPort = get_args()
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon, flush=True)
-
+    # Open leoBridge.
     controller = ServerController()
-    
-    # Create a _WindowsSelectorEventLoop object.
+    # Start the server.
     loop = asyncio.get_event_loop()  
-    # print('event loop', loop)
-    
-    # Create websockets.server.Serve object.
-    # This is slow because it Leo's bridge starts all of Leo.
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
-    
-    # Create websockets.server.WebSocketServer object.
     loop.run_until_complete(server)
-     
-    # Continue.
     loop.run_forever()
+#@+node:ekr.20210202110128.87: ** function:printAction
+def printAction(p_param):
+    """Dump p_param"""
+    print(f"Action: {p_param['action']}, id: {p_param['id']}", flush=True)
 #@-others
 if __name__ == '__main__':
     # Startup
