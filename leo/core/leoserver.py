@@ -1973,19 +1973,17 @@ class ServerController:
     def _outputError(self, p_message="Unknown Error"):
         # Output to this server's running console
         print("ERROR: " + p_message, flush=True)
-        w_package = {"id": self.currentActionId}
-        w_package["error"] = p_message
-        return p_message
+        return {
+            "id": self.currentActionId,
+            "error": p_message,
+        }
     #@+node:ekr.20210202110128.49: *4* sc._outputPNode
     def _outputPNode(self, p_node=False):
         return self.sendLeoBridgePackage("node", self._p_to_ap(p_node) if p_node else None)
     #@+node:ekr.20210202110128.50: *4* sc._outputPNodes
     def _outputPNodes(self, p_pList):
-        w_apList = []
-        for p in p_pList:
-            w_apList.append(self._p_to_ap(p))
         # Multiple nodes, plural
-        return self.sendLeoBridgePackage("nodes", w_apList)
+        return self.sendLeoBridgePackage("nodes", [self._p_to_ap(p) for p in p_pList])
     #@+node:ekr.20210202110128.48: *4* sc._outputSelectionData
     def _outputSelectionData(self, p_bodySelection):
         return self.sendLeoBridgePackage("bodySelection", p_bodySelection)
@@ -2023,7 +2021,7 @@ class ServerController:
                 json.dumps(p_package, separators=(',', ':'))))
         else:
             print('[sendAsyncOutput] Error loop not ready' +
-                  json.dumps(p_package, separators=(',', ':')))
+                json.dumps(p_package, separators=(',', ':')))
     #@+node:ekr.20210202110128.45: *4* sc.sendLeoBridgePackage
     def sendLeoBridgePackage(self, p_key=None, p_any=None):
         w_package = {
@@ -2041,12 +2039,11 @@ class ServerController:
         Return false if no key
         '''
         childIndex = ap['childIndex']
-
         try:
             v = self.gnx_to_vnode[ap['gnx']]  # Trap this
             stack = [
                 (self.gnx_to_vnode[d['gnx']], d['childIndex'])
-                for d in ap['stack']
+                    for d in ap['stack']
             ]
         except Exception:
             return False
@@ -2058,13 +2055,13 @@ class ServerController:
         '''Make the first gnx_to_vnode array with all unique nodes'''
         t1 = time.process_time()
         self.gnx_to_vnode = {
-            v.gnx: v for v in self.c.all_unique_nodes()}
+            v.gnx: v for v in self.c.all_unique_nodes()
+        }
         # This is likely the only data that ever will be needed.
         if 0:
             print('app.create_all_data: %5.3f sec. %s entries' % (
                 (time.process_time()-t1), len(list(self.gnx_to_vnode.keys()))), flush=True)
         self._test_round_trip_positions()
-
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
         '''(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position.'''
@@ -2075,21 +2072,23 @@ class ServerController:
         # * Expand gnx-vnode translation table for any new node encountered
         if p_gnx not in self.gnx_to_vnode:
             self.gnx_to_vnode[p_gnx] = p.v
-        # * necessary properties for outline
+        # Necessary properties for outline
         w_ap = {
             'childIndex': p._childIndex,
             'gnx': p.v.gnx,
             'level': p.level(),
             'headline': p.h,
-            'stack': [{
-                'gnx': stack_v.gnx,
-                'childIndex': stack_childIndex,
-                'headline': stack_v.h,
-            } for (stack_v, stack_childIndex) in p.stack],
+            'stack': [
+                {
+                    'gnx': stack_v.gnx,
+                    'childIndex': stack_childIndex,
+                    'headline': stack_v.h,
+                } for (stack_v, stack_childIndex) in p.stack
+            ],
         }
-        # TODO : Convert all those booleans into an 8 bit integer 'status' flag
         if p.v.u:
             w_ap['u'] = p.v.u
+        # EKR: No need to use a 'status' flag for now.
         if bool(p.b):
             w_ap['hasBody'] = True
         if p.hasChildren():
@@ -2113,18 +2112,13 @@ class ServerController:
         # Bug fix: p_to_ap updates app.gnx_to_vnode. Save and restore it.
         old_d = self.gnx_to_vnode.copy()
         old_len = len(list(self.gnx_to_vnode.keys()))
-        # t1 = time.process_time()
-        qtyAllPositions = 0
         for p in self.c.all_positions():
-            qtyAllPositions += 1
             ap = self._p_to_ap(p)
             p2 = self._ap_to_p(ap)
             assert p == p2, (repr(p), repr(p2), repr(ap))
-        gnx_to_vnode = old_d
+        gnx_to_vnode = old_d  # Required!
         new_len = len(list(gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
-        # print('Leo file opened. Its outline contains ' + str(qtyAllPositions) + " nodes positions.", flush=True)
-        # print(('Testing app.test_round_trip_positions for all nodes: Total time: %5.3f sec.' % (time.process_time()-t1)), flush=True)
     #@-others
 #@+node:ekr.20210202110128.87: ** printAction
 def printAction(p_param):
