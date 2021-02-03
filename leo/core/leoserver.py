@@ -1733,39 +1733,35 @@ class ServerController:
     #@+node:ekr.20210202183724.15: *5* sc.insertNamedPNode
     def insertNamedPNode(self, package):
         '''Insert a node at given node, set its headline, select it and finally return it'''
-        c = self.c
+        c, u = self.c, self.c.undoer
         newHeadline = package['text']
         ap = package['node']
         if not ap:
             return self._outputError("Error in insertNamedPNode no param node")
         p = self._ap_to_p(ap)
         if not p:
-            return self._outputError("Error in insertNamedPNode no p node found")
-        u = c.undoer.beforeInsertNode(p)
+            return self._outputError("Error in insertNamedPNode: position not found")
+        bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
-        # set this node's new headline
         newNode.h = newHeadline
         newNode.setDirty()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', u)
+        u.afterInsertNode(newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
-        # in any case, return selected node
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.14: *5* sc.insertPNode
     def insertPNode(self, package):
         '''Insert a node at given node, then select it once created, and finally return it'''
-        c = self.c
+        c, u = self.c, self.c.undoer
         ap = package["node"]
         if not ap:
             return self._outputError("Error in insertPNode no param node")
         p = self._ap_to_p(ap)
         if not p:
             return self._outputError("Error in insertPNode no p node found")
-        bunch = c.undoer.beforeInsertNode(p)
+        bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.setDirty()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', bunch)
+        u.afterInsertNode(newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
         return self._outputPNode(c.p)
     #@+node:ekr.20210202183724.9: *5* sc.markPNode
@@ -1808,30 +1804,29 @@ class ServerController:
     #@+node:ekr.20210202110128.74: *5* sc.setBody
     def setBody(self, package):
         '''Change Body text of a node'''
+        c, u = self.c, self.c.undoer
         gnx = package['gnx']
         body = package['body']
         for p in self.c.all_positions():
             if p.v.gnx == gnx:
                 # TODO : Before setting undo and trying to set body, first check if different than existing body
-                bunch = self.c.undoer.beforeChangeNodeContents(
-                    p)  # setup undoable operation
+                bunch = u.beforeChangeNodeContents(p)
                 p.v.setBodyString(body)
-                self.c.undoer.afterChangeNodeContents(
+                u.afterChangeNodeContents(
                     p, "Body Text", bunch)
                 if self.c.p.v.gnx == gnx:
-                    self.c.frame.body.wrapper.setAllText(body)
+                    c.frame.body.wrapper.setAllText(body)
                 if not self.c.isChanged():
-                    self.c.setChanged()
+                    c.setChanged()
                 if not p.v.isDirty():
                     p.setDirty()
                 break
         # additional forced string setting
         if gnx:
-            v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
+            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
             if v:
                 v.b = body
-        return self._outputPNode(self.c.p)  # return selected node
-        # return self.send()  # Just send empty as 'ok'
+        return self._outputPNode(c.p)
 
     #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
     def setNewHeadline(self, package):
@@ -1947,7 +1942,6 @@ class ServerController:
         c, u = self.c, self.c.undoer
         if u.canUndo():
             u.undo()
-        # return selected node when done
         return self._outputPNode(c.p)
 
     #@+node:ekr.20210202183724.10: *5* sc.unmarkPNode
