@@ -235,7 +235,7 @@ class EditBodyTestCase(unittest.TestCase):
         try:
             return f"EditBodyTestCase: {self.parent.h}"
         except Exception:
-            g.es_print_exception()
+            g.print_exception()
             return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *3* tearDown
     def tearDown(self):
@@ -907,7 +907,7 @@ class TestManager:
                 return None
         except Exception:
             print(f"\n{fname}: exception creating test class in {p.h}")
-            g.es_print_exception()
+            g.print_exception()
             return None
         return None
     #@+node:ekr.20051104075904.12: *5* tm.makeTestSuite
@@ -939,7 +939,7 @@ class TestManager:
             return suite
         except Exception:
             print(f"\n{fname}: exception creating test cases for {p.h}")
-            g.es_print_exception()
+            g.print_exception()
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
     def runTestsExternally(self, all, marked):
@@ -1366,13 +1366,13 @@ class TestManager:
         except SyntaxError:
             if not suppress:
                 g.warning("syntax error in:", fileName)
-                g.es_print_exception(full=True, color="black")
+                g.print_exception(full=True, color="black")
             if reraise: raise
             return False
         except Exception:
             if not suppress:
                 g.warning("unexpected error in:", fileName)
-                # g.es_print_exception(full=False,color="black")
+                # g.print_exception(full=False,color="black")
             if reraise: raise
             return False
     #@+node:ekr.20051104075904.94: *4* TM.checkFileTabs
@@ -1397,7 +1397,7 @@ class TestManager:
             assert 0, "test failed"
         except Exception:
             g.trace("unexpected exception")
-            g.es_print_exception()
+            g.print_exception()
             assert 0, "test failed"
     #@+node:ekr.20051104075904.40: *4* TM.compareIgnoringNodeNames
     def compareIgnoringNodeNames(self, s1, s2, delims, verbose=False):

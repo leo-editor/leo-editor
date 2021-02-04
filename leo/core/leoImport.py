@@ -548,7 +548,7 @@ class LeoImportCommands:
                     g.es("created:", newFileName)
             except Exception:
                 g.es("exception creating:", newFileName)
-                g.es_print_exception()
+                g.print_exception()
             #@-<< Write s into newFileName >>
         return None
     #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
@@ -604,7 +604,7 @@ class LeoImportCommands:
                         f.write(s.rstrip() + nl)
         except Exception:
             g.es("exception opening:", filename)
-            g.es_print_exception()
+            g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self,
