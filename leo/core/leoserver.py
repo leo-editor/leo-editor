@@ -78,15 +78,15 @@ class ServerController:
         self.webSocket = webSocket
         self.loop = asyncio.get_event_loop()
 
-    #@+node:ekr.20210202110128.42: *4* sc.logSignon
-    def logSignon(self):
+    #@+node:ekr.20210202110128.42: *4* sc.sign_on
+    def sign_on(self):
         '''Simulate the initial Leo Log Entry'''
         if self.loop:
             g.app.computeSignon()
             g.es(g.app.signon)
             g.es(g.app.signon1)
         else:
-            print('logSignon: no loop', flush=True)
+            print('sign_on: no loop', flush=True)
     #@+node:ekr.20210204154548.1: *3* sc:Command utils
     #@+node:ekr.20210203084135.1: *4* sc._check_ap
     def _check_ap(self, package):
@@ -107,38 +107,28 @@ class ServerController:
             raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
         return p
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
-    def _do_message(self, message): ### command, package):
+    def _do_message(self, d):
         '''
-        Generic call to either:
-
-        1: A named method in Leo's Commands class or any subcommander class.
-        2: A named Leo command.
-
-        d: A dict that should contain 'id', 'command' and 'package' keys.
-
-        The ap position node is to be selected before having the command run,
-        while the keepSelection parameter specifies wether the original position should be re-selected.
-        The whole of those operations is to be undoable as one undo step.
-
-        command: a method name (a string).
-        ap: an archived position.
-        keepSelection: preserve the current selection, if possible.
+        Handle d, a python dict representing the incoming request.
+        
+        The request will call either:
+        - A named method in Leo's Commands class or any subcommander class.
+        - A named Leo command.
         '''
         tag = '_do_message'
         try:
-            # The message and id are required.
-            if not message:
-                raise ServerError(f"no message")
-            the_id = message.get('id')
+            if not d:
+                raise ServerError(f"{tag}: no d")
+            the_id = d.get('id')
             if the_id is None:
-                raise ServerError(f"no id in message")
+                raise ServerError(f"{tag}: no id in d")
             # Set the id.
             self.current_id = the_id
             # The package is optional.
-            package = message.get('package')
+            package = d.get('package')
             # Exactly one of "command" or "method" must be present.
-            command_name = message.get('command')
-            method_name = message.get('method')
+            command_name = d.get('command')
+            method_name = d.get('method')
             if command_name and method_name:
                 raise ServerError(f"{tag}: command and method can't both be given")
             # Execute the method or command.
@@ -152,11 +142,11 @@ class ServerController:
             return result
         except ServerError as e:
             # Common format for all error results.
-            print(f"Error: {e} in message: {message}", flush=True)
+            print(f"{tag}: Exception {e}\njson: {d}", flush=True)
             result = {
                 "id": self.current_id,
                 "error": e,
-                "message": message,
+                "json": d,
             }
         return result
     #@+node:ekr.20210204100154.1: *5* sc._do_command_by_name
@@ -2064,7 +2054,7 @@ def main():
             controller.initConnection(websocket)
             # Start by sending empty as 'ok'.
             await websocket.send(controller._make_response(""))
-            controller.logSignon()
+            controller.sign_on()
             async for json_message in websocket:
                 try:
                     d = json.loads(json_message)
