@@ -2063,7 +2063,7 @@ def main():
             n += 1
             await controller.asyncOutput(
                 f'{{"counter": {n}, "time": {n*timeout}}}')
-    #@+node:ekr.20210202110128.90: *3* async def ws_handler
+    #@+node:ekr.20210202110128.90: *3* ws_handler
     async def ws_handler(websocket, path):
         """
         The ws_handler: server.ws_server.
@@ -2112,7 +2112,7 @@ def main():
             print("Websocket connection closed", flush=True)
         except Exception:
             print('Exception in leobridgeserver.py!', flush=True)
-            # Like g.es_exception()...
+            # Like g.es_exception(), but does not call g.es.
             typ, val, tb = sys.exc_info()
             for line in traceback.format_exception(typ, val, tb):
                 print(line.rstrip(), flush=True)
