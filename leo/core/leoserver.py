@@ -118,10 +118,10 @@ class ServerController:
     def _do_message(self, message): ### command, package):
         '''
         Generic call to either:
-            
+
         1: A named method in Leo's Commands class or any subcommander class.
         2: A named Leo command.
-        
+
         d: A dict that should contain 'id', 'command' and 'package' keys.
 
         The ap position node is to be selected before having the command run,
