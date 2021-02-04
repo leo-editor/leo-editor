@@ -273,8 +273,7 @@ class ServerController:
     #@+node:ekr.20210202110128.60: *4* sc.test
     def test(self, package):
         '''Utility test function for debugging'''
-        return self._make_response('returned-key', package or '<no package>')
-           
+        return self._make_response('test-result', package)
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210202183724.4: *5* sc.clickButton
     def clickButton(self, package):
@@ -1938,7 +1937,8 @@ class ServerController:
         p.clearMarked()
         return self._make_position_response(self.c.p)  # Don't select p.
     #@+node:ekr.20210204145902.1: *3* sc:Responses
-    def _make_response(self, key=None, any=None):
+    def _make_response(self, key, any=None):
+        """An empty key ("") is allowed."""
         package = {
             "id": self.current_id,
         }
@@ -1949,7 +1949,7 @@ class ServerController:
 
     def _make_position_response(self, p):
         return self._make_response(
-            "archived-posistion",
+            "archived-position",
             self._p_to_ap(p) if p else None,
         )
 
