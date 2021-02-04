@@ -11,7 +11,7 @@ based on leoInteg's leobridgeserver.py.
 import asyncio
 import getopt
 import json
-import os.path
+# import os.path
 import sys
 import time
 # Third-party.
@@ -72,8 +72,8 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.52: *4* sc.initConnection
-    def initConnection(self, webSocket):
+    #@+node:ekr.20210202110128.52: *4* sc.init_connection
+    def init_connection(self, webSocket):
         """Begin the connection."""
         self.webSocket = webSocket
         self.loop = asyncio.get_event_loop()
@@ -289,8 +289,8 @@ class ServerController:
         '''Utility test function for debugging'''
         return self._make_response('test-result', package)
     #@+node:ekr.20210202193709.1: *4* sc:button commands
-    #@+node:ekr.20210202183724.4: *5* sc.clickButton
-    def clickButton(self, package):
+    #@+node:ekr.20210202183724.4: *5* sc.click_button
+    def click_button(self, package):
         '''Handles buttons clicked in client from the '@button' panel'''
         c = self.c
         index = package['index']
@@ -305,8 +305,20 @@ class ServerController:
             except Exception():
                 pass
         return self._make_position_response(c.p)
-    #@+node:ekr.20210202183724.3: *5* sc.removeButton
-    def removeButton(self, package):
+    #@+node:ekr.20210202183724.2: *5* sc.get_buttons
+    def get_buttons(self, package):
+        '''Gets the currently opened file's @buttons list'''
+        c = self.c
+        buttons = []
+        if c and c.theScriptingController and c.theScriptingController.buttonsDict:
+            d = c.theScriptingController.buttonsDict
+            for key in d:
+                entry = {"name": d[key], "index": str(key)}
+                buttons.append(entry)
+        return self._make_response("buttons", buttons)
+
+    #@+node:ekr.20210202183724.3: *5* sc.remove_button
+    def remove_button(self, package):
         '''Removes an entry from the buttonsDict by index string'''
         c, d = self.c, self.c.theScriptingController.buttonsDict
         index = package['index']
@@ -314,12 +326,12 @@ class ServerController:
             del d[index]
         return self._make_position_response(c.p)
     #@+node:ekr.20210202193642.1: *4* sc:file commands
-    #@+node:ekr.20210202110128.57: *5* sc.openFile
-    def openFile(self, filename):
+    #@+node:ekr.20210202110128.57: *5* sc.open_file
+    def open_file(self, filename):
         """
         Open a leo file with the given filename. Create a new document if no name.
         """
-        c, found, tag = None, False, 'openFile'
+        c, found, tag = None, False, 'open_file'
         openCommanders = [z for z in g.app.commanders() if not c.closed]
         if filename:
             for c in openCommanders:
@@ -342,46 +354,10 @@ class ServerController:
             "total": len(g.app.commanders),
         }
         return self._make_response("opened", result)
-    #@+node:ekr.20210202182311.1: *5* sc.openFiles
-    def openFiles(self, package):
+    #@+node:ekr.20210202110128.58: *5* sc.close_file
+    def close_file(self, package):
         """
-        Opens an array of leo files
-        Returns an object that contains the last 'opened' member.
-        """
-        c, tag = None, 'openFiles'
-        filename, files = None, []
-        if "files" in package:
-            files = package["files"]
-        openCommanders = [z for z in g.app.commanders() if not z.closed]
-        for filename in files:
-            found = False
-            # If not empty string (asking for New file) then check if already opened
-            if filename:
-                for c in openCommanders:
-                    if c.fileName() == filename:
-                        found = True
-            if not found:
-                if os.path.isfile(filename):
-                    c = self.bridge.openLeoFile(filename)  # create self.c
-            if c:
-                c.closed = False
-                self.c = c
-                c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
-                c.selectPosition(c.p)
-        # Done with the last one, it's now the selected commander. Check again just in case.
-        if not c:
-            raise ServerError(f"{tag}: file not found: {filename!r}")
-        self._create_gnx_to_vnode()
-        result = {
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-            "total": len(openCommanders),
-        }
-        return self._make_response("opened", result)
-    #@+node:ekr.20210202110128.58: *5* sc.closeFile
-    def closeFile(self, package):
-        """
-        Closes a leo file. A file can then be opened with "openFile"
+        Closes a leo file. A file can then be opened with "open_file"
         Returns an object that contains a 'closed' member
         """
         c = self.c
@@ -408,8 +384,8 @@ class ServerController:
             "total": len(openCommanders),
         }
         return self._make_response("closed", result)
-    #@+node:ekr.20210202183724.1: *5* sc.saveFile
-    def saveFile(self, package):
+    #@+node:ekr.20210202183724.1: *5* sc.save_file
+    def save_file(self, package):
         '''Saves the leo file. New or dirty derived files are rewritten'''
         c = self.c
         if c:
@@ -423,142 +399,9 @@ class ServerController:
                 print("Error while saving", flush=True)
                 print(e, flush=True)
         return self._make_response("")  # Send empty as 'ok'
-    #@+node:ekr.20210202110128.56: *5* sc.setOpenedFile
-    def setOpenedFile(self, package):
-        '''Choose the new active commander from array of opened file path/names by numeric index'''
-        tag = 'setOpenedFile'
-        ### self._check_ap(package)
-        openedCommanders = [z for z in g.app.commanders() if not z.closed]
-        index = package.get('index')
-        if index is None or index >= len(openedCommanders):
-            raise ServerError(f"{tag}: invalid index: {index!r}")
-        c = self.c = openedCommanders[index]
-        c.closed = False
-        self._create_gnx_to_vnode()
-        c.selectPosition(c.p) # maybe needed for frame wrapper
-        result = {
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-            "total": len(g.app.commanders()),
-        }
-        return self._make_response("setOpened", result)
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
-    #@+node:ekr.20210202110128.71: *5* sc.getAllGnx
-    def getAllGnx(self, unused):
-        '''Get gnx array from all unique nodes'''
-        c = self.c
-        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
-        return self._make_response("allGnx", result)
-
-    #@+node:ekr.20210202110128.72: *5* sc.getBody
-    def getBody(self, gnx):
-        '''EMIT OUT body of a node'''
-        #
-        #### TODO : if not found, send code to prevent unresolved promise
-        #           if 'document switch' occurred shortly before
-        if gnx:
-            v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
-            if v:
-                return self._make_response("bodyData", v.b)
-        #
-        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
-        return self._make_response("bodyData", "")
-
-    #@+node:ekr.20210202110128.73: *5* sc.getBodyLength
-    def getBodyLength(self, gnx):
-        '''EMIT OUT body string length of a node'''
-        if gnx:
-            v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
-            if v and v.b:
-                return self._make_response("bodyLength", len(v.b))
-        return self._make_response("bodyLength", 0)  # empty as default
-
-    #@+node:ekr.20210202110128.66: *5* sc.get_body_states
-    def get_body_states(self, package):
-        """
-        Finds the language in effect at top of body for position p,
-        Also returns the saved cursor position from last time node was accessed.
-        """
-        c, wrapper = self.c, self.c.frame.body.wrapper
-        p = self._check_ap(package)
-        defaultPosition = {"line": 0, "col": 0}
-        states = {
-            'language': 'plain',
-            # See BodySelectionInfo interface in types.d.ts
-            'selection': {
-                "gnx": p.v.gnx,
-                "scroll": {
-                    "start": defaultPosition,
-                    "end": defaultPosition
-                },
-                "active": defaultPosition,
-                "start": defaultPosition,
-                "end": defaultPosition
-            }
-        }
-        aList = g.get_directives_dict_list(p)
-        d = g.scanAtCommentAndAtLanguageDirectives(aList)
-        language = (
-            d and d.get('language') or
-            g.getLanguageFromAncestorAtFileNode(p) or
-            c.config.getString('target-language') or
-            'plain'
-        )
-        scroll = p.v.scrollBarSpot
-        active = p.v.insertSpot
-        start = p.v.selectionStart
-        end = p.v.selectionStart + p.v.selectionLength
-        # get selection from wrapper instead if its the selected node
-        if c.p.v.gnx == p.v.gnx:
-            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
-            active = wrapper.getInsertPoint()
-            start, end = wrapper.getSelectionRange(True)
-            scroll = wrapper.getYScrollPosition()
-
-        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
-        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
-        # compute line and column for the insertion point, and the start & end of selection
-        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
-        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
-        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
-        states = {
-            'language': language.lower(),
-            'selection': {
-                "gnx": p.v.gnx,
-                "scroll": scroll,  # scroll was kept as-is
-                "active": {"line": activeRow, "col": activeCol},
-                "start": {"line": startRow, "col": startCol},
-                "end": {"line": endRow, "col": endCol}
-            }
-        }
-        return self._make_response("bodyStates", states)
-    #@+node:ekr.20210202183724.2: *5* sc.getButtons
-    def getButtons(self, package):
-        '''Gets the currently opened file's @buttons list'''
-        c = self.c
-        buttons = []
-        if c and c.theScriptingController and c.theScriptingController.buttonsDict:
-            d = c.theScriptingController.buttonsDict
-            for key in d:
-                entry = {"name": d[key], "index": str(key)}
-                buttons.append(entry)
-        return self._make_response("buttons", buttons)
-
-    #@+node:ekr.20210202110128.68: *5* sc.getChildren
-    def getChildren(self, ap):
-        '''EMIT OUT list of children of a node'''
-        c = self.c
-        if ap:
-            p = self._ap_to_p(ap)
-            nodes = p and p.children() or []
-        elif c.hoistStack:
-            nodes = [c.hoistStack[-1].p]
-        else:
-            # Output all top-level nodes.
-            nodes = [z for z in c.rootPosition().self_and_siblings()]
-        return self._make_position_list_response(nodes)
-    #@+node:ekr.20210202183724.5: *5* sc.getCommands & helpers
-    def getCommands(self, package):
+    #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
+    def get_all_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
         c = self.c
         d = c.commandsDict  # keys are command names, values are functions.
@@ -1627,9 +1470,16 @@ class ServerController:
         ]
         return good_list
 
-    #@+node:ekr.20210202110128.55: *5* sc.getOpenedFiles
-    def getOpenedFiles(self, package):
-        '''Return array of opened file path/names to be used as openFile parameters to switch files'''
+    #@+node:ekr.20210202110128.71: *5* sc.get_all_gnxs
+    def get_all_gnxs(self, package):
+        '''Get gnx array from all unique nodes'''
+        c = self.c
+        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+        return self._make_response("allGnx", result)
+
+    #@+node:ekr.20210202110128.55: *5* sc.get_all_opened_files
+    def get_all_opened_files(self, package):
+        '''Return array of opened file path/names to be used as open_file parameters to switch files'''
         c = self.c
         openCommanders = [z for z in g.app.commanders() if not z.closed]
         files = [
@@ -1644,40 +1494,138 @@ class ServerController:
             "files": files,
         }
         return self._make_response("openedFiles", result)
-    #@+node:ekr.20210202110128.69: *5* sc.getParent
-    def getParent(self, ap):
-        '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
+    #@+node:ekr.20210202110128.72: *5* sc.get_body
+    def get_body(self, package):
+        '''EMIT OUT body of a node'''
+        ###
+        # TODO: if not found, send code to prevent unresolved promise
+        #       if 'document switch' occurred shortly before
+        gnx = package.get('gnx')
+        if gnx:
+            v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
+            if v:
+                return self._make_response("bodyData", v.b)
+        #
+        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
+        return self._make_response("bodyData", "")
+
+    #@+node:ekr.20210202110128.73: *5* sc.get_body_length
+    def get_body_length(self, package):
+        '''EMIT OUT body string length of a node'''
+        tag = 'get_body_length'
+        gnx = package.get('gnx')
+        if not gnx:
+            raise ServerError(f"{tag}: no gnx. package: {package}")
+        v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
+        if not v:
+            raise ServerError(f"{tag}: gnx not found. package: {package}")
+        return self._make_response("bodyLength", len(v.b))
+    #@+node:ekr.20210202110128.66: *5* sc.get_body_states
+    def get_body_states(self, package):
+        """
+        Finds the language in effect at top of body for position p,
+        Also returns the saved cursor position from last time node was accessed.
+        """
+        c, wrapper = self.c, self.c.frame.body.wrapper
+        p = self._check_ap(package)
+        defaultPosition = {"line": 0, "col": 0}
+        states = {
+            'language': 'plain',
+            # See BodySelectionInfo interface in types.d.ts
+            'selection': {
+                "gnx": p.v.gnx,
+                "scroll": {
+                    "start": defaultPosition,
+                    "end": defaultPosition
+                },
+                "active": defaultPosition,
+                "start": defaultPosition,
+                "end": defaultPosition
+            }
+        }
+        aList = g.get_directives_dict_list(p)
+        d = g.scanAtCommentAndAtLanguageDirectives(aList)
+        language = (
+            d and d.get('language') or
+            g.getLanguageFromAncestorAtFileNode(p) or
+            c.config.getString('target-language') or
+            'plain'
+        )
+        scroll = p.v.scrollBarSpot
+        active = p.v.insertSpot
+        start = p.v.selectionStart
+        end = p.v.selectionStart + p.v.selectionLength
+        # get selection from wrapper instead if its the selected node
+        if c.p.v.gnx == p.v.gnx:
+            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
+            active = wrapper.getInsertPoint()
+            start, end = wrapper.getSelectionRange(True)
+            scroll = wrapper.getYScrollPosition()
+
+        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
+        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
+        # compute line and column for the insertion point, and the start & end of selection
+        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
+        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
+        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
+        states = {
+            'language': language.lower(),
+            'selection': {
+                "gnx": p.v.gnx,
+                "scroll": scroll,  # scroll was kept as-is
+                "active": {"line": activeRow, "col": activeCol},
+                "start": {"line": startRow, "col": startCol},
+                "end": {"line": endRow, "col": endCol}
+            }
+        }
+        return self._make_response("bodyStates", states)
+    #@+node:ekr.20210202110128.68: *5* sc.get_children
+    def get_children(self, package):
+        '''EMIT OUT list of children of a node'''
+        c = self.c
+        ap = package.get('archived-position')
         if ap:
             p = self._ap_to_p(ap)
-            if p and p.hasParent():
-                return self._make_position_response(p.getParent())  # if not root
-        return self._make_position_response(None)  # root is the default
-    #@+node:ekr.20210202110128.67: *5* sc.getPNode
-    def getPNode(self, package):
+            nodes = p and p.children() or []
+        elif c.hoistStack:
+            nodes = [c.hoistStack[-1].p]
+        else:
+            # Output all top-level nodes.
+            nodes = [z for z in c.rootPosition().self_and_siblings()]
+        return self._make_position_list_response(nodes)
+    #@+node:ekr.20210202110128.69: *5* sc.get_parent
+    def get_parent(self, package):
+        '''EMIT OUT the parent of a node, as an array, even if unique or empty'''
+        tag = 'get_parent'
+        ap = package.get('archived-position')
+        if not ap:
+            raise ServerError(f"{tag}: no archived-position. package: {package}")
+        p = self._ap_to_p(ap)
+        if not p:
+            raise ServerError(f"{tag}: position not found. package: {package}")
+        return self._make_position_response(p.getParent())
+    #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
+    def get_position(self, package):
         '''EMIT OUT a node, don't select it'''
         return self._make_position_response(self.c.p)
-    #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
-    def getSelectedNode(self, unused):
-        '''EMIT OUT Selected Position as an array, even if unique'''
-        return self._make_position_response(self.c.p)
-    #@+node:ekr.20210202110128.61: *5* sc.getStates
-    def getStates(self, package):
+    #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
+    def get_ui_states(self, package):
         """
         Gets the currently opened file's general states for UI enabled/disabled states
         such as undo available, file changed/unchanged
         """
-        c = self.c
-        states = {}
+        c, tag = self.c, 'get_ui_states'
         # Set the defaults.
-        states["changed"] = False
-        states["canUndo"] = False
-        states["canRedo"] = False
-        states["canDemote"] = False
-        states["canPromote"] = False
-        states["canDehoist"] = False
+        states = {
+            "changed": False,
+            "canUndo": False,
+            "canRedo": False,
+            "canDemote": False,
+            "canPromote": False,
+            "canDehoist": False,
+        }
         if c:
             try:
-                # 'dirty/changed' member
                 states["changed"] = c.changed
                 states["canUndo"] = c.canUndo()
                 states["canRedo"] = c.canRedo()
@@ -1685,9 +1633,7 @@ class ServerController:
                 states["canPromote"] = c.canPromote()
                 states["canDehoist"] = c.canDehoist()
             except Exception as e:
-                g.trace('Error while getting states')
-                print("Error while getting states", flush=True)
-                print(str(e), flush=True)
+                raise ServerError(f"{tag} Exception: {e}. package: {package}")
         return self._make_response("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202110128.81: *5* sc._gnx_to_p
@@ -2055,7 +2001,7 @@ def main():
         """
         tag = '[ws_handler]'
         try:
-            controller.initConnection(websocket)
+            controller.init_connection(websocket)
             # Start by sending empty as 'ok'.
             await websocket.send(controller._make_response(""))
             controller.sign_on()
