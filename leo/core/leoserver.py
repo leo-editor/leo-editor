@@ -142,7 +142,7 @@ class ServerController:
             return result
         except ServerError as e:
             # Common format for all error results.
-            print(f"{tag}: Exception {e}\njson: {d}", flush=True)
+            print(f"{tag}: Exception {e}\nd: {d}", flush=True)
             result = {
                 "id": self.current_id,
                 "error": e,
@@ -160,7 +160,9 @@ class ServerController:
         tag = '_do_method_by_name'
         # For now, disallow hidden methods.
         if method_name.startswith('_'):
-            raise ServerError(f"{tag}: method name starts with '_': {method_name}")
+            raise ServerError(
+                f"{tag}: method name starts with '_'. {method_name}\n"
+                f"package: {package!r}")
         # Prefer ServerController methods to Leo's methods.
         func = getattr(self, method_name, None)
         if func:
@@ -168,7 +170,9 @@ class ServerController:
         func = self._get_commander_method(method_name)
         if func:
             return func(event=None)
-        raise ServerError(f"{tag}: method not found: {method_name!r}")
+        raise ServerError(
+            f"{tag}: method not found: {method_name!r}\n"
+            f"package: {package!r}")
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
     def _get_commander_method(self, method_name):
         """ Return the method with the given name in the Commands class or subcommanders."""
@@ -2061,7 +2065,7 @@ def main():
                     answer = controller._do_message(d)
                 except Exception as e:
                     # Continue on all errors.
-                    answer = f"{tag} Unexpected exception. message: {d!r}\n{e}"
+                    answer = f"{tag} Unexpected exception. d: {d!r}\n{e}"
                     print(answer, flush=True)
                     g.print_exception()  # Always flushes.
                 await websocket.send(answer)
