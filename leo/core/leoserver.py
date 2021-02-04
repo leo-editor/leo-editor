@@ -88,7 +88,6 @@ class ServerController:
             g.es(g.app.signon1)
         else:
             print('logSignon: no loop', flush=True)
-    #@+node:ekr.20210204132128.1: *3* sc:Checking
     #@+node:ekr.20210204154548.1: *3* sc:Command utils
     #@+node:ekr.20210203084135.1: *4* sc._check_ap
     def _check_ap(self, package):
@@ -224,6 +223,33 @@ class ServerController:
                 if func:
                     return func
         return None
+    #@+node:ekr.20210204154318.2: *4* sc._make_position_list_response
+    def _make_position_list_response(self, position_list):
+        return self._make_response(
+            "archived-position-list",
+            [self._p_to_ap(p) for p in position_list],
+        )
+    #@+node:ekr.20210204154318.1: *4* sc._make_position_response
+    def _make_position_response(self, p):
+        return self._make_response(
+            "archived-position",
+            self._p_to_ap(p) if p else None,
+        )
+
+    #@+node:ekr.20210204154315.1: *4* sc._make_response
+    def _make_response(self, key, any=None):
+        """
+        Return a json string corresponding to a package dictionary.
+        An empty key ("") is allowed.
+        """
+        package = {
+            "id": self.current_id,
+        }
+        if key:
+            assert isinstance(key, str), repr(key)
+            package [key] = any or ""
+        return json.dumps(package, separators=(',', ':')) 
+
     #@+node:ekr.20210202193210.1: *3* sc:Commands
     #@+node:ekr.20210202110128.41: *4* sc.applyConfig
     def applyConfig(self, config):
@@ -1926,34 +1952,6 @@ class ServerController:
         p = self._check_ap(package)
         p.clearMarked()
         return self._make_position_response(self.c.p)  # Don't select p.
-    #@+node:ekr.20210204145902.1: *3* sc:Responses
-    #@+node:ekr.20210204154318.2: *4* sc._make_position_list_response
-    def _make_position_list_response(self, position_list):
-        return self._make_response(
-            "archived-position-list",
-            [self._p_to_ap(p) for p in position_list],
-        )
-    #@+node:ekr.20210204154318.1: *4* sc._make_position_response
-    def _make_position_response(self, p):
-        return self._make_response(
-            "archived-position",
-            self._p_to_ap(p) if p else None,
-        )
-
-    #@+node:ekr.20210204154315.1: *4* sc._make_response
-    def _make_response(self, key, any=None):
-        """
-        Return a json string corresponding to a package dictionary.
-        An empty key ("") is allowed.
-        """
-        package = {
-            "id": self.current_id,
-        }
-        if key:
-            assert isinstance(key, str), repr(key)
-            package [key] = any or ""
-        return json.dumps(package, separators=(',', ':')) 
-
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
