@@ -94,8 +94,8 @@ class ServerController:
             g.es(g.app.signon1)
         else:
             print('logSignon: no loop', flush=True)
-    #@+node:ekr.20210202110128.43: *4* sc.setActionId
-    def setActionId(self, the_id):
+    #@+node:ekr.20210202110128.43: *4* sc.set_action_id
+    def set_action_id(self, the_id):
         self.currentActionId = the_id
 
     #@+node:ekr.20210202193210.1: *3* sc:Commands
@@ -104,10 +104,12 @@ class ServerController:
         '''Got the configuration from client'''
         self.config = config
         return self._make_response("")  # Send empty as 'ok'
-    #@+node:ekr.20210202110128.54: *4* sc.leoCommand & helpers (not called yet!)
-    def leoCommand(self, command, package):
+    #@+node:ekr.20210202110128.54: *4* sc.do_command_by_name & helpers (not called yet!)
+    def do_command_by_name(self, command, package):
         '''
         Generic call to a method in Leo's Commands class or any subcommander class.
+        
+        ### To do: execute a Leo command by name. ###
 
         The ap position node is to be selected before having the command run,
         while the keepSelection parameter specifies wether the original position should be re-selected.
@@ -117,7 +119,7 @@ class ServerController:
         ap: an archived position.
         keepSelection: preserve the current selection, if possible.
         '''
-        c, tag = self.c, 'leoCommand'
+        c, tag = self.c, 'do_command_by_name'
         g.trace(repr(command), repr(package))  ###
         # Check the args.
         p = self._check_package(package)
@@ -2066,9 +2068,7 @@ def main():
     #@+node:ekr.20210202110128.90: *3* ws_handler
     async def ws_handler(websocket, path):
         """
-        The ws_handler: server.ws_server.
-        
-        This gets turned into a WebSocketServer object.
+        The web socket handler: server.ws_server.
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
@@ -2084,6 +2084,7 @@ def main():
                 param = json.loads(message)
                 param_id = param and param.get('id')
                 action = param and param.get('action')
+                param_param = param and param.get('param')
                 if not param:
                     err = "no param in message"
                 elif not action:
@@ -2094,14 +2095,13 @@ def main():
                     err = "no id in param"
                 else:
                     # All is well. Execute the request.
-                    controller.setActionId(param_id)
-                    param_param = param.get('param')
+                    controller.set_action_id(param_id)
                     func = getattr(controller, action, None)  # crux
                     if func:
                         answer = func(param_param)
                     else:
-                        # Attempt to execute the command with Leo methods.
-                        answer = controller.leoCommand(action, param_param)
+                        # Execute a Leo method by name, or a command by name.
+                        answer = controller.do_command_by_name(action, param_param)
                 # Continue!
                 if err:
                     answer = f"{tag}: {err}. message: {message!r}"
