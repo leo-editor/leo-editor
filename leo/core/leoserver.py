@@ -73,12 +73,6 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.31: *4* sc._asyncIdleLoop
-    async def _asyncIdleLoop(self, seconds, fn):
-        """Call function fn every seconds"""
-        while True:
-            await asyncio.sleep(seconds)
-            fn(self)
     #@+node:ekr.20210202110128.52: *4* sc.initConnection
     def initConnection(self, webSocket):
         """Begin the connection."""
@@ -95,6 +89,7 @@ class ServerController:
         else:
             print('logSignon: no loop', flush=True)
     #@+node:ekr.20210204132128.1: *3* sc:Checking
+    #@+node:ekr.20210204154548.1: *3* sc:Command utils
     #@+node:ekr.20210203084135.1: *4* sc._check_ap
     def _check_ap(self, package):
         """
@@ -113,7 +108,6 @@ class ServerController:
         if not c.positionExists(p):
             raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
         return p
-    #@+node:ekr.20210202193210.1: *3* sc:Commands
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
     def _do_message(self, message): ### command, package):
         '''
@@ -230,6 +224,7 @@ class ServerController:
                 if func:
                     return func
         return None
+    #@+node:ekr.20210202193210.1: *3* sc:Commands
     #@+node:ekr.20210202110128.41: *4* sc.applyConfig
     def applyConfig(self, config):
         '''Got the configuration from client'''
