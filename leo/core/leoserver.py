@@ -2063,7 +2063,7 @@ def main():
             n += 1
             await controller.asyncOutput(
                 f'{{"counter": {n}, "time": {n*timeout}}}')
-    #@+node:ekr.20210202110128.90: *3* async def ws_handler (calls websocket.send)
+    #@+node:ekr.20210202110128.90: *3* async def ws_handler
     async def ws_handler(websocket, path):
         """
         The ws_handler: server.ws_server.
@@ -2072,34 +2072,42 @@ def main():
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
+        tag = 'ws_handler'
         try:
             controller.initConnection(websocket)
             # Start by sending empty as 'ok'
             await websocket.send(controller._make_response(""))
             controller.logSignon()
-            async for w_message in websocket:
-                w_param = json.loads(w_message)
-                if w_param and w_param['action']:
-                    w_action = w_param['action']
-                    w_actionParam = w_param['param']
-                    # Storing id of action in global var instead of passing as parameter
-                    controller.setActionId(w_param['id'])
-                    # ! functions called this way need to accept at least a parameter other than 'self'
-                    # ! See : getSelectedNode and getAllGnx
-                    # TODO : Block attempts to call functions starting with underscore or reserved
-                    #
-                    w_func = getattr(controller, w_action, None)  # crux
-                    if w_func:
-                        # Is Filtered by Leo Bridge Integration Controller
-                        w_answer = w_func(w_actionParam)
-                    else:
-                        # Attempt to execute the command directly on the commander/subcommander
-                        w_answer = controller.leoCommand(
-                            w_action, w_actionParam)
+            async for message in websocket:
+                # Check the message...
+                err = None
+                param = json.loads(message)
+                param_id = param and param.get('id')
+                action = param and param.get('action')
+                if not param:
+                    err = "no param in message"
+                elif not action:
+                    err = "no action in param"
+                elif action.startswith('_'):
+                    err = "action starts with underscore"
+                elif param_id is None:
+                    err = "no id in param"
                 else:
-                    w_answer = "Error in processCommand"
-                    print(w_answer, flush=True)
-                await websocket.send(w_answer)
+                    # All is well. Execute the request.
+                    controller.setActionId(param_id)
+                    param_param = param.get('param')
+                    func = getattr(controller, action, None)  # crux
+                    if func:
+                        answer = func(param_param)
+                    else:
+                        # Attempt to execute the command with Leo methods.
+                        answer = controller.leoCommand(action, param_param)
+                # Continue!
+                if err:
+                    answer = f"{tag}: {err}. message: {message!r}"
+                    print(answer, flush=True)
+                assert answer is not None, repr(message)
+                await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError:
             print("Websocket connection closed", flush=True)
         except Exception:
