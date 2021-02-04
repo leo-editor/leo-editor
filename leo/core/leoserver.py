@@ -14,7 +14,6 @@ import json
 import os.path
 import sys
 import time
-import traceback
 # Third-party.
 import websockets
 # Leo
@@ -2067,27 +2066,14 @@ def main():
             await websocket.send(controller._make_response(""))
             controller.logSignon()
             async for json_message in websocket:
-                # Check only that json is syntactically correct.
-                # The controller makes all other checks.
                 try:
                     d = json.loads(json_message)
-                except json.JSONDecodeError:
-                    answer = f"{tag} Invalid json: {json_message!r}"
-                    print(answer)
-                    await websocket.send(answer)
-                    continue
-                try:
-                    # _do_message catches all errors.
                     answer = controller._do_message(d)
                 except Exception as e:
-                    # Continue on errors in the controller.
-                    answer = f"{tag} Exception in controller. message: {d!r}"
+                    # Continue on all errors.
+                    answer = f"{tag} Unexpected exception. message: {d!r}\n{e}"
                     print(answer, flush=True)
-                    print(e, flush=True)
-                    # Like g.es_exception(), but does not call g.es.
-                    typ, val, tb = sys.exc_info()
-                    for line in traceback.format_exception(typ, val, tb):
-                        print(line.rstrip(), flush=True)
+                    g.print_exception()  # Always flushes.
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError:
             print("Websocket connection closed", flush=True)
