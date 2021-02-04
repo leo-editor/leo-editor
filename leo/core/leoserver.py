@@ -31,8 +31,8 @@ wsHost = "localhost"
 wsPort = 32125
 commonActions = ["getChildren", "getBody", "getBodyLength"]
 #@+others
-#@+node:ekr.20210204054519.1: ** class ArgumentError(Exception)
-class ArgumentError(Exception):
+#@+node:ekr.20210204054519.1: ** class ServerError(Exception)
+class ServerError(Exception):
     """The server received a package containing missing or erroneous contents."""
     pass
 #@+node:ekr.20210202110128.29: ** class ServerController
@@ -49,7 +49,7 @@ class ServerController:
         # Init ivars first.
         self.c = None  # Currently Selected Commander.
         self.config = None
-        self.currentActionId = 1  # Id of action being processed.
+        self.current_id = 1  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
         self.loop = None
         self.webSocket = None
@@ -94,22 +94,35 @@ class ServerController:
             g.es(g.app.signon1)
         else:
             print('logSignon: no loop', flush=True)
-    #@+node:ekr.20210202110128.43: *4* sc.set_action_id
-    def set_action_id(self, the_id):
-        self.currentActionId = the_id
-
+    #@+node:ekr.20210204132128.1: *3* sc:Checking
+    #@+node:ekr.20210203084135.1: *4* sc._check_ap
+    def _check_ap(self, package):
+        """
+        Resolve archived position to a position.
+        Return p, or raise ServerError.
+        """
+        c = self.c
+        callers = g.callers().split(',')
+        tag = callers[-1]
+        ap = package.get('archived_position')
+        if not ap:
+            raise ServerError(f"{tag}: no archived_position in package.")
+        p = self._ap_to_p(ap)
+        if not p:
+            raise ServerError(f"{tag}: position not found. ap: {ap!r}")
+        if not c.positionExists(p):
+            raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+        return p
     #@+node:ekr.20210202193210.1: *3* sc:Commands
-    #@+node:ekr.20210202110128.41: *4* sc.applyConfig
-    def applyConfig(self, config):
-        '''Got the configuration from client'''
-        self.config = config
-        return self._make_response("")  # Send empty as 'ok'
-    #@+node:ekr.20210202110128.54: *4* sc.do_command_by_name & helpers (not called yet!)
-    def do_command_by_name(self, command, package):
+    #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
+    def _do_message(self, message): ### command, package):
         '''
-        Generic call to a method in Leo's Commands class or any subcommander class.
+        Generic call to either:
+            
+        1: A named method in Leo's Commands class or any subcommander class.
+        2: A named Leo command.
         
-        ### To do: execute a Leo command by name. ###
+        d: A dict that should contain 'id', 'command' and 'package' keys.
 
         The ap position node is to be selected before having the command run,
         while the keepSelection parameter specifies wether the original position should be re-selected.
@@ -119,33 +132,67 @@ class ServerController:
         ap: an archived position.
         keepSelection: preserve the current selection, if possible.
         '''
-        c, tag = self.c, 'do_command_by_name'
-        g.trace(repr(command), repr(package))  ###
-        # Check the args.
-        p = self._check_package(package)
-        # Execute the command.
-        func = self._get_commander_method(command)
-        if not func:
-            return self._output_error(f"{tag}: command not found: {command!r}")
-        # Easy case: ignore the previous position.
-        keep = package.get("keep")
-        if p == c.p or not keep:
-            self._call_function(func)
-            return self._output_position(c.p)
-        # Harder case: try to restore the previous position.
-        oldPosition = c.p
-        c.selectPosition(p)
-        self._call_function(func)
-        # Careful: the old position might not exist now.
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
-        return self._output_position(c.p)
+        tag = '_do_message'
+        try:
+            # The message and id are required.
+            if not message:
+                raise ServerError(f"no message")
+            the_id = message.get('id')
+            if the_id is None:
+                raise ServerError(f"no id in message")
+            # Set the id.
+            self.current_id = the_id
+            # The package is optional.
+            package = message.get('package')
+            # Exactly one of "command" or "method" must be present.
+            command_name = message.get('command')
+            method_name = message.get('method')
+            if command_name and method_name:
+                raise ServerError(f"{tag}: command and method can't both be given")
+            # Execute the method or command.
+            if command_name:
+                result = self._do_command_by_name(command_name, package)
+            else:
+                result = self._do_method_by_name(method_name, package)
+            # Ensure the result is a json-formatted string.
+            if not result:
+                result = self._make_response("")
+            return result
+        except ServerError as e:
+            # Common format for all error results.
+            print(f"Error: {e} in message: {message}", flush=True)
+            result = {
+                "id": self.current_id,
+                "error": e,
+                "message": message,
+            }
+        return result
+    #@+node:ekr.20210204100154.1: *5* sc._do_command_by_name
+    def _do_command_by_name(self, command_name, package):
+        """Execute one of Leo's methods by name."""
+        tag = '_do_command_by_name'
+        raise ServerError(f"{tag}: not ready yet. command: {command_name} package: {package!r}")  ###
+    #@+node:ekr.20210204095743.1: *5* sc._do_method_by_name
+    def _do_method_by_name(self, method_name, package):
+        """Execute one of Leo's methods by name."""
+        tag = '_do_method_by_name'
+        # For now, disallow hidden methods.
+        if method_name.startswith('_'):
+            raise ServerError(f"{tag}: method name starts with '_': {method_name}")
+        # Prefer ServerController methods to Leo's methods.
+        func = getattr(self, method_name, None)
+        if func:
+            return func(package)
+        func = self._get_commander_method(method_name)
+        if func:
+            return func(event=None)
+        raise ServerError(f"{tag}: method not found: {method_name!r}")
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
-    def _get_commander_method(self, command):
-        """ Return the given method (command) in the Commands class or subcommanders."""
-        c = self.c
+    def _get_commander_method(self, method_name):
+        """ Return the method with the given name in the Commands class or subcommanders."""
+        c, tag = self.c
         # First, try the Commands class.
-        func = getattr(c, command, None)
+        func = getattr(c, method_name, None)
         if func:
             return func
         # Search all subcommanders for the method.
@@ -179,23 +226,54 @@ class ServerController:
         for ivar in table:
             subcommander = getattr(c, ivar, None)
             if subcommander:
-                func = getattr(subcommander, command, None)
+                func = getattr(subcommander, method_name, None)
                 if func:
                     return func
         return None
-    #@+node:ekr.20210204060048.1: *5* sc._call_function
-    def _call_function(self, func):
-        c = self.c
-        try:
-            func(event=None)
-            return self._output_position(c.p)
-        except ArgumentError as e:
-            tag = func.__name__
-            return self._output_error(f"{tag}: {e}")
+    #@+node:ekr.20210202110128.41: *4* sc.applyConfig
+    def applyConfig(self, config):
+        '''Got the configuration from client'''
+        self.config = config
+        return self._make_response("")  # Send empty as 'ok'
+    #@+node:ekr.20210202110128.51: *4* sc.es & helpers
+    def es(self, * args, **keys):
+        '''Output to the Log Pane'''
+        d = {
+            'color': None,
+            'commas': False,
+            'newline': True,
+            'spaces': True,
+            'tabName': 'Log',
+            'nodeLink': None,
+        }
+        d = g.doKeywordArgs(keys, d)
+        s = g.translateArgs(args, d)
+        package = {"async": "log", "log": s}
+        self._send_async_output(package)
+    #@+node:ekr.20210202110128.39: *5* sc._send_async_output
+    def _send_async_output(self, package):
+        tag = '_send_async_output'
+        response = json.dumps(package, separators=(',', ':'))
+        if "async" not in package:
+            print(f"{tag}: Error: no 'async' in package parameter")
+            print(response, flush=True)
+            return
+        if self.loop:
+            self.loop.create_task(self._async_output(response))
+        else:
+            print(f"{tag}: Error loop not ready {response}")
+    #@+node:ekr.20210204145818.1: *5* sc._async_output
+    async def _async_output(self, json):
+        '''Output json string to the websocket'''
+        tag = '_async_output'
+        if self.webSocket:
+            await self.webSocket.send(bytes(json, 'utf-8'))
+        else:
+            g.trace(f"{tag} no web socket. json: {json}", flush=True)
     #@+node:ekr.20210202110128.60: *4* sc.test
     def test(self, package):
         '''Utility test function for debugging'''
-        return self._make_response('returned-key', package)
+        return self._make_response('returned-key', package or '<no package>')
            
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210202183724.4: *5* sc.clickButton
@@ -213,7 +291,7 @@ class ServerController:
                 button.command()
             except Exception():
                 pass
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.3: *5* sc.removeButton
     def removeButton(self, package):
         '''Removes an entry from the buttonsDict by index string'''
@@ -221,7 +299,7 @@ class ServerController:
         index = package['index']
         if index in d:
             del d[index]
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202193642.1: *4* sc:file commands
     #@+node:ekr.20210202110128.57: *5* sc.openFile
     def openFile(self, filename):
@@ -237,7 +315,7 @@ class ServerController:
         if not found:
             c = self.bridge.openLeoFile(filename)
         if not c:
-            return self._output_error(f"{tag}: can not open {filename!r}")
+            raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
         c.closed = False  # Mark as open *in the server*.
@@ -279,7 +357,7 @@ class ServerController:
                 c.selectPosition(c.p)
         # Done with the last one, it's now the selected commander. Check again just in case.
         if not c:
-            return self._output_error(f"{tag}: file not found: {filename!r}")
+            raise ServerError(f"{tag}: file not found: {filename!r}")
         self._create_gnx_to_vnode()
         result = {
             "filename": c.fileName(),
@@ -304,7 +382,7 @@ class ServerController:
                 c.close()
             else:
                 # Cannot close immediately. Ask to save, ignore or cancel
-                return self._make_response('closed', False)
+                return self._make_response('closed', {"closed": 0})
         # Select the first open commander.
         openCommanders = [z for z in g.app.commanders() if not z.closed]
         if not openCommanders:
@@ -336,11 +414,11 @@ class ServerController:
     def setOpenedFile(self, package):
         '''Choose the new active commander from array of opened file path/names by numeric index'''
         tag = 'setOpenedFile'
-        self._check_package(package)
+        ### self._check_ap(package)
         openedCommanders = [z for z in g.app.commanders() if not z.closed]
         index = package.get('index')
         if index is None or index >= len(openedCommanders):
-            return self._output_error(f"{tag}: invalid index: {index!r}")
+            raise ServerError(f"{tag}: invalid index: {index!r}")
         c = self.c = openedCommanders[index]
         c.closed = False
         self._create_gnx_to_vnode()
@@ -468,7 +546,7 @@ class ServerController:
         else:
             # Output all top-level nodes.
             nodes = [z for z in c.rootPosition().self_and_siblings()]
-        return self._output_position_list(nodes)
+        return self._make_position_list_response(nodes)
     #@+node:ekr.20210202183724.5: *5* sc.getCommands & helpers
     def getCommands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
@@ -1562,18 +1640,18 @@ class ServerController:
         if ap:
             p = self._ap_to_p(ap)
             if p and p.hasParent():
-                return self._output_position(p.getParent())  # if not root
-        return self._output_position(None)  # root is the default
+                return self._make_position_response(p.getParent())  # if not root
+        return self._make_position_response(None)  # root is the default
     #@+node:ekr.20210202110128.67: *5* sc.getPNode
-    def getPNode(self, ap):
+    def getPNode(self, package):
         '''EMIT OUT a node, don't select it'''
         c = self.c
-        err, p = self._check_ap(ap)
-        return err if err else self._output_position(c.p)  # Don't select p.
+        err, p = self._check_ap(package)
+        return err if err else self._make_position_response(c.p)  # Don't select p.
     #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
     def getSelectedNode(self, unused):
         '''EMIT OUT Selected Position as an array, even if unique'''
-        return self._output_position(self.c.p)
+        return self._make_position_response(self.c.p)
     #@+node:ekr.20210202110128.61: *5* sc.getStates
     def getStates(self, package):
         """
@@ -1616,17 +1694,17 @@ class ServerController:
     def clonePNode(self, package):
         '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
         c = self.c
-        p = self._check_package(package)
+        p = self._check_ap(package)
         if p == c.p:
             c.clone()
-            return self._output_position(c.p)
+            return self._make_position_response(c.p)
         # ??? Retain previous position ???
         oldPosition = c.p
         c.selectPosition(p)
         c.clone()
         if c.positionExists(oldPosition):
             c.selectPosition(oldPosition)
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
 
     #@+node:ekr.20210202110128.79: *5* sc.collapseNode
     def collapseNode(self, ap):
@@ -1643,40 +1721,40 @@ class ServerController:
         Try to keep selection, then return the selected node that remains
         '''
         c = self.c
-        p = self._check_package(package)
+        p = self._check_ap(package)
         if p == c.p:
             c.cutOutline()
-            return self._output_position(c.p)
+            return self._make_position_response(c.p)
         oldPosition = c.p  
         c.selectPosition(p)
         c.cutOutline()
         if c.positionExists(oldPosition):
             c.selectPosition(oldPosition)
-            return self._output_position(c.p)
+            return self._make_position_response(c.p)
         ### Experimental.
         oldPosition._childIndex = oldPosition._childIndex-1
         if c.positionExists(oldPosition):
             c.selectPosition(oldPosition)
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.13: *5* sc.deletePNode
     def deletePNode(self, package):
         '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
         c = self.c
-        p = self._check_package(package)
+        p = self._check_ap(package)
         if p == c.p:
             c.deleteOutline()
-            return self._output_position(c.p)
+            return self._make_position_response(c.p)
         oldPosition = c.p  
         c.selectPosition(p)
         c.deleteOutline()
         if c.positionExists(oldPosition):
             c.selectPosition(oldPosition)
-            return self._output_position(c.p)
+            return self._make_position_response(c.p)
         ### Experimental.
         oldPosition._childIndex = oldPosition._childIndex-1
         if c.positionExists(oldPosition):
             c.selectPosition(oldPosition)
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202110128.78: *5* sc.expandNode
     def expandNode(self, ap):
         '''Expand a node'''
@@ -1690,7 +1768,7 @@ class ServerController:
     def insertNamedPNode(self, package):
         '''Insert a node at given node, set its headline, select it and finally return it'''
         c, u = self.c, self.c.undoer
-        p = self._check_package(package)
+        p = self._check_ap(package)
         newHeadline = 'text' in package and package['text']
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
@@ -1698,24 +1776,24 @@ class ServerController:
         newNode.setDirty()
         u.afterInsertNode(newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.14: *5* sc.insertPNode
     def insertPNode(self, package):
         '''Insert and slect a new node.'''
         c, u = self.c, self.c.undoer
-        p = self._check_package(package)
+        p = self._check_ap(package)
         bunch = u.beforeInsertNode(p)
         newNode = p.insertAfter()
         newNode.setDirty()
         u.afterInsertNode(newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
-        return self._output_position(c.p)  # Select the new node.
+        return self._make_position_response(c.p)  # Select the new node.
     #@+node:ekr.20210202183724.9: *5* sc.markPNode
     def markPNode(self, package):
         '''Mark a node, don't select it'''
-        p = self._check_package(package)
+        p = self._check_ap(package)
         p.setMarked()
-        return self._output_position(self.c.p)  # Don't select p.
+        return self._make_position_response(self.c.p)  # Don't select p.
     #@+node:ekr.20210202110128.64: *5* sc.pageDown
     def pageDown(self, unused):
         """Selects a node a couple of steps down in the tree to simulate page down"""
@@ -1723,7 +1801,7 @@ class ServerController:
         c.selectVisNext()
         c.selectVisNext()
         c.selectVisNext()
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
 
     #@+node:ekr.20210202110128.63: *5* sc.pageUp
     def pageUp(self, unused):
@@ -1732,14 +1810,14 @@ class ServerController:
         c.selectVisBack()
         c.selectVisBack()
         c.selectVisBack()
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.17: *5* sc.redo
     def redo(self, unused):
         '''Undo last un-doable operation'''
         c, u = self.c, self.c.undoer
         if u.canRedo():
             u.redo()
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202110128.74: *5* sc.setBody
     def setBody(self, package):
         '''Change Body text of a node'''
@@ -1765,18 +1843,18 @@ class ServerController:
             v = c.fileCommands.gnxDict.get(gnx)  # vitalije
             if v:
                 v.b = body
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
 
     #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
     def setNewHeadline(self, package):
         '''Change a node's headline.'''
         u = self.c.undoer
-        p = self._check_package(package)
+        p = self._check_ap(package)
         headline = 'text' in package and package['text']  ### Check for headline.
         bunch = u.beforeChangeNodeContents(p)
         p.h = headline
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
-        return self._output_position(p)
+        return self._make_position_response(p)
     #@+node:ekr.20210202110128.77: *5* sc.setSelectedNode
     def setSelectedNode(self, ap):
         '''Select a node, or the first one found with its GNX'''
@@ -1793,7 +1871,7 @@ class ServerController:
                     else:
                         print("Set Selection node does not exist! ap was:" +
                               json.dumps(ap), flush=True)
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
 
     #@+node:ekr.20210202110128.75: *5* sc.setSelection
     def setSelection(self, package):
@@ -1818,7 +1896,7 @@ class ServerController:
             v = c.fileCommands.gnxDict.get(gnx)
         if not v:
             print('Set Selection: different Leo Document')
-            return self._output_position(c.p) # Failed, but return as normal.
+            return self._make_position_response(c.p) # Failed, but return as normal.
         body = v.b
         f_convert = g.convertRowColToPythonIndex
         active = package['active']
@@ -1844,115 +1922,42 @@ class ServerController:
             # self.scrollBarSpot = None
             # self.selectionLength = 0
             # self.selectionStart = 0
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.16: *5* sc.undo
     def undo(self, unused):
         '''Undo last un-doable operation'''
         c, u = self.c, self.c.undoer
         if u.canUndo():
             u.undo()
-        return self._output_position(c.p)
+        return self._make_position_response(c.p)
 
     #@+node:ekr.20210202183724.10: *5* sc.unmarkPNode
     def unmarkPNode(self, package):
         '''Unmark a node, don't select it'''
-        p = self._check_package(package)
+        p = self._check_ap(package)
         p.clearMarked()
-        return self._output_position(self.c.p)  # Don't select p.
-    #@+node:ekr.20210204054703.1: *3* sc:Errors
-    #@+node:ekr.20210203084135.1: *4* sc._check_ap
-    def _check_ap(self, ap):
-        """
-        Resolve archived position to a position.
-        Return p, or raise ArgumentError.
-        """
-        c = self.c
-        callers = g.callers().split(',')
-        tag = callers[-1]
-        p = self._ap_to_p(ap)
-        if not p:
-            raise ArgumentError(f"{tag}: position not found. ap: {ap!r}")
-        if not c.positionExists(p):
-            raise ArgumentError(f"{tag}: position does not exist. ap: {ap!r}")
-        return p
-    #@+node:ekr.20210203082009.1: *4* sc._check_package
-    def _check_package(self, package):
-        """
-        Resolve package["node"] to a position.
-        Return p, or raise ArgumentError
-        """
-        c = self.c
-        callers = g.callers().split(',')
-        tag = callers[-1]
-        ap = package.get('node')
-        if not ap:
-            raise ArgumentError(f"{tag}: no ap in package: {package!r}")
-        p = self._ap_to_p(ap)
-        if not p:
-            raise ArgumentError(f"{tag}: position not found. ap: {ap!r}")
-        if not c.positionExists(p):
-            raise ArgumentError(f"{tag}: position does not exist. ap: {ap!r}")
-        return p
-    #@+node:ekr.20210203081126.1: *4* sc._output_error
-    def _output_error(self, message):
-        # Output to this server's running console
-        print(f"Error: {message}", flush=True)
-        return {
-            "id": self.currentActionId,
-            "error": message,
-        }
-    #@+node:ekr.20210202194141.1: *3* sc:Output
-    #@+node:ekr.20210202110128.44: *4* sc._async_output
-    async def _async_output(self, json):
-        '''Output json string to the websocket'''
-        if self.webSocket:
-            await self.webSocket.send(bytes(json, 'utf-8'))
-        else:
-            g.trace(f"no web socket. json: {json}", flush=True)
-    #@+node:ekr.20210202110128.45: *4* sc._make_response
+        return self._make_position_response(self.c.p)  # Don't select p.
+    #@+node:ekr.20210204145902.1: *3* sc:Responses
     def _make_response(self, key=None, any=None):
         package = {
-            "id": self.currentActionId,
+            "id": self.current_id,
         }
         if key:
-            package [key] = any  # add [key]?:any
+            package [key] = any or ""
         # Send as json.
         return json.dumps(package, separators=(',', ':')) 
-    #@+node:ekr.20210202110128.49: *4* sc._output_position & _output_position_list
-    def _output_position(self, node):
-        return self._make_response("node", self._p_to_ap(node) if node else None)
 
-    def _output_position_list(self, position_list):
-        # Multiple nodes, plural.
-        return self._make_response("nodes", [self._p_to_ap(p) for p in position_list])
-    #@+node:ekr.20210202110128.51: *4* sc.es
-    def es(self, * args, **keys):
-        '''Output to the Log Pane'''
-        d = {
-            'color': None,
-            'commas': False,
-            'newline': True,
-            'spaces': True,
-            'tabName': 'Log',
-            'nodeLink': None,
-        }
-        d = g.doKeywordArgs(keys, d)
-        s = g.translateArgs(args, d)
-        package = {"async": "log", "log": s}
-        self._send_async_output(package)
+    def _make_position_response(self, p):
+        return self._make_response(
+            "archived-posistion",
+            self._p_to_ap(p) if p else None,
+        )
 
-    #@+node:ekr.20210202110128.39: *4* sc._send_async_output
-    def _send_async_output(self, package):
-        tag = '_send_async_output'
-        response = json.dumps(package, separators=(',', ':'))
-        if "async" not in package:
-            print(f"{tag}: Error: no 'async' in package parameter")
-            print(response, flush=True)
-            return
-        if self.loop:
-            self.loop.create_task(self._async_output(response))
-        else:
-            print(f"{tag}: Error loop not ready {response}")
+    def _make_position_list_response(self, position_list):
+        return self._make_response(
+            "archived-position-list",
+            [self._p_to_ap(p) for p in position_list],
+        )
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
@@ -2046,7 +2051,7 @@ class ServerController:
         new_len = len(list(gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
     #@-others
-#@+node:ekr.20210202110128.88: ** function:main
+#@+node:ekr.20210202110128.88: ** function:main & helpers
 def main():
     '''python script for leo integration via leoBridge'''
     # from leo.core import leoGlobals as g
@@ -2054,71 +2059,47 @@ def main():
     print("Starting LeoBridge... (Launch with -h for help)", flush=True)
     # replace default host address and port if provided as arguments
     #@+others
-    #@+node:ekr.20210202110128.89: *3* async def asyncInterval (create connection???)
-    # A basic example loop
-    async def asyncInterval(timeout):
-
-        print('asyncInterval.timeout', timeout)
-        n = 0
-        while True:
-            await asyncio.sleep(timeout)
-            n += 1
-            await controller.asyncOutput(
-                f'{{"counter": {n}, "time": {n*timeout}}}')
-    #@+node:ekr.20210202110128.90: *3* ws_handler
+    #@+node:ekr.20210202110128.90: *3* function: ws_handler
     async def ws_handler(websocket, path):
         """
         The web socket handler: server.ws_server.
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
-        tag = 'ws_handler'
+        tag = '[ws_handler]'
         try:
             controller.initConnection(websocket)
-            # Start by sending empty as 'ok'
+            # Start by sending empty as 'ok'.
             await websocket.send(controller._make_response(""))
             controller.logSignon()
-            async for message in websocket:
-                # Check the message...
-                err = None
-                param = json.loads(message)
-                param_id = param and param.get('id')
-                action = param and param.get('action')
-                param_param = param and param.get('param')
-                if not param:
-                    err = "no param in message"
-                elif not action:
-                    err = "no action in param"
-                elif action.startswith('_'):
-                    err = "action starts with underscore"
-                elif param_id is None:
-                    err = "no id in param"
-                else:
-                    # All is well. Execute the request.
-                    controller.set_action_id(param_id)
-                    func = getattr(controller, action, None)  # crux
-                    if func:
-                        answer = func(param_param)
-                    else:
-                        # Execute a Leo method by name, or a command by name.
-                        answer = controller.do_command_by_name(action, param_param)
-                # Continue!
-                if err:
-                    answer = f"{tag}: {err}. message: {message!r}"
+            async for json_message in websocket:
+                # Check only that json is syntactically correct.
+                # The controller makes all other checks.
+                try:
+                    d = json.loads(json_message)
+                except json.JSONDecodeError:
+                    answer = f"{tag} Invalid json: {json_message!r}"
+                    print(answer)
+                    await websocket.send(answer)
+                    continue
+                try:
+                    # _do_message catches all errors.
+                    answer = controller._do_message(d)
+                except Exception as e:
+                    # Continue on errors in the controller.
+                    answer = f"{tag} Exception in controller. message: {d!r}"
                     print(answer, flush=True)
-                assert answer is not None, repr(message)
+                    print(e, flush=True)
+                    # Like g.es_exception(), but does not call g.es.
+                    typ, val, tb = sys.exc_info()
+                    for line in traceback.format_exception(typ, val, tb):
+                        print(line.rstrip(), flush=True)
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError:
             print("Websocket connection closed", flush=True)
-        except Exception:
-            print('Exception in leobridgeserver.py!', flush=True)
-            # Like g.es_exception(), but does not call g.es.
-            typ, val, tb = sys.exc_info()
-            for line in traceback.format_exception(typ, val, tb):
-                print(line.rstrip(), flush=True)
         finally:
             asyncio.get_event_loop().stop()
-    #@+node:ekr.20210202110128.91: *3* get_args
+    #@+node:ekr.20210202110128.91: *3* function: get_args
     def get_args():
         global wsHost, wsPort
         args = None
@@ -2151,10 +2132,6 @@ def main():
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
     loop.run_until_complete(server)
     loop.run_forever()
-#@+node:ekr.20210202110128.87: ** function:printAction
-def printAction(p_param):
-    """Dump p_param"""
-    print(f"Action: {p_param['action']}, id: {p_param['id']}", flush=True)
 #@-others
 if __name__ == '__main__':
     # Startup

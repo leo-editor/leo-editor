@@ -19,12 +19,11 @@ async def asyncInterval(timeout):
             n += 1
             await asyncio.sleep(timeout)
             p_package = {
-                "action": "test",
-                "id":n,
-                # "param" is the p_package arg to leoCommand in leoserver.py.
-                "param": {
-                    "n": n,
-                    "node": 1, 
+                "id": n,
+                # "command": 'command-name',
+                "method": "test",
+                "package": {
+                    # "archived_position": "1",
                     "random": random.randrange(1, 1000)
                 }
             }
