@@ -459,16 +459,14 @@ class ServerController:
                 return self._make_response("bodyLength", len(v.b))
         return self._make_response("bodyLength", 0)  # empty as default
 
-    #@+node:ekr.20210202110128.66: *5* sc.getBodyStates
-    def getBodyStates(self, ap):
+    #@+node:ekr.20210202110128.66: *5* sc.get_body_states
+    def get_body_states(self, package):
         """
         Finds the language in effect at top of body for position p,
         Also returns the saved cursor position from last time node was accessed.
         """
         c, wrapper = self.c, self.c.frame.body.wrapper
-        err, p = self._check_ap(ap)
-        if err:
-            return err
+        p = self._check_ap(package)
         defaultPosition = {"line": 0, "col": 0}
         states = {
             'language': 'plain',
@@ -484,42 +482,41 @@ class ServerController:
                 "end": defaultPosition
             }
         }
-        if p:
-            aList = g.get_directives_dict_list(p)
-            d = g.scanAtCommentAndAtLanguageDirectives(aList)
-            language = (
-                d and d.get('language') or
-                g.getLanguageFromAncestorAtFileNode(p) or
-                c.config.getString('target-language') or
-                'plain'
-            )
-            scroll = p.v.scrollBarSpot
-            active = p.v.insertSpot
-            start = p.v.selectionStart
-            end = p.v.selectionStart + p.v.selectionLength
-            # get selection from wrapper instead if its the selected node
-            if c.p.v.gnx == p.v.gnx:
-                # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
-                active = wrapper.getInsertPoint()
-                start, end = wrapper.getSelectionRange(True)
-                scroll = wrapper.getYScrollPosition()
+        aList = g.get_directives_dict_list(p)
+        d = g.scanAtCommentAndAtLanguageDirectives(aList)
+        language = (
+            d and d.get('language') or
+            g.getLanguageFromAncestorAtFileNode(p) or
+            c.config.getString('target-language') or
+            'plain'
+        )
+        scroll = p.v.scrollBarSpot
+        active = p.v.insertSpot
+        start = p.v.selectionStart
+        end = p.v.selectionStart + p.v.selectionLength
+        # get selection from wrapper instead if its the selected node
+        if c.p.v.gnx == p.v.gnx:
+            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
+            active = wrapper.getInsertPoint()
+            start, end = wrapper.getSelectionRange(True)
+            scroll = wrapper.getYScrollPosition()
 
-            # TODO : This conversion for scroll position may be unneeded (consider as lines only)
-            # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
-            # compute line and column for the insertion point, and the start & end of selection
-            activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
-            startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
-            endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
-            states = {
-                'language': language.lower(),
-                'selection': {
-                    "gnx": p.v.gnx,
-                    "scroll": scroll,  # scroll was kept as-is
-                    "active": {"line": activeRow, "col": activeCol},
-                    "start": {"line": startRow, "col": startCol},
-                    "end": {"line": endRow, "col": endCol}
-                }
+        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
+        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
+        # compute line and column for the insertion point, and the start & end of selection
+        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
+        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
+        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
+        states = {
+            'language': language.lower(),
+            'selection': {
+                "gnx": p.v.gnx,
+                "scroll": scroll,  # scroll was kept as-is
+                "active": {"line": activeRow, "col": activeCol},
+                "start": {"line": startRow, "col": startCol},
+                "end": {"line": endRow, "col": endCol}
             }
+        }
         return self._make_response("bodyStates", states)
     #@+node:ekr.20210202183724.2: *5* sc.getButtons
     def getButtons(self, package):
@@ -1644,9 +1641,7 @@ class ServerController:
     #@+node:ekr.20210202110128.67: *5* sc.getPNode
     def getPNode(self, package):
         '''EMIT OUT a node, don't select it'''
-        c = self.c
-        err, p = self._check_ap(package)
-        return err if err else self._make_position_response(c.p)  # Don't select p.
+        return self._make_position_response(self.c.p)
     #@+node:ekr.20210202110128.70: *5* sc.getSelectedNode
     def getSelectedNode(self, unused):
         '''EMIT OUT Selected Position as an array, even if unique'''
@@ -1938,13 +1933,16 @@ class ServerController:
         return self._make_position_response(self.c.p)  # Don't select p.
     #@+node:ekr.20210204145902.1: *3* sc:Responses
     def _make_response(self, key, any=None):
-        """An empty key ("") is allowed."""
+        """
+        Return a json string corresponding to a package dictionary.
+        An empty key ("") is allowed.
+        """
         package = {
             "id": self.current_id,
         }
         if key:
+            assert isinstance(key, str), repr(key)
             package [key] = any or ""
-        # Send as json.
         return json.dumps(package, separators=(',', ':')) 
 
     def _make_position_response(self, p):
