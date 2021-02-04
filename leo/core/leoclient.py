@@ -18,7 +18,7 @@ async def asyncInterval(timeout):
         while True:
             n += 1
             await asyncio.sleep(timeout)
-            p_package = {
+            package = {
                 "id": n,
                 # "command": 'command-name',
                 "method": "test",
@@ -27,7 +27,7 @@ async def asyncInterval(timeout):
                     "random": random.randrange(1, 1000)
                 }
             }
-            request = json.dumps(p_package, separators=(',', ':'))
+            request = json.dumps(package, separators=(',', ':'))
             await websocket.send(request)
             response = await websocket.recv()
             print('got', g.toUnicode(response))
