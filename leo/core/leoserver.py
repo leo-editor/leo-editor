@@ -1716,7 +1716,7 @@ class ServerController:
     #@+node:ekr.20210205103759.1: *5* sc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
-        raise TerminateServer(f"shut down: package: {package}")
+        raise TerminateServer(f"client requested shut down")
     #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
     def clear_trace(self, package):
         self.trace = False
@@ -1849,8 +1849,8 @@ def main():
                         print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    print(e)
-                    raise websockets.exceptions.ConnectionClosed(code=1000, reason="shut_down request")
+                    # print(f"{tag}: TerminateServer: {e}", flush=True)
+                    raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except Exception as e:
                     # Continue on all errors.
                     data = f"request: {d!r}" if d else f"bad request: {json_message!r}"
