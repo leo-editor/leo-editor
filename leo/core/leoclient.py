@@ -28,17 +28,20 @@ def main():
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
 #@+node:ekr.20210205144500.1: ** function: main_loop
+times_d = {}  # Keys are n, values are time sent.
+
 async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
     # action_dict = {1: "set_trace", 5: "error", 100: "shut_down"}
-    times_d = {}  # Keys are n, values are time sent.
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
         while True:
             n += 1
             try:
-                await asyncio.sleep(timeout)
+                ### await asyncio.sleep(timeout)
+                times_d [n] = time.perf_counter()
+                # g.printObj(times_d, tag=str(n))
                 # action = 'test'
                 action = "set_trace" if n == 1 else input(f"{n:3} enter action: ")
                 package = {
@@ -51,17 +54,17 @@ async def main_loop(timeout):
                 }
                 if trace: print(f"{tag}: send: {package.get('action')}")
                 request = json.dumps(package, separators=(',', ':'))
-                times_d [n] = time.process_time()
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
                 if trace_response:
                     response_d = json.loads(json_s)
-                    print(f"{tag}:  got: {json_s}")
-                    id_ = response_d.get("id")
-                    t2 = time.process_time()
-                    t1 = None if id_ is None else times_d.get(id_)
+                    print(f"{tag}:  got: {response_d}")
+                    n2 = response_d.get("id") # An int!
+                    assert n2 is None or isinstance(n2, int), repr(n2)
+                    t2 = time.perf_counter()
+                    t1 = None if n2 is None else times_d.get(n2)
                     response_time = '???' if t1 is None else f"{(t2 -t1):4.4}"
-                    print(f"{tag}: id: {id_} response time: {response_time}")
+                    print(f"{tag}: id: {n2} response time: {response_time}")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break

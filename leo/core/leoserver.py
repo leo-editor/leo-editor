@@ -12,7 +12,7 @@ import asyncio
 import getopt
 import json
 # import os.path
-import random
+# import random
 import sys
 import time
 # Third-party.
@@ -1719,6 +1719,8 @@ class ServerController:
     def shut_down(self, package):
         """Shut down the server."""
         raise TerminateServer(f"client requested shut down")
+
+    quit = shut_down  # Abbreviation for testing.
     #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
     def clear_trace(self, package):
         self.trace = False
@@ -1860,11 +1862,6 @@ def main():
                     error = f"{tag}: {e}.\n{tag}: {data}"
                     print(error, flush=flush)
                     answer = controller._make_response('error', error)
-                # Add a small amount of random delay.
-                if trace_response: # Appears to make no difference.
-                    delay = random.uniform(0.0, 0.5)
-                    print(f"{tag} delay:{delay:3.2}")
-                    await asyncio.sleep(delay)
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"{tag}: closed error: {e}", flush=flush)
