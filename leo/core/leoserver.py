@@ -29,8 +29,7 @@ g = None  # The bridge's leoGlobals module.
 # server defaults...
 wsHost = "localhost"
 wsPort = 32125
-# commonActions = ["getChildren", "getBody", "getBodyLength"]
-flush = False
+flush = True
 trace_response = True
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
@@ -1860,11 +1859,7 @@ def main():
                     data = f"request: {d}" if d else f"bad request: {json_message!r}"
                     error = f"{tag}: {e}.\n{tag}: {data}"
                     print(error, flush=flush)
-                    # g.print_exception()  # Always flushes.
-                    answer = {
-                        "id": controller.current_id,
-                        "error": error,
-                    }
+                    answer = controller._make_response('error', error)
                 # Add a small amount of random delay.
                 if trace_response: # Appears to make no difference.
                     delay = random.uniform(0.0, 0.5)
