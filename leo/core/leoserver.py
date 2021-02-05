@@ -77,7 +77,7 @@ class ServerController:
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
     #@+node:ekr.20210202110128.51: *4* sc._es & helpers (**test**)
     def _es(self, s):
-        """Output to the Log Pane"""
+        """Send a response that does not correspond to an request."""
         self._send_async_output({
             "async": "",  # This response corresponds to no id_.
             "s": g.toUnicode(s),
