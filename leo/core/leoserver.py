@@ -108,7 +108,7 @@ class ServerController:
         tag = 'apply_config'
         config = package.get('config')
         if not config:
-            raise ServerError(f"{tag}: no config. package: {package}")
+            raise ServerError(f"{tag}: no config")
         self.config = config
         return self._make_response("")  # Send empty as 'ok'
     #@+node:ekr.20210202110128.52: *4* sc.init_connection
@@ -129,12 +129,12 @@ class ServerController:
         tag = callers[-1]
         ap = package.get('archived_position')
         if not ap:
-            raise ServerError(f"{tag}: no archived_position. package: {package}")
+            raise ServerError(f"{tag}: no archived_position")
         p = self._ap_to_p(ap)
         if not p:
-            raise ServerError(f"{tag}: position not found. package: {package}")
+            raise ServerError(f"{tag}: position not found")
         if not c.positionExists(p):
-            raise ServerError(f"{tag}: position does not exist. package: {package}")
+            raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
     def _do_message(self, d):
@@ -146,102 +146,31 @@ class ServerController:
         - A named Leo command.
         """
         tag = '_do_message'
-        try:
-            if not d:
-                raise ServerError(f"{tag}: no d")
-            the_id = d.get('id')
-            if the_id is None:
-                raise ServerError(f"{tag}: no id. d: {d}")
-            # Set the id.
-            self.current_id = the_id
-            # The package is optional.
-            package = d.get('package')
-            # Exactly one of "command" or "method" must be present.
-            command_name = d.get('command')
-            method_name = d.get('method')
-            if command_name and method_name:
-                raise ServerError(f"{tag}: both command and method given. d: {d}")
-            # Execute the method or command.
-            if command_name:
-                result = self._do_command_by_name(command_name, package)
-            else:
-                result = self._do_method_by_name(method_name, package)
-            # Ensure the result is a json-formatted string.
-            if not result:
-                result = self._make_response("")
-            return result
-        except ServerError as e:
-            # Common format for all error results.
-            print(f"{tag}: Exception {e}\nd: {d}", flush=True)
-            result = {
-                "id": self.current_id,
-                "error": e,
-                "json": d,
-            }
+        assert d, g.callers()
+        the_id = d.get('id')
+        if the_id is None:
+            raise ServerError(f"{tag}: no id")
+        # Set the id.
+        self.current_id = the_id
+        # The package is optional.
+        package = d.get('package')
+        method_name = d.get('method')
+        result = self._do_method_by_name(method_name, package)
+        # Ensure the result is a json-formatted string.
+        if result is None:
+            result = self._make_response("")
         return result
-    #@+node:ekr.20210204100154.1: *5* sc._do_command_by_name
-    def _do_command_by_name(self, command_name, package):
-        """Execute one of Leo's methods by name."""
-        tag = '_do_command_by_name'
-        raise ServerError(f"{tag}: not ready yet. package: {package}")  ###
     #@+node:ekr.20210204095743.1: *5* sc._do_method_by_name
     def _do_method_by_name(self, method_name, package):
         """Execute one of Leo's methods by name."""
         tag = '_do_method_by_name'
         # For now, disallow hidden methods.
         if method_name.startswith('_'):
-            raise ServerError(f"{tag}: method name starts with '_'. package: {package}")
-        # Prefer ServerController methods to Leo's methods.
+            raise ServerError(f"{tag}: method name starts with '_': {method_name!r}")
         func = getattr(self, method_name, None)
         if func:
             return func(package)
-        func = self._get_commander_method(method_name)
-        if func:
-            return func(event=None)
-        raise ServerError(f"{tag}: method not found: package: {package}")
-    #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
-    def _get_commander_method(self, method_name):
-        """ Return the method with the given name in the Commands class or subcommanders."""
-        c, tag = self.c
-        # First, try the Commands class.
-        func = getattr(c, method_name, None)
-        if func:
-            return func
-        # Search all subcommanders for the method.
-        table = (
-            # This table comes from c.initObjectIvars.
-            'abbrevCommands',
-            'bufferCommands',
-            'chapterCommands',
-            'controlCommands',
-            'convertCommands',
-            'debugCommands',
-            'editCommands',
-            'editFileCommands',
-            'evalController',
-            'gotoCommands',
-            'helpCommands',
-            'keyHandler',
-            'keyHandlerCommands',
-            'killBufferCommands',
-            'leoCommands',
-            'leoTestManager',
-            'macroCommands',
-            'miniBufferWidget',
-            'printingController',
-            'queryReplaceCommands',
-            'rectangleCommands',
-            'searchCommands',
-            'spellCommands',
-            'vimCommands',  # Not likely to be useful.
-        )
-        for ivar in table:
-            subcommander = getattr(c, ivar, None)
-            if subcommander:
-                func = getattr(subcommander, method_name, None)
-                if func:
-                    return func
-        return None
+        raise ServerError(f"{tag}: method not found: {method_name!r}")
     #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
     def _gnx_to_p(self, gnx):
         """Return first p node with this gnx or None"""
@@ -335,7 +264,7 @@ class ServerController:
         if not found:
             c = self.bridge.openLeoFile(filename)
         if not c:
-            raise ServerError(f"{tag}: can not open {filename!r} package: {package}")
+            raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
         c.closed = False  # Mark as open *in the server*.
@@ -1510,10 +1439,10 @@ class ServerController:
         tag = 'get_body_length'
         gnx = package.get('gnx')
         if not gnx:
-            raise ServerError(f"{tag}: no gnx. package: {package}")
+            raise ServerError(f"{tag}: no gnx")
         v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:
-            raise ServerError(f"{tag}: gnx not found. package: {package}")
+            raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         return self._make_response("bodyLength", len(v.b))
     #@+node:ekr.20210202110128.66: *5* sc.get_body_states
     def get_body_states(self, package):
@@ -1594,10 +1523,10 @@ class ServerController:
         tag = 'get_parent'
         ap = package.get('archived-position')
         if not ap:
-            raise ServerError(f"{tag}: no archived-position. package: {package}")
+            raise ServerError(f"{tag}: no archived-position")
         p = self._ap_to_p(ap)
         if not p:
-            raise ServerError(f"{tag}: position not found. package: {package}")
+            raise ServerError(f"{tag}: position not found")
         return self._make_position_response(p.getParent())
     #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
     def get_position(self, package):
@@ -1628,7 +1557,7 @@ class ServerController:
                 states["canPromote"] = c.canPromote()
                 states["canDehoist"] = c.canDehoist()
             except Exception as e:
-                raise ServerError(f"{tag} Exception: {e}. package: {package}")
+                raise ServerError(f"{tag} Exception setting state: {e}")
         return self._make_response("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202183724.11: *5* sc.clone_node
@@ -1674,7 +1603,7 @@ class ServerController:
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:
-            raise ServerError(f"{tag} no headline. package: {package}")
+            raise ServerError(f"{tag} no headline")
         c.selectPosition(p)
         p2 = c.insertHeadline()  # Handles undo.
         return self._make_position_response(p2)
@@ -1697,10 +1626,10 @@ class ServerController:
         c, u, tag = self.c, self.c.undoer, 'set_body'
         gnx = package['gnx']
         if not gnx:
-            raise ServerError(f"{tag} no gnx. package: {package}")
+            raise ServerError(f"{tag} no gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:
-            raise ServerError(f"{tag} gnx not found. package: {package}")
+            raise ServerError(f"{tag} gnx not found: {gnx!r}")
         # Set the body once.
         body = package.get('body') or ""
         v.b = body
@@ -1728,7 +1657,7 @@ class ServerController:
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:
-            raise ServerError(f"{tag} no headline. package: {package}")
+            raise ServerError(f"{tag} no headline")
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
@@ -1749,10 +1678,10 @@ class ServerController:
         c, wrapper, tag = self.c, self.c.frame.body.wrapper, 'set_selection'
         gnx = package.get('gnx')
         if not gnx:
-            raise ServerError(f"{tag}: no gnx. package: {package}")
+            raise ServerError(f"{tag}: no gnx")
         v = c.fileCommands.gnxDict.get(gnx)
         if not v:
-            raise ServerError(f"{tag}: gnx not found: package: {package}")
+            raise ServerError(f"{tag}: gnx not found. gnx: {gnx!r}")
         start = package.get('start', 0)
         end = package.get('end', 0)
         insert = package.get('insert', 0)
@@ -1894,14 +1823,20 @@ def main():
             await websocket.send(controller._make_response(""))
             controller._sign_on()
             async for json_message in websocket:
+                d = None
                 try:
                     d = json.loads(json_message)
                     answer = controller._do_message(d)
                 except Exception as e:
                     # Continue on all errors.
-                    answer = f"{tag} Unexpected exception. d: {d!r}\n{e}"
-                    print(answer, flush=True)
+                    data = f"request: {d!r}" if d else f"Bad request: {json_message!r}"
+                    error = f"{tag}{e}.\n{data}"
+                    print(error, flush=True)
                     g.print_exception()  # Always flushes.
+                    answer = {
+                        "id": controller.current_id,
+                        "error": error,
+                    }
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError:
             print("Websocket connection closed", flush=True)
