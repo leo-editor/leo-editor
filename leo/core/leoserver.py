@@ -1848,14 +1848,14 @@ def main():
                     trace = controller.trace
                     d = json.loads(json_message)
                     if trace:
-                        print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=flush)
+                        print(f"{tag}: got id: {d.get('id'):2} action: {d.get('action')}", flush=flush)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     # print(f"{tag}: TerminateServer: {e}", flush=flush)
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except Exception as e:
                     # Continue on all errors.
-                    data = f"request: {d!r}" if d else f"bad request: {json_message!r}"
+                    data = f"request: {d}" if d else f"bad request: {json_message!r}"
                     error = f"{tag}: {e}.\n{tag}: {data}"
                     print(error, flush=flush)
                     # g.print_exception()  # Always flushes.
