@@ -129,12 +129,12 @@ class ServerController:
         tag = callers[-1]
         ap = package.get('archived_position')
         if not ap:
-            raise ServerError(f"{tag}: no archived_position in package.")
+            raise ServerError(f"{tag}: no archived_position. package: {package}")
         p = self._ap_to_p(ap)
         if not p:
-            raise ServerError(f"{tag}: position not found. ap: {ap!r}")
+            raise ServerError(f"{tag}: position not found. package: {package}")
         if not c.positionExists(p):
-            raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+            raise ServerError(f"{tag}: position does not exist. package: {package}")
         return p
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
     def _do_message(self, d):
@@ -151,7 +151,7 @@ class ServerController:
                 raise ServerError(f"{tag}: no d")
             the_id = d.get('id')
             if the_id is None:
-                raise ServerError(f"{tag}: no id in d")
+                raise ServerError(f"{tag}: no id. d: {d}")
             # Set the id.
             self.current_id = the_id
             # The package is optional.
@@ -160,7 +160,7 @@ class ServerController:
             command_name = d.get('command')
             method_name = d.get('method')
             if command_name and method_name:
-                raise ServerError(f"{tag}: command and method can't both be given")
+                raise ServerError(f"{tag}: both command and method given. d: {d}")
             # Execute the method or command.
             if command_name:
                 result = self._do_command_by_name(command_name, package)
@@ -183,16 +183,14 @@ class ServerController:
     def _do_command_by_name(self, command_name, package):
         """Execute one of Leo's methods by name."""
         tag = '_do_command_by_name'
-        raise ServerError(f"{tag}: not ready yet. command: {command_name} package: {package!r}")  ###
+        raise ServerError(f"{tag}: not ready yet. package: {package}")  ###
     #@+node:ekr.20210204095743.1: *5* sc._do_method_by_name
     def _do_method_by_name(self, method_name, package):
         """Execute one of Leo's methods by name."""
         tag = '_do_method_by_name'
         # For now, disallow hidden methods.
         if method_name.startswith('_'):
-            raise ServerError(
-                f"{tag}: method name starts with '_'. {method_name}\n"
-                f"package: {package!r}")
+            raise ServerError(f"{tag}: method name starts with '_'. package: {package}")
         # Prefer ServerController methods to Leo's methods.
         func = getattr(self, method_name, None)
         if func:
@@ -200,9 +198,7 @@ class ServerController:
         func = self._get_commander_method(method_name)
         if func:
             return func(event=None)
-        raise ServerError(
-            f"{tag}: method not found: {method_name!r}\n"
-            f"package: {package!r}")
+        raise ServerError(f"{tag}: method not found: package: {package}")
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method
     def _get_commander_method(self, method_name):
         """ Return the method with the given name in the Commands class or subcommanders."""
@@ -339,7 +335,7 @@ class ServerController:
         if not found:
             c = self.bridge.openLeoFile(filename)
         if not c:
-            raise ServerError(f"{tag}: can not open {filename!r}")
+            raise ServerError(f"{tag}: can not open {filename!r} package: {package}")
         # Assign self.c
         self.c = c
         c.closed = False  # Mark as open *in the server*.
