@@ -20,15 +20,15 @@ timeout = 0.1
 def main():
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main_loop(2))
-        loop.run_forever()
+        loop.run_until_complete(main_loop(timeout))
+        ### loop.run_forever()
     except KeyboardInterrupt:
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
 #@+node:ekr.20210205144500.1: ** function: main_loop
 async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
-    action_dict = {1: "set_trace", 5: "error", 6: "shut_down"}
+    action_dict = {1: "set_trace", 5: "error", 100: "shut_down"}
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
@@ -58,7 +58,7 @@ async def main_loop(timeout):
 #@+node:ekr.20210205143347.1: ** function: test_main_loop
 async def test_main_loop():
     uri = f"ws://{wsHost}:{wsPort}"
-    action_dict = {1: "set_trace", 5: "error", 6: "shut_down"}
+    action_dict = {1: "set_trace", 5: "error"} ### 6: "shut_down"}
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
@@ -85,34 +85,32 @@ async def test_main_loop():
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
+        print('==== end of test_main_loop')
 #@+node:ekr.20210205141510.1: ** class TestServer(unittest.TestCase)
 class TestServer(unittest.TestCase):
     """Unit tests for leoserver.py"""
-    
-    
-    def test_shut_down(self):
-        g.trace('=====')
-
     #@+others
     #@+node:ekr.20210205144929.1: *3* test.setupClass & tearDownClass
     @classmethod
     def setUpClass(cls):
-        g.trace()
+        g.trace('=====')
         loop = asyncio.get_event_loop()
         loop.run_until_complete(test_main_loop())
-        loop.run_forever()
+        ### loop.run_forever()
         
     @classmethod
     def tearDownClass(cls):
-        g.trace('before stop')
         loop = asyncio.get_event_loop()
+        g.trace('===== before stop')
         loop.stop()
-        g.trace('after stop')
+        g.trace('===== after stop') ### Never shows up.
     #@+node:ekr.20210205142756.1: *3* test.test_shut_down
+    def test_shut_down(self):
+        g.trace('=====')
     #@-others
 #@-others
 
 if __name__ == '__main__':
-    unittest.main()
-    # main()
+    # unittest.main()
+    main()
 #@-leo
