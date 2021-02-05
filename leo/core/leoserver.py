@@ -25,10 +25,10 @@ import leo.core.leoFrame as leoFrame
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module.
 
-# server defaults
+# server defaults...
 wsHost = "localhost"
 wsPort = 32125
-commonActions = ["getChildren", "getBody", "getBodyLength"]
+# commonActions = ["getChildren", "getBody", "getBodyLength"]
 flush = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
