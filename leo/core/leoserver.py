@@ -31,6 +31,7 @@ wsHost = "localhost"
 wsPort = 32125
 # commonActions = ["getChildren", "getBody", "getBodyLength"]
 flush = False
+trace_response = True
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
@@ -1865,7 +1866,7 @@ def main():
                         "error": error,
                     }
                 # Add a small amount of random delay.
-                if 0: # Appears to make no difference.
+                if trace_response: # Appears to make no difference.
                     delay = random.uniform(0.0, 0.5)
                     print(f"{tag} delay:{delay:3.2}")
                     await asyncio.sleep(delay)

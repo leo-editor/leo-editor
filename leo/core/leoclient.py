@@ -14,7 +14,7 @@ wsPort = 32125
 
 tag = 'client'
 trace = True
-trace_response = False
+trace_response = True
 timeout = 0.1  # Without some wait everything happens too quickly to test.
 
 #@+others
@@ -59,7 +59,7 @@ async def main_loop(timeout):
                     print(f"{tag}:  got: {json_s}")
                     id_ = response_d.get("id")
                     t2 = time.process_time()
-                    t1 = times_d.get(id_ or 'xxx')
+                    t1 = None if id_ is None else times_d.get(id_)
                     response_time = '???' if t1 is None else f"{(t2 -t1):4.4}"
                     print(f"{tag}: id: {id_} response time: {response_time}")
             except websockets.exceptions.ConnectionClosedError as e:
