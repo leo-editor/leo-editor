@@ -332,12 +332,13 @@ class ServerController:
         return self._make_position_response(c.p)
     #@+node:ekr.20210202193642.1: *4* sc:file commands
     #@+node:ekr.20210202110128.57: *5* sc.open_file
-    def open_file(self, filename):
+    def open_file(self, package):
         """
         Open a leo file with the given filename. Create a new document if no name.
         """
         c, found, tag = None, False, 'open_file'
         openCommanders = [z for z in g.app.commanders() if not c.closed]
+        filename = package.get('filename')  # Optional.
         if filename:
             for c in openCommanders:
                 if c.fileName() == filename:
