@@ -9,9 +9,9 @@ from leo.core import leoGlobals as g
 
 wsHost = "localhost"
 wsPort = 32125
+tag = 'client'
 
 async def asyncInterval(timeout):
-    tag = 'client'
     uri = f"ws://{wsHost}:{wsPort}"
     async with websockets.connect(uri) as websocket:
         print(f"{tag}: asyncInterval.timeout: {timeout}")
@@ -34,6 +34,7 @@ async def asyncInterval(timeout):
                 await websocket.send(request)
                 response = g.toUnicode(await websocket.recv())
                 print(f"{tag}: got: {response}")
+            
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
@@ -41,6 +42,10 @@ async def asyncInterval(timeout):
                 print(f"{tag}: connection closed normally")
                 break
 loop = asyncio.get_event_loop()
-loop.run_until_complete(asyncInterval(2))
-loop.run_forever()
+try:
+    loop.run_until_complete(asyncInterval(2))
+    loop.run_forever()
+except KeyboardInterrupt:
+    # This terminates the server abnormally.
+    print(f"{tag}: Keyboard interrupt")
 #@-leo
