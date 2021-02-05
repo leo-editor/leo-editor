@@ -12,6 +12,7 @@ import asyncio
 import getopt
 import json
 # import os.path
+import random
 import sys
 import time
 # Third-party.
@@ -1863,6 +1864,11 @@ def main():
                         "id": controller.current_id,
                         "error": error,
                     }
+                # Add a small amount of random delay.
+                if 0: # Appears to make no difference.
+                    delay = random.uniform(0.0, 0.5)
+                    print(f"{tag} delay:{delay:3.2}")
+                    await asyncio.sleep(delay)
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"{tag}: closed error: {e}", flush=flush)
