@@ -79,7 +79,7 @@ class ServerController:
     def _es(self, s):
         """Output to the Log Pane"""
         self._send_async_output({
-            "async": "",
+            "async": "",  # This response corresponds to no id_.
             "s": g.toUnicode(s),
         })
     #@+node:ekr.20210202110128.39: *5* sc._send_async_output
