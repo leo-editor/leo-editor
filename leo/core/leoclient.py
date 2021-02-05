@@ -14,8 +14,7 @@ wsPort = 32125
 
 tag = 'client'
 trace = True
-trace_response = True
-timeout = 0.1  # Without some wait everything happens too quickly to test.
+timeout = 0.1
 
 #@+others
 #@+node:ekr.20210205141432.1: ** function: main
@@ -32,21 +31,22 @@ times_d = {}  # Keys are n, values are time sent.
 
 async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
-    # action_dict = {1: "set_trace", 5: "error", 100: "shut_down"}
+    action_dict = {1: "set_trace", 5: "error", 20: "shut_down"}
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
         while True:
             n += 1
             try:
-                ### await asyncio.sleep(timeout)
                 times_d [n] = time.perf_counter()
-                # g.printObj(times_d, tag=str(n))
-                # action = 'test'
-                action = "set_trace" if n == 1 else input(f"{n:3} enter action: ")
+                if 0:
+                    action = "set_trace" if n == 1 else input(f"{n:3} enter action: ")
+                else:
+                    await asyncio.sleep(timeout)
+                    action = action_dict.get(n)
                 package = {
                     "id": n,
-                    "action": action or "test",  ### action_dict.get(n, "test"),
+                    "action": action or "test",
                     "package": {
                         "ap": "1",
                         "random": random.randrange(1, 1000)
@@ -56,15 +56,13 @@ async def main_loop(timeout):
                 request = json.dumps(package, separators=(',', ':'))
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
-                if trace_response:
-                    response_d = json.loads(json_s)
-                    print(f"{tag}:  got: {response_d}")
-                    n2 = response_d.get("id") # An int!
-                    assert n2 is None or isinstance(n2, int), repr(n2)
+                response_d = json.loads(json_s)
+                if trace:
                     t2 = time.perf_counter()
+                    n2 = response_d.get("id")
                     t1 = None if n2 is None else times_d.get(n2)
                     response_time = '???' if t1 is None else f"{(t2 -t1):4.4}"
-                    print(f"{tag}: id: {n2} response time: {response_time}")
+                    print(f"{tag}:  got: {response_d} response time: {response_time}")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
