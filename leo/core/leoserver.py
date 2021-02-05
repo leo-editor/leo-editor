@@ -216,6 +216,14 @@ class ServerController:
                 if func:
                     return func
         return None
+    #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
+    def _gnx_to_p(self, gnx):
+        '''Return first p node with this gnx or None'''
+        for p in self.c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        return None
+
     #@+node:ekr.20210204154318.2: *4* sc._make_position_list_response
     def _make_position_list_response(self, position_list):
         return self._make_response(
@@ -1636,148 +1644,79 @@ class ServerController:
                 raise ServerError(f"{tag} Exception: {e}. package: {package}")
         return self._make_response("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
-    #@+node:ekr.20210202110128.81: *5* sc._gnx_to_p
-    def _gnx_to_p(self, gnx):
-        '''Return first p node with this gnx or None'''
-        for p in self.c.all_unique_positions():
-            if p.v.gnx == gnx:
-                return p
-        return None
-
-    #@+node:ekr.20210202183724.11: *5* sc.clonePNode
-    def clonePNode(self, package):
-        '''Clone a node, return it, if it was also the current selection, otherwise try not to select it'''
+    #@+node:ekr.20210202183724.11: *5* sc.clone_node
+    def clone_node(self, package):
+        '''Clone a node'''
         c = self.c
         p = self._check_ap(package)
-        if p == c.p:
-            c.clone()
-            return self._make_position_response(c.p)
-        # ??? Retain previous position ???
-        oldPosition = c.p
         c.selectPosition(p)
         c.clone()
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
         return self._make_position_response(c.p)
-
-    #@+node:ekr.20210202110128.79: *5* sc.collapseNode
-    def collapseNode(self, ap):
+    #@+node:ekr.20210202110128.79: *5* sc.collapse_node
+    def collapse_node(self, package):
         '''Collapse a node'''
-        if ap:
-            p = self._ap_to_p(ap)
-            if p:
-                p.contract()
+        p = self._check_ap(package)
+        p.contract()
         return self._make_response("")  # Just send empty as 'ok'
-    #@+node:ekr.20210202183724.12: *5* sc.cutPNode
-    def cutPNode(self, package):
-        '''
-        Cut a node, don't select it.
-        Try to keep selection, then return the selected node that remains
-        '''
+    #@+node:ekr.20210202183724.12: *5* sc.cut_node
+    def cut_node(self, package):
+        '''Cut a node, return the newly-selected node.'''
         c = self.c
         p = self._check_ap(package)
-        if p == c.p:
-            c.cutOutline()
-            return self._make_position_response(c.p)
-        oldPosition = c.p  
         c.selectPosition(p)
         c.cutOutline()
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
-            return self._make_position_response(c.p)
-        ### Experimental.
-        oldPosition._childIndex = oldPosition._childIndex-1
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
         return self._make_position_response(c.p)
-    #@+node:ekr.20210202183724.13: *5* sc.deletePNode
-    def deletePNode(self, package):
-        '''Delete a node, don't select it. Try to keep selection, then return the selected node that remains'''
+    #@+node:ekr.20210202183724.13: *5* sc.delete_node
+    def delete_node(self, package):
+        '''Delete a node. Return the newly-selected node.'''
         c = self.c
         p = self._check_ap(package)
-        if p == c.p:
-            c.deleteOutline()
-            return self._make_position_response(c.p)
-        oldPosition = c.p  
         c.selectPosition(p)
-        c.deleteOutline()
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
-            return self._make_position_response(c.p)
-        ### Experimental.
-        oldPosition._childIndex = oldPosition._childIndex-1
-        if c.positionExists(oldPosition):
-            c.selectPosition(oldPosition)
+        c.deleteOutline()  # Handles undo.
         return self._make_position_response(c.p)
-    #@+node:ekr.20210202110128.78: *5* sc.expandNode
-    def expandNode(self, ap):
+    #@+node:ekr.20210202110128.78: *5* sc.expand_node
+    def expand_node(self, package):
         '''Expand a node'''
-        if ap:
-            p = self._ap_to_p(ap)
-            if p:
-                p.expand()
+        p = self._check_ap(package)
+        p.expand()
         return self._make_response("")  # Just send empty as 'ok'
-
-    #@+node:ekr.20210202183724.15: *5* sc.insertNamedPNode
-    def insertNamedPNode(self, package):
-        '''Insert a node at given node, set its headline, select it and finally return it'''
-        c, u = self.c, self.c.undoer
+    #@+node:ekr.20210202183724.15: *5* sc.insert_node
+    def insert_node(self, package):
+        '''Insert a node after the given node, set its headline and select it.'''
+        c, tag = self.c, 'insert_node'
         p = self._check_ap(package)
-        newHeadline = 'text' in package and package['text']
-        bunch = u.beforeInsertNode(p)
-        newNode = p.insertAfter()
-        newNode.h = newHeadline
-        newNode.setDirty()
-        u.afterInsertNode(newNode, 'Insert Node', bunch)
-        c.selectPosition(newNode)
-        return self._make_position_response(c.p)
-    #@+node:ekr.20210202183724.14: *5* sc.insertPNode
-    def insertPNode(self, package):
-        '''Insert and slect a new node.'''
-        c, u = self.c, self.c.undoer
-        p = self._check_ap(package)
-        bunch = u.beforeInsertNode(p)
-        newNode = p.insertAfter()
-        newNode.setDirty()
-        u.afterInsertNode(newNode, 'Insert Node', bunch)
-        c.selectPosition(newNode)
-        return self._make_position_response(c.p)  # Select the new node.
-    #@+node:ekr.20210202183724.9: *5* sc.markPNode
-    def markPNode(self, package):
-        '''Mark a node, don't select it'''
+        h = package.get('headline')
+        if not h:
+            raise ServerError(f"{tag} no headline. package: {package}")
+        c.selectPosition(p)
+        p2 = c.insertHeadline()  # Handles undo.
+        return self._make_position_response(p2)
+    #@+node:ekr.20210202183724.9: *5* sc.mark_node
+    def mark_node(self, package):
+        '''Mark a node, but don't select it.'''
         p = self._check_ap(package)
         p.setMarked()
-        return self._make_position_response(self.c.p)  # Don't select p.
-    #@+node:ekr.20210202110128.64: *5* sc.pageDown
-    def pageDown(self, unused):
-        """Selects a node a couple of steps down in the tree to simulate page down"""
-        c = self.c
-        c.selectVisNext()
-        c.selectVisNext()
-        c.selectVisNext()
-        return self._make_position_response(c.p)
-
-    #@+node:ekr.20210202110128.63: *5* sc.pageUp
-    def pageUp(self, unused):
-        """Selects a node a couple of steps up in the tree to simulate page up"""
-        c = self.c
-        c.selectVisBack()
-        c.selectVisBack()
-        c.selectVisBack()
-        return self._make_position_response(c.p)
+        return self._make_position_response(self.c.p)
     #@+node:ekr.20210202183724.17: *5* sc.redo
-    def redo(self, unused):
+    def redo(self, package):
         '''Undo last un-doable operation'''
         c, u = self.c, self.c.undoer
         if u.canRedo():
             u.redo()
         return self._make_position_response(c.p)
-    #@+node:ekr.20210202110128.74: *5* sc.setBody
-    def setBody(self, package):
+    #@+node:ekr.20210202110128.74: *5* sc.set_body
+    def set_body(self, package):
         '''Change Body text of a node'''
-        c, u = self.c, self.c.undoer
+        c, u, tag = self.c, self.c.undoer, 'set_body'
         gnx = package['gnx']
-        body = package['body']
+        if not gnx:
+            raise ServerError(f"{tag} no gnx. package: {package}")
+        v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+        if not v:
+            raise ServerError(f"{tag} gnx not found. package: {package}")
+        # Set the body once.
+        body = package.get('body') or ""
+        v.b = body
         for p in self.c.all_positions():
             if p.v.gnx == gnx:
                 # TODO : Before setting undo and trying to set body, first check if different than existing body
@@ -1792,105 +1731,67 @@ class ServerController:
                 if not p.v.isDirty():
                     p.setDirty()
                 break
-        # additional forced string setting
-        if gnx:
-            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-            if v:
-                v.b = body
         return self._make_position_response(c.p)
 
-    #@+node:ekr.20210202110128.76: *5* sc.setNewHeadline
-    def setNewHeadline(self, package):
+    #@+node:ekr.20210202110128.76: *5* sc.set_headline
+    def set_headline(self, package):
         '''Change a node's headline.'''
+        tag = 'set_headline'
         u = self.c.undoer
         p = self._check_ap(package)
-        headline = 'text' in package and package['text']  ### Check for headline.
+        h = package.get('headline')
+        if not h:
+            raise ServerError(f"{tag} no headline. package: {package}")
         bunch = u.beforeChangeNodeContents(p)
-        p.h = headline
+        p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_position_response(p)
-    #@+node:ekr.20210202110128.77: *5* sc.setSelectedNode
-    def setSelectedNode(self, ap):
+    #@+node:ekr.20210202110128.77: *5* sc.set_current_position
+    def set_current_position(self, package):
         '''Select a node, or the first one found with its GNX'''
         c = self.c
-        if ap:
-            p = self._ap_to_p(ap)
-            if p:
-                if c.positionExists(p):
-                    c.selectPosition(p)
-                else:
-                    found_p = self._gnx_to_p(ap['gnx'])
-                    if found_p:
-                        c.selectPosition(found_p)
-                    else:
-                        print("Set Selection node does not exist! ap was:" +
-                              json.dumps(ap), flush=True)
+        p = self._check_ap(package)  # p is guaranteed to exist.
+        c.selectPosition(p)
         return self._make_position_response(c.p)
-
-    #@+node:ekr.20210202110128.75: *5* sc.setSelection
-    def setSelection(self, package):
+    #@+node:ekr.20210202110128.75: *5* sc.set_selection
+    def set_selection(self, package):
         '''
-        Set cursor position and scroll position along with selection start and end.
-        (For the currently selected node's body, if gnx matches only)
-        Save those values on the commander's body "wrapper"
-        See BodySelectionInfo interface in types.d.ts
+        Given package['gnx'], selection.
+        Set the selection in the wrapper if c.p.gnx == gnx.
         '''
-        c = self.c
-        same = False  # True: set values in the wrapper, if same gnx.
-        wrapper = self.c.frame.body.wrapper
-        gnx = package['gnx']
-        body = ""
-        v = None
-        if c.p.v.gnx == gnx:
-            same = True
-            v = c.p.v
-        else:
-            ### Is this a bug?
-            print(f"Set Selection: different gnx: selected: {c.p.v.gnx!r} package: {gnx}")
-            v = c.fileCommands.gnxDict.get(gnx)
+        c, wrapper, tag = self.c, self.c.frame.body.wrapper, 'set_selection'
+        gnx = package.get('gnx')
+        if not gnx:
+            raise ServerError(f"{tag}: no gnx. package: {package}")
+        v = c.fileCommands.gnxDict.get(gnx)
         if not v:
-            print('Set Selection: different Leo Document')
-            return self._make_position_response(c.p) # Failed, but return as normal.
-        body = v.b
-        f_convert = g.convertRowColToPythonIndex
-        active = package['active']
-        start = package['start']
-        end = package['end']
-        # no convertion necessary, its given back later
-        scroll = package['scroll']
-        insert = f_convert(body, active['line'], active['col'])
-        startSel = f_convert(body, start['line'], start['col'])
-        endSel = f_convert(body, end['line'], end['col'])
-        if same:
-            wrapper.setSelectionRange(startSel, endSel, insert)
+            raise ServerError(f"{tag}: gnx not found: package: {package}")
+        start = package.get('start', 0)
+        end = package.get('end', 0)
+        insert = package.get('insert', 0)
+        scroll = package.get('scroll', 0)
+        if gnx == c.p.v.gnx:
+            wrapper.setSelectionRange(start, end, insert)
             wrapper.setYScrollPosition(scroll)
-        else:
-            pass
-        # Set for v node no matter what
+        # Always set vnode attrs.
         v.scrollBarSpot = scroll
         v.insertSpot = insert
-        v.selectionStart = startSel
-        v.selectionLength = abs(endSel - endSel)
-        ### From v.init:
-            # self.insertSpot = None
-            # self.scrollBarSpot = None
-            # self.selectionLength = 0
-            # self.selectionStart = 0
+        v.selectionStart = start
+        v.selectionLength = abs(start - end)
         return self._make_position_response(c.p)
     #@+node:ekr.20210202183724.16: *5* sc.undo
-    def undo(self, unused):
+    def undo(self, package):
         '''Undo last un-doable operation'''
         c, u = self.c, self.c.undoer
         if u.canUndo():
             u.undo()
         return self._make_position_response(c.p)
-
-    #@+node:ekr.20210202183724.10: *5* sc.unmarkPNode
-    def unmarkPNode(self, package):
+    #@+node:ekr.20210202183724.10: *5* sc.unmark_node
+    def unmark_node(self, package):
         '''Unmark a node, don't select it'''
         p = self._check_ap(package)
         p.clearMarked()
-        return self._make_position_response(self.c.p)  # Don't select p.
+        return self._make_position_response(self.c.p)
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
