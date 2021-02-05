@@ -51,7 +51,7 @@ class ServerController:
         self.current_id = 1  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
         self.loop = None
-        self.webSocket = None
+        self.web_socket = None
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
@@ -72,14 +72,8 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.52: *4* sc.init_connection
-    def init_connection(self, webSocket):
-        """Begin the connection."""
-        self.webSocket = webSocket
-        self.loop = asyncio.get_event_loop()
-
-    #@+node:ekr.20210202110128.42: *4* sc.sign_on
-    def sign_on(self):
+    #@+node:ekr.20210202110128.42: *4* sc._sign_on
+    def _sign_on(self):
         '''Simulate the initial Leo Log Entry'''
         if self.loop:
             g.app.computeSignon()
@@ -87,6 +81,21 @@ class ServerController:
             g.es(g.app.signon1)
         else:
             print('sign_on: no loop', flush=True)
+    #@+node:ekr.20210202110128.41: *4* sc.apply_config
+    def apply_config(self, package):
+        '''Got the configuration from client'''
+        tag = 'apply_config'
+        config = package.get('config')
+        if not config:
+            raise ServerError(f"{tag}: no config. package: {package}")
+        self.config = config
+        return self._make_response("")  # Send empty as 'ok'
+    #@+node:ekr.20210202110128.52: *4* sc.init_connection
+    def _init_connection(self, web_socket):
+        """Begin the connection."""
+        self.web_socket = web_socket
+        self.loop = asyncio.get_event_loop()
+
     #@+node:ekr.20210204154548.1: *3* sc:Command utils
     #@+node:ekr.20210203084135.1: *4* sc._check_ap
     def _check_ap(self, package):
@@ -252,49 +261,37 @@ class ServerController:
         return json.dumps(package, separators=(',', ':')) 
 
     #@+node:ekr.20210202193210.1: *3* sc:Commands
-    #@+node:ekr.20210202110128.41: *4* sc.applyConfig
-    def applyConfig(self, config):
-        '''Got the configuration from client'''
-        self.config = config
-        return self._make_response("")  # Send empty as 'ok'
-    #@+node:ekr.20210202110128.51: *4* sc.es & helpers
-    def es(self, * args, **keys):
+    #@+node:ekr.20210202110128.51: *4* sc.es & helpers (**test**)
+    def es(self, package):
         '''Output to the Log Pane'''
-        d = {
-            'color': None,
-            'commas': False,
-            'newline': True,
-            'spaces': True,
-            'tabName': 'Log',
-            'nodeLink': None,
-        }
-        d = g.doKeywordArgs(keys, d)
-        s = g.translateArgs(args, d)
-        package = {"async": "log", "log": s}
-        self._send_async_output(package)
+        tag = 'es'
+        s = package.get('s')
+        if not s:
+            raise ServerError(f"{tag}: no s. package: {package}")
+        self._send_async_output({
+            "async": "",
+            "s": s,
+        })
     #@+node:ekr.20210202110128.39: *5* sc._send_async_output
     def _send_async_output(self, package):
         tag = '_send_async_output'
+        assert "async" in package, repr(package)
         response = json.dumps(package, separators=(',', ':'))
-        if "async" not in package:
-            print(f"{tag}: Error: no 'async' in package parameter")
-            print(response, flush=True)
-            return
         if self.loop:
             self.loop.create_task(self._async_output(response))
         else:
             print(f"{tag}: Error loop not ready {response}")
     #@+node:ekr.20210204145818.1: *5* sc._async_output
     async def _async_output(self, json):
-        '''Output json string to the websocket'''
+        '''Output json string to the web_socket'''
         tag = '_async_output'
-        if self.webSocket:
-            await self.webSocket.send(bytes(json, 'utf-8'))
+        if self.web_socket:
+            await self.web_socket.send(bytes(json, 'utf-8'))
         else:
             g.trace(f"{tag} no web socket. json: {json}", flush=True)
     #@+node:ekr.20210202110128.60: *4* sc.test
     def test(self, package):
-        '''Utility test function for debugging'''
+        '''Do-nothing test function for debugging'''
         return self._make_response('test-result', package)
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210202183724.4: *5* sc.click_button
@@ -1905,7 +1902,7 @@ def main():
             controller.init_connection(websocket)
             # Start by sending empty as 'ok'.
             await websocket.send(controller._make_response(""))
-            controller.sign_on()
+            controller._sign_on()
             async for json_message in websocket:
                 try:
                     d = json.loads(json_message)
