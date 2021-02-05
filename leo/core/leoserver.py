@@ -29,7 +29,7 @@ g = None  # The bridge's leoGlobals module.
 wsHost = "localhost"
 wsPort = 32125
 commonActions = ["getChildren", "getBody", "getBodyLength"]
-flush = False  # Experimental
+flush = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
