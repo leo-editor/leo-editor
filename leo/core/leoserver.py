@@ -30,9 +30,13 @@ wsHost = "localhost"
 wsPort = 32125
 commonActions = ["getChildren", "getBody", "getBodyLength"]
 #@+others
-#@+node:ekr.20210204054519.1: ** class ServerError(Exception)
+#@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
     """The server received a package containing missing or erroneous contents."""
+    pass
+
+class TerminateServer(Exception):
+    """Ask the server to terminate."""
     pass
 #@+node:ekr.20210202110128.29: ** class ServerController
 class ServerController:
@@ -48,7 +52,7 @@ class ServerController:
         # Init ivars first.
         self.c = None  # Currently Selected Commander.
         self.config = None
-        self.current_id = 1  # Id of action being processed.
+        self.current_id = 0  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
         self.loop = None
         self.web_socket = None
@@ -154,7 +158,7 @@ class ServerController:
         self.current_id = the_id
         # The package is optional.
         package = d.get('package')
-        method_name = d.get('method')
+        method_name = d.get('action')
         result = self._do_method_by_name(method_name, package)
         # Ensure the result is a json-formatted string.
         if result is None:
@@ -207,10 +211,6 @@ class ServerController:
         return json.dumps(package, separators=(',', ':')) 
 
     #@+node:ekr.20210202193210.1: *3* sc:Commands
-    #@+node:ekr.20210202110128.60: *4* sc.test
-    def test(self, package):
-        """Do-nothing test function for debugging"""
-        return self._make_response('test-result', package)
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210202183724.4: *5* sc.click_button
     def click_button(self, package):
@@ -1557,7 +1557,7 @@ class ServerController:
                 states["canPromote"] = c.canPromote()
                 states["canDehoist"] = c.canDehoist()
             except Exception as e:
-                raise ServerError(f"{tag} Exception setting state: {e}")
+                raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_response("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202183724.11: *5* sc.clone_node
@@ -1603,7 +1603,7 @@ class ServerController:
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:
-            raise ServerError(f"{tag} no headline")
+            raise ServerError(f"{tag}: no headline")
         c.selectPosition(p)
         p2 = c.insertHeadline()  # Handles undo.
         return self._make_position_response(p2)
@@ -1626,10 +1626,10 @@ class ServerController:
         c, u, tag = self.c, self.c.undoer, 'set_body'
         gnx = package['gnx']
         if not gnx:
-            raise ServerError(f"{tag} no gnx")
+            raise ServerError(f"{tag}: no gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:
-            raise ServerError(f"{tag} gnx not found: {gnx!r}")
+            raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         # Set the body once.
         body = package.get('body') or ""
         v.b = body
@@ -1657,7 +1657,7 @@ class ServerController:
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:
-            raise ServerError(f"{tag} no headline")
+            raise ServerError(f"{tag}: no headline")
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
@@ -1708,6 +1708,19 @@ class ServerController:
         p = self._check_ap(package)
         p.clearMarked()
         return self._make_position_response(self.c.p)
+    #@+node:ekr.20210205102806.1: *4* sc:test commands
+    #@+node:ekr.20210205102818.1: *5* sc.error
+    def error(self, package):
+        """For unit testing. Raise ServerError"""
+        raise ServerError("sc.error called. package: {package}")
+    #@+node:ekr.20210205103759.1: *5* sc.shut_down
+    def shut_down(self, package):
+        """Shut down the server."""
+        raise TerminateServer(f"shut down: package: {package}")
+    #@+node:ekr.20210202110128.60: *5* sc.test
+    def test(self, package):
+        """Do-nothing test function for debugging"""
+        return self._make_response('test-result', package)
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
@@ -1827,6 +1840,9 @@ def main():
                 try:
                     d = json.loads(json_message)
                     answer = controller._do_message(d)
+                except TerminateServer as e:
+                    print(e)
+                    break
                 except Exception as e:
                     # Continue on all errors.
                     data = f"request: {d!r}" if d else f"Bad request: {json_message!r}"
@@ -1840,6 +1856,7 @@ def main():
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError:
             print("Websocket connection closed", flush=True)
+            websocket.close()  ### Experimental.
         finally:
             asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
