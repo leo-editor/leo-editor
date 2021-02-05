@@ -1713,7 +1713,7 @@ class ServerController:
     #@+node:ekr.20210205102818.1: *5* sc.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
-        raise ServerError("sc.error called. package: {package}")
+        raise ServerError(f"sc.error called. package: {package}")
     #@+node:ekr.20210205103759.1: *5* sc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
@@ -1845,8 +1845,9 @@ def main():
             async for json_message in websocket:
                 d = None
                 try:
+                    trace = controller.trace
                     d = json.loads(json_message)
-                    if controller.trace:
+                    if trace:
                         print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=flush)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
