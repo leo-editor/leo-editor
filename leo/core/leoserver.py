@@ -29,6 +29,7 @@ g = None  # The bridge's leoGlobals module.
 wsHost = "localhost"
 wsPort = 32125
 commonActions = ["getChildren", "getBody", "getBodyLength"]
+flush = False  # Experimental
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
@@ -97,7 +98,7 @@ class ServerController:
         if self.web_socket:
             await self.web_socket.send(bytes(json, 'utf-8'))
         else:
-            g.trace(f"{tag} no web socket. json: {json}", flush=True)
+            g.trace(f"{tag} no web socket. json: {json}", flush=flush)
     #@+node:ekr.20210202110128.42: *4* sc._sign_on
     def _sign_on(self):
         """Simulate the initial Leo Log Entry"""
@@ -106,7 +107,7 @@ class ServerController:
             self._es(g.app.signon)
             self._es(g.app.signon1)
         else:
-            print('sign_on: no loop', flush=True)
+            print('sign_on: no loop', flush=flush)
     #@+node:ekr.20210202110128.41: *4* sc.apply_config
     def apply_config(self, package):
         """Got the configuration from client"""
@@ -320,8 +321,8 @@ class ServerController:
                     c.save()
             except Exception as e:
                 g.trace('Error while saving')
-                print("Error while saving", flush=True)
-                print(e, flush=True)
+                print("Error while saving", flush=flush)
+                print(e, flush=flush)
         return self._make_response("")  # Send empty as 'ok'
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
     #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
@@ -333,21 +334,21 @@ class ServerController:
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:
-            print('duplicate command names...', flush=True)
+            print('duplicate command names...', flush=flush)
             for z in sorted(duplicates):
                 print(z)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
             if not func:
-                print('no func:', command_name, flush=True)
+                print('no func:', command_name, flush=flush)
                 continue
             if command_name in bad_names:  # #92.
                 continue
             # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
             func_name = getattr(func, '__func_name__', func.__name__)
             if not func_name:
-                print('no name', command_name, flush=True)
+                print('no name', command_name, flush=flush)
                 continue
             doc = func.__doc__ or ''
             result.append({
@@ -1756,7 +1757,7 @@ class ServerController:
         """(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position."""
         c, v = self.c, p.v
         if not v:
-            print(f"ServerController.p_to_ap: no v for position {p!r}", flush=True)
+            print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
             assert False
         # Expand gnx-vnode translation table for any new node encountered
         if v.gnx not in self.gnx_to_vnode:
@@ -1846,16 +1847,16 @@ def main():
                 try:
                     d = json.loads(json_message)
                     if controller.trace:
-                        print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=True)
+                        print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=flush)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    # print(f"{tag}: TerminateServer: {e}", flush=True)
+                    # print(f"{tag}: TerminateServer: {e}", flush=flush)
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except Exception as e:
                     # Continue on all errors.
                     data = f"request: {d!r}" if d else f"bad request: {json_message!r}"
                     error = f"{tag}: {e}.\n{tag}: {data}"
-                    print(error, flush=True)
+                    print(error, flush=flush)
                     # g.print_exception()  # Always flushes.
                     answer = {
                         "id": controller.current_id,
@@ -1863,9 +1864,9 @@ def main():
                     }
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
-            print(f"{tag}: closed error: {e}", flush=True)
+            print(f"{tag}: closed error: {e}", flush=flush)
         except websockets.exceptions.ConnectionClosed as e:
-            print(f"{tag}: closed normally: {e}", flush=True)
+            print(f"{tag}: closed normally: {e}", flush=flush)
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
