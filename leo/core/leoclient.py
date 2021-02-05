@@ -11,30 +11,34 @@ wsHost = "localhost"
 wsPort = 32125
 
 async def asyncInterval(timeout):
+    tag = 'client'
     uri = f"ws://{wsHost}:{wsPort}"
     async with websockets.connect(uri) as websocket:
-        print('asyncInterval.timeout', timeout)
+        print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
         while True:
             n += 1
             try:
                 await asyncio.sleep(timeout)
+                action = "shut_down" if n == 6 else "error" if n == 5 else "set_trace" if n == 1 else "test"
                 package = {
                     "id": n,
-                    # "command": 'command-name',
-                    # "method": "shut_down" if n == 6 else "error" if n == 5 else "test",
-                    "action": "shut_down" if n == 4 else "test",
+                    "action": action,
                     "package": {
-                        # "archived_position": "1",
+                        "ap": "1",
                         "random": random.randrange(1, 1000)
                     }
                 }
+                print(f"{tag}: send {package.get('action')}")
                 request = json.dumps(package, separators=(',', ':'))
                 await websocket.send(request)
-                response = await websocket.recv()
-                print('got', g.toUnicode(response))
+                response = g.toUnicode(await websocket.recv())
+                print(f"{tag}: got: {response}")
             except websockets.exceptions.ConnectionClosedError as e:
-                print('connection closed', e)
+                print(f"{tag}: connection closed: {e}")
+                break
+            except websockets.exceptions.ConnectionClosed:
+                print(f"{tag}: connection closed normally")
                 break
 loop = asyncio.get_event_loop()
 loop.run_until_complete(asyncInterval(2))

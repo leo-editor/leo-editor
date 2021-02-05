@@ -55,6 +55,7 @@ class ServerController:
         self.current_id = 0  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
         self.loop = None
+        self.trace = False
         self.web_socket = None
         #
         # Start the bridge.
@@ -78,7 +79,7 @@ class ServerController:
         """Output to the Log Pane"""
         self._send_async_output({
             "async": "",
-            "s": s,
+            "s": g.toUnicode(s),
         })
     #@+node:ekr.20210202110128.39: *5* sc._send_async_output
     def _send_async_output(self, package):
@@ -150,14 +151,13 @@ class ServerController:
         - A named Leo command.
         """
         tag = '_do_message'
-        assert d, g.callers()
-        the_id = d.get('id')
-        if the_id is None:
+        id_ = d.get('id')
+        if id_ is None:
             raise ServerError(f"{tag}: no id")
         # Set the id.
-        self.current_id = the_id
+        self.current_id = id_
         # The package is optional.
-        package = d.get('package')
+        package = d.get('package', {})
         method_name = d.get('action')
         result = self._do_method_by_name(method_name, package)
         # Ensure the result is a json-formatted string.
@@ -1507,7 +1507,7 @@ class ServerController:
     def get_children(self, package):
         """EMIT OUT list of children of a node"""
         c = self.c
-        ap = package.get('archived-position')
+        ap = package.get('ap')
         if ap:
             p = self._ap_to_p(ap)
             nodes = p and p.children() or []
@@ -1521,9 +1521,9 @@ class ServerController:
     def get_parent(self, package):
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
         tag = 'get_parent'
-        ap = package.get('archived-position')
+        ap = package.get('ap')
         if not ap:
-            raise ServerError(f"{tag}: no archived-position")
+            raise ServerError(f"{tag}: no ap")
         p = self._ap_to_p(ap)
         if not p:
             raise ServerError(f"{tag}: position not found")
@@ -1717,6 +1717,12 @@ class ServerController:
     def shut_down(self, package):
         """Shut down the server."""
         raise TerminateServer(f"shut down: package: {package}")
+    #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
+    def clear_trace(self, package):
+        self.trace = False
+        
+    def set_trace(self, package):
+        self.trace = True
     #@+node:ekr.20210202110128.60: *5* sc.test
     def test(self, package):
         """Do-nothing test function for debugging"""
@@ -1829,7 +1835,7 @@ def main():
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
-        tag = '[ws_handler]'
+        tag = 'server'
         try:
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
@@ -1839,26 +1845,29 @@ def main():
                 d = None
                 try:
                     d = json.loads(json_message)
+                    if controller.trace:
+                        print(f"{tag}: got id: {d.get('id')} action: {d.get('action')}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     print(e)
-                    break
+                    raise websockets.exceptions.ConnectionClosed(code=1000, reason="shut_down request")
                 except Exception as e:
                     # Continue on all errors.
-                    data = f"request: {d!r}" if d else f"Bad request: {json_message!r}"
-                    error = f"{tag}{e}.\n{data}"
+                    data = f"request: {d!r}" if d else f"bad request: {json_message!r}"
+                    error = f"{tag}: {e}.\n{tag}: {data}"
                     print(error, flush=True)
-                    g.print_exception()  # Always flushes.
+                    # g.print_exception()  # Always flushes.
                     answer = {
                         "id": controller.current_id,
                         "error": error,
                     }
                 await websocket.send(answer)
-        except websockets.exceptions.ConnectionClosedError:
-            print("Websocket connection closed", flush=True)
-            websocket.close()  ### Experimental.
-        finally:
-            asyncio.get_event_loop().stop()
+        except websockets.exceptions.ConnectionClosedError as e:
+            print(f"{tag}: closed error: {e}", flush=True)
+        except websockets.exceptions.ConnectionClosed as e:
+            print(f"{tag}: closed normally: {e}", flush=True)
+        # Don't call EventLoop.stop(). It terminates abnormally.
+            # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
     def get_args():
         global wsHost, wsPort
