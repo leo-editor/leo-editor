@@ -33,6 +33,7 @@ async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
     action_dict = {
         1: "set_trace",
+        2: "get_sign_on",
         5: "error",
         10: "shut_down",
     }
@@ -85,13 +86,12 @@ async def main_loop(timeout):
                     n_known_response_times += 1
                     response_time_s = f"{response_time:3.2}"
                 if trace:
-                    if 0:
-                        d = response_d
-                        for key, val in d.items():
-                            if isinstance(val, str):
-                                d[key] = val.replace('\\n', '\\\\n')
-                                ### print('MUNGE', d[key])
-                    print(f"{tag}:  got: {response_d} response time: {response_time_s}")
+                    # Note: g.printObj converts multi-line strings to lists
+                    # repr(response_d) shows newlines as "\n", not actual newlines.
+                    if False and 'sign-on' in response_d:
+                        g.printObj(response_d, tag=f"{tag}: response time: {response_time_s}")
+                    else:
+                        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break

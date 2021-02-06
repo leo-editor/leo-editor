@@ -77,7 +77,7 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.51: *4* sc._es & helpers (**test**)
+    #@+node:ekr.20210202110128.51: *4* sc._es & helpers
     def _es(self, s):
         """Send a response that does not correspond to an request."""
         self._send_async_output({
@@ -1535,6 +1535,17 @@ class ServerController:
     def get_position(self, package):
         """EMIT OUT a node, don't select it"""
         return self._make_position_response(self.c.p)
+    #@+node:ekr.20210206062654.1: *5* sc.get_sign_on
+    def get_sign_on(self, package):
+        """Synchronous version of _sign_on"""
+        g.app.computeSignon()
+        signon = []
+        for z in (g.app.signon, g.app.signon1):
+            for z2 in z.split('\n'):
+                signon.append(z2.strip())
+        signon = "\n".join(signon)
+        assert isinstance(signon, str)  # Weird. json.dumps converts to a list!
+        return self._make_response("sign-on", signon)
     #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
     def get_ui_states(self, package):
         """
