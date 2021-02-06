@@ -84,7 +84,7 @@ class ServerController:
         """Got the configuration from client"""
         tag = 'apply_config'
         config = package.get('config')
-        if not config:
+        if not config:  # pragma: no cover
             raise ServerError(f"{tag}: no config")
         self.config = config
         return self._make_response("")  # Send empty as 'ok'
@@ -104,13 +104,13 @@ class ServerController:
         c = self.c
         callers = g.callers().split(',')
         tag = callers[-1]
-        ap = package.get('archived_position')
-        if not ap:
+        ap = package.get('ap')
+        if not ap:  # pragma: no cover
             raise ServerError(f"{tag}: no archived_position")
         p = self._ap_to_p(ap)
-        if not p:
+        if not p:  # pragma: no cover
             raise ServerError(f"{tag}: position not found")
-        if not c.positionExists(p):
+        if not c.positionExists(p):  # pragma: no cover
             raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
@@ -124,7 +124,7 @@ class ServerController:
         """
         tag = '_do_message'
         id_ = d.get('id')
-        if id_ is None:
+        if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         # Set the id.
         self.current_id = id_
@@ -141,19 +141,19 @@ class ServerController:
         """Execute one of Leo's methods by name."""
         tag = '_do_method_by_name'
         # For now, disallow hidden methods.
-        if method_name.startswith('_'):
+        if method_name.startswith('_'):  # pragma: no cover
             raise ServerError(f"{tag}: method name starts with '_': {method_name!r}")
         func = getattr(self, method_name, None)
         if func:
             return func(package)
-        raise ServerError(f"{tag}: method not found: {method_name!r}")
+        raise ServerError(f"{tag}: method not found: {method_name!r}")  # pragma: no cover
     #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
     def _gnx_to_p(self, gnx):
         """Return first p node with this gnx or None"""
         for p in self.c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
-        return None
+        return None  # pragma: no cover
 
     #@+node:ekr.20210204154318.2: *4* sc._make_position_list_response
     def _make_position_list_response(self, position_list):
@@ -235,11 +235,10 @@ class ServerController:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
-        if not c:
+        if not c:  # pragma: no cover
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        ### c.closed = False  # Mark as open *in the server*.
         if not found:
             c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
             c.selectPosition(c.p)
@@ -318,7 +317,7 @@ class ServerController:
                 continue
             # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
             func_name = getattr(func, '__func_name__', func.__name__)
-            if not func_name:
+            if not func_name:  # pragma: no cover
                 print('no name', command_name, flush=flush)
                 continue
             doc = func.__doc__ or ''
@@ -1410,10 +1409,10 @@ class ServerController:
         """EMIT OUT body string length of a node"""
         tag = 'get_body_length'
         gnx = package.get('gnx')
-        if not gnx:
+        if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
         v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if not v:
+        if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         return self._make_response("bodyLength", len(v.b))
     #@+node:ekr.20210202110128.66: *5* sc.get_body_states
@@ -1494,10 +1493,10 @@ class ServerController:
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
         tag = 'get_parent'
         ap = package.get('ap')
-        if not ap:
+        if not ap:  # pragma: no cover
             raise ServerError(f"{tag}: no ap")
         p = self._ap_to_p(ap)
-        if not p:
+        if not p:  # pragma: no cover
             raise ServerError(f"{tag}: position not found")
         return self._make_position_response(p.getParent())
     #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
@@ -1539,7 +1538,7 @@ class ServerController:
                 states["canDemote"] = c.canDemote()
                 states["canPromote"] = c.canPromote()
                 states["canDehoist"] = c.canDehoist()
-            except Exception as e:
+            except Exception as e:  # pragma: no cover
                 raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_response("states", states)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
@@ -1585,7 +1584,7 @@ class ServerController:
         c, tag = self.c, 'insert_node'
         p = self._check_ap(package)
         h = package.get('headline')
-        if not h:
+        if not h:  # pragma: no cover
             raise ServerError(f"{tag}: no headline")
         c.selectPosition(p)
         p2 = c.insertHeadline()  # Handles undo.
@@ -1608,10 +1607,10 @@ class ServerController:
         """Change Body text of a node"""
         c, u, tag = self.c, self.c.undoer, 'set_body'
         gnx = package['gnx']
-        if not gnx:
+        if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if not v:
+        if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         # Set the body once.
         body = package.get('body') or ""
@@ -1639,7 +1638,7 @@ class ServerController:
         u = self.c.undoer
         p = self._check_ap(package)
         h = package.get('headline')
-        if not h:
+        if not h:  # pragma: no cover
             raise ServerError(f"{tag}: no headline")
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
@@ -1660,10 +1659,10 @@ class ServerController:
         """
         c, wrapper, tag = self.c, self.c.frame.body.wrapper, 'set_selection'
         gnx = package.get('gnx')
-        if not gnx:
+        if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
         v = c.fileCommands.gnxDict.get(gnx)
-        if not v:
+        if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found. gnx: {gnx!r}")
         start = package.get('start', 0)
         end = package.get('end', 0)
@@ -1719,15 +1718,18 @@ class ServerController:
         (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
         Return None if no key
         """
-        childIndex = ap['childIndex']
+        tag = '_ap_to_p'
         try:
-            v = self.gnx_to_vnode[ap['gnx']]  # Trap this
+            childIndex = ap['childIndex']
+            v = self.gnx_to_vnode[ap['gnx']]
             stack = [
                 (self.gnx_to_vnode[d['gnx']], d['childIndex'])
                     for d in ap['stack']
             ]
-        except Exception:  # pragma: no cover
-            return None
+        except Exception as e:  # pragma: no cover
+            # Continue after showing the full exception.
+            g.print_exception()
+            raise ServerError(f"{tag}: {e}")
         return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
@@ -1861,6 +1863,7 @@ def main():
                     print(error, flush=flush)
                     package = {
                         "id": controller.current_id,
+                        "request": data,
                         "ServerError": f"{e}",
                     }
                     answer = json.dumps(package, separators=(',', ':')) 
@@ -1869,9 +1872,9 @@ def main():
                     g.print_exception()
                     raise
                 await websocket.send(answer)
-        except websockets.exceptions.ConnectionClosedError as e:
+        except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}", flush=flush)
-        except websockets.exceptions.ConnectionClosed as e:  # pragma: no cover
+        except websockets.exceptions.ConnectionClosed as e:
             print(f"{tag}: closed normally: {e}", flush=flush)
         coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.

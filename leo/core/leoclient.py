@@ -57,17 +57,19 @@ def main():
 async def main_loop(timeout):
     trace = True
     uri = f"ws://{wsHost}:{wsPort}"
-    #@+<< define action_dict >>
-    #@+node:ekr.20210206075253.1: *3* << define action_dict >>
-    action_dict = {
-        1: ("set_trace", {}),
-        2: ("get_sign_on", {}),
-        3: ("error", {}),
-        4: ("open_file", {"filename": "xyzzy.leo"}),
-        5: ("get_all_commands", {}),
-        10: ("shut_down", {}),
-    }
-    #@-<< define action_dict >>
+    #@+<< define action_list >>
+    #@+node:ekr.20210206075253.1: *3* << define action_list >>
+    action_list = [
+        ("set_trace", {}),
+        ("get_sign_on", {}),
+        ("apply_config", {"config": {"whatever": True}}),
+        ("error", {}),
+        ("open_file", {"filename": "xyzzy.leo"}),
+        ("get_all_commands", {}),
+        ("collapse_node", {"ap": 1}),
+        ("test", {}),
+    ]
+    #@-<< define action_list >>
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
@@ -80,7 +82,11 @@ async def main_loop(timeout):
             try:
                 times_d [n] = time.perf_counter()
                 await asyncio.sleep(timeout)
-                action, package  = action_dict.get(n, ("test", {}))
+                if n < len(action_list):
+                    aTuple  = action_list[n-1]
+                    action, package = aTuple
+                else:
+                    action, package = "shut_down", {}
                 request_package = {
                     "id": n,
                     "action": action,
