@@ -16,7 +16,7 @@ wsPort = 32125
 tag = 'client'
 trace = True
 timeout = 0.1
-sync = True
+sync = False
 
 #@+others
 #@+node:ekr.20210205141432.1: ** function: main
@@ -29,11 +29,12 @@ def main():
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
 #@+node:ekr.20210205144500.1: ** function: main_loop
-times_d = {}  # Keys are n, values are time sent.
-
 async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
     action_dict = {1: "set_trace", 5: "error", 20: "shut_down"}
+    times_d = {}  # Keys are n, values are time sent.
+    tot_response_time = 0.0
+    n_known_response_times = 0
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         n = 0
@@ -54,23 +55,32 @@ async def main_loop(timeout):
                         "random": random.randrange(1, 1000)
                     }
                 }
-                if trace: print(f"{tag}: send: {package.get('action')}")
+                if trace: print(f"{tag}: send: id: {n} action: {package.get('action')}")
                 request = json.dumps(package, separators=(',', ':'))
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
                 response_d = json.loads(json_s)
+                # Calculate response time.
+                n2 = response_d.get("id")
+                t1 = times_d.get(n2)
+                t2 = time.perf_counter()
+                if t1 is None or n2 is None:
+                    response_time_s = '???'
+                else:
+                    response_time = t2 - t1
+                    tot_response_time += response_time
+                    n_known_response_times += 1
+                    response_time_s = f"{response_time:4.3}"
                 if trace:
-                    t2 = time.perf_counter()
-                    n2 = response_d.get("id")
-                    t1 = None if n2 is None else times_d.get(n2)
-                    response_time = '???' if t1 is None else f"{(t2 -t1):4.4}"
-                    print(f"{tag}:  got: {response_d} response time: {response_time}")
+                    print(f"{tag}:  got: {response_d} response time: {response_time_s}")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
+        if trace:
+            print(f"Average response_time: {(tot_response_time/n_known_response_times):6.3}")
 #@+node:ekr.20210205143347.1: ** function: test_main_loop
 async def test_main_loop():
     uri = f"ws://{wsHost}:{wsPort}"

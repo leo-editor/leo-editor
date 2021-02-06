@@ -32,7 +32,7 @@ wsHost = "localhost"
 wsPort = 32125
 flush = True
 trace_response = True
-sync = True
+sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
