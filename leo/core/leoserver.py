@@ -11,11 +11,10 @@ based on leoInteg's leobridgeserver.py.
 import asyncio
 import getopt
 import json
-# import os.path
-# import random
 import socket
 import sys
 import time
+import unittest
 # Third-party.
 import websockets
 # Leo
@@ -270,7 +269,7 @@ class ServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        c.closed = False  # Mark as open *in the server*.
+        ### c.closed = False  # Mark as open *in the server*.
         if not found:
             c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
             c.selectPosition(c.p)
@@ -278,9 +277,9 @@ class ServerController:
         result = {
             "filename": c.fileName(),
             "node": self._p_to_ap(c.p),
-            "total": len(g.app.commanders),
+            # "open-files": len(g.app.commanders()),
         }
-        return self._make_response("opened", result)
+        return self._make_response("open-file", result)
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
         """
@@ -1769,7 +1768,10 @@ class ServerController:
         self._test_round_trip_positions()
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
-        """(From Leo plugin leoflexx.py) Converts Leo position to a serializable archived position."""
+        """
+        Modified from Leo plugin leoflexx.py.
+        Convert Leo position to a serializable archived position.
+        """
         c, v = self.c, p.v
         if not v:
             print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
@@ -1791,50 +1793,43 @@ class ServerController:
                 } for (stack_v, stack_childIndex) in p.stack
             ],
         }
-        if v.u:
-            ap['u'] = v.u
-        # EKR: No need to use a 'status' flag for now.
-        table = (
-            (p.isAnyAtFileNode(), 'atFile'),
-            (p.b, 'hasBody'),
-            (p == c.p, 'selected'),
-        )
-        for cond, attr in table:
-            if cond: ap [attr] = True
-        for attr in ('cloned', 'dirty', 'expanded', 'hasChildren','marked'):
-            func = getattr(p, attr)
-            if func(): ap [attr] = True
+        if 0: # EKR: 'status' flags should be handled separately.
+            if v.u:
+                ap['u'] = v.u
+            table = (
+                (p.isAnyAtFileNode(), 'atFile'),
+                (p.b, 'hasBody'),
+                (p == c.p, 'selected'),
+            )
+            for cond, attr in table:
+                if cond: ap [attr] = True
+            for attr in ('isCloned', 'isDirty', 'isExpanded', 'hasChildren','isMarked'):
+                func = getattr(p, attr)
+                if func(): ap [attr] = True
         return ap
-        ###
-            # if bool(p.b):
-                # ap['hasBody'] = True
-            # if p.isAnyAtFileNode():
-                # ap['atFile'] = True
-            # if p == self.c.p:
-                # ap['selected'] = True
-            # if p.hasChildren():
-                # ap['hasChildren'] = True
-            # if p.isCloned():
-                # ap['cloned'] = True
-            # if p.isDirty():
-                # ap['dirty'] = True
-            # if p.isExpanded():
-                # ap['expanded'] = True
-            # if p.isMarked():
-                # ap['marked'] = True
+        
     #@+node:ekr.20210202110128.84: *4* sc._test_round_trip_positions
     def _test_round_trip_positions(self):
-        """(From Leo plugin leoflexx.py) Test the round tripping of p_to_ap and ap_to_p."""
-        # Careful: p_to_ap updates app.gnx_to_vnode. Save and restore it.
-        old_d = self.gnx_to_vnode.copy()
-        old_len = len(list(self.gnx_to_vnode.keys()))
-        for p in self.c.all_positions():
-            ap = self._p_to_ap(p)
-            p2 = self._ap_to_p(ap)
-            assert p == p2, (repr(p), repr(p2), repr(ap))
-        gnx_to_vnode = old_d  # Required!
-        new_len = len(list(gnx_to_vnode.keys()))
-        assert old_len == new_len, (old_len, new_len)
+        """
+        From Leo plugin leoflexx.py.
+        Test the round tripping of p_to_ap and ap_to_p.
+        """
+        tag = '_test_round_trip_positions'
+        try:
+            # Careful: p_to_ap updates app.gnx_to_vnode. Save and restore it.
+            old_d = self.gnx_to_vnode.copy()
+            old_len = len(list(self.gnx_to_vnode.keys()))
+            for p in self.c.all_positions():
+                ap = self._p_to_ap(p)
+                p2 = self._ap_to_p(ap)
+                assert p == p2, (repr(p), repr(p2), repr(ap))
+            gnx_to_vnode = old_d  # Required!
+            new_len = len(list(gnx_to_vnode.keys()))
+            assert old_len == new_len, (old_len, new_len)
+        except Exception as e:
+            # Continue after showing the full exception.
+            g.print_exception()
+            raise ServerError(f"{tag}: {e}")
     #@-others
 #@+node:ekr.20210202110128.88: ** function:main & helpers
 def main():
@@ -1878,6 +1873,7 @@ def main():
                     answer = json.dumps(package, separators=(',', ':')) 
                 except Exception as e:
                     print(f"{tag}: Unexpected Exception! {e}")
+                    g.print_exception()
                     raise
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
@@ -1938,12 +1934,16 @@ def sync_main():
                 conn.sendall(data)
 #@-others
 if __name__ == '__main__':
-    # Startup
     try:
-        if sync:
-            sync_main()
-        else:
+        if 1:
             main()
+        else:  # Fails to connect.
+            import pytest
+            class TestServer(unittest.TestCase):
+                def test_server_main(self):
+                    main()
+                    
+            pytest.main()
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)
         sys.exit()

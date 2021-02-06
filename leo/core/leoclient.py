@@ -3,7 +3,7 @@
 """An example client for leoserver.py."""
 import asyncio
 import json
-import random
+# import random
 import socket
 import time
 import unittest
@@ -31,12 +31,16 @@ def main():
 async def main_loop(timeout):
     trace = True
     uri = f"ws://{wsHost}:{wsPort}"
+    #@+<< define action_dict >>
+    #@+node:ekr.20210206075253.1: *3* << define action_dict >>
     action_dict = {
-        1: "set_trace",
-        2: "get_sign_on",
-        5: "error",
-        10: "shut_down",
+        1: ("set_trace", {}),
+        2: ("get_sign_on", {}),
+        3: ("error", {}),
+        4: ("open_file", {"filename": "xyzzy.leo"}),
+        10: ("shut_down", {}),
     }
+    #@-<< define action_dict >>
     times_d = {}  # Keys are n, values are time sent.
     tot_response_time = 0.0
     n_known_response_times = 0
@@ -52,21 +56,16 @@ async def main_loop(timeout):
             n += 1
             try:
                 times_d [n] = time.perf_counter()
-                if 0:
-                    action = "set_trace" if n == 1 else input(f"{n:3} enter action: ")
-                else:
-                    await asyncio.sleep(timeout)
-                    action = action_dict.get(n)
-                package = {
+                await asyncio.sleep(timeout)
+                action, package  = action_dict.get(n, ("test", {}))
+                request_package = {
                     "id": n,
-                    "action": action or "test",
-                    "package": {
-                        "ap": "1",
-                        "random": random.randrange(1, 1000)
-                    }
+                    "action": action,
+                    "package": package,
+                    # { "ap": "1", "random": random.randrange(1, 1000) }
                 }
                 if trace: print(f"{tag}: send: id: {n} action: {package.get('action')}")
-                request = json.dumps(package, separators=(',', ':'))
+                request = json.dumps(request_package, separators=(',', ':'))
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
                 response_d = json.loads(json_s)
@@ -88,7 +87,7 @@ async def main_loop(timeout):
                 if trace:
                     # Note: g.printObj converts multi-line strings to lists.
                     # repr(response_d) shows newlines as "\n", not actual newlines.
-                    if False and 'sign-on' in response_d:
+                    if 'open-file' in response_d:
                         g.printObj(response_d, tag=f"{tag}: response time: {response_time_s}")
                     else:
                         print(f"{tag}:  got: {response_d} response time: {response_time_s}")
@@ -120,7 +119,7 @@ async def test_main_loop():
                     "action": action or "test",
                     "package": {
                         "ap": "1",
-                        "random": random.randrange(1, 1000)
+                        # "random": random.randrange(1, 1000)
                     }
                 }
                 if trace or action == "set_trace": print(f"{tag}: send: {package.get('action')}")
