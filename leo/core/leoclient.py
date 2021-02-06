@@ -86,7 +86,7 @@ async def main_loop(timeout):
                     n_known_response_times += 1
                     response_time_s = f"{response_time:3.2}"
                 if trace:
-                    # Note: g.printObj converts multi-line strings to lists
+                    # Note: g.printObj converts multi-line strings to lists.
                     # repr(response_d) shows newlines as "\n", not actual newlines.
                     if False and 'sign-on' in response_d:
                         g.printObj(response_d, tag=f"{tag}: response time: {response_time_s}")
