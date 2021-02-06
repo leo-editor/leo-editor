@@ -6,20 +6,27 @@
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
+#@+<< start coverage >>
+#@+node:ekr.20210206133542.1: ** << start coverage >>
+try:  # pragma: no cover
+    import coverage
+    print('----- Start coverage')
+    cov = coverage.Coverage()
+    cov.start()
+except ImportError:  # pragma: no cover
+    cov = None
+#@-<< start coverage >>
+#@+<< imports >>
+#@+node:ekr.20210202110128.2: ** << imports >>
 if 1:  # pragma: no cover
-    # These happen too early to be covered.
-    #@+<< imports >>
-    #@+node:ekr.20210202110128.2: ** << imports >>
+    # We want to start coverage before these imports.
+    # pylint: disable=wrong-import-position
     import asyncio
     import getopt
     import json
     import sys
     import time
     # Third-party.
-    try:
-        import coverage
-    except ImportError:
-        coverage = None
     import websockets
     # Leo
     import leo.core.leoApp as leoApp
@@ -27,13 +34,13 @@ if 1:  # pragma: no cover
     import leo.core.leoNodes as leoNodes
     import leo.core.leoExternalFiles as leoExternalFiles
     import leo.core.leoFrame as leoFrame
-    #@-<< imports >>
-    g = None  # The bridge's leoGlobals module.
-    # server defaults...
-    wsHost = "localhost"
-    wsPort = 32125
-    flush = True
-    sync = False
+#@-<< imports >>
+g = None  # The bridge's leoGlobals module.
+# server defaults...
+wsHost = "localhost"
+wsPort = 32125
+flush = True
+sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):  # pragma: no cover
@@ -1555,7 +1562,7 @@ class ServerController:
         """Collapse a node"""
         p = self._check_ap(package)
         p.contract()
-        return self._make_response("")  # Just send empty as 'ok'
+        return self._make_response("collapse_node")
     #@+node:ekr.20210202183724.12: *5* sc.cut_node
     def cut_node(self, package):
         """Cut a node, return the newly-selected node."""
@@ -1715,18 +1722,54 @@ class ServerController:
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
         """
-        (From Leo plugin leoflexx.py) Convert an archived position to a true Leo position.
-        Return None if no key
+        Convert ap (archived position, a dict) to a valid Leo position.
+        Raise ServerError on any kind of error.
         """
         tag = '_ap_to_p'
         try:
-            childIndex = ap['childIndex']
-            v = self.gnx_to_vnode[ap['gnx']]
-            stack = [
-                (self.gnx_to_vnode[d['gnx']], d['childIndex'])
-                    for d in ap['stack']
-            ]
+            c = self.c
+            if not c:
+                raise ServerError(f"{tag} no c")
+            ### To do: don't recalculate this!
+            gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
+            g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
+            # Get the outer level items, so we can be permissive.
+            childIndex = ap.get('childIndex')
+            gnx = ap.get('gnx')
+            ap_stack = ap.get('stack')
+            # Test the outer level.
+            if childIndex is None:
+                raise ServerError(f"{tag} no outer childIndex.")
+            if gnx is None:
+                raise ServerError(f"{tag} no outer gnx.")
+            v = gnx_d.get(gnx)
+            if v is None:  # pragma: no cover.
+                # An error, but make an exception for testing.
+                if childIndex == 0 and ap_stack in (None, []):
+                    g.trace(f"{tag} Default to root position: {ap}")
+                    return c.rootPosition()
+                raise ServerError(f"{tag} gnx not found: {gnx}")
+            # Resolve the stack.
+                # stack = [
+                    # (self.gnx_to_vnode[d['gnx']], d['childIndex'])
+                        # for d in ap['stack']
+                # ]
+            stack = []
+            for d in ap_stack:
+                childIndex = d.get('childIndex')
+                if childIndex is None:  # pragma: no cover.
+                    raise ServerError(f"{tag} no childIndex in {d}")
+                gnx = d.get('gnx')
+                if gnx is None:  # pragma: no cover.
+                    raise ServerError(f"{tag} no gnx in {d}")
+                stack.append((gnx, childIndex))
+            # Create a new position.
+            p = leoNodes.Position(v, childIndex, stack)
+            if not c.positionExists(p):  # pragma: no cover.
+                raise ServerError(f"{tag} p does not exist: {p!r}")
+            return p  # Whew!
         except Exception as e:  # pragma: no cover
+            # This should not be possible, but be safe.
             # Continue after showing the full exception.
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
@@ -1803,19 +1846,7 @@ class ServerController:
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
     #@-others
-#@+node:ekr.20210206083303.1: ** function:coverage_start & coverage_end (server)
-cov = None
-
-def coverage_start():  # pragma: no cover
-    """Start coverage tests (server)"""
-    global cov
-    if not coverage:
-        return
-    print('----- Start coverage')  # g may not exist.
-    # By default, this measures *all* Leo files!
-    cov = coverage.Coverage()
-    cov.start()
-
+#@+node:ekr.20210206083303.1: ** function: coverage_end (server)
 def coverage_end():  # pragma: no cover
     """End coverage tests (server)"""
     global cov
@@ -1826,7 +1857,7 @@ def coverage_end():  # pragma: no cover
     directory = r'c:/test'
     cov.html_report(directory=directory, morfs=['leoserver.py'])
     print(f"----- End coverage: index.html in {directory}/leoserver_py.html")
-#@+node:ekr.20210202110128.88: ** function:main & helpers
+#@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():
     """python script for leo integration via leoBridge"""
     # from leo.core import leoGlobals as g
@@ -1915,7 +1946,6 @@ def main():
 #@-others
 if __name__ == '__main__':  # pragma: no cover
     try:
-        coverage_start()
         main()  # ws_handler calls coverage_end.
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)

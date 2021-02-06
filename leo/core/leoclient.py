@@ -59,6 +59,12 @@ async def main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
     #@+<< define action_list >>
     #@+node:ekr.20210206075253.1: *3* << define action_list >>
+    root_ap = {
+        'childIndex': 0,
+        'gnx': 0,
+        'stack': [],  # List of inner dicts with 'childIndex and 'gnx' keys.
+    }
+
     action_list = [
         ("set_trace", {}),
         ("get_sign_on", {}),
@@ -66,7 +72,7 @@ async def main_loop(timeout):
         ("error", {}),
         ("open_file", {"filename": "xyzzy.leo"}),
         ("get_all_commands", {}),
-        ("collapse_node", {"ap": 1}),
+        ("collapse_node", {"ap": root_ap}),
         ("test", {}),
     ]
     #@-<< define action_list >>
@@ -93,7 +99,7 @@ async def main_loop(timeout):
                     "package": package,
                 }
                 if trace:
-                    print(f"{tag}: send: id: {n} action: {package.get('action')}")
+                    print(f"{tag}: send: id: {n} package: {request_package}")
                 request = json.dumps(request_package, separators=(',', ':'))
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
@@ -104,6 +110,7 @@ async def main_loop(timeout):
                     break
                 if trace:
                     _show_response(json_s, n, response_d)
+                    print("")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
