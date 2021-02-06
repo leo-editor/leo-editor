@@ -1728,7 +1728,7 @@ class ServerController:
         tag = '_ap_to_p'
         try:
             c = self.c
-            if not c:
+            if not c:  # pragma: no cover.
                 raise ServerError(f"{tag} no c")
             ### To do: don't recalculate this!
             gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
@@ -1738,9 +1738,9 @@ class ServerController:
             gnx = ap.get('gnx')
             ap_stack = ap.get('stack')
             # Test the outer level.
-            if childIndex is None:
+            if childIndex is None:  # pragma: no cover.
                 raise ServerError(f"{tag} no outer childIndex.")
-            if gnx is None:
+            if gnx is None:  # pragma: no cover.
                 raise ServerError(f"{tag} no outer gnx.")
             v = gnx_d.get(gnx)
             if v is None:  # pragma: no cover.
@@ -1749,11 +1749,7 @@ class ServerController:
                     g.trace(f"{tag} Default to root position: {ap}")
                     return c.rootPosition()
                 raise ServerError(f"{tag} gnx not found: {gnx}")
-            # Resolve the stack.
-                # stack = [
-                    # (self.gnx_to_vnode[d['gnx']], d['childIndex'])
-                        # for d in ap['stack']
-                # ]
+            # Resolve the stack, a list of tuples(gnx, childIndex).
             stack = []
             for d in ap_stack:
                 childIndex = d.get('childIndex')
@@ -1769,8 +1765,7 @@ class ServerController:
                 raise ServerError(f"{tag} p does not exist: {p!r}")
             return p  # Whew!
         except Exception as e:  # pragma: no cover
-            # This should not be possible, but be safe.
-            # Continue after showing the full exception.
+            # This should not be possible, but don't stop the server if it happens.
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
         return leoNodes.position(v, childIndex, stack)
@@ -1783,29 +1778,27 @@ class ServerController:
         self._test_round_trip_positions()
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
-        """
-        Modified from Leo plugin leoflexx.py.
-        Convert Leo position to a serializable archived position.
-        """
+        """Convert Leo position to a serializable archived position."""
         c, v = self.c, p.v
         if not v:  # pragma: no cover
             print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
             assert False
-        # Expand gnx-vnode translation table for any new node encountered
-        if v.gnx not in self.gnx_to_vnode:
-            self.gnx_to_vnode[v.gnx] = v
+        ### To do: At present there is no such dict.
+            # Add any new node encountered to the dict.
+            # if v.gnx not in self.gnx_to_vnode:
+                # self.gnx_to_vnode[v.gnx] = v
         # Necessary properties for outline.
         ap = {
             'childIndex': p._childIndex,
             'gnx': v.gnx,
-            'headline': p.h,
-            'level': p.level(),
+            # 'headline': p.h,
+            # 'level': p.level(),
             'stack': [
                 {
-                    'gnx': stack_v.gnx,
-                    'childIndex': stack_childIndex,
-                    'headline': stack_v.h,
-                } for (stack_v, stack_childIndex) in p.stack
+                    'gnx': gnx,
+                    'childIndex': childIndex,
+                    # 'headline': stack_v.h,
+                } for (gnx, childIndex) in p.stack
             ],
         }
         if 0: # EKR: 'status' flags should be handled separately.
