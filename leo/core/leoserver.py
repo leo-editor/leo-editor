@@ -94,7 +94,7 @@ class ServerController:
         if not config:  # pragma: no cover
             raise ServerError(f"{tag}: no config")
         self.config = config
-        return self._make_response("")  # Send empty as 'ok'
+        return self._make_response("config")
     #@+node:ekr.20210202110128.52: *4* sc.init_connection
     def _init_connection(self, web_socket):
         """Begin the connection."""
@@ -141,7 +141,7 @@ class ServerController:
         result = self._do_method_by_name(method_name, package)
         # Ensure the result is a json-formatted string.
         if result is None:
-            result = self._make_response("")
+            result = self._make_response("")  # This is an error.
         return result
     #@+node:ekr.20210204095743.1: *5* sc._do_method_by_name
     def _do_method_by_name(self, method_name, package):
@@ -255,7 +255,7 @@ class ServerController:
             "node": self._p_to_ap(c.p),
             # "open-files": len(g.app.commanders()),
         }
-        return self._make_response("open-file", result)
+        return self._make_response("open_file", result)
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
         """
@@ -300,7 +300,7 @@ class ServerController:
                 g.trace('Error while saving')
                 print("Error while saving", flush=flush)
                 print(e, flush=flush)
-        return self._make_response("")  # Send empty as 'ok'
+        return self._make_response("save_file")
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
     #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
     def get_all_commands(self, package):
@@ -1520,7 +1520,7 @@ class ServerController:
                 signon.append(z2.strip())
         signon = "\n".join(signon)
         assert isinstance(signon, str)  # Weird. json.dumps converts to a list!
-        return self._make_response("sign-on", signon)
+        return self._make_response("sign_on", signon)
     #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
     def get_ui_states(self, package):
         """
@@ -1584,7 +1584,7 @@ class ServerController:
         """Expand a node"""
         p = self._check_ap(package)
         p.expand()
-        return self._make_response("")  # Just send empty as 'ok'
+        return self._make_response("expand_node")
     #@+node:ekr.20210202183724.15: *5* sc.insert_node
     def insert_node(self, package):
         """Insert a node after the given node, set its headline and select it."""
@@ -1711,9 +1711,11 @@ class ServerController:
     #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
     def clear_trace(self, package):  # pragma: no cover
         self.trace = False
+        return self._make_response("trace_off")
         
     def set_trace(self, package):  # pragma: no cover
         self.trace = True
+        return self._make_response("trace_on")
     #@+node:ekr.20210202110128.60: *5* sc.test
     def test(self, package):
         """Do-nothing test function for debugging"""

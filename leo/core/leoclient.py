@@ -12,6 +12,7 @@ wsPort = 32125
 
 n_known_response_times = 0
 n_unknown_response_times = 0
+n_unexpected_responses = 0
 sync = False
 tag = 'client'
 timeout = 0.1
@@ -19,42 +20,17 @@ times_d = {}  # Keys are n, values are time sent.
 tot_response_time = 0.0
 
 #@+others
-#@+node:ekr.20210206093130.1: ** function: _show_response
-def _show_response(json_s, n, response_d):
-    global n_known_response_times
-    global n_unknown_response_times
-    global times_d
-    global tot_response_time 
-    # Calculate response time.
-    t1 = times_d.get(n)
-    t2 = time.perf_counter()
-    if t1 is None or n is None:
-        response_time_s = '???'
-        n_unknown_response_times += 1
-    else:
-        response_time = t2 - t1
-        tot_response_time += response_time
-        n_known_response_times += 1
-        response_time_s = f"{response_time:3.2}"
-    # Note: g.printObj converts multi-line strings to lists.
-    # repr(response_d) shows newlines as "\n", not actual newlines.
-    if 'open-file' in response_d:
-        g.printObj(response_d, tag=f"{tag}: got: open-file response time: {response_time_s}")
-    elif 'commands' in response_d:
-        print(f"{tag}: got: commands: len(commands): {len(response_d.get('commands'))}")
-    else:
-        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
 #@+node:ekr.20210205141432.1: ** function: main
 def main():
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main_loop(timeout))
+        loop.run_until_complete(client_main_loop(timeout))
         ### loop.run_forever()
     except KeyboardInterrupt:
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
-#@+node:ekr.20210205144500.1: ** function: main_loop (client)
-async def main_loop(timeout):
+#@+node:ekr.20210205144500.1: ** function: client_main_loop & helpers
+async def client_main_loop(timeout):
     trace = True
     uri = f"ws://{wsHost}:{wsPort}"
     #@+<< define action_list >>
@@ -65,6 +41,7 @@ async def main_loop(timeout):
         'stack': [],  # List of inner dicts with 'childIndex and 'gnx' keys.
     }
 
+    # In effect, these are unit tests.
     action_list = [
         ("set_trace", {}),
         ("get_sign_on", {}),
@@ -104,10 +81,13 @@ async def main_loop(timeout):
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
                 response_d = json.loads(json_s)
+                # Check the response.
                 n2 = response_d.get("id")
                 if n2 != n:
                     print(f"{tag}: response out of order. Expected {n}, got {n2}")
                     break
+                # Check the response. This completes the unit tests.
+                _check_response(action, n, response_d)
                 if trace:
                     _show_response(json_s, n, response_d)
                     print("")
@@ -117,10 +97,57 @@ async def main_loop(timeout):
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
-        print(f"Unknown response times: {n_unknown_response_times}")
-        print(f"  Known response times: {n_known_response_times}")
-        print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
+        print(f"Unexpected response keys: {n_unexpected_responses}")
+        print(f"  Unknown response times: {n_unknown_response_times}")
+        print(f"    Known response times: {n_known_response_times}")
+        print(f"   Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
+#@+node:ekr.20210206093130.1: *3* function: _show_response
+def _show_response(json_s, n, response_d):
+    global n_known_response_times
+    global n_unknown_response_times
+    global times_d
+    global tot_response_time 
+    # Calculate response time.
+    t1 = times_d.get(n)
+    t2 = time.perf_counter()
+    if t1 is None or n is None:
+        response_time_s = '???'
+        n_unknown_response_times += 1
+    else:
+        response_time = t2 - t1
+        tot_response_time += response_time
+        n_known_response_times += 1
+        response_time_s = f"{response_time:3.2}"
+    # Note: g.printObj converts multi-line strings to lists.
+    # repr(response_d) shows newlines as "\n", not actual newlines.
+    if 'open-file' in response_d:
+        g.printObj(response_d, tag=f"{tag}: got: open-file response time: {response_time_s}")
+    elif 'commands' in response_d:
+        print(f"{tag}: got: commands: len(commands): {len(response_d.get('commands'))}")
+    else:
+        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
+#@+node:ekr.20210206144703.1: *3* function: _check_response
+def _check_response(action, n, response_d):
+    """
+    Warn if the response is unexpected.
+    This completes the unit test.
+    """
+    global n_unexpected_responses
+    d, tag = response_d, '_check_response'
+    keys = sorted(list(d.keys()))
+    expected_keys = {
+        "apply_config": "config",
+        "clear_trace": "trace_off",
+        "error": "ServerError",
+        "get_all_commands": "commands",
+        "get_sign_on": "sign_on",
+        "set_trace": "trace_on",
+    }
+    expected_key = expected_keys.get(action, action)
+    if expected_key not in d:
+        n_unexpected_responses += 1
+        print(f"{tag} action: {action}. {expected_key} not in response keys: {keys}")
 #@-others
 
 if __name__ == '__main__':
