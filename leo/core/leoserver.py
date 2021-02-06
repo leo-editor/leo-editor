@@ -6,13 +6,13 @@
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
-if 1: # pragma: no cover
+if 1:  # pragma: no cover
+    # These happen too early to be covered.
     #@+<< imports >>
     #@+node:ekr.20210202110128.2: ** << imports >>
     import asyncio
     import getopt
     import json
-    import socket
     import sys
     import time
     # Third-party.
@@ -304,14 +304,14 @@ class ServerController:
         bad_names = self._bad_commands()  # #92.
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
-        if duplicates:
+        if duplicates:  # pragma: no cover
             print('duplicate command names...', flush=flush)
             for z in sorted(duplicates):
                 print(z)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
-            if not func:
+            if not func:  # pragma: no cover
                 print('no func:', command_name, flush=flush)
                 continue
             if command_name in bad_names:  # #92.
@@ -1703,10 +1703,10 @@ class ServerController:
 
     quit = shut_down  # Abbreviation for testing.
     #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
-    def clear_trace(self, package):
+    def clear_trace(self, package):  # pragma: no cover
         self.trace = False
         
-    def set_trace(self, package):
+    def set_trace(self, package):  # pragma: no cover
         self.trace = True
     #@+node:ekr.20210202110128.60: *5* sc.test
     def test(self, package):
@@ -1726,7 +1726,7 @@ class ServerController:
                 (self.gnx_to_vnode[d['gnx']], d['childIndex'])
                     for d in ap['stack']
             ]
-        except Exception:
+        except Exception:  # pragma: no cover
             return None
         return leoNodes.position(v, childIndex, stack)
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
@@ -1743,7 +1743,7 @@ class ServerController:
         Convert Leo position to a serializable archived position.
         """
         c, v = self.c, p.v
-        if not v:
+        if not v:  # pragma: no cover
             print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
             assert False
         # Expand gnx-vnode translation table for any new node encountered
@@ -1796,7 +1796,7 @@ class ServerController:
             gnx_to_vnode = old_d  # Required!
             new_len = len(list(gnx_to_vnode.keys()))
             assert old_len == new_len, (old_len, new_len)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             # Continue after showing the full exception.
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
@@ -1804,7 +1804,7 @@ class ServerController:
 #@+node:ekr.20210206083303.1: ** function:coverage_start & coverage_end (server)
 cov = None
 
-def coverage_start():
+def coverage_start():  # pragma: no cover
     """Start coverage tests (server)"""
     global cov
     if not coverage:
@@ -1814,7 +1814,7 @@ def coverage_start():
     cov = coverage.Coverage()
     cov.start()
 
-def coverage_end():
+def coverage_end():  # pragma: no cover
     """End coverage tests (server)"""
     global cov
     if not cov:
@@ -1864,20 +1864,20 @@ def main():
                         "ServerError": f"{e}",
                     }
                     answer = json.dumps(package, separators=(',', ':')) 
-                except Exception as e:
+                except Exception as e:  # pragma: no cover
                     print(f"{tag}: Unexpected Exception! {e}")
                     g.print_exception()
                     raise
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"{tag}: closed error: {e}", flush=flush)
-        except websockets.exceptions.ConnectionClosed as e:
+        except websockets.exceptions.ConnectionClosed as e:  # pragma: no cover
             print(f"{tag}: closed normally: {e}", flush=flush)
         coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
-    def get_args():
+    def get_args():  # pragma: no cover
         global wsHost, wsPort
         args = None
         try:
@@ -1909,25 +1909,8 @@ def main():
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
     loop.run_until_complete(server)
     loop.run_forever()
-#@+node:ekr.20210205181241.1: ** function:sync_main (server)
-def sync_main():
-    print('===== sync_main (server)')
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_:
-        socket_.bind((wsHost, wsPort))
-        socket_.listen()
-        conn, addr = socket_.accept()
-        print('Connected at addr:', addr)
-        with conn:
-            while True:
-                data = conn.recv(1024)
-                if data:
-                    print('server: got:', repr(data))
-                else:
-                    print('no data. Quitting')
-                    break
-                conn.sendall(data)
 #@-others
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     try:
         coverage_start()
         main()  # ws_handler calls coverage_end.
