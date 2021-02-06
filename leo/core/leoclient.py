@@ -83,7 +83,7 @@ async def main_loop(timeout):
                     response_time = t2 - t1
                     tot_response_time += response_time
                     n_known_response_times += 1
-                    response_time_s = f"{response_time:4.3}"
+                    response_time_s = f"{response_time:3.2}"
                 if trace:
                     if 0:
                         d = response_d

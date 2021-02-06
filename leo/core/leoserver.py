@@ -1852,7 +1852,7 @@ def main():
                     trace = controller.trace
                     d = json.loads(json_message)
                     if trace:
-                        print(f"{tag}: got id: {d.get('id'):2} action: {d.get('action')}", flush=flush)
+                        print(f"{tag}: got: {d}", flush=flush)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
@@ -1862,7 +1862,7 @@ def main():
                     print(error, flush=flush)
                     package = {
                         "id": controller.current_id,
-                        "error": f"ServerError: {e}",
+                        "ServerError": f"{e}",
                     }
                     answer = json.dumps(package, separators=(',', ':')) 
                 except Exception as e:
