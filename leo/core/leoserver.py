@@ -6,38 +6,41 @@
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
-#@+<< imports >>
-#@+node:ekr.20210202110128.2: ** << imports >>
-import asyncio
-import getopt
-import json
-import socket
-import sys
-import time
-import unittest
-# Third-party.
-import websockets
-# Leo
-import leo.core.leoApp as leoApp
-import leo.core.leoBridge as leoBridge
-import leo.core.leoNodes as leoNodes
-import leo.core.leoExternalFiles as leoExternalFiles
-import leo.core.leoFrame as leoFrame
-#@-<< imports >>
-g = None  # The bridge's leoGlobals module.
-
-# server defaults...
-wsHost = "localhost"
-wsPort = 32125
-flush = True
-sync = False
+if 1: # pragma: no cover
+    #@+<< imports >>
+    #@+node:ekr.20210202110128.2: ** << imports >>
+    import asyncio
+    import getopt
+    import json
+    import socket
+    import sys
+    import time
+    # Third-party.
+    try:
+        import coverage
+    except ImportError:
+        coverage = None
+    import websockets
+    # Leo
+    import leo.core.leoApp as leoApp
+    import leo.core.leoBridge as leoBridge
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoExternalFiles as leoExternalFiles
+    import leo.core.leoFrame as leoFrame
+    #@-<< imports >>
+    g = None  # The bridge's leoGlobals module.
+    # server defaults...
+    wsHost = "localhost"
+    wsPort = 32125
+    flush = True
+    sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
-class ServerError(Exception):
+class ServerError(Exception):  # pragma: no cover
     """The server received a package containing missing or erroneous contents."""
     pass
 
-class TerminateServer(Exception):
+class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
 #@+node:ekr.20210202110128.29: ** class ServerController
@@ -76,39 +79,6 @@ class ServerController:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.51: *4* sc._es & helpers
-    def _es(self, s):
-        """Send a response that does not correspond to an request."""
-        self._send_async_output({
-            "async": "",  # This response corresponds to no id_.
-            "s": g.toUnicode(s),
-        })
-    #@+node:ekr.20210202110128.39: *5* sc._send_async_output
-    def _send_async_output(self, package):
-        tag = '_send_async_output'
-        assert "async" in package, repr(package)
-        response = json.dumps(package, separators=(',', ':'))
-        if self.loop:
-            self.loop.create_task(self._async_output(response))
-        else:
-            print(f"{tag}: Error loop not ready {response}")
-    #@+node:ekr.20210204145818.1: *5* sc._async_output
-    async def _async_output(self, json):
-        """Output json string to the web_socket"""
-        tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
-        else:
-            g.trace(f"{tag} no web socket. json: {json}", flush=flush)
-    #@+node:ekr.20210202110128.42: *4* sc._sign_on
-    def _sign_on(self):
-        """Simulate the initial Leo Log Entry"""
-        if self.loop:
-            g.app.computeSignon()
-            self._es(g.app.signon)
-            self._es(g.app.signon1)
-        else:
-            print('sign_on: no loop', flush=flush)
     #@+node:ekr.20210202110128.41: *4* sc.apply_config
     def apply_config(self, package):
         """Got the configuration from client"""
@@ -1831,6 +1801,29 @@ class ServerController:
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
     #@-others
+#@+node:ekr.20210206083303.1: ** function:coverage_start & coverage_end (server)
+cov = None
+
+def coverage_start():
+    """Start coverage tests (server)"""
+    global cov
+    if not coverage:
+        return
+    print('----- Start coverage')  # g may not exist.
+    # By default, this measures *all* Leo files!
+    cov = coverage.Coverage()
+    cov.start()
+
+def coverage_end():
+    """End coverage tests (server)"""
+    global cov
+    if not cov:
+        return
+    cov.stop()
+    cov.save()
+    directory = r'c:/test'
+    cov.html_report(directory=directory, morfs=['leoserver.py'])
+    print(f"----- End coverage: index.html in {directory}/leoserver_py.html")
 #@+node:ekr.20210202110128.88: ** function:main & helpers
 def main():
     """python script for leo integration via leoBridge"""
@@ -1880,6 +1873,7 @@ def main():
             print(f"{tag}: closed error: {e}", flush=flush)
         except websockets.exceptions.ConnectionClosed as e:
             print(f"{tag}: closed normally: {e}", flush=flush)
+        coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
@@ -1915,7 +1909,7 @@ def main():
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
     loop.run_until_complete(server)
     loop.run_forever()
-#@+node:ekr.20210205181241.1: ** function: sync_main (server)
+#@+node:ekr.20210205181241.1: ** function:sync_main (server)
 def sync_main():
     print('===== sync_main (server)')
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_:
@@ -1935,15 +1929,8 @@ def sync_main():
 #@-others
 if __name__ == '__main__':
     try:
-        if 1:
-            main()
-        else:  # Fails to connect.
-            import pytest
-            class TestServer(unittest.TestCase):
-                def test_server_main(self):
-                    main()
-                    
-            pytest.main()
+        coverage_start()
+        main()  # ws_handler calls coverage_end.
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)
         sys.exit()

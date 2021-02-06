@@ -3,21 +3,47 @@
 """An example client for leoserver.py."""
 import asyncio
 import json
-# import random
-import socket
 import time
-import unittest
 import websockets
 from leo.core import leoGlobals as g
 
 wsHost = "localhost"
 wsPort = 32125
 
+n_known_response_times = 0
+n_unknown_response_times = 0
+sync = False
 tag = 'client'
 timeout = 0.1
-sync = False
+times_d = {}  # Keys are n, values are time sent.
+tot_response_time = 0.0
 
 #@+others
+#@+node:ekr.20210206093130.1: ** function: _show_response
+def _show_response(json_s, n, response_d):
+    global n_known_response_times
+    global n_unknown_response_times
+    global times_d
+    global tot_response_time 
+    # Calculate response time.
+    t1 = times_d.get(n)
+    t2 = time.perf_counter()
+    if t1 is None or n is None:
+        response_time_s = '???'
+        n_unknown_response_times += 1
+    else:
+        response_time = t2 - t1
+        tot_response_time += response_time
+        n_known_response_times += 1
+        response_time_s = f"{response_time:3.2}"
+    # Note: g.printObj converts multi-line strings to lists.
+    # repr(response_d) shows newlines as "\n", not actual newlines.
+    if 'open-file' in response_d:
+        g.printObj(response_d, tag=f"{tag}: got: open-file response time: {response_time_s}")
+    elif 'commands' in response_d:
+        print(f"{tag}: got: commands: len(commands): {len(response_d.get('commands'))}")
+    else:
+        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
 #@+node:ekr.20210205141432.1: ** function: main
 def main():
     loop = asyncio.get_event_loop()
@@ -38,13 +64,10 @@ async def main_loop(timeout):
         2: ("get_sign_on", {}),
         3: ("error", {}),
         4: ("open_file", {"filename": "xyzzy.leo"}),
+        5: ("get_all_commands", {}),
         10: ("shut_down", {}),
     }
     #@-<< define action_dict >>
-    times_d = {}  # Keys are n, values are time sent.
-    tot_response_time = 0.0
-    n_known_response_times = 0
-    n_unknown_response_times = 0
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
@@ -62,35 +85,19 @@ async def main_loop(timeout):
                     "id": n,
                     "action": action,
                     "package": package,
-                    # { "ap": "1", "random": random.randrange(1, 1000) }
                 }
-                if trace: print(f"{tag}: send: id: {n} action: {package.get('action')}")
+                if trace:
+                    print(f"{tag}: send: id: {n} action: {package.get('action')}")
                 request = json.dumps(request_package, separators=(',', ':'))
                 await websocket.send(request)
                 json_s = g.toUnicode(await websocket.recv())
                 response_d = json.loads(json_s)
-                # Calculate response time.
                 n2 = response_d.get("id")
                 if n2 != n:
                     print(f"{tag}: response out of order. Expected {n}, got {n2}")
                     break
-                t1 = times_d.get(n2)
-                t2 = time.perf_counter()
-                if t1 is None or n2 is None:
-                    response_time_s = '???'
-                    n_unknown_response_times += 1
-                else:
-                    response_time = t2 - t1
-                    tot_response_time += response_time
-                    n_known_response_times += 1
-                    response_time_s = f"{response_time:3.2}"
                 if trace:
-                    # Note: g.printObj converts multi-line strings to lists.
-                    # repr(response_d) shows newlines as "\n", not actual newlines.
-                    if 'open-file' in response_d:
-                        g.printObj(response_d, tag=f"{tag}: response time: {response_time_s}")
-                    else:
-                        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
+                    _show_response(json_s, n, response_d)
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
@@ -101,81 +108,8 @@ async def main_loop(timeout):
         print(f"  Known response times: {n_known_response_times}")
         print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
-#@+node:ekr.20210205143347.1: ** function: test_main_loop (client)
-async def test_main_loop():
-    trace = True
-    uri = f"ws://{wsHost}:{wsPort}"
-    # action_dict = {1: "set_trace", 5: "error", 6: "shut_down"}
-    async with websockets.connect(uri) as websocket:
-        if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
-        n = 0
-        while True:
-            n += 1
-            try:
-                await asyncio.sleep(timeout)
-                action = "set_trace" if n == 1 else input(f"{n:3} enter action: ")
-                package = {
-                    "id": n,
-                    "action": action or "test",
-                    "package": {
-                        "ap": "1",
-                        # "random": random.randrange(1, 1000)
-                    }
-                }
-                if trace or action == "set_trace": print(f"{tag}: send: {package.get('action')}")
-                request = json.dumps(package, separators=(',', ':'))
-                await websocket.send(request)
-                response = g.toUnicode(await websocket.recv())
-                if trace: print(f"{tag}:  got: {response}")
-            except websockets.exceptions.ConnectionClosedError as e:
-                print(f"{tag}: connection closed: {e}")
-                break
-            except websockets.exceptions.ConnectionClosed:
-                print(f"{tag}: connection closed normally")
-                break
-        print('==== end of test_main_loop')
-#@+node:ekr.20210205181835.1: ** function: sync_main (client)
-def sync_main():
-    tag = 'client'
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_:
-        socket_.connect((wsHost, wsPort))
-        print(f"{tag}: {wsHost} {wsPort}")
-        n = 0
-        while n < 20:
-            n += 1
-            message = bytes(f"message {n}", encoding='utf-8')
-            socket_.sendall(message)
-            data = socket_.recv(1024)
-            g.trace(f"{tag}: got: {g.toUnicode(data)}")
-#@+node:ekr.20210205141510.1: ** class TestServer(unittest.TestCase)
-class TestServer(unittest.TestCase):
-    """Unit tests for leoserver.py"""
-    #@+others
-    #@+node:ekr.20210205144929.1: *3* test.setupClass & tearDownClass
-    @classmethod
-    def setUpClass(cls):
-        g.trace('===== before')
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(test_main_loop())
-        g.trace('===== after')  ### We never get here!
-        ### loop.run_forever()
-        
-    @classmethod
-    def tearDownClass(cls):
-        loop = asyncio.get_event_loop()
-        g.trace('===== before stop')
-        loop.stop()
-        g.trace('===== after stop') ### Never shows up.
-    #@+node:ekr.20210205142756.1: *3* test.test_shut_down
-    def test_shut_down(self):
-        g.trace('=====')
-    #@-others
 #@-others
 
 if __name__ == '__main__':
-    # unittest.main()
-    if sync:
-        sync_main()
-    else:
-        main()
+    main()
 #@-leo
