@@ -13,6 +13,7 @@ import getopt
 import json
 # import os.path
 # import random
+import socket
 import sys
 import time
 # Third-party.
@@ -31,6 +32,7 @@ wsHost = "localhost"
 wsPort = 32125
 flush = True
 trace_response = True
+sync = True
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class ServerError(Exception):
@@ -1902,11 +1904,31 @@ def main():
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
     loop.run_until_complete(server)
     loop.run_forever()
+#@+node:ekr.20210205181241.1: ** function: sync_main (server)
+def sync_main():
+    print('===== sync_main (server)')
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_:
+        socket_.bind((wsHost, wsPort))
+        socket_.listen()
+        conn, addr = socket_.accept()
+        print('Connected at addr:', addr)
+        with conn:
+            while True:
+                data = conn.recv(1024)
+                if data:
+                    print('server: got:', repr(data))
+                else:
+                    print('no data. Quitting')
+                    break
+                conn.sendall(data)
 #@-others
 if __name__ == '__main__':
     # Startup
     try:
-        main()
+        if sync:
+            sync_main()
+        else:
+            main()
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)
         sys.exit()

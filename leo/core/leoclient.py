@@ -4,6 +4,7 @@
 import asyncio
 import json
 import random
+import socket
 import time
 import unittest
 import websockets
@@ -15,6 +16,7 @@ wsPort = 32125
 tag = 'client'
 trace = True
 timeout = 0.1
+sync = True
 
 #@+others
 #@+node:ekr.20210205141432.1: ** function: main
@@ -101,6 +103,19 @@ async def test_main_loop():
                 print(f"{tag}: connection closed normally")
                 break
         print('==== end of test_main_loop')
+#@+node:ekr.20210205181835.1: ** function: sync_main (client)
+def sync_main():
+    tag = 'client'
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_:
+        socket_.connect((wsHost, wsPort))
+        print(f"{tag}: {wsHost} {wsPort}")
+        n = 0
+        while n < 20:
+            n += 1
+            message = bytes(f"message {n}", encoding='utf-8')
+            socket_.sendall(message)
+            data = socket_.recv(1024)
+            g.trace(f"{tag}: got: {g.toUnicode(data)}")
 #@+node:ekr.20210205141510.1: ** class TestServer(unittest.TestCase)
 class TestServer(unittest.TestCase):
     """Unit tests for leoserver.py"""
@@ -128,5 +143,8 @@ class TestServer(unittest.TestCase):
 
 if __name__ == '__main__':
     # unittest.main()
-    main()
+    if sync:
+        sync_main()
+    else:
+        main()
 #@-leo
