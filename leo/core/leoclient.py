@@ -14,7 +14,6 @@ wsHost = "localhost"
 wsPort = 32125
 
 tag = 'client'
-trace = True
 timeout = 0.1
 sync = False
 
@@ -28,15 +27,25 @@ def main():
     except KeyboardInterrupt:
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
-#@+node:ekr.20210205144500.1: ** function: main_loop
+#@+node:ekr.20210205144500.1: ** function: main_loop (client)
 async def main_loop(timeout):
+    trace = True
     uri = f"ws://{wsHost}:{wsPort}"
-    action_dict = {1: "set_trace", 5: "error", 20: "shut_down"}
+    action_dict = {
+        1: "set_trace",
+        5: "error",
+        10: "shut_down",
+    }
     times_d = {}  # Keys are n, values are time sent.
     tot_response_time = 0.0
     n_known_response_times = 0
+    n_unknown_response_times = 0
     async with websockets.connect(uri) as websocket:
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
+        # Await the startup package.
+        json_s = g.toUnicode(await websocket.recv())
+        response_d = json.loads(json_s)
+        print(f"startup package: {response_d}")
         n = 0
         while True:
             n += 1
@@ -62,16 +71,26 @@ async def main_loop(timeout):
                 response_d = json.loads(json_s)
                 # Calculate response time.
                 n2 = response_d.get("id")
+                if n2 != n:
+                    print(f"{tag}: response out of order. Expected {n}, got {n2}")
+                    break
                 t1 = times_d.get(n2)
                 t2 = time.perf_counter()
                 if t1 is None or n2 is None:
                     response_time_s = '???'
+                    n_unknown_response_times += 1
                 else:
                     response_time = t2 - t1
                     tot_response_time += response_time
                     n_known_response_times += 1
                     response_time_s = f"{response_time:4.3}"
                 if trace:
+                    if 0:
+                        d = response_d
+                        for key, val in d.items():
+                            if isinstance(val, str):
+                                d[key] = val.replace('\\n', '\\\\n')
+                                ### print('MUNGE', d[key])
                     print(f"{tag}:  got: {response_d} response time: {response_time_s}")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
@@ -79,10 +98,13 @@ async def main_loop(timeout):
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
-        if trace:
-            print(f"Average response_time: {(tot_response_time/n_known_response_times):6.3}")
-#@+node:ekr.20210205143347.1: ** function: test_main_loop
+        print(f"Unknown response times: {n_unknown_response_times}")
+        print(f"  Known response times: {n_known_response_times}")
+        print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
+            # About 0.1, regardless of tracing.
+#@+node:ekr.20210205143347.1: ** function: test_main_loop (client)
 async def test_main_loop():
+    trace = True
     uri = f"ws://{wsHost}:{wsPort}"
     # action_dict = {1: "set_trace", 5: "error", 6: "shut_down"}
     async with websockets.connect(uri) as websocket:

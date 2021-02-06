@@ -31,7 +31,6 @@ g = None  # The bridge's leoGlobals module.
 wsHost = "localhost"
 wsPort = 32125
 flush = True
-trace_response = True
 sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
@@ -145,7 +144,7 @@ class ServerController:
         if not c.positionExists(p):
             raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
-    #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers
+    #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
     def _do_message(self, d):
         """
         Handle d, a python dict representing the incoming request.
@@ -1716,7 +1715,7 @@ class ServerController:
     #@+node:ekr.20210205102818.1: *5* sc.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
-        raise ServerError(f"sc.error called. package: {package}")
+        raise ServerError(f"sc.error called")
     #@+node:ekr.20210205103759.1: *5* sc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
@@ -1834,7 +1833,7 @@ def main():
     print("Starting LeoBridge... (Launch with -h for help)", flush=True)
     # replace default host address and port if provided as arguments
     #@+others
-    #@+node:ekr.20210202110128.90: *3* function: ws_handler
+    #@+node:ekr.20210202110128.90: *3* function: ws_handler (server)
     async def ws_handler(websocket, path):
         """
         The web socket handler: server.ws_server.
@@ -1846,7 +1845,7 @@ def main():
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
             await websocket.send(controller._make_response(""))
-            controller._sign_on()
+            # controller._sign_on()
             async for json_message in websocket:
                 d = None
                 try:
@@ -1856,14 +1855,19 @@ def main():
                         print(f"{tag}: got id: {d.get('id'):2} action: {d.get('action')}", flush=flush)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    # print(f"{tag}: TerminateServer: {e}", flush=flush)
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
-                except Exception as e:
-                    # Continue on all errors.
-                    data = f"request: {d}" if d else f"bad request: {json_message!r}"
-                    error = f"{tag}: {e}.\n{tag}: {data}"
+                except ServerError as e:
+                    data = f"  Incoming request: {d}" if d else f"bad request: {json_message!r}"
+                    error = f"{tag}:   ServerError: {e}...\n{tag}: {data}"
                     print(error, flush=flush)
-                    answer = controller._make_response('error', error)
+                    package = {
+                        "id": controller.current_id,
+                        "error": f"ServerError: {e}",
+                    }
+                    answer = json.dumps(package, separators=(',', ':')) 
+                except Exception as e:
+                    print(f"{tag}: Unexpected Exception! {e}")
+                    raise
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:
             print(f"{tag}: closed error: {e}", flush=flush)
