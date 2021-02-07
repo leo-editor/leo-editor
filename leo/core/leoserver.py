@@ -39,7 +39,6 @@ g = None  # The bridge's leoGlobals module.
 # server defaults...
 wsHost = "localhost"
 wsPort = 32125
-flush = True
 sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
@@ -357,21 +356,21 @@ class ServerController:
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:  # pragma: no cover
-            print('duplicate command names...', flush=flush)
+            print('duplicate command names...')
             for z in sorted(duplicates):
                 print(z)
         result = []
         for command_name in sorted(d):
             func = d.get(command_name)
             if not func:  # pragma: no cover
-                print('no func:', command_name, flush=flush)
+                print('no func:', command_name)
                 continue
             if command_name in bad_names:  # #92.
                 continue
             # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
             func_name = getattr(func, '__func_name__', func.__name__)
             if not func_name:  # pragma: no cover
-                print('no name', command_name, flush=flush)
+                print('no name', command_name)
                 continue
             doc = func.__doc__ or ''
             result.append({
@@ -1857,7 +1856,7 @@ class ServerController:
         c = self._check_c()
         v = c.p.v
         if not v:  # pragma: no cover
-            print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
+            print(f"ServerController.p_to_ap: no v for position {p!r}")
             assert False
         ### To do: At present there is no such dict.
             # Add any new node encountered to the dict.
@@ -1936,7 +1935,7 @@ def main():
     """python script for leo integration via leoBridge"""
     # from leo.core import leoGlobals as g
     global wsHost, wsPort
-    print("Starting LeoBridge... (Launch with -h for help)", flush=True)
+    print("Starting LeoBridge... (Launch with -h for help)")
     # replace default host address and port if provided as arguments
     #@+others
     #@+node:ekr.20210202110128.90: *3* function: ws_handler (server)
@@ -1958,13 +1957,13 @@ def main():
                     trace = controller.trace
                     d = json.loads(json_message)
                     if trace:
-                        print(f"{tag}: got: {d}", flush=flush)
+                        print(f"{tag}: got: {d}")
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
-                    error = f"{tag}:   ServerError: {e}...\n{tag}: {data}"
+                    error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
                     print("")
                     print(error)
                     print("")
@@ -1984,9 +1983,9 @@ def main():
                     break
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
-            print(f"{tag}: closed error: {e}", flush=flush)
+            print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
-            print(f"{tag}: closed normally: {e}", flush=flush)
+            print(f"{tag}: closed normally: {e}")
         coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
@@ -1998,14 +1997,14 @@ def main():
             opts, args = getopt.getopt(sys.argv[1:], "ha:p:", ["help", "address=", "port="])
         except getopt.GetoptError:
             print('leobridgeserver.py -a <address> -p <port>')
-            print('defaults to localhost on port 32125', flush=True)
+            print('defaults to localhost on port 32125')
             if args:
-                print("unused args: " + str(args), flush=True)
+                print("unused args: " + str(args))
             sys.exit(2)
         for opt, arg in opts:
             if opt in ("-h", "--help"):
                 print('leobridgeserver.py -a <address> -p <port>')
-                print('defaults to localhost on port 32125', flush=True)
+                print('defaults to localhost on port 32125')
                 sys.exit()
             elif opt in ("-a", "--address"):
                 wsHost = arg
@@ -2015,7 +2014,7 @@ def main():
     #@-others
     wsHost, wsPort = get_args()
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
-    print(signon, flush=True)
+    print(signon)
     # Open leoBridge.
     controller = ServerController()
     # Start the server.
@@ -2028,6 +2027,6 @@ if __name__ == '__main__':  # pragma: no cover
     try:
         main()  # ws_handler calls coverage_end.
     except KeyboardInterrupt:
-        print("\nKeyboard Interupt: Stopping leoserver.py", flush=True)
+        print("\nKeyboard Interupt: Stopping leoserver.py")
         sys.exit()
 #@-leo
