@@ -105,7 +105,7 @@ async def client_main_loop(timeout):
         print(f"   Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
 #@+node:ekr.20210206093130.1: *3* function: _show_response
-def _show_response(json_s, n, response_d):
+def _show_response(json_s, n, d):
     global n_known_response_times
     global n_unknown_response_times
     global times_d
@@ -122,31 +122,31 @@ def _show_response(json_s, n, response_d):
         n_known_response_times += 1
         response_time_s = f"{response_time:3.2}"
     # Note: g.printObj converts multi-line strings to lists.
-    # repr(response_d) shows newlines as "\n", not actual newlines.
-    action = response_d.get('action')
-    assert action, response_d
+    # repr(d) shows newlines as "\n", not actual newlines.
+    action = d.get('action')
+    assert action, d
     if action == 'open_file':
-        g.printObj(response_d,
+        g.printObj(d,
             tag=f"{tag}: got: open-file response time: {response_time_s}")
     elif action == 'get_all_commands':
-        commands = response_d.get('commands')
+        commands = d.get('commands')
         print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
-        print(f"{tag}:  got: {response_d}")
+        print(f"{tag}:  got: {d}")
 #@+node:ekr.20210206144703.1: *3* function: _check_response
-def _check_response(expected_action, n, response_d):
+def _check_response(expected_action, n, d):
     """
     Warn if the response is unexpected.
     This completes the unit test.
     """
     global n_unexpected_responses
-    d, tag = response_d, '_check_response'
+    tag = '_check_response'
     keys = sorted(list(d.keys()))
-    if 'action' not in response_d:
+    if 'action' not in d:
         n_unexpected_responses += 1
         print(f"{tag}: no 'action' key response keys: {keys}")
         return
-    action = response_d.get('action')
+    action = d.get('action')
     if action != expected_action:
         n_unexpected_responses += 1
         print(f"{tag}: action value: {action} is not {expected_action}: {keys}")
