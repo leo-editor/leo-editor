@@ -67,6 +67,7 @@ class ServerController:
         #
         # Init ivars first.
         self.c = None  # Currently Selected Commander.
+        self.action = None
         self.config = None
         self.current_id = 0  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
@@ -79,7 +80,7 @@ class ServerController:
             gui='nullGui',
             loadPlugins=False,   # True: attempt to load plugins.
             readSettings=False,  # True: read standard settings files.
-            silent=False,        # True: don't print signon messages.
+            silent=True,         # True: don't print signon messages.
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
         g = self.bridge.globals()
@@ -98,7 +99,7 @@ class ServerController:
         if not config:  # pragma: no cover
             raise ServerError(f"{tag}: no config")
         self.config = config
-        return self._make_response("config")
+        return self._make_response()
     #@+node:ekr.20210202110128.52: *4* sc.init_connection
     def _init_connection(self, web_socket):
         """Begin the connection."""
@@ -115,7 +116,7 @@ class ServerController:
         tag = '_check_ap'
         c = self.c
         if not c:
-            raise ServerError(f"{tag}: no c. callers: {g.callers()}")
+            raise ServerError(f"{tag}: no c")
         ap = package.get('ap')
         if not ap:  # pragma: no cover
             raise ServerError(f"{tag}: no archived_position")
@@ -131,7 +132,7 @@ class ServerController:
         tag = '_check_c'
         c = self.c
         if not c:
-            raise ServerError(f"{tag} no open commander: callers: {g.callers()}")
+            raise ServerError(f"{tag} no open commander")
         return c
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
     def _do_message(self, d):
@@ -229,10 +230,14 @@ class ServerController:
         Return a standard response.
         Always return "id", "commander" and "node" keys.
         """
+        tag = '_make_response'
         c = self.c  # It is valid for c to be None.
         p = c and c.p
         if package is None:
             package = {}
+        if isinstance(package, str):
+            raise InternalServerError(f"{tag}: bad package: {package!r}")
+        # g.trace(self.action, sorted(list(package.keys())))
         package ["id"] = self.current_id
         package ["action"] = self.action
         package ["commander"] = {
@@ -304,9 +309,7 @@ class ServerController:
         Open a leo file with the given filename.
         Create a new document if no name.
         """
-        tag = 'open_file'
-        c = self._check_c()
-        found = False
+        found, tag = False, 'open_file'
         filename = package.get('filename')  # Optional.
         if filename:
             for c in g.app.commanders():
@@ -347,9 +350,10 @@ class ServerController:
     #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
     def get_all_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
-        c = self._check_c()
+        # No need to have an open commander.
+        c = g.app.newCommander(fileName=None)
         d = c.commandsDict  # keys are command names, values are functions.
-        bad_names = self._bad_commands()  # #92.
+        bad_names = self._bad_commands(c)  # #92.
         good_names = self._good_commands()
         duplicates = set(bad_names).intersection(set(good_names))
         if duplicates:  # pragma: no cover
@@ -377,9 +381,8 @@ class ServerController:
             })
         return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *6* sc._bad_commands
-    def _bad_commands(self):
+    def _bad_commands(self, c):
         """Return the list of Leo's command names that leoInteg should ignore."""
-        c = self._check_c()
         d = c.commandsDict  # keys are command names, values are functions.
         bad = []
         #
@@ -1609,7 +1612,7 @@ class ServerController:
         self._check_c()
         p = self._check_ap(package)
         p.contract()
-        return self._make_response("collapse_node")
+        return self._make_response()
     #@+node:ekr.20210202183724.12: *5* sc.cut_node
     def cut_node(self, package):
         """Cut a node, return the newly-selected node."""
@@ -1805,7 +1808,7 @@ class ServerController:
         c = self._check_c()
         ### To do: don't recalculate this!
         gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
-        g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
+        # g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
         #
         # Get the outer level items, so we can be permissive.
         childIndex = ap.get('childIndex')
@@ -1821,7 +1824,7 @@ class ServerController:
         if v is None:  # pragma: no cover.
             # An error, but make an exception for testing.
             if childIndex == 0 and ap_stack in (None, []):
-                g.trace(f"{tag} Default to root position: {ap}")
+                # print(f"{tag} Default to root position: {ap}")
                 return c.rootPosition()
             raise ServerError(f"{tag} gnx not found: {gnx}")
         #
@@ -1947,7 +1950,7 @@ def main():
         try:
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
-            await websocket.send(controller._make_response(""))
+            await websocket.send(controller._make_response())
             # controller._sign_on()
             async for json_message in websocket:
                 d = None
@@ -1960,14 +1963,17 @@ def main():
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)
                 except ServerError as e:
-                    data = f"  Incoming request: {d}" if d else f"bad request: {json_message!r}"
+                    data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:   ServerError: {e}...\n{tag}: {data}"
-                    print(error, flush=flush)
+                    print("")
+                    print(error)
+                    print("")
                     package = {
                         "id": controller.current_id,
+                        "action": controller.action,
                         "request": data,
                         "ServerError": f"{e}",
-                    }
+                    }  
                     answer = json.dumps(package, separators=(',', ':'))
                 except InternalServerError as e:  # pragma: no cover
                     print(f"{tag}: InternalServerError {e}")

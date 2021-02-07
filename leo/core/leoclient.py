@@ -121,14 +121,17 @@ def _show_response(json_s, n, response_d):
         response_time_s = f"{response_time:3.2}"
     # Note: g.printObj converts multi-line strings to lists.
     # repr(response_d) shows newlines as "\n", not actual newlines.
-    if 'open-file' in response_d:
+    action = response_d.get('action')
+    assert action, response_d
+    if action == 'open_file':
         g.printObj(response_d, tag=f"{tag}: got: open-file response time: {response_time_s}")
-    elif 'commands' in response_d:
-        print(f"{tag}: got: commands: len(commands): {len(response_d.get('commands'))}")
+    elif action == 'get_all_commands':
+        commands = response_d.get('commands')
+        print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
-        print(f"{tag}:  got: {response_d} response time: {response_time_s}")
+        print(f"{tag}:  got: {response_d} ")
 #@+node:ekr.20210206144703.1: *3* function: _check_response
-def _check_response(action, n, response_d):
+def _check_response(expected_action, n, response_d):
     """
     Warn if the response is unexpected.
     This completes the unit test.
@@ -136,18 +139,14 @@ def _check_response(action, n, response_d):
     global n_unexpected_responses
     d, tag = response_d, '_check_response'
     keys = sorted(list(d.keys()))
-    expected_keys = {
-        "apply_config": "config",
-        "clear_trace": "trace_off",
-        "error": "ServerError",
-        "get_all_commands": "commands",
-        "get_sign_on": "sign_on",
-        "set_trace": "trace_on",
-    }
-    expected_key = expected_keys.get(action, action)
-    if expected_key not in d:
+    if 'action' not in response_d:
         n_unexpected_responses += 1
-        print(f"{tag} action: {action}. {expected_key} not in response keys: {keys}")
+        print(f"{tag} no 'action' key response keys: {keys}")
+        return
+    action = response_d.get('action')
+    if action != expected_action:
+        n_unexpected_responses += 1
+        print(f"{tag} action value: {action} is not {expected_action}: {keys}")
 #@-others
 
 if __name__ == '__main__':
