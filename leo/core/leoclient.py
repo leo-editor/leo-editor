@@ -97,10 +97,8 @@ async def client_main_loop(timeout):
                         _show_response(json_s, n, d)
                     if n2 == n:
                         break
-                    # print(f"{tag}: response out of order. Expected {n}, got {n2}")
                     inner_n += 1
-                    if inner_n > 3:
-                        break
+                    assert inner_n < 50, n  # This seems like a reasonable limit.
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
