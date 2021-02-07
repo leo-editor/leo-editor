@@ -132,7 +132,7 @@ class ServerController:
         tag = '_check_c'
         c = self.c
         if not c:
-            raise ServerError(f"{tag} no open commander")
+            raise ServerError(f"{tag}: no open commander")
         return c
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
     def _do_message(self, d):
@@ -1842,32 +1842,32 @@ class ServerController:
         #
         # Test the outer level.
         if childIndex is None:  # pragma: no cover.
-            raise ServerError(f"{tag} no outer childIndex.")
+            raise ServerError(f"{tag}: no outer childIndex.")
         if gnx is None:  # pragma: no cover.
-            raise ServerError(f"{tag} no outer gnx.")
+            raise ServerError(f"{tag}: no outer gnx.")
         v = gnx_d.get(gnx)
         if v is None:  # pragma: no cover.
             # An error, but make an exception for testing.
             if childIndex == 0 and ap_stack in (None, []):
-                # print(f"{tag} Default to root position: {ap}")
+                # print(f"{tag}: Default to root position: {ap}")
                 return c.rootPosition()
-            raise ServerError(f"{tag} gnx not found: {gnx}")
+            raise ServerError(f"{tag}: gnx not found: {gnx}")
         #
         # Resolve the stack, a list of tuples(gnx, childIndex).
         stack = []
         for d in ap_stack:
             childIndex = d.get('childIndex')
             if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag} no childIndex in {d}")
+                raise ServerError(f"{tag}: no childIndex in {d}")
             gnx = d.get('gnx')
             if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag} no gnx in {d}")
+                raise ServerError(f"{tag}: no gnx in {d}")
             stack.append((gnx, childIndex))
         #
         # Create the position.
         p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
-            raise ServerError(f"{tag} p does not exist: {p!r}")
+            raise ServerError(f"{tag}: p does not exist: {p!r}")
         return p  # Whew!
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):

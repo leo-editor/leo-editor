@@ -142,12 +142,12 @@ def _check_response(expected_action, n, response_d):
     keys = sorted(list(d.keys()))
     if 'action' not in response_d:
         n_unexpected_responses += 1
-        print(f"{tag} no 'action' key response keys: {keys}")
+        print(f"{tag}: no 'action' key response keys: {keys}")
         return
     action = response_d.get('action')
     if action != expected_action:
         n_unexpected_responses += 1
-        print(f"{tag} action value: {action} is not {expected_action}: {keys}")
+        print(f"{tag}: action value: {action} is not {expected_action}: {keys}")
 #@-others
 
 if __name__ == '__main__':
