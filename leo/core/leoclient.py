@@ -58,8 +58,8 @@ async def client_main_loop(timeout):
         if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
         json_s = g.toUnicode(await websocket.recv())
-        response_d = json.loads(json_s)
-        print(f"startup package: {response_d}")
+        d = json.loads(json_s)
+        print(f"startup package: {d}")
         n = 0
         while True:
             n += 1
@@ -83,13 +83,13 @@ async def client_main_loop(timeout):
                     request = json.dumps(request_package, separators=(',', ':'))
                     await websocket.send(request)
                     json_s = g.toUnicode(await websocket.recv())
-                    response_d = json.loads(json_s)
+                    d = json.loads(json_s)
                     # Check the response.
-                    n2 = response_d.get("id")
+                    n2 = d.get("id")
                     # Check the response. This completes the unit tests.
-                    _check_response(action, n, response_d)
+                    _check_response(action, n, d)
                     if trace:
-                        _show_response(json_s, n, response_d)
+                        _show_response(json_s, n, d)
                     if n2 == n:
                         break
                     print(f"{tag}: response out of order. Expected {n}, got {n2}")
