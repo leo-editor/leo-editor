@@ -353,6 +353,14 @@ class ServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
+        if 0:  # Clean the dict.
+            d = c.fileCommands.gnxDict
+            c.fileCommands.gnxDict = {
+                gnx: v for gnx, v in d.items()
+                    if v.h != "NewHeadline"  # This looks like a bug in Leo.
+            }
+            g.printObj(c.fileCommands.gnxDict)
+        c.selectPosition(c.rootPosition())  # Required..
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
