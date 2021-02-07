@@ -112,9 +112,10 @@ class ServerController:
         Resolve archived position to a position.
         Return p, or raise ServerError.
         """
-        callers = g.callers().split(',')
-        tag = callers[-1]
-        c = self._check_c(tag=tag)
+        tag = '_check_ap'
+        c = self.c
+        if not c:
+            raise ServerError(f"{tag}: no c. callers: {g.callers()}")
         ap = package.get('ap')
         if not ap:  # pragma: no cover
             raise ServerError(f"{tag}: no archived_position")
@@ -125,14 +126,12 @@ class ServerController:
             raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
     #@+node:ekr.20210207054237.1: *4* sc._check_c
-    def _check_c(self, tag=None):
+    def _check_c(self):
         """Return self.c or raise ServerError"""
-        if not tag:
-            callers = g.callers().split(',')
-            tag = callers[-1]
+        tag = '_check_c'
         c = self.c
         if not c:
-            raise ServerError(f"{tag} no open commander")
+            raise ServerError(f"{tag} no open commander: callers: {g.callers()}")
         return c
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
     def _do_message(self, d):
@@ -224,7 +223,7 @@ class ServerController:
                 return p
         return None  # pragma: no cover
 
-    #@+node:ekr.20210206182638.1: *4* sc__make_response
+    #@+node:ekr.20210206182638.1: *4* sc._make_response
     def _make_response(self, package=None):
         """
         Return a standard response.
@@ -250,7 +249,7 @@ class ServerController:
         Check that a button command is possible.
         Raise ServerError if not. Otherwise, return sc.buttonsDict.
         """
-        c = self._check_c(tag=tag)
+        c = self._check_c()
         sc = c.theScriptingController
         if not sc:
             # This will happen unless mod_scripting is loaded!
@@ -1453,6 +1452,7 @@ class ServerController:
 
     def get_body_using_p(self, package):
         """Given an ap, return the body text of the node."""
+        self._check_c()
         p = self._check_ap(package)
         return self._make_response({"body": p.b})
     #@+node:ekr.20210202110128.73: *5* sc.get_body_length
@@ -1476,8 +1476,8 @@ class ServerController:
         Also returns the saved cursor position from last time node was accessed.
         """
         c = self._check_c()
-        wrapper = c.frame.body.wrapper
         p = self._check_ap(package)
+        wrapper = c.frame.body.wrapper
         defaultPosition = {"line": 0, "col": 0}
         states = {
             'language': 'plain',
@@ -1535,6 +1535,7 @@ class ServerController:
     #@+node:ekr.20210202110128.68: *5* sc.get_children
     def get_children(self, package):
         """Return list of children of a node"""
+        self._check_c()
         p = self._check_ap(package)
         package = {
             "ap-list": [self._p_to_ap(child) for child in p.children()],
@@ -1546,6 +1547,7 @@ class ServerController:
     #@+node:ekr.20210202110128.69: *5* sc.get_parent
     def get_parent(self, package):
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
+        self._check_c()
         p = self._check_ap(package)
         return self._make_response({"parent": p.getParent()})
     #@+node:ekr.20210206184431.1: *5* sc.get_position_data
@@ -1604,6 +1606,7 @@ class ServerController:
     #@+node:ekr.20210202110128.79: *5* sc.collapse_node
     def collapse_node(self, package):
         """Collapse a node"""
+        self._check_c()
         p = self._check_ap(package)
         p.contract()
         return self._make_response("collapse_node")
@@ -1626,6 +1629,7 @@ class ServerController:
     #@+node:ekr.20210202110128.78: *5* sc.expand_node
     def expand_node(self, package):
         """Expand a node"""
+        self._check_c()
         p = self._check_ap(package)
         p.expand()
         return self._make_response("expand_node")
@@ -1644,6 +1648,7 @@ class ServerController:
     #@+node:ekr.20210202183724.9: *5* sc.mark_node
     def mark_node(self, package):
         """Mark a node, but don't select it."""
+        self._check_c()
         p = self._check_ap(package)
         p.setMarked()
         return self._make_response()
@@ -1690,8 +1695,8 @@ class ServerController:
         """Change a node's headline."""
         tag = 'set_headline'
         c = self._check_c()
-        u = c.undoer
         p = self._check_ap(package)
+        u = c.undoer
         h = package.get('headline')
         if not h:  # pragma: no cover
             raise ServerError(f"{tag}: no headline")
@@ -1746,6 +1751,7 @@ class ServerController:
     #@+node:ekr.20210202183724.10: *5* sc.unmark_node
     def unmark_node(self, package):
         """Unmark a node, don't select it"""
+        self._check_c()
         p = self._check_ap(package)
         p.clearMarked()
         return self._make_response()
