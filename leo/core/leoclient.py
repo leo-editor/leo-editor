@@ -25,7 +25,6 @@ def main():
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(client_main_loop(timeout))
-        ### loop.run_forever()
     except KeyboardInterrupt:
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")

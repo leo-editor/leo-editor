@@ -1559,9 +1559,30 @@ class ServerController:
         return self._make_response({"parent": p.getParent()})
     #@+node:ekr.20210206184431.1: *5* sc.get_position_data
     def get_position_data(self, package):
-        pass
-        ### ap = package.get('ap')
-        
+        """returns all data needed to redraw p the screen."""
+        c = self._check_c()
+        p = self._check_ap(package)
+        stack = [{'gnx': gnx, 'childIndex': childIndex}
+            for (gnx, childIndex) in p.stack]
+        return {
+            # The minimal attributes that define a position.
+            'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
+            'stack': stack,
+            # Other attributes.
+            'expanded': p.isExpanded(),
+            'hasBody': bool(p.b),  # Don't return the body!!
+            'hasChildren': p.hasChildren(),
+            'headline': p.h,
+            'isCloned': p.isCloned(),
+            'isMarked': p.isMark(),
+            'selected': p == c.p, 
+            #
+            # These would be expensive or marginally useful.
+            # 'atFile', p.isAnyAtFileNode(), 'atFile'),
+            # 'level': p.level(),
+            # 'uA': p.v.u,
+        }
     #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
     def get_position(self, package):
         """Return the current position. Don't select it."""
@@ -1857,50 +1878,20 @@ class ServerController:
         self._test_round_trip_positions()
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
-        """Convert Leo position to a serializable archived position."""
-        c = self._check_c()
-        v = c.p.v
-        if not v:  # pragma: no cover
-            print(f"ServerController.p_to_ap: no v for position {p!r}")
-            assert False
-        ### To do: At present there is no such dict.
-            # Add any new node encountered to the dict.
-            # if v.gnx not in self.gnx_to_vnode:
-                # self.gnx_to_vnode[v.gnx] = v
-        # Necessary properties for outline.
-        ap = {
-            'childIndex': p._childIndex,
-            'gnx': v.gnx,
-            # 'level': p.level(),
-            'stack': [
-                {
-                    'gnx': gnx,
-                    'childIndex': childIndex,
-                    # 'headline': stack_v.h,
-                } for (gnx, childIndex) in p.stack
-            ],
-            # 'expanded': p.isExpanded(),
-            # 'hasChildren': p.hasChildren(),
-            # 'hasBody': bool(p.b),
-            # 'isCloned': p.isCloned(),
-            # 'isMarked': p.isMark(),
-            # 'headline': p.h,
-        }
-        if 0: # EKR: 'status' flags should be handled separately.
-            if v.u:
-                ap['u'] = v.u
-            table = (
-                (p.isAnyAtFileNode(), 'atFile'),
-                (p.b, 'hasBody'),
-                (p == c.p, 'selected'),
-            )
-            for cond, attr in table:
-                if cond: ap [attr] = True
-            for attr in ('isCloned', 'isDirty', 'isExpanded', 'hasChildren','isMarked'):
-                func = getattr(p, attr)
-                if func(): ap [attr] = True
-        return ap
+        """
+        Convert Leo position p to a serializable archived position.
         
+        This returns only position-related data.
+        get_position_data returns all data needed to redraw the screen.
+        """
+        self._check_c()
+        stack = [{'gnx': gnx, 'childIndex': childIndex}
+            for (gnx, childIndex) in p.stack]
+        return {
+            'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
+            'stack': stack,
+        }
     #@+node:ekr.20210202110128.84: *4* sc._test_round_trip_positions
     def _test_round_trip_positions(self):
         """
