@@ -360,7 +360,7 @@ class ServerController:
                     if v.h != "NewHeadline"  # This looks like a bug in Leo.
             }
             g.printObj(c.fileCommands.gnxDict)
-        c.selectPosition(c.rootPosition())  # Required..
+        c.selectPosition(c.rootPosition())  # Required.
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
