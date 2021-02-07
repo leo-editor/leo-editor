@@ -78,20 +78,21 @@ async def client_main_loop(timeout):
                 }
                 if trace:
                     print(f"{tag}: send: id: {n} package: {request_package}")
-                request = json.dumps(request_package, separators=(',', ':'))
-                await websocket.send(request)
-                json_s = g.toUnicode(await websocket.recv())
-                response_d = json.loads(json_s)
-                # Check the response.
-                n2 = response_d.get("id")
-                if n2 != n:
+                # Wait for response n.
+                while True:
+                    request = json.dumps(request_package, separators=(',', ':'))
+                    await websocket.send(request)
+                    json_s = g.toUnicode(await websocket.recv())
+                    response_d = json.loads(json_s)
+                    # Check the response.
+                    n2 = response_d.get("id")
+                    # Check the response. This completes the unit tests.
+                    _check_response(action, n, response_d)
+                    if trace:
+                        _show_response(json_s, n, response_d)
+                    if n2 == n:
+                        break
                     print(f"{tag}: response out of order. Expected {n}, got {n2}")
-                    break
-                # Check the response. This completes the unit tests.
-                _check_response(action, n, response_d)
-                if trace:
-                    _show_response(json_s, n, response_d)
-                    print("")
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
@@ -125,12 +126,13 @@ def _show_response(json_s, n, response_d):
     action = response_d.get('action')
     assert action, response_d
     if action == 'open_file':
-        g.printObj(response_d, tag=f"{tag}: got: open-file response time: {response_time_s}")
+        g.printObj(response_d,
+            tag=f"{tag}: got: open-file response time: {response_time_s}")
     elif action == 'get_all_commands':
         commands = response_d.get('commands')
         print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
-        print(f"{tag}:  got: {response_d} ")
+        print(f"{tag}:  got: {response_d}")
 #@+node:ekr.20210206144703.1: *3* function: _check_response
 def _check_response(expected_action, n, response_d):
     """
