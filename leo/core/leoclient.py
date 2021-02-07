@@ -86,21 +86,21 @@ async def client_main_loop(timeout):
                 inner_n = 0
                 while True:
                     inner_n += 1
-                    assert inner_n < 50
+                    assert inner_n < 50  # Arbitrary.
                     json_s = g.toUnicode(await websocket.recv())
                     d = json.loads(json_s)
                     if trace:
                         _show_response(n, d)
-                    # Check the response.
+                    # The loop invariant. No recovery is possible.
+                    action2, n2 = d.get("action"), d.get("id")
+                    assert not action2 or (action, n) == (action2, n2), (
+                        action, action2, n, n2)
                     if 'async' in d:
                         n_async_responses += 1
                     else:
                         break
                 # Something is drastically wrong if these fail.
-                n2 = d.get("id")
-                action2 = d.get("action")
-                assert n2 == n, (n2, n)
-                assert action2 == action, (action2, action)
+               
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
