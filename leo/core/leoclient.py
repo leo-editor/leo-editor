@@ -10,11 +10,6 @@ from leo.core import leoGlobals as g
 wsHost = "localhost"
 wsPort = 32125
 
-n_async_responses = 0
-n_known_response_times = 0
-n_unexpected_responses = 0
-n_unknown_response_times = 0
-
 tag = 'client'
 timeout = 0.1
 times_d = {}  # Keys are n, values are time sent.
@@ -30,7 +25,12 @@ def main():
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
 #@+node:ekr.20210205144500.1: ** function: client_main_loop & helpers
+n_async_responses = 0
+n_known_response_times = 0
+n_unknown_response_times = 0
+
 async def client_main_loop(timeout):
+    global n_async_responses
     trace = True
     uri = f"ws://{wsHost}:{wsPort}"
     #@+<< define action_list >>
@@ -55,6 +55,7 @@ async def client_main_loop(timeout):
         ("close_file", {"filename": __file__}),
         ("get_all_commands", {}),
         ("test", {}),
+        ("shut_down", {}),
     ]
     #@-<< define action_list >>
     async with websockets.connect(uri) as websocket:
@@ -69,11 +70,8 @@ async def client_main_loop(timeout):
             try:
                 times_d [n] = time.perf_counter()
                 await asyncio.sleep(timeout)
-                if n < len(action_list):
-                    aTuple  = action_list[n-1]
-                    action, package = aTuple
-                else:
-                    action, package = "shut_down", {}
+                # Get the next package. The last action is shut_down.
+                action, package  = action_list[n-1]
                 request_package = {
                     "id": n,
                     "action": action,
@@ -85,20 +83,24 @@ async def client_main_loop(timeout):
                 request = json.dumps(request_package, separators=(',', ':'))
                 await websocket.send(request)
                 # Wait for response n.
+                inner_n = 0
                 while True:
-                    inner_n = 0
+                    inner_n += 1
+                    assert inner_n < 50
                     json_s = g.toUnicode(await websocket.recv())
                     d = json.loads(json_s)
-                    # Check the response.
-                    n2 = d.get("id")
-                    # Check the response. This completes the unit tests.
-                    _check_response(action, n, d)
                     if trace:
-                        _show_response(json_s, n, d)
-                    if n2 == n:
+                        _show_response(n, d)
+                    # Check the response.
+                    if 'async' in d:
+                        n_async_responses += 1
+                    else:
                         break
-                    inner_n += 1
-                    assert inner_n < 50, n  # This seems like a reasonable limit.
+                # Something is drastically wrong if these fail.
+                n2 = d.get("id")
+                action2 = d.get("action")
+                assert n2 == n, (n2, n)
+                assert action2 == action, (action2, action)
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
@@ -106,13 +108,12 @@ async def client_main_loop(timeout):
                 print(f"{tag}: connection closed normally")
                 break
         print(f"Asynchronous responses: {n_async_responses}")
-        print(f"  Unexpected responses: {n_unexpected_responses}")
         print(f"Unknown response times: {n_unknown_response_times}")
         print(f"  Known response times: {n_known_response_times}")
         print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
 #@+node:ekr.20210206093130.1: *3* function: _show_response
-def _show_response(json_s, n, d):
+def _show_response(n, d):
     global n_known_response_times
     global n_unknown_response_times
     global times_d
@@ -128,13 +129,8 @@ def _show_response(json_s, n, d):
         tot_response_time += response_time
         n_known_response_times += 1
         response_time_s = f"{response_time:3.2}"
-    # Note: g.printObj converts multi-line strings to lists.
-    # repr(d) shows newlines as "\n", not actual newlines.
-    async_ = d.get('async')
     action = d.get('action')
-    if async_:
-        print(f"{tag}: got: {d}")
-    elif action == 'open_file':
+    if action == 'open_file':
         g.printObj(d,
             tag=f"{tag}: got: open-file response time: {response_time_s}")
     elif action == 'get_all_commands':
@@ -142,24 +138,6 @@ def _show_response(json_s, n, d):
         print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
         print(f"{tag}: got: {d}")
-#@+node:ekr.20210206144703.1: *3* function: _check_response
-def _check_response(expected_action, n, d):
-    """
-    Warn if the response is unexpected.
-    This completes the unit test.
-    """
-    global n_async_responses
-    global n_unexpected_responses
-    tag = '_check_response'
-    keys = sorted(list(d.keys()))
-    if 'async' in d:
-        n_async_responses += 1
-        # print(f"{tag}: no 'action' key response keys: {keys}")
-        return
-    action = d.get('action')
-    if action != expected_action:
-        n_unexpected_responses += 1
-        print(f"{tag}: action value: {action} is not {expected_action}: {keys}")
 #@-others
 
 if __name__ == '__main__':
