@@ -37,7 +37,7 @@ async def client_main_loop(timeout):
     root_ap = {
         'childIndex': 0,
         'gnx': 0,
-        'stack': [],  # List of inner dicts with 'childIndex and 'gnx' keys.
+        'stack': [],
     }
 
     # In effect, these are unit tests.
@@ -47,7 +47,7 @@ async def client_main_loop(timeout):
         ("apply_config", {"config": {"whatever": True}}),
         ("error", {}),
         ("open_file", {"filename": __file__}),
-        ("contract-all", {}),
+        ("contract-all", {}),  # Execute contract-all command by name.
         ("collapse_node", {"ap": root_ap}),
         ("close_file", {"filename": __file__}),
         ("get_all_commands", {}),
