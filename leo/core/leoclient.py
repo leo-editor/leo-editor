@@ -10,10 +10,11 @@ from leo.core import leoGlobals as g
 wsHost = "localhost"
 wsPort = 32125
 
+n_async_responses = 0
 n_known_response_times = 0
-n_unknown_response_times = 0
 n_unexpected_responses = 0
-sync = False
+n_unknown_response_times = 0
+
 tag = 'client'
 timeout = 0.1
 times_d = {}  # Keys are n, values are time sent.
@@ -34,9 +35,11 @@ async def client_main_loop(timeout):
     uri = f"ws://{wsHost}:{wsPort}"
     #@+<< define action_list >>
     #@+node:ekr.20210206075253.1: *3* << define action_list >>
+
+
     root_ap = {
         'childIndex': 0,
-        'gnx': 0,
+        'gnx': 'ekr.20210202110241.1', # The actual gnx of this file.
         'stack': [],
     }
 
@@ -78,10 +81,12 @@ async def client_main_loop(timeout):
                 }
                 if trace:
                     print(f"{tag}: send: id: {n} package: {request_package}")
+                # Send the next request.
+                request = json.dumps(request_package, separators=(',', ':'))
+                await websocket.send(request)
                 # Wait for response n.
                 while True:
-                    request = json.dumps(request_package, separators=(',', ':'))
-                    await websocket.send(request)
+                    inner_n = 0
                     json_s = g.toUnicode(await websocket.recv())
                     d = json.loads(json_s)
                     # Check the response.
@@ -92,17 +97,21 @@ async def client_main_loop(timeout):
                         _show_response(json_s, n, d)
                     if n2 == n:
                         break
-                    print(f"{tag}: response out of order. Expected {n}, got {n2}")
+                    # print(f"{tag}: response out of order. Expected {n}, got {n2}")
+                    inner_n += 1
+                    if inner_n > 3:
+                        break
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
-        print(f"Unexpected response keys: {n_unexpected_responses}")
-        print(f"  Unknown response times: {n_unknown_response_times}")
-        print(f"    Known response times: {n_known_response_times}")
-        print(f"   Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
+        print(f"Asynchronous responses: {n_async_responses}")
+        print(f"  Unexpected responses: {n_unexpected_responses}")
+        print(f"Unknown response times: {n_unknown_response_times}")
+        print(f"  Known response times: {n_known_response_times}")
+        print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
 #@+node:ekr.20210206093130.1: *3* function: _show_response
 def _show_response(json_s, n, d):
@@ -123,28 +132,31 @@ def _show_response(json_s, n, d):
         response_time_s = f"{response_time:3.2}"
     # Note: g.printObj converts multi-line strings to lists.
     # repr(d) shows newlines as "\n", not actual newlines.
+    async_ = d.get('async')
     action = d.get('action')
-    assert action, d
-    if action == 'open_file':
+    if async_:
+        print(f"{tag}: got: {d}")
+    elif action == 'open_file':
         g.printObj(d,
             tag=f"{tag}: got: open-file response time: {response_time_s}")
     elif action == 'get_all_commands':
         commands = d.get('commands')
         print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
-        print(f"{tag}:  got: {d}")
+        print(f"{tag}: got: {d}")
 #@+node:ekr.20210206144703.1: *3* function: _check_response
 def _check_response(expected_action, n, d):
     """
     Warn if the response is unexpected.
     This completes the unit test.
     """
+    global n_async_responses
     global n_unexpected_responses
     tag = '_check_response'
     keys = sorted(list(d.keys()))
-    if 'action' not in d:
-        n_unexpected_responses += 1
-        print(f"{tag}: no 'action' key response keys: {keys}")
+    if 'async' in d:
+        n_async_responses += 1
+        # print(f"{tag}: no 'action' key response keys: {keys}")
         return
     action = d.get('action')
     if action != expected_action:

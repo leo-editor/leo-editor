@@ -56,7 +56,7 @@ class ServerController:
     #@+node:ekr.20210202160349.1: *3* sc:Birth & startup
     #@+node:ekr.20210202110128.30: *4* sc.__init__ (load bridge, set self.g)
     def __init__(self):
-        ### TODO : @boltex #74 need gnx_to_vnode for each opened file/commander
+
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
         import leo.core.leoExternalFiles as leoExternalFiles
@@ -223,6 +223,30 @@ class ServerController:
                 if func:
                     return func
         return None
+    #@+node:ekr.20210202110128.51: *4* sc._es & helpers
+    def _es(self, s):
+        """Send a response that does not correspond to an request."""
+        self._send_async_output({
+            "async": "",  # This response corresponds to no id_.
+            "s": g.toUnicode(s),
+        })
+    #@+node:ekr.20210202110128.39: *5* sc._send_async_output
+    def _send_async_output(self, package):
+        tag = '_send_async_output'
+        assert "async" in package, repr(package)
+        response = json.dumps(package, separators=(',', ':'))
+        if self.loop:
+            self.loop.create_task(self._async_output(response))
+        else:
+            print(f"{tag}: Error loop not ready {response}")
+    #@+node:ekr.20210204145818.1: *5* sc._async_output
+    async def _async_output(self, json):
+        """Output json string to the web_socket"""
+        tag = '_async_output'
+        if self.web_socket:
+            await self.web_socket.send(bytes(json, 'utf-8'))
+        else:
+            g.trace(f"{tag}: no web socket. json: {json}")
     #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
     def _gnx_to_p(self, gnx):
         """Return first p node with this gnx or None"""
@@ -329,7 +353,6 @@ class ServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        ### self._create_gnx_to_vnode()
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
@@ -1575,7 +1598,7 @@ class ServerController:
             'hasChildren': p.hasChildren(),
             'headline': p.h,
             'isCloned': p.isCloned(),
-            'isMarked': p.isMark(),
+            'isMarked': p.isMarked(),
             'selected': p == c.p, 
             #
             # These would be expensive or marginally useful.
@@ -1831,11 +1854,7 @@ class ServerController:
         """
         tag = '_ap_to_p'
         c = self._check_c()
-        ### To do: don't recalculate this!
-        gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
-        # g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
-        #
-        # Get the outer level items, so we can be permissive.
+        gnx_d = c.fileCommands.gnxDict
         childIndex = ap.get('childIndex')
         gnx = ap.get('gnx')
         ap_stack = ap.get('stack')
@@ -1847,10 +1866,7 @@ class ServerController:
             raise ServerError(f"{tag}: no outer gnx.")
         v = gnx_d.get(gnx)
         if v is None:  # pragma: no cover.
-            # An error, but make an exception for testing.
-            if childIndex == 0 and ap_stack in (None, []):
-                # print(f"{tag}: Default to root position: {ap}")
-                return c.rootPosition()
+            g.printObj(gnx_d, tag=f"gnx_d")
             raise ServerError(f"{tag}: gnx not found: {gnx}")
         #
         # Resolve the stack, a list of tuples(gnx, childIndex).
@@ -1864,11 +1880,11 @@ class ServerController:
                 raise ServerError(f"{tag}: no gnx in {d}")
             stack.append((gnx, childIndex))
         #
-        # Create the position.
+        # Create the position!
         p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
             raise ServerError(f"{tag}: p does not exist: {p!r}")
-        return p  # Whew!
+        return p
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
         """Make the first gnx_to_vnode array with all unique nodes"""
@@ -1945,11 +1961,13 @@ def main():
         try:
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
+            n = 0
             await websocket.send(controller._make_response())
             # controller._sign_on()
             async for json_message in websocket:
-                d = None
                 try:
+                    n += 1
+                    d = None
                     trace = controller.trace
                     d = json.loads(json_message)
                     if trace:
@@ -1978,6 +1996,8 @@ def main():
                     g.print_exception()
                     break
                 await websocket.send(answer)
+                if n in (3, 4, 7, 10):
+                    controller._es(f"send async message {n}")
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
