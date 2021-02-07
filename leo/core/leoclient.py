@@ -47,9 +47,11 @@ async def client_main_loop(timeout):
         ("get_sign_on", {}),
         ("apply_config", {"config": {"whatever": True}}),
         ("error", {}),
-        ("open_file", {"filename": "xyzzy.leo"}),
-        ("get_all_commands", {}),
+        ("open_file", {"filename": __file__}),
+        ("contract-all", {}),
         ("collapse_node", {"ap": root_ap}),
+        ("close_file", {"filename": __file__}),
+        ("get_all_commands", {}),
         ("test", {}),
     ]
     #@-<< define action_list >>

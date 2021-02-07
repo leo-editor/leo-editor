@@ -29,11 +29,7 @@ if 1:  # pragma: no cover
     # Third-party.
     import websockets
     # Leo
-    import leo.core.leoApp as leoApp
-    import leo.core.leoBridge as leoBridge
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoExternalFiles as leoExternalFiles
-    import leo.core.leoFrame as leoFrame
+    from leo.core.leoNodes import Position
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module.
 # server defaults...
@@ -61,11 +57,15 @@ class ServerController:
     #@+node:ekr.20210202110128.30: *4* sc.__init__ (load bridge, set self.g)
     def __init__(self):
         ### TODO : @boltex #74 need gnx_to_vnode for each opened file/commander
+        import leo.core.leoApp as leoApp
+        import leo.core.leoBridge as leoBridge
+        import leo.core.leoExternalFiles as leoExternalFiles
         global g
         t1 = time.process_time()
         #
         # Init ivars first.
         self.c = None  # Currently Selected Commander.
+        self.dummy_c = None  # Set below, after we set g.
         self.action = None
         self.config = None
         self.current_id = 0  # Id of action being processed.
@@ -83,6 +83,7 @@ class ServerController:
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
         g = self.bridge.globals()
+        self.dummy_c = g.app.newCommander(fileName=None)  # To inspect commands
         #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
@@ -168,7 +169,14 @@ class ServerController:
         func = getattr(self, action, None)
         if func:
             return func(package)
-        ### To do: allow Leo command names.
+        # Now c must exist.
+        c = self._check_c()
+        func = c.commandsDict.get(action)
+        if func and action in self._bad_commands(c):  # pragma: no cover
+            raise ServerError(f"{tag}: disallowed command: {action}")
+        if func:
+            value = func(event={"c":c})
+            return self._make_response({"return-value": value})
         raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
     #@+node:ekr.20210202110128.53: *5* sc._get_commander_method (revise)
     def _get_commander_method(self, method_name):
@@ -316,13 +324,15 @@ class ServerController:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
+            assert c.frame.body.wrapper, filename
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        if not found:
-            c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
-            c.selectPosition(c.p)
+        ###
+            # if not getattr(c.frame.body, 'wrapper', None):
+                # g.trace('SET WRAPPER')
+                # c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
         ### self._create_gnx_to_vnode() ###
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
@@ -349,8 +359,7 @@ class ServerController:
     #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
     def get_all_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
-        # No need to have an open commander.
-        c = g.app.newCommander(fileName=None)
+        c = self.dummy_c  # Use the dummy commander.
         d = c.commandsDict  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
         good_names = self._good_commands()
@@ -1839,7 +1848,7 @@ class ServerController:
             stack.append((gnx, childIndex))
         #
         # Create the position.
-        p = leoNodes.Position(v, childIndex, stack)
+        p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
             raise ServerError(f"{tag} p does not exist: {p!r}")
         return p  # Whew!
