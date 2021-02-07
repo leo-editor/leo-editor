@@ -329,11 +329,7 @@ class ServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        ###
-            # if not getattr(c.frame.body, 'wrapper', None):
-                # g.trace('SET WRAPPER')
-                # c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
-        ### self._create_gnx_to_vnode() ###
+        ### self._create_gnx_to_vnode()
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
@@ -1663,6 +1659,22 @@ class ServerController:
         p = self._check_ap(package)
         p.setMarked()
         return self._make_response()
+    #@+node:ekr.20210202110128.64: *5* sc.page_down
+    def page_down(self, unused):
+        """Selects a node a couple of steps down in the tree to simulate page down"""
+        c = self._check_c()
+        c.selectVisNext()
+        c.selectVisNext()
+        c.selectVisNext()
+        return self._make_response()
+    #@+node:ekr.20210202110128.63: *5* sc.page_up
+    def pageUp(self, unused):
+        """Selects a node a couple of steps up in the tree to simulate page up"""
+        c = self._check_c()
+        c.selectVisBack()
+        c.selectVisBack()
+        c.selectVisBack()
+        return self._make_response()
     #@+node:ekr.20210202183724.17: *5* sc.redo
     def redo(self, package):
         """Undo last un-doable operation"""
@@ -1701,6 +1713,13 @@ class ServerController:
                     p.setDirty()
                 break
         return self._make_response()
+    #@+node:ekr.20210202110128.77: *5* sc.set_current_position
+    def set_current_position(self, package):
+        """Select a node, or the first one found with its GNX"""
+        c = self._check_c()
+        p = self._check_ap(package)  # p is guaranteed to exist.
+        c.selectPosition(p)
+        return self._make_response()
     #@+node:ekr.20210202110128.76: *5* sc.set_headline
     def set_headline(self, package):
         """Change a node's headline."""
@@ -1714,13 +1733,6 @@ class ServerController:
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
-        return self._make_response()
-    #@+node:ekr.20210202110128.77: *5* sc.set_current_position
-    def set_current_position(self, package):
-        """Select a node, or the first one found with its GNX"""
-        c = self._check_c()
-        p = self._check_ap(package)  # p is guaranteed to exist.
-        c.selectPosition(p)
         return self._make_response()
     #@+node:ekr.20210202110128.75: *5* sc.set_selection
     def set_selection(self, package):
@@ -1765,22 +1777,6 @@ class ServerController:
         self._check_c()
         p = self._check_ap(package)
         p.clearMarked()
-        return self._make_response()
-    #@+node:ekr.20210202110128.64: *5* sc.page_down
-    def page_down(self, unused):
-        """Selects a node a couple of steps down in the tree to simulate page down"""
-        c = self._check_c()
-        c.selectVisNext()
-        c.selectVisNext()
-        c.selectVisNext()
-        return self._make_response()
-    #@+node:ekr.20210202110128.63: *5* sc.page_up
-    def pageUp(self, unused):
-        """Selects a node a couple of steps up in the tree to simulate page up"""
-        c = self._check_c()
-        c.selectVisBack()
-        c.selectVisBack()
-        c.selectVisBack()
         return self._make_response()
     #@+node:ekr.20210205102806.1: *4* sc:test commands
     #@+node:ekr.20210205102818.1: *5* sc.error
