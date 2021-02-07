@@ -43,8 +43,12 @@ flush = True
 sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
+class InternalServerError(Exception):  # pragma: no cover
+    """The server violated its own coding conventions."""
+    pass
+
 class ServerError(Exception):  # pragma: no cover
-    """The server received a package containing missing or erroneous contents."""
+    """The server received an erroneous package."""
     pass
 
 class TerminateServer(Exception):  # pragma: no cover
@@ -108,9 +112,9 @@ class ServerController:
         Resolve archived position to a position.
         Return p, or raise ServerError.
         """
-        c = self.c
         callers = g.callers().split(',')
         tag = callers[-1]
+        c = self._check_c(tag=tag)
         ap = package.get('ap')
         if not ap:  # pragma: no cover
             raise ServerError(f"{tag}: no archived_position")
@@ -120,6 +124,16 @@ class ServerController:
         if not c.positionExists(p):  # pragma: no cover
             raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
+    #@+node:ekr.20210207054237.1: *4* sc._check_c
+    def _check_c(self, tag=None):
+        """Return self.c or raise ServerError"""
+        if not tag:
+            callers = g.callers().split(',')
+            tag = callers[-1]
+        c = self.c
+        if not c:
+            raise ServerError(f"{tag} no open commander")
+        return c
     #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
     def _do_message(self, d):
         """
@@ -133,27 +147,75 @@ class ServerController:
         id_ = d.get('id')
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
-        # Set the id.
+        action = d.get('action')
+        if action is None:
+            raise ServerError("f{tag}: no action")
+        # Set the id and action for _make_response.
         self.current_id = id_
+        self.action = action
         # The package is optional.
         package = d.get('package', {})
-        method_name = d.get('action')
-        result = self._do_method_by_name(method_name, package)
-        # Ensure the result is a json-formatted string.
+        result = self._do_action_by_name(action, package)
         if result is None:
-            result = self._make_response("")  # This is an error.
+            raise ServerError(f"{tag}: no response: {action}")
         return result
-    #@+node:ekr.20210204095743.1: *5* sc._do_method_by_name
-    def _do_method_by_name(self, method_name, package):
+    #@+node:ekr.20210204095743.1: *5* sc._do_action_by_name
+    def _do_action_by_name(self, action, package):
         """Execute one of Leo's methods by name."""
         tag = '_do_method_by_name'
         # For now, disallow hidden methods.
-        if method_name.startswith('_'):  # pragma: no cover
-            raise ServerError(f"{tag}: method name starts with '_': {method_name!r}")
-        func = getattr(self, method_name, None)
+        if action.startswith('_'):  # pragma: no cover
+            raise ServerError(f"{tag}: action starts with '_': {action}")
+        func = getattr(self, action, None)
         if func:
             return func(package)
-        raise ServerError(f"{tag}: method not found: {method_name!r}")  # pragma: no cover
+        ### To do: allow Leo command names.
+        raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
+    #@+node:ekr.20210202110128.53: *5* sc._get_commander_method (revise)
+    def _get_commander_method(self, method_name):
+        """ Return the method with the given name in the Commands class or subcommanders."""
+        c = self.c
+        if not c:
+            return None
+        # First, try the Commands class.
+        func = getattr(c, method_name, None)
+        if func:
+            return func
+        # Search all subcommanders for the method.
+        table = (
+            # This table comes from c.initObjectIvars.
+            'abbrevCommands',
+            'bufferCommands',
+            'chapterCommands',
+            'controlCommands',
+            'convertCommands',
+            'debugCommands',
+            'editCommands',
+            'editFileCommands',
+            'evalController',
+            'gotoCommands',
+            'helpCommands',
+            'keyHandler',
+            'keyHandlerCommands',
+            'killBufferCommands',
+            'leoCommands',
+            'leoTestManager',
+            'macroCommands',
+            'miniBufferWidget',
+            'printingController',
+            'queryReplaceCommands',
+            'rectangleCommands',
+            'searchCommands',
+            'spellCommands',
+            'vimCommands',  # Not likely to be useful.
+        )
+        for ivar in table:
+            subcommander = getattr(c, ivar, None)
+            if subcommander:
+                func = getattr(subcommander, method_name, None)
+                if func:
+                    return func
+        return None
     #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
     def _gnx_to_p(self, gnx):
         """Return first p node with this gnx or None"""
@@ -162,82 +224,93 @@ class ServerController:
                 return p
         return None  # pragma: no cover
 
-    #@+node:ekr.20210204154318.2: *4* sc._make_position_list_response
-    def _make_position_list_response(self, position_list):
-        return self._make_response(
-            "archived-position-list",
-            [self._p_to_ap(p) for p in position_list],
-        )
-    #@+node:ekr.20210204154318.1: *4* sc._make_position_response
-    def _make_position_response(self, p):
-        return self._make_response(
-            "archived-position",
-            self._p_to_ap(p) if p else None,
-        )
-
-    #@+node:ekr.20210204154315.1: *4* sc._make_response
-    def _make_response(self, key, any=None):
+    #@+node:ekr.20210206182638.1: *4* sc__make_response
+    def _make_response(self, package=None):
         """
-        Return a json string corresponding to a package dictionary.
-        An empty key ("") is allowed.
+        Return a standard response.
+        Always return "id", "commander" and "node" keys.
         """
-        package = {
-            "id": self.current_id,
+        c = self.c  # It is valid for c to be None.
+        p = c and c.p
+        if package is None:
+            package = {}
+        package ["id"] = self.current_id
+        package ["action"] = self.action
+        package ["commander"] = {
+            "file_name": c and c.fileName(), # Can be None for new files.
+            "creation_time": None,   ### To do.
         }
-        if key:
-            assert isinstance(key, str), repr(key)
-            package [key] = any or ""
+        package ["node"] = p and self._p_to_ap(p)
         return json.dumps(package, separators=(',', ':')) 
-
     #@+node:ekr.20210202193210.1: *3* sc:Commands
     #@+node:ekr.20210202193709.1: *4* sc:button commands
+    #@+node:ekr.20210207051720.1: *5* _check_button_command
+    def _check_button_command(self, tag):
+        """
+        Check that a button command is possible.
+        Raise ServerError if not. Otherwise, return sc.buttonsDict.
+        """
+        c = self._check_c(tag=tag)
+        sc = c.theScriptingController
+        if not sc:
+            # This will happen unless mod_scripting is loaded!
+            raise ServerError(f"{tag}: no scripting controller")
+        return sc.buttonsDict
     #@+node:ekr.20210202183724.4: *5* sc.click_button
     def click_button(self, package):
         """Handles buttons clicked in client from the '@button' panel"""
-        c = self.c
-        index = package['index']
-        d = c.theScriptingController.buttonsDict
-        button = None
-        for key in d:
-            if(str(key) == index):
-                button = key
-        if button:
-            try:
-                button.command()
-            except Exception():
-                pass
-        return self._make_position_response(c.p)
+        tag = 'click_button'
+        name = package.get("name")
+        if not name:
+            raise ServerError(f"{tag}: no button name given")
+        d = self._check_button_command(tag)
+        button = d.get(name)
+        if not button:
+            raise ServerError(f"{tag}: button {name!r} does not exist")
+        try:
+            button.command()
+        except Exception as e:
+            raise ServerError(f"{tag}: exception clicking button {name}: {e}")
+        return self._make_response()
     #@+node:ekr.20210202183724.2: *5* sc.get_buttons
     def get_buttons(self, package):
         """Gets the currently opened file's @buttons list"""
-        c = self.c
-        buttons = []
-        if c and c.theScriptingController and c.theScriptingController.buttonsDict:
-            d = c.theScriptingController.buttonsDict
-            for key in d:
-                entry = {"name": d[key], "index": str(key)}
-                buttons.append(entry)
-        return self._make_response("buttons", buttons)
-
+        d = self._check_button_command('get_buttons')
+        package = {
+            "buttons": sorted(list(d.get.keys()))
+        }
+        return self._make_response(package)
     #@+node:ekr.20210202183724.3: *5* sc.remove_button
     def remove_button(self, package):
-        """Removes an entry from the buttonsDict by index string"""
-        c, d = self.c, self.c.theScriptingController.buttonsDict
-        index = package['index']
-        if index in d:
-            del d[index]
-        return self._make_position_response(c.p)
+        """Remove button by name."""
+        tag = 'remove_button'
+        name = package.get("name")
+        if not name:
+            raise ServerError(f"{tag}: no button name given")
+        d = self._check_button_command(tag)
+        if name not in d:
+            raise ServerError(f"{tag}: button {name!r} does not exist")
+        try:
+            del d [name]
+        except Exception as e:
+            raise ServerError(f"{tag}: exception removing button {name}: {e}")
+        package = {
+            "buttons": sorted(list(d.get.keys()))
+        }
+        return self._make_response(package)
     #@+node:ekr.20210202193642.1: *4* sc:file commands
     #@+node:ekr.20210202110128.57: *5* sc.open_file
     def open_file(self, package):
         """
-        Open a leo file with the given filename. Create a new document if no name.
+        Open a leo file with the given filename.
+        Create a new document if no name.
         """
-        c, found, tag = None, False, 'open_file'
-        openCommanders = [z for z in g.app.commanders() if not c.closed]
+        tag = 'open_file'
+        c = self._check_c()
+        found = False
         filename = package.get('filename')  # Optional.
         if filename:
-            for c in openCommanders:
+            for c in g.app.commanders():
                 if c.fileName() == filename:
                     found = True
         if not found:
@@ -249,63 +322,33 @@ class ServerController:
         if not found:
             c.frame.body.wrapper = leoFrame.StringTextWrapper(c, 'bodyWrapper')
             c.selectPosition(c.p)
-        self._create_gnx_to_vnode()
-        result = {
-            "filename": c.fileName(),
-            "node": self._p_to_ap(c.p),
-            # "open-files": len(g.app.commanders()),
-        }
-        return self._make_response("open_file", result)
+        ### self._create_gnx_to_vnode() ###
+        return self._make_response()
     #@+node:ekr.20210202110128.58: *5* sc.close_file
     def close_file(self, package):
         """
         Closes a leo file. A file can then be opened with "open_file"
         Returns an object that contains a 'closed' member
         """
-        c = self.c
-        ### To do: Support multiple opened files
-        if c:
-            if package["forced"] and c.changed:
-                # return "no" g.app.gui.runAskYesNoDialog  and g.app.gui.runAskYesNoCancelDialog
-                c.revert()
-            if package["forced"] or not c.changed:
-                c.closed = True
-                c.close()
-            else:
-                # Cannot close immediately. Ask to save, ignore or cancel
-                return self._make_response('closed', {"closed": 0})
-        # Select the first open commander.
-        openCommanders = [z for z in g.app.commanders() if not z.closed]
-        if not openCommanders:
-            return self._make_response("closed", {"total": 0})
-        self.c = openCommanders[0]
-        self._create_gnx_to_vnode()
-        result = {
-            "filename": c.fileName(),
-            "node": self._p_to_ap(self.c.p),
-            "total": len(openCommanders),
-        }
-        return self._make_response("closed", result)
+        c = self._check_c()
+        # Close the outline, even if it is dirty!
+        c.changed = False  # Force the close!
+        c.close()
+        # Select the first open outline, if any.
+        commanders = g.app.commanders()
+        self.c = commanders and commanders[0]
+        return self._make_response()
     #@+node:ekr.20210202183724.1: *5* sc.save_file
     def save_file(self, package):
-        """Saves the leo file. New or dirty derived files are rewritten"""
-        c = self.c
-        if c:
-            try:
-                if "text" in package:
-                    c.save(fileName=package['text'])
-                else:
-                    c.save()
-            except Exception as e:
-                g.trace('Error while saving')
-                print("Error while saving", flush=flush)
-                print(e, flush=flush)
-        return self._make_response("save_file")
+        """Save the leo outline."""
+        c = self._check_c()
+        c.save()
+        return self._make_response()
     #@+node:ekr.20210202193505.1: *4* sc:getter commands
     #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
     def get_all_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
-        c = self.c
+        c = self._check_c()
         d = c.commandsDict  # keys are command names, values are functions.
         bad_names = self._bad_commands()  # #92.
         good_names = self._good_commands()
@@ -333,13 +376,13 @@ class ServerController:
                 "func":  func_name,
                 "detail": doc,
             })
-        return self._make_response("commands", result)
+        return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *6* sc._bad_commands
     def _bad_commands(self):
         """Return the list of Leo's command names that leoInteg should ignore."""
-        c = self.c
-        bad = []
+        c = self._check_c()
         d = c.commandsDict  # keys are command names, values are functions.
+        bad = []
         #
         # First, remove @button, @command and vim commands.
         for command_name in sorted(d):
@@ -1375,42 +1418,43 @@ class ServerController:
     #@+node:ekr.20210202110128.71: *5* sc.get_all_gnxs
     def get_all_gnxs(self, package):
         """Get gnx array from all unique nodes"""
-        c = self.c
+        c = self._check_c()
         result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
-        return self._make_response("allGnx", result)
+        return self._make_response({"allGnx", result})
 
     #@+node:ekr.20210202110128.55: *5* sc.get_all_opened_files
     def get_all_opened_files(self, package):
         """Return array of opened file path/names to be used as open_file parameters to switch files"""
-        c = self.c
-        openCommanders = [z for z in g.app.commanders() if not z.closed]
+        c = self._check_c()
         files = [
             {
                 "changed": commander.changed,
                 "name": commander.mFileName,
                 "selected": c == commander,
-            } for commander in openCommanders
+            } for commander in g.app.commanders()
         ]
         # Removed 'index entries from result and files. They appear to be useless.
-        result = {
-            "files": files,
+        package = {
+            "open-files": files,
         }
-        return self._make_response("openedFiles", result)
+        return self._make_response(package)
     #@+node:ekr.20210202110128.72: *5* sc.get_body
-    def get_body(self, package):
-        """EMIT OUT body of a node"""
-        ###
-        # TODO: if not found, send code to prevent unresolved promise
-        #       if 'document switch' occurred shortly before
+    def get_body_using_gnx(self, package):
+        """Given a gnx, return the body text of the node."""
+        tag = 'get_body_using_gnx'
+        c = self._check_c()
         gnx = package.get('gnx')
-        if gnx:
-            v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
-            if v:
-                return self._make_response("bodyData", v.b)
-        #
-        # Send as empty to fix unresolved promise if 'document switch' occurred shortly before
-        return self._make_response("bodyData", "")
+        if not gnx:
+            raise ServerError(f"{tag}: not gnx given")
+        v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+        if not v:
+            raise ServerError(f"{tag}: gnx not found: {gnx}")
+        return self._make_response({"body": v.b})
 
+    def get_body_using_p(self, package):
+        """Given an ap, return the body text of the node."""
+        p = self._check_ap(package)
+        return self._make_response({"body": p.b})
     #@+node:ekr.20210202110128.73: *5* sc.get_body_length
     def get_body_length(self, package):
         """EMIT OUT body string length of a node"""
@@ -1421,14 +1465,18 @@ class ServerController:
         v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-        return self._make_response("bodyLength", len(v.b))
+        package = {
+            "bodyLength", len(v.b)
+        }
+        return self._make_response(package)
     #@+node:ekr.20210202110128.66: *5* sc.get_body_states
     def get_body_states(self, package):
         """
         Finds the language in effect at top of body for position p,
         Also returns the saved cursor position from last time node was accessed.
         """
-        c, wrapper = self.c, self.c.frame.body.wrapper
+        c = self._check_c()
+        wrapper = c.frame.body.wrapper
         p = self._check_ap(package)
         defaultPosition = {"line": 0, "col": 0}
         states = {
@@ -1480,36 +1528,36 @@ class ServerController:
                 "end": {"line": endRow, "col": endCol}
             }
         }
-        return self._make_response("bodyStates", states)
+        package = {
+            "body-states": states,
+        }
+        return self._make_response(package)
     #@+node:ekr.20210202110128.68: *5* sc.get_children
     def get_children(self, package):
-        """EMIT OUT list of children of a node"""
-        c = self.c
-        ap = package.get('ap')
-        if ap:
-            p = self._ap_to_p(ap)
-            nodes = p and p.children() or []
-        elif c.hoistStack:
-            nodes = [c.hoistStack[-1].p]
-        else:
-            # Output all top-level nodes.
-            nodes = [z for z in c.rootPosition().self_and_siblings()]
-        return self._make_position_list_response(nodes)
+        """Return list of children of a node"""
+        p = self._check_ap(package)
+        package = {
+            "ap-list": [self._p_to_ap(child) for child in p.children()],
+        }
+        return self._make_response(package)
+
+        
+        
     #@+node:ekr.20210202110128.69: *5* sc.get_parent
     def get_parent(self, package):
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
-        tag = 'get_parent'
-        ap = package.get('ap')
-        if not ap:  # pragma: no cover
-            raise ServerError(f"{tag}: no ap")
-        p = self._ap_to_p(ap)
-        if not p:  # pragma: no cover
-            raise ServerError(f"{tag}: position not found")
-        return self._make_position_response(p.getParent())
+        p = self._check_ap(package)
+        return self._make_response({"parent": p.getParent()})
+    #@+node:ekr.20210206184431.1: *5* sc.get_position_data
+    def get_position_data(self, package):
+        pass
+        ### ap = package.get('ap')
+        
     #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
     def get_position(self, package):
-        """EMIT OUT a node, don't select it"""
-        return self._make_position_response(self.c.p)
+        """Return the current position. Don't select it."""
+        # *All* responses contain a "node" key.
+        return self._make_response()
     #@+node:ekr.20210206062654.1: *5* sc.get_sign_on
     def get_sign_on(self, package):
         """Synchronous version of _sign_on"""
@@ -1518,45 +1566,41 @@ class ServerController:
         for z in (g.app.signon, g.app.signon1):
             for z2 in z.split('\n'):
                 signon.append(z2.strip())
-        signon = "\n".join(signon)
-        assert isinstance(signon, str)  # Weird. json.dumps converts to a list!
-        return self._make_response("sign_on", signon)
+        package = {
+            "sign-on-message": "\n".join(signon),
+        }
+        return self._make_response(package)
     #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
     def get_ui_states(self, package):
         """
-        Gets the currently opened file's general states for UI enabled/disabled states
-        such as undo available, file changed/unchanged
+        Return the enabled/disabled UI states for the open commander, or defaults if None.
         """
-        c, tag = self.c, 'get_ui_states'
-        # Set the defaults.
-        states = {
-            "changed": False,
-            "canUndo": False,
-            "canRedo": False,
-            "canDemote": False,
-            "canPromote": False,
-            "canDehoist": False,
+        c = self._check_c()
+        tag = 'get_ui_states'
+        try:
+            states = {
+                "changed": c and c.changed,
+                "canUndo": c and c.canUndo(),
+                "canRedo": c and c.canRedo(),
+                "canDemote": c and c.canDemote(),
+                "canPromote": c and c.canPromote(),
+                "canDehoist": c and c.canDehoist(),
+            }
+        except Exception as e:  # pragma: no cover
+            raise ServerError(f"{tag}: Exception setting state: {e}")
+        package = {
+            "states": states,
         }
-        if c:
-            try:
-                states["changed"] = c.changed
-                states["canUndo"] = c.canUndo()
-                states["canRedo"] = c.canRedo()
-                states["canDemote"] = c.canDemote()
-                states["canPromote"] = c.canPromote()
-                states["canDehoist"] = c.canDehoist()
-            except Exception as e:  # pragma: no cover
-                raise ServerError(f"{tag}: Exception setting state: {e}")
-        return self._make_response("states", states)
+        return self._make_response(package)
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202183724.11: *5* sc.clone_node
     def clone_node(self, package):
         """Clone a node"""
-        c = self.c
+        c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
         c.clone()
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202110128.79: *5* sc.collapse_node
     def collapse_node(self, package):
         """Collapse a node"""
@@ -1566,19 +1610,19 @@ class ServerController:
     #@+node:ekr.20210202183724.12: *5* sc.cut_node
     def cut_node(self, package):
         """Cut a node, return the newly-selected node."""
-        c = self.c
+        c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
         c.cutOutline()
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202183724.13: *5* sc.delete_node
     def delete_node(self, package):
         """Delete a node. Return the newly-selected node."""
-        c = self.c
+        c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
         c.deleteOutline()  # Handles undo.
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202110128.78: *5* sc.expand_node
     def expand_node(self, package):
         """Expand a node"""
@@ -1588,31 +1632,35 @@ class ServerController:
     #@+node:ekr.20210202183724.15: *5* sc.insert_node
     def insert_node(self, package):
         """Insert a node after the given node, set its headline and select it."""
-        c, tag = self.c, 'insert_node'
+        tag = 'insert_node'
+        c = self._check_c()
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:  # pragma: no cover
-            raise ServerError(f"{tag}: no headline")
+            raise ServerError(f"{tag}: no headline given")
         c.selectPosition(p)
-        p2 = c.insertHeadline()  # Handles undo.
-        return self._make_position_response(p2)
+        c.insertHeadline()  # Handles undo, sets c.p
+        return self._make_response()
     #@+node:ekr.20210202183724.9: *5* sc.mark_node
     def mark_node(self, package):
         """Mark a node, but don't select it."""
         p = self._check_ap(package)
         p.setMarked()
-        return self._make_position_response(self.c.p)
+        return self._make_response()
     #@+node:ekr.20210202183724.17: *5* sc.redo
     def redo(self, package):
         """Undo last un-doable operation"""
-        c, u = self.c, self.c.undoer
+        c = self._check_c()
+        u = c.undoer
         if u.canRedo():
             u.redo()
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202110128.74: *5* sc.set_body
     def set_body(self, package):
         """Change Body text of a node"""
-        c, u, tag = self.c, self.c.undoer, 'set_body'
+        tag = 'set_body'
+        c = self._check_c()
+        u = c.undoer
         gnx = package['gnx']
         if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
@@ -1636,13 +1684,13 @@ class ServerController:
                 if not p.v.isDirty():
                     p.setDirty()
                 break
-        return self._make_position_response(c.p)
-
+        return self._make_response()
     #@+node:ekr.20210202110128.76: *5* sc.set_headline
     def set_headline(self, package):
         """Change a node's headline."""
         tag = 'set_headline'
-        u = self.c.undoer
+        c = self._check_c()
+        u = c.undoer
         p = self._check_ap(package)
         h = package.get('headline')
         if not h:  # pragma: no cover
@@ -1650,21 +1698,23 @@ class ServerController:
         bunch = u.beforeChangeNodeContents(p)
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
-        return self._make_position_response(p)
+        return self._make_response()
     #@+node:ekr.20210202110128.77: *5* sc.set_current_position
     def set_current_position(self, package):
         """Select a node, or the first one found with its GNX"""
-        c = self.c
+        c = self._check_c()
         p = self._check_ap(package)  # p is guaranteed to exist.
         c.selectPosition(p)
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202110128.75: *5* sc.set_selection
     def set_selection(self, package):
         """
         Given package['gnx'], selection.
         Set the selection in the wrapper if c.p.gnx == gnx.
         """
-        c, wrapper, tag = self.c, self.c.frame.body.wrapper, 'set_selection'
+        tag = 'set_selection'
+        c = self._check_c()
+        wrapper = c.frame.body.wrapper
         gnx = package.get('gnx')
         if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
@@ -1683,20 +1733,38 @@ class ServerController:
         v.insertSpot = insert
         v.selectionStart = start
         v.selectionLength = abs(start - end)
-        return self._make_position_response(c.p)
+        return self._make_response()
     #@+node:ekr.20210202183724.16: *5* sc.undo
     def undo(self, package):
         """Undo last un-doable operation"""
-        c, u = self.c, self.c.undoer
+        c = self._check_c()
+        u = c.undoer
         if u.canUndo():
             u.undo()
-        return self._make_position_response(c.p)
+        # Félix: Caller can get focus using other calls.
+        return self._make_response()
     #@+node:ekr.20210202183724.10: *5* sc.unmark_node
     def unmark_node(self, package):
         """Unmark a node, don't select it"""
         p = self._check_ap(package)
         p.clearMarked()
-        return self._make_position_response(self.c.p)
+        return self._make_response()
+    #@+node:ekr.20210202110128.64: *5* sc.page_down
+    def page_down(self, unused):
+        """Selects a node a couple of steps down in the tree to simulate page down"""
+        c = self._check_c()
+        c.selectVisNext()
+        c.selectVisNext()
+        c.selectVisNext()
+        return self._make_response()
+    #@+node:ekr.20210202110128.63: *5* sc.page_up
+    def pageUp(self, unused):
+        """Selects a node a couple of steps up in the tree to simulate page up"""
+        c = self._check_c()
+        c.selectVisBack()
+        c.selectVisBack()
+        c.selectVisBack()
+        return self._make_response()
     #@+node:ekr.20210205102806.1: *4* sc:test commands
     #@+node:ekr.20210205102818.1: *5* sc.error
     def error(self, package):
@@ -1709,17 +1777,17 @@ class ServerController:
 
     quit = shut_down  # Abbreviation for testing.
     #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
-    def clear_trace(self, package):  # pragma: no cover
+    def clear_trace(self, package):
         self.trace = False
-        return self._make_response("trace_off")
+        return self._make_response()
         
-    def set_trace(self, package):  # pragma: no cover
+    def set_trace(self, package):
         self.trace = True
-        return self._make_response("trace_on")
+        return self._make_response()
     #@+node:ekr.20210202110128.60: *5* sc.test
     def test(self, package):
         """Do-nothing test function for debugging"""
-        return self._make_response('test-result', package)
+        return self._make_response()
     #@+node:ekr.20210202193334.1: *3* sc:Serialization
     #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
     def _ap_to_p(self, ap):
@@ -1728,49 +1796,45 @@ class ServerController:
         Raise ServerError on any kind of error.
         """
         tag = '_ap_to_p'
-        try:
-            c = self.c
-            if not c:  # pragma: no cover.
-                raise ServerError(f"{tag} no c")
-            ### To do: don't recalculate this!
-            gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
-            g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
-            # Get the outer level items, so we can be permissive.
-            childIndex = ap.get('childIndex')
-            gnx = ap.get('gnx')
-            ap_stack = ap.get('stack')
-            # Test the outer level.
+        c = self._check_c()
+        ### To do: don't recalculate this!
+        gnx_d = { v.gnx: v for v in self.c.all_unique_nodes() }
+        g.printObj(sorted(list(gnx_d.keys())), tag='gnx_d keys')
+        #
+        # Get the outer level items, so we can be permissive.
+        childIndex = ap.get('childIndex')
+        gnx = ap.get('gnx')
+        ap_stack = ap.get('stack')
+        #
+        # Test the outer level.
+        if childIndex is None:  # pragma: no cover.
+            raise ServerError(f"{tag} no outer childIndex.")
+        if gnx is None:  # pragma: no cover.
+            raise ServerError(f"{tag} no outer gnx.")
+        v = gnx_d.get(gnx)
+        if v is None:  # pragma: no cover.
+            # An error, but make an exception for testing.
+            if childIndex == 0 and ap_stack in (None, []):
+                g.trace(f"{tag} Default to root position: {ap}")
+                return c.rootPosition()
+            raise ServerError(f"{tag} gnx not found: {gnx}")
+        #
+        # Resolve the stack, a list of tuples(gnx, childIndex).
+        stack = []
+        for d in ap_stack:
+            childIndex = d.get('childIndex')
             if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag} no outer childIndex.")
+                raise ServerError(f"{tag} no childIndex in {d}")
+            gnx = d.get('gnx')
             if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag} no outer gnx.")
-            v = gnx_d.get(gnx)
-            if v is None:  # pragma: no cover.
-                # An error, but make an exception for testing.
-                if childIndex == 0 and ap_stack in (None, []):
-                    g.trace(f"{tag} Default to root position: {ap}")
-                    return c.rootPosition()
-                raise ServerError(f"{tag} gnx not found: {gnx}")
-            # Resolve the stack, a list of tuples(gnx, childIndex).
-            stack = []
-            for d in ap_stack:
-                childIndex = d.get('childIndex')
-                if childIndex is None:  # pragma: no cover.
-                    raise ServerError(f"{tag} no childIndex in {d}")
-                gnx = d.get('gnx')
-                if gnx is None:  # pragma: no cover.
-                    raise ServerError(f"{tag} no gnx in {d}")
-                stack.append((gnx, childIndex))
-            # Create a new position.
-            p = leoNodes.Position(v, childIndex, stack)
-            if not c.positionExists(p):  # pragma: no cover.
-                raise ServerError(f"{tag} p does not exist: {p!r}")
-            return p  # Whew!
-        except Exception as e:  # pragma: no cover
-            # This should not be possible, but don't stop the server if it happens.
-            g.print_exception()
-            raise ServerError(f"{tag}: {e}")
-        return leoNodes.position(v, childIndex, stack)
+                raise ServerError(f"{tag} no gnx in {d}")
+            stack.append((gnx, childIndex))
+        #
+        # Create the position.
+        p = leoNodes.Position(v, childIndex, stack)
+        if not c.positionExists(p):  # pragma: no cover.
+            raise ServerError(f"{tag} p does not exist: {p!r}")
+        return p  # Whew!
     #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
         """Make the first gnx_to_vnode array with all unique nodes"""
@@ -1781,7 +1845,8 @@ class ServerController:
     #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
     def _p_to_ap(self, p):
         """Convert Leo position to a serializable archived position."""
-        c, v = self.c, p.v
+        c = self._check_c()
+        v = c.p.v
         if not v:  # pragma: no cover
             print(f"ServerController.p_to_ap: no v for position {p!r}", flush=flush)
             assert False
@@ -1793,7 +1858,6 @@ class ServerController:
         ap = {
             'childIndex': p._childIndex,
             'gnx': v.gnx,
-            # 'headline': p.h,
             # 'level': p.level(),
             'stack': [
                 {
@@ -1802,6 +1866,12 @@ class ServerController:
                     # 'headline': stack_v.h,
                 } for (gnx, childIndex) in p.stack
             ],
+            # 'expanded': p.isExpanded(),
+            # 'hasChildren': p.hasChildren(),
+            # 'hasBody': bool(p.b),
+            # 'isCloned': p.isCloned(),
+            # 'isMarked': p.isMark(),
+            # 'headline': p.h,
         }
         if 0: # EKR: 'status' flags should be handled separately.
             if v.u:
@@ -1892,11 +1962,14 @@ def main():
                         "request": data,
                         "ServerError": f"{e}",
                     }
-                    answer = json.dumps(package, separators=(',', ':')) 
+                    answer = json.dumps(package, separators=(',', ':'))
+                except InternalServerError as e:  # pragma: no cover
+                    print(f"{tag}: InternalServerError {e}")
+                    break
                 except Exception as e:  # pragma: no cover
                     print(f"{tag}: Unexpected Exception! {e}")
                     g.print_exception()
-                    raise
+                    break
                 await websocket.send(answer)
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}", flush=flush)
