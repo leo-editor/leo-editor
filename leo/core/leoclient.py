@@ -64,7 +64,7 @@ async def client_main_loop(timeout):
                 # Send the next request.
                 request = json.dumps(request_package, separators=(',', ':'))
                 await websocket.send(request)
-                # Wait for response n.
+                # Wait for response to request n.
                 inner_n = 0
                 while True:
                     inner_n += 1
@@ -77,19 +77,16 @@ async def client_main_loop(timeout):
                         if json_s is not None:
                             g.trace('json_s', json_s)
                             g.print_exception()
-                        break  # Probably the end of the server.
-                    _show_response(n, d, trace, verbose)  # Always calculate stats.
-                    # The loop invariant. No recovery is possible.
-                    async_ = d.get("async")
+                        break
+                    _show_response(n, d, trace, verbose)
+                    # This loop invariant guarantees we receive messages in order. 
+                    is_async = "async" in d
                     action2, n2 = d.get("action"), d.get("id")
-                    assert async_ is not None or (action, n) == (action2, n2), (
-                        action, action2, n, n2, d)
-                    if 'async' in d:
+                    assert is_async or (action, n) == (action2, n2), (action, n, d)
+                    if is_async:
                         n_async_responses += 1
                     else:
                         break
-                # Something is drastically wrong if these fail.
-               
             except websockets.exceptions.ConnectionClosedError as e:
                 print(f"{tag}: connection closed: {e}")
                 break

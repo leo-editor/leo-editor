@@ -1945,7 +1945,6 @@ def main():
     # replace default host address and port if provided as arguments
     #@+others
     #@+node:ekr.20210202110128.90: *3* function: ws_handler (server)
-
     async def ws_handler(websocket, path):
         """
         The web socket handler: server.ws_server.
