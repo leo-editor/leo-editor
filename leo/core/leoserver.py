@@ -1945,6 +1945,7 @@ def main():
     # replace default host address and port if provided as arguments
     #@+others
     #@+node:ekr.20210202110128.90: *3* function: ws_handler (server)
+
     async def ws_handler(websocket, path):
         """
         The web socket handler: server.ws_server.
@@ -1958,6 +1959,7 @@ def main():
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
             n = 0
+            async_n = 0
             await websocket.send(controller._make_response())
             # controller._sign_on()
             async for json_message in websocket:
@@ -1995,7 +1997,8 @@ def main():
                     break
                 await websocket.send(answer)
                 if n in (3, 4, 7, 10):
-                    controller._es(f"send async message {n}")
+                    async_n += 1
+                    controller._es(f"async message {async_n}")
         except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
