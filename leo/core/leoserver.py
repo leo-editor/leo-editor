@@ -280,19 +280,19 @@ class ServerController:
     #@+node:ekr.20210202193210.1: *3* sc:Commands
     #@+node:ekr.20210202193709.1: *4* sc:button commands
     #@+node:ekr.20210207051720.1: *5* _check_button_command
-    def _check_button_command(self, tag):
+    def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
         """
         Check that a button command is possible.
         Raise ServerError if not. Otherwise, return sc.buttonsDict.
         """
         c = self._check_c()
-        sc = c.theScriptingController
+        sc = getattr(c, "theScriptingController", None)
         if not sc:
             # This will happen unless mod_scripting is loaded!
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
     #@+node:ekr.20210202183724.4: *5* sc.click_button
-    def click_button(self, package):
+    def click_button(self, package):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
         name = package.get("name")
@@ -308,15 +308,14 @@ class ServerController:
             raise ServerError(f"{tag}: exception clicking button {name}: {e}")
         return self._make_response()
     #@+node:ekr.20210202183724.2: *5* sc.get_buttons
-    def get_buttons(self, package):
+    def get_buttons(self, package):  # pragma: no cover (no scripting controller)
         """Gets the currently opened file's @buttons list"""
         d = self._check_button_command('get_buttons')
-        package = {
+        return self._make_response({
             "buttons": sorted(list(d.get.keys()))
-        }
-        return self._make_response(package)
+        })
     #@+node:ekr.20210202183724.3: *5* sc.remove_button
-    def remove_button(self, package):
+    def remove_button(self, package):  # pragma: no cover (no scripting controller)
         """Remove button by name."""
         tag = 'remove_button'
         name = package.get("name")
@@ -329,10 +328,9 @@ class ServerController:
             del d [name]
         except Exception as e:
             raise ServerError(f"{tag}: exception removing button {name}: {e}")
-        package = {
+        return self._make_response({
             "buttons": sorted(list(d.get.keys()))
-        }
-        return self._make_response(package)
+        })
     #@+node:ekr.20210202193642.1: *4* sc:file commands
     #@+node:ekr.20210202110128.57: *5* sc.open_file
     def open_file(self, package):
@@ -1457,7 +1455,7 @@ class ServerController:
         """Get gnx array from all unique nodes"""
         c = self._check_c()
         result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
-        return self._make_response({"allGnx", result})
+        return self._make_response({"allGnx": result})
 
     #@+node:ekr.20210202110128.55: *5* sc.get_all_opened_files
     def get_all_opened_files(self, package):
@@ -1470,11 +1468,7 @@ class ServerController:
                 "selected": c == commander,
             } for commander in g.app.commanders()
         ]
-        # Removed 'index entries from result and files. They appear to be useless.
-        package = {
-            "open-files": files,
-        }
-        return self._make_response(package)
+        return self._make_response({"open-files": files})
     #@+node:ekr.20210202110128.72: *5* sc.get_body
     def get_body_using_gnx(self, package):
         """Given a gnx, return the body text of the node."""
@@ -1482,7 +1476,7 @@ class ServerController:
         c = self._check_c()
         gnx = package.get('gnx')
         if not gnx:
-            raise ServerError(f"{tag}: not gnx given")
+            raise ServerError(f"{tag}: no gnx given")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:
             raise ServerError(f"{tag}: gnx not found: {gnx}")
@@ -1503,10 +1497,7 @@ class ServerController:
         v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-        package = {
-            "bodyLength", len(v.b)
-        }
-        return self._make_response(package)
+        return self._make_response({"bodyLength", len(v.b)})
     #@+node:ekr.20210202110128.66: *5* sc.get_body_states
     def get_body_states(self, package):
         """
@@ -1566,19 +1557,15 @@ class ServerController:
                 "end": {"line": endRow, "col": endCol}
             }
         }
-        package = {
-            "body-states": states,
-        }
-        return self._make_response(package)
+        return self._make_response({"body-states": states})
     #@+node:ekr.20210202110128.68: *5* sc.get_children
     def get_children(self, package):
         """Return list of children of a node"""
         self._check_c()
         p = self._check_ap(package)
-        package = {
-            "ap-list": [self._p_to_ap(child) for child in p.children()],
-        }
-        return self._make_response(package)
+        return self._make_response({
+            "ap-list": [self._p_to_ap(child) for child in p.children()]
+        })
 
         
         
@@ -1587,7 +1574,9 @@ class ServerController:
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
         self._check_c()
         p = self._check_ap(package)
-        return self._make_response({"parent": p.getParent()})
+        parent = p.parent()
+        parent_ap = self._p_to_ap(parent) if parent else None
+        return self._make_response({"parent": parent_ap})
     #@+node:ekr.20210206184431.1: *5* sc.get_position_data
     def get_position_data(self, package):
         """returns all data needed to redraw p the screen."""
@@ -1595,7 +1584,7 @@ class ServerController:
         p = self._check_ap(package)
         stack = [{'gnx': gnx, 'childIndex': childIndex}
             for (gnx, childIndex) in p.stack]
-        return {
+        package = {
             # The minimal attributes that define a position.
             'childIndex': p._childIndex,
             'gnx': p.v.gnx,
@@ -1614,6 +1603,7 @@ class ServerController:
             # 'level': p.level(),
             # 'uA': p.v.u,
         }
+        return self._make_response(package)
     #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
     def get_position(self, package):
         """Return the current position. Don't select it."""
@@ -1627,10 +1617,7 @@ class ServerController:
         for z in (g.app.signon, g.app.signon1):
             for z2 in z.split('\n'):
                 signon.append(z2.strip())
-        package = {
-            "sign-on-message": "\n".join(signon),
-        }
-        return self._make_response(package)
+        return self._make_response({"sign-on-message": "\n".join(signon)})
     #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
     def get_ui_states(self, package):
         """
@@ -1649,10 +1636,7 @@ class ServerController:
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
-        package = {
-            "states": states,
-        }
-        return self._make_response(package)
+        return self._make_response({"states": states})
     #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
     #@+node:ekr.20210202183724.11: *5* sc.clone_node
     def clone_node(self, package):
@@ -1691,7 +1675,7 @@ class ServerController:
         self._check_c()
         p = self._check_ap(package)
         p.expand()
-        return self._make_response("expand_node")
+        return self._make_response()
     #@+node:ekr.20210202183724.15: *5* sc.insert_node
     def insert_node(self, package):
         """Insert a node after the given node, set its headline and select it."""
@@ -1909,8 +1893,8 @@ class ServerController:
         get_position_data returns all data needed to redraw the screen.
         """
         self._check_c()
-        stack = [{'gnx': gnx, 'childIndex': childIndex}
-            for (gnx, childIndex) in p.stack]
+        stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+            for (v, childIndex) in p.stack]
         return {
             'childIndex': p._childIndex,
             'gnx': p.v.gnx,
@@ -1976,7 +1960,7 @@ def main():
                 try:
                     n += 1
                     d = None
-                    trace = controller.trace
+                    trace = False  ## controller.trace
                     d = json.loads(json_message)
                     if trace:
                         print(f"{tag}: got: {d}")
