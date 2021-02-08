@@ -1725,14 +1725,16 @@ class ServerController:
         tag = 'set_body'
         c = self._check_c()
         u = c.undoer
-        gnx = package['gnx']
+        gnx = package.get('gnx')
         if not gnx:  # pragma: no cover
             raise ServerError(f"{tag}: no gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         # Set the body once.
-        body = package.get('body') or ""
+        body = package.get('body')
+        if body is None:
+            raise ServerError(f"{tag}: no body given")
         v.b = body
         for p in self.c.all_positions():
             if p.v.gnx == gnx:
@@ -1950,6 +1952,8 @@ def main():
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
         tag = 'server'
+        trace = True
+        verbose = False
         try:
             controller._init_connection(websocket)
             # Start by sending empty as 'ok'.
@@ -1960,10 +1964,12 @@ def main():
                 try:
                     n += 1
                     d = None
-                    trace = False  ## controller.trace
+                    trace = True  ## controller.trace
                     d = json.loads(json_message)
-                    if trace:
+                    if trace and verbose:
                         print(f"{tag}: got: {d}")
+                    elif trace:
+                        print(f"{tag}: got: {d.get('action')}")
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     raise websockets.exceptions.ConnectionClosed(code=1000, reason=e)

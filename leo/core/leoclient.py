@@ -31,15 +31,17 @@ n_unknown_response_times = 0
 
 async def client_main_loop(timeout):
     global n_async_responses
-    trace = False
+    trace = True
+    verbose = False
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
     async with websockets.connect(uri) as websocket:
-        if trace: print(f"{tag}: asyncInterval.timeout: {timeout}")
+        if trace and verbose:
+            print(f"{tag}: asyncInterval.timeout: {timeout}")
         # Await the startup package.
         json_s = g.toUnicode(await websocket.recv())
         d = json.loads(json_s)
-        if trace:
+        if trace and verbose:
             print(f"startup package: {d}")
         n = 0
         while True:
@@ -48,13 +50,16 @@ async def client_main_loop(timeout):
                 times_d [n] = time.perf_counter()
                 await asyncio.sleep(timeout)
                 # Get the next package. The last action is shut_down.
-                action, package  = action_list[n-1]
+                try:
+                    action, package  = action_list[n-1]
+                except IndexError:
+                    break
                 request_package = {
                     "id": n,
                     "action": action,
                     "package": package,
                 }
-                if trace:
+                if trace and verbose:
                     print(f"{tag}: send: id: {n} package: {request_package}")
                 # Send the next request.
                 request = json.dumps(request_package, separators=(',', ':'))
@@ -73,11 +78,12 @@ async def client_main_loop(timeout):
                             g.trace('json_s', json_s)
                             g.print_exception()
                         break  # Probably the end of the server.
-                    _show_response(n, d, trace)  # Always calculate stats.
+                    _show_response(n, d, trace, verbose)  # Always calculate stats.
                     # The loop invariant. No recovery is possible.
+                    async_ = d.get("async")
                     action2, n2 = d.get("action"), d.get("id")
-                    assert not action2 or (action, n) == (action2, n2), (
-                        action, action2, n, n2)
+                    assert async_ is not None or (action, n) == (action2, n2), (
+                        action, action2, n, n2, d)
                     if 'async' in d:
                         n_async_responses += 1
                     else:
@@ -96,7 +102,7 @@ async def client_main_loop(timeout):
         print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
 #@+node:ekr.20210206093130.1: *3* function: _show_response
-def _show_response(n, d, trace):
+def _show_response(n, d, trace, verbose):
     global n_known_response_times
     global n_unknown_response_times
     global times_d
@@ -112,9 +118,15 @@ def _show_response(n, d, trace):
         tot_response_time += response_time
         n_known_response_times += 1
         response_time_s = f"{response_time:3.2}"
-    if not trace:
+    if not trace and not verbose:
         return
     action = d.get('action')
+    if not verbose:
+        if "async" in d:
+            print(f"{tag}: async: {d.get('s')}")
+        else:
+            print(f"{tag}:   got: {n} {action}")
+        return
     if action == 'open_file':
         g.printObj(d,
             tag=f"{tag}: got: open-file response time: {response_time_s}")
@@ -131,7 +143,6 @@ def _get_action_list():
     """
     import inspect
     import leoserver
-    trace = False
     server = leoserver.ServerController()
     root_gnx = 'ekr.20210202110241.1'  # The  gnx of this file's root node.
     root_ap = {
@@ -142,7 +153,10 @@ def _get_action_list():
     exclude_names = [
         'clear_trace',  # Unwanted.
         'delete_node', 'cut_node',  # dangerous.
-        'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+        'click_button', 'get_buttons', 'remove_button',  # Require plugins.\
+        'save_file',  # way too dangerous!
+        'set_selection',  ### Not ready yet.
+        'quit', # wait for shut_down.
     ]
     head = [
         ("set_trace", {}),
@@ -157,6 +171,8 @@ def _get_action_list():
         ("get_body_length", {"ap": root_ap}),
         ("get_body_using_gnx", {"gnx": root_gnx}),
         ("get_body_using_p", {"ap": root_ap}),
+        ("set_body", {"gnx": root_gnx, "body": "new body"}),
+        ("set_headline", {"gnx": root_gnx, "headline": "new headline"}),
         ("contract-all", {}),  # Execute contract-all command by name.
         ("insert_node", {"ap": root_ap, "headline": "inserted headline"}),
         ("collapse_node", {"ap": root_ap}),
@@ -171,12 +187,11 @@ def _get_action_list():
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
     middle = [(z, {"ap": root_ap}) for z in test_names
         if z not in head_names + tail_names + exclude_names]
-    if trace:
-        middle_names = [name for (name, package) in middle]
-        g.printObj(middle_names, tag='middle_names')
+    middle_names = [name for (name, package) in middle]
     all_tests = head + middle + tail
-    all_names = sorted([name for (name, package) in all_tests])
-    if trace:
+    if 0:
+        g.printObj(middle_names, tag='middle_names')
+        all_names = sorted([name for (name, package) in all_tests])
         g.printObj(all_names, tag='all_names')
     return all_tests
     
