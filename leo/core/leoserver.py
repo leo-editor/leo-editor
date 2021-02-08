@@ -26,6 +26,7 @@ if 1:  # pragma: no cover
     import json
     import sys
     import time
+    import unittest
     # Third-party.
     import websockets
     # Leo
@@ -54,7 +55,7 @@ class LeoServerController:
     #@+others
     #@+node:ekr.20210202160349.1: *3* lsc:Birth & startup
     #@+node:ekr.20210202110128.30: *4* lsc.__init__ (load bridge, set self.g)
-    def __init__(self):
+    def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -81,7 +82,7 @@ class LeoServerController:
             silent=True,         # True: don't print signon messages.
             verbose=False,       # True: prints messages that would be sent to the log pane.
         )
-        g = self.bridge.globals()
+        self.g = g = self.bridge.globals()
         self.dummy_c = g.app.newCommander(fileName=None)  # To inspect commands
         #
         # Complete the initialization, as in LeoApp.initApp.
@@ -89,7 +90,8 @@ class LeoServerController:
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
-        print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
+        if not testing:
+            print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
     #@+node:ekr.20210202110128.41: *4* lsc.apply_config
     def apply_config(self, package):
         """Got the configuration from client"""
@@ -1924,6 +1926,29 @@ class LeoServerController:
             g.print_exception()
             raise ServerError(f"{tag}: {e}")
     #@-others
+#@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
+class TestLeoServer (unittest.TestCase):
+    """Tests of LeoServerController."""
+    
+    server = None
+    
+    @classmethod
+    def setUpClass(cls):
+        global server
+        import leoserver
+        server = leoserver.LeoServerController(testing=True)
+        
+    def setUp(self):
+        global server
+        assert server
+        self.g = server.g
+
+    #@+others
+    #@+node:ekr.20210208163150.1: *3* test_open_and_close
+    def test_open_and_close(self):
+        g = self.g
+        g.trace()
+    #@-others
 #@+node:ekr.20210206083303.1: ** function: coverage_end (server)
 def coverage_end():  # pragma: no cover
     """End coverage tests (server)"""
@@ -2007,9 +2032,9 @@ def main():
     #@+node:ekr.20210202110128.91: *3* function: get_args
     def get_args():  # pragma: no cover
         global wsHost, wsPort
-        args = None
+        args, test = None, False
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "ha:p:", ["help", "address=", "port="])
+            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port=", "unittest"])
         except getopt.GetoptError:
             print('leobridgeserver.py -a <address> -p <port>')
             print('defaults to localhost on port 32125')
@@ -2018,16 +2043,24 @@ def main():
             sys.exit(2)
         for opt, arg in opts:
             if opt in ("-h", "--help"):
-                print('leobridgeserver.py -a <address> -p <port>')
+                print('leobridgeserver.py -a <address> -p <port> -u')
                 print('defaults to localhost on port 32125')
                 sys.exit()
             elif opt in ("-a", "--address"):
                 wsHost = arg
             elif opt in ("-p", "--port"):
                 wsPort = arg
-        return wsHost, wsPort
+            elif opt in ("-u", "--unittest"):
+                test = True
+        # Leave other options for unittest.
+        for opt, junk in opts:  # opts is a 2-tuple.
+            if opt in sys.argv:
+                sys.argv.remove(opt)
+        return wsHost, wsPort, test
     #@-others
-    wsHost, wsPort = get_args()
+    wsHost, wsPort, test = get_args()
+    if test:
+        unittest.main()
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon)
     # Open leoBridge.
