@@ -140,7 +140,7 @@ def _get_action_list():
     """
     import inspect
     import leoserver
-    server = leoserver.ServerController()
+    server = leoserver.LeoServerController()
     root_gnx = 'ekr.20210202110241.1'  # The  gnx of this file's root node.
     root_ap = {
         'childIndex': 0,

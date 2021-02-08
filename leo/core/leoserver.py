@@ -49,12 +49,12 @@ class ServerError(Exception):  # pragma: no cover
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
-#@+node:ekr.20210202110128.29: ** class ServerController
-class ServerController:
-    """Leo Bridge Controller"""
+#@+node:ekr.20210202110128.29: ** class LeoServerController
+class LeoServerController:
+    """Leo Server Controller"""
     #@+others
-    #@+node:ekr.20210202160349.1: *3* sc:Birth & startup
-    #@+node:ekr.20210202110128.30: *4* sc.__init__ (load bridge, set self.g)
+    #@+node:ekr.20210202160349.1: *3* lsc:Birth & startup
+    #@+node:ekr.20210202110128.30: *4* lsc.__init__ (load bridge, set self.g)
     def __init__(self):
 
         import leo.core.leoApp as leoApp
@@ -90,8 +90,8 @@ class ServerController:
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
-        print(f"ServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.41: *4* sc.apply_config
+        print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
+    #@+node:ekr.20210202110128.41: *4* lsc.apply_config
     def apply_config(self, package):
         """Got the configuration from client"""
         tag = 'apply_config'
@@ -100,14 +100,14 @@ class ServerController:
             raise ServerError(f"{tag}: no config")
         self.config = config
         return self._make_response()
-    #@+node:ekr.20210202110128.52: *4* sc.init_connection
+    #@+node:ekr.20210202110128.52: *4* lsc.init_connection
     def _init_connection(self, web_socket):
         """Begin the connection."""
         self.web_socket = web_socket
         self.loop = asyncio.get_event_loop()
 
-    #@+node:ekr.20210204154548.1: *3* sc:Command utils
-    #@+node:ekr.20210203084135.1: *4* sc._check_ap
+    #@+node:ekr.20210204154548.1: *3* lsc:Command utils
+    #@+node:ekr.20210203084135.1: *4* lsc._check_ap
     def _check_ap(self, package):
         """
         Resolve archived position to a position.
@@ -126,7 +126,7 @@ class ServerController:
         if not c.positionExists(p):  # pragma: no cover
             raise ServerError(f"{tag}: position does not exist. ap: {ap}")
         return p
-    #@+node:ekr.20210207054237.1: *4* sc._check_c
+    #@+node:ekr.20210207054237.1: *4* lsc._check_c
     def _check_c(self):
         """Return self.c or raise ServerError"""
         tag = '_check_c'
@@ -134,7 +134,7 @@ class ServerController:
         if not c:
             raise ServerError(f"{tag}: no open commander")
         return c
-    #@+node:ekr.20210202110128.54: *4* sc._do_message & helpers (server)
+    #@+node:ekr.20210202110128.54: *4* lsc._do_message & helpers (server)
     def _do_message(self, d):
         """
         Handle d, a python dict representing the incoming request.
@@ -159,7 +159,7 @@ class ServerController:
         if result is None:
             raise ServerError(f"{tag}: no response: {action}")
         return result
-    #@+node:ekr.20210204095743.1: *5* sc._do_action_by_name
+    #@+node:ekr.20210204095743.1: *5* lsc._do_action_by_name
     def _do_action_by_name(self, action, package):
         """Execute one of Leo's methods by name."""
         tag = '_do_method_by_name'
@@ -178,7 +178,7 @@ class ServerController:
             value = func(event={"c":c})
             return self._make_response({"return-value": value})
         raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
-    #@+node:ekr.20210202110128.53: *5* sc._get_commander_method (revise)
+    #@+node:ekr.20210202110128.53: *5* lsc._get_commander_method (revise)
     def _get_commander_method(self, method_name):
         """ Return the method with the given name in the Commands class or subcommanders."""
         c = self.c
@@ -223,14 +223,14 @@ class ServerController:
                 if func:
                     return func
         return None
-    #@+node:ekr.20210202110128.51: *4* sc._es & helpers
+    #@+node:ekr.20210202110128.51: *4* lsc._es & helpers
     def _es(self, s):
         """Send a response that does not correspond to an request."""
         self._send_async_output({
             "async": "",  # This response corresponds to no id_.
             "s": g.toUnicode(s),
         })
-    #@+node:ekr.20210202110128.39: *5* sc._send_async_output
+    #@+node:ekr.20210202110128.39: *5* lsc._send_async_output
     def _send_async_output(self, package):
         tag = '_send_async_output'
         assert "async" in package, repr(package)
@@ -239,7 +239,7 @@ class ServerController:
             self.loop.create_task(self._async_output(response))
         else:
             print(f"{tag}: Error loop not ready {response}")
-    #@+node:ekr.20210204145818.1: *5* sc._async_output
+    #@+node:ekr.20210204145818.1: *5* lsc._async_output
     async def _async_output(self, json):
         """Output json string to the web_socket"""
         tag = '_async_output'
@@ -247,7 +247,7 @@ class ServerController:
             await self.web_socket.send(bytes(json, 'utf-8'))
         else:
             g.trace(f"{tag}: no web socket. json: {json}")
-    #@+node:ekr.20210202110128.81: *4* sc._gnx_to_p
+    #@+node:ekr.20210202110128.81: *4* lsc._gnx_to_p
     def _gnx_to_p(self, gnx):
         """Return first p node with this gnx or None"""
         for p in self.c.all_unique_positions():
@@ -255,7 +255,7 @@ class ServerController:
                 return p
         return None  # pragma: no cover
 
-    #@+node:ekr.20210206182638.1: *4* sc._make_response
+    #@+node:ekr.20210206182638.1: *4* lsc._make_response
     def _make_response(self, package=None):
         """
         Return a standard response.
@@ -277,8 +277,8 @@ class ServerController:
         }
         package ["node"] = p and self._p_to_ap(p)
         return json.dumps(package, separators=(',', ':')) 
-    #@+node:ekr.20210202193210.1: *3* sc:Commands
-    #@+node:ekr.20210202193709.1: *4* sc:button commands
+    #@+node:ekr.20210202193210.1: *3* lsc:Commands
+    #@+node:ekr.20210202193709.1: *4* lsc:button commands
     #@+node:ekr.20210207051720.1: *5* _check_button_command
     def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
         """
@@ -291,7 +291,7 @@ class ServerController:
             # This will happen unless mod_scripting is loaded!
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
-    #@+node:ekr.20210202183724.4: *5* sc.click_button
+    #@+node:ekr.20210202183724.4: *5* lsc.click_button
     def click_button(self, package):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
@@ -307,14 +307,14 @@ class ServerController:
         except Exception as e:
             raise ServerError(f"{tag}: exception clicking button {name}: {e}")
         return self._make_response()
-    #@+node:ekr.20210202183724.2: *5* sc.get_buttons
+    #@+node:ekr.20210202183724.2: *5* lsc.get_buttons
     def get_buttons(self, package):  # pragma: no cover (no scripting controller)
         """Gets the currently opened file's @buttons list"""
         d = self._check_button_command('get_buttons')
         return self._make_response({
             "buttons": sorted(list(d.get.keys()))
         })
-    #@+node:ekr.20210202183724.3: *5* sc.remove_button
+    #@+node:ekr.20210202183724.3: *5* lsc.remove_button
     def remove_button(self, package):  # pragma: no cover (no scripting controller)
         """Remove button by name."""
         tag = 'remove_button'
@@ -331,8 +331,8 @@ class ServerController:
         return self._make_response({
             "buttons": sorted(list(d.get.keys()))
         })
-    #@+node:ekr.20210202193642.1: *4* sc:file commands
-    #@+node:ekr.20210202110128.57: *5* sc.open_file
+    #@+node:ekr.20210202193642.1: *4* lsc:file commands
+    #@+node:ekr.20210202110128.57: *5* lsc.open_file
     def open_file(self, package):
         """
         Open a leo file with the given filename.
@@ -360,7 +360,7 @@ class ServerController:
             g.printObj(c.fileCommands.gnxDict)
         c.selectPosition(c.rootPosition())  # Required.
         return self._make_response()
-    #@+node:ekr.20210202110128.58: *5* sc.close_file
+    #@+node:ekr.20210202110128.58: *5* lsc.close_file
     def close_file(self, package):
         """
         Closes a leo file. A file can then be opened with "open_file"
@@ -374,14 +374,14 @@ class ServerController:
         commanders = g.app.commanders()
         self.c = commanders and commanders[0]
         return self._make_response()
-    #@+node:ekr.20210202183724.1: *5* sc.save_file
+    #@+node:ekr.20210202183724.1: *5* lsc.save_file
     def save_file(self, package):
         """Save the leo outline."""
         c = self._check_c()
         c.save()
         return self._make_response()
-    #@+node:ekr.20210202193505.1: *4* sc:getter commands
-    #@+node:ekr.20210202183724.5: *5* sc.get_all_commands & helpers
+    #@+node:ekr.20210202193505.1: *4* lsc:getter commands
+    #@+node:ekr.20210202183724.5: *5* lsc.get_all_commands & helpers
     def get_all_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
         c = self.dummy_c  # Use the dummy commander.
@@ -413,7 +413,7 @@ class ServerController:
                 "detail": doc,
             })
         return self._make_response({"commands": result})
-    #@+node:ekr.20210202183724.6: *6* sc._bad_commands
+    #@+node:ekr.20210202183724.6: *6* lsc._bad_commands
     def _bad_commands(self, c):
         """Return the list of Leo's command names that leoInteg should ignore."""
         d = c.commandsDict  # keys are command names, values are functions.
@@ -1018,7 +1018,7 @@ class ServerController:
         result = list(sorted(bad))
         return result
 
-    #@+node:ekr.20210202183724.7: *6* sc._good_commands
+    #@+node:ekr.20210202183724.7: *6* lsc._good_commands
     def _good_commands(self):
         """Defined commands that definitely should be included in leoInteg."""
         good_list = [
@@ -1450,14 +1450,14 @@ class ServerController:
         ]
         return good_list
 
-    #@+node:ekr.20210202110128.71: *5* sc.get_all_gnxs
+    #@+node:ekr.20210202110128.71: *5* lsc.get_all_gnxs
     def get_all_gnxs(self, package):
         """Get gnx array from all unique nodes"""
         c = self._check_c()
         result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
         return self._make_response({"allGnx": result})
 
-    #@+node:ekr.20210202110128.55: *5* sc.get_all_opened_files
+    #@+node:ekr.20210202110128.55: *5* lsc.get_all_opened_files
     def get_all_opened_files(self, package):
         """Return array of opened file path/names to be used as open_file parameters to switch files"""
         c = self._check_c()
@@ -1469,7 +1469,7 @@ class ServerController:
             } for commander in g.app.commanders()
         ]
         return self._make_response({"open-files": files})
-    #@+node:ekr.20210202110128.72: *5* sc.get_body
+    #@+node:ekr.20210202110128.72: *5* lsc.get_body
     def get_body_using_gnx(self, package):
         """Given a gnx, return the body text of the node."""
         tag = 'get_body_using_gnx'
@@ -1487,7 +1487,7 @@ class ServerController:
         self._check_c()
         p = self._check_ap(package)
         return self._make_response({"body": p.b})
-    #@+node:ekr.20210202110128.73: *5* sc.get_body_length
+    #@+node:ekr.20210202110128.73: *5* lsc.get_body_length
     def get_body_length(self, package):
         """EMIT OUT body string length of a node"""
         tag = 'get_body_length'
@@ -1498,7 +1498,7 @@ class ServerController:
         if not v:  # pragma: no cover
             raise ServerError(f"{tag}: gnx not found: {gnx!r}")
         return self._make_response({"bodyLength", len(v.b)})
-    #@+node:ekr.20210202110128.66: *5* sc.get_body_states
+    #@+node:ekr.20210202110128.66: *5* lsc.get_body_states
     def get_body_states(self, package):
         """
         Finds the language in effect at top of body for position p,
@@ -1558,7 +1558,7 @@ class ServerController:
             }
         }
         return self._make_response({"body-states": states})
-    #@+node:ekr.20210202110128.68: *5* sc.get_children
+    #@+node:ekr.20210202110128.68: *5* lsc.get_children
     def get_children(self, package):
         """Return list of children of a node"""
         self._check_c()
@@ -1569,7 +1569,7 @@ class ServerController:
 
         
         
-    #@+node:ekr.20210202110128.69: *5* sc.get_parent
+    #@+node:ekr.20210202110128.69: *5* lsc.get_parent
     def get_parent(self, package):
         """EMIT OUT the parent of a node, as an array, even if unique or empty"""
         self._check_c()
@@ -1577,7 +1577,7 @@ class ServerController:
         parent = p.parent()
         parent_ap = self._p_to_ap(parent) if parent else None
         return self._make_response({"parent": parent_ap})
-    #@+node:ekr.20210206184431.1: *5* sc.get_position_data
+    #@+node:ekr.20210206184431.1: *5* lsc.get_position_data
     def get_position_data(self, package):
         """returns all data needed to redraw p the screen."""
         c = self._check_c()
@@ -1604,12 +1604,12 @@ class ServerController:
             # 'uA': p.v.u,
         }
         return self._make_response(package)
-    #@+node:ekr.20210202110128.67: *5* sc.get_selected_position
+    #@+node:ekr.20210202110128.67: *5* lsc.get_selected_position
     def get_position(self, package):
         """Return the current position. Don't select it."""
         # *All* responses contain a "node" key.
         return self._make_response()
-    #@+node:ekr.20210206062654.1: *5* sc.get_sign_on
+    #@+node:ekr.20210206062654.1: *5* lsc.get_sign_on
     def get_sign_on(self, package):
         """Synchronous version of _sign_on"""
         g.app.computeSignon()
@@ -1618,7 +1618,7 @@ class ServerController:
             for z2 in z.split('\n'):
                 signon.append(z2.strip())
         return self._make_response({"sign-on-message": "\n".join(signon)})
-    #@+node:ekr.20210202110128.61: *5* sc.get_ui_states
+    #@+node:ekr.20210202110128.61: *5* lsc.get_ui_states
     def get_ui_states(self, package):
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
@@ -1637,8 +1637,8 @@ class ServerController:
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_response({"states": states})
-    #@+node:ekr.20210202193540.1: *4* sc:node commands (setters)
-    #@+node:ekr.20210202183724.11: *5* sc.clone_node
+    #@+node:ekr.20210202193540.1: *4* lsc:node commands (setters)
+    #@+node:ekr.20210202183724.11: *5* lsc.clone_node
     def clone_node(self, package):
         """Clone a node"""
         c = self._check_c()
@@ -1646,14 +1646,14 @@ class ServerController:
         c.selectPosition(p)
         c.clone()
         return self._make_response()
-    #@+node:ekr.20210202110128.79: *5* sc.collapse_node
+    #@+node:ekr.20210202110128.79: *5* lsc.collapse_node
     def collapse_node(self, package):
         """Collapse a node"""
         self._check_c()
         p = self._check_ap(package)
         p.contract()
         return self._make_response()
-    #@+node:ekr.20210202183724.12: *5* sc.cut_node
+    #@+node:ekr.20210202183724.12: *5* lsc.cut_node
     def cut_node(self, package):
         """Cut a node, return the newly-selected node."""
         c = self._check_c()
@@ -1661,7 +1661,7 @@ class ServerController:
         c.selectPosition(p)
         c.cutOutline()
         return self._make_response()
-    #@+node:ekr.20210202183724.13: *5* sc.delete_node
+    #@+node:ekr.20210202183724.13: *5* lsc.delete_node
     def delete_node(self, package):
         """Delete a node. Return the newly-selected node."""
         c = self._check_c()
@@ -1669,14 +1669,14 @@ class ServerController:
         c.selectPosition(p)
         c.deleteOutline()  # Handles undo.
         return self._make_response()
-    #@+node:ekr.20210202110128.78: *5* sc.expand_node
+    #@+node:ekr.20210202110128.78: *5* lsc.expand_node
     def expand_node(self, package):
         """Expand a node"""
         self._check_c()
         p = self._check_ap(package)
         p.expand()
         return self._make_response()
-    #@+node:ekr.20210202183724.15: *5* sc.insert_node
+    #@+node:ekr.20210202183724.15: *5* lsc.insert_node
     def insert_node(self, package):
         """Insert a node after the given node, set its headline and select it."""
         tag = 'insert_node'
@@ -1688,14 +1688,14 @@ class ServerController:
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
-    #@+node:ekr.20210202183724.9: *5* sc.mark_node
+    #@+node:ekr.20210202183724.9: *5* lsc.mark_node
     def mark_node(self, package):
         """Mark a node, but don't select it."""
         self._check_c()
         p = self._check_ap(package)
         p.setMarked()
         return self._make_response()
-    #@+node:ekr.20210202110128.64: *5* sc.page_down
+    #@+node:ekr.20210202110128.64: *5* lsc.page_down
     def page_down(self, unused):
         """Selects a node a couple of steps down in the tree to simulate page down"""
         c = self._check_c()
@@ -1703,7 +1703,7 @@ class ServerController:
         c.selectVisNext()
         c.selectVisNext()
         return self._make_response()
-    #@+node:ekr.20210202110128.63: *5* sc.page_up
+    #@+node:ekr.20210202110128.63: *5* lsc.page_up
     def pageUp(self, unused):
         """Selects a node a couple of steps up in the tree to simulate page up"""
         c = self._check_c()
@@ -1711,7 +1711,7 @@ class ServerController:
         c.selectVisBack()
         c.selectVisBack()
         return self._make_response()
-    #@+node:ekr.20210202183724.17: *5* sc.redo
+    #@+node:ekr.20210202183724.17: *5* lsc.redo
     def redo(self, package):
         """Undo last un-doable operation"""
         c = self._check_c()
@@ -1719,7 +1719,7 @@ class ServerController:
         if u.canRedo():
             u.redo()
         return self._make_response()
-    #@+node:ekr.20210202110128.74: *5* sc.set_body
+    #@+node:ekr.20210202110128.74: *5* lsc.set_body
     def set_body(self, package):
         """Change Body text of a node"""
         tag = 'set_body'
@@ -1751,14 +1751,14 @@ class ServerController:
                     p.setDirty()
                 break
         return self._make_response()
-    #@+node:ekr.20210202110128.77: *5* sc.set_current_position
+    #@+node:ekr.20210202110128.77: *5* lsc.set_current_position
     def set_current_position(self, package):
         """Select a node, or the first one found with its GNX"""
         c = self._check_c()
         p = self._check_ap(package)  # p is guaranteed to exist.
         c.selectPosition(p)
         return self._make_response()
-    #@+node:ekr.20210202110128.76: *5* sc.set_headline
+    #@+node:ekr.20210202110128.76: *5* lsc.set_headline
     def set_headline(self, package):
         """Change a node's headline."""
         tag = 'set_headline'
@@ -1772,7 +1772,7 @@ class ServerController:
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
-    #@+node:ekr.20210202110128.75: *5* sc.set_selection
+    #@+node:ekr.20210202110128.75: *5* lsc.set_selection
     def set_selection(self, package):
         """
         Given package['gnx'], selection.
@@ -1800,7 +1800,7 @@ class ServerController:
         v.selectionStart = start
         v.selectionLength = abs(start - end)
         return self._make_response()
-    #@+node:ekr.20210202183724.16: *5* sc.undo
+    #@+node:ekr.20210202183724.16: *5* lsc.undo
     def undo(self, package):
         """Undo last un-doable operation"""
         c = self._check_c()
@@ -1809,25 +1809,25 @@ class ServerController:
             u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
-    #@+node:ekr.20210202183724.10: *5* sc.unmark_node
+    #@+node:ekr.20210202183724.10: *5* lsc.unmark_node
     def unmark_node(self, package):
         """Unmark a node, don't select it"""
         self._check_c()
         p = self._check_ap(package)
         p.clearMarked()
         return self._make_response()
-    #@+node:ekr.20210205102806.1: *4* sc:test commands
-    #@+node:ekr.20210205102818.1: *5* sc.error
+    #@+node:ekr.20210205102806.1: *4* lsc:test commands
+    #@+node:ekr.20210205102818.1: *5* lsc.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
         raise ServerError(f"sc.error called")
-    #@+node:ekr.20210205103759.1: *5* sc.shut_down
+    #@+node:ekr.20210205103759.1: *5* lsc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
         raise TerminateServer(f"client requested shut down")
 
     quit = shut_down  # Abbreviation for testing.
-    #@+node:ekr.20210205111421.1: *5* sc.set/clear_trace
+    #@+node:ekr.20210205111421.1: *5* lsc.set/clear_trace
     def clear_trace(self, package):
         self.trace = False
         return self._make_response()
@@ -1835,12 +1835,12 @@ class ServerController:
     def set_trace(self, package):
         self.trace = True
         return self._make_response()
-    #@+node:ekr.20210202110128.60: *5* sc.test
+    #@+node:ekr.20210202110128.60: *5* lsc.test
     def test(self, package):
         """Do-nothing test function for debugging"""
         return self._make_response()
-    #@+node:ekr.20210202193334.1: *3* sc:Serialization
-    #@+node:ekr.20210202110128.85: *4* sc._ap_to_p
+    #@+node:ekr.20210202193334.1: *3* lsc:Serialization
+    #@+node:ekr.20210202110128.85: *4* lsc._ap_to_p
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
@@ -1879,14 +1879,14 @@ class ServerController:
         if not c.positionExists(p):  # pragma: no cover.
             raise ServerError(f"{tag}: p does not exist: {p!r}")
         return p
-    #@+node:ekr.20210202110128.83: *4* sc._create_gnx_to_vnode
+    #@+node:ekr.20210202110128.83: *4* lsc._create_gnx_to_vnode
     def _create_gnx_to_vnode(self):
         """Make the first gnx_to_vnode array with all unique nodes"""
         self.gnx_to_vnode = {
             v.gnx: v for v in self.c.all_unique_nodes()
         }
         self._test_round_trip_positions()
-    #@+node:ekr.20210202110128.86: *4* sc._p_to_ap
+    #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
     def _p_to_ap(self, p):
         """
         Convert Leo position p to a serializable archived position.
@@ -1902,7 +1902,7 @@ class ServerController:
             'gnx': p.v.gnx,
             'stack': stack,
         }
-    #@+node:ekr.20210202110128.84: *4* sc._test_round_trip_positions
+    #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
     def _test_round_trip_positions(self):
         """
         From Leo plugin leoflexx.py.
@@ -2032,7 +2032,7 @@ def main():
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon)
     # Open leoBridge.
-    controller = ServerController()
+    controller = LeoServerController()
     # Start the server.
     loop = asyncio.get_event_loop()  
     server = websockets.serve(ws_handler=ws_handler, host=wsHost, port=wsPort)
