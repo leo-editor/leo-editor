@@ -35,7 +35,6 @@ g = None  # The bridge's leoGlobals module.
 # server defaults...
 wsHost = "localhost"
 wsPort = 32125
-sync = False
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class InternalServerError(Exception):  # pragma: no cover
