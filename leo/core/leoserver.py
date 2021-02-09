@@ -1311,7 +1311,7 @@ class LeoServerController:
         self._check_c()
         p = self._check_ap(package)
         return self._make_response({"body-length": len(p.b)})
-    #@+node:ekr.20210202110128.66: *4* lsc.get_body_states (rewrite)
+    #@+node:ekr.20210202110128.66: *4* lsc.get_body_states
     def get_body_states(self, package):
         """
         Finds the language in effect at top of body for position p,
