@@ -1972,7 +1972,8 @@ class TestLeoServer (unittest.TestCase):
         response = server._do_message(d)
         # _make_response calls json_dumps, so undo it with json.loads.
         answer = json.loads(response)
-        # self.g.printObj(answer, tag=f"response to {action}")
+        if 0:
+            self.g.printObj(answer, tag=f"response to {action}")
         return answer
     #@+node:ekr.20210208163150.1: *3* test.g_and_server
     # def test_g_and_server(self):
