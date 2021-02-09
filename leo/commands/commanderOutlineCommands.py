@@ -1302,7 +1302,8 @@ def markChangedRoots(self, event=None):
         g.blue('done')
     c.redraw_after_icons_changed()
 #@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
-@g.commander_command('mark')
+@g.commander_command('mark')  # Compatibility
+@g.commander_command('toggle-mark')
 def markHeadline(self, event=None):
     """Toggle the mark of the selected node."""
     c = self; u = c.undoer; p = c.p

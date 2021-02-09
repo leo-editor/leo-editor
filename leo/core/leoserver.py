@@ -1276,7 +1276,7 @@ class LeoServerController:
         ]
         return good_list
 
-    #@+node:ekr.20210202110128.71: *4* lsc.get_all_gnxs
+    #@+node:ekr.20210202110128.71: *4* lsc.get_all_gnxs (May be removed)
     def get_all_gnxs(self, package):
         """Get gnx array from all unique nodes"""
         c = self._check_c()
@@ -1295,35 +1295,22 @@ class LeoServerController:
             } for commander in g.app.commanders()
         ]
         return self._make_response({"open-files": files})
-    #@+node:ekr.20210202110128.72: *4* lsc.get_body
-    def get_body_using_gnx(self, package):
-        """Given a gnx, return the body text of the node."""
-        tag = 'get_body_using_gnx'
-        c = self._check_c()
-        gnx = package.get('gnx')
-        if not gnx:
-            raise ServerError(f"{tag}: no gnx given")
-        v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if not v:
-            raise ServerError(f"{tag}: gnx not found: {gnx}")
-        return self._make_response({"body": v.b})
-
-    def get_body_using_p(self, package):
-        """Given an ap, return the body text of the node."""
+    #@+node:ekr.20210202110128.72: *4* lsc.get_body & get_body_length
+    def get_body(self, package):
+        """
+        Return p.b for position p given by package ["ap"], an archived position.
+        """
         self._check_c()
         p = self._check_ap(package)
         return self._make_response({"body": p.b})
-    #@+node:ekr.20210202110128.73: *4* lsc.get_body_length
+
     def get_body_length(self, package):
-        """EMIT OUT body string length of a node"""
-        tag = 'get_body_length'
-        gnx = package.get('gnx')
-        if not gnx:  # pragma: no cover
-            raise ServerError(f"{tag}: no gnx")
-        v = self.c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if not v:  # pragma: no cover
-            raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-        return self._make_response({"bodyLength", len(v.b)})
+        """
+        Return len(p.b) for position p given by package ["ap"], an archived position.
+        """
+        self._check_c()
+        p = self._check_ap(package)
+        return self._make_response({"body-length": len(p.b)})
     #@+node:ekr.20210202110128.66: *4* lsc.get_body_states (rewrite)
     def get_body_states(self, package):
         """
@@ -1446,25 +1433,45 @@ class LeoServerController:
     #@+node:ekr.20210202183724.11: *4* lsc.clone_node
     def clone_node(self, package):
         """
-        Clone the node at p.
+        Clone the node given by package ["ap"], an archived position.
         
-        Leo's 
+        To clone c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "clone",
+        }
         """
         c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
         c.clone()
         return self._make_response()
-    #@+node:ekr.20210202110128.79: *4* lsc.collapse_node
-    def collapse_node(self, package):
-        """Collapse the node at p."""
+    #@+node:ekr.20210202110128.79: *4* lsc.contract_node
+    def contract_node(self, package):
+        """
+        Contract the node given by package ["ap"], an archived position.
+        
+        To contract c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "contract-node",
+        }
+        """
         self._check_c()
         p = self._check_ap(package)
         p.contract()
         return self._make_response()
     #@+node:ekr.20210202183724.12: *4* lsc.cut_node
     def cut_node(self, package):
-        """Cut a node. Return the newly-selected node."""
+        """
+        Cut the node (and its descendants) given by package ["ap"], an archived position.
+        
+        To cut c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "cut-node",
+        }
+        """
         c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
@@ -1472,7 +1479,15 @@ class LeoServerController:
         return self._make_response()
     #@+node:ekr.20210202183724.13: *4* lsc.delete_node
     def delete_node(self, package):
-        """Delete a node. Return the newly-selected node."""
+        """
+        Delete the node (and its descendants) given by package ["ap"], an archived position.
+        
+        To delete c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "delete-node",
+        }
+        """
         c = self._check_c()
         p = self._check_ap(package)
         c.selectPosition(p)
@@ -1480,33 +1495,43 @@ class LeoServerController:
         return self._make_response()
     #@+node:ekr.20210202110128.78: *4* lsc.expand_node
     def expand_node(self, package):
-        """Expand the node at p."""
+        """
+        Expand the node given by package ["ap"], an archived position.
+        
+        To expand c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "expand-node",
+        }
+        """
         self._check_c()
         p = self._check_ap(package)
         p.expand()
         return self._make_response()
     #@+node:ekr.20210202183724.15: *4* lsc.insert_node
     def insert_node(self, package):
-        """Insert a node after the given node, set its headline and select it."""
-        tag = 'insert_node'
+        """
+        Insert a new node given by package ["ap"]: an archived position.
+        This node has 'newHeadline' as its headline.
+        
+        To insert a new node at c.p (with the default headline), use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "insert-node",
+        }
+        
+        Use the 'set_headline' method to undoably set any node's headlines.
+        """
         c = self._check_c()
         p = self._check_ap(package)
-        h = package.get('headline')
-        if not h:  # pragma: no cover
-            raise ServerError(f"{tag}: no headline given")
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
-    #@+node:ekr.20210202183724.9: *4* lsc.mark_node
-    def mark_node(self, package):
-        """Mark a node, but don't select it."""
-        self._check_c()
-        p = self._check_ap(package)
-        p.setMarked()
-        return self._make_response()
     #@+node:ekr.20210202110128.64: *4* lsc.page_down
     def page_down(self, unused):
-        """Selects a node a couple of steps down in the tree to simulate page down"""
+        """
+        Selects a node a couple of steps down in the tree to simulate page down.
+        """
         c = self._check_c()
         c.selectVisNext()
         c.selectVisNext()
@@ -1514,7 +1539,9 @@ class LeoServerController:
         return self._make_response()
     #@+node:ekr.20210202110128.63: *4* lsc.page_up
     def page_up(self, unused):
-        """Selects a node a couple of steps up in the tree to simulate page up"""
+        """
+        Selects a node a couple of steps up in the tree to simulate page up.
+        """
         c = self._check_c()
         c.selectVisBack()
         c.selectVisBack()
@@ -1530,35 +1557,25 @@ class LeoServerController:
         return self._make_response()
     #@+node:ekr.20210202110128.74: *4* lsc.set_body
     def set_body(self, package):
-        """Change Body text of a node"""
+        """
+        Undoably set body text of position p, given by package ["ap"], an archived position.
+        """
         tag = 'set_body'
         c = self._check_c()
-        u = c.undoer
-        gnx = package.get('gnx')
-        if not gnx:  # pragma: no cover
-            raise ServerError(f"{tag}: no gnx")
-        v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if not v:  # pragma: no cover
-            raise ServerError(f"{tag}: gnx not found: {gnx!r}")
-        # Set the body once.
+        u, wrapper = c.undoer, c.frame.body.wrapper
+        p = self._check_ap(package)
         body = package.get('body')
         if body is None:
             raise ServerError(f"{tag}: no body given")
-        v.b = body
-        for p in self.c.all_positions():
-            if p.v.gnx == gnx:
-                # TODO : Before setting undo and trying to set body, first check if different than existing body
-                bunch = u.beforeChangeNodeContents(p)
-                p.v.setBodyString(body)
-                u.afterChangeNodeContents(
-                    p, "Body Text", bunch)
-                if self.c.p.v.gnx == gnx:
-                    c.frame.body.wrapper.setAllText(body)
-                if not self.c.isChanged():
-                    c.setChanged()
-                if not p.v.isDirty():
-                    p.setDirty()
-                break
+        bunch = u.beforeChangeNodeContents(p)
+        p.v.setBodyString(body)
+        u.afterChangeNodeContents(p, "Body Text", bunch)
+        if c.p == p:
+            wrapper.setAllText(body)
+        if not self.c.isChanged():
+            c.setChanged()
+        if not p.v.isDirty():
+            p.setDirty()
         return self._make_response()
     #@+node:ekr.20210202110128.77: *4* lsc.set_current_position
     def set_current_position(self, package):
@@ -1569,7 +1586,9 @@ class LeoServerController:
         return self._make_response()
     #@+node:ekr.20210202110128.76: *4* lsc.set_headline
     def set_headline(self, package):
-        """Change a node's headline."""
+        """
+        Set p.h where p is given by package ["ap"], an arcived position.
+        """
         tag = 'set_headline'
         c = self._check_c()
         p = self._check_ap(package)
@@ -1584,23 +1603,25 @@ class LeoServerController:
     #@+node:ekr.20210202110128.75: *4* lsc.set_selection
     def set_selection(self, package):
         """
-        Given package['gnx'], selection.
-        Set the selection in the wrapper if c.p.gnx == gnx.
+        Set the selection in node p.  Package has these keys:
+            
+        - "ap":     An archived position for position p.
+        - "start":  The start of the selection.
+        - "end":    The end of the selection.
+        - "insert": The insert point. Must be either start or end.
+        - "scroll": An optional scroll position.
+        
+        Set the selection in the wrapper if p == c.p
         """
-        tag = 'set_selection'
         c = self._check_c()
+        p = self._check_ap(package)  # Will raise ServerError if p does not exist.
+        v = p.v
         wrapper = c.frame.body.wrapper
-        gnx = package.get('gnx')
-        if not gnx:  # pragma: no cover
-            raise ServerError(f"{tag}: no gnx")
-        v = c.fileCommands.gnxDict.get(gnx)
-        if not v:  # pragma: no cover
-            raise ServerError(f"{tag}: gnx not found. gnx: {gnx!r}")
         start = package.get('start', 0)
         end = package.get('end', 0)
         insert = package.get('insert', 0)
         scroll = package.get('scroll', 0)
-        if gnx == c.p.v.gnx:
+        if p == c.p:
             wrapper.setSelectionRange(start, end, insert)
             wrapper.setYScrollPosition(scroll)
         # Always set vnode attrs.
@@ -1608,6 +1629,26 @@ class LeoServerController:
         v.insertSpot = insert
         v.selectionStart = start
         v.selectionLength = abs(start - end)
+        return self._make_response()
+    #@+node:ekr.20210202183724.10: *4* lsc.toggle_mark
+
+
+    def toggle_mark(self, package):
+        """
+        Toggle the mark of the node given by package ["ap"], an archived position.
+        
+        To *toggle* the mark of c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "toggle-mark",
+        }
+        """
+        self._check_c()
+        p = self._check_ap(package)
+        if p.isMarked():
+            p.clearMarked()
+        else:
+            p.setMarked()
         return self._make_response()
     #@+node:ekr.20210202183724.16: *4* lsc.undo
     def undo(self, package):
@@ -1617,13 +1658,6 @@ class LeoServerController:
         if u.canUndo():
             u.undo()
         # Félix: Caller can get focus using other calls.
-        return self._make_response()
-    #@+node:ekr.20210202183724.10: *4* lsc.unmark_node
-    def unmark_node(self, package):
-        """Unmark a node, don't select it"""
-        self._check_c()
-        p = self._check_ap(package)
-        p.clearMarked()
         return self._make_response()
     #@+node:ekr.20210205102806.1: *3* lsc:server/testing commands
     #@+node:ekr.20210205102818.1: *4* lsc.error
