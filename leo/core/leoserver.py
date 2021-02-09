@@ -6,31 +6,22 @@
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
-#@+<< start coverage >>
-#@+node:ekr.20210206133542.1: ** << start coverage >>
-try:  # pragma: no cover
-    import coverage
-    print('----- Start coverage')
-    cov = coverage.Coverage()
-    cov.start()
-except ImportError:  # pragma: no cover
-    cov = None
-#@-<< start coverage >>
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
-if 1:  # pragma: no cover
-    # We want to start coverage before these imports.
-    # pylint: disable=wrong-import-position
-    import asyncio
-    import getopt
-    import json
-    import sys
-    import time
-    import unittest
-    # Third-party.
-    import websockets
-    # Leo
-    from leo.core.leoNodes import Position
+import asyncio
+import getopt
+import json
+import sys
+import time
+import unittest
+# Third-party.
+try:
+    import coverage
+except ImportError:
+    coverage = None
+import websockets
+# Leo
+from leo.core.leoNodes import Position
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module.
 # server defaults...
@@ -50,6 +41,10 @@ class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
 #@+node:ekr.20210202110128.29: ** class LeoServerController
+g_leoserver = None
+g_server = None
+g_coverage = None
+
 class LeoServerController:
     """Leo Server Controller"""
     #@+others
@@ -1929,37 +1924,72 @@ class LeoServerController:
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
 class TestLeoServer (unittest.TestCase):
     """Tests of LeoServerController."""
-    
-    server = None
-    
-    @classmethod
-    def setUpClass(cls):
-        global server
-        import leoserver
-        server = leoserver.LeoServerController(testing=True)
-        
-    def setUp(self):
-        global server
-        assert server
-        self.g = server.g
+    request_number = 0
 
     #@+others
-    #@+node:ekr.20210208163150.1: *3* test_open_and_close
+    #@+node:ekr.20210208171724.1: *3*  test:SetUp & TearDown
+    @classmethod
+    def setUpClass(cls):
+        global g_coverage, g_leoserver, g_server
+        import leoserver
+        g_leoserver = leoserver
+        g_server = leoserver.LeoServerController(testing=True)
+        if coverage:
+            print('Start coverage')
+            g_coverage = coverage.Coverage()
+            g_coverage.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        global g_coverage, g_leoserver, g_server
+        try:
+            g_server.shut_down({})
+            print('===== server did not terminate properly ====')
+        except g_leoserver.TerminateServer:
+            pass
+        # End coverage testing.
+        if g_coverage:
+            g_coverage.stop()
+            g_coverage.save()
+            directory = r'c:/test'
+            g_coverage.html_report(directory=directory, morfs=['leoserver.py'])
+            print(f"\nCoverage report in {directory}/leoserver_py.html")
+
+    def setUp(self):
+        global g_server
+        self.server = g_server
+        self.g = g_server.g
+    #@+node:ekr.20210208171819.1: *3* test._request
+    def _request(self, action, package=None):
+        server = self.server
+        self.request_number += 1
+        d = {
+            "action": action,
+            "id": self.request_number
+        }
+        if package:
+            d ["package"] = package
+        response = server._do_message(d)
+        # _make_response calls json_dumps, so undo it with json.loads.
+        answer = json.loads(response)
+        # self.g.printObj(answer, tag=f"response to {action}")
+        return answer
+    #@+node:ekr.20210208163150.1: *3* test.g_and_server
+    # def test_g_and_server(self):
+        # g, server = self.g, self.server
+        # g.trace(server)
+    #@+node:ekr.20210208171319.1: *3* test.open_and_close
     def test_open_and_close(self):
-        g = self.g
-        g.trace()
+        table = [
+            ("open_file", {}),
+            ("close_file", {}),
+        ]
+        for action, package in table:
+            self._request(action, package)
+    #@+node:ekr.20210208171628.1: *3* test.test
+    def test_test(self):
+        self._request('test')
     #@-others
-#@+node:ekr.20210206083303.1: ** function: coverage_end (server)
-def coverage_end():  # pragma: no cover
-    """End coverage tests (server)"""
-    global cov
-    if not cov:
-        return
-    cov.stop()
-    cov.save()
-    directory = r'c:/test'
-    cov.html_report(directory=directory, morfs=['leoserver.py'])
-    print(f"----- End coverage: index.html in {directory}/leoserver_py.html")
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():
     """python script for leo integration via leoBridge"""
@@ -2026,7 +2056,7 @@ def main():
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
             print(f"{tag}: closed normally: {e}")
-        coverage_end()
+        ### coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
