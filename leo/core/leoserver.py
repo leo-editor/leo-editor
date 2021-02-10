@@ -2143,11 +2143,12 @@ def main():  # pragma: no cover (tested in client)
     loop.run_forever()
 #@-others
 if __name__ == '__main__':
+    # pytest will *not* execute this code when run as follows 
+    # python -m pytest ^
+    #   --cov-report html --cov-report term-missing ^
+    #   --cov leo.core.leoserver leo\core\leoserver.py
     try:
-        if 1: # pytest doesn't handle extra arguments well.
-            unittest.main()
-        else:
-            main()
+        main()
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py")
         sys.exit()
