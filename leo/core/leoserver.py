@@ -63,6 +63,7 @@ class LeoServerController:
         self.c = None  # Currently Selected Commander.
         self.dummy_c = None  # Set below, after we set g.
         self.action = None
+        self.bad_commands_list = []  # Set below.
         self.config = None
         self.creation_time_d = {}  # Keys are commanders, values are creation times (in the server).
         self.current_id = 0  # Id of action being processed.
@@ -81,6 +82,7 @@ class LeoServerController:
         )
         self.g = g = self.bridge.globals()
         self.dummy_c = g.app.newCommander(fileName=None)  # To inspect commands
+        self.bad_commands_list = self._bad_commands(self.dummy_c)
         #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
@@ -618,7 +620,7 @@ class LeoServerController:
         """Return _ap_to_p(package["ap"]) or c.p."""
         tag = '_get_ap'
         c = self.c
-        if not c:
+        if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no c")
         ap = package.get("ap")
         if ap:
@@ -635,7 +637,7 @@ class LeoServerController:
         """Return self.c or raise ServerError if self.c is None."""
         tag = '_check_c'
         c = self.c
-        if not c:
+        if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no open commander")
         return c
     #@+node:ekr.20210202110128.54: *4* lsc._do_message & helpers
@@ -692,7 +694,7 @@ class LeoServerController:
         command_name = package.get("leo-command-name")
         if not command_name:  # pragma: no cover
             raise ServerError(f"{tag}: no 'leo-command-name' key in package")
-        if command_name in self._bad_commands(c):  # pragma: no cover
+        if command_name in self.bad_commands_list:  # pragma: no cover
             raise ServerError(f"{tag}: disallowed command: {command_name}")
         func = c.commandsDict.get(command_name)
         if not func:  # pragma: no cover
@@ -728,7 +730,7 @@ class LeoServerController:
         else:
             print(f"{tag}: Error loop not ready {message}")
     #@+node:ekr.20210204145818.1: *5* lsc._async_output
-    async def _async_output(self, json):
+    async def _async_output(self, json):  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         tag = '_async_output'
         if self.web_socket:
@@ -1950,6 +1952,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
+        # pylint: disable=import-self
         import leo.core.leoserver as leoserver
         global g_leoserver, g_server
         g_leoserver = leoserver
