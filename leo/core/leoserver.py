@@ -6,28 +6,35 @@
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
-#@+<< imports >>
-#@+node:ekr.20210202110128.2: ** << imports >>
-import asyncio
-import getopt
-import inspect
-import json
-import sys
-import time
-import unittest
-# Third-party.
-try:
-    import coverage
-except ImportError:
-    coverage = None
-import websockets
-# Leo
-from leo.core.leoNodes import Position
-#@-<< imports >>
-g = None  # The bridge's leoGlobals module.
-# server defaults...
-wsHost = "localhost"
-wsPort = 32125
+if 1:  # pragma: no cover
+    g = None  # The bridge's leoGlobals module.
+    # For unit tests.
+    g_leoserver = None
+    g_server = None
+    g_coverage = None
+    # server defaults...
+    wsHost = "localhost"
+    wsPort = 32125
+if 1:  # pragma: no cover
+    #@+<< imports >>
+    #@+node:ekr.20210202110128.2: ** << imports >>
+    import asyncio
+    import getopt
+    import inspect
+    import json
+    import sys
+    import time
+    import unittest
+    # Third-party.
+    try:
+        import coverage
+    except ImportError:
+        coverage = None
+    import websockets
+    # Leo
+    from leo.core.leoNodes import Position
+    #@-<< imports >>
+
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
 class InternalServerError(Exception):  # pragma: no cover
@@ -42,15 +49,11 @@ class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
 #@+node:ekr.20210202110128.29: ** class LeoServerController
-g_leoserver = None
-g_server = None
-g_coverage = None
-
 class LeoServerController:
     """Leo Server Controller"""
     #@+others
     #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge, set self.g)
-    def __init__(self, testing=False):
+    def __init__(self, testing=False):  # pragma: no cover
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -186,7 +189,7 @@ class LeoServerController:
         self.c = commanders and commanders[0] or None
         return self._make_response()
     #@+node:ekr.20210202183724.1: *4* lsc.save_file
-    def save_file(self, package):
+    def save_file(self, package):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
         c = self._check_c()
         c.save()
@@ -1997,21 +2000,48 @@ class TestLeoServer (unittest.TestCase):
         if 0:
             self.g.printObj(answer, tag=f"response to {action}")
         return answer
-    #@+node:ekr.20210208163150.1: *3* test.g_and_server
-    # def test_g_and_server(self):
-        # g, server = self.g, self.server
-        # g.trace(server)
+    #@+node:ekr.20210208163150.1: *3* test.server_ivar
+    def test_server_ivar(self):
+        assert isinstance(self.server, g_leoserver.LeoServerController), self.server
+    #@+node:ekr.20210210102638.1: *3* test.most_server_methods
+    def test_most_server_methods(self):
+        server=self.server
+        methods = server._get_all_server_commands()
+        exclude = [
+            'delete_node', 'cut_node',  # dangerous.
+            'click_button', 'get_buttons', 'remove_button',  # Require plugins.\
+            'save_file',  # way too dangerous!
+            # 'set_selection',  ### Not ready yet.
+            'open_file', 'close_file',  # Done by hand.
+            'shut_down',  # Don't shut down the server.
+        ]
+        expected = ['error']
+        package_d = {
+            "apply_config": {"config": {"whatever": True}},
+            "set_body": {"body": "new body\n"},
+            "set_headline": {"headline": "new headline"},
+        }
+        # First open a test file.
+        server.open_file({"filename": "xyzzy.leo"})
+        for method_name in methods:
+            if method_name not in exclude:
+                func = getattr(server, method_name)
+                package = package_d.get(method_name, {})
+                try:
+                    func(package)
+                except Exception as e:
+                    if method_name not in expected:
+                        print(f"fail: {method_name} {e}")
+        # Finally, close the test file.
+        server.close_file({"filename": "xyzzy.leo"})
     #@+node:ekr.20210208171319.1: *3* test.open_and_close
     def test_open_and_close(self):
         table = [
-            ("open_file", {}),
+            ("open_file", {"filename": "xyzzy.leo"}),
             ("close_file", {}),
         ]
         for action, package in table:
             self._request(action, package)
-    #@+node:ekr.20210208171628.1: *3* test.test
-    def test_test(self):
-        self._request('test')
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():
