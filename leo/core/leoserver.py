@@ -49,8 +49,7 @@ g_coverage = None
 class LeoServerController:
     """Leo Server Controller"""
     #@+others
-    #@+node:ekr.20210202160349.1: *3* lsc:birth & startup
-    #@+node:ekr.20210202110128.30: *4* lsc.__init__ (load bridge, set self.g)
+    #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge, set self.g)
     def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
@@ -64,6 +63,7 @@ class LeoServerController:
         self.dummy_c = None  # Set below, after we set g.
         self.action = None
         self.config = None
+        self.creation_time_d = {}  # Keys are commanders, values are creation times (in the server).
         self.current_id = 0  # Id of action being processed.
         self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
         self.loop = None
@@ -88,21 +88,6 @@ class LeoServerController:
         t2 = time.process_time()
         if not testing:
             print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210202110128.41: *4* lsc.apply_config
-    def apply_config(self, package):
-        """Got the configuration from client"""
-        tag = 'apply_config'
-        config = package.get('config')
-        if not config:  # pragma: no cover
-            raise ServerError(f"{tag}: no config")
-        self.config = config
-        return self._make_response()
-    #@+node:ekr.20210202110128.52: *4* lsc.init_connection
-    def _init_connection(self, web_socket):
-        """Begin the connection."""
-        self.web_socket = web_socket
-        self.loop = asyncio.get_event_loop()
-
     #@+node:ekr.20210202193709.1: *3* lsc:button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:ekr.20210207051720.1: *4* _check_button_command
@@ -198,7 +183,7 @@ class LeoServerController:
         c.close()
         # Select the first open outline, if any.
         commanders = g.app.commanders()
-        self.c = commanders and commanders[0]
+        self.c = commanders and commanders[0] or None
         return self._make_response()
     #@+node:ekr.20210202183724.1: *4* lsc.save_file
     def save_file(self, package):
@@ -207,9 +192,651 @@ class LeoServerController:
         c.save()
         return self._make_response()
     #@+node:ekr.20210202193505.1: *3* lsc:getter commands
-    #@+node:ekr.20210202183724.5: *4* lsc.get_all_leo_commands & helpers
+    #@+node:ekr.20210202110128.71: *4* lsc.get_all_gnxs (May be removed)
+    def get_all_gnxs(self, package):
+        """Get gnx array from all unique nodes"""
+        c = self._check_c()
+        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+        return self._make_response({"allGnx": result})
+
+    #@+node:ekr.20210202110128.55: *4* lsc.get_all_opened_files
+    def get_all_opened_files(self, package):
+        """Return array of opened file path/names to be used as open_file parameters to switch files"""
+        c = self._check_c()
+        files = [
+            {
+                "changed": commander.changed,
+                "name": commander.mFileName,
+                "selected": c == commander,
+            } for commander in g.app.commanders()
+        ]
+        return self._make_response({"open-files": files})
+    #@+node:ekr.20210202110128.72: *4* lsc.get_body & get_body_length
+    def get_body(self, package):
+        """
+        Return p.b, where p is c.p if package["ap"] is missing.
+        """
+        self._check_c()
+        p = self._get_p(package)
+        return self._make_response({"body": p.b})
+
+    def get_body_length(self, package):
+        """
+        Return len(p.b), where p is c.p if package["ap"] is missing.
+        """
+        self._check_c()
+        p = self._get_p(package)
+        return self._make_response({"body-length": len(p.b)})
+    #@+node:ekr.20210202110128.66: *4* lsc.get_body_states (*** revise)
+    def get_body_states(self, package):
+        """
+        Return body data for p, where p is c.p if package["ap"] is missing.
+        """
+        c = self._check_c()
+        p = self._get_p(package)
+        wrapper = c.frame.body.wrapper
+        defaultPosition = {"line": 0, "col": 0}
+        states = {
+            'language': 'plain',
+            # See BodySelectionInfo interface in types.d.ts
+            'selection': {
+                "gnx": p.v.gnx,
+                "scroll": {
+                    "start": defaultPosition,
+                    "end": defaultPosition
+                },
+                "active": defaultPosition,
+                "start": defaultPosition,
+                "end": defaultPosition
+            }
+        }
+        aList = g.get_directives_dict_list(p)
+        d = g.scanAtCommentAndAtLanguageDirectives(aList)
+        language = (
+            d and d.get('language')
+            or g.getLanguageFromAncestorAtFileNode(p)
+            or c.config.getString('target-language')
+            or 'plain'
+        )
+        scroll = p.v.scrollBarSpot
+        active = p.v.insertSpot
+        start = p.v.selectionStart
+        end = p.v.selectionStart + p.v.selectionLength
+        # get selection from wrapper instead if its the selected node
+        if c.p.v.gnx == p.v.gnx:
+            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
+            active = wrapper.getInsertPoint()
+            start, end = wrapper.getSelectionRange(True)
+            scroll = wrapper.getYScrollPosition()
+
+        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
+        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
+        # compute line and column for the insertion point, and the start & end of selection
+        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
+        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
+        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
+        states = {
+            'language': language.lower(),
+            'selection': {
+                "gnx": p.v.gnx,
+                "scroll": scroll,  # scroll was kept as-is
+                "active": {"line": activeRow, "col": activeCol},
+                "start": {"line": startRow, "col": startCol},
+                "end": {"line": endRow, "col": endCol}
+            }
+        }
+        return self._make_response({"body-states": states})
+    #@+node:ekr.20210202110128.68: *4* lsc.get_children
+    def get_children(self, package):
+        """Return the children of p, where p is c.p if package["ap"] is missing."""
+        self._check_c()
+        p = self._get_p(package)
+        return self._make_response({
+            "children": [self._p_to_ap(child) for child in p.children()]
+        })
+    #@+node:ekr.20210202110128.69: *4* lsc.get_parent
+    def get_parent(self, package):
+        """Return the parent of position p, where p is c.p if package["ap"] is missing."""
+        ### As an array ### ?
+        self._check_c()
+        p = self._get_p(package)
+        parent = p.parent()
+        parent_ap = self._p_to_ap(parent) if parent else None
+        return self._make_response({"parent": parent_ap})
+    #@+node:ekr.20210206184431.1: *4* lsc.get_redraw_data
+    def get_redraw_data(self, package):
+        """Return the data needed to redraw p on the screen."""
+        self._check_c()
+        p = self._get_p(package)
+        return self._make_response({"p": p})
+    #@+node:ekr.20210202110128.67: *4* lsc.get_selected_position
+    def get_position(self, package):
+        """Return the current position. Don't select it."""
+        # *All* responses contain a "node" key.
+        return self._make_response()
+    #@+node:ekr.20210206062654.1: *4* lsc.get_sign_on
+    def get_sign_on(self, package):
+        """Synchronous version of _sign_on"""
+        g.app.computeSignon()
+        signon = []
+        for z in (g.app.signon, g.app.signon1):
+            for z2 in z.split('\n'):
+                signon.append(z2.strip())
+        return self._make_response({"sign-on": "\n".join(signon)})
+    #@+node:ekr.20210202110128.61: *4* lsc.get_ui_states
+    def get_ui_states(self, package):
+        """
+        Return the enabled/disabled UI states for the open commander, or defaults if None.
+        """
+        c = self._check_c()
+        tag = 'get_ui_states'
+        try:
+            states = {
+                "changed": c and c.changed,
+                "canUndo": c and c.canUndo(),
+                "canRedo": c and c.canRedo(),
+                "canDemote": c and c.canDemote(),
+                "canPromote": c and c.canPromote(),
+                "canDehoist": c and c.canDehoist(),
+            }
+        except Exception as e:  # pragma: no cover
+            raise ServerError(f"{tag}: Exception setting state: {e}")
+        return self._make_response({"states": states})
+    #@+node:ekr.20210202193540.1: *3* lsc:node commands
+    #@+node:ekr.20210202183724.11: *4* lsc.clone_node
+    def clone_node(self, package):
+        """
+        Clone the node at position p, where p is c.p if package["ap"] is missing.
+        
+        To clone c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "clone",
+        }
+        """
+        c = self._check_c()
+        p = self._get_p(package)
+        c.selectPosition(p)
+        c.clone()
+        return self._make_response()
+    #@+node:ekr.20210202110128.79: *4* lsc.contract_node
+    def contract_node(self, package):
+        """
+        Contract the node at position p, where p is c.p if package["ap"] is missing.
+        
+        To contract c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "contract-node",
+        }
+        """
+        self._check_c()
+        p = self._get_p(package)
+        p.contract()
+        return self._make_response()
+    #@+node:ekr.20210202183724.12: *4* lsc.cut_node
+    def cut_node(self, package):
+        """
+        Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
+        
+        To cut c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "cut-node",
+        }
+        """
+        c = self._check_c()
+        p = self._get_p(package)
+        c.selectPosition(p)
+        c.cutOutline()
+        return self._make_response()
+    #@+node:ekr.20210202183724.13: *4* lsc.delete_node
+    def delete_node(self, package):
+        """
+        Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
+        
+        To delete c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "delete-node",
+        }
+        """
+        c = self._check_c()
+        p = self._get_p(package)
+        c.selectPosition(p)
+        c.deleteOutline()  # Handles undo.
+        return self._make_response()
+    #@+node:ekr.20210202110128.78: *4* lsc.expand_node
+    def expand_node(self, package):
+        """
+        Expand the node at position p, where p is c.p if package["ap"] is missing.
+        
+        To expand c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "expand-node",
+        }
+        """
+        self._check_c()
+        p = self._get_p(package)
+        p.expand()
+        return self._make_response()
+    #@+node:ekr.20210202183724.15: *4* lsc.insert_node
+    def insert_node(self, package):
+        """
+        Insert a new node at position p, where p is c.p if package["ap"] is missing.
+
+        This node has 'newHeadline' as its headline.
+        
+        To insert a new node at c.p (with the default headline), use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "insert-node",
+        }
+        
+        Use the 'set_headline' method to undoably set any node's headlines.
+        """
+        c = self._check_c()
+        p = self._get_p(package)
+        c.selectPosition(p)
+        c.insertHeadline()  # Handles undo, sets c.p
+        return self._make_response()
+    #@+node:ekr.20210202110128.64: *4* lsc.page_down
+    def page_down(self, unused):
+        """
+        Selects a node a couple of steps down in the tree to simulate page down.
+        """
+        c = self._check_c()
+        c.selectVisNext()
+        c.selectVisNext()
+        c.selectVisNext()
+        return self._make_response()
+    #@+node:ekr.20210202110128.63: *4* lsc.page_up
+    def page_up(self, unused):
+        """
+        Selects a node a couple of steps up in the tree to simulate page up.
+        """
+        c = self._check_c()
+        c.selectVisBack()
+        c.selectVisBack()
+        c.selectVisBack()
+        return self._make_response()
+    #@+node:ekr.20210202183724.17: *4* lsc.redo
+    def redo(self, package):
+        """Undo last un-doable operation"""
+        c = self._check_c()
+        u = c.undoer
+        if u.canRedo():
+            u.redo()
+        return self._make_response()
+    #@+node:ekr.20210202110128.74: *4* lsc.set_body
+    def set_body(self, package):
+        """
+        Undoably set p.b, where p is c.p if package["ap"] is missing.
+        """
+        tag = 'set_body'
+        c = self._check_c()
+        p = self._get_p(package)
+        u, wrapper = c.undoer, c.frame.body.wrapper
+        body = package.get('body')
+        if body is None:
+            raise ServerError(f"{tag}: no body given")
+        bunch = u.beforeChangeNodeContents(p)
+        p.v.setBodyString(body)
+        u.afterChangeNodeContents(p, "Body Text", bunch)
+        if c.p == p:
+            wrapper.setAllText(body)
+        if not self.c.isChanged():
+            c.setChanged()
+        if not p.v.isDirty():
+            p.setDirty()
+        return self._make_response()
+    #@+node:ekr.20210202110128.77: *4* lsc.set_current_position
+    def set_current_position(self, package):
+        """Select position p, where p is c.p if package["ap"] is missing."""
+        c = self._check_c()
+        p = self._get_p(package)
+        c.selectPosition(p)
+        return self._make_response()
+    #@+node:ekr.20210202110128.76: *4* lsc.set_headline
+    def set_headline(self, package):
+        """
+        Undoably set p.h, where p is c.p if package["ap"] is missing.
+        """
+        tag = 'set_headline'
+        c = self._check_c()
+        p = self._get_p(package)
+        u = c.undoer
+        h = package.get('headline')
+        if not h:  # pragma: no cover
+            raise ServerError(f"{tag}: no headline")
+        bunch = u.beforeChangeNodeContents(p)
+        p.h = h
+        u.afterChangeNodeContents(p, 'Change Headline', bunch)
+        return self._make_response()
+    #@+node:ekr.20210202110128.75: *4* lsc.set_selection
+    def set_selection(self, package):
+        """
+        Set the selection range for p.b, where p is c.p if package["ap"] is missing.
+        
+        Set the selection in the wrapper if p == c.p
+        
+        Package has these keys:
+            
+        - "ap":     An archived position for position p.
+        - "start":  The start of the selection.
+        - "end":    The end of the selection.
+        - "insert": The insert point. Must be either start or end.
+        - "scroll": An optional scroll position.
+        """
+        c = self._check_c()
+        p = self._get_p(package)  # Will raise ServerError if p does not exist.
+        v = p.v
+        wrapper = c.frame.body.wrapper
+        start = package.get('start', 0)
+        end = package.get('end', 0)
+        insert = package.get('insert', 0)
+        scroll = package.get('scroll', 0)
+        if p == c.p:
+            wrapper.setSelectionRange(start, end, insert)
+            wrapper.setYScrollPosition(scroll)
+        # Always set vnode attrs.
+        v.scrollBarSpot = scroll
+        v.insertSpot = insert
+        v.selectionStart = start
+        v.selectionLength = abs(start - end)
+        return self._make_response()
+    #@+node:ekr.20210202183724.10: *4* lsc.toggle_mark
+    def toggle_mark(self, package):
+        """
+        Toggle the mark at position p, where p is c.p if package["ap"] is missing.
+        
+        To *toggle* the mark of c.p, use this request:
+        {
+            "action": "execute-leo-command",
+            "leo-command-name": "toggle-mark",
+        }
+        """
+        self._check_c()
+        p = self._get_p(package)
+        if p.isMarked():
+            p.clearMarked()
+        else:
+            p.setMarked()
+        return self._make_response()
+    #@+node:ekr.20210202183724.16: *4* lsc.undo
+    def undo(self, package):
+        """Undo last un-doable operation"""
+        c = self._check_c()
+        u = c.undoer
+        if u.canUndo():
+            u.undo()
+        # Félix: Caller can get focus using other calls.
+        return self._make_response()
+    #@+node:ekr.20210204154548.1: *3* lsc:server utils
+    #@+node:ekr.20210202110128.85: *4* lsc._ap_to_p
+    def _ap_to_p(self, ap):
+        """
+        Convert ap (archived position, a dict) to a valid Leo position.
+        Raise ServerError on any kind of error.
+        """
+        tag = '_ap_to_p'
+        c = self._check_c()
+        gnx_d = c.fileCommands.gnxDict
+        childIndex = ap.get('childIndex')
+        gnx = ap.get('gnx')
+        ap_stack = ap.get('stack')
+        #
+        # Test the outer level.
+        if childIndex is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: no outer childIndex.")
+        if gnx is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: no outer gnx.")
+        v = gnx_d.get(gnx)
+        if v is None:  # pragma: no cover.
+            g.printObj(gnx_d, tag=f"gnx_d")
+            raise ServerError(f"{tag}: gnx not found: {gnx}")
+        #
+        # Resolve the stack, a list of tuples(gnx, childIndex).
+        stack = []
+        for d in ap_stack:
+            childIndex = d.get('childIndex')
+            if childIndex is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no childIndex in {d}")
+            gnx = d.get('gnx')
+            if gnx is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no gnx in {d}")
+            stack.append((gnx, childIndex))
+        #
+        # Create the position!
+        p = Position(v, childIndex, stack)
+        if not c.positionExists(p):  # pragma: no cover.
+            raise ServerError(f"{tag}: p does not exist: {p!r}")
+        return p
+    #@+node:ekr.20210210081236.1: *4* lsc._get_p
+    def _get_p(self, package):
+        """Return _ap_to_p(package["ap"]) or c.p."""
+        tag = '_get_ap'
+        c = self.c
+        if not c:
+            raise ServerError(f"{tag}: no c")
+        ap = package.get("ap")
+        if ap:
+            p = self._ap_to_p(ap)
+            if not p:  # pragma: no cover
+                raise ServerError(f"{tag}: no p")
+            if not c.positionExists(p):  # pragma: no cover
+                raise ServerError(f"{tag}: position does not exist. ap: {ap}")
+        if not c.p:
+            raise ServerError(f"{tag}: no c.p")  # pragma: no cover
+        return c.p
+    #@+node:ekr.20210207054237.1: *4* lsc._check_c
+    def _check_c(self):
+        """Return self.c or raise ServerError if self.c is None."""
+        tag = '_check_c'
+        c = self.c
+        if not c:
+            raise ServerError(f"{tag}: no open commander")
+        return c
+    #@+node:ekr.20210202110128.54: *4* lsc._do_message & helpers
+    def _do_message(self, d):
+        """
+        Handle d, a python dict representing the incoming request.
+        d must have at least the following keys:
+        
+        - "id": A positive integer.
+        - "action": A string, which is either:
+            - The name of public method of this class.
+            - The name of a Leo command.
+        
+        Return a dict, created by _make_response, containing least these keys:
+
+        - "id":         Same as the incoming id.
+        - "action":     Same as the incoming action.
+        - "commander":  A dict describing self.c.
+        - "node":       None, or an archived position describing self.c.p.
+        """
+        tag = '_do_message'
+        # Require "id" and "action" keys. The "package" key is optional.
+        id_ = d.get("id")
+        if id_ is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no id")
+        action = d.get("action")
+        if action is None:
+            raise ServerError("f{tag}: no action")
+        package = d.get('package', {})
+        # Set the current_id and action ivars for _make_response.
+        self.current_id = id_
+        self.action = action
+        # Execute the requested action.
+        if action == "execute-leo-command":
+            func = self._do_leo_command
+        else:
+            func = self._do_server_command
+        result = func(action, package)
+        if result is None:
+            raise ServerError(f"{tag}: no response: {action}")
+        return result
+    #@+node:ekr.20210209062536.1: *5* lsc._do_leo_command
+    def _do_leo_command(self, action, package):
+        """
+        Execute the leo command given by package ["leo-command-name"].
+        
+        The client must open an outline before calling this method.
+        """
+        # We *can* require self.c to exist, because:
+        # 1. all commands imply c.
+        # 2. The client must call open_file to set self.c.
+        tag = '_execute_leo_command'
+        c = self._check_c()
+        command_name = package.get("leo-command-name")
+        if not command_name:
+            raise ServerError(f"{tag}: no 'leo-command-name' key in package")
+        if command_name in self._bad_commands(c):  # pragma: no cover
+            raise ServerError(f"{tag}: disallowed command: {command_name}")
+        func = c.commandsDict.get(command_name)
+        if not func:  # pragma: no cover
+            raise ServerError(f"{tag}: Leo command not found: {command_name}")
+        value = func(event={"c":c})
+        return self._make_response({"return-value": value})
+    #@+node:ekr.20210209085438.1: *5* lsc._do_server_command
+    def _do_server_command(self, action, package):
+        tag = '_do_server_command'
+        # Disallow hidden methods.
+        if action.startswith('_'):  # pragma: no cover
+            raise ServerError(f"{tag}: action starts with '_': {action}")
+        # Find and execute the server method.
+        func = getattr(self, action, None)
+        if not func:
+            raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
+        if not callable(func):
+            raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
+        return func(package)
+    #@+node:ekr.20210202110128.51: *4* lsc._es & helper
+    def _es(self, s):
+        """
+        Send a response that does not correspond to a request.
+        
+        The response *must* have an "async" key, but *not* an "id" key.
+        """
+        tag = '_es'
+        message = g.toUnicode(s)
+        package = {"async": "", "s": message}
+        response = json.dumps(package, separators=(',', ':'))
+        if self.loop:
+            self.loop.create_task(self._async_output(response))
+        else:
+            print(f"{tag}: Error loop not ready {message}")
+    #@+node:ekr.20210204145818.1: *5* lsc._async_output
+    async def _async_output(self, json):
+        """Output json string to the web_socket"""
+        tag = '_async_output'
+        if self.web_socket:
+            await self.web_socket.send(bytes(json, 'utf-8'))
+        else:
+            g.trace(f"{tag}: no web socket. json: {json}")
+    #@+node:ekr.20210206182638.1: *4* lsc._make_response
+    def _make_response(self, package=None):
+        """
+        Return a json string representing a response dict.
+        
+        The 'package' kwarg, if present, must be a python dict describing a
+        response. package may be an empty dict or None.
+        
+        The 'p' kwarg, if present, must be a position.
+        
+        First, this method creates a response (a python dict) containing all
+        the keys in the 'package' dict, with the following added keys:
+            
+        - "id":         The incoming id.
+        - "action":     The incoming action.
+        - "commander":  A dict describing self.c.
+        - "node":       None, or an archived position describing self.c.p.
+        
+        Finally, this method returns the json string corresponding to the
+        response.
+        """
+        tag = '_make_response'
+        c = self.c  # It is valid for c to be None.
+        if package is None:
+            package = {}
+        p = package.get("p")
+        if p:
+            del package ["p"]
+        # Raise an *internal* error if checks fail.
+        if isinstance(package, str):
+            raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
+        if p and not isinstance(p, Position):
+            raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
+        if p and not c:
+            raise InternalServerError(f"{tag}: p but not c")
+        if p and not c.positionExists(p):
+            raise InternalServerError(f"{tag}: p does not exist")
+        if c and not c.p:
+            raise InternalServerError(f"{tag}: empty c.p")
+        #
+        package ["id"] = self.current_id
+        package ["action"] = self.action
+        # The following keys are relevant only if there is an open commander.
+        if c:
+            # Allow commands, especially get_redraw_data, to set p!
+            p = p or c.p
+            package ["commander"] = {
+                "file_name": c.fileName(), # Can be None for new files.
+                "creation_time": self.creation_time_d.get(c),
+            }
+            # Don't bother echoing the incoming ap back to the client.
+            package ["node"] = self._p_to_ap(p)
+            # Provide the cheap redraw data, but *not* p.gnx.
+            package ["icon_val"] = p.v.iconVal  # An int between 0 and 15.
+            package ["is_at_file"] = p.isAnyAtFileNode()
+        return json.dumps(package, separators=(',', ':')) 
+    #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
+    def _p_to_ap(self, p):
+        """
+        Convert Leo position p to a serializable archived position.
+        
+        This returns only position-related data.
+        get_position_data returns all data needed to redraw the screen.
+        """
+        self._check_c()
+        stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+            for (v, childIndex) in p.stack]
+        return {
+            'childIndex': p._childIndex,
+            'gnx': p.v.gnx,
+            'stack': stack,
+        }
+    #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
+    def _test_round_trip_positions(self):
+        """Test the round tripping of p_to_ap and ap_to_p."""
+        tag = '_test_round_trip_positions'
+        c = self._check_c()  # Ensure that c exists.
+        for p in c.all__unique_positions():
+            ap = self._p_to_ap(p)
+            p2 = self._ap_to_p(ap)
+            if p != p2:
+                raise ServerError(f"{tag}: round-trip failed: ap: {ap}, p: {p}, p2: {p2}")
+    #@+node:ekr.20210205102806.1: *3* lsc:server commands
+    #@+node:ekr.20210202110128.41: *4* lsc.apply_config
+    def apply_config(self, package):
+        """Got the configuration from client"""
+        tag = 'apply_config'
+        config = package.get('config')
+        if not config:  # pragma: no cover
+            raise ServerError(f"{tag}: no config")
+        self.config = config
+        return self._make_response()
+    #@+node:ekr.20210205102818.1: *4* lsc.error
+    def error(self, package):
+        """For unit testing. Raise ServerError"""
+        raise ServerError(f"error called")
+    #@+node:ekr.20210202183724.5: *4* lsc.get_all_leo_commands & helper
     def get_all_leo_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
+        tag = 'get_all_leo_commands'
+        trace = package.get('trace')
+        verbose = package.get('verbose')
         c = self.dummy_c  # Use the dummy commander.
         d = c.commandsDict  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
@@ -234,10 +861,14 @@ class LeoServerController:
                 continue
             doc = func.__doc__ or ''
             result.append({
-                "label": command_name,
+                "command-name": command_name,
                 "func":  func_name,
                 "detail": doc,
             })
+        if verbose:
+             g.printObj([z.get("command-name") for z in result], tag=tag)
+        elif trace:
+            print(f"\n{tag}: {len(result)} leo commands\n")
         return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *5* lsc._bad_commands
     def _bad_commands(self, c):
@@ -1276,635 +1907,43 @@ class LeoServerController:
         ]
         return good_list
 
-    #@+node:ekr.20210202110128.71: *4* lsc.get_all_gnxs (May be removed)
-    def get_all_gnxs(self, package):
-        """Get gnx array from all unique nodes"""
-        c = self._check_c()
-        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
-        return self._make_response({"allGnx": result})
+    #@+node:ekr.20210209055518.1: *4* lsc.get_all_server_commands
+    def get_all_server_commands(self, package):
+        """
+        Public server method:
+        Return the names of all callable public methods of the server.
+        """
+        tag = 'get_all_server_commands'
+        trace = package.get('trace')
+        verbose = package.get('verbose')
+        names = self._get_all_server_commands()
+        if verbose:
+            g.printObj(names, tag=tag)
+        elif trace:
+            print(f"\n{tag}: {len(names)} server commands\n")
+        return self._make_response({"server-commands": names})
 
-    #@+node:ekr.20210202110128.55: *4* lsc.get_all_opened_files
-    def get_all_opened_files(self, package):
-        """Return array of opened file path/names to be used as open_file parameters to switch files"""
-        c = self._check_c()
-        files = [
-            {
-                "changed": commander.changed,
-                "name": commander.mFileName,
-                "selected": c == commander,
-            } for commander in g.app.commanders()
-        ]
-        return self._make_response({"open-files": files})
-    #@+node:ekr.20210202110128.72: *4* lsc.get_body & get_body_length
-    def get_body(self, package):
+    def _get_all_server_commands(self):
         """
-        Return p.b for position p given by package ["ap"], an archived position.
+        Private server method:
+        Return the names of all callable public methods of the server.
         """
-        self._check_c()
-        p = self._check_ap(package)
-        return self._make_response({"body": p.b})
+        members = inspect.getmembers(self, inspect.ismethod)
+        return sorted([name for (name, value) in members if not name.startswith('_')])
+    #@+node:ekr.20210202110128.52: *4* lsc.init_connection
+    def _init_connection(self, web_socket):
+        """Begin the connection."""
+        self.web_socket = web_socket
+        self.loop = asyncio.get_event_loop()
 
-    def get_body_length(self, package):
-        """
-        Return len(p.b) for position p given by package ["ap"], an archived position.
-        """
-        self._check_c()
-        p = self._check_ap(package)
-        return self._make_response({"body-length": len(p.b)})
-    #@+node:ekr.20210202110128.66: *4* lsc.get_body_states
-    def get_body_states(self, package):
-        """
-        Finds the language in effect at top of body for position p,
-        Also returns the saved cursor position from last time node was accessed.
-        """
-        c = self._check_c()
-        p = self._check_ap(package)
-        wrapper = c.frame.body.wrapper
-        defaultPosition = {"line": 0, "col": 0}
-        states = {
-            'language': 'plain',
-            # See BodySelectionInfo interface in types.d.ts
-            'selection': {
-                "gnx": p.v.gnx,
-                "scroll": {
-                    "start": defaultPosition,
-                    "end": defaultPosition
-                },
-                "active": defaultPosition,
-                "start": defaultPosition,
-                "end": defaultPosition
-            }
-        }
-        aList = g.get_directives_dict_list(p)
-        d = g.scanAtCommentAndAtLanguageDirectives(aList)
-        language = (
-            d and d.get('language') or
-            g.getLanguageFromAncestorAtFileNode(p) or
-            c.config.getString('target-language') or
-            'plain'
-        )
-        scroll = p.v.scrollBarSpot
-        active = p.v.insertSpot
-        start = p.v.selectionStart
-        end = p.v.selectionStart + p.v.selectionLength
-        # get selection from wrapper instead if its the selected node
-        if c.p.v.gnx == p.v.gnx:
-            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
-            active = wrapper.getInsertPoint()
-            start, end = wrapper.getSelectionRange(True)
-            scroll = wrapper.getYScrollPosition()
-
-        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
-        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
-        # compute line and column for the insertion point, and the start & end of selection
-        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
-        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
-        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
-        states = {
-            'language': language.lower(),
-            'selection': {
-                "gnx": p.v.gnx,
-                "scroll": scroll,  # scroll was kept as-is
-                "active": {"line": activeRow, "col": activeCol},
-                "start": {"line": startRow, "col": startCol},
-                "end": {"line": endRow, "col": endCol}
-            }
-        }
-        return self._make_response({"body-states": states})
-    #@+node:ekr.20210202110128.68: *4* lsc.get_children
-    def get_children(self, package):
-        """Return list of children of a node"""
-        self._check_c()
-        p = self._check_ap(package)
-        return self._make_response({
-            "children": [self._p_to_ap(child) for child in p.children()]
-        })
-    #@+node:ekr.20210202110128.69: *4* lsc.get_parent
-    def get_parent(self, package):
-        """EMIT OUT the parent of a node, as an array, even if unique or empty"""
-        self._check_c()
-        p = self._check_ap(package)
-        parent = p.parent()
-        parent_ap = self._p_to_ap(parent) if parent else None
-        return self._make_response({"parent": parent_ap})
-    #@+node:ekr.20210206184431.1: *4* lsc.get_redraw_data
-    def get_redraw_data(self, package):
-        """Return the data needed to redraw p on the screen."""
-        self._check_c()
-        p = self._check_ap(package)
-        return self._make_response({
-            "headline": p.h,
-            "icon_val": p.v.iconVal,  # An int between 0 and 15.
-        })
-    #@+node:ekr.20210202110128.67: *4* lsc.get_selected_position
-    def get_position(self, package):
-        """Return the current position. Don't select it."""
-        # *All* responses contain a "node" key.
-        return self._make_response()
-    #@+node:ekr.20210206062654.1: *4* lsc.get_sign_on
-    def get_sign_on(self, package):
-        """Synchronous version of _sign_on"""
-        g.app.computeSignon()
-        signon = []
-        for z in (g.app.signon, g.app.signon1):
-            for z2 in z.split('\n'):
-                signon.append(z2.strip())
-        return self._make_response({"sign-on": "\n".join(signon)})
-    #@+node:ekr.20210202110128.61: *4* lsc.get_ui_states
-    def get_ui_states(self, package):
-        """
-        Return the enabled/disabled UI states for the open commander, or defaults if None.
-        """
-        c = self._check_c()
-        tag = 'get_ui_states'
-        try:
-            states = {
-                "changed": c and c.changed,
-                "canUndo": c and c.canUndo(),
-                "canRedo": c and c.canRedo(),
-                "canDemote": c and c.canDemote(),
-                "canPromote": c and c.canPromote(),
-                "canDehoist": c and c.canDehoist(),
-            }
-        except Exception as e:  # pragma: no cover
-            raise ServerError(f"{tag}: Exception setting state: {e}")
-        return self._make_response({"states": states})
-    #@+node:ekr.20210202193540.1: *3* lsc:node commands
-    #@+node:ekr.20210202183724.11: *4* lsc.clone_node
-    def clone_node(self, package):
-        """
-        Clone the node given by package ["ap"], an archived position.
-        
-        To clone c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "clone",
-        }
-        """
-        c = self._check_c()
-        p = self._check_ap(package)
-        c.selectPosition(p)
-        c.clone()
-        return self._make_response()
-    #@+node:ekr.20210202110128.79: *4* lsc.contract_node
-    def contract_node(self, package):
-        """
-        Contract the node given by package ["ap"], an archived position.
-        
-        To contract c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "contract-node",
-        }
-        """
-        self._check_c()
-        p = self._check_ap(package)
-        p.contract()
-        return self._make_response()
-    #@+node:ekr.20210202183724.12: *4* lsc.cut_node
-    def cut_node(self, package):
-        """
-        Cut the node (and its descendants) given by package ["ap"], an archived position.
-        
-        To cut c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "cut-node",
-        }
-        """
-        c = self._check_c()
-        p = self._check_ap(package)
-        c.selectPosition(p)
-        c.cutOutline()
-        return self._make_response()
-    #@+node:ekr.20210202183724.13: *4* lsc.delete_node
-    def delete_node(self, package):
-        """
-        Delete the node (and its descendants) given by package ["ap"], an archived position.
-        
-        To delete c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "delete-node",
-        }
-        """
-        c = self._check_c()
-        p = self._check_ap(package)
-        c.selectPosition(p)
-        c.deleteOutline()  # Handles undo.
-        return self._make_response()
-    #@+node:ekr.20210202110128.78: *4* lsc.expand_node
-    def expand_node(self, package):
-        """
-        Expand the node given by package ["ap"], an archived position.
-        
-        To expand c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "expand-node",
-        }
-        """
-        self._check_c()
-        p = self._check_ap(package)
-        p.expand()
-        return self._make_response()
-    #@+node:ekr.20210202183724.15: *4* lsc.insert_node
-    def insert_node(self, package):
-        """
-        Insert a new node given by package ["ap"]: an archived position.
-        This node has 'newHeadline' as its headline.
-        
-        To insert a new node at c.p (with the default headline), use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "insert-node",
-        }
-        
-        Use the 'set_headline' method to undoably set any node's headlines.
-        """
-        c = self._check_c()
-        p = self._check_ap(package)
-        c.selectPosition(p)
-        c.insertHeadline()  # Handles undo, sets c.p
-        return self._make_response()
-    #@+node:ekr.20210202110128.64: *4* lsc.page_down
-    def page_down(self, unused):
-        """
-        Selects a node a couple of steps down in the tree to simulate page down.
-        """
-        c = self._check_c()
-        c.selectVisNext()
-        c.selectVisNext()
-        c.selectVisNext()
-        return self._make_response()
-    #@+node:ekr.20210202110128.63: *4* lsc.page_up
-    def page_up(self, unused):
-        """
-        Selects a node a couple of steps up in the tree to simulate page up.
-        """
-        c = self._check_c()
-        c.selectVisBack()
-        c.selectVisBack()
-        c.selectVisBack()
-        return self._make_response()
-    #@+node:ekr.20210202183724.17: *4* lsc.redo
-    def redo(self, package):
-        """Undo last un-doable operation"""
-        c = self._check_c()
-        u = c.undoer
-        if u.canRedo():
-            u.redo()
-        return self._make_response()
-    #@+node:ekr.20210202110128.74: *4* lsc.set_body
-    def set_body(self, package):
-        """
-        Undoably set body text of position p, given by package ["ap"], an archived position.
-        """
-        tag = 'set_body'
-        c = self._check_c()
-        u, wrapper = c.undoer, c.frame.body.wrapper
-        p = self._check_ap(package)
-        body = package.get('body')
-        if body is None:
-            raise ServerError(f"{tag}: no body given")
-        bunch = u.beforeChangeNodeContents(p)
-        p.v.setBodyString(body)
-        u.afterChangeNodeContents(p, "Body Text", bunch)
-        if c.p == p:
-            wrapper.setAllText(body)
-        if not self.c.isChanged():
-            c.setChanged()
-        if not p.v.isDirty():
-            p.setDirty()
-        return self._make_response()
-    #@+node:ekr.20210202110128.77: *4* lsc.set_current_position
-    def set_current_position(self, package):
-        """Select a node, or the first one found with its GNX"""
-        c = self._check_c()
-        p = self._check_ap(package)  # p is guaranteed to exist.
-        c.selectPosition(p)
-        return self._make_response()
-    #@+node:ekr.20210202110128.76: *4* lsc.set_headline
-    def set_headline(self, package):
-        """
-        Set p.h where p is given by package ["ap"], an arcived position.
-        """
-        tag = 'set_headline'
-        c = self._check_c()
-        p = self._check_ap(package)
-        u = c.undoer
-        h = package.get('headline')
-        if not h:  # pragma: no cover
-            raise ServerError(f"{tag}: no headline")
-        bunch = u.beforeChangeNodeContents(p)
-        p.h = h
-        u.afterChangeNodeContents(p, 'Change Headline', bunch)
-        return self._make_response()
-    #@+node:ekr.20210202110128.75: *4* lsc.set_selection
-    def set_selection(self, package):
-        """
-        Set the selection in node p.  Package has these keys:
-            
-        - "ap":     An archived position for position p.
-        - "start":  The start of the selection.
-        - "end":    The end of the selection.
-        - "insert": The insert point. Must be either start or end.
-        - "scroll": An optional scroll position.
-        
-        Set the selection in the wrapper if p == c.p
-        """
-        c = self._check_c()
-        p = self._check_ap(package)  # Will raise ServerError if p does not exist.
-        v = p.v
-        wrapper = c.frame.body.wrapper
-        start = package.get('start', 0)
-        end = package.get('end', 0)
-        insert = package.get('insert', 0)
-        scroll = package.get('scroll', 0)
-        if p == c.p:
-            wrapper.setSelectionRange(start, end, insert)
-            wrapper.setYScrollPosition(scroll)
-        # Always set vnode attrs.
-        v.scrollBarSpot = scroll
-        v.insertSpot = insert
-        v.selectionStart = start
-        v.selectionLength = abs(start - end)
-        return self._make_response()
-    #@+node:ekr.20210202183724.10: *4* lsc.toggle_mark
-
-
-    def toggle_mark(self, package):
-        """
-        Toggle the mark of the node given by package ["ap"], an archived position.
-        
-        To *toggle* the mark of c.p, use this request:
-        {
-            "action": "execute-leo-command",
-            "leo-command-name": "toggle-mark",
-        }
-        """
-        self._check_c()
-        p = self._check_ap(package)
-        if p.isMarked():
-            p.clearMarked()
-        else:
-            p.setMarked()
-        return self._make_response()
-    #@+node:ekr.20210202183724.16: *4* lsc.undo
-    def undo(self, package):
-        """Undo last un-doable operation"""
-        c = self._check_c()
-        u = c.undoer
-        if u.canUndo():
-            u.undo()
-        # Félix: Caller can get focus using other calls.
-        return self._make_response()
-    #@+node:ekr.20210205102806.1: *3* lsc:server/testing commands
-    #@+node:ekr.20210205102818.1: *4* lsc.error
-    def error(self, package):
-        """For unit testing. Raise ServerError"""
-        raise ServerError(f"error called")
     #@+node:ekr.20210205103759.1: *4* lsc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
         raise TerminateServer(f"client requested shut down")
-
-    quit = shut_down  # Abbreviation for testing.
-    #@+node:ekr.20210204154548.1: *3* lsc:server utils
-    #@+node:ekr.20210202110128.85: *4* lsc._ap_to_p
-    def _ap_to_p(self, ap):
-        """
-        Convert ap (archived position, a dict) to a valid Leo position.
-        Raise ServerError on any kind of error.
-        """
-        tag = '_ap_to_p'
-        c = self._check_c()
-        gnx_d = c.fileCommands.gnxDict
-        childIndex = ap.get('childIndex')
-        gnx = ap.get('gnx')
-        ap_stack = ap.get('stack')
-        #
-        # Test the outer level.
-        if childIndex is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no outer childIndex.")
-        if gnx is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no outer gnx.")
-        v = gnx_d.get(gnx)
-        if v is None:  # pragma: no cover.
-            g.printObj(gnx_d, tag=f"gnx_d")
-            raise ServerError(f"{tag}: gnx not found: {gnx}")
-        #
-        # Resolve the stack, a list of tuples(gnx, childIndex).
-        stack = []
-        for d in ap_stack:
-            childIndex = d.get('childIndex')
-            if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no childIndex in {d}")
-            gnx = d.get('gnx')
-            if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no gnx in {d}")
-            stack.append((gnx, childIndex))
-        #
-        # Create the position!
-        p = Position(v, childIndex, stack)
-        if not c.positionExists(p):  # pragma: no cover.
-            raise ServerError(f"{tag}: p does not exist: {p!r}")
-        return p
-    #@+node:ekr.20210203084135.1: *4* lsc._check_ap
-    def _check_ap(self, package):
-        """
-        Resolve package ["ap"] (an archived position) to a valid position.
-        Return p, or raise ServerError.
-        """
-        tag = '_check_ap'
-        c = self.c
-        if not c:
-            raise ServerError(f"{tag}: no c")
-        ap = package.get('ap')
-        if not ap:  # pragma: no cover
-            raise ServerError(f"{tag}: no archived_position")
-        p = self._ap_to_p(ap)
-        if not p:  # pragma: no cover
-            raise ServerError(f"{tag}: position not found")
-        if not c.positionExists(p):  # pragma: no cover
-            raise ServerError(f"{tag}: position does not exist. ap: {ap}")
-        return p
-    #@+node:ekr.20210207054237.1: *4* lsc._check_c
-    def _check_c(self):
-        """Return self.c or raise ServerError if self.c is None."""
-        tag = '_check_c'
-        c = self.c
-        if not c:
-            raise ServerError(f"{tag}: no open commander")
-        return c
-    #@+node:ekr.20210202110128.54: *4* lsc._do_message & helpers
-    def _do_message(self, d):
-        """
-        Handle d, a python dict representing the incoming request.
-        d must have at least the following keys:
-        
-        - "id": A positive integer.
-        - "action": A string, which is either:
-            - The name of public method of this class.
-            - The name of a Leo command.
-        
-        Return a dict, created by _make_response, containing least these keys:
-
-        - "id":         Same as the incoming id.
-        - "action":     Same as the incoming action.
-        - "commander":  A dict describing self.c.
-        - "node":       None, or an archived position describing self.c.p.
-        """
-        tag = '_do_message'
-        # Require "id" and "action" keys. The "package" key is optional.
-        id_ = d.get("id")
-        if id_ is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no id")
-        action = d.get("action")
-        if action is None:
-            raise ServerError("f{tag}: no action")
-        package = d.get('package', {})
-        # Set the current_id and action ivars for _make_response.
-        self.current_id = id_
-        self.action = action
-        # Execute the requested action.
-        if action == "execute-leo-command":
-            func = self._do_leo_command
-        else:
-            func = self._do_server_command
-        result = func(action, package)
-        if result is None:
-            raise ServerError(f"{tag}: no response: {action}")
-        return result
-    #@+node:ekr.20210209062536.1: *5* lsc._do_leo_command
-    def _do_leo_command(self, action, package):
-        """
-        Execute the leo command given by package ["leo-command-name"].
-        
-        The client must open an outline before calling this method.
-        """
-        # We *can* require self.c to exist, because:
-        # 1. all commands imply c.
-        # 2. The client must call open_file to set self.c.
-        tag = '_execute_leo_command'
-        c = self._check_c()
-        command_name = package.get("leo-command-name")
-        if not command_name:
-            raise ServerError(f"{tag}: no 'leo-command-name' key in package")
-        if command_name in self._bad_commands(c):  # pragma: no cover
-            raise ServerError(f"{tag}: disallowed command: {command_name}")
-        func = c.commandsDict.get(command_name)
-        if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command_name}")
-        value = func(event={"c":c})
-        return self._make_response({"return-value": value})
-    #@+node:ekr.20210209085438.1: *5* lsc._do_server_command
-    def _do_server_command(self, action, package):
-        tag = '_do_server_command'
-        # Disallow hidden methods.
-        if action.startswith('_'):  # pragma: no cover
-            raise ServerError(f"{tag}: action starts with '_': {action}")
-        # Find and execute the server method.
-        func = getattr(self, action, package)
-        if func:
-            return func(package)
-        raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
-    #@+node:ekr.20210202110128.51: *4* lsc._es & helper
-    def _es(self, s):
-        """
-        Send a response that does not correspond to a request.
-        
-        The response *must* have an "async" key, but *not* an "id" key.
-        """
-        tag = '_es'
-        message = g.toUnicode(s)
-        package = {"async": "", "s": message}
-        response = json.dumps(package, separators=(',', ':'))
-        if self.loop:
-            self.loop.create_task(self._async_output(response))
-        else:
-            print(f"{tag}: Error loop not ready {message}")
-    #@+node:ekr.20210204145818.1: *5* lsc._async_output
-    async def _async_output(self, json):
-        """Output json string to the web_socket"""
-        tag = '_async_output'
-        if self.web_socket:
-            await self.web_socket.send(bytes(json, 'utf-8'))
-        else:
-            g.trace(f"{tag}: no web socket. json: {json}")
-    #@+node:ekr.20210209055518.1: *4* lsc._get_all_command_names
-    def _get_all_command_names(self):
-        """
-        Return the names of all callable public methods of the server.
-        """
-        members = inspect.getmembers(self, inspect.ismethod)
-        names = sorted([name for (name, value) in members if not name.startswith('_')])
-        if 1:
-            g.printObj(names, tag="public command names")
-        return names
-    #@+node:ekr.20210206182638.1: *4* lsc._make_response
-    def _make_response(self, package=None):
-        """
-        Return a json string representing a response dict.
-        
-        The 'package' argument, if present, must be a python dict describing a
-        response. package may be an empty dict or None.
-        
-        First, this method creates a response (a python dict) containing all
-        the keys in the 'package' dict, with the following added keys:
-            
-        - "id":         The incoming id.
-        - "action":     The incoming action.
-        - "commander":  A dict describing self.c.
-        - "node":       None, or an archived position describing self.c.p.
-        
-        Finally, this method returns the json string corresponding to the
-        response.
-        """
-        tag = '_make_response'
-        c = self.c  # It is valid for c to be None.
-        p = c and c.p
-        if package is None:
-            package = {}
-        if isinstance(package, str):
-            raise InternalServerError(f"{tag}: bad package: {package!r}")
-        # g.trace(self.action, sorted(list(package.keys())))
-        package ["id"] = self.current_id
-        package ["action"] = self.action
-        package ["commander"] = {
-            "file_name": c and c.fileName(), # Can be None for new files.
-            "creation_time": None,   ### To do.
-        }
-        package ["node"] = p and self._p_to_ap(p)
-        return json.dumps(package, separators=(',', ':')) 
-    #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
-    def _p_to_ap(self, p):
-        """
-        Convert Leo position p to a serializable archived position.
-        
-        This returns only position-related data.
-        get_position_data returns all data needed to redraw the screen.
-        """
-        self._check_c()
-        stack = [{'gnx': v.gnx, 'childIndex': childIndex}
-            for (v, childIndex) in p.stack]
-        return {
-            'childIndex': p._childIndex,
-            'gnx': p.v.gnx,
-            'stack': stack,
-        }
-    #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
-    def _test_round_trip_positions(self):
-        """Test the round tripping of p_to_ap and ap_to_p."""
-        tag = '_test_round_trip_positions'
-        c = self._check_c()  # Ensure that c exists.
-        for p in c.all__unique_positions():
-            ap = self._p_to_ap(p)
-            p2 = self._ap_to_p(ap)
-            if p != p2:
-                raise ServerError(f"{tag}: round-trip failed: ap: {ap}, p: {p}, p2: {p2}")
     #@-others
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
+#@@nosearch
+
 class TestLeoServer (unittest.TestCase):
     """Tests of LeoServerController."""
     request_number = 0
@@ -2030,6 +2069,7 @@ def main():
                     break
                 except Exception as e:  # pragma: no cover
                     print(f"{tag}: Unexpected Exception! {e}")
+                    g.printObj(package, tag=f"message: {d}")
                     g.print_exception()
                     break
                 await websocket.send(answer)

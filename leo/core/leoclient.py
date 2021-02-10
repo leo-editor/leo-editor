@@ -93,6 +93,12 @@ async def client_main_loop(timeout):
             except websockets.exceptions.ConnectionClosed:
                 print(f"{tag}: connection closed normally")
                 break
+            except Exception as e:
+                print('')
+                print(f"{tag}: internal client error {e}")
+                print(f"{tag}: request_package: {request_package}")
+                g.print_exception()
+                print('')
         print(f"Asynchronous responses: {n_async_responses}")
         print(f"Unknown response times: {n_unknown_response_times}")
         print(f"  Known response times: {n_known_response_times}")
@@ -141,40 +147,37 @@ def _get_action_list():
     import inspect
     import leoserver
     server = leoserver.LeoServerController()
-    root_gnx = 'ekr.20210202110241.1'  # The  gnx of this file's root node.
-    root_ap = {
-        'childIndex': 0,
-        'gnx': root_gnx, 
-        'stack': [],
-    }
+    file_name = "xyzzy.leo"
+    # root_gnx = 'ekr.20210202110241.1'  # The  gnx of this file's root node.
+    # root_ap = {
+        # 'childIndex': 0,
+        # 'gnx': root_gnx, 
+        # 'stack': [],
+    # }
     exclude_names = [
-        'clear_trace',  # Unwanted.
         'delete_node', 'cut_node',  # dangerous.
         'click_button', 'get_buttons', 'remove_button',  # Require plugins.\
         'save_file',  # way too dangerous!
         'set_selection',  ### Not ready yet.
-        'quit', # wait for shut_down.
     ]
     head = [
-        ("set_trace", {}),
         ("get_sign_on", {}),
         ("apply_config", {"config": {"whatever": True}}),
         ("error", {}),
-        ("test", {}),
-        ("open_file", {"filename": __file__}),
+        ("bad_server_command", {}),
+        ("open_file", {"filename": file_name}),
     ]
     head_names = [name for (name, package) in head]
     tail = [
-        ("get_body_length", {"ap": root_ap}),
-        ("get_body_using_gnx", {"gnx": root_gnx}),
-        ("get_body_using_p", {"ap": root_ap}),
-        ("set_body", {"gnx": root_gnx, "body": "new body"}),
-        ("set_headline", {"gnx": root_gnx, "headline": "new headline"}),
-        ("contract-all", {}),  # Execute contract-all command by name.
-        ("insert_node", {"ap": root_ap, "headline": "inserted headline"}),
-        ("collapse_node", {"ap": root_ap}),
-        ("close_file", {"filename": __file__}),
-        ("get_all_commands", {}),
+        ("get_body_length", {}),  # {"ap": root_ap}),
+        ("set_body", {"body": "new body"}),
+        ("set_headline", {"headline": "new headline"}),
+        ("execute-leo-command", {"leo-command-name": "contract-all"}),
+        ("insert_node", {"headline": "inserted headline"}),
+        ("contract_node", {}),
+        ("close_file", {"filename": file_name}),
+        ("get_all_leo_commands", {"trace": True, "verbose": False}),
+        ("get_all_server_commands", {"trace": True, "verbose": False}),
         ("shut_down", {}),
     ]
     tail_names = [name for (name, package) in tail]
@@ -182,7 +185,7 @@ def _get_action_list():
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
-    middle = [(z, {"ap": root_ap}) for z in test_names
+    middle = [(z, {}) for z in test_names
         if z not in head_names + tail_names + exclude_names]
     middle_names = [name for (name, package) in middle]
     all_tests = head + middle + tail
