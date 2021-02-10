@@ -378,7 +378,7 @@ class LeoServerController:
         p.contract()
         return self._make_response()
     #@+node:ekr.20210202183724.12: *4* lsc.cut_node
-    def cut_node(self, package):
+    def cut_node(self, package):  # pragma: no cover (too dangerous, for now)
         """
         Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
         
@@ -394,7 +394,7 @@ class LeoServerController:
         c.cutOutline()
         return self._make_response()
     #@+node:ekr.20210202183724.13: *4* lsc.delete_node
-    def delete_node(self, package):
+    def delete_node(self, package):  # pragma: no cover (too dangerous, for now)
         """
         Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
         
@@ -482,16 +482,16 @@ class LeoServerController:
         p = self._get_p(package)
         u, wrapper = c.undoer, c.frame.body.wrapper
         body = package.get('body')
-        if body is None:
+        if body is None:  # pragma: no cover
             raise ServerError(f"{tag}: no body given")
         bunch = u.beforeChangeNodeContents(p)
         p.v.setBodyString(body)
         u.afterChangeNodeContents(p, "Body Text", bunch)
         if c.p == p:
             wrapper.setAllText(body)
-        if not self.c.isChanged():
+        if not self.c.isChanged():  # pragma: no cover
             c.setChanged()
-        if not p.v.isDirty():
+        if not p.v.isDirty():  # pragma: no cover
             p.setDirty()
         return self._make_response()
     #@+node:ekr.20210202110128.77: *4* lsc.set_current_position
@@ -665,7 +665,7 @@ class LeoServerController:
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         action = d.get("action")
-        if action is None:
+        if action is None:  # pragma: no cover
             raise ServerError("f{tag}: no action")
         package = d.get('package', {})
         # Set the current_id and action ivars for _make_response.
@@ -677,7 +677,7 @@ class LeoServerController:
         else:
             func = self._do_server_command
         result = func(action, package)
-        if result is None:
+        if result is None:  # pragma: no cover
             raise ServerError(f"{tag}: no response: {action}")
         return result
     #@+node:ekr.20210209062536.1: *5* lsc._do_leo_command
@@ -693,7 +693,7 @@ class LeoServerController:
         tag = '_execute_leo_command'
         c = self._check_c()
         command_name = package.get("leo-command-name")
-        if not command_name:
+        if not command_name:  # pragma: no cover
             raise ServerError(f"{tag}: no 'leo-command-name' key in package")
         if command_name in self._bad_commands(c):  # pragma: no cover
             raise ServerError(f"{tag}: disallowed command: {command_name}")
@@ -716,7 +716,7 @@ class LeoServerController:
             raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
         return func(package)
     #@+node:ekr.20210202110128.51: *4* lsc._es & helper
-    def _es(self, s):
+    def _es(self, s):  # pragma: no cover (tested in client).
         """
         Send a response that does not correspond to a request.
         
@@ -767,17 +767,18 @@ class LeoServerController:
         if p:
             del package ["p"]
         # Raise an *internal* error if checks fail.
-        if isinstance(package, str):
+        if isinstance(package, str):  # pragma: no cover
             raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
-        if p and not isinstance(p, Position):
+        if p and not isinstance(p, Position):  # pragma: no cover
             raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
-        if p and not c:
+        if p and not c:  # pragma: no cover
             raise InternalServerError(f"{tag}: p but not c")
-        if p and not c.positionExists(p):
+        if p and not c.positionExists(p):  # pragma: no cover
             raise InternalServerError(f"{tag}: p does not exist")
-        if c and not c.p:
+        if c and not c.p:  # pragma: no cover
             raise InternalServerError(f"{tag}: empty c.p")
         #
+        # Always add these keys.
         package ["id"] = self.current_id
         package ["action"] = self.action
         # The following keys are relevant only if there is an open commander.
@@ -811,7 +812,7 @@ class LeoServerController:
             'stack': stack,
         }
     #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
-    def _test_round_trip_positions(self):
+    def _test_round_trip_positions(self):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
         tag = '_test_round_trip_positions'
         c = self._check_c()  # Ensure that c exists.
@@ -868,9 +869,9 @@ class LeoServerController:
                 "func":  func_name,
                 "detail": doc,
             })
-        if verbose:
+        if verbose:  # pragma: no cover
              g.printObj([z.get("command-name") for z in result], tag=tag)
-        elif trace:
+        elif trace:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
         return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *5* lsc._bad_commands
@@ -1920,9 +1921,9 @@ class LeoServerController:
         trace = package.get('trace')
         verbose = package.get('verbose')
         names = self._get_all_server_commands()
-        if verbose:
+        if verbose:  # pragma: no cover
             g.printObj(names, tag=tag)
-        elif trace:
+        elif trace:  # pragma: no cover
             print(f"\n{tag}: {len(names)} server commands\n")
         return self._make_response({"server-commands": names})
 
@@ -1934,7 +1935,7 @@ class LeoServerController:
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
     #@+node:ekr.20210202110128.52: *4* lsc.init_connection
-    def _init_connection(self, web_socket):
+    def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
         """Begin the connection."""
         self.web_socket = web_socket
         self.loop = asyncio.get_event_loop()
@@ -1954,7 +1955,7 @@ class TestLeoServer (unittest.TestCase):
     #@+others
     #@+node:ekr.20210208171724.1: *3*  test:SetUp & TearDown
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls):  # pragma: no cover
         global g_coverage, g_leoserver, g_server
         import leoserver
         g_leoserver = leoserver
@@ -1965,7 +1966,7 @@ class TestLeoServer (unittest.TestCase):
             g_coverage.start()
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls):  # pragma: no cover
         global g_coverage, g_leoserver, g_server
         try:
             g_server.shut_down({})
@@ -2009,7 +2010,7 @@ class TestLeoServer (unittest.TestCase):
         methods = server._get_all_server_commands()
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
-            'click_button', 'get_buttons', 'remove_button',  # Require plugins.\
+            'click_button', 'get_buttons', 'remove_button',  # Require plugins.
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
@@ -2030,7 +2031,7 @@ class TestLeoServer (unittest.TestCase):
                 try:
                     func(package)
                 except Exception as e:
-                    if method_name not in expected:
+                    if method_name not in expected:  # pragma: no cover
                         print(f"fail: {method_name} {e}")
         # Finally, close the test file.
         server.close_file({"filename": "xyzzy.leo"})
@@ -2044,7 +2045,7 @@ class TestLeoServer (unittest.TestCase):
             self._request(action, package)
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
-def main():
+def main():  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
     # from leo.core import leoGlobals as g
     global wsHost, wsPort
