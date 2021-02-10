@@ -16,11 +16,6 @@ import sys
 import time
 import unittest
 # Third-party.
-###
-    # try:
-        # import coverage
-    # except ImportError:
-        # coverage = None
 import websockets
 # Leo
 from leo.core.leoNodes import Position
@@ -65,12 +60,11 @@ class LeoServerController:
         self.action = None
         self.bad_commands_list = []  # Set below.
         self.config = None
-        self.creation_time_d = {}  # Keys are commanders, values are creation times (in the server).
+        self.creation_time_d = {}  # Keys are commanders.
+                                   # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
-        self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
-        self.loop = None
-        self.trace = False
-        self.web_socket = None
+        self.trace = False  # Set by package {"trace": True}
+        self.verbose = False  # Set by package {"verbose": True}
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
@@ -164,13 +158,9 @@ class LeoServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        if 0:  # Clean the dict.
-            d = c.fileCommands.gnxDict
-            c.fileCommands.gnxDict = {
-                gnx: v for gnx, v in d.items()
-                    if v.h != "NewHeadline"  # This looks like a bug in Leo.
-            }
-            g.printObj(c.fileCommands.gnxDict)
+        # Set the creation time. Same as used in gnx's.
+        self.creation_time_d [c] = time.strftime(
+            "%Y%m%d%H%M%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
         return self._make_response()
     #@+node:ekr.20210202110128.58: *4* lsc.close_file
@@ -179,6 +169,7 @@ class LeoServerController:
         Closes a leo file. A file can then be opened with "open_file"
         Returns an object that contains a 'closed' member
         """
+        tag = 'close_file'
         c = self._check_c()
         # Close the outline, even if it is dirty!
         c.changed = False  # Force the close!
@@ -186,6 +177,9 @@ class LeoServerController:
         # Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
+        timestamp = self.creation_time_d.get(c)
+        if timestamp is None:
+            raise ServerError(f"{tag}: no timestamp for {c}")
         return self._make_response()
     #@+node:ekr.20210202183724.1: *4* lsc.save_file
     def save_file(self, package):  # pragma: no cover (too dangerous).
@@ -257,7 +251,7 @@ class LeoServerController:
         language = (
             d and d.get('language')
             or g.getLanguageFromAncestorAtFileNode(p)
-            or c.config.getString('target-language')
+            or c.config.getLanguage('target-language')
             or 'plain'
         )
         scroll = p.v.scrollBarSpot
@@ -667,6 +661,9 @@ class LeoServerController:
         if action is None:  # pragma: no cover
             raise ServerError("f{tag}: no action")
         package = d.get('package', {})
+        # Set tracing vars.
+        self.trace = package.get("trace")
+        self.verbose = package.get("verbose")
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
@@ -838,8 +835,6 @@ class LeoServerController:
     def get_all_leo_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
         tag = 'get_all_leo_commands'
-        trace = package.get('trace')
-        verbose = package.get('verbose')
         c = self.dummy_c  # Use the dummy commander.
         d = c.commandsDict  # keys are command names, values are functions.
         bad_names = self._bad_commands(c)  # #92.
@@ -868,9 +863,9 @@ class LeoServerController:
                 "func":  func_name,
                 "detail": doc,
             })
-        if verbose:  # pragma: no cover
+        if self.verbose:  # pragma: no cover
              g.printObj([z.get("command-name") for z in result], tag=tag)
-        elif trace:  # pragma: no cover
+        elif self.trace:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
         return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *5* lsc._bad_commands
@@ -1917,12 +1912,10 @@ class LeoServerController:
         Return the names of all callable public methods of the server.
         """
         tag = 'get_all_server_commands'
-        trace = package.get('trace')
-        verbose = package.get('verbose')
         names = self._get_all_server_commands()
-        if verbose:  # pragma: no cover
+        if self.verbose:  # pragma: no cover
             g.printObj(names, tag=tag)
-        elif trace:  # pragma: no cover
+        elif self.trace:  # pragma: no cover
             print(f"\n{tag}: {len(names)} server commands\n")
         return self._make_response({"server-commands": names})
 
@@ -1948,7 +1941,7 @@ class LeoServerController:
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
     """Tests of LeoServerController."""
     request_number = 0
-    
+
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
@@ -1989,6 +1982,23 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         if 0:
             self.g.printObj(answer, tag=f"response to {action}")
         return answer
+    #@+node:ekr.20210210174801.1: *3* test.test_leo_commands
+    def test_leo_commands (self):
+        server = self.server
+        table = [
+            # Toggle mark twice.
+            ("toggle-mark", {}),
+            ("toggle-mark", {}),
+        ]
+        # First open a test file.
+        server.open_file({"filename": "xyzzy.leo"})
+        try:
+            action = "execute-leo-command"
+            for command_name, package in table:
+                package ["leo-command-name"] = command_name
+                self._request(action, package)
+        finally:
+            server.close_file({"filename": "xyzzy.leo"})
     #@+node:ekr.20210210102638.1: *3* test.test_most_server_methods
     def test_most_server_methods(self):
         server=self.server
@@ -2007,20 +2017,22 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             "apply_config": {"config": {"whatever": True}},
             "set_body": {"body": "new body\n"},
             "set_headline": {"headline": "new headline"},
+            "get_all_server_methods": {"verbose": True},
         }
         # First open a test file.
         server.open_file({"filename": "xyzzy.leo"})
-        for method_name in methods:
-            if method_name not in exclude:
-                func = getattr(server, method_name)
-                package = package_d.get(method_name, {})
-                try:
-                    func(package)
-                except Exception as e:
-                    if method_name not in expected:
-                        print(f"fail: {method_name} {e}")
-        # Finally, close the test file.
-        server.close_file({"filename": "xyzzy.leo"})
+        try:
+            for method_name in methods:
+                if method_name not in exclude:
+                    func = getattr(server, method_name)
+                    package = package_d.get(method_name, {})
+                    try:
+                        func(package)
+                    except Exception as e:
+                        if method_name not in expected:
+                            print(f"fail: {method_name} {e}")
+        finally:
+            server.close_file({"filename": "xyzzy.leo"})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
         table = [

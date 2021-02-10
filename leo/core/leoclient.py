@@ -148,28 +148,24 @@ def _get_action_list():
     import leoserver
     server = leoserver.LeoServerController()
     file_name = "xyzzy.leo"
-    # root_gnx = 'ekr.20210202110241.1'  # The  gnx of this file's root node.
-    # root_ap = {
-        # 'childIndex': 0,
-        # 'gnx': root_gnx, 
-        # 'stack': [],
-    # }
     exclude_names = [
-        'delete_node', 'cut_node',  # dangerous.
-        'click_button', 'get_buttons', 'remove_button',  # Require plugins.\
-        'save_file',  # way too dangerous!
-        'set_selection',  ### Not ready yet.
+        # Dangerous at present.
+        'delete_node', 'cut_node', 'save_file',
+        # Require plugins.
+        'click_button', 'get_buttons', 'remove_button',
+        # Not ready yet.
+        'set_selection',
     ]
     head = [
         ("get_sign_on", {}),
         ("apply_config", {"config": {"whatever": True}}),
         ("error", {}),
-        ("bad_server_command", {}),
+        # ("bad_server_command", {}),
         ("open_file", {"filename": file_name}),
     ]
     head_names = [name for (name, package) in head]
     tail = [
-        ("get_body_length", {}),  # {"ap": root_ap}),
+        ("get_body_length", {}),
         ("set_body", {"body": "new body"}),
         ("set_headline", {"headline": "new headline"}),
         ("execute-leo-command", {"leo-command-name": "contract-all"}),
@@ -181,7 +177,6 @@ def _get_action_list():
         ("shut_down", {}),
     ]
     tail_names = [name for (name, package) in tail]
-    #
     # Add all remaining methods to the middle.
     tests = inspect.getmembers(server, inspect.ismethod)
     test_names = sorted([name for (name, value) in tests if not name.startswith('_')])
