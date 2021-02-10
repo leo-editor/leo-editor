@@ -1,39 +1,37 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210202110128.1: * @file  leoserver.py
+#@+node:ekr.20210202110128.1: * @file leoserver.py
 #@@language python
 #@@tabwidth -4
 """
 A language-agnostic server for Leo's bridge,
 based on leoInteg's leobridgeserver.py.
 """
-if 1:  # pragma: no cover
-    g = None  # The bridge's leoGlobals module.
-    # For unit tests.
-    g_leoserver = None
-    g_server = None
-    g_coverage = None
-    # server defaults...
-    wsHost = "localhost"
-    wsPort = 32125
-if 1:  # pragma: no cover
-    #@+<< imports >>
-    #@+node:ekr.20210202110128.2: ** << imports >>
-    import asyncio
-    import getopt
-    import inspect
-    import json
-    import sys
-    import time
-    import unittest
-    # Third-party.
-    try:
-        import coverage
-    except ImportError:
-        coverage = None
-    import websockets
-    # Leo
-    from leo.core.leoNodes import Position
-    #@-<< imports >>
+#@+<< imports >>
+#@+node:ekr.20210202110128.2: ** << imports >>
+import asyncio
+import getopt
+import inspect
+import json
+import sys
+import time
+import unittest
+# Third-party.
+###
+    # try:
+        # import coverage
+    # except ImportError:
+        # coverage = None
+import websockets
+# Leo
+from leo.core.leoNodes import Position
+#@-<< imports >>
+g = None  # The bridge's leoGlobals module.
+# For unit tests.
+g_leoserver = None
+g_server = None
+# server defaults...
+wsHost = "localhost"
+wsPort = 32125
 
 #@+others
 #@+node:ekr.20210204054519.1: ** Exception classes
@@ -53,7 +51,7 @@ class LeoServerController:
     """Leo Server Controller"""
     #@+others
     #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge, set self.g)
-    def __init__(self, testing=False):  # pragma: no cover
+    def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
         import leo.core.leoBridge as leoBridge
@@ -89,8 +87,7 @@ class LeoServerController:
         g.app.idleTimeManager.start()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
-        if not testing:
-            print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
+        print(f"LeoServerController: init leoBridge in {t2-t1:4.2} sec.")
     #@+node:ekr.20210202193709.1: *3* lsc:button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:ekr.20210207051720.1: *4* _check_button_command
@@ -1948,38 +1945,28 @@ class LeoServerController:
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
 #@@nosearch
 
-class TestLeoServer (unittest.TestCase):
+class TestLeoServer (unittest.TestCase):  # pragma: no cover
     """Tests of LeoServerController."""
     request_number = 0
 
     #@+others
     #@+node:ekr.20210208171724.1: *3*  test:SetUp & TearDown
     @classmethod
-    def setUpClass(cls):  # pragma: no cover
-        global g_coverage, g_leoserver, g_server
-        import leoserver
+    def setUpClass(cls):
+        # Assume we are running in the leo-editor directory.
+        import leo.core.leoserver as leoserver
+        global g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServerController(testing=True)
-        if coverage:
-            print('Start coverage')
-            g_coverage = coverage.Coverage()
-            g_coverage.start()
 
     @classmethod
-    def tearDownClass(cls):  # pragma: no cover
+    def tearDownClass(cls):
         global g_coverage, g_leoserver, g_server
         try:
             g_server.shut_down({})
             print('===== server did not terminate properly ====')
         except g_leoserver.TerminateServer:
             pass
-        # End coverage testing.
-        if g_coverage:
-            g_coverage.stop()
-            g_coverage.save()
-            directory = r'c:/test'
-            g_coverage.html_report(directory=directory, morfs=['leoserver.py'])
-            print(f"\nCoverage report in {directory}/leoserver_py.html")
 
     def setUp(self):
         global g_server
@@ -2031,7 +2018,7 @@ class TestLeoServer (unittest.TestCase):
                 try:
                     func(package)
                 except Exception as e:
-                    if method_name not in expected:  # pragma: no cover
+                    if method_name not in expected:
                         print(f"fail: {method_name} {e}")
         # Finally, close the test file.
         server.close_file({"filename": "xyzzy.leo"})
@@ -2156,9 +2143,12 @@ def main():  # pragma: no cover (tested in client)
     loop.run_until_complete(server)
     loop.run_forever()
 #@-others
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == '__main__':
     try:
-        main()  # ws_handler calls coverage_end.
+        if 1: # pytest doesn't handle extra arguments well.
+            unittest.main()
+        else:
+            main()
     except KeyboardInterrupt:
         print("\nKeyboard Interupt: Stopping leoserver.py")
         sys.exit()
