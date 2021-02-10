@@ -1943,14 +1943,10 @@ class LeoServerController:
         raise TerminateServer(f"client requested shut down")
     #@-others
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
-#@@nosearch
-
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
     """Tests of LeoServerController."""
     request_number = 0
-
-    #@+others
-    #@+node:ekr.20210208171724.1: *3*  test:SetUp & TearDown
+    
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
@@ -1958,20 +1954,22 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         global g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServerController(testing=True)
-
+    
     @classmethod
     def tearDownClass(cls):
-        global g_coverage, g_leoserver, g_server
+        global g_leoserver, g_server
         try:
             g_server.shut_down({})
             print('===== server did not terminate properly ====')
         except g_leoserver.TerminateServer:
             pass
-
+    
     def setUp(self):
         global g_server
         self.server = g_server
         self.g = g_server.g
+
+    #@+others
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -1988,12 +1986,10 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         if 0:
             self.g.printObj(answer, tag=f"response to {action}")
         return answer
-    #@+node:ekr.20210208163150.1: *3* test.server_ivar
-    def test_server_ivar(self):
-        assert isinstance(self.server, g_leoserver.LeoServerController), self.server
-    #@+node:ekr.20210210102638.1: *3* test.most_server_methods
+    #@+node:ekr.20210210102638.1: *3* test.test_most_server_methods
     def test_most_server_methods(self):
         server=self.server
+        assert isinstance(server, g_leoserver.LeoServerController), self.server
         methods = server._get_all_server_commands()
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
@@ -2022,7 +2018,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         print(f"fail: {method_name} {e}")
         # Finally, close the test file.
         server.close_file({"filename": "xyzzy.leo"})
-    #@+node:ekr.20210208171319.1: *3* test.open_and_close
+    #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
         table = [
             ("open_file", {"filename": "xyzzy.leo"}),
