@@ -16,11 +16,6 @@ import sys
 import time
 import unittest
 # Third-party.
-###
-    # try:
-        # import coverage
-    # except ImportError:
-        # coverage = None
 import websockets
 # Leo
 from leo.core.leoNodes import Position
@@ -65,12 +60,9 @@ class LeoServerController:
         self.action = None
         self.bad_commands_list = []  # Set below.
         self.config = None
-        self.creation_time_d = {}  # Keys are commanders, values are creation times (in the server).
+        self.creation_time_d = {}  # Keys are commanders.
+                                   # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
-        self.gnx_to_vnode = []  # See leoflexx.py in leoPluginsRef.leo
-        self.loop = None
-        self.trace = False
-        self.web_socket = None
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
@@ -164,13 +156,9 @@ class LeoServerController:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        if 0:  # Clean the dict.
-            d = c.fileCommands.gnxDict
-            c.fileCommands.gnxDict = {
-                gnx: v for gnx, v in d.items()
-                    if v.h != "NewHeadline"  # This looks like a bug in Leo.
-            }
-            g.printObj(c.fileCommands.gnxDict)
+        # Set the creation time. Same as used in gnx's.
+        self.creation_time_d [c] = time.strftime(
+            "%Y%m%d%H%M%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
         return self._make_response()
     #@+node:ekr.20210202110128.58: *4* lsc.close_file
@@ -179,6 +167,7 @@ class LeoServerController:
         Closes a leo file. A file can then be opened with "open_file"
         Returns an object that contains a 'closed' member
         """
+        tag = 'close_file'
         c = self._check_c()
         # Close the outline, even if it is dirty!
         c.changed = False  # Force the close!
@@ -186,6 +175,9 @@ class LeoServerController:
         # Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
+        timestamp = self.creation_time_d.get(c)
+        if timestamp is None:
+            raise ServerError(f"{tag}: no timestamp for {c}")
         return self._make_response()
     #@+node:ekr.20210202183724.1: *4* lsc.save_file
     def save_file(self, package):  # pragma: no cover (too dangerous).
@@ -257,7 +249,7 @@ class LeoServerController:
         language = (
             d and d.get('language')
             or g.getLanguageFromAncestorAtFileNode(p)
-            or c.config.getString('target-language')
+            or c.config.getLanguage('target-language')
             or 'plain'
         )
         scroll = p.v.scrollBarSpot
@@ -1948,7 +1940,7 @@ class LeoServerController:
 class TestLeoServer (unittest.TestCase):  # pragma: no cover
     """Tests of LeoServerController."""
     request_number = 0
-    
+
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
