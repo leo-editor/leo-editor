@@ -188,13 +188,31 @@ class LeoServerController:
         c.save()
         return self._make_response()
     #@+node:ekr.20210202193505.1: *3* lsc:getter commands
-    #@+node:ekr.20210202110128.71: *4* lsc.get_all_gnxs (May be removed)
-    def get_all_gnxs(self, package):
-        """Get gnx array from all unique nodes"""
+    #@+node:ekr.20210211053955.1: *4* lsc.get_position_dict
+    def get_position_data_dict(self, package):
+        """
+        Return a dict of postition data for all positions.
+        
+        Useful as a sanity check for debugging.
+        """
         c = self._check_c()
-        result = [p.v.gnx for p in c.all_unique_positions(copy=False)]
-        return self._make_response({"allGnx": result})
-
+        result = {
+            p.v.gnx: self._get_position_data(p)
+                for p in c.all_unique_positions(copy=False)
+        }
+        return self._make_response({"position-data-dict": result})
+    #@+node:ekr.20210202110128.71: *4* lsc.get_position_data_list
+    def get_position_data_list(self, package):
+        """
+        Return a list of position data for all positions.
+        
+        Useful as a sanity check for debugging.
+        """
+        c = self._check_c()
+        result = [
+            self._get_position_data(p) for p in c.all_positions(copy=False)
+        ]
+        return self._make_response({"position-data-list": result})
     #@+node:ekr.20210202110128.55: *4* lsc.get_all_opened_files
     def get_all_opened_files(self, package):
         """Return array of opened file path/names to be used as open_file parameters to switch files"""
@@ -609,23 +627,6 @@ class LeoServerController:
         if not c.positionExists(p):  # pragma: no cover.
             raise ServerError(f"{tag}: p does not exist: {p!r}")
         return p
-    #@+node:ekr.20210210081236.1: *4* lsc._get_p
-    def _get_p(self, package):
-        """Return _ap_to_p(package["ap"]) or c.p."""
-        tag = '_get_ap'
-        c = self.c
-        if not c:  # pragma: no cover
-            raise ServerError(f"{tag}: no c")
-        ap = package.get("ap")
-        if ap:
-            p = self._ap_to_p(ap)
-            if not p:  # pragma: no cover
-                raise ServerError(f"{tag}: no p")
-            if not c.positionExists(p):  # pragma: no cover
-                raise ServerError(f"{tag}: position does not exist. ap: {ap}")
-        if not c.p:
-            raise ServerError(f"{tag}: no c.p")  # pragma: no cover
-        return c.p
     #@+node:ekr.20210207054237.1: *4* lsc._check_c
     def _check_c(self):
         """Return self.c or raise ServerError if self.c is None."""
@@ -734,6 +735,23 @@ class LeoServerController:
             await self.web_socket.send(bytes(json, 'utf-8'))
         else:
             g.trace(f"{tag}: no web socket. json: {json}")
+    #@+node:ekr.20210210081236.1: *4* lsc._get_p
+    def _get_p(self, package):
+        """Return _ap_to_p(package["ap"]) or c.p."""
+        tag = '_get_ap'
+        c = self.c
+        if not c:  # pragma: no cover
+            raise ServerError(f"{tag}: no c")
+        ap = package.get("ap")
+        if ap:
+            p = self._ap_to_p(ap)
+            if not p:  # pragma: no cover
+                raise ServerError(f"{tag}: no p")
+            if not c.positionExists(p):  # pragma: no cover
+                raise ServerError(f"{tag}: position does not exist. ap: {ap}")
+        if not c.p:
+            raise ServerError(f"{tag}: no c.p")  # pragma: no cover
+        return c.p
     #@+node:ekr.20210206182638.1: *4* lsc._make_response
     def _make_response(self, package=None):
         """
@@ -806,6 +824,18 @@ class LeoServerController:
             'childIndex': p._childIndex,
             'gnx': p.v.gnx,
             'stack': stack,
+        }
+    #@+node:ekr.20210211053733.1: *4* lsc._get_position_data
+    def _get_position_data(self, p):
+        """
+        Return (debugging) data for position p.
+        
+        Similar to what _make_response returns.
+        """
+        return {
+            "node": self._p_to_ap(p), # Contains gnx.
+            "icon_val": p.v.iconVal,  # An int between 0 and 15.
+            "is_at_file": p.isAnyAtFileNode(),
         }
     #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
     def _test_round_trip_positions(self):  # pragma: no cover (tested in client).
@@ -2009,7 +2039,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             methods.remove(z)
         for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
             methods.append(z)
-        self.g.printObj(methods, tag=methods)
+        # self.g.printObj(methods, tag=methods)
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -2161,7 +2191,9 @@ def main():  # pragma: no cover (tested in client)
     #@-others
     wsHost, wsPort, test = get_args()
     if test:
+        # sys.argv contains --unittest.
         unittest.main()
+        return
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon)
     # Open leoBridge.
