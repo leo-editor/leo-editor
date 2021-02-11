@@ -24,7 +24,7 @@ def main():
     except KeyboardInterrupt:
         # This terminates the server abnormally.
         print(f"{tag}: Keyboard interrupt")
-#@+node:ekr.20210205144500.1: ** function: client_main_loop & helpers
+#@+node:ekr.20210205144500.1: ** function: client_main_loop
 n_async_responses = 0
 n_known_response_times = 0
 n_unknown_response_times = 0
@@ -104,7 +104,7 @@ async def client_main_loop(timeout):
         print(f"  Known response times: {n_known_response_times}")
         print(f" Average response_time: {(tot_response_time/n_known_response_times):3.2} sec.")
             # About 0.1, regardless of tracing.
-#@+node:ekr.20210206093130.1: *3* function: _show_response
+#@+node:ekr.20210206093130.1: ** function: _show_response
 def _show_response(n, d, trace, verbose):
     global n_known_response_times
     global n_unknown_response_times
@@ -138,7 +138,7 @@ def _show_response(n, d, trace, verbose):
         print(f"{tag}: got: get_all_commands {len(commands)}")
     else:
         print(f"{tag}: got: {d}")
-#@+node:ekr.20210206075253.1: *3* function: _get_action_list
+#@+node:ekr.20210206075253.1: ** function: _get_action_list
 def _get_action_list():
     """
     Return all callable public methods of the server.
@@ -159,9 +159,10 @@ def _get_action_list():
     head = [
         ("get_sign_on", {}),
         ("apply_config", {"config": {"whatever": True}}),
+        ("echo", {"echo": True}),
         ("error", {}),
         # ("bad_server_command", {}),
-        ("open_file", {"filename": file_name}),
+        ("open_file", {"filename": file_name, "echo": True}),
     ]
     head_names = [name for (name, package) in head]
     tail = [

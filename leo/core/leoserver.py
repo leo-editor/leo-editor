@@ -63,8 +63,11 @@ class LeoServerController:
         self.creation_time_d = {}  # Keys are commanders.
                                    # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
-        self.trace = False  # Set by package {"trace": True}
-        self.verbose = False  # Set by package {"verbose": True}
+        #
+        # Tracing vars, set by "echo", "trace" and "verbose" keys in requests.
+        self.echo_flag = False
+        self.trace = False
+        self.verbose = False
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
@@ -663,11 +666,13 @@ class LeoServerController:
             raise ServerError("f{tag}: no action")
         package = d.get('package', {})
         # Set tracing vars.
+        self.echo_flag = package.get("echo")
         self.trace = package.get("trace")
         self.verbose = package.get("verbose")
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
+        # if self.echo_flag: g.printObj(d, tag=f"{tag}: d")
         # Execute the requested action.
         if action == "execute-leo-command":
             func = self._do_leo_command
@@ -808,6 +813,8 @@ class LeoServerController:
             # Provide the cheap redraw data, but *not* p.gnx.
             package ["icon_val"] = p.v.iconVal  # An int between 0 and 15.
             package ["is_at_file"] = p.isAnyAtFileNode()
+        if self.echo_flag:
+            g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':')) 
     #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
     def _p_to_ap(self, p):
@@ -857,6 +864,10 @@ class LeoServerController:
             raise ServerError(f"{tag}: no config")
         self.config = config
         return self._make_response()
+    #@+node:ekr.20210211082418.1: *4* lsc.echo
+    def echo(self, package):
+        """Echo the request."""
+        return self._make_response(package)
     #@+node:ekr.20210205102818.1: *4* lsc.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
