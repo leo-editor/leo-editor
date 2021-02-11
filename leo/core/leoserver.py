@@ -2163,9 +2163,9 @@ def main():  # pragma: no cover (tested in client)
     #@+node:ekr.20210202110128.91: *3* function: get_args
     def get_args():  # pragma: no cover
         global wsHost, wsPort
-        args, test = None, False
+        args = None
         try:
-            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port=", "unittest"])
+            opts, args = getopt.getopt(sys.argv[1:], "help:", ["help", "address=", "port="])
         except getopt.GetoptError:
             print('leobridgeserver.py -a <address> -p <port>')
             print('defaults to localhost on port 32125')
@@ -2181,19 +2181,17 @@ def main():  # pragma: no cover (tested in client)
                 wsHost = arg
             elif opt in ("-p", "--port"):
                 wsPort = arg
-            elif opt in ("-u", "--unittest"):
-                test = True
         # Leave other options for unittest.
         for opt, junk in opts:  # opts is a 2-tuple.
             if opt in sys.argv:
                 sys.argv.remove(opt)
-        return wsHost, wsPort, test
+        return wsHost, wsPort
     #@-others
-    wsHost, wsPort, test = get_args()
-    if test:
-        # sys.argv contains --unittest.
+    if '--unittest' in sys.argv:
+        sys.argv.remove('--unittest')
         unittest.main()
-        return
+        return  # Make *sure* we don't start the server.
+    wsHost, wsPort = get_args()
     signon = f"LeoBridge started at {wsHost} on port: {wsPort}. Ctrl+c to break"
     print(signon)
     # Open leoBridge.
