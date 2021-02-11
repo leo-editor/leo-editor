@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210202110241.1: * @file leoclient.py
-"""An example client for leoserver.py."""
+"""
+An example client for leoserver.py, based on work by Félix. Used by permission.
+"""
 import asyncio
 import json
 import time
@@ -146,7 +148,7 @@ def _get_action_list():
     """
     import inspect
     import leoserver
-    server = leoserver.LeoServerController()
+    server = leoserver.LeoServer()
     file_name = "xyzzy.leo"
     exclude_names = [
         # Dangerous at present.
