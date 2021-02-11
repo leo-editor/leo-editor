@@ -65,8 +65,6 @@ class LeoServer:
         self.creation_time_d = {}  # Keys are commanders.
                                    # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
-        self.gnx_d = None  # Keys are gnx's, values are VNodes.
-                           # For the *open* .leo file. Set by open_file, cleared by close_file.
         #
         # Tracing vars, set by "echo", "trace" and "verbose" keys in requests.
         self.echo_flag = False
@@ -166,8 +164,6 @@ class LeoServer:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        # Set the gnx dict for c.
-        self.gnx_d = c.fileCommands.gnxDict
         # Set the creation time. Same as used in gnx's.
         self.creation_time_d [c] = time.strftime(
             "%Y%m%d%H%M%S",time.localtime())
@@ -186,9 +182,8 @@ class LeoServer:
         # First, get the timestamp and the response describing the to-be-closed file.
         timestamp = self.creation_time_d.get(c)
         response = self._make_response()
-        # No matter what happens, kill the gnx_d and the timestamp.
+        # No matter what happens, kill the timestamp.
         del self.creation_time_d [c]
-        self.gnx_d = None
         # Do the checks.
         if timestamp is None:  # pragma: no cover
             raise ServerError(f"{tag}: no timestamp for {c}")
@@ -1739,56 +1734,39 @@ class LeoServer:
         Raise ServerError on any kind of error.
         """
         tag = '_ap_to_p'
+        c = self._check_c()
+        gnx_d = c.fileCommands.gnxDict
         
         def d_to_childIndex_v (d):
+            """Helper: return childIndex and v from d."""
             childIndex = d.get('childIndex')
             gnx = d.get('gnx')
             if childIndex is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no childIndex in {d}")
             if gnx is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no gnx in {d}.")
-            v = self.gnx_d.get(gnx)
+            v = gnx_d.get(gnx)
             if v is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: gnx not found: {gnx}")
-            return childIndex, v   
-            
-        # g.printObj(ap, tag=f"{tag}: ap")
-        c = self._check_c()
-        childIndex, v = d_to_childIndex_v(ap)
-        # gnx = ap.get('gnx')  ##########
-        # ap_stack = ap.get('stack')
-        ###
-            # childIndex = ap.get('childIndex')
-            # #
-            # # Test the outer level.
-            # if childIndex is None:  # pragma: no cover.
-                # raise ServerError(f"{tag}: no outer childIndex.")
-            # if gnx is None:  # pragma: no cover.
-                # raise ServerError(f"{tag}: no outer gnx.")
-            # v = self.gnx_d.get(gnx)
-            # if v is None:  # pragma: no cover.
-                # raise ServerError(f"{tag}: gnx not found: {gnx}")
+            return childIndex, v
         #
-        # Resolve the stack, a list of tuples(gnx, childIndex).
+        # Compute p.childIndex and p.v.
+        childIndex, v = d_to_childIndex_v(ap)
+        #
+        # Create p.stack.
         stack = []
         for stack_d in ap.get('stack'): ### ap_stack:
             stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
-            ###
-                # stack_childIndex = stack_d.get("childIndex")
-                # if stack_childIndex is None:  # pragma: no cover.
-                    # raise ServerError(f"{tag}: no childIndex in {stack_d}")
-                # stack_gnx = stack_d.get("gnx")
-                # stack_v = self.gnx_d.get(stack_gnx)
-                # if stack_gnx is None:  # pragma: no cover.
-                    # raise ServerError(f"{tag}: no gnx in {stack_d}")
-                # # Stack entries are tuples (v, childIndex).
             stack.append((stack_v, stack_childIndex))
         #
-        # Create the position!
+        # Make p!
         p = Position(v, childIndex, stack)
+        #
+        # Check that p exists in c.
         if not c.positionExists(p):  # pragma: no cover.
-            self._dump_position_and_stack(p)
-            raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}\np: {p}")
+            raise ServerError(
+                f"{tag}: p does not exist in {c.shortFileName()}\n"
+                f"{tag}: {self._dump_position(p)}")
         return p
     #@+node:ekr.20210207054237.1: *4* lsc._check_c
     def _check_c(self):
@@ -1866,7 +1844,6 @@ class LeoServer:
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
-        # if self.echo_flag: g.printObj(d, tag=f"{tag}: d")
         # Execute the requested action.
         if action == "execute-leo-command":
             func = self._do_leo_command
@@ -1890,7 +1867,7 @@ class LeoServer:
             raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
         return func(package)
     #@+node:ekr.20210211131707.1: *4* lsc._dump_*
-    def _dump_outline(self, c):
+    def _dump_outline(self, c):  # pragma: no cover
         """Dump the outline in various formats."""
         tag = '_dump_outline'
         print(f"{tag}: {c.shortFileName()}...\n")
@@ -1898,19 +1875,9 @@ class LeoServer:
             self._dump_position(p)
         print('')
 
-    def _dump_position(self, p):
+    def _dump_position(self, p):  # pragma: no cover
         level_s = ' ' * 2 * p.level()
         print(f"{level_s}{p.v.gnx} {p.h}")
-        
-    def _dump_position_and_stack(self, p):
-        g.pdb()
-        print(f"{p.v.gnx} {p.h}")
-        parent = p.parent()
-        if parent:
-            print(f"parent: {parent.v.gnx} {parent.h}")
-        print(f"childIndex: {p.childIndex()}")
-        print(f"children: {p.numberOfChildren()}")
-        
     #@+node:ekr.20210202110128.51: *4* lsc._es & helper
     def _es(self, s):  # pragma: no cover (tested in client).
         """
@@ -1948,8 +1915,8 @@ class LeoServer:
                 raise ServerError(f"{tag}: no p")
             if not c.positionExists(p):  # pragma: no cover
                 raise ServerError(f"{tag}: position does not exist. ap: {ap}")
-        if not c.p:
-            raise ServerError(f"{tag}: no c.p")  # pragma: no cover
+        if not c.p:  # pragma: no cover
+            raise ServerError(f"{tag}: no c.p")
         return c.p
     #@+node:ekr.20210211053733.1: *4* lsc._get_position_data
     def _get_position_data(self, p):
@@ -2019,7 +1986,7 @@ class LeoServer:
             # Provide the cheap redraw data, but *not* p.gnx.
             package ["icon_val"] = p.v.iconVal  # An int between 0 and 15.
             package ["is_at_file"] = p.isAnyAtFileNode()
-        if self.echo_flag:
+        if self.echo_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':')) 
     #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
