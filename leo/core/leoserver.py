@@ -13,6 +13,7 @@ import asyncio
 import getopt
 import inspect
 import json
+import os
 import sys
 import time
 import unittest
@@ -176,16 +177,25 @@ class LeoServer:
         """
         tag = 'close_file'
         c = self._check_c()
+        # Raise ServerError if the package demands a clean file.
+        if package.get("must-be-saved") and c.isChanged():
+            raise ServerError(f"{tag}: closing a changed outline: {c.fileName()}")
         # Close the outline, even if it is dirty!
-        c.changed = False  # Force the close!
+        c.clearChanged()
         c.close()
-        # Select the first open outline, if any.
-        commanders = g.app.commanders()
-        self.c = commanders and commanders[0] or None
+        # Double check.
         timestamp = self.creation_time_d.get(c)
         if timestamp is None:  # pragma: no cover
             raise ServerError(f"{tag}: no timestamp for {c}")
-        return self._make_response()
+        # Make the response describing the *closed* file.
+        response = self._make_response()
+        # Kill the timestamp of the just-closed file.
+        del self.creation_time_d [c]
+        # Select the first open outline, if any.
+        commanders = g.app.commanders()
+        self.c = commanders and commanders[0] or None
+        # Return the response describing the closed file, not self.c.
+        return response
     #@+node:ekr.20210202183724.1: *5* lsc.save_file
     def save_file(self, package):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
@@ -1985,6 +1995,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     """Tests of LeoServer class."""
     request_number = 0
 
+    #@+others
+    #@+node:ekr.20210211085544.1: *3* test: Setup and TearDown
     @classmethod
     def setUpClass(cls):
         # Assume we are running in the leo-editor directory.
@@ -1993,7 +2005,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         global g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
-    
+
     @classmethod
     def tearDownClass(cls):
         global g_leoserver, g_server
@@ -2002,13 +2014,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             print('===== server did not terminate properly ====')
         except g_leoserver.TerminateServer:
             pass
-    
+
     def setUp(self):
         global g_server
         self.server = g_server
         self.g = g_server.g
-
-    #@+others
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -2096,9 +2106,19 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             server.close_file({"filename": "xyzzy.leo"})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
+        g = self.g
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        echo = True
         table = [
-            ("open_file", {"filename": "xyzzy.leo"}),
-            ("close_file", {}),
+            # Open file.
+            ("open_file", {"echo": echo, "filename": "xyzzy.leo"}),  # Does not exist.
+            # Switch to the second file.
+            ("open_file", {"echo": echo, "filename": test_dot_leo}),   # Does exist.
+            # Close the second file.
+            ("close_file", {"echo": echo, }),
+            # Close the first file.
+            ("close_file", {"echo": echo, }),
         ]
         for action, package in table:
             self._request(action, package)
