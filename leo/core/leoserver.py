@@ -822,7 +822,7 @@ class LeoServerController:
     def apply_config(self, package):
         """Got the configuration from client"""
         tag = 'apply_config'
-        config = package.get('config')
+        config = package.get("config")
         if not config:  # pragma: no cover
             raise ServerError(f"{tag}: no config")
         self.config = config
@@ -2017,17 +2017,27 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             "apply_config": {"config": {"whatever": True}},
             "set_body": {"body": "new body\n"},
             "set_headline": {"headline": "new headline"},
-            "get_all_server_methods": {"verbose": True},
+            "get_all_server_commands": {"verbose": False, "trace": False},
+            "get_all_leo_commands": {"verbose": False, "trace": False},
         }
         # First open a test file.
         server.open_file({"filename": "xyzzy.leo"})
         try:
+            id_ = 0
             for method_name in methods:
+                id_ += 1
                 if method_name not in exclude:
-                    func = getattr(server, method_name)
+                    assert getattr(server, method_name), method_name
                     package = package_d.get(method_name, {})
+                    message = {
+                        "id": id_,
+                        "action": method_name,
+                        "package": package,
+                    }
                     try:
-                        func(package)
+                        # Don't call the method directly.
+                        # That would disable trace/verbose logic, checking, etc.
+                        server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
                             print(f"fail: {method_name} {e}")
