@@ -178,7 +178,7 @@ class LeoServerController:
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
         timestamp = self.creation_time_d.get(c)
-        if timestamp is None:
+        if timestamp is None:  # pragma: no cover
             raise ServerError(f"{tag}: no timestamp for {c}")
         return self._make_response()
     #@+node:ekr.20210202183724.1: *4* lsc.save_file
@@ -812,7 +812,7 @@ class LeoServerController:
         """Test the round tripping of p_to_ap and ap_to_p."""
         tag = '_test_round_trip_positions'
         c = self._check_c()  # Ensure that c exists.
-        for p in c.all__unique_positions():
+        for p in c.all_unique_positions():
             ap = self._p_to_ap(p)
             p2 = self._ap_to_p(ap)
             if p != p2:
@@ -2004,6 +2004,12 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         server=self.server
         assert isinstance(server, g_leoserver.LeoServerController), self.server
         methods = server._get_all_server_commands()
+        # Ensure that some methods happen at the end.
+        for z in ('toggle_mark', 'undo', 'redo'):
+            methods.remove(z)
+        for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
+            methods.append(z)
+        self.g.printObj(methods, tag=methods)
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -2022,6 +2028,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         }
         # First open a test file.
         server.open_file({"filename": "xyzzy.leo"})
+        # Test round tripping.
+        server._test_round_trip_positions()
         try:
             id_ = 0
             for method_name in methods:
