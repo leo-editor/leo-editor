@@ -170,6 +170,8 @@ class LeoServer:
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
+        if self.trace or self.verbose:  # pragma: no cover
+            self._dump_outline(c)
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* lsc.close_file
     def close_file(self, package):
@@ -1738,7 +1740,7 @@ class LeoServer:
         gnx_d = c.fileCommands.gnxDict
         
         def d_to_childIndex_v (d):
-            """Helper: return childIndex and v from d."""
+            """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
             childIndex = d.get('childIndex')
             gnx = d.get('gnx')
             if childIndex is None:  # pragma: no cover.
@@ -1759,14 +1761,15 @@ class LeoServer:
             stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
             stack.append((stack_v, stack_childIndex))
         #
-        # Make p!
+        # Make p and check p.
         p = Position(v, childIndex, stack)
-        #
-        # Check that p exists in c.
         if not c.positionExists(p):  # pragma: no cover.
-            raise ServerError(
-                f"{tag}: p does not exist in {c.shortFileName()}\n"
-                f"{tag}: {self._dump_position(p)}")
+            print(
+                f"{tag}: Bad ap: {ap}\n"
+                # f"{tag}: position: {p!r}\n"
+                f"{tag}: v {v!r} childIndex: {childIndex}\n"
+                f"{tag}: stack: {stack}")
+            raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         return p
     #@+node:ekr.20210207054237.1: *4* lsc._check_c
     def _check_c(self):
@@ -1877,7 +1880,7 @@ class LeoServer:
 
     def _dump_position(self, p):  # pragma: no cover
         level_s = ' ' * 2 * p.level()
-        print(f"{level_s}{p.v.gnx} {p.h}")
+        print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
     #@+node:ekr.20210202110128.51: *4* lsc._es & helper
     def _es(self, s):  # pragma: no cover (tested in client).
         """
@@ -2139,8 +2142,17 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             # Open file.
             ("open_file", {"echo": echo, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("open_file", {"echo": echo, "filename": test_dot_leo}),   # Does exist.
+            ("open_file", {"echo": echo, "trace": False, "filename": test_dot_leo}),   # Does exist.
+            # Open again. This should be valid.
+            ("open_file", {"echo": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
+            ("set_current_position", {
+                "ap": {
+                    "gnx": "ekr.20180311131424.1",  # Recent
+                    "childIndex": 1,
+                    "stack": [],
+                }
+            }),
             # Close the second file.
             ("close_file", {"echo": echo, }),
             # Close the first file.
