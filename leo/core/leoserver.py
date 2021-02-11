@@ -1739,41 +1739,52 @@ class LeoServer:
         Raise ServerError on any kind of error.
         """
         tag = '_ap_to_p'
+        
+        def d_to_childIndex_v (d):
+            childIndex = d.get('childIndex')
+            gnx = d.get('gnx')
+            if childIndex is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no childIndex in {d}")
+            if gnx is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no gnx in {d}.")
+            v = self.gnx_d.get(gnx)
+            if v is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: gnx not found: {gnx}")
+            return childIndex, v   
+            
         # g.printObj(ap, tag=f"{tag}: ap")
         c = self._check_c()
-        childIndex = ap.get('childIndex')
-        gnx = ap.get('gnx')
-        ap_stack = ap.get('stack')
-        #
-        # Test the outer level.
-        if childIndex is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no outer childIndex.")
-        # g.trace(repr(childIndex), childIndex.__class__.__name__)
-        if gnx is None:  # pragma: no cover.
-            raise ServerError(f"{tag}: no outer gnx.")
-        v = self.gnx_d.get(gnx)
-        # g.trace(repr(v), v.__class__.__name__)
-        if v is None:  # pragma: no cover.
-            # g.printObj(self.gnx_d, tag=f"gnx_d")
-            raise ServerError(f"{tag}: gnx not found: {gnx}")
+        childIndex, v = d_to_childIndex_v(ap)
+        # gnx = ap.get('gnx')  ##########
+        # ap_stack = ap.get('stack')
+        ###
+            # childIndex = ap.get('childIndex')
+            # #
+            # # Test the outer level.
+            # if childIndex is None:  # pragma: no cover.
+                # raise ServerError(f"{tag}: no outer childIndex.")
+            # if gnx is None:  # pragma: no cover.
+                # raise ServerError(f"{tag}: no outer gnx.")
+            # v = self.gnx_d.get(gnx)
+            # if v is None:  # pragma: no cover.
+                # raise ServerError(f"{tag}: gnx not found: {gnx}")
         #
         # Resolve the stack, a list of tuples(gnx, childIndex).
         stack = []
-        for stack_d in ap_stack:
-            stack_childIndex = stack_d.get("childIndex")
-            # g.trace(repr(stack_childIndex), stack_childIndex.__class__.__name__)
-            if stack_childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no childIndex in {stack_d}")
-            stack_gnx = stack_d.get("gnx")
-            stack_v = self.gnx_d.get(stack_gnx)
-            # g.trace(repr(stack_gnx), stack_gnx.__class__.__name__)
-            if stack_gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no gnx in {stack_d}")
-            # Stack entries are tuples (v, childIndex).
+        for stack_d in ap.get('stack'): ### ap_stack:
+            stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
+            ###
+                # stack_childIndex = stack_d.get("childIndex")
+                # if stack_childIndex is None:  # pragma: no cover.
+                    # raise ServerError(f"{tag}: no childIndex in {stack_d}")
+                # stack_gnx = stack_d.get("gnx")
+                # stack_v = self.gnx_d.get(stack_gnx)
+                # if stack_gnx is None:  # pragma: no cover.
+                    # raise ServerError(f"{tag}: no gnx in {stack_d}")
+                # # Stack entries are tuples (v, childIndex).
             stack.append((stack_v, stack_childIndex))
         #
         # Create the position!
-        # g.trace(v, childIndex, stack)
         p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
             self._dump_position_and_stack(p)
