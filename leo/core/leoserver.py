@@ -5,7 +5,7 @@
 """
 Leo's internet server.
 
-Based on Félix's leobridgeserver.py.
+Based on Félix Malboeuf's leobridgeserver.py. Used by permission.
 """
 #@+<< imports >>
 #@+node:ekr.20210202110128.2: ** << imports >>
@@ -65,6 +65,8 @@ class LeoServer:
         self.creation_time_d = {}  # Keys are commanders.
                                    # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
+        self.gnx_d = None  # Keys are gnx's, values are VNodes.
+                           # For the *open* .leo file. Set by open_file, cleared by close_file.
         #
         # Tracing vars, set by "echo", "trace" and "verbose" keys in requests.
         self.echo_flag = False
@@ -164,10 +166,14 @@ class LeoServer:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
+        # Set the gnx dict for c.
+        self.gnx_d = c.fileCommands.gnxDict
         # Set the creation time. Same as used in gnx's.
         self.creation_time_d [c] = time.strftime(
             "%Y%m%d%H%M%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
+        # Check the outline!
+        self._check_outline(c)
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* lsc.close_file
     def close_file(self, package):
@@ -177,20 +183,20 @@ class LeoServer:
         """
         tag = 'close_file'
         c = self._check_c()
-        # Raise ServerError if the package demands a clean file.
-        if package.get("must-be-saved") and c.isChanged():
+        # First, get the timestamp and the response describing the to-be-closed file.
+        timestamp = self.creation_time_d.get(c)
+        response = self._make_response()
+        # No matter what happens, kill the gnx_d and the timestamp.
+        del self.creation_time_d [c]
+        self.gnx_d = None
+        # Do the checks.
+        if timestamp is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no timestamp for {c}")
+        if package.get("must-be-saved") and c.isChanged():  # pragma: no cover
             raise ServerError(f"{tag}: closing a changed outline: {c.fileName()}")
         # Close the outline, even if it is dirty!
         c.clearChanged()
         c.close()
-        # Double check.
-        timestamp = self.creation_time_d.get(c)
-        if timestamp is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no timestamp for {c}")
-        # Make the response describing the *closed* file.
-        response = self._make_response()
-        # Kill the timestamp of the just-closed file.
-        del self.creation_time_d [c]
         # Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
@@ -1733,8 +1739,8 @@ class LeoServer:
         Raise ServerError on any kind of error.
         """
         tag = '_ap_to_p'
+        # g.printObj(ap, tag=f"{tag}: ap")
         c = self._check_c()
-        gnx_d = c.fileCommands.gnxDict
         childIndex = ap.get('childIndex')
         gnx = ap.get('gnx')
         ap_stack = ap.get('stack')
@@ -1742,28 +1748,36 @@ class LeoServer:
         # Test the outer level.
         if childIndex is None:  # pragma: no cover.
             raise ServerError(f"{tag}: no outer childIndex.")
+        # g.trace(repr(childIndex), childIndex.__class__.__name__)
         if gnx is None:  # pragma: no cover.
             raise ServerError(f"{tag}: no outer gnx.")
-        v = gnx_d.get(gnx)
+        v = self.gnx_d.get(gnx)
+        # g.trace(repr(v), v.__class__.__name__)
         if v is None:  # pragma: no cover.
-            g.printObj(gnx_d, tag=f"gnx_d")
+            # g.printObj(self.gnx_d, tag=f"gnx_d")
             raise ServerError(f"{tag}: gnx not found: {gnx}")
         #
         # Resolve the stack, a list of tuples(gnx, childIndex).
         stack = []
-        for d in ap_stack:
-            childIndex = d.get('childIndex')
-            if childIndex is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no childIndex in {d}")
-            gnx = d.get('gnx')
-            if gnx is None:  # pragma: no cover.
-                raise ServerError(f"{tag}: no gnx in {d}")
-            stack.append((gnx, childIndex))
+        for stack_d in ap_stack:
+            stack_childIndex = stack_d.get("childIndex")
+            # g.trace(repr(stack_childIndex), stack_childIndex.__class__.__name__)
+            if stack_childIndex is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no childIndex in {stack_d}")
+            stack_gnx = stack_d.get("gnx")
+            stack_v = self.gnx_d.get(stack_gnx)
+            # g.trace(repr(stack_gnx), stack_gnx.__class__.__name__)
+            if stack_gnx is None:  # pragma: no cover.
+                raise ServerError(f"{tag}: no gnx in {stack_d}")
+            # Stack entries are tuples (v, childIndex).
+            stack.append((stack_v, stack_childIndex))
         #
         # Create the position!
+        # g.trace(v, childIndex, stack)
         p = Position(v, childIndex, stack)
         if not c.positionExists(p):  # pragma: no cover.
-            raise ServerError(f"{tag}: p does not exist: {p!r}")
+            self._dump_position_and_stack(p)
+            raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}\np: {p}")
         return p
     #@+node:ekr.20210207054237.1: *4* lsc._check_c
     def _check_c(self):
@@ -1773,7 +1787,41 @@ class LeoServer:
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no open commander")
         return c
-    #@+node:ekr.20210202110128.54: *4* lsc._do_message & helpers
+    #@+node:ekr.20210211131234.1: *4* lsc._check_outline
+    def _check_outline(self, c):
+        """Check self.c for consistency."""
+        # Check that all positions exist.
+        self._check_outline_positions(c)
+        # Test round-tripping.
+        self._test_round_trip_positions(c)
+    #@+node:ekr.20210211131827.1: *4* lsc._check_outline_positions
+    def _check_outline_positions(self, c):
+        """Verify that all positions in c exist."""
+        for p in c.all_positions(copy=False):
+            assert c.positionExists(p), self._dump_position(p)
+    #@+node:ekr.20210209062536.1: *4* lsc._do_leo_command
+    def _do_leo_command(self, action, package):
+        """
+        Execute the leo command given by package ["leo-command-name"].
+        
+        The client must open an outline before calling this method.
+        """
+        # We *can* require self.c to exist, because:
+        # 1. all commands imply c.
+        # 2. The client must call open_file to set self.c.
+        tag = '_execute_leo_command'
+        c = self._check_c()
+        command_name = package.get("leo-command-name")
+        if not command_name:  # pragma: no cover
+            raise ServerError(f"{tag}: no 'leo-command-name' key in package")
+        if command_name in self.bad_commands_list:  # pragma: no cover
+            raise ServerError(f"{tag}: disallowed command: {command_name}")
+        func = c.commandsDict.get(command_name)
+        if not func:  # pragma: no cover
+            raise ServerError(f"{tag}: Leo command not found: {command_name}")
+        value = func(event={"c":c})
+        return self._make_response({"return-value": value})
+    #@+node:ekr.20210202110128.54: *4* lsc._do_message
     def _do_message(self, d):
         """
         Handle d, a python dict representing the incoming request.
@@ -1817,29 +1865,7 @@ class LeoServer:
         if result is None:  # pragma: no cover
             raise ServerError(f"{tag}: no response: {action}")
         return result
-    #@+node:ekr.20210209062536.1: *5* lsc._do_leo_command
-    def _do_leo_command(self, action, package):
-        """
-        Execute the leo command given by package ["leo-command-name"].
-        
-        The client must open an outline before calling this method.
-        """
-        # We *can* require self.c to exist, because:
-        # 1. all commands imply c.
-        # 2. The client must call open_file to set self.c.
-        tag = '_execute_leo_command'
-        c = self._check_c()
-        command_name = package.get("leo-command-name")
-        if not command_name:  # pragma: no cover
-            raise ServerError(f"{tag}: no 'leo-command-name' key in package")
-        if command_name in self.bad_commands_list:  # pragma: no cover
-            raise ServerError(f"{tag}: disallowed command: {command_name}")
-        func = c.commandsDict.get(command_name)
-        if not func:  # pragma: no cover
-            raise ServerError(f"{tag}: Leo command not found: {command_name}")
-        value = func(event={"c":c})
-        return self._make_response({"return-value": value})
-    #@+node:ekr.20210209085438.1: *5* lsc._do_server_command
+    #@+node:ekr.20210209085438.1: *4* lsc._do_server_command
     def _do_server_command(self, action, package):
         tag = '_do_server_command'
         # Disallow hidden methods.
@@ -1852,6 +1878,28 @@ class LeoServer:
         if not callable(func):
             raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
         return func(package)
+    #@+node:ekr.20210211131707.1: *4* lsc._dump_*
+    def _dump_outline(self, c):
+        """Dump the outline in various formats."""
+        tag = '_dump_outline'
+        print(f"{tag}: {c.shortFileName()}...\n")
+        for p in c.all_positions():
+            self._dump_position(p)
+        print('')
+
+    def _dump_position(self, p):
+        level_s = ' ' * 2 * p.level()
+        print(f"{level_s}{p.v.gnx} {p.h}")
+        
+    def _dump_position_and_stack(self, p):
+        g.pdb()
+        print(f"{p.v.gnx} {p.h}")
+        parent = p.parent()
+        if parent:
+            print(f"parent: {parent.v.gnx} {parent.h}")
+        print(f"childIndex: {p.childIndex()}")
+        print(f"children: {p.numberOfChildren()}")
+        
     #@+node:ekr.20210202110128.51: *4* lsc._es & helper
     def _es(self, s):  # pragma: no cover (tested in client).
         """
@@ -1892,6 +1940,18 @@ class LeoServer:
         if not c.p:
             raise ServerError(f"{tag}: no c.p")  # pragma: no cover
         return c.p
+    #@+node:ekr.20210211053733.1: *4* lsc._get_position_data
+    def _get_position_data(self, p):
+        """
+        Return (debugging) data for position p.
+        
+        Similar to what _make_response returns.
+        """
+        return {
+            "node": self._p_to_ap(p), # Contains gnx.
+            "icon_val": p.v.iconVal,  # An int between 0 and 15.
+            "is_at_file": p.isAnyAtFileNode(),
+        }
     #@+node:ekr.20210206182638.1: *4* lsc._make_response
     def _make_response(self, package=None):
         """
@@ -1967,27 +2027,15 @@ class LeoServer:
             'gnx': p.v.gnx,
             'stack': stack,
         }
-    #@+node:ekr.20210211053733.1: *4* lsc._get_position_data
-    def _get_position_data(self, p):
-        """
-        Return (debugging) data for position p.
-        
-        Similar to what _make_response returns.
-        """
-        return {
-            "node": self._p_to_ap(p), # Contains gnx.
-            "icon_val": p.v.iconVal,  # An int between 0 and 15.
-            "is_at_file": p.isAnyAtFileNode(),
-        }
     #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
-    def _test_round_trip_positions(self):  # pragma: no cover (tested in client).
+    def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
         tag = '_test_round_trip_positions'
-        c = self._check_c()  # Ensure that c exists.
         for p in c.all_unique_positions():
             ap = self._p_to_ap(p)
             p2 = self._ap_to_p(ap)
             if p != p2:
+                self._dump_outline(c)
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap}, p: {p}, p2: {p2}")
     #@-others
 #@+node:ekr.20210208163018.1: ** class TestLeoServer (unittest.TestCase)
@@ -2052,8 +2100,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                 self._request(action, package)
         finally:
             server.close_file({"filename": "xyzzy.leo"})
-    #@+node:ekr.20210210102638.1: *3* test.test_most_server_methods
-    def test_most_server_methods(self):
+    #@+node:ekr.20210210102638.1: *3* test.test_most_public_server_methods
+    def test_most_public_server_methods(self):
         server=self.server
         assert isinstance(server, g_leoserver.LeoServer), self.server
         methods = server._get_all_server_commands()
@@ -2079,10 +2127,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             "get_all_server_commands": {"verbose": False, "trace": False},
             "get_all_leo_commands": {"verbose": False, "trace": False},
         }
-        # First open a test file.
+        # First open a test file & performa all tests.
         server.open_file({"filename": "xyzzy.leo"})
-        # Test round tripping.
-        server._test_round_trip_positions()
         try:
             id_ = 0
             for method_name in methods:
@@ -2107,14 +2153,16 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
         g = self.g
+        # server = self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        echo = True
+        echo = False
         table = [
             # Open file.
             ("open_file", {"echo": echo, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
             ("open_file", {"echo": echo, "filename": test_dot_leo}),   # Does exist.
+            # Better test of _ap_to_p.
             # Close the second file.
             ("close_file", {"echo": echo, }),
             # Close the first file.

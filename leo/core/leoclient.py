@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210202110241.1: * @file leoclient.py
 """
-An example client for leoserver.py, based on work by Félix. Used by permission.
+An example client for leoserver.py, based on work by Félix Malboeuf. Used by permission.
 """
 import asyncio
 import json
