@@ -65,11 +65,7 @@ class LeoServer:
         self.creation_time_d = {}  # Keys are commanders.
                                    # values are server time stamps.
         self.current_id = 0  # Id of action being processed.
-        #
-        # Tracing vars, set by "echo", "trace" and "verbose" keys in requests.
-        self.echo_flag = False
-        self.trace = False
-        self.verbose = False
+        self.log_flag = False  # set by "log" key
         #
         # Start the bridge.
         self.bridge = leoBridge.controller(
@@ -171,7 +167,7 @@ class LeoServer:
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
-        if self.trace or self.verbose:  # pragma: no cover
+        if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* lsc.close_file
@@ -319,8 +315,7 @@ class LeoServer:
         self._check_c()
         p = self._get_p(package)
         parent = p.parent()
-        # data = self._p_to_ap(parent) if parent else None
-        data = self._get_node_data(parent) if parent else None
+        data = self._get_position_d(parent) if parent else None
         return self._make_response({"parent": data})
     #@+node:ekr.20210211053955.1: *5* lsc.get_position_dict
     def get_position_data_dict(self, package):
@@ -644,10 +639,9 @@ class LeoServer:
                 "func":  func_name,
                 "detail": doc,
             })
-        if self.verbose:  # pragma: no cover
-             g.printObj([z.get("command-name") for z in result], tag=tag)
-        elif self.trace:  # pragma: no cover
+        if self.log_flag:  # pragma: no cover
             print(f"\n{tag}: {len(result)} leo commands\n")
+            g.printObj([z.get("command-name") for z in result], tag=tag)
         return self._make_response({"commands": result})
     #@+node:ekr.20210202183724.6: *6* lsc._bad_commands
     def _bad_commands(self, c):
@@ -1694,10 +1688,9 @@ class LeoServer:
         """
         tag = 'get_all_server_commands'
         names = self._get_all_server_commands()
-        if self.verbose:  # pragma: no cover
-            g.printObj(names, tag=tag)
-        elif self.trace:  # pragma: no cover
+        if self.log_flag:  # pragma: no cover
             print(f"\n{tag}: {len(names)} server commands\n")
+            g.printObj(names, tag=tag)
         return self._make_response({"server-commands": names})
 
     def _get_all_server_commands(self):
@@ -1838,10 +1831,8 @@ class LeoServer:
         if action is None:  # pragma: no cover
             raise ServerError("f{tag}: no action")
         package = d.get('package', {})
-        # Set tracing vars.
-        self.echo_flag = package.get("echo")
-        self.trace = package.get("trace")
-        self.verbose = package.get("verbose")
+        # Set log flag.
+        self.log_flag = package.get("log")
         # Set the current_id and action ivars for _make_response.
         self.current_id = id_
         self.action = action
@@ -1997,7 +1988,7 @@ class LeoServer:
             for key, value in redraw_d.items():
                 assert key not in package, (key, package)
                 package [key] = value
-        if self.echo_flag:  # pragma: no cover
+        if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':')) 
     #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
@@ -2110,11 +2101,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         ]
         expected = ['error']
         package_d = {
-            "apply_config": {"config": {"whatever": True}},
+            # "apply_config": {"config": {"whatever": True}},
             "set_body": {"body": "new body\n"},
             "set_headline": {"headline": "new headline"},
-            "get_all_server_commands": {"verbose": False, "trace": False},
-            "get_all_leo_commands": {"verbose": False, "trace": False},
+            "get_all_server_commands": {"echo": False},
+            "get_all_leo_commands": {"echo": False},
         }
         # First open a test file & performa all tests.
         server.open_file({"filename": "xyzzy.leo"})
@@ -2145,14 +2136,14 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         # server = self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
-        echo = False
+        log = False
         table = [
             # Open file.
-            ("open_file", {"echo": echo, "filename": "xyzzy.leo"}),  # Does not exist.
+            ("open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
             # Switch to the second file.
-            ("open_file", {"echo": echo, "trace": False, "filename": test_dot_leo}),   # Does exist.
+            ("open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
             # Open again. This should be valid.
-            ("open_file", {"echo": False, "filename": test_dot_leo}),
+            ("open_file", {"log": False, "filename": test_dot_leo}),
             # Better test of _ap_to_p.
             ("set_current_position", {
                 "ap": {
@@ -2161,11 +2152,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                     "stack": [],
                 }
             }),
-            ("get_ua", {"echo": echo}),
+            ("get_ua", {"log": log}),
             # Close the second file.
-            ("close_file", {"echo": echo, }),
+            ("close_file", {"log": log, }),
             # Close the first file.
-            ("close_file", {"echo": echo, }),
+            ("close_file", {"log": log, }),
         ]
         for action, package in table:
             self._request(action, package)
