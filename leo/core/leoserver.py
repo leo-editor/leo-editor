@@ -47,7 +47,7 @@ class TerminateServer(Exception):  # pragma: no cover
 class LeoServer:
     """Leo Server Controller"""
     #@+others
-    #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge, set self.g)
+    #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge)
     def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
@@ -2030,9 +2030,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         # Assume we are running in the leo-editor directory.
         # pylint: disable=import-self
         import leo.core.leoserver as leoserver
-        global g_leoserver, g_server
+        global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
+        g = g_server.g
+        assert g
 
     @classmethod
     def tearDownClass(cls):
@@ -2046,7 +2048,6 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUp(self):
         global g_server
         self.server = g_server
-        self.g = g_server.g
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -2060,8 +2061,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
-        if 0:
-            self.g.printObj(answer, tag=f"response to {action}")
+        if 1:
+            g.printObj(answer, tag=f"response to {action}")
         return answer
     #@+node:ekr.20210210174801.1: *3* test.test_leo_commands
     def test_leo_commands (self):
@@ -2090,7 +2091,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             methods.remove(z)
         for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
             methods.append(z)
-        # self.g.printObj(methods, tag=methods)
+        # g.printObj(methods, tag=methods)
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -2132,7 +2133,6 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             server.close_file({"filename": "xyzzy.leo"})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
-        g = self.g
         # server = self.server
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
