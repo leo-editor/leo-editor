@@ -170,6 +170,8 @@ def _get_action_list():
     tail = [
         # ("get_body_length", {}),  # All responses now contain len(p.b).
         ("get_ua", {"echo":True}),
+        ("get_parent",  {"echo":True}),
+        ("get_children",  {"echo":True}),
         ("set_body", {"body": "new body"}),
         ("set_headline", {"headline": "new headline"}),
         ("execute-leo-command", {"leo-command-name": "contract-all"}),

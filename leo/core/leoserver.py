@@ -304,20 +304,23 @@ class LeoServer:
         return self._make_response({"body-states": states})
     #@+node:ekr.20210202110128.68: *5* lsc.get_children
     def get_children(self, package):
-        """Return the children of p, where p is c.p if package["ap"] is missing."""
+        """
+        Return the node data for children of p, where p is c.p if package["ap"] is missing."""
         self._check_c()
         p = self._get_p(package)
         return self._make_response({
-            "children": [self._p_to_ap(child) for child in p.children()]
+            # "children": [self._p_to_ap(child) for child in p.children()]
+            "children": [self._get_node_d(child) for child in p.children()]
         })
     #@+node:ekr.20210202110128.69: *5* lsc.get_parent
     def get_parent(self, package):
-        """Return the parent of position p, where p is c.p if package["ap"] is missing."""
+        """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
         self._check_c()
         p = self._get_p(package)
         parent = p.parent()
-        parent_ap = self._p_to_ap(parent) if parent else None
-        return self._make_response({"parent": parent_ap})
+        # data = self._p_to_ap(parent) if parent else None
+        data = self._get_node_data(parent) if parent else None
+        return self._make_response({"parent": data})
     #@+node:ekr.20210211053955.1: *5* lsc.get_position_dict
     def get_position_data_dict(self, package):
         """
@@ -1755,7 +1758,7 @@ class LeoServer:
         #
         # Create p.stack.
         stack = []
-        for stack_d in ap.get('stack'): ### ap_stack:
+        for stack_d in ap.get('stack'):
             stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
             stack.append((stack_v, stack_childIndex))
         #
@@ -2237,7 +2240,6 @@ def main():  # pragma: no cover (tested in client)
             print(f"{tag}: closed error: {e}")
         except websockets.exceptions.ConnectionClosed as e:
             print(f"{tag}: closed normally: {e}")
-        ### coverage_end()
         # Don't call EventLoop.stop(). It terminates abnormally.
             # asyncio.get_event_loop().stop()
     #@+node:ekr.20210202110128.91: *3* function: get_args
