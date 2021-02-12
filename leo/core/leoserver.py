@@ -1780,8 +1780,13 @@ class LeoServer:
     #@+node:ekr.20210211131827.1: *4* lsc._check_outline_positions
     def _check_outline_positions(self, c):
         """Verify that all positions in c exist."""
+        tag = '_check_outline_positions'
         for p in c.all_positions(copy=False):
-            assert c.positionExists(p), self._dump_position(p)
+            if not c.positionExists(p):  # pragma: no cover
+                message = f"{tag}: position {p} does not exist in {c.shortFileName()}"
+                print(message)
+                self._dump_position(p)
+                raise ServerError(message)
     #@+node:ekr.20210209062536.1: *4* lsc._do_leo_command
     def _do_leo_command(self, action, package):
         """
@@ -1986,7 +1991,8 @@ class LeoServer:
             # - All the *cheap* redraw data for p.
             redraw_d = self._get_position_d(p)
             for key, value in redraw_d.items():
-                assert key not in package, (key, package)
+                if key in package:  # pragma: no cover
+                    raise InternalServerError(f"{tag}: key {key} in package: {package}")
                 package [key] = value
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
