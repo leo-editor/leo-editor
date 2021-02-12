@@ -1727,13 +1727,22 @@ class LeoServer:
         tag = '_ap_to_p'
         c = self._check_c()
         gnx_d = c.fileCommands.gnxDict
+        outer_stack = ap.get('stack')
+        if outer_stack is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: no stack in ap: {ap}")
+        if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
+            raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
         
         def d_to_childIndex_v (d):
             """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
             childIndex = d.get('childIndex')
-            gnx = d.get('gnx')
             if childIndex is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no childIndex in {d}")
+            try:
+                childIndex = int(childIndex)
+            except Exception:  # pragma: no cover.
+                raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+            gnx = d.get('gnx')
             if gnx is None:  # pragma: no cover.
                 raise ServerError(f"{tag}: no gnx in {d}.")
             v = gnx_d.get(gnx)
@@ -1746,7 +1755,7 @@ class LeoServer:
         #
         # Create p.stack.
         stack = []
-        for stack_d in ap.get('stack'):
+        for stack_d in outer_stack:
             stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
             stack.append((stack_v, stack_childIndex))
         #
@@ -1925,7 +1934,7 @@ class LeoServer:
             "body-length": len(p.b),  # *Not* p.b.
             "has-gnx": bool(p.gnx),  # *Not* p.gnx.
             "headline": p.h,
-            "iconVal": p.v.iconVal,  # An int between 0 and 15.
+            "icon-val": p.v.iconVal,  # An int between 0 and 15.
             "is-at-file": p.isAnyAtFileNode(),
             "level": p.level(),  # Useful for debugging.
         }
