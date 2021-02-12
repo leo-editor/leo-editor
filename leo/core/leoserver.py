@@ -161,6 +161,8 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
+        # A (temporary?) hack:
+        c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
         # Set the creation time. Similar to timestamps in gnx's.
         self.creation_time_d [c] = time.strftime(
             "%Y.%m.%d.%H.%M.%S",time.localtime())
@@ -202,6 +204,51 @@ class LeoServer:
         c = self._check_c()
         c.save()
         return self._make_response()
+    #@+node:ekr.20210212092848.1: *4* lsc:find commands
+    #@+node:ekr.20210212094817.1: *5* lsc._get_find_settings
+    def _get_find_settings(self, c):
+        """Return a g.Bunch containing the present find settings settings."""
+        ### We can't get the defaults from Leo because c.findCommands.ftm is None.
+        ### Maybe the client should supply defaults.
+        #
+        # For now, return EKR defaults.
+        return g.Bunch(
+            find_text=None, change_text=None,
+            search_body=True, search_headline=True,
+            ignore_case=True, pattern_match=False, whole_word=True,
+            mark_changes=False, mark_finds=False,
+            node_only=False, suboutline_only=False,
+            entry_focus=None,
+        )  
+        # return {
+            # "change_text": None,
+            # "ignore_case": True,
+            # "mark_changes": False,
+            # "mark_finds": False,
+            # "node_only": False,
+            # "pattern_match": False,
+            # "search_body": True,
+            # "search_headline": True,
+            # "suboutline_only": True,
+            # "whole_word": True,
+        # }   
+    #@+node:ekr.20210212092854.1: *5* lsc.find_all
+    def find_all(self, package):
+        """Run Leo's find-all command and return results."""
+        tag = 'find_all'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        answer = fc.do_find_all(settings)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(answer, tag=f"{tag}: answer")
+        return self._make_response({"answer": answer})
     #@+node:ekr.20210202193505.1: *4* lsc:getter commands
     #@+node:ekr.20210202110128.55: *5* lsc.get_all_open_commanders
     def get_all_open_commanders(self, package):
@@ -2066,6 +2113,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def _request(self, action, package=None):
         server = self.server
         self.request_number += 1
+        log_flag = package.get("log")
         d = {
             "action": action,
             "id": self.request_number
@@ -2075,7 +2123,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         response = server._do_message(d)
         # _make_response calls json_dumps. Undo it with json.loads.
         answer = json.loads(response)
-        if 1:
+        if log_flag:
             g.printObj(answer, tag=f"response to {action}")
         return answer
     #@+node:ekr.20210210174801.1: *3* test.test_leo_commands
@@ -2099,6 +2147,8 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def test_most_public_server_methods(self):
         server=self.server
         assert isinstance(server, g_leoserver.LeoServer), self.server
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         methods = server._get_all_server_commands()
         # Ensure that some methods happen at the end.
         for z in ('toggle_mark', 'undo', 'redo'):
@@ -2109,6 +2159,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         exclude = [
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+            'find_all', # see test_find_commands.
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
@@ -2123,7 +2174,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             "get_all_leo_commands": {"echo": False},
         }
         # First open a test file & performa all tests.
-        server.open_file({"filename": "xyzzy.leo"})
+        server.open_file({"filename": test_dot_leo})  # A real file.
         try:
             id_ = 0
             for method_name in methods:
@@ -2144,7 +2195,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         if method_name not in expected:
                             print(f"fail: {method_name} {e}")
         finally:
-            server.close_file({"filename": "xyzzy.leo"})
+            server.close_file({"filename": test_dot_leo})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
@@ -2174,6 +2225,21 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         ]
         for action, package in table:
             self._request(action, package)
+    #@+node:ekr.20210212093613.1: *3* test.test_find_commands
+    def test_find_commands(self):
+        
+        tag = 'test_find_commands'
+        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+        log = False
+        #
+        # Open the file.
+        self._request("open_file", {"log": log, "filename": test_dot_leo})
+        #
+        # Do find_all.
+        answer = self._request("find_all", {"log": log, "find_text": "def"})
+        if log:
+            g.printObj(answer, tag=f"{tag}: answer")
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)

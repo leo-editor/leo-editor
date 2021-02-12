@@ -2371,8 +2371,9 @@ class LeoFind:
         """
         c = self.c
         ftm = self.ftm
-        w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
-        ftm.entry_focus = None  # Only use this focus widget once!
+        w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
+        if ftm:
+            ftm.entry_focus = None  # Only use this focus widget once!
         w_name = c.widget_name(w)
         if w == c.frame.body.wrapper:
             val = False

@@ -147,9 +147,12 @@ def _get_action_list():
     In effect, these are unit tests.
     """
     import inspect
+    import os
     import leoserver
     server = leoserver.LeoServer()
-    file_name = "xyzzy.leo"
+    ### file_name = "xyzzy.leo"
+    file_name = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+    assert os.path.exists(file_name), repr(file_name)
     log = False
     exclude_names = [
         # Dangerous at present.
@@ -169,6 +172,7 @@ def _get_action_list():
     head_names = [name for (name, package) in head]
     tail = [
         # ("get_body_length", {}),  # All responses now contain len(p.b).
+        ("find_all", {"find_text": "def"}),
         ("get_ua", {"log": log}),
         ("get_parent",  {"log": log}),
         ("get_children",  {"log": log}),
