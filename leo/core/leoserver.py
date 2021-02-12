@@ -1922,12 +1922,20 @@ class LeoServer:
         - "node": self._p_to_ap(p).
         - All *cheap* redraw data..
         
-        Use get_ua to get p.ua *and* all the redraw data.
+        Use get_ua to get p.ua *plus* all this redraw data.
+        
+        Note: v.computeIcon sets iconVal as follows:
+            v, val = self, 0
+            if v.hasBody(): val += 1
+            if v.isMarked(): val += 2
+            if v.isCloned(): val += 4
+            if v.isDirty(): val += 8
         """
         return {
             "node": self._p_to_ap(p), # Contains p.gnx, p.childIndex and p.stack.
             # The cheap redraw data...
             "body-length": len(p.b),  # *Not* p.b.
+            "has-children": p.hasChildren(),  # *Not* p.children().
             "has-gnx": bool(p.gnx),  # *Not* p.gnx.
             "headline": p.h,
             "icon-val": p.v.iconVal,  # An int between 0 and 15.
