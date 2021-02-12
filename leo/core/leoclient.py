@@ -168,7 +168,8 @@ def _get_action_list():
     ]
     head_names = [name for (name, package) in head]
     tail = [
-        ("get_body_length", {}),
+        # ("get_body_length", {}),  # All responses now contain len(p.b).
+        ("get_ua", {"echo":True}),
         ("set_body", {"body": "new body"}),
         ("set_headline", {"headline": "new headline"}),
         ("execute-leo-command", {"leo-command-name": "contract-all"}),

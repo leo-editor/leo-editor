@@ -164,9 +164,9 @@ class LeoServer:
             raise ServerError(f"{tag}: can not open {filename!r}")
         # Assign self.c
         self.c = c
-        # Set the creation time. Same as used in gnx's.
+        # Set the creation time. Similar to timestamps in gnx's.
         self.creation_time_d [c] = time.strftime(
-            "%Y%m%d%H%M%S",time.localtime())
+            "%Y.%m.%d.%H.%M.%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
@@ -206,21 +206,20 @@ class LeoServer:
         c.save()
         return self._make_response()
     #@+node:ekr.20210202193505.1: *4* lsc:getter commands
-    #@+node:ekr.20210211053955.1: *5* lsc.get_position_dict
-    def get_position_data_dict(self, package):
-        """
-        Return a dict of postition data for all positions.
-        
-        Useful as a sanity check for debugging.
-        """
-        c = self._check_c()
-        result = {
-            p.v.gnx: self._get_position_data(p)
-                for p in c.all_unique_positions(copy=False)
-        }
-        return self._make_response({"position-data-dict": result})
-    #@+node:ekr.20210202110128.71: *5* lsc.get_position_data_list
-    def get_position_data_list(self, package):
+    #@+node:ekr.20210202110128.55: *5* lsc.get_all_open_commanders
+    def get_all_open_commanders(self, package):
+        """Return array describing each commander in g.app.commanders()."""
+        files = [
+            {
+                "changed": c.isChanged(),
+                "creation-time": self.creation_time_d.get(c),
+                "name": c.fileName(),
+                "selected": c == self.c,
+            } for c in g.app.commanders()
+        ]
+        return self._make_response({"open-commanders": files})
+    #@+node:ekr.20210202110128.71: *5* lsc.get_all_positions
+    def get_all_positions(self, package):
         """
         Return a list of position data for all positions.
         
@@ -228,37 +227,22 @@ class LeoServer:
         """
         c = self._check_c()
         result = [
-            self._get_position_data(p) for p in c.all_positions(copy=False)
+            self._get_node_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_response({"position-data-list": result})
-    #@+node:ekr.20210202110128.55: *5* lsc.get_all_opened_files
-    def get_all_opened_files(self, package):
-        """Return array of opened file path/names to be used as open_file parameters to switch files"""
-        c = self._check_c()
-        files = [
-            {
-                "changed": commander.changed,
-                "name": commander.mFileName,
-                "selected": c == commander,
-            } for commander in g.app.commanders()
-        ]
-        return self._make_response({"open-files": files})
     #@+node:ekr.20210202110128.72: *5* lsc.get_body & get_body_length
     def get_body(self, package):
         """
         Return p.b, where p is c.p if package["ap"] is missing.
+        
+        Note: There is no need for a separate get_body_length command,
+              because _make_response always adds "body-length": len(p.b)
         """
         self._check_c()
         p = self._get_p(package)
+        # _make_response adds all the cheap redraw data, including "body-length"
         return self._make_response({"body": p.b})
-
-    def get_body_length(self, package):
-        """
-        Return len(p.b), where p is c.p if package["ap"] is missing.
-        """
-        self._check_c()
-        p = self._get_p(package)
-        return self._make_response({"body-length": len(p.b)})
+        
     #@+node:ekr.20210202110128.66: *5* lsc.get_body_states (*** revise)
     def get_body_states(self, package):
         """
@@ -329,23 +313,37 @@ class LeoServer:
     #@+node:ekr.20210202110128.69: *5* lsc.get_parent
     def get_parent(self, package):
         """Return the parent of position p, where p is c.p if package["ap"] is missing."""
-        ### As an array ### ?
         self._check_c()
         p = self._get_p(package)
         parent = p.parent()
         parent_ap = self._p_to_ap(parent) if parent else None
         return self._make_response({"parent": parent_ap})
-    #@+node:ekr.20210206184431.1: *5* lsc.get_redraw_data
-    def get_redraw_data(self, package):
-        """Return the data needed to redraw p on the screen."""
+    #@+node:ekr.20210211053955.1: *5* lsc.get_position_dict
+    def get_position_data_dict(self, package):
+        """
+        Return a dict of postition data for all positions.
+        
+        Useful as a sanity check for debugging.
+        """
+        c = self._check_c()
+        result = {
+            p.v.gnx: self._get_node_d(p)
+                for p in c.all_unique_positions(copy=False)
+        }
+        return self._make_response({"position-data-dict": result})
+    #@+node:ekr.20210211233814.1: *5* lsc.get_ua
+    def get_ua(self, package):
+        """Return p.v.u, making sure it can be serialized."""
         self._check_c()
         p = self._get_p(package)
-        return self._make_response({"p": p})
-    #@+node:ekr.20210202110128.67: *5* lsc.get_selected_position
-    def get_position(self, package):
-        """Return the current position. Don't select it."""
-        # *All* responses contain a "node" key.
-        return self._make_response()
+        try:
+            ua = {"ua": p.v.u}
+            json.dumps(ua, separators=(',', ':'))
+            response = {"p": p, "ua": p.v.u} 
+        except Exception:  # pragma: no cover
+            response = {"p": p, "bad-ua": repr(p.v.u)} 
+        # _make_response adds all the cheap redraw data.
+        return self._make_response(response)
     #@+node:ekr.20210206062654.1: *5* lsc.get_sign_on
     def get_sign_on(self, package):
         """Synchronous version of _sign_on"""
@@ -1921,17 +1919,24 @@ class LeoServer:
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
-    #@+node:ekr.20210211053733.1: *4* lsc._get_position_data
-    def _get_position_data(self, p):
+    #@+node:ekr.20210211053733.1: *4* lsc._get_node_d
+    def _get_node_d(self, p):
         """
-        Return (debugging) data for position p.
+        Return a python dict containing:
+        - "node": self._p_to_ap(p).
+        - All *cheap* redraw data..
         
-        Similar to what _make_response returns.
+        Use get_ua to get p.ua *and* all the redraw data.
         """
         return {
-            "node": self._p_to_ap(p), # Contains gnx.
-            "icon_val": p.v.iconVal,  # An int between 0 and 15.
-            "is_at_file": p.isAnyAtFileNode(),
+            "node": self._p_to_ap(p), # Contains p.gnx, p.childIndex and p.stack.
+            # The cheap redraw data...
+            "body-length": len(p.b),  # *Not* p.b.
+            "has-gnx": bool(p.gnx),  # *Not* p.gnx.
+            "headline": p.h,
+            "iconVal": p.v.iconVal,  # An int between 0 and 15.
+            "is-at-file": p.isAnyAtFileNode(),
+            "level": p.level(),  # Useful for debugging.
         }
     #@+node:ekr.20210206182638.1: *4* lsc._make_response
     def _make_response(self, package=None):
@@ -1978,17 +1983,20 @@ class LeoServer:
         package ["action"] = self.action
         # The following keys are relevant only if there is an open commander.
         if c:
-            # Allow commands, especially get_redraw_data, to set p!
+            # Allow commands, especially _get_redraw_d, to specify p!
             p = p or c.p
             package ["commander"] = {
+                "changed": c.isChanged(),
+                "creation-time": self.creation_time_d.get(c),
                 "file_name": c.fileName(), # Can be None for new files.
-                "creation_time": self.creation_time_d.get(c),
             }
-            # Don't bother echoing the incoming ap back to the client.
-            package ["node"] = self._p_to_ap(p)
-            # Provide the cheap redraw data, but *not* p.gnx.
-            package ["icon_val"] = p.v.iconVal  # An int between 0 and 15.
-            package ["is_at_file"] = p.isAnyAtFileNode()
+            # Add all the node data, including:
+            # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
+            # - All the *cheap* redraw data for p.
+            redraw_d = self._get_node_d(p)
+            for key, value in redraw_d.items():
+                assert key not in package, (key, package)
+                package [key] = value
         if self.echo_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':')) 
@@ -2153,6 +2161,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                     "stack": [],
                 }
             }),
+            ("get_ua", {"echo": echo}),
             # Close the second file.
             ("close_file", {"echo": echo, }),
             # Close the first file.
