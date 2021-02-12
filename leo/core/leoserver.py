@@ -159,9 +159,10 @@ class LeoServer:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
-            assert c.frame.body.wrapper, filename
         if not c:  # pragma: no cover
-            raise ServerError(f"{tag}: can not open {filename!r}")
+            raise ServerError(f"{tag}: bridge did not open {filename!r}")
+        if not c.frame.body.wrapper:  # pragma: no cover
+            raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
         # Set the creation time. Similar to timestamps in gnx's.
@@ -227,7 +228,7 @@ class LeoServer:
         """
         c = self._check_c()
         result = [
-            self._get_node_d(p) for p in c.all_positions(copy=False)
+            self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_response({"position-data-list": result})
     #@+node:ekr.20210202110128.72: *5* lsc.get_body & get_body_length
@@ -310,7 +311,7 @@ class LeoServer:
         p = self._get_p(package)
         return self._make_response({
             # "children": [self._p_to_ap(child) for child in p.children()]
-            "children": [self._get_node_d(child) for child in p.children()]
+            "children": [self._get_position_d(child) for child in p.children()]
         })
     #@+node:ekr.20210202110128.69: *5* lsc.get_parent
     def get_parent(self, package):
@@ -330,7 +331,7 @@ class LeoServer:
         """
         c = self._check_c()
         result = {
-            p.v.gnx: self._get_node_d(p)
+            p.v.gnx: self._get_position_d(p)
                 for p in c.all_unique_positions(copy=False)
         }
         return self._make_response({"position-data-dict": result})
@@ -607,19 +608,6 @@ class LeoServer:
         # Félix: Caller can get focus using other calls.
         return self._make_response()
     #@+node:ekr.20210205102806.1: *4* lsc:server commands
-    #@+node:ekr.20210202110128.41: *5* lsc.apply_config
-    def apply_config(self, package):
-        """Got the configuration from client"""
-        tag = 'apply_config'
-        config = package.get("config")
-        if not config:  # pragma: no cover
-            raise ServerError(f"{tag}: no config")
-        self.config = config
-        return self._make_response()
-    #@+node:ekr.20210211082418.1: *5* lsc.echo
-    def echo(self, package):
-        """Echo the request."""
-        return self._make_response(package)
     #@+node:ekr.20210205102818.1: *5* lsc.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
@@ -1922,8 +1910,8 @@ class LeoServer:
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
-    #@+node:ekr.20210211053733.1: *4* lsc._get_node_d
-    def _get_node_d(self, p):
+    #@+node:ekr.20210211053733.1: *4* lsc._get_position_d
+    def _get_position_d(self, p):
         """
         Return a python dict containing:
         - "node": self._p_to_ap(p).
@@ -1996,7 +1984,7 @@ class LeoServer:
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
             # - All the *cheap* redraw data for p.
-            redraw_d = self._get_node_d(p)
+            redraw_d = self._get_position_d(p)
             for key, value in redraw_d.items():
                 assert key not in package, (key, package)
                 package [key] = value

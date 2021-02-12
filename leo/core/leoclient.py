@@ -150,6 +150,7 @@ def _get_action_list():
     import leoserver
     server = leoserver.LeoServer()
     file_name = "xyzzy.leo"
+    echo = False
     exclude_names = [
         # Dangerous at present.
         'delete_node', 'cut_node', 'save_file',
@@ -160,26 +161,26 @@ def _get_action_list():
     ]
     head = [
         ("get_sign_on", {}),
-        ("apply_config", {"config": {"whatever": True}}),
-        ("echo", {"echo": True}),
+        # ("apply_config", {"config": {"whatever": True}}),
+        # ("echo", {"echo": True}),
         ("error", {}),
         # ("bad_server_command", {}),
-        ("open_file", {"filename": file_name, "echo": True}),
+        ("open_file", {"filename": file_name, "echo": echo}),
     ]
     head_names = [name for (name, package) in head]
     tail = [
         # ("get_body_length", {}),  # All responses now contain len(p.b).
-        ("get_ua", {"echo":True}),
-        ("get_parent",  {"echo":True}),
-        ("get_children",  {"echo":True}),
+        ("get_ua", {"echo": echo}),
+        ("get_parent",  {"echo": echo}),
+        ("get_children",  {"echo": echo}),
         ("set_body", {"body": "new body"}),
         ("set_headline", {"headline": "new headline"}),
         ("execute-leo-command", {"leo-command-name": "contract-all"}),
         ("insert_node", {"headline": "inserted headline"}),
         ("contract_node", {}),
         ("close_file", {"filename": file_name}),
-        ("get_all_leo_commands", {"trace": True, "verbose": False}),
-        ("get_all_server_commands", {"trace": True, "verbose": False}),
+        ("get_all_leo_commands", {}), ### "trace": True, "verbose": False}),
+        ("get_all_server_commands", {}), ### {"trace": True, "verbose": False}),
         ("shut_down", {}),
     ]
     tail_names = [name for (name, package) in tail]
