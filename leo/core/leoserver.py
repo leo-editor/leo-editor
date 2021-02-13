@@ -62,8 +62,7 @@ class LeoServer:
         self.action = None
         self.bad_commands_list = []  # Set below.
         self.config = None
-        self.creation_time_d = {}  # Keys are commanders.
-                                   # values are server time stamps.
+        self.open_time_d = {}  # Keys are commanders. values are server time stamps.
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
         #
@@ -164,8 +163,7 @@ class LeoServer:
         # A (temporary?) hack:
         c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
         # Set the creation time. Similar to timestamps in gnx's.
-        self.creation_time_d [c] = time.strftime(
-            "%Y.%m.%d.%H.%M.%S",time.localtime())
+        self.open_time_d [c] = time.strftime("%Y.%m.%d.%H.%M.%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
@@ -181,10 +179,10 @@ class LeoServer:
         tag = 'close_file'
         c = self._check_c()
         # First, get the timestamp and the response describing the to-be-closed file.
-        timestamp = self.creation_time_d.get(c)
+        timestamp = self.open_time_d.get(c)
         response = self._make_response()
         # No matter what happens, kill the timestamp.
-        del self.creation_time_d [c]
+        del self.open_time_d [c]
         # Do the checks.
         if timestamp is None:  # pragma: no cover
             raise ServerError(f"{tag}: no timestamp for {c}")
@@ -256,7 +254,7 @@ class LeoServer:
         files = [
             {
                 "changed": c.isChanged(),
-                "creation-time": self.creation_time_d.get(c),
+                "open-time": self.open_time_d.get(c),
                 "name": c.fileName(),
                 "selected": c == self.c,
             } for c in g.app.commanders()
@@ -1983,7 +1981,7 @@ class LeoServer:
             # The cheap redraw data...
             "body-length": len(p.b),  # *Not* p.b.
             "has-children": p.hasChildren(),  # *Not* p.children().
-            "has-gnx": bool(p.gnx),  # *Not* p.gnx.
+            "has-ua": bool(p.v.u),  # *Not* p.v.u.
             "headline": p.h,
             "icon-val": p.v.iconVal,  # An int between 0 and 15.
             "is-at-file": p.isAnyAtFileNode(),
@@ -2038,7 +2036,7 @@ class LeoServer:
             p = p or c.p
             package ["commander"] = {
                 "changed": c.isChanged(),
-                "creation-time": self.creation_time_d.get(c),
+                "open-time": self.open_time_d.get(c),
                 "file_name": c.fileName(), # Can be None for new files.
             }
             # Add all the node data, including:
