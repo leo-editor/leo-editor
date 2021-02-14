@@ -267,7 +267,7 @@ class LeoServer:
         # _make_response adds all the cheap redraw data, including "body-length"
         return self._make_response({"body": p.b})
         
-    #@+node:ekr.20210202110128.66: *5* lsc.get_body_states (*** revise)
+    #@+node:ekr.20210202110128.66: *5* lsc.get_body_states
     def get_body_states(self, package):
         """
         Return body data for p, where p is c.p if package["ap"] is missing.
@@ -318,6 +318,7 @@ class LeoServer:
         states = {
             'language': language.lower(),
             'selection': {
+                # EKR: Not really needed. The reponse will have p.v.gnx.
                 "gnx": p.v.gnx,
                 "scroll": scroll,  # scroll was kept as-is
                 "active": {"line": activeRow, "col": activeCol},
