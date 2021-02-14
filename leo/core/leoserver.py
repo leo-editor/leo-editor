@@ -498,24 +498,24 @@ class LeoServer:
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
     #@+node:ekr.20210202110128.64: *5* lsc.page_down
-    def page_down(self, unused):
+    def page_down(self, package):
         """
-        Selects a node a couple of steps down in the tree to simulate page down.
+        Selects a node "n" steps down in the tree to simulate page down.
         """
         c = self._check_c()
-        c.selectVisNext()
-        c.selectVisNext()
-        c.selectVisNext()
+        n = package.get("n", 3)
+        for z in range(n):
+            c.selectVisNext()
         return self._make_response()
     #@+node:ekr.20210202110128.63: *5* lsc.page_up
-    def page_up(self, unused):
+    def page_up(self, package):
         """
-        Selects a node a couple of steps up in the tree to simulate page up.
+        Selects a node "N" steps up in the tree to simulate page up.
         """
         c = self._check_c()
-        c.selectVisBack()
-        c.selectVisBack()
-        c.selectVisBack()
+        n = package.get("n", 3)
+        for z in range(n):
+            c.selectVisBack()
         return self._make_response()
     #@+node:ekr.20210202183724.17: *5* lsc.redo
     def redo(self, package):
