@@ -275,21 +275,12 @@ class LeoServer:
         c = self._check_c()
         p = self._get_p(package)
         wrapper = c.frame.body.wrapper
-        defaultPosition = {"line": 0, "col": 0}
-        states = {
-            'language': 'plain',
-            # See BodySelectionInfo interface in types.d.ts
-            'selection': {
-                "gnx": p.v.gnx,
-                "scroll": {
-                    "start": defaultPosition,
-                    "end": defaultPosition
-                },
-                "active": defaultPosition,
-                "start": defaultPosition,
-                "end": defaultPosition
-            }
-        }
+        
+        def row_col_dict(i):
+            junk, line, col = wrapper.toPythonIndexRowCol(i)
+            return {"line": line, "col": col}
+            
+        # Get the language.
         aList = g.get_directives_dict_list(p)
         d = g.scanAtCommentAndAtLanguageDirectives(aList)
         language = (
@@ -298,32 +289,24 @@ class LeoServer:
             or c.config.getLanguage('target-language')
             or 'plain'
         )
-        scroll = p.v.scrollBarSpot
-        active = p.v.insertSpot
-        start = p.v.selectionStart
-        end = p.v.selectionStart + p.v.selectionLength
-        # get selection from wrapper instead if its the selected node
+        # get values from wrapper if it's the selected node.
         if c.p.v.gnx == p.v.gnx:
-            # print("in GBS -> SAME AS c.p SO USING FROM WRAPPER")
             active = wrapper.getInsertPoint()
             start, end = wrapper.getSelectionRange(True)
             scroll = wrapper.getYScrollPosition()
-
-        # TODO : This conversion for scroll position may be unneeded (consider as lines only)
-        # scrollI, scrollRow, scrollCol = c.frame.body.wrapper.toPythonIndexRowCol(Scroll)
-        # compute line and column for the insertion point, and the start & end of selection
-        activeI, activeRow, activeCol = c.frame.body.wrapper.toPythonIndexRowCol(active)
-        startI, startRow, startCol = c.frame.body.wrapper.toPythonIndexRowCol(start)
-        endI, endRow, endCol = c.frame.body.wrapper.toPythonIndexRowCol(end)
+        else:  # pragma: no cover
+            active = p.v.insertSpot
+            start = p.v.selectionStart
+            end = p.v.selectionStart + p.v.selectionLength
+            scroll = p.v.scrollBarSpot
         states = {
             'language': language.lower(),
             'selection': {
-                # EKR: Not really needed. The reponse will have p.v.gnx.
-                "gnx": p.v.gnx,
-                "scroll": scroll,  # scroll was kept as-is
-                "active": {"line": activeRow, "col": activeCol},
-                "start": {"line": startRow, "col": startCol},
-                "end": {"line": endRow, "col": endCol}
+                # "gnx": p.v.gnx,  # EKR: Not needed. The reponse will have p.v.gnx.
+                "scroll": scroll,
+                "active": row_col_dict(active),
+                "start": row_col_dict(start),
+                "end": row_col_dict(end),
             }
         }
         return self._make_response({"body-states": states})
