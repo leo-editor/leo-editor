@@ -1736,6 +1736,10 @@ class LeoServer:
     #@+node:ekr.20210205103759.1: *5* lsc.shut_down
     def shut_down(self, package):
         """Shut down the server."""
+        tag = 'shut_down'
+        n = len(g.app.commanders())
+        if n:  # pragma: no cover
+            raise ServerError(f"{tag}: {n} open outlines")
         raise TerminateServer(f"client requested shut down")
     #@+node:ekr.20210204154548.1: *3* lsc:server utils
     #@+node:ekr.20210202110128.85: *4* lsc._ap_to_p
