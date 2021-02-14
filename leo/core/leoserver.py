@@ -2172,7 +2172,7 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
                         server._do_message(message)
                     except Exception as e:
                         if method_name not in expected:
-                            print(f"fail: {method_name} {e}")
+                            print(f"Exception in test_most_public_server_methods: {method_name} {e}")
         finally:
             server.close_file({"filename": test_dot_leo})
     #@+node:ekr.20210208171319.1: *3* test.test_open_and_close
