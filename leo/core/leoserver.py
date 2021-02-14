@@ -62,7 +62,6 @@ class LeoServer:
         self.action = None
         self.bad_commands_list = []  # Set below.
         self.config = None
-        ### self.open_time_d = {}  # Keys are commanders. values are server time stamps.
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
         #
@@ -162,8 +161,6 @@ class LeoServer:
         self.c = c
         # A (temporary?) hack:
         c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
-        ### Set the creation time. Similar to timestamps in gnx's.
-        ### self.open_time_d [c] = time.strftime("%Y.%m.%d.%H.%M.%S",time.localtime())
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
@@ -172,30 +169,16 @@ class LeoServer:
         return self._make_response()
     #@+node:ekr.20210202110128.58: *5* lsc.close_file
     def close_file(self, package):
-        """
-        Closes a leo file. A file can then be opened with "open_file"
-        Returns an object that contains a 'closed' member
-        """
+        """Closes an outline opened with open_file."""
         c = self._check_c()
-        response = self._make_response()
-        ###
-            # tag = 'close_file'
-            # timestamp = self.open_time_d.get(c)
-            ## No matter what happens, kill the timestamp.
-            # del self.open_time_d [c]
-            # if timestamp is None:  # pragma: no cover
-                # raise ServerError(f"{tag}: no timestamp for {c}")
-            # Do the checks.
-            # if package.get("must-be-saved") and c.isChanged():  # pragma: no cover
-                # raise ServerError(f"{tag}: closing a changed outline: {c.fileName()}")
         # Close the outline, even if it is dirty!
         c.clearChanged()
         c.close()
         # Select the first open outline, if any.
         commanders = g.app.commanders()
         self.c = commanders and commanders[0] or None
-        # Return the response describing the closed file, not self.c.
-        return response
+        # Return a response describing self.c, not the closed outline.
+        return self._make_response()
     #@+node:ekr.20210202183724.1: *5* lsc.save_file
     def save_file(self, package):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
@@ -254,7 +237,6 @@ class LeoServer:
         files = [
             {
                 "changed": c.isChanged(),
-                ### "open-time": self.open_time_d.get(c),
                 "name": c.fileName(),
                 "selected": c == self.c,
             } for c in g.app.commanders()
@@ -2036,7 +2018,6 @@ class LeoServer:
             p = p or c.p
             package ["commander"] = {
                 "changed": c.isChanged(),
-                ### "open-time": self.open_time_d.get(c),
                 "file_name": c.fileName(), # Can be None for new files.
             }
             # Add all the node data, including:
