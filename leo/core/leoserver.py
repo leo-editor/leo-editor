@@ -320,6 +320,15 @@ class LeoServer:
             # "children": [self._p_to_ap(child) for child in p.children()]
             "children": [self._get_position_d(child) for child in p.children()]
         })
+    #@+node:ekr.20210214154702.1: *5* lsc.get_focus
+    def get_focus(self, packages):
+        """
+        Return a representation of the focs widget,
+        one of ("body", "tree", "headline", repr(the_widget)).
+        """
+        w = g.app.gui.get_focus()
+        focus = g.app.gui.widget_name(w)
+        return self._make_response({"focus": focus})
     #@+node:ekr.20210202110128.69: *5* lsc.get_parent
     def get_parent(self, package):
         """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
@@ -2135,10 +2144,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         expected = ['error']
         package_d = {
             # "apply_config": {"config": {"whatever": True}},
+            "get_focus": {"log": False},
             "set_body": {"body": "new body\n"},
             "set_headline": {"headline": "new headline"},
-            "get_all_server_commands": {"echo": False},
-            "get_all_leo_commands": {"echo": False},
+            "get_all_server_commands": {"log": False},
+            "get_all_leo_commands": {"log": False},
         }
         # First open a test file & performa all tests.
         server.open_file({"filename": test_dot_leo})  # A real file.
