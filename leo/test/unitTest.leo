@@ -181,7 +181,6 @@
 </v>
 <v t="ekr.20071113193527"><vh>leoFind</vh>
 <v t="ekr.20060130151716.3"><vh>@test minibuffer find commands</vh></v>
-<v t="ekr.20200219070324.1"><vh>@@test python -m leo.core.leoFind</vh></v>
 <v t="ekr.20190603184713.1"><vh>@test replace-all: plain search</vh></v>
 <v t="ekr.20190603192140.1"><vh>@test replace-all: plain search: ignore case</vh></v>
 <v t="ekr.20190603193938.1"><vh>@test replace-all: regex search</vh></v>
@@ -199,9 +198,12 @@
 </v>
 <v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
 </v>
+<v t="ekr.20210215043210.1"><vh>New-style unit tests</vh>
 <v t="ekr.20200219072300.1"><vh>@test python -m leo.core.leoGlobals</vh></v>
-<v t="ekr.20200219070324.1"></v>
+<v t="ekr.20200219070324.1"><vh>@@test python -m leo.core.leoFind</vh></v>
 <v t="ekr.20200219070034.1"><vh>@test python -m leo.core.leoAst</vh></v>
+<v t="ekr.20210215043324.1"><vh>@test python -m leo.core.leoserver</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1641,6 +1643,13 @@ g.run_unit_test_in_separate_process(command)
 import sys
 python = 'python3' if sys.platform == 'linux' else 'python'
 command = f'{python} -m unittest leo.core.leoGlobals'
+g.run_unit_test_in_separate_process(command)
+</t>
+<t tx="ekr.20210215043210.1"></t>
+<t tx="ekr.20210215043324.1">#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoserver'
 g.run_unit_test_in_separate_process(command)
 </t>
 </tnodes>
