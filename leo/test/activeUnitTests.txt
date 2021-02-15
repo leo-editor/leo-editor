@@ -648,12 +648,6 @@ s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tok
 assert s
 controller = msf.StandAloneMakeStubFile()
 msf.StubTraverser(controller).visit(node)
-#@+node:ekr.20200219070034.1: *4* @test python -m leo.core.leoAst
-#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoAst'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
@@ -11874,12 +11868,6 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
-#@+node:ekr.20200219070324.1: *4* @@test python -m leo.core.leoFind
-#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoFind'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
 fc = c.findCommands
 
@@ -12953,12 +12941,6 @@ else:
 #@+node:ekr.20050208135429: *4* @test pre-definition of g in scripts
 for ivar in ('c','g','p'):
     assert ivar in dir()
-#@+node:ekr.20200219072300.1: *4* @test python -m leo.core.leoGlobals
-#1498: Run per-file unit tests from unitTest.leo.
-import sys
-python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoGlobals'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
@@ -27615,6 +27597,31 @@ if hasattr(c,'theScriptingController'):
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
+#@+node:ekr.20210215043210.1: ** New-style unit tests
+#@+node:ekr.20200219072300.1: *3* @test python -m leo.core.leoGlobals
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoGlobals'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219070324.1: *3* @@test python -m leo.core.leoFind
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoFind'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219070034.1: *3* @test python -m leo.core.leoAst
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoAst'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20210215043324.1: *3* @test python -m leo.core.leoserver
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoserver'
+g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20100205231441.5386: *3* @test at.checkPythonSyntax
 at = c.atFileCommands

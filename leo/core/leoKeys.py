@@ -2037,7 +2037,7 @@ class KeyHandlerClass:
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
                 g.es_print('exception binding', shortcut, 'to', commandName)
-                g.es_print_exception()
+                g.print_exception()
                 g.app.menuWarningsGiven = True
             return False
 

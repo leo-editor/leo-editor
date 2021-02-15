@@ -6569,8 +6569,8 @@ def es_print(*args, **keys):
     g.pr(*args, **keys)
     if g.app and not g.app.unitTesting:
         g.es(*args, **keys)
-#@+node:ekr.20111107181638.9741: *3* g.es_print_exception
-def es_print_exception(full=True, c=None, color="red"):
+#@+node:ekr.20111107181638.9741: *3* g.print_exception
+def print_exception(full=True, c=None, flush=False, color="red"):
     """Print exception info about the last exception."""
     typ, val, tb = sys.exc_info()
         # val is the second argument to the raise statement.
@@ -6578,7 +6578,7 @@ def es_print_exception(full=True, c=None, color="red"):
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)
-    print(''.join(lines))
+    print(''.join(lines), flush=True)
     try:
         fileName, n = g.getLastTracebackFileAndLineNumber()
         return fileName, n
