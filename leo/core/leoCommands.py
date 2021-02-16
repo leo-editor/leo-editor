@@ -1408,25 +1408,6 @@ class Commands:
 
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@+node:ekr.20031218072017.3404: *5* c.trimTrailingLines
-    def trimTrailingLines(self, p):
-        """Trims trailing blank lines from a node.
-
-        It is surprising difficult to do this during Untangle."""
-        ### c = self
-        body = p.b
-        lines = body.split('\n')
-        i = len(lines) - 1; changed = False
-        while i >= 0:
-            line = lines[i]
-            j = g.skip_ws(line, 0)
-            if j + 1 == len(line):
-                del lines[i]
-                i -= 1; changed = True
-            else: break
-        if changed:
-            p.b = ''.join(body) + '\n'  # Add back one last newline.
-            # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
