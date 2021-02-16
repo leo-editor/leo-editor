@@ -484,7 +484,7 @@ class StringGui(LeoGui):
     def runMainLoop(self):
         self.oops()
     #@-others
-#@+node:ekr.20171128093503.1: ** class StringLineEdit
+#@+node:ekr.20171128093503.1: ** class StringLineEdit (leoGui)
 class StringLineEdit:
 
     """Simulate a QLineEdit."""

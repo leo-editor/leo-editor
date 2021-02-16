@@ -337,8 +337,8 @@ class LeoFind:
         self._save_before_find_def(p)  # Save previous settings.
         self.init_vim_search(find_pattern)
         self.update_change_list(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
+        settings = self._compute_find_def_settings(find_pattern)
         self.do_find_def(settings, word, strict)
 
     def find_def_strict(self, event=None):  #pragma: no cover (cmd)
@@ -347,7 +347,7 @@ class LeoFind:
 
     def do_find_def(self, settings, word, strict):
         """A standalone helper for unit tests."""
-        return self._fd_helper(settings, word, def_flag=True, strict=False)
+        return self._fd_helper(settings, word, def_flag=True, strict=strict)
 
     #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
     def _compute_find_def_settings(self, find_pattern):
@@ -370,6 +370,7 @@ class LeoFind:
             # Set the values.
             setattr(self, attr, val)
             settings[attr] = val
+        g.printObj(settings, tag='_compute_find_def_settings returns')  ###
         return settings
     #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
     def _compute_find_def_word(self, event):
@@ -399,7 +400,15 @@ class LeoFind:
         return p, pos, newpos for unit tests.
         """
         c, find, ftm = self.c, self, self.ftm
+        #
+        # Recompute find_text for unit tests.
         prefix = 'class' if word[0].isupper() else 'def'
+        self.find_text = settings.find_text = prefix + ' ' + word
+        # g.printObj(settings, tag='_fd_helper: settings')
+        #
+        # Just search body text.
+        self.search_headline = False
+        self.search_body = True
         w = c.frame.body.wrapper
         # Check.
         if not w:
@@ -427,6 +436,7 @@ class LeoFind:
         if not found and def_flag and not strict:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
             word2 = self._switch_style(word)
+            p = c.rootPosition()  # Bug fix.
             if word2:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
@@ -2929,18 +2939,21 @@ class TestFind(unittest.TestCase):
 
         # pylint: disable=import-self
         from leo.core import leoFind
+        from leo.core.leoGui import StringLineEdit
         from leo.plugins.qt_frame import FindTabManager
-
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
         self.x = leoFind.LeoFind(c)
+        # Set c.p in the command.
+        self.x.c.selectPosition(self.c.rootPosition())
         self.x.ftm = FindTabManager(c)
+        # x.ftm must have find_findbox for set_find_text.
+        self.x.ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
         self.settings = self.x.default_settings()
         self.make_test_tree()
 
     def tearDown(self):
         g.unitTesting = False
-
     #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
     def test_tree(self):
         table = (
@@ -2961,6 +2974,32 @@ class TestFind(unittest.TestCase):
             # print(' '*p.level(), p.h)
             # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
+    #@+node:ekr.20210216044541.1: *4* passed tests
+    if 0:
+        #@+others
+        #@+node:ekr.20210110073117.64: *5* TestFind.find-next & find-prev
+        def test_find_next(self):
+            c, settings, x = self.c, self.settings, self.x
+            settings.find_text = 'def top1'
+            # find-next
+            p, pos, newpos = x.do_find_next(settings)
+            assert p and p.h == 'Node 1', p.h
+            s = p.b[pos:newpos]
+            assert s == settings.find_text, repr(s)
+            # find-prev: starts at end, so we stay in the node.
+            last = c.lastTopLevel()
+            child = last.firstChild()
+            grand_child = child.firstChild()
+            assert grand_child.h == 'child 6', grand_child.h
+            settings.p = grand_child.copy()
+            settings.find_text = 'def child2'
+            # Set c.p in the command.
+            x.c.selectPosition(x.rootPosition())
+            p, pos, newpos = x.do_find_prev(settings)
+            assert p.h == 'child 2', p.h
+            s = p.b[pos:newpos]
+            assert s == settings.find_text, repr(s)
+        #@-others
     #@+node:ekr.20210215122612.1: *4* suppress tests
     if 0:
         #@+others
@@ -3031,23 +3070,6 @@ class TestFind(unittest.TestCase):
             settings.search_headline = False
             settings.p.setVisited()
             x.do_find_all(settings)
-        #@+node:ekr.20210110073117.65: *5* TestFind.find-def
-        def test_find_def(self):
-            c, settings, x = self.c, self.settings, self.x
-            root = c.rootPosition()
-            settings.find_text = 'child5'
-            # Test 1.
-            p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
-            assert p and p.h == 'child 5'
-            s = p.b[pos:newpos]
-            assert s == 'def child5', repr(s)
-            # Test 2: switch style.
-            settings.find_text = 'child_5'
-            x.find_def(settings)
-            # Test3: not found after switching style.
-            settings.p = root.next()
-            settings.find_text = 'def notFound'
-            x.find_def(settings)
         #@+node:ekr.20210113221831.1: *5* TestFind.find_def_use_cff
         def test_find_def_use_cff(self):
             settings, x = self.settings, self.x
@@ -3187,28 +3209,21 @@ class TestFind(unittest.TestCase):
             c.theTagController = DummyTagController()
             x.do_tag_children(p, 'test')
         #@-others
-    #@+node:ekr.20210110073117.64: *4* TestFind.find-next & find-prev
-    def test_find_next(self):
-        c, settings, x = self.c, self.settings, self.x
-        self.dump_tree()
-        settings.find_text = 'def top1'
-        # find-next
-        p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == 'Node 1', p.h
+    #@+node:ekr.20210110073117.65: *4* TestFind.find-def
+    def test_find_def(self):
+        settings, x = self.settings, self.x
+        # self.dump_tree()
+        # Test 1.
+        p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
+        assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
         s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)
-        # find-prev: starts at end, so we stay in the node.
-        last = c.lastTopLevel()
-        child = last.firstChild()
-        grand_child = child.firstChild()
-        assert grand_child.h == 'child 6', grand_child.h
-        settings.p = grand_child.copy()
-        settings.find_text = 'def child2'
-        x.c.selectPosition(grand_child.copy())  ### Temp bug fix.
-        p, pos, newpos = x.do_find_prev(settings)
-        assert p.h == 'child 2', p.h
-        s = p.b[pos:newpos]
-        assert s == settings.find_text, repr(s)
+        assert s == 'def child5', repr(s)
+        # Test 2: switch style.
+        p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
+        assert p and p.h == 'child 5', repr(p and p.h)  # Test 2.
+        # Test3: not found after switching style.
+        p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
+        assert p is None, repr(p)  # Test 3.
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
     if 0:
         #@+others
