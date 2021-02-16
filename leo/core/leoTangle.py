@@ -877,10 +877,9 @@ class BaseTangleCommands:
         whitespace and remove leading whitespace from the updated definition.
         '''
         #@-<< skip_body docstring >>
-        c = self.c
+        # c = self.c
         s = p.b
         code = doc = None; i = 0
-        anyChanged = False
         if self.start_mode == "code":
             j = g.skip_blank_lines(s, i)
             i, code, new_delims, reflist = self.skip_code(s, j, delims)
@@ -899,7 +898,6 @@ class BaseTangleCommands:
                         else:
                             head = s[: j]; tail = s[i:]
                             s, i, changed = self.update_def(self.header, part, head, code, tail)
-                            if changed: anyChanged = True
                     code = doc = None
                 # leading code without a header name gets silently dropped
                 #@-<< Define a section for a leading code part >>
@@ -961,7 +959,6 @@ class BaseTangleCommands:
                         else:
                             head = s[: j]; tail = s[i:]
                             s, i, changed = self.update_def(section_name, part, head, code, tail)
-                            if changed: anyChanged = True
                 #@-<<process normal section>>
                 code = None
                 doc = ''
@@ -996,7 +993,6 @@ class BaseTangleCommands:
                             else:
                                 head = s[: j]; tail = s[i:]
                                 s, i, changed = self.update_def(section_name, part, head, code, tail)
-                                if changed: anyChanged = True
                     #@-<<process normal section>>
                 else:
                     self.error("@c expects the headline: " + self.header + " to contain a section name")
@@ -1027,7 +1023,6 @@ class BaseTangleCommands:
                         part = 1 # Use 1 for root part.
                         head = s[: j]; tail = s[k:]
                         s, i, changed = self.update_def(old_root_name, part, head, code, tail, is_root_flag=True)
-                        if changed: anyChanged = True
                 code = None
                 doc = ''
                 #@-<< Scan and define a root section >>
@@ -1038,9 +1033,11 @@ class BaseTangleCommands:
             else:
                 i = g.skip_line(s, i)
             assert(progress < i) # we must make progress!
-        # Only call trimTrailingLines if we have changed its body.
-        if anyChanged:
-            c.trimTrailingLines(p)
+        #  2021/02/16: Due to a bug, c.trimTrailingLines did nothing.
+        #              The @root logic is frozen (and deprecated),
+        #              so I'll just remove the call (and the method).
+        # if anyChanged:
+            # c.trimTrailingLines(p)
         return delims
     #@+node:sps.20100618004337.20965: *5* skip_code
     #@+at
