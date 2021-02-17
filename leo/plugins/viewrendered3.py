@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.01
+About Viewrendered3 V3.02
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -2551,13 +2551,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
             """Return the language and tag for a line beginning with ".. code::"."""
-
+            global _in_code_block
             _fields = line.split('.. code::')
             if len(_fields) > 1:
                 _lang = _fields[1].strip()
             else:
                 _lang = PYTHON # Standard RsT default.
             _tag = CODE if _lang in LANGUAGES else TEXT
+            _in_code_block = _tag == CODE
 
             return _lang, _tag
 
@@ -2592,7 +2593,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for i, line in enumerate(lines):
             #@+<< omit at-others >>
             #@+node:TomP.20200909123019.1: *7* << omit at-others >>
-            # Omit lines starting with [blank]*line =     @others
+            # Omit lines starting with [blank]*line = @others
             left = line.lstrip()
             if left.startswith('@others'):
                 continue
@@ -2714,8 +2715,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             break
             elif line.find('@language') == 0 and not _in_quotes:
                 _got_language = True
+                _language = line.split()[1]
                 _in_rst_block = False
-                _in_code_block = True
+                _in_code_block = _language in LANGUAGES
             #@-<< identify_code_blocks >>
             #@+<< fill_chunks >>
             #@+node:TomP.20200112103729.5: *7* << fill_chunks >>
@@ -3452,7 +3454,7 @@ class StateMachine:
         if next == State.TO_BE_COMPUTED:
             # Need to know if this line specified a code or text language.
             # Only known case is if we are in an @language code block
-            # And encounter another @language block.
+            # and encounter another @language block.
             if tag == CODE:
                 next = State.AT_LANG_CODE
                 #_lang = language
@@ -3547,7 +3549,7 @@ class StateMachine:
 
         # For debugging
         if line.startswith('#%%%%'):
-            g.es('====', self.state, self.lang, self.current_chunk.language, self.current_chunk.tag)
+            g.es(f'==== state: {self.state}, lang: {self.lang}, chunk_lang: {self.current_chunk.language}, tag: {self.current_chunk.tag}')
             return(None, None, None)
 
         # Omit lines between @ and @c
@@ -3590,7 +3592,8 @@ class StateMachine:
     State_table = { # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER):  (Action.new_chunk, State.AT_LANG_CODE),
-        (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
+        #(State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
+        (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
         (State.BASE, Marker.MARKER_NONE):         (Action.add_line, State.BASE),
 
         # When we encounter a new @language line, the next state might be either
