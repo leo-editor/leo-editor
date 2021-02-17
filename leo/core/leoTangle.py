@@ -858,7 +858,7 @@ class BaseTangleCommands:
             i += 2 # Skip a CWEB control code.
         else: assert(False)
         return i, done, delims
-    #@+node:sps.20100618004337.20951: *5* skip_body
+    #@+node:sps.20100618004337.20951: *5* tangleCommands.skip_body & trimTrailingLines
     # This method handles all the body text.
 
     def skip_body(self, p, delims):
@@ -880,6 +880,7 @@ class BaseTangleCommands:
         # c = self.c
         s = p.b
         code = doc = None; i = 0
+        anyChanged = False
         if self.start_mode == "code":
             j = g.skip_blank_lines(s, i)
             i, code, new_delims, reflist = self.skip_code(s, j, delims)
@@ -898,6 +899,7 @@ class BaseTangleCommands:
                         else:
                             head = s[: j]; tail = s[i:]
                             s, i, changed = self.update_def(self.header, part, head, code, tail)
+                            if changed: anyChanged = True
                     code = doc = None
                 # leading code without a header name gets silently dropped
                 #@-<< Define a section for a leading code part >>
@@ -959,6 +961,7 @@ class BaseTangleCommands:
                         else:
                             head = s[: j]; tail = s[i:]
                             s, i, changed = self.update_def(section_name, part, head, code, tail)
+                            if changed: anyChanged = True
                 #@-<<process normal section>>
                 code = None
                 doc = ''
@@ -993,6 +996,7 @@ class BaseTangleCommands:
                             else:
                                 head = s[: j]; tail = s[i:]
                                 s, i, changed = self.update_def(section_name, part, head, code, tail)
+                                if changed: anyChanged = True
                     #@-<<process normal section>>
                 else:
                     self.error("@c expects the headline: " + self.header + " to contain a section name")
@@ -1023,6 +1027,7 @@ class BaseTangleCommands:
                         part = 1 # Use 1 for root part.
                         head = s[: j]; tail = s[k:]
                         s, i, changed = self.update_def(old_root_name, part, head, code, tail, is_root_flag=True)
+                        if changed: anyChanged = True
                 code = None
                 doc = ''
                 #@-<< Scan and define a root section >>
@@ -1033,12 +1038,29 @@ class BaseTangleCommands:
             else:
                 i = g.skip_line(s, i)
             assert(progress < i) # we must make progress!
-        #  2021/02/16: Due to a bug, c.trimTrailingLines did nothing.
-        #              The @root logic is frozen (and deprecated),
-        #              so I'll just remove the call (and the method).
-        # if anyChanged:
-            # c.trimTrailingLines(p)
+        # Only call trimTrailingLines if we have changed its body.
+        if anyChanged:
+            self.trimTrailingLines(p)
         return delims
+    #@+node:ekr.20210217060252.1: *6* tangleCommands.trimTrailingLines
+    def trimTrailingLines(self, p):
+        """Trims trailing blank lines from a node.
+
+        It is surprising difficult to do this during Untangle."""
+        ### c = self
+        body = p.b
+        lines = body.split('\n')
+        i = len(lines) - 1; changed = False
+        while i >= 0:
+            line = lines[i]
+            j = g.skip_ws(line, 0)
+            if j + 1 == len(line):
+                del lines[i]
+                i -= 1; changed = True
+            else: break
+        if changed:
+            p.b = ''.join(body) + '\n'  # Add back one last newline.
+            # Don't set the dirty bit: it would just be annoying.
     #@+node:sps.20100618004337.20965: *5* skip_code
     #@+at
     # This method skips an entire code section. The caller is responsible
