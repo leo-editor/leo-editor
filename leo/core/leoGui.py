@@ -449,7 +449,7 @@ class NullScriptingControllerClass:
 
     def createAllButtons(self):
         pass
-#@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
+#@+node:ekr.20171128093401.1: ** class StringCheckBox
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
@@ -469,7 +469,7 @@ class StringCheckBox:
 
     def toggle(self):
         self.value = not self.value
-#@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
+#@+node:ekr.20170613095422.1: ** class StringGui (LeoGui)
 class StringGui(LeoGui):
     """
     A class representing all on-screen objects using subclasses of the
@@ -484,7 +484,7 @@ class StringGui(LeoGui):
     def runMainLoop(self):
         self.oops()
     #@-others
-#@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
+#@+node:ekr.20171128093503.1: ** class StringLineEdit
 class StringLineEdit:
 
     """Simulate a QLineEdit."""
@@ -510,7 +510,7 @@ class StringLineEdit:
 
     def text(self):
         return self.s
-#@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
+#@+node:ekr.20171128093602.1: ** class StringRadioButton
 class StringRadioButton:
 
     """Simulate QRadioButton."""

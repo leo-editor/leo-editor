@@ -1938,6 +1938,7 @@ class NullTree(LeoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
+        self.treeWidget = g.NullObject()
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
@@ -2075,10 +2076,12 @@ class StringTextWrapper:
     def delete(self, i, j=None):
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
         self.setAllText(s[:i] + s[j:])
         # Bug fix: 2011/11/13: Significant in external tests.
@@ -2092,7 +2095,8 @@ class StringTextWrapper:
     def get(self, i, j=None):
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
@@ -2156,7 +2160,8 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
     def setInsertPoint(self, pos, s=None):
         """StringTextWrapper."""
-        self.virtualInsertPoint = i = self.toPythonIndex(pos)
+        i = self.toPythonIndex(pos)
+        self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
@@ -2167,7 +2172,13 @@ class StringTextWrapper:
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
-        """StringTextWrapper."""
+        """
+        StringTextWrapper.toPythonIndex.
+        
+        Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
+        
+        Unit tests *do* use non-integer indices, so removing this method would be tricky.
+        """
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):

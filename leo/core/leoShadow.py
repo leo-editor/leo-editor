@@ -542,7 +542,7 @@ class ShadowController:
             except IOError:
                 g.es_exception()
                 g.es_print('can not open', fileName)
-    #@+node:ekr.20080709062932.2: *3* class x.AtShadowTestCase
+    #@+node:ekr.20080709062932.2: *3* class x.AtShadowTestCase (leoShadow.py)
     class AtShadowTestCase(unittest.TestCase):
         """
         Support @shadow-test nodes.

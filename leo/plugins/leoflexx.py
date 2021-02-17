@@ -1021,9 +1021,9 @@ class LeoBrowserApp(flx.PyComponent):
         fc = c.findCommands
         
         class DummyFTM:
-            def getFindText(self):
+            def get_find_text(self):
                 return pattern
-            def getReplaceText(self):
+            def get_change_text(self):
                 return ''
 
         # Init the search.
@@ -1036,7 +1036,7 @@ class LeoBrowserApp(flx.PyComponent):
             fc.pattern_match = False
             fc.in_headline = False
             fc.search_body = True
-            fc.was_in_headline = False
+            ### fc.was_in_headline = False
             fc.wrapping = False
         # Do the search.
         fc.findNext()

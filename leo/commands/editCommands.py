@@ -1550,7 +1550,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.beginCommand(w, undoType='insert-newline-and-indent')
         oldSel = w.getSelectionRange()
         self.insertNewlineHelper(w=w, oldSel=oldSel, undoType=None)
-        self.updateTab(p, w, smartTab=False)
+        self.updateTab(event, p, w, smartTab=False)
         k.setInputState('insert')
         k.showStateAndMode()
         self.endCommand(changed=True, setLabel=False)
@@ -1686,7 +1686,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return
         if ch == '\t':
-            self.updateTab(p, w, smartTab=True)
+            self.updateTab(event, p, w, smartTab=True)
         elif ch == '\b':
             # This is correct: we only come here if there no bindngs for this key.
             self.backwardDeleteCharacter(event)
@@ -1897,7 +1897,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, ch)
                 w.setInsertPoint(i + 1)
     #@+node:ekr.20150514063305.277: *5* ec.updateTab
-    def updateTab(self, p, w, smartTab=True):
+    def updateTab(self, event, p, w, smartTab=True):
         """
         A helper for selfInsertCommand.
 
@@ -1907,7 +1907,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
         if i != j:
-            c.indentBody()
+            c.indentBody(event)
             return
         tab_width = c.getTabWidth(p)
         # Get the preceeding characters.

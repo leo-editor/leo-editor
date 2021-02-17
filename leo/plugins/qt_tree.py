@@ -731,8 +731,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # enters editing state.
             if auto_edit and self.auto_edit:
                 e, wrapper = self.createTreeEditorForItem(item)
-            # 2014/10/26: Reset find vars.
-            c.findCommands.reset_state_ivars()
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed

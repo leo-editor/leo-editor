@@ -305,7 +305,7 @@ class BridgeController:
                 if c:
                     return c
             elif not self.silentMode:
-                print(f"file not found: {fileName}. creating new window")
+                print(f"file not found: {fileName}. creating new outline")
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
         frame = c.frame

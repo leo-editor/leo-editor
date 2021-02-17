@@ -809,16 +809,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
             ('box', '&Ignore case', 1, 0),
             ('rb', '&Suboutline only', 1, 1),
             # Third row.
-            ('box', 'wrap &Around', 2, 0),
+            ('box', 'rege&Xp', 2, 0),
             ('rb', '&Node only', 2, 1),
             # Fourth row.
-            ('box', 'rege&Xp', 3, 0),
+            ('box', 'mark &Finds', 3, 0),
             ('box', 'search &Headline', 3, 1),
             # Fifth row.
-            ('box', 'mark &Finds', 4, 0),
+            ('box', 'mark &Changes', 4, 0),
             ('box', 'search &Body', 4, 1),
             # Sixth row.
-            ('box', 'mark &Changes', 5, 0),
+            # ('box', 'wrap &Around', 5, 0),
             # a,b,c,e,f,h,i,n,rs,w
         )
         for kind, label, row2, col in table:
@@ -843,14 +843,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0, 2, 'findButton', 'find-next'),
-            (1, 2, 'findPreviousButton', 'find-prev'),
-            (2, 2, 'findAllButton', 'find-all'),
-            (3, 2, 'changeButton', 'replace'),
-            (4, 2, 'changeThenFindButton', 'replace-then-find'),
-            (5, 2, 'changeAllButton', 'replace-all'),
+            (0, 2, 'find-next'),  # 'findButton', 
+            (1, 2, 'find-prev'),  # 'findPreviousButton', 
+            (2, 2, 'find-all'),   # 'findAllButton', 
+            (3, 2, 'replace'),    # 'changeButton', 
+            (4, 2, 'replace-then-find'), # 'changeThenFindButton', 
+            (5, 2, 'replace-all'), # 'changeAllButton', 
         )
-        for row2, col, func_name, cmd_name in table:
+        for row2, col, cmd_name in table:
             stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
                 label = f"{cmd_name}:  {k.prettyPrintKey(stroke)}"
@@ -980,29 +980,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             #@-others
         #@-others
         EventWrapper(
-            c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.findNextCommand)
+            c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
         EventWrapper(
-            c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.findNextCommand)
-
-        if 0:  # #1342: These are no longer needed, because there are no buttons.
-            table = (
-                ('findNextCommand', 'find-next'),
-                ('findPrevCommand', 'find-prev'),
-                ('findAll', 'find-all'),
-                ('changeCommand', 'replace'),
-                ('changeThenFind', 'replace-then-find'),
-                ('changeAll', 'replace-all'),
-            )
-            for func_name, cmd_name in table:
-                ivar = f"{cmd_name}-{'button'}"
-                ivar = ivar.replace('-', '_')
-                w = getattr(ftm, ivar, None)
-                func = getattr(fc, func_name, None)
-                if w and func:
-                    next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
-                    EventWrapper(c, w=w, next_w=next_w, func=func)
-                else:
-                    g.trace('**oops**')
+            c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
     #@+node:ekr.20110605121601.18168: *4* dw.utils
@@ -1073,7 +1053,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
     #@-others
-#@+node:ekr.20131117054619.16698: ** class FindTabManager
+#@+node:ekr.20131117054619.16698: ** class FindTabManager (qt_frame.py)
 class FindTabManager:
     """A helper class for the LeoFind class."""
     #@+others
@@ -1093,7 +1073,7 @@ class FindTabManager:
         self.check_box_search_body = None
         self.check_box_search_headline = None
         self.check_box_whole_word = None
-        self.check_box_wrap_around = None
+        # self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
@@ -1107,27 +1087,55 @@ class FindTabManager:
         self.replace_then_find_button = None
         self.replace_all_button = None
     #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
-    def getFindText(self):
-        return self.find_findbox.text()
+    def get_find_text(self):
+        s = self.find_findbox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
 
-    def getReplaceText(self):
-        return self.find_replacebox.text()
+    def get_change_text(self):
+        s = self.find_replacebox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
 
-    getChangeText = getReplaceText
+    getChangeText = get_change_text
 
-    def setFindText(self, s):
+    def set_find_text(self, s):
         w = self.find_findbox
         s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
 
-    def setReplaceText(self, s):
+    def set_change_text(self, s):
         w = self.find_replacebox
         s = g.checkUnicode(s)
         w.clear()
         w.insert(s)
-
-    setChangeText = setReplaceText
+    #@+node:ekr.20210110143917.1: *3* ftm.get_settings
+    def get_settings(self):
+        """
+        Return a g.bunch representing all widget values.
+        
+        Similar to LeoFind.default_settings, but only for find-tab values.
+        """
+        return g.Bunch(
+            # Find/change strings...
+            find_text = self.find_findbox.text(),
+            change_text = self.find_replacebox.text(),
+            # Find options...
+            ignore_case = self.check_box_ignore_case.isChecked(),
+            mark_changes = self.check_box_mark_changes.isChecked(),
+            mark_finds = self.check_box_mark_finds.isChecked(),
+            node_only = self.radio_button_node_only.isChecked(),
+            pattern_match = self.check_box_regexp.isChecked(),
+            # reverse = False,
+            search_body =  self.check_box_search_body.isChecked(),
+            search_headline = self.check_box_search_headline.isChecked(),
+            suboutline_only = self.radio_button_suboutline_only.isChecked(),
+            whole_word = self.check_box_whole_word.isChecked(),
+            # wrapping = self.check_box_wrap_around.isChecked(),
+        )
     #@+node:ekr.20131119185305.16478: *3* ftm.clear_focus & init_focus & set_entry_focus
     def clear_focus(self):
         self.entry_focus = None
@@ -1185,7 +1193,7 @@ class FindTabManager:
             ('search_body', self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word', self.check_box_whole_word),
-            ('wrap', self.check_box_wrap_around),
+            # ('wrap', self.check_box_wrap_around),
         )
         for setting_name, w in table:
             val = c.config.getBool(setting_name, default=False)
@@ -1223,7 +1231,6 @@ class FindTabManager:
 
             def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
                 val = w.isChecked()
-                find.radioButtonsChanged = True
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
@@ -1245,12 +1252,14 @@ class FindTabManager:
             'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
-        assert w
+        if not w:
+            ### g.trace('no button for', name)
+            return  ### Valid???
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
         if find.minibuffer_mode:
-            find.showFindOptionsInStatusArea()
+            find.show_find_options_in_status_area()
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
     #@@nobeautify
 
@@ -1268,14 +1277,14 @@ class FindTabManager:
             'search_body':     self.check_box_search_body,
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
-            'wrap':            self.check_box_wrap_around,
+            # 'wrap':            self.check_box_wrap_around,
         }
         w = d.get(checkbox_name)
         assert w
         assert hasattr(find,checkbox_name),checkbox_name
         w.toggle() # The checkbox callback toggles the ivar.
         if find.minibuffer_mode:
-            find.showFindOptionsInStatusArea()
+            find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
 class LeoBaseTabWidget(QtWidgets.QTabWidget):

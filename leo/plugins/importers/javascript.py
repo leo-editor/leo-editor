@@ -521,7 +521,7 @@ class JsLexer(Lexer):
 
 
     #@-others
-#@+node:ekr.20200131070055.1: ** class TestJSImporter
+#@+node:ekr.20200131070055.1: ** class TestJSImporter (importers/javascript.py)
 class TestJSImporter(unittest.TestCase):
     #@+others
     #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments

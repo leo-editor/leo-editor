@@ -1408,25 +1408,6 @@ class Commands:
 
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@+node:ekr.20031218072017.3404: *5* c.trimTrailingLines
-    def trimTrailingLines(self, p):
-        """Trims trailing blank lines from a node.
-
-        It is surprising difficult to do this during Untangle."""
-        ### c = self
-        body = p.b
-        lines = body.split('\n')
-        i = len(lines) - 1; changed = False
-        while i >= 0:
-            line = lines[i]
-            j = g.skip_ws(line, 0)
-            if j + 1 == len(line):
-                del lines[i]
-                i -= 1; changed = True
-            else: break
-        if changed:
-            p.b = ''.join(body) + '\n'  # Add back one last newline.
-            # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
@@ -1670,12 +1651,12 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event=None, unittest=False, ignoreAtIgnore=True):
+    def checkAllPythonCode(self, event=None, unittestFlag=False, ignoreAtIgnore=True):
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
         for p in c.all_unique_positions():
             count += 1
-            if not unittest:
+            if not unittestFlag:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.2: *5* << print dots >>
                 if count % 100 == 0:
@@ -1688,29 +1669,29 @@ class Commands:
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
                     try:
-                        c.checkPythonNode(p, unittest)
+                        c.checkPythonNode(p, unittestFlag)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-                    if unittest and result != "ok":
+                    if unittestFlag and result != "ok":
                         g.pr(f"Syntax error in {p.h}")
                         return result  # End the unit test: it has failed.
-        if not unittest:
+        if not unittestFlag:
             g.blue("check complete")
         return result
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(self, event=None,
-        unittest=False, ignoreAtIgnore=True,
+        unittestFlag=False, ignoreAtIgnore=True,
         suppressErrors=False, checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
-        if not unittest:
+        if not unittestFlag:
             g.es("checking Python code   ")
         for p in c.p.self_and_subtree():
             count += 1
-            if not unittest and not checkOnSave:
+            if not unittestFlag and not checkOnSave:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.4: *5* << print dots >>
                 if count % 100 == 0:
@@ -1721,17 +1702,17 @@ class Commands:
             if g.scanForAtLanguage(c, p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
-                        c.checkPythonNode(p, unittest, suppressErrors)
+                        c.checkPythonNode(p, unittestFlag, suppressErrors)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-        if not unittest:
+        if not unittestFlag:
             g.blue("check complete")
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
     #@+node:ekr.20040723094220.5: *4* c.checkPythonNode
-    def checkPythonNode(self, p, unittest=False, suppressErrors=False):
+    def checkPythonNode(self, p, unittestFlag=False, suppressErrors=False):
         c = self; h = p.h
         # Call getScript to ignore directives and section references.
         body = g.getScript(c, p.copy())
@@ -1739,20 +1720,20 @@ class Commands:
         try:
             fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
-            c.tabNannyNode(p, h, body, unittest, suppressErrors)
+            c.tabNannyNode(p, h, body, unittestFlag, suppressErrors)
         except SyntaxError:
             if not suppressErrors:
                 g.warning(f"Syntax error in: {h}")
                 g.es_exception(full=False, color="black")
-            if unittest: raise
+            if unittestFlag: raise
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
-            if unittest: raise
+            if unittestFlag: raise
     #@+node:ekr.20040723094220.6: *4* c.tabNannyNode
     # This code is based on tabnanny.check.
 
-    def tabNannyNode(self, p, headline, body, unittest=False, suppressErrors=False):
+    def tabNannyNode(self, p, headline, body, unittestFlag=False, suppressErrors=False):
         """Check indentation using tabnanny."""
         # c = self
         try:
@@ -1763,13 +1744,13 @@ class Commands:
             if not suppressErrors:
                 g.warning("IndentationError in", headline)
                 g.es('', msg)
-            if unittest: raise
+            if unittestFlag: raise
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if not suppressErrors:
                 g.warning("TokenError in", headline)
                 g.es('', msg)
-            if unittest: raise
+            if unittestFlag: raise
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
             if not suppressErrors:
@@ -1780,11 +1761,11 @@ class Commands:
                 g.es(message)
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n", line2)
-            if unittest: raise
+            if unittestFlag: raise
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            if unittest: raise
+            if unittestFlag: raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body=True):

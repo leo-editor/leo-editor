@@ -5,7 +5,7 @@
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
 #@+<< imports >>
-#@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
+#@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile.py)
 import os
 import re
 import sys
@@ -3737,7 +3737,7 @@ class FastAtRead:
             g.trace(f"{t2 - t1:5.2f} sec. {path}")
         return True
     #@-others
-#@+node:ekr.20200204092455.1: ** class TestAtFile
+#@+node:ekr.20200204092455.1: ** class TestAtFile (leoAtFile.py)
 class TestAtFile(unittest.TestCase):
     #@+others
     #@+node:ekr.20200204104247.1: *3* Helpers

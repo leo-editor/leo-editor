@@ -375,7 +375,7 @@ def orange_diff_command(files):
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
-    #@+node:ekr.20200702102239.1: *3* function: main
+    #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
     def main():
         """Run commands specified by sys.argv."""
         usage = '\n'.join([

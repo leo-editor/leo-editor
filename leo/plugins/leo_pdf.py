@@ -1014,7 +1014,7 @@ if docutils: # NOQA
                 self.story.append(s)
             except Exception:
                 g.es_print('\nreportlab error...\n',color='orange')
-                g.es_print_exception(full=False)
+                g.print_exception(full=False)
                 g.es_exception(full=False)
                 print(repr(text))
         #@+node:ekr.20090704103932.5217: *4* dumpContext

@@ -2037,7 +2037,7 @@ class KeyHandlerClass:
         except Exception:  # Could be a user error.
             if g.unitTesting or not g.app.menuWarningsGiven:
                 g.es_print('exception binding', shortcut, 'to', commandName)
-                g.es_print_exception()
+                g.print_exception()
                 g.app.menuWarningsGiven = True
             return False
 
@@ -2683,7 +2683,6 @@ class KeyHandlerClass:
     # New in Leo 5.4
 
     def get1Arg(self, event, handler,
-        # returnKind=None, returnState=None,
         prefix=None, tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
     ):

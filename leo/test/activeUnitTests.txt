@@ -648,10 +648,6 @@ s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tok
 assert s
 controller = msf.StandAloneMakeStubFile()
 msf.StubTraverser(controller).visit(node)
-#@+node:ekr.20200219070034.1: *4* @test python -m leo.core.leoAst
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoAst'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
@@ -3798,7 +3794,7 @@ else:
     import subprocess
     path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
     assert g.os_path_exists(path), path
-    command = 'python3 %s' % path
+    command = 'python %s' % path
     pid = subprocess.Popen(
         command,
         shell=True,
@@ -11872,10 +11868,6 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
-#@+node:ekr.20200219070324.1: *4* @test python -m leo.core.leoFind
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoFind'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
 fc = c.findCommands
 
@@ -11889,7 +11881,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -11905,7 +11897,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -11922,7 +11914,7 @@ for s, find, change, count, result in regex_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchRegexReplace(s)
+    count2, result2 = fc._change_all_regex(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -11938,7 +11930,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -11954,7 +11946,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -11985,7 +11977,7 @@ table = (
     'toggle-find-regex-option',
     # 'toggle-find-reverse-option',
     'toggle-find-word-option',
-    'toggle-find-wrap-around-option',
+    # 'toggle-find-wrap-around-option',
 )
 for command in table:
     c.k.simulateCommand(command)
@@ -11995,14 +11987,16 @@ for command in table:
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
-    'batch', 'ignore_case', 'node_only', 'pattern_match',
+    # 'batch',  # 'wrap', 
+    'ignore_case', 'node_only', 'pattern_match', 
     'search_headline', 'search_body', 'suboutline_only',
-    'mark_changes', 'mark_finds', 'reverse',
-    'wrap', 'whole_word',
+    'mark_changes', 'mark_finds', 'whole_word',
+   
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
-#@+node:ekr.20190608143502.1: *5* @test find.regexHelper
+assert x.reverse is False
+#@+node:ekr.20190608143502.1: *5* @test find._inner_search_regex
 import re
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
@@ -12011,7 +12005,8 @@ def test(table, table_name, back, nocase):
     for pattern, s, expected in table:
         flags = re.IGNORECASE if nocase else 0
         x.re_obj = re.compile(pattern, flags)
-        pos, new_pos = x.regexHelper(s, 0, len(s), pattern, backwards=back, nocase=nocase)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
         got = s[pos:new_pos]
         assert expected==got, (
             '\n   table: %s'
@@ -12040,7 +12035,7 @@ back_table = (
 test(plain_table,  'plain_table',  back=False, nocase=False)
 test(nocase_table, 'nocase_table', back=False, nocase=True)
 test(back_table,   'back_table',   back=True,  nocase=False)
-#@+node:ekr.20190608143502.2: *5* @test find.backwardsHelper
+#@+node:ekr.20190608143502.2: *5* @test find._inner_search_backward
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12049,7 +12044,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.backwardsHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12082,7 +12078,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143502.3: *5* @test find.plainHelper
+#@+node:ekr.20190608143502.3: *5* @test find._inner_search_plain
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12091,7 +12087,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.plainHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12124,7 +12121,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143503.1: *5* @test find.replaceBackSlashes
+#@+node:ekr.20190608143503.1: *5* @test find.replace_back_slashes
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
@@ -12133,7 +12130,7 @@ table = (
     ('\\t', '\t'),
 )
 for s, expected in table:
-    got = x.replaceBackSlashes(s)
+    got = x.replace_back_slashes(s)
     assert expected==got, (
         '\n         s: %r'
         '\n  expected: %r'
@@ -12944,10 +12941,6 @@ else:
 #@+node:ekr.20050208135429: *4* @test pre-definition of g in scripts
 for ivar in ('c','g','p'):
     assert ivar in dir()
-#@+node:ekr.20200219072300.1: *4* @test python -m leo.core.leoGlobals
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoGlobals'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
@@ -27604,6 +27597,31 @@ if hasattr(c,'theScriptingController'):
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
+#@+node:ekr.20210215043210.1: ** New-style unit tests
+#@+node:ekr.20200219072300.1: *3* @test python -m leo.core.leoGlobals
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoGlobals'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219070324.1: *3* @@test python -m leo.core.leoFind
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoFind'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219070034.1: *3* @test python -m leo.core.leoAst
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoAst'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20210215043324.1: *3* @test python -m leo.core.leoserver
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoserver'
+g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20100205231441.5386: *3* @test at.checkPythonSyntax
 at = c.atFileCommands
@@ -27652,7 +27670,7 @@ except IndentationError:
     pass
 #@+node:ekr.20100205235740.5391: *3* @test c.checkPythonCode
 c.checkPythonCode(event=None,
-    unittest=True,ignoreAtIgnore=False,
+    unittestFlag=True,ignoreAtIgnore=False,
     suppressErrors=True,checkOnSave=False)
 #@+node:ekr.20100205223124.5378: *3* @test c.checkPythonNode
 table = (
@@ -27663,7 +27681,7 @@ for h,expected in table:
     p2 = g.findNodeInTree(c,p,h)
     assert p2,'node not found: %s' % h
     result = c.checkPythonCode(event=None,
-        unittest=True,ignoreAtIgnore=True,
+        unittestFlag=True,ignoreAtIgnore=True,
         suppressErrors=True,checkOnSave=False)
     assert result==expected, 'expected %s got %s' % (
         expected,result)
@@ -27679,7 +27697,7 @@ def spam():
     pass
 '''
 
-c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+c.tabNannyNode(p,headline=p.h,body=s,unittestFlag=True,suppressErrors=True)
 
 s2 = '''
 # syntax error
@@ -27689,7 +27707,7 @@ def spam:
 '''
 
 try:
-    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+    c.tabNannyNode(p,headline=p.h,body=s2,unittestFlag=True,suppressErrors=True)
 except IndentationError:
     pass
 #@+node:ekr.20100206002004.5397: *3* @test g.es_exception
