@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file viewrendered3.py
 #@@tabwidth -4
 #@@language python
 """
@@ -11,7 +11,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V3.0
+About Viewrendered3 V3.01
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") duplicates the functionalities of the
@@ -161,7 +161,7 @@ Stylesheets
 
 CSS stylesheets are located in Leo's plugin/viewrendered3 directory.  They are
 used if no other location is specified by an ``@setting`` node, or if a
-specified file:/// URL does not exist.  If the MD stylesheet is removed, the
+specified ``file:///`` URL does not exist.  If the default MD stylesheet is removed, the
 plugin will re-create it on startup, but the RsT stylesheet will not be
 recreated if removed.
 
@@ -192,17 +192,27 @@ example for the VR3 plugin::
 Commands
 ========
 
-viewrendered3.py- specific commands all start with a "vr3-" prefix.  There is
+viewrendered3-specific commands all start with a "vr3-" prefix.  There is
 rarely a reason to invoke any of them, except for ``vr3-toggle``, which shows
-or hides the VR3 pane. This is best bound to a hot key (see above).
+or hides the VR3 pane. This is best bound to a hot key (see `Hot Key`_).
 
 #@+node:TomP.20200902222012.1: *3* Structured Text
 Structured Text
 ---------------
 
 VR3 renders three kinds of structured text: reStructured Text (RsT), Markdown (MD),
-and Asciidoc.  Normally the currently selected node is rendered, but a menu item
+and Asciidoc.  Normally the currently selected node is rendered, but a toolbar menu item
 can be selected to render an entire subtree, or just the code blocks.
+
+Any number of code blocks can be used in a node, but do not split a
+code block across two nodes.
+
+Other languages are supported besides python.  See the list of languages below
+at `Colorized Languages`_.  Only Python can be successfully executed.
+
+VR3 can render RsT, MD, and Asciidoc, but do not include more than one in any
+one node or subtree.
+
 #@+node:TomP.20200902222226.1: *4* Special Directives
 Special Directives
 ------------------
@@ -210,17 +220,17 @@ Special Directives
 For all structured text types, VR3 recognizes certain special Leo directives.
 Each of these directives must begin with an "@" character at the start of a line.
 
-Omit Text
-=========
+\@/@c - Omit Text
+-------------------
 All lines between the pair "@" and "@c" will be omitted.
 
-Set Language Type For Node Or Block
-===================================
+\@language - Set Language Type For Node Or Block
+--------------------------------------------------
 If a node or the top of a subtree begins with `@rst`, `@md`, or `asciidoc`,
 that language will be the default language of the node or subtree.  If the
 node or subtree is not marked with one of these `@xxx` types, then the
 default language is given by the setting `@string vr3-default-kind = xxx`.
-This can be overiden by the ``Default Kind`` menu.
+This can be overidden by the ``Default Kind`` toolbar menu.
 
 Within a node, the ``@language`` directive will set the language to be used
 until another ``@language`` directive or the end of the node.
@@ -229,33 +239,29 @@ Current languages are `rst`, `rest`, `md`, `asciidoc`, `text`, `python`,
 `javascript`, `java`, `css`, and `xml`.
 
 A directive line must be blank except for the elements of the directive.
-Examplesof ``@language`` directives::
+Examples of ``@language`` directives::
 
-    Python:
     @language python
     def f(x):
         return 2*x
 
-    @language rest
-    Javascript:
     @language javascript
     function f(x) {
         return 2*x;
     }
 
-    @language rest
-    Java:
     @language java
     function f(x) {
         return 2*x;
     }
 
-Alternate Directive For Inserting an Image
-==========================================
+
+\@image - Alternate Method For Inserting an Image
+------------------------------------------------------
 In addition to the image syntax of the structured text in use, the `@image`
 directive can be used::
 
-    @image url-or-file_url
+    @image url-or-file_url-or-data_url
 
 
 #@+node:TomP.20200115200601.1: *4* Rendering reStructuredText
@@ -267,15 +273,6 @@ a parent, starts with ``@rst``. The type of rendering is called its "kind". If
 no kind is known, then RsT rendering will be used unless the ``vr3-default-kind``
 setting is set to another allowed value.  The default kind can also be changed 
 using the ``Default Kind`` menu.
-
-Any number of code blocks can be used in a node, but do not split a
-code block across two nodes.
-
-Other languages are supported besides python.  See the list of languages below
-at **Colorized Languages**.  Only Python can be successfully executed.
-
-VR3 can render RsT, MD, and Asciidoc, but do not include more than one in any
-one node or subtree.
 
 **Note**: reStructuredText errors and warnings will appear in red in the
 rendering pane.
@@ -326,8 +323,8 @@ The VR3 plugin will render a node using Asciidoc if
 an Asciidoc or Asciidoc3 processor has been installed and the node type 
 is ``@asciidoc`` or if the node starts with ``@language asciidoc``.
 
-If an Python Asciidoc processor is used (as opposed to Asciidoc3), 
-The asciidoc processor must be in a directory directory pointed 
+If a Python Asciidoc processor is used (as opposed to Asciidoc3),
+the asciidoc processor must be in a directory directory pointed 
 to by the system setting named ``vr3-asciidoc-path``.  As an
 alternative, VR3 will use an executable processor named ``asciidoc``
 if it is on the system path.
@@ -402,12 +399,13 @@ asciidoc processors described above does not use the
 syntactical form ``[.xxx]``, e.g., ``[.big.]``.  Instead, 
 the leading period must be omitted: ``[big]``. There may be
 other differences.
+
 #@+node:TomP.20200309191519.1: *3* Colorized Languages
 Colorized Languages
 ===================
 
-Currently the languages that can be colorized are Python, Javascript,
-Java, CSS, and XML.
+Currently the languages that can be colorized are python, javascript,
+java, css, xml, and sql.
 
 #@+node:TomP.20200115200704.1: *3* Special Renderings
 Special Renderings
@@ -521,10 +519,10 @@ from urllib.request import urlopen
 #@@c
 
 # Leo imports...
-from leo.core import leoGlobals as g
+import leo.core.leoGlobals as g
 try:
-    from leo.plugins import qt_text
-    from leo.plugins import free_layout
+    import leo.plugins.qt_text as qt_text
+    import leo.plugins.free_layout as free_layout
     from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except ImportError:
@@ -610,6 +608,7 @@ PYTHON = 'python'
 RESPONSE = 'response'
 REST = 'rest'
 RST = 'rst'
+SQL = 'sql'
 TEXT = 'text'
 VR3_TEMP_FILE = 'leo_rst_html.html'
 XML = 'xml'
@@ -638,7 +637,7 @@ MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 RST_DEFAULT_STYLESHEET_NAME = 'vr3_rst.css'
 
 # For code rendering
-LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS, XML)
+LANGUAGES = (PYTHON, JAVASCRIPT, JAVA, CSS, XML, SQL)
 TRIPLEQUOTES = '"""'
 TRIPLEAPOS = "'''"
 RST_CODE_INTRO = '.. code::'
@@ -822,7 +821,6 @@ def getVr3(event):
     RETURNS
     The active ViewRenderedController3 or None.
     """
-
     global controllers
     if g.app.gui.guiName() != 'qt':
         return None
@@ -865,6 +863,7 @@ def viewrendered(event):
         vr3.adjust_layout('open')
 
     c.bodyWantsFocusNow()
+    
     return vr3
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
@@ -1616,6 +1615,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             layout.removeItem(layout.itemAt(0))
         self.layout().addWidget(w)
         w.show()
+
         # Special inits for text widgets...
         if w.__class__ == QtWidgets.QTextBrowser:
             text_name = 'body-text-renderer'
@@ -2066,6 +2066,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def create_latex_html(self, s):
         """Create an html page embedding the latex code s."""
         c = self.c
+        # py--lint: disable=deprecated-method
         html_s = html.escape(s)
         template = latex_template % (html_s)
         template = g.adjustTripleString(template, c.tab_width).strip()
@@ -2196,61 +2197,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     result += f'{err_result}\n'
                 result += '```\n'
 
-        #@+node:TomP.20200906224158.1: *6* process nodes orig
-        #@+at
-        # result = ''
-        # codelist = []
-        # sm = StateMachine(self, TEXT, MD, MD)
-        #
-        # if not node_list:
-        #     lines = s.split('\n')
-        #     # Process node's entire body text; handle @language directives
-        #     sproc, codelines = sm.runMachine(lines)
-        #     result += sproc
-        #     sm.reset()
-        # else:
-        #     for node in node_list:
-        #         s = node.b
-        #         s = self.remove_directives(s)
-        #         if self.use_node_headline:
-        #             # Add node's text as a headline
-        #             # Remove "@" directive from headline, if any
-        #             header = node.h or ''
-        #             if header.startswith('@'):
-        #                 fields = header.split()
-        #                 headline = ' '.join(fields[1:]) if len(fields) > 1 else header[1:]
-        #             else:
-        #                 headline = header
-        #             headline_str = '##' + headline
-        #             s = headline_str + '\n' + s
-        #         lines = s.split('\n')
-        #
-        #         # Process node's entire body text; handle @language directives
-        #         sproc, codelines = sm.runMachine(lines)
-        #         result += sproc
-        #         if codelines:
-        #             codelist.extend(codelines)
-        #         sm.reset()
-        #
-        # # Execute code blocks; capture and insert execution results.
-        # # This means anything written to stdout or stderr.
-        # if self.execute_flag and codelist:
-        #     execution_result, err_result = None, None
-        #     code = '\n'.join(codelist)
-        #     c = self.c
-        #     environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c & p.
-        #     execution_result, err_result = self.exec_code(code, environment)
-        #     execution_result, err_result = execution_result.strip(), err_result.strip()
-        #     self.execute_flag = False
-        #
-        #     if execution_result or err_result:
-        #         result += '\n```text\n'
-        #         if execution_result:
-        #             result += f'\n{execution_result}\n'
-        #         if err_result:
-        #             result += f'{err_result}\n'
-        #         result += '```\n'
-        #
         #@+node:TomP.20200209115750.1: *6* generate HTML
 
         #ext = ['fenced_code', 'codehilite', 'def_list']
