@@ -115,9 +115,11 @@ if 0:
         return colorer.match_seq(s, i, kind="operator", seq="~",
             at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
+    # #1821.
     def forth_rule20(colorer, s, i):
-        return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+        return 0
+        # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
+            # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
     def forth_rule21(colorer, s, i):
         return colorer.match_keywords(s, i)
