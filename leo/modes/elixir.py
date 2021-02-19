@@ -335,9 +335,8 @@ def elixir_rule40(colorer, s, i):
 rulesDict1 = {
     "!": [elixir_rule27,],
     "\"": [elixir_rule1,],
-    "#": [elixir_rule17,],
-    ### "$": [elixir_rule5,],
-    "#": [elixir_rule0,],
+    "#": [elixir_rule0,elixir_rule17,],
+    # "$": [elixir_rule5,],
     "'": [elixir_rule2,],
     "(": [elixir_rule3,],
     "*": [elixir_rule19,],
