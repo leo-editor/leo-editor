@@ -1889,7 +1889,7 @@ class LeoServer:
         return func(package)
     #@+node:ekr.20210211131707.1: *4* lsc._dump_*
     def _dump_outline(self, c):  # pragma: no cover
-        """Dump the outline in various formats."""
+        """Dump the outline."""
         tag = '_dump_outline'
         print(f"{tag}: {c.shortFileName()}...\n")
         for p in c.all_positions():
