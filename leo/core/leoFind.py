@@ -129,7 +129,6 @@ class LeoFind:
         #
         # User settings.
         self.minibuffer_mode = None
-        ### self.use_cff = None
         self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self):
@@ -154,8 +153,6 @@ class LeoFind:
             suboutline_only=False,
             whole_word=False,
             wrapping=False,
-            # User options.
-            ### use_cff=False,  # For find-def.
         )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
     def finishCreate(self):
@@ -197,9 +194,6 @@ class LeoFind:
         self.suboutline_only = settings.suboutline_only
         self.whole_word = settings.whole_word
         # self.wrapping = settings.wrapping
-        #
-        # Init user options
-        ### self.use_cff = False  # For find-def
     #@+node:ekr.20210110073117.5: *5* NEW:find.init_settings
     def init_settings(self, settings):
         """Initialize all user settings."""
@@ -209,7 +203,6 @@ class LeoFind:
         """LeoFind.reload_settings."""
         c = self.c
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
-        ###self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self, root, replacements, settings=None):
         """
@@ -425,12 +418,6 @@ class LeoFind:
         c.selectPosition(p)
         c.redraw()
         c.bodyWantsFocusNow()
-        ###
-            # count = 0
-            # if self.use_cff:
-                # count = find._find_def_cff()
-                # found = count > 0
-            # else:
         # #1592.  Ignore hits under control of @nosearch
         while True:
             p, pos, newpos = self.find_next_match(p)
@@ -445,30 +432,12 @@ class LeoFind:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
                 ftm.set_find_text(find_pattern)
-                ###
-                    # if self.use_cff:
-                        # count = self._find_def_cff()
-                        # found = count > 0
-                    # else:
                 # #1592.  Ignore hits under control of @nosearch
                 while True:
                     p, pos, newpos = self.find_next_match(p)
                     found = pos is not None
                     if not found or not g.inAtNosearch(p):
                         break
-        ###
-            # if found and self.use_cff:
-                # last = c.lastTopLevel()
-                # if count == 1:
-                    # # It's annoying to create a clone in this case.
-                    # # Undo the clone find and just select the proper node.
-                    # p = last.firstChild()  # A clone, so it will exist after the delete.
-                    # last.doDelete()
-                    # assert c.positionExists(p)
-                    # ###  p, pos, newpos = self.find_next_match(p)
-                    # c.selectPosition(p)
-                # else:  # pragma: no cover
-                    # c.selectPosition(last)
         if found:
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
@@ -2980,7 +2949,6 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
         settings, x = self.settings, self.x
-        ### x.use_cff = False  # This is a user setting.
         # Test 1.
         p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
         assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
@@ -2992,7 +2960,6 @@ class TestFind(unittest.TestCase):
         # Test 3: not found after switching style.
         p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
         assert p is None, repr(p)  # Test 3.
-        ### # Note: find-def w/o use_cff does *not* support suboutline-only.
     #@+node:ekr.20210110073117.64: *4* TestFind.find-next
     def test_find_next(self):
         settings, x = self.settings, self.x

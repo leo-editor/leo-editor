@@ -1253,8 +1253,7 @@ class FindTabManager:
         }
         w = d.get(name)
         if not w:
-            ### g.trace('no button for', name)
-            return  ### Valid???
+            return  # Valid???
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
