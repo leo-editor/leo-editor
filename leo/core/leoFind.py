@@ -129,7 +129,7 @@ class LeoFind:
         #
         # User settings.
         self.minibuffer_mode = None
-        self.use_cff = None
+        ### self.use_cff = None
         self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self):
@@ -155,7 +155,7 @@ class LeoFind:
             whole_word=False,
             wrapping=False,
             # User options.
-            use_cff=False,  # For find-def.
+            ### use_cff=False,  # For find-def.
         )
     #@+node:ekr.20131117164142.17022: *4* find.finishCreate
     def finishCreate(self):
@@ -199,7 +199,7 @@ class LeoFind:
         # self.wrapping = settings.wrapping
         #
         # Init user options
-        self.use_cff = False  # For find-def
+        ### self.use_cff = False  # For find-def
     #@+node:ekr.20210110073117.5: *5* NEW:find.init_settings
     def init_settings(self, settings):
         """Initialize all user settings."""
@@ -209,7 +209,7 @@ class LeoFind:
         """LeoFind.reload_settings."""
         c = self.c
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
-        self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
+        ###self.use_cff = c.config.getBool('find-def-creates-clones', default=False)
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
     def batch_change(self, root, replacements, settings=None):
         """
@@ -313,13 +313,13 @@ class LeoFind:
                 val = settings.get(ivar)
                 if val in (True, False):
                     setattr(self, ivar, val)
-                else:
+                else:  # pragma: no cover
                     g.trace("bad value: {ivar!r} = {val!r}")
                     errors += 1
-            else:
+            else:  # pragma: no cover
                 g.trace(f"ignoring {ivar!r} setting")
                 errors += 1
-        if errors:
+        if errors:  # pragma: no cover
             g.printObj(sorted(valid.keys()), tag='valid keys')
     #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
@@ -425,17 +425,18 @@ class LeoFind:
         c.selectPosition(p)
         c.redraw()
         c.bodyWantsFocusNow()
-        count = 0
-        if self.use_cff:
-            count = find._find_def_cff()
-            found = count > 0
-        else:
-            # #1592.  Ignore hits under control of @nosearch
-            while True:
-                p, pos, newpos = self.find_next_match(p)
-                found = pos is not None
-                if not found or not g.inAtNosearch(c.p):
-                    break
+        ###
+            # count = 0
+            # if self.use_cff:
+                # count = find._find_def_cff()
+                # found = count > 0
+            # else:
+        # #1592.  Ignore hits under control of @nosearch
+        while True:
+            p, pos, newpos = self.find_next_match(p)
+            found = pos is not None
+            if not found or not g.inAtNosearch(c.p):
+                break
         if not found and def_flag and not strict:
             # Leo 5.7.3: Look for an alternative defintion of function/methods.
             word2 = self._switch_style(word)
@@ -444,25 +445,30 @@ class LeoFind:
                 find_pattern = prefix + ' ' + word2
                 find.find_text = find_pattern
                 ftm.set_find_text(find_pattern)
-                if self.use_cff:
-                    count = self._find_def_cff()
-                    found = count > 0
-                else:
-                    # #1592.  Ignore hits under control of @nosearch
-                    while True:
-                        p, pos, newpos = self.find_next_match(p)
-                        found = pos is not None
-                        if not found or not g.inAtNosearch(p):
-                            break
-        if found and self.use_cff:
-            last = c.lastTopLevel()
-            if count == 1:
-                # It's annoying to create a clone in this case.
-                # Undo the clone find and just select the proper node.
-                last.doDelete()
-                p, pos, newpos = self.find_next_match(p)
-            else:
-                c.selectPosition(last)
+                ###
+                    # if self.use_cff:
+                        # count = self._find_def_cff()
+                        # found = count > 0
+                    # else:
+                # #1592.  Ignore hits under control of @nosearch
+                while True:
+                    p, pos, newpos = self.find_next_match(p)
+                    found = pos is not None
+                    if not found or not g.inAtNosearch(p):
+                        break
+        ###
+            # if found and self.use_cff:
+                # last = c.lastTopLevel()
+                # if count == 1:
+                    # # It's annoying to create a clone in this case.
+                    # # Undo the clone find and just select the proper node.
+                    # p = last.firstChild()  # A clone, so it will exist after the delete.
+                    # last.doDelete()
+                    # assert c.positionExists(p)
+                    # ###  p, pos, newpos = self.find_next_match(p)
+                    # c.selectPosition(p)
+                # else:  # pragma: no cover
+                    # c.selectPosition(last)
         if found:
             c.redraw(p)
             w.setSelectionRange(pos, newpos, insert=newpos)
@@ -474,47 +480,6 @@ class LeoFind:
         w.setSelectionRange(i, j, insert=ins)
         c.bodyWantsFocusNow()
         return None, None, None
-    #@+node:ekr.20210112195456.1: *5* find._find_def_cff
-    def _find_def_cff(self):
-        c = self.c
-        undoType = 'Find Def'
-        if not self.check_args('find-def'):
-            return 0
-        self.init_in_headline()
-        data = self.save()
-        self.in_headline = self.search_headline  # Search headlines first.
-        # Remember the start of the search.
-        p = self.root = c.p.copy()
-        # Set the work widget.
-        s = p.h if self.in_headline else p.b
-        ins = len(s) if self.reverse else 0
-        self.work_s = s
-        self.work_sel = (ins, ins, ins)
-        # Init suboutline-only for clone-find-all commands
-        # Much simpler: does not set self.p or any other state.
-        if self.pattern_match:
-            ok = self.precompile_pattern()
-            if not ok: return 0
-        if self.suboutline_only:
-            p = c.p
-            after = p.nodeAfterTree()
-        else:
-            # Always search the entire outline.
-            p = c.rootPosition()
-            after = None
-        # Fix #292: Never collapse nodes during find-all commands.
-        old_sparse_find = c.sparse_find
-        try:
-            c.sparse_find = False
-            count = self._find_all_helper(after, data, p, undoType)
-            c.contractAllHeadlines()
-        finally:
-            c.sparse_find = old_sparse_find
-            self.root = None
-        if count:
-            c.redraw()
-        g.es("found", count, "matches for", self.find_text)
-        return count
     #@+node:ekr.20150629095511.1: *5* find._restore_after_find_def
     def _restore_after_find_def(self):
         """Restore find settings in effect before a find-def command."""
@@ -2966,24 +2931,25 @@ class TestFind(unittest.TestCase):
             suboutline_only=False,
             whole_word=False,
         )
+        # Test 1: Match in body.
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^def\b', 'DEF'),),
             settings=settings)
-        assert n > 0
+        assert n > 3, n  # Test 1.
         # Test 2: Match in headline.
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^Node\b', 'DEF'),),
             settings=settings)
-        assert n > 0
+        assert n == 2, n  # Test 2.
         # Test 3: node-only.
         settings ['node_only'] = True
         n = x.batch_change(
             root=c.rootPosition(),
             replacements=((r'^DEF\b', 'def'),),
             settings=settings)
-        assert n > 0
+        assert n == 1, n  # Text 3.
         # Test 4: suboutline-only.
         settings ['node_only'] = False
         settings ['suboutline_only'] = True
@@ -2991,8 +2957,7 @@ class TestFind(unittest.TestCase):
             root=c.rootPosition(),
             replacements=((r'^def\b', 'DEF'),),
             settings=settings)
-        assert n > 0
-        
+        assert n == 1, n  # Test 4.
     #@+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
     def test_batch_change_word(self):
         # settings, x = self.settings, self.x
@@ -3015,6 +2980,7 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
         settings, x = self.settings, self.x
+        ### x.use_cff = False  # This is a user setting.
         # Test 1.
         p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
         assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
@@ -3023,9 +2989,10 @@ class TestFind(unittest.TestCase):
         # Test 2: switch style.
         p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
         assert p and p.h == 'child 5', repr(p and p.h)  # Test 2.
-        # Test3: not found after switching style.
+        # Test 3: not found after switching style.
         p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
         assert p is None, repr(p)  # Test 3.
+        ### # Note: find-def w/o use_cff does *not* support suboutline-only.
     #@+node:ekr.20210110073117.64: *4* TestFind.find-next
     def test_find_next(self):
         settings, x = self.settings, self.x
@@ -3144,21 +3111,6 @@ class TestFind(unittest.TestCase):
         settings.search_headline = False
         settings.p.setVisited()
         x.do_find_all(settings)
-    #@+node:ekr.20210113221831.1: *4* TestFind.find_def_use_cff
-    def test_find_def_use_cff(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'child5'
-        # Test 1: Set p *without* use_cff.
-        p, pos, newpos = x.do_find_def(settings, 'child5', strict=True)
-        assert p and p.h == 'child 5'
-        s = p.b[pos:newpos]
-        assert s == 'def child5', repr(s)
-        # Test 2.
-        settings.use_cff = True
-        x.find_def(settings)
-        # Test 3: switch style.
-        settings.find_text = 'child_5'
-        x.find_def(settings)
     #@+node:ekr.20210110073117.67: *4* TestFind.replace-all
     def test_replace_all(self):
         c, settings, x = self.c, self.settings, self.x
