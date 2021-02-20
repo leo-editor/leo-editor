@@ -847,7 +847,7 @@ class StringFindTabManager:
     #@+others
     #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
-        '''Ctor for the FindTabManager class.'''
+        '''Ctor for the StringFindTabManager class.'''
         self.c = c
         assert(c.findCommands)
         c.findCommands.minibuffer_mode = True

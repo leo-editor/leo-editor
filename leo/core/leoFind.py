@@ -124,7 +124,7 @@ class LeoFind:
         self.in_headline = False
         self.match_obj = None
         self.reverse = False
-        self.root = None
+        self.root = None  # The start of the search, especially for suboutline-only.
         self.unique_matches = set()
         #
         # User settings.
@@ -577,7 +577,7 @@ class LeoFind:
                 setattr(self, request, False)  # Clear the request!
         #
         # Leo 6.4: set/clear self.root
-        if self.root:
+        if self.root:  # pragma: no cover
             if p != self.root and not self.root.isAncestorOf(p):
                 # p is outside of self.root's tree.
                 # Clear suboutline-only.
@@ -676,11 +676,11 @@ class LeoFind:
         return self.set_find_scope('node-only')
 
     @cmd('set-find-suboutline-only')
-    def set_find_scope_suboutline_only(self, event=None):  # pragma: no cover (cmd)
+    def set_find_scope_suboutline_only(self, event=None):
         """Set the 'Suboutline Only' radio button in the Find tab."""
         return self.set_find_scope('suboutline-only')
 
-    def set_find_scope(self, where):  # pragma: no cover (cmd)
+    def set_find_scope(self, where):
         """Set the radio buttons to the given scope"""
         c, fc = self.c, self.c.findCommands
         self.ftm.set_radio_button(where)
@@ -2755,7 +2755,7 @@ class LeoFind:
         s = self.compute_find_options_in_status_area()
         c.frame.putStatusLine(s)
     #@+node:ekr.20171129211238.1: *5* find.compute_find_options_in_status_area
-    def compute_find_options_in_status_area(self):  # pragma: no cover (cmd)
+    def compute_find_options_in_status_area(self):
         c = self.c
         ftm = c.findCommands.ftm
         table = (
@@ -2833,6 +2833,47 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             print(' ' * p.level(), p.h)
             print(' ' * p.level(), p.b)
+    #@+node:ekr.20210220070051.1: *4* TestFind.make_find_tab_manager
+    def make_find_tab_manager(self, c):
+        """
+        Create a proxy FindTabManager sufficient to run unit tests.
+        In the Qt gui, the DynamicWindow class creates the FindTabManager.
+        """
+        from leo.core.leoGui import StringLineEdit
+        from leo.plugins.qt_frame import FindTabManager
+        x = self.x
+        x.ftm = FindTabManager(c)
+        #
+        # Create a find_findbox for find.set_find_text.
+        x.ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
+        #
+        # Create widgets for set_find_scope.
+        class StringWidget:
+            """A widget simulating both a Qt checkbox and a Qt radio button."""
+
+            value = False
+            
+            def toggle(self):  # For radio buttons.
+                self.value = not self.value
+                
+            def isChecked(self):  # For checkboxes.
+                return self.value
+                
+            checkState = isChecked
+            
+        x.ftm.radio_button_suboutline_only = StringWidget()
+        # Similar to the table in find.compute_find_options_in_status_area:
+        table = (
+            'check_box_whole_word',
+            'check_box_ignore_case',
+            'check_box_regexp',
+            'check_box_search_body',
+            'check_box_search_headline',
+            'check_box_mark_changes',
+            'check_box_mark_finds',
+        )
+        for ivar in table:
+            setattr(x.ftm, ivar, StringWidget())
     #@+node:ekr.20210110073117.56: *4* TestFind.make_test_tree
     def make_test_tree(self):
         """Make a test tree for other tests"""
@@ -2870,16 +2911,12 @@ class TestFind(unittest.TestCase):
 
         # pylint: disable=import-self
         from leo.core import leoFind
-        from leo.core.leoGui import StringLineEdit
-        from leo.plugins.qt_frame import FindTabManager
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
-        self.x = leoFind.LeoFind(c)
+        c.findCommands = self.x = leoFind.LeoFind(c)
         # Set c.p in the command.
         self.x.c.selectPosition(self.c.rootPosition())
-        self.x.ftm = FindTabManager(c)
-        # x.ftm must have find_findbox for set_find_text.
-        self.x.ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
+        self.make_find_tab_manager(c)
         self.settings = self.x.default_settings()
         self.make_test_tree()
 
@@ -2949,6 +2986,12 @@ class TestFind(unittest.TestCase):
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
         settings, x = self.settings, self.x
+        # Test methods called by x.find_def.
+        # It would be wrong to call these methods from x.do_find_def.
+        x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
+        x._compute_find_def_settings('my-find-pattern')
+        #
+        # Now the main tests...
         # Test 1.
         p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
         assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
@@ -2965,9 +3008,19 @@ class TestFind(unittest.TestCase):
         settings, x = self.settings, self.x
         settings.find_text = 'def top1'
         p, pos, newpos = x.do_find_next(settings)
-        assert p and p.h == 'Node 1', p.h
+        assert p and p.h == 'Node 1', repr(p)
         s = p.b[pos:newpos]
         assert s == settings.find_text, repr(s)
+    #@+node:ekr.20210220072631.1: *4* TestFind.find-next (suboutline-only)
+    def test_find_next_suboutline_only(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'def root()'
+        settings.suboutline_only = True
+            # init_ivars_from_settings will set the ivar.
+        p, pos, newpos = x.do_find_next(settings)
+        assert p and p.h == 'Root', repr(p)  # Test2
+        s = p.b[pos:newpos]
+        assert s == settings.find_text, repr(s)  # Test 2.
     #@+node:ekr.20210216094444.1: *4* TestFind.find-prev
     def test_find_prev(self):
         c, settings, x = self.c, self.settings, self.x
