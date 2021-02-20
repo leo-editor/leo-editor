@@ -1505,7 +1505,6 @@ class LeoFind:
         """
         self.ftm.clear_focus()
         self.match_obj = None
-        self.unique_matches = set()
         self.changeAllFlag = False
         self.findAllUniqueFlag = True
         self.ftm.set_entry_focus()
@@ -1748,7 +1747,7 @@ class LeoFind:
         )
     #@+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
-    def word_search_backward(self, event):
+    def word_search_backward(self, event):  # pragma: no cover (interactive)
         # Set flags for show_find_options.
         self.reverse = True
         self.whole_world = True
