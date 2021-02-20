@@ -1398,9 +1398,11 @@ class LeoFind:
         self.init_ivars_from_settings(settings)
         if not self.check_args('find-all'):  # pragma: no cover
             return count
+        # Init data.
         self.init_in_headline()
         data = self.save()
         self.in_headline = self.search_headline  # Search headlines first.
+        self.unique_matches = set()  # 2021/02/20.
         # Remember the start of the search.
         p = self.root = c.p.copy()
         # Set the work widget.
@@ -2913,75 +2915,202 @@ class TestFind(unittest.TestCase):
         from leo.core import leoFind
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
-        c.findCommands = self.x = leoFind.LeoFind(c)
+        c.findCommands = self.x = x = leoFind.LeoFind(c)
         # Set c.p in the command.
-        self.x.c.selectPosition(self.c.rootPosition())
+        x.c.selectPosition(self.c.rootPosition())
         self.make_find_tab_manager(c)
-        self.settings = self.x.default_settings()
+        self.settings = x.default_settings()
         self.make_test_tree()
 
     def tearDown(self):
         g.unitTesting = False
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
-    #@+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
-    def test_batch_change_regex(self):
+    #@+node:ekr.20210110073117.67: *4* TestFind.change-all
+    def test_change_all(self):
+        c, settings, x = self.c, self.settings, self.x
+        root = c.rootPosition()
+        
+        def init():
+            self.make_test_tree()  # Reinit the whole tree.
+            settings.change_text = '_DEF_'
+            settings.find_text = 'def'
+            settings.ignore_case = False
+            settings.node_only = False
+            settings.pattern_match = False
+            settings.suboutline_only = False
+            settings.whole_word = True
+
+        # Default settings.
+        init()
+        x.do_change_all(settings)
+        # Plain search, ignore case.
+        init()
+        settings.whole_word = False
+        settings.ignore_case = True
+        x.do_change_all(settings)
+        # Node only.
+        init()
+        settings.node_only = True
+        x.do_change_all(settings)
+        # Suboutline only.
+        init()
+        settings.suboutline_only = True
+        x.do_change_all(settings)
+        # Pattern match.
+        init()
+        settings.pattern_match = True
+        x.do_change_all(settings)
+        # Pattern match, ignore case.
+        init()
+        settings.pattern_match = True
+        settings.ignore_case = True
+        x.do_change_all(settings)
+        # Pattern match, with groups.
+        init()
+        settings.pattern_match = True
+        settings.find_text = r'^(def)'
+        settings.change_text = '*\1*'
+        x.do_change_all(settings)
+        # Ignore case
+        init()
+        settings.ignore_case = True
+        x.do_change_all(settings)
+        # Word, ignore case.
+        init()
+        settings.ignore_case = True
+        settings.whole_word = True
+        x.do_change_all(settings)
+        # Multiple matches
+        init()
+        root.h = 'abc'
+        root.b = 'abc\nxyz abc\n'
+        settings.find_text = settings.change_text = 'abc'
+        x.do_change_all(settings)
+        # Set ancestor @file node dirty.
+        root.h = '@file xyzzy'
+        settings.find_text = settings.change_text = 'child1'
+        x.do_change_all(settings)
+    #@+node:ekr.20210220091434.1: *4* TestFind.change-all (@file node)
+    def test_change_all_with_at_file_node(self):
+        c, settings, x = self.c, self.settings, self.x
+        root = c.rootPosition().next()  # Must have children.
+        settings.find_text = 'def'
+        settings.change_text = '_DEF_'
+        settings.ignore_case = False
+        settings.match_word = True
+        settings.pattern_match = False
+        settings.suboutline_only = False
+        # Ensure that the @file node is marked dirty.
+        root.h = '@file xyzzy.py'
+        root.b = ''
+        root.v.clearDirty()
+        assert root.anyAtFileNodeName()
+        x.do_change_all(settings)
+        assert root.v.isDirty(), root.h
+
+    #@+node:ekr.20210220091434.2: *4* TestFind.change-all (headline)
+    def test_change_all_headline(self):
+        settings, x = self.settings, self.x
+        settings.find_text = 'child'
+        settings.change_text = '_CHILD_'
+        settings.ignore_case = False
+        settings.in_headline = True
+        settings.match_word = True
+        settings.pattern_match = False
+        settings.suboutline_only = False
+        x.do_change_all(settings)
+    #@+node:ekr.20210110073117.60: *4* TestFind.clone-find-all
+    def test_clone_find_all(self):
+        settings, x = self.settings, self.x
+        # Regex find.
+        settings.find_text = r'^def\b'
+        settings.change_text = 'def'  # Don't actually change anything!
+        settings.pattern_match = True
+        x.do_clone_find_all(settings)
+        # Word find.
+        settings.find_text = 'def'
+        settings.match_word = True
+        settings.pattern_match = False
+        x.do_clone_find_all(settings)
+        # Suboutline only.
+        settings.suboutline_only = True
+        x.do_clone_find_all(settings)
+    #@+node:ekr.20210110073117.61: *4* TestFind.clone-find-all-flattened
+    def test_clone_find_all_flattened(self):
+        settings, x = self.settings, self.x
+        # regex find.
+        settings.find_text = r'^def\b'
+        settings.pattern_match = True
+        x.do_clone_find_all_flattened(settings)
+        # word find.
+        settings.find_text = 'def'
+        settings.match_word = True
+        settings.pattern_match = False
+        x.do_clone_find_all_flattened(settings)
+        # Suboutline only.
+        settings.suboutline_only = True
+        x.do_clone_find_all_flattened(settings)
+    #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
+    def test_clone_find_tag(self):
         c, x = self.c, self.x
-        # self.dump_tree()
-        # Test 1: Match in body.
-        settings = dict(
-            ignore_case=False,
-            node_only=False,
-            pattern_match=True,
-            search_body=True,
-            search_headline=True,
-            suboutline_only=False,
-            whole_word=False,
-        )
-        # Test 1: Match in body.
-        n = x.batch_change(
-            root=c.rootPosition(),
-            replacements=((r'^def\b', 'DEF'),),
-            settings=settings)
-        assert n > 3, n  # Test 1.
-        # Test 2: Match in headline.
-        n = x.batch_change(
-            root=c.rootPosition(),
-            replacements=((r'^Node\b', 'DEF'),),
-            settings=settings)
-        assert n == 2, n  # Test 2.
-        # Test 3: node-only.
-        settings ['node_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(),
-            replacements=((r'^DEF\b', 'def'),),
-            settings=settings)
-        assert n == 1, n  # Text 3.
-        # Test 4: suboutline-only.
-        settings ['node_only'] = False
-        settings ['suboutline_only'] = True
-        n = x.batch_change(
-            root=c.rootPosition(),
-            replacements=((r'^def\b', 'DEF'),),
-            settings=settings)
-        assert n == 1, n  # Test 4.
-    #@+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
-    def test_batch_change_word(self):
-        # settings, x = self.settings, self.x
-        c, x = self.c, self.x
-        settings = dict(
-            ignore_case=False,
-            node_only=False,
-            pattern_match=False,
-            search_body=True,
-            search_headline=True,
-            suboutline_only=False,
-            whole_word=True,
-        )
-        n = x.batch_change(
-            root=c.rootPosition(),
-            replacements=(('def', 'DEF'),),
-            settings=settings)
-        assert n > 0
+
+        class DummyTagController:
+
+            def __init__(self, clones):
+                self.clones = clones
+
+            def get_tagged_nodes(self, tag):
+                return self.clones
+
+            def show_all_tags(self):
+                pass
+
+        c.theTagController = DummyTagController([c.rootPosition()])
+        x.do_clone_find_tag('test')
+        c.theTagController = DummyTagController([])
+        x.do_clone_find_tag('test')
+        c.theTagController = None
+        x.do_clone_find_tag('test')
+    #@+node:ekr.20210110073117.63: *4* TestFind.find-all
+    def test_find_all(self):
+        settings, x = self.settings, self.x
+        
+        def init():
+            self.make_test_tree()  # Reinit the whole tree.
+            x.findAllUniqueFlag = False
+            x.unique_matches = set()
+            settings.change_text = '_DEF_'
+            settings.find_text = 'def'
+            settings.ignore_case = False
+            settings.node_only = False
+            settings.pattern_match = False
+            settings.suboutline_only = False
+            settings.whole_word = True
+
+        # Test 1.
+        init()
+        settings.pattern_match = True
+        x.do_find_all(settings)
+        # Test 2.
+        init()
+        settings.suboutline_only = True
+        x.do_find_all(settings)
+        # Test 3.
+        init()
+        settings.search_headline = False
+        settings.p.setVisited()
+        x.do_find_all(settings)
+        # Test 4.
+        init()
+        x.findAllUniqueFlag = True
+        settings.pattern_match = True
+        settings.find_text = r'^(def)'
+        settings.change_text = '*\1*'
+        x.do_find_all(settings)
+        # Test 5: no match.
+        init()
+        settings.find_text = 'not-found-xyzzy'
+        x.do_find_all(settings)
         
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
@@ -3045,150 +3174,6 @@ class TestFind(unittest.TestCase):
         assert p and p.h == 'child 5', repr(p)
         s = p.b[pos:newpos]
         assert s == 'v5 =', repr(s)
-    #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
-    def test_tree(self):
-        table = (
-            (0, 'Root'),
-            (0, 'Node 1'),
-            (1, 'child 2'),
-            (2, 'child 3'),
-            (0, 'Node 4'),
-            (1, 'child 5'),
-            (2, 'child 6'),
-        )
-        i = 0
-        for p in self.c.all_positions():
-            level, h = table[i]
-            i += 1
-            assert p.h == h, (p.h, h)
-            assert p.level() == level, (p.level(), level, p.h)
-            # print(' '*p.level(), p.h)
-            # g.printObj(g.splitLines(p.b), tag=p.h)
-    #@+node:ekr.20210110073117.60: *4* TestFind.clone-find-all
-    def test_clone_find_all(self):
-        settings, x = self.settings, self.x
-        # Regex find.
-        settings.find_text = r'^def\b'
-        settings.change_text = 'def'  # Don't actually change anything!
-        settings.pattern_match = True
-        x.do_clone_find_all(settings)
-        # Word find.
-        settings.find_text = 'def'
-        settings.match_word = True
-        settings.pattern_match = False
-        x.do_clone_find_all(settings)
-        # Suboutline only.
-        settings.suboutline_only = True
-        x.do_clone_find_all(settings)
-    #@+node:ekr.20210110073117.61: *4* TestFind.clone-find-all-flattened
-    def test_clone_find_all_flattened(self):
-        settings, x = self.settings, self.x
-        # regex find.
-        settings.find_text = r'^def\b'
-        settings.pattern_match = True
-        x.do_clone_find_all_flattened(settings)
-        # word find.
-        settings.find_text = 'def'
-        settings.match_word = True
-        settings.pattern_match = False
-        x.do_clone_find_all_flattened(settings)
-        # Suboutline only.
-        settings.suboutline_only = True
-        x.do_clone_find_all_flattened(settings)
-    #@+node:ekr.20210110073117.62: *4* TestFind.clone-find-tag
-    def test_clone_find_tag(self):
-        c, x = self.c, self.x
-
-        class DummyTagController:
-
-            def __init__(self, clones):
-                self.clones = clones
-
-            def get_tagged_nodes(self, tag):
-                return self.clones
-
-            def show_all_tags(self):
-                pass
-
-        c.theTagController = DummyTagController([c.rootPosition()])
-        x.do_clone_find_tag('test')
-        c.theTagController = DummyTagController([])
-        x.do_clone_find_tag('test')
-        c.theTagController = None
-        x.do_clone_find_tag('test')
-    #@+node:ekr.20210110073117.63: *4* TestFind.find-all
-    def test_find_all(self):
-        settings, x = self.settings, self.x
-        # Test 1.
-        settings.find_text = r'^def\b'
-        settings.pattern_match = True
-        x.do_find_all(settings)
-        # Test 2.
-        settings.suboutline_only = True
-        x.do_find_all(settings)
-        # Test 3.
-        settings.suboutline_only = False
-        settings.search_headline = False
-        settings.p.setVisited()
-        x.do_find_all(settings)
-    #@+node:ekr.20210110073117.67: *4* TestFind.replace-all
-    def test_replace_all(self):
-        c, settings, x = self.c, self.settings, self.x
-        root = c.rootPosition()
-        settings.find_text = 'def'
-        settings.change_text = '_DEF_'
-        settings.ignore_case = False
-        settings.match_word = True
-        settings.pattern_match = False
-        settings.suboutline_only = False
-        x.do_change_all(settings)
-        # Node only.
-        settings.node_only = True
-        x.do_change_all(settings)
-        settings.node_only = False
-        # Suboutline only.
-        settings.suboutline_only = True
-        x.do_change_all(settings)
-        settings.suboutline_only = False
-        # Pattern match.
-        settings.pattern_match = True
-        x.do_change_all(settings)
-        # Multiple matches
-        root.h = 'abc'
-        root.b = 'abc\nxyz abc\n'
-        settings.find_text = settings.change_text = 'abc'
-        x.do_change_all(settings)
-        # Set ancestor @file node dirty.
-        root.h = '@file xyzzy'
-        settings.find_text = settings.change_text = 'child1'
-
-    def test_replace_all_with_at_file_node(self):
-        c, settings, x = self.c, self.settings, self.x
-        root = c.rootPosition().next()  # Must have children.
-        settings.find_text = 'def'
-        settings.change_text = '_DEF_'
-        settings.ignore_case = False
-        settings.match_word = True
-        settings.pattern_match = False
-        settings.suboutline_only = False
-        # Ensure that the @file node is marked dirty.
-        root.h = '@file xyzzy.py'
-        root.b = ''
-        root.v.clearDirty()
-        assert root.anyAtFileNodeName()
-        x.do_change_all(settings)
-        assert root.v.isDirty(), root.h
-
-    def test_replace_all_headline(self):
-        settings, x = self.settings, self.x
-        settings.find_text = 'child'
-        settings.change_text = '_CHILD_'
-        settings.ignore_case = False
-        settings.in_headline = True
-        settings.match_word = True
-        settings.pattern_match = False
-        settings.suboutline_only = False
-        x.do_change_all(settings)
     #@+node:ekr.20210110073117.68: *4* TestFind.replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
@@ -3246,6 +3231,85 @@ class TestFind(unittest.TestCase):
         x.do_tag_children(p, 'test')
         c.theTagController = DummyTagController()
         x.do_tag_children(p, 'test')
+    #@+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
+    def test_batch_change_regex(self):
+        c, x = self.c, self.x
+        # self.dump_tree()
+        # Test 1: Match in body.
+        settings = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=True,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,
+            whole_word=False,
+        )
+        # Test 1: Match in body.
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^def\b', 'DEF'),),
+            settings=settings)
+        assert n > 3, n  # Test 1.
+        # Test 2: Match in headline.
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^Node\b', 'DEF'),),
+            settings=settings)
+        assert n == 2, n  # Test 2.
+        # Test 3: node-only.
+        settings ['node_only'] = True
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^DEF\b', 'def'),),
+            settings=settings)
+        assert n == 1, n  # Text 3.
+        # Test 4: suboutline-only.
+        settings ['node_only'] = False
+        settings ['suboutline_only'] = True
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^def\b', 'DEF'),),
+            settings=settings)
+        assert n == 1, n  # Test 4.
+    #@+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
+    def test_batch_change_word(self):
+        # settings, x = self.settings, self.x
+        c, x = self.c, self.x
+        settings = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,
+            whole_word=True,
+        )
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=(('def', 'DEF'),),
+            settings=settings)
+        assert n > 0
+        
+    #@+node:ekr.20210110073117.58: *4* TestFind.test_tree
+    def test_tree(self):
+        table = (
+            (0, 'Root'),
+            (0, 'Node 1'),
+            (1, 'child 2'),
+            (2, 'child 3'),
+            (0, 'Node 4'),
+            (1, 'child 5'),
+            (2, 'child 6'),
+        )
+        i = 0
+        for p in self.c.all_positions():
+            level, h = table[i]
+            i += 1
+            assert p.h == h, (p.h, h)
+            assert p.level() == level, (p.level(), level, p.h)
+            # print(' '*p.level(), p.h)
+            # g.printObj(g.splitLines(p.b), tag=p.h)
     #@+node:ekr.20210110073117.70: *3* Tests of Helpers...
     #@+node:ekr.20210110073117.80: *4* TestFind._cfa_find_next_match
     def test_cfa_find_next_match(self):
