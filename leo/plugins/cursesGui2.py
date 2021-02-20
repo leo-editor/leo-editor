@@ -936,7 +936,7 @@ class StringFindTabManager:
             ('search_body', self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word', self.check_box_whole_word),
-            ### ('wrap', self.check_box_wrap_around),
+            # ('wrap', self.check_box_wrap_around),
         )
         for setting_name, w in table:
             val = c.config.getBool(setting_name, default=False)
@@ -2220,7 +2220,7 @@ class CoreFrame (leoFrame.LeoFrame):
             ('box', '&Ignore case'),
             ('rb', '&Suboutline only'),
             # Third row.
-            ('box', 'wrap &Around'),
+            # ('box', 'wrap &Around'),  # #1824.
             ('rb', '&Node only'),
             # Fourth row.
             ('box', 'rege&Xp'),
