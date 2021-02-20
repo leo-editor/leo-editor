@@ -247,13 +247,13 @@ class LeoFind:
         c, p1, u = self.c, p.copy(), self.c.undoer
         undoType = 'Batch Change All'
         # Check...
-        if not find_text:
+        if not find_text:  # pragma: no cover
             return 0
         if not self.search_headline and not self.search_body:
-            return 0
+            return 0  # pragma: no cover
         if self.pattern_match:
             ok = self.precompile_pattern()
-            if not ok:
+            if not ok:  # pragma: no cover
                 return 0
         # Init...
         self.find_text = find_text
@@ -287,7 +287,8 @@ class LeoFind:
             if count_h or count_b:
                 u.afterChangeNodeContents(p1, 'Replace All', undoData)
         u.afterChangeGroup(p1, undoType, reportFlag=True)
-        print(f"{count:3}: {find_text:>30} => {change_text}")
+        if not g.unitTesting:  # pragma: no cover
+            print(f"{count:3}: {find_text:>30} => {change_text}")
         return count
     #@+node:ekr.20210108083003.1: *4* find._init_from_dict
     def _init_from_dict(self, settings):
@@ -904,12 +905,12 @@ class LeoFind:
         # Settings...
         self.init_ivars_from_settings(settings)
         if not self.check_args('change-all'):
-            return False
-        self._change_all_helper(settings)
+            return 0
+        n = self._change_all_helper(settings)
         #
         # Bugs #947, #880 and #722:
         # Set ancestor @<file> nodes by brute force.
-        for p in c.all_positions():
+        for p in c.all_positions():  # pragma: no cover
             if (
                 p.anyAtFileNodeName()
                 and not p.v.isDirty()
@@ -917,16 +918,17 @@ class LeoFind:
             ):
                 p.setDirty()
         c.redraw()
-        return True
+        return n
     #@+node:ekr.20031218072017.3069: *6* find._change_all_helper
     def _change_all_helper(self, settings):
+        """Do the change-all command. Return the number of changes, or 0 for error."""
         # Caller has checked settings.
 
         c, current, u = self.c, self.c.p, self.c.undoer
         undoType = 'Replace All'
         t1 = time.process_time()
         if not self.check_args('change-all'):  # pragma: no cover
-            return
+            return 0
         self.init_in_headline()
         saveData = self.save()
         self.in_headline = self.search_headline  # Search headlines first.
@@ -942,14 +944,14 @@ class LeoFind:
         # Fix bug 338172: ReplaceAll will not replace newlines
         # indicated as \n in target string.
         if not self.find_text:  # pragma: no cover
-            return
+            return 0
         if not self.search_headline and not self.search_body:  # pragma: no cover
-            return
+            return 0
         self.change_text = self.replace_back_slashes(self.change_text)
         if self.pattern_match:
             ok = self.precompile_pattern()
             if not ok:
-                return
+                return 0
         # #1428: Honor limiters in replace-all.
         if self.node_only:
             positions = [c.p]
@@ -987,6 +989,7 @@ class LeoFind:
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
+        return count
     #@+node:ekr.20190602134414.1: *6* find._change_all_search_and_replace & helpers
     def _change_all_search_and_replace(self, s):
         """
@@ -1860,7 +1863,7 @@ class LeoFind:
                     for p2 in p.self_and_subtree(copy=False):
                         skip.add(p2.v)
                     p.moveToNodeAfterTree()
-            else:
+            else:  # pragma: no cover (minor)
                 p.moveToThreadNext()
             assert p != progress
         self.ftm.set_radio_button('entire-outline')
@@ -1925,16 +1928,16 @@ class LeoFind:
         c = self.c
         wrapper = c.frame.body and c.frame.body.wrapper
         gui_w = c.edit_widget(p) if self.in_headline else wrapper
-        if not gui_w:
+        if not gui_w:  # pragma: no cover
             self.in_headline = False
             gui_w = wrapper
-        if not gui_w:
+        if not gui_w:  # pragma: no cover
             return False
         oldSel = sel = gui_w.getSelectionRange()
         start, end = sel
-        if start > end:
+        if start > end:  # pragma: no cover
             start, end = end, start
-        if start == end:
+        if start == end:  # pragma: no cover
             g.es("no text selected")
             return False
         start, end = oldSel
@@ -1957,10 +1960,10 @@ class LeoFind:
         gui_w.setSelectionRange(start, start + len(change_text))
         c.widgetWantsFocus(gui_w)
         # No redraws here: they would destroy the headline selection.
-        if self.mark_changes:
+        if self.mark_changes:  # pragma: no cover
             p.setMarked()
             p.setDirty()
-        if self.in_headline:
+        if self.in_headline:  # pragma: no cover
             pass
         else:
             c.frame.body.onBodyChanged('Change', oldSel=oldSel)
@@ -2894,8 +2897,8 @@ class TestFind(unittest.TestCase):
         c = self.c
         print('dump_tree', tag)
         for p in c.all_positions():
-            print(' ' * p.level(), p.h, p.b) ###c'dirty', p.v.isDirty())
-            # g.printObj(g.splitLines(p.b), tag=p.h)
+            print(' ' * p.level(), p.h)
+            print(' ' * p.level(), p.b)
     #@+node:ekr.20210110073117.56: *4* TestFind.make_test_tree
     def make_test_tree(self):
         """Make a test tree for other tests"""
@@ -2949,6 +2952,66 @@ class TestFind(unittest.TestCase):
     def tearDown(self):
         g.unitTesting = False
     #@+node:ekr.20210110073117.59: *3* Tests of Commands...
+    #@+node:ekr.20210219181001.1: *4* testFind.test_batch_change_regex
+    def test_batch_change_regex(self):
+        c, x = self.c, self.x
+        # self.dump_tree()
+        # Test 1: Match in body.
+        settings = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=True,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,
+            whole_word=False,
+        )
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^def\b', 'DEF'),),
+            settings=settings)
+        assert n > 0
+        # Test 2: Match in headline.
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^Node\b', 'DEF'),),
+            settings=settings)
+        assert n > 0
+        # Test 3: node-only.
+        settings ['node_only'] = True
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^DEF\b', 'def'),),
+            settings=settings)
+        assert n > 0
+        # Test 4: suboutline-only.
+        settings ['node_only'] = False
+        settings ['suboutline_only'] = True
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=((r'^def\b', 'DEF'),),
+            settings=settings)
+        assert n > 0
+        
+    #@+node:ekr.20210219175850.1: *4* testFind.test_batch_change_word
+    def test_batch_change_word(self):
+        # settings, x = self.settings, self.x
+        c, x = self.c, self.x
+        settings = dict(
+            ignore_case=False,
+            node_only=False,
+            pattern_match=False,
+            search_body=True,
+            search_headline=True,
+            suboutline_only=False,
+            whole_word=True,
+        )
+        n = x.batch_change(
+            root=c.rootPosition(),
+            replacements=(('def', 'DEF'),),
+            settings=settings)
+        assert n > 0
+        
     #@+node:ekr.20210110073117.65: *4* TestFind.find-def
     def test_find_def(self):
         settings, x = self.settings, self.x
