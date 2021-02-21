@@ -1717,7 +1717,7 @@ class LeoFind:
         c.treeWantsFocus()
     #@+node:ekr.20160920164418.4: *5* find.do_tag_children
     def do_tag_children(self, p, tag):
-        """Handle the clone-find-tag command."""
+        """Handle the tag-children command."""
         c = self.c
         tc = c.theTagController
         if not tc:
