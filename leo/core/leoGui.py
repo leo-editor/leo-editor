@@ -14,7 +14,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoFrame
     # for NullGui and StringTextWrapper.
 #@+others
-#@+node:ekr.20031218072017.3720: ** class LeoGui (object)
+#@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui:
     """The base class of all gui classes.
 
@@ -247,7 +247,7 @@ class LeoGui:
             return w._name
         return repr(w)
     #@-others
-#@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
+#@+node:ekr.20070228160107: ** class LeoKeyEvent
 class LeoKeyEvent:
     """A gui-independent wrapper for gui events."""
     #@+others
@@ -449,17 +449,19 @@ class NullScriptingControllerClass:
 
     def createAllButtons(self):
         pass
-#@+node:ekr.20171128093401.1: ** class StringCheckBox
+#@+node:ekr.20171128093401.1: ** class StringCheckBox (leoGui.py)
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
-    def __init__(self, name, label):
+    def __init__(self, name, label=None):
         self.label = label
         self.name = name
         self.value = True
 
     def checkState(self):
         return self.value
+        
+    isChecked = checkState
 
     def objectName(self):
         return self.name
@@ -469,6 +471,168 @@ class StringCheckBox:
 
     def toggle(self):
         self.value = not self.value
+#@+node:ekr.20210221130549.1: ** class StringFindTabManager (leoGui.py) (new)
+class StringFindTabManager:
+    """A string-based FindTabManager class for unit tests.."""
+    #@+others
+    #@+node:ekr.20210221130549.2: *3*  sftm.ctor
+    #@@nobeautify
+
+    def __init__(self, c):
+        """Ctor for the FindTabManager class."""
+        self.c = c
+        self.entry_focus = None  # Accessed directly from code(!)
+        # Find/change text boxes...
+        self.find_findbox = StringLineEdit('find_text')
+        self.find_replacebox = StringLineEdit('change_text')
+        # Check boxes...
+        self.check_box_ignore_case      = StringCheckBox('ignore_case')
+        self.check_box_mark_changes     = StringCheckBox('mark_changes')
+        self.check_box_mark_finds       = StringCheckBox('mark_finds')
+        self.check_box_regexp           = StringCheckBox('pattern_match')
+        self.check_box_search_body      = StringCheckBox('search_body')
+        self.check_box_search_headline  = StringCheckBox('search_headline')
+        self.check_box_whole_word       = StringCheckBox('whole_word')
+        # Radio buttons...
+        self.radio_button_entire_outline  = StringRadioButton('entire_outline')
+        self.radio_button_node_only       = StringRadioButton('node_only')
+        self.radio_button_suboutline_only = StringRadioButton('suboutline_only')
+        # Init the default values.
+        self.init_widgets()
+    #@+node:ekr.20210221130549.3: *3* sftm.text getters/setters
+    def get_find_text(self):
+        s = self.find_findbox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    def get_change_text(self):
+        s = self.find_replacebox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    def set_find_text(self, s):
+        w = self.find_findbox
+        w.clear()
+        w.insert(s)
+
+    def set_change_text(self, s):
+        w = self.find_replacebox
+        w.clear()
+        w.insert(s)
+    #@+node:ekr.20210221130549.4: *3* sftm.get_settings
+    #@@nobeautify
+
+    def get_settings(self):
+        """
+        Return a g.bunch representing all widget values.
+        
+        Similar to LeoFind.default_settings, but only for find-tab values.
+        """
+        return g.Bunch(
+            # Find/change strings...
+            find_text   = self.find_findbox.text(),
+            change_text = self.find_replacebox.text(),
+            # Find options...
+            ignore_case     = self.check_box_ignore_case.isChecked(),
+            mark_changes    = self.check_box_mark_changes.isChecked(),
+            mark_finds      = self.check_box_mark_finds.isChecked(),
+            node_only       = self.radio_button_node_only.isChecked(),
+            pattern_match   = self.check_box_regexp.isChecked(),
+            search_body     = self.check_box_search_body.isChecked(),
+            search_headline = self.check_box_search_headline.isChecked(),
+            suboutline_only = self.radio_button_suboutline_only.isChecked(),
+            whole_word      = self.check_box_whole_word.isChecked(),
+        )
+    #@+node:ekr.20210221130549.5: *3* sftm.clear_focus & init_focus & set_entry_focus
+    def clear_focus(self):
+        pass
+
+    def init_focus(self):
+        pass
+
+    def set_entry_focus(self):
+        pass
+    #@+node:ekr.20210221130549.7: *3* sftm.init_widgets
+    def init_widgets(self):
+        """
+        Init widgets and ivars from c.config settings.
+        Create callbacks that always keep the LeoFind ivars up to date.
+        """
+        c, find = self.c, self.c.findCommands
+        # Find/change text boxes.
+        table = (
+            ('find_findbox', 'find_text', '<find pattern here>'),
+            ('find_replacebox', 'change_text', ''),
+        )
+        for widget_ivar, setting_name, default in table:
+            w = getattr(self, widget_ivar)
+            s = c.config.getString(setting_name) or default
+            w.insert(s)
+        # Check boxes.
+        table = (
+            ('ignore_case', 'check_box_ignore_case'),
+            ('mark_changes', 'check_box_mark_changes'),
+            ('mark_finds', 'check_box_mark_finds'),
+            ('pattern_match', 'check_box_regexp'),
+            ('search_body', 'check_box_search_body'),
+            ('search_headline', 'check_box_search_headline'),
+            ('whole_word', 'check_box_whole_word'),
+        )
+        for setting_name, widget_ivar in table:
+            w = getattr(self, widget_ivar)
+            val = c.config.getBool(setting_name, default=False)
+            setattr(find, setting_name, val)
+            if val:
+                w.toggle()
+        # Radio buttons
+        table = (
+            ('node_only', 'node_only', 'radio_button_node_only'),
+            ('entire_outline', None, 'radio_button_entire_outline'),
+            ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
+        )
+        for setting_name, ivar, widget_ivar in table:
+            w = getattr(self, widget_ivar)
+            val = c.config.getBool(setting_name, default=False)
+            if ivar is not None:
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                w.toggle()
+        # Ensure one radio button is set.
+        if not find.node_only and not find.suboutline_only:
+            w = self.radio_button_entire_outline
+            w.toggle()
+    #@+node:ekr.20210221130549.8: *3* sftm.set_radio_button
+    #@@nobeautify
+
+    def set_radio_button(self, name):
+        """Set the value of the radio buttons"""
+        d = {
+            'node-only':       self.radio_button_node_only,
+            'entire-outline':  self.radio_button_entire_outline,
+            'suboutline-only': self.radio_button_suboutline_only,
+        }
+        w = d.get(name)
+        if not w.isChecked():
+            w.toggle()
+    #@+node:ekr.20210221130549.9: *3* sftm.toggle_checkbox
+    #@@nobeautify
+
+    def toggle_checkbox(self, checkbox_name):
+        """Toggle the value of the checkbox whose name is given."""
+        d = {
+            'ignore_case':     self.check_box_ignore_case,
+            'mark_changes':    self.check_box_mark_changes,
+            'mark_finds':      self.check_box_mark_finds,
+            'pattern_match':   self.check_box_regexp,
+            'search_body':     self.check_box_search_body,
+            'search_headline': self.check_box_search_headline,
+            'whole_word':      self.check_box_whole_word,
+        }
+        w = d.get(checkbox_name)
+        w.toggle()
+    #@-others
 #@+node:ekr.20170613095422.1: ** class StringGui (LeoGui)
 class StringGui(LeoGui):
     """
@@ -486,10 +650,9 @@ class StringGui(LeoGui):
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (leoGui)
 class StringLineEdit:
-
     """Simulate a QLineEdit."""
 
-    def __init__(self, name, disabled):
+    def __init__(self, name, disabled=False):
         self.disabled = disabled
         self.name = name
         self.pos = 0
@@ -510,12 +673,11 @@ class StringLineEdit:
 
     def text(self):
         return self.s
-#@+node:ekr.20171128093602.1: ** class StringRadioButton
+#@+node:ekr.20171128093602.1: ** class StringRadioButton (leoGui.py)
 class StringRadioButton:
+    """Simulate a QRadioButton."""
 
-    """Simulate QRadioButton."""
-
-    def __init__(self, name, label):
+    def __init__(self, name, label=None):
         self.label = label
         self.name = name
         self.value = True

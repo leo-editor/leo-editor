@@ -21,6 +21,7 @@ import unittest
 import websockets
 # Leo
 from leo.core.leoNodes import Position
+from leo.core.leoGui import StringFindTabManager
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
@@ -153,6 +154,8 @@ class LeoServer:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
+            ftm = StringFindTabManager(c)
+            c.findCommands.ftm = ftm
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
@@ -230,7 +233,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042145.1: *5* lsc.change_all (test)
+    #@+node:ekr.20210221042145.1: *5* lsc.change_all
     def change_all(self, package):
         """Run Leo's change-all command and return results."""
         tag = 'change_all'
@@ -251,7 +254,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042406.1: *5* lsc.change_then_find (test)
+    #@+node:ekr.20210221042406.1: *5* lsc.change_then_find
     def change_then_find(self, package):
         """Run Leo's change-then-find command and return results."""
         tag = 'change_then_find'
@@ -268,7 +271,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042541.1: *5* lsc.clone_find_all (test)
+    #@+node:ekr.20210221042541.1: *5* lsc.clone_find_all
     def clone_find_all(self, package):
         """Run Leo's clone-find-all command and return results."""
         tag = 'clone_find_all'
@@ -285,7 +288,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042633.1: *5* lsc.clone_find_all_flattened (test)
+    #@+node:ekr.20210221042633.1: *5* lsc.clone_find_all_flattened
     def clone_find_all_flattened(self, package):
         """Run Leo's clone-find-all-flattened command and return results."""
         tag = 'clone_find_all_flattened'
@@ -332,11 +335,11 @@ class LeoServer:
         settings.find_text = find_text
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_def(settings)
+        p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
         if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042808.1: *5* lsc.find_next (test)
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221042808.1: *5* lsc.find_next
     def find_next(self, package):
         """Run Leo's find-next command and return results."""
         tag = 'find_next'
@@ -349,11 +352,11 @@ class LeoServer:
         settings.find_text = find_text
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_next(settings)
+        p, pos, newpos = fc.do_find_next(settings)
         if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042851.1: *5* lsc.find_previous (test)
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221042851.1: *5* lsc.find_previous
     def find_previous(self, package):
         """Run Leo's find-previous command and return results."""
         tag = 'find_previous'
@@ -366,10 +369,10 @@ class LeoServer:
         settings.find_text = find_text
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_previous(settings)
+        p, pos, newpos = fc.do_find_prev(settings)
         if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221043134.1: *5* lsc.find_var (test)
     def find_var(self, package):
         """Run Leo's find-var command and return results."""
@@ -383,10 +386,10 @@ class LeoServer:
         settings.find_text = find_text
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_find_var(settings)
+        p, pos, newpos = fc.do_find_var(settings, word=find_text)
         if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
     #@+node:ekr.20210221043224.1: *5* lsc.tag_children (test)
     def tag_children(self, package):
         """Run Leo's tag-children command and return results."""
@@ -2303,9 +2306,14 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             methods.append(z)
         # g.printObj(methods, tag=methods)
         exclude = [
+            # Find methods...
+            'change_all', 'change_then_find',
+            'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+            'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+            'tag_children',  
+            # Other methods
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
-            'find_all', # see test_find_commands.
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
@@ -2379,14 +2387,25 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
+        # Open the file & create the StringFindTabManager.
+        self._request("open_file", {"log": False, "filename": test_dot_leo})
         #
-        # Open the file.
-        self._request("open_file", {"log": log, "filename": test_dot_leo})
+        # Batch find commands: The answer is a count of found nodes.
+        for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
-        # Do find_all.
-        answer = self._request("find_all", {"log": log, "find_text": "def"})
-        if log:
-            g.printObj(answer, tag=f"{tag}: answer")
+        # Find commands that may select text: The answer is (p, pos, newpos).
+        for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Change commands: The answer is a count of changed nodes.
+        for method in ('change_all', 'change_then_find'):
+            answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        ### To do...
+        # 'clone_find_tag', 'tag_children')
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)

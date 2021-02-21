@@ -1280,7 +1280,7 @@ class FindTabManager:
         }
         w = d.get(checkbox_name)
         assert w
-        assert hasattr(find,checkbox_name),checkbox_name
+        assert hasattr(find, checkbox_name), checkbox_name
         w.toggle() # The checkbox callback toggles the ivar.
         if find.minibuffer_mode:
             find.show_find_options_in_status_area()
