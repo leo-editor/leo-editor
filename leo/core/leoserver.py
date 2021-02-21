@@ -305,24 +305,23 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210221042719.1: *5* lsc.clone_find_tag (test)
+    #@+node:ekr.20210221042719.1: *5* lsc.clone_find_tag
     def clone_find_tag(self, package):
         """Run Leo's clone-find-tag command and return results."""
         tag = 'clone_find_tag'
         c = self._check_c()
         fc = c.findCommands
-        find_text = package.get("find_text")
-        if find_text is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no find pattern")
+        the_tag = package.get("tag")
+        if not the_tag:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
         settings = self._get_find_settings(c)
-        settings.find_text = find_text
         if self.log_flag:  # pragma: no cover
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
-        answer = fc.do_clone_find_tag(settings)
+        n, p = fc.do_clone_find_tag(settings)
         if self.log_flag:  # pragma: no cover
-            g.printObj(answer, tag=f"{tag}: answer")
-        return self._make_response({"answer": answer})
-    #@+node:ekr.20210221043043.1: *5* lsc.find_def (test)
+            g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
+        return self._make_response({"n": n, "p": p})
+    #@+node:ekr.20210221043043.1: *5* lsc.find_def
     def find_def(self, package):
         """Run Leo's find-def command and return results."""
         tag = 'find_def'
@@ -373,7 +372,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221043134.1: *5* lsc.find_var (test)
+    #@+node:ekr.20210221043134.1: *5* lsc.find_var
     def find_var(self, package):
         """Run Leo's find-var command and return results."""
         tag = 'find_var'
@@ -390,7 +389,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
         return self._make_response({"p": p, "pos": pos, "newpos": newpos})
-    #@+node:ekr.20210221043224.1: *5* lsc.tag_children (test)
+    #@+node:ekr.20210221043224.1: *5* lsc.tag_children
     def tag_children(self, package):
         """Run Leo's tag-children command and return results."""
         # This is not a find command!
@@ -2404,8 +2403,16 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         for method in ('change_all', 'change_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-        ### To do...
-        # 'clone_find_tag', 'tag_children')
+        #
+        # Tag commands. Why they are in leoFind.py??
+        try:
+            g.unitTesting = True  # To disable a warning.
+            for method in ('clone_find_tag', 'tag_children'):
+                answer = self._request(method, {"log": log, "tag": "my-tag"})
+                if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        finally:
+            # For some reason, setting g.unitTesting to True causes failures.
+            g.unitTesting = False
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)

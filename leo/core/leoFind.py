@@ -1292,7 +1292,7 @@ class LeoFind:
         Return (len(clones), found) for unit tests.
         """
         c, u = self.c, self.c.undoer
-        tc = c.theTagController
+        tc = getattr(c, 'theTagController', None)
         if not tc:
             if not g.unitTesting:  # pragma: no cover (skip)
                 g.es_print('nodetags not active')
@@ -1719,7 +1719,7 @@ class LeoFind:
     def do_tag_children(self, p, tag):
         """Handle the tag-children command."""
         c = self.c
-        tc = c.theTagController
+        tc = getattr(c, 'theTagController', None)
         if not tc:
             if not g.unitTesting:  # pragma: no cover (skip)
                 g.es_print('nodetags not active')
