@@ -154,16 +154,15 @@ class LeoServer:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
-            ftm = StringFindTabManager(c)
-            c.findCommands.ftm = ftm
+            c.findCommands.ftm = StringFindTabManager(c)
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        # A (temporary?) hack:
-        c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
+        ### A (temporary?) hack:
+        ### c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
@@ -2257,6 +2256,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUp(self):
         global g_server
         self.server = g_server
+        g.unitTesting = True
+        
+    def tearDown(self):
+        g.unitTesting = False 
+        
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
