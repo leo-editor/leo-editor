@@ -1252,8 +1252,6 @@ class FindTabManager:
             'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
-        if not w:
-            return  # Valid???
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()

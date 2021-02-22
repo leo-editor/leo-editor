@@ -473,7 +473,7 @@ class StringCheckBox:
         self.value = not self.value
 #@+node:ekr.20210221130549.1: ** class StringFindTabManager (leoGui.py) (new)
 class StringFindTabManager:
-    """A string-based FindTabManager class for unit tests.."""
+    """A string-based FindTabManager class for unit tests."""
     #@+others
     #@+node:ekr.20210221130549.2: *3*  sftm.ctor
     #@@nobeautify
