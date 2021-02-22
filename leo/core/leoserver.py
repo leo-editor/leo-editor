@@ -2394,14 +2394,10 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
         # Tag commands. Why they are in leoFind.py??
-        try:
-            g.unitTesting = True  # To disable a warning.
-            for method in ('clone_find_tag', 'tag_children'):
-                answer = self._request(method, {"log": log, "tag": "my-tag"})
-                if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
-        finally:
-            # For some reason, setting g.unitTesting to True causes failures.
-            g.unitTesting = False
+        for method in ('clone_find_tag', 'tag_children'):
+            answer = self._request(method, {"log": log, "tag": "my-tag"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+       
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)
