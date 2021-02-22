@@ -21,6 +21,7 @@ import unittest
 import websockets
 # Leo
 from leo.core.leoNodes import Position
+from leo.core.leoGui import StringFindTabManager
 #@-<< imports >>
 g = None  # The bridge's leoGlobals module. Unit tests use self.g.
 # For unit tests.
@@ -47,7 +48,7 @@ class TerminateServer(Exception):  # pragma: no cover
 class LeoServer:
     """Leo Server Controller"""
     #@+others
-    #@+node:ekr.20210202110128.30: *3* lsc.__init__ (load bridge)
+    #@+node:ekr.20210202110128.30: *3* server.__init__ (load bridge)
     def __init__(self, testing=False):
 
         import leo.core.leoApp as leoApp
@@ -83,8 +84,8 @@ class LeoServer:
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
         t2 = time.process_time()
         print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
-    #@+node:ekr.20210211084004.1: *3* lsc:public commands
-    #@+node:ekr.20210202193709.1: *4* lsc:button commands
+    #@+node:ekr.20210211084004.1: *3* server:public commands
+    #@+node:ekr.20210202193709.1: *4* server:button commands
     # These will fail unless the open_file inits c.theScriptingController.
     #@+node:ekr.20210207051720.1: *5* _check_button_command
     def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
@@ -98,7 +99,7 @@ class LeoServer:
             # This will happen unless mod_scripting is loaded!
             raise ServerError(f"{tag}: no scripting controller")
         return sc.buttonsDict
-    #@+node:ekr.20210202183724.4: *5* lsc.click_button
+    #@+node:ekr.20210202183724.4: *5* server.click_button
     def click_button(self, package):  # pragma: no cover (no scripting controller)
         """Handles buttons clicked in client from the '@button' panel"""
         tag = 'click_button'
@@ -114,14 +115,14 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception clicking button {name}: {e}")
         return self._make_response()
-    #@+node:ekr.20210202183724.2: *5* lsc.get_buttons
+    #@+node:ekr.20210202183724.2: *5* server.get_buttons
     def get_buttons(self, package):  # pragma: no cover (no scripting controller)
         """Gets the currently opened file's @buttons list"""
         d = self._check_button_command('get_buttons')
         return self._make_response({
             "buttons": sorted(list(d.get.keys()))
         })
-    #@+node:ekr.20210202183724.3: *5* lsc.remove_button
+    #@+node:ekr.20210202183724.3: *5* server.remove_button
     def remove_button(self, package):  # pragma: no cover (no scripting controller)
         """Remove button by name."""
         tag = 'remove_button'
@@ -138,8 +139,8 @@ class LeoServer:
         return self._make_response({
             "buttons": sorted(list(d.get.keys()))
         })
-    #@+node:ekr.20210202193642.1: *4* lsc:file commands
-    #@+node:ekr.20210202110128.57: *5* lsc.open_file
+    #@+node:ekr.20210202193642.1: *4* server:file commands
+    #@+node:ekr.20210202110128.57: *5* server.open_file
     def open_file(self, package):
         """
         Open a leo file with the given filename.
@@ -153,21 +154,20 @@ class LeoServer:
                     found = True
         if not found:
             c = self.bridge.openLeoFile(filename)
+            c.findCommands.ftm = StringFindTabManager(c)
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        # A (temporary?) hack:
-        c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
         return self._make_response()
-    #@+node:ekr.20210202110128.58: *5* lsc.close_file
+    #@+node:ekr.20210202110128.58: *5* server.close_file
     def close_file(self, package):
         """Closes an outline opened with open_file."""
         c = self._check_c()
@@ -179,41 +179,28 @@ class LeoServer:
         self.c = commanders and commanders[0] or None
         # Return a response describing self.c, not the closed outline.
         return self._make_response()
-    #@+node:ekr.20210202183724.1: *5* lsc.save_file
+    #@+node:ekr.20210202183724.1: *5* server.save_file
     def save_file(self, package):  # pragma: no cover (too dangerous).
         """Save the leo outline."""
         c = self._check_c()
         c.save()
         return self._make_response()
-    #@+node:ekr.20210212092848.1: *4* lsc:find commands
-    #@+node:ekr.20210212094817.1: *5* lsc._get_find_settings
+    #@+node:ekr.20210212092848.1: *4* server:find commands
+    #@+node:ekr.20210212094817.1: *5* server._get_find_settings
     def _get_find_settings(self, c):
         """Return a g.Bunch containing the present find settings settings."""
-        ### We can't get the defaults from Leo because c.findCommands.ftm is None.
-        ### Maybe the client should supply defaults.
-        #
-        # For now, return EKR defaults.
-        return g.Bunch(
-            find_text=None, change_text=None,
-            search_body=True, search_headline=True,
-            ignore_case=True, pattern_match=False, whole_word=True,
-            mark_changes=False, mark_finds=False,
-            node_only=False, suboutline_only=False,
-            entry_focus=None,
-        )  
-        # return {
-            # "change_text": None,
-            # "ignore_case": True,
-            # "mark_changes": False,
-            # "mark_finds": False,
-            # "node_only": False,
-            # "pattern_match": False,
-            # "search_body": True,
-            # "search_headline": True,
-            # "suboutline_only": True,
-            # "whole_word": True,
-        # }   
-    #@+node:ekr.20210212092854.1: *5* lsc.find_all
+        return c.findCommands.ftm.get_settings()
+        ###
+            # # For now, return EKR defaults.
+            # return g.Bunch(
+                # find_text=None, change_text=None,
+                # search_body=True, search_headline=True,
+                # ignore_case=True, pattern_match=False, whole_word=True,
+                # mark_changes=False, mark_finds=False,
+                # node_only=False, suboutline_only=False,
+                # entry_focus=None,
+            # )  
+    #@+node:ekr.20210212092854.1: *5* server.find_all
     def find_all(self, package):
         """Run Leo's find-all command and return results."""
         tag = 'find_all'
@@ -230,8 +217,177 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(answer, tag=f"{tag}: answer")
         return self._make_response({"answer": answer})
-    #@+node:ekr.20210202193505.1: *4* lsc:getter commands
-    #@+node:ekr.20210202110128.55: *5* lsc.get_all_open_commanders
+    #@+node:ekr.20210221042145.1: *5* server.change_all
+    def change_all(self, package):
+        """Run Leo's change-all command and return results."""
+        tag = 'change_all'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        change_text = package.get("change_text")
+        if change_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no change text")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        settings.change_text = change_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        answer = fc.do_change_all(settings)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(answer, tag=f"{tag}: answer")
+        return self._make_response({"answer": answer})
+    #@+node:ekr.20210221042406.1: *5* server.change_then_find
+    def change_then_find(self, package):
+        """Run Leo's change-then-find command and return results."""
+        tag = 'change_then_find'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        answer = fc.do_change_then_find(settings)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(answer, tag=f"{tag}: answer")
+        return self._make_response({"answer": answer})
+    #@+node:ekr.20210221042541.1: *5* server.clone_find_all
+    def clone_find_all(self, package):
+        """Run Leo's clone-find-all command and return results."""
+        tag = 'clone_find_all'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        answer = fc.do_clone_find_all(settings)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(answer, tag=f"{tag}: answer")
+        return self._make_response({"answer": answer})
+    #@+node:ekr.20210221042633.1: *5* server.clone_find_all_flattened
+    def clone_find_all_flattened(self, package):
+        """Run Leo's clone-find-all-flattened command and return results."""
+        tag = 'clone_find_all_flattened'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        answer = fc.do_clone_find_all_flattened(settings)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(answer, tag=f"{tag}: answer")
+        return self._make_response({"answer": answer})
+    #@+node:ekr.20210221042719.1: *5* server.clone_find_tag
+    def clone_find_tag(self, package):
+        """Run Leo's clone-find-tag command and return results."""
+        tag = 'clone_find_tag'
+        c = self._check_c()
+        fc = c.findCommands
+        the_tag = package.get("tag")
+        if not the_tag:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        settings = self._get_find_settings(c)
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        n, p = fc.do_clone_find_tag(settings)
+        if self.log_flag:  # pragma: no cover
+            g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
+        return self._make_response({"n": n, "p": p})
+    #@+node:ekr.20210221043043.1: *5* server.find_def
+    def find_def(self, package):
+        """Run Leo's find-def command and return results."""
+        tag = 'find_def'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
+        if self.log_flag:  # pragma: no cover
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221042808.1: *5* server.find_next
+    def find_next(self, package):
+        """Run Leo's find-next command and return results."""
+        tag = 'find_next'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        p, pos, newpos = fc.do_find_next(settings)
+        if self.log_flag:  # pragma: no cover
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221042851.1: *5* server.find_previous
+    def find_previous(self, package):
+        """Run Leo's find-previous command and return results."""
+        tag = 'find_previous'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        p, pos, newpos = fc.do_find_prev(settings)
+        if self.log_flag:  # pragma: no cover
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221043134.1: *5* server.find_var
+    def find_var(self, package):
+        """Run Leo's find-var command and return results."""
+        tag = 'find_var'
+        c = self._check_c()
+        fc = c.findCommands
+        find_text = package.get("find_text")
+        if find_text is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no find pattern")
+        settings = self._get_find_settings(c)
+        settings.find_text = find_text
+        if self.log_flag:  # pragma: no cover
+            g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+        p, pos, newpos = fc.do_find_var(settings, word=find_text)
+        if self.log_flag:  # pragma: no cover
+            g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+        return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+    #@+node:ekr.20210221043224.1: *5* server.tag_children
+    def tag_children(self, package):
+        """Run Leo's tag-children command and return results."""
+        # This is not a find command!
+        tag = 'tag_children'
+        c = self._check_c()
+        fc = c.findCommands
+        the_tag = package.get("tag")
+        if the_tag is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no tag")
+        # Unlike find commands, do_tag_children does not use a settings dict.
+        fc.do_tag_children(c.p, the_tag)
+        return self._make_response({})
+    #@+node:ekr.20210202193505.1: *4* server:getter commands
+    #@+node:ekr.20210202110128.55: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, package):
         """Return array describing each commander in g.app.commanders()."""
         files = [
@@ -242,7 +398,7 @@ class LeoServer:
             } for c in g.app.commanders()
         ]
         return self._make_response({"open-commanders": files})
-    #@+node:ekr.20210202110128.71: *5* lsc.get_all_positions
+    #@+node:ekr.20210202110128.71: *5* server.get_all_positions
     def get_all_positions(self, package):
         """
         Return a list of position data for all positions.
@@ -254,7 +410,7 @@ class LeoServer:
             self._get_position_d(p) for p in c.all_positions(copy=False)
         ]
         return self._make_response({"position-data-list": result})
-    #@+node:ekr.20210202110128.72: *5* lsc.get_body & get_body_length
+    #@+node:ekr.20210202110128.72: *5* server.get_body & get_body_length
     def get_body(self, package):
         """
         Return p.b, where p is c.p if package["ap"] is missing.
@@ -267,7 +423,7 @@ class LeoServer:
         # _make_response adds all the cheap redraw data, including "body-length"
         return self._make_response({"body": p.b})
         
-    #@+node:ekr.20210202110128.66: *5* lsc.get_body_states
+    #@+node:ekr.20210202110128.66: *5* server.get_body_states
     def get_body_states(self, package):
         """
         Return body data for p, where p is c.p if package["ap"] is missing.
@@ -310,7 +466,7 @@ class LeoServer:
             }
         }
         return self._make_response({"body-states": states})
-    #@+node:ekr.20210202110128.68: *5* lsc.get_children
+    #@+node:ekr.20210202110128.68: *5* server.get_children
     def get_children(self, package):
         """
         Return the node data for children of p, where p is c.p if package["ap"] is missing."""
@@ -320,7 +476,7 @@ class LeoServer:
             # "children": [self._p_to_ap(child) for child in p.children()]
             "children": [self._get_position_d(child) for child in p.children()]
         })
-    #@+node:ekr.20210214154702.1: *5* lsc.get_focus
+    #@+node:ekr.20210214154702.1: *5* server.get_focus
     def get_focus(self, packages):
         """
         Return a representation of the focs widget,
@@ -329,7 +485,7 @@ class LeoServer:
         w = g.app.gui.get_focus()
         focus = g.app.gui.widget_name(w)
         return self._make_response({"focus": focus})
-    #@+node:ekr.20210202110128.69: *5* lsc.get_parent
+    #@+node:ekr.20210202110128.69: *5* server.get_parent
     def get_parent(self, package):
         """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
         self._check_c()
@@ -337,7 +493,7 @@ class LeoServer:
         parent = p.parent()
         data = self._get_position_d(parent) if parent else None
         return self._make_response({"parent": data})
-    #@+node:ekr.20210211053955.1: *5* lsc.get_position_dict
+    #@+node:ekr.20210211053955.1: *5* server.get_position_dict
     def get_position_data_dict(self, package):
         """
         Return a dict of postition data for all positions.
@@ -350,7 +506,7 @@ class LeoServer:
                 for p in c.all_unique_positions(copy=False)
         }
         return self._make_response({"position-data-dict": result})
-    #@+node:ekr.20210211233814.1: *5* lsc.get_ua
+    #@+node:ekr.20210211233814.1: *5* server.get_ua
     def get_ua(self, package):
         """Return p.v.u, making sure it can be serialized."""
         self._check_c()
@@ -363,7 +519,7 @@ class LeoServer:
             response = {"p": p, "bad-ua": repr(p.v.u)} 
         # _make_response adds all the cheap redraw data.
         return self._make_response(response)
-    #@+node:ekr.20210206062654.1: *5* lsc.get_sign_on
+    #@+node:ekr.20210206062654.1: *5* server.get_sign_on
     def get_sign_on(self, package):
         """Synchronous version of _sign_on"""
         g.app.computeSignon()
@@ -372,7 +528,7 @@ class LeoServer:
             for z2 in z.split('\n'):
                 signon.append(z2.strip())
         return self._make_response({"sign-on": "\n".join(signon)})
-    #@+node:ekr.20210202110128.61: *5* lsc.get_ui_states
+    #@+node:ekr.20210202110128.61: *5* server.get_ui_states
     def get_ui_states(self, package):
         """
         Return the enabled/disabled UI states for the open commander, or defaults if None.
@@ -391,8 +547,8 @@ class LeoServer:
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
         return self._make_response({"states": states})
-    #@+node:ekr.20210202193540.1: *4* lsc:node commands
-    #@+node:ekr.20210202183724.11: *5* lsc.clone_node
+    #@+node:ekr.20210202193540.1: *4* server:node commands
+    #@+node:ekr.20210202183724.11: *5* server.clone_node
     def clone_node(self, package):
         """
         Clone the node at position p, where p is c.p if package["ap"] is missing.
@@ -408,7 +564,7 @@ class LeoServer:
         c.selectPosition(p)
         c.clone()
         return self._make_response()
-    #@+node:ekr.20210202110128.79: *5* lsc.contract_node
+    #@+node:ekr.20210202110128.79: *5* server.contract_node
     def contract_node(self, package):
         """
         Contract the node at position p, where p is c.p if package["ap"] is missing.
@@ -423,7 +579,7 @@ class LeoServer:
         p = self._get_p(package)
         p.contract()
         return self._make_response()
-    #@+node:ekr.20210202183724.12: *5* lsc.cut_node
+    #@+node:ekr.20210202183724.12: *5* server.cut_node
     def cut_node(self, package):  # pragma: no cover (too dangerous, for now)
         """
         Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
@@ -439,7 +595,7 @@ class LeoServer:
         c.selectPosition(p)
         c.cutOutline()
         return self._make_response()
-    #@+node:ekr.20210202183724.13: *5* lsc.delete_node
+    #@+node:ekr.20210202183724.13: *5* server.delete_node
     def delete_node(self, package):  # pragma: no cover (too dangerous, for now)
         """
         Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
@@ -455,7 +611,7 @@ class LeoServer:
         c.selectPosition(p)
         c.deleteOutline()  # Handles undo.
         return self._make_response()
-    #@+node:ekr.20210202110128.78: *5* lsc.expand_node
+    #@+node:ekr.20210202110128.78: *5* server.expand_node
     def expand_node(self, package):
         """
         Expand the node at position p, where p is c.p if package["ap"] is missing.
@@ -470,7 +626,7 @@ class LeoServer:
         p = self._get_p(package)
         p.expand()
         return self._make_response()
-    #@+node:ekr.20210202183724.15: *5* lsc.insert_node
+    #@+node:ekr.20210202183724.15: *5* server.insert_node
     def insert_node(self, package):
         """
         Insert a new node at position p, where p is c.p if package["ap"] is missing.
@@ -490,7 +646,7 @@ class LeoServer:
         c.selectPosition(p)
         c.insertHeadline()  # Handles undo, sets c.p
         return self._make_response()
-    #@+node:ekr.20210202110128.64: *5* lsc.page_down
+    #@+node:ekr.20210202110128.64: *5* server.page_down
     def page_down(self, package):
         """
         Selects a node "n" steps down in the tree to simulate page down.
@@ -500,7 +656,7 @@ class LeoServer:
         for z in range(n):
             c.selectVisNext()
         return self._make_response()
-    #@+node:ekr.20210202110128.63: *5* lsc.page_up
+    #@+node:ekr.20210202110128.63: *5* server.page_up
     def page_up(self, package):
         """
         Selects a node "N" steps up in the tree to simulate page up.
@@ -510,7 +666,7 @@ class LeoServer:
         for z in range(n):
             c.selectVisBack()
         return self._make_response()
-    #@+node:ekr.20210202183724.17: *5* lsc.redo
+    #@+node:ekr.20210202183724.17: *5* server.redo
     def redo(self, package):
         """Undo last un-doable operation"""
         c = self._check_c()
@@ -518,7 +674,7 @@ class LeoServer:
         if u.canRedo():
             u.redo()
         return self._make_response()
-    #@+node:ekr.20210202110128.74: *5* lsc.set_body
+    #@+node:ekr.20210202110128.74: *5* server.set_body
     def set_body(self, package):
         """
         Undoably set p.b, where p is c.p if package["ap"] is missing.
@@ -540,14 +696,14 @@ class LeoServer:
         if not p.v.isDirty():  # pragma: no cover
             p.setDirty()
         return self._make_response()
-    #@+node:ekr.20210202110128.77: *5* lsc.set_current_position
+    #@+node:ekr.20210202110128.77: *5* server.set_current_position
     def set_current_position(self, package):
         """Select position p, where p is c.p if package["ap"] is missing."""
         c = self._check_c()
         p = self._get_p(package)
         c.selectPosition(p)
         return self._make_response()
-    #@+node:ekr.20210202110128.76: *5* lsc.set_headline
+    #@+node:ekr.20210202110128.76: *5* server.set_headline
     def set_headline(self, package):
         """
         Undoably set p.h, where p is c.p if package["ap"] is missing.
@@ -563,7 +719,7 @@ class LeoServer:
         p.h = h
         u.afterChangeNodeContents(p, 'Change Headline', bunch)
         return self._make_response()
-    #@+node:ekr.20210202110128.75: *5* lsc.set_selection
+    #@+node:ekr.20210202110128.75: *5* server.set_selection
     def set_selection(self, package):
         """
         Set the selection range for p.b, where p is c.p if package["ap"] is missing.
@@ -595,7 +751,7 @@ class LeoServer:
         v.selectionStart = start
         v.selectionLength = abs(start - end)
         return self._make_response()
-    #@+node:ekr.20210202183724.10: *5* lsc.toggle_mark
+    #@+node:ekr.20210202183724.10: *5* server.toggle_mark
     def toggle_mark(self, package):
         """
         Toggle the mark at position p, where p is c.p if package["ap"] is missing.
@@ -613,7 +769,7 @@ class LeoServer:
         else:
             p.setMarked()
         return self._make_response()
-    #@+node:ekr.20210202183724.16: *5* lsc.undo
+    #@+node:ekr.20210202183724.16: *5* server.undo
     def undo(self, package):
         """Undo last un-doable operation"""
         c = self._check_c()
@@ -622,12 +778,12 @@ class LeoServer:
             u.undo()
         # Félix: Caller can get focus using other calls.
         return self._make_response()
-    #@+node:ekr.20210205102806.1: *4* lsc:server commands
-    #@+node:ekr.20210205102818.1: *5* lsc.error
+    #@+node:ekr.20210205102806.1: *4* server:server commands
+    #@+node:ekr.20210205102818.1: *5* server.error
     def error(self, package):
         """For unit testing. Raise ServerError"""
         raise ServerError(f"error called")
-    #@+node:ekr.20210202183724.5: *5* lsc.get_all_leo_commands & helper
+    #@+node:ekr.20210202183724.5: *5* server.get_all_leo_commands & helper
     def get_all_leo_commands(self, package):
         """Return a list of all Leo commands that make sense in leoInteg."""
         tag = 'get_all_leo_commands'
@@ -663,7 +819,7 @@ class LeoServer:
             print(f"\n{tag}: {len(result)} leo commands\n")
             g.printObj([z.get("command-name") for z in result], tag=tag)
         return self._make_response({"commands": result})
-    #@+node:ekr.20210202183724.6: *6* lsc._bad_commands
+    #@+node:ekr.20210202183724.6: *6* server._bad_commands
     def _bad_commands(self, c):
         """Return the list of Leo's command names that leoInteg should ignore."""
         d = c.commandsDict  # keys are command names, values are functions.
@@ -1268,7 +1424,7 @@ class LeoServer:
         result = list(sorted(bad))
         return result
 
-    #@+node:ekr.20210202183724.7: *6* lsc._good_commands
+    #@+node:ekr.20210202183724.7: *6* server._good_commands
     def _good_commands(self):
         """Defined commands that definitely should be included in leoInteg."""
         good_list = [
@@ -1700,7 +1856,7 @@ class LeoServer:
         ]
         return good_list
 
-    #@+node:ekr.20210209055518.1: *5* lsc.get_all_server_commands
+    #@+node:ekr.20210209055518.1: *5* server.get_all_server_commands
     def get_all_server_commands(self, package):
         """
         Public server method:
@@ -1720,13 +1876,13 @@ class LeoServer:
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
-    #@+node:ekr.20210202110128.52: *5* lsc.init_connection
+    #@+node:ekr.20210202110128.52: *5* server.init_connection
     def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
         """Begin the connection."""
         self.web_socket = web_socket
         self.loop = asyncio.get_event_loop()
 
-    #@+node:ekr.20210205103759.1: *5* lsc.shut_down
+    #@+node:ekr.20210205103759.1: *5* server.shut_down
     def shut_down(self, package):
         """Shut down the server."""
         tag = 'shut_down'
@@ -1734,8 +1890,8 @@ class LeoServer:
         if n:  # pragma: no cover
             raise ServerError(f"{tag}: {n} open outlines")
         raise TerminateServer(f"client requested shut down")
-    #@+node:ekr.20210204154548.1: *3* lsc:server utils
-    #@+node:ekr.20210202110128.85: *4* lsc._ap_to_p
+    #@+node:ekr.20210204154548.1: *3* server:server utils
+    #@+node:ekr.20210202110128.85: *4* server._ap_to_p
     def _ap_to_p(self, ap):
         """
         Convert ap (archived position, a dict) to a valid Leo position.
@@ -1786,7 +1942,7 @@ class LeoServer:
                 f"{tag}: stack: {stack}")
             raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
         return p
-    #@+node:ekr.20210207054237.1: *4* lsc._check_c
+    #@+node:ekr.20210207054237.1: *4* server._check_c
     def _check_c(self):
         """Return self.c or raise ServerError if self.c is None."""
         tag = '_check_c'
@@ -1794,14 +1950,14 @@ class LeoServer:
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: no open commander")
         return c
-    #@+node:ekr.20210211131234.1: *4* lsc._check_outline
+    #@+node:ekr.20210211131234.1: *4* server._check_outline
     def _check_outline(self, c):
         """Check self.c for consistency."""
         # Check that all positions exist.
         self._check_outline_positions(c)
         # Test round-tripping.
         self._test_round_trip_positions(c)
-    #@+node:ekr.20210211131827.1: *4* lsc._check_outline_positions
+    #@+node:ekr.20210211131827.1: *4* server._check_outline_positions
     def _check_outline_positions(self, c):
         """Verify that all positions in c exist."""
         tag = '_check_outline_positions'
@@ -1811,7 +1967,7 @@ class LeoServer:
                 print(message)
                 self._dump_position(p)
                 raise ServerError(message)
-    #@+node:ekr.20210209062536.1: *4* lsc._do_leo_command
+    #@+node:ekr.20210209062536.1: *4* server._do_leo_command
     def _do_leo_command(self, action, package):
         """
         Execute the leo command given by package ["leo-command-name"].
@@ -1833,7 +1989,7 @@ class LeoServer:
             raise ServerError(f"{tag}: Leo command not found: {command_name}")
         value = func(event={"c":c})
         return self._make_response({"return-value": value})
-    #@+node:ekr.20210202110128.54: *4* lsc._do_message
+    #@+node:ekr.20210202110128.54: *4* server._do_message
     def _do_message(self, d):
         """
         Handle d, a python dict representing the incoming request.
@@ -1874,7 +2030,7 @@ class LeoServer:
         if result is None:  # pragma: no cover
             raise ServerError(f"{tag}: no response: {action}")
         return result
-    #@+node:ekr.20210209085438.1: *4* lsc._do_server_command
+    #@+node:ekr.20210209085438.1: *4* server._do_server_command
     def _do_server_command(self, action, package):
         tag = '_do_server_command'
         # Disallow hidden methods.
@@ -1887,9 +2043,9 @@ class LeoServer:
         if not callable(func):
             raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
         return func(package)
-    #@+node:ekr.20210211131707.1: *4* lsc._dump_*
+    #@+node:ekr.20210211131707.1: *4* server._dump_*
     def _dump_outline(self, c):  # pragma: no cover
-        """Dump the outline in various formats."""
+        """Dump the outline."""
         tag = '_dump_outline'
         print(f"{tag}: {c.shortFileName()}...\n")
         for p in c.all_positions():
@@ -1899,7 +2055,7 @@ class LeoServer:
     def _dump_position(self, p):  # pragma: no cover
         level_s = ' ' * 2 * p.level()
         print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
-    #@+node:ekr.20210202110128.51: *4* lsc._es & helper
+    #@+node:ekr.20210202110128.51: *4* server._es & helper
     def _es(self, s):  # pragma: no cover (tested in client).
         """
         Send a response that does not correspond to a request.
@@ -1914,7 +2070,7 @@ class LeoServer:
             self.loop.create_task(self._async_output(response))
         else:
             print(f"{tag}: Error loop not ready {message}")
-    #@+node:ekr.20210204145818.1: *5* lsc._async_output
+    #@+node:ekr.20210204145818.1: *5* server._async_output
     async def _async_output(self, json):  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
         tag = '_async_output'
@@ -1922,7 +2078,7 @@ class LeoServer:
             await self.web_socket.send(bytes(json, 'utf-8'))
         else:
             g.trace(f"{tag}: no web socket. json: {json}")
-    #@+node:ekr.20210210081236.1: *4* lsc._get_p
+    #@+node:ekr.20210210081236.1: *4* server._get_p
     def _get_p(self, package):
         """Return _ap_to_p(package["ap"]) or c.p."""
         tag = '_get_ap'
@@ -1939,7 +2095,7 @@ class LeoServer:
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
-    #@+node:ekr.20210211053733.1: *4* lsc._get_position_d
+    #@+node:ekr.20210211053733.1: *4* server._get_position_d
     def _get_position_d(self, p):
         """
         Return a python dict containing:
@@ -1966,7 +2122,7 @@ class LeoServer:
             "is-at-file": p.isAnyAtFileNode(),
             "level": p.level(),  # Useful for debugging.
         }
-    #@+node:ekr.20210206182638.1: *4* lsc._make_response
+    #@+node:ekr.20210206182638.1: *4* server._make_response
     def _make_response(self, package=None):
         """
         Return a json string representing a response dict.
@@ -2028,7 +2184,7 @@ class LeoServer:
         if self.log_flag:  # pragma: no cover
             g.printObj(package, tag=f"{tag} returns")
         return json.dumps(package, separators=(',', ':')) 
-    #@+node:ekr.20210202110128.86: *4* lsc._p_to_ap
+    #@+node:ekr.20210202110128.86: *4* server._p_to_ap
     def _p_to_ap(self, p):
         """
         Convert Leo position p to a serializable archived position.
@@ -2044,7 +2200,7 @@ class LeoServer:
             'gnx': p.v.gnx,
             'stack': stack,
         }
-    #@+node:ekr.20210202110128.84: *4* lsc._test_round_trip_positions
+    #@+node:ekr.20210202110128.84: *4* serverver._test_round_trip_positions
     def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
         """Test the round tripping of p_to_ap and ap_to_p."""
         tag = '_test_round_trip_positions'
@@ -2085,6 +2241,11 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
     def setUp(self):
         global g_server
         self.server = g_server
+        g.unitTesting = True
+        
+    def tearDown(self):
+        g.unitTesting = False 
+        
     #@+node:ekr.20210208171819.1: *3* test._request
     def _request(self, action, package=None):
         server = self.server
@@ -2133,9 +2294,14 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
             methods.append(z)
         # g.printObj(methods, tag=methods)
         exclude = [
+            # Find methods...
+            'change_all', 'change_then_find',
+            'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+            'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+            'tag_children',  
+            # Other methods
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
-            'find_all', # see test_find_commands.
             'save_file',  # way too dangerous!
             # 'set_selection',  ### Not ready yet.
             'open_file', 'close_file',  # Done by hand.
@@ -2209,14 +2375,29 @@ class TestLeoServer (unittest.TestCase):  # pragma: no cover
         test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
+        # Open the file & create the StringFindTabManager.
+        self._request("open_file", {"log": False, "filename": test_dot_leo})
         #
-        # Open the file.
-        self._request("open_file", {"log": log, "filename": test_dot_leo})
+        # Batch find commands: The answer is a count of found nodes.
+        for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
         #
-        # Do find_all.
-        answer = self._request("find_all", {"log": log, "find_text": "def"})
-        if log:
-            g.printObj(answer, tag=f"{tag}: answer")
+        # Find commands that may select text: The answer is (p, pos, newpos).
+        for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+            answer = self._request(method, {"log": log, "find_text": "def"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Change commands: The answer is a count of changed nodes.
+        for method in ('change_all', 'change_then_find'):
+            answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+        #
+        # Tag commands. Why they are in leoFind.py??
+        for method in ('clone_find_tag', 'tag_children'):
+            answer = self._request(method, {"log": log, "tag": "my-tag"})
+            if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+       
     #@-others
 #@+node:ekr.20210202110128.88: ** function: main & helpers
 def main():  # pragma: no cover (tested in client)

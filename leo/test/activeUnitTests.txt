@@ -27598,11 +27598,13 @@ if hasattr(c,'theScriptingController'):
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
 #@+node:ekr.20210215043210.1: ** New-style unit tests
-#@+node:ekr.20200219072300.1: *3* @test python -m leo.core.leoGlobals
+# These are more typically run using unittest or pytest -cov
+# They are included here for reference.
+#@+node:ekr.20200219070034.1: *3* @@test python -m leo.core.leoAst
 #1498: Run per-file unit tests from unitTest.leo.
 import sys
 python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoGlobals'
+command = f'{python} -m unittest leo.core.leoAst'
 g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20200219070324.1: *3* @@test python -m leo.core.leoFind
 #1498: Run per-file unit tests from unitTest.leo.
@@ -27610,13 +27612,13 @@ import sys
 python = 'python3' if sys.platform == 'linux' else 'python'
 command = f'{python} -m unittest leo.core.leoFind'
 g.run_unit_test_in_separate_process(command)
-#@+node:ekr.20200219070034.1: *3* @test python -m leo.core.leoAst
+#@+node:ekr.20200219072300.1: *3* @@test python -m leo.core.leoGlobals
 #1498: Run per-file unit tests from unitTest.leo.
 import sys
 python = 'python3' if sys.platform == 'linux' else 'python'
-command = f'{python} -m unittest leo.core.leoAst'
+command = f'{python} -m unittest leo.core.leoGlobals'
 g.run_unit_test_in_separate_process(command)
-#@+node:ekr.20210215043324.1: *3* @test python -m leo.core.leoserver
+#@+node:ekr.20210215043324.1: *3* @@test python -m leo.core.leoserver
 #1498: Run per-file unit tests from unitTest.leo.
 import sys
 python = 'python3' if sys.platform == 'linux' else 'python'

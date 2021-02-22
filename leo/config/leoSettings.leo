@@ -89,12 +89,13 @@
 </v>
 <v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
 <v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
-<v t="ekr.20190915192702.1"><vh>@bool black-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192705.1"><vh>@bool black-string-normalization = False</vh></v>
-<v t="ekr.20190915192705.2"><vh>@int black-line-length = 88</vh></v>
+<v t="ekr.20190915192702.1"><vh>@@bool black-keep-comment-indentation = True</vh></v>
+<v t="ekr.20190915192705.1"><vh>@@bool black-string-normalization = False</vh></v>
+<v t="ekr.20190915192705.2"><vh>@@int black-line-length = 88</vh></v>
 </v>
-<v t="ekr.20141010095448.19779"><vh>@bool beautify-keep-comment-indentation = True</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@@@bool use_codewise = False</vh></v>
+<v t="ekr.20141010095448.19779"><vh>@@bool beautify-keep-comment-indentation = True</vh></v>
+<v t="ekr.20110510071925.14590"><vh>@@bool use_codewise = False</vh></v>
+<v t="ekr.20200227181439.1"><vh>@@bool find-def-creates-clones = False</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -509,7 +510,6 @@
 <v t="ekr.20070318065601"><vh>@bool use-chapters = True</vh></v>
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
-<v t="ekr.20200227181439.1"><vh>@bool find-def-creates-clones = False</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>

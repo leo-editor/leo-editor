@@ -842,12 +842,12 @@ def method_name(f):
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
-    '''A helper class for the LeoFind class.'''
+    '''CursesGui.py: A string-based FindTabManager class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
     #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
-        '''Ctor for the FindTabManager class.'''
+        '''Ctor for the StringFindTabManager class.'''
         self.c = c
         assert(c.findCommands)
         c.findCommands.minibuffer_mode = True

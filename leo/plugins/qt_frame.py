@@ -1252,9 +1252,6 @@ class FindTabManager:
             'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
-        if not w:
-            ### g.trace('no button for', name)
-            return  ### Valid???
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
@@ -1281,7 +1278,7 @@ class FindTabManager:
         }
         w = d.get(checkbox_name)
         assert w
-        assert hasattr(find,checkbox_name),checkbox_name
+        assert hasattr(find, checkbox_name), checkbox_name
         w.toggle() # The checkbox callback toggles the ivar.
         if find.minibuffer_mode:
             find.show_find_options_in_status_area()
