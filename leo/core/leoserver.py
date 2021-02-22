@@ -161,8 +161,6 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        ### A (temporary?) hack:
-        ### c.fileCommands.ftm = g.TracingNullObject(tag=f"fc.ftm for {c.shortFileName()}")
         c.selectPosition(c.rootPosition())  # Required.
         # Check the outline!
         self._check_outline(c)
@@ -191,30 +189,17 @@ class LeoServer:
     #@+node:ekr.20210212094817.1: *5* server._get_find_settings
     def _get_find_settings(self, c):
         """Return a g.Bunch containing the present find settings settings."""
-        ### We can't get the defaults from Leo because c.findCommands.ftm is None.
-        ### Maybe the client should supply defaults.
-        #
-        # For now, return EKR defaults.
-        return g.Bunch(
-            find_text=None, change_text=None,
-            search_body=True, search_headline=True,
-            ignore_case=True, pattern_match=False, whole_word=True,
-            mark_changes=False, mark_finds=False,
-            node_only=False, suboutline_only=False,
-            entry_focus=None,
-        )  
-        # return {
-            # "change_text": None,
-            # "ignore_case": True,
-            # "mark_changes": False,
-            # "mark_finds": False,
-            # "node_only": False,
-            # "pattern_match": False,
-            # "search_body": True,
-            # "search_headline": True,
-            # "suboutline_only": True,
-            # "whole_word": True,
-        # }   
+        return c.findCommands.ftm.get_settings()
+        ###
+            # # For now, return EKR defaults.
+            # return g.Bunch(
+                # find_text=None, change_text=None,
+                # search_body=True, search_headline=True,
+                # ignore_case=True, pattern_match=False, whole_word=True,
+                # mark_changes=False, mark_finds=False,
+                # node_only=False, suboutline_only=False,
+                # entry_focus=None,
+            # )  
     #@+node:ekr.20210212092854.1: *5* server.find_all
     def find_all(self, package):
         """Run Leo's find-all command and return results."""
