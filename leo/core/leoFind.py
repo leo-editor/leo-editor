@@ -2834,47 +2834,6 @@ class TestFind(unittest.TestCase):
         for p in c.all_positions():
             print(' ' * p.level(), p.h)
             print(' ' * p.level(), p.b)
-    #@+node:ekr.20210220070051.1: *4* TestFind.make_find_tab_manager
-    def make_find_tab_manager(self, c):
-        """
-        Create a proxy FindTabManager sufficient to run unit tests.
-        In the Qt gui, the DynamicWindow class creates the FindTabManager.
-        """
-        from leo.core.leoGui import StringLineEdit
-        from leo.plugins.qt_frame import FindTabManager
-        x = self.x
-        x.ftm = FindTabManager(c)
-        #
-        # Create a find_findbox for find.set_find_text.
-        x.ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
-        #
-        # Create widgets for set_find_scope.
-        class StringWidget:
-            """A widget simulating both a Qt checkbox and a Qt radio button."""
-
-            value = False
-            
-            def toggle(self):  # For radio buttons.
-                self.value = not self.value
-                
-            def isChecked(self):  # For checkboxes.
-                return self.value
-                
-            checkState = isChecked
-            
-        x.ftm.radio_button_suboutline_only = StringWidget()
-        # Similar to the table in find.compute_find_options_in_status_area:
-        table = (
-            'check_box_whole_word',
-            'check_box_ignore_case',
-            'check_box_regexp',
-            'check_box_search_body',
-            'check_box_search_headline',
-            'check_box_mark_changes',
-            'check_box_mark_finds',
-        )
-        for ivar in table:
-            setattr(x.ftm, ivar, StringWidget())
     #@+node:ekr.20210110073117.56: *4* TestFind.make_test_tree
     def make_test_tree(self):
         """Make a test tree for other tests"""
@@ -2909,15 +2868,16 @@ class TestFind(unittest.TestCase):
         c.selectPosition(c.rootPosition())
     #@+node:ekr.20210110073117.57: *4* TestFind.setUp & tearDown
     def setUp(self):
-
+        """setUp for TestFind class"""
         # pylint: disable=import-self
         from leo.core import leoFind
+        from leo.core.leoGui import StringFindTabManager
         g.unitTesting = True
         self.c = c = leoTest2.create_app()
         c.findCommands = self.x = x = leoFind.LeoFind(c)
         # Set c.p in the command.
         x.c.selectPosition(self.c.rootPosition())
-        self.make_find_tab_manager(c)
+        x.ftm = StringFindTabManager(c)
         self.settings = x.default_settings()
         self.make_test_tree()
 
