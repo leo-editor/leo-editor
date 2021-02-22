@@ -16,6 +16,8 @@ tag = 'client'
 timeout = 0.1
 times_d = {}  # Keys are n, values are time sent.
 tot_response_time = 0.0
+n_known_response_times = 0
+n_unknown_response_times = 0
 
 #@+others
 #@+node:ekr.20210219105145.1: ** function: _dump_outline
