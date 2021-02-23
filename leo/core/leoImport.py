@@ -1768,7 +1768,6 @@ class RecursiveImportController:
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
-        # force_at_others = False, #tag:no-longer-used
         add_context=None,  # Override setting only if True/False
         add_file_context=None,  # Override setting only if True/False
         add_path=True,
@@ -1780,10 +1779,8 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
-        self.file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-        self.kind = kind
-            # in ('@auto', '@clean', '@edit', '@file', '@nosent')
-        # self.force_at_others = force_at_others #tag:no-longer-used
+        self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+        self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
@@ -1884,7 +1881,7 @@ class RecursiveImportController:
         assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
-            p.v.h = path.replace('\\', '/')
+            p.v.h = '@edit ' + path.replace('\\', '/')  # 2021/02/19: bug fix: add @edit.
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return

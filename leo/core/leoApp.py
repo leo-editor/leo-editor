@@ -3420,7 +3420,7 @@ class RecentFilesManager:
         rf = self
         menu = c.frame.menu
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
-        if not recentFilesMenu and not g.unitTesting:
+        if not recentFilesMenu:
             return
         # Delete all previous entries.
         menu.deleteRecentFilesMenuItems(recentFilesMenu)
