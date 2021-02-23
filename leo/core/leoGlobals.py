@@ -5641,7 +5641,6 @@ def cantImport(moduleName, pluginName=None, verbose=True):
     if not g.app or not g.app.gui:
         print(s)
     elif g.unitTesting:
-        # print s
         return
     else:
         g.warning('', s)
