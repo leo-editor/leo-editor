@@ -14,7 +14,18 @@
 <v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
-<v t="ekr.20160122104332.1"><vh>Buttons</vh>
+<v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
+<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
+<v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
+<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
+<v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
+<v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
+<v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
+<v t="ekr.20201018063747.1"><vh>get_content</vh></v>
+<v t="ekr.20201018070822.1"><vh>main</vh></v>
+<v t="ekr.20201018072911.1"><vh>oops</vh></v>
+</v>
+<v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
 <v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
@@ -75,16 +86,11 @@
 <v t="ekr.20201013034742.25"><vh>@@button test-jup-export</vh></v>
 <v t="ekr.20201013034742.26"><vh>@@button test-jup-import</vh></v>
 </v>
-<v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
-<v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
-<v t="ekr.20150413091056.1"><vh>@button check-clones</vh></v>
-<v t="ekr.20201018062305.1"><vh>@button write-leoPyRef</vh>
-<v t="ekr.20201018065757.1"><vh>check_file_names</vh></v>
-<v t="ekr.20201018065921.1"><vh>check_nodes</vh></v>
-<v t="ekr.20201018063747.1"><vh>get_content</vh></v>
-<v t="ekr.20201018070822.1"><vh>main</vh></v>
-<v t="ekr.20201018072911.1"><vh>oops</vh></v>
 </v>
+<v t="ekr.20210110092457.1"><vh>leojs buttons</vh>
+<v t="ekr.20210110092457.5"><vh>@@@button cov @key=ctrl-6</vh></v>
+<v t="ekr.20210110092457.6"><vh>@@@button moz @key=ctrl-7</vh></v>
+<v t="ekr.20210110092457.7"><vh>@@@button unit</vh></v>
 </v>
 <v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
 <v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
@@ -113,7 +119,7 @@
 <v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.1"><vh>@data:@auto leo_cloud.py</vh>
-<v t="ekr.20201221065401.1"><vh>@gnxs</vh></v>
+<v t="ekr.20210128141640.1"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
 <v t="ekr.20201012142922.2"><vh>@gnxs</vh></v>
@@ -124,6 +130,12 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
+<v t="ekr.20210118013157.1"><vh>script: convert-LeoFind</vh>
+<v t="ekr.20210118024739.1"><vh>convert</vh></v>
+<v t="ekr.20210118013807.1"><vh>main</vh></v>
+<v t="ekr.20210118020530.1"><vh>new_name</vh></v>
+<v t="ekr.20210118021337.1"><vh>exists</vh></v>
+</v>
 <v t="ekr.20180816105258.1"><vh>script: diff-branches/revs (one file)</vh></v>
 <v t="ekr.20201208114843.1"><vh>script: diff-pr</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-revs</vh></v>
@@ -135,15 +147,11 @@
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20191029023442.1"><vh> 4 kinds of documentation</vh></v>
+<v t="ekr.20190122185223.1"><vh> regex: find all kwargs</vh></v>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 <v t="ekr.20031218072017.329"><vh>@file ../doc/leoNotes.txt</vh></v>
-<v t="ekr.20200522082827.1"><vh>From leoMenu.py</vh>
-<v t="ekr.20051022044950"><vh>LeoMenu.computeOldStyleShortcutKey</vh></v>
-<v t="ekr.20031218072017.4117"><vh>LeoMenu.defineMenuCallback</vh></v>
-</v>
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
-<v t="ekr.20190122185223.1"><vh>regex: find all kwargs</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -169,7 +177,7 @@
 <v t="ekr.20160306114544.1"><vh>@file leoExternalFiles.py</vh></v>
 <v t="ekr.20181202062518.1"><vh>@file leoFastRedraw.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
-<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31372e3071057d71065808000000616e6e6f7461746571077d7108735806000000302e31392e3171097d710a5808000000616e6e6f74617465710b7d710c735806000000302e32302e31710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file leoGlobals.py</vh></v>
+<v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d7100285806000000302e31362e3071017d71025808000000616e6e6f7461746571037d7104735806000000302e31372e3071057d710668037d7107735806000000302e31392e3171087d710968037d710a735806000000302e32302e31710b7d710c68037d710d73752e"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
 <v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
@@ -546,6 +554,7 @@
 <v t="EKR.20040517080250.1"><vh>@file ../plugins/mod_http.py</vh></v>
 <v t="ekr.20131004162848.11444"><vh>@file ../plugins/rss.py</vh></v>
 <v t="peckj.20140811080604.9496"><vh>@file ../plugins/sftp.py</vh></v>
+<v t="ekr.20210223152423.1"><vh>@edit ../plugins/anki.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
@@ -749,10 +758,11 @@
 </v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
+<v t="ekr.20210223151922.1"><vh>@edit ../modes/julia.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@clean ../modes/forth.py</vh>
-<v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt;</vh></v>
-<v t="ekr.20150326145530.3"><vh>&lt;&lt; define mode data &gt;&gt;</vh></v>
-<v t="ekr.20150326145530.4"><vh>&lt;&lt; define extendForth class &gt;&gt;</vh>
+<v t="ekr.20150326145530.2"><vh>&lt;&lt; define mode rules &gt;&gt; (forth.py)</vh></v>
+<v t="ekr.20150326145530.3"><vh>&lt;&lt; define mode data &gt;&gt; (forth.py)</vh></v>
+<v t="ekr.20150326145530.4"><vh>&lt;&lt; define extendForth class &gt;&gt; (forth.py)</vh>
 <v t="ekr.20150326145530.5"><vh>ctor</vh></v>
 <v t="ekr.20150326145530.6"><vh>init &amp; helper</vh>
 <v t="ekr.20150326145530.7"><vh>splitList</vh></v>
@@ -764,6 +774,7 @@
 <v t="ekr.20150326145530.12"><vh>extendRulesDict</vh></v>
 </v>
 </v>
+<v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
 </v>
 <v t="ekr.20181013081645.1"><vh>In leo/core/test</vh></v>
 </v>
@@ -885,6 +896,37 @@ in LeoDocs.leo for full details.
         g.es("...not found: " + name)
         p.b = ''
         p.setDirty()
+</t>
+<t tx="btheado.20111110215920.7164">def scrollDelegate(self, kind):
+    """
+    Scroll a QTreeWidget up or down or right or left.
+    kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
+    """
+    c = self.c; w = self.treeWidget
+    if kind in ('left', 'right'):
+        hScroll = w.horizontalScrollBar()
+        if kind == 'right':
+            delta = hScroll.pageStep()
+        else:
+            delta = -hScroll.pageStep()
+        hScroll.setValue(hScroll.value() + delta)
+    else:
+        vScroll = w.verticalScrollBar()
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h / lineSpacing
+        if kind == 'down-half-page': delta = n / 2
+        elif kind == 'down-line': delta = 1
+        elif kind == 'down-page': delta = n
+        elif kind == 'up-half-page': delta = -n / 2
+        elif kind == 'up-line': delta = -1
+        elif kind == 'up-page': delta = -n
+        else:
+            delta = 0
+            g.trace('bad kind:', kind)
+        val = vScroll.value()
+        vScroll.setValue(val + delta)
+    c.treeWantsFocus()
 </t>
 <t tx="btheado.20120129145543.8180">def pageUpDown(self, op, moveMode):
     """
@@ -1390,6 +1432,18 @@ u.newNewlines = new_newlines
 # See the "About this file" node for important notes.
 </t>
 <t tx="ekr.20031218072017.2604"></t>
+<t tx="ekr.20031218072017.2996">@g.commander_command('goto-next-visible')
+def selectVisNext(self, event=None):
+    """Select the visible node following the presently selected node."""
+    c, p = self, self.p
+    if not p:
+        return
+    if c.canSelectVisNext():
+        p.moveToVisNext(c)
+        c.treeSelectHelper(p)
+    else:
+        c.endEditing()  # 2011/05/28: A special case.
+</t>
 <t tx="ekr.20031218072017.3029">def readAtFileNodes(self):
     
     c, p = self.c, self.c.p
@@ -1400,50 +1454,493 @@ u.newNewlines = new_newlines
     c.setBodyString(p, p.b)  # Not a do-nothing!
     
 </t>
-<t tx="ekr.20031218072017.3070"># Replace selection with self.change_text.
-# If no selection, insert self.change_text at the cursor.
+<t tx="ekr.20031218072017.3053">def __init__(self, c):
+    """Ctor for LeoFind class."""
+    self.c = c
+    self.expert_mode = False  # Set in finishCreate.
+    self.ftm = None  # Created by dw.createFindTab.
+    self.frame = None
+    self.k = c.k
+    self.re_obj = None
+    #
+    # The work "widget".
+    self.work_s = ''  # p.b or p.c.
+    self.work_sel = (0, 0, 0)  # pos, newpos, insert.
+    #
+    # Options ivars: set by FindTabManager.init.
+    self.ignore_case = None
+    self.node_only = None
+    self.pattern_match = None
+    self.search_headline = None
+    self.search_body = None
+    self.suboutline_only = None
+    self.mark_changes = None
+    self.mark_finds = None
+    self.whole_word = None
+    #
+    # For isearch commands...
+    self.stack = []  # Entries are (p, sel)
+    self.isearch_ignore_case = None
+    self.isearch_forward_flag = None
+    self.isearch_regexp = None
+    self.findTextList = []
+    self.changeTextList = []
+    #
+    # For find/change...
+    self.find_text = ""
+    self.change_text = ""
+    #
+    # State machine...
+    self.escape_handler = None
+    self.handler = None
+    # "Delayed" requests for do_find_next.
+    self.request_reverse = False
+    self.request_pattern_match = False
+    self.request_whole_word = False
+    # Internal state...
+    self.changeAllFlag = False
+    self.findAllUniqueFlag = False
+    self.find_def_data = None
+    self.in_headline = False
+    self.match_obj = None
+    self.reverse = False
+    self.root = None  # The start of the search, especially for suboutline-only.
+    self.unique_matches = set()
+    #
+    # User settings.
+    self.minibuffer_mode = None
+    self.reload_settings()
+</t>
+<t tx="ekr.20031218072017.3055"></t>
+<t tx="ekr.20031218072017.3062">@cmd('replace-then-find')
+@cmd('change-then-find')
+def change_then_find(self, event=None):  # pragma: no cover (cmd)
+    """Handle the replace-then-find command."""
+    # Settings...
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    self.do_change_then_find(settings)
+</t>
+<t tx="ekr.20031218072017.3063">@cmd('find-next')
+def find_next(self, event=None):  # pragma: no cover (cmd)
+    """The find-next command."""
+    # Settings...
+    self.reverse = False
+    self.init_in_headline()  # Do this *before* creating the settings.
+    settings = self.ftm.get_settings()
+    # Do the command!
+    self.do_find_next(settings)
 
-def changeSelection(self):
+@cmd('find-prev')
+def find_prev(self, event=None):  # pragma: no cover (cmd)
+    """Handle F2 (find-previous)"""
+    # Settings...
+    self.init_in_headline()  # Do this *before* creating the settings.
+    settings = self.ftm.get_settings()
+    # Do the command!
+    self.do_find_prev(settings)
+</t>
+<t tx="ekr.20031218072017.3067"></t>
+<t tx="ekr.20031218072017.3068">@cmd('replace')
+@cmd('change')
+def change(self, event=None):  # pragma: no cover (cmd)
+    p = self.c.p
+    if self.check_args('replace'):
+        self.init_in_headline()
+        self.change_selection(p)
+
+replace = change
+</t>
+<t tx="ekr.20031218072017.3069">def _change_all_helper(self, settings):
+    """Do the change-all command. Return the number of changes, or 0 for error."""
+    # Caller has checked settings.
+
+    c, current, u = self.c, self.c.p, self.c.undoer
+    undoType = 'Replace All'
+    t1 = time.process_time()
+    if not self.check_args('change-all'):  # pragma: no cover
+        return 0
+    self.init_in_headline()
+    saveData = self.save()
+    self.in_headline = self.search_headline  # Search headlines first.
+    # Remember the start of the search.
+    p = self.root = c.p.copy()
+    # Set the work widget.
+    s = p.h if self.in_headline else p.b
+    ins = len(s) if self.reverse else 0
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    count = 0
+    u.beforeChangeGroup(current, undoType)
+    # Fix bug 338172: ReplaceAll will not replace newlines
+    # indicated as \n in target string.
+    if not self.find_text:  # pragma: no cover
+        return 0
+    if not self.search_headline and not self.search_body:  # pragma: no cover
+        return 0
+    self.change_text = self.replace_back_slashes(self.change_text)
+    if self.pattern_match:
+        ok = self.precompile_pattern()
+        if not ok:
+            return 0
+    # #1428: Honor limiters in replace-all.
+    if self.node_only:
+        positions = [c.p]
+    elif self.suboutline_only:
+        positions = c.p.self_and_subtree()
+    else:
+        positions = c.all_unique_positions()
+    count = 0
+    for p in positions:
+        count_h, count_b = 0, 0
+        undoData = u.beforeChangeNodeContents(p)
+        if self.search_headline:
+            count_h, new_h = self._change_all_search_and_replace(p.h)
+            if count_h:
+                count += count_h
+                p.h = new_h
+        if self.search_body:
+            count_b, new_b = self._change_all_search_and_replace(p.b)
+            if count_b:
+                count += count_b
+                p.b = new_b
+        if count_h or count_b:
+            u.afterChangeNodeContents(p, 'Replace All', undoData)
+    self.ftm.set_radio_button('entire-outline')
+    # suboutline-only is a one-shot for batch commands.
+    self.root = None
+    self.node_only = self.suboutline_only = False
+    p = c.p
+    u.afterChangeGroup(p, undoType, reportFlag=True)
+    t2 = time.process_time()
+    if not g.unitTesting:  # pragma: no cover
+        g.es_print(
+            f"changed {count} instances{g.plural(count)} "
+            f"in {t2 - t1:4.2f} sec.")
+    c.recolor()
+    c.redraw(p)
+    self.restore(saveData)
+    return count
+</t>
+<t tx="ekr.20031218072017.3070">def change_selection(self, p):
+    """Replace selection with self.change_text."""
     c = self.c
-    p = self.p or c.p  # 2015/06/22
     wrapper = c.frame.body and c.frame.body.wrapper
-    w = c.edit_widget(p) if self.in_headline else wrapper
-    if not w:
+    gui_w = c.edit_widget(p) if self.in_headline else wrapper
+    if not gui_w:  # pragma: no cover
         self.in_headline = False
-        w = wrapper
-    if not w: return False
-    oldSel = sel = w.getSelectionRange()
+        gui_w = wrapper
+    if not gui_w:  # pragma: no cover
+        return False
+    oldSel = sel = gui_w.getSelectionRange()
     start, end = sel
-    if start &gt; end: start, end = end, start
-    if start == end:
-        g.es("no text selected"); return False
-    # Replace the selection in _both_ controls.
+    if start &gt; end:  # pragma: no cover
+        start, end = end, start
+    if start == end:  # pragma: no cover
+        g.es("no text selected")
+        return False
     start, end = oldSel
     change_text = self.change_text
     # Perform regex substitutions of \1, \2, ...\9 in the change text.
     if self.pattern_match and self.match_obj:
         groups = self.match_obj.groups()
         if groups:
-            change_text = self.makeRegexSubs(change_text, groups)
-    # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
-    change_text = self.replaceBackSlashes(change_text)
-    for w2 in (w, self.s_ctrl):
-        if start != end: w2.delete(start, end)
-        w2.insert(start, change_text)
-        w2.setInsertPoint(start if self.reverse else start + len(change_text))
+            change_text = self.make_regex_subs(change_text, groups)
+    change_text = self.replace_back_slashes(change_text)
+    # Update both the gui widget and the work "widget"
+    new_ins = start if self.reverse else start + len(change_text)
+    if start != end:
+        gui_w.delete(start, end)
+        self.work_s = self.work_s[:start] + self.work_s[start + end :]
+    gui_w.insert(start, change_text)
+    gui_w.setInsertPoint(new_ins)
+    self.work_sel = (new_ins, new_ins, new_ins)
     # Update the selection for the next match.
-    w.setSelectionRange(start, start + len(change_text))
-    c.widgetWantsFocus(w)
+    gui_w.setSelectionRange(start, start + len(change_text))
+    c.widgetWantsFocus(gui_w)
     # No redraws here: they would destroy the headline selection.
-    if self.mark_changes:
+    if self.mark_changes:  # pragma: no cover
         p.setMarked()
         p.setDirty()
-    if self.in_headline:
+    if self.in_headline:  # pragma: no cover
         pass
     else:
         c.frame.body.onBodyChanged('Change', oldSel=oldSel)
     c.frame.tree.updateIcon(p)  # redraw only the icon.
     return True
+</t>
+<t tx="ekr.20031218072017.3073">def do_find_all(self, settings):
+    """Top-level helper for find-all command."""
+    c = self.c
+    count = 0
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('find-all'):  # pragma: no cover
+        return count
+    # Init data.
+    self.init_in_headline()
+    data = self.save()
+    self.in_headline = self.search_headline  # Search headlines first.
+    self.unique_matches = set()  # 2021/02/20.
+    # Remember the start of the search.
+    p = self.root = c.p.copy()
+    # Set the work widget.
+    s = p.h if self.in_headline else p.b
+    ins = len(s) if self.reverse else 0
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    if self.pattern_match:
+        ok = self.precompile_pattern()
+        if not ok:  # pragma: no cover
+            return count
+    if self.suboutline_only:
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        # Always search the entire outline.
+        p = c.rootPosition()
+        after = None
+    # Fix #292: Never collapse nodes during find-all commands.
+    old_sparse_find = c.sparse_find
+    try:
+        c.sparse_find = False
+        count = self._find_all_helper(after, data, p, 'Find All')
+        c.contractAllHeadlines()
+    finally:
+        c.sparse_find = old_sparse_find
+        self.root = None
+    if count:
+        c.redraw()
+    g.es("found", count, "matches for", self.find_text)
+    return count
+</t>
+<t tx="ekr.20031218072017.3074">def do_find_prev(self, settings):
+    """Find the previous instance of self.find_text."""
+    self.request_reverse = True
+    return self.do_find_next(settings)
+
+def do_find_next(self, settings):
+    """
+    Find the next instance of self.find_text.
+    
+    Return True (for vim-mode) if a match was found.
+    
+    """
+    c, p = self.c, self.c.p
+    #
+    # The gui widget may not exist for headlines.
+    gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
+    #
+    # Init the work widget, so we don't get stuck.
+    s = p.h if self.in_headline else p.b
+    ins = gui_w.getInsertPoint() if gui_w else 0
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    #
+    # Set the settings *after* initing the search.
+    self.init_ivars_from_settings(settings)
+    #
+    # Honor delayed requests.
+    for ivar in ('reverse', 'pattern_match', 'whole_word'):
+        request = 'request_' + ivar
+        val = getattr(self, request)
+        if val:  # Only *set* the ivar!
+            setattr(self, ivar, val)  # Set the ivar.
+            setattr(self, request, False)  # Clear the request!
+    #
+    # Leo 6.4: set/clear self.root
+    if self.root:  # pragma: no cover
+        if p != self.root and not self.root.isAncestorOf(p):
+            # p is outside of self.root's tree.
+            # Clear suboutline-only.
+            self.root = None
+            self.suboutline_only = False
+            self.set_find_scope_every_where()  # Update find-tab &amp; status area.
+    elif self.suboutline_only:
+        # Start the range and set suboutline-only.
+        self.root = c.p
+        self.set_find_scope_suboutline_only()  # Update find-tab &amp; status area.
+    #
+    # Now check the args.
+    tag = 'find-prev' if self.reverse else 'find-next'
+    if not self.check_args(tag):  # Issues error message.
+        return None, None, None
+    data = self.save()
+    p, pos, newpos = self.find_next_match(p)
+    found = pos is not None
+    if found:
+        self.show_success(p, pos, newpos)
+    else:
+        # Restore previous position.
+        self.restore(data)
+    self.show_status(found)
+    return p, pos, newpos
+</t>
+<t tx="ekr.20031218072017.3075">def find_next_match(self, p):
+    """
+    Resume the search where it left off.
+    
+    Return (p, pos, newpos).
+    """
+    c = self.c
+    if not self.search_headline and not self.search_body:  # pragma: no cover
+        return None, None, None
+    if not self.find_text:  # pragma: no cover
+        return None, None, None
+    attempts = 0
+    if self.pattern_match:
+        ok = self.precompile_pattern()
+        if not ok:
+            return None, None, None
+    while p:
+        pos, newpos = self._fnm_search(p)
+        if pos is not None:
+            # Success.
+            if self.mark_finds:  # pragma: no cover
+                p.setMarked()
+                p.setDirty()
+                if not self.changeAllFlag:
+                    c.frame.tree.updateIcon(p)  # redraw only the icon.
+            return p, pos, newpos
+        # Searching the pane failed: switch to another pane or node.
+        if self._fnm_should_stay_in_node(p):
+            # Switching panes is possible.  Do so.
+            self.in_headline = not self.in_headline
+            s = p.h if self.in_headline else p.b
+            ins = len(s) if self.reverse else 0
+            self.work_s = s
+            self.work_sel = (ins, ins, ins)
+        else:
+            # Switch to the next/prev node, if possible.
+            attempts += 1
+            p = self._fnm_next_after_fail(p)
+            if p:  # Found another node: select the proper pane.
+                self.in_headline = self._fnm_first_search_pane()
+                s = p.h if self.in_headline else p.b
+                ins = len(s) if self.reverse else 0
+                self.work_s = s
+                self.work_sel = (ins, ins, ins)
+    return None, None, None
+</t>
+<t tx="ekr.20031218072017.3077">def _fnm_search(self, p):
+    """
+    Search self.work_s for self.find_text with present options.
+    Returns (pos, newpos) or (None, dNone).
+    """
+    index = self.work_sel[2]
+    s = self.work_s
+    if sys.platform.lower().startswith('win'):
+        s = s.replace('\r', '')
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+            # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if not s:  # pragma: no cover
+        return None, None
+    stopindex = 0 if self.reverse else len(s)
+    pos, newpos = self.inner_search_helper(s, index, stopindex, self.find_text)
+    if self.in_headline and not self.search_headline:  # pragma: no cover
+        return None, None
+    if not self.in_headline and not self.search_body:  # pragma: no cover
+        return None, None
+    if pos == -1:  # pragma: no cover
+        return None, None
+    ins = min(pos, newpos) if self.reverse else max(pos, newpos)
+    self.work_sel = (pos, newpos, ins)
+    return pos, newpos
+</t>
+<t tx="ekr.20031218072017.3082"></t>
+<t tx="ekr.20031218072017.3086">def init_in_headline(self):
+    """
+    Select the first pane to search for incremental searches and changes.
+    This is called only at the start of each search.
+    This must not alter the current insertion point or selection range.
+    """
+    #
+    # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
+    if self.search_headline and self.search_body:
+        # We have no choice: we *must* search the present widget!
+        self.in_headline = self.focus_in_tree()
+    else:
+        self.in_headline = self.search_headline
+</t>
+<t tx="ekr.20031218072017.3089">def restore(self, data):
+    """
+    Restore Leo's gui and settings from data, a g.Bunch.
+    """
+    c, p = self.c, data.p
+    c.frame.bringToFront()  # Needed on the Mac
+    if not p or not c.positionExists(p):  # pragma: no cover
+        # Better than selecting the root!
+        return
+    c.selectPosition(p)
+    # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+    if self.in_headline:
+        c.treeWantsFocus()
+    else:
+        # Looks good and provides clear indication of failure or termination.
+        w = c.frame.body.wrapper
+        w.setSelectionRange(data.start, data.end, insert=data.insert)
+        w.seeInsertPoint()
+        c.widgetWantsFocus(w)
+</t>
+<t tx="ekr.20031218072017.3090">def save(self):
+    """Save everything needed to restore after a search fails."""
+    c = self.c
+    if self.in_headline:  # pragma: no cover
+        # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+        # Don't try to re-edit the headline.
+        insert, start, end = None, None, None
+    else:
+        w = c.frame.body.wrapper
+        insert = w.getInsertPoint()
+        start, end = w.getSelectionRange()
+    data = g.Bunch(
+        end=end,
+        in_headline=self.in_headline,
+        insert=insert,
+        p=c.p.copy(),
+        start=start,
+    )
+    return data
+</t>
+<t tx="ekr.20031218072017.3091">def show_success(self, p, pos, newpos, showState=True):
+    """Display the result of a successful find operation."""
+    c = self.c
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = min(pos, newpos) if self.reverse else max(pos, newpos)
+    if c.sparse_find:  # pragma: no cover
+        c.expandOnlyAncestorsOfNode(p=p)
+    if self.in_headline:
+        c.endEditing()
+        selection = pos, newpos, insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+    else:
+        # Tricky code.  Do not change without careful thought.
+        w = c.frame.body.wrapper
+        # *Always* do the full selection logic.
+        # This ensures that the body text is inited  and recolored.
+        c.selectPosition(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        c.bodyWantsFocusNow()
+        w.setSelectionRange(pos, newpos, insert=insert)
+        k = g.see_more_lines(w.getAllText(), insert, 4)
+        w.see(k)
+            # #78: find-next match not always scrolled into view.
+        c.outerUpdate()
+            # Set the focus immediately.
+        if c.vim_mode and c.vimCommands:  # pragma: no cover
+            c.vimCommands.update_selection_after_search()
+    # Support for the console gui.
+    if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+        g.app.gui.show_find_success(c, self.in_headline, insert, p)
+    c.frame.bringToFront()
+    return w  # Support for isearch.
+    
 </t>
 <t tx="ekr.20031218072017.3210">def createOutline(self,
     fileName,
@@ -1578,30 +2075,6 @@ def isExpanded(self):
     return (self.statusBits &amp; self.expandedBit) != 0
 </t>
 <t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
-</t>
-<t tx="ekr.20031218072017.4117">def defineMenuCallback(self, command, name, minibufferCommand):
-    # pylint: disable=no-else-return
-        # This code is simpler as it is.
-    c = self.c
-    if minibufferCommand:
-        # Create a dummy event as a signal to doCommand.
-        event = g.app.gui.create_key_event(c)
-        # The first parameter must be event, and it must default to None.
-
-        def minibufferMenuCallback(event=event, self=self, command=command, label=name):
-            c = self.c
-            return c.doCommand(command, label, event)
-
-        return minibufferMenuCallback
-    else:
-        # The first parameter must be event, and it must default to None.
-
-        def legacyMenuCallback(event=None, self=self, command=command, label=name):
-            c = self.c # 2012/03/04.
-            c.check_event(event)
-            return c.doCommand(command, label)
-
-        return legacyMenuCallback
 </t>
 <t tx="ekr.20040205071616.4">def setHeadOK(c,v):
 
@@ -2159,6 +2632,69 @@ affect Leo's panes and windows in various ways.
             return
     s = g.toUnicode(s, at.encoding)
     at.outputList.append(s)
+</t>
+<t tx="ekr.20041005105605.21">def read(self, root, importFileName=None,
+    fromString=None, atShadow=False, force=False
+):
+    """Read an @thin or @file tree."""
+    at, c = self, self.c
+    fileName = at.initFileName(fromString, importFileName, root)
+    if not fileName:
+        at.error("Missing file name. Restoring @file tree from .leo file.")
+        return False
+    at.rememberReadPath(g.fullPath(c, root), root)
+        # Fix bug 760531: always mark the root as read, even if there was an error.
+        # Fix bug 889175: Remember the full fileName.
+    at.initReadIvars(root, fileName,
+        importFileName=importFileName, atShadow=atShadow)
+    at.fromString = fromString
+    if at.errors:
+        return False
+    fileName, file_s = at.openFileForReading(fromString=fromString)
+    # #1798:
+    if file_s is None:
+        return False
+    #
+    # Set the time stamp.
+    if fileName:
+        c.setFileTimeStamp(fileName)
+    elif not fileName and not fromString and not file_s:
+        return False
+    root.clearVisitedInTree()
+    at.scanAllDirectives(root, importing=at.importing, reading=True)
+        # Sets the following ivars:
+            # at.default_directory
+            # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
+    gnx2vnode = c.fileCommands.gnxDict
+    contents = fromString or file_s
+    FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+    root.clearDirty()
+    return True
+</t>
+<t tx="ekr.20041005105605.22">def initFileName(self, fromString, importFileName, root):
+    """Return the fileName to be used in messages."""
+    # at = self
+    c = self.c
+    if fromString:
+        fileName = "&lt;string-file&gt;"
+    elif importFileName:
+        fileName = importFileName
+    elif root.isAnyAtFileNode():
+        # #1798: It's not possible to honor the @path directive in @file nodes!
+        #        @file nodes have empty bodies here, before Leo reads the outline.
+        fileName = root.anyAtFileNodeName()
+        # #102, #1341: expand user expression.
+        fileName = c.expand_path_expression(fileName)  # #1341:
+    else:
+        fileName = None
+    if fileName:
+        fileName = g.os_path_finalize(fileName)  # #1341:
+    return fileName
 </t>
 <t tx="ekr.20041030092101">@Notes by EKR: The dyna plugin is a remarkable body of work by 'e'. Have fun with it.
 
@@ -4226,12 +4762,217 @@ To activate the rst3 plugin, do the following:
 3. Start up Leo
 - Check in the menu 'Edit' for item 'Write-Restructured-Text'.
 </t>
-<t tx="ekr.20051022044950">def computeOldStyleShortcutKey(self, s):
-    '''Compute the old-style shortcut key for @shortcuts entries.'''
-    # #1121: Allow Chinese characters in command names
-    return s.strip()
+<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e">g.cls()
+import os
+if c.changed:
+    c.save()
+prolog = "python -m pytest --cov-report html --cov-report term-missing --cov "
+if 1:
+    dir_ = os.path.join(g.app.loadDir, '..', '..')
+    command = 'python -m leoserver --unittest'
+elif 1:
+    dir_ = os.path.join(g.app.loadDir, '..', '..')
+    command = prolog + r"leo.core.leoserver leo\core\leoserver.py"
+else: # Fails.
+    dir = g.app.loadDir
+    command = prolog + "leoserver leoserver.py"
+os.chdir(dir_)
+g.execute_shell_commands(command)
 </t>
-<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e"></t>
+<t tx="ekr.20051104075904.10">def runTest(self, define_g=True):
+    """Run a Leo GeneralTestCase test."""
+    trace_time = False
+    tm = self
+    c = tm.c
+    p = tm.p.copy()
+    if trace_time:
+        t1 = time.process_time()
+    script = g.getScript(c, p).strip()
+    if self.setup_script:
+        script = self.setup_script + '\n' + script
+    tm.assertTrue(script)
+    if c.shortFileName() == 'dynamicUnitTest.leo':
+        c.write_script_file = True
+    # New in Leo 4.4.3: always define the entries in g.app.unitTestDict.
+    g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
+    if define_g:
+        d = {'c': c, 'g': g, 'p': p and p.copy(), 'self': tm,}
+    else:
+        d = {'self': tm,}
+    script = script + '\n'
+    # Execute the script. Let the unit test handle any errors!
+    # 2011/11/02: pass the script sources to exec or execfile.
+    if c.write_script_file:
+        scriptFile = c.writeScriptFile(script)
+        exec(compile(script, scriptFile, 'exec'), d)
+    else:
+        exec(script, d)
+    if trace_time:
+        t2 = time.process_time()
+        if t2 - t1 &gt; 3.0:
+            g.trace(f"\nEXCESSIVE TIME: {t2 - t1:5.2f} sec. in {self.p.h}")
+</t>
+<t tx="ekr.20051104075904.11">def shortDescription(self):
+    s = self.p.h
+    return s + '\n'
+</t>
+<t tx="ekr.20051104075904.5">class GeneralTestCase(unittest.TestCase):
+    """Create a unit test from a snippet of code."""
+    @others
+</t>
+<t tx="ekr.20051104075904.6">def __init__(self, c, p, setup_script=None):
+    """Ctor for the GeneralTestCase class."""
+    super().__init__()
+    self.c = c
+    self.p = p.copy()
+    self.setup_script = setup_script
+</t>
+<t tx="ekr.20051104075904.7">def fail(self, msg=None):
+    """Mark a unit test as having failed."""
+    g.app.unitTestDict["fail"] = g.callers()
+    raise self.failureException(msg)
+        # Fix # 1002. Raise an exception, as in TestCase.fail()
+</t>
+<t tx="ekr.20051104075904.70">class EditBodyTestCase(unittest.TestCase):
+    """Data-driven unit tests for Leo's edit body commands."""
+    @others
+</t>
+<t tx="ekr.20051104075904.71">def __init__(self, c, parent, before, after, sel, ins, tempNode):
+
+    super().__init__()
+    self.c = c
+    self.failFlag = False
+    self.parent = parent.copy()
+    self.before = before.copy()
+    self.after = after.copy()
+    self.sel = sel and sel.copy()
+        # Two lines giving the selection range in tk coordinates.
+    self.ins = ins and ins.copy()
+        # One line giving the insert point in tk coordinate.
+    self.tempNode = tempNode.copy()
+</t>
+<t tx="ekr.20051104075904.72">def fail(self, msg=None):
+    """Mark a unit test as having failed."""
+    g.app.unitTestDict["fail"] = g.callers()
+    self.failFlag = True
+</t>
+<t tx="ekr.20051104075904.73">def editBody(self):
+    c = self.c
+    tm = self.c.testManager
+    # Blank stops the command name.
+    commandName = self.parent.h
+    i = commandName.find(' ')
+    if i &gt; -1:
+        commandName = commandName[:i]
+    # Compute the result in tempNode.b
+    command = getattr(c, commandName)
+    command()
+    try:
+        # Don't call the Undoer if we expect no change.
+        if not tm.compareOutlines(
+            self.before, self.after, compareHeadlines=False, report=False):
+            assert tm.compareOutlines(
+                self.tempNode,
+                self.after,
+                compareHeadlines=False), f"{commandName}: before undo1"
+            c.undoer.undo()
+            assert tm.compareOutlines(
+                self.tempNode,
+                self.before,
+                compareHeadlines=False), f"{commandName}: after undo1"
+            c.undoer.redo()
+            assert tm.compareOutlines(
+                self.tempNode,
+                self.after,
+                compareHeadlines=False), f"{commandName}: after redo"
+            c.undoer.undo()
+            assert tm.compareOutlines(
+                self.tempNode,
+                self.before,
+                compareHeadlines=False), f"{commandName}: after undo2"
+    except Exception:
+        self.fail()
+        raise
+</t>
+<t tx="ekr.20051104075904.74">def runTest(self):
+    self.editBody()
+</t>
+<t tx="ekr.20051104075904.75">def setUp(self):
+    c = self.c; tempNode = self.tempNode
+    c.undoer.clearUndoState()
+    # Delete all children of temp node.
+    while tempNode.firstChild():
+        tempNode.firstChild().doDelete()
+    text = self.before.b
+    tempNode.setBodyString(text)
+    c.selectPosition(self.tempNode)
+    w = c.frame.body.wrapper
+    if self.sel:
+        s = str(self.sel.b)  # Can't be unicode.
+        lines = s.split('\n')
+        w.setSelectionRange(lines[0], lines[1])
+    if self.ins:
+        s = str(self.ins.b)  # Can't be unicode.
+        lines = s.split('\n')
+        g.trace(lines)
+        w.setInsertPoint(lines[0])
+    if not self.sel and not self.ins:  # self.sel is a **tk** index.
+        w.setInsertPoint(0)
+        w.setSelectionRange(0, 0)
+</t>
+<t tx="ekr.20051104075904.76">def tearDown(self):
+    c = self.c; tempNode = self.tempNode
+    c.selectPosition(tempNode)
+    if not self.failFlag:
+        tempNode.setBodyString("")
+        # Delete all children of temp node.
+        while tempNode.firstChild():
+            tempNode.firstChild().doDelete()
+    tempNode.clearDirty()
+    c.undoer.clearUndoState()
+</t>
+<t tx="ekr.20051104075904.79">class ImportExportTestCase(unittest.TestCase):
+    """Data-driven unit tests for Leo's edit body commands."""
+    @others
+</t>
+<t tx="ekr.20051104075904.8">def setUp(self):
+    c = self.c
+    oldChanged = c.changed
+    c.selectPosition(self.p.copy())
+    if not oldChanged:
+        c.clearChanged()
+</t>
+<t tx="ekr.20051104075904.80">def __init__(self, c, p, dialog, temp_p, doImport):
+
+    super().__init__()
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+    self.old_p = c.p
+</t>
+<t tx="ekr.20051104075904.81">def fail(self, msg=None):
+    """Mark a unit test as having failed."""
+    g.app.unitTestDict["fail"] = g.callers()
+</t>
+<t tx="ekr.20051104075904.82">def importExport(self):
+    c = self.c; p = self.p
+    g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
+    commandName = p.h
+    command = getattr(c, commandName)  # Will fail if command does not exist.
+    command(event=None)
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.assertFalse(failedMethod, failedMethod)
+</t>
+<t tx="ekr.20051104075904.83">def runTest(self):
+    # """Import Export Test Case"""
+    self.importExport()
+</t>
 <t tx="ekr.20051104075904.84">def setUp(self):
 
     c = self.c; temp_p = self.temp_p
@@ -4260,6 +5001,29 @@ To activate the rst3 plugin, do the following:
         theDict = {name: fileName}
     self.oldGui = g.app.gui
     self.gui = leoGui.UnitTestGui(theDict)
+</t>
+<t tx="ekr.20051104075904.85">def shortDescription(self):
+    try:
+        return f"ImportExportTestCase: {self.p.h} {self.fileName}"
+    except Exception:
+        return "ImportExportTestCase"
+</t>
+<t tx="ekr.20051104075904.86">def tearDown(self):
+    c = self.c; temp_p = self.temp_p
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+    temp_p.setBodyString("")
+    temp_p.clearDirty()
+    if 1:  # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+</t>
+<t tx="ekr.20051104075904.9">def tearDown(self):
+    # Restore the outline.
+    self.c.outerUpdate()
 </t>
 <t tx="ekr.20051121102358">def processTopTree (self,p,justOneFile=False):
 
@@ -4321,34 +5085,6 @@ To activate the rst3 plugin, do the following:
         if p.h.startswith('@rst'):
             return self.processTree(p,ext=ext,toString=True,justOneFile=True)
     return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-</t>
-<t tx="ekr.20060526201951">def makeRegexSubs(self, change_text, groups):
-    """
-    Substitute group[i-1] for \\i strings in change_text.
-    """
-
-    def repl(match_object):
-        # # 1494...
-        n = int(match_object.group(1)) - 1
-        if 0 &lt;= n &lt; len(groups):
-            return (
-                groups[n].
-                    replace(r'\b', r'\\b').
-                    replace(r'\f', r'\\f').
-                    replace(r'\n', r'\\n').
-                    replace(r'\r', r'\\r').
-                    replace(r'\t', r'\\t').
-                    replace(r'\v', r'\\v'))
-        # No replacement.
-        return match_object.group(0)
-
-    result = re.sub(r'\\([0-9])', repl, change_text)
-    # print(
-        # f"makeRegexSubs:\n"
-        # f"change_text: {change_text!s}\n"
-        # f"     groups: {groups!s}\n"
-        # f"     result: {result!s}")
-    return result
 </t>
 <t tx="ekr.20060608094815">def handleDocOnlyMode (self,p,lines):
     '''
@@ -5903,7 +6639,7 @@ def reloadSettings(self):
     except Exception:  # Could be a user error.
         if g.unitTesting or not g.app.menuWarningsGiven:
             g.es_print('exception binding', shortcut, 'to', commandName)
-            g.es_print_exception()
+            g.print_exception()
             g.app.menuWarningsGiven = True
         return False
 
@@ -6137,6 +6873,10 @@ setLabelGray = setLabelGrey
 
     g.trace('Should be defined in subclass:', g.callers(4))
 </t>
+<t tx="ekr.20061212084717">class LeoFind:
+    """The base class for Leo's Find commands."""
+    @others
+</t>
 <t tx="ekr.20070130115927.6">@cmd('cut-text')
 def cutText(self, event=None):
     """Invoked from the mini-buffer and from shortcuts."""
@@ -6328,6 +7068,24 @@ OnPasteFromMenu = pasteText
     else:
         self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n'
 </t>
+<t tx="ekr.20071105164407">def deleteUnvisitedNodes(self, root, redraw=True):
+    """
+    Delete unvisited nodes in root's subtree, not including root.
+
+    Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
+    Nodes'.
+    """
+    at = self
+    # Find the unvisited nodes.
+    aList = [z for z in root.subtree() if not z.isVisited()]
+    if aList:
+        # new-read: Never create resurrected nodes.
+            # r = at.createResurrectedNodesNode()
+            # callback = at.defineResurrectedNodeCallback(r, root)
+            # # Move the nodes using the callback.
+            # at.c.deletePositionsInList(aList, callback)
+        at.c.deletePositionsInList(aList, redraw=redraw)
+</t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20071115061253">def writePreformat (self,p):
@@ -6376,6 +7134,27 @@ OnPasteFromMenu = pasteText
         k.mb_prefix = s
 </t>
 <t tx="ekr.20080412053100.5">@language rest
+</t>
+<t tx="ekr.20080416161551.211">def moveToVisNext(self, c):
+    """Move a position to the position of the next visible node."""
+    p = self
+    limit, limitIsVisible = c.visLimit()
+    while p:
+        if p.hasChildren():
+            if p.isExpanded():
+                p.moveToFirstChild()
+            else:
+                p.moveToNodeAfterTree()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        if p:
+            if limit and self.checkVisNextLimit(limit, p):
+                return None
+            if p.isVisible(c):
+                return p
+    return p
 </t>
 <t tx="ekr.20080509064108.6">def defineSingleLineCommands(self):
     k = self
@@ -6636,6 +7415,134 @@ OnPasteFromMenu = pasteText
     old_public_lines = x.init_data()
     x.b = x.preprocess(new_public_lines)
     x.a = x.preprocess(old_public_lines)
+</t>
+<t tx="ekr.20080709062932.10">def runTest(self, define_g=True):
+    """AtShadowTestCase.runTest."""
+    x = self.shadowController
+    x.trace = self.trace
+    p = self.p.copy()
+    results = x.propagate_changed_lines(
+        self.new_public_lines, self.old_private_lines, self.marker, p=p)
+    if results != self.expected_private_lines:
+        g.pr(p.h)
+        for aList, tag in (
+            (results, 'results'),
+            (self.expected_private_lines, 'expected_private_lines')
+        ):
+            g.pr(f"{tag}...")
+            for i, line in enumerate(aList):
+                g.pr(f"{i:3} {line!r}")
+            g.pr('-' * 40)
+        assert results == self.expected_private_lines
+    assert self.ok
+    return self.ok
+</t>
+<t tx="ekr.20080709062932.11">def shortDescription(self):
+    """AtShadowTestCase.shortDescription."""
+    return self.p.h if self.p else '@test-shadow: no self.p'
+</t>
+<t tx="ekr.20080709062932.19">def findNode(self, c, p, headline):
+    """Return the node in p's subtree with given headline."""
+    p = g.findNodeInTree(c, p, headline)
+    if not p:
+        g.es_print('can not find', headline)
+        assert False
+    return p
+</t>
+<t tx="ekr.20080709062932.2">class AtShadowTestCase(unittest.TestCase):
+    """
+    Support @shadow-test nodes.
+
+    These nodes should have two descendant nodes: 'before' and 'after'.
+    """
+    @others
+</t>
+<t tx="ekr.20080709062932.20">def createSentinelNode(self, root, p):
+    """Write p's tree to a string, as if to a file."""
+    h = p.h
+    p2 = root.insertAsLastChild()
+    p2.setHeadString(h + '-sentinels')
+    return p2
+</t>
+<t tx="ekr.20080709062932.21">def makePrivateLines(self, p):
+    """Return a list of the lines of p containing sentinels."""
+    at = self.c.atFileCommands
+    # A hack: we want to suppress gnx's *only* in @+node sentinels,
+    # but we *do* want sentinels elsewhere.
+    at.at_shadow_test_hack = True
+    try:
+        s = at.atFileToString(p, sentinels=True)
+    finally:
+        at.at_shadow_test_hack = False
+    return g.splitLines(s)
+</t>
+<t tx="ekr.20080709062932.22">def makePublicLines(self, lines):
+    """Return the public lines in lines."""
+    x = self.shadowController
+    lines, junk = x.separate_sentinels(lines, x.marker)
+    return lines
+</t>
+<t tx="ekr.20080709062932.23">def mungePrivateLines(self, lines, find, replace):
+    """Change the 'find' the 'replace' pattern in sentinel lines."""
+    x = self.shadowController
+    marker = self.marker
+    i, results = 0, []
+    while i &lt; len(lines):
+        line = lines[i]
+        if marker.isSentinel(line):
+            new_line = line.replace(find, replace)
+            results.append(new_line)
+            if marker.isVerbatimSentinel(line):
+                i += 1
+                if i &lt; len(lines):
+                    line = lines[i]
+                    results.append(line)
+                else:
+                    x.verbatim_error()
+        else:
+            results.append(line)
+        i += 1
+    return results
+</t>
+<t tx="ekr.20080709062932.6">def __init__(self, c, p, shadowController, delims=None, trace=False):
+    """Ctor for AtShadowTestCase class."""
+    super().__init__()
+    self.c = c
+    self.p = p.copy()
+    self.shadowController = x = shadowController
+    self.trace = trace
+    # Hard value for now.
+    if delims is None:
+        delims = '#', '', ''
+    self.marker = x.marker = shadowController.Marker(delims)
+        # 2015/04/03: tricky: set *both* ivars.
+        # This bug became apparent because unitTest.leo no longer
+        # pre-loads any @shadow files.
+    # For teardown...
+    self.ok = True
+</t>
+<t tx="ekr.20080709062932.7">def fail(self, msg=None):
+    """Mark an AtShadowTestCase as having failed."""
+    g.app.unitTestDict["fail"] = g.callers()
+</t>
+<t tx="ekr.20080709062932.8">def setUp(self):
+    """AtShadowTestCase.setup."""
+    c, p = self.c, self.p
+    old = self.findNode(c, p, 'old')
+    new = self.findNode(c, p, 'new')
+    self.old_private_lines = self.makePrivateLines(old)
+    self.new_private_lines = self.makePrivateLines(new)
+    self.old_public_lines = self.makePublicLines(self.old_private_lines)
+    self.new_public_lines = self.makePublicLines(self.new_private_lines)
+    # Change node:new to node:old in all sentinel lines.
+    self.expected_private_lines = self.mungePrivateLines(
+        self.new_private_lines, 'node:new', 'node:old')
+</t>
+<t tx="ekr.20080709062932.9">def tearDown(self):
+    """AtShadowTestCase.tearDown."""
+    pass
+        # No change is made to the outline.
+        # self.c.redraw()
 </t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20080811174246.1">def languageForExtension(self, ext):
@@ -6931,6 +7838,10 @@ gnx = property(
     s = s.lower()
     return s.startswith('f') and len(s) &lt;= 3 and s[1:].isdigit()
 </t>
+<t tx="ekr.20090715145956.6167">def checkVisNextLimit(self, limit, p):
+    """Return True is p is outside limit of visible nodes."""
+    return limit != p and not limit.isAncestorOf(p)
+</t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20091230094319.6240">def getPaneBinding(self, event):
 
@@ -7052,6 +7963,15 @@ gnx = property(
 </t>
 <t tx="ekr.20100103093121.5365"># These are experimental plugins.
 </t>
+<t tx="ekr.20100122130101.6174">def deleteTnodeList(self, p):  # AtFile method.
+    """Remove p's tnodeList."""
+    v = p.v
+    if hasattr(v, "tnodeList"):
+        if False:  # Not an error, but a useful trace.
+            g.blue("deleting tnodeList for " + repr(v))
+        delattr(v, "tnodeList")
+        v._p_changed = True
+</t>
 <t tx="ekr.20100124110832.6212">def propegateDirtyNodes(self):
     fc = self; c = fc.c
     aList = [z for z in c.all_positions() if z.isDirty()]
@@ -7110,6 +8030,58 @@ gnx = property(
             n2.setBodyString(b2)
     return root
 </t>
+<t tx="ekr.20100224050618.11547">def isFileLike(self, s):
+    """Return True if s has file-like sentinels."""
+    at = self; tag = "@+leo"
+    s = g.checkUnicode(s)
+    i = s.find(tag)
+    if i == -1:
+        return True  # Don't use the cache.
+    j, k = g.getLine(s, i)
+    line = s[j:k]
+    valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
+    return not isThin
+</t>
+<t tx="ekr.20100803073751.5817">def createResurrectedNodesNode(self):
+    """Create a 'Resurrected Nodes' node as the last top-level node."""
+    at = self; c = at.c; tag = 'Resurrected Nodes'
+    # Find the last top-level node.
+    last = c.rootPosition()
+    while last.hasNext():
+        last.moveToNext()
+    # Create the node after last if it doesn't exist.
+    if last.h == tag:
+        p = last
+    else:
+        p = last.insertAfter()
+        p.setHeadString(tag)
+    p.expand()
+    return p
+</t>
+<t tx="ekr.20100803073751.5818">def defineResurrectedNodeCallback(self, r, root):
+    """Define a callback that moves node p as r's last child."""
+
+    def callback(p, r=r.copy(), root=root):
+        """The resurrected nodes callback."""
+        child = r.insertAsLastChild()
+        child.h = f"From {root.h}"
+        v = p.v
+        # new code: based on vnodes.
+        for parent_v in v.parents:
+            assert isinstance(parent_v, leoNodes.VNode), parent_v
+            if v in parent_v.children:
+                childIndex = parent_v.children.index(v)
+                v._cutLink(childIndex, parent_v)
+                v._addLink(len(child.v.children), child.v)
+            else:
+                # This would be surprising.
+                g.trace('**already deleted**', parent_v, v)
+        if not g.unitTesting:
+            g.error('resurrected node:', v.h)
+            g.blue('in file:', root.h)
+
+    return callback
+</t>
 <t tx="ekr.20101004082701.5674"></t>
 <t tx="ekr.20101101175644.5891">def put(self, *args, **keys):
     """Put s to the given tab.
@@ -7124,6 +8096,13 @@ gnx = property(
 <t tx="ekr.20101110150056.9453"># Some of the most important recent plugins work only with the Qt gui.
 </t>
 <t tx="ekr.20101110150056.9457"></t>
+<t tx="ekr.20110117113521.6107">def shortDescription(self):
+    try:
+        return f"EditBodyTestCase: {self.parent.h}"
+    except Exception:
+        g.print_exception()
+        return "EditBodyTestCase"
+</t>
 <t tx="ekr.20110202111105.15439">def showStateCursor(self, state, w):
     pass
 </t>
@@ -7547,6 +8526,66 @@ def get_completions(self, prefix):
 </t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
 </t>
+<t tx="ekr.20110605121601.17873">def full_redraw(self, p=None):
+    """
+    Redraw all visible nodes of the tree.
+    Preserve the vertical scrolling unless scroll is True.
+    """
+    c = self.c
+    if g.app.disable_redraw:
+        return None
+    if self.busy:
+        return None
+    # Cancel the delayed redraw request.
+    c.requestLaterRedraw = False
+    if not p:
+        p = c.currentPosition()
+    elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
+        # Make sure the current position is visible.
+        # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+        p = p.firstChild()
+        c.frame.tree.select(p)
+        c.setCurrentPosition(p)
+    else:
+        c.setCurrentPosition(p)
+    assert not self.busy, g.callers()
+    self.redrawCount += 1
+    self.initData()
+    try:
+        self.busy = True
+        self.drawTopTree(p)
+    finally:
+        self.busy = False
+    self.setItemForCurrentPosition()
+    return p  # Return the position, which may have changed.
+
+# Compatibility
+
+redraw = full_redraw
+redraw_now = full_redraw
+</t>
+<t tx="ekr.20110605121601.17874">def drawChildren(self, p, parent_item):
+    """Draw the children of p if they should be expanded."""
+    if not p:
+        g.trace('can not happen: no p')
+        return
+    if p.hasChildren():
+        if p.isExpanded():
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child, parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child, parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+</t>
 <t tx="ekr.20110605121601.17875">def drawNode(self, p, parent_item):
     """Draw the node p."""
     c = self.c
@@ -7580,6 +8619,48 @@ def get_completions(self, prefix):
     if icon:
         item.setIcon(0, icon)
     return item
+</t>
+<t tx="ekr.20110605121601.17876">def drawTopTree(self, p):
+    """Draw the tree rooted at p."""
+    trace = 'drawing' in g.app.debug and not g.unitTesting
+    if trace:
+        t1 = time.process_time()
+    c = self.c
+    self.clear()
+    # Draw all top-level nodes and their visible descendants.
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p; h = p.h
+        if len(c.hoistStack) == 1 and h.startswith('@chapter') and p.hasChildren():
+            p = p.firstChild()
+            while p:
+                self.drawTree(p)
+                p.moveToNext()
+        else:
+            self.drawTree(p)
+    else:
+        p = c.rootPosition()
+        while p:
+            self.drawTree(p)
+            p.moveToNext()
+    if trace:
+        t2 = time.process_time()
+        g.trace(f"{t2 - t1:5.2f} sec.", g.callers(5))
+</t>
+<t tx="ekr.20110605121601.17877">def drawTree(self, p, parent_item=None):
+    if g.app.gui.isNullGui:
+        return
+    # Draw the (visible) parent node.
+    item = self.drawNode(p, parent_item)
+    # Draw all the visible children.
+    self.drawChildren(p, parent_item=item)
+</t>
+<t tx="ekr.20110605121601.17878">def initData(self):
+    self.item2positionDict = {}
+    self.item2vnodeDict = {}
+    self.position2itemDict = {}
+    self.vnode2itemsDict = {}
+    self.editWidgetsDict = {}
 </t>
 <t tx="ekr.20110605121601.17911">def endEditLabel(self):
     """
@@ -7821,6 +8902,27 @@ def show_completions(self, aList):
         kind = f"unknown: {repr(button)}"
     return kind
 </t>
+<t tx="ekr.20110605121601.18058">class QLineEditWrapper(QTextMixin):
+    """
+    A class to wrap QLineEdit widgets.
+
+    The QHeadlineWrapper class is a subclass that merely
+    redefines the do-nothing check method here.
+    """
+    @others
+</t>
+<t tx="ekr.20110605121601.18060">def __init__(self, widget, name, c=None):
+    """Ctor for QLineEditWrapper class."""
+    super().__init__(c)
+    self.widget = widget
+    self.name = name
+    self.baseClassName = 'QLineEditWrapper'
+
+def __repr__(self):
+    return f"&lt;QLineEditWrapper: widget: {self.widget}"
+
+__str__ = __repr__
+</t>
 <t tx="ekr.20110605121601.18077">def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
     """QTextEditWrapper."""
     w = self.widget
@@ -7869,6 +8971,31 @@ def show_completions(self, aList):
         g.app.gui.setClipboardSelection(sel)
     self.c.frame.updateStatusLine()
 </t>
+<t tx="ekr.20110605121601.18088">def scrollDelegate(self, kind):
+    """
+    Scroll a QTextEdit up or down one page.
+    direction is in ('down-line','down-page','up-line','up-page')
+    """
+    c = self.c
+    w = self.widget
+    vScroll = w.verticalScrollBar()
+    h = w.size().height()
+    lineSpacing = w.fontMetrics().lineSpacing()
+    n = h / lineSpacing
+    n = max(2, n - 3)
+    if kind == 'down-half-page': delta = n / 2
+    elif kind == 'down-line': delta = 1
+    elif kind == 'down-page': delta = n
+    elif kind == 'up-half-page': delta = -n / 2
+    elif kind == 'up-line': delta = -1
+    elif kind == 'up-page': delta = -n
+    else:
+        delta = 0
+        g.trace('bad kind:', kind)
+    val = vScroll.value()
+    vScroll.setValue(val + (delta * lineSpacing))
+    c.bodyWantsFocus()
+</t>
 <t tx="ekr.20110605121601.18090">def see(self, see_i):
     """Scroll so that position see_i is visible."""
     w = self.widget
@@ -7888,6 +9015,149 @@ def show_completions(self, aList):
 def seeInsertPoint(self):
     """Make sure the insert point is visible."""
     self.widget.ensureCursorVisible()
+</t>
+<t tx="ekr.20110605121601.18102">def get(self, i, j=None):
+    """QTextMixin"""
+    # 2012/04/12: fix the following two bugs by using the vanilla code:
+    # https://bugs.launchpad.net/leo-editor/+bug/979142
+    # https://bugs.launchpad.net/leo-editor/+bug/971166
+    s = self.getAllText()
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+    return s[i:j]
+</t>
+<t tx="ekr.20110605121601.18112">def see(self, i):
+    """Ensure insert point i is visible in a QsciScintilla widget."""
+    # Ok for now.  Using SCI_SETYCARETPOLICY might be better.
+    w = self.widget
+    s = self.getAllText()
+    i = self.toPythonIndex(i)
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    w.ensureLineVisible(row)
+</t>
+<t tx="ekr.20110605121601.18116">class QHeadlineWrapper(QLineEditWrapper):
+    """
+    A wrapper class for QLineEdit widgets in QTreeWidget's.
+    This class just redefines the check method.
+    """
+    @others
+</t>
+<t tx="ekr.20110605121601.18117">def __init__(self, c, item, name, widget):
+    """The ctor for the QHeadlineWrapper class."""
+    assert isinstance(widget, QtWidgets.QLineEdit), widget
+    super().__init__(widget, name, c)
+    # Set ivars.
+    self.c = c
+    self.item = item
+    self.name = name
+    self.permanent = False  # Warn the minibuffer that we can go away.
+    self.widget = widget
+    # Set the signal.
+    g.app.gui.setFilter(c, self.widget, self, tag=name)
+
+def __repr__(self):
+    return f"QHeadlineWrapper: {id(self)}"
+</t>
+<t tx="ekr.20110605121601.18118"></t>
+<t tx="ekr.20110605121601.18119">def check(self):
+    """Return True if the tree item exists and it's edit widget exists."""
+    tree = self.c.frame.tree
+    try:
+        e = tree.treeWidget.itemWidget(self.item, 0)
+    except RuntimeError:
+        return False
+    valid = tree.isValidItem(self.item)
+    result = valid and e == self.widget
+    return result
+</t>
+<t tx="ekr.20110605121601.18120">def getAllText(self):
+    """QHeadlineWrapper."""
+    if self.check():
+        w = self.widget
+        return w.text()
+    return ''
+</t>
+<t tx="ekr.20110605121601.18121">def getInsertPoint(self):
+    """QHeadlineWrapper."""
+    if self.check():
+        return self.widget.cursorPosition()
+    return 0
+</t>
+<t tx="ekr.20110605121601.18122">def getSelectionRange(self, sort=True):
+    """QHeadlineWrapper."""
+    w = self.widget
+    if self.check():
+        if w.hasSelectedText():
+            i = w.selectionStart()
+            s = w.selectedText()
+            j = i + len(s)
+        else:
+            i = j = w.cursorPosition()
+        return i, j
+    return 0, 0
+</t>
+<t tx="ekr.20110605121601.18123">def hasSelection(self):
+    """QHeadlineWrapper."""
+    if self.check():
+        return self.widget.hasSelectedText()
+    return False
+</t>
+<t tx="ekr.20110605121601.18124">def see(self, i):
+    """QHeadlineWrapper."""
+    pass
+
+def seeInsertPoint(self):
+    """QHeadlineWrapper."""
+    pass
+</t>
+<t tx="ekr.20110605121601.18125">def setAllText(self, s):
+    """Set all text of a Qt headline widget."""
+    if self.check():
+        w = self.widget
+        w.setText(s)
+</t>
+<t tx="ekr.20110605121601.18128">def setFocus(self):
+    """QHeadlineWrapper."""
+    if self.check():
+        g.app.gui.set_focus(self.c, self.widget)
+</t>
+<t tx="ekr.20110605121601.18129">def setInsertPoint(self, i, s=None):
+    """QHeadlineWrapper."""
+    if not self.check(): return
+    w = self.widget
+    if s is None:
+        s = w.text()
+    i = self.toPythonIndex(i)
+    i = max(0, min(i, len(s)))
+    w.setCursorPosition(i)
+</t>
+<t tx="ekr.20110605121601.18130">def setSelectionRange(self, i, j, insert=None, s=None):
+    """QHeadlineWrapper."""
+    if not self.check(): return
+    w = self.widget
+    if i &gt; j: i, j = j, i
+    if s is None:
+        s = w.text()
+    n = len(s)
+    i = self.toPythonIndex(i)
+    j = self.toPythonIndex(j)
+    i = max(0, min(i, n))
+    j = max(0, min(j, n))
+    if insert is None:
+        insert = j
+    else:
+        insert = self.toPythonIndex(insert)
+        insert = max(0, min(insert, n))
+    if i == j:
+        w.setCursorPosition(i)
+    else:
+        length = j - i
+        # Set selection is a QLineEditMethod
+        if insert &lt; j:
+            w.setSelection(j, -length)
+        else:
+            w.setSelection(i, length)
+# setSelectionRangeHelper = setSelectionRange
 </t>
 <t tx="ekr.20110605121601.18411">def getIcon(self, p):
     """Return the proper icon for position p."""
@@ -7928,6 +9198,28 @@ def seeInsertPoint(self):
         return wrapper  # 2011/02/12
     g.trace('can not happen: no e')
     return None
+</t>
+<t tx="ekr.20110605121601.18433"></t>
+<t tx="ekr.20110605121601.18434">def getScroll(self):
+    """Return the hPos,vPos for the tree's scrollbars."""
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    vScroll = w.verticalScrollBar()
+    hPos = hScroll.sliderPosition()
+    vPos = vScroll.sliderPosition()
+    return hPos, vPos
+</t>
+<t tx="ekr.20110605121601.18435">def setHScroll(self, hPos):
+
+    w = self.treeWidget
+    hScroll = w.horizontalScrollBar()
+    hScroll.setValue(hPos)
+
+def setVScroll(self, vPos):
+
+    w = self.treeWidget
+    vScroll = w.verticalScrollBar()
+    vScroll.setValue(vPos)
 </t>
 <t tx="ekr.20110605121601.18540">def eventFilter(self, obj, event):
     """Return False if Qt should handle the event."""
@@ -8051,6 +9343,21 @@ def seeInsertPoint(self):
         ch = ''
     # g.trace(keynum, ch)
     return keynum, text, toString, ch
+</t>
+<t tx="ekr.20110605121601.18618">def match_mark_previous(self, s, i,
+    kind='', pattern='',
+    at_line_start=False, at_whitespace_end=False, at_word_start=False,
+    exclude_match=False
+):
+    """
+    Return the length of a matched SEQ or 0 if no match.
+
+    'at_line_start':    True: sequence must start the line.
+    'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
+    'at_word_start':    True: sequence must start a word.
+    """
+    # This match was causing most of the syntax-color problems.
+    return 0  # 2009/6/23
 </t>
 <t tx="ekr.20110605121601.18624">def restart_match_span(self, s,
     delegate, end, exclude_match, kind,
@@ -8781,6 +10088,61 @@ def __str__(self):
     }
     return d
 </t>
+<t tx="ekr.20120225072226.10301">def createRecentFilesMenuItems(self, c):
+    rf = self
+    menu = c.frame.menu
+    recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
+    if not recentFilesMenu:
+        return
+    # Delete all previous entries.
+    menu.deleteRecentFilesMenuItems(recentFilesMenu)
+    # Create the permanent (static) menu entries.
+    table = rf.getRecentFilesTable()
+    menu.createMenuEntries(recentFilesMenu, table)
+    # Create all the other entries (a maximum of 36).
+    accel_ch = string.digits + string.ascii_uppercase  # Not a unicode problem.
+    i = 0
+    n = len(accel_ch)
+    # see if we're grouping when files occur in more than one place
+    rf_group = c.config.getBool("recent-files-group")
+    rf_always = c.config.getBool("recent-files-group-always")
+    groupedEntries = rf_group or rf_always
+    if groupedEntries:  # if so, make dict of groups
+        dirCount = {}
+        for fileName in rf.getRecentFiles()[:n]:
+            dirName, baseName = g.os_path_split(fileName)
+            if baseName not in dirCount:
+                dirCount[baseName] = {'dirs': [], 'entry': None}
+            dirCount[baseName]['dirs'].append(dirName)
+    for name in rf.getRecentFiles()[:n]:
+        # pylint: disable=cell-var-from-loop
+        if name.strip() == "":
+            continue  # happens with empty list/new file
+
+        def recentFilesCallback(event=None, c=c, name=name):
+            c.openRecentFile(fn=name)
+
+        if groupedEntries:
+            dirName, baseName = g.os_path_split(name)
+            entry = dirCount[baseName]
+            if len(entry['dirs']) &gt; 1 or rf_always:  # sub menus
+                if entry['entry'] is None:
+                    entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
+                    # acts as a flag for the need to create the menu
+                c.add_command(menu.getMenu(baseName), label=dirName,
+                    command=recentFilesCallback, underline=0)
+            else:  # single occurence, no submenu
+                c.add_command(recentFilesMenu, label=baseName,
+                    command=recentFilesCallback, underline=0)
+        else:  # original behavior
+            label = f"{accel_ch[i]} {g.computeWindowTitle(name)}"
+            c.add_command(recentFilesMenu, label=label,
+                command=recentFilesCallback, underline=0)
+        i += 1
+    if groupedEntries:  # store so we can delete them later
+        rf.groupedMenus = [z for z in dirCount
+            if dirCount[z]['entry'] is not None]
+</t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20120427064024.10064">def checkForOpenFile(self, c, fn):
     """Warn if fn is already open and add fn to already_open_files list."""
@@ -8888,6 +10250,255 @@ def printButtons(self, event=None):
         p.v.scrollBarSpot = arg
 </t>
 <t tx="ekr.20121126102050.10134"></t>
+<t tx="ekr.20130823083943.12596">class RecursiveImportController:
+    """Recursively import all python files in a directory and clean the result."""
+    @others
+</t>
+<t tx="ekr.20130823083943.12597">def import_dir(self, dir_, parent):
+    """Import selected files from dir_, a directory."""
+    if g.os_path_isfile(dir_):
+        files = [dir_]
+    else:
+        g.es_print('importing directory:', dir_)
+        files = os.listdir(dir_)
+    dirs, files2 = [], []
+    for path in files:
+        try:
+            # Fix #408. Catch path exceptions.
+            # The idea here is to keep going on small errors.
+            path = g.os_path_join(dir_, path)
+            if g.os_path_isfile(path):
+                name, ext = g.os_path_splitext(path)
+                if ext in self.theTypes:
+                    files2.append(path)
+            elif self.recursive:
+                if not self.ignore_pattern.search(path):
+                    dirs.append(path)
+        except OSError:
+            g.es_print('Exception computing', path)
+            g.es_exception()
+    if files or dirs:
+        assert parent and parent.v != self.root.v, g.callers()
+        parent = parent.insertAsLastChild()
+        parent.v.h = dir_
+        if files2:
+            for f in files2:
+                if not self.ignore_pattern.search(f):
+                    self.import_one_file(f, parent=parent)
+        if dirs:
+            assert self.recursive
+            for dir_ in sorted(dirs):
+                self.import_dir(dir_, parent)
+</t>
+<t tx="ekr.20130823083943.12607">def post_process(self, p, prefix):
+    """
+    Traverse p's tree, replacing all nodes that start with prefix
+    by the smallest equivalent @path or @file node.
+    """
+    self.fix_back_slashes(p)
+    prefix = prefix.replace('\\', '/')
+    if self.kind not in ('@auto', '@edit'):
+        self.remove_empty_nodes(p)
+    if p.firstChild():
+        self.minimize_headlines(p.firstChild(), prefix)
+    self.clear_dirty_bits(p)
+    self.add_class_names(p)
+</t>
+<t tx="ekr.20130823083943.12608">def clear_dirty_bits(self, p):
+    c = self.c
+    c.clearChanged()  # Clears *all* dirty bits.
+    for p in p.self_and_subtree(copy=False):
+        p.clearDirty()
+</t>
+<t tx="ekr.20130823083943.12609">def dump_headlines(self, p):
+    # show all headlines.
+    for p in p.self_and_subtree(copy=False):
+        print(p.h)
+</t>
+<t tx="ekr.20130823083943.12610">def fix_back_slashes(self, p):
+    """Convert backslash to slash in all headlines."""
+    for p in p.self_and_subtree(copy=False):
+        s = p.h.replace('\\', '/')
+        if s != p.h:
+            p.v.h = s
+</t>
+<t tx="ekr.20130823083943.12611">def minimize_headlines(self, p, prefix):
+    """Create @path nodes to minimize the paths required in descendant nodes."""
+    if prefix and not prefix.endswith('/'):
+        prefix = prefix + '/'
+    m = self.file_pattern.match(p.h)
+    if m:
+        # It's an @file node of some kind. Strip off the prefix.
+        kind = m.group(0)
+        path = p.h[len(kind) :].strip()
+        stripped = self.strip_prefix(path, prefix)
+        p.h = f"{kind} {stripped or path}"
+        # Put the *full* @path directive in the body.
+        if self.add_path and prefix:
+            tail = g.os_path_dirname(stripped).rstrip('/')
+            p.b = f"@path {prefix}{tail}\n{p.b}"
+    else:
+        # p.h is a path.
+        path = p.h
+        stripped = self.strip_prefix(path, prefix)
+        p.h = f"@path {stripped or path}"
+        for p in p.children():
+            self.minimize_headlines(p, prefix + stripped)
+</t>
+<t tx="ekr.20130823083943.12612">def remove_empty_nodes(self, p):
+    """Remove empty nodes. Not called for @auto or @edit trees."""
+    c = self.c
+    aList = [
+        p2 for p2 in p.self_and_subtree()
+            if not p2.b and not p2.hasChildren()]
+    if aList:
+        c.deletePositionsInList(aList, redraw=False)
+</t>
+<t tx="ekr.20130823083943.12613">def run(self, dir_):
+    """
+    Import all files whose extension matches self.theTypes in dir_.
+    In fact, dir_ can be a path to a single file.
+    """
+    if self.kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+        g.es('bad kind param', self.kind, color='red')
+    try:
+        c = self.c
+        p1 = self.root = c.p
+        t1 = time.time()
+        g.app.disable_redraw = True
+        bunch = c.undoer.beforeChangeTree(p1)
+        # Leo 5.6: Always create a new last top-level node.
+        last = c.lastTopLevel()
+        parent = last.insertAfter()
+        parent.v.h = 'imported files'
+        # Leo 5.6: Special case for a single file.
+        self.n_files = 0
+        if g.os_path_isfile(dir_):
+            g.es_print('\nimporting file:', dir_)
+            self.import_one_file(dir_, parent)
+        else:
+            self.import_dir(dir_, parent)
+        self.post_process(parent, dir_)
+            # Fix # 1033.
+        c.undoer.afterChangeTree(p1, 'recursive-import', bunch)
+    except Exception:
+        g.es_print('Exception in recursive import')
+        g.es_exception()
+    finally:
+        g.app.disable_redraw = False
+        for p2 in parent.self_and_subtree(copy=False):
+            p2.contract()
+        c.redraw(parent)
+    t2 = time.time()
+    n = len(list(parent.self_and_subtree()))
+    g.es_print(
+        f"imported {n} node{g.plural(n)} "
+        f"in {self.n_files} file{g.plural(self.n_files)} "
+        f"in {t2 - t1:2.2f} seconds")
+</t>
+<t tx="ekr.20130823083943.12615">def __init__(self, c, kind,
+    add_context=None,  # Override setting only if True/False
+    add_file_context=None,  # Override setting only if True/False
+    add_path=True,
+    recursive=True,
+    safe_at_file=True,
+    theTypes=None,
+    ignore_pattern=None,
+):
+    """Ctor for RecursiveImportController class."""
+    self.c = c
+    self.add_path = add_path
+    self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+    self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+    self.recursive = recursive
+    self.root = None
+    self.safe_at_file = safe_at_file
+    self.theTypes = theTypes
+    self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
+    # #1605:
+
+    def set_bool(setting, val):
+        if val not in (True, False):
+            return
+        c.config.set(None, 'bool', setting, val, warn=True)
+        
+    set_bool('add-context-to-headlines', add_context)
+    set_bool('add-file-context-to-headlines', add_file_context)
+</t>
+<t tx="ekr.20130911110233.11284">def readFileToUnicode(self, fileName):
+    '''
+    Carefully sets at.encoding, then uses at.encoding to convert the file
+    to a unicode string.
+
+    Sets at.encoding as follows:
+    1. Use the BOM, if present. This unambiguously determines the encoding.
+    2. Use the -encoding= field in the @+leo header, if present and valid.
+    3. Otherwise, uses existing value of at.encoding, which comes from:
+        A. An @encoding directive, found by at.scanAllDirectives.
+        B. The value of c.config.default_derived_file_encoding.
+
+    Returns the string, or None on failure.
+    '''
+    at = self
+    s = at.openFileHelper(fileName)
+        # Catches all exceptions.
+    # #1798.
+    if s is None:
+        return None
+    e, s = g.stripBOM(s)
+    if e:
+        # The BOM determines the encoding unambiguously.
+        s = g.toUnicode(s, encoding=e)
+    else:
+        # Get the encoding from the header, or the default encoding.
+        s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
+        e = at.getEncodingFromHeader(fileName, s_temp)
+        s = g.toUnicode(s, encoding=e)
+    s = s.replace('\r\n', '\n')
+    at.encoding = e
+    at.initReadLine(s)
+    return s
+</t>
+<t tx="ekr.20130911110233.11285">def openFileHelper(self, fileName):
+    """Open a file, reporting all exceptions."""
+    at = self
+    # #1798: return None as a flag on any error.
+    s = None 
+    try:
+        with open(fileName, 'rb') as f:
+            s = f.read()
+    except IOError:
+        at.error(f"can not open {fileName}")
+    except Exception:
+        at.error(f"Exception reading {fileName}")
+        g.es_exception()
+    return s
+</t>
+<t tx="ekr.20130911110233.11287">def getEncodingFromHeader(self, fileName, s):
+    """
+    Return the encoding given in the @+leo sentinel, if the sentinel is
+    present, or the previous value of at.encoding otherwise.
+    """
+    at = self
+    if at.errors:
+        g.trace('can not happen: at.errors &gt; 0', g.callers())
+        e = at.encoding
+        if g.unitTesting: assert False, g.callers()
+            # This can happen when the showTree command in a unit test is left on.
+            # A @file/@clean node is created which refers to a non-existent file.
+            # It's surprisingly difficult to set at.error=0 safely elsewhere.
+            # Otoh, I'm not sure why this test here is ever really useful.
+    else:
+        at.initReadLine(s)
+        old_encoding = at.encoding
+        assert old_encoding
+        at.encoding = None
+        # Execute scanHeader merely to set at.encoding.
+        at.scanHeader(fileName, giveErrors=False)
+        e = at.encoding or old_encoding
+    assert e
+    return e
+</t>
 <t tx="ekr.20130924035029.12741">def initOneAbbrev(self, commandName, key):
     """Enter key as an abbreviation for commandName in c.commandsDict."""
     c = self.c
@@ -9026,6 +10637,749 @@ def runVimTest(self, p):
     atTest.contract()
     # Don't redraw.
 </t>
+<t tx="ekr.20131117120458.16792">def set_radio_button(self, name):
+    """Set the value of the radio buttons"""
+    c = self.c
+    find = c.findCommands
+    d = {
+        # Name is not an ivar. Set by find.setFindScope... commands.
+        'node-only': self.radio_button_node_only,
+        'entire-outline': self.radio_button_entire_outline,
+        'suboutline-only': self.radio_button_suboutline_only,
+    }
+    w = d.get(name)
+    # Most of the work will be done in the radio button callback.
+    if not w.isChecked():
+        w.toggle()
+    if find.minibuffer_mode:
+        find.show_find_options_in_status_area()
+</t>
+<t tx="ekr.20131117164142.16916">@cmd('find-tab-open')
+def open_find_tab(self, event=None, show=True):  # pragma: no cover (cmd)
+    """Open the Find tab in the log pane."""
+    c = self.c
+    if c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+</t>
+<t tx="ekr.20131117164142.16919">@cmd('toggle-find-collapses-nodes')
+def toggle_find_collapes_nodes(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Collapse Nodes' checkbox in the find tab."""
+    c = self.c
+    c.sparse_find = not c.sparse_find
+    if not g.unitTesting:
+        g.es('sparse_find', c.sparse_find)
+
+@cmd('toggle-find-ignore-case-option')
+def toggle_ignore_case_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Ignore Case' checkbox in the Find tab."""
+    return self.toggle_option('ignore_case')
+
+@cmd('toggle-find-mark-changes-option')
+def toggle_mark_changes_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Mark Changes' checkbox in the Find tab."""
+    return self.toggle_option('mark_changes')
+
+@cmd('toggle-find-mark-finds-option')
+def toggle_mark_finds_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Mark Finds' checkbox in the Find tab."""
+    return self.toggle_option('mark_finds')
+
+@cmd('toggle-find-regex-option')
+def toggle_regex_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Regexp' checkbox in the Find tab."""
+    return self.toggle_option('pattern_match')
+
+@cmd('toggle-find-in-body-option')
+def toggle_search_body_option(self, event):  # pragma: no cover (cmd)
+    """Set the 'Search Body' checkbox in the Find tab."""
+    return self.toggle_option('search_body')
+
+@cmd('toggle-find-in-headline-option')
+def toggle_search_headline_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Search Headline' checkbox in the Find tab."""
+    return self.toggle_option('search_headline')
+
+@cmd('toggle-find-word-option')
+def toggle_whole_word_option(self, event):  # pragma: no cover (cmd)
+    """Toggle the 'Whole Word' checkbox in the Find tab."""
+    return self.toggle_option('whole_word')
+
+# @cmd('toggle-find-wrap-around-option')
+# def toggleWrapSearchOption(self, event):
+    # """Toggle the 'Wrap Around' checkbox in the Find tab."""
+    # return self.toggle_option('wrap')
+
+def toggle_option(self, checkbox_name):  # pragma: no cover (cmd)
+    c, fc = self.c, self.c.findCommands
+    self.ftm.toggle_checkbox(checkbox_name)
+    options = fc.compute_find_options_in_status_area()
+    c.frame.statusLine.put(options)
+</t>
+<t tx="ekr.20131117164142.16939"></t>
+<t tx="ekr.20131117164142.16941">@cmd('isearch-forward')
+def isearch_forward(self, event):  # pragma: no cover (cmd)
+    """
+    Begin a forward incremental search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-forward',
+        forward=True, ignoreCase=False, regexp=False)
+</t>
+<t tx="ekr.20131117164142.16942">@cmd('isearch-backward')
+def isearch_backward(self, event):  # pragma: no cover (cmd)
+    """
+    Begin a backward incremental search.
+
+    - Plain characters extend the search backward.
+    - !&lt;isearch-forward&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-backward',
+        forward=False, ignoreCase=False, regexp=False)
+</t>
+<t tx="ekr.20131117164142.16943">@cmd('isearch-forward-regexp')
+def isearch_forward_regexp(self, event):  # pragma: no cover (cmd)
+    """
+    Begin a forward incremental regexp search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-forward-regexp',
+        forward=True, ignoreCase=False, regexp=True)
+</t>
+<t tx="ekr.20131117164142.16944">@cmd('isearch-backward-regexp')
+def isearch_backward_regexp(self, event):  # pragma: no cover (cmd)
+    """
+    Begin a backward incremental regexp search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-backward-regexp',
+        forward=False, ignoreCase=False, regexp=True)
+</t>
+<t tx="ekr.20131117164142.16945">@cmd('isearch-with-present-options')
+def isearch_with_present_options(self, event):  # pragma: no cover (cmd)
+    """
+    Begin an incremental search using find panel options.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-with-present-options',
+        forward=None, ignoreCase=None, regexp=None)
+</t>
+<t tx="ekr.20131117164142.16946"></t>
+<t tx="ekr.20131117164142.16947">def abort_search(self):  # pragma: no cover (cmd)
+    """Restore the original position and selection."""
+    c, k = self.c, self.k
+    w = c.frame.body.wrapper
+    k.clearState()
+    k.resetLabel()
+    p, i, j, in_headline = self.stack[0]
+    self.in_headline = in_headline
+    c.selectPosition(p)
+    c.redraw_after_select(p)
+    c.bodyWantsFocus()
+    w.setSelectionRange(i, j)
+</t>
+<t tx="ekr.20131117164142.16948">def end_search(self):  # pragma: no cover (cmd)
+    c, k = self.c, self.k
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20131117164142.16949">def iSearch_helper(self, again=False):  # pragma: no cover (cmd)
+    """Handle the actual incremental search."""
+    c, k, p = self.c, self.k, self.c.p
+    reverse = not self.isearch_forward_flag
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        self.abort_search()
+        return
+    # Settings...
+    self.find_text = self.ftm.get_find_text()
+    self.change_text = self.ftm.get_change_text()
+    # Save
+    oldPattern = self.find_text
+    oldRegexp = self.pattern_match
+    oldWord = self.whole_word
+    # Override
+    self.pattern_match = self.isearch_regexp
+    self.reverse = reverse
+    self.find_text = pattern
+    self.whole_word = False  # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) &lt;= 1:
+        self.in_headline = False
+    # Init the work widget from the gui widget.
+    gui_w = self.set_widget()
+    s = gui_w.getAllText()
+    i, j = gui_w.getSelectionRange()
+    if again:
+        ins = i if reverse else j + len(pattern)
+    else:
+        ins = j + len(pattern) if reverse else i
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    # Do the search!
+    p, pos, newpos = self.find_next_match(p)
+    # Restore.
+    self.find_text = oldPattern
+    self.pattern_match = oldRegexp
+    self.reverse = False
+    self.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None:  # success.
+        w = self.show_success(p, pos, newpos, showState=False)
+        if w:
+            i, j = w.getSelectionRange(sort=False)
+        if not again:
+            self.push(c.p, i, j, self.in_headline)
+    else:
+        g.es(f"not found: {pattern}")
+        if not again:
+            event = g.app.gui.create_key_event(
+                c, binding='BackSpace', char='\b', w=w)
+            k.updateLabel(event)
+</t>
+<t tx="ekr.20131117164142.16950">def isearch_state_handler(self, event):  # pragma: no cover (cmd)
+    """The state manager when the state is 'isearch"""
+    # c = self.c
+    k = self.k
+    stroke = event.stroke if event else None
+    s = stroke.s if stroke else ''
+    # No need to recognize ctrl-z.
+    if s in ('Escape', '\n', 'Return'):
+        self.end_search()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch_helper(again=True)
+    elif s in ('\b', 'BackSpace'):
+        k.updateLabel(event)
+        self.isearch_backspace()
+    elif (
+        s.startswith('Ctrl+') or
+        s.startswith('Alt+') or
+        k.isFKey(s)  # 2011/06/13.
+    ):
+        # End the search.
+        self.end_search()
+        k.masterKeyHandler(event)
+    # Fix bug 1267921: isearch-forward accepts non-alphanumeric keys as input.
+    elif k.isPlainKey(stroke):
+        k.updateLabel(event)
+        self.iSearch_helper()
+</t>
+<t tx="ekr.20131117164142.16951">def isearch_backspace(self):  # pragma: no cover (cmd)
+
+    c = self.c
+    if len(self.stack) &lt;= 1:
+        self.abort_search()
+        return
+    # Reduce the stack by net 1.
+    self.pop()
+    p, i, j, in_headline = self.pop()
+    self.push(p, i, j, in_headline)
+    if in_headline:
+        # Like self.show_success.
+        selection = i, j, i
+        c.redrawAndEdit(p, selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        c.selectPosition(p)
+        w = c.frame.body.wrapper
+        c.bodyWantsFocus()
+        if i &gt; j: i, j = j, i
+        w.setSelectionRange(i, j)
+    if len(self.stack) &lt;= 1:
+        self.abort_search()
+</t>
+<t tx="ekr.20131117164142.16952">def get_strokes(self, commandName):  # pragma: no cover (cmd)
+    aList = self.inverseBindingDict.get(commandName, [])
+    return [key for pane, key in aList]
+</t>
+<t tx="ekr.20131117164142.16953">def push(self, p, i, j, in_headline):  # pragma: no cover (cmd)
+    data = p.copy(), i, j, in_headline
+    self.stack.append(data)
+
+def pop(self):  # pragma: no cover (cmd)
+    data = self.stack.pop()
+    p, i, j, in_headline = data
+    return p, i, j, in_headline
+</t>
+<t tx="ekr.20131117164142.16954">def set_widget(self):  # pragma: no cover (cmd)
+    c = self.c; p = c.currentPosition()
+    wrapper = c.frame.body.wrapper
+    if self.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0, 0, 0
+            c.redrawAndEdit(p, selectAll=False,
+                selection=selection, keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w:  # Should never happen.
+            g.trace('**** no edit widget!')
+            self.in_headline = False; w = wrapper
+    else:
+        w = wrapper
+    if w == wrapper:
+        c.bodyWantsFocus()
+    return w
+</t>
+<t tx="ekr.20131117164142.16955">def start_incremental(self, event, commandName, forward, ignoreCase, regexp):  # pragma: no cover (cmd)
+    c, k = self.c, self.k
+    # None is a signal to get the option from the find tab.
+    self.event = event
+    self.isearch_forward_flag = not self.reverse if forward is None else forward
+    self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
+    self.isearch_regexp = self.pattern_match if regexp is None else regexp
+    # Note: the word option can't be used with isearches!
+    w = c.frame.body.wrapper
+    self.p1 = c.p
+    self.sel1 = w.getSelectionRange(sort=False)
+    i, j = self.sel1
+    self.push(c.p, i, j, self.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.get_strokes(commandName)
+    k.setLabelBlue(
+        "Isearch"
+        f"{' Backward' if not self.isearch_forward_flag else ''}"
+        f"{' Regexp' if self.isearch_regexp else ''}"
+        f"{' NoCase' if self.isearch_ignore_case else ''}"
+        ": "
+    )
+    k.setState('isearch', 1, handler=self.isearch_state_handler)
+    c.minibufferWantsFocus()
+</t>
+<t tx="ekr.20131117164142.16989">@cmd('show-find-options')
+def show_find_options(self, event=None):  # pragma: no cover (cmd)
+    """
+    Show the present find options in the status line.
+    This is useful for commands like search-forward that do not show the Find Panel.
+    """
+    frame = self.c.frame
+    frame.clearStatusLine()
+    part1, part2 = self.compute_find_options()
+    frame.putStatusLine(part1, bg='blue')
+    frame.putStatusLine(part2)
+</t>
+<t tx="ekr.20131117164142.16992">def add_change_string_to_label(self):  # pragma: no cover (cmd)
+    """Add an unprotected change string to the minibuffer label."""
+    c = self.c
+    s = self.ftm.get_change_text()
+    c.minibufferWantsFocus()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+    c.k.extendLabel(s, select=True, protect=False)
+</t>
+<t tx="ekr.20131117164142.16993">def add_find_string_to_label(self, protect=True):  # pragma: no cover (cmd)
+    c, k = self.c, self.c.k
+    ftm = c.findCommands.ftm
+    s = ftm.get_find_text()
+    c.minibufferWantsFocus()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+    k.extendLabel(s, select=True, protect=protect)
+</t>
+<t tx="ekr.20131117164142.16994">@cmd('change-all')
+@cmd('replace-all')
+def interactive_change_all(self, event=None):  # pragma: no cover (interactive)
+    """Replace all instances of the search string with the replacement string."""
+    self.ftm.clear_focus()
+    self.ftm.set_entry_focus()
+    prompt = 'Replace Regex: ' if self.pattern_match else 'Replace: '
+    self.start_state_machine(event, prompt,
+        handler=self.interactive_replace_all1,
+        # Allow either '\t' or '\n' to switch to the change text.
+        escape_handler=self.interactive_replace_all1,
+    )
+
+def interactive_replace_all1(self, event):  # pragma: no cover (interactive)
+    k = self.k
+    find_pattern = k.arg
+    self._sString = k.arg
+    self.update_find_list(k.arg)
+    regex = ' Regex' if self.pattern_match else ''
+    prompt = f"Replace{regex}: {find_pattern} With: "
+    k.setLabelBlue(prompt)
+    self.add_change_string_to_label()
+    k.getNextArg(self.interactive_replace_all2)
+
+def interactive_replace_all2(self, event):  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+
+    # Update settings data.
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.init_vim_search(find_pattern)
+    self.update_change_list(change_pattern)
+    # Compute settings...
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    # Do the command!
+    self.do_change_all(settings)
+</t>
+<t tx="ekr.20131117164142.16996">@cmd('clone-find-all-flattened')
+# @cmd('find-clone-all-flattened')
+@cmd('cff')
+def interactive_cff(
+    self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    """
+    clone-find-all-flattened (aka find-clone-all-flattened and cff).
+
+    Create an organizer node whose direct children are clones of all nodes
+    matching the search string, except @nosearch trees.
+
+    The list is flattened: every cloned node appears as a direct child
+    of the organizer node, even if the clone also is a descendant of
+    another cloned node.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    if not preloaded:
+        self.preload_find_pattern(w)
+    self.start_state_machine(event,
+        prefix='Clone Find All Flattened: ',
+        handler=self.interactive_cff1)
+
+def interactive_cff1(self, event):  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    pattern = k.arg
+    self.ftm.set_find_text(pattern)
+    self.init_vim_search(pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    count = self.do_clone_find_all(settings)
+    if count:
+        c.redraw()
+        c.treeWantsFocus()
+    return count
+</t>
+<t tx="ekr.20131117164142.16998">@cmd('find-all')
+def interactive_find_all(self, event=None):  # pragma: no cover (interactive)
+    """
+    Create a summary node containing descriptions of all matches of the
+    search string.
+    
+    Typing tab converts this to the change-all command.
+    """
+    self.ftm.clear_focus()
+    self.ftm.set_entry_focus()
+    self.start_state_machine(event, 'Search: ',
+        handler=self.interactive_find_all1,
+        escape_handler=self.find_all_escape_handler,
+    )
+
+def interactive_find_all1(self, event=None):  # pragma: no cover (interactive)
+    k = self.k
+    # Settings.
+    find_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    ##self.init_in_headline()
+    settings = self.ftm.get_settings()
+    self.find_text = find_pattern
+    self.change_text = self.ftm.get_change_text()
+    self.update_find_list(find_pattern)
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_find_all(settings)
+
+def find_all_escape_handler(self, event):  # pragma: no cover (interactive)
+    k = self.k
+    prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
+    find_pattern = k.arg
+    self._sString = k.arg
+    self.update_find_list(k.arg)
+    s = f"{prompt}: {find_pattern} With: "
+    k.setLabelBlue(s)
+    self.add_change_string_to_label()
+    k.getNextArg(self.find_all_escape_handler2)
+
+def find_all_escape_handler2(self, event):  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.update_change_list(change_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_change_all(settings)
+</t>
+<t tx="ekr.20131117164142.17003">@cmd('re-search')
+@cmd('re-search-forward')
+def interactive_re_search_forward(self, event):  # pragma: no cover (interactive)
+    """Same as start-find, with regex."""
+    # Set flag for show_find_options.
+    self.pattern_match = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_pattern_match = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Regexp Search: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20131117164142.17004">@cmd('search-backward')
+def interactive_search_backward(self, event):  # pragma: no cover (interactive)
+    """Same as start-find, but in reverse."""
+    # Set flag for show_find_options.
+    self.reverse = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_reverse = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Search Backward: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20131117164142.17007">def start_state_machine(self, event, prefix, handler, escape_handler=None):  # pragma: no cover (cmd)
+    """
+    Initialize and start the state machine used to get user arguments.
+    """
+    c, k = self.c, self.k
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    # Gui...
+    k.setLabelBlue(prefix)
+    # New in Leo 5.2: minibuffer modes shows options in status area.
+    if self.minibuffer_mode:
+        self.show_find_options_in_status_area()
+    elif c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+    self.add_find_string_to_label(protect=False)
+    k.getArgEscapes = ['\t'] if escape_handler else []
+    self.handler = handler
+    self.escape_handler = escape_handler
+    # Start the state maching!
+    k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
+
+def state0(self, event):  # pragma: no cover (cmd)
+    """Dispatch the next handler."""
+    k = self.k
+    if k.getArgEscapeFlag:
+        k.getArgEscapeFlag = False
+        self.escape_handler(event)
+    else:
+        self.handler(event)
+</t>
+<t tx="ekr.20131117164142.17008">def update_change_list(self, s):  # pragma: no cover (cmd)
+    if s not in self.changeTextList:
+        self.changeTextList.append(s)
+
+def update_find_list(self, s):  # pragma: no cover (cmd)
+    if s not in self.findTextList:
+        self.findTextList.append(s)
+</t>
+<t tx="ekr.20131117164142.17009">@cmd('word-search-backward')
+def word_search_backward(self, event):  # pragma: no cover (interactive)
+    # Set flags for show_find_options.
+    self.reverse = True
+    self.whole_world = True
+    self.show_find_options()
+    # Set flags for do_find_next().
+    self.request_reverse = True
+    self.request_whole_world = True
+    # Go
+    self.start_state_machine(event,
+        prefix='Word Search Backward: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20131117164142.17011">@cmd('clone-find-all')
+@cmd('find-clone-all')
+@cmd('cfa')
+def interactive_clone_find_all(
+    self, event=None, preloaded=None):  # pragma: no cover (interactive)
+    """
+    clone-find-all ( aka find-clone-all and cfa).
+
+    Create an organizer node whose descendants contain clones of all nodes
+    matching the search string, except @nosearch trees.
+
+    The list is *not* flattened: clones appear only once in the
+    descendants of the organizer node.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    if not preloaded:
+        self.preload_find_pattern(w)
+    self.start_state_machine(event,
+        prefix='Clone Find All: ',
+        handler=self.interactive_clone_find_all1)
+
+def interactive_clone_find_all1(self, event):  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    pattern = k.arg
+    self.ftm.set_find_text(pattern)
+    self.init_vim_search(pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    count = self.do_clone_find_all(settings)
+    if count:
+        c.redraw()
+        c.treeWantsFocus()
+    return count
+</t>
+<t tx="ekr.20131117164142.17013"></t>
+<t tx="ekr.20131117164142.17015">@cmd('find-tab-hide')
+def hide_find_tab(self, event=None):  # pragma: no cover (cmd)
+    """Hide the Find tab."""
+    c = self.c
+    if self.minibuffer_mode:
+        c.k.keyboardQuit()
+    else:
+        self.c.frame.log.selectTab('Log')
+</t>
+<t tx="ekr.20131117164142.17016">def do_change_all(self, settings):
+    c = self.c
+    # Settings...
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('change-all'):
+        return 0
+    n = self._change_all_helper(settings)
+    #
+    # Bugs #947, #880 and #722:
+    # Set ancestor @&lt;file&gt; nodes by brute force.
+    for p in c.all_positions():  # pragma: no cover
+        if (
+            p.anyAtFileNodeName()
+            and not p.v.isDirty()
+            and any([p2.v.isDirty() for p2 in p.subtree()])
+        ):
+            p.setDirty()
+    c.redraw()
+    return n
+</t>
+<t tx="ekr.20131117164142.17019">@cmd('set-find-everywhere')
+def set_find_scope_every_where(self, event=None):  # pragma: no cover (cmd)
+    """Set the 'Entire Outline' radio button in the Find tab."""
+    return self.set_find_scope('entire-outline')
+
+@cmd('set-find-node-only')
+def set_find_scope_node_only(self, event=None):  # pragma: no cover (cmd)
+    """Set the 'Node Only' radio button in the Find tab."""
+    return self.set_find_scope('node-only')
+
+@cmd('set-find-suboutline-only')
+def set_find_scope_suboutline_only(self, event=None):
+    """Set the 'Suboutline Only' radio button in the Find tab."""
+    return self.set_find_scope('suboutline-only')
+
+def set_find_scope(self, where):
+    """Set the radio buttons to the given scope"""
+    c, fc = self.c, self.c.findCommands
+    self.ftm.set_radio_button(where)
+    options = fc.compute_find_options_in_status_area()
+    c.frame.statusLine.put(options)
+</t>
+<t tx="ekr.20131117164142.17021"></t>
+<t tx="ekr.20131117164142.17022">def finishCreate(self):
+    # New in 4.11.1.
+    # Must be called when config settings are valid.
+    c = self.c
+    self.reload_settings()
+    # now that configuration settings are valid,
+    # we can finish creating the Find pane.
+    dw = c.frame.top
+    if dw: dw.finishCreateLogPane()
+</t>
+<t tx="ekr.20131119060731.22452">@cmd('start-search')
+@cmd('search-forward')  # Compatibility.
+def start_search(self, event):  # pragma: no cover (interactive)
+    """
+    The default binding of Ctrl-F.
+    
+    Also contains default state-machine entries for find/change commands.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    self.preload_find_pattern(w)
+    if self.minibuffer_mode:
+        # Set up the state machine.
+        self.ftm.clear_focus()
+        self.changeAllFlag = False
+        self.findAllUniqueFlag = False
+        self.ftm.set_entry_focus()
+        self.start_state_machine(event,
+            prefix='Search: ',
+            handler=self.start_search1,
+            escape_handler=self.start_search_escape1,
+        )
+    else:
+        self.open_find_tab(event)
+        self.ftm.init_focus()
+        return
+
+startSearch = start_search  # Compatibility. Do not delete.
+</t>
+<t tx="ekr.20131119204029.16479">def help_for_find_commands(self, event=None):  # pragma: no cover (cmd)
+    """Called from Find panel.  Redirect."""
+    self.c.helpCommands.help_for_find_commands(event)
+</t>
 <t tx="ekr.20131121084830.16362">@language python
 
 # Toggle the settings.
@@ -9034,6 +11388,108 @@ g.app.debug_widgets = not g.app.debug_widgets
 # Report the new settings.
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
+</t>
+<t tx="ekr.20131123071505.16465">def _fail_outside_range(self, p):  # pragma: no cover
+    """
+    Return True if the search is about to go outside its range, assuming
+    both the headline and body text of the present node have been searched.
+    """
+    c = self.c
+    if not p:
+        return True
+    if self.node_only:
+        return True
+    if self.suboutline_only:
+        if self.root and p != self.root and not self.root.isAncestorOf(p):
+            return True
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        if not bunch.p.isAncestorOf(p):
+            g.trace('outside hoist', p.h)
+            g.warning('found match outside of hoisted outline')
+            return True
+    return False  # Within range.
+</t>
+<t tx="ekr.20131123071505.16467">def precompile_pattern(self):
+    """Precompile the regexp pattern if necessary."""
+    try:  # Precompile the regexp.
+        # pylint: disable=no-member
+        flags = re.MULTILINE
+        if self.ignore_case: flags |= re.IGNORECASE
+        # Escape the search text.
+        # Ignore the whole_word option.
+        s = self.find_text
+        # A bad idea: insert \b automatically.
+            # b, s = '\\b', self.find_text
+            # if self.whole_word:
+                # if not s.startswith(b): s = b + s
+                # if not s.endswith(b): s = s + b
+        self.re_obj = re.compile(s, flags)
+        return True
+    except Exception:
+        if not g.unitTesting:
+            g.warning('invalid regular expression:', self.find_text)
+        return False
+</t>
+<t tx="ekr.20131123132043.16476">def _fnm_next_after_fail(self, p):
+    """Return the next node after a failed search or None."""
+    # Move to the next position.
+    p = p.threadBack() if self.reverse else p.threadNext()
+    # Check it.
+    if p and self._fail_outside_range(p):  # pragma: no cover
+        return None
+    if not p:  # pragma: no cover
+        return None
+    return p
+</t>
+<t tx="ekr.20131124060912.16472">def _fnm_should_stay_in_node(self, p):
+    """Return True if the find should simply switch panes."""
+    # Errors here cause the find command to fail badly.
+    # Switch only if:
+    #   a) searching both panes and,
+    #   b) this is the first pane of the pair.
+    # There is *no way* this can ever change.
+    # So simple in retrospect, so difficult to see.
+    return (
+        self.search_headline and self.search_body and (
+        (self.reverse and not self.in_headline) or
+        (not self.reverse and self.in_headline)))
+</t>
+<t tx="ekr.20131124060912.16473">def _fnm_first_search_pane(self):
+    """
+    Set return the value of self.in_headline
+    indicating which pane to search first.
+    """
+    if self.search_headline and self.search_body:
+        # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
+        if self.reverse:
+            return False  # Search the body pane first.
+        return True  # Search the headline pane first.
+    if self.search_headline or self.search_body:
+        # Search the only enabled pane.
+        return self.search_headline
+    g.trace('can not happen: no search enabled')
+    return False  # pragma: no cover (now search the body)
+</t>
+<t tx="ekr.20131126085250.16651">def focus_in_tree(self):
+    """
+    Return True is the focus widget w is anywhere in the tree pane.
+
+    Note: the focus may be in the find pane.
+    """
+    c = self.c
+    ftm = self.ftm
+    w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)
+    if ftm:
+        ftm.entry_focus = None  # Only use this focus widget once!
+    w_name = c.widget_name(w)
+    if w == c.frame.body.wrapper:
+        val = False
+    elif w == c.frame.tree.treeWidget:  # pragma: no cover
+        val = True
+    else:
+        val = w_name.startswith('head')  # pragma: no cover
+    return val
 </t>
 <t tx="ekr.20131222112420.16371">def contract(self):
     """Contract p.v and clear p.v.expandedPositions list."""
@@ -9126,6 +11582,69 @@ nosentinels = property(
         g.es_exception()
         self.quit()
     return self.return_value
+</t>
+<t tx="ekr.20140613141207.17673">def deletenodes_rclick_cb():
+
+    if len(pl) == 1:
+        # sometimes this may leave the selected node in a more
+        # convenient place than the generalized case below
+        c.deleteOutline()  # handles undo, redraw, etc.
+        return
+    c.endEditing()
+    cull = []
+    # try and find the best node to select when this is done
+    nextviz = []
+    tmp = pl[0].copy().moveToVisBack(c)
+    if tmp:
+        nextviz.append(tmp.v)
+    tmp = pl[-1].copy().moveToVisNext(c)
+    if tmp:
+        nextviz.append(tmp.v)
+    for nd in pl:
+        cull.append((nd.v, nd.parent().v or None))
+    u.beforeChangeGroup(current,undoType)
+    for v, vp in cull:
+        for pos in c.vnode2allPositions(v):
+            if c.positionExists(pos) and pos.parent().v == vp:
+                bunch = u.beforeDeleteNode(pos)
+                pos.doDelete()
+                u.afterDeleteNode(pos,undoType,bunch)
+                c.setChanged()
+                break
+    u.afterChangeGroup(current,undoType)
+    # move to a node that still exists
+    for v in nextviz:
+        pos = c.vnode2position(v)
+        if c.positionExists(pos):
+            c.selectPosition(pos)
+            break
+    else:
+        # c.selectPosition(c.allNodes_iter().next())
+        c.selectPosition(c.rootPosition())
+    c.redraw()
+</t>
+<t tx="ekr.20140630110633.16726"># Tangle code.
+j = g.skip_blank_lines(s, i)
+i, code, new_delims, reflist = self.skip_code(s, j, delims)
+part = self.st_enter_section_name(section_name, code, doc, delims, new_delims)
+delims = new_delims
+# Untangle code
+if not self.tangling:
+    # part may be zero if there was an empty code section (doc part only)
+    # In untangle stage1 such code produces no reference list,
+    #    thus nothing to do.
+    # In untangle stage2, such code cannot be updated because it
+    # was either not emitted to the external file or emitted as a doc part only
+    #     in either case, there is no code section to update, and we don't
+    #     update doc parts.
+    if part &gt; 0:
+        if self.untangle_stage1:
+            section = self.st_lookup(section_name)
+            section.parts[part - 1].reflist(refs=reflist)
+        else:
+            head = s[: j]; tail = s[i:]
+            s, i, changed = self.update_def(section_name, part, head, code, tail)
+            if changed: anyChanged = True
 </t>
 <t tx="ekr.20140723122936.17925"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
 
@@ -9250,7 +11769,6 @@ def getNextArg(self, handler):
 # New in Leo 5.4
 
 def get1Arg(self, event, handler,
-    # returnKind=None, returnState=None,
     prefix=None, tabList=None, completion=True, oneCharacter=False,
     stroke=None, useMinibuffer=True
 ):
@@ -9360,6 +11878,84 @@ Leo's core uses this api almost exclusively. That is, Leo's core code treats wra
 
 There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
 </t>
+<t tx="ekr.20140901062324.18604">if 0:  # Not yet.
+
+    def scrollDelegate(self, kind):
+        """
+        Scroll a QTextEdit up or down one page.
+        direction is in ('down-line','down-page','up-line','up-page')
+        """
+        c = self.c
+        w = self.widget
+        vScroll = w.verticalScrollBar()
+        h = w.size().height()
+        lineSpacing = w.fontMetrics().lineSpacing()
+        n = h / lineSpacing
+        n = max(2, n - 3)
+        if kind == 'down-half-page': delta = n / 2
+        elif kind == 'down-line': delta = 1
+        elif kind == 'down-page': delta = n
+        elif kind == 'up-half-page': delta = -n / 2
+        elif kind == 'up-line': delta = -1
+        elif kind == 'up-page': delta = -n
+        else:
+            delta = 0
+            g.trace('bad kind:', kind)
+        val = vScroll.value()
+        vScroll.setValue(val + (delta * lineSpacing))
+        c.bodyWantsFocus()
+</t>
+<t tx="ekr.20140901062324.18698">def setFocus(self):
+    """QTextMixin"""
+    if 'focus' in g.app.debug:
+        print('BaseQTextWrapper.setFocus', self.widget)
+    # Call the base class
+    assert isinstance(self.widget, (
+        QtWidgets.QTextBrowser,
+        QtWidgets.QLineEdit,
+        QtWidgets.QTextEdit,
+        Qsci and Qsci.QsciScintilla,
+    )), self.widget
+    QtWidgets.QTextBrowser.setFocus(self.widget)
+</t>
+<t tx="ekr.20140901062324.18703">def appendText(self, s):
+    """QTextMixin"""
+    s2 = self.getAllText()
+    self.setAllText(s2 + s)
+    self.setInsertPoint(len(s2))
+</t>
+<t tx="ekr.20140901062324.18704">def getLastPosition(self, s=None):
+    """QTextMixin"""
+    return len(self.getAllText()) if s is None else len(s)
+
+def getLength(self, s=None):
+    """QTextMixin"""
+    return len(self.getAllText()) if s is None else len(s)
+</t>
+<t tx="ekr.20140901062324.18705">def getSelectedText(self):
+    """QTextMixin"""
+    i, j = self.getSelectionRange()
+    if i == j:
+        return ''
+    s = self.getAllText()
+    return s[i:j]
+</t>
+<t tx="ekr.20140901062324.18712">def tag_configure(self, *args, **keys):
+
+    if len(args) == 1:
+        key = args[0]
+        self.tags[key] = keys
+        val = keys.get('foreground')
+        underline = keys.get('underline')
+        if val:
+            self.configDict[key] = val
+        if underline:
+            self.configUnderlineDict[key] = True
+    else:
+        g.trace('oops', args, keys)
+
+tag_config = tag_configure
+</t>
 <t tx="ekr.20140901062324.18714">def onTextChanged(self):
     """
     Update Leo after the body has been changed.
@@ -9403,6 +11999,110 @@ There is, however, a back door for (hopefully rare!) special cases. All wrapper 
     if hasattr(c.frame, 'statusLine'):
         c.frame.statusLine.update()
 </t>
+<t tx="ekr.20140901062324.18717"></t>
+<t tx="ekr.20140901062324.18719">class QTextMixin:
+    """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
+    @others
+</t>
+<t tx="ekr.20140901062324.18721">def injectIvars(self, name='1', parentFrame=None):
+    """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
+    w = self
+    p = self.c.currentPosition()
+    if name == '1':
+        w.leo_p = None  # Will be set when the second editor is created.
+    else:
+        w.leo_p = p and p.copy()
+    w.leo_active = True
+    # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    w.leo_frame = None
+    w.leo_name = name
+    w.leo_label = None
+    return w
+</t>
+<t tx="ekr.20140901062324.18729">def rememberSelectionAndScroll(self):
+
+    w = self
+    v = self.c.p.v  # Always accurate.
+    v.insertSpot = w.getInsertPoint()
+    i, j = w.getSelectionRange()
+    if i &gt; j: i, j = j, i
+    assert(i &lt;= j)
+    v.selectionStart = i
+    v.selectionLength = j - i
+    v.scrollBarSpot = w.getYScrollPosition()
+</t>
+<t tx="ekr.20140901062324.18732">def __init__(self, c=None):
+    """Ctor for QTextMixin class"""
+    self.c = c
+    self.changingText = False  # A lockout for onTextChanged.
+    self.enabled = True
+    self.supportsHighLevelInterface = True
+        # A flag for k.masterKeyHandler and isTextWrapper.
+    self.tags = {}
+    self.permanent = True  # False if selecting the minibuffer will make the widget go away.
+    self.configDict = {}  # Keys are tags, values are colors (names or values).
+    self.configUnderlineDict = {}  # Keys are tags, values are True
+    # self.formatDict = {} # Keys are tags, values are actual QTextFormat objects.
+    self.useScintilla = False  # This is used!
+    self.virtualInsertPoint = None
+    if c:
+        self.injectIvars(c)
+</t>
+<t tx="ekr.20140901062324.18825">def getName(self):
+    return self.name  # Essential.
+</t>
+<t tx="ekr.20140901062324.18827">def deleteTextSelection(self):
+    """QTextMixin"""
+    i, j = self.getSelectionRange()
+    self.delete(i, j)
+</t>
+<t tx="ekr.20140901122110.18733"># These are independent of the kind of Qt widget.
+</t>
+<t tx="ekr.20140901122110.18734"># These call only wrapper methods.
+</t>
+<t tx="ekr.20140901141402.18702">def insert(self, i, s):
+    """QTextMixin"""
+    s2 = self.getAllText()
+    i = self.toPythonIndex(i)
+    self.setAllText(s2[:i] + s + s2[i:])
+    self.setInsertPoint(i + len(s))
+    return i
+</t>
+<t tx="ekr.20140901141402.18704">def toPythonIndexRowCol(self, index):
+    """QTextMixin"""
+    s = self.getAllText()
+    i = self.toPythonIndex(index)
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    return i, row, col
+</t>
+<t tx="ekr.20140901141402.18706">def delete(self, i, j=None):
+    """QTextMixin"""
+    i = self.toPythonIndex(i)
+    if j is None: j = i + 1
+    j = self.toPythonIndex(j)
+    # This allows subclasses to use this base class method.
+    if i &gt; j: i, j = j, i
+    s = self.getAllText()
+    self.setAllText(s[:i] + s[j:])
+    # Bug fix: Significant in external tests.
+    self.setSelectionRange(i, i, insert=i)
+</t>
+<t tx="ekr.20140901141402.18710">def toPythonIndex(self, index, s=None):
+    """QTextMixin"""
+    if s is None:
+        s = self.getAllText()
+    i = g.toPythonIndex(s, index)
+    return i
+</t>
+<t tx="ekr.20140901191541.18599">def check(self):
+    """
+    QLineEditWrapper.
+    """
+    return True
+</t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
 
@@ -9417,7 +12117,114 @@ Leo uses a model/view/controller architecture.
 **Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
 
 </t>
+<t tx="ekr.20140902084950.18634">def seeInsertPoint(self):
+    """Ensure the insert point is visible."""
+    self.see(self.getInsertPoint())
+        # getInsertPoint defined in client classes.
+</t>
+<t tx="ekr.20140902135648.18668">def selectAllText(self, s=None):
+    """QTextMixin."""
+    self.setSelectionRange(0, self.getLength(s))
+</t>
 <t tx="ekr.20140902155015.18674"></t>
+<t tx="ekr.20140902181058.18644">def clipboard_append(self, s):
+    s1 = g.app.gui.getTextFromClipboard()
+    g.app.gui.replaceClipboardWith(s1 + s)
+
+def clipboard_clear(self):
+    g.app.gui.replaceClipboardWith('')
+</t>
+<t tx="ekr.20140902181058.18645">def disable(self):
+    self.enabled = False
+
+def enable(self, enabled=True):
+    self.enabled = enabled
+</t>
+<t tx="ekr.20140903025053.18631">class WrapperAPI:
+    """A class specifying the wrapper api used throughout Leo's core."""
+
+    def __init__(self, c): pass
+
+    def appendText(self, s): pass
+
+    def clipboard_append(self, s): pass
+
+    def clipboard_clear(self): pass
+
+    def delete(self, i, j=None): pass
+
+    def deleteTextSelection(self): pass
+
+    def disable(self): pass
+
+    def enable(self, enabled=True): pass
+
+    def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75): pass
+
+    def get(self, i, j): return ''
+
+    def getAllText(self): return ''
+
+    def getInsertPoint(self): return 0
+
+    def getSelectedText(self): return ''
+
+    def getSelectionRange(self): return (0, 0)
+
+    def getXScrollPosition(self): return 0
+
+    def getYScrollPosition(self): return 0
+
+    def hasSelection(self): return False
+
+    def insert(self, i, s): pass
+
+    def see(self, i): pass
+
+    def seeInsertPoint(self): pass
+
+    def selectAllText(self, insert=None): pass
+
+    def setAllText(self, s): pass
+
+    def setFocus(self): pass  # Required: sets the focus to wrapper.widget.
+
+    def setInsertPoint(self, pos, s=None): pass
+
+    def setSelectionRange(self, i, j, insert=None): pass
+
+    def setXScrollPosition(self, i): pass
+
+    def setYScrollPosition(self, i): pass
+
+    def tag_configure(self, colorName, **keys): pass
+
+    def toPythonIndex(self, index): return 0
+
+    def toPythonIndexRowCol(self, index): return (0, 0, 0)
+</t>
+<t tx="ekr.20140903172510.18579"># For StringTextWrapper.
+
+def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75): pass
+
+def getXScrollPosition(self): return 0
+
+def getYScrollPosition(self): return 0
+
+def see(self, i): pass
+
+def seeInsertPoint(self): pass
+
+def setFocus(self): pass
+
+def setStyleClass(self, name): pass
+
+def setXScrollPosition(self, i): pass
+
+def setYScrollPosition(self, i): pass
+
+def tag_configure(self, colorName, **keys): pass
+</t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -9442,6 +12249,90 @@ def setXScrollPosition(self, pos):
         w = self
         sb = w.horizontalScrollBar()
         sb.setSliderPosition(pos)
+</t>
+<t tx="ekr.20141113094129.6">@cmd('focus-to-find')
+def focus_to_find(self, event=None):  # pragma: no cover (cmd)
+    c = self.c
+    if c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+</t>
+<t tx="ekr.20150107090324.62">def redraw(self, p=None, scroll=True, forceDraw=False):
+    self.text_draw_tree()
+    
+redraw_now = redraw
+
+# def redraw_now(self, p=None, scroll=True, forceDraw=False):
+    # if forceDraw:
+        # self.redraw()
+</t>
+<t tx="ekr.20150204165040.5">def readOneAtCleanNode(self, root):
+    '''Update the @clean/@nosent node at root.'''
+    at, c, x = self, self.c, self.c.shadowController
+    fileName = g.fullPath(c, root)
+    if not g.os_path_exists(fileName):
+        g.es_print(
+            f"not found: {fileName}",
+            color='red',
+            nodeLink=root.get_UNL(with_proto=True))
+        return False
+    at.rememberReadPath(fileName, root)
+    at.initReadIvars(root, fileName)
+        # Must be called before at.scanAllDirectives.
+    at.scanAllDirectives(root)
+        # Sets at.startSentinelComment/endSentinelComment.
+    new_public_lines = at.read_at_clean_lines(fileName)
+    old_private_lines = self.write_at_clean_sentinels(root)
+    marker = x.markerFromFileLines(old_private_lines, fileName)
+    old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+    if old_public_lines:
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines, old_private_lines, marker, p=root)
+    else:
+        new_private_lines = []
+        root.b = ''.join(new_public_lines)
+        return True
+    if new_private_lines == old_private_lines:
+        return True
+    if not g.unitTesting:
+        g.es("updating:", root.h)
+    root.clearVisitedInTree()
+    gnx2vnode = at.fileCommands.gnxDict
+    contents = ''.join(new_private_lines)
+    FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+    return True  # Errors not detected.
+</t>
+<t tx="ekr.20150204165040.7">def dump(self, lines, tag):
+    """Dump all lines."""
+    print(f"***** {tag} lines...\n")
+    for s in lines:
+        print(s.rstrip())
+</t>
+<t tx="ekr.20150204165040.8">def read_at_clean_lines(self, fn):
+    '''Return all lines of the @clean/@nosent file at fn.'''
+    at = self
+    s = at.openFileHelper(fn)
+        # Use the standard helper. Better error reporting.
+        # Important: uses 'rb' to open the file.
+    # #1798.
+    if s is None:
+        s = ''
+    else:
+        s = g.toUnicode(s, encoding=at.encoding)
+        s = s.replace('\r\n', '\n')
+            # Suppress meaningless "node changed" messages.
+    return g.splitLines(s)
+</t>
+<t tx="ekr.20150204165040.9">def write_at_clean_sentinels(self, root):
+    '''
+    Return all lines of the @clean tree as if it were
+    written as an @file node.
+    '''
+    at = self.c.atFileCommands
+    result = at.atFileToString(root, sentinels=True)
+    s = g.toUnicode(result, encoding=at.encoding)
+    return g.splitLines(s)
 </t>
 <t tx="ekr.20150207044400.12">def op_delete(self, tag, ai, aj, bi, bj):
     """Handle the 'delete' opcode."""
@@ -9985,9 +12876,11 @@ if 0:
         return colorer.match_seq(s, i, kind="operator", seq="~",
             at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
+    # #1821.
     def forth_rule20(colorer, s, i):
-        return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-            at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+        return 0
+        # return colorer.match_mark_previous(s, i, kind="function", pattern="(",
+            # at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
 
     def forth_rule21(colorer, s, i):
         return colorer.match_keywords(s, i)
@@ -10284,6 +13177,23 @@ def on_idle(self):
     self.set_time(path)
     self.checksum_d[path] = self.checksum(path)
 </t>
+<t tx="ekr.20150403150655.1">def fullPath(c, p, simulate=False):
+    """
+    Return the full path (including fileName) in effect at p. Neither the
+    path nor the fileName will be created if it does not exist.
+    """
+    # Search p and p's parents.
+    for p in p.self_and_parents(copy=False):
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        fn = p.h if simulate else p.anyAtFileNodeName()
+            # Use p.h for unit tests.
+        if fn:
+            # Fix #102: expand path expressions.
+            fn = c.expand_path_expression(fn)  # #1341.
+            return g.os_path_finalize_join(path, fn)  # #1341.
+    return ''
+</t>
 <t tx="ekr.20150404045115.1">def idle_check_commander(self, c):
     '''
     Check all external files corresponding to @&lt;file&gt; nodes in c for
@@ -10413,16 +13323,10 @@ def resetCommandHistory(self):
     self.commandIndex = None
     #
 </t>
-<t tx="ekr.20150425145248.1">run-pylint
-clone-to-at-spot
-beautify-tree
-cfa-code
-sort-lines
-# show-data
-# test-ptb
-check-clones
-expand-log-pane
-contract-log-pane</t>
+<t tx="ekr.20150425145248.1">pylint
+cov
+moz
+backup</t>
 <t tx="ekr.20150502050609.1">c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20150507170849.1">g.cls()
@@ -11116,7 +14020,7 @@ def insertNewLineAndTab(self, event):
     self.beginCommand(w, undoType='insert-newline-and-indent')
     oldSel = w.getSelectionRange()
     self.insertNewlineHelper(w=w, oldSel=oldSel, undoType=None)
-    self.updateTab(p, w, smartTab=False)
+    self.updateTab(event, p, w, smartTab=False)
     k.setInputState('insert')
     k.showStateAndMode()
     self.endCommand(changed=True, setLabel=False)
@@ -11180,7 +14084,7 @@ def selfInsertCommand(self, event, action='insert'):
     if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
         return
     if ch == '\t':
-        self.updateTab(p, w, smartTab=True)
+        self.updateTab(event, p, w, smartTab=True)
     elif ch == '\b':
         # This is correct: we only come here if there no bindngs for this key.
         self.backwardDeleteCharacter(event)
@@ -11364,7 +14268,7 @@ inBrackets = ch and g.checkUnicode(ch) in brackets
             w.insert(i, ch)
             w.setInsertPoint(i + 1)
 </t>
-<t tx="ekr.20150514063305.277">def updateTab(self, p, w, smartTab=True):
+<t tx="ekr.20150514063305.277">def updateTab(self, event, p, w, smartTab=True):
     """
     A helper for selfInsertCommand.
 
@@ -11374,7 +14278,7 @@ inBrackets = ch and g.checkUnicode(ch) in brackets
     i, j = w.getSelectionRange()
         # Returns insert point if no selection, with i &lt;= j.
     if i != j:
-        c.indentBody()
+        c.indentBody(event)
         return
     tab_width = c.getTabWidth(p)
     # Get the preceeding characters.
@@ -12263,6 +15167,74 @@ def seek_special_end(i):
 def seek_special_start(i):
     return seek_until_changed(i, is_special, -1)
 </t>
+<t tx="ekr.20150514063305.336">def scrollHelper(self, event, direction, distance):
+    """
+    Scroll the present pane up or down one page
+    kind is in ('up/down-half-page/line/page)
+    """
+    w = event and event.w
+    if w and hasattr(w, 'scrollDelegate'):
+        kind = direction + '-' + distance
+        w.scrollDelegate(kind)
+</t>
+<t tx="ekr.20150514063305.337">@cmd('scroll-outline-down-line')
+def scrollOutlineDownLine(self, event=None):
+    """Scroll the outline pane down one line."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('down-line')
+    elif hasattr(tree.canvas, 'leo_treeBar'):
+        a, b = tree.canvas.leo_treeBar.get()
+        if b &lt; 1.0: tree.canvas.yview_scroll(1, "unit")
+
+@cmd('scroll-outline-down-page')
+def scrollOutlineDownPage(self, event=None):
+    """Scroll the outline pane down one page."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('down-page')
+    elif hasattr(tree.canvas, 'leo_treeBar'):
+        a, b = tree.canvas.leo_treeBar.get()
+        if b &lt; 1.0: tree.canvas.yview_scroll(1, "page")
+
+@cmd('scroll-outline-up-line')
+def scrollOutlineUpLine(self, event=None):
+    """Scroll the outline pane up one line."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('up-line')
+    elif hasattr(tree.canvas, 'leo_treeBar'):
+        a, b = tree.canvas.leo_treeBar.get()
+        if a &gt; 0.0: tree.canvas.yview_scroll(-1, "unit")
+
+@cmd('scroll-outline-up-page')
+def scrollOutlineUpPage(self, event=None):
+    """Scroll the outline pane up one page."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('up-page')
+    elif hasattr(tree.canvas, 'leo_treeBar'):
+        a, b = tree.canvas.leo_treeBar.get()
+        if a &gt; 0.0: tree.canvas.yview_scroll(-1, "page")
+</t>
+<t tx="ekr.20150514063305.338">@cmd('scroll-outline-left')
+def scrollOutlineLeft(self, event=None):
+    """Scroll the outline left."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('left')
+    elif hasattr(tree.canvas, 'xview_scroll'):
+        tree.canvas.xview_scroll(1, "unit")
+
+@cmd('scroll-outline-right')
+def scrollOutlineRight(self, event=None):
+    """Scroll the outline left."""
+    tree = self.c.frame.tree
+    if hasattr(tree, 'scrollDelegate'):
+        tree.scrollDelegate('right')
+    elif hasattr(tree.canvas, 'xview_scroll'):
+        tree.canvas.xview_scroll(-1, "unit")
+</t>
 <t tx="ekr.20150514063305.504">def change(self, event=None):
     """Make the selected change to the text"""
     if not self.loaded:
@@ -12293,9 +15265,84 @@ def seek_special_start(i):
     c.bodyWantsFocus()
     return False
 </t>
+<t tx="ekr.20150514063305.505">def find(self, event=None):
+    """Find the next unknown word."""
+    if not self.loaded:
+        return
+    c, n, p = self.c, 0, self.c.p
+    sc = self.spellController
+    w = c.frame.body.wrapper
+    c.selectPosition(p)
+    s = w.getAllText().rstrip()
+    ins = w.getInsertPoint()
+    # New in Leo 5.3: use regex to find words.
+    last_p = p.copy()
+    while True:
+        for m in self.re_word.finditer(s[ins:]):
+            start, word = m.start(0), m.group(0)
+            if word in self.seen:
+                continue
+            n += 1
+            # Ignore the word if numbers precede or follow it.
+            # Seems difficult to do this in the regex itself.
+            k1 = ins + start - 1
+            if k1 &gt;= 0 and s[k1].isdigit():
+                continue
+            k2 = ins + start + len(word)
+            if k2 &lt; len(s) and s[k2].isdigit():
+                continue
+            alts = sc.process_word(word)
+            if alts:
+                self.currentWord = word
+                i = ins + start
+                j = i + len(word)
+                self.showMisspelled(p)
+                self.tab.fillbox(alts, word)
+                c.invalidateFocus()
+                c.bodyWantsFocus()
+                w.setSelectionRange(i, j, insert=j)
+                k = g.see_more_lines(s, j, 4)
+                w.see(k)
+                return
+            self.seen.add(word)
+        # No more misspellings in p
+        p.moveToThreadNext()
+        if p:
+            ins = 0
+            s = p.b
+        else:
+            g.es("no more misspellings")
+            c.selectPosition(last_p)
+            self.tab.fillbox([])
+            c.invalidateFocus()
+            c.bodyWantsFocus()
+            return
+</t>
 <t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
 </t>
 <t tx="ekr.20150604130353.2"></t>
+<t tx="ekr.20150615174549.1">def show_find_options_in_status_area(self):  # pragma: no cover (cmd)
+    """Show find options in the status area."""
+    c = self.c
+    s = self.compute_find_options_in_status_area()
+    c.frame.putStatusLine(s)
+</t>
+<t tx="ekr.20150619070602.1">def show_status(self, found):
+    """Show the find status the Find dialog, if present, and the status line."""
+    c = self.c
+    status = 'found' if found else 'not found'
+    options = self.compute_result_status()
+    s = f"{status}:{options} {self.find_text}"
+    # Set colors.
+    found_bg = c.config.getColor('find-found-bg') or 'blue'
+    not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
+    found_fg = c.config.getColor('find-found-fg') or 'white'
+    not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
+    bg = found_bg if found else not_found_bg
+    fg = found_fg if found else not_found_fg
+    if c.config.getBool("show-find-result-in-status") is not False:
+        c.frame.putStatusLine(s, bg=bg, fg=fg)
+</t>
 <t tx="ekr.20150621062355.1">def runAlreadyOpenDialog(self, c):
     """Warn about possibly already-open files."""
     if g.app.already_open_files:
@@ -12311,6 +15358,163 @@ def seek_special_start(i):
             message=message,
             text="Ok")
 </t>
+<t tx="ekr.20150629072547.1">def preload_find_pattern(self, w):  # pragma: no cover (cmd)
+    """Preload the find pattern from the selected text of widget w."""
+    c, ftm = self.c, self.ftm
+    if not c.config.getBool('preload-find-pattern', default=False):
+        # Make *sure* we don't preload the find pattern if it is not wanted.
+        return
+    if not w:
+        return
+    #
+    # #1436: Don't create a selection if there isn't one.
+    #        Leave the search pattern alone!
+    #
+        # if not w.hasSelection():
+        #     c.editCommands.extendToWord(event=None, select=True, w=w)
+    #
+    # #177:  Use selected text as the find string.
+    # #1436: Make make sure there is a significant search pattern.
+    s = w.getSelectedText()
+    if s.strip():
+        ftm.set_find_text(s)
+        ftm.init_focus()
+</t>
+<t tx="ekr.20150629084204.1">@cmd('find-def')
+def find_def(self, event=None, strict=False):  # pragma: no cover (cmd)
+    """Find the def or class under the cursor."""
+    ftm, p = self.ftm, self.c.p
+    # Check.
+    word = self._compute_find_def_word(event)
+    if not word:
+        return
+    # Settings...
+    prefix = 'class' if word[0].isupper() else 'def'
+    find_pattern = prefix + ' ' + word
+    ftm.set_find_text(find_pattern)
+    self._save_before_find_def(p)  # Save previous settings.
+    self.init_vim_search(find_pattern)
+    self.update_change_list(self.change_text)  # Optional. An edge case.
+    # Do the command!
+    settings = self._compute_find_def_settings(find_pattern)
+    self.do_find_def(settings, word, strict)
+
+def find_def_strict(self, event=None):  #pragma: no cover (cmd)
+    """Same as find_def, but don't call _switch_style."""
+    self.find_def(event=event, strict=True)
+
+def do_find_def(self, settings, word, strict):
+    """A standalone helper for unit tests."""
+    return self._fd_helper(settings, word, def_flag=True, strict=strict)
+
+</t>
+<t tx="ekr.20150629084611.1">def _compute_find_def_word(self, event):  # pragma: no cover (cmd)
+    """Init the find-def command. Return the word to find or None."""
+    c = self.c
+    w = c.frame.body.wrapper
+    # First get the word.
+    c.bodyWantsFocusNow()
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if not word:
+        return None
+    if keyword.iskeyword(word):
+        return None
+    # Return word, stripped of preceding class or def.
+    for tag in ('class ', 'def '):
+        found = word.startswith(tag) and len(word) &gt; len(tag)
+        if found:
+            return word[len(tag) :].strip()
+    return word
+</t>
+<t tx="ekr.20150629095511.1">def _restore_after_find_def(self):
+    """Restore find settings in effect before a find-def command."""
+    b = self.find_def_data  # A g.Bunch
+    if b:
+        self.ignore_case = b.ignore_case
+        self.pattern_match = b.pattern_match
+        self.search_body = b.search_body
+        self.search_headline = b.search_headline
+        self.whole_word = b.whole_word
+        self.find_def_data = None
+</t>
+<t tx="ekr.20150629095633.1">def _save_before_find_def(self, p):
+    """Save the find settings in effect before a find-def command."""
+    if not self.find_def_data:
+        self.find_def_data = g.Bunch(
+            ignore_case=self.ignore_case,
+            p=p.copy(),
+            pattern_match=self.pattern_match,
+            search_body=self.search_body,
+            search_headline=self.search_headline,
+            whole_word=self.whole_word,
+        )
+</t>
+<t tx="ekr.20150629125733.1">def _fd_helper(self, settings, word, def_flag, strict):
+    """
+    Find the definition of the class, def or var under the cursor.
+    
+    return p, pos, newpos for unit tests.
+    """
+    c, find, ftm = self.c, self, self.ftm
+    #
+    # Recompute find_text for unit tests.
+    if def_flag:
+        prefix = 'class' if word[0].isupper() else 'def'
+        self.find_text = settings.find_text = prefix + ' ' + word
+    else:
+        self.find_text = settings.find_text = word + ' ='
+    # g.printObj(settings, tag='_fd_helper: settings')
+    #
+    # Just search body text.
+    self.search_headline = False
+    self.search_body = True
+    w = c.frame.body.wrapper
+    # Check.
+    if not w:  # pragma: no cover
+        return None, None, None
+    save_sel = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    # Always start in the root position.
+    old_p = c.p
+    p = c.rootPosition()
+    # Required.
+    c.selectPosition(p)
+    c.redraw()
+    c.bodyWantsFocusNow()
+    # #1592.  Ignore hits under control of @nosearch
+    while True:
+        p, pos, newpos = self.find_next_match(p)
+        found = pos is not None
+        if not found or not g.inAtNosearch(c.p):
+            break
+    if not found and def_flag and not strict:
+        # Leo 5.7.3: Look for an alternative defintion of function/methods.
+        word2 = self._switch_style(word)
+        p = c.rootPosition()  # Bug fix.
+        if word2:
+            find_pattern = prefix + ' ' + word2
+            find.find_text = find_pattern
+            ftm.set_find_text(find_pattern)
+            # #1592.  Ignore hits under control of @nosearch
+            while True:
+                p, pos, newpos = self.find_next_match(p)
+                found = pos is not None
+                if not found or not g.inAtNosearch(p):
+                    break
+    if found:
+        c.redraw(p)
+        w.setSelectionRange(pos, newpos, insert=newpos)
+        c.bodyWantsFocusNow()
+        return p, pos, newpos
+    self._restore_after_find_def()  # Avoid massive confusion!
+    i, j = save_sel
+    c.redraw(old_p)
+    w.setSelectionRange(i, j, insert=ins)
+    c.bodyWantsFocusNow()
+    return None, None, None
+</t>
 <t tx="ekr.20150703061709.1">@language python
 
 """myLeoSettings.py: save the outline and run the pylint command"""
@@ -12319,6 +15523,17 @@ def seek_special_start(i):
 if c.isChanged():
     c.save()
 c.k.simulateCommand('pylint')
+</t>
+<t tx="ekr.20150717105329.1">def _create_find_all_node(self, result):
+    """Create a "Found All" node as the last node of the outline."""
+    c = self.c
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    found.h = f"Found All:{self.find_text}"
+    status = self.compute_result_status(find_all_flag=True)
+    status = status.strip().lstrip('(').rstrip(')').strip()
+    found.b = f"# {status}\n{''.join(result)}"
+    return found
 </t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
@@ -12401,6 +15616,24 @@ u = property(
             # c.redraw()
         # return found
 </t>
+<t tx="ekr.20160415033936.1">def showMisspelled(self, p):
+    """Show the position p, contracting the tree as needed."""
+    c = self.c
+    redraw = not p.isVisible(c)
+    # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
+    if c.sparse_spell and not c.p.isAncestorOf(p):
+        for p2 in c.p.self_and_parents(copy=False):
+            p2.contract()
+            redraw = True
+    for p2 in p.parents(copy=False):
+        if not p2.isExpanded():
+            p2.expand()
+            redraw = True
+    if redraw:
+        c.redraw(p)
+    else:
+        c.selectPosition(p)
+</t>
 <t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
 unl: qt_quicksearch declarations
 gnx: ekr.20160412193816.6
@@ -12411,6 +15644,46 @@ gnx: ekr.20160412193816.8
 unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
 </t>
 <t tx="ekr.20160420054135.5"></t>
+<t tx="ekr.20160422073500.1">def _find_all_helper(self, after, data, p, undoType):
+    """Handle the find-all command from p to after."""
+    c, u = self.c, self.c.undoer
+    both = self.search_body and self.search_headline
+    count, found, result = 0, None, []
+    while 1:
+        p, pos, newpos = self.find_next_match(p)
+        if pos is None: break
+        count += 1
+        s = self.work_s
+        i, j = g.getLine(s, pos)
+        line = s[i:j]
+        if self.findAllUniqueFlag:
+            m = self.match_obj
+            if m:
+                self.unique_matches.add(m.group(0).strip())
+        elif both:
+            result.append('%s%s\n%s%s\n' % (
+                '-' * 20, p.h,
+                "head: " if self.in_headline else "body: ",
+                line.rstrip() + '\n'))
+        elif p.isVisited():
+            result.append(line.rstrip() + '\n')
+        else:
+            result.append('%s%s\n%s' % ('-' * 20, p.h, line.rstrip() + '\n'))
+            p.setVisited()
+    if result or self.unique_matches:
+        undoData = u.beforeInsertNode(c.p)
+        if self.findAllUniqueFlag:
+            found = self._create_find_unique_node()
+            count = len(list(self.unique_matches))
+        else:
+            found = self._create_find_all_node(result)
+        u.afterInsertNode(found, undoType, undoData)
+        c.selectPosition(found)
+        c.setChanged()
+    else:
+        self.restore(data)
+    return count
+</t>
 <t tx="ekr.20160425070345.1">gnx: ekr.20160412193816.1
 unl: qt_main declarations
 gnx: ekr.20160412193816.2
@@ -12421,6 +15694,72 @@ gnx: ekr.20160412193816.4
 unl: class Ui_MainWindow--&gt;retranslateUi
 </t>
 <t tx="ekr.20160425070345.2"></t>
+<t tx="ekr.20160920110324.1">@cmd('clone-find-tag')
+@cmd('find-clone-tag')
+@cmd('cft')
+def interactive_clone_find_tag(self, event=None):  # pragma: no cover (interactive)
+    """
+    clone-find-tag (aka find-clone-tag and cft).
+
+    Create an organizer node whose descendants contain clones of all
+    nodes matching the given tag, except @nosearch trees.
+
+    The list is *always* flattened: every cloned node appears as a
+    direct child of the organizer node, even if the clone also is a
+    descendant of another cloned node.
+    """
+    w = self.c.frame.body.wrapper
+    if w:
+        self.start_state_machine(event,
+            prefix='Clone Find Tag: ',
+            handler=self.interactive_clone_find_tag1)
+
+def interactive_clone_find_tag1(self, event):  # pragma: no cover (interactive)
+    c, k = self.c, self.k
+    # Settings...
+    self.find_text = tag = k.arg
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_clone_find_tag(tag)
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20160920164418.2">@cmd('tag-children')
+def interactive_tag_children(self, event=None):  # pragma: no cover (interactive)
+    """tag-children: prompt for a tag and add it to all children of c.p."""
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    self.start_state_machine(event,
+        prefix='Tag Children: ',
+        handler=self.interactive_tag_children1)
+
+def interactive_tag_children1(self, event):  # pragma: no cover (interactive)
+    c, k, p = self.c, self.k, self.c.p
+    # Settings...
+    tag = k.arg
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_tag_children(p, tag)
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20160920164418.4">def do_tag_children(self, p, tag):
+    """Handle the tag-children command."""
+    c = self.c
+    tc = getattr(c, 'theTagController', None)
+    if not tc:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print('nodetags not active')
+        return
+    for p in p.children():
+        tc.add_tag(p, tag)
+    if not g.unitTesting:  # pragma: no cover (skip)
+        g.es_print(f"Added {tag} tag to {len(list(c.p.children()))} nodes")
+
+</t>
 <t tx="ekr.20160920221324.1">def convert_to_html(self, s):
     '''Convert s to html using docutils.'''
     c, p = self.c, self.c.p
@@ -14172,6 +17511,37 @@ def starts_decorator(self, i, lines, prev_state):
         for j, s in enumerate(aList2)])
     return result
 </t>
+<t tx="ekr.20170404103953.1">def import_one_file(self, path, parent):
+    """Import one file to the last top-level node."""
+    c = self.c
+    self.n_files += 1
+    assert parent and parent.v != self.root.v, g.callers()
+    if self.kind == '@edit':
+        p = parent.insertAsLastChild()
+        p.v.h = '@edit ' + path.replace('\\', '/')  # 2021/02/19: bug fix: add @edit.
+        s, e = g.readFileIntoString(path, kind=self.kind)
+        p.v.b = s
+        return
+    # #1484: Use this for @auto as well.
+    c.importCommands.importFilesCommand(
+        files=[path],
+        parent=parent,
+        redrawFlag=False,
+        shortFn=True,
+        treeType='@file',  # '@auto','@clean','@nosent' cause problems.
+    )
+    p = parent.lastChild()
+    p.h = self.kind + p.h[5:]
+        # Bug fix 2017/10/27: honor the requested kind.
+    if self.safe_at_file:
+        p.v.h = '@' + p.v.h
+</t>
+<t tx="ekr.20170404134052.1">def strip_prefix(self, path, prefix):
+    """Strip the prefix from the path and return the result."""
+    if path.startswith(prefix):
+        return path[len(prefix) :]
+    return ''  # A signal.
+</t>
 <t tx="ekr.20170405191106.1">def import_binary_file(self, fileName, parent):
 
     # Fix bug 1185409 importing binary files puts binary content in body editor.
@@ -14238,9 +17608,6 @@ def starts_decorator(self, i, lines, prev_state):
     """
     Compute the path to .git/HEAD given the path.
     """
-    #Transcrypt does not support Python's pathlib module.
-    # __pragma__ ('skip')
-    from pathlib import Path
     path = Path(path)
     # #1780: Look up the directory tree, looking the .git directory.
     while os.path.exists(path):
@@ -14250,8 +17617,6 @@ def starts_decorator(self, i, lines, prev_state):
         if path == path.parent:
             break
         path = path.parent
-    # __pragma__ ('noskip')
-
     return None
 </t>
 <t tx="ekr.20170427112302.1">g.cls()
@@ -14280,18 +17645,20 @@ else:
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170428084123.1">"""Recursively import all python files in a directory and clean the result."""
 g.cls()
-# dir_ = r'C:\leo.repo\leointeg\src'
-# dir_ = r'C:\apps\Emacs\share\emacs\26.1\lisp\outline.el'
-# dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\Pymacs.py'
-# dir_ = r'C:\Users\edreamleo\emacs-packages\pymacs.el'
-# dir_ = r'C:\leo.repo\pscript'
-dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
+if 0:
+    import importlib
+    import leo.core.leoImport as leoImport
+    importlib.reload(leoImport)
+# dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
+dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+assert g.os_path_exists(dir_), repr(dir_)
 c.recursiveImport(
+    add_context = False,
     dir_ = dir_,
-    kind = '@clean', # '@clean', #'@nosent','@auto','@file',
+    kind = '@edit', # '@clean', '@edit', '@nosent','@auto','@file',
     recursive = False,
     safe_at_file = False,
-    theTypes = ['.py',] # '.py',],
+    theTypes = ['.py',]
 )
 </t>
 <t tx="ekr.20170428084208.443">#!/usr/bin/python
@@ -14786,6 +18153,11 @@ os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
 <t tx="ekr.20171031111403.1"></t>
+<t tx="ekr.20171113164709.1">def reload_settings(self):
+    """LeoFind.reload_settings."""
+    c = self.c
+    self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+</t>
 <t tx="ekr.20171122055719.1">def declutter_style(arg, cmd):
     """Handle style options."""
     arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
@@ -15005,6 +18377,12 @@ def alwaysIndentBody(self, event=None):
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
     #
+    # #1801: Don't rely on bindings to ensure that we are editing the body.
+    event_w = event and event.w
+    if event_w != w:
+        c.insertCharFromEvent(event)
+        return
+    #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     #
@@ -15048,25 +18426,6 @@ def alwaysIndentBody(self, event=None):
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 
-@g.commander_command('indent-region')
-def indentBody(self, event=None):
-    """
-    The indent-region command indents each line of the selected body text.
-    Unlike the always-indent-region command, this command inserts a tab
-    (soft or hard) when there is no selected text.
-    
-    The @tabwidth directive in effect determines amount of indentation.
-    """
-    c, w = self, self.frame.body.wrapper
-    # # 1739. Special case for a *plain* tab bound to indent-region.
-    sel_1, sel_2 = w.getSelectionRange()
-    if sel_1 == sel_2:
-        char = getattr(event, 'char', None)
-        stroke = getattr(event, 'stroke', None)
-        if char == '\t' and stroke and stroke.isPlainKey():
-            c.editCommands.selfInsertCommand(event)  # Handles undo.
-            return
-    c.alwaysIndentBody(event)
 </t>
 <t tx="ekr.20171123135625.34">@g.commander_command('add-comments')
 def addComments(self, event=None):
@@ -15342,6 +18701,137 @@ def insertBodyTime(self, event=None):
                 if d.get(key) == commandName:
                     c.commandsDict[key] = c.commandsDict.get(commandName)
                     break
+</t>
+<t tx="ekr.20171129205648.1">def compute_find_options(self):  # pragma: no cover (cmd)
+    """Return the status line as two strings."""
+    z = []
+    # Set the scope field.
+    head = self.search_headline
+    body = self.search_body
+    if self.suboutline_only:
+        scope = 'tree'
+    elif self.node_only:
+        scope = 'node'
+    else:
+        scope = 'all'
+    # scope = self.getOption('radio-search-scope')
+    # d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
+    # scope = d.get(scope) or ''
+    head = 'head' if head else ''
+    body = 'body' if body else ''
+    sep = '+' if head and body else ''
+    part1 = f"{head}{sep}{body} {scope}  "
+    # Set the type field.
+    regex = self.pattern_match
+    if regex: z.append('regex')
+    table = (
+        ('reverse', 'reverse'),
+        ('ignore_case', 'noCase'),
+        ('whole_word', 'word'),
+        # ('wrap', 'wrap'),
+        ('mark_changes', 'markChg'),
+        ('mark_finds', 'markFnd'),
+    )
+    for ivar, s in table:
+        val = getattr(self, ivar)
+        if val: z.append(s)
+    part2 = ' '.join(z)
+    return part1, part2
+</t>
+<t tx="ekr.20171129211238.1">def compute_find_options_in_status_area(self):
+    c = self.c
+    ftm = c.findCommands.ftm
+    table = (
+        ('Word', ftm.check_box_whole_word),
+        ('Ig-case', ftm.check_box_ignore_case),
+        ('regeXp', ftm.check_box_regexp),
+        ('Body', ftm.check_box_search_body),
+        ('Head', ftm.check_box_search_headline),
+        # ('wrap-Around', ftm.check_box_wrap_around),
+        ('mark-Changes', ftm.check_box_mark_changes),
+        ('mark-Finds', ftm.check_box_mark_finds),
+    )
+    result = [option for option, ivar in table if ivar.checkState()]
+    table2 = (
+        ('Suboutline', ftm.radio_button_suboutline_only),
+        ('Node', ftm.radio_button_node_only),
+    )
+    for option, ivar in table2:
+        if ivar.isChecked():
+            result.append(f"[{option}]")
+            break
+    return f"Find: {' '.join(result)}"
+</t>
+<t tx="ekr.20171226140643.1">@cmd('find-all-unique-regex')
+def interactive_find_all_unique_regex(
+    self, event=None):  # pragma: no cover (interactive)
+    """
+    Create a summary node containing all unique matches of the regex search
+    string. This command shows only the matched string itself.
+    """
+    self.ftm.clear_focus()
+    self.match_obj = None
+    self.changeAllFlag = False
+    self.findAllUniqueFlag = True
+    self.ftm.set_entry_focus()
+    self.start_state_machine(event,
+        prefix='Search Unique Regex: ',
+        handler=self.interactive_find_all_unique_regex1,
+        escape_handler=self.interactive_change_all_unique_regex1,
+    )
+
+def interactive_find_all_unique_regex1(
+    self, event=None):  # pragma: no cover (interactive)
+    k = self.k
+    # Settings...
+    find_pattern = k.arg
+    self.update_find_list(find_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    return self.do_find_all(settings)
+
+def interactive_change_all_unique_regex1(
+    self, event):  # pragma: no cover (interactive)
+    k = self.k
+    find_pattern = self._sString = k.arg
+    self.update_find_list(k.arg)
+    s = f"'Replace All Unique Regex': {find_pattern} With: "
+    k.setLabelBlue(s)
+    self.add_change_string_to_label()
+    k.getNextArg(self.interactive_change_all_unique_regex2)
+
+def interactive_change_all_unique_regex2(
+    self, event):  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.update_change_list(change_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_change_all(settings)
+</t>
+<t tx="ekr.20171226143621.1">def _create_find_unique_node(self):
+    """Create a "Found Unique" node as the last node of the outline."""
+    c = self.c
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    found.h = f"Found Unique Regex:{self.find_text}"
+    result = sorted(self.unique_matches)
+    found.b = '\n'.join(result)
+    return found
 </t>
 <t tx="ekr.20180210092235.1">def backup_helper(self,
     base_dir=None,
@@ -15996,6 +19486,34 @@ else:
         self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
     self.finish()
 </t>
+<t tx="ekr.20180511045458.1">def _switch_style(self, word):
+    """
+    Switch between camelCase and underscore_style function defintiions.
+    Return None if there would be no change.
+    """
+    s = word
+    if not s:
+        return None
+    if s[0].isupper():
+        return None  # Don't convert class names.
+    if s.find('_') &gt; -1:
+        # Convert to CamelCase
+        s = s.lower()
+        while s:
+            i = s.find('_')
+            if i == -1:
+                break
+            s = s[:i] + s[i + 1 :].capitalize()
+        return s
+    # Convert to underscore_style.
+    result = []
+    for i, ch in enumerate(s):
+        if i &gt; 0 and ch.isupper():
+            result.append('_')
+        result.append(ch.lower())
+    s = ''.join(result)
+    return None if s == word else s
+</t>
 <t tx="ekr.20180519111302.1">def get_jedi_completions(self, prefix):
 
     c = self.c
@@ -16073,6 +19591,46 @@ else:
         # ch = line[local_column:local_column+1]
         # g.trace(len(completions), repr(ch), head.strip())
     return completions
+</t>
+<t tx="ekr.20180524100258.1">def add_class_names(self, p):
+    """Add class names to headlines for all descendant nodes."""
+    # pylint: disable=no-else-continue
+    after, class_name = None, None
+    class_paren_pattern = re.compile(r'(.*)\(.*\)\.(.*)')
+    paren_pattern = re.compile(r'(.*)\(.*\.py\)')
+    for p in p.self_and_subtree(copy=False):
+        # Part 1: update the status.
+        m = self.file_pattern.match(p.h)
+        if m:
+            # prefix = m.group(1)
+            # fn = g.shortFileName(p.h[len(prefix):].strip())
+            after, class_name = None, None
+            continue
+        elif p.h.startswith('@path '):
+            after, class_name = None, None
+        elif p.h.startswith('class '):
+            class_name = p.h[5:].strip()
+            if class_name:
+                after = p.nodeAfterTree()
+                continue
+        elif p == after:
+            after, class_name = None, None
+        # Part 2: update the headline.
+        if class_name:
+            if p.h.startswith(class_name):
+                m = class_paren_pattern.match(p.h)
+                if m:
+                    p.h = f"{m.group(1)}.{m.group(2)}".rstrip()
+            else:
+                p.h = f"{class_name}.{p.h}"
+        else:
+            m = paren_pattern.match(p.h)
+            if m:
+                p.h = m.group(1).rstrip()
+        # elif fn:
+            # tag = ' (%s)' % fn
+            # if not p.h.endswith(tag):
+                # p.h += tag
 </t>
 <t tx="ekr.20180524130023.1">file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
     # Note: this method is never called for @clean trees.
@@ -16610,12 +20168,30 @@ precede the node's line that have not already been returned.
     if target_p:
         g.trace('NOT FOUND:', target_p.h)
 </t>
-<t tx="ekr.20180816105258.1">import leo.commands.editFileCommands as efc
+<t tx="ekr.20180810052056.3">def slowYieldVisible(self, first_p, target_p=None):
+    """
+    A generator yielding positions from first_p to target_p.
+    """
+    c = self.c
+    p = first_p.copy()
+    while p:
+        yield p
+        if p == target_p:
+            return
+        p.moveToVisNext(c)
+    if target_p:
+        g.trace('NOT FOUND:', target_p.h)
+</t>
+<t tx="ekr.20180816105258.1">import os
+import leo.commands.editFileCommands as efc
+
+path = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(path)
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='bc24e607a5', # '6bd282f', # 'bc24e607a5', # old branch/rev
+    branch1='master', # '6bd282f', # 'bc24e607a5', # old branch/rev
     branch2='devel', # new branch/rev
-    fn='leo/plugins/nested_splitter.py',
+    fn='leo/core/leoTangle.py',
     directory=None,
 )
 </t>
@@ -16707,6 +20283,11 @@ for fn in files:
         for line in g.splitLines(s):
             if len(line) &gt; 150:
                 print(line)</t>
+<t tx="ekr.20181118052203.1">def redraw(self, p=None):
+    '''This is c.frame.tree.redraw!'''
+    if 0: print(self.tag, '(c.frame.tree) redraw')
+    self.root.redraw(p)
+</t>
 <t tx="ekr.20190108105509.1">def writePathChanged(self, p):
     '''
     raise IOError if p's path has changed *and* user forbids the write.
@@ -16924,7 +20505,28 @@ https://github.com/leo-editor/leo-editor/issues/1132
 </t>
 <t tx="ekr.20190506060857.1"></t>
 <t tx="ekr.20190506061636.1"></t>
-<t tx="ekr.20190602151043.2">def batchRegexReplace(self, s):
+<t tx="ekr.20190602134414.1">def _change_all_search_and_replace(self, s):
+    """
+    Search s for self.find_text and replace with self.change_text.
+    
+    Return (found, new text)
+    """
+    if sys.platform.lower().startswith('win'):
+        s = s.replace('\r', '')
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+            # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if not s:
+        return False, None
+    #
+    # Order matters: regex matches ignore whole-word.
+    if self.pattern_match:
+        return self._change_all_regex(s)
+    if self.whole_word:
+        return self._change_all_word(s)
+    return self._change_all_plain(s)
+</t>
+<t tx="ekr.20190602151043.2">def _change_all_regex(self, s):
     """
     Perform all regex find/replace on s.
     return (count, new_s)
@@ -16941,7 +20543,7 @@ https://github.com/leo-editor/leo-editor/issues/1132
         # #1748.
         groups = m.groups()
         if groups:
-            change_text = self.makeRegexSubs(self.change_text, groups)
+            change_text = self.make_regex_subs(self.change_text, groups)
         else:
             change_text = self.change_text
         result.append(change_text)
@@ -16950,6 +20552,65 @@ https://github.com/leo-editor/leo-editor/issues/1132
     result.append(s[prev_i:])
     s = ''.join(result)
     return count, s
+</t>
+<t tx="ekr.20190602151043.4">def _change_all_plain(self, s):
+    """
+    Perform all plain find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        progress = prev_i
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0 &amp; change.
+        count += 1
+        result.append(s0[prev_i:i])
+        result.append(change)
+        prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
+        assert prev_i &gt; progress, prev_i
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
+</t>
+<t tx="ekr.20190602155933.1">def _change_all_word(self, s):
+    """
+    Perform all whole word find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0, change &amp; find0.
+        result.append(s0[prev_i:i])
+        if g.match_word(s, i, find):
+            count += 1
+            result.append(change)
+        else:
+            result.append(find0)
+        prev_i = i + len(find)
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
 </t>
 <t tx="ekr.20190607124533.1"></t>
 <t tx="ekr.20190611095758.1"></t>
@@ -17484,6 +21145,175 @@ https://github.com/leo-editor/leo-editor/issues/1361
 @language python
 </t>
 <t tx="ekr.20191207065251.1"></t>
+<t tx="ekr.20200131070055.1">class TestJSImporter(unittest.TestCase):
+    @others
+</t>
+<t tx="ekr.20200202093420.1">def test_get_trailing_comments(self):
+    
+    table = (
+        # Test 1
+        ( """\
+head
+// tail""", 1),
+
+        # Test 2
+        ("""\
+head
+/* comment 1
+ * comment 2
+ */""", 3),
+ 
+        # Test 3
+        ("""\
+head
+/* comment 1
+ * comment 2
+ */
+tail""", 0), # no tail
+
+        # Test 4
+        ("""\
+head
+// comment
+tail""", 0), # no tail
+
+) # End table.
+    for s, expected_length in table:
+        x = JS_Importer(None)
+        s = g.adjustTripleString(s, -4)
+        lines = g.splitLines(s)
+        head, tail = x.get_trailing_comments(lines)
+        expected_lines = lines[-expected_length:] if expected_length else []
+        assert tail == expected_lines , (repr(tail), repr(expected_lines))
+</t>
+<t tx="ekr.20200202104932.1">def test_JsLex(self):
+    
+    table = (
+        ('id', ('f_', '$', 'A1', 'abc')),
+        ('other', ('ÁÁ',)),  # Unicode strings are not handled by JsLex.
+        ('keyword', ('async', 'await', 'if')),
+        ('punct', ('(', ')', '{', '}', ',', ':', ';')),
+        # ('num', ('9', '2')),  # This test doesn't matter at present.
+    )
+    for kind, data in table:
+        for contents in data:
+            for name, tok in JsLexer().lex(contents):
+                assert name == kind, f"expected {kind!s} got {name!s} {tok!r} {contents}"
+                # print(f"{kind!s:10} {tok!r:10}")
+                    
+</t>
+<t tx="ekr.20200203051839.1">def test_starts_block(self):
+
+    table = (
+        (1, 'xx) =&gt; {}'),
+        (1, 'class c1'),
+        (1, 'function f1'),
+        (1, 'xx(function f2'),
+        (1, 'xx = function f3'),
+        (1, 'xx, function f4'),
+        (0, 'a = "function"'),
+        (0, 'a = /function/'),
+    )
+    for expected, line in table:
+        x = JS_Importer(None)
+        lines = [line]
+        new_state = JS_ScanState()
+        new_state.curlies += 1
+        prev_state = JS_ScanState()
+        results = x.starts_block(0, lines, new_state, prev_state)
+        # if expected != results: x.scan_line(line, prev_state
+        assert expected == results, f"expected: {expected} got: {int(results)} {line!r}\n"
+</t>
+<t tx="ekr.20200203060718.1">def test_scan_line(self):
+
+    table = (
+        # result        prev_context    s
+        ( (0, 0, '"'),  "",             r'"string'),
+        ( (0, 0, '/*'), "",             r'/* line 1'),
+        ( (0, 0, '/*'), "/*",           r'line 2'), # New.
+        ( (0, 0, ''),   "/*",           r'line 3 */'), # New.
+        ( (0, 0, ''),   "",             r'a + b // /*'),
+        ( (0, 1, ''),   "",             r'(function'),
+        ( (1, 1, ''),   "",             r'(function(a) {'),
+        ( (0, 0, ''),   "",             r'var x = /abc/'),
+        ( (0, 0, ''),   "",             r'var x = /a"c/'),
+        ( (0, 0, ''),   "",             r'var x = /a\//'),
+        ( (0, 0, ''),   "",             r'var x = /a\//'),
+        ( (0, 1, ''),   "",             r'var x = (0,'),
+    )
+    for result, prev_context, s in table:
+        importer = JS_Importer(None) ### c.importCommands)
+        prev_state = JS_ScanState()
+        prev_state.context = prev_context
+        new_state = importer.scan_line(s, prev_state)
+        curlies, parens, context = result
+        ok = (
+            new_state.curlies == curlies and
+            new_state.parens == parens and
+            new_state.context == context)
+        assert ok, (
+                f"\n"
+                f" expected: curlies: {curlies}, parens: {parens}, context: {context!r}\n"
+                f"new_state: {new_state}\n"
+                f"        s: {s!r}")
+</t>
+<t tx="ekr.20200204092455.1">class TestAtFile(unittest.TestCase):
+    @others
+</t>
+<t tx="ekr.20200204094139.1">def test_save_after_external_file_rename(self):
+    """Test #1469."""
+    # Create a new outline with @file node and save it
+    bridge = self.bridge()
+    temp_dir = self.temp_dir()
+    filename = f"{temp_dir.name}{os.sep}test_file.leo"
+    c = bridge.openLeoFile(filename)
+    p = c.rootPosition()
+    p.h = '@file 1'
+    p.b = 'b1'
+    c.save()
+    # Rename the @file node and save
+    p1 = c.rootPosition()
+    p1.h = "@file 1_renamed"
+    c.save()
+    # Remove the original "@file 1" from the disk
+    external_filename = f"{temp_dir.name}{os.sep}1"
+    assert os.path.exists(external_filename)
+    os.remove(external_filename)
+    assert not os.path.exists(external_filename)
+    # Change the @file contents, save and reopen the outline
+    p1.b = "b_1_changed"
+    c.save()
+    c.close()
+    c = bridge.openLeoFile(c.fileName())
+    p1 = c.rootPosition()
+    assert p1.h == "@file 1_renamed", repr(p1.h)
+    assert p1.b == "b_1_changed\n", repr(p1.b)
+</t>
+<t tx="ekr.20200204095726.1">def bridge(self):
+    """Return an instance of Leo's bridge."""
+    from leo.core import leoBridge
+    return leoBridge.controller(gui='nullGui',
+        loadPlugins=False,
+        readSettings=False,
+        silent=True,
+        verbose=False,
+    )
+</t>
+<t tx="ekr.20200204103744.1">def temp_file(self):
+    """Create a temp file with the given name."""
+    import warnings
+    warnings.simplefilter("ignore")
+    import tempfile
+    return tempfile.NamedTemporaryFile(mode='w')
+</t>
+<t tx="ekr.20200204104247.1"></t>
+<t tx="ekr.20200204112501.1">def temp_dir(self):
+    """Create a temp file with the given name."""
+    import warnings
+    warnings.simplefilter("ignore")
+    import tempfile
+    return tempfile.TemporaryDirectory()
+</t>
 <t tx="ekr.20200212095937.1"></t>
 <t tx="ekr.20200212095937.2">True:  allow joined lines to contain strings.
 False: (Recommended by EKR): Retain alignment of strings.</t>
@@ -17492,6 +21322,73 @@ False: (Recommended by EKR): Retain alignment of strings.</t>
 
 Should be &lt;= beautify-max-split-line-length</t>
 <t tx="ekr.20200212095937.6"></t>
+<t tx="ekr.20200216063538.1">class TestFind(unittest.TestCase):
+    """Test cases for leoFind.py"""
+    @others
+</t>
+<t tx="ekr.20200219071828.1">class TestLeoGlobals(unittest.TestCase):
+    """Tests for leoGlobals.py."""
+    @others
+</t>
+<t tx="ekr.20200219071958.1">def test_comment_delims_from_extension(self):
+
+    # pylint: disable=import-self
+    from leo.core import leoGlobals as leo_g
+    from leo.core import leoApp
+    leo_g.app = leoApp.LeoApp()
+    assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
+    assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
+    assert leo_g.comment_delims_from_extension(".html") == ('', '&lt;!--', '--&gt;')
+</t>
+<t tx="ekr.20200219072957.1">def test_is_sentinel(self):
+
+    # pylint: disable=import-self
+    from leo.core import leoGlobals as leo_g
+    # Python.
+    py_delims = leo_g.comment_delims_from_extension('.py')
+    assert leo_g.is_sentinel("#@+node", py_delims)
+    assert not leo_g.is_sentinel("#comment", py_delims)
+    # C.
+    c_delims = leo_g.comment_delims_from_extension('.c')
+    assert leo_g.is_sentinel("//@+node", c_delims)
+    assert not g.is_sentinel("//comment", c_delims)
+    # Html.
+    html_delims = leo_g.comment_delims_from_extension('.html')
+    assert leo_g.is_sentinel("&lt;!--@+node--&gt;", html_delims)
+    assert not leo_g.is_sentinel("&lt;!--comment--&gt;", html_delims)
+</t>
+<t tx="ekr.20200221050038.1">def run_unit_test_in_separate_process(command):
+    """
+    A script to be run from unitTest.leo.
+    
+    Run the unit testing command (say `python -m leo.core.leoAst`) in a separate process.
+    
+    Fail (in leoTest.leo) if that fails.
+    """
+    leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+    os.chdir(leo_editor_dir)
+    p = subprocess.Popen(
+        shlex.split(command),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=sys.platform.startswith('win'),
+    )
+    out, err = p.communicate()
+    err = g.toUnicode(err)
+    out = g.toUnicode(out)
+    print('')
+    print(command)
+    if out.strip():
+        # print('traces...')
+        print(out.rstrip())
+    print(err.rstrip())
+    # There may be skipped tests...
+    err_lines = g.splitLines(err.rstrip())
+    if not err_lines[-1].startswith('OK'):
+        g.trace('Test failed')
+        g.printObj(err_lines, tag='err_lines')
+        assert False
+</t>
 <t tx="ekr.20200222083959.1">import logging
 rootLogger = logging.getLogger('')
 rootLogger.setLevel(logging.DEBUG)
@@ -17616,7 +21513,6 @@ def restartLeo(self, event=None):
         c.frame.updateStatusLine()
     return val
 </t>
-<t tx="ekr.20200522082827.1"></t>
 <t tx="ekr.20200523135601.1">def insertCharFromEvent(self, event):
     """
     Handle the character given by event, ignoring various special keys:
@@ -18298,7 +22194,7 @@ run(extensions, language, name, state_ivar)
         g.es_print('already pep8:', name)
     else:
         g.es_print('%s -&gt; %s' % (name, new_name))
-        c.findCommands.ftm.setFindText(new_name)
+        c.findCommands.ftm.set_find_text(new_name)
             # Preload the replacement text.
         found = False
         for target in table:
@@ -25297,3449 +29193,29 @@ https://github.com/leo-editor/leo-editor/issues/1734
 @wrap
 @nosearch
 
-**Move More. More balance. **
+**Move More**
 
-- Finish documentation for vim changes.
-  https://github.com/leo-editor/leo-editor/issues/1757
+Fix bugs:
+- Fix rst bug.
 
-- vs-code plugin using transcrypt.
+- Bug: Deleting headline text:
+  QLineEdit::setSelection: Invalid start position (31)
 
-- Buy harp for lamp.
-- Christmas Present: new range, dishwasher.
-- Bird Feeder
+Promises:
+- (Done) Clear desk and emails by end of Monday.
+- Upload RR's photos.
+- Finish Phil's portrait.
+- Play go with Phil 8 pm Thursday. pstraus on igs.
+- Move more. 50 looks. vimeo.
+- Experiment with piano.
 
 </t>
-<t tx="ekr.20201114160816.10">+-- node-inspect@2.0.0</t>
-<t tx="ekr.20201114160816.11">+-- npm@6.14.8
-| +-- abbrev@1.1.1
-| +-- ansicolors@0.3.2
-| +-- ansistyles@0.1.3
-| +-- aproba@2.0.0
-| +-- archy@1.0.0
-| +-- bin-links@1.1.8
-| | +-- bluebird@3.5.5 deduped
-| | +-- cmd-shim@3.0.3 deduped
-| | +-- gentle-fs@2.3.1 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- npm-normalize-package-bin@1.0.1
-| | `-- write-file-atomic@2.4.3 deduped
-| +-- bluebird@3.5.5
-| +-- byte-size@5.0.1
-| +-- cacache@12.0.3
-| | +-- bluebird@3.5.5 deduped
-| | +-- chownr@1.1.4 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- glob@7.1.6 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- infer-owner@1.0.4 deduped
-| | +-- lru-cache@5.1.1 deduped
-| | +-- mississippi@3.0.0 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- move-concurrently@1.0.1 deduped
-| | +-- promise-inflight@1.0.1 deduped
-| | +-- rimraf@2.7.1 deduped
-| | +-- ssri@6.0.1 deduped
-| | +-- unique-filename@1.1.1 deduped
-| | `-- y18n@4.0.0
-| +-- call-limit@1.1.1
-| +-- chownr@1.1.4
-| +-- ci-info@2.0.0
-| +-- cli-columns@3.1.2
-| | +-- string-width@2.1.1
-| | | +-- is-fullwidth-code-point@2.0.0
-| | | `-- strip-ansi@4.0.0
-| | |   `-- ansi-regex@3.0.0
-| | `-- strip-ansi@3.0.1
-| |   `-- ansi-regex@2.1.1
-| +-- cli-table3@0.5.1
-| | +-- colors@1.3.3
-| | +-- object-assign@4.1.1
-| | `-- string-width@2.1.1 deduped
-| +-- cmd-shim@3.0.3
-| | +-- graceful-fs@4.2.4 deduped
-| | `-- mkdirp@0.5.5 deduped
-| +-- columnify@1.5.4
-| | +-- strip-ansi@3.0.1 deduped
-| | `-- wcwidth@1.0.1
-| |   `-- defaults@1.0.3
-| |     `-- clone@1.0.4
-| +-- config-chain@1.1.12
-| | +-- ini@1.3.5 deduped
-| | `-- proto-list@1.2.4
-| +-- debuglog@1.0.1
-| +-- detect-indent@5.0.0
-| +-- detect-newline@2.1.0
-| +-- dezalgo@1.0.3
-| | +-- asap@2.0.6
-| | `-- wrappy@1.0.2
-| +-- editor@1.0.0
-| +-- figgy-pudding@3.5.1
-| +-- find-npm-prefix@1.0.2
-| +-- fs-vacuum@1.2.10
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- path-is-inside@1.0.2 deduped
-| | `-- rimraf@2.7.1 deduped
-| +-- fs-write-stream-atomic@1.0.10
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- iferr@0.1.5
-| | +-- imurmurhash@0.1.4 deduped
-| | `-- readable-stream@2.3.6
-| |   +-- core-util-is@1.0.2
-| |   +-- inherits@2.0.4 deduped
-| |   +-- isarray@1.0.0
-| |   +-- process-nextick-args@2.0.0
-| |   +-- safe-buffer@5.1.2 deduped
-| |   +-- string_decoder@1.1.1
-| |   | `-- safe-buffer@5.1.2 deduped
-| |   `-- util-deprecate@1.0.2 deduped
-| +-- gentle-fs@2.3.1
-| | +-- aproba@1.2.0
-| | +-- chownr@1.1.4 deduped
-| | +-- cmd-shim@3.0.3 deduped
-| | +-- fs-vacuum@1.2.10 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- iferr@0.1.5
-| | +-- infer-owner@1.0.4 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- path-is-inside@1.0.2 deduped
-| | +-- read-cmd-shim@1.0.5 deduped
-| | `-- slide@1.1.6 deduped
-| +-- glob@7.1.6
-| | +-- fs.realpath@1.0.0
-| | +-- inflight@1.0.6 deduped
-| | +-- inherits@2.0.4 deduped
-| | +-- minimatch@3.0.4
-| | | `-- brace-expansion@1.1.11
-| | |   +-- balanced-match@1.0.0
-| | |   `-- concat-map@0.0.1
-| | +-- once@1.4.0 deduped
-| | `-- path-is-absolute@1.0.1
-| +-- graceful-fs@4.2.4
-| +-- has-unicode@2.0.1
-| +-- hosted-git-info@2.8.8
-| +-- iferr@1.0.2
-| +-- imurmurhash@0.1.4
-| +-- infer-owner@1.0.4
-| +-- inflight@1.0.6
-| | +-- once@1.4.0 deduped
-| | `-- wrappy@1.0.2 deduped
-| +-- inherits@2.0.4
-| +-- ini@1.3.5
-| +-- init-package-json@1.10.3
-| | +-- glob@7.1.6 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | +-- promzard@0.3.0
-| | | `-- read@1.0.7 deduped
-| | +-- read@1.0.7 deduped
-| | +-- read-package-json@2.1.1 deduped
-| | +-- semver@5.7.1 deduped
-| | +-- validate-npm-package-license@3.0.4 deduped
-| | `-- validate-npm-package-name@3.0.0 deduped
-| +-- is-cidr@3.0.0
-| | `-- cidr-regex@2.0.10
-| |   `-- ip-regex@2.1.0
-| +-- json-parse-better-errors@1.0.2
-| +-- JSONStream@1.3.5
-| | +-- jsonparse@1.3.1
-| | `-- through@2.3.8
-| +-- lazy-property@1.0.0
-| +-- libcipm@4.0.8
-| | +-- bin-links@1.1.8 deduped
-| | +-- bluebird@3.5.5 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- find-npm-prefix@1.0.2 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- ini@1.3.5 deduped
-| | +-- lock-verify@2.1.0 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- npm-lifecycle@3.1.5 deduped
-| | +-- npm-logical-tree@1.2.1
-| | +-- npm-package-arg@6.1.1 deduped
-| | +-- pacote@9.5.12 deduped
-| | +-- read-package-json@2.1.1 deduped
-| | +-- rimraf@2.7.1 deduped
-| | `-- worker-farm@1.7.0 deduped
-| +-- libnpm@3.0.1
-| | +-- bin-links@1.1.8 deduped
-| | +-- bluebird@3.5.5 deduped
-| | +-- find-npm-prefix@1.0.2 deduped
-| | +-- libnpmaccess@3.0.2 deduped
-| | +-- libnpmconfig@1.2.1
-| | | +-- figgy-pudding@3.5.1 deduped
-| | | +-- find-up@3.0.0
-| | | | `-- locate-path@3.0.0
-| | | |   +-- p-locate@3.0.0
-| | | |   | `-- p-limit@2.2.0
-| | | |   |   `-- p-try@2.2.0
-| | | |   `-- path-exists@3.0.0
-| | | `-- ini@1.3.5 deduped
-| | +-- libnpmhook@5.0.3 deduped
-| | +-- libnpmorg@1.0.1 deduped
-| | +-- libnpmpublish@1.1.2
-| | | +-- aproba@2.0.0 deduped
-| | | +-- figgy-pudding@3.5.1 deduped
-| | | +-- get-stream@4.1.0 deduped
-| | | +-- lodash.clonedeep@4.5.0 deduped
-| | | +-- normalize-package-data@2.5.0 deduped
-| | | +-- npm-package-arg@6.1.1 deduped
-| | | +-- npm-registry-fetch@4.0.7 deduped
-| | | +-- semver@5.7.1 deduped
-| | | `-- ssri@6.0.1 deduped
-| | +-- libnpmsearch@2.0.2 deduped
-| | +-- libnpmteam@1.0.2 deduped
-| | +-- lock-verify@2.1.0 deduped
-| | +-- npm-lifecycle@3.1.5 deduped
-| | +-- npm-logical-tree@1.2.1 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | +-- npm-profile@4.0.4 deduped
-| | +-- npm-registry-fetch@4.0.7 deduped
-| | +-- npmlog@4.1.2 deduped
-| | +-- pacote@9.5.12 deduped
-| | +-- read-package-json@2.1.1 deduped
-| | `-- stringify-package@1.0.1 deduped
-| +-- libnpmaccess@3.0.2
-| | +-- aproba@2.0.0 deduped
-| | +-- get-stream@4.1.0
-| | | `-- pump@3.0.0 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- libnpmhook@5.0.3
-| | +-- aproba@2.0.0 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- get-stream@4.1.0 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- libnpmorg@1.0.1
-| | +-- aproba@2.0.0 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- get-stream@4.1.0 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- libnpmsearch@2.0.2
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- get-stream@4.1.0 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- libnpmteam@1.0.2
-| | +-- aproba@2.0.0 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- get-stream@4.1.0 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- libnpx@10.2.4
-| | +-- dotenv@5.0.1
-| | +-- npm-package-arg@6.1.1 deduped
-| | +-- rimraf@2.7.1 deduped
-| | +-- safe-buffer@5.1.2 deduped
-| | +-- update-notifier@2.5.0 deduped
-| | +-- which@1.3.1 deduped
-| | +-- y18n@4.0.0 deduped
-| | `-- yargs@14.2.3
-| |   +-- cliui@5.0.0
-| |   | +-- string-width@3.1.0
-| |   | | +-- emoji-regex@7.0.3 deduped
-| |   | | +-- is-fullwidth-code-point@2.0.0
-| |   | | `-- strip-ansi@5.2.0 deduped
-| |   | +-- strip-ansi@5.2.0
-| |   | | `-- ansi-regex@4.1.0
-| |   | `-- wrap-ansi@5.1.0
-| |   |   +-- ansi-styles@3.2.1 deduped
-| |   |   +-- string-width@3.1.0
-| |   |   | +-- emoji-regex@7.0.3 deduped
-| |   |   | +-- is-fullwidth-code-point@2.0.0
-| |   |   | `-- strip-ansi@5.2.0 deduped
-| |   |   `-- strip-ansi@5.2.0
-| |   |     `-- ansi-regex@4.1.0
-| |   +-- decamelize@1.2.0
-| |   +-- find-up@3.0.0
-| |   | `-- locate-path@3.0.0
-| |   |   +-- p-locate@3.0.0
-| |   |   | `-- p-limit@2.3.0
-| |   |   |   `-- p-try@2.2.0
-| |   |   `-- path-exists@3.0.0 deduped
-| |   +-- get-caller-file@2.0.5
-| |   +-- require-directory@2.1.1
-| |   +-- require-main-filename@2.0.0
-| |   +-- set-blocking@2.0.0 deduped
-| |   +-- string-width@3.1.0
-| |   | +-- emoji-regex@7.0.3
-| |   | +-- is-fullwidth-code-point@2.0.0
-| |   | `-- strip-ansi@5.2.0
-| |   |   `-- ansi-regex@4.1.0
-| |   +-- which-module@2.0.0
-| |   +-- y18n@4.0.0 deduped
-| |   `-- yargs-parser@15.0.1
-| |     +-- camelcase@5.3.1
-| |     `-- decamelize@1.2.0 deduped
-| +-- lock-verify@2.1.0
-| | +-- npm-package-arg@6.1.1 deduped
-| | `-- semver@5.7.1 deduped
-| +-- lockfile@1.0.4
-| | `-- signal-exit@3.0.2
-| +-- lodash._baseindexof@3.1.0
-| +-- lodash._baseuniq@4.6.0
-| | +-- lodash._createset@4.0.3
-| | `-- lodash._root@3.0.1
-| +-- lodash._bindcallback@3.0.1
-| +-- lodash._cacheindexof@3.0.2
-| +-- lodash._createcache@3.1.2
-| | `-- lodash._getnative@3.9.1 deduped
-| +-- lodash._getnative@3.9.1
-| +-- lodash.clonedeep@4.5.0
-| +-- lodash.restparam@3.6.1
-| +-- lodash.union@4.6.0
-| +-- lodash.uniq@4.5.0
-| +-- lodash.without@4.4.0
-| +-- lru-cache@5.1.1
-| | `-- yallist@3.0.3
-| +-- meant@1.0.2
-| +-- mississippi@3.0.0
-| | +-- concat-stream@1.6.2
-| | | +-- buffer-from@1.0.0
-| | | +-- inherits@2.0.4 deduped
-| | | +-- readable-stream@2.3.6
-| | | | +-- core-util-is@1.0.2 deduped
-| | | | +-- inherits@2.0.4 deduped
-| | | | +-- isarray@1.0.0 deduped
-| | | | +-- process-nextick-args@2.0.0 deduped
-| | | | +-- safe-buffer@5.1.2 deduped
-| | | | +-- string_decoder@1.1.1
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | `-- util-deprecate@1.0.2 deduped
-| | | `-- typedarray@0.0.6
-| | +-- duplexify@3.6.0
-| | | +-- end-of-stream@1.4.1 deduped
-| | | +-- inherits@2.0.4 deduped
-| | | +-- readable-stream@2.3.6
-| | | | +-- core-util-is@1.0.2 deduped
-| | | | +-- inherits@2.0.4 deduped
-| | | | +-- isarray@1.0.0 deduped
-| | | | +-- process-nextick-args@2.0.0 deduped
-| | | | +-- safe-buffer@5.1.2 deduped
-| | | | +-- string_decoder@1.1.1
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | `-- util-deprecate@1.0.2 deduped
-| | | `-- stream-shift@1.0.0
-| | +-- end-of-stream@1.4.1
-| | | `-- once@1.4.0 deduped
-| | +-- flush-write-stream@1.0.3
-| | | +-- inherits@2.0.4 deduped
-| | | `-- readable-stream@2.3.6
-| | |   +-- core-util-is@1.0.2 deduped
-| | |   +-- inherits@2.0.4 deduped
-| | |   +-- isarray@1.0.0 deduped
-| | |   +-- process-nextick-args@2.0.0 deduped
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   +-- string_decoder@1.1.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   `-- util-deprecate@1.0.2 deduped
-| | +-- from2@2.3.0
-| | | +-- inherits@2.0.4 deduped
-| | | `-- readable-stream@2.3.6
-| | |   +-- core-util-is@1.0.2 deduped
-| | |   +-- inherits@2.0.4 deduped
-| | |   +-- isarray@1.0.0 deduped
-| | |   +-- process-nextick-args@2.0.0 deduped
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   +-- string_decoder@1.1.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   `-- util-deprecate@1.0.2 deduped
-| | +-- parallel-transform@1.1.0
-| | | +-- cyclist@0.2.2
-| | | +-- inherits@2.0.4 deduped
-| | | `-- readable-stream@2.3.6
-| | |   +-- core-util-is@1.0.2 deduped
-| | |   +-- inherits@2.0.4 deduped
-| | |   +-- isarray@1.0.0 deduped
-| | |   +-- process-nextick-args@2.0.0 deduped
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   +-- string_decoder@1.1.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   `-- util-deprecate@1.0.2 deduped
-| | +-- pump@3.0.0
-| | | +-- end-of-stream@1.4.1 deduped
-| | | `-- once@1.4.0 deduped
-| | +-- pumpify@1.5.1
-| | | +-- duplexify@3.6.0 deduped
-| | | +-- inherits@2.0.4 deduped
-| | | `-- pump@2.0.1
-| | |   +-- end-of-stream@1.4.1 deduped
-| | |   `-- once@1.4.0 deduped
-| | +-- stream-each@1.2.2
-| | | +-- end-of-stream@1.4.1 deduped
-| | | `-- stream-shift@1.0.0 deduped
-| | `-- through2@2.0.3
-| |   +-- readable-stream@2.3.6
-| |   | +-- core-util-is@1.0.2 deduped
-| |   | +-- inherits@2.0.4 deduped
-| |   | +-- isarray@1.0.0 deduped
-| |   | +-- process-nextick-args@2.0.0 deduped
-| |   | +-- safe-buffer@5.1.2 deduped
-| |   | +-- string_decoder@1.1.1
-| |   | | `-- safe-buffer@5.1.2 deduped
-| |   | `-- util-deprecate@1.0.2 deduped
-| |   `-- xtend@4.0.1
-| +-- mkdirp@0.5.5
-| | `-- minimist@1.2.5
-| +-- move-concurrently@1.0.1
-| | +-- aproba@1.2.0
-| | +-- copy-concurrently@1.0.5
-| | | +-- aproba@1.2.0
-| | | +-- fs-write-stream-atomic@1.0.10 deduped
-| | | +-- iferr@0.1.5
-| | | +-- mkdirp@0.5.5 deduped
-| | | +-- rimraf@2.7.1 deduped
-| | | `-- run-queue@1.0.3 deduped
-| | +-- fs-write-stream-atomic@1.0.10 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- rimraf@2.7.1 deduped
-| | `-- run-queue@1.0.3
-| |   `-- aproba@1.2.0
-| +-- node-gyp@5.1.0
-| | +-- env-paths@2.2.0
-| | +-- glob@7.1.6 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- nopt@4.0.3 deduped
-| | +-- npmlog@4.1.2 deduped
-| | +-- request@2.88.0 deduped
-| | +-- rimraf@2.7.1 deduped
-| | +-- semver@5.7.1 deduped
-| | +-- tar@4.4.13 deduped
-| | `-- which@1.3.1 deduped
-| +-- nopt@4.0.3
-| | +-- abbrev@1.1.1 deduped
-| | `-- osenv@0.1.5 deduped
-| +-- normalize-package-data@2.5.0
-| | +-- hosted-git-info@2.8.8 deduped
-| | +-- resolve@1.10.0
-| | | `-- path-parse@1.0.6
-| | +-- semver@5.7.1 deduped
-| | `-- validate-npm-package-license@3.0.4 deduped
-| +-- npm-audit-report@1.3.3
-| | +-- cli-table3@0.5.1 deduped
-| | `-- console-control-strings@1.1.0
-| +-- npm-cache-filename@1.0.2
-| +-- npm-install-checks@3.0.2
-| | `-- semver@5.7.1 deduped
-| +-- npm-lifecycle@3.1.5
-| | +-- byline@5.0.0
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- node-gyp@5.1.0 deduped
-| | +-- resolve-from@4.0.0
-| | +-- slide@1.1.6 deduped
-| | +-- uid-number@0.0.6 deduped
-| | +-- umask@1.1.0 deduped
-| | `-- which@1.3.1 deduped
-| +-- npm-package-arg@6.1.1
-| | +-- hosted-git-info@2.8.8 deduped
-| | +-- osenv@0.1.5 deduped
-| | +-- semver@5.7.1 deduped
-| | `-- validate-npm-package-name@3.0.0 deduped
-| +-- npm-packlist@1.4.8
-| | +-- ignore-walk@3.0.3
-| | | `-- minimatch@3.0.4 deduped
-| | +-- npm-bundled@1.1.1
-| | | `-- npm-normalize-package-bin@1.0.1 deduped
-| | `-- npm-normalize-package-bin@1.0.1 deduped
-| +-- npm-pick-manifest@3.0.2
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | `-- semver@5.7.1 deduped
-| +-- npm-profile@4.0.4
-| | +-- aproba@2.0.0 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | `-- npm-registry-fetch@4.0.7 deduped
-| +-- npm-registry-fetch@4.0.7
-| | +-- bluebird@3.5.5 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- JSONStream@1.3.5 deduped
-| | +-- lru-cache@5.1.1 deduped
-| | +-- make-fetch-happen@5.0.2
-| | | +-- agentkeepalive@3.5.2
-| | | | `-- humanize-ms@1.2.1
-| | | |   `-- ms@2.1.1
-| | | +-- cacache@12.0.3 deduped
-| | | +-- http-cache-semantics@3.8.1
-| | | +-- http-proxy-agent@2.1.0
-| | | | +-- agent-base@4.3.0
-| | | | | `-- es6-promisify@5.0.0
-| | | | |   `-- es6-promise@4.2.8
-| | | | `-- debug@3.1.0
-| | | |   `-- ms@2.0.0
-| | | +-- https-proxy-agent@2.2.4
-| | | | +-- agent-base@4.3.0 deduped
-| | | | `-- debug@3.1.0 deduped
-| | | +-- lru-cache@5.1.1 deduped
-| | | +-- mississippi@3.0.0 deduped
-| | | +-- node-fetch-npm@2.0.2
-| | | | +-- encoding@0.1.12
-| | | | | `-- iconv-lite@0.4.23
-| | | | |   `-- safer-buffer@2.1.2 deduped
-| | | | +-- json-parse-better-errors@1.0.2 deduped
-| | | | `-- safe-buffer@5.1.2 deduped
-| | | +-- promise-retry@1.1.1 deduped
-| | | +-- socks-proxy-agent@4.0.2
-| | | | +-- agent-base@4.2.1
-| | | | | `-- es6-promisify@5.0.0 deduped
-| | | | `-- socks@2.3.3
-| | | |   +-- ip@1.1.5
-| | | |   `-- smart-buffer@4.1.0
-| | | `-- ssri@6.0.1 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | `-- safe-buffer@5.2.1
-| +-- npm-user-validate@1.0.0
-| +-- npmlog@4.1.2
-| | +-- are-we-there-yet@1.1.4
-| | | +-- delegates@1.0.0
-| | | `-- readable-stream@2.3.6
-| | |   +-- core-util-is@1.0.2 deduped
-| | |   +-- inherits@2.0.4 deduped
-| | |   +-- isarray@1.0.0 deduped
-| | |   +-- process-nextick-args@2.0.0 deduped
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   +-- string_decoder@1.1.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   `-- util-deprecate@1.0.2 deduped
-| | +-- console-control-strings@1.1.0 deduped
-| | +-- gauge@2.7.4
-| | | +-- aproba@1.2.0
-| | | +-- console-control-strings@1.1.0 deduped
-| | | +-- has-unicode@2.0.1 deduped
-| | | +-- object-assign@4.1.1 deduped
-| | | +-- signal-exit@3.0.2 deduped
-| | | +-- string-width@1.0.2
-| | | | +-- code-point-at@1.1.0
-| | | | +-- is-fullwidth-code-point@1.0.0
-| | | | | `-- number-is-nan@1.0.1
-| | | | `-- strip-ansi@3.0.1 deduped
-| | | +-- strip-ansi@3.0.1 deduped
-| | | `-- wide-align@1.1.2
-| | |   `-- string-width@1.0.2
-| | |     +-- code-point-at@1.1.0 deduped
-| | |     +-- is-fullwidth-code-point@1.0.0 deduped
-| | |     `-- strip-ansi@3.0.1 deduped
-| | `-- set-blocking@2.0.0
-| +-- once@1.4.0
-| | `-- wrappy@1.0.2 deduped
-| +-- opener@1.5.1
-| +-- osenv@0.1.5
-| | +-- os-homedir@1.0.2
-| | `-- os-tmpdir@1.0.2
-| +-- pacote@9.5.12
-| | +-- bluebird@3.5.5 deduped
-| | +-- cacache@12.0.3 deduped
-| | +-- chownr@1.1.4 deduped
-| | +-- figgy-pudding@3.5.1 deduped
-| | +-- get-stream@4.1.0 deduped
-| | +-- glob@7.1.6 deduped
-| | +-- infer-owner@1.0.4 deduped
-| | +-- lru-cache@5.1.1 deduped
-| | +-- make-fetch-happen@5.0.2 deduped
-| | +-- minimatch@3.0.4 deduped
-| | +-- minipass@2.9.0
-| | | +-- safe-buffer@5.1.2 deduped
-| | | `-- yallist@3.0.3 deduped
-| | +-- mississippi@3.0.0 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- normalize-package-data@2.5.0 deduped
-| | +-- npm-normalize-package-bin@1.0.1 deduped
-| | +-- npm-package-arg@6.1.1 deduped
-| | +-- npm-packlist@1.4.8 deduped
-| | +-- npm-pick-manifest@3.0.2 deduped
-| | +-- npm-registry-fetch@4.0.7 deduped
-| | +-- osenv@0.1.5 deduped
-| | +-- promise-inflight@1.0.1 deduped
-| | +-- promise-retry@1.1.1
-| | | +-- err-code@1.1.2
-| | | `-- retry@0.10.1
-| | +-- protoduck@5.0.1
-| | | `-- genfun@5.0.0
-| | +-- rimraf@2.7.1 deduped
-| | +-- safe-buffer@5.1.2 deduped
-| | +-- semver@5.7.1 deduped
-| | +-- ssri@6.0.1 deduped
-| | +-- tar@4.4.13 deduped
-| | +-- unique-filename@1.1.1 deduped
-| | `-- which@1.3.1 deduped
-| +-- path-is-inside@1.0.2
-| +-- promise-inflight@1.0.1
-| +-- qrcode-terminal@0.12.0
-| +-- query-string@6.8.2
-| | +-- decode-uri-component@0.2.0
-| | +-- split-on-first@1.1.0
-| | `-- strict-uri-encode@2.0.0
-| +-- qw@1.0.1
-| +-- read@1.0.7
-| | `-- mute-stream@0.0.7
-| +-- read-cmd-shim@1.0.5
-| | `-- graceful-fs@4.2.4 deduped
-| +-- read-installed@4.0.3
-| | +-- debuglog@1.0.1 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- read-package-json@2.1.1 deduped
-| | +-- readdir-scoped-modules@1.1.0 deduped
-| | +-- semver@5.7.1 deduped
-| | +-- slide@1.1.6 deduped
-| | `-- util-extend@1.0.3
-| +-- read-package-json@2.1.1
-| | +-- glob@7.1.6 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- json-parse-better-errors@1.0.2 deduped
-| | +-- normalize-package-data@2.5.0 deduped
-| | `-- npm-normalize-package-bin@1.0.1 deduped
-| +-- read-package-tree@5.3.1
-| | +-- read-package-json@2.1.1 deduped
-| | +-- readdir-scoped-modules@1.1.0 deduped
-| | `-- util-promisify@2.1.0
-| |   `-- object.getownpropertydescriptors@2.0.3
-| |     +-- define-properties@1.1.3
-| |     | `-- object-keys@1.0.12
-| |     `-- es-abstract@1.12.0
-| |       +-- es-to-primitive@1.2.0
-| |       | +-- is-callable@1.1.4 deduped
-| |       | +-- is-date-object@1.0.1
-| |       | `-- is-symbol@1.0.2
-| |       |   `-- has-symbols@1.0.0
-| |       +-- function-bind@1.1.1
-| |       +-- has@1.0.3
-| |       | `-- function-bind@1.1.1 deduped
-| |       +-- is-callable@1.1.4
-| |       `-- is-regex@1.0.4
-| |         `-- has@1.0.3 deduped
-| +-- readable-stream@3.6.0
-| | +-- inherits@2.0.4 deduped
-| | +-- string_decoder@1.3.0
-| | | `-- safe-buffer@5.2.0
-| | `-- util-deprecate@1.0.2
-| +-- readdir-scoped-modules@1.1.0
-| | +-- debuglog@1.0.1 deduped
-| | +-- dezalgo@1.0.3 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | `-- once@1.4.0 deduped
-| +-- request@2.88.0
-| | +-- aws-sign2@0.7.0
-| | +-- aws4@1.8.0
-| | +-- caseless@0.12.0
-| | +-- combined-stream@1.0.6
-| | | `-- delayed-stream@1.0.0
-| | +-- extend@3.0.2
-| | +-- forever-agent@0.6.1
-| | +-- form-data@2.3.2
-| | | +-- asynckit@0.4.0
-| | | +-- combined-stream@1.0.6 deduped
-| | | `-- mime-types@2.1.19 deduped
-| | +-- har-validator@5.1.0
-| | | +-- ajv@5.5.2
-| | | | +-- co@4.6.0
-| | | | +-- fast-deep-equal@1.1.0
-| | | | +-- fast-json-stable-stringify@2.0.0
-| | | | `-- json-schema-traverse@0.3.1
-| | | `-- har-schema@2.0.0
-| | +-- http-signature@1.2.0
-| | | +-- assert-plus@1.0.0
-| | | +-- jsprim@1.4.1
-| | | | +-- assert-plus@1.0.0 deduped
-| | | | +-- extsprintf@1.3.0
-| | | | +-- json-schema@0.2.3
-| | | | `-- verror@1.10.0
-| | | |   +-- assert-plus@1.0.0 deduped
-| | | |   +-- core-util-is@1.0.2 deduped
-| | | |   `-- extsprintf@1.3.0 deduped
-| | | `-- sshpk@1.14.2
-| | |   +-- asn1@0.2.4
-| | |   | `-- safer-buffer@2.1.2 deduped
-| | |   +-- assert-plus@1.0.0 deduped
-| | |   +-- bcrypt-pbkdf@1.0.2
-| | |   | `-- tweetnacl@0.14.5 deduped
-| | |   +-- dashdash@1.14.1
-| | |   | `-- assert-plus@1.0.0 deduped
-| | |   +-- ecc-jsbn@0.1.2
-| | |   | +-- jsbn@0.1.1 deduped
-| | |   | `-- safer-buffer@2.1.2 deduped
-| | |   +-- getpass@0.1.7
-| | |   | `-- assert-plus@1.0.0 deduped
-| | |   +-- jsbn@0.1.1
-| | |   +-- safer-buffer@2.1.2
-| | |   `-- tweetnacl@0.14.5
-| | +-- is-typedarray@1.0.0
-| | +-- isstream@0.1.2
-| | +-- json-stringify-safe@5.0.1
-| | +-- mime-types@2.1.19
-| | | `-- mime-db@1.35.0
-| | +-- oauth-sign@0.9.0
-| | +-- performance-now@2.1.0
-| | +-- qs@6.5.2
-| | +-- safe-buffer@5.1.2 deduped
-| | +-- tough-cookie@2.4.3
-| | | +-- psl@1.1.29
-| | | `-- punycode@1.4.1
-| | +-- tunnel-agent@0.6.0
-| | | `-- safe-buffer@5.1.2 deduped
-| | `-- uuid@3.3.3 deduped
-| +-- retry@0.12.0
-| +-- rimraf@2.7.1
-| | `-- glob@7.1.6 deduped
-| +-- safe-buffer@5.1.2
-| +-- semver@5.7.1
-| +-- sha@3.0.0
-| | `-- graceful-fs@4.2.4 deduped
-| +-- slide@1.1.6
-| +-- sorted-object@2.0.1
-| +-- sorted-union-stream@2.1.3
-| | +-- from2@1.3.0
-| | | +-- inherits@2.0.4 deduped
-| | | `-- readable-stream@1.1.14
-| | |   +-- core-util-is@1.0.2 deduped
-| | |   +-- inherits@2.0.4 deduped
-| | |   +-- isarray@0.0.1
-| | |   `-- string_decoder@0.10.31
-| | `-- stream-iterate@1.2.0
-| |   +-- readable-stream@2.3.6
-| |   | +-- core-util-is@1.0.2 deduped
-| |   | +-- inherits@2.0.4 deduped
-| |   | +-- isarray@1.0.0 deduped
-| |   | +-- process-nextick-args@2.0.0 deduped
-| |   | +-- safe-buffer@5.1.2 deduped
-| |   | +-- string_decoder@1.1.1
-| |   | | `-- safe-buffer@5.1.2 deduped
-| |   | `-- util-deprecate@1.0.2 deduped
-| |   `-- stream-shift@1.0.0 deduped
-| +-- ssri@6.0.1
-| | `-- figgy-pudding@3.5.1 deduped
-| +-- stringify-package@1.0.1
-| +-- tar@4.4.13
-| | +-- chownr@1.1.4 deduped
-| | +-- fs-minipass@1.2.7
-| | | `-- minipass@2.9.0
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   `-- yallist@3.0.3 deduped
-| | +-- minipass@2.9.0
-| | | +-- safe-buffer@5.1.2 deduped
-| | | `-- yallist@3.0.3 deduped
-| | +-- minizlib@1.3.3
-| | | `-- minipass@2.9.0
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   `-- yallist@3.0.3 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- safe-buffer@5.1.2 deduped
-| | `-- yallist@3.0.3 deduped
-| +-- text-table@0.2.0
-| +-- tiny-relative-date@1.3.0
-| +-- uid-number@0.0.6
-| +-- umask@1.1.0
-| +-- unique-filename@1.1.1
-| | `-- unique-slug@2.0.0
-| |   `-- imurmurhash@0.1.4 deduped
-| +-- unpipe@1.0.0
-| +-- update-notifier@2.5.0
-| | +-- boxen@1.3.0
-| | | +-- ansi-align@2.0.0
-| | | | `-- string-width@2.1.1 deduped
-| | | +-- camelcase@4.1.0
-| | | +-- chalk@2.4.1 deduped
-| | | +-- cli-boxes@1.0.0
-| | | +-- string-width@2.1.1 deduped
-| | | +-- term-size@1.2.0
-| | | | `-- execa@0.7.0
-| | | |   +-- cross-spawn@5.1.0
-| | | |   | +-- lru-cache@4.1.5
-| | | |   | | +-- pseudomap@1.0.2
-| | | |   | | `-- yallist@2.1.2
-| | | |   | +-- shebang-command@1.2.0
-| | | |   | | `-- shebang-regex@1.0.0
-| | | |   | `-- which@1.3.1 deduped
-| | | |   +-- get-stream@3.0.0
-| | | |   +-- is-stream@1.1.0
-| | | |   +-- npm-run-path@2.0.2
-| | | |   | `-- path-key@2.0.1
-| | | |   +-- p-finally@1.0.0
-| | | |   +-- signal-exit@3.0.2 deduped
-| | | |   `-- strip-eof@1.0.0
-| | | `-- widest-line@2.0.1
-| | |   `-- string-width@2.1.1 deduped
-| | +-- chalk@2.4.1
-| | | +-- ansi-styles@3.2.1
-| | | | `-- color-convert@1.9.1
-| | | |   `-- color-name@1.1.3
-| | | +-- escape-string-regexp@1.0.5
-| | | `-- supports-color@5.4.0
-| | |   `-- has-flag@3.0.0
-| | +-- configstore@3.1.5
-| | | +-- dot-prop@4.2.1
-| | | | `-- is-obj@1.0.1
-| | | +-- graceful-fs@4.2.4 deduped
-| | | +-- make-dir@1.3.0
-| | | | `-- pify@3.0.0
-| | | +-- unique-string@1.0.0
-| | | | `-- crypto-random-string@1.0.0
-| | | +-- write-file-atomic@2.4.3 deduped
-| | | `-- xdg-basedir@3.0.0 deduped
-| | +-- import-lazy@2.1.0
-| | +-- is-ci@1.2.1
-| | | `-- ci-info@1.6.0
-| | +-- is-installed-globally@0.1.0
-| | | +-- global-dirs@0.1.1
-| | | | `-- ini@1.3.5 deduped
-| | | `-- is-path-inside@1.0.1
-| | |   `-- path-is-inside@1.0.2 deduped
-| | +-- is-npm@1.0.0
-| | +-- latest-version@3.1.0
-| | | `-- package-json@4.0.1
-| | |   +-- got@6.7.1
-| | |   | +-- create-error-class@3.0.2
-| | |   | | `-- capture-stack-trace@1.0.0
-| | |   | +-- duplexer3@0.1.4
-| | |   | +-- get-stream@3.0.0
-| | |   | +-- is-redirect@1.0.0
-| | |   | +-- is-retry-allowed@1.2.0
-| | |   | +-- is-stream@1.1.0 deduped
-| | |   | +-- lowercase-keys@1.0.1
-| | |   | +-- safe-buffer@5.1.2 deduped
-| | |   | +-- timed-out@4.0.1
-| | |   | +-- unzip-response@2.0.1
-| | |   | `-- url-parse-lax@1.0.0
-| | |   |   `-- prepend-http@1.0.4
-| | |   +-- registry-auth-token@3.4.0
-| | |   | +-- rc@1.2.8
-| | |   | | +-- deep-extend@0.6.0
-| | |   | | +-- ini@1.3.5 deduped
-| | |   | | +-- minimist@1.2.5
-| | |   | | `-- strip-json-comments@2.0.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   +-- registry-url@3.1.0
-| | |   | `-- rc@1.2.8 deduped
-| | |   `-- semver@5.7.1 deduped
-| | +-- semver-diff@2.1.0
-| | | `-- semver@5.7.1 deduped
-| | `-- xdg-basedir@3.0.0
-| +-- uuid@3.3.3
-| +-- validate-npm-package-license@3.0.4
-| | +-- spdx-correct@3.0.0
-| | | +-- spdx-expression-parse@3.0.0 deduped
-| | | `-- spdx-license-ids@3.0.5
-| | `-- spdx-expression-parse@3.0.0
-| |   +-- spdx-exceptions@2.1.0
-| |   `-- spdx-license-ids@3.0.5 deduped
-| +-- validate-npm-package-name@3.0.0
-| | `-- builtins@1.0.3
-| +-- which@1.3.1
-| | `-- isexe@2.0.0
-| +-- worker-farm@1.7.0
-| | `-- errno@0.1.7
-| |   `-- prr@1.0.1
-| `-- write-file-atomic@2.4.3
-|   +-- graceful-fs@4.2.4 deduped
-|   +-- imurmurhash@0.1.4 deduped
-|   `-- signal-exit@3.0.2 deduped
-</t>
-<t tx="ekr.20201114160816.12">+-- typescript@3.9.5
-`-- wasm-opt@1.1.1
-  +-- node-fetch@2.6.1
-  +-- ora@4.1.1
-  | +-- chalk@3.0.0
-  | | +-- ansi-styles@4.2.1
-  | | | +-- @types/color-name@1.1.1
-  | | | `-- color-convert@2.0.1
-  | | |   `-- color-name@1.1.4
-  | | `-- supports-color@7.2.0
-  | |   `-- has-flag@4.0.0
-  | +-- cli-cursor@3.1.0
-  | | `-- restore-cursor@3.1.0
-  | |   +-- onetime@5.1.2
-  | |   | `-- mimic-fn@2.1.0
-  | |   `-- signal-exit@3.0.3
-  | +-- cli-spinners@2.4.0
-  | +-- is-interactive@1.0.0
-  | +-- log-symbols@3.0.0
-  | | `-- chalk@2.4.2
-  | |   +-- ansi-styles@3.2.1
-  | |   | `-- color-convert@1.9.3
-  | |   |   `-- color-name@1.1.3
-  | |   +-- escape-string-regexp@1.0.5
-  | |   `-- supports-color@5.5.0
-  | |     `-- has-flag@3.0.0
-  | +-- mute-stream@0.0.8
-  | +-- strip-ansi@6.0.0
-  | | `-- ansi-regex@5.0.0
-  | `-- wcwidth@1.0.1
-  |   `-- defaults@1.0.3
-  |     `-- clone@1.0.4
-  `-- tar@5.0.5
-    +-- chownr@1.1.4
-    +-- fs-minipass@2.1.0
-    | `-- minipass@3.1.3 deduped
-    +-- minipass@3.1.3
-    | `-- yallist@4.0.0 deduped
-    +-- minizlib@2.1.2
-    | +-- minipass@3.1.3 deduped
-    | `-- yallist@4.0.0 deduped
-    +-- mkdirp@0.5.5
-    | `-- minimist@1.2.5
-    `-- yallist@4.0.0
-</t>
-<t tx="ekr.20201114160816.13">pip install jupyter_contrib_nbextensions
+<t tx="ekr.20201117043352.1">- Make Rebecca an admin.
 
-pip install jupyterlab
-
-jupyterlab extensions are npm packages.
-
-npm list -g</t>
-<t tx="ekr.20201114160816.14">C:\Users\edreamleo\Python\Python37\share\jupyter\lab\staging\node_modules&gt;npm list
-
-@jupyterlab/application-top@2.2.9 C:\Users\edreamleo\Python\Python37\share\jupyter\lab\staging
-
-+-- @jupyterlab/docmanager-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docmanager@2.2.4 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/documentsearch-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/documentsearch@2.2.7 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/extensionmanager-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/extensionmanager@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/settingregistry@2.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- react@16.9.0 deduped
-| | +-- react-paginate@6.5.0
-| | | `-- prop-types@15.7.2 deduped
-| | `-- semver@6.3.0 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| `-- @jupyterlab/ui-components@2.2.4 deduped
-
-+-- @jupyterlab/filebrowser-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docmanager@2.2.4 deduped
-| +-- @jupyterlab/filebrowser@2.2.5 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statedb@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/commands@1.11.3 deduped
-| +-- @lumino/messaging@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/fileeditor-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/codeeditor@2.2.5 deduped
-| +-- @jupyterlab/codemirror@2.2.4 deduped
-| +-- @jupyterlab/console@2.2.7 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/filebrowser@2.2.5 deduped
-| +-- @jupyterlab/fileeditor@2.2.4 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/commands@1.11.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/help-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/inspector@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| `-- react@16.9.0 deduped
-
-+-- @jupyterlab/htmlviewer-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/htmlviewer@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- react@16.9.0 deduped
-| `-- @jupyterlab/ui-components@2.2.4 deduped
-
-+-- @jupyterlab/hub-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| `-- @jupyterlab/services@5.2.5 deduped
-
-+-- @jupyterlab/imageviewer-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| `-- @jupyterlab/imageviewer@2.2.4
-|   +-- @jupyterlab/apputils@2.2.6 deduped
-|   +-- @jupyterlab/coreutils@4.2.5 deduped
-|   +-- @jupyterlab/docregistry@2.2.4 deduped
-|   +-- @lumino/coreutils@1.5.3 deduped
-|   +-- @lumino/messaging@1.4.3 deduped
-|   `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/inspector-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/console@2.2.7 deduped
-| +-- @jupyterlab/inspector@2.2.4 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| `-- @jupyterlab/ui-components@2.2.4 deduped
-
-+-- @jupyterlab/javascript-extension@2.2.4
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| `-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-
-+-- @jupyterlab/json-extension@2.2.6
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/messaging@1.4.3 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| +-- react@16.9.0 deduped
-| +-- react-dom@16.9.0 deduped
-| +-- react-highlighter@0.4.3
-| | +-- blacklist@1.1.4
-| | +-- create-react-class@15.7.0
-| | | +-- loose-envify@1.4.0 deduped
-| | | `-- object-assign@4.1.1 deduped
-| | +-- escape-string-regexp@1.0.5
-| | `-- prop-types@15.7.2 deduped
-| `-- react-json-tree@0.11.2
-|   +-- babel-runtime@6.26.0
-|   | +-- core-js@2.6.11
-|   | `-- regenerator-runtime@0.11.1
-|   +-- prop-types@15.7.2 deduped
-|   `-- react-base16-styling@0.5.3
-|     +-- base16@1.0.0
-|     +-- lodash.curry@4.1.1
-|     +-- lodash.flow@3.5.0
-|     `-- pure-color@1.3.0
-
-+-- @jupyterlab/launcher-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/logconsole-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/logconsole@2.2.4
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/outputarea@2.2.4 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/nbformat@2.2.5
-| | `-- @lumino/coreutils@1.5.3 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/signaling@1.4.3 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| `-- react@16.9.0 deduped
-
-+-- @jupyterlab/mainmenu-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/markdownviewer-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/markdownviewer@2.2.6 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| `-- @jupyterlab/settingregistry@2.2.5 deduped
-
-+-- @jupyterlab/mathjax2-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/mathjax2@2.2.1
-| | +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| | `-- @lumino/coreutils@1.5.3 deduped
-| `-- @jupyterlab/rendermime@2.2.4 deduped
-
-+-- @jupyterlab/notebook-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/cells@2.2.7 deduped
-| +-- @jupyterlab/codeeditor@2.2.5 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docmanager@2.2.4 deduped
-| +-- @jupyterlab/filebrowser@2.2.5 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/nbformat@2.2.5 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/property-inspector@2.2.6 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statedb@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/commands@1.11.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| +-- @lumino/messaging@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/pdf-extension@2.2.1
-| +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/rendermime-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/docmanager@2.2.4 deduped
-| `-- @jupyterlab/rendermime@2.2.4 deduped
-
-+-- @jupyterlab/running-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/running@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| `-- @lumino/algorithm@1.3.3 deduped
-
-+-- @jupyterlab/settingeditor-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/codeeditor@2.2.5 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/settingeditor@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/inspector@2.2.4 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/settingregistry@2.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- react@16.9.0 deduped
-| | `-- react-dom@16.9.0 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statedb@2.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| `-- @lumino/disposable@1.4.3 deduped
-
-+-- @jupyterlab/shortcuts-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @lumino/commands@1.11.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| `-- @lumino/disposable@1.4.3 deduped
-
-+-- @jupyterlab/statusbar-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/cells@2.2.7 deduped
-| +-- @jupyterlab/console@2.2.7 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/fileeditor@2.2.4 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/tabmanager-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/terminal-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/launcher@2.2.6 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/running@2.2.6 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/terminal@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- xterm@4.2.0
-| | `-- xterm-addon-fit@0.3.0
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/theme-dark-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| `-- @jupyterlab/apputils@2.2.6 deduped
-
-+-- @jupyterlab/theme-light-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| `-- @jupyterlab/apputils@2.2.6 deduped
-
-+-- @jupyterlab/toc@4.0.0 invalid
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/settingregistry@2.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/virtualdom@1.7.3
-| | | `-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- @types/react@16.9.53
-| | | +-- @types/prop-types@15.7.3
-| | | `-- csstype@3.0.4
-| | +-- react@16.9.0 deduped
-| | +-- react-dom@16.9.0 deduped
-| | `-- sanitize-html@1.20.1
-| |   +-- chalk@2.4.2 deduped
-| |   +-- htmlparser2@3.10.1
-| |   | +-- domelementtype@1.3.1
-| |   | +-- domhandler@2.4.2
-| |   | | `-- domelementtype@1.3.1 deduped
-| |   | +-- domutils@1.5.1
-| |   | | +-- dom-serializer@0.2.2
-| |   | | | +-- domelementtype@2.0.2
-| |   | | | `-- entities@2.1.0
-| |   | | `-- domelementtype@1.3.1 deduped
-| |   | +-- entities@1.1.2
-| |   | +-- inherits@2.0.4 deduped
-| |   | `-- readable-stream@3.6.0
-| |   |   +-- inherits@2.0.4 deduped
-| |   |   +-- string_decoder@1.1.1 deduped
-| |   |   `-- util-deprecate@1.0.2 deduped
-| |   +-- lodash.clonedeep@4.5.0
-| |   +-- lodash.escaperegexp@4.1.2
-| |   +-- lodash.isplainobject@4.0.6
-| |   +-- lodash.isstring@4.0.1
-| |   +-- lodash.mergewith@4.6.2
-| |   +-- postcss@7.0.35 deduped
-| |   +-- srcset@1.0.0
-| |   | +-- array-uniq@1.0.3
-| |   | `-- number-is-nan@1.0.1
-| |   `-- xtend@4.0.2
-| +-- @jupyterlab/cells@2.2.7
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/attachments@2.2.4
-| | | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | | +-- @jupyterlab/observables@3.2.5 deduped
-| | | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | | +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| | | +-- @lumino/disposable@1.4.3 deduped
-| | | `-- @lumino/signaling@1.4.3 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/codemirror@2.2.4 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/filebrowser@2.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5
-| | | +-- @lumino/algorithm@1.3.3 deduped
-| | | +-- @lumino/coreutils@1.5.3 deduped
-| | | +-- @lumino/disposable@1.4.3 deduped
-| | | +-- @lumino/messaging@1.4.3 deduped
-| | | `-- @lumino/signaling@1.4.3 deduped
-| | +-- @jupyterlab/outputarea@2.2.4
-| | | +-- @jupyterlab/apputils@2.2.6 deduped
-| | | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | | +-- @jupyterlab/observables@3.2.5 deduped
-| | | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | | +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| | | +-- @jupyterlab/services@5.2.5 deduped
-| | | +-- @lumino/algorithm@1.3.3 deduped
-| | | +-- @lumino/coreutils@1.5.3 deduped
-| | | +-- @lumino/disposable@1.4.3 deduped
-| | | +-- @lumino/messaging@1.4.3 deduped
-| | | +-- @lumino/properties@1.2.3 deduped
-| | | +-- @lumino/signaling@1.4.3 deduped
-| | | `-- @lumino/widgets@1.14.0 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/dragdrop@1.6.4
-| | | +-- @lumino/coreutils@1.5.3 deduped
-| | | `-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/virtualdom@1.7.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docmanager@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/statusbar@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/docregistry@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/codemirror@2.2.4 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/fileeditor@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/statusbar@2.2.4 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/markdownviewer@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/notebook@2.2.7
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/cells@2.2.7 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/statusbar@2.2.4 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/virtualdom@1.7.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/rendermime@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codemirror@2.2.4 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- lodash.escape@4.0.1
-| | `-- marked@0.8.2
-| +-- @lumino/algorithm@1.3.3
-| +-- @lumino/coreutils@1.5.3
-| +-- @lumino/messaging@1.4.3
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | `-- @lumino/collections@1.3.3
-| |   `-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/widgets@1.14.0
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/keyboard@1.2.3
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/virtualdom@1.7.3 deduped
-| +-- react@16.9.0
-| | +-- loose-envify@1.4.0
-| | | `-- js-tokens@4.0.0
-| | +-- object-assign@4.1.1 deduped
-| | `-- prop-types@15.7.2
-| |   +-- loose-envify@1.4.0 deduped
-| |   +-- object-assign@4.1.1 deduped
-| |   `-- react-is@16.13.1
-| `-- react-dom@16.9.0
-|   +-- loose-envify@1.4.0 deduped
-|   +-- object-assign@4.1.1 deduped
-|   +-- prop-types@15.7.2 deduped
-|   `-- scheduler@0.15.0
-|     +-- loose-envify@1.4.0 deduped
-|     `-- object-assign@4.1.1 deduped
-
-+-- @jupyterlab/tooltip-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/codeeditor@2.2.5 deduped
-| +-- @jupyterlab/console@2.2.7 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/fileeditor@2.2.4 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @jupyterlab/tooltip@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/ui-components-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| `-- @jupyterlab/ui-components@2.2.4 deduped
-
-+-- @jupyterlab/vdom-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| `-- @jupyterlab/vdom@2.2.6
-|   +-- @jupyterlab/apputils@2.2.6 deduped
-|   +-- @jupyterlab/docregistry@2.2.4 deduped
-|   +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-|   +-- @jupyterlab/services@5.2.5 deduped
-|   +-- @lumino/coreutils@1.5.3 deduped
-|   +-- @lumino/messaging@1.4.3 deduped
-|   +-- @lumino/widgets@1.14.0 deduped
-|   +-- @nteract/transform-vdom@4.0.15
-|   | `-- lodash.clonedeep@4.5.0 deduped
-|   +-- react@16.9.0 deduped
-|   `-- react-dom@16.9.0 deduped
-
-+-- @jupyterlab/vega5-extension@2.2.1
-| +-- @jupyterlab/rendermime-interfaces@2.2.1 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| +-- vega@5.17.0
-| | +-- vega-crossfilter@4.0.5
-| | | +-- d3-array@2.8.0
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-dataflow@5.7.3
-| | | +-- vega-format@1.0.4 deduped
-| | | +-- vega-loader@4.4.0 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-encode@4.8.3
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-interpolate@2.0.1
-| | | | `-- d3-color@2.0.0 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-scale@7.1.1 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-event-selector@2.0.6
-| | +-- vega-expression@3.0.0
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-force@4.0.7
-| | | +-- d3-force@2.1.1
-| | | | +-- d3-dispatch@2.0.0
-| | | | +-- d3-quadtree@2.0.0
-| | | | `-- d3-timer@2.0.0 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-format@1.0.4
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-format@2.0.0
-| | | +-- d3-time-format@3.0.0
-| | | | `-- d3-time@2.0.0 deduped
-| | | +-- vega-time@2.0.4 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-functions@5.8.0
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-color@2.0.0
-| | | +-- d3-geo@2.0.1
-| | | | `-- d3-array@2.8.0 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-expression@3.0.0 deduped
-| | | +-- vega-scale@7.1.1 deduped
-| | | +-- vega-scenegraph@4.9.2 deduped
-| | | +-- vega-selections@5.1.4
-| | | | +-- vega-expression@3.0.0 deduped
-| | | | `-- vega-util@1.16.0 deduped
-| | | +-- vega-statistics@1.7.9 deduped
-| | | +-- vega-time@2.0.4 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-geo@4.3.7
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-color@2.0.0 deduped
-| | | +-- d3-geo@2.0.1 deduped
-| | | +-- vega-canvas@1.2.6
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-projection@1.4.5 deduped
-| | | +-- vega-statistics@1.7.9 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-hierarchy@4.0.9
-| | | +-- d3-hierarchy@2.0.0
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-label@1.0.0
-| | | +-- vega-canvas@1.2.6 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-scenegraph@4.9.2 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-loader@4.4.0
-| | | +-- d3-dsv@2.0.0
-| | | | +-- commander@2.20.3 deduped
-| | | | +-- iconv-lite@0.4.24 deduped
-| | | | `-- rw@1.3.3
-| | | +-- node-fetch@2.6.1 deduped
-| | | +-- topojson-client@3.1.0
-| | | | `-- commander@2.20.3 deduped
-| | | +-- vega-format@1.0.4 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-parser@6.1.0
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-event-selector@2.0.6 deduped
-| | | +-- vega-functions@5.8.0 deduped
-| | | +-- vega-scale@7.1.1 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-projection@1.4.5
-| | | +-- d3-geo@2.0.1 deduped
-| | | `-- d3-geo-projection@3.0.0
-| | |   +-- commander@2.20.3 deduped
-| | |   +-- d3-array@2.8.0 deduped
-| | |   +-- d3-geo@2.0.1 deduped
-| | |   `-- resolve@1.18.1
-| | |     +-- is-core-module@2.0.0
-| | |     | `-- has@1.0.3 deduped
-| | |     `-- path-parse@1.0.6
-| | +-- vega-regression@1.0.9
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-statistics@1.7.9 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-runtime@6.1.3
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-scale@7.1.1
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-interpolate@2.0.1 deduped
-| | | +-- d3-scale@3.2.3
-| | | | +-- d3-array@2.8.0 deduped
-| | | | +-- d3-format@2.0.0 deduped
-| | | | +-- d3-interpolate@2.0.1 deduped
-| | | | +-- d3-time@2.0.0 deduped
-| | | | `-- d3-time-format@3.0.0 deduped
-| | | +-- vega-time@2.0.4 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-scenegraph@4.9.2
-| | | +-- d3-path@2.0.0
-| | | +-- d3-shape@2.0.0
-| | | | `-- d3-path@2.0.0 deduped
-| | | +-- vega-canvas@1.2.6 deduped
-| | | +-- vega-loader@4.4.0 deduped
-| | | +-- vega-scale@7.1.1 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-statistics@1.7.9
-| | | `-- d3-array@2.8.0 deduped
-| | +-- vega-time@2.0.4
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-time@2.0.0
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-transforms@4.9.3
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-statistics@1.7.9 deduped
-| | | +-- vega-time@2.0.4 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-typings@0.19.1
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-util@1.16.0
-| | +-- vega-view@5.9.0
-| | | +-- d3-array@2.8.0 deduped
-| | | +-- d3-timer@2.0.0
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-format@1.0.4 deduped
-| | | +-- vega-functions@5.8.0 deduped
-| | | +-- vega-runtime@6.1.3 deduped
-| | | +-- vega-scenegraph@4.9.2 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-view-transforms@4.5.8
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | +-- vega-scenegraph@4.9.2 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | +-- vega-voronoi@4.1.5
-| | | +-- d3-delaunay@5.3.0
-| | | | `-- delaunator@4.0.1
-| | | +-- vega-dataflow@5.7.3 deduped
-| | | `-- vega-util@1.16.0 deduped
-| | `-- vega-wordcloud@4.1.3
-| |   +-- vega-canvas@1.2.6 deduped
-| |   +-- vega-dataflow@5.7.3 deduped
-| |   +-- vega-scale@7.1.1 deduped
-| |   +-- vega-statistics@1.7.9 deduped
-| |   `-- vega-util@1.16.0 deduped
-| +-- vega-embed@6.12.2
-| | +-- fast-json-patch@3.0.0-1
-| | +-- json-stringify-pretty-compact@2.0.0
-| | +-- semver@7.3.2
-| | +-- vega-schema-url-parser@2.1.0
-| | +-- vega-themes@2.9.1
-| | `-- vega-tooltip@0.24.2
-| |   `-- vega-util@1.16.0 deduped
-| `-- vega-lite@4.17.0
-|   +-- @types/clone@2.1.0
-|   +-- @types/fast-json-stable-stringify@2.0.0
-|   +-- array-flat-polyfill@1.0.1
-|   +-- clone@2.1.2
-|   +-- fast-deep-equal@3.1.3
-|   +-- fast-json-stable-stringify@2.1.0
-|   +-- json-stringify-pretty-compact@2.0.0 deduped
-|   +-- tslib@2.0.3
-|   +-- vega-event-selector@2.0.6 deduped
-|   +-- vega-expression@3.0.0 deduped
-|   +-- vega-util@1.16.0 deduped
-|   `-- yargs@16.0.3
-|     +-- cliui@7.0.3
-|     | +-- string-width@4.2.0 deduped
-|     | +-- strip-ansi@6.0.0 deduped
-|     | `-- wrap-ansi@7.0.0
-|     |   +-- ansi-styles@4.3.0
-|     |   | `-- color-convert@2.0.1
-|     |   |   `-- color-name@1.1.4
-|     |   +-- string-width@4.2.0 deduped
-|     |   `-- strip-ansi@6.0.0 deduped
-|     +-- escalade@3.1.1
-|     +-- get-caller-file@2.0.5 deduped
-|     +-- require-directory@2.1.1 deduped
-|     +-- string-width@4.2.0 deduped
-|     +-- y18n@5.0.4
-|     `-- yargs-parser@20.2.3
-
-+-- chokidar@3.4.3
-| +-- anymatch@3.1.1
-| | +-- normalize-path@3.0.0 deduped
-| | `-- picomatch@2.2.2
-| +-- braces@3.0.2
-| | `-- fill-range@7.0.1
-| |   `-- to-regex-range@5.0.1
-| |     `-- is-number@7.0.0
-| +-- UNMET OPTIONAL DEPENDENCY fsevents@~2.1.2
-| +-- glob-parent@5.1.1
-| | `-- is-glob@4.0.1 deduped
-| +-- is-binary-path@2.1.0
-| | `-- binary-extensions@2.1.0
-| +-- is-glob@4.0.1
-| | `-- is-extglob@2.1.1
-| +-- normalize-path@3.0.0
-| `-- readdirp@3.5.0
-|   `-- picomatch@2.2.2 deduped
-
-+-- css-loader@3.2.1
-| +-- camelcase@5.3.1
-| +-- cssesc@3.0.0
-| +-- icss-utils@4.1.1
-| | `-- postcss@7.0.35 deduped
-| +-- loader-utils@1.4.0
-| | +-- big.js@5.2.2
-| | +-- emojis-list@3.0.0
-| | `-- json5@1.0.1
-| |   `-- minimist@1.2.5 deduped
-| +-- normalize-path@3.0.0 deduped
-| +-- postcss@7.0.35
-| | +-- chalk@2.4.2 deduped
-| | +-- source-map@0.6.1 deduped
-| | `-- supports-color@6.1.0 deduped
-| +-- postcss-modules-extract-imports@2.0.0
-| | `-- postcss@7.0.35 deduped
-| +-- postcss-modules-local-by-default@3.0.3
-| | +-- icss-utils@4.1.1 deduped
-| | +-- postcss@7.0.35 deduped
-| | +-- postcss-selector-parser@6.0.4
-| | | +-- cssesc@3.0.0 deduped
-| | | +-- indexes-of@1.0.1
-| | | +-- uniq@1.0.1
-| | | `-- util-deprecate@1.0.2
-| | `-- postcss-value-parser@4.1.0 deduped
-| +-- postcss-modules-scope@2.2.0
-| | +-- postcss@7.0.35 deduped
-| | `-- postcss-selector-parser@6.0.4 deduped
-| +-- postcss-modules-values@3.0.0
-| | +-- icss-utils@4.1.1 deduped
-| | `-- postcss@7.0.35 deduped
-| +-- postcss-value-parser@4.1.0
-| `-- schema-utils@2.7.1
-|   +-- @types/json-schema@7.0.6
-|   +-- ajv@6.12.6 deduped
-|   `-- ajv-keywords@3.5.2 deduped
-
-+-- duplicate-package-checker-webpack-plugin@3.0.0
-| +-- chalk@2.4.2
-| | +-- ansi-styles@3.2.1
-| | | `-- color-convert@1.9.3
-| | |   `-- color-name@1.1.3
-| | +-- escape-string-regexp@1.0.5 deduped
-| | `-- supports-color@5.5.0
-| |   `-- has-flag@3.0.0 deduped
-| +-- find-root@1.1.0
-| +-- lodash@4.17.20
-| `-- semver@5.7.1
-
-+-- file-loader@5.0.2
-| +-- loader-utils@1.4.0 deduped
-| `-- schema-utils@2.7.1 deduped
-
-+-- fs-extra@8.1.0
-| +-- graceful-fs@4.2.4
-| +-- jsonfile@4.0.0
-| | `-- graceful-fs@4.2.4 deduped
-| `-- universalify@0.1.2
-
-+-- glob@7.1.6
-| +-- fs.realpath@1.0.0
-| +-- inflight@1.0.6
-| | +-- once@1.4.0 deduped
-| | `-- wrappy@1.0.2
-| +-- inherits@2.0.4
-| +-- minimatch@3.0.4
-| | `-- brace-expansion@1.1.11
-| |   +-- balanced-match@1.0.0
-| |   `-- concat-map@0.0.1
-| +-- once@1.4.0
-| | `-- wrappy@1.0.2 deduped
-| `-- path-is-absolute@1.0.1
-
-+-- handlebars@4.7.6
-| +-- minimist@1.2.5 deduped
-| +-- neo-async@2.6.2
-| +-- source-map@0.6.1
-| +-- uglify-js@3.4.10
-| | +-- commander@2.19.0
-| | `-- source-map@0.6.1 deduped
-| `-- wordwrap@1.0.0
-
-+-- html-loader@0.5.5
-| +-- es6-templates@0.2.3
-| | +-- recast@0.11.23
-| | | +-- ast-types@0.9.6
-| | | +-- esprima@3.1.3
-| | | +-- private@0.1.8
-| | | `-- source-map@0.5.7
-| | `-- through@2.3.8 deduped
-| +-- fastparse@1.1.2
-| +-- html-minifier@3.5.21
-| | +-- camel-case@3.0.0
-| | | +-- no-case@2.3.2
-| | | | `-- lower-case@1.1.4
-| | | `-- upper-case@1.1.3
-| | +-- clean-css@4.2.3
-| | | `-- source-map@0.6.1 deduped
-| | +-- commander@2.17.1
-| | +-- he@1.2.0
-| | +-- param-case@2.1.1
-| | | `-- no-case@2.3.2 deduped
-| | +-- relateurl@0.2.7
-| | `-- uglify-js@3.4.10 deduped
-| +-- loader-utils@1.4.0 deduped
-| `-- object-assign@4.1.1
-
-+-- html-webpack-plugin@3.2.0
-| +-- html-minifier@3.5.21 deduped
-| +-- loader-utils@0.2.17
-| | +-- big.js@3.2.0
-| | +-- emojis-list@2.1.0
-| | +-- json5@0.5.1
-| | `-- object-assign@4.1.1 deduped
-| +-- lodash@4.17.20 deduped
-| +-- pretty-error@2.1.2
-| | +-- lodash@4.17.20 deduped
-| | `-- renderkid@2.0.4
-| |   +-- css-select@1.2.0
-| |   | +-- boolbase@1.0.0
-| |   | +-- css-what@2.1.3
-| |   | +-- domutils@1.5.1 deduped
-| |   | `-- nth-check@1.0.2
-| |   |   `-- boolbase@1.0.0 deduped
-| |   +-- dom-converter@0.2.0
-| |   | `-- utila@0.4.0
-| |   +-- htmlparser2@3.10.1 deduped
-| |   +-- lodash@4.17.20 deduped
-| |   `-- strip-ansi@3.0.1
-| |     `-- ansi-regex@2.1.1
-| +-- tapable@1.1.3
-| +-- toposort@1.0.7
-| `-- util.promisify@1.0.0
-|   +-- define-properties@1.1.3
-|   | `-- object-keys@1.1.1
-|   `-- object.getownpropertydescriptors@2.1.0
-|     +-- define-properties@1.1.3 deduped
-|     `-- es-abstract@1.17.7
-|       +-- es-to-primitive@1.2.1
-|       | +-- is-callable@1.2.2 deduped
-|       | +-- is-date-object@1.0.2 deduped
-|       | `-- is-symbol@1.0.3
-|       |   `-- has-symbols@1.0.1 deduped
-|       +-- function-bind@1.1.1
-|       +-- has@1.0.3
-|       | `-- function-bind@1.1.1 deduped
-|       +-- has-symbols@1.0.1
-|       +-- is-callable@1.2.2
-|       +-- is-regex@1.1.1
-|       | `-- has-symbols@1.0.1 deduped
-|       +-- object-inspect@1.8.0
-|       +-- object-keys@1.1.1 deduped
-|       +-- object.assign@4.1.1
-|       | +-- define-properties@1.1.3 deduped
-|       | +-- es-abstract@1.18.0-next.1
-|       | | +-- es-to-primitive@1.2.1 deduped
-|       | | +-- function-bind@1.1.1 deduped
-|       | | +-- has@1.0.3 deduped
-|       | | +-- has-symbols@1.0.1 deduped
-|       | | +-- is-callable@1.2.2 deduped
-|       | | +-- is-negative-zero@2.0.0
-|       | | +-- is-regex@1.1.1 deduped
-|       | | +-- object-inspect@1.8.0 deduped
-|       | | +-- object-keys@1.1.1 deduped
-|       | | +-- object.assign@4.1.1 deduped
-|       | | +-- string.prototype.trimend@1.0.2 deduped
-|       | | `-- string.prototype.trimstart@1.0.2 deduped
-|       | +-- has-symbols@1.0.1 deduped
-|       | `-- object-keys@1.1.1 deduped
-|       +-- string.prototype.trimend@1.0.2
-|       | +-- define-properties@1.1.3 deduped
-|       | `-- es-abstract@1.18.0-next.1
-|       |   +-- es-to-primitive@1.2.1 deduped
-|       |   +-- function-bind@1.1.1 deduped
-|       |   +-- has@1.0.3 deduped
-|       |   +-- has-symbols@1.0.1 deduped
-|       |   +-- is-callable@1.2.2 deduped
-|       |   +-- is-negative-zero@2.0.0 deduped
-|       |   +-- is-regex@1.1.1 deduped
-|       |   +-- object-inspect@1.8.0 deduped
-|       |   +-- object-keys@1.1.1 deduped
-|       |   +-- object.assign@4.1.1 deduped
-|       |   +-- string.prototype.trimend@1.0.2 deduped
-|       |   `-- string.prototype.trimstart@1.0.2 deduped
-|       `-- string.prototype.trimstart@1.0.2
-|         +-- define-properties@1.1.3 deduped
-|         `-- es-abstract@1.18.0-next.1
-|           +-- es-to-primitive@1.2.1 deduped
-|           +-- function-bind@1.1.1 deduped
-|           +-- has@1.0.3 deduped
-|           +-- has-symbols@1.0.1 deduped
-|           +-- is-callable@1.2.2 deduped
-|           +-- is-negative-zero@2.0.0 deduped
-|           +-- is-regex@1.1.1 deduped
-|           +-- object-inspect@1.8.0 deduped
-|           +-- object-keys@1.1.1 deduped
-|           +-- object.assign@4.1.1 deduped
-|           +-- string.prototype.trimend@1.0.2 deduped
-|           `-- string.prototype.trimstart@1.0.2 deduped
-
-+-- mini-css-extract-plugin@0.8.2
-| +-- loader-utils@1.4.0 deduped
-| +-- normalize-url@1.9.1
-| | +-- object-assign@4.1.1 deduped
-| | +-- prepend-http@1.0.4
-| | +-- query-string@4.3.4
-| | | +-- object-assign@4.1.1 deduped
-| | | `-- strict-uri-encode@1.1.0
-| | `-- sort-keys@1.1.2
-| |   `-- is-plain-obj@1.1.0
-| +-- schema-utils@1.0.0
-| | +-- ajv@6.12.6 deduped
-| | +-- ajv-errors@1.0.1
-| | `-- ajv-keywords@3.5.2 deduped
-| `-- webpack-sources@1.4.3
-|   +-- source-list-map@2.0.1
-|   `-- source-map@0.6.1 deduped
-
-+-- raw-loader@4.0.2
-| +-- loader-utils@2.0.0
-| | +-- big.js@5.2.2 deduped
-| | +-- emojis-list@3.0.0
-| | `-- json5@2.1.3
-| |   `-- minimist@1.2.5 deduped
-| `-- schema-utils@3.0.0
-|   +-- @types/json-schema@7.0.6 deduped
-|   +-- ajv@6.12.6 deduped
-|   `-- ajv-keywords@3.5.2 deduped
-
-+-- rimraf@3.0.2
-| `-- glob@7.1.6 deduped
-
-+-- sort-package-json@1.31.0
-| +-- detect-indent@6.0.0
-| +-- detect-newline@3.1.0
-| +-- glob@7.1.6 deduped
-| `-- sort-object-keys@1.1.3
-
-+-- source-map-loader@0.2.4
-| +-- async@2.6.3
-| | `-- lodash@4.17.20 deduped
-| `-- loader-utils@1.4.0 deduped
-
-+-- style-loader@1.0.2
-| +-- loader-utils@1.4.0 deduped
-| `-- schema-utils@2.7.1 deduped
-
-+-- svg-url-loader@3.0.3
-| +-- file-loader@4.3.0
-| | +-- loader-utils@1.4.0
-| | | +-- big.js@5.2.2 deduped
-| | | +-- emojis-list@3.0.0
-| | | `-- json5@1.0.1 deduped
-| | `-- schema-utils@2.7.1 deduped
-| `-- loader-utils@1.2.3
-|   +-- big.js@5.2.2 deduped
-|   +-- emojis-list@2.1.0 deduped
-|   `-- json5@1.0.1 deduped
-
-+-- terser-webpack-plugin@2.3.8
-| +-- cacache@13.0.1
-| | +-- chownr@1.1.4
-| | +-- figgy-pudding@3.5.2
-| | +-- fs-minipass@2.1.0
-| | | `-- minipass@3.1.3 deduped
-| | +-- glob@7.1.6 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- infer-owner@1.0.4
-| | +-- lru-cache@5.1.1
-| | | `-- yallist@3.1.1
-| | +-- minipass@3.1.3
-| | | `-- yallist@4.0.0
-| | +-- minipass-collect@1.0.2
-| | | `-- minipass@3.1.3 deduped
-| | +-- minipass-flush@1.0.5
-| | | `-- minipass@3.1.3 deduped
-| | +-- minipass-pipeline@1.2.4
-| | | `-- minipass@3.1.3 deduped
-| | +-- mkdirp@0.5.5 deduped
-| | +-- move-concurrently@1.0.1
-| | | +-- aproba@1.2.0
-| | | +-- copy-concurrently@1.0.5
-| | | | +-- aproba@1.2.0 deduped
-| | | | +-- fs-write-stream-atomic@1.0.10 deduped
-| | | | +-- iferr@0.1.5
-| | | | +-- mkdirp@0.5.5 deduped
-| | | | +-- rimraf@2.7.1
-| | | | | `-- glob@7.1.6 deduped
-| | | | `-- run-queue@1.0.3 deduped
-| | | +-- fs-write-stream-atomic@1.0.10
-| | | | +-- graceful-fs@4.2.4 deduped
-| | | | +-- iferr@0.1.5 deduped
-| | | | +-- imurmurhash@0.1.4
-| | | | `-- readable-stream@2.3.7 deduped
-| | | +-- mkdirp@0.5.5 deduped
-| | | +-- rimraf@2.7.1
-| | | | `-- glob@7.1.6 deduped
-| | | `-- run-queue@1.0.3
-| | |   `-- aproba@1.2.0 deduped
-| | +-- p-map@3.0.0
-| | | `-- aggregate-error@3.1.0
-| | |   +-- clean-stack@2.2.0
-| | |   `-- indent-string@4.0.0
-| | +-- promise-inflight@1.0.1
-| | +-- rimraf@2.7.1
-| | | `-- glob@7.1.6 deduped
-| | +-- ssri@7.1.0
-| | | +-- figgy-pudding@3.5.2 deduped
-| | | `-- minipass@3.1.3 deduped
-| | `-- unique-filename@1.1.1
-| |   `-- unique-slug@2.0.2
-| |     `-- imurmurhash@0.1.4 deduped
-| +-- find-cache-dir@3.3.1
-| | +-- commondir@1.0.1
-| | +-- make-dir@3.1.0
-| | | `-- semver@6.3.0 deduped
-| | `-- pkg-dir@4.2.0
-| |   `-- find-up@4.1.0
-| |     +-- locate-path@5.0.0
-| |     | `-- p-locate@4.1.0
-| |     |   `-- p-limit@2.3.0 deduped
-| |     `-- path-exists@4.0.0
-| +-- jest-worker@25.5.0
-| | +-- merge-stream@2.0.0
-| | `-- supports-color@7.2.0
-| |   `-- has-flag@4.0.0
-| +-- p-limit@2.3.0
-| | `-- p-try@2.2.0
-| +-- schema-utils@2.7.1 deduped
-| +-- serialize-javascript@4.0.0
-| | `-- randombytes@2.1.0
-| |   `-- safe-buffer@5.1.2 deduped
-| +-- source-map@0.6.1 deduped
-| +-- terser@4.8.0
-| | +-- commander@2.20.3 deduped
-| | +-- source-map@0.6.1 deduped
-| | `-- source-map-support@0.5.19
-| |   +-- buffer-from@1.1.1
-| |   `-- source-map@0.6.1 deduped
-| `-- webpack-sources@1.4.3 deduped
-
-+-- url-loader@3.0.0
-| +-- loader-utils@1.4.0 deduped
-| +-- mime@2.4.6
-| `-- schema-utils@2.7.1 deduped
-
-+-- webpack@4.44.2
-| +-- @webassemblyjs/ast@1.9.0
-| | +-- @webassemblyjs/helper-module-context@1.9.0 deduped
-| | +-- @webassemblyjs/helper-wasm-bytecode@1.9.0
-| | `-- @webassemblyjs/wast-parser@1.9.0
-| |   +-- @webassemblyjs/ast@1.9.0 deduped
-| |   +-- @webassemblyjs/floating-point-hex-parser@1.9.0
-| |   +-- @webassemblyjs/helper-api-error@1.9.0 deduped
-| |   +-- @webassemblyjs/helper-code-frame@1.9.0
-| |   | `-- @webassemblyjs/wast-printer@1.9.0 deduped
-| |   +-- @webassemblyjs/helper-fsm@1.9.0
-| |   `-- @xtuc/long@4.2.2
-| +-- @webassemblyjs/helper-module-context@1.9.0
-| | `-- @webassemblyjs/ast@1.9.0 deduped
-| +-- @webassemblyjs/wasm-edit@1.9.0
-| | +-- @webassemblyjs/ast@1.9.0 deduped
-| | +-- @webassemblyjs/helper-buffer@1.9.0
-| | +-- @webassemblyjs/helper-wasm-bytecode@1.9.0 deduped
-| | +-- @webassemblyjs/helper-wasm-section@1.9.0
-| | | +-- @webassemblyjs/ast@1.9.0 deduped
-| | | +-- @webassemblyjs/helper-buffer@1.9.0 deduped
-| | | +-- @webassemblyjs/helper-wasm-bytecode@1.9.0 deduped
-| | | `-- @webassemblyjs/wasm-gen@1.9.0 deduped
-| | +-- @webassemblyjs/wasm-gen@1.9.0
-| | | +-- @webassemblyjs/ast@1.9.0 deduped
-| | | +-- @webassemblyjs/helper-wasm-bytecode@1.9.0 deduped
-| | | +-- @webassemblyjs/ieee754@1.9.0 deduped
-| | | +-- @webassemblyjs/leb128@1.9.0 deduped
-| | | `-- @webassemblyjs/utf8@1.9.0 deduped
-| | +-- @webassemblyjs/wasm-opt@1.9.0
-| | | +-- @webassemblyjs/ast@1.9.0 deduped
-| | | +-- @webassemblyjs/helper-buffer@1.9.0 deduped
-| | | +-- @webassemblyjs/wasm-gen@1.9.0 deduped
-| | | `-- @webassemblyjs/wasm-parser@1.9.0 deduped
-| | +-- @webassemblyjs/wasm-parser@1.9.0 deduped
-| | `-- @webassemblyjs/wast-printer@1.9.0
-| |   +-- @webassemblyjs/ast@1.9.0 deduped
-| |   +-- @webassemblyjs/wast-parser@1.9.0 deduped
-| |   `-- @xtuc/long@4.2.2 deduped
-| +-- @webassemblyjs/wasm-parser@1.9.0
-| | +-- @webassemblyjs/ast@1.9.0 deduped
-| | +-- @webassemblyjs/helper-api-error@1.9.0
-| | +-- @webassemblyjs/helper-wasm-bytecode@1.9.0 deduped
-| | +-- @webassemblyjs/ieee754@1.9.0
-| | | `-- @xtuc/ieee754@1.2.0
-| | +-- @webassemblyjs/leb128@1.9.0
-| | | `-- @xtuc/long@4.2.2 deduped
-| | `-- @webassemblyjs/utf8@1.9.0
-| +-- acorn@6.4.2
-| +-- ajv@6.12.6
-| | +-- fast-deep-equal@3.1.3 deduped
-| | +-- fast-json-stable-stringify@2.1.0 deduped
-| | +-- json-schema-traverse@0.4.1
-| | `-- uri-js@4.4.0
-| |   `-- punycode@2.1.1
-| +-- ajv-keywords@3.5.2
-| +-- chrome-trace-event@1.0.2
-| | `-- tslib@1.13.0
-| +-- enhanced-resolve@4.3.0
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- memory-fs@0.5.0
-| | | +-- errno@0.1.7 deduped
-| | | `-- readable-stream@2.3.7 deduped
-| | `-- tapable@1.1.3 deduped
-| +-- eslint-scope@4.0.3
-| | +-- esrecurse@4.3.0
-| | | `-- estraverse@5.2.0
-| | `-- estraverse@4.3.0
-| +-- json-parse-better-errors@1.0.2
-| +-- loader-runner@2.4.0
-| +-- loader-utils@1.4.0 deduped
-| +-- memory-fs@0.4.1
-| | +-- errno@0.1.7
-| | | `-- prr@1.0.1
-| | `-- readable-stream@2.3.7
-| |   +-- core-util-is@1.0.2
-| |   +-- inherits@2.0.4 deduped
-| |   +-- isarray@1.0.0
-| |   +-- process-nextick-args@2.0.1
-| |   +-- safe-buffer@5.1.2 deduped
-| |   +-- string_decoder@1.1.1 deduped
-| |   `-- util-deprecate@1.0.2 deduped
-| +-- micromatch@3.1.10
-| | +-- arr-diff@4.0.0
-| | +-- array-unique@0.3.2
-| | +-- braces@2.3.2
-| | | +-- arr-flatten@1.1.0
-| | | +-- array-unique@0.3.2 deduped
-| | | +-- extend-shallow@2.0.1
-| | | | `-- is-extendable@0.1.1
-| | | +-- fill-range@4.0.0
-| | | | +-- extend-shallow@2.0.1 deduped
-| | | | +-- is-number@3.0.0
-| | | | | `-- kind-of@3.2.2
-| | | | |   `-- is-buffer@1.1.6
-| | | | +-- repeat-string@1.6.1
-| | | | `-- to-regex-range@2.1.1
-| | | |   +-- is-number@3.0.0 deduped
-| | | |   `-- repeat-string@1.6.1 deduped
-| | | +-- isobject@3.0.1
-| | | +-- repeat-element@1.1.3
-| | | +-- snapdragon@0.8.2 deduped
-| | | +-- snapdragon-node@2.1.1
-| | | | +-- define-property@1.0.0
-| | | | | `-- is-descriptor@1.0.2 deduped
-| | | | +-- isobject@3.0.1 deduped
-| | | | `-- snapdragon-util@3.0.1
-| | | |   `-- kind-of@3.2.2 deduped
-| | | +-- split-string@3.1.0
-| | | | `-- extend-shallow@3.0.2
-| | | |   +-- assign-symbols@1.0.0 deduped
-| | | |   `-- is-extendable@1.0.1
-| | | |     `-- is-plain-object@2.0.4 deduped
-| | | `-- to-regex@3.0.2 deduped
-| | +-- define-property@2.0.2
-| | | +-- is-descriptor@1.0.2
-| | | | +-- is-accessor-descriptor@1.0.0
-| | | | | `-- kind-of@6.0.3
-| | | | +-- is-data-descriptor@1.0.0
-| | | | | `-- kind-of@6.0.3
-| | | | `-- kind-of@6.0.3
-| | | `-- isobject@3.0.1 deduped
-| | +-- extend-shallow@3.0.2
-| | | +-- assign-symbols@1.0.0
-| | | `-- is-extendable@1.0.1
-| | |   `-- is-plain-object@2.0.4
-| | |     `-- isobject@3.0.1 deduped
-| | +-- extglob@2.0.4
-| | | +-- array-unique@0.3.2 deduped
-| | | +-- define-property@1.0.0
-| | | | `-- is-descriptor@1.0.2 deduped
-| | | +-- expand-brackets@2.1.4
-| | | | +-- debug@2.6.9 deduped
-| | | | +-- define-property@0.2.5 deduped
-| | | | +-- extend-shallow@2.0.1 deduped
-| | | | +-- posix-character-classes@0.1.1
-| | | | +-- regex-not@1.0.2 deduped
-| | | | +-- snapdragon@0.8.2 deduped
-| | | | `-- to-regex@3.0.2 deduped
-| | | +-- extend-shallow@2.0.1 deduped
-| | | +-- fragment-cache@0.2.1 deduped
-| | | +-- regex-not@1.0.2 deduped
-| | | +-- snapdragon@0.8.2 deduped
-| | | `-- to-regex@3.0.2 deduped
-| | +-- fragment-cache@0.2.1
-| | | `-- map-cache@0.2.2
-| | +-- kind-of@6.0.3
-| | +-- nanomatch@1.2.13
-| | | +-- arr-diff@4.0.0 deduped
-| | | +-- array-unique@0.3.2 deduped
-| | | +-- define-property@2.0.2
-| | | | +-- is-descriptor@1.0.2 deduped
-| | | | `-- isobject@3.0.1 deduped
-| | | +-- extend-shallow@3.0.2
-| | | | +-- assign-symbols@1.0.0 deduped
-| | | | `-- is-extendable@1.0.1
-| | | |   `-- is-plain-object@2.0.4 deduped
-| | | +-- fragment-cache@0.2.1 deduped
-| | | +-- is-windows@1.0.2
-| | | +-- kind-of@6.0.3
-| | | +-- object.pick@1.3.0 deduped
-| | | +-- regex-not@1.0.2 deduped
-| | | +-- snapdragon@0.8.2 deduped
-| | | `-- to-regex@3.0.2 deduped
-| | +-- object.pick@1.3.0
-| | | `-- isobject@3.0.1 deduped
-| | +-- regex-not@1.0.2
-| | | +-- extend-shallow@3.0.2
-| | | | +-- assign-symbols@1.0.0 deduped
-| | | | `-- is-extendable@1.0.1
-| | | |   `-- is-plain-object@2.0.4 deduped
-| | | `-- safe-regex@1.1.0
-| | |   `-- ret@0.1.15
-| | +-- snapdragon@0.8.2
-| | | +-- base@0.11.2
-| | | | +-- cache-base@1.0.1
-| | | | | +-- collection-visit@1.0.0
-| | | | | | +-- map-visit@1.0.0
-| | | | | | | `-- object-visit@1.0.1 deduped
-| | | | | | `-- object-visit@1.0.1
-| | | | | |   `-- isobject@3.0.1 deduped
-| | | | | +-- component-emitter@1.3.0 deduped
-| | | | | +-- get-value@2.0.6
-| | | | | +-- has-value@1.0.0
-| | | | | | +-- get-value@2.0.6 deduped
-| | | | | | +-- has-values@1.0.0
-| | | | | | | +-- is-number@3.0.0 deduped
-| | | | | | | `-- kind-of@4.0.0
-| | | | | | |   `-- is-buffer@1.1.6 deduped
-| | | | | | `-- isobject@3.0.1 deduped
-| | | | | +-- isobject@3.0.1 deduped
-| | | | | +-- set-value@2.0.1
-| | | | | | +-- extend-shallow@2.0.1 deduped
-| | | | | | +-- is-extendable@0.1.1 deduped
-| | | | | | +-- is-plain-object@2.0.4 deduped
-| | | | | | `-- split-string@3.1.0 deduped
-| | | | | +-- to-object-path@0.3.0
-| | | | | | `-- kind-of@3.2.2 deduped
-| | | | | +-- union-value@1.0.1
-| | | | | | +-- arr-union@3.1.0 deduped
-| | | | | | +-- get-value@2.0.6 deduped
-| | | | | | +-- is-extendable@0.1.1 deduped
-| | | | | | `-- set-value@2.0.1 deduped
-| | | | | `-- unset-value@1.0.0
-| | | | |   +-- has-value@0.3.1
-| | | | |   | +-- get-value@2.0.6 deduped
-| | | | |   | +-- has-values@0.1.4
-| | | | |   | `-- isobject@2.1.0
-| | | | |   |   `-- isarray@1.0.0 deduped
-| | | | |   `-- isobject@3.0.1 deduped
-| | | | +-- class-utils@0.3.6
-| | | | | +-- arr-union@3.1.0
-| | | | | +-- define-property@0.2.5 deduped
-| | | | | +-- isobject@3.0.1 deduped
-| | | | | `-- static-extend@0.1.2
-| | | | |   +-- define-property@0.2.5 deduped
-| | | | |   `-- object-copy@0.1.0
-| | | | |     +-- copy-descriptor@0.1.1
-| | | | |     +-- define-property@0.2.5 deduped
-| | | | |     `-- kind-of@3.2.2 deduped
-| | | | +-- component-emitter@1.3.0
-| | | | +-- define-property@1.0.0
-| | | | | `-- is-descriptor@1.0.2 deduped
-| | | | +-- isobject@3.0.1 deduped
-| | | | +-- mixin-deep@1.3.2
-| | | | | +-- for-in@1.0.2
-| | | | | `-- is-extendable@1.0.1
-| | | | |   `-- is-plain-object@2.0.4 deduped
-| | | | `-- pascalcase@0.1.1
-| | | +-- debug@2.6.9 deduped
-| | | +-- define-property@0.2.5
-| | | | `-- is-descriptor@0.1.6
-| | | |   +-- is-accessor-descriptor@0.1.6
-| | | |   | `-- kind-of@3.2.2
-| | | |   |   `-- is-buffer@1.1.6 deduped
-| | | |   +-- is-data-descriptor@0.1.4
-| | | |   | `-- kind-of@3.2.2
-| | | |   |   `-- is-buffer@1.1.6 deduped
-| | | |   `-- kind-of@5.1.0
-| | | +-- extend-shallow@2.0.1 deduped
-| | | +-- map-cache@0.2.2 deduped
-| | | +-- source-map@0.5.7
-| | | +-- source-map-resolve@0.5.3
-| | | | +-- atob@2.1.2
-| | | | +-- decode-uri-component@0.2.0
-| | | | +-- resolve-url@0.2.1
-| | | | +-- source-map-url@0.4.0
-| | | | `-- urix@0.1.0
-| | | `-- use@3.1.1
-| | `-- to-regex@3.0.2
-| |   +-- define-property@2.0.2
-| |   | +-- is-descriptor@1.0.2 deduped
-| |   | `-- isobject@3.0.1 deduped
-| |   +-- extend-shallow@3.0.2
-| |   | +-- assign-symbols@1.0.0 deduped
-| |   | `-- is-extendable@1.0.1
-| |   |   `-- is-plain-object@2.0.4 deduped
-| |   +-- regex-not@1.0.2 deduped
-| |   `-- safe-regex@1.1.0 deduped
-| +-- mkdirp@0.5.5
-| | `-- minimist@1.2.5 deduped
-| +-- neo-async@2.6.2 deduped
-| +-- node-libs-browser@2.2.1
-| | +-- assert@1.5.0
-| | | +-- object-assign@4.1.1 deduped
-| | | `-- util@0.10.3 deduped
-| | +-- browserify-zlib@0.2.0
-| | | `-- pako@1.0.11
-| | +-- buffer@4.9.2
-| | | +-- base64-js@1.3.1
-| | | +-- ieee754@1.1.13
-| | | `-- isarray@1.0.0 deduped
-| | +-- console-browserify@1.2.0
-| | +-- constants-browserify@1.0.0
-| | +-- crypto-browserify@3.12.0
-| | | +-- browserify-cipher@1.0.1
-| | | | +-- browserify-aes@1.2.0
-| | | | | +-- buffer-xor@1.0.3
-| | | | | +-- cipher-base@1.0.4 deduped
-| | | | | +-- create-hash@1.2.0 deduped
-| | | | | +-- evp_bytestokey@1.0.3 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | +-- browserify-des@1.0.2
-| | | | | +-- cipher-base@1.0.4 deduped
-| | | | | +-- des.js@1.0.1
-| | | | | | +-- inherits@2.0.4 deduped
-| | | | | | `-- minimalistic-assert@1.0.1 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | `-- evp_bytestokey@1.0.3
-| | | |   +-- md5.js@1.3.5 deduped
-| | | |   `-- safe-buffer@5.1.2 deduped
-| | | +-- browserify-sign@4.2.1
-| | | | +-- bn.js@5.1.3
-| | | | +-- browserify-rsa@4.0.1
-| | | | | +-- bn.js@4.11.9 deduped
-| | | | | `-- randombytes@2.1.0 deduped
-| | | | +-- create-hash@1.2.0 deduped
-| | | | +-- create-hmac@1.1.7 deduped
-| | | | +-- elliptic@6.5.3
-| | | | | +-- bn.js@4.11.9 deduped
-| | | | | +-- brorand@1.1.0
-| | | | | +-- hash.js@1.1.7
-| | | | | | +-- inherits@2.0.4 deduped
-| | | | | | `-- minimalistic-assert@1.0.1 deduped
-| | | | | +-- hmac-drbg@1.0.1
-| | | | | | +-- hash.js@1.1.7 deduped
-| | | | | | +-- minimalistic-assert@1.0.1 deduped
-| | | | | | `-- minimalistic-crypto-utils@1.0.1 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | +-- minimalistic-assert@1.0.1
-| | | | | `-- minimalistic-crypto-utils@1.0.1
-| | | | +-- inherits@2.0.4 deduped
-| | | | +-- parse-asn1@5.1.6
-| | | | | +-- asn1.js@5.4.1
-| | | | | | +-- bn.js@4.11.9 deduped
-| | | | | | +-- inherits@2.0.4 deduped
-| | | | | | +-- minimalistic-assert@1.0.1 deduped
-| | | | | | `-- safer-buffer@2.1.2 deduped
-| | | | | +-- browserify-aes@1.2.0 deduped
-| | | | | +-- evp_bytestokey@1.0.3 deduped
-| | | | | +-- pbkdf2@3.1.1 deduped
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | +-- readable-stream@3.6.0
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | +-- string_decoder@1.1.1 deduped
-| | | | | `-- util-deprecate@1.0.2 deduped
-| | | | `-- safe-buffer@5.2.1
-| | | +-- create-ecdh@4.0.4
-| | | | +-- bn.js@4.11.9
-| | | | `-- elliptic@6.5.3 deduped
-| | | +-- create-hash@1.2.0
-| | | | +-- cipher-base@1.0.4
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | +-- inherits@2.0.4 deduped
-| | | | +-- md5.js@1.3.5
-| | | | | +-- hash-base@3.1.0
-| | | | | | +-- inherits@2.0.4 deduped
-| | | | | | +-- readable-stream@3.6.0
-| | | | | | | +-- inherits@2.0.4 deduped
-| | | | | | | +-- string_decoder@1.1.1 deduped
-| | | | | | | `-- util-deprecate@1.0.2 deduped
-| | | | | | `-- safe-buffer@5.2.1
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- safe-buffer@5.1.2 deduped
-| | | | +-- ripemd160@2.0.2
-| | | | | +-- hash-base@3.1.0 deduped
-| | | | | `-- inherits@2.0.4 deduped
-| | | | `-- sha.js@2.4.11
-| | | |   +-- inherits@2.0.4 deduped
-| | | |   `-- safe-buffer@5.1.2 deduped
-| | | +-- create-hmac@1.1.7
-| | | | +-- cipher-base@1.0.4 deduped
-| | | | +-- create-hash@1.2.0 deduped
-| | | | +-- inherits@2.0.4 deduped
-| | | | +-- ripemd160@2.0.2 deduped
-| | | | +-- safe-buffer@5.1.2 deduped
-| | | | `-- sha.js@2.4.11 deduped
-| | | +-- diffie-hellman@5.0.3
-| | | | +-- bn.js@4.11.9 deduped
-| | | | +-- miller-rabin@4.0.1
-| | | | | +-- bn.js@4.11.9 deduped
-| | | | | `-- brorand@1.1.0 deduped
-| | | | `-- randombytes@2.1.0 deduped
-| | | +-- inherits@2.0.4 deduped
-| | | +-- pbkdf2@3.1.1
-| | | | +-- create-hash@1.2.0 deduped
-| | | | +-- create-hmac@1.1.7 deduped
-| | | | +-- ripemd160@2.0.2 deduped
-| | | | +-- safe-buffer@5.1.2 deduped
-| | | | `-- sha.js@2.4.11 deduped
-| | | +-- public-encrypt@4.0.3
-| | | | +-- bn.js@4.11.9 deduped
-| | | | +-- browserify-rsa@4.0.1 deduped
-| | | | +-- create-hash@1.2.0 deduped
-| | | | +-- parse-asn1@5.1.6 deduped
-| | | | +-- randombytes@2.1.0 deduped
-| | | | `-- safe-buffer@5.1.2 deduped
-| | | +-- randombytes@2.1.0 deduped
-| | | `-- randomfill@1.0.4
-| | |   +-- randombytes@2.1.0 deduped
-| | |   `-- safe-buffer@5.1.2 deduped
-| | +-- domain-browser@1.2.0
-| | +-- events@3.2.0
-| | +-- https-browserify@1.0.0
-| | +-- os-browserify@0.3.0
-| | +-- path-browserify@0.0.1
-| | +-- process@0.11.10 deduped
-| | +-- punycode@1.3.2
-| | +-- querystring-es3@0.2.1
-| | +-- readable-stream@2.3.7 deduped
-| | +-- stream-browserify@2.0.2
-| | | +-- inherits@2.0.4 deduped
-| | | `-- readable-stream@2.3.7 deduped
-| | +-- stream-http@2.8.3
-| | | +-- builtin-status-codes@3.0.0
-| | | +-- inherits@2.0.4 deduped
-| | | +-- readable-stream@2.3.7 deduped
-| | | +-- to-arraybuffer@1.0.1
-| | | `-- xtend@4.0.2 deduped
-| | +-- string_decoder@1.1.1
-| | | `-- safe-buffer@5.1.2 deduped
-| | +-- timers-browserify@2.0.11
-| | | `-- setimmediate@1.0.5
-| | +-- tty-browserify@0.0.0
-| | +-- url@0.11.0
-| | | +-- punycode@1.3.2 deduped
-| | | `-- querystring@0.2.0
-| | +-- util@0.11.1
-| | | `-- inherits@2.0.3
-| | `-- vm-browserify@1.1.2
-| +-- schema-utils@1.0.0
-| | +-- ajv@6.12.6 deduped
-| | +-- ajv-errors@1.0.1 deduped
-| | `-- ajv-keywords@3.5.2 deduped
-| +-- tapable@1.1.3 deduped
-| +-- terser-webpack-plugin@1.4.5
-| | +-- cacache@12.0.4
-| | | +-- bluebird@3.7.2 deduped
-| | | +-- chownr@1.1.4 deduped
-| | | +-- figgy-pudding@3.5.2 deduped
-| | | +-- glob@7.1.6 deduped
-| | | +-- graceful-fs@4.2.4 deduped
-| | | +-- infer-owner@1.0.4 deduped
-| | | +-- lru-cache@5.1.1 deduped
-| | | +-- mississippi@3.0.0
-| | | | +-- concat-stream@1.6.2
-| | | | | +-- buffer-from@1.1.1 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | +-- readable-stream@2.3.7 deduped
-| | | | | `-- typedarray@0.0.6
-| | | | +-- duplexify@3.7.1
-| | | | | +-- end-of-stream@1.4.4 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | +-- readable-stream@2.3.7 deduped
-| | | | | `-- stream-shift@1.0.1
-| | | | +-- end-of-stream@1.4.4
-| | | | | `-- once@1.4.0 deduped
-| | | | +-- flush-write-stream@1.1.1
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- readable-stream@2.3.7 deduped
-| | | | +-- from2@2.3.0
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- readable-stream@2.3.7 deduped
-| | | | +-- parallel-transform@1.2.0
-| | | | | +-- cyclist@1.0.1
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- readable-stream@2.3.7 deduped
-| | | | +-- pump@3.0.0 deduped
-| | | | +-- pumpify@1.5.1
-| | | | | +-- duplexify@3.7.1 deduped
-| | | | | +-- inherits@2.0.4 deduped
-| | | | | `-- pump@2.0.1
-| | | | |   +-- end-of-stream@1.4.4 deduped
-| | | | |   `-- once@1.4.0 deduped
-| | | | +-- stream-each@1.2.3
-| | | | | +-- end-of-stream@1.4.4 deduped
-| | | | | `-- stream-shift@1.0.1 deduped
-| | | | `-- through2@2.0.5
-| | | |   +-- readable-stream@2.3.7 deduped
-| | | |   `-- xtend@4.0.2 deduped
-| | | +-- mkdirp@0.5.5 deduped
-| | | +-- move-concurrently@1.0.1 deduped
-| | | +-- promise-inflight@1.0.1 deduped
-| | | +-- rimraf@2.7.1
-| | | | `-- glob@7.1.6 deduped
-| | | +-- ssri@6.0.1
-| | | | `-- figgy-pudding@3.5.2 deduped
-| | | +-- unique-filename@1.1.1 deduped
-| | | `-- y18n@4.0.0 deduped
-| | +-- find-cache-dir@2.1.0
-| | | +-- commondir@1.0.1 deduped
-| | | +-- make-dir@2.1.0
-| | | | +-- pify@4.0.1 deduped
-| | | | `-- semver@5.7.1
-| | | `-- pkg-dir@3.0.0 deduped
-| | +-- is-wsl@1.1.0
-| | +-- schema-utils@1.0.0 deduped
-| | +-- serialize-javascript@4.0.0 deduped
-| | +-- source-map@0.6.1 deduped
-| | +-- terser@4.8.0 deduped
-| | +-- webpack-sources@1.4.3 deduped
-| | `-- worker-farm@1.7.0
-| |   `-- errno@0.1.7 deduped
-| +-- watchpack@1.7.4
-| | +-- chokidar@3.4.3 deduped
-| | +-- graceful-fs@4.2.4 deduped
-| | +-- neo-async@2.6.2 deduped
-| | `-- UNMET OPTIONAL DEPENDENCY watchpack-chokidar2@^2.0.0
-| `-- webpack-sources@1.4.3 deduped
-
-+-- webpack-bundle-analyzer@3.9.0
-| +-- acorn@7.4.1
-| +-- acorn-walk@7.2.0
-| +-- bfj@6.1.2
-| | +-- bluebird@3.7.2
-| | +-- check-types@8.0.3
-| | +-- hoopy@0.1.4
-| | `-- tryer@1.0.1
-| +-- chalk@2.4.2 deduped
-| +-- commander@2.20.3
-| +-- ejs@2.7.4
-| +-- express@4.17.1
-| | +-- accepts@1.3.7
-| | | +-- mime-types@2.1.27
-| | | | `-- mime-db@1.44.0
-| | | `-- negotiator@0.6.2
-| | +-- array-flatten@1.1.1
-| | +-- body-parser@1.19.0
-| | | +-- bytes@3.1.0
-| | | +-- content-type@1.0.4 deduped
-| | | +-- debug@2.6.9 deduped
-| | | +-- depd@1.1.2 deduped
-| | | +-- http-errors@1.7.2
-| | | | +-- depd@1.1.2 deduped
-| | | | +-- inherits@2.0.3
-| | | | +-- setprototypeof@1.1.1 deduped
-| | | | +-- statuses@1.5.0 deduped
-| | | | `-- toidentifier@1.0.0
-| | | +-- iconv-lite@0.4.24 deduped
-| | | +-- on-finished@2.3.0 deduped
-| | | +-- qs@6.7.0 deduped
-| | | +-- raw-body@2.4.0
-| | | | +-- bytes@3.1.0 deduped
-| | | | +-- http-errors@1.7.2 deduped
-| | | | +-- iconv-lite@0.4.24 deduped
-| | | | `-- unpipe@1.0.0 deduped
-| | | `-- type-is@1.6.18 deduped
-| | +-- content-disposition@0.5.3
-| | | `-- safe-buffer@5.1.2 deduped
-| | +-- content-type@1.0.4
-| | +-- cookie@0.4.0
-| | +-- cookie-signature@1.0.6
-| | +-- debug@2.6.9
-| | | `-- ms@2.0.0
-| | +-- depd@1.1.2
-| | +-- encodeurl@1.0.2
-| | +-- escape-html@1.0.3
-| | +-- etag@1.8.1
-| | +-- finalhandler@1.1.2
-| | | +-- debug@2.6.9 deduped
-| | | +-- encodeurl@1.0.2 deduped
-| | | +-- escape-html@1.0.3 deduped
-| | | +-- on-finished@2.3.0 deduped
-| | | +-- parseurl@1.3.3 deduped
-| | | +-- statuses@1.5.0 deduped
-| | | `-- unpipe@1.0.0
-| | +-- fresh@0.5.2
-| | +-- merge-descriptors@1.0.1
-| | +-- methods@1.1.2
-| | +-- on-finished@2.3.0
-| | | `-- ee-first@1.1.1
-| | +-- parseurl@1.3.3
-| | +-- path-to-regexp@0.1.7
-| | +-- proxy-addr@2.0.6
-| | | +-- forwarded@0.1.2
-| | | `-- ipaddr.js@1.9.1
-| | +-- qs@6.7.0
-| | +-- range-parser@1.2.1
-| | +-- safe-buffer@5.1.2
-| | +-- send@0.17.1
-| | | +-- debug@2.6.9 deduped
-| | | +-- depd@1.1.2 deduped
-| | | +-- destroy@1.0.4
-| | | +-- encodeurl@1.0.2 deduped
-| | | +-- escape-html@1.0.3 deduped
-| | | +-- etag@1.8.1 deduped
-| | | +-- fresh@0.5.2 deduped
-| | | +-- http-errors@1.7.2 deduped
-| | | +-- mime@1.6.0
-| | | +-- ms@2.1.1
-| | | +-- on-finished@2.3.0 deduped
-| | | +-- range-parser@1.2.1 deduped
-| | | `-- statuses@1.5.0 deduped
-| | +-- serve-static@1.14.1
-| | | +-- encodeurl@1.0.2 deduped
-| | | +-- escape-html@1.0.3 deduped
-| | | +-- parseurl@1.3.3 deduped
-| | | `-- send@0.17.1 deduped
-| | +-- setprototypeof@1.1.1
-| | +-- statuses@1.5.0
-| | +-- type-is@1.6.18
-| | | +-- media-typer@0.3.0
-| | | `-- mime-types@2.1.27 deduped
-| | +-- utils-merge@1.0.1
-| | `-- vary@1.1.2
-| +-- filesize@3.6.1
-| +-- gzip-size@5.1.1
-| | +-- duplexer@0.1.2
-| | `-- pify@4.0.1
-| +-- lodash@4.17.20 deduped
-| +-- mkdirp@0.5.5 deduped
-| +-- opener@1.5.2
-| `-- ws@6.2.1
-|   `-- async-limiter@1.0.1
-
-+-- webpack-cli@3.3.12
-| +-- chalk@2.4.2 deduped
-| +-- cross-spawn@6.0.5
-| | +-- nice-try@1.0.5
-| | +-- path-key@2.0.1
-| | +-- semver@5.7.1
-| | +-- shebang-command@1.2.0
-| | | `-- shebang-regex@1.0.0
-| | `-- which@1.3.1
-| |   `-- isexe@2.0.0 deduped
-| +-- enhanced-resolve@4.3.0 deduped
-| +-- findup-sync@3.0.0
-| | +-- detect-file@1.0.0
-| | +-- is-glob@4.0.1 deduped
-| | +-- micromatch@3.1.10 deduped
-| | `-- resolve-dir@1.0.1
-| |   +-- expand-tilde@2.0.2
-| |   | `-- homedir-polyfill@1.0.3
-| |   |   `-- parse-passwd@1.0.0
-| |   `-- global-modules@1.0.0
-| |     +-- global-prefix@1.0.2
-| |     | +-- expand-tilde@2.0.2 deduped
-| |     | +-- homedir-polyfill@1.0.3 deduped
-| |     | +-- ini@1.3.5 deduped
-| |     | +-- is-windows@1.0.2 deduped
-| |     | `-- which@1.3.1 deduped
-| |     +-- is-windows@1.0.2 deduped
-| |     `-- resolve-dir@1.0.1 deduped
-| +-- global-modules@2.0.0
-| | `-- global-prefix@3.0.0
-| |   +-- ini@1.3.5
-| |   +-- kind-of@6.0.3
-| |   `-- which@1.3.1 deduped
-| +-- import-local@2.0.0
-| | +-- pkg-dir@3.0.0
-| | | `-- find-up@3.0.0 deduped
-| | `-- resolve-cwd@2.0.0
-| |   `-- resolve-from@3.0.0
-| +-- interpret@1.4.0
-| +-- loader-utils@1.4.0 deduped
-| +-- supports-color@6.1.0
-| | `-- has-flag@3.0.0
-| +-- v8-compile-cache@2.1.1
-| `-- yargs@13.3.2
-|   +-- cliui@5.0.0
-|   | +-- string-width@3.1.0
-|   | | +-- emoji-regex@7.0.3
-|   | | +-- is-fullwidth-code-point@2.0.0
-|   | | `-- strip-ansi@5.2.0 deduped
-|   | +-- strip-ansi@5.2.0
-|   | | `-- ansi-regex@4.1.0
-|   | `-- wrap-ansi@5.1.0
-|   |   +-- ansi-styles@3.2.1 deduped
-|   |   +-- string-width@3.1.0
-|   |   | +-- emoji-regex@7.0.3
-|   |   | +-- is-fullwidth-code-point@2.0.0
-|   |   | `-- strip-ansi@5.2.0 deduped
-|   |   `-- strip-ansi@5.2.0
-|   |     `-- ansi-regex@4.1.0
-|   +-- find-up@3.0.0
-|   | `-- locate-path@3.0.0
-|   |   +-- p-locate@3.0.0
-|   |   | `-- p-limit@2.3.0 deduped
-|   |   `-- path-exists@3.0.0
-|   +-- get-caller-file@2.0.5
-|   +-- require-directory@2.1.1
-|   +-- require-main-filename@2.0.0
-|   +-- set-blocking@2.0.0
-|   +-- string-width@3.1.0
-|   | +-- emoji-regex@7.0.3
-|   | +-- is-fullwidth-code-point@2.0.0
-|   | `-- strip-ansi@5.2.0
-|   |   `-- ansi-regex@4.1.0
-|   +-- which-module@2.0.0
-|   +-- y18n@4.0.0
-|   `-- yargs-parser@13.1.2
-|     +-- camelcase@5.3.1 deduped
-|     `-- decamelize@1.2.0
-
-+-- webpack-merge@4.2.2
-| `-- lodash@4.17.20 deduped
-
-+-- whatwg-fetch@3.4.1
-
-+-- worker-loader@2.0.0
-| +-- loader-utils@1.4.0 deduped
-| `-- schema-utils@0.4.7
-|   +-- ajv@6.12.6 deduped
-|   `-- ajv-keywords@3.5.2 deduped
-`-- yarn-deduplicate@1.2.0
-  +-- @yarnpkg/lockfile@1.1.0 deduped
-  +-- commander@4.1.1
-  `-- semver@7.1.3
-
-npm ERR! invalid: @jupyterlab/toc@4.0.0 C:\Users\edreamleo\Python\Python37\share\jupyter\lab\staging\node_modules\@jupyterlab\toc</t>
-<t tx="ekr.20201114160816.15">+-- @jupyterlab/application@2.2.6
-| +-- @fortawesome/fontawesome-free@5.15.1
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/rendermime-interfaces@2.2.1
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/services@5.2.5
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/settingregistry@2.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- node-fetch@2.6.1
-| | `-- ws@7.3.1
-| +-- @jupyterlab/statedb@2.2.5
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | `-- @lumino/signaling@1.4.3 deduped
-| +-- @jupyterlab/ui-components@2.2.4
-| | +-- @blueprintjs/core@3.35.0
-| | | +-- @blueprintjs/icons@3.22.0
-| | | | +-- classnames@2.2.6 deduped
-| | | | `-- tslib@1.13.0 deduped
-| | | +-- @types/dom4@2.0.1
-| | | +-- classnames@2.2.6
-| | | +-- dom4@2.1.5
-| | | +-- normalize.css@8.0.1
-| | | +-- popper.js@1.16.1
-| | | +-- react-lifecycles-compat@3.0.4
-| | | +-- react-popper@1.3.7
-| | | | +-- @babel/runtime@7.12.1
-| | | | | `-- regenerator-runtime@0.13.7
-| | | | +-- create-react-context@0.3.0
-| | | | | +-- gud@1.0.0
-| | | | | `-- warning@4.0.3 deduped
-| | | | +-- deep-equal@1.1.1
-| | | | | +-- is-arguments@1.0.4
-| | | | | +-- is-date-object@1.0.2
-| | | | | +-- is-regex@1.1.1 deduped
-| | | | | +-- object-is@1.1.3
-| | | | | | +-- define-properties@1.1.3 deduped
-| | | | | | `-- es-abstract@1.18.0-next.1
-| | | | | |   +-- es-to-primitive@1.2.1 deduped
-| | | | | |   +-- function-bind@1.1.1 deduped
-| | | | | |   +-- has@1.0.3 deduped
-| | | | | |   +-- has-symbols@1.0.1 deduped
-| | | | | |   +-- is-callable@1.2.2 deduped
-| | | | | |   +-- is-negative-zero@2.0.0 deduped
-| | | | | |   +-- is-regex@1.1.1 deduped
-| | | | | |   +-- object-inspect@1.8.0 deduped
-| | | | | |   +-- object-keys@1.1.1 deduped
-| | | | | |   +-- object.assign@4.1.1 deduped
-| | | | | |   +-- string.prototype.trimend@1.0.2 deduped
-| | | | | |   `-- string.prototype.trimstart@1.0.2 deduped
-| | | | | +-- object-keys@1.1.1 deduped
-| | | | | `-- regexp.prototype.flags@1.3.0
-| | | | |   +-- define-properties@1.1.3 deduped
-| | | | |   `-- es-abstract@1.17.7 deduped
-| | | | +-- popper.js@1.16.1 deduped
-| | | | +-- prop-types@15.7.2 deduped
-| | | | +-- typed-styles@0.0.7
-| | | | `-- warning@4.0.3
-| | | |   `-- loose-envify@1.4.0 deduped
-| | | +-- react-transition-group@2.9.0
-| | | | +-- dom-helpers@3.4.0
-| | | | | `-- @babel/runtime@7.12.1 deduped
-| | | | +-- loose-envify@1.4.0 deduped
-| | | | +-- prop-types@15.7.2 deduped
-| | | | `-- react-lifecycles-compat@3.0.4 deduped
-| | | +-- resize-observer-polyfill@1.5.1
-| | | `-- tslib@1.13.0 deduped
-| | +-- @blueprintjs/select@3.14.3
-| | | +-- @blueprintjs/core@3.35.0 deduped
-| | | +-- classnames@2.2.6 deduped
-| | | `-- tslib@1.13.0 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/virtualdom@1.7.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- react@16.9.0 deduped
-| | +-- react-dom@16.9.0 deduped
-| | `-- typestyle@2.1.0
-| |   +-- csstype@2.6.9 deduped
-| |   `-- free-style@3.1.0
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/application@1.11.0
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @lumino/commands@1.11.3
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/keyboard@1.2.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/virtualdom@1.7.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | `-- @lumino/signaling@1.4.3 deduped
-| +-- @lumino/messaging@1.4.3 deduped
-| +-- @lumino/polling@1.3.3
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | `-- @lumino/signaling@1.4.3 deduped
-| +-- @lumino/properties@1.2.3
-| +-- @lumino/signaling@1.4.3
-| | `-- @lumino/algorithm@1.3.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped
-
-+-- @jupyterlab/application-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/property-inspector@2.2.6
-| | +-- @jupyterlab/application@2.2.6 deduped
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/settingregistry@2.2.5
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- ajv@6.12.6 deduped
-| | `-- json5@2.1.3
-| |   `-- minimist@1.2.5 deduped
-| +-- @jupyterlab/statedb@2.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| `-- react@16.9.0 deduped
-
-+-- @jupyterlab/apputils-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/mainmenu@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statedb@2.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/commands@1.11.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| +-- @lumino/polling@1.3.3 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| `-- es6-promise@4.2.8
-
-+-- @jupyterlab/buildutils@2.2.3
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @yarnpkg/lockfile@1.1.0
-| +-- child_process@1.0.2
-| +-- commander@4.0.1
-| +-- crypto@1.0.1
-| +-- dependency-graph@0.8.1
-| +-- duplicate-package-checker-webpack-plugin@3.0.0 deduped
-| +-- fs-extra@8.1.0 deduped
-| +-- glob@7.1.6 deduped
-| +-- inquirer@7.3.3
-| | +-- ansi-escapes@4.3.1
-| | | `-- type-fest@0.11.0
-| | +-- chalk@4.1.0
-| | | +-- ansi-styles@4.3.0
-| | | | `-- color-convert@2.0.1
-| | | |   `-- color-name@1.1.4
-| | | `-- supports-color@7.2.0
-| | |   `-- has-flag@4.0.0
-| | +-- cli-cursor@3.1.0
-| | | `-- restore-cursor@3.1.0
-| | |   +-- onetime@5.1.2
-| | |   | `-- mimic-fn@2.1.0
-| | |   `-- signal-exit@3.0.3
-| | +-- cli-width@3.0.0
-| | +-- external-editor@3.1.0
-| | | +-- chardet@0.7.0
-| | | +-- iconv-lite@0.4.24
-| | | | `-- safer-buffer@2.1.2
-| | | `-- tmp@0.0.33
-| | |   `-- os-tmpdir@1.0.2
-| | +-- figures@3.2.0
-| | | `-- escape-string-regexp@1.0.5 deduped
-| | +-- lodash@4.17.20 deduped
-| | +-- mute-stream@0.0.8
-| | +-- run-async@2.4.1
-| | +-- rxjs@6.6.3
-| | | `-- tslib@1.13.0 deduped
-| | +-- string-width@4.2.0
-| | | +-- emoji-regex@8.0.0
-| | | +-- is-fullwidth-code-point@3.0.0
-| | | `-- strip-ansi@6.0.0 deduped
-| | +-- strip-ansi@6.0.0
-| | | `-- ansi-regex@5.0.0
-| | `-- through@2.3.8
-| +-- mini-css-extract-plugin@0.8.2 deduped
-| +-- package-json@6.5.0
-| | +-- got@9.6.0
-| | | +-- @sindresorhus/is@0.14.0
-| | | +-- @szmarczak/http-timer@1.1.2
-| | | | `-- defer-to-connect@1.1.3
-| | | +-- cacheable-request@6.1.0
-| | | | +-- clone-response@1.0.2
-| | | | | `-- mimic-response@1.0.1 deduped
-| | | | +-- get-stream@5.2.0
-| | | | | `-- pump@3.0.0 deduped
-| | | | +-- http-cache-semantics@4.1.0
-| | | | +-- keyv@3.1.0
-| | | | | `-- json-buffer@3.0.0
-| | | | +-- lowercase-keys@2.0.0
-| | | | +-- normalize-url@4.5.0
-| | | | `-- responselike@1.0.2
-| | | |   `-- lowercase-keys@1.0.1 deduped
-| | | +-- decompress-response@3.3.0
-| | | | `-- mimic-response@1.0.1 deduped
-| | | +-- duplexer3@0.1.4
-| | | +-- get-stream@4.1.0
-| | | | `-- pump@3.0.0
-| | | |   +-- end-of-stream@1.4.4 deduped
-| | | |   `-- once@1.4.0 deduped
-| | | +-- lowercase-keys@1.0.1
-| | | +-- mimic-response@1.0.1
-| | | +-- p-cancelable@1.1.0
-| | | +-- to-readable-stream@1.0.0
-| | | `-- url-parse-lax@3.0.0
-| | |   `-- prepend-http@2.0.0
-| | +-- registry-auth-token@4.2.0
-| | | `-- rc@1.2.8
-| | |   +-- deep-extend@0.6.0
-| | |   +-- ini@1.3.5 deduped
-| | |   +-- minimist@1.2.5 deduped
-| | |   `-- strip-json-comments@2.0.1
-| | +-- registry-url@5.1.0
-| | | `-- rc@1.2.8 deduped
-| | `-- semver@6.3.0 deduped
-| +-- path@0.12.7
-| | +-- process@0.11.10
-| | `-- util@0.10.3
-| |   `-- inherits@2.0.1
-| +-- prettier@1.19.1
-| +-- semver@6.3.0
-| +-- sort-package-json@1.31.0 deduped
-| +-- typescript@3.7.5
-| +-- webpack@4.44.2 deduped
-| `-- which@2.0.2
-|   `-- isexe@2.0.0</t>
-<t tx="ekr.20201114160816.16">+-- @jupyterlab/celltags-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/celltags@2.2.7
-| | +-- @jupyterlab/application@2.2.6 deduped
-| | +-- @jupyterlab/cells@2.2.7 deduped
-| | +-- @jupyterlab/notebook@2.2.7 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| `-- @jupyterlab/notebook@2.2.7 deduped</t>
-<t tx="ekr.20201114160816.17">+-- @jupyterlab/codemirror-extension@2.2.6
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/codeeditor@2.2.5
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/codemirror@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/statusbar@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- codemirror@5.53.2 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/fileeditor@2.2.4 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/statusbar@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- csstype@2.6.9
-| | +-- react@16.9.0 deduped
-| | `-- typestyle@2.1.0 deduped
-| +-- @lumino/widgets@1.14.0 deduped
-| `-- codemirror@5.53.2</t>
-<t tx="ekr.20201114160816.18">+-- @jupyterlab/completer-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/completer@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/console@2.2.7
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/cells@2.2.7 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/nbformat@2.2.5 deduped
-| | +-- @jupyterlab/observables@3.2.5 deduped
-| | +-- @jupyterlab/rendermime@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/fileeditor@2.2.4 deduped
-| +-- @jupyterlab/notebook@2.2.7 deduped
-| +-- @jupyterlab/services@5.2.5 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped</t>
-<t tx="ekr.20201114160816.19">+-- @jupyterlab/console-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/codeeditor@2.2.5 deduped
-| +-- @jupyterlab/console@2.2.7 deduped
-| +-- @jupyterlab/coreutils@4.2.5 deduped
-| +-- @jupyterlab/filebrowser@2.2.5
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docmanager@2.2.4 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @jupyterlab/services@5.2.5 deduped
-| | +-- @jupyterlab/statedb@2.2.5 deduped
-| | +-- @jupyterlab/statusbar@2.2.4 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/launcher@2.2.6
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/commands@1.11.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/properties@1.2.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @jupyterlab/rendermime@2.2.4 deduped
-| +-- @jupyterlab/settingregistry@2.2.5 deduped
-| +-- @jupyterlab/ui-components@2.2.4 deduped
-| +-- @lumino/algorithm@1.3.3 deduped
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| +-- @lumino/properties@1.2.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped</t>
-<t tx="ekr.20201114160816.20">+-- @jupyterlab/coreutils@4.2.5
-| +-- @lumino/coreutils@1.5.3 deduped
-| +-- @lumino/disposable@1.4.3 deduped
-| +-- @lumino/signaling@1.4.3 deduped
-| +-- minimist@1.2.5
-| +-- moment@2.29.1
-| +-- path-posix@1.0.0
-| `-- url-parse@1.4.7
-|   +-- querystringify@2.2.0
-|   `-- requires-port@1.0.0</t>
-<t tx="ekr.20201114160816.21">+-- @jupyterlab/csvviewer-extension@2.2.7
-| +-- @jupyterlab/application@2.2.6 deduped
-| +-- @jupyterlab/apputils@2.2.6 deduped
-| +-- @jupyterlab/csvviewer@2.2.4
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/coreutils@4.2.5 deduped
-| | +-- @jupyterlab/docregistry@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/datagrid@0.6.0 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @jupyterlab/docregistry@2.2.4 deduped
-| +-- @jupyterlab/documentsearch@2.2.7
-| | +-- @jupyterlab/apputils@2.2.6 deduped
-| | +-- @jupyterlab/cells@2.2.7 deduped
-| | +-- @jupyterlab/codeeditor@2.2.5 deduped
-| | +-- @jupyterlab/codemirror@2.2.4 deduped
-| | +-- @jupyterlab/fileeditor@2.2.4 deduped
-| | +-- @jupyterlab/notebook@2.2.7 deduped
-| | +-- @jupyterlab/ui-components@2.2.4 deduped
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/polling@1.3.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | +-- @lumino/widgets@1.14.0 deduped
-| | +-- codemirror@5.53.2 deduped
-| | `-- react@16.9.0 deduped
-| +-- @jupyterlab/mainmenu@2.2.4 deduped
-| +-- @lumino/datagrid@0.6.0
-| | +-- @lumino/algorithm@1.3.3 deduped
-| | +-- @lumino/coreutils@1.5.3 deduped
-| | +-- @lumino/disposable@1.4.3 deduped
-| | +-- @lumino/domutils@1.2.3 deduped
-| | +-- @lumino/dragdrop@1.6.4 deduped
-| | +-- @lumino/keyboard@1.2.3 deduped
-| | +-- @lumino/messaging@1.4.3 deduped
-| | +-- @lumino/signaling@1.4.3 deduped
-| | `-- @lumino/widgets@1.14.0 deduped
-| +-- @lumino/signaling@1.4.3 deduped
-| `-- @lumino/widgets@1.14.0 deduped</t>
-<t tx="ekr.20201114160816.5">- Colorize and import .tsx like .ts.
-
-- Read the Jupyter docs! Good first issue.
-
-- Location of jupyterlab toc packages:
-    C:\leo.repo\jupyterlab-toc (study version)
-    ~/AppData/local/yarn/cache/v6 (two places)
-        @jupyterlab\toc
-    
-  - Search for the keyword jupyterlab-extension on the npm registry to find extensions
-  - Search for markdownViewerTracker.
-  
-- Script to parse npm list into children.
-  Search:  ^(\+\-\-)
-  Replace: \n\1
-</t>
-<t tx="ekr.20201114160816.6">@language rest
-@wrap
-
-c:\leo.repo\leo-editor&gt;npm list -g
-
-C:\Users\edreamleo\AppData\Roaming\npm
-
-
-
-
-</t>
-<t tx="ekr.20201114160816.7">+-- http-server@0.11.1
-| +-- colors@1.0.3
-| +-- corser@2.0.1
-| +-- ecstatic@3.2.1
-| | +-- he@1.1.1
-| | +-- mime@1.6.0
-| | +-- minimist@1.2.0
-| | `-- url-join@2.0.5
-| +-- http-proxy@1.17.0
-| | +-- eventemitter3@3.1.0
-| | +-- follow-redirects@1.5.7
-| | | `-- debug@3.1.0
-| | |   `-- ms@2.0.0 deduped
-| | `-- requires-port@1.0.0
-| +-- opener@1.4.3
-| +-- optimist@0.6.1
-| | +-- minimist@0.0.10
-| | `-- wordwrap@0.0.3
-| +-- portfinder@1.0.17
-| | +-- async@1.5.2
-| | +-- debug@2.6.9
-| | | `-- ms@2.0.0
-| | `-- mkdirp@0.5.1
-| |   `-- minimist@0.0.8
-| `-- union@0.4.6
-|   `-- qs@2.3.3</t>
-<t tx="ekr.20201114160816.8">+-- inspect-brk@0.1.2
-| `-- find-up@2.1.0
-|   `-- locate-path@2.0.0
-|     +-- p-locate@2.0.0
-|     | `-- p-limit@1.3.0
-|     |   `-- p-try@1.0.0
-|     `-- path-exists@3.0.0
-</t>
-<t tx="ekr.20201114160816.9">+-- node-gyp@3.6.2
-| +-- fstream@1.0.11
-| | +-- graceful-fs@4.1.11 deduped
-| | +-- inherits@2.0.3
-| | +-- mkdirp@0.5.1 deduped
-| | `-- rimraf@2.6.2 deduped
-| +-- glob@7.1.2
-| | +-- fs.realpath@1.0.0
-| | +-- inflight@1.0.6
-| | | +-- once@1.4.0 deduped
-| | | `-- wrappy@1.0.2
-| | +-- inherits@2.0.3 deduped
-| | +-- minimatch@3.0.4 deduped
-| | +-- once@1.4.0
-| | | `-- wrappy@1.0.2 deduped
-| | `-- path-is-absolute@1.0.1
-| +-- graceful-fs@4.1.11
-| +-- minimatch@3.0.4
-| | `-- brace-expansion@1.1.11
-| |   +-- balanced-match@1.0.0
-| |   `-- concat-map@0.0.1
-| +-- mkdirp@0.5.1
-| | `-- minimist@0.0.8
-| +-- nopt@3.0.6
-| | `-- abbrev@1.1.1
-| +-- npmlog@4.1.2
-| | +-- are-we-there-yet@1.1.5
-| | | +-- delegates@1.0.0
-| | | `-- readable-stream@2.3.6
-| | |   +-- core-util-is@1.0.2
-| | |   +-- inherits@2.0.3 deduped
-| | |   +-- isarray@1.0.0
-| | |   +-- process-nextick-args@2.0.0
-| | |   +-- safe-buffer@5.1.2 deduped
-| | |   +-- string_decoder@1.1.1
-| | |   | `-- safe-buffer@5.1.2 deduped
-| | |   `-- util-deprecate@1.0.2
-| | +-- console-control-strings@1.1.0
-| | +-- gauge@2.7.4
-| | | +-- aproba@1.2.0
-| | | +-- console-control-strings@1.1.0 deduped
-| | | +-- has-unicode@2.0.1
-| | | +-- object-assign@4.1.1
-| | | +-- signal-exit@3.0.2
-| | | +-- string-width@1.0.2
-| | | | +-- code-point-at@1.1.0
-| | | | +-- is-fullwidth-code-point@1.0.0
-| | | | | `-- number-is-nan@1.0.1
-| | | | `-- strip-ansi@3.0.1 deduped
-| | | +-- strip-ansi@3.0.1
-| | | | `-- ansi-regex@2.1.1
-| | | `-- wide-align@1.1.3
-| | |   `-- string-width@1.0.2 deduped
-| | `-- set-blocking@2.0.0
-| +-- osenv@0.1.5
-| | +-- os-homedir@1.0.2
-| | `-- os-tmpdir@1.0.2
-| +-- request@2.88.0
-| | +-- aws-sign2@0.7.0
-| | +-- aws4@1.8.0
-| | +-- caseless@0.12.0
-| | +-- combined-stream@1.0.6
-| | | `-- delayed-stream@1.0.0
-| | +-- extend@3.0.2
-| | +-- forever-agent@0.6.1
-| | +-- form-data@2.3.2
-| | | +-- asynckit@0.4.0
-| | | +-- combined-stream@1.0.6 deduped
-| | | `-- mime-types@2.1.19 deduped
-| | +-- har-validator@5.1.0
-| | | +-- ajv@5.5.2
-| | | | +-- co@4.6.0
-| | | | +-- fast-deep-equal@1.1.0
-| | | | +-- fast-json-stable-stringify@2.0.0
-| | | | `-- json-schema-traverse@0.3.1
-| | | `-- har-schema@2.0.0
-| | +-- http-signature@1.2.0
-| | | +-- assert-plus@1.0.0
-| | | +-- jsprim@1.4.1
-| | | | +-- assert-plus@1.0.0 deduped
-| | | | +-- extsprintf@1.3.0
-| | | | +-- json-schema@0.2.3
-| | | | `-- verror@1.10.0
-| | | |   +-- assert-plus@1.0.0 deduped
-| | | |   +-- core-util-is@1.0.2 deduped
-| | | |   `-- extsprintf@1.3.0 deduped
-| | | `-- sshpk@1.14.2
-| | |   +-- asn1@0.2.4
-| | |   | `-- safer-buffer@2.1.2 deduped
-| | |   +-- assert-plus@1.0.0 deduped
-| | |   +-- bcrypt-pbkdf@1.0.2
-| | |   | `-- tweetnacl@0.14.5 deduped
-| | |   +-- dashdash@1.14.1
-| | |   | `-- assert-plus@1.0.0 deduped
-| | |   +-- ecc-jsbn@0.1.2
-| | |   | +-- jsbn@0.1.1 deduped
-| | |   | `-- safer-buffer@2.1.2 deduped
-| | |   +-- getpass@0.1.7
-| | |   | `-- assert-plus@1.0.0 deduped
-| | |   +-- jsbn@0.1.1
-| | |   +-- safer-buffer@2.1.2
-| | |   `-- tweetnacl@0.14.5
-| | +-- is-typedarray@1.0.0
-| | +-- isstream@0.1.2
-| | +-- json-stringify-safe@5.0.1
-| | +-- mime-types@2.1.19
-| | | `-- mime-db@1.35.0
-| | +-- oauth-sign@0.9.0
-| | +-- performance-now@2.1.0
-| | +-- qs@6.5.2
-| | +-- safe-buffer@5.1.2
-| | +-- tough-cookie@2.4.3
-| | | +-- psl@1.1.29
-| | | `-- punycode@1.4.1
-| | +-- tunnel-agent@0.6.0
-| | | `-- safe-buffer@5.1.2 deduped
-| | `-- uuid@3.3.2
-| +-- rimraf@2.6.2
-| | `-- glob@7.1.2 deduped
-| +-- semver@5.3.0
-| +-- tar@2.2.1
-| | +-- block-stream@0.0.9
-| | | `-- inherits@2.0.3 deduped
-| | +-- fstream@1.0.11 deduped
-| | `-- inherits@2.0.3 deduped
-| `-- which@1.3.1
-|   `-- isexe@2.0.0</t>
-<t tx="ekr.20201117043352.1">- Second test purchase.
 - Sign in to stripe.
-
-- Group purchases.
 - Add contact page.
 - Customize my-account page.
 - Set tax and payment methods.
-- Make Rebecca an admin.
 </t>
 <t tx="ekr.20201118031649.1">@language rest
 @wrap
@@ -28758,26 +29234,6 @@ https://github.com/leo-editor/leo-editor/issues/1743
 
 @language python
 @nosearch
-</t>
-<t tx="ekr.20201118090108.1">@language rest
-@wrap
-
-
-How to create your own Leo/Leo Vue site:
-
-Create a folder
-Create a leo file in the folder (See Leo Vue for more info about Leo).
-Download ‘index.html’ from this repo (https://github.com/kaleguy/leo-examples) to the folder
-Edit settings in index.html
-Upload your folder to github pages or other server.
-
-Installed docker for desktop.
-Installed kernel update.
-
-Run with Docker
-
-docker build -t leovue .
-docker run -p 8080:8080 leovue
 </t>
 <t tx="ekr.20201118194139.1">@language rest
 @wrap
@@ -28887,141 +29343,6 @@ https://github.com/leo-editor/leo-editor/issues/1747
 @language python
 @nosearch
 </t>
-<t tx="ekr.20201120061256.1">c:\leo.repo&gt;cd leovue
-
-c:\leo.repo\leovue&gt;docker build -t leovue .
-[+] Building 134.7s (14/14) FINISHED
- =&gt; [internal] load .dockerignore                                                                                  0.1s
- =&gt; =&gt; transferring context: 180B                                                                                  0.0s
- =&gt; [internal] load build definition from Dockerfile                                                               0.1s
- =&gt; =&gt; transferring dockerfile: 411B                                                                               0.0s
- =&gt; [internal] load metadata for docker.io/library/node:8                                                          2.9s
- =&gt; [1/9] FROM docker.io/library/node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df   30.6s
- =&gt; =&gt; resolve docker.io/library/node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df    0.0s
- =&gt; =&gt; sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df 1.42kB / 1.42kB                     0.0s
- =&gt; =&gt; sha256:ee25271e00572cb09d095f6b35880a284eac570c17452644bc67fd1d8dc7f9f7 2.21kB / 2.21kB                     0.0s
- =&gt; =&gt; sha256:146bd6a886182fde06fbf747470b1c89814bc8ab1c96fdf1aef6107171959fe6 45.38MB / 45.38MB                  10.3s
- =&gt; =&gt; sha256:db0efb86e80601b5bbdbb7c406426982c4202d339687c14c3941b364527e2249 4.34MB / 4.34MB                     2.3s
- =&gt; =&gt; sha256:8eeadf3757f41ffbde6fbb4bbbe14f9f5b9ce33cc1aa88bb5c0b4d6e9467509d 7.76kB / 7.76kB                     0.0s
- =&gt; =&gt; sha256:9935d0c62ace92b388be202275e222007d6cac10b9c1f2c1ea63af38c09ea7ab 10.80MB / 10.80MB                   3.1s
- =&gt; =&gt; sha256:e705a4c4fd310b96bfb3d7928428e65f0d3f5bad0cd0bda1434aee1d89418468 50.07MB / 50.07MB                  12.3s
- =&gt; =&gt; sha256:c877b722db6f4d4297c21f07162d21fa6ac6f51d03360f75e24cfa3bcaefe57d 214.84MB / 214.84MB                24.0s
- =&gt; =&gt; sha256:645c20ec82147f2bdc182280ac02b60687cfac33c4231059051bbdcf60e31035 4.16kB / 4.16kB                    11.0s
- =&gt; =&gt; extracting sha256:146bd6a886182fde06fbf747470b1c89814bc8ab1c96fdf1aef6107171959fe6                          4.1s
- =&gt; =&gt; sha256:db8fbd9db2fe6382804432552a60f85b0e292cdb34b8a5c751c4a3061f68df29 19.40MB / 19.40MB                  14.3s
- =&gt; =&gt; sha256:1c151cd1b3eabced84742529489b3c8c344181b4cbcdcfccdb1f4a7c7d0239ec 1.40MB / 1.40MB                    13.0s
- =&gt; =&gt; sha256:fbd993995f407f3681fc8399ae67c04bba8e15c7f754b1af8b37f50b35f4a11e 292B / 292B                        13.7s
- =&gt; =&gt; extracting sha256:9935d0c62ace92b388be202275e222007d6cac10b9c1f2c1ea63af38c09ea7ab                          0.8s
- =&gt; =&gt; extracting sha256:db0efb86e80601b5bbdbb7c406426982c4202d339687c14c3941b364527e2249                          0.3s
- =&gt; =&gt; extracting sha256:e705a4c4fd310b96bfb3d7928428e65f0d3f5bad0cd0bda1434aee1d89418468                          5.5s
- =&gt; =&gt; extracting sha256:c877b722db6f4d4297c21f07162d21fa6ac6f51d03360f75e24cfa3bcaefe57d                          4.9s
- =&gt; =&gt; extracting sha256:645c20ec82147f2bdc182280ac02b60687cfac33c4231059051bbdcf60e31035                          0.0s
- =&gt; =&gt; extracting sha256:db8fbd9db2fe6382804432552a60f85b0e292cdb34b8a5c751c4a3061f68df29                          0.8s
- =&gt; =&gt; extracting sha256:1c151cd1b3eabced84742529489b3c8c344181b4cbcdcfccdb1f4a7c7d0239ec                          0.1s
- =&gt; =&gt; extracting sha256:fbd993995f407f3681fc8399ae67c04bba8e15c7f754b1af8b37f50b35f4a11e                          0.0s
- =&gt; [internal] load build context                                                                                  3.4s
- =&gt; =&gt; transferring context: 98.65MB                                                                               3.3s
- =&gt; [2/9] RUN node --version                                                                                       2.8s
- =&gt; [3/9] RUN npm --version                                                                                        0.6s
- =&gt; [4/9] RUN apt-get update &amp;&amp; apt-get install -y build-essential &amp;&amp; apt-get -y install sudo                      6.0s
- =&gt; [5/9] RUN mkdir -p /usr/src/app                                                                                0.5s
- =&gt; [6/9] WORKDIR /usr/src/app                                                                                     0.0s
- =&gt; [7/9] COPY package.json /usr/src/app/                                                                          0.0s
- =&gt; [8/9] COPY . /usr/src/app                                                                                      0.5s
- =&gt; [9/9] RUN npm install                                                                                         83.2s
- =&gt; exporting to image                                                                                             7.4s
- =&gt; =&gt; exporting layers                                                                                            7.3s
- =&gt; =&gt; writing image sha256:9669cb5783882380c8ac61361b4f4d0a80645646a4b95467eca67fe95fed2359                       0.0s
- =&gt; =&gt; naming to docker.io/library/leovue                                                                          0.1s
-
-c:\leo.repo\leovue&gt;</t>
-<t tx="ekr.20201120061449.1">c:\leo.repo\leovue&gt;docker run -p 8080:8080 leovue
-
-&gt; leo-vue@2.0.2 dev /usr/src/app
-&gt; node build/dev-server.js
-
-ℹ ｢wdm｣: wait until bundle finished:
-[BABEL] Note: The code generator has deoptimised the styling of "/usr/src/app/node_modules/bootstrap-vue/esm/icons/icons.js" as it exceeds the max of "500KB".
- DONE  Compiled successfully in 36240ms12:14:37
-
-ℹ ｢wdm｣: Hash: bceb58d1acc6117a234f
-Version: webpack 3.12.0
-Time: 47240ms
-     Asset     Size  Chunks                    Chunk Names
-    app.js  30.5 MB       0  [emitted]  [big]  app
-index.html  11.3 kB          [emitted]
-   [0] ./node_modules/vue-awesome/components/Icon.vue 1.65 kB {0} [built]
- [810] multi ./build/dev-client ./src/main.js 40 bytes {0} [built]
- [811] ./build/dev-client.js 254 bytes {0} [built]
- [827] ./src/main.js 6.87 kB {0} [built]
-[3250] ./src/components/MathJax.vue 2.08 kB {0} [built]
-[3253] ./src/components/layout/ImageLeft.vue 2.11 kB {0} [built]
-[3256] ./src/components/LVTimeline.vue 2.09 kB {0} [built]
-[3260] ./src/components/WordCloud.vue 2.09 kB {0} [built]
-[3298] ./src/components/Kanban.vue 2.42 kB {0} [built]
-[3302] ./src/components/MermaidBoard.vue 2.1 kB {0} [built]
-[3306] ./src/components/D3Board.vue 2.08 kB {0} [built]
-[3309] ./node_modules/vue-table-component/dist/index.js 160 kB {0} [built]
-[3311] ./src/components/SummaryTable.vue 2.1 kB {0} [built]
-[3314] ./src/components/TagSearch.vue 2.09 kB {0} [built]
-[3318] ./node_modules/vuewordcloud/index.js 13.3 kB {0} [built]
-    + 3312 hidden modules
-Child html-webpack-plugin for "index.html":
-         Asset     Size  Chunks  Chunk Names
-    index.html  1.48 MB       0
-       [0] ./node_modules/html-webpack-plugin/lib/loader.js!./index.html 12.3 kB {0} [built]
-       [1] ./node_modules/lodash/lodash.js 543 kB {0} [built]
-       [2] (webpack)/buildin/global.js 509 bytes {0} [built]
-       [3] (webpack)/buildin/module.js 517 bytes {0} [built]
-ℹ ｢wdm｣: Compiled successfully.
-&gt; Listening at http://localhost:8080
-</t>
-<t tx="ekr.20201120061944.1">@language rest
-@wrap
-
-git clone https://github.com/kaleguy/leovue.git leovue
-
-- Study app.js in original form.
-- Compare before/after build for index.html.
-- Use plain build, not docker.
-
-- Check bit defender permissions.
-- Change title to LeoVue2 and see what happens.
-
-Download MathJax, Revealjs, Mermaid.
-
-build-leovue:
-cd c:\leo.repo\leovue
-docker build -t leovue .
-
-run-leovue:
-cd c:\leo.repo\leovue
-docker run -p 8080:8080 leovue
-
-moz localhost:8080
-
-Docker Commands:
-
-    docker ps -a
-    docker system prune
-    docker kill &lt;id&gt;
-    
-See the main.js file in the LeoVue source for how other components are included with LeoVue.</t>
-<t tx="ekr.20201121062544.1">@language rest
-@wrap
-
-From https://kaleguy.github.io/leo-examples/
-
-How to create your own Leo/Leo Vue site:
-
-- Create a folder
-- Create a leo file in the folder (See Leo Vue for more info about Leo).
-- Download ‘index.html’ from this repo to the folder
-- Edit settings in index.html
-  The default filename is docs (docs.leo)
-- Upload your folder to github pages or other server.
-
-Note that if your Leo file contains diagrams, you’ll need to include Onsen and Mermaid (see the Diagram Example)</t>
 <t tx="ekr.20201121085817.1">@language rest
 @wrap
 
@@ -29032,13 +29353,6 @@ regex fails with replace-all
 @language python
 @nosearch
 </t>
-<t tx="ekr.20201122121724.1">@language rest
-@wrap
-
-- Fix more icons. When done, send url for ekr.com to Linda.
-- Use local .js files.
-- Use https instead of http for EKR.com
-- Study powershell.</t>
 <t tx="ekr.20201122134617.1">@language rest
 @wrap
 
@@ -29049,14 +29363,6 @@ https://github.com/leo-editor/leo-editor/issues/1749
 </t>
 <t tx="ekr.20201122165543.1"></t>
 <t tx="ekr.20201122165606.1"></t>
-<t tx="ekr.20201123163439.1">@language rest
-@wrap
-
-This kind of error suggests that the script your browser loads is intended for nodejs scripting environment not for the browser.  In order to be used in the webpage this scripts must be transformed or repackaged.
-
-IIRC leo-vue uses webpack as build tool. The build tool (whatever it might be) bundles all separate javascript files in one big javascript file. That file should be loaded in the webpage. It means that the script tag in your index.html needs a src attribute to be correctly set to load this big javascript which contains all separate files bundled together.
-
-Look in the webpack configuration file to find out where the result of build process should be and then adjust `&lt;scirpt src=""&gt;` inside your index.html to the correct path.</t>
 <t tx="ekr.20201123183452.1">@language rest
 @wrap
 
@@ -29066,29 +29372,6 @@ w.see works for the first time ever!
 
 @language python
 @nosearch
-</t>
-<t tx="ekr.20201124105426.1">c:\leo.repo\leovue&gt;docker build -t leovue .
-[+] Building 93.9s (14/14) FINISHED
- =&gt; [internal] load .dockerignore                                                                                  0.1s
- =&gt; =&gt; transferring context: 170B                                                                                  0.0s
- =&gt; [internal] load build definition from Dockerfile                                                               0.0s
- =&gt; =&gt; transferring dockerfile: 391B                                                                               0.0s
- =&gt; [internal] load metadata for docker.io/library/node:8                                                          1.6s
- =&gt; [1/9] FROM docker.io/library/node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df    0.0s
- =&gt; [internal] load build context                                                                                  1.4s
- =&gt; =&gt; transferring context: 97.09MB                                                                               1.3s
- =&gt; CACHED [2/9] RUN node --version                                                                                0.0s
- =&gt; CACHED [3/9] RUN npm --version                                                                                 0.0s
- =&gt; CACHED [4/9] RUN apt-get update &amp;&amp; apt-get install -y build-essential &amp;&amp; apt-get -y install sudo               0.0s
- =&gt; CACHED [5/9] RUN mkdir -p /usr/src/app                                                                         0.0s
- =&gt; CACHED [6/9] WORKDIR /usr/src/app                                                                              0.0s
- =&gt; CACHED [7/9] COPY package.json /usr/src/app/                                                                   0.0s
- =&gt; [8/9] COPY . /usr/src/app                                                                                      0.5s
- =&gt; [9/9] RUN npm install                                                                                         83.3s
- =&gt; exporting to image                                                                                             6.9s
- =&gt; =&gt; exporting layers                                                                                            6.9s
- =&gt; =&gt; writing image sha256:97a641aaedb86bbdfcb0a4e20b00181cec74625f4a31dd16518211a101c74c91                       0.0s
- =&gt; =&gt; naming to docker.io/library/leovue                                                                          0.0s
 </t>
 <t tx="ekr.20201124191844.1">@g.commander_command('reformat-selection')
 def reformatSelection(self, event=None, undoType='Reformat Paragraph'):
@@ -29148,9 +29431,11 @@ AttributeError: 'NoneType' object has no attribute 'text'
         # An important, ever-present unit test.
         all = w.getAllText()
         if g.unitTesting:
-            assert p.b == all, g.callers()
+            assert p.b == all, (w, g.callers())
         elif p.b != all:
-            g.trace(f"\nError:p.b != w.getAllText() p:{p.h} {g.callers()}\n")
+            g.trace(
+                f"\np.b != w.getAllText() p: {p.h} \n"
+                f"w: {w!r} \n{g.callers()}\n")
             # g.printObj(g.splitLines(p.b), tag='p.b')
             # g.printObj(g.splitLines(all), tag='getAllText')
         p.v.insertSpot = ins = w.getInsertPoint()
@@ -29209,6 +29494,8 @@ https://github.com/leo-editor/leo-editor/issues/1757
 k.doBinding and k.getPaneBinding fix the primary issue.
 
 vc.vim_dot fixes a secondary issue, described in #1757.
+
+- Update vim docs.
 
 @language python
 @nosearch
@@ -34316,10 +34603,6 @@ if root and target:
 else:
     print('Error: root and target nodes must be top-level nodes.')</t>
 <t tx="ekr.20201128171127.1"></t>
-<t tx="ekr.20201129092548.1">- Why is noscript interfering with leoflexx.py?
-
-- Build Leovue.
-</t>
 <t tx="ekr.20201129132149.1"></t>
 <t tx="ekr.20201130074836.1">def convert_leoEditCommands_tests(c, root, target):
     """
@@ -34344,6 +34627,48 @@ else:
             count += 1
     c.redraw()
     print(f"converted {count} @test nodes", color='blue')
+</t>
+<t tx="ekr.20201130195111.1">def create_app():
+    """
+    Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
+    
+    This method is expensive (about 1 sec) only the first time it is called.
+    
+    Thereafter, recreating g.app, g.app.gui, and new commands is fast.
+    """
+    # dump_leo_modules()
+    t1 = time.process_time()
+    from leo.core import leoGlobals as g
+    from leo.core import leoApp
+    from leo.core import leoConfig
+    from leo.core import leoNodes
+    from leo.core import leoCommands
+    from leo.core import leoGui
+    t2 = time.process_time()
+    g.app = leoApp.LeoApp()
+    g.app.recentFilesManager = leoApp.RecentFilesManager()
+    g.app.loadManager = leoApp.LoadManager()
+    g.app.loadManager.computeStandardDirectories()
+    if not g.app.setLeoID(useDialog=False, verbose=True):
+        raise ValueError("unable to set LeoID.")
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
+    g.app.config = leoConfig.GlobalConfigManager()
+    g.app.db = g.TracingNullObject('g.app.db')
+    g.app.pluginsController = g.NullObject('g.app.pluginsController')
+    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')
+    g.app.gui=leoGui.NullGui()
+    t3 = time.process_time()
+    # Create a dummy commander, to do the imports in c.initObjects.
+    c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+    # dump_leo_modules()
+    t4 = time.process_time()
+    if False and t4 - t3 &gt; 0.1:
+        print('create_app\n'
+            f"  imports: {(t2-t1):.3f}\n"
+            f"      gui: {(t3-t2):.3f}\n"
+            f"commander: {(t4-t2):.3f}\n"
+            f"    total: {(t4-t1):.3f}\n")
+    return c
 </t>
 <t tx="ekr.20201202085332.1">def test_add_space_to_lines(self):
     """Test case for add-space-to-lines"""
@@ -38306,10 +38631,6 @@ https://github.com/leo-editor/leo-editor/issues/1780
     1. os.environ['LEO_BACKUP']
     2. ~/Backup
     """
-    # Transcrypt does not support Python's pathlib module.
-    # __pragma__ ('skip')
-
-    from pathlib import Path
     # Compute the main backup directory.
     # First, try the LEO_BACKUP directory.
     backup = None
@@ -38417,31 +38738,6 @@ https://github.com/leo-editor/leo-editor/issues/1783
 
 # found 4 nodes</t>
 <t tx="ekr.20201216061211.1"></t>
-<t tx="ekr.20201216114709.1">@language rest
-@wrap
-
-FAIL: javaScripthon: (pj -h)
-- Created ekr-no-fstrings branch for this.
-- Doesn't handle f-strings.
-- Assertion fails in leoNodes.py without explanation.
-
-rapydscript: npm package. Command-line shell.
-
-transcrypt:  (note spelling) pip install transcript.
-- -a annotated code.
-- -m Source maps.
-- -n Suppresses minimization.
-- Fails on Python's copy module. There are workarounds.
-- Produces good error messages.
-
-@language python
-
-# Transcrypt does not support Python's copy module.
-# __pragma__ ('skip')
-
-
-# __pragma__ ('noskip')
-</t>
 <t tx="ekr.20201217144708.1">@language rest
 @wrap
 
@@ -38466,7 +38762,1695 @@ https://github.com/leo-editor/leo-editor/issues/1792
 @language python
 @nosearch
 </t>
-<t tx="ekr.20201221065401.1">gnx: ekr.20201012111338.2
+<t tx="ekr.20201221071542.1"></t>
+<t tx="ekr.20201222095250.1">g.cls()
+import glob
+import os
+efc = c.editFileCommands
+theme_dir = os.path.join(g.app.loadDir, '..', 'themes')
+assert os.path.exists(theme_dir), repr(theme_dir)
+paths = glob.glob(f"{theme_dir}{os.sep}*.leo")
+
+def clean(s):
+    return s.strip().replace('-','').replace('_','').replace(' ','')
+    
+for path in paths:
+    d = {}
+    c = efc.createHiddenCommander(path)
+    sfn = c.shortFileName()
+    if sfn == 'old_themes.leo':
+        continue
+    print('checking ', sfn)
+    for p in c.all_unique_positions():
+        h = clean(p.h)
+        if h.startswith('@'):
+            if h in d:
+                print(f"  {sfn:20}: duplicate {h}")
+            else:
+                d [h] = True
+print('done')</t>
+<t tx="ekr.20201228103916.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1798
+
+Note: Leo can not recognize @path directives in the body text of @file nodes!
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20201228104039.1"></t>
+<t tx="ekr.20201228113135.1"></t>
+<t tx="ekr.20210103092453.1"></t>
+<t tx="ekr.20210103095019.1"># Called using if __name__ == '__main__'.</t>
+<t tx="ekr.20210103130324.1"></t>
+<t tx="ekr.20210103130403.1"></t>
+<t tx="ekr.20210103130436.1"></t>
+<t tx="ekr.20210103192132.1"></t>
+<t tx="ekr.20210103192210.1">
+ if 0:  # #1342: These are no longer needed, because there are no buttons.
+    table = (
+        ('findNextCommand', 'find-next'),
+        ('findPrevCommand', 'find-prev'),
+        ('findAll', 'find-all'),
+        ('changeCommand', 'replace'),
+        ('changeThenFind', 'replace-then-find'),
+        ('changeAll', 'replace-all'),
+    )
+    for func_name, cmd_name in table:
+        ivar = f"{cmd_name}-{'button'}"
+        ivar = ivar.replace('-', '_')
+        w = getattr(ftm, ivar, None)
+        func = getattr(fc, func_name, None)
+        if w and func:
+            next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
+            EventWrapper(c, w=w, next_w=next_w, func=func)
+        else:
+            g.trace('**oops**')</t>
+<t tx="ekr.20210103222604.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1801
+
+PR: https://github.com/leo-editor/leo-editor/pull/1803
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210104122029.1">def getYScrollPosition(self):
+    return 0  # #1801.
+</t>
+<t tx="ekr.20210104122304.1"></t>
+<t tx="ekr.20210104122316.1"></t>
+<t tx="ekr.20210104123442.1">@g.commander_command('indent-region')
+def indentBody(self, event=None):
+    """
+    The indent-region command indents each line of the selected body text.
+    Unlike the always-indent-region command, this command inserts a tab
+    (soft or hard) when there is no selected text.
+    
+    The @tabwidth directive in effect determines amount of indentation.
+    """
+    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    # #1801: Don't rely on bindings to ensure that we are editing the body.
+    if event_w != w:
+        c.insertCharFromEvent(event)
+        return
+    # # 1739. Special case for a *plain* tab bound to indent-region.
+    sel_1, sel_2 = w.getSelectionRange()
+    if sel_1 == sel_2:
+        char = getattr(event, 'char', None)
+        stroke = getattr(event, 'stroke', None)
+        if char == '\t' and stroke and stroke.isPlainKey():
+            c.editCommands.selfInsertCommand(event)  # Handles undo.
+            return
+    c.alwaysIndentBody(event)
+</t>
+<t tx="ekr.20210108053422.1">def batch_change(self, root, replacements, settings=None):
+    """
+    Support batch change scripts.
+    
+    replacement: a list of tuples (find_string, change_string).
+    settings: a dict or g.Bunch containing find/change settings.
+    
+    Example:
+        
+        h = '@file src/ekr/coreFind.py'
+        root = g.findNodeAnywhere(c, h)
+        assert root
+        replacements = (
+            ('clone_find_all', 'do_clone_find_all'),
+            ('clone_find_all_flattened', 'do_clone_find_all_flattened'),
+        )
+        settings = dict(suboutline_only=True)
+        count = c.findCommands.batch_change(c, root, replacements, settings)
+        if count:
+            c.save()
+    """
+    try:
+        self._init_from_dict(settings or {})
+        count = 0
+        for find, change in replacements:
+            count += self._batch_change_helper(root, find, change)
+        return count
+    except Exception:
+        g.es_exception()
+        return 0
+</t>
+<t tx="ekr.20210108070948.1">def _batch_change_helper(self, p, find_text, change_text):
+
+    c, p1, u = self.c, p.copy(), self.c.undoer
+    undoType = 'Batch Change All'
+    # Check...
+    if not find_text:  # pragma: no cover
+        return 0
+    if not self.search_headline and not self.search_body:
+        return 0  # pragma: no cover
+    if self.pattern_match:
+        ok = self.precompile_pattern()
+        if not ok:  # pragma: no cover
+            return 0
+    # Init...
+    self.find_text = find_text
+    self.change_text = self.replace_back_slashes(change_text)
+    if self.node_only:
+        positions = [p1]
+    elif self.suboutline_only:
+        positions = p1.self_and_subtree()
+    else:
+        positions = c.all_unique_positions()
+    # Init the work widget.
+    s = p.h if self.in_headline else p.b
+    self.work_s = s
+    self.work_sel = (0, 0, 0)
+    # The main loop.
+    u.beforeChangeGroup(p1, undoType)
+    count = 0
+    for p in positions:
+        count_h, count_b = 0, 0
+        undoData = u.beforeChangeNodeContents(p)
+        if self.search_headline:
+            count_h, new_h = self._change_all_search_and_replace(p.h)
+            if count_h:
+                count += count_h
+                p.h = new_h
+        if self.search_body:
+            count_b, new_b = self._change_all_search_and_replace(p.b)
+            if count_b:
+                count += count_b
+                p.b = new_b
+        if count_h or count_b:
+            u.afterChangeNodeContents(p1, 'Replace All', undoData)
+    u.afterChangeGroup(p1, undoType, reportFlag=True)
+    if not g.unitTesting:  # pragma: no cover
+        print(f"{count:3}: {find_text:&gt;30} =&gt; {change_text}")
+    return count
+</t>
+<t tx="ekr.20210108083003.1">def _init_from_dict(self, settings):
+    """Initialize ivars from settings (a dict or g.Bunch)."""
+    # The valid ivars and reasonable defaults.
+    valid = dict(
+        ignore_case=False,
+        node_only=False,
+        pattern_match=False,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,  # Seems safest.  # Was True !!!
+        whole_word=True,
+    )
+    # Set ivars to reasonable defaults.
+    for ivar in valid:
+        setattr(self, ivar, valid.get(ivar))
+    # Override ivars from settings.
+    errors = 0
+    for ivar in settings.keys():
+        if ivar in valid:
+            val = settings.get(ivar)
+            if val in (True, False):
+                setattr(self, ivar, val)
+            else:  # pragma: no cover
+                g.trace("bad value: {ivar!r} = {val!r}")
+                errors += 1
+        else:  # pragma: no cover
+            g.trace(f"ignoring {ivar!r} setting")
+            errors += 1
+    if errors:  # pragma: no cover
+        g.printObj(sorted(valid.keys()), tag='valid keys')
+</t>
+<t tx="ekr.20210108130751.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1804
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210110073117.10">def _cfa_find_next_match(self, p):
+    """
+    Find the next batch match at p.
+    """
+    # Called only from unit tests.
+    table = []
+    if self.search_headline:
+        table.append(p.h)
+    if self.search_body:
+        table.append(p.b)
+    for s in table:
+        self.reverse = False
+        pos, newpos = self.inner_search_helper(s, 0, len(s), self.find_text)
+        if pos != -1:
+            return True
+    return False
+</t>
+<t tx="ekr.20210110073117.11"># A stand-alone method for unit tests.
+def do_clone_find_tag(self, tag):
+    """
+    Do the clone-all-find commands from settings.
+    Return (len(clones), found) for unit tests.
+    """
+    c, u = self.c, self.c.undoer
+    tc = getattr(c, 'theTagController', None)
+    if not tc:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print('nodetags not active')
+        return 0, c.p
+    clones = tc.get_tagged_nodes(tag)
+    if not clones:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print(f"tag not found: {tag}")
+        tc.show_all_tags()
+        return 0, c.p
+    undoData = u.beforeInsertNode(c.p)
+    found = self._create_clone_tag_nodes(clones)
+    u.afterInsertNode(found, 'Clone Find Tag', undoData)
+    assert c.positionExists(found, trace=True), found
+    c.setChanged()
+    c.selectPosition(found)
+    c.redraw()
+    return len(clones), found
+</t>
+<t tx="ekr.20210110073117.12">def _create_clone_tag_nodes(self, clones):
+    """
+    Create a "Found Tag" node as the last node of the outline.
+    Clone all positions in the clones set as children of found.
+    """
+    c, p = self.c, self.c.p
+    # Create the found node.
+    assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    assert c.positionExists(found), found
+    found.h = f"Found Tag: {self.find_text}"
+    # Clone nodes as children of the found node.
+    for p in clones:
+        # Create the clone directly as a child of found.
+        p2 = p.copy()
+        n = found.numberOfChildren()
+        p2._linkCopiedAsNthChild(found, n)
+    return found
+</t>
+<t tx="ekr.20210110073117.23">def replace_all_helper(self, s):
+    """
+    Search s for self.find_text and replace with self.change_text.
+    
+    Return (found, new text)
+    """
+    if sys.platform.lower().startswith('win'):
+        s = s.replace('\r', '')
+            # Ignore '\r' characters, which may appear in @edit nodes.
+            # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+            # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if not s:
+        return False, None
+    #
+    # Order matters: regex matches ignore whole-word.
+    if self.pattern_match:
+        return self.batch_regex_replace(s)
+    if self.whole_word:
+        return self.batch_word_replace(s)
+    return self.batch_plain_replace(s)
+</t>
+<t tx="ekr.20210110073117.24">def batch_plain_replace(self, s):
+    """
+    Perform all plain find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        progress = prev_i
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0 &amp; change.
+        count += 1
+        result.append(s0[prev_i:i])
+        result.append(change)
+        prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
+        assert prev_i &gt; progress, prev_i
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
+</t>
+<t tx="ekr.20210110073117.25">def batch_regex_replace(self, s):
+    """
+    Perform all regex find/replace on s.
+    return (count, new_s)
+    """
+    count, prev_i, result = 0, 0, []
+
+    flags = re.MULTILINE
+    if self.ignore_case:
+        flags |= re.IGNORECASE
+    for m in re.finditer(self.find_text, s, flags):
+        count += 1
+        i = m.start()
+        result.append(s[prev_i:i])
+        # #1748.
+        groups = m.groups()
+        if groups:
+            change_text = self.make_regex_subs(self.change_text, groups)
+        else:
+            change_text = self.change_text
+        result.append(change_text)
+        prev_i = m.end()
+    # Compute the result.
+    result.append(s[prev_i:])
+    s = ''.join(result)
+    return count, s
+</t>
+<t tx="ekr.20210110073117.26">def batch_word_replace(self, s):
+    """
+    Perform all whole word find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        progress = prev_i
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0, change &amp; find0.
+        result.append(s0[prev_i:i])
+        if g.match_word(s, i, find):
+            count += 1
+            result.append(change)
+        else:
+            result.append(find0)
+        prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
+        assert prev_i &gt; progress, prev_i
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
+</t>
+<t tx="ekr.20210110073117.31">def check_args(self, tag):
+    """Check the user arguments to a command."""
+    if not self.search_headline and not self.search_body:
+        if not g.unitTesting:
+            g.es_print("not searching headline or body")  # pragma: no cover (skip)
+        return False
+    if not self.find_text:
+        if not g.unitTesting:
+            g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
+        return False
+    return True
+</t>
+<t tx="ekr.20210110073117.32">def compile_pattern(self):
+    """Precompile the regexp pattern if necessary."""
+    try:  # Precompile the regexp.
+        # pylint: disable=no-member
+        flags = re.MULTILINE
+        if self.ignore_case: flags |= re.IGNORECASE
+        # Escape the search text.
+        # Ignore the whole_word option.
+        s = self.find_text
+        # A bad idea: insert \b automatically.
+            # b, s = '\\b', self.find_text
+            # if self.whole_word:
+                # if not s.startswith(b): s = b + s
+                # if not s.endswith(b): s = s + b
+        self.re_obj = re.compile(s, flags)
+        return True
+    except Exception:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.warning('invalid regular expression:', self.find_text)
+        return False
+</t>
+<t tx="ekr.20210110073117.33">def compute_result_status(self, find_all_flag=False):  # pragma: no cover (cmd)
+    """Return the status to be shown in the status line after a find command completes."""
+    # Too similar to another method...
+    status = []
+    table = (
+        ('whole_word', 'Word'),
+        ('ignore_case', 'Ignore Case'),
+        ('pattern_match', 'Regex'),
+        ('suboutline_only', '[Outline Only]'),
+        ('node_only', '[Node Only]'),
+        ('search_headline', 'Head'),
+        ('search_body', 'Body'),
+    )
+    for ivar, val in table:
+        if getattr(self, ivar):
+            status.append(val)
+    return f" ({', '.join(status)})" if status else ''
+</t>
+<t tx="ekr.20210110073117.34">def _cfa_create_nodes(self, clones, flattened):
+    """
+    Create a "Found" node as the last node of the outline.
+    Clone all positions in the clones set a children of found.
+    """
+    c = self.c
+    # Create the found node.
+    assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    assert c.positionExists(found), found
+    found.h = f"Found:{self.find_text}"
+    status = self.compute_result_status(find_all_flag=True)
+    status = status.strip().lstrip('(').rstrip(')').strip()
+    flat = 'flattened, ' if flattened else ''
+    found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
+    # Clone nodes as children of the found node.
+    for p in clones:
+        # Create the clone directly as a child of found.
+        p2 = p.copy()
+        n = found.numberOfChildren()
+        p2._linkCopiedAsNthChild(found, n)
+    # Sort the clones in place, without undo.
+    found.v.children.sort(key=lambda v: v.h.lower())
+    return found
+</t>
+<t tx="ekr.20210110073117.4">def init_ivars_from_settings(self, settings):
+    """
+    Initialize all ivars from settings, including required defaults.
+    
+    This should be called from the do_ methods as follows:
+        
+        self.init_ivars_from_settings(settings)
+        if not self.check_args('find-next'):
+            return &lt;appropriate error indication&gt;
+    """
+    #
+    # Init required defaults.
+    self.reverse = False
+    #
+    # Init find/change strings.
+    self.change_text = settings.change_text
+    self.find_text = settings.find_text
+    #
+    # Init find options.
+    self.ignore_case = settings.ignore_case
+    self.mark_changes = settings.mark_changes
+    self.mark_finds = settings.mark_finds
+    self.node_only = settings.node_only
+    self.pattern_match = settings.pattern_match
+    self.search_body = settings.search_body
+    self.search_headline = settings.search_headline
+    self.suboutline_only = settings.suboutline_only
+    self.whole_word = settings.whole_word
+    # self.wrapping = settings.wrapping
+</t>
+<t tx="ekr.20210110073117.43">def inner_search_helper(self, s, i, j, pattern):
+    """
+    Dispatch the proper search method based on settings.
+    """
+    backwards = self.reverse
+    nocase = self.ignore_case
+    regexp = self.pattern_match
+    word = self.whole_word
+    if backwards:
+        i, j = j, i
+    if not s[i:j] or not pattern:
+        return -1, -1
+    if regexp:
+        pos, newpos = self._inner_search_regex(s, i, j, pattern, backwards, nocase)
+    elif backwards:
+        pos, newpos = self._inner_search_backward(s, i, j, pattern, nocase, word)
+    else:
+        pos, newpos = self._inner_search_plain(s, i, j, pattern, nocase, word)
+    return pos, newpos
+</t>
+<t tx="ekr.20210110073117.44">debugIndices = []
+
+def _inner_search_backward(self, s, i, j, pattern, nocase, word):
+    """
+    rfind(sub [,start [,end]])
+
+    Return the highest index in the string where substring sub is found,
+    such that sub is contained within s[start,end].
+    
+    Optional arguments start and end are interpreted as in slice notation.
+
+    Return (-1, -1) on failure.
+    """
+    if nocase:
+        s = s.lower()
+        pattern = pattern.lower()
+    pattern = self.replace_back_slashes(pattern)
+    n = len(pattern)
+    # Put the indices in range.  Indices can get out of range
+    # because the search code strips '\r' characters when searching @edit nodes.
+    i = max(0, i)
+    j = min(len(s), j)
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        return -1, -1
+    if word:
+        while 1:
+            k = s.rfind(pattern, i, j)
+            if k == -1:
+                break
+            if self._inner_search_match_word(s, k, pattern):
+                return k, k + n
+            j = max(0, k - 1)
+        return -1, -1
+    k = s.rfind(pattern, i, j)
+    if k == -1:
+        return -1, -1
+    return k, k + n
+</t>
+<t tx="ekr.20210110073117.45">def _inner_search_match_word(self, s, i, pattern):
+    """Do a whole-word search."""
+    pattern = self.replace_back_slashes(pattern)
+    if not s or not pattern or not g.match(s, i, pattern):
+        return False
+    pat1, pat2 = pattern[0], pattern[-1]
+    n = len(pattern)
+    ch1 = s[i - 1] if 0 &lt;= i - 1 &lt; len(s) else '.'
+    ch2 = s[i + n] if 0 &lt;= i + n &lt; len(s) else '.'
+    isWordPat1 = g.isWordChar(pat1)
+    isWordPat2 = g.isWordChar(pat2)
+    isWordCh1 = g.isWordChar(ch1)
+    isWordCh2 = g.isWordChar(ch2)
+    inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
+    return not inWord
+</t>
+<t tx="ekr.20210110073117.46">def _inner_search_plain(self, s, i, j, pattern, nocase, word):
+    """Do a plain search."""
+    if nocase:
+        s = s.lower()
+        pattern = pattern.lower()
+    pattern = self.replace_back_slashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern, i, j)
+            if k == -1:
+                break
+            if self._inner_search_match_word(s, k, pattern):
+                return k, k + n
+            i = k + n
+        return -1, -1
+    k = s.find(pattern, i, j)
+    if k == -1:
+        return -1, -1
+    return k, k + n
+</t>
+<t tx="ekr.20210110073117.47">def _inner_search_regex(self, s, i, j, pattern, backwards, nocase):
+    """Called from inner_search_helper"""
+    re_obj = self.re_obj  # Use the pre-compiled object
+    if not re_obj:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.trace('can not happen: no re_obj')
+        return -1, -1
+    if backwards:
+        # Scan to the last match using search here.
+        i, last_mo = 0, None
+        while i &lt; len(s):
+            mo = re_obj.search(s, i, j)
+            if not mo:
+                break
+            i += 1
+            last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s, i, j)
+    if mo:
+        self.match_obj = mo
+        return mo.start(), mo.end()
+    self.match_obj = None
+    return -1, -1
+    #
+    # The following is mysterious.
+    # Félix, please don't bother with it.
+    # I'll re-enable it if it ever makes sense to me :-)
+    ###
+        # # if mo and mo.group(0) != 'def': g.trace(i, mo, mo.start(), mo.end())
+        # while mo and 0 &lt;= i &lt;= len(s):
+            # if mo.start() == mo.end():
+                # if backwards:
+                    # # Search backward using match instead of search.
+                    # i -= 1
+                    # while 0 &lt;= i &lt; len(s):
+                        # mo = re_obj.match(s, i, j)
+                        # if mo: break
+                        # i -= 1
+                # else:
+                    # i += 1
+                    # mo = re_obj.search(s, i, j)
+            # else:
+                # self.match_obj = mo
+                # return mo.start(), mo.end()
+        # self.match_obj = None
+        # return -1, -1
+</t>
+<t tx="ekr.20210110073117.48">def make_regex_subs(self, change_text, groups):
+    """
+    Substitute group[i-1] for \\i strings in change_text.
+    
+    Groups is a tuple of strings, one for every matched group.
+    """
+
+    # g.printObj(list(groups), tag=f"groups in {change_text!r}")
+
+    def repl(match_object):
+        """re.sub calls this function once per group."""
+        # # 1494...
+        n = int(match_object.group(1)) - 1
+        if 0 &lt;= n &lt; len(groups):
+            # Executed only if the change text contains groups that match.
+            return (
+                groups[n].
+                    replace(r'\b', r'\\b').
+                    replace(r'\f', r'\\f').
+                    replace(r'\n', r'\\n').
+                    replace(r'\r', r'\\r').
+                    replace(r'\t', r'\\t').
+                    replace(r'\v', r'\\v'))
+        # No replacement.
+        return match_object.group(0)
+
+    result = re.sub(r'\\([0-9])', repl, change_text)
+    return result
+</t>
+<t tx="ekr.20210110073117.49">def replace_back_slashes(self, s):
+    """Carefully replace backslashes in a search pattern."""
+    # This is NOT the same as:
+    #
+    #   s.replace('\\n','\n').replace('\\t','\t').replace('\\\\','\\')
+    #
+    # because there is no rescanning.
+    i = 0
+    while i + 1 &lt; len(s):
+        if s[i] == '\\':
+            ch = s[i + 1]
+            if ch == '\\':
+                s = s[:i] + s[i + 1 :]  # replace \\ by \
+            elif ch == 'n':
+                s = s[:i] + '\n' + s[i + 2 :]  # replace the \n by a newline
+            elif ch == 't':
+                s = s[:i] + '\t' + s[i + 2 :]  # replace \t by a tab
+            else:
+                i += 1  # Skip the escaped character.
+        i += 1
+    return s
+</t>
+<t tx="ekr.20210110073117.5">def init_settings(self, settings):
+    """Initialize all user settings."""
+
+</t>
+<t tx="ekr.20210110073117.55"></t>
+<t tx="ekr.20210110073117.56">def make_test_tree(self):
+    """Make a test tree for other tests"""
+    c = self.c
+    root = c.rootPosition()
+    root.h = 'Root'
+    root.b = f"def root():\n    pass\n"
+    last = root
+
+    def make_child(n, p):
+        p2 = p.insertAsLastChild()
+        p2.h = f"child {n}"
+        p2.b = f"def child{n}():\n    v{n} = 2\n"
+        return p2
+
+    def make_top(n, sib):
+        p = sib.insertAfter()
+        p.h = f"Node {n}"
+        p.b = f"def top{n}():\n    v{n} = 3\n"
+        return p
+
+    for n in range(0, 4, 3):
+        last = make_top(n + 1, last)
+        child = make_child(n + 2, last)
+        make_child(n + 3, child)
+
+    for p in c.all_positions():
+        p.v.clearDirty()
+        p.v.clearVisited()
+        
+    # Always start with the root selected.
+    c.selectPosition(c.rootPosition())
+</t>
+<t tx="ekr.20210110073117.57">def setUp(self):
+    """setUp for TestFind class"""
+    # pylint: disable=import-self
+    from leo.core import leoFind
+    from leo.core.leoGui import StringFindTabManager
+    g.unitTesting = True
+    self.c = c = leoTest2.create_app()
+    c.findCommands = self.x = x = leoFind.LeoFind(c)
+    # Set c.p in the command.
+    x.c.selectPosition(self.c.rootPosition())
+    x.ftm = StringFindTabManager(c)
+    self.settings = x.default_settings()
+    self.make_test_tree()
+
+def tearDown(self):
+    g.unitTesting = False
+</t>
+<t tx="ekr.20210110073117.58">def test_tree(self):
+    table = (
+        (0, 'Root'),
+        (0, 'Node 1'),
+        (1, 'child 2'),
+        (2, 'child 3'),
+        (0, 'Node 4'),
+        (1, 'child 5'),
+        (2, 'child 6'),
+    )
+    i = 0
+    for p in self.c.all_positions():
+        level, h = table[i]
+        i += 1
+        assert p.h == h, (p.h, h)
+        assert p.level() == level, (p.level(), level, p.h)
+        # print(' '*p.level(), p.h)
+        # g.printObj(g.splitLines(p.b), tag=p.h)
+</t>
+<t tx="ekr.20210110073117.59"></t>
+<t tx="ekr.20210110073117.6">def default_settings(self):
+    """Return a dict representing all default settings."""
+    c = self.c
+    return g.Bunch(
+        # State...
+        in_headline=False,
+        p=c.rootPosition(),
+        # Find/change strings...
+        find_text='',
+        change_text='',
+        # Find options...
+        ignore_case=False,
+        mark_changes=False,
+        mark_finds=False,
+        node_only=False,
+        pattern_match=False,
+        reverse=False,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,
+        whole_word=False,
+        wrapping=False,
+    )
+</t>
+<t tx="ekr.20210110073117.60">def test_clone_find_all(self):
+    settings, x = self.settings, self.x
+    # Regex find.
+    settings.find_text = r'^def\b'
+    settings.change_text = 'def'  # Don't actually change anything!
+    settings.pattern_match = True
+    x.do_clone_find_all(settings)
+    # Word find.
+    settings.find_text = 'def'
+    settings.match_word = True
+    settings.pattern_match = False
+    x.do_clone_find_all(settings)
+    # Suboutline only.
+    settings.suboutline_only = True
+    x.do_clone_find_all(settings)
+</t>
+<t tx="ekr.20210110073117.61">def test_clone_find_all_flattened(self):
+    settings, x = self.settings, self.x
+    # regex find.
+    settings.find_text = r'^def\b'
+    settings.pattern_match = True
+    x.do_clone_find_all_flattened(settings)
+    # word find.
+    settings.find_text = 'def'
+    settings.match_word = True
+    settings.pattern_match = False
+    x.do_clone_find_all_flattened(settings)
+    # Suboutline only.
+    settings.suboutline_only = True
+    x.do_clone_find_all_flattened(settings)
+</t>
+<t tx="ekr.20210110073117.62">def test_clone_find_tag(self):
+    c, x = self.c, self.x
+
+    class DummyTagController:
+
+        def __init__(self, clones):
+            self.clones = clones
+
+        def get_tagged_nodes(self, tag):
+            return self.clones
+
+        def show_all_tags(self):
+            pass
+
+    c.theTagController = DummyTagController([c.rootPosition()])
+    x.do_clone_find_tag('test')
+    c.theTagController = DummyTagController([])
+    x.do_clone_find_tag('test')
+    c.theTagController = None
+    x.do_clone_find_tag('test')
+</t>
+<t tx="ekr.20210110073117.63">def test_find_all(self):
+    settings, x = self.settings, self.x
+    
+    def init():
+        self.make_test_tree()  # Reinit the whole tree.
+        x.findAllUniqueFlag = False
+        x.unique_matches = set()
+        settings.change_text = '_DEF_'
+        settings.find_text = 'def'
+        settings.ignore_case = False
+        settings.node_only = False
+        settings.pattern_match = False
+        settings.suboutline_only = False
+        settings.whole_word = True
+
+    # Test 1.
+    init()
+    settings.pattern_match = True
+    x.do_find_all(settings)
+    # Test 2.
+    init()
+    settings.suboutline_only = True
+    x.do_find_all(settings)
+    # Test 3.
+    init()
+    settings.search_headline = False
+    settings.p.setVisited()
+    x.do_find_all(settings)
+    # Test 4.
+    init()
+    x.findAllUniqueFlag = True
+    settings.pattern_match = True
+    settings.find_text = r'^(def)'
+    settings.change_text = '*\1*'
+    x.do_find_all(settings)
+    # Test 5: no match.
+    init()
+    settings.find_text = 'not-found-xyzzy'
+    x.do_find_all(settings)
+    
+</t>
+<t tx="ekr.20210110073117.64">def test_find_next(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'def top1'
+    p, pos, newpos = x.do_find_next(settings)
+    assert p and p.h == 'Node 1', repr(p)
+    s = p.b[pos:newpos]
+    assert s == settings.find_text, repr(s)
+</t>
+<t tx="ekr.20210110073117.65">def test_find_def(self):
+    settings, x = self.settings, self.x
+    # Test methods called by x.find_def.
+    # It would be wrong to call these methods from x.do_find_def.
+    x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
+    x._compute_find_def_settings('my-find-pattern')
+    #
+    # Now the main tests...
+    # Test 1.
+    p, pos, newpos = x.do_find_def(settings, word='child5', strict=True)
+    assert p and p.h == 'child 5', repr(p and p.h)  # Test 1.
+    s = p.b[pos:newpos]
+    assert s == 'def child5', repr(s)
+    # Test 2: switch style.
+    p, pos, newpos = x.do_find_def(settings, word='child_5', strict=False)
+    assert p and p.h == 'child 5', repr(p and p.h)  # Test 2.
+    # Test 3: not found after switching style.
+    p, pos, newpos = x.do_find_def(settings, word='xyzzy', strict=False)
+    assert p is None, repr(p)  # Test 3.
+</t>
+<t tx="ekr.20210110073117.66">def test_find_var(self):
+    settings, x = self.settings, self.x
+    p, pos, newpos = x.do_find_var(settings, word='v5')
+    assert p and p.h == 'child 5', repr(p)
+    s = p.b[pos:newpos]
+    assert s == 'v5 =', repr(s)
+</t>
+<t tx="ekr.20210110073117.67">def test_change_all(self):
+    c, settings, x = self.c, self.settings, self.x
+    root = c.rootPosition()
+    
+    def init():
+        self.make_test_tree()  # Reinit the whole tree.
+        settings.change_text = '_DEF_'
+        settings.find_text = 'def'
+        settings.ignore_case = False
+        settings.node_only = False
+        settings.pattern_match = False
+        settings.suboutline_only = False
+        settings.whole_word = True
+
+    # Default settings.
+    init()
+    x.do_change_all(settings)
+    # Plain search, ignore case.
+    init()
+    settings.whole_word = False
+    settings.ignore_case = True
+    x.do_change_all(settings)
+    # Node only.
+    init()
+    settings.node_only = True
+    x.do_change_all(settings)
+    # Suboutline only.
+    init()
+    settings.suboutline_only = True
+    x.do_change_all(settings)
+    # Pattern match.
+    init()
+    settings.pattern_match = True
+    x.do_change_all(settings)
+    # Pattern match, ignore case.
+    init()
+    settings.pattern_match = True
+    settings.ignore_case = True
+    x.do_change_all(settings)
+    # Pattern match, with groups.
+    init()
+    settings.pattern_match = True
+    settings.find_text = r'^(def)'
+    settings.change_text = '*\1*'
+    x.do_change_all(settings)
+    # Ignore case
+    init()
+    settings.ignore_case = True
+    x.do_change_all(settings)
+    # Word, ignore case.
+    init()
+    settings.ignore_case = True
+    settings.whole_word = True
+    x.do_change_all(settings)
+    # Multiple matches
+    init()
+    root.h = 'abc'
+    root.b = 'abc\nxyz abc\n'
+    settings.find_text = settings.change_text = 'abc'
+    x.do_change_all(settings)
+    # Set ancestor @file node dirty.
+    root.h = '@file xyzzy'
+    settings.find_text = settings.change_text = 'child1'
+    x.do_change_all(settings)
+</t>
+<t tx="ekr.20210110073117.68">def test_replace_then_find(self):
+    settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
+    settings.find_text = 'def top1'
+    settings.change_text = 'def top'
+    # find-next
+    p, pos, newpos = x.do_find_next(settings)
+    assert p and p.h == 'Node 1', p.h
+    s = p.b[pos:newpos]
+    assert s == settings.find_text, repr(s)
+    # replace-then-find
+    w.setSelectionRange(pos, newpos, insert=pos)
+    x.do_change_then_find(settings)
+    # Failure exit.
+    w.setSelectionRange(0, 0)
+    x.do_change_then_find(settings)
+
+def test_replace_then_find_regex(self):
+    settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
+    settings.find_text = r'(def) top1'
+    settings.change_text = r'\1\1'
+    settings.pattern_match = True
+    # find-next
+    p, pos, newpos = x.do_find_next(settings)
+    s = p.b[pos:newpos]
+    assert s == 'def top1', repr(s)
+    # replace-then-find
+    w.setSelectionRange(pos, newpos, insert=pos)
+    x.do_change_then_find(settings)
+
+def test_replace_then_find_in_headline(self):
+    settings, x = self.settings, self.x
+    p = settings.p
+    settings.find_text = 'Node 1'
+    settings.change_text = 'Node 1a'
+    settings.in_headline = True
+    # find-next
+    p, pos, newpos = x.do_find_next(settings)
+    assert p and p.h == settings.find_text, p.h
+    w = self.c.edit_widget(p)
+    assert w
+    s = p.h[pos:newpos]
+    assert s == settings.find_text, repr(s)
+</t>
+<t tx="ekr.20210110073117.69">def test_tag_children(self):
+
+    c, x = self.c, self.x
+
+    class DummyTagController:
+        def add_tag(self, p, tag):
+            pass
+
+    p = c.rootPosition().next()
+    c.theTagController = None
+    x.do_tag_children(p, 'test')
+    c.theTagController = DummyTagController()
+    x.do_tag_children(p, 'test')
+</t>
+<t tx="ekr.20210110073117.70"></t>
+<t tx="ekr.20210110073117.71">def test_cfa_backwards_search(self):
+    settings, x = self.settings, self.x
+    pattern = 'def'
+    for nocase in (True, False):
+        settings.ignore_case = nocase
+        for word in (True, False):
+            for s in ('def spam():\n', 'define spam'):
+                settings.whole_word = word
+                x.init_ivars_from_settings(settings)
+                x._inner_search_backward(s, 0, len(s), pattern, nocase, word)
+                x._inner_search_backward(s, 0, 0, pattern, nocase, word)
+</t>
+<t tx="ekr.20210110073117.72">def test_argument_errors(self):
+
+    settings, x = self.settings, self.x
+    # Bad search pattern.
+    settings.find_text = r'^def\b(('
+    settings.pattern_match = True
+    x.do_clone_find_all(settings)
+    x.find_next_match(p=None)
+    x.do_change_all(settings)
+</t>
+<t tx="ekr.20210110073117.73">def test_batch_word_replace(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'b'
+    settings.change_text = 'B'
+    for ignore in (True, False):
+        settings.ignore_case = ignore
+        x.init_ivars_from_settings(settings)
+        s = 'abc b z'
+        count, s2 = x.batch_word_replace(s)
+        assert count == 1 and s2 == 'abc B z', (ignore, count, repr(s2))
+</t>
+<t tx="ekr.20210110073117.74">def test_batch_plain_replace(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'b'
+    settings.change_text = 'B'
+    for ignore in (True, False):
+        settings.ignore_case = ignore
+        x.init_ivars_from_settings(settings)
+        s = 'abc b z'
+        count, s2 = x.batch_plain_replace(s)
+        assert count == 2 and s2 == 'aBc B z', (ignore, count, repr(s2))
+</t>
+<t tx="ekr.20210110073117.75">def test_batch_regex_replace(self):
+    settings, x = self.settings, self.x
+    s = 'abc b z'
+    table = (
+        (1, 2, 'B', 'B', 'aBc B z'),
+        (0, 2, 'b', 'B', 'aBc B z'),
+        (1, 2, r'([BX])', 'B', 'aBc B z'),
+    )
+    for ignore, count, find, change, expected_s in table:
+        settings.ignore_case = bool(ignore)
+        settings.find_text = find
+        settings.change_text = change
+        x.init_ivars_from_settings(settings)
+        actual_count, actual_s = x.batch_regex_replace(s)
+        assert actual_count == count and actual_s == expected_s, (
+            f"ignore: {ignore} find: {find} change {change}\n"
+            f"expected count: {count} s: {expected_s}\n"
+            f"     got count: {actual_count} s: {actual_s}")
+
+</t>
+<t tx="ekr.20210110073117.76">def test_check_args(self):
+    # Bad search patterns..
+    x = self.x
+    settings = self.settings
+    # Not searching headline or body.
+    settings.search_body = False
+    settings.search_headline = False
+    x.do_clone_find_all(settings)
+    # Empty find pattern.
+    settings.search_body = True
+    settings.find_text = ''
+    x.do_clone_find_all(settings)
+    x.do_clone_find_all_flattened(settings)
+    x.do_find_all(settings)
+    ### x.do_find_def(settings, word='xyzzy')
+    ### x.do_find_var(settings, word='xyzzy')
+    x.do_find_next(settings)
+    x.do_find_next(settings)
+    x.do_find_prev(settings)
+    x.do_change_all(settings)
+    x.do_change_then_find(settings)
+</t>
+<t tx="ekr.20210110073117.77">def test_compute_result_status(self):
+    x = self.x
+    # find_all_flag is True
+    all_settings = x.default_settings()
+    all_settings.ignore_case = True
+    all_settings.pattern_match = True
+    all_settings.whole_word = True
+    all_settings.wrapping = True
+    x.init_ivars_from_settings(all_settings)
+    x.compute_result_status(find_all_flag=True)
+    # find_all_flag is False
+    partial_settings = x.default_settings()
+    partial_settings.search_body = True
+    partial_settings.search_headline = True
+    partial_settings.node_only = True
+    partial_settings.suboutline_only = True
+    partial_settings.wrapping = True
+    x.init_ivars_from_settings(partial_settings)
+    x.compute_result_status(find_all_flag=False)
+</t>
+<t tx="ekr.20210110073117.79">def dump_tree(self, tag=''):  # pragma: no cover (skip)
+    """Dump the test tree created by make_test_tree."""
+    c = self.c
+    print('dump_tree', tag)
+    for p in c.all_positions():
+        print(' ' * p.level(), p.h)
+        print(' ' * p.level(), p.b)
+</t>
+<t tx="ekr.20210110073117.80">def test_cfa_find_next_match(self):
+    c, settings, x = self.c, self.settings, self.x
+    p = c.rootPosition()
+    for find in ('xxx', 'def'):
+        settings.find_text = find
+        x._cfa_find_next_match(p)
+</t>
+<t tx="ekr.20210110073117.82">def test_make_regex_subs(self):
+    x = self.x
+    x.re_obj = re.compile(r'(.*)pattern')  # The search pattern.
+    m = x.re_obj.search('test pattern')  # The find pattern.
+    change_text = r'\1Pattern\2'  # \2 is non-matching group.
+    x.make_regex_subs(change_text, m.groups())
+
+    # OLD
+    # groups = (r"f'", r"line\n")
+    # change_text = r"""\1 AA \2 BB \3'"""
+    # expected = r"""f' AA line\\n BB \3'"""
+    # result = x.makeRegexSubs(change_text, groups)
+    # assert result == expected, (expected, result)
+</t>
+<t tx="ekr.20210110073117.83">def test_cfa_match_word(self):
+    x = self.x
+    x._inner_search_match_word("def spam():", 0, "spam")
+    x._inner_search_match_word("def spam():", 0, "xxx")
+
+</t>
+<t tx="ekr.20210110073117.84">def test_fnm_next_after_fail(self):
+    settings, x = self.settings, self.x
+    for reverse in (True, False):
+        settings.reverse = reverse
+        for wrapping in (True, False):
+            settings.wrapping = wrapping
+            x.init_ivars_from_settings(settings)
+            x._fnm_next_after_fail(settings.p)
+</t>
+<t tx="ekr.20210110073117.85">def test_cfa_plain_search(self):
+    settings, x = self.settings, self.x
+    pattern = 'def'
+    for nocase in (True, False):
+        settings.ignore_case = nocase
+        for word in (True, False):
+            for s in ('def spam():\n', 'define'):
+                settings.whole_word = word
+                x.init_ivars_from_settings(settings)
+                x._inner_search_plain(s, 0, len(s), pattern, nocase, word)
+                x._inner_search_plain(s, 0, 0, pattern, nocase, word)
+</t>
+<t tx="ekr.20210110073117.86">def test_replace_all_helper(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'xyzzy'
+    settings.change_text = 'xYzzy'
+    s = 'abc xyzzy done'
+    x.replace_all_helper('')  # Error test.
+    for regex in (True, False):
+        settings.pattern_match = regex
+        for word in (True, False):
+            settings.whole_word = word
+            x.init_ivars_from_settings(settings)
+            x.replace_all_helper(s)
+</t>
+<t tx="ekr.20210110073117.87">def test_replace_back_slashes(self):
+    x = self.x
+    table = (
+        (r'a\bc', r'a\bc'),
+        (r'a\\bc', r'a\bc'),
+        (r'a\tc', 'a\tc'),  # Replace \t by a tab.
+        (r'a\nc', 'a\nc'),  # Replace \n by a newline.
+    )
+    for s, expected in table:
+        result = x.replace_back_slashes(s)
+        assert result == expected, (s, result, expected)
+</t>
+<t tx="ekr.20210110073117.88">def test_cfa_regex_search(self):
+    x = self.x
+    pattern = r'(.*)pattern'
+    x.re_obj = re.compile(pattern)
+    table = (
+        'test pattern',  # Match.
+        'xxx',  # No match.
+    )
+    for backwards in (True, False):
+        for nocase in (True, False):
+            for s in table:
+                if backwards:
+                    i = j = len(s)
+                else:
+                    i = j = 0
+                x._inner_search_regex(s, i, j, pattern, backwards, nocase)
+    # Error test.
+    x.re_obj = None
+    backwards = pattern = nocase = None
+    x._inner_search_regex("", 0, 0, pattern, backwards, nocase)
+
+    # for change_text, groups, expected in table:
+        # result = x.make_regex_subs(change_text, groups)
+        # assert result == expected, (
+            # f"change_text: {change_text}\n"
+            # f"     groups: {groups}\n"
+            # f"   expected: {expected}\n"
+            # f"        got: {result}")
+</t>
+<t tx="ekr.20210110073117.89">def test_switch_style(self):
+    x = self.x
+    table = (
+        ('', None),
+        ('TestClass', None),
+        ('camelCase', 'camel_case'),
+        ('under_score', 'underScore'),
+    )
+    for s, expected in table:
+        result = x._switch_style(s)
+        assert result == expected, (
+            f"       s: {s}\n"
+            f"expected: {expected!r}\n"
+            f"     got: {result!r}")
+</t>
+<t tx="ekr.20210110073117.9">def _cf_helper(self, settings, flatten):  # Caller has  checked the settings.
+    """
+    The common part of the clone-find commands.
+    
+    Return the number of found nodes.
+    """
+    c, u = self.c, self.c.undoer
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok: return 0
+    if self.suboutline_only:
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        p = c.rootPosition()
+        after = None
+    count, found = 0, None
+    clones, skip = [], set()
+    while p and p != after:
+        progress = p.copy()
+        if p.v in skip:  # pragma: no cover (minor)
+            p.moveToThreadNext()
+        elif g.inAtNosearch(p):
+            p.moveToNodeAfterTree()
+        elif self._cfa_find_next_match(p):
+            count += 1
+            if p not in clones:
+                clones.append(p.copy())
+            if flatten:
+                p.moveToThreadNext()
+            else:
+                # Don't look at the node or it's descendants.
+                for p2 in p.self_and_subtree(copy=False):
+                    skip.add(p2.v)
+                p.moveToNodeAfterTree()
+        else:  # pragma: no cover (minor)
+            p.moveToThreadNext()
+        assert p != progress
+    self.ftm.set_radio_button('entire-outline')
+    # suboutline-only is a one-shot for batch commands.
+    self.node_only = self.suboutline_only = False
+    self.root = None
+    if clones:
+        undoData = u.beforeInsertNode(c.p)
+        found = self._cfa_create_nodes(clones, flattened=False)
+        u.afterInsertNode(found, 'Clone Find All', undoData)
+        assert c.positionExists(found, trace=True), found
+        c.setChanged()
+        c.selectPosition(found)
+    g.es("found", count, "matches for", self.find_text)
+    return count  # Might be useful for the gui update.
+</t>
+<t tx="ekr.20210110073209.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1806
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210110092457.1">@language python
+@nosearch
+</t>
+<t tx="ekr.20210110092457.5">g.cls()
+import os
+os.chdir(os.path.join(g.app.loadDir, '..', '..'))
+# os.system('py-cov-find')
+command = r'pytest --cov-report html --cov-report term-missing --cov leo.core.leoFind leo\core\leoFind.py'
+os.system(command)
+g.es_print('done')</t>
+<t tx="ekr.20210110092457.6">import os
+# os.system('moz htmlcov/leo_core_leoFind_py.html')
+os.chdir(os.path.join(g.app.loadDir, '..', '..'))
+os.system('moz htmlcov/leo_core_leoFind_py.html')</t>
+<t tx="ekr.20210110092457.7">g.cls()
+import os
+os.system('python -m unittest leoFind.py')
+g.es_print('done')</t>
+<t tx="ekr.20210111082524.1">def init_vim_search(self, pattern):  # pragma: no cover (cmd)
+    """Initialize searches in vim mode."""
+    c = self.c
+    if c.vim_mode and c.vimCommands:
+        c.vimCommands.update_dot_before_search(
+            find_pattern=pattern,
+            change_pattern=None)  # A flag.
+</t>
+<t tx="ekr.20210112044303.1">@cmd('re-search-backward')
+def interactive_re_search_backward(self, event):  # pragma: no cover (interactive)
+    """Same as start-find, but with regex and in reverse."""
+    # Set flags for show_find_options.
+    self.reverse = True
+    self.pattern_match = True
+    self.show_find_options()
+    # Set flags for do_find_next().
+    self.request_reverse = True
+    self.request_pattern_match = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Regexp Search Backward:',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+
+</t>
+<t tx="ekr.20210112050845.1">@cmd('word-search')
+@cmd('word-search-forward')
+def word_search_forward(self, event):  # pragma: no cover (interactive)
+    """Same as start-search, with whole_word setting."""
+    # Set flag for show_find_options.
+    self.whole_word = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_whole_world = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Word Search: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20210112192011.1"></t>
+<t tx="ekr.20210112192427.1"></t>
+<t tx="ekr.20210113054702.1">import os
+print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
+<t tx="ekr.20210114063355.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1808
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210114094846.1"># A stand-alone method for unit testing.
+def do_clone_find_all(self, settings):
+    """
+    Do the clone-all-find commands from settings.
+
+    Return the count of found nodes.
+    
+    This is a stand-alone method for unit testing.
+    """
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('clone-find-all'):
+        return 0
+    return self._cf_helper(settings, flatten=False)
+</t>
+<t tx="ekr.20210114094944.1"># A stand-alone method for unit testing.
+def do_clone_find_all_flattened(self, settings):
+    """
+    Do the clone-find-all-flattened command from the settings.
+    
+    Return the count of found nodes.
+    
+    This is a stand-alone method for unit testing.
+    """
+    self.init_ivars_from_settings(settings)
+    if self.check_args('clone-find-all-flattened'):
+        return self._cf_helper(settings, flatten=True)
+    return 0
+</t>
+<t tx="ekr.20210114100105.1"># A stand-alone method for unit testing.
+def do_change_then_find(self, settings):
+    """
+    Do the change-then-find command from settings.
+    
+    This is a stand-alone method for unit testing.
+    """
+    p = self.c.p
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('change-then-find'):
+        return False
+    if self.change_selection(p):
+        self.do_find_next(settings)
+    return True
+
+</t>
+<t tx="ekr.20210114202757.1">def _compute_find_def_settings(self, find_pattern):
+
+    settings = self.default_settings()
+    table = (
+        ('change_text', ''),
+        ('find_text', find_pattern),
+        ('ignore_case', False),
+        ('pattern_match', False),
+        ('reverse', False),
+        ('search_body', True),
+        ('search_headline', False),
+        ('whole_word', True),
+    )
+    for attr, val in table:
+        # Guard against renamings &amp; misspellings.
+        assert hasattr(self, attr), attr
+        assert attr in settings.__dict__, attr
+        # Set the values.
+        setattr(self, attr, val)
+        settings[attr] = val
+    return settings
+</t>
+<t tx="ekr.20210115173729.153">def showSuccess(self, pos, newpos, showState=True):
+    """Display the result of a successful find operation."""
+    c = self.c
+    self.p = p = self.p or c.p
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = min(pos, newpos) if self.reverse else max(pos, newpos)
+    if self.wrap and not self.wrapPosition:
+        self.wrapPosition = self.p
+    if c.sparse_find:
+        c.expandOnlyAncestorsOfNode(p=p)
+    if self.in_headline:
+        c.endEditing()
+        selection = pos, newpos, insert
+        c.redrawAndEdit(p,
+            selection=selection,
+            keepMinibuffer=True)
+        w = c.edit_widget(p)
+        self.was_in_headline = True  # 2015/03/25
+    else:
+        # Tricky code.  Do not change without careful thought.
+        w = c.frame.body.wrapper
+        # *Always* do the full selection logic.
+        # This ensures that the body text is inited  and recolored.
+        c.selectPosition(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        c.bodyWantsFocusNow()
+        w.setSelectionRange(pos, newpos, insert=insert)
+        k = g.see_more_lines(w.getAllText(), insert, 4)
+        w.see(k)
+            # #78: find-next match not always scrolled into view.
+        c.outerUpdate()
+            # Set the focus immediately.
+        if c.vim_mode and c.vimCommands:
+            c.vimCommands.update_selection_after_search()
+    # Support for the console gui.
+    if hasattr(g.app.gui, 'show_find_success'):
+        g.app.gui.show_find_success(c, self.in_headline, insert, p)
+    c.frame.bringToFront()
+    return w  # Support for isearch.
+</t>
+<t tx="ekr.20210117064814.1">from collections import namedtuple
+
+Work = namedtuple('Work', ('start', 'end', 'ins'), defaults=(0,0,0))
+w = Work(ins=1)
+print(w.start, w.end, w.ins)
+print(repr(w))</t>
+<t tx="ekr.20210117143611.1">def start_search1(self, event=None):  # pragma: no cover
+    """Common handler for use by vim commands and other find commands."""
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    find_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    self.update_find_list(find_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()  # Required.
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    # Do the command!
+    self.do_find_next(settings)  # Handles reverse.
+</t>
+<t tx="ekr.20210117143614.1">def start_search_escape1(self, event=None):  # pragma: no cover
+    """
+    Common escape handler for use by find commands.
+    
+    Prompt for a change pattern.
+    """
+    k = self.k
+    self._sString = find_pattern = k.arg
+    # Settings.
+    k.getArgEscapeFlag = False
+    self.ftm.set_find_text(find_pattern)
+    self.update_find_list(find_pattern)
+    self.find_text = find_pattern
+    self.change_text = self.ftm.get_change_text()
+    # Gui...
+    regex = ' Regex' if self.pattern_match else ''
+    backward = ' Backward' if self.reverse else ''
+    prompt = f"Replace{regex}{backward}: {find_pattern} With: "
+    k.setLabelBlue(prompt)
+    self.add_change_string_to_label()
+    k.getNextArg(self._start_search_escape2)
+
+</t>
+<t tx="ekr.20210117143615.1">def _start_search_escape2(self, event):  # pragma: no cover
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Compute settings...
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.update_change_list(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()  # Required
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_find_next(settings)
+</t>
+<t tx="ekr.20210118003803.1">@cmd('find-var')
+def find_var(self, event=None):  # pragma: no cover (cmd)
+    """Find the var under the cursor."""
+    ftm, p = self.ftm, self.c.p
+    # Check...
+    word = self._compute_find_def_word(event)
+    if not word:
+        return
+    # Settings...
+    self.find_pattern = find_pattern = word + ' ='
+    ftm.set_find_text(find_pattern)
+    self._save_before_find_def(p)  # Save previous settings.
+    self.init_vim_search(find_pattern)
+    self.update_change_list(self.change_text)  # Optional. An edge case.
+    settings = self._compute_find_def_settings(find_pattern)
+    # Do the command!
+    self.do_find_var(settings, word)
+
+def do_find_var(self, settings, word):
+    """A standalone helper for unit tests."""
+    return self._fd_helper(settings, word, def_flag=False, strict=False)
+</t>
+<t tx="ekr.20210118013157.1">"""
+Convert defs in LeoFind to pep8 names.
+- Don't change defs containing underscores.
+- Check for existing target.
+"""
+g.cls()
+import re
+h = 'class LeoFind (LeoFind.py)'
+root = g.findNodeAnywhere(c, h)
+@others
+if root:
+    main(root)
+else:
+    print('not found:', root)</t>
+<t tx="ekr.20210118013807.1">def main(root):
+    pattern = re.compile(r'^def\s+(\w+)', re.MULTILINE)
+    for pass_n in (0, 1):
+        n = 0
+        for p in root.subtree():
+            for m in re.finditer(pattern, p.b):
+                target = m.group(0)
+                old_func = m.group(1)
+                if '_' in target:
+                    continue
+                if target.islower():
+                    continue
+                if old_func == 'finishCreate':  # Special case.
+                    return
+                new_func = new_name(old_func)
+                if new_func == old_func:
+                    continue
+                if pass_n == 0:
+                    if exists(new_func, root):
+                        g.trace(f"already exists: {old_func} {new_func}")
+                        g.trace('aborting')
+                        return
+                else:
+                    n += 1
+                    convert(old_func, new_func, root)
+    g.trace(f"converted {n} function names")
+    c.redraw()
+            </t>
+<t tx="ekr.20210118020530.1">def new_name(s):
+    """Return the new name of s."""
+    assert ' ' not in s
+    # Convert s to underscore style.
+    result = []
+    for i, ch in enumerate(s):
+        if i &gt; 0 and ch.isupper():
+            result.append('_')
+        result.append(ch.lower())
+    return ''.join(result).replace('i_search', 'isearch')
+</t>
+<t tx="ekr.20210118021337.1">def exists(s, root):
+    """Return True if s exists in any of root's nodes."""
+    for p in root.self_and_subtree():
+        if s in p.b:
+            return True
+    return False</t>
+<t tx="ekr.20210118024739.1">def convert(old_func, new_func, root):
+    print(f"{old_func} =&gt; {new_func}\n")
+    for p in root.subtree():
+        pattern = rf"\b{old_func}\b"
+        p.h = re.sub(pattern, new_func, p.h)
+        p.b = re.sub(pattern, new_func, p.b)
+        # g.printObj(g.splitLines(s2), tag='p.h')
+    print('')</t>
+<t tx="ekr.20210124064805.1">@language rest
+@wrap
+
+- Explore issues relating to #1810.
+
+- Explore various ways of using leoserver.py:
+
+Could Leo be a Jupyter kernel? This might be a good place to play with JS frameworks like vue.js, etc. Could vim interact with leoserver.py?
+
+- Explore adding type checking stub files to Leo.
+
+I am more comfortable with type checking after learning rust.
+
+- Explore other technologies, including templating systems.
+</t>
+<t tx="ekr.20210128141640.1">gnx: ekr.20201012111338.2
 unl: Declarations (leo_cloud.py)
 gnx: ekr.20201012111338.3
 unl: init (leo_cloud.py)
@@ -38549,33 +40533,2937 @@ unl: class LeoCloud--&gt;LeoCloud._ua_clean
 gnx: ekr.20201012111338.42
 unl: class LeoCloud--&gt;LeoCloud.write_current
 </t>
-<t tx="ekr.20201221071542.1"></t>
-<t tx="ekr.20201222095250.1">g.cls()
-import glob
-import os
-efc = c.editFileCommands
-theme_dir = os.path.join(g.app.loadDir, '..', 'themes')
-assert os.path.exists(theme_dir), repr(theme_dir)
-paths = glob.glob(f"{theme_dir}{os.sep}*.leo")
+<t tx="ekr.20210129094203.1">g.cls()
+import time
+if c.changed:
+    c.save()
+g.execute_shell_commands('start cmd /k "python leoserver.py"')
+time.sleep(0.5)
+g.execute_shell_commands('start cmd /k "python leoclient.py"')
+if 0:
+    time.sleep(8)
+    g.execute_shell_commands(r'moz c:\test\index.html')
 
-def clean(s):
-    return s.strip().replace('-','').replace('_','').replace(' ','')
+</t>
+<t tx="ekr.20210129104613.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1813
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210202110128.29">class LeoServer:
+    """Leo Server Controller"""
+    @others
+</t>
+<t tx="ekr.20210202110128.30">def __init__(self, testing=False):
+
+    import leo.core.leoApp as leoApp
+    import leo.core.leoBridge as leoBridge
+    import leo.core.leoExternalFiles as leoExternalFiles
+    global g
+    t1 = time.process_time()
+    #
+    # Init ivars first.
+    self.c = None  # Currently Selected Commander.
+    self.dummy_c = None  # Set below, after we set g.
+    self.action = None
+    self.bad_commands_list = []  # Set below.
+    self.config = None
+    self.current_id = 0  # Id of action being processed.
+    self.log_flag = False  # set by "log" key
+    #
+    # Start the bridge.
+    self.bridge = leoBridge.controller(
+        gui='nullGui',
+        loadPlugins=False,   # True: attempt to load plugins.
+        readSettings=False,  # True: read standard settings files.
+        silent=True,         # True: don't print signon messages.
+        verbose=False,       # True: prints messages that would be sent to the log pane.
+    )
+    self.g = g = self.bridge.globals()
+    self.dummy_c = g.app.newCommander(fileName=None)  # To inspect commands
+    self.bad_commands_list = self._bad_commands(self.dummy_c)
+    #
+    # Complete the initialization, as in LeoApp.initApp.
+    g.app.idleTimeManager = leoApp.IdleTimeManager()
+    g.app.idleTimeManager.start()
+    g.app.externalFilesController = leoExternalFiles.ExternalFilesController(None)
+    t2 = time.process_time()
+    print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.")
+</t>
+<t tx="ekr.20210202110128.51">def _es(self, s):  # pragma: no cover (tested in client).
+    """
+    Send a response that does not correspond to a request.
     
-for path in paths:
-    d = {}
-    c = efc.createHiddenCommander(path)
-    sfn = c.shortFileName()
-    if sfn == 'old_themes.leo':
-        continue
-    print('checking ', sfn)
+    The response *must* have an "async" key, but *not* an "id" key.
+    """
+    tag = '_es'
+    message = g.toUnicode(s)
+    package = {"async": "", "s": message}
+    response = json.dumps(package, separators=(',', ':'))
+    if self.loop:
+        self.loop.create_task(self._async_output(response))
+    else:
+        print(f"{tag}: Error loop not ready {message}")
+</t>
+<t tx="ekr.20210202110128.52">def _init_connection(self, web_socket):  # pragma: no cover (tested in client).
+    """Begin the connection."""
+    self.web_socket = web_socket
+    self.loop = asyncio.get_event_loop()
+
+</t>
+<t tx="ekr.20210202110128.54">def _do_message(self, d):
+    """
+    Handle d, a python dict representing the incoming request.
+    d must have at least the following keys:
+    
+    - "id": A positive integer.
+    - "action": A string, which is either:
+        - The name of public method of this class.
+        - The name of a Leo command.
+    
+    Return a dict, created by _make_response, containing least these keys:
+
+    - "id":         Same as the incoming id.
+    - "action":     Same as the incoming action.
+    - "commander":  A dict describing self.c.
+    - "node":       None, or an archived position describing self.c.p.
+    """
+    tag = '_do_message'
+    # Require "id" and "action" keys. The "package" key is optional.
+    id_ = d.get("id")
+    if id_ is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no id")
+    action = d.get("action")
+    if action is None:  # pragma: no cover
+        raise ServerError("f{tag}: no action")
+    package = d.get('package', {})
+    # Set log flag.
+    self.log_flag = package.get("log")
+    # Set the current_id and action ivars for _make_response.
+    self.current_id = id_
+    self.action = action
+    # Execute the requested action.
+    if action == "execute-leo-command":
+        func = self._do_leo_command
+    else:
+        func = self._do_server_command
+    result = func(action, package)
+    if result is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no response: {action}")
+    return result
+</t>
+<t tx="ekr.20210202110128.55">def get_all_open_commanders(self, package):
+    """Return array describing each commander in g.app.commanders()."""
+    files = [
+        {
+            "changed": c.isChanged(),
+            "name": c.fileName(),
+            "selected": c == self.c,
+        } for c in g.app.commanders()
+    ]
+    return self._make_response({"open-commanders": files})
+</t>
+<t tx="ekr.20210202110128.57">def open_file(self, package):
+    """
+    Open a leo file with the given filename.
+    Create a new document if no name.
+    """
+    found, tag = False, 'open_file'
+    filename = package.get('filename')  # Optional.
+    if filename:
+        for c in g.app.commanders():
+            if c.fileName() == filename:
+                found = True
+    if not found:
+        c = self.bridge.openLeoFile(filename)
+        c.findCommands.ftm = StringFindTabManager(c)
+    if not c:  # pragma: no cover
+        raise ServerError(f"{tag}: bridge did not open {filename!r}")
+    if not c.frame.body.wrapper:  # pragma: no cover
+        raise ServerError(f"{tag}: no wrapper")
+    # Assign self.c
+    self.c = c
+    c.selectPosition(c.rootPosition())  # Required.
+    # Check the outline!
+    self._check_outline(c)
+    if self.log_flag:  # pragma: no cover
+        self._dump_outline(c)
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.58">def close_file(self, package):
+    """Closes an outline opened with open_file."""
+    c = self._check_c()
+    # Close the outline, even if it is dirty!
+    c.clearChanged()
+    c.close()
+    # Select the first open outline, if any.
+    commanders = g.app.commanders()
+    self.c = commanders and commanders[0] or None
+    # Return a response describing self.c, not the closed outline.
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.61">def get_ui_states(self, package):
+    """
+    Return the enabled/disabled UI states for the open commander, or defaults if None.
+    """
+    c = self._check_c()
+    tag = 'get_ui_states'
+    try:
+        states = {
+            "changed": c and c.changed,
+            "canUndo": c and c.canUndo(),
+            "canRedo": c and c.canRedo(),
+            "canDemote": c and c.canDemote(),
+            "canPromote": c and c.canPromote(),
+            "canDehoist": c and c.canDehoist(),
+        }
+    except Exception as e:  # pragma: no cover
+        raise ServerError(f"{tag}: Exception setting state: {e}")
+    return self._make_response({"states": states})
+</t>
+<t tx="ekr.20210202110128.63">def page_up(self, package):
+    """
+    Selects a node "N" steps up in the tree to simulate page up.
+    """
+    c = self._check_c()
+    n = package.get("n", 3)
+    for z in range(n):
+        c.selectVisBack()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.64">def page_down(self, package):
+    """
+    Selects a node "n" steps down in the tree to simulate page down.
+    """
+    c = self._check_c()
+    n = package.get("n", 3)
+    for z in range(n):
+        c.selectVisNext()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.66">def get_body_states(self, package):
+    """
+    Return body data for p, where p is c.p if package["ap"] is missing.
+    """
+    c = self._check_c()
+    p = self._get_p(package)
+    wrapper = c.frame.body.wrapper
+    
+    def row_col_dict(i):
+        junk, line, col = wrapper.toPythonIndexRowCol(i)
+        return {"line": line, "col": col}
+        
+    # Get the language.
+    aList = g.get_directives_dict_list(p)
+    d = g.scanAtCommentAndAtLanguageDirectives(aList)
+    language = (
+        d and d.get('language')
+        or g.getLanguageFromAncestorAtFileNode(p)
+        or c.config.getLanguage('target-language')
+        or 'plain'
+    )
+    # get values from wrapper if it's the selected node.
+    if c.p.v.gnx == p.v.gnx:
+        active = wrapper.getInsertPoint()
+        start, end = wrapper.getSelectionRange(True)
+        scroll = wrapper.getYScrollPosition()
+    else:  # pragma: no cover
+        active = p.v.insertSpot
+        start = p.v.selectionStart
+        end = p.v.selectionStart + p.v.selectionLength
+        scroll = p.v.scrollBarSpot
+    states = {
+        'language': language.lower(),
+        'selection': {
+            # "gnx": p.v.gnx,  # EKR: Not needed. The reponse will have p.v.gnx.
+            "scroll": scroll,
+            "active": row_col_dict(active),
+            "start": row_col_dict(start),
+            "end": row_col_dict(end),
+        }
+    }
+    return self._make_response({"body-states": states})
+</t>
+<t tx="ekr.20210202110128.68">def get_children(self, package):
+    """
+    Return the node data for children of p, where p is c.p if package["ap"] is missing."""
+    self._check_c()
+    p = self._get_p(package)
+    return self._make_response({
+        # "children": [self._p_to_ap(child) for child in p.children()]
+        "children": [self._get_position_d(child) for child in p.children()]
+    })
+</t>
+<t tx="ekr.20210202110128.69">def get_parent(self, package):
+    """Return the node data for the parent of position p, where p is c.p if package["ap"] is missing."""
+    self._check_c()
+    p = self._get_p(package)
+    parent = p.parent()
+    data = self._get_position_d(parent) if parent else None
+    return self._make_response({"parent": data})
+</t>
+<t tx="ekr.20210202110128.71">def get_all_positions(self, package):
+    """
+    Return a list of position data for all positions.
+    
+    Useful as a sanity check for debugging.
+    """
+    c = self._check_c()
+    result = [
+        self._get_position_d(p) for p in c.all_positions(copy=False)
+    ]
+    return self._make_response({"position-data-list": result})
+</t>
+<t tx="ekr.20210202110128.72">def get_body(self, package):
+    """
+    Return p.b, where p is c.p if package["ap"] is missing.
+    
+    Note: There is no need for a separate get_body_length command,
+          because _make_response always adds "body-length": len(p.b)
+    """
+    self._check_c()
+    p = self._get_p(package)
+    # _make_response adds all the cheap redraw data, including "body-length"
+    return self._make_response({"body": p.b})
+    
+</t>
+<t tx="ekr.20210202110128.74">def set_body(self, package):
+    """
+    Undoably set p.b, where p is c.p if package["ap"] is missing.
+    """
+    tag = 'set_body'
+    c = self._check_c()
+    p = self._get_p(package)
+    u, wrapper = c.undoer, c.frame.body.wrapper
+    body = package.get('body')
+    if body is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no body given")
+    bunch = u.beforeChangeNodeContents(p)
+    p.v.setBodyString(body)
+    u.afterChangeNodeContents(p, "Body Text", bunch)
+    if c.p == p:
+        wrapper.setAllText(body)
+    if not self.c.isChanged():  # pragma: no cover
+        c.setChanged()
+    if not p.v.isDirty():  # pragma: no cover
+        p.setDirty()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.75">def set_selection(self, package):
+    """
+    Set the selection range for p.b, where p is c.p if package["ap"] is missing.
+    
+    Set the selection in the wrapper if p == c.p
+    
+    Package has these keys:
+        
+    - "ap":     An archived position for position p.
+    - "start":  The start of the selection.
+    - "end":    The end of the selection.
+    - "insert": The insert point. Must be either start or end.
+    - "scroll": An optional scroll position.
+    """
+    c = self._check_c()
+    p = self._get_p(package)  # Will raise ServerError if p does not exist.
+    v = p.v
+    wrapper = c.frame.body.wrapper
+    start = package.get('start', 0)
+    end = package.get('end', 0)
+    insert = package.get('insert', 0)
+    scroll = package.get('scroll', 0)
+    if p == c.p:
+        wrapper.setSelectionRange(start, end, insert)
+        wrapper.setYScrollPosition(scroll)
+    # Always set vnode attrs.
+    v.scrollBarSpot = scroll
+    v.insertSpot = insert
+    v.selectionStart = start
+    v.selectionLength = abs(start - end)
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.76">def set_headline(self, package):
+    """
+    Undoably set p.h, where p is c.p if package["ap"] is missing.
+    """
+    tag = 'set_headline'
+    c = self._check_c()
+    p = self._get_p(package)
+    u = c.undoer
+    h = package.get('headline')
+    if not h:  # pragma: no cover
+        raise ServerError(f"{tag}: no headline")
+    bunch = u.beforeChangeNodeContents(p)
+    p.h = h
+    u.afterChangeNodeContents(p, 'Change Headline', bunch)
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.77">def set_current_position(self, package):
+    """Select position p, where p is c.p if package["ap"] is missing."""
+    c = self._check_c()
+    p = self._get_p(package)
+    c.selectPosition(p)
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.78">def expand_node(self, package):
+    """
+    Expand the node at position p, where p is c.p if package["ap"] is missing.
+    
+    To expand c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "expand-node",
+    }
+    """
+    self._check_c()
+    p = self._get_p(package)
+    p.expand()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.79">def contract_node(self, package):
+    """
+    Contract the node at position p, where p is c.p if package["ap"] is missing.
+    
+    To contract c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "contract-node",
+    }
+    """
+    self._check_c()
+    p = self._get_p(package)
+    p.contract()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202110128.84">def _test_round_trip_positions(self, c):  # pragma: no cover (tested in client).
+    """Test the round tripping of p_to_ap and ap_to_p."""
+    tag = '_test_round_trip_positions'
     for p in c.all_unique_positions():
-        h = clean(p.h)
-        if h.startswith('@'):
-            if h in d:
-                print(f"  {sfn:20}: duplicate {h}")
-            else:
-                d [h] = True
-print('done')</t>
+        ap = self._p_to_ap(p)
+        p2 = self._ap_to_p(ap)
+        if p != p2:
+            self._dump_outline(c)
+            raise ServerError(f"{tag}: round-trip failed: ap: {ap}, p: {p}, p2: {p2}")
+</t>
+<t tx="ekr.20210202110128.85">def _ap_to_p(self, ap):
+    """
+    Convert ap (archived position, a dict) to a valid Leo position.
+    Raise ServerError on any kind of error.
+    """
+    tag = '_ap_to_p'
+    c = self._check_c()
+    gnx_d = c.fileCommands.gnxDict
+    outer_stack = ap.get('stack')
+    if outer_stack is None:  # pragma: no cover.
+        raise ServerError(f"{tag}: no stack in ap: {ap}")
+    if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
+        raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
+    
+    def d_to_childIndex_v (d):
+        """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
+        childIndex = d.get('childIndex')
+        if childIndex is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: no childIndex in {d}")
+        try:
+            childIndex = int(childIndex)
+        except Exception:  # pragma: no cover.
+            raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+        gnx = d.get('gnx')
+        if gnx is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: no gnx in {d}.")
+        v = gnx_d.get(gnx)
+        if v is None:  # pragma: no cover.
+            raise ServerError(f"{tag}: gnx not found: {gnx}")
+        return childIndex, v
+    #
+    # Compute p.childIndex and p.v.
+    childIndex, v = d_to_childIndex_v(ap)
+    #
+    # Create p.stack.
+    stack = []
+    for stack_d in outer_stack:
+        stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
+        stack.append((stack_v, stack_childIndex))
+    #
+    # Make p and check p.
+    p = Position(v, childIndex, stack)
+    if not c.positionExists(p):  # pragma: no cover.
+        print(
+            f"{tag}: Bad ap: {ap}\n"
+            # f"{tag}: position: {p!r}\n"
+            f"{tag}: v {v!r} childIndex: {childIndex}\n"
+            f"{tag}: stack: {stack}")
+        raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+    return p
+</t>
+<t tx="ekr.20210202110128.86">def _p_to_ap(self, p):
+    """
+    Convert Leo position p to a serializable archived position.
+    
+    This returns only position-related data.
+    get_position_data returns all data needed to redraw the screen.
+    """
+    self._check_c()
+    stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+        for (v, childIndex) in p.stack]
+    return {
+        'childIndex': p._childIndex,
+        'gnx': p.v.gnx,
+        'stack': stack,
+    }
+</t>
+<t tx="ekr.20210202183724.1">def save_file(self, package):  # pragma: no cover (too dangerous).
+    """Save the leo outline."""
+    c = self._check_c()
+    c.save()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.10">def toggle_mark(self, package):
+    """
+    Toggle the mark at position p, where p is c.p if package["ap"] is missing.
+    
+    To *toggle* the mark of c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "toggle-mark",
+    }
+    """
+    self._check_c()
+    p = self._get_p(package)
+    if p.isMarked():
+        p.clearMarked()
+    else:
+        p.setMarked()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.11">def clone_node(self, package):
+    """
+    Clone the node at position p, where p is c.p if package["ap"] is missing.
+    
+    To clone c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "clone",
+    }
+    """
+    c = self._check_c()
+    p = self._get_p(package)
+    c.selectPosition(p)
+    c.clone()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.12">def cut_node(self, package):  # pragma: no cover (too dangerous, for now)
+    """
+    Cut the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
+    
+    To cut c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "cut-node",
+    }
+    """
+    c = self._check_c()
+    p = self._get_p(package)
+    c.selectPosition(p)
+    c.cutOutline()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.13">def delete_node(self, package):  # pragma: no cover (too dangerous, for now)
+    """
+    Delete the node (and its descendants) at position p, where p is c.p if package["ap"] is missing.
+    
+    To delete c.p, use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "delete-node",
+    }
+    """
+    c = self._check_c()
+    p = self._get_p(package)
+    c.selectPosition(p)
+    c.deleteOutline()  # Handles undo.
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.15">def insert_node(self, package):
+    """
+    Insert a new node at position p, where p is c.p if package["ap"] is missing.
+
+    This node has 'newHeadline' as its headline.
+    
+    To insert a new node at c.p (with the default headline), use this request:
+    {
+        "action": "execute-leo-command",
+        "leo-command-name": "insert-node",
+    }
+    
+    Use the 'set_headline' method to undoably set any node's headlines.
+    """
+    c = self._check_c()
+    p = self._get_p(package)
+    c.selectPosition(p)
+    c.insertHeadline()  # Handles undo, sets c.p
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.16">def undo(self, package):
+    """Undo last un-doable operation"""
+    c = self._check_c()
+    u = c.undoer
+    if u.canUndo():
+        u.undo()
+    # Félix: Caller can get focus using other calls.
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.17">def redo(self, package):
+    """Undo last un-doable operation"""
+    c = self._check_c()
+    u = c.undoer
+    if u.canRedo():
+        u.redo()
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.2">def get_buttons(self, package):  # pragma: no cover (no scripting controller)
+    """Gets the currently opened file's @buttons list"""
+    d = self._check_button_command('get_buttons')
+    return self._make_response({
+        "buttons": sorted(list(d.get.keys()))
+    })
+</t>
+<t tx="ekr.20210202183724.3">def remove_button(self, package):  # pragma: no cover (no scripting controller)
+    """Remove button by name."""
+    tag = 'remove_button'
+    name = package.get("name")
+    if not name:
+        raise ServerError(f"{tag}: no button name given")
+    d = self._check_button_command(tag)
+    if name not in d:
+        raise ServerError(f"{tag}: button {name!r} does not exist")
+    try:
+        del d [name]
+    except Exception as e:
+        raise ServerError(f"{tag}: exception removing button {name}: {e}")
+    return self._make_response({
+        "buttons": sorted(list(d.get.keys()))
+    })
+</t>
+<t tx="ekr.20210202183724.4">def click_button(self, package):  # pragma: no cover (no scripting controller)
+    """Handles buttons clicked in client from the '@button' panel"""
+    tag = 'click_button'
+    name = package.get("name")
+    if not name:
+        raise ServerError(f"{tag}: no button name given")
+    d = self._check_button_command(tag)
+    button = d.get(name)
+    if not button:
+        raise ServerError(f"{tag}: button {name!r} does not exist")
+    try:
+        button.command()
+    except Exception as e:
+        raise ServerError(f"{tag}: exception clicking button {name}: {e}")
+    return self._make_response()
+</t>
+<t tx="ekr.20210202183724.5">def get_all_leo_commands(self, package):
+    """Return a list of all Leo commands that make sense in leoInteg."""
+    tag = 'get_all_leo_commands'
+    c = self.dummy_c  # Use the dummy commander.
+    d = c.commandsDict  # keys are command names, values are functions.
+    bad_names = self._bad_commands(c)  # #92.
+    good_names = self._good_commands()
+    duplicates = set(bad_names).intersection(set(good_names))
+    if duplicates:  # pragma: no cover
+        print('duplicate command names...')
+        for z in sorted(duplicates):
+            print(z)
+    result = []
+    for command_name in sorted(d):
+        func = d.get(command_name)
+        if not func:  # pragma: no cover
+            print('no func:', command_name)
+            continue
+        if command_name in bad_names:  # #92.
+            continue
+        # Prefer func.__func_name__ to func.__name__: Leo's decorators change func.__name__!
+        func_name = getattr(func, '__func_name__', func.__name__)
+        if not func_name:  # pragma: no cover
+            print('no name', command_name)
+            continue
+        doc = func.__doc__ or ''
+        result.append({
+            "command-name": command_name,
+            "func":  func_name,
+            "detail": doc,
+        })
+    if self.log_flag:  # pragma: no cover
+        print(f"\n{tag}: {len(result)} leo commands\n")
+        g.printObj([z.get("command-name") for z in result], tag=tag)
+    return self._make_response({"commands": result})
+</t>
+<t tx="ekr.20210202183724.6">def _bad_commands(self, c):
+    """Return the list of Leo's command names that leoInteg should ignore."""
+    d = c.commandsDict  # keys are command names, values are functions.
+    bad = []
+    #
+    # First, remove @button, @command and vim commands.
+    for command_name in sorted(d):
+        if command_name.startswith((':', '@')):
+            # print('ignore', command_name)
+            bad.append(command_name)
+    # Second, remove other commands.
+    # This is a hand-curated list.
+    bad_list = [
+
+        # Abbreviations...
+        'abbrev-kill-all',
+        'abbrev-list',
+        'dabbrev-completion',
+        'dabbrev-expands',
+
+        # Autocompletion...
+        'auto-complete',
+        'auto-complete-force',
+        'disable-autocompleter',
+        'disable-calltips',
+        'enable-autocompleter',
+        'enable-calltips',
+
+        # Debugger...
+        'debug',
+        'db-again',
+        'db-b',
+        'db-c',
+        'db-h',
+        'db-input',
+        'db-l',
+        'db-n',
+        'db-q',
+        'db-r',
+        'db-s',
+        'db-status',
+        'db-w',
+
+        # File operations...
+        'directory-make',
+        'directory-remove',
+        'file-delete',
+        'file-diff-files',
+        'file-insert',
+        'file-new',
+        'file-open-by-name',
+
+        # All others...
+        'shell-command',
+        'shell-command-on-region',
+        'cheat-sheet',
+        'dehoist',  # Duplicates of de-hoist.
+        'find-clone-all',
+        'find-clone-all-flattened',
+        'find-clone-tag',
+        'find-all',
+        'find-all-unique-regex',
+        'find-character',
+        'find-character-extend-selection',
+        'find-next',
+        'find-prev',
+        'find-word',
+        'find-word-in-line',
+
+        'global-search',
+
+        'isearch-backward',
+        'isearch-backward-regexp',
+        'isearch-forward',
+        'isearch-forward-regexp',
+        'isearch-with-present-options',
+
+        'replace',
+        'replace-all',
+        'replace-current-character',
+        'replace-then-find',
+
+        're-search-backward',
+        're-search-forward',
+
+        'search-backward',
+        'search-forward',
+        'search-return-to-origin',
+
+        'set-find-everywhere',
+        'set-find-node-only',
+        'set-find-suboutline-only',
+        'set-replace-string',
+        'set-search-string',
+
+        'show-find-options',
+
+        'start-search',
+
+        'toggle-find-collapses-nodes',
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+
+        'word-search-backward',
+        'word-search-forward',
+
+        # Buttons...
+        'delete-script-button-button',
+
+        # Clicks...
+        'click-click-box',
+        'click-icon-box',
+        'ctrl-click-at-cursor',
+        'ctrl-click-icon',
+        'double-click-icon-box',
+        'right-click-icon',
+
+        # Editors...
+        'add-editor', 'editor-add',
+        'delete-editor', 'editor-delete',
+        'detach-editor-toggle',
+        'detach-editor-toggle-max',
+
+        # Focus...
+        'cycle-editor-focus', 'editor-cycle-focus',
+        'focus-to-body',
+        'focus-to-find',
+        'focus-to-log',
+        'focus-to-minibuffer',
+        'focus-to-nav',
+        'focus-to-spell-tab',
+        'focus-to-tree',
+
+        'tab-cycle-next',
+        'tab-cycle-previous',
+        'tab-detach',
+
+        # Headlines..
+        'abort-edit-headline',
+        'edit-headline',
+        'end-edit-headline',
+
+        # Layout and panes...
+        'adoc',
+        'adoc-with-preview',
+
+        'contract-body-pane',
+        'contract-log-pane',
+        'contract-outline-pane',
+
+        'edit-pane-csv',
+        'edit-pane-test-open',
+        'equal-sized-panes',
+        'expand-log-pane',
+        'expand-body-pane',
+        'expand-outline-pane',
+
+        'free-layout-context-menu',
+        'free-layout-load',
+        'free-layout-restore',
+        'free-layout-zoom',
+
+        'zoom-in',
+        'zoom-out'
+
+        # Log
+        'clear-log',
+
+        # Menus...
+        'activate-cmds-menu',
+        'activate-edit-menu',
+        'activate-file-menu',
+        'activate-help-menu',
+        'activate-outline-menu',
+        'activate-plugins-menu',
+        'activate-window-menu',
+        'context-menu-open',
+        'menu-shortcut',
+
+        # Modes...
+        'clear-extend-mode',
+
+        # Outline...
+        'contract-or-go-left',
+        'contract-node',
+        'contract-parent',
+
+        # Scrolling...
+        'scroll-down-half-page',
+        'scroll-down-line',
+        'scroll-down-page',
+        'scroll-outline-down-line',
+        'scroll-outline-down-page',
+        'scroll-outline-left',
+        'scroll-outline-right',
+        'scroll-outline-up-line',
+        'scroll-outline-up-page',
+        'scroll-up-half-page',
+        'scroll-up-line',
+        'scroll-up-page',
+
+        # Windows...
+        'about-leo',
+
+        'cascade-windows',
+        'close-others',
+        'close-window',
+
+        'iconify-frame',
+
+        'find-tab-hide',
+        'find-tab-open',
+
+        'hide-body-dock',
+        'hide-body-pane',
+        'hide-invisibles',
+        'hide-log-pane',
+        'hide-outline-dock',
+        'hide-outline-pane',
+        'hide-tabs-dock',
+
+        'minimize-all',
+
+        'resize-to-screen',
+
+        'show-body-dock',
+        'show-hide-body-dock',
+        'show-hide-outline-dock',
+        'show-hide-render-dock',
+        'show-hide-tabs-dock',
+        'show-tabs-dock',
+        'clean-diff',
+        'cm-external-editor',
+
+        'delete-@button-parse-json-button',
+        'delete-trace-statements',
+
+        'disable-idle-time-events',
+        'do-nothing',
+
+        'enable-idle-time-events',
+        'enter-quick-command-mode',
+        'exit-named-mode',
+
+        'F6-open-console',
+
+        'flush-lines',
+        'full-command',
+
+        'get-child-headlines',
+
+        'history',
+
+        'insert-file-name',
+
+        'justify-toggle-auto',
+
+        'keep-lines',
+        'keyboard-quit',
+
+        'line-number',
+        'line-numbering-toggle',
+        'line-to-headline',
+
+        'marked-list',
+
+        'mode-help',
+
+        'open-python-window',
+
+        'open-with-idle',
+        'open-with-open-office',
+        'open-with-scite',
+        'open-with-word',
+
+        'recolor',
+        'redraw',
+
+        'repeat-complex-command',
+
+        'session-clear',
+        'session-create',
+        'session-refresh',
+        'session-restore',
+        'session-snapshot-load',
+        'session-snapshot-save',
+
+        'set-colors',
+        'set-command-state',
+        'set-comment-column',
+        'set-extend-mode',
+        'set-fill-column',
+        'set-fill-prefix',
+        'set-font',
+        'set-insert-state',
+        'set-overwrite-state',
+        'set-silent-mode',
+
+        'show-buttons',
+        'show-calltips',
+        'show-calltips-force',
+        'show-color-names',
+        'show-color-wheel',
+        'show-commands',
+        'show-file-line',
+
+        'show-focus',
+        'show-fonts',
+
+        'show-invisibles',
+        'show-next-tip',
+        'show-node-uas',
+        'show-outline-dock',
+        'show-plugin-handlers',
+        'show-plugins-info',
+        'show-settings',
+        'show-settings-outline',
+        'show-spell-info',
+        'show-stats',
+
+        'style-set-selected',
+
+        'suspend',
+
+        'toggle-abbrev-mode',
+        'toggle-active-pane',
+        'toggle-angle-brackets',
+        'toggle-at-auto-at-edit',
+        'toggle-autocompleter',
+        'toggle-calltips',
+        'toggle-case-region',
+        'toggle-extend-mode',
+        'toggle-idle-time-events',
+        'toggle-input-state',
+        'toggle-invisibles',
+        'toggle-line-numbering-root',
+        'toggle-sparse-move',
+        'toggle-split-direction',
+
+        'what-line',
+        'eval',
+        'eval-block',
+        'eval-last',
+        'eval-last-pretty',
+        'eval-replace',
+
+        'find-quick',
+        'find-quick-changed',
+        'find-quick-selected',
+        'find-quick-test-failures',
+        'find-quick-timeline',
+
+        'goto-next-history-node',
+        'goto-prev-history-node',
+
+        'preview',
+        'preview-body',
+        'preview-expanded-body',
+        'preview-expanded-html',
+        'preview-html',
+        'preview-marked-bodies',
+        'preview-marked-html',
+        'preview-marked-nodes',
+        'preview-node',
+        'preview-tree-bodies',
+        'preview-tree-html',
+        'preview-tree-nodes',
+
+        'spell-add',
+        'spell-as-you-type-next',
+        'spell-as-you-type-toggle',
+        'spell-as-you-type-undo',
+        'spell-as-you-type-wrap',
+        'spell-change',
+        'spell-change-then-find',
+        'spell-find',
+        'spell-ignore',
+        'spell-tab-hide',
+        'spell-tab-open',
+
+        'tag-children',
+
+        'todo-children-todo',
+        'todo-dec-pri',
+        'todo-find-todo',
+        'todo-fix-datetime',
+        'todo-inc-pri',
+
+        'vr',
+        'vr-contract',
+        'vr-expand',
+        'vr-hide',
+        'vr-lock',
+        'vr-pause-play-movie',
+        'vr-show',
+        'vr-toggle',
+        'vr-unlock',
+        'vr-update',
+        'vr-zoom',
+
+        'vs-create-tree',
+        'vs-dump',
+        'vs-reset',
+        'vs-update',
+        # vs code's text editing commands should cover all of these...
+        'add-comments',
+        'add-space-to-lines',
+        'add-tab-to-lines',
+        'align-eq-signs',
+
+        'back-char',
+        'back-char-extend-selection',
+        'back-page',
+        'back-page-extend-selection',
+        'back-paragraph',
+        'back-paragraph-extend-selection',
+        'back-sentence',
+        'back-sentence-extend-selection',
+        'back-to-home',
+        'back-to-home-extend-selection',
+        'back-to-indentation',
+        'back-word',
+        'back-word-extend-selection',
+        'back-word-smart',
+        'back-word-smart-extend-selection',
+        'backward-delete-char',
+        'backward-delete-word',
+        'backward-delete-word-smart',
+        'backward-find-character',
+        'backward-find-character-extend-selection',
+        'backward-kill-paragraph',
+        'backward-kill-sentence',
+        'backward-kill-word',
+        'beginning-of-buffer',
+        'beginning-of-buffer-extend-selection',
+        'beginning-of-line',
+        'beginning-of-line-extend-selection',
+
+        'capitalize-word',
+        'center-line',
+        'center-region',
+        'clean-all-blank-lines',
+        'clean-all-lines',
+        'clean-body',
+        'clean-lines',
+        'clear-kill-ring',
+        'clear-selected-text',
+        'convert-blanks',
+        'convert-tabs',
+        'copy-text',
+        'cut-text',
+
+        'delete-char',
+        'delete-comments',
+        'delete-indentation',
+        'delete-spaces',
+        'delete-word',
+        'delete-word-smart',
+        'downcase-region',
+        'downcase-word',
+
+        'end-of-buffer',
+        'end-of-buffer-extend-selection',
+        'end-of-line',
+        'end-of-line-extend-selection',
+
+        'exchange-point-mark',
+
+        'extend-to-line',
+        'extend-to-paragraph',
+        'extend-to-sentence',
+        'extend-to-word',
+
+        'fill-paragraph',
+        'fill-region',
+        'fill-region-as-paragraph',
+
+        'finish-of-line',
+        'finish-of-line-extend-selection',
+
+        'forward-char',
+        'forward-char-extend-selection',
+        'forward-end-word',
+        'forward-end-word-extend-selection',
+        'forward-page',
+        'forward-page-extend-selection',
+        'forward-paragraph',
+        'forward-paragraph-extend-selection',
+        'forward-sentence',
+        'forward-sentence-extend-selection',
+        'forward-word',
+        'forward-word-extend-selection',
+        'forward-word-smart',
+        'forward-word-smart-extend-selection',
+
+        'go-anywhere',
+        'go-back',
+        'go-forward',
+        'goto-char',
+
+        'indent-region',
+        'indent-relative',
+        'indent-rigidly',
+        'indent-to-comment-column',
+
+        'insert-hard-tab',
+        'insert-newline',
+        'insert-parentheses',
+        'insert-soft-tab',
+
+        'kill-line',
+        'kill-paragraph',
+        'kill-pylint',
+        'kill-region',
+        'kill-region-save',
+        'kill-sentence',
+        'kill-to-end-of-line',
+        'kill-word',
+        'kill-ws',
+
+        'match-brackets',
+
+        'move-lines-down',
+        'move-lines-up',
+        'move-past-close',
+        'move-past-close-extend-selection',
+
+        'newline-and-indent',
+        'next-line',
+        'next-line-extend-selection',
+        'next-or-end-of-line',
+        'next-or-end-of-line-extend-selection',
+
+        'previous-line',
+        'previous-line-extend-selection',
+        'previous-or-beginning-of-line',
+        'previous-or-beginning-of-line-extend-selection',
+
+        'rectangle-clear',
+        'rectangle-close',
+        'rectangle-delete',
+        'rectangle-kill',
+        'rectangle-open',
+        'rectangle-string',
+        'rectangle-yank',
+
+        'remove-blank-lines',
+        'remove-newlines',
+        'remove-space-from-lines',
+        'remove-tab-from-lines',
+
+        'reverse-region',
+        'reverse-sort-lines',
+        'reverse-sort-lines-ignoring-case',
+
+        'paste-text',
+        'pop-cursor',
+        'push-cursor',
+
+        'select-all',
+        'select-next-trace-statement',
+        'select-to-matching-bracket',
+
+        'sort-columns',
+        'sort-fields',
+        'sort-lines',
+        'sort-lines-ignoring-case',
+
+        'split-defs',
+        'split-line',
+
+        'start-of-line',
+        'start-of-line-extend-selection',
+
+        'tabify',
+        'transpose-chars',
+        'transpose-lines',
+        'transpose-words',
+
+        'unformat-paragraph',
+        'unindent-region',
+
+        'untabify',
+
+        'upcase-region',
+        'upcase-word',
+        'update-ref-file',
+
+        'yank',
+        'yank-pop',
+
+        'zap-to-character',
+
+    ]
+    bad.extend(bad_list)
+    result = list(sorted(bad))
+    return result
+
+</t>
+<t tx="ekr.20210202183724.7">def _good_commands(self):
+    """Defined commands that definitely should be included in leoInteg."""
+    good_list = [
+
+        'contract-all',
+        'contract-all-other-nodes',
+        'clone-node',
+        'copy-node',
+        'copy-marked-nodes',
+        'cut-node',
+
+        'de-hoist',
+        'delete-marked-nodes',
+        'delete-node',
+        'demangle-recent-files',
+        'demote',
+
+        'expand-and-go-right',
+        'expand-next-level',
+        'expand-node',
+        'expand-or-go-right',
+        'expand-prev-level',
+        'expand-to-level-1',
+        'expand-to-level-2',
+        'expand-to-level-3',
+        'expand-to-level-4',
+        'expand-to-level-5',
+        'expand-to-level-6',
+        'expand-to-level-7',
+        'expand-to-level-8',
+        'expand-to-level-9',
+        'expand-all',
+        'expand-all-subheads',
+        'expand-ancestors-only',
+
+        'find-next-clone',
+
+        'goto-first-node',
+        'goto-first-sibling',
+        'goto-first-visible-node',
+        'goto-last-node',
+        'goto-last-sibling',
+        'goto-last-visible-node',
+        'goto-next-changed',
+        'goto-next-clone',
+        'goto-next-marked',
+        'goto-next-node',
+        'goto-next-sibling',
+        'goto-next-visible',
+        'goto-parent',
+        'goto-prev-marked',
+        'goto-prev-node',
+        'goto-prev-sibling',
+        'goto-prev-visible',
+
+        'hoist',
+
+        'insert-node',
+        'insert-node-before',
+        'insert-as-first-child',
+        'insert-as-last-child',
+        'insert-child',
+
+        'mark',
+        'mark-changed-items',
+        'mark-first-parents',
+        'mark-subheads',
+
+        'move-marked-nodes',
+        'move-outline-down',
+        'move-outline-left',
+        'move-outline-right',
+        'move-outline-up',
+
+        'paste-node',
+        'paste-retaining-clones',
+        'promote',
+        'promote-bodies',
+        'promote-headlines',
+
+        'sort-children',
+        'sort-siblings',
+
+        'tangle',
+        'tangle-all',
+        'tangle-marked',
+
+        'unmark-all',
+        'unmark-first-parents',
+        'clean-main-spell-dict',
+        'clean-persistence',
+        'clean-recent-files',
+        'clean-spellpyx',
+        'clean-user-spell-dict',
+
+        'clear-all-caches',
+        'clear-all-hoists',
+        'clear-all-uas',
+        'clear-cache',
+        'clear-node-uas',
+        'clear-recent-files',
+
+        'delete-first-icon',
+        'delete-last-icon',
+        'delete-node-icons',
+
+        'dump-caches',
+        'dump-clone-parents',
+        'dump-expanded',
+        'dump-node',
+        'dump-outline',
+
+        'insert-icon',
+
+        'set-ua',
+
+        'show-all-uas',
+        'show-bindings',
+        'show-clone-ancestors',
+        'show-clone-parents',
+        # Export files...
+        'export-headlines',
+        'export-jupyter-notebook',
+        'outline-to-cweb',
+        'outline-to-noweb',
+        'remove-sentinels',
+        'typescript-to-py',
+
+        # Import files...
+        'import-MORE-files',
+        'import-file',
+        'import-free-mind-files',
+        'import-jupyter-notebook',
+        'import-legacy-external-files',
+        'import-mind-jet-files',
+        'import-tabbed-files',
+        'import-todo-text-files',
+        'import-zim-folder',
+
+        # Open specific files...
+        # 'ekr-projects',
+        'leo-cheat-sheet',  # These duplicates are useful.
+        'leo-dist-leo',
+        'leo-docs-leo',
+        'leo-plugins-leo',
+        'leo-py-leo',
+        'leo-quickstart-leo',
+        'leo-scripts-leo',
+        'leo-settings',
+        'leo-unittest-leo',
+        'my-leo-settings',
+        # 'scripts',
+        'settings',
+
+        'open-cheat-sheet-leo',
+        'open-desktop-integration-leo',
+        'open-leo-dist-leo',
+        'open-leo-docs-leo',
+        'open-leo-plugins-leo',
+        'open-leo-py-leo',
+        'open-leo-settings',
+        'open-leo-settings-leo',
+        'open-local-settings',
+        'open-my-leo-settings',
+        'open-my-leo-settings-leo',
+        'open-quickstart-leo',
+        'open-scripts-leo',
+        'open-unittest-leo',
+
+        # Open other places...
+        'open-offline-tutorial',
+        'open-online-home',
+        'open-online-toc',
+        'open-online-tutorials',
+        'open-online-videos',
+        'open-recent-file',
+        'open-theme-file',
+        'open-url',
+        'open-url-under-cursor',
+        'open-users-guide',
+
+        # Read outlines...
+        'read-at-auto-nodes',
+        'read-at-file-nodes',
+        'read-at-shadow-nodes',
+        'read-file-into-node',
+        'read-outline-only',
+        'read-ref-file',
+
+        # Save Files.
+        'file-save',
+        'file-save-as',
+        'file-save-as-unzipped',
+        'file-save-by-name',
+        'file-save-to',
+        'save',  # Some may not be needed.
+        'save-all',
+        'save-as',
+        'save-file',
+        'save-file-as',
+        'save-file-as-unzipped',
+        'save-file-as-zipped',
+        'save-file-by-name',
+        'save-file-to',
+        'save-to',
+
+        # Write parts of outlines...
+        'write-at-auto-nodes',
+        'write-at-file-nodes',
+        'write-at-shadow-nodes',
+        'write-dirty-at-auto-nodes',
+        'write-dirty-at-file-nodes',
+        'write-dirty-at-shadow-nodes',
+        'write-edited-recent-files',
+        'write-file-from-node',
+        'write-missing-at-file-nodes',
+        'write-outline-only',
+
+        'clone-find-all',
+        'clone-find-all-flattened',
+        'clone-find-all-flattened-marked',
+        'clone-find-all-marked',
+        'clone-find-parents',
+        'clone-find-tag',
+        'clone-marked-nodes',
+        'clone-node-to-last-node',
+        'clone-to-at-spot',
+
+        'edit-setting',
+        'edit-shortcut',
+
+        'execute-pytest',
+        'execute-script',
+        'extract',
+        'extract-names',
+
+        'goto-any-clone',
+        'goto-global-line',
+        'goto-line',
+        'git-diff', 'gd',
+
+        'log-kill-listener', 'kill-log-listener',
+        'log-listen', 'listen-to-log',
+
+        'make-stub-files',
+
+        'pdb',
+
+        'redo',
+        'rst3',
+        'run-all-unit-tests-externally',
+        'run-all-unit-tests-locally',
+        'run-marked-unit-tests-externally',
+        'run-marked-unit-tests-locally',
+        'run-selected-unit-tests-externally',
+        'run-selected-unit-tests-locally',
+        'run-tests',
+
+        'undo',
+
+        'xdb',
+        # Beautify, blacken, fstringify...
+        'beautify-files',
+        'beautify-files-diff',
+        'blacken-files',
+        'blacken-files-diff',
+        'diff-and-open-leo-files',
+        'diff-beautify-files',
+        'diff-fstringify-files',
+        'diff-leo-files',
+        'diff-marked-nodes',
+        'fstringify-files',
+        'fstringify-files-diff',
+        'fstringify-files-silent',
+        'pretty-print-c',
+        'silent-fstringify-files',
+
+        # All other commands...
+        'at-file-to-at-auto',
+
+        'beautify-c',
+
+        'cls',
+        'c-to-python',
+        'c-to-python-clean-docs',
+        'check-derived-file',
+        'check-outline',
+        'code-to-rst',
+        'compare-two-leo-files',
+        'convert-all-blanks',
+        'convert-all-tabs',
+        'count-children',
+        'count-pages',
+        'count-region',
+
+        'desktop-integration-leo',
+
+        'edit-recent-files',
+        'exit-leo',
+
+        'file-compare-two-leo-files',
+        'find-def',
+        'find-long-lines',
+        'find-missing-docstrings',
+        'flake8',
+        'flatten-outline',
+        'flatten-outline-to-node',
+        'flatten-script',
+
+        'gc-collect-garbage',
+        'gc-dump-all-objects',
+        'gc-dump-new-objects',
+        'gc-dump-objects-verbose',
+        'gc-show-summary',
+
+        'help',  # To do.
+        'help-for-abbreviations',
+        'help-for-autocompletion',
+        'help-for-bindings',
+        'help-for-command',
+        'help-for-creating-external-files',
+        'help-for-debugging-commands',
+        'help-for-drag-and-drop',
+        'help-for-dynamic-abbreviations',
+        'help-for-find-commands',
+        'help-for-keystroke',
+        'help-for-minibuffer',
+        'help-for-python',
+        'help-for-regular-expressions',
+        'help-for-scripting',
+        'help-for-settings',
+
+        'insert-body-time',  # ?
+        'insert-headline-time',
+        'insert-jupyter-toc',
+        'insert-markdown-toc',
+
+        'find-var',
+
+        'join-leo-irc',
+        'join-node-above',
+        'join-node-below',
+        'join-selection-to-node-below',
+
+        'move-lines-to-next-node',
+
+        'new',
+
+        'open-outline',
+
+        'parse-body',
+        'parse-json',
+        'pandoc',
+        'pandoc-with-preview',
+        'paste-as-template',
+
+        'print-body',
+        'print-cmd-docstrings',
+        'print-expanded-body',
+        'print-expanded-html',
+        'print-html',
+        'print-marked-bodies',
+        'print-marked-html',
+        'print-marked-nodes',
+        'print-node',
+        'print-sep',
+        'print-tree-bodies',
+        'print-tree-html',
+        'print-tree-nodes',
+        'print-window-state',
+
+        'pyflakes',
+        'pylint',
+        'pylint-kill',
+        'python-to-coffeescript',
+
+        'quit-leo',
+
+        'reformat-body',
+        'reformat-paragraph',
+        'refresh-from-disk',
+        'reload-all-settings',
+        'reload-settings',
+        'reload-style-sheets',
+        'revert',
+
+        'save-buffers-kill-leo',
+        'screen-capture-5sec',
+        'screen-capture-now',
+        'script-button',  # ?
+        'set-reference-file',
+        'show-style-sheet',
+        'sort-recent-files',
+        'sphinx',
+        'sphinx-with-preview',
+        'style-reload',  # ?
+
+        'untangle',
+        'untangle-all',
+        'untangle-marked',
+
+        'view-lossage',  # ?
+
+        'weave',
+
+        # Dubious commands (to do)...
+        'act-on-node',
+
+        'cfa',  # Do we need abbreviations?
+        'cfam',
+        'cff',
+        'cffm',
+        'cft',
+
+        'buffer-append-to',
+        'buffer-copy',
+        'buffer-insert',
+        'buffer-kill',
+        'buffer-prepend-to',
+        'buffer-switch-to',
+        'buffers-list',
+        'buffers-list-alphabetically',
+
+        'chapter-back',
+        'chapter-next',
+        'chapter-select',
+        'chapter-select-main',
+        'create-def-list',  # ?
+    ]
+    return good_list
+
+</t>
+<t tx="ekr.20210202193505.1"></t>
+<t tx="ekr.20210202193540.1"></t>
+<t tx="ekr.20210202193642.1"></t>
+<t tx="ekr.20210202193709.1"># These will fail unless the open_file inits c.theScriptingController.
+</t>
+<t tx="ekr.20210204145818.1">async def _async_output(self, json):  # pragma: no cover (tested in server)
+    """Output json string to the web_socket"""
+    tag = '_async_output'
+    if self.web_socket:
+        await self.web_socket.send(bytes(json, 'utf-8'))
+    else:
+        g.trace(f"{tag}: no web socket. json: {json}")
+</t>
+<t tx="ekr.20210204154548.1"></t>
+<t tx="ekr.20210205102806.1"></t>
+<t tx="ekr.20210205102818.1">def error(self, package):
+    """For unit testing. Raise ServerError"""
+    raise ServerError(f"error called")
+</t>
+<t tx="ekr.20210205103759.1">def shut_down(self, package):
+    """Shut down the server."""
+    tag = 'shut_down'
+    n = len(g.app.commanders())
+    if n:  # pragma: no cover
+        raise ServerError(f"{tag}: {n} open outlines")
+    raise TerminateServer(f"client requested shut down")
+</t>
+<t tx="ekr.20210206062654.1">def get_sign_on(self, package):
+    """Synchronous version of _sign_on"""
+    g.app.computeSignon()
+    signon = []
+    for z in (g.app.signon, g.app.signon1):
+        for z2 in z.split('\n'):
+            signon.append(z2.strip())
+    return self._make_response({"sign-on": "\n".join(signon)})
+</t>
+<t tx="ekr.20210206182638.1">def _make_response(self, package=None):
+    """
+    Return a json string representing a response dict.
+    
+    The 'package' kwarg, if present, must be a python dict describing a
+    response. package may be an empty dict or None.
+    
+    The 'p' kwarg, if present, must be a position.
+    
+    First, this method creates a response (a python dict) containing all
+    the keys in the 'package' dict, with the following added keys:
+        
+    - "id":         The incoming id.
+    - "action":     The incoming action.
+    - "commander":  A dict describing self.c.
+    - "node":       None, or an archived position describing self.c.p.
+    
+    Finally, this method returns the json string corresponding to the
+    response.
+    """
+    tag = '_make_response'
+    c = self.c  # It is valid for c to be None.
+    if package is None:
+        package = {}
+    p = package.get("p")
+    if p:
+        del package ["p"]
+    # Raise an *internal* error if checks fail.
+    if isinstance(package, str):  # pragma: no cover
+        raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
+    if p and not isinstance(p, Position):  # pragma: no cover
+        raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
+    if p and not c:  # pragma: no cover
+        raise InternalServerError(f"{tag}: p but not c")
+    if p and not c.positionExists(p):  # pragma: no cover
+        raise InternalServerError(f"{tag}: p does not exist")
+    if c and not c.p:  # pragma: no cover
+        raise InternalServerError(f"{tag}: empty c.p")
+    #
+    # Always add these keys.
+    package ["id"] = self.current_id
+    package ["action"] = self.action
+    # The following keys are relevant only if there is an open commander.
+    if c:
+        # Allow commands, especially _get_redraw_d, to specify p!
+        p = p or c.p
+        package ["commander"] = {
+            "changed": c.isChanged(),
+            "file_name": c.fileName(), # Can be None for new files.
+        }
+        # Add all the node data, including:
+        # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
+        # - All the *cheap* redraw data for p.
+        redraw_d = self._get_position_d(p)
+        for key, value in redraw_d.items():
+            if key in package:  # pragma: no cover
+                raise InternalServerError(f"{tag}: key {key} in package: {package}")
+            package [key] = value
+    if self.log_flag:  # pragma: no cover
+        g.printObj(package, tag=f"{tag} returns")
+    return json.dumps(package, separators=(',', ':')) 
+</t>
+<t tx="ekr.20210207051720.1">def _check_button_command(self, tag):  # pragma: no cover (no scripting controller)
+    """
+    Check that a button command is possible.
+    Raise ServerError if not. Otherwise, return sc.buttonsDict.
+    """
+    c = self._check_c()
+    sc = getattr(c, "theScriptingController", None)
+    if not sc:
+        # This will happen unless mod_scripting is loaded!
+        raise ServerError(f"{tag}: no scripting controller")
+    return sc.buttonsDict
+</t>
+<t tx="ekr.20210207054237.1">def _check_c(self):
+    """Return self.c or raise ServerError if self.c is None."""
+    tag = '_check_c'
+    c = self.c
+    if not c:  # pragma: no cover
+        raise ServerError(f"{tag}: no open commander")
+    return c
+</t>
+<t tx="ekr.20210208163018.1">class TestLeoServer (unittest.TestCase):  # pragma: no cover
+    """Tests of LeoServer class."""
+    request_number = 0
+
+    @others
+</t>
+<t tx="ekr.20210208163409.1">"""Run unittest on leoserver.py: good for debugging."""
+g.cls()
+import os
+if c.changed:
+    c.save()
+leo_dir = os.path.join(g.app.loadDir, '..', '..')
+assert os.path.exists(leo_dir), repr(leo_dir)
+os.chdir(leo_dir)
+# leoserver.main detects and removes the --unittest command-line arg.
+g.execute_shell_commands('python -m leo.core.leoserver --unittest')
+</t>
+<t tx="ekr.20210208171319.1">def test_open_and_close(self):
+    # server = self.server
+    test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+    assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+    log = False
+    table = [
+        # Open file.
+        ("open_file", {"log": log, "filename": "xyzzy.leo"}),  # Does not exist.
+        # Switch to the second file.
+        ("open_file", {"log": log, "filename": test_dot_leo}),   # Does exist.
+        # Open again. This should be valid.
+        ("open_file", {"log": False, "filename": test_dot_leo}),
+        # Better test of _ap_to_p.
+        ("set_current_position", {
+            "ap": {
+                "gnx": "ekr.20180311131424.1",  # Recent
+                "childIndex": 1,
+                "stack": [],
+            }
+        }),
+        ("get_ua", {"log": log}),
+        # Close the second file.
+        ("close_file", {"log": log, }),
+        # Close the first file.
+        ("close_file", {"log": log, }),
+    ]
+    for action, package in table:
+        self._request(action, package)
+</t>
+<t tx="ekr.20210208171819.1">def _request(self, action, package=None):
+    server = self.server
+    self.request_number += 1
+    log_flag = package.get("log")
+    d = {
+        "action": action,
+        "id": self.request_number
+    }
+    if package:
+        d ["package"] = package
+    response = server._do_message(d)
+    # _make_response calls json_dumps. Undo it with json.loads.
+    answer = json.loads(response)
+    if log_flag:
+        g.printObj(answer, tag=f"response to {action}")
+    return answer
+</t>
+<t tx="ekr.20210209055518.1">def get_all_server_commands(self, package):
+    """
+    Public server method:
+    Return the names of all callable public methods of the server.
+    """
+    tag = 'get_all_server_commands'
+    names = self._get_all_server_commands()
+    if self.log_flag:  # pragma: no cover
+        print(f"\n{tag}: {len(names)} server commands\n")
+        g.printObj(names, tag=tag)
+    return self._make_response({"server-commands": names})
+
+def _get_all_server_commands(self):
+    """
+    Private server method:
+    Return the names of all callable public methods of the server.
+    """
+    members = inspect.getmembers(self, inspect.ismethod)
+    return sorted([name for (name, value) in members if not name.startswith('_')])
+</t>
+<t tx="ekr.20210209062536.1">def _do_leo_command(self, action, package):
+    """
+    Execute the leo command given by package ["leo-command-name"].
+    
+    The client must open an outline before calling this method.
+    """
+    # We *can* require self.c to exist, because:
+    # 1. all commands imply c.
+    # 2. The client must call open_file to set self.c.
+    tag = '_execute_leo_command'
+    c = self._check_c()
+    command_name = package.get("leo-command-name")
+    if not command_name:  # pragma: no cover
+        raise ServerError(f"{tag}: no 'leo-command-name' key in package")
+    if command_name in self.bad_commands_list:  # pragma: no cover
+        raise ServerError(f"{tag}: disallowed command: {command_name}")
+    func = c.commandsDict.get(command_name)
+    if not func:  # pragma: no cover
+        raise ServerError(f"{tag}: Leo command not found: {command_name}")
+    value = func(event={"c":c})
+    return self._make_response({"return-value": value})
+</t>
+<t tx="ekr.20210209085438.1">def _do_server_command(self, action, package):
+    tag = '_do_server_command'
+    # Disallow hidden methods.
+    if action.startswith('_'):  # pragma: no cover
+        raise ServerError(f"{tag}: action starts with '_': {action}")
+    # Find and execute the server method.
+    func = getattr(self, action, None)
+    if not func:
+        raise ServerError(f"{tag}: action not found: {action}")  # pragma: no cover
+    if not callable(func):
+        raise ServerError(f"{tag}: not callable: {func}")  # pragma: no cover
+    return func(package)
+</t>
+<t tx="ekr.20210209150755.1">@nosearch
+
+# Ignore Case, Head, Body
+
+# found 12 nodes</t>
+<t tx="ekr.20210209151428.1">@nosearch
+
+# Ignore Case, Head, Body
+
+# found 11 nodes</t>
+<t tx="ekr.20210209151948.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 5 nodes</t>
+<t tx="ekr.20210209152020.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 5 nodes</t>
+<t tx="ekr.20210209152725.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 10 nodes</t>
+<t tx="ekr.20210209153451.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 6 nodes</t>
+<t tx="ekr.20210210060738.1">@nosearch</t>
+<t tx="ekr.20210210081236.1">def _get_p(self, package):
+    """Return _ap_to_p(package["ap"]) or c.p."""
+    tag = '_get_ap'
+    c = self.c
+    if not c:  # pragma: no cover
+        raise ServerError(f"{tag}: no c")
+    ap = package.get("ap")
+    if ap:
+        p = self._ap_to_p(ap)
+        if not p:  # pragma: no cover
+            raise ServerError(f"{tag}: no p")
+        if not c.positionExists(p):  # pragma: no cover
+            raise ServerError(f"{tag}: position does not exist. ap: {ap}")
+    if not c.p:  # pragma: no cover
+        raise ServerError(f"{tag}: no c.p")
+    return c.p
+</t>
+<t tx="ekr.20210210102638.1">def test_most_public_server_methods(self):
+    server=self.server
+    assert isinstance(server, g_leoserver.LeoServer), self.server
+    test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+    assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+    methods = server._get_all_server_commands()
+    # Ensure that some methods happen at the end.
+    for z in ('toggle_mark', 'undo', 'redo'):
+        methods.remove(z)
+    for z in ('toggle_mark', 'toggle_mark', 'undo', 'redo'):
+        methods.append(z)
+    # g.printObj(methods, tag=methods)
+    exclude = [
+        # Find methods...
+        'change_all', 'change_then_find',
+        'clone_find_all', 'clone_find_all_flattened', 'clone_find_tag',
+        'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
+        'tag_children',  
+        # Other methods
+        'delete_node', 'cut_node',  # dangerous.
+        'click_button', 'get_buttons', 'remove_button',  # Require plugins.
+        'save_file',  # way too dangerous!
+        # 'set_selection',  ### Not ready yet.
+        'open_file', 'close_file',  # Done by hand.
+        'shut_down',  # Don't shut down the server.
+    ]
+    expected = ['error']
+    package_d = {
+        # "apply_config": {"config": {"whatever": True}},
+        "get_focus": {"log": False},
+        "set_body": {"body": "new body\n"},
+        "set_headline": {"headline": "new headline"},
+        "get_all_server_commands": {"log": False},
+        "get_all_leo_commands": {"log": False},
+    }
+    # First open a test file &amp; performa all tests.
+    server.open_file({"filename": test_dot_leo})  # A real file.
+    try:
+        id_ = 0
+        for method_name in methods:
+            id_ += 1
+            if method_name not in exclude:
+                assert getattr(server, method_name), method_name
+                package = package_d.get(method_name, {})
+                message = {
+                    "id": id_,
+                    "action": method_name,
+                    "package": package,
+                }
+                try:
+                    # Don't call the method directly.
+                    # That would disable trace/verbose logic, checking, etc.
+                    server._do_message(message)
+                except Exception as e:
+                    if method_name not in expected:
+                        print(f"Exception in test_most_public_server_methods: {method_name} {e}")
+    finally:
+        server.close_file({"filename": test_dot_leo})
+</t>
+<t tx="ekr.20210210174801.1">def test_leo_commands (self):
+    server = self.server
+    table = [
+        # Toggle mark twice.
+        ("toggle-mark", {}),
+        ("toggle-mark", {}),
+    ]
+    # First open a test file.
+    server.open_file({"filename": "xyzzy.leo"})
+    try:
+        action = "execute-leo-command"
+        for command_name, package in table:
+            package ["leo-command-name"] = command_name
+            self._request(action, package)
+    finally:
+        server.close_file({"filename": "xyzzy.leo"})
+</t>
+<t tx="ekr.20210211053733.1">def _get_position_d(self, p):
+    """
+    Return a python dict containing:
+    - "node": self._p_to_ap(p).
+    - All *cheap* redraw data..
+    
+    Use get_ua to get p.ua *plus* all this redraw data.
+    
+    Note: v.computeIcon sets iconVal as follows:
+        v, val = self, 0
+        if v.hasBody(): val += 1
+        if v.isMarked(): val += 2
+        if v.isCloned(): val += 4
+        if v.isDirty(): val += 8
+    """
+    return {
+        "node": self._p_to_ap(p), # Contains p.gnx, p.childIndex and p.stack.
+        # The cheap redraw data...
+        "body-length": len(p.b),  # *Not* p.b.
+        "has-children": p.hasChildren(),  # *Not* p.children().
+        "has-ua": bool(p.v.u),  # *Not* p.v.u.
+        "headline": p.h,
+        "icon-val": p.v.iconVal,  # An int between 0 and 15.
+        "is-at-file": p.isAnyAtFileNode(),
+        "level": p.level(),  # Useful for debugging.
+    }
+</t>
+<t tx="ekr.20210211053955.1">def get_position_data_dict(self, package):
+    """
+    Return a dict of postition data for all positions.
+    
+    Useful as a sanity check for debugging.
+    """
+    c = self._check_c()
+    result = {
+        p.v.gnx: self._get_position_d(p)
+            for p in c.all_unique_positions(copy=False)
+    }
+    return self._make_response({"position-data-dict": result})
+</t>
+<t tx="ekr.20210211084004.1"></t>
+<t tx="ekr.20210211085544.1">@classmethod
+def setUpClass(cls):
+    # Assume we are running in the leo-editor directory.
+    # pylint: disable=import-self
+    import leo.core.leoserver as leoserver
+    global g, g_leoserver, g_server
+    g_leoserver = leoserver
+    g_server = leoserver.LeoServer(testing=True)
+    g = g_server.g
+    assert g
+
+@classmethod
+def tearDownClass(cls):
+    global g_leoserver, g_server
+    try:
+        g_server.shut_down({})
+        print('===== server did not terminate properly ====')
+    except g_leoserver.TerminateServer:
+        pass
+
+def setUp(self):
+    global g_server
+    self.server = g_server
+    g.unitTesting = True
+    
+def tearDown(self):
+    g.unitTesting = False 
+    
+</t>
+<t tx="ekr.20210211131234.1">def _check_outline(self, c):
+    """Check self.c for consistency."""
+    # Check that all positions exist.
+    self._check_outline_positions(c)
+    # Test round-tripping.
+    self._test_round_trip_positions(c)
+</t>
+<t tx="ekr.20210211131707.1">def _dump_outline(self, c):  # pragma: no cover
+    """Dump the outline."""
+    tag = '_dump_outline'
+    print(f"{tag}: {c.shortFileName()}...\n")
+    for p in c.all_positions():
+        self._dump_position(p)
+    print('')
+
+def _dump_position(self, p):  # pragma: no cover
+    level_s = ' ' * 2 * p.level()
+    print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}")
+</t>
+<t tx="ekr.20210211131827.1">def _check_outline_positions(self, c):
+    """Verify that all positions in c exist."""
+    tag = '_check_outline_positions'
+    for p in c.all_positions(copy=False):
+        if not c.positionExists(p):  # pragma: no cover
+            message = f"{tag}: position {p} does not exist in {c.shortFileName()}"
+            print(message)
+            self._dump_position(p)
+            raise ServerError(message)
+</t>
+<t tx="ekr.20210211233814.1">def get_ua(self, package):
+    """Return p.v.u, making sure it can be serialized."""
+    self._check_c()
+    p = self._get_p(package)
+    try:
+        ua = {"ua": p.v.u}
+        json.dumps(ua, separators=(',', ':'))
+        response = {"p": p, "ua": p.v.u} 
+    except Exception:  # pragma: no cover
+        response = {"p": p, "bad-ua": repr(p.v.u)} 
+    # _make_response adds all the cheap redraw data.
+    return self._make_response(response)
+</t>
+<t tx="ekr.20210212004223.1">- End nameless fears. Trace.
+- Does scrolling ever cause redraw?
+- QTree.ensureVisible?
+- What do leoflexx and curses gui do?</t>
+<t tx="ekr.20210212051716.1">"""Run py-cov on leoserver.py"""
+g.cls()
+import os
+if c.changed:
+    c.save()
+leo_dir = os.path.join(g.app.loadDir, '..', '..')
+assert os.path.exists(leo_dir), repr(leo_dir)
+os.chdir(leo_dir)
+prolog = "python -m pytest --cov-report html --cov-report term-missing --cov "
+command = prolog + r"leo.core.leoserver leo\core\leoserver.py"
+g.execute_shell_commands(command)
+</t>
+<t tx="ekr.20210212092848.1"></t>
+<t tx="ekr.20210212092854.1">def find_all(self, package):
+    """Run Leo's find-all command and return results."""
+    tag = 'find_all'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    answer = fc.do_find_all(settings)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(answer, tag=f"{tag}: answer")
+    return self._make_response({"answer": answer})
+</t>
+<t tx="ekr.20210212093613.1">def test_find_commands(self):
+    
+    tag = 'test_find_commands'
+    test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+    assert os.path.exists(test_dot_leo), repr(test_dot_leo)
+    log = False
+    # Open the file &amp; create the StringFindTabManager.
+    self._request("open_file", {"log": False, "filename": test_dot_leo})
+    #
+    # Batch find commands: The answer is a count of found nodes.
+    for method in ('find_all', 'clone_find_all', 'clone_find_all_flattened'):
+        answer = self._request(method, {"log": log, "find_text": "def"})
+        if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+    #
+    # Find commands that may select text: The answer is (p, pos, newpos).
+    for method in ('find_next', 'find_previous', 'find_def', 'find_var'):
+        answer = self._request(method, {"log": log, "find_text": "def"})
+        if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+    #
+    # Change commands: The answer is a count of changed nodes.
+    for method in ('change_all', 'change_then_find'):
+        answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
+        if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+    #
+    # Tag commands. Why they are in leoFind.py??
+    for method in ('clone_find_tag', 'tag_children'):
+        answer = self._request(method, {"log": log, "tag": "my-tag"})
+        if log: g.printObj(answer, tag=f"{tag}:{method}: answer")
+   
+</t>
+<t tx="ekr.20210212094817.1">def _get_find_settings(self, c):
+    """Return a g.Bunch containing the present find settings settings."""
+    return c.findCommands.ftm.get_settings()
+    ###
+        # # For now, return EKR defaults.
+        # return g.Bunch(
+            # find_text=None, change_text=None,
+            # search_body=True, search_headline=True,
+            # ignore_case=True, pattern_match=False, whole_word=True,
+            # mark_changes=False, mark_finds=False,
+            # node_only=False, suboutline_only=False,
+            # entry_focus=None,
+        # )  
+</t>
+<t tx="ekr.20210214154432.1"></t>
+<t tx="ekr.20210214154702.1">def get_focus(self, packages):
+    """
+    Return a representation of the focs widget,
+    one of ("body", "tree", "headline", repr(the_widget)).
+    """
+    w = g.app.gui.get_focus()
+    focus = g.app.gui.widget_name(w)
+    return self._make_response({"focus": focus})
+</t>
+<t tx="ekr.20210215070414.1">"""Run unittest on leoserver.py: good for debugging."""
+g.cls()
+import os
+if c.changed:
+    c.save()
+os.chdir(os.path.join(g.app.loadDir, '..', '..'))
+g.execute_shell_commands('python -m unittest leo.core.leoFind')
+</t>
+<t tx="ekr.20210216094444.1">def test_find_prev(self):
+    c, settings, x = self.c, self.settings, self.x
+    settings.find_text = 'def top1'
+    # Start at end, so we stay in the node.
+    last = c.lastTopLevel()
+    child = last.firstChild()
+    grand_child = child.firstChild()
+    assert grand_child.h == 'child 6', grand_child.h
+    settings.p = grand_child.copy()
+    settings.find_text = 'def child2'
+    # Set c.p in the command.
+    x.c.selectPosition(grand_child)
+    p, pos, newpos = x.do_find_prev(settings)
+    assert p and p.h == 'child 2', repr(p and p.h)
+    s = p.b[pos:newpos]
+    assert s == settings.find_text, repr(s)
+</t>
+<t tx="ekr.20210216102036.1">"""Run py-cov on leoserver.py"""
+g.cls()
+import os
+if c.changed:
+    c.save()
+os.chdir(os.path.join(g.app.loadDir, '..', '..'))
+prolog = "python -m pytest --cov-report html --cov-report term-missing --cov "
+command = prolog + r"leo.core.leoFind leo\core\leoFind.py"
+g.execute_shell_commands(command)
+</t>
+<t tx="ekr.20210217060252.1">def trimTrailingLines(self, p):
+    """Trims trailing blank lines from a node.
+
+    It is surprising difficult to do this during Untangle."""
+    ### c = self
+    body = p.b
+    lines = body.split('\n')
+    i = len(lines) - 1; changed = False
+    while i &gt;= 0:
+        line = lines[i]
+        j = g.skip_ws(line, 0)
+        if j + 1 == len(line):
+            del lines[i]
+            i -= 1; changed = True
+        else: break
+    if changed:
+        p.b = ''.join(body) + '\n'  # Add back one last newline.
+        # Don't set the dirty bit: it would just be annoying.
+</t>
+<t tx="ekr.20210218065110.1">@language rest
+@wrap
+
+
+See https://github.com/leo-editor/leo-editor/issues/1563 concerning German keyboards.
+
+</t>
+<t tx="ekr.20210218070942.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/pull/1818
+</t>
+<t tx="ekr.20210218130800.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1821
+
+docs: https://leoeditor.com/coloring.html#match-mark-previous
+
+*** Bug: specifying @edit creates @path node.
+
+@language python
+@nosearch</t>
+<t tx="ekr.20210219115553.2"></t>
+<t tx="ekr.20210219120137.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/pull/1822
+
+@language python
+</t>
+<t tx="ekr.20210219135156.1">@nosearch
+
+# Word, Ignore Case, Head, Body
+
+# found 71 nodes</t>
+<t tx="ekr.20210219175850.1">def test_batch_change_word(self):
+    # settings, x = self.settings, self.x
+    c, x = self.c, self.x
+    settings = dict(
+        ignore_case=False,
+        node_only=False,
+        pattern_match=False,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,
+        whole_word=True,
+    )
+    n = x.batch_change(
+        root=c.rootPosition(),
+        replacements=(('def', 'DEF'),),
+        settings=settings)
+    assert n &gt; 0
+    
+</t>
+<t tx="ekr.20210219181001.1">def test_batch_change_regex(self):
+    c, x = self.c, self.x
+    # self.dump_tree()
+    # Test 1: Match in body.
+    settings = dict(
+        ignore_case=False,
+        node_only=False,
+        pattern_match=True,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,
+        whole_word=False,
+    )
+    # Test 1: Match in body.
+    n = x.batch_change(
+        root=c.rootPosition(),
+        replacements=((r'^def\b', 'DEF'),),
+        settings=settings)
+    assert n &gt; 3, n  # Test 1.
+    # Test 2: Match in headline.
+    n = x.batch_change(
+        root=c.rootPosition(),
+        replacements=((r'^Node\b', 'DEF'),),
+        settings=settings)
+    assert n == 2, n  # Test 2.
+    # Test 3: node-only.
+    settings ['node_only'] = True
+    n = x.batch_change(
+        root=c.rootPosition(),
+        replacements=((r'^DEF\b', 'def'),),
+        settings=settings)
+    assert n == 1, n  # Text 3.
+    # Test 4: suboutline-only.
+    settings ['node_only'] = False
+    settings ['suboutline_only'] = True
+    n = x.batch_change(
+        root=c.rootPosition(),
+        replacements=((r'^def\b', 'DEF'),),
+        settings=settings)
+    assert n == 1, n  # Test 4.
+</t>
+<t tx="ekr.20210220070051.1">def make_find_tab_manager(self, c):
+    """
+    Create a proxy FindTabManager sufficient to run unit tests.
+    In the Qt gui, the DynamicWindow class creates the FindTabManager.
+    """
+    from leo.core.leoGui import StringLineEdit
+    from leo.plugins.qt_frame import FindTabManager
+    x = self.x
+    x.ftm = FindTabManager(c)
+    #
+    # Create a find_findbox for find.set_find_text.
+    x.ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
+    #
+    # Create widgets for set_find_scope.
+    class StringWidget:
+        """A widget simulating both a Qt checkbox and a Qt radio button."""
+
+        value = False
+        
+        def toggle(self):  # For radio buttons.
+            self.value = not self.value
+            
+        def isChecked(self):  # For checkboxes.
+            return self.value
+            
+        checkState = isChecked
+        
+    x.ftm.radio_button_suboutline_only = StringWidget()
+    # Similar to the table in find.compute_find_options_in_status_area:
+    table = (
+        'check_box_whole_word',
+        'check_box_ignore_case',
+        'check_box_regexp',
+        'check_box_search_body',
+        'check_box_search_headline',
+        'check_box_mark_changes',
+        'check_box_mark_finds',
+    )
+    for ivar in table:
+        setattr(x.ftm, ivar, StringWidget())
+</t>
+<t tx="ekr.20210220072631.1">def test_find_next_suboutline_only(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'def root()'
+    settings.suboutline_only = True
+        # init_ivars_from_settings will set the ivar.
+    p, pos, newpos = x.do_find_next(settings)
+    assert p and p.h == 'Root', repr(p)  # Test2
+    s = p.b[pos:newpos]
+    assert s == settings.find_text, repr(s)  # Test 2.
+</t>
+<t tx="ekr.20210220091434.1">def test_change_all_with_at_file_node(self):
+    c, settings, x = self.c, self.settings, self.x
+    root = c.rootPosition().next()  # Must have children.
+    settings.find_text = 'def'
+    settings.change_text = '_DEF_'
+    settings.ignore_case = False
+    settings.match_word = True
+    settings.pattern_match = False
+    settings.suboutline_only = False
+    # Ensure that the @file node is marked dirty.
+    root.h = '@file xyzzy.py'
+    root.b = ''
+    root.v.clearDirty()
+    assert root.anyAtFileNodeName()
+    x.do_change_all(settings)
+    assert root.v.isDirty(), root.h
+
+</t>
+<t tx="ekr.20210220091434.2">def test_change_all_headline(self):
+    settings, x = self.settings, self.x
+    settings.find_text = 'child'
+    settings.change_text = '_CHILD_'
+    settings.ignore_case = False
+    settings.in_headline = True
+    settings.match_word = True
+    settings.pattern_match = False
+    settings.suboutline_only = False
+    x.do_change_all(settings)
+</t>
+<t tx="ekr.20210220145825.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1824
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210220145920.1">@language rest
+@wrap
+
+pr: File "N:\git\leo-editor\leo\core\leoCommands.py", line 411, in finishCreate
+pr: c.frame.finishCreate()
+pr: File "N:\git\leo-editor\leo\plugins\cursesGui2.py", line 2166, in finishCreate
+pr: self.createFindTab()
+pr: File "N:\git\leo-editor\leo\plugins\cursesGui2.py", line 2177, in createFindTab
+pr: self.create_find_checkboxes()
+pr: File "N:\git\leo-editor\leo\plugins\cursesGui2.py", line 2240, in create_find_checkboxes
+pr: assert getattr(ftm, name) is None
+pr: AttributeError: 'StringFindTabManager' object has no attribute 'check_box_wrap_around'</t>
+<t tx="ekr.20210221042145.1">def change_all(self, package):
+    """Run Leo's change-all command and return results."""
+    tag = 'change_all'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    change_text = package.get("change_text")
+    if change_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no change text")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    settings.change_text = change_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    answer = fc.do_change_all(settings)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(answer, tag=f"{tag}: answer")
+    return self._make_response({"answer": answer})
+</t>
+<t tx="ekr.20210221042406.1">def change_then_find(self, package):
+    """Run Leo's change-then-find command and return results."""
+    tag = 'change_then_find'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    answer = fc.do_change_then_find(settings)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(answer, tag=f"{tag}: answer")
+    return self._make_response({"answer": answer})
+</t>
+<t tx="ekr.20210221042541.1">def clone_find_all(self, package):
+    """Run Leo's clone-find-all command and return results."""
+    tag = 'clone_find_all'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    answer = fc.do_clone_find_all(settings)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(answer, tag=f"{tag}: answer")
+    return self._make_response({"answer": answer})
+</t>
+<t tx="ekr.20210221042633.1">def clone_find_all_flattened(self, package):
+    """Run Leo's clone-find-all-flattened command and return results."""
+    tag = 'clone_find_all_flattened'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    answer = fc.do_clone_find_all_flattened(settings)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(answer, tag=f"{tag}: answer")
+    return self._make_response({"answer": answer})
+</t>
+<t tx="ekr.20210221042719.1">def clone_find_tag(self, package):
+    """Run Leo's clone-find-tag command and return results."""
+    tag = 'clone_find_tag'
+    c = self._check_c()
+    fc = c.findCommands
+    the_tag = package.get("tag")
+    if not the_tag:  # pragma: no cover
+        raise ServerError(f"{tag}: no tag")
+    settings = self._get_find_settings(c)
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    n, p = fc.do_clone_find_tag(settings)
+    if self.log_flag:  # pragma: no cover
+        g.trace("tag: {the_tag} n: {n} p: {p and p.h!r}")
+    return self._make_response({"n": n, "p": p})
+</t>
+<t tx="ekr.20210221042808.1">def find_next(self, package):
+    """Run Leo's find-next command and return results."""
+    tag = 'find_next'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    p, pos, newpos = fc.do_find_next(settings)
+    if self.log_flag:  # pragma: no cover
+        g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+    return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+</t>
+<t tx="ekr.20210221042851.1">def find_previous(self, package):
+    """Run Leo's find-previous command and return results."""
+    tag = 'find_previous'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    p, pos, newpos = fc.do_find_prev(settings)
+    if self.log_flag:  # pragma: no cover
+        g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+    return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+</t>
+<t tx="ekr.20210221043043.1">def find_def(self, package):
+    """Run Leo's find-def command and return results."""
+    tag = 'find_def'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    p, pos, newpos = fc.do_find_def(settings, word=find_text, strict=False)
+    if self.log_flag:  # pragma: no cover
+        g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+    return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+</t>
+<t tx="ekr.20210221043134.1">def find_var(self, package):
+    """Run Leo's find-var command and return results."""
+    tag = 'find_var'
+    c = self._check_c()
+    fc = c.findCommands
+    find_text = package.get("find_text")
+    if find_text is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no find pattern")
+    settings = self._get_find_settings(c)
+    settings.find_text = find_text
+    if self.log_flag:  # pragma: no cover
+        g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
+    p, pos, newpos = fc.do_find_var(settings, word=find_text)
+    if self.log_flag:  # pragma: no cover
+        g.trace(f"p: {p and p.h!r} pos: {pos} newpos {newpos}")
+    return self._make_response({"p": p, "pos": pos, "newpos": newpos})
+</t>
+<t tx="ekr.20210221043224.1">def tag_children(self, package):
+    """Run Leo's tag-children command and return results."""
+    # This is not a find command!
+    tag = 'tag_children'
+    c = self._check_c()
+    fc = c.findCommands
+    the_tag = package.get("tag")
+    if the_tag is None:  # pragma: no cover
+        raise ServerError(f"{tag}: no tag")
+    # Unlike find commands, do_tag_children does not use a settings dict.
+    fc.do_tag_children(c.p, the_tag)
+    return self._make_response({})
+</t>
+<t tx="ekr.20210221084048.1">def make_find_tab_manager(self, c):
+    """
+    Create a proxy FindTabManager sufficient to run unit tests.
+    In the Qt gui, the DynamicWindow class creates the FindTabManager.
+    """
+    from leo.core.leoGui import StringFindTabManager
+    self.ftm = ftm = StringFindTabManager(c)
+
+
+    #
+    # Create a find_findbox for find.set_find_text.
+    ftm.find_findbox = StringLineEdit(name='findbox', disabled=False)
+    #
+    # Create widgets for set_find_scope.
+    class StringWidget:
+        """A widget simulating both a Qt checkbox and a Qt radio button."""
+
+        value = False
+        
+        def toggle(self):  # For radio buttons.
+            self.value = not self.value
+            
+        def isChecked(self):  # For checkboxes.
+            return self.value
+            
+        checkState = isChecked
+        
+    ftm.radio_button_suboutline_only = StringWidget()
+    # Similar to the table in find.compute_find_options_in_status_area:
+    table = (
+        'check_box_whole_word',
+        'check_box_ignore_case',
+        'check_box_regexp',
+        'check_box_search_body',
+        'check_box_search_headline',
+        'check_box_mark_changes',
+        'check_box_mark_finds',
+    )
+    for ivar in table:
+        setattr(ftm, ivar, StringWidget())
+</t>
+<t tx="ekr.20210221130549.1">class StringFindTabManager:
+    """A string-based FindTabManager class for unit tests."""
+    @others
+</t>
+<t tx="ekr.20210221130549.2">@nobeautify
+
+def __init__(self, c):
+    """Ctor for the FindTabManager class."""
+    self.c = c
+    self.entry_focus = None  # Accessed directly from code(!)
+    # Find/change text boxes...
+    self.find_findbox = StringLineEdit('find_text')
+    self.find_replacebox = StringLineEdit('change_text')
+    # Check boxes...
+    self.check_box_ignore_case      = StringCheckBox('ignore_case')
+    self.check_box_mark_changes     = StringCheckBox('mark_changes')
+    self.check_box_mark_finds       = StringCheckBox('mark_finds')
+    self.check_box_regexp           = StringCheckBox('pattern_match')
+    self.check_box_search_body      = StringCheckBox('search_body')
+    self.check_box_search_headline  = StringCheckBox('search_headline')
+    self.check_box_whole_word       = StringCheckBox('whole_word')
+    # Radio buttons...
+    self.radio_button_entire_outline  = StringRadioButton('entire_outline')
+    self.radio_button_node_only       = StringRadioButton('node_only')
+    self.radio_button_suboutline_only = StringRadioButton('suboutline_only')
+    # Init the default values.
+    self.init_widgets()
+</t>
+<t tx="ekr.20210221130549.3">def get_find_text(self):
+    s = self.find_findbox.text()
+    if s and s[-1] in ('\r', '\n'):
+        s = s[:-1]
+    return s
+
+def get_change_text(self):
+    s = self.find_replacebox.text()
+    if s and s[-1] in ('\r', '\n'):
+        s = s[:-1]
+    return s
+
+def set_find_text(self, s):
+    w = self.find_findbox
+    w.clear()
+    w.insert(s)
+
+def set_change_text(self, s):
+    w = self.find_replacebox
+    w.clear()
+    w.insert(s)
+</t>
+<t tx="ekr.20210221130549.4">@nobeautify
+
+def get_settings(self):
+    """
+    Return a g.bunch representing all widget values.
+    
+    Similar to LeoFind.default_settings, but only for find-tab values.
+    """
+    return g.Bunch(
+        # Find/change strings...
+        find_text   = self.find_findbox.text(),
+        change_text = self.find_replacebox.text(),
+        # Find options...
+        ignore_case     = self.check_box_ignore_case.isChecked(),
+        mark_changes    = self.check_box_mark_changes.isChecked(),
+        mark_finds      = self.check_box_mark_finds.isChecked(),
+        node_only       = self.radio_button_node_only.isChecked(),
+        pattern_match   = self.check_box_regexp.isChecked(),
+        search_body     = self.check_box_search_body.isChecked(),
+        search_headline = self.check_box_search_headline.isChecked(),
+        suboutline_only = self.radio_button_suboutline_only.isChecked(),
+        whole_word      = self.check_box_whole_word.isChecked(),
+    )
+</t>
+<t tx="ekr.20210221130549.5">def clear_focus(self):
+    pass
+
+def init_focus(self):
+    pass
+
+def set_entry_focus(self):
+    pass
+</t>
+<t tx="ekr.20210221130549.7">def init_widgets(self):
+    """
+    Init widgets and ivars from c.config settings.
+    Create callbacks that always keep the LeoFind ivars up to date.
+    """
+    c, find = self.c, self.c.findCommands
+    # Find/change text boxes.
+    table = (
+        ('find_findbox', 'find_text', '&lt;find pattern here&gt;'),
+        ('find_replacebox', 'change_text', ''),
+    )
+    for widget_ivar, setting_name, default in table:
+        w = getattr(self, widget_ivar)
+        s = c.config.getString(setting_name) or default
+        w.insert(s)
+    # Check boxes.
+    table = (
+        ('ignore_case', 'check_box_ignore_case'),
+        ('mark_changes', 'check_box_mark_changes'),
+        ('mark_finds', 'check_box_mark_finds'),
+        ('pattern_match', 'check_box_regexp'),
+        ('search_body', 'check_box_search_body'),
+        ('search_headline', 'check_box_search_headline'),
+        ('whole_word', 'check_box_whole_word'),
+    )
+    for setting_name, widget_ivar in table:
+        w = getattr(self, widget_ivar)
+        val = c.config.getBool(setting_name, default=False)
+        setattr(find, setting_name, val)
+        if val:
+            w.toggle()
+    # Radio buttons
+    table = (
+        ('node_only', 'node_only', 'radio_button_node_only'),
+        ('entire_outline', None, 'radio_button_entire_outline'),
+        ('suboutline_only', 'suboutline_only', 'radio_button_suboutline_only'),
+    )
+    for setting_name, ivar, widget_ivar in table:
+        w = getattr(self, widget_ivar)
+        val = c.config.getBool(setting_name, default=False)
+        if ivar is not None:
+            assert hasattr(find, setting_name), setting_name
+            setattr(find, setting_name, val)
+            w.toggle()
+    # Ensure one radio button is set.
+    if not find.node_only and not find.suboutline_only:
+        w = self.radio_button_entire_outline
+        w.toggle()
+</t>
+<t tx="ekr.20210221130549.8">@nobeautify
+
+def set_radio_button(self, name):
+    """Set the value of the radio buttons"""
+    d = {
+        'node-only':       self.radio_button_node_only,
+        'entire-outline':  self.radio_button_entire_outline,
+        'suboutline-only': self.radio_button_suboutline_only,
+    }
+    w = d.get(name)
+    if not w.isChecked():
+        w.toggle()
+</t>
+<t tx="ekr.20210221130549.9">@nobeautify
+
+def toggle_checkbox(self, checkbox_name):
+    """Toggle the value of the checkbox whose name is given."""
+    d = {
+        'ignore_case':     self.check_box_ignore_case,
+        'mark_changes':    self.check_box_mark_changes,
+        'mark_finds':      self.check_box_mark_finds,
+        'pattern_match':   self.check_box_regexp,
+        'search_body':     self.check_box_search_body,
+        'search_headline': self.check_box_search_headline,
+        'whole_word':      self.check_box_whole_word,
+    }
+    w = d.get(checkbox_name)
+    w.toggle()
+</t>
+<t tx="ekr.20210221134134.1"></t>
+<t tx="ekr.20210221134759.1"></t>
+<t tx="ekr.20210222033958.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1810
+
+- YouTube vids: https://stackoverflow.com/questions/48103685/youtube-video-embedding-pyqt
+- Math: https://stackoverflow.com/questions/56760843/how-to-display-mathematical-typesetting-mathjax-latex-etc-in-qt-using-pyqt5
+- Matplotlib plots: https://www.learnpyqt.com/tutorials/plotting-matplotlib/
+- leaflet maps: https://github.com/skylarkdrones/pyqtlet
+- Quizlet flash cards: https://quizlet.com/cn/213650959/pyqt-flash-cards/
+- Screen shots: 3Blue1Brown: https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210223083935.1"></t>
+<t tx="ekr.20210223083944.1">ID,Type,SKU,Name,Short description,Description,Date sale price starts,Date sale price ends,Tax status,Tax class,In stock?,Stock,Backorders allowed?,Sold individually?,Weight (lbs),Length (in),Width (in),Height (in),Allow customer reviews?,Purchase note,Sale price,Regular price,Categories,Tags,Shipping class,Images,Download limit,Download expiry days,Parent,Grouped products,Upsells,Cross-sells,External URL,Button text,Position,Attribute 1 name,Attribute 1 value(s),Attribute 1 visible,Attribute 1 global,Attribute 2 name,Attribute 2 value(s),Attribute 2 visible,Attribute 2 global,Meta: _wpcom_is_markdown,Download 1 name,Download 1 URL,Download 2 name,Download 2 URL
+
+
+,,5100.1,Chenille Scarf Red x Black,Chenille Scarf,,,,,,1,1,,,,,,,,,,79,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5102.4,Silk Scarf Azalea x Fine,Silk Scarf,,,,,,1,1,,,,,,,,,,99,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,6533,Mohair Hat,"Mohair Hat, Mitten &amp; Scarf",,,,,,1,1,,,,,,,,,,39,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,2148,Mohair Mitten,"Mohair Hat, Mitten &amp; Scarf",,,,,,,,,,,,,,,,,39,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5104,Mohair Scarf,"Mohair Hat, Mitten &amp; Scarf",,,,,,,,,,,,,,,,,59,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,7108,Silk Cowl Canyons x Pacific,Silk Cowl,,,,,,,,,,,,,,,,,??,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,7144, Long Cowl Canyons Chenile  x Peacock Silk,Chenille &amp; Silk Cowl,,,,,,,,,,,,,,,,,89,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5112.1,Alpaca Tencel Silk Scarf Deflected Doubleweave,Deflected Doubleweave Scarf,,,,,,,,,,,,,,,,,139,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5112.6,Rayon Chenille Scarf Forest Floor x Gray/Green,Rayon &amp; Chenille Scarf,,,,,,,,,,,,,,,,,79,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+</t>
+<t tx="ekr.20210223084024.1">,,5100.1,Chenille Scarf Red x Black,Chenille Scarf,,,,,,1,1,,,,,,,,,,79,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5102.4,Silk Scarf Azalea x Fine,Silk Scarf,,,,,,1,1,,,,,,,,,,99,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,6533,Mohair Hat,"Mohair Hat, Mitten &amp; Scarf",,,,,,1,1,,,,,,,,,,39,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,2148,Mohair Mitten,"Mohair Hat, Mitten &amp; Scarf",,,,,,,,,,,,,,,,,39,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5104,Mohair Scarf,"Mohair Hat, Mitten &amp; Scarf",,,,,,,,,,,,,,,,,59,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,7108,Silk Cowl Canyons x Pacific,Silk Cowl,,,,,,,,,,,,,,,,,??,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,7144, Long Cowl Canyons Chenile  x Peacock Silk,Chenille &amp; Silk Cowl,,,,,,,,,,,,,,,,,89,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5112.1,Alpaca Tencel Silk Scarf Deflected Doubleweave,Deflected Doubleweave Scarf,,,,,,,,,,,,,,,,,139,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+,,5112.6,Rayon Chenille Scarf Forest Floor x Gray/Green,Rayon &amp; Chenille Scarf,,,,,,,,,,,,,,,,,79,Clothing,,,,,,,,,,,,,,,,,,,,,,,,,
+</t>
+<t tx="ekr.20210223084115.1">root = g.findTopLevelNode(c, '@csv')
+assert root
+for s in g.splitlines(p.b):
+    fields = ???
+    child = root.insertAsLastChild()
+    child.h = </t>
 <t tx="ktenney.20041211072654.14">def processDirectory(self, path, node):
 
     """
@@ -38595,6 +43483,159 @@ print('done')</t>
     for file in path.dirs():
         child = node.insertAsLastChild()
         child.h = '@view %s' % file.name
+</t>
+<t tx="sps.20100618004337.20951"># This method handles all the body text.
+
+def skip_body(self, p, delims):
+    &lt;&lt; skip_body docstring &gt;&gt;
+    # c = self.c
+    s = p.b
+    code = doc = None; i = 0
+    anyChanged = False
+    if self.start_mode == "code":
+        j = g.skip_blank_lines(s, i)
+        i, code, new_delims, reflist = self.skip_code(s, j, delims)
+        if code:
+            &lt;&lt; Define a section for a leading code part &gt;&gt;
+        delims = new_delims
+    if not code:
+        i, doc, delims = self.skip_doc(s, i, delims) # Start in doc section by default.
+        if i &gt;= len(s) and doc:
+            &lt;&lt; Define a section containing only an @doc part &gt;&gt;
+    while i &lt; len(s):
+        progress = i # progress indicator
+        kind, end = self.token_type(s, i, report_errors=True)
+        # if g.is_nl(s,i): i = g.skip_nl(s,i)
+        i = g.skip_ws(s, i)
+        if kind == section_def:
+            &lt;&lt; Scan and define a section definition &gt;&gt;
+        elif kind == at_code:
+            i = g.skip_line(s, i)
+            &lt;&lt; Scan and define an @code defininition &gt;&gt;
+        elif kind == at_root:
+            i = g.skip_line(s, i)
+            &lt;&lt; Scan and define a root section &gt;&gt;
+        elif kind in (at_doc, at_chapter, at_section):
+            i = g.skip_line(s, i)
+            i, more_doc, delims = self.skip_doc(s, i, delims)
+            doc = doc + more_doc
+        else:
+            i = g.skip_line(s, i)
+        assert(progress &lt; i) # we must make progress!
+    # Only call trimTrailingLines if we have changed its body.
+    if anyChanged:
+        self.trimTrailingLines(p)
+    return delims
+</t>
+<t tx="sps.20100618004337.20952">if self.header_name:
+    # Tangle code.
+    part = self.st_enter_section_name(
+        self.header_name, code, doc, delims, new_delims)
+    if not self.tangling:
+        # Untangle code.
+        if self.untangle_stage1:
+            section = self.st_lookup(self.header_name)
+            section.parts[part - 1].reflist(refs=reflist)
+        else:
+            head = s[: j]; tail = s[i:]
+            s, i, changed = self.update_def(self.header, part, head, code, tail)
+            if changed: anyChanged = True
+    code = doc = None
+# leading code without a header name gets silently dropped
+</t>
+<t tx="sps.20100618004337.20953">@
+It's valid for an @doc directive to appear under a headline that does
+not contain a section name. In that case, no section is defined.
+@c
+if self.header_name:
+    # Tangle code.
+    part = self.st_enter_section_name(self.header_name, code, doc, delims, delims)
+    # Untangle code.
+    if not self.tangling:
+        # Untangle no longer updates doc parts.
+        # 12/03/02: Mark the part as having been updated to suppress warning.
+        junk, junk = self.ust_lookup(self.header_name, part, update_flag=True)
+doc = None
+</t>
+<t tx="sps.20100618004337.20954"># We enter the code part and any preceding doc part into the symbol table.
+# Skip the section definition line.
+k = i; i, kind, junk = self.skip_section_name(s, i)
+section_name = s[k: i]
+assert(kind == section_def)
+i = g.skip_to_end_of_line(s, i)
+# Tangle code: enter the section name even if the code part is empty.
+&lt;&lt;process normal section&gt;&gt;
+code = None
+doc = ''
+</t>
+<t tx="sps.20100618004337.20955"># All @c or @code directives denote &lt; &lt; headline_name &gt; &gt; =
+if self.header_name:
+    section_name = self.header_name
+    &lt;&lt;process normal section&gt;&gt;
+else:
+    self.error("@c expects the headline: " + self.header + " to contain a section name")
+code = None
+doc = ''
+</t>
+<t tx="sps.20100618004337.20956"># We save the file name in case another @root ends the code section.
+old_root_name = self.root_name
+#
+# Tangle code.
+j = g.skip_blank_lines(s, i)
+k, code, new_delims, reflist = self.skip_code(s, j, delims)
+self.st_enter_root_name(old_root_name, code, doc, delims, new_delims)
+delims = new_delims
+if not self.tangling:
+    # Untangle code.
+    if self.untangle_stage1:
+        root_section = self.st_lookup(old_root_name)
+        assert(root_section)
+        root_first_part = root_section.parts[0]
+        assert(root_first_part)
+        root_first_part.reflist(refs=reflist)
+    else:
+        part = 1 # Use 1 for root part.
+        head = s[: j]; tail = s[k:]
+        s, i, changed = self.update_def(old_root_name, part, head, code, tail, is_root_flag=True)
+        if changed: anyChanged = True
+code = None
+doc = ''
+</t>
+<t tx="sps.20100618004337.20957">'''
+The following subsections contain the interface between the Tangle and
+Untangle commands. This interface is an important hack, and allows
+Untangle to avoid duplicating the logic in skip_tree and its allies.
+
+The aha is this: just at the time the Tangle command enters a
+definition into the symbol table, all the information is present that
+Untangle needs to update that definition.
+
+To get whitespace exactly right we retain the outline's leading
+whitespace and remove leading whitespace from the updated definition.
+'''
+</t>
+<t tx="sps.20100716120121.12132"># Tangle code.
+j = g.skip_blank_lines(s, i)
+i, code, new_delims, reflist = self.skip_code(s, j, delims)
+part = self.st_enter_section_name(section_name, code, doc, delims, new_delims)
+delims = new_delims
+# Untangle code
+if not self.tangling:
+    # part may be zero if there was an empty code section (doc part only)
+    # In untangle stage1 such code produces no reference list,
+    #    thus nothing to do.
+    # In untangle stage2, such code cannot be updated because it
+    # was either not emitted to the external file or emitted as a doc part only
+    #     in either case, there is no code section to update, and we don't
+    #     update doc parts.
+    if part &gt; 0:
+        if self.untangle_stage1:
+            section = self.st_lookup(section_name)
+            section.parts[part - 1].reflist(refs=reflist)
+        else:
+            head = s[: j]; tail = s[i:]
+            s, i, changed = self.update_def(section_name, part, head, code, tail)
+            if changed: anyChanged = True
 </t>
 <t tx="tbrown.20080613095157.10">def openDir(c,parent,d):
     """
@@ -39092,6 +44133,35 @@ def isInShortcutBodyLine(self):
         k.bindKey('all', stroke, cmdfunc, cmdname)
         g.es('bound', stroke, 'to command', cmdname)
 </t>
+<t tx="vitalije.20200327162532.1">def get_declutter_patterns(self):
+    "Initializes self.declutter_patterns from configuration and returns it"
+    if self.declutter_patterns is not None:
+        return self.declutter_patterns
+    c = self.c
+    patterns = []
+    warned = False
+    lines = c.config.getData("tree-declutter-patterns")
+    for line in lines:
+        try:
+            cmd, arg = line.split(None, 1)
+        except ValueError:
+            # Allow empty arg, and guard against user errors.
+            cmd = line.strip()
+            arg = ''
+        if cmd.startswith('#'):
+            pass
+        elif cmd == 'RULE':
+            patterns.append((re.compile(arg), []))
+        else:
+            if patterns:
+                patterns[-1][1].append((cmd, arg))
+            elif not warned:
+                warned = True
+                g.log('Declutter patterns must start with RULE*',
+                    color='error')
+    self.declutter_patterns = patterns
+    return patterns
+</t>
 <t tx="vitalije.20200327163522.1">def apply_declutter_rules(cmds):
     """Applies all commands for the matched rule."""
     for cmd, arg in cmds:
@@ -39153,6 +44223,7 @@ def isInShortcutBodyLine(self):
     a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
     return a
 </t>
+<t tx="vitalije.20200329160945.1"></t>
 <t tx="vitalije.20200329162015.1">def preload_images():
     for f in new_icons:
         if f not in loaded_images:
