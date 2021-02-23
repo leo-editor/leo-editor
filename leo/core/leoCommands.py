@@ -4,10 +4,6 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
-    # The leoCommands ctor now does most leo.core.leo* imports.
-    # This breaks circular dependencies.
 import itertools
 import os
 import re
@@ -18,6 +14,10 @@ try:
     import tabnanny  # for Check Python command # Does not exist in jython
 except ImportError:
     tabnanny = None
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+    # The leoCommands ctor now does most leo.core.leo* imports.
+    # This breaks circular dependencies.
 #@-<< imports >>
 
 def cmd(name):
@@ -257,63 +257,65 @@ class Commands:
         self.frame = gui.createLeoFrame(c, title)
         assert self.frame
         assert self.frame.c == c
-        import leo.core.leoHistory as leoHistory
+        from leo.core import leoHistory
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
         # Break circular import dependencies by doing imports here.
         # These imports take almost 3/4 sec in the leoBridge.
-        import leo.core.leoAtFile as leoAtFile
-        import leo.core.leoBeautify as leoBeautify # So decorators are executed.
-        assert leoBeautify # for pyflakes.
-        import leo.core.leoChapters as leoChapters
+        from leo.core import leoAtFile
+        from leo.core import leoBeautify  # So decorators are executed.
+        assert leoBeautify  # for pyflakes.
+        from leo.core import leoChapters
+        # from leo.core import leoTest2  # So decorators are executed.
+        # assert leoTest2  # For pyflakes.
         # User commands...
-        import leo.commands.abbrevCommands as abbrevCommands
-        import leo.commands.bufferCommands as bufferCommands
-        import leo.commands.checkerCommands as checkerCommands
+        from leo.commands import abbrevCommands
+        from leo.commands import bufferCommands
+        from leo.commands import checkerCommands
         assert checkerCommands
             # To suppress a pyflakes warning.
             # The import *is* required to define commands.
-        import leo.commands.controlCommands as controlCommands
-        import leo.commands.convertCommands as convertCommands
-        import leo.commands.debugCommands as debugCommands
-        import leo.commands.editCommands as editCommands
-        import leo.commands.editFileCommands as editFileCommands
-        import leo.commands.gotoCommands as gotoCommands
-        import leo.commands.helpCommands as helpCommands
-        import leo.commands.keyCommands as keyCommands
-        import leo.commands.killBufferCommands as killBufferCommands
-        import leo.commands.rectangleCommands as rectangleCommands
-        import leo.commands.spellCommands as spellCommands
+        from leo.commands import controlCommands
+        from leo.commands import convertCommands
+        from leo.commands import debugCommands
+        from leo.commands import editCommands
+        from leo.commands import editFileCommands
+        from leo.commands import gotoCommands
+        from leo.commands import helpCommands
+        from leo.commands import keyCommands
+        from leo.commands import killBufferCommands
+        from leo.commands import rectangleCommands
+        from leo.commands import spellCommands
         # Import files to execute @g.commander_command decorators
-        import leo.core.leoCompare as leoCompare
+        from leo.core import leoCompare
         assert leoCompare
-        import leo.core.leoDebugger as leoDebugger
+        from leo.core import leoDebugger
         assert leoDebugger
-        import leo.commands.commanderEditCommands as commanderEditCommands
+        from leo.commands import commanderEditCommands
         assert commanderEditCommands
-        import leo.commands.commanderFileCommands as commanderFileCommands
+        from leo.commands import commanderFileCommands
         assert commanderFileCommands
-        import leo.commands.commanderFindCommands as commanderFindCommands
+        from leo.commands import commanderFindCommands
         assert commanderFindCommands
-        import leo.commands.commanderHelpCommands as commanderHelpCommands
+        from leo.commands import commanderHelpCommands
         assert commanderHelpCommands
-        import leo.commands.commanderOutlineCommands as commanderOutlineCommands
+        from leo.commands import commanderOutlineCommands
         assert commanderOutlineCommands
         # Other subcommanders.
-        import leo.core.leoFind as leoFind # Leo 4.11.1
-        import leo.core.leoKeys as leoKeys
-        import leo.core.leoFileCommands as leoFileCommands
-        import leo.core.leoImport as leoImport
-        import leo.core.leoMarkup as leoMarkup
-        import leo.core.leoPersistence as leoPersistence
-        import leo.core.leoPrinting as leoPrinting
-        import leo.core.leoRst as leoRst
-        import leo.core.leoShadow as leoShadow
-        import leo.core.leoTangle as leoTangle
-        import leo.core.leoTest as leoTest
-        import leo.core.leoUndo as leoUndo
-        import leo.core.leoVim as leoVim
+        from leo.core import leoFind # Leo 4.11.1
+        from leo.core import leoKeys
+        from leo.core import leoFileCommands
+        from leo.core import leoImport
+        from leo.core import leoMarkup
+        from leo.core import leoPersistence
+        from leo.core import leoPrinting
+        from leo.core import leoRst
+        from leo.core import leoShadow
+        from leo.core import leoTangle
+        from leo.core import leoTest
+        from leo.core import leoUndo
+        from leo.core import leoVim
         # Define the subcommanders.
         self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
         self.chapterController      = leoChapters.ChapterController(c)
@@ -378,7 +380,7 @@ class Commands:
         c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
         c.db = g.app.commander_cacher.get_wrapper(c)
-        import leo.plugins.free_layout as free_layout
+        from leo.plugins import free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
@@ -389,7 +391,7 @@ class Commands:
     def initSettings(self, previousSettings):
         """Init the settings *before* initing the objects."""
         c = self
-        import leo.core.leoConfig as leoConfig
+        from leo.core import leoConfig
         c.config = leoConfig.LocalConfigManager(c, previousSettings)
         g.app.config.setIvarsFromSettings(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
@@ -499,7 +501,7 @@ class Commands:
         #       on headline and Alt+Tab, Alt+Tab
         #
         # #276: Focus lost...in Nav text input
-        import leo.plugins.qt_frame as qt_frame
+        from leo.plugins import qt_frame
         return isinstance(w, qt_frame.QtTabBarWrapper)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
     last_unusual_focus = None
@@ -508,7 +510,7 @@ class Commands:
     def trace_idle_focus(self, w):
         """Trace the focus for w, minimizing chatter."""
         from leo.core.leoQt import QtWidgets
-        import leo.plugins.qt_frame as qt_frame
+        from leo.plugins import qt_frame
         trace = 'focus' in g.app.debug
         trace_known = False
         c = self
@@ -615,7 +617,7 @@ class Commands:
             # Only for error reporting below.
         # #532: check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
-            import leo.commands.checkerCommands as cc
+            from leo.commands import checkerCommands as cc
             # at = c.atFileCommands
             prefix = ('c,g,p,script_gnx=None,None,None,None;'
                       'assert c and g and p and script_gnx;\n')
@@ -993,14 +995,16 @@ class Commands:
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self):
         """
-        Return head,lines,tail where:
+        Return (head, lines, tail, oldSel, oldYview).
 
-        before is string containg all the lines before the selected text
-        (or the text before the insert point if no selection) lines is a
-        list of lines containing the selected text (or the line containing
-        the insert point if no selection) after is a string all lines
-        after the selected text (or the text after the insert point if no
-        selection)
+        - head: string containg all the lines before the selected text (or the
+          text before the insert point if no selection)
+        - lines: list of lines containing the selected text
+          (or the line containing the insert point if no selection)
+        - after: string containing all lines after the selected text
+          (or the text after the insert point if no  selection)
+        - oldSel: tuple containing the old selection range, or None.
+        - oldYview: int containing the old y-scroll value, or None.
         """
         c = self
         body = c.frame.body
@@ -1011,9 +1015,9 @@ class Commands:
         lines = g.splitLines(s)  # Retain the newlines of each line.
         # Expand the selection.
         i = len(head)
-        j = max(i, len(head) + len(s) - 1)
+        j = len(head) + len(s)
         oldSel = i, j
-        return head, lines, tail, oldSel, oldVview  # string,list,string,tuple.
+        return head, lines, tail, oldSel, oldVview  # string,list,string,tuple,int.
     #@+node:ekr.20150417073117.1: *5* c.getTabWidth
     def getTabWidth(self, p):
         """Return the tab width in effect at p."""
@@ -1270,7 +1274,11 @@ class Commands:
         g.doHook("clear-mark", c=c, p=p)
     #@+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p, s):
-        """This is equivalent to p.b = s."""
+        """
+        This is equivalent to p.b = s.
+        
+        Warning: This method may call c.recolor() or c.redraw().
+        """
         c, v = self, p.v
         if not c or not v:
             return
@@ -1400,25 +1408,6 @@ class Commands:
 
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@+node:ekr.20031218072017.3404: *5* c.trimTrailingLines
-    def trimTrailingLines(self, p):
-        """Trims trailing blank lines from a node.
-
-        It is surprising difficult to do this during Untangle."""
-        ### c = self
-        body = p.b
-        lines = body.split('\n')
-        i = len(lines) - 1; changed = False
-        while i >= 0:
-            line = lines[i]
-            j = g.skip_ws(line, 0)
-            if j + 1 == len(line):
-                del lines[i]
-                i -= 1; changed = True
-            else: break
-        if changed:
-            p.b = ''.join(body) + '\n'  # Add back one last newline.
-            # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
@@ -1662,12 +1651,12 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event=None, unittest=False, ignoreAtIgnore=True):
+    def checkAllPythonCode(self, event=None, unittestFlag=False, ignoreAtIgnore=True):
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
         for p in c.all_unique_positions():
             count += 1
-            if not unittest:
+            if not unittestFlag:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.2: *5* << print dots >>
                 if count % 100 == 0:
@@ -1680,29 +1669,29 @@ class Commands:
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
                     try:
-                        c.checkPythonNode(p, unittest)
+                        c.checkPythonNode(p, unittestFlag)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-                    if unittest and result != "ok":
+                    if unittestFlag and result != "ok":
                         g.pr(f"Syntax error in {p.h}")
                         return result  # End the unit test: it has failed.
-        if not unittest:
+        if not unittestFlag:
             g.blue("check complete")
         return result
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(self, event=None,
-        unittest=False, ignoreAtIgnore=True,
+        unittestFlag=False, ignoreAtIgnore=True,
         suppressErrors=False, checkOnSave=False
     ):
         """Check the selected tree for syntax and tab errors."""
         c = self; count = 0; result = "ok"
-        if not unittest:
+        if not unittestFlag:
             g.es("checking Python code   ")
         for p in c.p.self_and_subtree():
             count += 1
-            if not unittest and not checkOnSave:
+            if not unittestFlag and not checkOnSave:
                 #@+<< print dots >>
                 #@+node:ekr.20040723094220.4: *5* << print dots >>
                 if count % 100 == 0:
@@ -1713,17 +1702,17 @@ class Commands:
             if g.scanForAtLanguage(c, p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
-                        c.checkPythonNode(p, unittest, suppressErrors)
+                        c.checkPythonNode(p, unittestFlag, suppressErrors)
                     except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
                         result = "error"  # Continue to check.
                     except Exception:
                         return "surprise"  # abort
-        if not unittest:
+        if not unittestFlag:
             g.blue("check complete")
         # We _can_ return a result for unit tests because we aren't using doCommand.
         return result
     #@+node:ekr.20040723094220.5: *4* c.checkPythonNode
-    def checkPythonNode(self, p, unittest=False, suppressErrors=False):
+    def checkPythonNode(self, p, unittestFlag=False, suppressErrors=False):
         c = self; h = p.h
         # Call getScript to ignore directives and section references.
         body = g.getScript(c, p.copy())
@@ -1731,20 +1720,20 @@ class Commands:
         try:
             fn = f"<node: {p.h}>"
             compile(body + '\n', fn, 'exec')
-            c.tabNannyNode(p, h, body, unittest, suppressErrors)
+            c.tabNannyNode(p, h, body, unittestFlag, suppressErrors)
         except SyntaxError:
             if not suppressErrors:
                 g.warning(f"Syntax error in: {h}")
                 g.es_exception(full=False, color="black")
-            if unittest: raise
+            if unittestFlag: raise
         except Exception:
             g.es_print('unexpected exception')
             g.es_exception()
-            if unittest: raise
+            if unittestFlag: raise
     #@+node:ekr.20040723094220.6: *4* c.tabNannyNode
     # This code is based on tabnanny.check.
 
-    def tabNannyNode(self, p, headline, body, unittest=False, suppressErrors=False):
+    def tabNannyNode(self, p, headline, body, unittestFlag=False, suppressErrors=False):
         """Check indentation using tabnanny."""
         # c = self
         try:
@@ -1755,13 +1744,13 @@ class Commands:
             if not suppressErrors:
                 g.warning("IndentationError in", headline)
                 g.es('', msg)
-            if unittest: raise
+            if unittestFlag: raise
         except tokenize.TokenError:
             junk, msg, junk = sys.exc_info()
             if not suppressErrors:
                 g.warning("TokenError in", headline)
                 g.es('', msg)
-            if unittest: raise
+            if unittestFlag: raise
         except tabnanny.NannyNag:
             junk, nag, junk = sys.exc_info()
             if not suppressErrors:
@@ -1772,11 +1761,11 @@ class Commands:
                 g.es(message)
                 line2 = repr(str(line))[1:-1]
                 g.es("offending line:\n", line2)
-            if unittest: raise
+            if unittestFlag: raise
         except Exception:
             g.trace("unexpected exception")
             g.es_exception()
-            if unittest: raise
+            if unittestFlag: raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body=True):
@@ -2189,7 +2178,7 @@ class Commands:
     def check_event(self, event):
         """Check an event object."""
         # c = self
-        import leo.core.leoGui as leoGui
+        from leo.core import leoGui
 
         if not event:
             return
@@ -2304,9 +2293,11 @@ class Commands:
         - Body: ec.selfInsertCommand
         - Log: log_w.insert
         """
+        trace = all(z in g.app.debug for z in ('keys', 'verbose'))
         c, k, w = self, self.k, event.widget
         name = c.widget_name(w)
         stroke = event.stroke
+        if trace: g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
         if not stroke:
             return
         #
@@ -2695,20 +2686,16 @@ class Commands:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
-        efc.GitDiffController(c=self).diff_file(
-            directory=directory,
-            fn=fn,
-            rev1=rev1,
-            rev2=rev2,
-        )
+        from leo.commands import editFileCommands as efc
+        x = efc.GitDiffController(c=self)
+        x.diff_file(directory=directory, fn=fn, rev1=rev1, rev2=rev2)
     #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
     def diff_two_revs(self, directory=None, rev1='', rev2=''):
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_revs(
             directory=directory,
             rev1=rev1,
@@ -2720,7 +2707,7 @@ class Commands:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         """
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_branches(
             branch1=branch1,
             branch2=branch2,
@@ -2730,7 +2717,7 @@ class Commands:
     #@+node:ekr.20180510105125.1: *4* c.git_diff
     def git_diff(self, rev1='HEAD', rev2='', directory=None):
 
-        import leo.commands.editFileCommands as efc
+        from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).git_diff(
             directory=directory,
             rev1=rev1,
@@ -3772,7 +3759,7 @@ class Commands:
         if g.os_path_exists(dir_):
             # Import all files in dir_ after c.p.
             try:
-                import leo.core.leoImport as leoImport
+                from leo.core import leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
                     add_context=add_context,
                     add_file_context=add_file_context,

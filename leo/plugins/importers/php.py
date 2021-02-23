@@ -2,8 +2,8 @@
 #@+node:ekr.20140723122936.18148: * @file ../plugins/importers/php.py
 '''The @auto importer for the php language.'''
 import re
-import leo.core.leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161129213243.2: ** class Php_Importer

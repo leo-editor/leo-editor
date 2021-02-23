@@ -7,50 +7,28 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
-import sys
-isPython3 = sys.version_info >= (3, 0, 0)
-minimum_python_version = '3.6'
-    # #1215.
-isMac = sys.platform.startswith('darwin')
-isWindows = sys.platform.startswith('win')
-#@+<< global switches >>
-#@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-in_bridge = False
-    # Set to True in leoBridge.py just before importing leo.core.leoApp.
-    # This tells leoApp to load a null Gui.
-#@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
-# This is now done in run.
-    # import leo.core.leoGlobals as g # So code can use g below.
-#
 # Don't import leoTest here: it messes up Leo's startup code.
-    # import leo.core.leoTest as leoTest
+    # from leo.core import leoTest
 import binascii
 import codecs
+import fnmatch
 from functools import reduce
-try:
-    import gc
-except ImportError:
-    gc = None
-try:
-    import gettext
-except ImportError:  # does not exist in jython.
-    gettext = None
 import glob
-import io
-StringIO = io.StringIO
 import importlib
 import inspect
+import io
 import operator
 import os
-#
+from pathlib import Path
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
     # import pdb
 import re
 import shlex
 import shutil
 import string
+import sys
 import subprocess
 import tempfile
 import time
@@ -59,7 +37,30 @@ import types
 import unittest
 import urllib
 import urllib.parse as urlparse
+import webbrowser
+# User imports last.
+try:
+    import requests
+except Exception:
+    requests = None
+try:
+    import gc
+except ImportError:
+    gc = None
+try:
+    import gettext
+except ImportError:  # does not exist in jython.
+    gettext = None
+
+StringIO = io.StringIO
 #@-<< imports >>
+in_bridge = False
+    # Set to True in leoBridge.py just before importing leo.core.leoApp.
+    # This tells leoApp to load a null Gui.
+minimum_python_version = '3.6'  # #1215.
+isPython3 = sys.version_info >= (3, 0, 0)
+isMac = sys.platform.startswith('darwin')
+isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
@@ -207,7 +208,7 @@ command = Command
 #@+node:ekr.20171124070654.1: *3* g.command_alias
 def command_alias(alias, func):
     """Create an alias for the *already defined* method in the Commands class."""
-    import leo.core.leoCommands as leoCommands
+    from leo.core import leoCommands
     assert hasattr(leoCommands.Commands, func.__name__)
     funcToMethod(func, leoCommands.Commands, alias)
 #@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
@@ -246,7 +247,7 @@ class CommanderCommand:
         commander_command_wrapper.__doc__ = func.__doc__
         global_commands_dict[self.name] = commander_command_wrapper
         if app:
-            import leo.core.leoCommands as leoCommands
+            from leo.core import leoCommands
             funcToMethod(func, leoCommands.Commands)
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
@@ -332,6 +333,42 @@ app = None  # The singleton app object. Set by runLeo.py.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
+#@+node:ekr.20201211182722.1: ** g.Backup
+#@+node:ekr.20201211182659.1: *3* g.standard_timestamp
+def standard_timestamp():
+    """Return a reasonable timestamp."""
+    return time.strftime("%Y%m%d-%H%M%S")
+#@+node:ekr.20201211183100.1: *3* g.get_backup_directory
+def get_backup_path(sub_directory):
+    """
+    Return the full path to the subdirectory of the main backup directory.
+    
+    The main backup directory is computed as follows:
+        
+    1. os.environ['LEO_BACKUP']
+    2. ~/Backup
+    """
+    # Compute the main backup directory.
+    # First, try the LEO_BACKUP directory.
+    backup = None
+    try:
+        backup = os.environ['LEO_BACKUP']
+        if not os.path.exists(backup):
+            backup = None
+    except KeyError:
+        pass
+    except Exception:
+        g.es_exception()
+    # Second, try ~/Backup.
+    if not backup:
+        backup = os.path.join(str(Path.home()), 'Backup')
+        if not os.path.exists(backup):
+            backup = None
+    if not backup:
+        return None
+    # Compute the path to backup/sub_directory
+    directory = os.path.join(backup, sub_directory)
+    return directory if os.path.exists(directory) else None
 #@+node:ekr.20140711071454.17644: ** g.Classes & class accessors
 #@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
 class BindingInfo:
@@ -393,27 +430,20 @@ class BindingInfo:
 def isBindingInfo(obj):
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
-#@@language rest
-#@+at
-# From The Python Cookbook:
-#
-# Create a Bunch whenever you want to group a few variables:
-#
-#     point = Bunch(datum=y, squared=y*y, coord=x)
-#
-# You can read/write the named attributes you just created, add others,
-# del some of them, etc::
-#
-#     if point.squared > threshold:
-#         point.isok = True
-#@@c
-#@@language python
-
-
 class Bunch:
-    """A class that represents a colection of things.
+    """
+    From The Python Cookbook:
 
-    Especially useful for representing a collection of related variables."""
+        Create a Bunch whenever you want to group a few variables:
+        
+            point = Bunch(datum=y, squared=y*y, coord=x)
+        
+        You can read/write the named attributes you just created, add others,
+        del some of them, etc::
+        
+            if point.squared > threshold:
+                point.isok = True
+    """
 
     def __init__(self, **keywords):
         self.__dict__.update(keywords)
@@ -1808,7 +1838,6 @@ class SherlockTracer:
     #@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
     def do_return(self, frame, arg):  # Arg *is* used below.
         """Trace a return statement."""
-        import os
         code = frame.f_code
         fn = code.co_filename
         locals_ = frame.f_locals
@@ -2010,7 +2039,6 @@ class SherlockTracer:
 
     def run(self, frame=None):
         """Trace from the given frame or the caller's frame."""
-        import sys
         print(f"SherlockTracer.run:patterns:\n%s" % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
@@ -2055,7 +2083,6 @@ class SherlockTracer:
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self):
         """Stop all tracing."""
-        import sys
         sys.settrace(None)
     #@-others
 #@+node:ekr.20191013145307.1: *3* class g.TkIDDialog (EmergencyDialog)
@@ -2075,6 +2102,7 @@ class TkIDDialog(EmergencyDialog):
     def __init__(self):
         super().__init__(self.title, self.message)
         self.val = ''
+        
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
     def onKey(self, event):
@@ -2218,8 +2246,8 @@ class Tracer:
         # Update the total counts.
         self.calledDict[name] = 1 + self.calledDict.get(name, 0)
     #@-others
+
 def startTracer(limit=0, trace=False, verbose=False):
-    import sys
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
@@ -2528,7 +2556,7 @@ class UiTypeException(Exception):
 def assertUi(uitype):
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
-#@+node:ekr.20200219071828.1: *3* class TestLeoGlobals
+#@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
 class TestLeoGlobals(unittest.TestCase):
     """Tests for leoGlobals.py."""
     #@+others
@@ -2536,8 +2564,8 @@ class TestLeoGlobals(unittest.TestCase):
     def test_comment_delims_from_extension(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
-        import leo.core.leoApp as leoApp
+        from leo.core import leoGlobals as leo_g
+        from leo.core import leoApp
         leo_g.app = leoApp.LeoApp()
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
@@ -2546,7 +2574,7 @@ class TestLeoGlobals(unittest.TestCase):
     def test_is_sentinel(self):
 
         # pylint: disable=import-self
-        import leo.core.leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g
         # Python.
         py_delims = leo_g.comment_delims_from_extension('.py')
         assert leo_g.is_sentinel("#@+node", py_delims)
@@ -3959,7 +3987,6 @@ def get_files_in_directory(directory, kinds=None, recursive=True):
             kinds = ['*.py']
         if recursive:
             # Works for all versions of Python.
-            import fnmatch
             for root, dirnames, filenames in os.walk(directory):
                 for kind in kinds:
                     for filename in fnmatch.filter(filenames, kind):
@@ -4588,6 +4615,19 @@ def scanf(s, pat):
         if part and len(result) < count:
             result.append(part)
     return result
+#@+node:ekr.20201127143342.1: *3* g.see_more_lines
+def see_more_lines(s, ins, n=4):
+    """
+    Extend index i within string s to include n more lines.
+    """
+    # Show more lines, if they exist.
+    if n > 0:
+        for z in range(n):
+            if ins >= len(s):
+                break
+            i, j = g.getLine(s, ins)
+            ins = j
+    return max(0, min(ins, len(s)))
 #@+node:ekr.20031218072017.3195: *3* g.splitLines & g.joinLines
 def splitLines(s):
     """Split s into lines, preserving the number of lines and
@@ -5097,8 +5137,6 @@ def skip_ws_and_nl(s, i):
 #@+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c, base_url=None):
     """Get a list of issues from Leo's GitHub site."""
-    import time
-
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
@@ -5115,21 +5153,26 @@ def execGitCommand(command, directory=None):
     """Execute the given git command in the given directory."""
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
-        g.trace('not found:', git_dir)
+        g.trace('not found:', git_dir, g.callers())
         return []
     if '\n' in command:
         g.trace('removing newline from', command)
         command = command.replace('\n', '')
+    # #1777: Save/restore os.curdir
+    old_dir = os.path.normpath(os.path.abspath(os.curdir))
     if directory:
         os.chdir(directory)
-    p = subprocess.Popen(
-        shlex.split(command),
-        stdout=subprocess.PIPE,
-        stderr=None,  # Shows error traces.
-        shell=False,
-    )
-    out, err = p.communicate()
-    lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    try:
+        p = subprocess.Popen(
+            shlex.split(command),
+            stdout=subprocess.PIPE,
+            stderr=None,  # Shows error traces.
+            shell=False,
+        )
+        out, err = p.communicate()
+        lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    finally:
+        os.chdir(old_dir)
     return lines
 #@+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(c,
@@ -5181,7 +5224,9 @@ class GitIssueController:
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, label_list, root, state, limit=100):
         """Get all issues for the base url."""
-        import requests
+        if not requests:
+            g.trace('requests not found: `pip install requests`')
+            return
         label = None
         assert state in ('open', 'closed')
         page_url = self.base_url + '?&state=%s&page=%s'
@@ -5216,7 +5261,9 @@ class GitIssueController:
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
     def get_one_issue(self, label, state, limit=20):
         """Create a list of issues with the given label."""
-        import requests
+        if not requests:
+            g.trace('requests not found: `pip install requests`')
+            return
         root = self.root.insertAsLastChild()
         page, total = 1, 0
         page_url = self.base_url + '?labels=%s&state=%s&page=%s'
@@ -5339,25 +5386,10 @@ def gitCommitNumber(path=None):
 #@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
 def gitInfoForFile(filename):
     """
-    return the git (branch, commit) info associated for the given file.
-    
-    Look for a .git directory in the file's directory, and parent directories.
+    Return the git (branch, commit) info associated for the given file.
     """
-    from pathlib import Path
-    branch, commit = '', ''
-    if filename:
-        parent = Path(filename)
-        while parent:
-            git_dir = os.path.join(parent, '.git')
-            if os.path.exists(git_dir) and os.path.isdir(git_dir):
-                head = os.path.join(git_dir, 'HEAD')
-                if os.path.exists(head):
-                    branch, commit = g.gitInfo(head)
-                    break
-            if parent == parent.parent:
-                break
-            parent = parent.parent
-    return branch, commit
+    # g.gitInfo and g.gitHeadPath now do all the work.
+    return g.gitInfo(filename)
 #@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
 def gitInfoForOutline(c):
     """
@@ -5381,29 +5413,36 @@ def gitDescribe(path=None):
     commit = commit.rstrip()
     return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
-def gitHeadPath(path=None):
+def gitHeadPath(path):
     """
-    Compute the path to the .git/HEAD directory given the path to another
-    directory. If no path is given, use the path to *this* file. This code
-    can *not* use g.app.loadDir because it is called too early in Leo's
-    startup code.
+    Compute the path to .git/HEAD given the path.
     """
-    if not path:
-        path = g.os_path_dirname(__file__)
-    head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
-    exists = g.os_path_exists(head)
-    return head if exists else None
+    path = Path(path)
+    # #1780: Look up the directory tree, looking the .git directory.
+    while os.path.exists(path):
+        head = os.path.join(path, '.git', 'HEAD')
+        if os.path.exists(head):
+            return head
+        if path == path.parent:
+            break
+        path = path.parent
+    return None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
     """
-    Path is a .git/HEAD directory, or None.
+    Path may be a directory or file.
 
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
+    if path is None:
+        # Default to leo/core.
+        path = os.path.dirname(__file__)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
     # Does path/../ref exist?
     path = g.gitHeadPath(path)
-    if not path or not g.os_path_exists(path):
+    if not path:
         return branch, commit
     try:
         with open(path) as f:
@@ -5961,7 +6000,6 @@ def isValidEncoding(encoding):
         return False
     if sys.platform == 'cli':
         return True
-    import codecs
     try:
         codecs.lookup(encoding)
         return True
@@ -6531,8 +6569,8 @@ def es_print(*args, **keys):
     g.pr(*args, **keys)
     if g.app and not g.app.unitTesting:
         g.es(*args, **keys)
-#@+node:ekr.20111107181638.9741: *3* g.es_print_exception
-def es_print_exception(full=True, c=None, color="red"):
+#@+node:ekr.20111107181638.9741: *3* g.print_exception
+def print_exception(full=True, c=None, flush=False, color="red"):
     """Print exception info about the last exception."""
     typ, val, tb = sys.exc_info()
         # val is the second argument to the raise statement.
@@ -6540,7 +6578,7 @@ def es_print_exception(full=True, c=None, color="red"):
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)
-    print(''.join(lines))
+    print(''.join(lines), flush=True)
     try:
         fileName, n = g.getLastTracebackFileAndLineNumber()
         return fileName, n
@@ -6883,8 +6921,6 @@ def choose(cond, a, b):  # warning: evaluates all arguments
 @command('cls')
 def cls(event=None):
     """Clear the screen."""
-    import os
-    import sys
     if sys.platform.lower().startswith('win'):
         os.system('cls')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
@@ -6926,9 +6962,11 @@ def init_zodb(pathToZodbStorage, verbose=True):
     global init_zodb_db, init_zodb_failed, init_zodb_import_failed
     db = init_zodb_db.get(pathToZodbStorage)
     if db: return db
-    if init_zodb_import_failed: return None
+    if init_zodb_import_failed:
+        return None
     failed = init_zodb_failed.get(pathToZodbStorage)
-    if failed: return None
+    if failed:
+        return None
     try:
         import ZODB
     except ImportError:
@@ -6997,9 +7035,6 @@ if 0:  # Testing:
     )
     for s in aList:
         print(pep8_class_name(s))
-#@+node:ekr.20190522093202.1: *3* g.placate_pyflakes
-def placate_pyflakes(*args):
-    """A do-nothing method that suppresses pyflakes warnings."""
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj):
     """Return "s" or "" depending on n."""
@@ -7788,7 +7823,10 @@ def run_unit_test_in_separate_process(command):
     print(err.rstrip())
     # There may be skipped tests...
     err_lines = g.splitLines(err.rstrip())
-    assert err_lines[-1].startswith('OK')
+    if not err_lines[-1].startswith('OK'):
+        g.trace('Test failed')
+        g.printObj(err_lines, tag='err_lines')
+        assert False
 #@+node:ekr.20080919065433.2: *3* g.toEncodedStringWithErrorCode (for unit testing)
 def toEncodedStringWithErrorCode(s, encoding, reportErrors=False):
     """For unit testing: convert s to an encoded string and return (s,ok)."""
@@ -7946,7 +7984,6 @@ def handleUrlHelper(url, c, p):
         else:
             g.es(f"File '{leo_path}' does not exist")
     else:
-        import webbrowser
         if g.unitTesting:
             g.app.unitTestDict['browser'] = url
         else:
@@ -8127,15 +8164,15 @@ def openUrlHelper(event, url=None):
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
     if word:
-        c.findCommands.findDef(event)
+        c.findCommands.find_def_strict(event)
     return None
 #@-others
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
-
 if __name__ == '__main__':
     unittest.main()
+
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70

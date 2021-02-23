@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.213: * @file ../external/npyscreen/wgmultilinetreeselectable.py
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084208.214: ** Declarations

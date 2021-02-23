@@ -13,7 +13,7 @@ Requires at least version 0.19 of mod_scripting.
 
 """
 #@-<< docstring >>
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 __version__ = "0.5"
 #@+<< version history >>

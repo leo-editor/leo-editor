@@ -93,18 +93,11 @@ __version__ = '0.1'
 
 #@+<< imports >>
 #@+node:peckj.20140113131037.5794: ** << imports >>
-import leo.core.leoGlobals as g
 import difflib
-
-# for VCS diff
+from io import StringIO
 import subprocess
 
-try:
-    from cStringIO import StringIO
-except Exception:
-    # python 3
-    from io import StringIO
-
+from leo.core import leoGlobals as g
 from leo.external import leosax
 #@-<< imports >>
 

@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18140: * @file ../plugins/importers/csharp.py
 '''The @auto importer for the csharp language.'''
-import leo.plugins.importers.linescanner as linescanner
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161121200106.3: ** class Csharp_Importer

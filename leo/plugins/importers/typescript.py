@@ -1,10 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18152: * @file ../plugins/importers/typescript.py
 '''The @auto importer for TypeScript.'''
-import leo.core.leoGlobals as g
-assert g
-import leo.plugins.importers.linescanner as linescanner
 import re
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
+assert g
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)

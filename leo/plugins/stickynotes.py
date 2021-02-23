@@ -54,16 +54,29 @@ process for each one.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:vivainio2.20091008133028.5823: ** << imports >>
-import leo.core.leoGlobals as g
-
-# Fail gracefully if the gui is not qt.
-g.assertUi('qt')
-
 import os
 import time
-# import webbrowser
-
-encOK = False
+from leo.core import leoGlobals as g
+from leo.core.leoQt import isQt5, Qt, QtWidgets
+# pylint: disable=no-name-in-module,import-error
+if isQt5:
+    from PyQt5.QtCore import QTimer
+    try:
+        from PyQt5.QtCore import QString
+    except ImportError:
+        QString = str
+    from PyQt5.QtGui import QFont,QTextCharFormat
+    from PyQt5.QtWidgets import (
+        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
+else:
+    from PyQt4.QtCore import QTimer
+    try:
+        from PyQt4.QtCore import QString
+    except ImportError:
+        QString = str
+    from PyQt4.QtGui import QAction,QFont,QTextCharFormat,QTextEdit
+    from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
+# Third-party imports.   
 try:
     from Crypto.Cipher import AES
     from Crypto.Hash import MD5, SHA
@@ -72,31 +85,9 @@ try:
     __ENCKEY = [None]
     encOK = True
 except ImportError:
-    pass
-
-from leo.core.leoQt import isQt5, Qt, QtWidgets
-
-# pylint: disable=no-name-in-module
-# pylint: disable= import-error
-if isQt5:
-    from PyQt5.QtCore import QTimer
-    try:
-        from PyQt5.QtCore import QString
-    except ImportError:
-        QString = str
-    from PyQt5.QtGui import QFont,QTextCharFormat # QIcon
-    from PyQt5.QtWidgets import (
-        QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
-            # QPlainTextEdit,
-else:
-    from PyQt4.QtCore import QTimer
-    try:
-        from PyQt4.QtCore import QString
-    except ImportError:
-        QString = str
-    from PyQt4.QtGui import QAction,QFont,QTextCharFormat,QTextEdit # QIcon
-    from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
-        # QPlainTextEdit,
+    encOK = False
+# Fail gracefully if the gui is not qt.
+g.assertUi('qt')
 #@-<< imports >>
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window

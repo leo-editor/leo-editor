@@ -3,21 +3,22 @@
 """Support for the edit-pane-test-open command and window."""
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** << editpane.py imports >>
-import leo.core.leoGlobals as g
-import leo.core.signal_manager as sig
+from collections import defaultdict
+from importlib import import_module
+import os
 try:
+    # pylint: disable=import-error
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
     assert GL  # To keep pyflakes happy.
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from collections import defaultdict
-from leo.core.leoQt import QtCore, QtWidgets, QtConst  # QtGui
+from leo.core.leoQt import QtCore, QtWidgets, QtConst
+from leo.core import leoGlobals as g
+from leo.core import signal_manager
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
-from importlib import import_module
-import os
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
@@ -250,7 +251,7 @@ class LeoEditPane(QtWidgets.QWidget):
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
-        sig.connect(self.c, 'body_changed', self._after_body_key)
+        signal_manager.connect(self.c, 'body_changed', self._after_body_key)
     #@+node:tbrown.20171028115438.13: *3* _build_layout
     def _build_layout(
         self, show_head=True, show_control=True, update=True, recurse=False):
@@ -372,7 +373,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         do_close = QtWidgets.QWidget.close(self)
         if do_close:
-            sig.disconnect_all(self)
+            signal_manager.disconnect_all(self)
             DBG("unregister handlers\n")
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
@@ -507,10 +508,10 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # Update p.b
         p = self.get_position()
-        sig.lock(self)
+        signal_manager.lock(self)
         p.b = new_text  # triggers 'body_changed' signal from c
         self.update_position_view(p)  # as we're ignoring signals
-        sig.unlock(self)
+        signal_manager.unlock(self)
     #@+node:tbrown.20171028115438.33: *3* update_position
     def update_position(self, p):
         """update_position - update editor and view for current Leo position

@@ -65,12 +65,11 @@ todo_calendar_cols
 
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
-import leo.core.leoGlobals as g
-
 import os
 import re
 import datetime
 import time
+from leo.core import leoGlobals as g
 
 NO_TIME = datetime.date(3000, 1, 1)
 
@@ -105,7 +104,7 @@ def popup_entry(c,p,menu):
 if g.app.gui.guiName() == "qt":
     class todoQtUI(QtWidgets.QWidget):
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor
+        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
         def __init__(self, owner, logTab=True):
 
             self.owner = owner

@@ -19,9 +19,8 @@ set to c:\ so you may need to modify it depending on your system.
 #@-<< docstring >>
 
 # leoToRTF 1.0 plugin by Dan Rahmel
-
-import leo.core.leoGlobals as g
 import configparser as ConfigParser
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20100128073941.5373: ** init

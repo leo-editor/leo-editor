@@ -6,7 +6,7 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 #@+others
 #@+node:ekr.20051016161205: ** init

@@ -6,6 +6,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20180307010409.1"><vh>Read me</vh></v>
 <v t="ekr.20180309203321.1"><vh>Tests</vh>
 <v t="ekr.20180314052647.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052647.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -16,10 +17,15 @@
 <v t="ekr.20180306170402.1"><vh>Test g.es(color=*)</vh></v>
 </v>
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
+<v t="ekr.20201221105203.1"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
-<v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
-<v t="ekr.20180307010409.1"><vh>@theme Leo Black Solarized</vh>
-<v t="ekr.20180307010409.2"><vh>Settings for Leo Solarized Dark theme</vh>
+<v t="ekr.20180307010409.64"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180307010409.65"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="ekr.20180307010409.104"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20180307010409.100"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20180307010409.101"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20201221105228.1"><vh>Colors</vh>
 <v t="ekr.20180309203459.1"><vh>Base colors: these are not solarized colors</vh>
 <v t="ekr.20180309203459.2"><vh>@color dark-base0 = #fdffdd</vh></v>
 <v t="ekr.20180309203459.3"><vh>@color dark-base00 = #657b83</vh></v>
@@ -43,7 +49,7 @@
 <v t="ekr.20180309203459.21"><vh>@color solarized-white = #fdf6e3 </vh></v>
 <v t="ekr.20180309203459.22"><vh>@color solarized-yellow = #b58900</vh></v>
 </v>
-<v t="ekr.20180307010409.3"><vh>Colors: Logical colors</vh>
+<v t="ekr.20180307010409.3"><vh>Color definitions</vh>
 <v t="ekr.20180307010409.4"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="ekr.20180307010409.5"><vh>@color log_blue_color = @solarized-blue</vh></v>
 <v t="ekr.20180307010409.6"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
@@ -58,45 +64,6 @@
 <v t="ekr.20180307010409.15"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="ekr.20180307010409.16"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
-<v t="ekr.20180307010409.17"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180307010409.18"><vh>Colors: defaults</vh>
-<v t="ekr.20180307010409.19"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20180307010409.20"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20180307010409.21"><vh>@color label_color = red</vh></v>
-<v t="ekr.20180307010409.22"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20180307010409.23"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20180307010409.24"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20180307010409.25"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20180307010409.26"><vh>@color literal1_color = #859900</vh></v>
-<v t="ekr.20180307010409.27"><vh>@color literal2_color = #859900</vh></v>
-<v t="ekr.20180307010409.28"><vh>@color literal3_color = #859900</vh></v>
-<v t="ekr.20180307010409.29"><vh>@color literal4_color = #859900</vh></v>
-<v t="ekr.20180307010409.30"><vh>@color markup_color = #268bd2</vh></v>
-<v t="ekr.20180307010409.31"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20180307010409.32"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20180307010409.33"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20180307010409.34"><vh>@color comment4_color = #d33682</vh></v>
-</v>
-<v t="ekr.20180307010409.35"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180307010409.36"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="ekr.20180307010409.37"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20180307010409.38"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20180307010409.39"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20180307010409.40"><vh>@color leo_keyword_color = @solarized-green</vh></v>
-<v t="ekr.20180307010409.41"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="ekr.20180307010409.42"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20180307010409.43"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20180307010409.44"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180307010409.45"><vh>@color url_color = @solarized-purple</vh></v>
-</v>
-<v t="ekr.20180314165700.1"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180314165700.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180314165700.3"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180314165700.4"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180314165700.5"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180314165700.6"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
-</v>
-</v>
 <v t="ekr.20180307010409.46"><vh>Colors: Text</vh>
 <v t="ekr.20180307010409.47"><vh>@color log_text_background_color =#000005</vh></v>
 <v t="ekr.20180307010409.48"><vh>@color log_text_foreground_color =#ffffff</vh></v>
@@ -108,20 +75,18 @@
 <v t="ekr.20180307010409.53"><vh>Colors: Widgets</vh>
 <v t="ekr.20180307010409.54"><vh>@color button-hover-fg =@dark-base03</vh></v>
 </v>
+</v>
 <v t="ekr.20180307010409.55"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180307010409.56"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="ekr.20180307010409.57"><vh>@string font-family-body =@font-family</vh></v>
-<v t="ekr.20180307010409.58"><vh>@string font-family-log =@font-family</vh></v>
-<v t="ekr.20180307010409.59"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180307010409.60"><vh>@string font-size-body = 17px</vh></v>
-<v t="ekr.20180307010409.61"><vh>@string font-size-log = 16px</vh></v>
-<v t="ekr.20180307010409.62"><vh>@string font-size-tree = 17px</vh></v>
+<v t="ekr.20180307010409.56"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
+<v t="ekr.20180307010409.57"><vh>@string font-family-body = @font-family</vh></v>
+<v t="ekr.20180307010409.58"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20180307010409.59"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="ekr.20180307010409.60"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20180307010409.61"><vh>@string font-size-log = 12pt</vh></v>
+<v t="ekr.20180307010409.62"><vh>@string font-size-tree = 12pt</vh></v>
 </v>
-<v t="ekr.20180307010409.63"><vh>Gradients</vh>
-<v t="ekr.20180307010409.64"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20180307010409.65"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
-</v>
-<v t="ekr.20180307010409.66"><vh>Plugins settings</vh>
+<v t="ekr.20180307010409.66"><vh>Plugins</vh>
+<v t="ekr.20180307010409.103"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="ekr.20180307010409.67"><vh>bookmarks</vh>
 <v t="ekr.20180307010409.68"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="ekr.20180307010409.69"><vh>bookmarks base</vh>
@@ -160,15 +125,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180307010409.99"><vh>Outline indicators</vh>
-<v t="ekr.20180307010409.100"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20180307010409.101"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20180307010409.102"><vh>Theme description settings</vh>
-<v t="ekr.20180307010409.103"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20180307010409.104"><vh>@string color_theme = leo_dark_0</vh></v>
-</v>
-</v>
+<v t="ekr.20201221105519.1"><vh>Stylesheet</vh>
 <v t="ekr.20180307010409.105"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20180307010409.106"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180307010409.107"><vh>Borders</vh></v>
@@ -187,10 +144,56 @@
 <v t="ekr.20190106104409.1"><vh>zz must be last</vh></v>
 </v>
 </v>
+<v t="ekr.20180307010409.17"><vh>Syntax coloring</vh>
+<v t="ekr.20180307010409.18"><vh>Colors: defaults</vh>
+<v t="ekr.20180307010409.19"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20180307010409.20"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20180307010409.21"><vh>@color label_color = red</vh></v>
+<v t="ekr.20180307010409.22"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20180307010409.23"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20180307010409.24"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20180307010409.25"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20180307010409.26"><vh>@color literal1_color = #859900</vh></v>
+<v t="ekr.20180307010409.27"><vh>@color literal2_color = #859900</vh></v>
+<v t="ekr.20180307010409.28"><vh>@color literal3_color = #859900</vh></v>
+<v t="ekr.20180307010409.29"><vh>@color literal4_color = #859900</vh></v>
+<v t="ekr.20180307010409.30"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20180307010409.31"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20180307010409.32"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20180307010409.33"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20180307010409.34"><vh>@color comment4_color = #d33682</vh></v>
 </v>
+<v t="ekr.20180307010409.35"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180307010409.36"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20180307010409.37"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20180307010409.38"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20180307010409.39"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20180307010409.40"><vh>@color leo_keyword_color = @solarized-green</vh></v>
+<v t="ekr.20180307010409.41"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20180307010409.42"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20180307010409.43"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20180307010409.44"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20180307010409.45"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20180314165700.1"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20180314165700.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20180314165700.3"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20180314165700.4"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165700.5"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165700.6"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180307010409.55"></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20180306142738.3">@language md</t>
+<t tx="ekr.20180306142738.3">@language rest
+@wrap
+
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="ekr.20180306143127.1">@language python
 
 @ This should be *colored* as rST.
@@ -207,9 +210,7 @@ def spam():
     pass
 </t>
 <t tx="ekr.20180306143127.2">Test.</t>
-<t tx="ekr.20180306144227.1"># For line_numbering plugin.</t>
-<t tx="ekr.20180306144735.1">The *last* setting in the tree wins.
-</t>
+<t tx="ekr.20180306144227.1">For line_numbering plugin.</t>
 <t tx="ekr.20180306170402.1">table = (
     # g.actualColor calls 
     'error', 'info', 'warning',
@@ -225,15 +226,13 @@ for s in table:
 </t>
 <t tx="ekr.20180307010409.1" lineYOffset="4b002e">@language rest
 @wrap
-@tabwidth -2
 
 A black theme with solarized colors.  Based on Chris George's superb work.
 
 Summary of theme:
 - Use solarized colors for syntax coloring.
 - Use dark-base colors, *not* solarized-base colors.
-- Prefer Inconsolata Font to Droid Sans Mono, DejaVu Sans Mono
-- Use 17px for tree and body. 16px for log.
+- Prefer DejaVu Sans Mono to Inconsolata or Droid Sans Mono
 
 Changes made by EKR:
 - Changed colors:
@@ -252,7 +251,6 @@ Changes made by EKR:
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180307010409.101">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180307010409.102"></t>
 <t tx="ekr.20180307010409.103" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180307010409.104" lineYOffset="4b002e">Name of the theme,
@@ -514,7 +512,6 @@ These names can't be changed.  Leo's colorizing code leoColorizer.py uses these 
 
 Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
 <t tx="ekr.20180307010409.19"></t>
-<t tx="ekr.20180307010409.2" lineYOffset="4b002e"></t>
 <t tx="ekr.20180307010409.20"></t>
 <t tx="ekr.20180307010409.21"></t>
 <t tx="ekr.20180307010409.22">was blue
@@ -601,8 +598,10 @@ gray90: #E5E5E5
 
 Only colors appearing in several places are given here.</t>
 <t tx="ekr.20180307010409.54"></t>
-<t tx="ekr.20180307010409.55"></t>
-<t tx="ekr.20180307010409.56">test text</t>
+<t tx="ekr.20180307010409.55">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
+<t tx="ekr.20180307010409.56"></t>
 <t tx="ekr.20180307010409.57"></t>
 <t tx="ekr.20180307010409.58"></t>
 <t tx="ekr.20180307010409.59"></t>
@@ -611,7 +610,6 @@ Only colors appearing in several places are given here.</t>
 something to see)</t>
 <t tx="ekr.20180307010409.61"></t>
 <t tx="ekr.20180307010409.62"></t>
-<t tx="ekr.20180307010409.63">Utility constants.</t>
 <t tx="ekr.20180307010409.64"></t>
 <t tx="ekr.20180307010409.65"></t>
 <t tx="ekr.20180307010409.66"></t>
@@ -652,16 +650,6 @@ valid values are: normal,bold,100,..,900
 <t tx="ekr.20180307010409.96"></t>
 <t tx="ekr.20180307010409.97">bold or regular</t>
 <t tx="ekr.20180307010409.98"></t>
-<t tx="ekr.20180307010409.99">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="ekr.20180309203321.1" str_leo_pos="1,3"></t>
 <t tx="ekr.20180309203342.1">/* bookmarks plugin styling */
 
@@ -799,5 +787,8 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
+<t tx="ekr.20201221105203.1"></t>
+<t tx="ekr.20201221105228.1"></t>
+<t tx="ekr.20201221105519.1"></t>
 </tnodes>
 </leo_file>

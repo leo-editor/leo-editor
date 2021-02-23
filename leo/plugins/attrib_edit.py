@@ -103,7 +103,7 @@ plugins. Here are some points of interest:
 #@-<< docstring >>
 # Written by TNB.
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 if g.app.gui.guiName() == "qt":
     from leo.core.leoQt import QtCore,QtWidgets
 

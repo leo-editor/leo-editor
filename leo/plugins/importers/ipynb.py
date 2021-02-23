@@ -2,7 +2,7 @@
 #@+node:ekr.20160412101008.1: * @file ../plugins/importers/ipynb.py
 '''The @auto importer for Jupyter (.ipynb) files.'''
 import re
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 try:
     import nbformat
 except ImportError:

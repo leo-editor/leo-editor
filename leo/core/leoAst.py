@@ -375,7 +375,7 @@ def orange_diff_command(files):
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
-    #@+node:ekr.20200702102239.1: *3* function: main
+    #@+node:ekr.20200702102239.1: *3* function: main (leoAst.py)
     def main():
         """Run commands specified by sys.argv."""
         usage = '\n'.join([
@@ -394,7 +394,7 @@ if 1:  # pragma: no cover
         ])
         parser = argparse.ArgumentParser(description=None, usage=usage)
         parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-        group = parser.add_mutually_exclusive_group(required=True)
+        group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
         add = group.add_argument
         add('--fstringify', dest='f', action='store_true', help='leonine fstringify')
         add('--fstringify-diff', dest='fd', action='store_true', help='show fstringify diff')
@@ -405,6 +405,19 @@ if 1:  # pragma: no cover
         add('--unittest', dest='unittest', metavar='ARGS', nargs='?', const=[], default=False, help='run unittest')
         args = parser.parse_args()
         # g.printObj(args, tag='ARGS')
+        # Default to --py-cov
+        if not any(getattr(args, z) for z in ('f', 'fd', 'o', 'od', 'pycov', 'pytest', 'unittest')):
+            if not pytest:
+                print('pytest not found')
+                return
+            pycov_args = sys.argv + [
+                '--cov-report=html',
+                '--cov-report=term-missing',
+                '--cov=leo.core.leoAst',
+                'leo/core/leoAst.py',
+            ]
+            pytest.main(args=pycov_args)
+            return # Seems necessary.
         files = args.PATHS
         if len(files) == 1 and os.path.isdir(files[0]):
             files = glob.glob(f"{files[0]}{os.sep}*.py")
@@ -428,7 +441,7 @@ if 1:  # pragma: no cover
                 'leo/core/leoAst.py',
             ]
             pytest.main(args=pycov_args)
-            return # Seems necessary.
+            return
         if isinstance(args.pytest, (str, list)):
             if not pytest:
                 print('pytest not found')
@@ -3818,9 +3831,9 @@ class Optional_TestFiles(BaseTest):  # pragma: no cover
     #@+node:ekr.20200115162419.1: *4* TestFiles.compare_tog_vs_asttokens
     def compare_tog_vs_asttokens(self):
         """Compare asttokens token lists with TOG token lists."""
-        import ast
         import token as token_module
         try:
+            # pylint: disable=import-error
             import asttokens
         except Exception:
             self.skipTest('requires asttokens')
@@ -5727,6 +5740,7 @@ class TestTokens(BaseTest):
         - Inject parent/child links into ast nodes. 
         - Inject many-to-many links between tokens and ast nodes.
         """
+        # pylint: disable=import-error,reimported
         import ast
         import asttokens
         import token as token_module

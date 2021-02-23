@@ -20,7 +20,7 @@
 #
 # Host programs will use the leoBridge module like this::
 #
-#     import leo.core.leoBridge as leoBridge
+#     from leo.core import leoBridge
 #     bridge = leoBridge.controller(gui='nullGui',verbose=False)
 #     if bridge.isOpen():
 #         g = bridge.globals()
@@ -105,7 +105,7 @@ class BridgeController:
         #@+node:ekr.20070227093629.1: *4* << initLeo imports >> initLeo (leoBridge)
         try:
             # #1472: Simplify import of g
-            import leo.core.leoGlobals as g
+            from leo.core import leoGlobals as g
             self.g = g
         except ImportError:
             print("Error importing leoGlobals.py")
@@ -115,7 +115,7 @@ class BridgeController:
             g.in_bridge = True
                 # Tell leoApp.createDefaultGui not to create a gui.
                 # This module will create the gui later.
-            import leo.core.leoApp as leoApp
+            from leo.core import leoApp
             g.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
@@ -125,15 +125,15 @@ class BridgeController:
         g.app.silentMode = self.silentMode
         #
         # Create the g.app.pluginsController here.
-        import leo.core.leoPlugins as leoPlugins
+        from leo.core import leoPlugins
         leoPlugins.init()  # Necessary. Sets g.app.pluginsController.
         try:
-            import leo.core.leoNodes as leoNodes
+            from leo.core import leoNodes
         except ImportError:
             print("Error importing leoNodes.py")
             import traceback; traceback.print_exc()
         try:
-            import leo.core.leoConfig as leoConfig
+            from leo.core import leoConfig
         except ImportError:
             print("Error importing leoConfig.py")
             import traceback; traceback.print_exc()
@@ -214,17 +214,17 @@ class BridgeController:
     """
         try:
             # This will fail if True/False are not defined.
-            import leo.core.leoGlobals as g
+            from leo.core import leoGlobals as g
             # print('leoBridge:isValidPython:g',g)
             # Set leoGlobals.g here, rather than in leoGlobals.py.
             leoGlobals = g  # Don't set g.g, it would pollute the autocompleter.
             leoGlobals.g = g
         except ImportError:
-            print("isValidPython: can not import leo.core.leoGlobals as leoGlobals")
+            print("isValidPython: can not import leoGlobals")
             return 0
         except Exception:
             print(
-                "isValidPytyhon: unexpected exception: import leo.core.leoGlobals as leoGlobals.py as g")
+                "isValidPytyhon: unexpected exception importing leoGlobals")
             import traceback; traceback.print_exc()
             return 0
         try:
@@ -305,7 +305,7 @@ class BridgeController:
                 if c:
                     return c
             elif not self.silentMode:
-                print(f"file not found: {fileName}. creating new window")
+                print(f"file not found: {fileName}. creating new outline")
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
         frame = c.frame
@@ -319,7 +319,7 @@ class BridgeController:
         return c
     #@+node:vitalije.20190923081235.1: *4* reopen_cachers
     def reopen_cachers(self):
-        import leo.core.leoCache as leoCache
+        from leo.core import leoCache
 
         g = self.g
         try:

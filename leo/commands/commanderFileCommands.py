@@ -3,10 +3,10 @@
 #@+node:ekr.20171123095353.1: * @file ../commands/commanderFileCommands.py
 #@@first
 """File commands that used to be defined in leoCommands.py"""
-import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
 import os
 import sys
+from leo.core import leoGlobals as g
+from leo.core import leoImport
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
@@ -66,10 +66,12 @@ def restartLeo(self, event=None):
             if veto:
                 g.es_print('Cancelling restart-leo command')
                 return
-    # 3. Save session data.
+    # 3. Officially begin the restart process. A flag for efc.ask.
+    g.app.restarting = True  # #1240.
+    # 4. Save session data.
     if g.app.sessionManager:
         g.app.sessionManager.save_snapshot()
-    # 4. Close all unsaved outlines.
+    # 5. Close all unsaved outlines.
     g.app.setLog(None)  # Kill the log.
     for c in g.app.commanders():
         frame = c.frame
@@ -84,9 +86,9 @@ def restartLeo(self, event=None):
         else:
             # #69.
             g.app.forgetOpenFile(fn=c.fileName(), force=True)
-    # 5. Complete the shutdown.
+    # 6. Complete the shutdown.
     g.app.finishQuit()
-    # 6. Restart, restoring the original command line.
+    # 7. Restart, restoring the original command line.
     args = ['-c'] + [z for z in lm.old_argv]
     if trace: g.trace('restarting with args', args)
     sys.stdout.flush()
@@ -204,7 +206,7 @@ def import_txt_file(c, fn):
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     """Create a new Leo window."""
-    import leo.core.leoApp as leoApp
+    from leo.core import leoApp
     lm = g.app.loadManager
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.

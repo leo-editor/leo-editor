@@ -3,7 +3,7 @@
 """Redefine the "put" and "put_nl" methods"""
 #@@language python
 #@@tabwidth -4
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 __version__ = "1.4"
 #@+others
 #@+node:ekr.20111104210837.9690: ** init

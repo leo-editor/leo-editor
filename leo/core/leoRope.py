@@ -4,10 +4,12 @@
 #@@first
 #@+<< leoRope imports >>
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
-import leo.core.leoGlobals as g
 import time
 import importlib
+from leo.core import leoGlobals as g
+# Third-party imports.
 try:
+    # pylint: disable=import-error
     import rope.base.project as project
     import rope.base.simplify as simplify
     import rope.refactor as refactor

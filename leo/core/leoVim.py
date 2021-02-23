@@ -2,10 +2,23 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
 #@@first
-"""Leo's vim emulator."""
-import leo.core.leoGlobals as g
+"""
+Leo's vim mode.
+
+**Important**
+
+`@bool vim-mode` enables vim *mode*.
+
+`@keys Vim bindings` enables vim *emulation*.
+         
+Vim *mode* is independent of vim *emulation* because
+k.masterKeyHandler dispatches keys to vim mode before
+doing the normal key handling that vim emulation uses.
+"""
 import os
 import string
+from leo.core import leoGlobals as g
+from leo.core.leoGui import LeoKeyEvent
 #@+others
 #@+node:ekr.20140802183521.17997: ** show_stroke
 #@@nobeautify
@@ -48,7 +61,12 @@ class VimEvent:
     __str__ = __repr__
 #@+node:ekr.20131113045621.16547: ** class VimCommands
 class VimCommands:
-    """A class that handles vim simulation in Leo."""
+    """
+    A class that handles vim mode in Leo.
+    
+    In vim mode, k.masterKeyHandler calls
+    
+    """
     #@+others
     #@+node:ekr.20131109170017.16507: *3*  vc.ctor & helpers
     def __init__(self, c):
@@ -458,16 +476,22 @@ class VimCommands:
         self.j_changed = True
             # False if the .leo file's change indicator should be
             # cleared after doing the j,j abbreviation.
-    #@+node:ekr.20140803220119.18102: *4* vc.top-level inits
-    # Called from command handlers or the ctor.
     #@+node:ekr.20150509040011.1: *3*  vc.cmd (decorator)
     def cmd(name):
         """Command decorator for the VimCommands class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'vimCommands',])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
-    # All acceptance methods must set the return_value ivar.
     # All key handlers must end with a call to an acceptance method.
+    #
+    # Acceptance methods set the return_value ivar, which becomes the value
+    # returned to k.masterKeyHandler by c.vimCommands.do_key:
+    #
+    # - True:  k.masterKeyHandler returns.
+    #          Vim mode has completely handled the key.
+    #
+    # - False: k.masterKeyHander handles the key.
+
     #@+node:ekr.20140803220119.18097: *4* direct acceptance methods
     #@+node:ekr.20140802225657.18031: *5* vc.accept
     def accept(self, add_to_dot=True, handler=None):
@@ -757,7 +781,7 @@ class VimCommands:
     def update_selection_after_search(self):
         """
         Extend visual mode's selection after a search.
-        Called from leoFind.showSuccess.
+        Called from leoFind.show_success.
         """
         if self.state == 'visual':
             w = self.w
@@ -989,15 +1013,16 @@ class VimCommands:
             # Copy the list so it can't change in the loop.
             for event in self.dot_list[:]:
                 # Only k.masterKeyHandler can insert characters!
-                # Create an event satisfying both k.masterKeyHandler and self.do_key.
-                self.k.masterKeyHandler(g.Bunch(
-                    # for do_key()...
-                    w=self.w,
-                    # for k.masterKeyHandler...
-                    widget=self.w,
+                #
+                # #1757: Create a LeoKeyEvent.
+                event = LeoKeyEvent(
+                    binding=g.KeyStroke(event.stroke),
+                    c = self.c,
                     char=event.char,
-                    stroke=g.KeyStroke(event.stroke)),
+                    event=event,
+                    w=self.w,
                 )
+                self.k.masterKeyHandler(event)
             # For the dot list to be the old dot list, whatever happens.
             self.command_list = self.old_dot_list[:]
             self.dot_list = self.old_dot_list[:]
@@ -1276,7 +1301,7 @@ class VimCommands:
     def vim_n(self):
         """Repeat last search N times."""
         fc = self.c.findCommands
-        fc.setup_command()
+        fc.setup_ivars()
         old_node_only = fc.node_only
         fc.node_only = True
         for z in range(self.n1 * self.n):
@@ -1288,7 +1313,7 @@ class VimCommands:
     def vim_N(self):
         """Repeat last search N times (reversed)."""
         fc = self.c.findCommands
-        fc.setup_command()
+        fc.setup_ivars()
         old_node_only = fc.node_only
         old_reverse = fc.reverse
         fc.node_only = True
@@ -1396,9 +1421,9 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            fc.searchWithPresentOptions(self.event)
+            fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
-                # leoFind.showSuccess calls update_selection_after_search().
+                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             self.done(add_to_dot=False, set_dot=False)
         else:
@@ -1436,9 +1461,9 @@ class VimCommands:
             fc.openFindTab(self.event)
             fc.ftm.clear_focus()
             old_node_only = fc.node_only
-            fc.searchWithPresentOptions(self.event)
+            fc.start_search1(self.event)
                 # This returns immediately, before the actual search.
-                # leoFind.showSuccess calls update_selection_after_search().
+                # leoFind.show_success calls update_selection_after_search().
             fc.node_only = old_node_only
             fc.reverse = False
             self.done(add_to_dot=False, set_dot=False)
@@ -1983,9 +2008,9 @@ class VimCommands:
                 fc.ftm.clear_focus()
                 fc.node_only = True
                     # Doesn't work.
-                fc.searchWithPresentOptions(vc.event)
+                fc.start_search1(vc.event)
                     # This returns immediately, before the actual search.
-                    # leoFind.showSuccess calls vc.update_selection_after_search.
+                    # leoFind.show_success calls vc.update_selection_after_search.
                 if c.vim_mode:
                     vc.done(add_to_dot=False, set_dot=False)
             elif c.vim_mode:
@@ -2371,13 +2396,11 @@ class VimCommands:
         if w and name.startswith('body'):
             # Similar to selfInsertCommand.
             oldSel = self.old_sel or w.getSelectionRange()
-            oldText = c.p.b
             newText = w.getAllText()
-            # To do: set undoType to the command spelling?
-            if newText != oldText:
+            if c.p.b != newText:
+                # To do: set undoType to the command spelling?
                 # undoType = ''.join(self.command_list) or 'Typing'
-                c.frame.body.onBodyChanged(undoType='Typing',
-                    oldSel=oldSel, oldText=oldText, oldYview=None)
+                c.frame.body.onBodyChanged(undoType='vc-save-body', oldSel=oldSel)
     #@+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(self, kind=None, w=None, activeFlag=None):
         """

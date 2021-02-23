@@ -158,10 +158,10 @@ Settings
 #@-<< documentation from Jim Sizelove >>
 #@+<< imports >>
 #@+node:ekr.20050226184411.2: ** << imports >>
-import leo.core.leoGlobals as g
 import os
 import subprocess
 import sys
+from leo.core import leoGlobals as g
 #@-<< imports >>
 # This command is used to communicate with the vim server. If you use gvim
 # you can leave the command as is, you do not need to change it to "gvim ..."

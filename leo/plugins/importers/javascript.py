@@ -3,8 +3,8 @@
 '''The @auto importer for JavaScript.'''
 import re
 import unittest
-import leo.core.leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others
@@ -521,7 +521,7 @@ class JsLexer(Lexer):
 
 
     #@-others
-#@+node:ekr.20200131070055.1: ** class TestJSImporter
+#@+node:ekr.20200131070055.1: ** class TestJSImporter (importers/javascript.py)
 class TestJSImporter(unittest.TestCase):
     #@+others
     #@+node:ekr.20200202093420.1: *3* test_get_trailing_comments

@@ -3,8 +3,8 @@
 #@+node:ekr.20150514040140.1: * @file ../commands/keyCommands.py
 #@@first
 """Leo's key-handling commands."""
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoGlobals as g
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@+others
 #@+node:ekr.20160514120948.1: ** class KeyHandlerCommandsClass
 class KeyHandlerCommandsClass(BaseEditCommandsClass):

@@ -217,8 +217,8 @@ You will find this stylesheet in the node @data
 #@+<< imports >>
 #@+node:ekr.20120913110135.10590: ** << imports >>
 import random
-import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui # for LeoKeyEvents.
+from leo.core import leoGlobals as g
+from leo.core import leoGui # for LeoKeyEvents.
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 #@-<< imports >>
 #@+at
@@ -306,7 +306,7 @@ class ScreenCastController:
         c.bodyWantsFocusNow()
         bunch = u.beforeChangeBody(p)
         p.b = p.b + s
-        u.afterChangeBody(p, 'Typing', bunch)
+        u.afterChangeBody(p, 'simulate-typing', bunch)
         for ch in s:
             p.b = p.b + ch
             w.repaint()
@@ -405,7 +405,7 @@ class ScreenCastController:
             m.repaint(pane)
         else:
             g.trace('bad pane: %s' % (pane))
-    #@+node:ekr.20120913110135.10583: *4* sc.head_keys
+    #@+node:ekr.20120913110135.10583: *4* sc.head_keys (screencast.py)
     def head_keys(self, s, n1=None, n2=None):
         '''Simulate typing in the headline.
         n1 and n2 indicate the range of delays between keystrokes.

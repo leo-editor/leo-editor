@@ -3,29 +3,26 @@
 """Classes relating to reading and writing .leo files."""
 #@+<< imports >>
 #@+node:ekr.20050405141130: ** << imports >> (leoFileCommands)
-import xml.etree.ElementTree as ElementTree
-try:
-    # IronPython has problems with this.
-    import xml.sax
-    import xml.sax.saxutils
-except Exception:
-    pass
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
 import binascii
 from collections import defaultdict
+from contextlib import contextmanager
 import difflib
-import time
+import hashlib
 import io
-StringIO = io.StringIO
-BytesIO = io.BytesIO
 import os
 import pickle
-import tempfile
-import zipfile
 import sqlite3
-import hashlib
-from contextlib import contextmanager
+import tempfile
+import time
+import zipfile
+import xml.etree.ElementTree as ElementTree
+import xml.sax
+import xml.sax.saxutils
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+# Abbreviations
+StringIO = io.StringIO
+BytesIO = io.BytesIO
 #@-<< imports >>
 PRIVAREA = '---begin-private-area---'
 #@+others
@@ -53,10 +50,9 @@ class FastRead:
         self.gnx2vnode = gnx2vnode
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile/FromClipboard & helper
-    def readFile(self, path):
+    def readFile(self, theFile, path):
         """Read the file, change splitter ratiors, and return its hidden vnode."""
-        with open(path, 'rb') as f:
-            s = f.read()
+        s = theFile.read()
         v, g_element = self.readWithElementTree(path, s)
         if not v:  # #1510.
             return None
@@ -555,7 +551,7 @@ class FileCommands:
             if fileName.endswith('.db'):
                 v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
             else:
-                v = FastRead(c, self.gnxDict).readFile(fileName)
+                v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
                 if v:
                     c.hiddenRootNode = v
             if v:
@@ -672,13 +668,14 @@ class FileCommands:
             g.error("read only:", fileName)
     #@+node:ekr.20031218072017.3029: *5* fc.readAtFileNodes
     def readAtFileNodes(self):
+        
         c, p = self.c, self.c.p
         c.endEditing()
         c.atFileCommands.readAll(p, force=True)
         c.redraw()
         # Force an update of the body pane.
         c.setBodyString(p, p.b)  # Not a do-nothing!
-        c.frame.body.onBodyChanged(undoType=None)
+        
     #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
     def openLeoFile(self, theFile, fileName, readAtFileNodesFlag=True, silent=False):
         """Open a Leo file."""

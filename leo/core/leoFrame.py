@@ -5,16 +5,13 @@ The base classes for all Leo Windows, their body, log and tree panes, key bindin
 
 These classes should be overridden to create frames for a particular gui.
 """
-big_text_buttons = True
-    # True: show buttons instead of immediately loading big text.
 #@+<< imports >>
 #@+node:ekr.20120219194520.10464: ** << imports >> (leoFrame)
-import leo.core.leoGlobals as g
-import leo.core.leoColorizer as leoColorizer
-    # NullColorizer is a subclass of ColorizerMixin
-import leo.core.leoMenu as LeoMenu
-import leo.core.leoNodes as leoNodes
 import time
+from leo.core import leoGlobals as g
+from leo.core import leoColorizer  # NullColorizer is a subclass of ColorizerMixin
+from leo.core import leoMenu
+from leo.core import leoNodes
 assert time
 #@-<< imports >>
 #@+<< About handling events >>
@@ -603,6 +600,9 @@ class LeoBody:
         if i == j:
             i, j = g.getLine(s, i)
         else:
+            # #1742: Move j back if it is at the start of a line.
+            if j > i and j > 0 and s[j-1] == '\n':
+                j -= 1
             i, junk = g.getLine(s, i)
             junk, j = g.getLine(s, j)
         before = g.checkUnicode(s[0:i])
@@ -610,56 +610,42 @@ class LeoBody:
         after = g.checkUnicode(s[j : len(s)])
         return before, sel, after  # 3 strings.
     #@+node:ekr.20031218072017.1329: *4* LeoBody.onBodyChanged (deprecated)
-    def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
+    def onBodyChanged(self, undoType, oldSel=None):
         """
         Update Leo after the body has been changed.
         
         This method is deprecated. New Leo commands and scripts should
         call u.before/afterChangeBody instead.
         """
-        body, c, p, u, w = self, self.c, self.c.p, self.c.undoer, self.wrapper
+        p, u, w = self.c.p, self.c.undoer, self.wrapper
         #
-        # Init data.
-        newText = w.getAllText()  # getAllText converts to unicode.
-        if oldText:
-            p.v.b = oldText
-            changed = oldText != newText
-        else:
-            oldText = p.b
-            changed = True
-        if not changed:
+        # Shortcut.
+        newText = w.getAllText()
+        if p.b == newText:
             return
         #
-        # "Before" snapshot.
+        # Init data.
+        newSel = w.getSelectionRange()
+        newInsert = w.getInsertPoint()
+        #
+        # The "Before" snapshot.
+        #
+        # #1743: Restore oldSel for u.beforeChangeBody
+        if oldSel and newSel and oldSel != newSel:
+            i, j = oldSel
+            w.setSelectionRange(i, j, insert=j)
         bunch = u.beforeChangeBody(p)
+        #
+        # #1743: Restore newSel if necessary.
+        if oldSel and newSel and oldSel != newSel:
+            i, j = newSel
+            w.setSelectionRange(i, j, insert=newInsert)
         #
         # Careful. Don't redraw unless necessary.
         p.v.b = newText  # p.b would cause a redraw.
-        p.v.insertSpot = w.getInsertPoint()
-        if p.isDirty():
-            redraw_flag = False
-        else:
-            p.setDirty()
-            redraw_flag = True
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Recolor the body.
-        c.frame.scanForTabWidth(p)
-        body.recolor(p)
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        if not c.changed:
-            c.setChanged()
-        # Update editors.
-        self.updateEditors()
-        # Update icons.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-        if redraw_flag:
-            c.redraw_after_icons_changed()
     #@-others
 #@+node:ekr.20031218072017.3678: ** class LeoFrame
 class LeoFrame:
@@ -951,7 +937,7 @@ class LeoFrame:
             w.see(i)  # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Cut', oldSel=oldSel)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
             # p.initHeadString(s)
@@ -978,7 +964,6 @@ class LeoFrame:
             tCurPosition = w.getInsertPoint()
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
             s = w.getAllText()
@@ -1008,7 +993,7 @@ class LeoFrame:
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif singleLine:
             s = w.getAllText()
             while s and s[-1] in ('\n', '\r'):
@@ -1669,6 +1654,7 @@ class NullFrame(LeoFrame):
         assert self.c
         self.wrapper = None
         self.iconBar = NullIconBarClass(self.c, self)
+        self.initComplete = True
         self.isNullFrame = True
         self.outerFrame = None
         self.ratio = self.secondary_ratio = 0.5
@@ -1678,7 +1664,7 @@ class NullFrame(LeoFrame):
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
         self.log = NullLog(frame=self, parentFrame=None)
-        self.menu = LeoMenu.NullMenu(frame=self)
+        self.menu = leoMenu.NullMenu(frame=self)
         self.tree = NullTree(frame=self)
         # Default window position.
         self.w = 600
@@ -1952,6 +1938,7 @@ class NullTree(LeoTree):
         self.font = None
         self.fontName = None
         self.canvas = None
+        self.treeWidget = g.NullObject()
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
@@ -2089,10 +2076,12 @@ class StringTextWrapper:
     def delete(self, i, j=None):
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         # This allows subclasses to use this base class method.
-        if i > j: i, j = j, i
+        if i > j:
+            i, j = j, i
         s = self.getAllText()
         self.setAllText(s[:i] + s[j:])
         # Bug fix: 2011/11/13: Significant in external tests.
@@ -2106,7 +2095,8 @@ class StringTextWrapper:
     def get(self, i, j=None):
         """StringTextWrapper."""
         i = self.toPythonIndex(i)
-        if j is None: j = i + 1
+        if j is None:
+            j = i + 1
         j = self.toPythonIndex(j)
         s = self.s[i:j]
         return g.toUnicode(s)
@@ -2170,7 +2160,8 @@ class StringTextWrapper:
     #@+node:ekr.20140903172510.18587: *4* stw.setInsertPoint
     def setInsertPoint(self, pos, s=None):
         """StringTextWrapper."""
-        self.virtualInsertPoint = i = self.toPythonIndex(pos)
+        i = self.toPythonIndex(pos)
+        self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
     #@+node:ekr.20070228111853: *4* stw.setSelectionRange
@@ -2181,7 +2172,13 @@ class StringTextWrapper:
         self.ins = j if insert is None else self.toPythonIndex(insert)
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
-        """StringTextWrapper."""
+        """
+        StringTextWrapper.toPythonIndex.
+        
+        Convert indices of the form 'end' or 'n1.n2' to integer indices into self.s.
+        
+        Unit tests *do* use non-integer indices, so removing this method would be tricky.
+        """
         return g.toPythonIndex(self.s, index)
     #@+node:ekr.20140903172510.18582: *4* stw.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):

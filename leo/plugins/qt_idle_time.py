@@ -3,8 +3,8 @@
 #@+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
 #@@first
 """Leo's Qt idle-time code."""
-import leo.core.leoGlobals as g
 import time
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 #@+others
 #@+node:ekr.20141028061518.24: ** class IdleTime

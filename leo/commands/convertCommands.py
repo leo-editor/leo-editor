@@ -5,9 +5,9 @@
 """Leo's file-conversion commands."""
 #@+<< imports >>
 #@+node:ekr.20161023150723.1: ** << imports >>
-import leo.core.leoGlobals as g
-import leo.core.leoBeautify as leoBeautify
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
+from leo.core import leoGlobals as g
+from leo.core import leoBeautify
+from leo.commands.baseCommands import BaseEditCommandsClass
 # import re
 # import sys
 #@-<< imports >>

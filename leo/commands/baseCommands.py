@@ -3,7 +3,7 @@
 #@+node:ekr.20150514035943.1: * @file ../commands/baseCommands.py
 #@@first
 """The base class for all of Leo's user commands."""
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20160514095639.1: ** class BaseEditCommandsClass
 class BaseEditCommandsClass:
@@ -22,19 +22,18 @@ class BaseEditCommandsClass:
     #@+node:ekr.20150514043714.4: *4* BaseEdit.beginCommand
     def beginCommand(self, w, undoType='Typing'):
         """Do the common processing at the start of each command."""
-        c, p = self.c, self.c.p
+        c, p, u = self.c, self.c.p, self.c.undoer
         name = c.widget_name(w)
         if name.startswith('body'):
-            oldSel = w.getSelectionRange()
-            oldText = p.b
             self.undoData = b = g.Bunch()
             # To keep pylint happy.
             b.ch = ''
             b.name = name
-            b.oldSel = oldSel
-            b.oldText = oldText
+            b.oldSel = w.getSelectionRange()
+            b.oldText = p.b
             b.w = w
             b.undoType = undoType
+            b.undoer_bunch = u.beforeChangeBody(p)  # #1733.
         else:
             self.undoData = None
         return w
@@ -44,11 +43,17 @@ class BaseEditCommandsClass:
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
         """
-        c, k = self.c, self.c.k
+        k, p, u= self.c.k, self.c.p, self.c.undoer
+        w = self.editWidget(event=None)
         b = self.undoData
         if b and b.name.startswith('body') and changed:
-            c.frame.body.onBodyChanged(undoType=b.undoType,
-                oldSel=b.oldSel, oldText=b.oldText, oldYview=None)
+            newText = w.getAllText()
+            if b.undoType.capitalize() == 'Typing':
+                u.doTyping(p, 'Typing', oldText=b.oldText, newText=newText, oldSel=b.oldSel)
+            else:
+                p.v.b = newText  # p.b would cause a redraw.
+                u.afterChangeBody(p, b.undoType, b.undoer_bunch)
+                
         self.undoData = None
         k.clearState()
         # Warning: basic editing commands **must not** set the label.

@@ -6,14 +6,14 @@
 #@+<< imports >>
 #@+node:ekr.20150514050530.1: ** << imports >> (spellCommands.py)
 import re
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
+from leo.commands.baseCommands import BaseEditCommandsClass
+from leo.core import leoGlobals as g
 #@-<< imports >>
 
 def cmd(name):
@@ -780,7 +780,8 @@ class SpellTabHandler:
                     c.invalidateFocus()
                     c.bodyWantsFocus()
                     w.setSelectionRange(i, j, insert=j)
-                    w.see(j)
+                    k = g.see_more_lines(s, j, 4)
+                    w.see(k)
                     return
                 self.seen.add(word)
             # No more misspellings in p

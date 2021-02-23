@@ -5,15 +5,15 @@
 """Leo's Qt tree class."""
 #@+<< imports >>
 #@+node:ekr.20140907131341.18709: ** << imports >> (qt_tree.py)
-import leo.core.leoGlobals as g
-import leo.core.leoFrame as leoFrame
-import leo.core.leoNodes as leoNodes
-import leo.core.leoPlugins as leoPlugins  # Uses leoPlugins.TryNext.
-import leo.plugins.qt_text as qt_text
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
 import re
 import time
 assert time
+from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets
+from leo.core import leoGlobals as g
+from leo.core import leoFrame
+from leo.core import leoNodes
+from leo.core import leoPlugins  # Uses leoPlugins.TryNext.
+from leo.plugins import qt_text
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
@@ -731,8 +731,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # enters editing state.
             if auto_edit and self.auto_edit:
                 e, wrapper = self.createTreeEditorForItem(item)
-            # 2014/10/26: Reset find vars.
-            c.findCommands.reset_state_ivars()
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed

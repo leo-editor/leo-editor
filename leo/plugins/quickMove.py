@@ -148,9 +148,7 @@ __version__ = '0.7'
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
-
-import leo.core.leoGlobals as g
-
+from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 
 if g.app.gui.guiName() == "qt":

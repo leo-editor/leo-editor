@@ -8,7 +8,7 @@ import os
 import sys
 import re
 from leo.plugins.mod_scripting import build_rclick_tree
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>
@@ -889,7 +889,7 @@ class ParserBaseClass:
         d[key] = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting',
             unl=(p and p.get_UNL(with_proto=True)))
     #@+node:ekr.20041119204700.1: *3* pbc.traverse
-    def traverse(self, theme=False):
+    def traverse(self):
         """Traverse the entire settings tree."""
         c = self.c
         self.settingsDict = g.TypedDict(
@@ -901,7 +901,7 @@ class ParserBaseClass:
             keyType=str,
             valType=g.BindingInfo)
         # This must be called after the outline has been inited.
-        p = c.config.settingsRoot(theme=theme)
+        p = c.config.settingsRoot()
         if not p:
             # c.rootPosition() doesn't exist yet.
             # This is not an error.
@@ -986,7 +986,6 @@ class ActiveSettingsOutline:
     #@+node:ekr.20190905091614.5: *4* aso.new_commander
     def new_commander(self):
         """Create the new commander, and load all settings files."""
-        # import leo.core.leoApp as leoApp
         lm = g.app.loadManager
         old_c = self.c
         # Save any changes so they can be seen.
@@ -1473,6 +1472,7 @@ class GlobalConfigManager:
         does not (loosely) match the actual type.
         returns (val,exists)
         """
+        tag = 'gcm.getValFromDict'
         gs = d.get(self.munge(setting))
         if not gs:
             return None, False
@@ -1486,8 +1486,9 @@ class GlobalConfigManager:
             # The warning is given only if the code tries to access the setting.
             if warn:
                 g.error(
-                    'warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
-                g.error('there may be conflicting settings!')
+                    f"{tag}: ignoring '{setting}' setting.\n"
+                    f"{tag}: '@{gs.kind}' is not '@{requestedType}'.\n"
+                    f"{tag}: there may be conflicting settings!")
             return None, False
         if isNone:
             return '', True
@@ -1509,11 +1510,13 @@ class GlobalConfigManager:
         if type1 in shortcuts or type2 in shortcuts:
             g.trace('oops: type in shortcuts')
         return (
-            type1 is None or type2 is None or
-            type1.startswith('string') and type2 not in shortcuts or
-            type1 == 'int' and type2 == 'size' or
-            (type1 in shortcuts and type2 in shortcuts) or
-            type1 == type2
+            type1 is None
+            or type2 is None
+            or type1.startswith('string') and type2 not in shortcuts
+            or type1 == 'language' and type2 == 'string'
+            or type1 == 'int' and type2 == 'size'
+            or (type1 in shortcuts and type2 in shortcuts)
+            or type1 == type2
         )
     #@+node:ekr.20060608224112: *4* gcm.getAbbrevDict
     def getAbbrevDict(self):
@@ -1819,17 +1822,13 @@ class LocalConfigManager:
                 return p.copy()
         return None
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
-    def settingsRoot(self, theme=False):
+    def settingsRoot(self):
         """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
-                if not theme:
-                    return p.copy()
-                # Look for an inner @theme node
-                for p2 in p.subtree():
-                    if g.match_word(p2.h, 0, '@theme'):
-                        return p2.copy()
+            # #1792: Allow comments after @settings.
+            if g.match_word(p.h.rstrip(), 0, "@settings"):
+                return p.copy()
         return None
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
@@ -1860,13 +1859,14 @@ class LocalConfigManager:
             val, junk = self.getValFromDict(d, setting, kind)
             return val
         return None
-    #@+node:ekr.20120215072959.12520: *6* getValFromDict
+    #@+node:ekr.20120215072959.12520: *6* c.config.getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
         returns (val,exists)
         """
+        tag = 'c.config.getValFromDict'
         gs = d.get(g.app.config.munge(setting))
         if not gs: return None, False
         assert isinstance(gs, g.GeneralSetting), repr(gs)
@@ -1879,14 +1879,15 @@ class LocalConfigManager:
             # The warning is given only if the code tries to access the setting.
             if warn:
                 g.error(
-                    'warning: ignoring', gs.kind, '', setting, 'is not', requestedType)
-                g.error('there may be conflicting settings!')
+                    f"{tag}: ignoring '{setting}' setting.\n"
+                    f"{tag}: '@{gs.kind}' is not '@{requestedType}'.\n"
+                    f"{tag}: there may be conflicting settings!")
             return None, False
         if isNone:
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
         return val, True
-    #@+node:ekr.20120215072959.12521: *6* typesMatch
+    #@+node:ekr.20120215072959.12521: *6* c.config.typesMatch
     def typesMatch(self, type1, type2):
         """
         Return True if type1, the actual type, matches type2, the requeseted type.
@@ -1902,11 +1903,13 @@ class LocalConfigManager:
         if type1 in shortcuts or type2 in shortcuts:
             g.trace('oops: type in shortcuts')
         return (
-            type1 is None or type2 is None or
-            type1.startswith('string') and type2 not in shortcuts or
-            type1 == 'int' and type2 == 'size' or
-            (type1 in shortcuts and type2 in shortcuts) or
-            type1 == type2
+            type1 is None
+            or type2 is None
+            or type1.startswith('string') and type2 not in shortcuts
+            or type1 == 'language' and type2 == 'string'
+            or type1 == 'int' and type2 == 'size'
+            or (type1 in shortcuts and type2 in shortcuts)
+            or type1 == type2
         )
     #@+node:ekr.20120215072959.12522: *5* c.config.getAbbrevDict
     def getAbbrevDict(self):

@@ -96,11 +96,10 @@ These commands attempt to deal with all of this.
 
 """
 
-# import time
 import os
 import traceback  # for XML parse error display
-import leo.core.leoGlobals as g
 from lxml import etree
+from leo.core import leoGlobals as g
 
 # top level entry in uA
 uAxml = '_XML'

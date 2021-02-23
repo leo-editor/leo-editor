@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.121: * @file ../external/npyscreen/fmActionForm.py
 #!/usr/bin/python
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.122: ** Declarations

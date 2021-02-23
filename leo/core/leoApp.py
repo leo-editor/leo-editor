@@ -4,13 +4,11 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
-import leo.core.leoGlobals as g
-import leo.core.leoExternalFiles as leoExternalFiles
 import importlib
 import io
-StringIO = io.StringIO
-import os
 import optparse
+import os
+import sqlite3
 import subprocess
 import string
 import sys
@@ -18,7 +16,9 @@ import time
 import traceback
 import zipfile
 import platform
-import sqlite3
+from leo.core import leoGlobals as g
+from leo.core import leoExternalFiles
+StringIO = io.StringIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -269,8 +269,6 @@ class LeoApp:
             # copy of Leo.
         self.dragging = False
             # True: dragging.
-        # self.allow_delayed_see = False
-            # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
         self.inBridge = False
             # True: running from leoBridge module.
         self.inScript = False
@@ -287,6 +285,8 @@ class LeoApp:
             # True: we are pre-reading a settings file.
         self.quitting = False
             # True: quitting.  Locks out some events.
+        self.restarting = False
+            # True: restarting all of Leo. #1240.
         self.reverting = False
             # True: executing the revert command.
         self.syntax_error_files = []
@@ -314,17 +314,11 @@ class LeoApp:
             # The directory from which the theme file was loaded, if any.
             # Set only by LM.readGlobalSettingsFiles.
             # Used by the StyleSheetManager class.
-
-        # Not necessary **provided** that theme .leo files
-        # set @string theme-name to the name of the .leo file.
-        if 0:
-            self.theme_color = None
-            self.theme_name = None
         #@-<< LeoApp: global theme data >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
-        import leo.core.leoFrame as leoFrame
-        import leo.core.leoGui as leoGui
+        from leo.core import leoFrame
+        from leo.core import leoGui
         self.nullGui = leoGui.NullGui()
         self.nullLog = leoFrame.NullLog()
         #@-<< LeoApp: global types >>
@@ -949,7 +943,7 @@ class LeoApp:
         return g.new_cmd_decorator(name, ['g', 'app'])
     #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
-        import leo.core.leoVersion as leoVersion
+        from leo.core import leoVersion
         app = self
         guiVersion = ', ' + app.gui.getFullVersion() if app.gui else ''
         leoVer = leoVersion.version
@@ -1012,7 +1006,7 @@ class LeoApp:
                 print('Windows: pip install windows-curses')
             sys.exit()
         try:
-            import leo.plugins.cursesGui2 as cursesGui2
+            from leo.plugins import cursesGui2
             ok = cursesGui2.init()
             if ok:
                 g.app.gui = cursesGui2.LeoCursesGui()
@@ -1031,7 +1025,7 @@ class LeoApp:
             print('can not import flexx')
             sys.exit(1)
         try:
-            import leo.plugins.leoflexx as leoflexx
+            from leo.plugins import leoflexx
             assert leoflexx
         except Exception:
             g.es_exception()
@@ -1086,7 +1080,7 @@ class LeoApp:
                 g.es_exception()
             sys.exit(1)
         try:
-            import leo.plugins.qt_gui as qt_gui
+            from leo.plugins import qt_gui
         except Exception:
             g.es_exception()
             print('can not import leo.plugins.qt_gui')
@@ -1124,7 +1118,7 @@ class LeoApp:
 
         """
         # Fixes bug 670108.
-        import leo.core.leoCache as leoCache
+        from leo.core import leoCache
         g.app.global_cacher = leoCache.GlobalCacher()
         g.app.db = g.app.global_cacher.db
         g.app.commander_cacher = leoCache.CommanderCacher()
@@ -1617,7 +1611,8 @@ class LeoApp:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
-        import leo.core.leoCommands as leoCommands
+        # Timeit reports 0.0175 sec when using a nullGui.
+        from leo.core import leoCommands
         c = leoCommands.Commands(fileName,
             gui=gui,
             parentFrame=parentFrame,
@@ -1793,7 +1788,6 @@ class LoadManager:
     #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
     def computeLoadDir(self):
         """Returns the directory containing leo.py."""
-        import sys
         try:
             # Fix a hangnail: on Windows the drive letter returned by
             # __file__ is randomly upper or lower case!
@@ -1839,7 +1833,6 @@ class LoadManager:
         # to give the machine-specific setting name.
         # How can this be worth doing??
         try:
-            import os
             name = os.getenv('HOSTNAME')
             if not name:
                 name = os.getenv('COMPUTERNAME')
@@ -1879,6 +1872,7 @@ class LoadManager:
         3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
            Load the file if setting exists.  Otherwise return None.
         """
+        trace = 'themes' in g.app.db
         lm = self
         resolve = self.resolve_theme_path
         #
@@ -1886,6 +1880,7 @@ class LoadManager:
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path:
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+            if trace: g.trace('--theme:', path)
             return path
         #
         # Step 2: look for the @string theme-name setting in the first loaded file.
@@ -1906,17 +1901,20 @@ class LoadManager:
                     path = resolve(setting, tag=tag)
                     if path:
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+                        if trace: g.trace(f"First loaded file", theme_c.shortFileName(), path)
                         return path
         #
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
         # Note: the setting should *never* appear in leoSettings.leo!
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
-        return resolve(setting, tag=tag)
+        path = resolve(setting, tag=tag)
+        if trace: g.trace(f"myLeoSettings.leo", path)
+        return path
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         """Search theme directories for the given .leo file."""
-        if not fn:
+        if not fn or fn.lower().strip() == 'none':
             return None
         if not fn.endswith('.leo'):
             fn += '.leo'
@@ -2022,12 +2020,13 @@ class LoadManager:
         )
         return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c, localFlag, theme=False):
-        import leo.core.leoConfig as leoConfig
+    def createSettingsDicts(self, c, localFlag):
+
+        from leo.core import leoConfig
         if c:
             parser = leoConfig.SettingsTreeParser(c, localFlag)
                 # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-            shortcutsDict, settingsDict = parser.traverse(theme=theme)
+            shortcutsDict, settingsDict = parser.traverse()
             return shortcutsDict, settingsDict
         return None, None
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
@@ -2268,17 +2267,7 @@ class LoadManager:
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(lm.theme_path)
                     # Used by the StyleSheetManager.
-                if 0:
-                    # Not necessary **provided** that theme .leo files
-                    # set @string theme-name to the name of the .leo file.
-                    g.app.theme_color = settings_d.get_string_setting('color-theme')
-                    g.app.theme_name = settings_d.get_string_setting('theme-name')
-                    if trace:
-                        g.trace('\n=====\n')
-                        print(f" g.app.theme_path: {g.app.theme_directory}")
-                        print(f" g.app.theme_name: {g.app.theme_name}")
-                        print(f"g.app.theme_color: {g.app.theme_color}")
-                        print('')
+                if trace: g.trace('g.app.theme_directory', g.app.theme_directory)
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
@@ -2720,15 +2709,15 @@ class LoadManager:
         self.createAllImporterData()
             # Can be done early. Uses only g.app.loadDir
         assert g.app.loadManager
-        import leo.core.leoBackground as leoBackground
-        import leo.core.leoConfig as leoConfig
-        import leo.core.leoNodes as leoNodes
-        import leo.core.leoPlugins as leoPlugins
-        import leo.core.leoSessions as leoSessions
+        from leo.core import leoBackground
+        from leo.core import leoConfig
+        from leo.core import leoNodes
+        from leo.core import leoPlugins
+        from leo.core import leoSessions
         # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         if g.app.useIpython:
-            import leo.core.leoIPython as leoIPython
+            from leo.core import leoIPython
                 # This launches the IPython Qt Console.  It *is* required.
             assert leoIPython  # suppress pyflakes/flake8 warning.
         # Make sure we call the new leoPlugins.init top-level function.
@@ -2759,9 +2748,9 @@ class LoadManager:
             '--session-save',
             '--use-docks',
         )
-        trace_m = '''beauty,cache,coloring,drawing,events,focus,git,gnx,
-          importers,ipython,keys,layouts,plugins,save,select,
-          shutdown,size,startup,themes,verbose,zoom'''
+        trace_m = '''abbrev,beauty,cache,coloring,drawing,events,focus,
+          git,gnx,importers,ipython,keys,layouts,plugins,save,
+          select,shutdown,size,startup,themes,undo,verbose,zoom'''
         for bad_option in table:
             if bad_option in sys.argv:
                 sys.argv.remove(bad_option)
@@ -2937,7 +2926,6 @@ class LoadManager:
             values = options.trace.lstrip('(').lstrip('[').rstrip(')').rstrip(']')
             for val in values.split(','):
                 if val in valid:
-                    # g.trace('val', val)
                     g.app.debug.append(val)
                 else:
                     g.es_print(f"unknown --trace value: {val}")
@@ -2983,11 +2971,6 @@ class LoadManager:
         Make sure that stdout and stderr exist.
         This is an issue when running Leo with pythonw.exe.
         """
-        # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
-        # import pdb ; pdb.set_trace()
-        import sys
-        import leo.core.leoGlobals as g
-
         # Define class LeoStdOut
         #@+others
         #@+node:ekr.20160718091844.1: *6* class LeoStdOut
@@ -3437,7 +3420,7 @@ class RecentFilesManager:
         rf = self
         menu = c.frame.menu
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
-        if not recentFilesMenu and not g.unitTesting:
+        if not recentFilesMenu:
             return
         # Delete all previous entries.
         menu.deleteRecentFilesMenuItems(recentFilesMenu)

@@ -67,109 +67,6 @@ test\\unittest\\output\\outlineToNoweb.txt
 #@+node:ekr.20090529141856.4697: *5* dialog
 saveFileDialog
 test\\unittest\\output\\outlineToCweb.txt
-#@+node:ekr.20100830114008.5967: *3* @common leoEditCommands test code
-@others
-#@+node:ekr.20100830114008.5968: *4* runEditCommandTest
-@
-This is an updated version of c.testManager.runEditCommandTest,
-moved here to take advantage of EKR's new common-test-code-sharing
-mechanism. It should be okay to delete the old code and replace
-all uses with:
-
-    exec(g.findTestScript(c,'@common leoEditCommands test code'))
-    runEditCommandTest(c,p)
-@c
-
-def runEditCommandTest (c,p,inHeadline=False):
-    '''
-    This is a helper for testing edit commands. It takes the name of the
-    command from the title of the test and the before and after conditions
-    from child nodes.
-
-    :param inHeadline: if True, tests the command in the headline; if False,
-    tests the command in the body.
-    '''
-
-    tm = c.testManager
-    atTest = p.copy()
-
-    h = atTest.h
-    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
-    commandName = h[6:].strip()
-    # Ignore everything after the actual command name.
-    i = g.skip_id(commandName, 0, chars='-')
-    commandName = commandName[:i]
-    assert commandName, 'empty command name'
-    command = c.commandsDict.get(commandName)
-    assert command, 'no command: %s' % (commandName)
-
-    work,before,after = tm.findChildrenOf(atTest)
-    before_h = 'before sel='
-    after_h = 'after sel='
-    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-        h2 = node.h
-        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-
-    sels = []
-    for node,h in ((before,before_h),(after,after_h)):
-        sel = node.h[len(h):].strip()
-        aList = [str(z) for z in sel.split(',')]
-        sels.append(tuple(aList))
-    sel1,sel2 = sels
-    #g.trace(repr(sels))
-
-    c.selectPosition(work)
-
-    if inHeadline:
-        c.setHeadString(work,before.b)
-        # To make the node visible, and edit the label
-        c.redrawAndEdit(work)
-        w = c.edit_widget(work)
-        g.app.gui.set_focus(c,w)
-    else:
-        w = c.frame.body.wrapper
-        c.setBodyString(work,before.b)
-
-    try:
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        if inHeadline:
-            # simulateCommand doesn't seem to work when editing a headline
-            c.k.manufactureKeyPressForCommandName(w,commandName)
-        else:
-            c.k.simulateCommand(commandName)
-
-        # Exit headline-editing mode
-        if inHeadline:
-            g.app.gui.event_generate(c,'\n','Return',w)
-
-        location = 'headline' if inHeadline else 'body'
-        s1 = work.h if inHeadline else work.b
-        s2 = after.b
-        
-        # Strip '\n' from 'before' headline, as is now done in Leo.
-        if inHeadline and s2.endswith('\n'):
-            s2 = s2[:-1]
-
-        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        ins = w.toPythonIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        # g.trace(w)
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-        # Don't redraw.
-    finally:
-        # Make sure to restore the headline so it can be used for future tests
-        if inHeadline:
-            c.setHeadString(work,'work')
 #@+node:ekr.20111006072734.3640: *3* @common x-marked-nodes test code
 @others
 #@+node:ekr.20111006072734.3641: *4* setup_test
@@ -751,10 +648,6 @@ s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tok
 assert s
 controller = msf.StandAloneMakeStubFile()
 msf.StubTraverser(controller).visit(node)
-#@+node:ekr.20200219070034.1: *4* @test python -m leo.core.leoAst
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoAst'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20050112095306.1: *3* leoAtFile
 # Node 1 should be the first node.
 #@+node:ekr.20120228174052.3929: *4* Node 1
@@ -3901,7 +3794,7 @@ else:
     import subprocess
     path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
     assert g.os_path_exists(path), path
-    command = 'python3 %s' % path
+    command = 'python %s' % path
     pid = subprocess.Popen(
         command,
         shell=True,
@@ -8574,7 +8467,7 @@ StormReady helps community leaders and
 emergency managers strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20061101121602.221: *6* after sel=8.33,8.33
+#@+node:ekr.20201123190854.1: *6* after sel=10.0, 10.0
 Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
 
 Some 90% of all presidentially declared disasters are weather related, leading
@@ -10506,7 +10399,7 @@ paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3803: *7* after sel=2.21,2.21
+#@+node:ekr.20110118082508.3803: *7* after sel=4.0,4.0
 This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -10610,7 +10503,7 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3819: *7* after sel=8.29,8.29
+#@+node:ekr.20110118082508.3819: *7* after sel=10.0,10.0
 This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -10662,7 +10555,7 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3827: *7* after sel=11.28,11.28
+#@+node:ekr.20201123191334.1: *7* after sel=13.0,13.0
 This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -10714,7 +10607,7 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3835: *7* after sel=14.19,14.19
+#@+node:ekr.20110118082508.3835: *7* after sel=15.1,15.1
 This paragraph leads of this test. It is
 the "lead" paragraph.
 
@@ -10791,7 +10684,7 @@ docstring. more docstring.
 docstring.
 more docstring.
 '''
-#@+node:ekr.20131103084038.4293: *7* after sel=3.26,3.26
+#@+node:ekr.20131103084038.4293: *7* after sel=4.0,4.0
 @pagewidth 40
 '''
 docstring. more docstring.
@@ -10811,7 +10704,7 @@ A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
 - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Line 11.
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4301: *7* after sel=2.10,2.10
+#@+node:ekr.20131103084038.4301: *7* after sel=3.0,3.0
 - Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
   Line 11.
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -10830,7 +10723,7 @@ A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
   Line 22.
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4309: *7* after sel=2.11,2.11
+#@+node:ekr.20131103084038.4309: *7* after sel=3.0,3.0
 A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
    Line 22.
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -10851,7 +10744,7 @@ c.testManager.runEditCommandTest(p)
 Line 32.
 
 2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-#@+node:ekr.20131103084038.4317: *7* after sel=2.11,2.11
+#@+node:ekr.20131103084038.4317: *7* after sel=4.0,4.0
 1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
    Line 32.
 
@@ -10930,7 +10823,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3792: *7* after sel=11.14,11.14
+#@+node:ekr.20110118082508.3792: *7* after sel=13.0,13.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11001,7 +10894,7 @@ Some 90% of all presidentially declared disasters are weather related, leading t
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3782: *7* after sel=23.33,23.33
+#@+node:ekr.20110118082508.3782: *7* after sel=25.0,25.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11099,7 +10992,7 @@ strengthen local safety programs.
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
 
 Last paragraph.
-#@+node:ekr.20110118082508.3790: *7* after sel=32.11,32.11
+#@+node:ekr.20110118082508.3790: *7* after sel=34.0,34.0
 Americans live in the most severe
 weather-prone country on Earth. Each
 year, Americans cope with an average of
@@ -11154,7 +11047,7 @@ Honor this line that has a hanging indentation, please.  Hanging
   indentation is valuable for lists of all kinds.  But it is tricky to get right.
 
 Next paragraph.
-#@+node:ekr.20110118082508.3747: *7* after sel= 5.8,5.8
+#@+node:ekr.20110118082508.3747: *7* after sel= 7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
@@ -11183,7 +11076,7 @@ Honor this line that has
     indentation is valuable for lists of all kinds.  But it is tricky to get right.
 
 Next paragraph.
-#@+node:ekr.20110118082508.3756: *7* after sel=5.8,5.8
+#@+node:ekr.20110118082508.3756: *7* after sel=7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
@@ -11215,7 +11108,7 @@ Honor this line that
     it is tricky to get right.
 
 Next Paragraph.
-#@+node:ekr.20110118082508.3765: *7* after sel=5.8,5.8
+#@+node:ekr.20110118082508.3765: *7* after sel=7.0,7.0
 Honor this line that has a hanging
   indentation, please. Hanging
   indentation is valuable for lists of
@@ -11975,10 +11868,6 @@ for command in table:
     # This is not a full test.  We must use keyboardQuit here!
     c.k.simulateCommand(command)
     c.k.keyboardQuit(None)
-#@+node:ekr.20200219070324.1: *4* @test python -m leo.core.leoFind
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoFind'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20190603184713.1: *4* @test replace-all: plain search
 fc = c.findCommands
 
@@ -11992,7 +11881,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -12008,7 +11897,7 @@ for s, find, change, count, result in plain_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchPlainReplace(s)
+    count2, result2 = fc._change_all_plain(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -12025,7 +11914,7 @@ for s, find, change, count, result in regex_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchRegexReplace(s)
+    count2, result2 = fc._change_all_regex(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -12041,7 +11930,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = False
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -12057,7 +11946,7 @@ for s, find, change, count, result in word_table:
     fc.ignore_case = True
     fc.find_text = find
     fc.change_text = change
-    count2, result2 = fc.batchWordReplace(s)
+    count2, result2 = fc._change_all_word(s)
     assert result == result2, 'expected result: %r: got: %r' % (result, result2)
     assert count == count2, 'expected count:  %r: got: %r' % (count, count2)
 # print('pass')
@@ -12088,7 +11977,7 @@ table = (
     'toggle-find-regex-option',
     # 'toggle-find-reverse-option',
     'toggle-find-word-option',
-    'toggle-find-wrap-around-option',
+    # 'toggle-find-wrap-around-option',
 )
 for command in table:
     c.k.simulateCommand(command)
@@ -12098,14 +11987,16 @@ for command in table:
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
-    'batch', 'ignore_case', 'node_only', 'pattern_match',
+    # 'batch',  # 'wrap', 
+    'ignore_case', 'node_only', 'pattern_match', 
     'search_headline', 'search_body', 'suboutline_only',
-    'mark_changes', 'mark_finds', 'reverse',
-    'wrap', 'whole_word',
+    'mark_changes', 'mark_finds', 'whole_word',
+   
 )
 for ivar in table:
     assert getattr(x, ivar) is None, ivar
-#@+node:ekr.20190608143502.1: *5* @test find.regexHelper
+assert x.reverse is False
+#@+node:ekr.20190608143502.1: *5* @test find._inner_search_regex
 import re
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
@@ -12114,7 +12005,8 @@ def test(table, table_name, back, nocase):
     for pattern, s, expected in table:
         flags = re.IGNORECASE if nocase else 0
         x.re_obj = re.compile(pattern, flags)
-        pos, new_pos = x.regexHelper(s, 0, len(s), pattern, backwards=back, nocase=nocase)
+        pos, new_pos = x._inner_search_regex(s, 0, len(s),
+            pattern, backwards=back, nocase=nocase)
         got = s[pos:new_pos]
         assert expected==got, (
             '\n   table: %s'
@@ -12143,7 +12035,7 @@ back_table = (
 test(plain_table,  'plain_table',  back=False, nocase=False)
 test(nocase_table, 'nocase_table', back=False, nocase=True)
 test(back_table,   'back_table',   back=True,  nocase=False)
-#@+node:ekr.20190608143502.2: *5* @test find.backwardsHelper
+#@+node:ekr.20190608143502.2: *5* @test find._inner_search_backward
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12152,7 +12044,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.backwardsHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_backward(s, i, j,
+            pattern, nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12185,7 +12078,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143502.3: *5* @test find.plainHelper
+#@+node:ekr.20190608143502.3: *5* @test find._inner_search_plain
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 
@@ -12194,7 +12087,8 @@ def test(table, table_name, nocase, word):
     for pattern, s, i, j, expected, expected_i, expected_j in table:
         test_n += 1
         if j == -1: j = len(s)
-        got_i, got_j = x.plainHelper(s, i, j, pattern, nocase=nocase, word=word)
+        got_i, got_j = x._inner_search_plain(s, i, j, pattern,
+            nocase=nocase, word=word)
         got = s[got_i: got_j]
         assert expected==got and got_i == expected_i and got_j == expected_j, (
             '\n     table: %s'
@@ -12227,7 +12121,7 @@ word_table = (
 test(plain_table,  'plain_table',  nocase=False, word=False)
 test(nocase_table, 'nocase_table', nocase=True,  word=False)
 test(word_table,   'word_table',   nocase=False, word=True)
-#@+node:ekr.20190608143503.1: *5* @test find.replaceBackSlashes
+#@+node:ekr.20190608143503.1: *5* @test find.replace_back_slashes
 import leo.core.leoFind as leoFind
 x = leoFind.LeoFind(c)
 table = (
@@ -12236,7 +12130,7 @@ table = (
     ('\\t', '\t'),
 )
 for s, expected in table:
-    got = x.replaceBackSlashes(s)
+    got = x.replace_back_slashes(s)
     assert expected==got, (
         '\n         s: %r'
         '\n  expected: %r'
@@ -13047,10 +12941,6 @@ else:
 #@+node:ekr.20050208135429: *4* @test pre-definition of g in scripts
 for ivar in ('c','g','p'):
     assert ivar in dir()
-#@+node:ekr.20200219072300.1: *4* @test python -m leo.core.leoGlobals
-#1498: Run per-file unit tests from unitTest.leo.
-command = 'python3 -m unittest leo.core.leoGlobals'
-g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of leoGlobals tests.')
@@ -27260,7 +27150,7 @@ after
 2.0
 #@+node:ekr.20201018144248.1: *4* @test restore marked bits
 # Test of #1694.
-u = c.undoer
+u, w = c.undoer, c.frame.body.wrapper
 oldText = p.b
 newText = p.b + '\n#changed'
 try:
@@ -27268,6 +27158,7 @@ try:
         c.undoer.clearUndoState()  # Required.
         p.setMarked() if marked else p.clearMarked()
         oldMarked = p.isMarked()
+        w.setAllText(newText)  # For the new assert in w.updateAfterTyping.
         u.setUndoTypingParams(p,
             undo_type = 'typing',
             oldText = oldText,
@@ -27706,6 +27597,33 @@ if hasattr(c,'theScriptingController'):
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
+#@+node:ekr.20210215043210.1: ** New-style unit tests
+# These are more typically run using unittest or pytest -cov
+# They are included here for reference.
+#@+node:ekr.20200219070034.1: *3* @@test python -m leo.core.leoAst
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoAst'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219070324.1: *3* @@test python -m leo.core.leoFind
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoFind'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20200219072300.1: *3* @@test python -m leo.core.leoGlobals
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoGlobals'
+g.run_unit_test_in_separate_process(command)
+#@+node:ekr.20210215043324.1: *3* @@test python -m leo.core.leoserver
+#1498: Run per-file unit tests from unitTest.leo.
+import sys
+python = 'python3' if sys.platform == 'linux' else 'python'
+command = f'{python} -m unittest leo.core.leoserver'
+g.run_unit_test_in_separate_process(command)
 #@+node:ekr.20100205223124.5377: ** Syntax checking
 #@+node:ekr.20100205231441.5386: *3* @test at.checkPythonSyntax
 at = c.atFileCommands
@@ -27754,7 +27672,7 @@ except IndentationError:
     pass
 #@+node:ekr.20100205235740.5391: *3* @test c.checkPythonCode
 c.checkPythonCode(event=None,
-    unittest=True,ignoreAtIgnore=False,
+    unittestFlag=True,ignoreAtIgnore=False,
     suppressErrors=True,checkOnSave=False)
 #@+node:ekr.20100205223124.5378: *3* @test c.checkPythonNode
 table = (
@@ -27765,7 +27683,7 @@ for h,expected in table:
     p2 = g.findNodeInTree(c,p,h)
     assert p2,'node not found: %s' % h
     result = c.checkPythonCode(event=None,
-        unittest=True,ignoreAtIgnore=True,
+        unittestFlag=True,ignoreAtIgnore=True,
         suppressErrors=True,checkOnSave=False)
     assert result==expected, 'expected %s got %s' % (
         expected,result)
@@ -27781,7 +27699,7 @@ def spam():
     pass
 '''
 
-c.tabNannyNode(p,headline=p.h,body=s,unittest=True,suppressErrors=True)
+c.tabNannyNode(p,headline=p.h,body=s,unittestFlag=True,suppressErrors=True)
 
 s2 = '''
 # syntax error
@@ -27791,7 +27709,7 @@ def spam:
 '''
 
 try:
-    c.tabNannyNode(p,headline=p.h,body=s2,unittest=True,suppressErrors=True)
+    c.tabNannyNode(p,headline=p.h,body=s2,unittestFlag=True,suppressErrors=True)
 except IndentationError:
     pass
 #@+node:ekr.20100206002004.5397: *3* @test g.es_exception

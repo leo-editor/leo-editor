@@ -20,9 +20,9 @@ node.
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
-
 import os.path
+from leo.core import leoGlobals as g
+
 __version__ = "1.1"
     # Terry Brown: support for @path ancestors and uses universal newline mode for opening.
 

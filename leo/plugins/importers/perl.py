@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20161027100313.1: * @file ../plugins/importers/perl.py
 '''The @auto importer for Perl.'''
-import leo.plugins.importers.linescanner as linescanner
-import leo.core.leoGlobals as g
 import re
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161027094537.13: ** class Perl_Importer

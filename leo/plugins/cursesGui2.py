@@ -37,16 +37,17 @@ try:
 except ImportError:
     print('cursesGui.py: Tk required for clipboard handling.')
     Tk = None
-import leo.core.leoGlobals as g
-import leo.core.leoFrame as leoFrame
-import leo.core.leoGui as leoGui
-import leo.core.leoMenu as leoMenu
-import leo.core.leoNodes as leoNodes
+from leo.core import leoGlobals as g
+from leo.core import leoFrame
+from leo.core import leoGui
+from leo.core import leoMenu
+from leo.core import leoNodes
 try:
     import curses
 except ImportError:
     curses = None
-import leo.external.npyscreen as npyscreen
+# Third-party imports
+from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
 from leo.external.npyscreen.wgwidget import (
     EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
@@ -839,14 +840,14 @@ def method_name(f):
             # Shows actual method: very useful
     return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20171128051435.1: *3* class StringFindTabManager
+#@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
-    '''A helper class for the LeoFind class.'''
+    '''CursesGui.py: A string-based FindTabManager class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
-    #@+node:ekr.20171128051435.2: *4*  ftm.ctor
+    #@+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c):
-        '''Ctor for the FindTabManager class.'''
+        '''Ctor for the StringFindTabManager class.'''
         self.c = c
         assert(c.findCommands)
         c.findCommands.minibuffer_mode = True
@@ -862,7 +863,7 @@ class StringFindTabManager:
         self.check_box_search_body = None
         self.check_box_search_headline = None
         self.check_box_whole_word = None
-        self.check_box_wrap_around = None
+        # self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_entire_outline = None
         self.radio_button_node_only = None
@@ -875,29 +876,25 @@ class StringFindTabManager:
         self.replace_button = None
         self.replace_then_find_button = None
         self.replace_all_button = None
-    #@+node:ekr.20171128051435.3: *4* ftm.text getters/setters
-    def getFindText(self):
-        return self.find_findbox.text()
+    #@+node:ekr.20171128051435.3: *4* sftm.text getters/setters
+    def get_find_text(self):
+        return g.toUnicode(self.find_findbox.text())
 
-    def getReplaceText(self):
-        return self.find_replacebox.text()
+    def get_change_text(self):
+        return g.toUnicode(self.find_replacebox.text())
 
-    getChangeText = getReplaceText
-
-    def setFindText(self, s):
+    def set_find_text(self, s):
         w = self.find_findbox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
 
-    def setReplaceText(self, s):
+    def set_change_text(self, s):
         w = self.find_replacebox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
-
-    setChangeText = setReplaceText
-    #@+node:ekr.20171128051435.4: *4* ftm.*_focus
+    #@+node:ekr.20171128051435.4: *4* sftm.*_focus
     def clear_focus(self):
         pass
 
@@ -906,14 +903,14 @@ class StringFindTabManager:
 
     def set_entry_focus(self):
         pass
-    #@+node:ekr.20171128051435.5: *4* ftm.set_ignore_case
+    #@+node:ekr.20171128051435.5: *4* sftm.set_ignore_case
     def set_ignore_case(self, aBool):
         '''Set the ignore-case checkbox to the given value.'''
         c = self.c
         c.findCommands.ignore_case = aBool
         w = self.check_box_ignore_case
         w.setChecked(aBool)
-    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets
+    #@+node:ekr.20171128051435.6: *4* sftm.init_widgets
     def init_widgets(self):
         '''
         Init widgets and ivars from c.config settings.
@@ -939,7 +936,7 @@ class StringFindTabManager:
             ('search_body', self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word', self.check_box_whole_word),
-            ('wrap', self.check_box_wrap_around),
+            # ('wrap', self.check_box_wrap_around),
         )
         for setting_name, w in table:
             val = c.config.getBool(setting_name, default=False)
@@ -970,7 +967,6 @@ class StringFindTabManager:
 
             def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
                 val = w.isChecked()
-                find.radioButtonsChanged = True
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
@@ -979,7 +975,7 @@ class StringFindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
-    #@+node:ekr.20171128051435.7: *4* ftm.set_radio_button
+    #@+node:ekr.20171128051435.7: *4* sftm.set_radio_button
     #@@nobeautify
 
     def set_radio_button(self, name):
@@ -1003,7 +999,7 @@ class StringFindTabManager:
         if ivar:
             setattr(fc, ivar, True)
        
-    #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
+    #@+node:ekr.20171128051435.8: *4* sftm.toggle_checkbox
     #@@nobeautify
 
     def toggle_checkbox(self,checkbox_name):
@@ -1020,7 +1016,7 @@ class StringFindTabManager:
             'search_body':     self.check_box_search_body,
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
-            'wrap':            self.check_box_wrap_around,
+            # 'wrap':            self.check_box_wrap_around,
         }
         w = d.get(checkbox_name)
         assert w, repr(w)
@@ -1189,7 +1185,6 @@ class KeyHandler:
                 if trace: g.trace('caps-lock')
                 binding = ch
         if trace: g.trace('ch: %r, binding: %r' % (ch, binding))
-        import leo.core.leoGui as leoGui
         return leoGui.LeoKeyEvent(
             c=c,
             char=ch,
@@ -2225,7 +2220,7 @@ class CoreFrame (leoFrame.LeoFrame):
             ('box', '&Ignore case'),
             ('rb', '&Suboutline only'),
             # Third row.
-            ('box', 'wrap &Around'),
+            # ('box', 'wrap &Around'),  # #1824.
             ('rb', '&Node only'),
             # Fourth row.
             ('box', 'rege&Xp'),
@@ -2339,7 +2334,6 @@ class CoreFrame (leoFrame.LeoFrame):
         wname = c.widget_name(w)
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))
@@ -2352,9 +2346,8 @@ class CoreFrame (leoFrame.LeoFrame):
         if i != j:
             w.delete(i, j)
         w.insert(i, s)
-        w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel)
         elif wname.startswith('head'):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.
@@ -2878,13 +2871,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         #
         # "after" snapshot.
         u.afterChangeBody(p, undoType, bunch)
-        #
-        # Don't recolor the body, but pretend we did.
-        if g.app.unitTesting:
-            g.app.unitTestDict['colorized'] = True
-        
-        # self.updateEditors()
-        # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
         '''Update the title of the Form surrounding the Leo Body.'''
@@ -2927,6 +2913,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         c = self.leo_c
         p = c.p
         v = p.v
+        undoType = 'update-body'
         i = self.cursor_line
         wrapper = c.frame.body.wrapper
         assert isinstance(wrapper, BodyWrapper), repr(wrapper)
@@ -2944,7 +2931,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         elif i == len(lines):
             aList = head + [s]
             self.values = aList
@@ -2953,7 +2940,7 @@ class LeoBody (npyscreen.MultiLineEditable):
             v.selectionStart = ins
             wrapper.ins = ins
             wrapper.sel = ins, ins
-            self.onBodyChanged(undoType='Typing')
+            self.onBodyChanged(undoType=undoType)
         else:
             g.trace('Can not happen', i, len(lines), repr(s))
             v.selectionLength = 0
@@ -3146,8 +3133,6 @@ class LeoMiniBuffer(npyscreen.Textfield):
         '''Perform tab completion.'''
         trace = False and not g.unitTesting
         c = self.leo_c
-        # import leo.core.leoKeys as leoKeys
-        # ga = leoKeys.GetArg()
         command = self.value
         i = self.leo_completion_index
         if trace: g.trace('command: %r prefix: %r' % (command, self.leo_completion_prefix))
@@ -3254,14 +3239,6 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # All other alt-x command
             event=KeyEvent(c,char='',event='',shortcut='',w=None)
             c.doCommandByName(commandName, event)
-            ###
-                # g.trace(k)
-                # k.masterCommand(
-                    # commandName=commandName,
-                    # event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                    # func=None,
-                    # stroke=None,
-                # )
             # Support repeat-complex-command.
             c.setComplexCommand(commandName=commandName)
             c.redraw()

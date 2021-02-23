@@ -2,11 +2,9 @@
 #@+node:tbrown.20171028115144.4: * @file ../plugins/editpane/markdownview.py
 #@+<< markdownview.py imports >>
 #@+node:tbrown.20171028115507.1: ** << markdownview.py imports >>
-import leo.core.leoGlobals as g
-assert g
-# from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-
 import markdown
+from leo.core import leoGlobals as g
+assert g
 
 # FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
 # probably superior, but needs --disable-web-security passed to the

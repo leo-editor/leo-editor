@@ -3655,40 +3655,59 @@ From the movie, My Cousin Vinny::
 
 Leo owes much of its visual design to MORE, possibly the most elegant computer program ever written. Leo's clone nodes are inspired by MORE.
 
-The following deserve special thanks:
+**Leo's VIPs**
+
+::
+
+    When, in disgrace with fortune and men’s eyes,
+    I all alone beweep my outcast state,
+    And trouble deaf heaven with my bootless cries,
+    And look upon myself and curse my fate,
+    Wishing me like to one more rich in hope,
+    Featured like him, like him with friends possessed,
+    Desiring this man’s art and that man’s scope,
+    With what I most enjoy contented least;
+    Yet in these thoughts myself almost despising,
+    Haply I think on thee, and then my state,
+    (Like to the lark at break of day arising
+    From sullen earth) sings hymns at heaven’s gate;
+           For thy sweet love remembered such wealth brings
+           That then I scorn to change my state with kings.
+
+    —William Shakespeare, Sonnet 29.
+
+Leo's very important people:
 
 - David Brock wrote TSyntaxMemo, used in early versions of Leo.
-- Terry Brown contributed many important features including Leo's user-modifiable panes, and several important plugins, including bookmarks.py and todo.py. He also pushes back against my foolish ideas.
-- e inspired @button nodes, a truly brilliant idea.
+- Terry Brown wrote important plugins, including Leo's user-modifiable panes.
+- e inspired @button nodes, a brilliant idea.
 - The late Bob Fitzwater kept me focused on design. Oh, how I wish he could see today's Leo.
 - Jonathan M. Gilligan showed how to put the Leo icon in Leo's windows.
 - The Jupyter development team taught me how to support pygments colorizing.
-- Almar Klein wrote pyzo, yoton and flexx.
-  Flexx is the basis of LeoWapp (--gui=browser).
-  Leo will (soon) use various excellent features of pyzo.
+- Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
+- Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
 - Donald Knuth invented the CWEB language and literate programming.
-- LeoUser (B.H.) contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
-- The late Bernhard Mulder invented the fundamental @shadow algorithm, a stroke of genius. Bernhard also inspired Leo's generators and position class. The one-node world could not have happened without Bernhard.
-- Joe Orr created tutorials and XSLT stylesheets for Leo: http://www.jserv.com/jk_orr/xml/leo.htm.
+- The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean.
+  Bernhard also inspired Leo's generators and position class.
+- Joe Orr created LeoVue and XSLT stylesheets for Leo.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) rewrote Leo's read code,
-  thereby allowing Leo to do without file caching.
+- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
+- Félix Malboeuf wrote leoInteg, leoserver.py and leoclient.py.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
-- François Pinard wrote pymacs.
+- François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
 - Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
+- Edward K. Ream is Leo's project leader and chief programmer.
 - Rich Ries has contributed a huge number of suggestions.
+- Guido van Rossum created Python.
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney lobbies constantly to make Leo easier to use and understand.
-  His comment opened the door to the one-node world.
-- Guido van Rossum created Python.
-- Dave Winer created MORE.
-- Ville M. Vainio made invaluable contributions, including the one-node world,
-  the IPython bridge code and the contextmenu.py and valuespace.py plugins.
+- Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
+- Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
+- Dave Winer created MORE, the foundation of Leo's visual design.
 - Dan Winkler helped support Leo on the Mac.
 
 Special thanks to my family. My brother, David Speed Ream, tested Leo and made many useful suggestions. Rebecca, James and Linda make it all worthwhile. During a conversation with Rebecca I realized that MORE could be used as a prototype for Leo. That was a crucial first step.
@@ -4841,14 +4860,11 @@ In 1998 I created a version of Leo using Apple's YellowBox environment. Alas, Ap
 There are two significant problems with the Borland version of Leo. First, it works only on Windows. Second, it can never be Open software, because it uses Borland's Delphi classes and a commercial syntax coloring component.
 
 This version of Leo was the first version to use xml as the format of .leo files. Marc-Antoine Parent urged me to use XML and patiently explained how to use XML properly. </t>
-<t tx="ekr.20050902105852.4">I attended the Python conference in early 2001. In May of 2000 I began work on an wxWindows version of Leo. This did not work out, but something good did come from this effort. I spent a lot of time adding Python scripting to the wxWindows code and I became familiar with Python and its internals.
+<t tx="ekr.20050902105852.4">I attended the Python conference in early 2001. In May of 2000 I began work on a wxWindows version of Leo. The wxWindows project failed in a useful way. While adding python scripting, I became familiar with Python and its internals.
 
-I really started to 'get' Python in September 2001. I wrote the white papers at about this time. Python solved *all* my programming problems. I rewrote Leo in Python in about two months! For the first time in my career I was no longer anxious while programming; it simply isn't possible to create bad bugs in Python. The Python version of Leo was the first officially OpenSoftware version of Leo. The first functional version of Leo in Python was 0.05 alpha, December 17, 2001.
+I started to 'get' Python in September 2001. In October of 2001 I began work on leo.py, based on Tk. The rewrite took only two months! leo.py 0.05 alpha went out the door on December 17, 2001.
 
-In October of 2001 I began work on the leo.py, an Open Software version of leo.py, a version of Leo written in Python and Tk.  At last I have found the proper platform for Leo.  leo.py naturally supports scripting in Python.  The combination of Python and Tk is incredibly powerful, very easy to use, and truly cross platform.  I rewrote Leo in Python in about two months!  For the first time in my career I no longer am anxious while programming; it simply isn't possible to create bad bugs in Python.
-
-Tk was officially retired in June 2011.
-</t>
+I wrote the white papers around this time. Python solved *all* my programming problems. I was no longer anxious while programming; it simply isn't possible to create hard-to-find bugs in Python.</t>
 <t tx="ekr.20050902105852.5">I registered the Leo project on SourceForge on March 10, 2003. Leo started a new life shortly thereafter. Prior to SourceForge my interest in Leo had been waning.
 </t>
 <t tx="ekr.20050902105852.6">In the summer of 2001 I began to consider using sentinel lines in external files. Previously I had thought that outline structure must be 'protected' by remaining inside .leo files. Accepting the possibility that sentinels might be corrupted opened vast new design possibilities. In retrospect, problems with sentinels almost never happen, but that wasn't obvious at the time! The result of this design was known then as Leo2. That terminology is extinct. I think of this version as the first version to support @file and automatic tangling and untangling.
@@ -5553,10 +5569,13 @@ If successful, match_eol_span highlights from i to the end of the line with the 
         at_whitespace_end = False,
         at_word_start = False,
         exclude_match = False):
+        
+At present match_mark_previous does nothing (always returns 0).
+Its use is deprectated.
 
-match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
+..  match_mark_previous succeeds if s[i:].startswith(pattern),and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.
 
-If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
+..  If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
 </t>
 <t tx="ekr.20060503064515">.. _`Ruleset name`: `Ruleset names`_
 
@@ -8883,7 +8902,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
    Sets the **path prefix** for relative filenames for all @&lt;file&gt; tree.
 
    This directive may appear in headlines or body text, and may
-   appear in top-level @&lt;file&gt; nodes.
+   appear in top-level @&lt;file&gt; nodes *except* @file nodes.
 
    The path is an **absolute path** if it begins with c:\\ or /,
    otherwise the path is a **relative** paths.
@@ -19134,8 +19153,10 @@ The @string undo_granularity setting controls the granularity of undo. There are
     Select all text in the text pane.
 
 These commands work with either headline or body text.</t>
-<t tx="ekr.20150318110552.22">``indent-region (Tab)`` 
-    Shift selected lines right one tab position. Inserts one unit of indentation if no text is selected.
+<t tx="ekr.20150318110552.22">``always-indent-region``
+     Shift selected lines right one tab position. Inserts one unit of indentation if no text is selected.
+``indent-region (Tab)`` 
+    Shift selected lines right one tab position. Inserts a tab (or spaces) if no text is selected.
 ``unindent-region (Shift-Tab)``
     Shifts selected lines left one tab position. Deletes one unit of indentation if no text is selected.
     

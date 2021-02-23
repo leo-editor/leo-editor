@@ -16,47 +16,42 @@ available."""
 # for SilverCity
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
-import leo.core.leoGlobals as g
-verbose = 'plugins' in g.app.debug
+import html.parser as HTMLParser
+import io
+import pprint
+import re
+import time
+# Leo imports.
+from leo.core import leoGlobals as g
+try:
+    from leo.plugins import mod_http
+except Exception:  # Don't let this crash Leo!
+    mod_http = None
+# Third-part imports.
 try:
     import docutils
     import docutils.core
 except ImportError:
     docutils = None
-if verbose:
-    print(f"leoRst3.py: docutils: {docutils}")
 if docutils:
     try:
         from docutils import parsers
-        if verbose or not parsers: print('leoRst.py', parsers)
         from docutils.parsers import rst
-        if verbose or not rst: print('leoRst.py', rst)
         if not parsers or not rst:
             docutils = None
-    except ImportError:
+    except Exception:  # Don't let this crash Leo!
         docutils = None
-    except Exception:
-        g.es_exception()
-        docutils = None
-import html.parser as HTMLParser
-try:
-    import leo.plugins.mod_http as mod_http
-except ImportError:
-    mod_http = None
-except Exception:
-    # Don't let a problem with a plugin crash Leo's core!
-    # g.es_print('leoRst: can not import leo.plugins.mod_http')
-    # g.es_exception()
-    mod_http = None
-import pprint
-import re
 try:
     import SilverCity
 except ImportError:
     SilverCity = None
-import io
+# Aliases.
 StringIO = io.StringIO
-import time
+
+if 'plugins' in g.app.debug:
+    print('leoRst.py: docutils:', repr(docutils))
+    print('leoRst.py:  parsers:', repr(parsers))
+    print('leoRst.py:      rst:', repr(rst))
 #@-<< imports >>
 #@+others
 #@+node:ekr.20090502071837.12: ** code_block

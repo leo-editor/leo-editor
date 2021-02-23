@@ -16,8 +16,8 @@ This does not work on Linux, because os.startfile does not exist.
 #@-<< docstring >>
 # By Josef Dalcolmo: contributed under the same license as Leo.py itself.
 
-import leo.core.leoGlobals as g
 import os
+from leo.core import leoGlobals as g
 #@+<< notes >>
 #@+node:ekr.20040828103325.2: ** << notes >>
 #@+at

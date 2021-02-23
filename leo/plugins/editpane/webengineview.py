@@ -2,13 +2,12 @@
 #@+node:tbrown.20171028115143.2: * @file ../plugins/editpane/webengineview.py
 #@+<< webengineview.py imports >>
 #@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
-import leo.core.leoGlobals as g
-assert g
 # EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
 # TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
 #      it's ok if it fails to load
 from PyQt5 import QtWebEngineWidgets
-
+from leo.core import leoGlobals as g
+assert g
 #@-<< webengineview.py imports >>
 #@+others
 #@+node:tbrown.20171028115459.2: ** class LEP_WebEngineView

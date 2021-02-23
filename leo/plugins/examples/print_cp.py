@@ -5,7 +5,7 @@ A plugin showing how to convert an @button node to a plugin.
 
 This plugin registers the 'print-cp' minibuffer command.
 '''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ekr.20060621123339.4: ** init
 def init():

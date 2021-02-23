@@ -78,20 +78,17 @@ This plugin defines the following commands that can be bound to keys:
 # Ville M. Vainio <vivainio@gmail.com>.
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
-import leo.core.leoGlobals as g
-import itertools
 from collections import OrderedDict
+import fnmatch
+import itertools
+import re
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtConst, QtWidgets
+from leo.core import leoNodes
+from leo.plugins import threadutil
+from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
-
-from leo.core import leoNodes
-    # Uses leoNodes.PosList.
-import fnmatch
-import re
-from leo.plugins import threadutil
-    # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
-from leo.plugins import qt_quicksearch_sub as qt_quicksearch
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
@@ -714,11 +711,9 @@ class QuickSearchController:
     def onSelectItem(self, it, it_prev=None):
 
         c = self.c
-
         tgt = self.its.get(it and id(it))
-
-        if not tgt: return
-
+        if not tgt:
+            return
         # if Ctrl key is down, delete item and
         # children (based on indent) and return
         modifiers = QtWidgets.QApplication.keyboardModifiers()
@@ -730,13 +725,16 @@ class QuickSearchController:
                 self.lw.item(row).setHidden(True)
                 row += 1
                 cur = self.lw.item(row)
-                indent = len(cur.text()) - len(str(cur.text()).lstrip())
+                # #1751.
+                if not cur:
+                    break
+                s = cur.text() or ''
+                indent = len(s) - len(str(s).lstrip())
                 if indent <= init_indent:
                     break
             self.lw.setCurrentRow(row)
             self.lw.blockSignals(False)
             return
-
         # generic callable
         if callable(tgt):
             tgt()
@@ -744,10 +742,8 @@ class QuickSearchController:
             p, pos = tgt
             if hasattr(p,'v'): #p might be "Root"
                 if not c.positionExists(p):
-                    g.es(
-                        "Node moved or deleted.\nMaybe re-do search.",
-                        color='red'
-                    )
+                    g.es("Node moved or deleted.\nMaybe re-do search.",
+                        color='red')
                     return
                 c.selectPosition(p)
                 if pos is not None:
@@ -755,7 +751,6 @@ class QuickSearchController:
                     w = c.frame.body.wrapper
                     w.setSelectionRange(st,en)
                     w.seeInsertPoint()
-
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
     def onActivated (self,event):

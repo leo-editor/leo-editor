@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18138: * @file ../plugins/importers/html.py
 '''The @auto importer for HTML.'''
-import leo.plugins.importers.xml as xml
+from leo.plugins.importers import xml
 Xml_Importer = xml.Xml_Importer
 #@+others
 #@+node:ekr.20140723122936.18136: ** class Html_Importer(Xml_Importer)

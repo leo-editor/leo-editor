@@ -4,10 +4,17 @@
 #@@first
 #@+<< imports >>
 #@+node:ekr.20091224155043.6539: ** << imports >> (leoImport)
-# Required so the unit test that simulates an @auto leoImport.py will work!
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
 import csv
+import io
+import json
+import os
+import re
+import time
+import urllib
+# Required so the unit test that simulates an @auto leoImport.py will work!
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+# Third-party imports.
 try:
     import docutils
     import docutils.core
@@ -15,17 +22,12 @@ try:
 except ImportError:
     docutils = None
     # print('leoImport.py: can not import docutils')
-import io
-StringIO = io.StringIO
-import json
 try:
     import lxml.html
 except ImportError:
     lxml = None
-import os
-import re
-import time
-import urllib
+# Abbreviation.
+StringIO = io.StringIO
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
@@ -546,7 +548,7 @@ class LeoImportCommands:
                     g.es("created:", newFileName)
             except Exception:
                 g.es("exception creating:", newFileName)
-                g.es_print_exception()
+                g.print_exception()
             #@-<< Write s into newFileName >>
         return None
     #@+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
@@ -602,7 +604,7 @@ class LeoImportCommands:
                         f.write(s.rstrip() + nl)
         except Exception:
             g.es("exception opening:", filename)
-            g.es_print_exception()
+            g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self,
@@ -1766,7 +1768,6 @@ class RecursiveImportController:
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
-        # force_at_others = False, #tag:no-longer-used
         add_context=None,  # Override setting only if True/False
         add_file_context=None,  # Override setting only if True/False
         add_path=True,
@@ -1778,10 +1779,8 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.add_path = add_path
-        self.file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
-        self.kind = kind
-            # in ('@auto', '@clean', '@edit', '@file', '@nosent')
-        # self.force_at_others = force_at_others #tag:no-longer-used
+        self.file_pattern = re.compile(r'^(@@|@)(auto|clean|edit|file|nosent)')
+        self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
@@ -1882,7 +1881,7 @@ class RecursiveImportController:
         assert parent and parent.v != self.root.v, g.callers()
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
-            p.v.h = path.replace('\\', '/')
+            p.v.h = '@edit ' + path.replace('\\', '/')  # 2021/02/19: bug fix: add @edit.
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
             return

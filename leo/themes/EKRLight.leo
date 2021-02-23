@@ -6,7 +6,7 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111251.1"><vh>EKRLight.leo: Read me</vh></v>
+<v t="ekr.20180312111251.1"><vh>Read me</vh></v>
 <v t="ekr.20180308122011.1"><vh>Tests</vh>
 <v t="ekr.20180314052351.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052351.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -15,137 +15,102 @@
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
-<v t="ekr.20180309185230.1"><vh>@theme Leo Light</vh>
-<v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
-<v t="ekr.20180309185230.103"><vh>@bool color_theme_is_dark = False</vh></v>
-<v t="ekr.20180309185230.104"><vh>@string color_theme = generic</vh></v>
-<v t="ekr.20180319081051.1"><vh>@string theme_name = EKRLight</vh></v>
+<v t="ekr.20201221102717.1"><vh>Appearance (miscellaneous)</vh>
+<v t="ekr.20201221074355.1"><vh>@string color-theme = generic</vh></v>
+<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
+<v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
 </v>
-<v t="ekr.20180309185230.2"><vh>Settings for Leo Light</vh>
-<v t="ekr.20180309185230.3"><vh>Colors: Logical colors</vh>
+<v t="ekr.20201221063741.1"><vh>Colors</vh>
+<v t="ekr.20180309185230.3"><vh>Color Definitions</vh>
 <v t="ekr.20180309191121.1"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20180309191129.1"><vh>@color LeoYellow = @LightYellow</vh></v>
 <v t="ekr.20180309191953.1"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
-<v t="ekr.20180309185230.4"><vh>@color log_black_color = @text-foreground</vh></v>
-<v t="ekr.20180309185230.5"><vh>@color log_blue_color = blue</vh></v>
-<v t="ekr.20180309185230.6"><vh>@color log_cyan_color = cyan</vh></v>
-<v t="ekr.20180309185230.7"><vh>@color log_error_color = red</vh></v>
-<v t="ekr.20180309185230.8"><vh>@color log_green_color = green</vh></v>
-<v t="ekr.20180309185230.9"><vh>@color log_info_color = blue</vh></v>
-<v t="ekr.20180309185230.10"><vh>@color log_magenta_color = magenta</vh></v>
-<v t="ekr.20180309185230.11"><vh>@color log_orange_color = orange</vh></v>
-<v t="ekr.20180309185230.12"><vh>@color log_red_color = red</vh></v>
-<v t="ekr.20180309185230.13"><vh>@color log_violet_color = violet</vh></v>
-<v t="ekr.20180309185230.14"><vh>@color log_warning_color_= red</vh></v>
-<v t="ekr.20180309185230.15"><vh>@color log_white_color = white</vh></v>
-<v t="ekr.20180309185230.16"><vh>@color log_yellow_color = yellow</vh></v>
+<v t="ekr.20180309185230.4"><vh>@color log-black-color = @text-foreground</vh></v>
+<v t="ekr.20180309185230.5"><vh>@color log-blue-color = blue</vh></v>
+<v t="ekr.20180309185230.6"><vh>@color log-cyan-color = cyan</vh></v>
+<v t="ekr.20180309185230.7"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20180309185230.8"><vh>@color log-green-color = green</vh></v>
+<v t="ekr.20180309185230.9"><vh>@color log-info-color = blue</vh></v>
+<v t="ekr.20180309185230.10"><vh>@color log-magenta-color = magenta</vh></v>
+<v t="ekr.20180309185230.11"><vh>@color log-orange-color = orange</vh></v>
+<v t="ekr.20180309185230.12"><vh>@color log-red-color = red</vh></v>
+<v t="ekr.20180309185230.13"><vh>@color log-violet-color = violet</vh></v>
+<v t="ekr.20180309185230.14"><vh>@color log-warning-color = red</vh></v>
+<v t="ekr.20180309185230.15"><vh>@color log-white-color = white</vh></v>
+<v t="ekr.20180309185230.16"><vh>@color log-yellow-color = yellow</vh></v>
 </v>
-<v t="ekr.20180309185230.17"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180309185230.18"><vh>Colors: defaults</vh>
-<v t="ekr.20180309185230.19"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20180309185230.20"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20180309185230.21"><vh>@color label_color = red</vh></v>
-<v t="ekr.20180309185230.22"><vh>@color keyword1_color = blue</vh></v>
-<v t="ekr.20180309185230.23"><vh>@color keyword2_color = blue</vh></v>
-<v t="ekr.20180309185230.24"><vh>@color keyword3_color = blue</vh></v>
-<v t="ekr.20180309185230.25"><vh>@color keyword4_color = blue</vh></v>
-<v t="ekr.20180309185230.26"><vh>@color literal1_color = #00aa00</vh></v>
-<v t="ekr.20180309185230.27"><vh>@color literal2_color = #00aa00</vh></v>
-<v t="ekr.20180309185230.28"><vh>@color literal3_color = #00aa00</vh></v>
-<v t="ekr.20180309185230.29"><vh>@color literal4_color = ##00aa00</vh></v>
-<v t="ekr.20180309185230.30"><vh>@color markup_color =black</vh></v>
-<v t="ekr.20180309185230.31"><vh>@color comment1_color = firebrick3</vh></v>
-<v t="ekr.20180309185230.32"><vh>@color comment2_color = firebrick3</vh></v>
-<v t="ekr.20180309185230.33"><vh>@color comment3_color = firebrick3</vh></v>
-<v t="ekr.20180309185230.34"><vh>@color comment4_color = firebrick3</vh></v>
-</v>
-<v t="ekr.20180309185230.35"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180309185230.36"><vh>@color section_name_brackets_color = blue</vh></v>
-<v t="ekr.20180309185230.37"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20180309185230.38"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20180309185230.39"><vh>@color doc_part_color = firebrick3</vh></v>
-<v t="ekr.20180309185230.40"><vh>@color leo_keyword_color = #00aa00</vh></v>
-<v t="ekr.20180309185230.41"><vh>@color section_name_color = red</vh></v>
-<v t="ekr.20180309185230.42"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20180309185230.43"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20180309185230.44"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180309185230.45"><vh>@color url_color = purple</vh></v>
-</v>
+<v t="ekr.20180309201328.1"><vh>Colors: Buttons</vh>
+<v t="ekr.20180309201328.9"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20180309201328.3"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
+<v t="ekr.20180309201328.6"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20180309201328.8"><vh>@color interact-btn-bg = @LightBlue</vh></v>
+<v t="ekr.20180309201328.7"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20180309201328.2"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
+<v t="ekr.20180309201328.5"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
+<v t="ekr.20180309201328.4"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
 </v>
 <v t="ekr.20180309185230.46"><vh>Colors: Text</vh>
-<v t="ekr.20180309185230.47"><vh>@color log_text_background_color =LeoYellow</vh></v>
-<v t="ekr.20180309185230.48"><vh>@color log_text_foreground_color =black</vh></v>
+<v t="ekr.20180309185230.47"><vh>@color log-text-background-color =LeoYellow</vh></v>
+<v t="ekr.20180309185230.48"><vh>@color log-text-foreground-color =black</vh></v>
 <v t="ekr.20180309185230.49"><vh>@color text-background =white</vh></v>
 <v t="ekr.20180309185230.50"><vh>@color text-background-bright =white</vh></v>
 <v t="ekr.20180309185230.51"><vh>@color text-foreground =black</vh></v>
 <v t="ekr.20180309185230.52"><vh>@color text-foreground-bright =black</vh></v>
 </v>
-<v t="ekr.20180309201328.1"><vh>Colors: Buttons</vh>
-<v t="ekr.20180309201328.2"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
-<v t="ekr.20180309201328.3"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
-<v t="ekr.20180309201328.4"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
-<v t="ekr.20180309201328.5"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
-<v t="ekr.20180309201328.6"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20180309201328.7"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20180309201328.8"><vh>@color interact-btn-bg = @LightBlue</vh></v>
-<v t="ekr.20180309201328.9"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
-</v>
 <v t="ekr.20180309185230.53"><vh>Colors: Widgets</vh>
-<v t="ekr.20180309190723.1"><vh>@color log_text_background_color = @LightSteelBlue2</vh></v>
+<v t="ekr.20180309190723.1"><vh>@color log-text-background-color = @LightSteelBlue2</vh></v>
+</v>
 </v>
 <v t="ekr.20180309185230.55"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180309185230.56"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20180309185230.56"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180309185230.57"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180309185230.58"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180309185230.59"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180309185230.60"><vh>@string font-size-body = 19px</vh></v>
-<v t="ekr.20180309185230.61"><vh>@string font-size-log = 16px</vh></v>
-<v t="ekr.20180309185230.62"><vh>@string font-size-tree = 17px</vh></v>
+<v t="ekr.20180309185230.60"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20180309185230.61"><vh>@string font-size-log = 12pt</vh></v>
+<v t="ekr.20180309185230.62"><vh>@string font-size-tree = 12pt</vh></v>
 </v>
-<v t="ekr.20180309185230.66"><vh>Plugins settings</vh>
+<v t="ekr.20180309185230.66"><vh>Plugins</vh>
+<v t="ekr.20180309185230.103"><vh>@bool color-theme-is-dark = False</vh></v>
 <v t="ekr.20180309185230.67"><vh>bookmarks</vh>
-<v t="ekr.20180309185230.68"><vh>@color bookmarks_current_color = orange</vh></v>
+<v t="ekr.20180309185230.68"><vh>@color bookmarks-current-color = orange</vh></v>
 <v t="ekr.20180309185230.69"><vh>bookmarks base</vh>
-<v t="ekr.20180309185230.70"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="ekr.20180309185230.71"><vh>@string bookmarks_base_border = none</vh></v>
-<v t="ekr.20180309185230.72"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="ekr.20180309185230.73"><vh>@string bookmarks_base_family = none</vh></v>
-<v t="ekr.20180309185230.74"><vh>@string bookmarks_base_margin = 0</vh></v>
-<v t="ekr.20180309185230.75"><vh>@string bookmarks_base_padding = 1</vh></v>
-<v t="ekr.20180309185230.76"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="ekr.20180309185230.77"><vh>@string bookmarks_base_style = normal</vh></v>
-<v t="ekr.20180309185230.78"><vh>@string bookmarks_base_weight = regular</vh></v>
+<v t="ekr.20180309185230.70"><vh>@color bookmarks-base-color = @text-foreground</vh></v>
+<v t="ekr.20180309185230.71"><vh>@string bookmarks-base-border = none</vh></v>
+<v t="ekr.20180309185230.72"><vh>@string bookmarks-base-decoration = none</vh></v>
+<v t="ekr.20180309185230.73"><vh>@string bookmarks-base-family = none</vh></v>
+<v t="ekr.20180309185230.74"><vh>@string bookmarks-base-margin = 0</vh></v>
+<v t="ekr.20180309185230.75"><vh>@string bookmarks-base-padding = 1</vh></v>
+<v t="ekr.20180309185230.76"><vh>@string bookmarks-base-size = @bookmarks-font-size</vh></v>
+<v t="ekr.20180309185230.77"><vh>@string bookmarks-base-style = normal</vh></v>
+<v t="ekr.20180309185230.78"><vh>@string bookmarks-base-weight = regular</vh></v>
 </v>
 <v t="ekr.20180309185230.79"><vh>bookmarks children</vh>
-<v t="ekr.20180309185230.80"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="ekr.20180309185230.81"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="ekr.20180309185230.82"><vh>@string bookmarks_children_family = none</vh></v>
-<v t="ekr.20180309185230.83"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="ekr.20180309185230.84"><vh>@string bookmarks_children_style = ignore</vh></v>
-<v t="ekr.20180309185230.85"><vh>@string bookmarks_children_weight = ignore</vh></v>
+<v t="ekr.20180309185230.80"><vh>@color bookmarks-children-color = @text-foreground</vh></v>
+<v t="ekr.20180309185230.81"><vh>@string bookmarks-children-decoration = underline</vh></v>
+<v t="ekr.20180309185230.82"><vh>@string bookmarks-children-family = none</vh></v>
+<v t="ekr.20180309185230.83"><vh>@string bookmarks-children-size = ignore</vh></v>
+<v t="ekr.20180309185230.84"><vh>@string bookmarks-children-style = ignore</vh></v>
+<v t="ekr.20180309185230.85"><vh>@string bookmarks-children-weight = ignore</vh></v>
 </v>
 <v t="ekr.20180309185230.86"><vh>bookmarks current</vh>
-<v t="ekr.20180309185230.87"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="ekr.20180309185230.88"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="ekr.20180309185230.89"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="ekr.20180309185230.90"><vh>@string bookmarks_current_style = ignore</vh></v>
-<v t="ekr.20180309185230.91"><vh>@string bookmarks_current_weight = bold</vh></v>
+<v t="ekr.20180309185230.87"><vh>@color bookmarks-current-color = blue</vh></v>
+<v t="ekr.20180309185230.88"><vh>@string bookmarks-current-decoration = ignore</vh></v>
+<v t="ekr.20180309185230.89"><vh>@string bookmarks-current-size = ignore</vh></v>
+<v t="ekr.20180309185230.90"><vh>@string bookmarks-current-style = ignore</vh></v>
+<v t="ekr.20180309185230.91"><vh>@string bookmarks-current-weight = bold</vh></v>
 </v>
 <v t="ekr.20180309185230.92"><vh>bookmarks expanded</vh>
-<v t="ekr.20180309185230.93"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="ekr.20180309185230.94"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="ekr.20180309185230.95"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="ekr.20180309185230.96"><vh>@string bookmarks_expanded_style = ignore</vh></v>
-<v t="ekr.20180309185230.97"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="ekr.20180309185230.98"><vh>@string bookmarks_font_size = 11pt</vh></v>
+<v t="ekr.20180309185230.93"><vh>@color bookmarks-expanded-color = @text-foreground</vh></v>
+<v t="ekr.20180309185230.94"><vh>@string bookmarks-expanded-decoration = underline</vh></v>
+<v t="ekr.20180309185230.95"><vh>@string bookmarks-expanded-size = ignore</vh></v>
+<v t="ekr.20180309185230.96"><vh>@string bookmarks-expanded-style = ignore</vh></v>
+<v t="ekr.20180309185230.97"><vh>@string bookmarks-expanded-weight = bold</vh></v>
+<v t="ekr.20180309185230.98"><vh>@string bookmarks-font-size = 11pt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20180309185230.99"><vh>Outline indicators</vh>
-<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
-<v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
-</v>
-</v>
+<v t="ekr.20201221072803.1"><vh>Style sheet</vh>
 <v t="ekr.20180309185230.105"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20180309185230.118"><vh> Widgets: general</vh></v>
 <v t="ekr.20180309185230.106"><vh>Body &amp; other text</vh></v>
@@ -164,10 +129,49 @@
 <v t="ekr.20190106114202.1"><vh>zz must be last</vh></v>
 </v>
 </v>
+<v t="ekr.20180309185230.17"><vh>Syntax coloring</vh>
+<v t="ekr.20180309185230.18"><vh>Colors: defaults</vh>
+<v t="ekr.20180309185230.19"><vh>@color blank-color = grey</vh></v>
+<v t="ekr.20180309185230.20"><vh>@color tab-color = red</vh></v>
+<v t="ekr.20180309185230.21"><vh>@color label-color = red</vh></v>
+<v t="ekr.20180309185230.22"><vh>@color keyword1-color = blue</vh></v>
+<v t="ekr.20180309185230.23"><vh>@color keyword2-color = blue</vh></v>
+<v t="ekr.20180309185230.24"><vh>@color keyword3-color = blue</vh></v>
+<v t="ekr.20180309185230.25"><vh>@color keyword4-color = blue</vh></v>
+<v t="ekr.20180309185230.26"><vh>@color literal1-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.27"><vh>@color literal2-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.28"><vh>@color literal3-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.29"><vh>@color literal4-color = ##00aa00</vh></v>
+<v t="ekr.20180309185230.30"><vh>@color markup-color =black</vh></v>
+<v t="ekr.20180309185230.31"><vh>@color comment1-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.32"><vh>@color comment2-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.33"><vh>@color comment3-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.34"><vh>@color comment4-color = firebrick3</vh></v>
 </v>
+<v t="ekr.20180309185230.35"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180309185230.36"><vh>@color section-name-brackets-color = blue</vh></v>
+<v t="ekr.20180309185230.37"><vh>@color null-color = #6c71c4</vh></v>
+<v t="ekr.20180309185230.38"><vh>@color operator-color = #6c71c4</vh></v>
+<v t="ekr.20180309185230.39"><vh>@color doc-part-color = firebrick3</vh></v>
+<v t="ekr.20180309185230.40"><vh>@color leo-keyword-color = #00aa00</vh></v>
+<v t="ekr.20180309185230.41"><vh>@color section-name-color = red</vh></v>
+<v t="ekr.20180309185230.42"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
+<v t="ekr.20180309185230.43"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
+<v t="ekr.20180309185230.44"><vh>@color undefined-section-name-color = red</vh></v>
+<v t="ekr.20180309185230.45"><vh>@color url-color = purple</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180309185230.55"></v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20180307205349.2"></t>
+<t tx="ekr.20180307205349.2">@language rest
+@wrap
+
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings. </t>
 <t tx="ekr.20180307205426.1">table = (
     # g.actualColor calls 
     'error', 'info', 'warning',
@@ -190,11 +194,6 @@ g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
 <t tx="ekr.20180308122011.1"></t>
-<t tx="ekr.20180309185230.1" lineYOffset="4b002e">@language rest
-@wrap
-@tabwidth -2
-
-A Light theme with solarized colors.</t>
 <t tx="ekr.20180309185230.10"></t>
 <t tx="ekr.20180309185230.100">Must be relative to either the users home directory or leo/Icons directory.
 
@@ -204,11 +203,7 @@ transparent/icons/nodes/triangles/black/closed.png</t>
 
 nodes-light/triangles/open.png
 transparent/icons/nodes/triangles/black/open.png</t>
-<t tx="ekr.20180309185230.102"></t>
-<t tx="ekr.20180309185230.103" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20180309185230.104" lineYOffset="4b002e">Name of the theme,
-used to find icon files</t>
+<t tx="ekr.20180309185230.103" lineYOffset="4b002e">Used by bookmarks and graphcanvas plugins.</t>
 <t tx="ekr.20180309185230.105">/*
 @language css
 
@@ -373,7 +368,7 @@ QLineEdit#status2 {
   background: @LeoBlue;
   color: black;
   show-decoration-selected: 1; /* Extend the selection */
-  padding: 2px solid @LeoBlue;
+  /*padding: 2px solid @LeoBlue; */
   border-color: @LeoBlue;
 }
 QTreeView::item:selected, QTreeView::item:active:selected {
@@ -399,6 +394,7 @@ QTreeView QLineEdit {
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal, italic,oblique */
   padding: 0px;
+  border: none;
 }
 
 QTreeWidget {
@@ -414,7 +410,7 @@ QTreeWidget {
 }
 QTreeWidget::selected {
   background: @LeoBlue;
-  color: black; 
+  color: black;
 }
 </t>
 <t tx="ekr.20180309185230.118">QDockWidget {
@@ -456,7 +452,6 @@ These names can't be changed.  Leo's colorizing code leoColorizer.py uses these 
 Check the .py file in leo/modes for your langauge to see which names are actually used.
 </t>
 <t tx="ekr.20180309185230.19"></t>
-<t tx="ekr.20180309185230.2" lineYOffset="4b002e"></t>
 <t tx="ekr.20180309185230.20"></t>
 <t tx="ekr.20180309185230.21"></t>
 <t tx="ekr.20180309185230.22">was blue
@@ -542,8 +537,10 @@ Only colors appearing in several places are given here.
     '@run-script-btn-bg',
     '@script-button-btn-bg',
     '@script-button-button-btn-bg'</t>
-<t tx="ekr.20180309185230.55"></t>
-<t tx="ekr.20180309185230.56">test text</t>
+<t tx="ekr.20180309185230.55">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
+<t tx="ekr.20180309185230.56"></t>
 <t tx="ekr.20180309185230.57"></t>
 <t tx="ekr.20180309185230.58"></t>
 <t tx="ekr.20180309185230.59"></t>
@@ -590,16 +587,6 @@ valid values are: normal,bold,100,..,900
 <t tx="ekr.20180309185230.96"></t>
 <t tx="ekr.20180309185230.97">bold or regular</t>
 <t tx="ekr.20180309185230.98"></t>
-<t tx="ekr.20180309185230.99">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="ekr.20180309190723.1"></t>
 <t tx="ekr.20180309191121.1"></t>
 <t tx="ekr.20180309191129.1">#ffffec Leo's traditional tree color.</t>
@@ -646,10 +633,7 @@ The following settings specify the indicators.  You can use an absolute path, or
 
 A light theme based on EKR's legacy theme.
 
-Colors are clear, not solarized.
-
-I do not use this theme at present. I much prefer dark/black themes.
-</t>
+Colors are clear, not solarized.</t>
 <t tx="ekr.20180314052351.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
 1. The '@' sign itself is colored with @color leokeyword constant.
@@ -700,7 +684,6 @@ def spam():
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052351.2"></t>
-<t tx="ekr.20180319081051.1"></t>
 <t tx="ekr.20190106114202.1">QLineEdit#status1[style_class ~= 'info'],
 QLineEdit#status2[style_class ~= 'info'] {
     background: @LeoBlue;
@@ -731,5 +714,9 @@ QLineEdit#editorLabel {
     /* border: 1px solid @dark-base2; */
 }
 </t>
+<t tx="ekr.20201221063741.1"></t>
+<t tx="ekr.20201221072803.1"></t>
+<t tx="ekr.20201221074355.1">The path to the icon folder.</t>
+<t tx="ekr.20201221102717.1"></t>
 </tnodes>
 </leo_file>

@@ -24,21 +24,21 @@ Requires 4Suite 1.0a3 or better, downloadable from http://4Suite.org.
 
 #@+<< imports >>
 #@+node:mork.20041025113509: ** << imports >>
-import leo.core.leoGlobals as g
-
-from xml.dom import minidom
 import io
-StringIO = io.StringIO
-
+import weakref
+from xml.dom import minidom
+from leo.core import leoGlobals as g
+# Third-part imports
 try:
+    # pylint: disable=import-error
     import Ft
     from Ft.Xml import InputSource
     from Ft.Xml.Xslt.Processor import Processor
 except ImportError:
     g.cantImport("Ft",__name__)
     Ft = None
-
-import weakref
+# Abbreviation.
+StringIO = io.StringIO
 #@-<< imports >>
 #@+<<parser problems>>
 #@+node:mork.20041024091024: ** <<parser problems>>
@@ -311,14 +311,14 @@ r'''
 #@+node:ekr.20140906065955.18786: *3* table.leo
 #@@path /boboo/leo-4.2-final/plugins
 #@+node:ekr.20140906065955.18787: *4* @@nosent table.py
+import csv
 import io
 StringIO = io.StringIO
+import Pmw
 import Tkinter as Tk
 import tktable as tktab
-import leo.core.leoGlobals as g
-import csv
 import weakref
-import Pmw
+from leo.core import leoGlobals as g
 
 class CSVVisualizer:
     arrays = []

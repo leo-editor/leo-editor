@@ -8,11 +8,9 @@ where the selected file is (the selected file itself doesn't matter.)
 '''
 # Written by VMV.
 
-import leo.core.leoGlobals as g
-
+from leo.core import leoGlobals as g
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-# from leo.core.leoQt import QtCore
 
 #@+others
 #@+node:ville.20090614224528.8139: ** init

@@ -3,9 +3,9 @@
 #@+node:ekr.20140831085423.18598: * @file ../plugins/qt_text.py
 #@@first
 """Text classes for the Qt version of Leo"""
-import leo.core.leoGlobals as g
 import time
 assert time
+from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, Qsci, QtWidgets
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
@@ -97,13 +97,15 @@ class QTextMixin:
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
+        
         c = self.c
         name = c.widget_name(self)
         # Apparently, this does not cause problems
         # because it generates no events in the body pane.
-        if name.startswith('body'):
-            if hasattr(c.frame, 'statusLine'):
-                c.frame.statusLine.update()
+        if not name.startswith('body'):
+            return
+        if hasattr(c.frame, 'statusLine'):
+            c.frame.statusLine.update()
     #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
     def onTextChanged(self):
         """
@@ -134,10 +136,8 @@ class QTextMixin:
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
-        oldYview = None
-        undoType = 'Typing'
-        c.undoer.setUndoTypingParams(p, undoType, oldText, newText,
-            oldSel=oldSel, oldYview=oldYview, newInsert=newInsert, newSel=newSel)
+        c.undoer.doTyping(p, 'Typing', oldText, newText,
+            oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
     #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
     # These call only wrapper methods.
     #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
@@ -330,6 +330,9 @@ class QLineEditWrapper(QTextMixin):
                 i = j = w.cursorPosition()
             return i, j
         return 0, 0
+    #@+node:ekr.20210104122029.1: *4* qlew.getYScrollPosition
+    def getYScrollPosition(self):
+        return 0  # #1801.
     #@+node:ekr.20110605121601.18123: *4* qlew.hasSelection
     def hasSelection(self):
         """QHeadlineWrapper."""
@@ -448,6 +451,7 @@ if QtWidgets:
             self.htmlFlag = True
             super().__init__(parent)
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
+            
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
                 self.textChanged.connect(self.onTextChanged)
@@ -527,9 +531,14 @@ if QtWidgets:
                     w.ev_filter.eventFilter(obj=self, event=event)
             #@+node:ekr.20110605121601.18014: *5* lqlw.select_callback
             def select_callback(self):
-                """Called when user selects an item in the QListWidget."""
+                """
+                Called when user selects an item in the QListWidget.
+                """
                 c = self.leo_c
-                w = c.k.autoCompleter.w or c.frame.body.wrapper  # 2014/09/19
+                p = c.p
+                w = c.k.autoCompleter.w or c.frame.body.wrapper
+                oldSel = w.getSelectionRange()
+                oldText = w.getAllText()
                 # Replace the tail of the prefix with the completion.
                 completion = self.currentItem().text()
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
@@ -546,7 +555,12 @@ if QtWidgets:
                     j = i + len(completion)
                     c.setChanged()
                     w.setInsertPoint(j)
-                    c.frame.body.onBodyChanged('Typing')
+                    c.undoer.doTyping(p, 'Typing', oldText,
+                        newText=w.getAllText(),
+                        newInsert=w.getInsertPoint(),
+                        newSel=w.getSelectionRange(),
+                        oldSel=oldSel,
+                    )
                 self.end_completer()
             #@+node:tbrown.20111011094944.27031: *5* lqlw.tab_callback
             def tab_callback(self):
@@ -714,6 +728,59 @@ if QtWidgets:
                 return
             if p:
                 p.v.scrollBarSpot = arg
+        #@+node:ekr.20201204172235.1: *3* lqtb.paintEvent
+        leo_cursor_width = 0
+
+        leo_vim_mode = None
+
+        def paintEvent(self, event):
+            """
+            LeoQTextBrowser.paintEvent.
+            
+            New in Leo 6.4: Draw a box around the cursor in command mode.
+                            This is as close as possible to vim's look.
+            """
+            c, vc, w = self.leo_c, self.leo_c.vimCommands, self
+            #
+            # First, call the base class paintEvent.
+            QtWidgets.QTextBrowser.paintEvent(self, event)
+            
+            def set_cursor_width(width):
+                """Set the cursor width, but only if necessary."""
+                if self.leo_cursor_width != width:
+                    self.leo_cursor_width = width
+                    w.setCursorWidth(width)
+            
+            #
+            # Are we in vim mode?
+            if self.leo_vim_mode is None:
+                self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
+            #
+            # Are we in command mode?
+            if self.leo_vim_mode:
+                in_command = vc and vc.state == 'normal'  # vim mode.
+            else:
+                in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
+            #
+            # Draw the box only in command mode, when w is the body pane, with focus.
+            if (
+                not in_command
+                or w != c.frame.body.widget
+                or w != g.app.gui.get_focus()
+            ):
+                set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
+                return
+            #
+            # Set the width of the cursor.
+            font = w.currentFont()
+            cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
+            set_cursor_width(cursor_width)
+            #
+            # Draw a box around the cursor.
+            qp = QtGui.QPainter()
+            qp.begin(self.viewport())
+            qp.drawRect(w.cursorRect())
+            qp.end()
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
         def wheelEvent(self, event):
             """Handle a wheel event."""
@@ -1501,10 +1568,21 @@ class QTextEditWrapper(QTextMixin):
         vScroll.setValue(val + (delta * lineSpacing))
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18090: *4* qtew.see & seeInsertPoint
-    def see(self, i):
-        """Make sure position i is visible."""
+    def see(self, see_i):
+        """Scroll so that position see_i is visible."""
         w = self.widget
+        tc = w.textCursor()
+        # Put see_i in range.
+        s = self.getAllText()
+        see_i = max(0, min(see_i, len(s)))
+        # Remember the old cursor
+        old_cursor = QtGui.QTextCursor(tc)
+        # Scroll so that see_i is visible.
+        tc.setPosition(see_i)
+        w.setTextCursor(tc)
         w.ensureCursorVisible()
+        # Restore the old cursor
+        w.setTextCursor(old_cursor)
 
     def seeInsertPoint(self):
         """Make sure the insert point is visible."""

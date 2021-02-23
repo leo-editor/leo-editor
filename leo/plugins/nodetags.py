@@ -96,9 +96,9 @@ whitespace (calling .strip()).
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:peckj.20140804103733.9241: ** << imports >>
-import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
 import re
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 #@+others
@@ -176,10 +176,13 @@ class TagController:
                 aList.append(p.h)
                 d [tag] = aList
         # Print all tags.
-        for key in sorted(d):
-            aList = d.get(key)
-            for h in sorted(aList):
-                print(f"{key:>8} {h}")
+        if d:
+            for key in sorted(d):
+                aList = d.get(key)
+                for h in sorted(aList):
+                    print(f"{key:>8} {h}")
+        else:
+            print(f"no tags in {c.shortFileName()}")
      
     #@+node:peckj.20140804103733.9267: *4* tag_c.update_taglist
     def update_taglist(self, tag):

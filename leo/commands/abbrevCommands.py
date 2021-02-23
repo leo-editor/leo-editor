@@ -5,11 +5,12 @@
 """Leo's abbreviations commands."""
 #@+<< imports >>
 #@+node:ekr.20150514045700.1: ** << imports >> (abbrevCommands.py)
-import leo.core.leoGlobals as g
-from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 import functools
 import re
 import string
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.commands.baseCommands import BaseEditCommandsClass
 #@-<< imports >>
 
 def cmd(name):
@@ -123,7 +124,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     script.append(z)
             script = ''.join(script)
             # Allow Leo directives in @data abbreviations-subst-env trees.
-            import leo.core.leoNodes as leoNodes
             # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
             root = c.rootPosition()
             if root:
@@ -232,8 +232,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         Words start with '@'.
         """
-        trace = 'keys' in g.app.debug
-        verbose = 'verbose' in g.app.debug
+        # Trace for *either* 'abbrev' or 'keys'
+        trace = any(z in g.app.debug for z in ('abbrev', 'keys'))
+        # Verbose only for *both* 'abbrev' and 'verbose'.
+        verbose = all(z in g.app.debug for z in ('abbrev', 'verbose'))
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
@@ -382,7 +384,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 scroll = w.getYScrollPosition()
             oldSel = w.getSelectionRange()
             w.setAllText(new_s)
-            c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+            c.frame.body.onBodyChanged(undoType='find-place-holder', oldSel=oldSel)
             c.p.b = new_s
             if switch:
                 c.redraw()
@@ -440,9 +442,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
-            # Huh?
             oldSel = i, j
-            c.frame.body.onBodyChanged(undoType='Typing', oldSel=oldSel)
+            c.frame.body.onBodyChanged(undoType='make-script-substitution', oldSel=oldSel)
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
@@ -547,7 +548,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             # Fix part of #438. Don't leave the headline.
             oldSel = j, j
-            c.frame.body.onBodyChanged(undoType='Abbreviation', oldSel=oldSel)
+            c.frame.body.onBodyChanged('Abbreviation', oldSel=oldSel)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
             # pylint: disable=unpacking-non-sequence

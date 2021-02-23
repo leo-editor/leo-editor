@@ -5,7 +5,6 @@
 """Commands that invoke external checkers"""
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
-import leo.core.leoGlobals as g
 try:
     # pylint: disable=import-error
         # We can't assume the user has this.
@@ -19,6 +18,7 @@ except ImportError:
 import shlex
 import sys
 import time
+from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
@@ -177,17 +177,24 @@ def pyflakes_command(event):
         else:
             g.es_print('can not import pyflakes')
 #@+node:ekr.20150514125218.7: *3* pylint command
+last_pylint_path = None
+
 @g.command('pylint')
 def pylint_command(event):
     """
     Run pylint on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
+    or the first @<file> node in an ancestor,
+    or the last checked @<file> node.
     """
+    global last_pylint_path
     c = event.get('c')
     if c:
         if c.isChanged():
             c.save()
-        PylintCommand(c).run()
+        data = PylintCommand(c).run(last_path=last_pylint_path)
+        if data:
+            path, p = data
+            last_pylint_path = path
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
     """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
@@ -434,14 +441,14 @@ class PylintCommand:
         self.rc_fn = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self):
+    def run(self, last_path=None):
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
         if not self.import_lint():
-            return
+            return False
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
-            return
+            return False
         # Make sure Leo is on sys.path.
         leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
         if leo_path not in sys.path:
@@ -458,17 +465,27 @@ class PylintCommand:
         roots = g.findRootsWithPredicate(c, root, predicate=predicate)
         data = [(self.get_fn(p), p.copy()) for p in roots]
         data = [z for z in data if z[0] is not None]
+        if not data and last_path:
+            # Default to the last path.
+            fn = last_path
+            for p in c.all_positions():
+                if p.isAnyAtFileNode() and g.fullPath(c, p) == fn:
+                    data = [(fn, p.copy())]
+                    break
         if not data:
             g.es('pylint: no files found', color='red')
-            return
+            return None
         for fn, p in data:
             self.run_pylint(fn, p)
+        # #1808: return the last data file.
+        return data[-1] if data else False
     #@+node:ekr.20190605183824.1: *3* 2. pylint.import_lint
     def import_lint(self):
         """Make sure lint can be imported."""
         try:
+            # pylint: disable=import-error
             from pylint import lint
-            g.placate_pyflakes(lint)
+            assert lint
             return True
         except ImportError:
             g.es_print('pylint is not installed')
@@ -535,7 +552,7 @@ class PylintCommand:
         # Old code: Invoke g.run_pylint.
             # args = ["fn=r'%s'" % (fn), "rc=r'%s'" % (rc_fn),]
             # # When shell is True, it's recommended to pass a string, not a sequence.
-            # command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+            # command = '%s -c "from leo.core import leoGlobals as g; g.run_pylint(%s)"' % (
                 # sys.executable, ','.join(args))
     #@-others
 #@-others

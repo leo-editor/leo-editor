@@ -5,7 +5,7 @@
 #@@language python
 #@@tabwidth -4
 
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 
 __version__ = "1.2" # Set version for the plugin handler.
 
@@ -40,7 +40,7 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
 #@+node:ekr.20100128073941.5376: ** onStart
 def onStart (tag,keywords):
 
-    import leo.core.leoNodes as leoNodes
+    from leo.core import leoNodes
 
     g.funcToMethod(newMoreHead,leoNodes.VNode,"moreHead")
 #@-others

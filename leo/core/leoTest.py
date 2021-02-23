@@ -1,13 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20051104075904: * @file leoTest.py
-"""Classes for Leo's unit testing.
+"""
+Support for Leo's *legacy* unit testing framework, based on unitTest.leo.
 
-Run the unit tests in test.leo using the Execute Script command.
+leoTest2.py supports Leo's *new* testing framework, based on coverage
+tests embedded in Leo's source code files themselves.
 """
 #@+<< imports >>
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
-import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui  # For UnitTestGui.
 import cProfile as profile
 import doctest
 import gc
@@ -23,6 +23,8 @@ try:
     import tabnanny  # Does not exist in jython.
 except ImportError:
     tabnanny = None
+from leo.core import leoGlobals as g
+from leo.core import leoGui  # For UnitTestGui.
 #@-<< imports >>
 if g.app:  # Make sure we can import this module stand-alone.
     newAtFile = g.app.pluginsController.isLoaded("___proto_atFile")
@@ -162,7 +164,6 @@ class EditBodyTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         self.failFlag = True
     #@+node:ekr.20051104075904.73: *3* editBody
@@ -234,7 +235,7 @@ class EditBodyTestCase(unittest.TestCase):
         try:
             return f"EditBodyTestCase: {self.parent.h}"
         except Exception:
-            g.es_print_exception()
+            g.print_exception()
             return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *3* tearDown
     def tearDown(self):
@@ -262,7 +263,6 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.7: *3*  fail (GeneralTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
         raise self.failureException(msg)
             # Fix # 1002. Raise an exception, as in TestCase.fail()
@@ -322,7 +322,6 @@ class ImportExportTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.81: *3*  fail (ImportExportTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.80: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
@@ -700,7 +699,7 @@ class TestManager:
             g.unitTesting = g.app.unitTesting = False
             c.contractAllHeadlines()
             c.redraw(p1)
-    #@+node:ekr.20170504130531.1: *5* class LoggingLog
+    #@+node:ekr.20170504130531.1: *5* class LoggingLog (leoTest.py)
     class LoggingStream:
         """A class that can searve as a logging stream."""
 
@@ -784,7 +783,7 @@ class TestManager:
         old_frame = c.frame
         old_k_w = c.k.w
         try:
-            import leo.core.leoFrame as leoFrame
+            from leo.core import leoFrame
             g.app.gui = new_gui
             c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
             c.frame.openDirectory = old_frame.openDirectory
@@ -908,7 +907,7 @@ class TestManager:
                 return None
         except Exception:
             print(f"\n{fname}: exception creating test class in {p.h}")
-            g.es_print_exception()
+            g.print_exception()
             return None
         return None
     #@+node:ekr.20051104075904.12: *5* tm.makeTestSuite
@@ -940,7 +939,7 @@ class TestManager:
             return suite
         except Exception:
             print(f"\n{fname}: exception creating test cases for {p.h}")
-            g.es_print_exception()
+            g.print_exception()
             return None
     #@+node:ekr.20070627135407: *4* TM.runTestsExternally (external tests)
     def runTestsExternally(self, all, marked):
@@ -983,7 +982,7 @@ class TestManager:
         g.app.unitTestDict = {'c': c, 'p': p and p.copy()}
         # This looks like the best we can do.
         setup = (
-            'import leo.core.leoGlobals as g; ' +
+            'from leo.core import leoGlobals as g; ' +
             'c = g.app.unitTestDict.get("c"); ' +
             'p = g.app.unitTestDict.get("p")'
         )
@@ -1133,6 +1132,8 @@ class TestManager:
         c.selectPosition(work)
         work.b = before.b
         w.setSelectionRange(sel1[0], sel1[1], insert=sel1[1])
+        ### g.trace(commandName, sel1[0], sel1[1])
+        ### g.printObj(g.splitLines(w.getSelectedText()))
         c.k.simulateCommand(commandName)
         s1 = work.b; s2 = after.b
         assert s1 == s2, (
@@ -1146,7 +1147,12 @@ class TestManager:
         i, j = sel2; sel2 = w.toPythonIndex(i), w.toPythonIndex(j)
         assert len(sel3) == 2, f"Bad headline index.  Expected index,index.  got: {sel3}"
         i, j = sel3; sel3 = w.toPythonIndex(i), w.toPythonIndex(j)
-        assert sel2 == sel3, f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
+        if 0:  # Be more permissive.
+            if sel2 != sel3:
+                print(f"\n{p.h}\nexpected: {sel2_orig} = {sel2}, got: {sel3}")
+        else:
+            message = f"mismatch in sel\nexpected: {sel2_orig} = {sel2}, got: {sel3}"
+            assert sel2 == sel3, message
         c.selectPosition(atTest)
         atTest.contract()
         # Don't redraw.
@@ -1360,13 +1366,13 @@ class TestManager:
         except SyntaxError:
             if not suppress:
                 g.warning("syntax error in:", fileName)
-                g.es_print_exception(full=True, color="black")
+                g.print_exception(full=True, color="black")
             if reraise: raise
             return False
         except Exception:
             if not suppress:
                 g.warning("unexpected error in:", fileName)
-                # g.es_print_exception(full=False,color="black")
+                # g.print_exception(full=False,color="black")
             if reraise: raise
             return False
     #@+node:ekr.20051104075904.94: *4* TM.checkFileTabs
@@ -1391,7 +1397,7 @@ class TestManager:
             assert 0, "test failed"
         except Exception:
             g.trace("unexpected exception")
-            g.es_print_exception()
+            g.print_exception()
             assert 0, "test failed"
     #@+node:ekr.20051104075904.40: *4* TM.compareIgnoringNodeNames
     def compareIgnoringNodeNames(self, s1, s2, delims, verbose=False):
@@ -1465,7 +1471,6 @@ class TestManager:
     #@+node:ekr.20051104075904.41: *4* TM.fail
     def fail(self):
         """Mark a unit test as having failed."""
-        import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
     #@+node:ekr.20051104075904.100: *4* TM.findAllAtFileNodes (not used here)
     def findAllAtFileNodes(self):

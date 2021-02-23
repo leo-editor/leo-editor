@@ -10,7 +10,7 @@ Scoring is based on how much you edit the nodes.
 '''
 
 # By VMV.
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 #@+others
 #@+node:ville.20120503224623.3578: ** init
 def init ():

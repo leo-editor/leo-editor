@@ -8,15 +8,16 @@
 from codecs import open  # To use a consistent encoding
 import os
 import platform
+import sys
 # from shutil import rmtree
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
-import sys
 
 # Ensure setup.py's folder is in module search path else import leo fails
 # required for pip >v10 and pyproject.toml
+# pylint: disable=wrong-import-position
 sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-import leo.core.leoGlobals as g
-import leo.core.leoVersion as leoVersion
+from leo.core import leoGlobals as g
+from leo.core import leoVersion
 
 #@+node:maphew.20181010203342.385: ** get_version & helper (setup.py)
 def get_version(file, version=None):

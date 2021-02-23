@@ -2,8 +2,8 @@
 #@+node:ekr.20140723122936.18142: * @file ../plugins/importers/ini.py
 '''The @auto importer for .ini files.'''
 import re
-import leo.core.leoGlobals as g
-import leo.plugins.importers.linescanner as linescanner
+from leo.core import leoGlobals as g
+from leo.plugins.importers import linescanner
 Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer

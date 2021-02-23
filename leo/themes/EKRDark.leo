@@ -15,45 +15,21 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20180318145515.704"><vh>@theme EKR Black Solarized</vh>
-<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
-<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20180318145515.812"><vh>@string color_theme = ekr_dark</vh></v>
-<v t="ekr.20180319081014.1"><vh>@string theme-name = EKRDark</vh></v>
-</v>
-<v t="ekr.20180318145515.178"><vh>Appearance</vh>
-<v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
-<v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
+<v t="ekr.20201221073843.1"><vh>Appearance (miscellaneous)</vh>
 <v t="ekr.20180318145515.181"><vh>@bool use-focus-border = True</vh></v>
 <v t="ekr.20180318145515.182"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180318145515.183"><vh>@int gutter-w-adjust = 30</vh></v>
-<v t="ekr.20180318145515.184"><vh>@color flash_brackets_background_color = red</vh></v>
-<v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
-<v t="ekr.20180318145515.186"><vh>@color trailing_whitespace_color = black</vh></v>
 <v t="ekr.20180318145515.187"><vh>@int qt-cursor-width = 5</vh></v>
+<v t="ekr.20180318145515.805"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180318145515.806"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="ekr.20201221075212.1"><vh>@string color-theme = EKRDark</vh></v>
 <v t="ekr.20180318145515.188"><vh>@string focused-border-width = 1px</vh></v>
-<v t="ekr.20180318145515.189"><vh>@string target_language = python</vh></v>
-<v t="ekr.20180318145515.190"><vh>Basic Fonts</vh>
-<v t="ekr.20180318145515.191"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20180318145515.192"><vh>@ignore font sizes for unmagnified windows</vh>
-<v t="ekr.20180318145515.193"><vh>@string font-size = 14pt </vh></v>
-<v t="ekr.20180318145515.194"><vh>@string medium-font-size = 12pt</vh></v>
-<v t="ekr.20180318145515.195"><vh>@string small-font-size = 10pt</vh></v>
+<v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
 </v>
-<v t="ekr.20180318145515.196"><vh>@string status-font-size = 12pt</vh></v>
-<v t="ekr.20180318145515.197"><vh>font sizes for magnified windows</vh>
-<v t="ekr.20180318145515.198"><vh>@string font-size = 14pt </vh></v>
-<v t="ekr.20180318145515.199"><vh>@string medium-font-size = 14pt</vh></v>
-<v t="ekr.20180318145515.200"><vh>@string small-font-size = 14pt</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.201"><vh>Basic outline colors</vh>
-<v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
-<v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.710"><vh>Settings for Leo Solarized Dark theme</vh>
-<v t="ekr.20180318145515.711"><vh>Colors...</vh>
+<v t="ekr.20180318145515.711"><vh>Colors</vh>
+<v t="ekr.20180318145515.184"><vh>@color flash_brackets_background_color = red</vh></v>
+<v t="ekr.20180318145515.186"><vh>@color trailing_whitespace_color = black</vh></v>
 <v t="ekr.20180318145515.712"><vh>Base colors: not all are solarized colors</vh>
 <v t="ekr.20180318145515.713"><vh>@color dark-base0 = #fdffdd</vh></v>
 <v t="ekr.20180318145515.714"><vh>@color dark-base00 = #657b83</vh></v>
@@ -96,8 +72,60 @@
 <v t="ekr.20180318145515.750"><vh>@color log_white_color = @solarized-white</vh></v>
 <v t="ekr.20180318145515.751"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
-<v t="ekr.20180318145515.752"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
+<v t="ekr.20201220213006.1"><vh>Colors: Status area</vh>
+<v t="ekr.20201220213006.2"><vh>@color status-bg = @dark-base03</vh></v>
+<v t="ekr.20201220213006.3"><vh>@color status-fg = @dark-base1</vh></v>
+<v t="ekr.20201220213006.4"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20201220213006.5"><vh>@color find-not-found-bg = @solarized-red</vh></v>
+</v>
+<v t="ekr.20180318145515.787"><vh>Colors: Text</vh>
+<v t="ekr.20180318145515.788"><vh>@color log_text_background_color = #000005</vh></v>
+<v t="ekr.20180318145515.789"><vh>@color log_text_foreground_color = #ffffff</vh></v>
+<v t="ekr.20180318145515.790"><vh>@color text-background =@dark-base03</vh></v>
+<v t="ekr.20180318145515.791"><vh>@color text-background-bright =@dark-base02</vh></v>
+<v t="ekr.20180318145515.792"><vh>@color text-foreground =@dark-base0</vh></v>
+<v t="ekr.20180318145515.793"><vh>@color text-foreground-bright =@dark-base2</vh></v>
+</v>
+<v t="ekr.20180318145515.794"><vh>Colors: Widgets</vh>
+<v t="ekr.20180318145515.795"><vh>@color button-hover-fg =@dark-base03</vh></v>
+<v t="ekr.20180318145515.185"><vh>@color log-bg = @LightSteelBlue1</vh></v>
+<v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
+<v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
+</v>
+</v>
+<v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
+<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
+<v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
+<v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
+<v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="ekr.20180318145515.801"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20180318145515.802"><vh>@string font-size-log = 12pt</vh></v>
+<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 12pt</vh></v>
+</v>
+<v t="ekr.20201221073034.1"><vh>Plugins</vh>
+<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+<v t="ekr.20201221073050.1"><vh>Style sheet</vh>
+<v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20180318145515.814"><vh> Widgets: general</vh></v>
+<v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
+<v t="ekr.20180318145515.816"><vh>Borders</vh></v>
+<v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
+<v t="ekr.20190531140643.1"><vh>Dock</vh></v>
+<v t="ekr.20180318145515.818"><vh>Log</vh></v>
+<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
+<v t="ekr.20180318145515.819"><vh>Menus</vh></v>
+<v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
+<v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
+<v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
+<v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
+<v t="ekr.20180318145515.824"><vh>Status area</vh></v>
+<v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
+<v t="ekr.20180318145515.826"><vh>Tree</vh></v>
+</v>
+</v>
+<v t="ekr.20201221102453.1"><vh>Syntax coloring</vh>
+<v t="ekr.20180318145515.753"><vh>Color names for syntax coloring</vh>
 <v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
 <v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
 <v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
@@ -136,56 +164,8 @@
 <v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
 </v>
 </v>
-<v t="ekr.20180318145515.787"><vh>Colors: Text</vh>
-<v t="ekr.20180318145515.788"><vh>@color log_text_background_color = #000005</vh></v>
-<v t="ekr.20180318145515.789"><vh>@color log_text_foreground_color = #ffffff</vh></v>
-<v t="ekr.20180318145515.790"><vh>@color text-background =@dark-base03</vh></v>
-<v t="ekr.20180318145515.791"><vh>@color text-background-bright =@dark-base02</vh></v>
-<v t="ekr.20180318145515.792"><vh>@color text-foreground =@dark-base0</vh></v>
-<v t="ekr.20180318145515.793"><vh>@color text-foreground-bright =@dark-base2</vh></v>
 </v>
-<v t="ekr.20180318145515.794"><vh>Colors: Widgets</vh>
-<v t="ekr.20180318145515.795"><vh>@color button-hover-fg =@dark-base03</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
-<v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
-<v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180318145515.801"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20180318145515.802"><vh>@string font-size-log = 16pt</vh></v>
-<v t="ekr.20180318145515.803"><vh>@string font-size-tree = 16pt</vh></v>
-</v>
-<v t="ekr.20180318145515.804"><vh>Gradients</vh>
-<v t="ekr.20180318145515.805"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20180318145515.806"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
-</v>
-<v t="ekr.20180318145515.807"><vh>Outline indicators</vh>
-<v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-</v>
-<v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20180318145515.814"><vh> Widgets: general</vh></v>
-<v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
-<v t="ekr.20180318145515.816"><vh>Borders</vh></v>
-<v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
-<v t="ekr.20190531140643.1"><vh>Dock</vh></v>
-<v t="ekr.20180318145515.818"><vh>Log</vh></v>
-<v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
-<v t="ekr.20180318145515.819"><vh>Menus</vh></v>
-<v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
-<v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
-<v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
-<v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
-<v t="ekr.20180318145515.824"><vh>Status area</vh></v>
-<v t="ekr.20180318145515.825"><vh>Tab bar</vh></v>
-<v t="ekr.20180318145515.826"><vh>Tree</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20180318145515.822"></v>
+<v t="ekr.20180318145515.796"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -265,12 +245,10 @@ def spam():
 <t tx="ekr.20180318145515.1">@language rest
 @wrap
 
-2018/03/18: from myLeoSettings.leo
-</t>
-<t tx="ekr.20180318145515.178"></t>
-<t tx="ekr.20180318145515.179">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
-False: Never scroll the find tab automatically.</t>
-<t tx="ekr.20180318145515.180"></t>
+Notes:
+
+1. This file should *not* contain @string theme-name.
+2. This file should contain *only* appearance-related settings.</t>
 <t tx="ekr.20180318145515.181"></t>
 <t tx="ekr.20180318145515.182"># For line_numbering plugin.</t>
 <t tx="ekr.20180318145515.183"># in pixels, I think.  Depends on font size.</t>
@@ -280,36 +258,8 @@ False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20180318145515.186"></t>
 <t tx="ekr.20180318145515.187"></t>
 <t tx="ekr.20180318145515.188"></t>
-<t tx="ekr.20180318145515.189">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20180318145515.190"># All other fonts are defined in terms of these basic fonts.
-# Changing the basic fonts are all that most users will want to do.</t>
-<t tx="ekr.20180318145515.191">Droid Sans Mono,
-DejaVu Sans Mono</t>
-<t tx="ekr.20180318145515.192"></t>
-<t tx="ekr.20180318145515.193">**Important**: This should be set by each user.</t>
-<t tx="ekr.20180318145515.194">A small font size used by default in the check boxes in the Find tab.</t>
-<t tx="ekr.20180318145515.195">A small font size used by default in the status area.</t>
-<t tx="ekr.20180318145515.196">
-    </t>
-<t tx="ekr.20180318145515.197"></t>
-<t tx="ekr.20180318145515.198">**Important**: This should be set by each user.</t>
-<t tx="ekr.20180318145515.199">A small font size used by default in the check boxes in the Find tab.</t>
-<t tx="ekr.20180318145515.200">A small font size used by default in the status area.</t>
-<t tx="ekr.20180318145515.201"></t>
 <t tx="ekr.20180318145515.202"></t>
 <t tx="ekr.20180318145515.203">@LeoYellow</t>
-<t tx="ekr.20180318145515.704" lineYOffset="4b002e" __bookmarks="7d7100580700000069735f6475706571014930300a732e">@language rest
-@wrap
-@tabwidth -2
-
-Same as Leo Black Solarized except it uses 19px for the body pane.
-</t>
-<t tx="ekr.20180318145515.710" lineYOffset="4b002e"></t>
 <t tx="ekr.20180318145515.711"></t>
 <t tx="ekr.20180318145515.712"></t>
 <t tx="ekr.20180318145515.713">@language md
@@ -533,7 +483,6 @@ Terry: #dc322f</t>
 Terry: #268bd2</t>
 <t tx="ekr.20180318145515.750"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180318145515.751"></t>
-<t tx="ekr.20180318145515.752" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
 <t tx="ekr.20180318145515.753">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
 
 There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
@@ -708,7 +657,9 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="ekr.20180318145515.796"></t>
+<t tx="ekr.20180318145515.796">Most users will want to change these settings first.
+
+The stylesheet uses these settings.</t>
 <t tx="ekr.20180318145515.797"></t>
 <t tx="ekr.20180318145515.798"></t>
 <t tx="ekr.20180318145515.799"></t>
@@ -717,30 +668,14 @@ div#bg {background:#000005}
 something to see)</t>
 <t tx="ekr.20180318145515.802"></t>
 <t tx="ekr.20180318145515.803"></t>
-<t tx="ekr.20180318145515.804">Utility constants.</t>
 <t tx="ekr.20180318145515.805"></t>
 <t tx="ekr.20180318145515.806"></t>
-<t tx="ekr.20180318145515.807">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
 <t tx="ekr.20180318145515.808">Must be relative to either the users home directory or leo/Icons directory.
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180318145515.810"></t>
 <t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme, used to find icon files:
-
-leo_dark_0
-ekr_dark</t>
 <t tx="ekr.20180318145515.813">/*
 @language css
 
@@ -998,7 +933,6 @@ QTreeView QLineEdit {
   padding: 0px;
 }
 </t>
-<t tx="ekr.20180319081014.1"></t>
 <t tx="ekr.20180320125351.1">#84c805: good enough.
 
 #94e507: better, but a tad too bright.
@@ -1027,5 +961,15 @@ QLineEdit#editorLabel {
     border: 1px solid @dark-base2;
 }
 </t>
+<t tx="ekr.20201220213006.1"></t>
+<t tx="ekr.20201220213006.2"></t>
+<t tx="ekr.20201220213006.3"></t>
+<t tx="ekr.20201220213006.4"></t>
+<t tx="ekr.20201220213006.5"></t>
+<t tx="ekr.20201221073034.1"></t>
+<t tx="ekr.20201221073050.1"></t>
+<t tx="ekr.20201221073843.1"></t>
+<t tx="ekr.20201221075212.1">The path to the icon folder.</t>
+<t tx="ekr.20201221102453.1">These settings must exist because they are *not* used in the css.</t>
 </tnodes>
 </leo_file>

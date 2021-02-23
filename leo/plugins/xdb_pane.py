@@ -4,7 +4,7 @@
 Creates a Debug tab in the log pane, containing buttons for common xdb
 commands, and an input area in which the user can type other commands.
 '''
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore,QtGui,QtWidgets # QtConst
 controllers = {}
     # Keys are 

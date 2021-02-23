@@ -10,14 +10,14 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
 """
-# pylint: disable=unused-import, no-member
+# pylint: disable=unused-import,no-member,ungrouped-imports,wrong-import-order
 
 # Define...
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
     # QtDeclarative, QtMultimedia, Qsci, QString, QtSvg,
     # QtWebKit, QtWebKitWidgets
     # printsupport, Signal
-import leo.core.leoGlobals as g
+from leo.core import leoGlobals as g
 strict = False
 trace = False
 fail = g.in_bridge
@@ -80,9 +80,6 @@ if fail:
     pass
 else:
     qt_version = QtCore.QT_VERSION_STR
-    if 0:
-        import leo.core.leoGlobals as g
-        isNewQt = g.CheckVersion(qt_version, '4.5.0')
 # Define phonon,Qsci,QtSvg,QtWebKit,QtWebKitWidgets,uic.
 # These imports may fail without affecting the isQt5 constant.
 if fail:
