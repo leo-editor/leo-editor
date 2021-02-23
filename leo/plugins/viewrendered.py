@@ -1511,6 +1511,7 @@ if QtWidgets: # NOQA
                         oldp, p = p, newp
                         #print("Found @jinja node")
                         return oldp, p
+                return None, None
 
             def find_inputs(p):
                 for newp in p.parents():
@@ -1518,6 +1519,7 @@ if QtWidgets: # NOQA
                         oldp, p = p, newp
                         _, p = find_root(p) 
                         return oldp, p
+                return None, None
                 
             # if on jinja node's children, find the parent
             if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
