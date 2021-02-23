@@ -213,6 +213,7 @@ Jacob Peck added markdown support to this plugin.
 from distutils.spawn import find_executable
 import json
 import os
+from pathlib import Path
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 
@@ -223,7 +224,10 @@ try:
     from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 except Exception:
     QtWidgets = False
-# Third-party imports
+#
+# Optional third-party imports...
+#
+# Docutils.
 try:
     # pylint: disable=import-error
     import docutils
@@ -243,14 +247,22 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-# markdown support, non-vital
+#
+# Jinja.
+try:
+    from jinja2 import Template
+except ImportError:
+    Template = None
+# 
+# Markdown.
 try:
     # pylint: disable=import-error
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False
-# nbformat (@jupyter) support, non-vital.
+#
+# nbformat (@jupyter) support.
 try:
     # pylint: disable=import-error
     import nbformat
@@ -258,7 +270,6 @@ try:
     # from traitlets.config import Config
 except ImportError:
     nbformat = None
-
 #@-<< imports >>
 #pylint: disable=no-member
 trace = False
@@ -718,6 +729,7 @@ if QtWidgets: # NOQA
                 'rst': pc.update_rst,
                 'svg': pc.update_svg,
                 'plantuml': pc.update_plantuml,
+                'jinja' : pc.update_jinja,
                 # 'url': pc.update_url,
                 # 'xml': pc.update_xml,
             }
@@ -1481,6 +1493,74 @@ if QtWidgets: # NOQA
             w.setHtml(template)
             w.setReadOnly(True)
 
+        def update_jinja(self, s, keywords):
+            pc = self
+            h = self.c.p.h
+            p = self.c.p
+            c = self.c
+            oldp = None
+
+            #print "try act"
+            if not h.startswith('@jinja'):
+                #print("Not a @jinja node")
+                return
+
+            def find_root(p):
+                for newp in p.parents():
+                    if newp.h.strip() == '@jinja':
+                        oldp, p = p, newp
+                        #print("Found @jinja node")
+                        return oldp, p
+
+            def find_inputs(p):
+                for newp in p.parents():
+                    if newp.h.strip() == '@jinja inputs':
+                        oldp, p = p, newp
+                        _, p = find_root(p) 
+                        return oldp, p
+                
+            # if on jinja node's children, find the parent
+            if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+                # not at @jinja, find from parents
+                oldp, p = find_root(p)
+
+            elif h.startswith('@jinja variable'):
+                # not at @jinja, first find @jinja inputs, then @jinja
+                oldp, p = find_inputs(p) 
+
+            def untangle(c,p):
+            
+                return g.getScript(c,p,
+                    useSelectedText=False,
+                    useSentinels=False)
+
+            template_data = {}
+            for child in p.children():
+                if child.h == '@jinja template':
+                    template_path = g.os_path_finalize_join(c.getNodePath(p), untangle(c, child).strip())
+                    #print("template_path: ", template_path)
+                elif child.h == '@jinja inputs':
+                    for template_var_node in child.children():
+                        template_data[template_var_node.h.replace('@jinja variable', '').strip()] = untangle(c, template_var_node).strip()
+                    #print("template_data: ", template_data)
+
+            if not template_path:
+                g.es("No template_path given. Your @jinja node should contain a child node 'template' with the path to the template (relative or absolute)")
+                return
+
+            #print "act"
+            tmpl = Template(Path(template_path).read_text())
+            out = tmpl.render(template_data)
+            w = pc.ensure_text_widget()
+            pc.show()
+            w.setPlainText(out)
+            p.b = out
+            c.redraw(p)
+            
+            # focus back on entry node
+            if oldp:
+                c.redraw(oldp)
+            
         #@+node:ekr.20110320120020.14479: *4* vr.update_svg
         # http://doc.trolltech.com/4.4/qtsvg.html
         # http://doc.trolltech.com/4.4/painting-svgviewer.html
