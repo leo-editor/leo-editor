@@ -498,7 +498,7 @@
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
-<v t="ekr.20090401113141.2"><vh>@rst c:/test/test.html</vh>
+<v t="ekr.20090401113141.2"><vh>@rst test.html</vh>
 <v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
 </v>
