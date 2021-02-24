@@ -1528,7 +1528,7 @@ class RstCommands:
 
         Return True if the directory existed or was made.
         """
-        c = self.c
+        c, ok = self.c, False  # 1815.
         # Create the directory if it doesn't exist.
         theDir, junk = g.os_path_split(fn)
         theDir = g.os_path_finalize(theDir)  # 1341
