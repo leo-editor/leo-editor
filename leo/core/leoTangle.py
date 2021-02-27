@@ -4,6 +4,8 @@
 Support for @root and Leo's tangle and untangle commands.
 
 Everything in this file is deprecated, but will remain "forever".
+
+In particular, David Szent-Györgyi uses @root files.
 '''
 import os
 import leo.core.leoGlobals as g
