@@ -48,7 +48,7 @@ except ImportError:
 # Aliases.
 StringIO = io.StringIO
 
-if 'plugins' in g.app.debug:
+if 'plugins' in g.app.debug:  # type: ignore
     print('leoRst.py: docutils:', repr(docutils))
     print('leoRst.py:  parsers:', repr(parsers))
     print('leoRst.py:      rst:', repr(rst))

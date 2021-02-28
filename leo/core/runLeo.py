@@ -23,7 +23,7 @@ try:
     # #1472: bind to g immediately.
     from leo.core import leoGlobals as g
     from leo.core import leoApp
-    g.app = leoApp.LeoApp()
+    g.app = leoApp.LeoApp()  # type: ignore
 except Exception as e:
     print(e)
     msg = "\n*** Leo could not be started ***"

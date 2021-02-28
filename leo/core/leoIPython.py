@@ -42,7 +42,7 @@ except ImportError:
     IPKernelApp = None
     import_fail('IPKernelApp')
 
-g.app.ipython_inited = IPKernelApp is not None
+g.app.ipython_inited = IPKernelApp is not None   # type: ignore
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
