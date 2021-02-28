@@ -2,7 +2,7 @@
 #@+node:ekr.20170428084207.303: * @file ../external/npyscreen/fmPopup.py
 #!/usr/bin/python
 # encoding: utf-8
-
+# type: ignore
 #@+others
 #@+node:ekr.20170428084207.304: ** Declarations
 from . import fmForm

@@ -2,6 +2,7 @@
 #@+node:ekr.20170428084208.398: * @file ../external/npyscreen/wgwidget.py
 #!/usr/bin/python
 # pylint: disable=no-member,access-member-before-definition
+# type: ignore
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 import copy

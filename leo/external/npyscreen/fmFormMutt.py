@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.248: * @file ../external/npyscreen/fmFormMutt.py
 #/usr/bin/env python
+# type: ignore
 #@+others
 #@+node:ekr.20170428084207.249: ** Declarations
 import curses

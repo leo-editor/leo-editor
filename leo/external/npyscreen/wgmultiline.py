@@ -2,6 +2,7 @@
 #@+node:ekr.20170428084208.68: * @file ../external/npyscreen/wgmultiline.py
 #!/usr/bin/python
 # pylint: disable=no-member
+# type: ignore
 import collections
 import copy
 import curses

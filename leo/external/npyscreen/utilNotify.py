@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.464: * @file ../external/npyscreen/utilNotify.py
 # pylint: disable=no-member
+# type: ignore
 #@+others
 #@+node:ekr.20170428084207.465: ** Declarations
 from . import fmPopup

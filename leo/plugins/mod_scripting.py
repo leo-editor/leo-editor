@@ -232,6 +232,10 @@ from leo.core import leoGui
 __version__ = '3.0' # Added EvalController class.
 
 #@+others
+#@+node:ekr.20210228135810.1: ** cmd decorator
+def eval_cmd(name):
+    '''Command decorator for the EvalController class.'''
+    return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p, rclicks=None, top_level=False):
@@ -1193,14 +1197,9 @@ class EvalController:
         self.last_result = None
         self.old_stderr = None
         self.old_stdout = None
-
-    def cmd(name):
-        '''Command decorator for the EvalController class.'''
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'evalController',])
     #@+node:ekr.20180328092221.1: *3* eval.Commands
     #@+node:ekr.20180328085426.2: *4* eval
-    @cmd("eval")
+    @eval_cmd("eval")
     def eval_command(self, event):
         #@+<< eval docstring >>
         #@+node:ekr.20180328100519.1: *5* << eval docstring >>
@@ -1236,7 +1235,7 @@ class EvalController:
             self.eval_text(s)
                 # Updates self.last_answer if there is exactly one answer.
     #@+node:ekr.20180328085426.3: *4* eval-block
-    @cmd("eval-block")
+    @eval_cmd("eval-block")
     def eval_block(self, event):
         #@+<< eval-block docstring >>
         #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
@@ -1291,7 +1290,7 @@ class EvalController:
         c.redraw()
         c.bodyWantsFocusNow()
     #@+node:ekr.20180328085426.5: *4* eval-last
-    @cmd("eval-last")
+    @eval_cmd("eval-last")
     def eval_last(self, event, text=None):
         """
         Insert the last result from ``eval``.
@@ -1315,7 +1314,7 @@ class EvalController:
         w.setInsertPoint(i+len(text)+1)
         c.setChanged()
     #@+node:ekr.20180328085426.6: *4* eval-last-pretty
-    @cmd("eval-last-pretty")
+    @eval_cmd("eval-last-pretty")
     def vs_last_pretty(self, event):
         """
         Insert the last result from ``eval``.
@@ -1334,7 +1333,7 @@ class EvalController:
             text=pprint.pformat(text)
             self.eval_last(event, text=text)
     #@+node:ekr.20180328085426.4: *4* eval-replace
-    @cmd("eval-replace")
+    @eval_cmd("eval-replace")
     def eval_replace(self, event):
         """
         Execute the selected text, if any.
