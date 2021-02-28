@@ -8,16 +8,14 @@ import itertools
 import os
 import re
 import sys
+import tabnanny  # for Check Python command # Does not exist in jython
 import time
 import tokenize  # for c.checkAllPythonCode
-try:
-    import tabnanny  # for Check Python command # Does not exist in jython
-except ImportError:
-    tabnanny = None
+from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-    # The leoCommands ctor now does most leo.core.leo* imports.
-    # This breaks circular dependencies.
+    # The leoCommands ctor now does most leo.core.leo* imports,
+    # thereby breaking circular dependencies.
 #@-<< imports >>
 
 def cmd(name):
@@ -1979,7 +1977,7 @@ class Commands:
                 languages.add(word)
         return len(list(languages)) > 1
     #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join (deprecated)
-    deprecated_messages = []
+    deprecated_messages: List[str] = []
 
     def os_path_finalize(self, path, **keys):
         """
@@ -2145,7 +2143,7 @@ class Commands:
             val = val.replace('\\', '/')
         return val
     #@+node:ekr.20190921130036.2: *4* c.replace_path_expression
-    replace_errors = []
+    replace_errors: List[str] = []
 
     def replace_path_expression(self, expr):
         """ local function to replace a single path expression."""
