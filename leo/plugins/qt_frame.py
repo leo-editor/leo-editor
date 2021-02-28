@@ -9,6 +9,7 @@ from collections import defaultdict
 import os
 import platform
 import sys
+from typing import Any, Dict
 
 from leo.core import leoGlobals as g
 from leo.core import leoColor
@@ -30,7 +31,7 @@ try:
         # Disable special behavior, turned back on by associated plugin.
 except ImportError:
     print('Can not import nested_splitter')
-    splitter_class = QtWidgets.QSplitter
+    splitter_class = QtWidgets.QSplitter  # type:ignore
 #@-<< imports >>
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
@@ -2253,7 +2254,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         def put1(self, s, bg=None, fg=None):
             self.put_helper(s, self.textWidget1, bg, fg)
 
-        styleSheetCache = {}
+        styleSheetCache: Dict[Any, str] = {}
             # Keys are widgets, values are stylesheets.
 
         def put_helper(self, s, w, bg=None, fg=None):
