@@ -331,7 +331,7 @@ class Position:
     # collections requires that a key’s hash value is immutable (if the object’s
     # hash value changes, it will be in the wrong hash bucket).
 
-    # To keep mypy happy, don't define __hash__ at all.
+    # #1557: To keep mypy happy, don't define __hash__ at all.
     # __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
