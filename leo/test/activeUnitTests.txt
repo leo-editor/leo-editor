@@ -12585,8 +12585,6 @@ try:
 except Exception:
     restore()
     raise
-#@+node:ekr.20100212112056.5361: *4* @test g.printGcAll
-g.printGcAll()
 #@+node:ekr.20100131180007.5396: *4* @test g.removeBlankLines
 for s,expected in (
     ('a\nb', 'a\nb'),

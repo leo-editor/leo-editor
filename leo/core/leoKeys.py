@@ -3021,22 +3021,17 @@ class KeyHandlerClass:
     def traceVars(self, event):
 
         trace = False and not g.unitTesting
-        traceGC = False
-        verbose = False
-        k = self
         if not trace:
             return
-        if traceGC:
-            g.printNewObjects('masterKey 1')
-        if verbose:
-            char = event.char
-            state = k.state.kind
-            stroke = event.stroke
-            g.trace(
-                f"stroke: {stroke!r}, "
-                f"char: {char!r}, "
-                f"state: {state}, "
-                f"state2: {k.unboundKeyAction}")
+        k = self
+        char = event.char
+        state = k.state.kind
+        stroke = event.stroke
+        g.trace(
+            f"stroke: {stroke!r}, "
+            f"char: {char!r}, "
+            f"state: {state}, "
+            f"state2: {k.unboundKeyAction}")
     #@+node:ekr.20180418031118.1: *5* 1. k.isSpecialKey
     def isSpecialKey(self, event):
         """Return True if char is a special key."""

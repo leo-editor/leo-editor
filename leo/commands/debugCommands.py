@@ -22,7 +22,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
     @cmd('gc-collect-garbage')
     def collectGarbage(self, event=None):
         """Run Python's Garbage Collector."""
-        g.collectGarbage()
+        import gc
+        gc.collect()
     #@+node:ekr.20150514063305.106: ** debug.dumpAll/New/VerboseObjects
     @cmd('gc-dump-all-objects')
     def dumpAllObjects(self, event=None):
