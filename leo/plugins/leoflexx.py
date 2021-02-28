@@ -1184,7 +1184,7 @@ class LeoBrowserApp(flx.PyComponent):
 #@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
     
-    attributes = set()
+    attributes = set()  # type: ignore
    
     def __init__(self, frame):
         super().__init__(frame, parentFrame=None)
