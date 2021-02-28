@@ -18,14 +18,17 @@ from leo.core import leoNodes
 try:
     import docutils
     import docutils.core
+    assert docutils and docutils.core
+    has_docutils = True
     # print('leoImport.py:',docutils)
 except ImportError:
-    docutils = None
+    has_docutils = False
     # print('leoImport.py: can not import docutils')
 try:
     import lxml.html
+    has_lxml = True
 except ImportError:
-    lxml = None
+    has_lxml = False
 # Abbreviation.
 StringIO = io.StringIO
 #@-<< imports >>
@@ -849,7 +852,7 @@ class LeoImportCommands:
         Import a list of .mm.html files exported from FreeMind:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
         """
-        if lxml:
+        if has_lxml:
             FreeMindImporter(self.c).import_files(files)
         else:
             g.es_print('can not import lxml.html')
@@ -1243,7 +1246,7 @@ class LeoImportCommands:
             p, fileName=fileName, s=s, showTree=showTree, ext='.py')
 
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
-        if docutils:
+        if has_docutils:
             return self.scannerUnitTest(
                 p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
         return None
