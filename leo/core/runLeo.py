@@ -12,7 +12,7 @@ import sys
 if sys.executable.endswith("pythonw.exe"):
     sys.stdout = open(os.devnull, "w");
     sys.stderr = open(
-        os.path.join(os.getenv("TEMP"),
+        os.path.join(os.getenv("TEMP", default=""),
         "stderr-" + os.path.basename(sys.argv[0])),
         "w")
 path = os.getcwd()
