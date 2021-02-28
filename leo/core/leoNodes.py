@@ -10,8 +10,10 @@ import copy
 import itertools
 import time
 import re
+from typing import Any, List, Tuple
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
+from leo.core.leoCommands import Commands as Cmdr
 #@-<< imports >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -19,11 +21,11 @@ class NodeIndices:
     """A class managing global node indices (gnx's)."""
     #@+others
     #@+node:ekr.20031218072017.1992: *3* ni.__init__
-    def __init__(self, id_):
+    def __init__(self, id_: str):
         """Ctor for NodeIndices class."""
         self.defaultId = id_
         self.lastIndex = 0
-        self.stack = []
+        self.stack: List[Cmdr] = []
             # A stack of open commanders.
         self.timeString = ''
             # Set by setTimeStamp.
@@ -31,7 +33,7 @@ class NodeIndices:
         # Assign the initial timestamp.
         self.setTimeStamp()
     #@+node:ekr.20150321161305.8: *3* ni.check_gnx
-    def check_gnx(self, c, gnx, v):
+    def check_gnx(self, c: Cmdr, gnx: str, v: "VNode"):
         """Check that no vnode exists with the given gnx in fc.gnxDict."""
         fc = c.fileCommands
         if gnx == 'hidden-root-vnode-gnx':
@@ -45,7 +47,7 @@ class NodeIndices:
                 f"          v: {v}\n"
                 f"         v2: {v2}")
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
-    def compute_last_index(self, c):
+    def compute_last_index(self, c: Cmdr):
         """Scan the entire leo outline to compute ni.last_index."""
         ni = self
         # Partial, experimental, fix for #658.
@@ -76,11 +78,11 @@ class NodeIndices:
         """Return the id to be used by default in all gnx's"""
         return self.defaultId
 
-    def setDefaultId(self, theId):
+    def setDefaultId(self, theId: str):
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
     #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
-    def getNewIndex(self, v, cached=False):
+    def getNewIndex(self, v: "VNode", cached: bool = False):
         """
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
@@ -98,7 +100,7 @@ class NodeIndices:
         fc.gnxDict[gnx] = v
         return gnx
     #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
-    def new_vnode_helper(self, c, gnx, v):
+    def new_vnode_helper(self, c: Cmdr, gnx: str, v: "VNode"):
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
         if gnx:
@@ -108,7 +110,7 @@ class NodeIndices:
         else:
             v.fileIndex = ni.getNewIndex(v)
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s, i=0):
+    def scanGnx(self, s: str, i: int = 0):
         """Create a gnx from its string representation."""
         if not isinstance(s, str):
             g.error("scanGnx: unexpected index type:", type(s), '', s)
@@ -133,7 +135,7 @@ class NodeIndices:
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20141015035853.18304: *3* ni.tupleToString
-    def tupleToString(self, aTuple):
+    def tupleToString(self, aTuple: Tuple[str, str, Any]):
         """
         Convert a gnx tuple returned by scanGnx
         to its string representation.
@@ -196,7 +198,7 @@ class Position:
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v, childIndex=0, stack=None):
+    def __init__(self, v: "VNode", childIndex: int = 0, stack: List[Tuple["VNode", int]] = None):
         """Create a new position with the given childIndex and parent stack."""
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable VNode object changes.
@@ -207,9 +209,9 @@ class Position:
             self.stack = stack[:]  # Creating a copy here is safest and best.
         else:
             self.stack = []
-        g.app.positions += 1
+        g.app.positions += 1  # type: ignore
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
-    def __eq__(self, p2):
+    def __eq__(self, p2: object):
         """Return True if two positions are equivalent."""
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
@@ -953,11 +955,12 @@ class Position:
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.
     #@+node:ekr.20080427062528.4: *4* p._adjustPositionBeforeUnlink
-    def _adjustPositionBeforeUnlink(self, p2):
+    def _adjustPositionBeforeUnlink(self, p2: "Position"):
         """Adjust position p before unlinking p2."""
         # p will change if p2 is a previous sibling of p or
         # p2 is a previous sibling of any ancestor of p.
-        p = self; sib = p.copy()
+        p = self
+        sib = p.copy()
         # A special case for previous siblings.
         # Adjust p._childIndex, not the stack's childIndex.
         while sib.hasBack():
@@ -966,7 +969,8 @@ class Position:
                 p._childIndex -= 1
                 return
         # Adjust p's stack.
-        stack = []; changed = False; i = 0
+        stack: List[Tuple[VNode, int]] = [] 
+        changed, i = False, 0
         while i < len(p.stack):
             v, childIndex = p.stack[i]
             p3 = Position(v=v, childIndex=childIndex, stack=stack[:i])
@@ -1053,7 +1057,7 @@ class Position:
             return p.v.context.hiddenRootNode
         return None
     #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
-    def _relinkAsCloneOf(self, p2):
+    def _relinkAsCloneOf(self, p2: "Position"):
         """A low-level method to replace p.v by a p2.v."""
         p = self
         v, v2 = p.v, p2.v
@@ -1343,7 +1347,7 @@ class Position:
     #@+node:ekr.20150316175921.7: *5* p.checkChild
     #@+node:ekr.20040303175026: *3* p.Moving, Inserting, Deleting, Cloning, Sorting
     #@+node:ekr.20040303175026.8: *4* p.clone
-    def clone(self):
+    def clone(self) -> "Position":
         """Create a clone of back.
 
         Returns the newly created position."""
@@ -1361,7 +1365,7 @@ class Position:
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self, copyGnxs=False):
+    def copyTreeAfter(self, copyGnxs: bool = False) -> "Position":
         """Copy p and insert it after itself."""
         p = self
         p2 = p.insertAfter()
@@ -1369,7 +1373,7 @@ class Position:
         return p2
         
 
-    def copyTreeFromSelfTo(self, p2, copyGnxs=False):
+    def copyTreeFromSelfTo(self, p2: "Position", copyGnxs: bool = False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
@@ -1437,7 +1441,7 @@ class Position:
                 break
         p._unlink()
     #@+node:ekr.20040303175026.3: *4* p.insertAfter
-    def insertAfter(self):
+    def insertAfter(self) -> "Position":
         """
         Inserts a new position after self.
 
@@ -1458,7 +1462,7 @@ class Position:
         n = p.numberOfChildren()
         return p.insertAsNthChild(n)
     #@+node:ekr.20040303175026.5: *4* p.insertAsNthChild
-    def insertAsNthChild(self, n):
+    def insertAsNthChild(self, n: int) -> "Position":
         """
         Inserts a new node as the the nth child of self.
         self must have at least n-1 children.
@@ -1706,7 +1710,7 @@ class Position:
             v.expandedPositions.append(p.copy())
         v.expand()
 
-    def isExpanded(self):
+    def isExpanded(self) -> bool:
         p = self
         if p.isCloned():
             c = p.v.context
