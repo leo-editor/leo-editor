@@ -32,25 +32,27 @@ import logging
 import logging.handlers
 import re
 import sys
+from typing import Any, List
+# Third-party.
+try:
+    import curses
+except ImportError:
+    curses = None  # type: ignore
+from leo.external import npyscreen
+import leo.external.npyscreen.utilNotify as utilNotify
+from leo.external.npyscreen.wgwidget import (EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)  # type: ignore
 try:
     from tkinter import Tk
 except ImportError:
     print('cursesGui.py: Tk required for clipboard handling.')
-    Tk = None
+    Tk = None  # type: ignore
+#
+# Leo imports
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.core import leoNodes
-try:
-    import curses
-except ImportError:
-    curses = None
-# Third-party imports
-from leo.external import npyscreen
-import leo.external.npyscreen.utilNotify as utilNotify
-from leo.external.npyscreen.wgwidget import (
-    EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)
 #@-<< cursesGui2 imports >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
@@ -839,6 +841,14 @@ def method_name(f):
         return '%20s%s' % (m.group(1), m.group(2))
             # Shows actual method: very useful
     return repr(f)
+#@+node:ekr.20210228141208.1: **  decorators (curses2)
+def frame_cmd(name):
+    '''Command decorator for the LeoFrame class.'''
+    return g.new_cmd_decorator(name, ['c', 'frame',])
+
+def log_cmd(name):
+    '''Command decorator for the c.frame.log class.'''
+    return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
@@ -1814,7 +1824,7 @@ class LeoCursesGui(leoGui.LeoGui):
             # At present, HeadWrappers have no widgets.
         return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
-    set_focus_fail = []
+    set_focus_fail: List[Any] = []  # List of widgets
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
@@ -2251,11 +2261,6 @@ class CoreFrame (leoFrame.LeoFrame):
     def createRadioButton(self, name, label):
 
         return leoGui.StringRadioButton(name, label)
-    #@+node:ekr.20170524145750.1: *4* CFrame.cmd (decorator)
-    def cmd(name):
-        '''Command decorator for the LeoFrame class.'''
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20170501161029.1: *4* CFrame.do nothings
     def bringToFront(self):
         pass
@@ -2319,7 +2324,7 @@ class CoreFrame (leoFrame.LeoFrame):
 
         return g.app.gui.get_focus()
     #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (cursesGui2)
-    @cmd('paste-text')
+    @frame_cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         '''
         Paste the clipboard into a widget.
@@ -2380,13 +2385,8 @@ class CoreLog (leoFrame.LeoLog):
         self.logDict = {}
             # Keys are tab names text widgets.  Values are the widgets.
         self.tabWidget = None
-    #@+node:ekr.20170419143731.2: *4*  CLog.cmd (decorator)
-    def cmd(name):
-        '''Command decorator for the c.frame.log class.'''
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20170419143731.7: *4* CLog.clearLog
-    @cmd('clear-log')
+    @log_cmd('clear-log')
     def clearLog(self, event=None):
         '''Clear the log pane.'''
     #@+node:ekr.20170420035717.1: *4* CLog.enable/disable
