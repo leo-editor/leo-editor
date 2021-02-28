@@ -723,9 +723,9 @@ class Position:
     def getThreadNext(self): return self.copy().moveToThreadNext()
     # New in Leo 4.4.3 b2: add c args.
 
-    def getVisBack(self, c): return self.copy().moveToVisBack(c)
+    def getVisBack(self, c: Cmdr): return self.copy().moveToVisBack(c)
 
-    def getVisNext(self, c): return self.copy().moveToVisNext(c)
+    def getVisNext(self, c: Cmdr): return self.copy().moveToVisNext(c)
     # These are efficient enough now that iterators are the normal way to traverse the tree!
     back = getBack
     firstChild = getFirstChild
@@ -1267,7 +1267,7 @@ class Position:
                     return p
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
-    def checkVisBackLimit(self, limit, limitIsVisible, p):
+    def checkVisBackLimit(self, limit, limitIsVisible, p: "Position"):
         """Return done, p or None"""
         c = p.v.context
         if limit == p:
