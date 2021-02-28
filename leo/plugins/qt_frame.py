@@ -105,6 +105,18 @@ def hideOutlinePane(event):
         return
     c.frame.divideLeoSplitter1(0.0)
 
+#@+node:ekr.20210228142208.1: ** decorators (qt_frame.py)
+def body_cmd(name):
+    """Command decorator for the LeoQtBody class."""
+    return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
+
+def frame_cmd(name):
+    """Command decorator for the LeoQtFrame class."""
+    return g.new_cmd_decorator(name, ['c', 'frame',])
+
+def log_cmd(name):
+    """Command decorator for the LeoQtLog class."""
+    return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
     """
@@ -1429,11 +1441,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 class LeoQtBody(leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
     #@+others
-    #@+node:ekr.20150521061618.1: *3* LeoQtBody.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the c.frame.body class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
+    #@+node:ekr.20150521061618.1: *3* LeoQtBody.body_cmd (decorator)
     #@+node:ekr.20110605121601.18181: *3* LeoQtBody.Birth
     #@+node:ekr.20110605121601.18182: *4* LeoQtBody.ctor
     def __init__(self, frame, parentFrame):
@@ -1520,8 +1528,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
     # An override of leoFrame.addEditor.
 
-    @cmd('editor-add')
-    @cmd('add-editor')
+    @body_cmd('editor-add')
+    @body_cmd('add-editor')
     def add_editor_command(self, event=None):
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
@@ -1576,8 +1584,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18198: *5* LeoQtBody.cycleEditorFocus
     # Use the base class method.
     #@+node:ekr.20110605121601.18199: *5* LeoQtBody.delete_editor_command
-    @cmd('delete-editor')
-    @cmd('editor-delete')
+    @body_cmd('delete-editor')
+    @body_cmd('editor-delete')
     def delete_editor_command(self, event=None):
         """Delete the presently selected body text editor."""
         c, d = self.c, self.editorWrappers
@@ -2071,11 +2079,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18249: *4* qtFrame.__repr__
     def __repr__(self):
         return f"<LeoQtFrame: {self.title}>"
-    #@+node:ekr.20150509040227.1: *4* qtFrame.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the LeoQtFrame class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate(self):
         """Finish creating the outline's frame."""
@@ -2770,7 +2773,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18293: *3* qtFrame.Gui-dependent commands
     #@+node:ekr.20110605121601.18301: *4* qtFrame.Window Menu...
     #@+node:ekr.20110605121601.18302: *5* qtFrame.toggleActivePane
-    @cmd('toggle-active-pane')
+    @frame_cmd('toggle-active-pane')
     def toggleActivePane(self, event=None):
         """Toggle the focus between the outline and body panes."""
         frame = self; c = frame.c
@@ -2782,7 +2785,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         else:
             c.treeWantsFocus()
     #@+node:ekr.20110605121601.18303: *5* qtFrame.cascade
-    @cmd('cascade-windows')
+    @frame_cmd('cascade-windows')
     def cascade(self, event=None):
         """Cascade all Leo windows."""
         x, y, delta = 50, 50, 50
@@ -2798,7 +2801,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                     x = 10 + delta; y = 40 + delta
                     delta += 10
     #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes
-    @cmd('equal-sized-panes')
+    @frame_cmd('equal-sized-panes')
     def equalSizedPanes(self, event=None):
         """Make the outline and body panes have the same size."""
         self.resizePanesToRatio(0.5, self.secondary_ratio)
@@ -2807,7 +2810,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Hide the log pane."""
         self.divideLeoSplitter2(0.99)
     #@+node:ekr.20110605121601.18306: *5* qtFrame.minimizeAll
-    @cmd('minimize-all')
+    @frame_cmd('minimize-all')
     def minimizeAll(self, event=None):
         """Minimize all Leo's windows."""
         for frame in g.app.windowList:
@@ -2823,13 +2826,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 w.setWindowState(QtCore.Qt.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
-    @cmd('toggle-split-direction')
+    @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event=None):
         """Toggle the split direction in the present Leo window."""
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
-    @cmd('resize-to-screen')
+    @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event=None):
         """Resize the Leo window so it fill the entire screen."""
         frame = self
@@ -2845,7 +2848,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 w.setWindowState(QtCore.Qt.WindowMaximized)
     #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20110605121601.18310: *5* qtFrame.leoHelp
-    @cmd('open-offline-tutorial')
+    @frame_cmd('open-offline-tutorial')
     def leoHelp(self, event=None):
         """Open Leo's offline tutorial."""
         frame = self; c = frame.c
@@ -2984,11 +2987,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
 class LeoQtLog(leoFrame.LeoLog):
     """A class that represents the log pane of a Qt window."""
     #@+others
-    #@+node:ekr.20150717102609.1: *3* LeoQtLog.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the c.frame.log class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
     #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
     def __init__(self, frame, parentFrame):
@@ -3067,7 +3065,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def getName(self):
         return 'log'  # Required for proper pane bindings.
     #@+node:ekr.20150717102728.1: *3* LeoQtLog.Commands
-    @cmd('clear-log')
+    @log_cmd('clear-log')
     def clearLog(self, event=None):
         """Clear the log pane."""
         w = self.logCtrl.widget  # w is a QTextBrowser
