@@ -331,7 +331,8 @@ class Position:
     # collections requires that a key’s hash value is immutable (if the object’s
     # hash value changes, it will be in the wrong hash bucket).
 
-    __hash__ = None
+    # To keep mypy happy, don't define __hash__ at all.
+    # __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().
