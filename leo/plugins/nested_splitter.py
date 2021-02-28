@@ -7,7 +7,7 @@ import sys
 try:
     from leo.core import leoGlobals as g
 except ImportError:
-    g = None
+    g = None  # type: ignore
         # This will fail when run from main function.
         # this import should be removed anyway
 from leo.core.leoQt import Qt, QtCore, QtConst, QtGui, QtWidgets
