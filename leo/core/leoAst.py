@@ -158,7 +158,7 @@ except Exception:
 v1, v2, junk1, junk2, junk3 = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
-# Async tokens exist in Python 3.5+, but *not* Python 3.7.
+# Async tokens exist in Python 3.5+, but *not* in Python 3.7.
 use_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
