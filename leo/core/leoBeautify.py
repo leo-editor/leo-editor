@@ -17,14 +17,14 @@ try:
     from leo.core import leoAst
 except ImportError:
     # Allow main() to run in any folder containing leoGlobals.py
-    import leoGlobals as g
+    import leoGlobals as g  # type: ignore
 
     # Create a dummy decorator.
 
     def command(func):
         return func
 
-    g.command = command
+    g.command = command  # type: ignore
 
 #@-<< leoBeautify imports >>
 #@+others
