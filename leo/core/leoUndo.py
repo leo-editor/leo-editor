@@ -43,6 +43,10 @@
 from leo.core import leoGlobals as g
 # pylint: disable=unpacking-non-sequence
 #@+others
+#@+node:ekr.20150509193222.1: ** u.cmd (decorator)
+def cmd(name):
+    """Command decorator for the Undoer class."""
+    return g.new_cmd_decorator(name, ['c', 'undoer',])
 #@+node:ekr.20031218072017.3605: ** class Undoer
 class Undoer:
     """A class that implements unlimited undo and redo."""
@@ -119,11 +123,6 @@ class Undoer:
             self.granularity = self.granularity.lower()
         if self.granularity not in ('node', 'line', 'word', 'char'):
             self.granularity = 'line'
-    #@+node:ekr.20150509193222.1: *4* u.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the Undoer class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'undoer',])
     #@+node:ekr.20050416092908.1: *3* u.Internal helpers
     #@+node:ekr.20031218072017.3607: *4* u.clearOptionalIvars
     def clearOptionalIvars(self):
