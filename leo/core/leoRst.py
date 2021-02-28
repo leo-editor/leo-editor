@@ -54,6 +54,10 @@ if 'plugins' in g.app.debug:
     print('leoRst.py:      rst:', repr(rst))
 #@-<< imports >>
 #@+others
+#@+node:ekr.20150509035745.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the RstCommands class."""
+    return g.new_cmd_decorator(name, ['c', 'rstCommands',])
 #@+node:ekr.20090502071837.12: ** code_block
 def code_block(name, arguments, options,
     content, lineno, content_offset, block_text, state, state_machine
@@ -184,11 +188,6 @@ class RstCommands:
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         self.debug = self.c.config.getBool('rst3-debug', default=False)
-    #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the RstCommands class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'rstCommands',])
     #@+node:ekr.20090502071837.42: *4* rst.createD0
     def createD0(self):
         """Create the default options dict."""
