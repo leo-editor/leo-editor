@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
@@ -100,7 +100,7 @@ class NodeIndices:
         fc.gnxDict[gnx] = v
         return gnx
     #@+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
-    def new_vnode_helper(self, c: Cmdr, gnx: str, v: "VNode"):
+    def new_vnode_helper(self, c: Cmdr, gnx: Union[str, None], v: "VNode"):
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
         if gnx:
@@ -1923,7 +1923,7 @@ class VNode:
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
-    def __init__(self, context, gnx=None):
+    def __init__(self, context: Cmdr, gnx: Union[str, None] = None):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = 1 whenever
@@ -1933,12 +1933,12 @@ class VNode:
         self._headString = 'newHeadline'
         self._bodyString = ''
         # Structure data...
-        self.children = []
+        self.children: List["VNode"] = []
             # Ordered list of all children of this node.
-        self.parents = []
+        self.parents: List["VNode"] = []
             # Unordered list of all parents of this node.
         # Other essential data...
-        self.fileIndex = None
+        self.fileIndex: Union[str, None] = None
             # The immutable fileIndex (gnx) for this node. Set below.
         self.iconVal = 0
             # The present value of the node's icon.
@@ -1948,7 +1948,7 @@ class VNode:
         self.context = context  # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
-        self.expandedPositions = []
+        self.expandedPositions: List[Position] = []
             # Positions that should be expanded.
         self.insertSpot = None
             # Location of previous insert point.
@@ -1964,7 +1964,7 @@ class VNode:
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
-        g.app.nodeIndices.new_vnode_helper(context, gnx, self)
+        g.app.nodeIndices.new_vnode_helper(context, gnx, self)  # type: ignore
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
@@ -1986,7 +1986,7 @@ class VNode:
         print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names, h=''):
+    def findAtFileName(self, names: List[str], h: str = ''):
         """Return the name following one of the names in nameList or """ ""
         # Allow h argument for unit testing.
         if not h:
@@ -2124,7 +2124,7 @@ class VNode:
         flag, i = g.is_special(self._bodyString, "@others")
         return flag
     #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
-    def matchHeadline(self, pattern):
+    def matchHeadline(self, pattern: str):
         """Returns True if the headline matches the pattern ignoring whitespace and case.
 
         The headline may contain characters following the successfully matched pattern."""
