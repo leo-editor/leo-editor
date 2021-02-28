@@ -4,6 +4,7 @@
 Support the commands in Leo's File:Print menu.
 Adapted from printing plugin.
 """
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import printsupport, QtGui
 #@+others
@@ -36,7 +37,7 @@ class PrintingController:
         )
         return '\n'.join(table)
     #@+node:ekr.20150509035503.1: *3* pr.cmd (decorator)
-    def cmd(name):
+    def cmd(name: str) -> Any:
         """Command decorator for the PrintingController class."""
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'printingController',])
