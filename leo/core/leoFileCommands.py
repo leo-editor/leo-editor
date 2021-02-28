@@ -26,6 +26,10 @@ BytesIO = io.BytesIO
 #@-<< imports >>
 PRIVAREA = '---begin-private-area---'
 #@+others
+#@+node:ekr.20150509194827.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the FileCommands class."""
+    return g.new_cmd_decorator(name, ['c', 'fileCommands',])
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
 
@@ -358,11 +362,6 @@ class FileCommands:
     """A class creating the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: *3* fc.Birth
-    #@+node:ekr.20150509194827.1: *4* fc.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the FileCommands class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'fileCommands',])
     #@+node:ekr.20031218072017.3019: *4* fc.ctor
     def __init__(self, c):
         """Ctor for FileCommands class."""
