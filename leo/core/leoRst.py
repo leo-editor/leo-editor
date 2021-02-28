@@ -26,25 +26,25 @@ from leo.core import leoGlobals as g
 try:
     from leo.plugins import mod_http
 except Exception:  # Don't let this crash Leo!
-    mod_http = None
+    mod_http = None  # type: ignore
 # Third-part imports.
 try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type: ignore
 if docutils:
     try:
         from docutils import parsers
         from docutils.parsers import rst
         if not parsers or not rst:
-            docutils = None
+            docutils = None  # type: ignore
     except Exception:  # Don't let this crash Leo!
-        docutils = None
+        docutils = None  # type: ignore
 try:
     import SilverCity
 except ImportError:
-    SilverCity = None
+    SilverCity = None  # type: ignore
 # Aliases.
 StringIO = io.StringIO
 
@@ -84,22 +84,22 @@ def code_block(name, arguments, options,
 
 # See http://docutils.sourceforge.net/spec/howto/rst-directives.html
 
-code_block.arguments = (
+code_block.arguments = (    # type: ignore
     1,  # Number of required arguments.
     0,  # Number of optional arguments.
-    0)  # True if final argument may contain whitespace.
+    0,  # True if final argument may contain whitespace.
+)
+
 # A mapping from option name to conversion function.
 if docutils:
-    code_block.options = {
-        'language':
-        docutils.parsers.rst.directives.unchanged
-            # Return the text argument, unchanged.
+    code_block.options = {    # type: ignore
+        'language': docutils.parsers.rst.directives.unchanged  # Return the text argument, unchanged.
     }
-    code_block.content = 1  # True if content is allowed.
+    code_block.content = 1  # type: ignore  # True if content is allowed.
     # Register the directive with docutils.
     docutils.parsers.rst.directives.register_directive('code-block', code_block)
 else:
-    code_block.options = {}
+    code_block.options = {}  # type: ignore
 #@+node:ekr.20090502071837.33: ** class RstCommands
 class RstCommands:
     """
