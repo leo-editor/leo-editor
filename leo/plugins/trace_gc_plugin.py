@@ -23,7 +23,7 @@ def init():
     return ok
 #@+node:ekr.20050111084900: ** printIdleRefs
 def printIdleRefs(tag, keywords):
-    g.printGcRefs(tag)
+    g.printGcRefs()
 #@+node:ekr.20050111084900.1: ** printIdleGC (trace_gc_plugin)
 def printIdleGC(tag, keywords):
     # Calling printGc is too expensive to do on every idle call.
@@ -32,8 +32,8 @@ def printIdleGC(tag, keywords):
     if tag == "idle":
         global gcCount; gcCount += 1
         if (gcCount % 20) == 0:
-            g.printGc(tag)
+            g.printGc()
     else:
-        g.printGc(tag)
+        g.printGc()
 #@-others
 #@-leo

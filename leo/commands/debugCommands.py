@@ -18,30 +18,17 @@ def cmd(name):
 
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.103: ** debug.collectGarbage
+    #@+node:ekr.20150514063305.103: ** debug.gc-collect-garbage
     @cmd('gc-collect-garbage')
     def collectGarbage(self, event=None):
         """Run Python's Garbage Collector."""
         import gc
         gc.collect()
-    #@+node:ekr.20150514063305.106: ** debug.dumpAll/New/VerboseObjects
+    #@+node:ekr.20150514063305.106: ** debug.gc-dump-all
     @cmd('gc-dump-all-objects')
     def dumpAllObjects(self, event=None):
         """Print a summary of all existing Python objects."""
-        g.printGcAll()
-
-    @cmd('gc-dump-new-objects')
-    def dumpNewObjects(self, event=None):
-        """
-        Print a summary of all Python objects created
-        since the last time Python's Garbage collector was run.
-        """
-        g.printGcObjects()
-
-    @cmd('gc-dump-objects-verbose')
-    def verboseDumpObjects(self, event=None):
-        """Print a more verbose listing of all existing Python objects."""
-        g.printGcVerbose()
+        g.printGc()
     #@+node:ekr.20170713112849.1: ** debug.dumpNode
     @cmd('dump-node')
     def dumpNode(self, event=None):
