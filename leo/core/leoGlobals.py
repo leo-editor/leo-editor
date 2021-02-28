@@ -35,7 +35,7 @@ import tempfile
 import time
 import traceback
 import types
-from typing import Any, Dict, Set  #  List, 
+from typing import Any, Callable, Dict, List, Set
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -44,11 +44,11 @@ import webbrowser
 try:
     import requests
 except Exception:
-    requests = None
+    requests = None  # type: ignore
 try:
     import gettext
 except ImportError:  # does not exist in jython.
-    gettext = None
+    gettext = None  # type: ignore
 
 StringIO = io.StringIO
 #@-<< imports >>
@@ -322,8 +322,8 @@ g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 #@-<< define regex's >>
-tree_popup_handlers = []  # Set later.
-user_dict = {}
+tree_popup_handlers: List[Callable] = []  # Set later.
+user_dict: Dict[Any, Any] = {}
     # Non-persistent dictionary for free use by scripts and plugins.
 # g = None
 app = None  # The singleton app object. Set by runLeo.py.
@@ -1800,7 +1800,7 @@ class SherlockTracer:
                         result.append(f"{name}={val}")
         return ','.join(result)
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
-    bad_fns = []
+    bad_fns: List[str] = []
 
     def do_line(self, frame, arg):
         """print each line of enabled functions."""
@@ -1940,8 +1940,8 @@ class SherlockTracer:
             pass
         return full_name
     #@+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
-    ignored_files = []
-    ignored_functions = []
+    ignored_files: List[str] = []  # List of files.
+    ignored_functions: List[str] = []  # List of files.
 
     def is_enabled(self, file_name, function_name, patterns=None):
         """Return True if tracing for function_name in the given file is enabled."""
