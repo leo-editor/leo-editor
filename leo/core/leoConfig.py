@@ -7,6 +7,8 @@
 import os
 import sys
 import re
+from typing import Any, Dict, Tuple, Union
+from leo.core.leoCommands import Commands
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -51,7 +53,7 @@ class ParserBaseClass:
         'shortcuts',
     ]
     # Keys are settings names, values are (type,value) tuples.
-    settingsDict = {}
+    settingsDict: Dict[str, Tuple[Any, Union[g.TypedDict, g.GeneralSetting]]] = {}
     #@-<< ParserBaseClass data >>
     #@+others
     #@+node:ekr.20041119204700: *3*  pbc.ctor
@@ -2066,7 +2068,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict = {}
+    no_menu_dict: Dict[str, Commands] = {}
         # Keys are file names.
 
     def getShortcut(self, commandName):
