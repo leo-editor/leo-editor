@@ -36,7 +36,7 @@ import tempfile
 import time
 import traceback
 import types
-from typing import Any, Callable, Dict, List, Set
+from typing import Any, Callable, Dict, List, Optional, Set
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -5915,9 +5915,9 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-unicode_warnings = {}  # Keys are g.callers.
+unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
-def toUnicode(s, encoding=None, reportErrors=False):
+def toUnicode(s: Any, encoding: Optional[str] = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -8021,7 +8021,7 @@ def openUrlHelper(event, url=None):
     return None
 #@-others
 # set g when the import is about to complete.
-g = sys.modules.get('leo.core.leoGlobals')
+g: Any = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
 if __name__ == '__main__':
     unittest.main()
