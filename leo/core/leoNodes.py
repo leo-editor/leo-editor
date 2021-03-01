@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
@@ -1927,8 +1927,10 @@ class VNode:
         v.unknownAttributes or any mutable VNode object changes.
         """
         # The primary data: headline and body text.
-        self._headString = 'newHeadline'
-        self._bodyString = ''
+        self._headString: str = 'newHeadline'
+        self._bodyString: str = ''
+        # For zodb.
+        self._p_changed = 0
         # Structure data...
         self.children: List["VNode"] = []
             # Ordered list of all children of this node.
@@ -1983,7 +1985,7 @@ class VNode:
         print(f"children: {g.listToString(v.children)}")
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: List[str], h: str = ''):
+    def findAtFileName(self, names: Sequence[str], h: str = '') -> str:
         """Return the name following one of the names in nameList or """ ""
         # Allow h argument for unit testing.
         if not h:
@@ -1997,7 +1999,7 @@ class VNode:
             return name
         return ""
     #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
-    def anyAtFileNodeName(self):
+    def anyAtFileNodeName(self) -> str:
         """Return the file name following an @file node or an empty string."""
         return (
             self.findAtFileName(g.app.atAutoNames) or
@@ -2006,47 +2008,47 @@ class VNode:
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
-    def atAutoNodeName(self, h=None):
+    def atAutoNodeName(self, h=None) -> str:
         return self.findAtFileName(g.app.atAutoNames, h=h)
 
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no
     # importer or writer for reStructuredText exists.
 
-    def atAutoRstNodeName(self, h=None):
+    def atAutoRstNodeName(self, h=None) -> str:
         names = ("@auto-rst",)
         return self.findAtFileName(names, h=h)
 
-    def atCleanNodeName(self):
+    def atCleanNodeName(self) -> str:
         names = ("@clean",)
         return self.findAtFileName(names)
 
-    def atEditNodeName(self):
+    def atEditNodeName(self) -> str:
         names = ("@edit",)
         return self.findAtFileName(names)
 
-    def atFileNodeName(self):
+    def atFileNodeName(self) -> str:
         names = ("@file", "@thin")
             # Fix #403.
         return self.findAtFileName(names)
 
-    def atNoSentinelsFileNodeName(self):
+    def atNoSentinelsFileNodeName(self) -> str:
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
 
-    def atRstFileNodeName(self):
+    def atRstFileNodeName(self) -> str:
         names = ("@rst",)
         return self.findAtFileName(names)
 
-    def atShadowFileNodeName(self):
+    def atShadowFileNodeName(self) -> str:
         names = ("@shadow",)
         return self.findAtFileName(names)
 
-    def atSilentFileNodeName(self):
+    def atSilentFileNodeName(self) -> str:
         names = ("@asis", "@file-asis",)
         return self.findAtFileName(names)
 
-    def atThinFileNodeName(self):
+    def atThinFileNodeName(self) -> str:
         names = ("@thin", "@file-thin",)
         return self.findAtFileName(names)
 
@@ -2055,54 +2057,51 @@ class VNode:
     atNoSentFileNodeName = atNoSentinelsFileNodeName
     atAsisFileNodeName = atSilentFileNodeName
     #@+node:EKR.20040430152000: *4* v.isAtAllNode
-    def isAtAllNode(self):
+    def isAtAllNode(self) -> bool:
         """Returns True if the receiver contains @others in its body at the start of a line."""
         flag, i = g.is_special(self._bodyString, "@all")
         return flag
     #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
-    def isAnyAtFileNode(self):
+    def isAnyAtFileNode(self) -> str:
         """Return True if v is any kind of @file or related node."""
-        # This routine should be as fast as possible.
-        # It is called once for every VNode when writing a file.
-        h = self.headString()
-        return h and h[0] == '@' and self.anyAtFileNodeName()
+        return self.anyAtFileNodeName()
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode
-    def isAtAutoNode(self):
-        return bool(self.atAutoNodeName())
+    def isAtAutoNode(self) -> str:
+        return self.atAutoNodeName()
 
-    def isAtAutoRstNode(self):
-        return bool(self.atAutoRstNodeName())
+    def isAtAutoRstNode(self) -> str:
+        return self.atAutoRstNodeName()
 
-    def isAtCleanNode(self):
-        return bool(self.atCleanNodeName())
+    def isAtCleanNode(self) -> str:
+        return self.atCleanNodeName()
 
-    def isAtEditNode(self):
-        return bool(self.atEditNodeName())
+    def isAtEditNode(self) -> str:
+        return self.atEditNodeName()
 
-    def isAtFileNode(self):
-        return bool(self.atFileNodeName())
+    def isAtFileNode(self) -> str:
+        return self.atFileNodeName()
 
-    def isAtRstFileNode(self):
-        return bool(self.atRstFileNodeName())
+    def isAtRstFileNode(self) -> str:
+        return self.atRstFileNodeName()
 
-    def isAtNoSentinelsFileNode(self):
-        return bool(self.atNoSentinelsFileNodeName())
+    def isAtNoSentinelsFileNode(self) -> str:
+        return self.atNoSentinelsFileNodeName()
 
-    def isAtSilentFileNode(self):  # @file-asis
-        return bool(self.atSilentFileNodeName())
+    def isAtSilentFileNode(self) -> str:
+        return self.atSilentFileNodeName()
 
-    def isAtShadowFileNode(self):
-        return bool(self.atShadowFileNodeName())
+    def isAtShadowFileNode(self) -> str:
+        return self.atShadowFileNodeName()
 
-    def isAtThinFileNode(self):
-        return bool(self.atThinFileNodeName())
+    def isAtThinFileNode(self) -> str:
+        return self.atThinFileNodeName()
 
     # New names, less confusing:
 
     isAtNoSentFileNode = isAtNoSentinelsFileNode
     isAtAsisFileNode = isAtSilentFileNode
     #@+node:ekr.20031218072017.3351: *4* v.isAtIgnoreNode
-    def isAtIgnoreNode(self):
+    def isAtIgnoreNode(self) -> bool:
         """
         Returns True if:
             
@@ -2116,12 +2115,12 @@ class VNode:
         flag, i = g.is_special(self._bodyString, "@ignore")
         return flag
     #@+node:ekr.20031218072017.3352: *4* v.isAtOthersNode
-    def isAtOthersNode(self):
+    def isAtOthersNode(self) -> bool:
         """Returns True if the receiver contains @others in its body at the start of a line."""
         flag, i = g.is_special(self._bodyString, "@others")
         return flag
     #@+node:ekr.20031218072017.3353: *4* v.matchHeadline
-    def matchHeadline(self, pattern: str):
+    def matchHeadline(self, pattern: str) -> bool:
         """Returns True if the headline matches the pattern ignoring whitespace and case.
 
         The headline may contain characters following the successfully matched pattern."""
@@ -2134,7 +2133,7 @@ class VNode:
         return h.startswith(pattern)
     #@+node:ekr.20160502100151.1: *3* v.copyTree
 
-    def copyTree(self, copyMarked=False):
+    def copyTree(self, copyMarked: bool = False):
         """
         Return an all-new tree of vnodes that are copies of self and all its
         descendants.
@@ -2162,7 +2161,7 @@ class VNode:
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     body_unicode_warning = False
 
-    def bodyString(self):
+    def bodyString(self) -> str:
         # This message should never be printed and we want to avoid crashing here!
         if isinstance(self._bodyString, str):
             return self._bodyString
@@ -2175,47 +2174,47 @@ class VNode:
         # Deprecated, but here for compatibility.
     #@+node:ekr.20031218072017.3360: *4* v.Children
     #@+node:ekr.20031218072017.3362: *5* v.firstChild
-    def firstChild(self):
+    def firstChild(self) -> Optional["VNode"]:
         v = self
-        return v.children and v.children[0]
+        return v.children[0] if v.children else None
     #@+node:ekr.20040307085922: *5* v.hasChildren & hasFirstChild
-    def hasChildren(self):
+    def hasChildren(self) -> bool:
         v = self
         return len(v.children) > 0
 
     hasFirstChild = hasChildren
     #@+node:ekr.20031218072017.3364: *5* v.lastChild
-    def lastChild(self):
+    def lastChild(self) -> Optional["VNode"]:
         v = self
         return v.children[-1] if v.children else None
     #@+node:ekr.20031218072017.3365: *5* v.nthChild
     # childIndex and nthChild are zero-based.
 
-    def nthChild(self, n):
+    def nthChild(self, n: int) -> Optional["VNode"]:
         v = self
         if 0 <= n < len(v.children):
             return v.children[n]
         return None
     #@+node:ekr.20031218072017.3366: *5* v.numberOfChildren
-    def numberOfChildren(self):
+    def numberOfChildren(self) -> int:
         v = self
         return len(v.children)
     #@+node:ekr.20040323100443: *4* v.directParents
-    def directParents(self):
+    def directParents(self) -> List["VNode"]:
         """(New in 4.2) Return a list of all direct parent vnodes of a VNode.
 
         This is NOT the same as the list of ancestors of the VNode."""
         v = self
         return v.parents
     #@+node:ekr.20080429053831.6: *4* v.hasBody
-    def hasBody(self):
+    def hasBody(self) -> bool:
         """Return True if this VNode contains body text."""
         s = self._bodyString
-        return s and len(s) > 0
+        return bool(s) and len(s) > 0
     #@+node:ekr.20031218072017.1581: *4* v.headString
     head_unicode_warning = False
 
-    def headString(self):
+    def headString(self) -> str:
         """Return the headline string."""
         # This message should never be printed and we want to avoid crashing here!
         if isinstance(self._headString, str):
@@ -2225,73 +2224,66 @@ class VNode:
             g.internalError('not a string', repr(self._headString))
         return g.toUnicode(self._headString)
     #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
-    def isNthChildOf(self, n, parent_v):
+    def isNthChildOf(self, n: int, parent_v: "VNode") -> bool:
         """Return True if v is the n'th child of parent_v."""
         v = self
-        children = parent_v and parent_v.children
-        return children and 0 <= n < len(children) and children[n] == v
+        if not parent_v:
+            return False
+        children = parent_v.children
+        if not children:
+            return False
+        return 0 <= n < len(children) and children[n] == v
     #@+node:ekr.20031218072017.3367: *4* v.Status Bits
     #@+node:ekr.20031218072017.3368: *5* v.isCloned
-    def isCloned(self):
+    def isCloned(self) -> bool:
         return len(self.parents) > 1
     #@+node:ekr.20031218072017.3369: *5* v.isDirty
-    def isDirty(self):
+    def isDirty(self) -> bool:
         return (self.statusBits & self.dirtyBit) != 0
     #@+node:ekr.20031218072017.3371: *5* v.isMarked
-    def isMarked(self):
+    def isMarked(self) -> bool:
         return (self.statusBits & VNode.markedBit) != 0
     #@+node:ekr.20031218072017.3372: *5* v.isOrphan
-    def isOrphan(self):
+    def isOrphan(self) -> bool:
         return (self.statusBits & VNode.orphanBit) != 0
     #@+node:ekr.20031218072017.3373: *5* v.isSelected
-    def isSelected(self):
+    def isSelected(self) -> bool:
         return (self.statusBits & VNode.selectedBit) != 0
     #@+node:ekr.20031218072017.3374: *5* v.isTopBitSet
-    def isTopBitSet(self):
+    def isTopBitSet(self) -> bool:
         return (self.statusBits & self.topBit) != 0
     #@+node:ekr.20031218072017.3376: *5* v.isVisited
-    def isVisited(self):
+    def isVisited(self) -> bool:
         return (self.statusBits & VNode.visitedBit) != 0
     #@+node:ekr.20080429053831.10: *5* v.isWriteBit
-    def isWriteBit(self):
+    def isWriteBit(self) -> bool:
         v = self
         return (v.statusBits & v.writeBit) != 0
     #@+node:ekr.20031218072017.3377: *5* v.status
-    def status(self):
+    def status(self) -> int:
         return self.statusBits
     #@+node:ekr.20031218072017.3384: *3* v.Setters
-    #@+node:ekr.20090830051712.6151: *4*  v.Dirty bits
+    #@+node:ekr.20031218072017.3386: *4*  v.Status bits
+    #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
+    def clearClonedBit(self):
+        self.statusBits &= ~self.clonedBit
     #@+node:ekr.20031218072017.3390: *5* v.clearDirty
     def clearDirty(self):
         """Clear the vnode dirty bit."""
         v = self
         v.statusBits &= ~v.dirtyBit
-    #@+node:ekr.20080429053831.12: *5* v.setDirty
-    def setDirty(self):
-        """
-        Set the vnode dirty bit.
-        
-        This method is fast, but dangerous. Unlike p.setDirty, this method does
-        not call v.setAllAncestorAtFileNodesDirty.
-        """
-        self.statusBits |= self.dirtyBit
-    #@+node:ekr.20031218072017.3386: *4*  v.Status bits
-    #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
-    def clearClonedBit(self):
-        self.statusBits &= ~self.clonedBit
     #@+node:ekr.20031218072017.3391: *5* v.clearMarked
     def clearMarked(self):
         self.statusBits &= ~self.markedBit
-    #@+node:ekr.20080429053831.8: *5* v.clearWriteBit
-    def clearWriteBit(self):
-        self.statusBits &= ~self.writeBit
     #@+node:ekr.20031218072017.3392: *5* v.clearOrphan
     def clearOrphan(self):
-        # if self.h.startswith('@file'): g.trace(self.h,g.callers())
         self.statusBits &= ~self.orphanBit
     #@+node:ekr.20031218072017.3393: *5* v.clearVisited
     def clearVisited(self):
         self.statusBits &= ~self.visitedBit
+    #@+node:ekr.20080429053831.8: *5* v.clearWriteBit
+    def clearWriteBit(self):
+        self.statusBits &= ~self.writeBit
     #@+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
     def contract(self):
         """Contract the node."""
@@ -2309,17 +2301,26 @@ class VNode:
         """Return True if the VNode expansion bit is set."""
         return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
-    def initStatus(self, status):
+    def initStatus(self, status: int):
         self.statusBits = status
     #@+node:ekr.20031218072017.3397: *5* v.setClonedBit & initClonedBit
     def setClonedBit(self):
         self.statusBits |= self.clonedBit
 
-    def initClonedBit(self, val):
+    def initClonedBit(self, val: bool):
         if val:
             self.statusBits |= self.clonedBit
         else:
             self.statusBits &= ~self.clonedBit
+    #@+node:ekr.20080429053831.12: *5* v.setDirty
+    def setDirty(self):
+        """
+        Set the vnode dirty bit.
+        
+        This method is fast, but dangerous. Unlike p.setDirty, this method does
+        not call v.setAllAncestorAtFileNodesDirty.
+        """
+        self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3398: *5* v.setMarked & initMarkedBit
     def setMarked(self):
         self.statusBits |= self.markedBit
@@ -2347,7 +2348,7 @@ class VNode:
     def childrenModified(self):
         g.childrenModifiedSet.add(self)
     #@+node:ekr.20031218072017.3385: *4* v.computeIcon & setIcon
-    def computeIcon(self):
+    def computeIcon(self) -> int:
         val = 0; v = self
         if v.hasBody(): val += 1
         if v.isMarked(): val += 2
@@ -2400,45 +2401,7 @@ class VNode:
         except AttributeError:
             # 2011/03/21: w may not support the high-level interface.
             pass
-    #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
-    unicode_warning_given = False
-
-    def setBodyString(self, s):
-        v = self
-        if isinstance(s, str):
-            v._bodyString = s
-            return
-        try:
-            v._bodyString = g.toUnicode(s, reportErrors=True)
-        except Exception:
-            if not self.unicode_warning_given:
-                self.unicode_warning_given = True
-                g.internalError(s)
-                g.es_exception()
-        self.contentModified()  # #1413.
-        signal_manager.emit(self.context, 'body_changed', self)
-
-    def setHeadString(self, s):
-        # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
-        # API allows headlines to contain newlines.
-        v = self
-        if g.isUnicode(s):
-            v._headString = s.replace('\n', '')
-            return
-        s = g.toUnicode(s, reportErrors=True)
-        v._headString = s.replace('\n', '')
-        self.contentModified()  # #1413.
-
-    initBodyString = setBodyString
-    initHeadString = setHeadString
-    setHeadText = setHeadString
-    setTnodeText = setBodyString
-    #@+node:ekr.20031218072017.3402: *4* v.setSelection
-    def setSelection(self, start, length):
-        v = self
-        v.selectionStart = start
-        v.selectionLength = length
-    #@+node:ekr.20191213161023.1: *3* v.setAllAncestorAtFileNodesDirty
+    #@+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self):
         """
         Original idea by Виталије Милошевић (Vitalije Milosevic).
@@ -2459,8 +2422,46 @@ class VNode:
         for v2 in v_and_parents(v):
             if v2.isAnyAtFileNode():
                 v2.setDirty()
+    #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
+    unicode_warning_given = False
+
+    def setBodyString(self, s: Any):
+        v = self
+        if isinstance(s, str):
+            v._bodyString = s
+            return
+        try:
+            v._bodyString = g.toUnicode(s, reportErrors=True)
+        except Exception:
+            if not self.unicode_warning_given:
+                self.unicode_warning_given = True
+                g.internalError(s)
+                g.es_exception()
+        self.contentModified()  # #1413.
+        signal_manager.emit(self.context, 'body_changed', self)
+
+    def setHeadString(self, s: Any):
+        # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
+        # API allows headlines to contain newlines.
+        v = self
+        if g.isUnicode(s):
+            v._headString = s.replace('\n', '')
+            return
+        s = g.toUnicode(s, reportErrors=True)
+        v._headString = s.replace('\n', '')
+        self.contentModified()  # #1413.
+
+    initBodyString = setBodyString
+    initHeadString = setHeadString
+    setHeadText = setHeadString
+    setTnodeText = setBodyString
+    #@+node:ekr.20031218072017.3402: *4* v.setSelection
+    def setSelection(self, start: int, length: int):
+        v = self
+        v.selectionStart = start
+        v.selectionLength = length
     #@+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
-    def cloneAsNthChild(self, parent_v, n):
+    def cloneAsNthChild(self, parent_v: "VNode", n: int):
         # Does not check for illegal clones!
         v = self
         v._linkAsNthChild(parent_v, n)
@@ -2474,7 +2475,7 @@ class VNode:
         v = self
         return v.insertAsNthChild(len(v.children))
 
-    def insertAsNthChild(self, n):
+    def insertAsNthChild(self, n: int):
         v = self
         assert 0 <= n <= len(v.children)
         v2 = VNode(v.context)
@@ -2483,7 +2484,7 @@ class VNode:
         return v2
     #@+node:ekr.20080427062528.9: *3* v.Low level methods
     #@+node:ekr.20180709175203.1: *4* v._addCopiedLink
-    def _addCopiedLink(self, childIndex, parent_v):
+    def _addCopiedLink(self, childIndex: int, parent_v: "VNode"):
         """Adjust links after adding a link to v."""
         v = self
         v.context.frame.tree.generation += 1
@@ -2496,7 +2497,7 @@ class VNode:
         v._p_changed = 1
         parent_v._p_changed = 1
     #@+node:ekr.20090706110836.6135: *4* v._addLink & _addParentLinks
-    def _addLink(self, childIndex, parent_v):
+    def _addLink(self, childIndex: int, parent_v: "VNode"):
         """Adjust links after adding a link to v."""
         v = self
         v.context.frame.tree.generation += 1
@@ -2523,7 +2524,7 @@ class VNode:
             for child in v.children:
                 child._addParentLinks(parent=v)
     #@+node:ekr.20090804184658.6128: *4* v._cutLink & _cutParentLinks
-    def _cutLink(self, childIndex, parent_v):
+    def _cutLink(self, childIndex: int, parent_v: "VNode"):
         """Adjust links after cutting a link to v."""
         v = self
         v.context.frame.tree.generation += 1
@@ -2571,7 +2572,7 @@ class VNode:
                 g.printObj(v2.parents)
         v.children = []
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild
-    def _linkAsNthChild(self, parent_v, n):
+    def _linkAsNthChild(self, parent_v: "VNode", n: int):
         """Links self as the n'th child of VNode pv"""
         v = self  # The child node.
         v._addLink(n, parent_v)
@@ -2581,7 +2582,7 @@ class VNode:
         v = self
         return v.bodyString()
 
-    def __set_b(self, val):
+    def __set_b(self, val: str):
         v = self
         v.setBodyString(val)
 

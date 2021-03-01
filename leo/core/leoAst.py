@@ -293,7 +293,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s, encoding='utf-8'):
+    def toUnicode(self, s, encoding='utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         if isinstance(s, str):
             return s
