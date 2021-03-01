@@ -16,6 +16,7 @@ import codecs
 import fnmatch
 from functools import reduce
 import gc
+import gettext
 import glob
 import importlib
 import inspect
@@ -23,8 +24,8 @@ import io
 import operator
 import os
 from pathlib import Path
-# Do NOT import pdb here!  We shall define pdb as a _function_ below.
-    # import pdb
+# import pdb  # Do NOT import pdb here!
+              # We shall define pdb as a _function_ below.
 import re
 import shlex
 import shutil
@@ -40,16 +41,8 @@ import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
-# User imports last.
-try:
-    import requests
-except Exception:
-    requests = None  # type: ignore
-try:
-    import gettext
-except ImportError:  # does not exist in jython.
-    gettext = None  # type: ignore
-
+#
+# Abbreviations...
 StringIO = io.StringIO
 #@-<< imports >>
 in_bridge = False
@@ -5081,7 +5074,9 @@ class GitIssueController:
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, label_list, root, state, limit=100):
         """Get all issues for the base url."""
-        if not requests:
+        try:
+            import requests
+        except Exception:
             g.trace('requests not found: `pip install requests`')
             return
         label = None
@@ -5118,7 +5113,9 @@ class GitIssueController:
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
     def get_one_issue(self, label, state, limit=20):
         """Create a list of issues with the given label."""
-        if not requests:
+        try:
+            import requests
+        except Exception:
             g.trace('requests not found: `pip install requests`')
             return
         root = self.root.insertAsLastChild()
