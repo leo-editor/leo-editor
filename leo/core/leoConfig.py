@@ -8,7 +8,7 @@ import os
 import sys
 import re
 from typing import Any, Dict, Tuple, Union
-from leo.core.leoCommands import Commands
+from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -2068,7 +2068,7 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: Dict[str, Commands] = {}
+    no_menu_dict: Dict[str, Cmdr] = {}
         # Keys are file names.
 
     def getShortcut(self, commandName):

@@ -1920,7 +1920,7 @@ class VNode:
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
-    def __init__(self, context: Cmdr, gnx: Union[str, None] = None):
+    def __init__(self, context: Cmdr, gnx: Optional[str] = None):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = 1 whenever
