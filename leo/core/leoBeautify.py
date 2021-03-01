@@ -24,7 +24,6 @@ def orange_diff_files(event):
     Show the diffs that would result from beautifying the external files at
     c.p.
     """
-    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return
@@ -167,7 +166,6 @@ def fstringify_diff_files(event):
     Show the diffs that would result from fstringifying the external files at
     c.p.
     """
-    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return
@@ -195,7 +193,6 @@ def fstringify_diff_files(event):
 @g.command('fstringify-files-silent')
 def fstringify_files_silent(event):
     """Silently fstringifying the external files at c.p."""
-    from leo.core import leoAst
     c = event.get('c')
     if not c or not c.p:
         return
