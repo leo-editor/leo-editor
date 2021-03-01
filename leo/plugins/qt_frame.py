@@ -23,15 +23,7 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins import qt_tree
 from leo.plugins.mod_scripting import build_rclick_tree
-
-try:
-    from leo.plugins import nested_splitter
-    splitter_class = nested_splitter.NestedSplitter
-    nested_splitter.NestedSplitter.enabled = False
-        # Disable special behavior, turned back on by associated plugin.
-except ImportError:
-    print('Can not import nested_splitter')
-    splitter_class = QtWidgets.QSplitter  # type:ignore
+from leo.plugins.nested_splitter import NestedSplitter
 #@-<< imports >>
 #@+others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
@@ -407,10 +399,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        main_splitter = splitter_class(parent)
+        main_splitter = NestedSplitter(parent)
         main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(QtCore.Qt.Vertical)
-        secondary_splitter = splitter_class(main_splitter)
+        secondary_splitter = NestedSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(QtCore.Qt.Horizontal)
         # Official ivar:
