@@ -325,8 +325,7 @@ g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 tree_popup_handlers: List[Callable] = []  # Set later.
 user_dict: Dict[Any, Any] = {}
     # Non-persistent dictionary for free use by scripts and plugins.
-# g = None
-app = None  # The singleton app object. Set by runLeo.py.
+app: Any = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
