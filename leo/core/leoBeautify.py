@@ -1,32 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20150521115018.1: * @file leoBeautify.py
 """Leo's beautification classes."""
-#@+<< leoBeautify imports >>
-#@+node:ekr.20150530081336.1: **   << leoBeautify imports >>
-try:
-    # pylint: disable=import-error
-        # We can't assume the user has this.
-    import black
-except Exception:
-    black = None
 import os
 import time
-
-try:
-    from leo.core import leoGlobals as g
-    from leo.core import leoAst
-except ImportError:
-    # Allow main() to run in any folder containing leoGlobals.py
-    import leoGlobals as g  # type: ignore
-
-    # Create a dummy decorator.
-
-    def command(func):
-        return func
-
-    g.command = command  # type: ignore
-
-#@-<< leoBeautify imports >>
+from leo.core import leoGlobals as g
+from leo.core import leoAst
 #@+others
 #@+node:ekr.20191104201534.1: **   Top-level functions (leoBeautify.py)
 #@+node:ekr.20150528131012.1: *3* Beautify:commands
@@ -107,12 +85,15 @@ def orange_files(event):
 @g.command('blacken-files')
 def blacken_files(event):
     """Run black on one or more files at c.p."""
+    tag = 'blacken-files'
+    try:
+        import black
+        assert black
+    except Exception:
+        g.es_print(f"{tag} can not import black")
+        return
     c = event.get('c')
     if not c or not c.p:
-        return
-    tag = 'blacken-files'
-    if not black:
-        g.es_print(f"{tag} can not import black")
         return
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
@@ -129,12 +110,15 @@ def blacken_files_diff(event):
     Show the diffs that would result from blacking the external files at
     c.p.
     """
+    tag = 'blacken-files-diff'
+    try:
+        import black
+        assert black
+    except Exception:
+        g.es_print(f"{tag} can not import black")
+        return
     c = event.get('c')
     if not c or not c.p:
-        return
-    tag = 'blacken-files-diff'
-    if not black:
-        g.es_print(f"{tag} can not import black")
         return
     for root in g.findRootsWithPredicate(c, c.p):
         path = g.fullPath(c, root)
