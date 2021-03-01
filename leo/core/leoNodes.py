@@ -10,7 +10,7 @@ import copy
 import itertools
 import time
 import re
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 from leo.core.leoCommands import Commands as Cmdr
@@ -220,16 +220,14 @@ class Position:
         stack: List[Tuple["VNode", int]] = None
     ):
         """Create a new position with the given childIndex and parent stack."""
-        # To support ZODB the code must set v._p_changed = 1
-        # whenever any mutable VNode object changes.
-        self._childIndex = childIndex
-        self.v = v
+        self._childIndex: int = childIndex
+        self.v: "VNode" = v
         # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.
         else:
             self.stack = []
-        g.app.positions += 1  # type: ignore
+        g.app.positions += 1
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__(self, other):
         return self.__eq__(other) or self.__gt__(other)
@@ -414,7 +412,7 @@ class Position:
 
     following_siblings_iter = following_siblings
     #@+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, copy: bool = True, predicate: Callable = None):
+    def nearest_roots(self, copy: bool = True, predicate: Optional[Callable] = None):
         """
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -426,31 +424,28 @@ class Position:
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         """
-        if predicate is None:
-
-            # pylint: disable=function-redefined
-
-            def predicate(p):
-                return p.isAnyAtFileNode()
+        def default_predicate(p):
+            return p.isAnyAtFileNode()
+            
+        the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-
         p1 = self
         for p in p1.self_and_parents(copy=False):
-            if predicate(p):  # type: ignore
+            if the_predicate(p):
                 yield p.copy() if copy else p
                 return
         # Next, look for all .md files in the tree.
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
-            if predicate(p):  # type: ignore
+            if the_predicate(p):
                 yield p.copy() if copy else p
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool = True, predicate: Callable = None):
+    def nearest_unique_roots(self, copy: bool = True, predicate: Optional[Callable] = None):
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -463,18 +458,16 @@ class Position:
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
         """
-        if predicate is None:
-
-            # pylint: disable=function-redefined
-
-            def predicate(p):
-                return p.isAnyAtFileNode()
+        
+        def default_predicate(p):
+            return p.isAnyAtFileNode()
+        
+        the_predicate = predicate or default_predicate
 
         # First, look up the tree.
-
         p1 = self
         for p in p1.self_and_parents(copy=False):
-            if predicate(p):  # type: ignore
+            if the_predicate(p):
                 yield p.copy() if copy else p
                 return
         # Next, look for all unique .md files in the tree.
@@ -482,7 +475,7 @@ class Position:
         after = p1.nodeAfterTree()
         p = p1
         while p and p != after:
-            if predicate(p):  # type: ignore
+            if the_predicate(p):
                 if p.v not in seen:
                     seen.add(p.v)
                     yield p.copy() if copy else p
@@ -1205,6 +1198,8 @@ class Position:
             p.v = p.v.children[n]
             p._childIndex = n
         else:
+            # mypy rightly doesn't like setting p.v to None.
+            # Leo's code must use the test `if p:` as appropriate.
             p.v = None  # type: ignore
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
@@ -1214,7 +1209,9 @@ class Position:
         if p.v and p.stack:
             p.v, p._childIndex = p.stack.pop()
         else:
-            p.v = None
+            # mypy rightly doesn't like setting p.v to None.
+            # Leo's code must use the test `if p:` as appropriate.
+            p.v = None  # type: ignore
         return p
     #@+node:ekr.20080416161551.208: *4* p.moveToThreadBack
     def moveToThreadBack(self):
@@ -1964,7 +1961,7 @@ class VNode:
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
-        g.app.nodeIndices.new_vnode_helper(context, gnx, self)  # type: ignore
+        g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
