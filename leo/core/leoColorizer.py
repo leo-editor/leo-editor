@@ -3050,30 +3050,23 @@ try:
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
 
-    if True: ### QtGui:
+    class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+        """ Storage for the user data associated with each line."""
 
+        syntax_stack = ('root',)
 
-        class PygmentsBlockUserData(QtGui.QTextBlockUserData):
-            """ Storage for the user data associated with each line."""
+        def __init__(self, **kwds):
+            for key, value in kwds.items():
+                setattr(self, key, value)
+            super().__init__()
 
-            syntax_stack = ('root',)
-
-            def __init__(self, **kwds):
-                for key, value in kwds.items():
-                    setattr(self, key, value)
-                super().__init__()
-
-            def __repr__(self):
-                attrs = ['syntax_stack']
-                kwds = ', '.join([
-                    f"{attr}={getattr(self, attr)!r}"
-                        for attr in attrs
-                ])
-                return f"PygmentsBlockUserData({kwds})"
-
-    # else:
-        # # For TravisCi.
-        # PygmentsBlockUserData = g.NullObject  # type: ignore
+        def __repr__(self):
+            attrs = ['syntax_stack']
+            kwds = ', '.join([
+                f"{attr}={getattr(self, attr)!r}"
+                    for attr in attrs
+            ])
+            return f"PygmentsBlockUserData({kwds})"
     #@-others
 except Exception:
     pass
