@@ -37,15 +37,16 @@ from typing import Any, List
 try:
     import curses
 except ImportError:
-    curses = None  # type: ignore
+    print('cursesGui2.py: curses required.')
+    raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
 from leo.external.npyscreen.wgwidget import (EXITED_DOWN, EXITED_ESCAPE, EXITED_MOUSE, EXITED_UP)  # type: ignore
 try:
     from tkinter import Tk
 except ImportError:
-    print('cursesGui.py: Tk required for clipboard handling.')
-    Tk = None  # type: ignore
+    print('cursesGui2.py: Tk module required for clipboard handling.')
+    raise
 #
 # Leo imports
 from leo.core import leoGlobals as g
