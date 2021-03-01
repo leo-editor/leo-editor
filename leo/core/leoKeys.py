@@ -2501,7 +2501,7 @@ class KeyHandlerClass:
                 s3 = bi.commandName
                 s4 = bi.kind or '<no hash>'
                 data.append((s1, s2, s3, s4),)
-        # Print keys by type:
+        # Print keys by type.
         result = []
         result.append('\n' + legend)
         for prefix in (

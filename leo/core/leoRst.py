@@ -21,34 +21,27 @@ import io
 import pprint
 import re
 import time
-# Leo imports.
-from leo.core import leoGlobals as g
-try:
-    from leo.plugins import mod_http
-except Exception:  # Don't let this crash Leo!
-    mod_http = None  # type: ignore
-# Third-part imports.
+#
+# Third-part imports...
 try:
     import docutils
     import docutils.core
-except ImportError:
+    from docutils import parsers
+    from docutils.parsers import rst
+except Exception:
     docutils = None  # type: ignore
-if docutils:
-    try:
-        from docutils import parsers
-        from docutils.parsers import rst
-        if not parsers or not rst:
-            docutils = None  # type: ignore
-    except Exception:  # Don't let this crash Leo!
-        docutils = None  # type: ignore
 try:
     import SilverCity
 except ImportError:
     SilverCity = None  # type: ignore
-# Aliases.
+#
+# Leo imports.
+from leo.core import leoGlobals as g
+from leo.plugins import mod_http
+#
+# Aliases & traces.
 StringIO = io.StringIO
-
-if 'plugins' in g.app.debug:  # type: ignore
+if 'plugins' in g.app.debug:
     print('leoRst.py: docutils:', repr(docutils))
     print('leoRst.py:  parsers:', repr(parsers))
     print('leoRst.py:      rst:', repr(rst))
