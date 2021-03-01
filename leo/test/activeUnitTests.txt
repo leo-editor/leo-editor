@@ -20002,8 +20002,10 @@ finally:
         c.redraw()
 #@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 if 0: # Preamble
@@ -20087,8 +20089,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 s = '''\
@@ -20121,8 +20125,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 if 0: # Preamble
@@ -20205,8 +20211,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 if 0: # Preamble
@@ -20249,8 +20257,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 if 0: # Preamble
@@ -20295,8 +20305,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4789: *5* @test rST import test: trailing whitespace
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 s = '''\
@@ -20329,8 +20341,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161129104243.1: *5* @test leo_rst
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+### import leo.core.leoImport as leoImport
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
 
 if 0:
@@ -22657,9 +22671,11 @@ assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 # A kludge: run the test in the open directory.
@@ -23231,9 +23247,11 @@ hr { /* EKR */
 </body>
 </html>
 #@+node:ekr.20100812172232.5801: *4* @test rst3Test default
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -23827,9 +23845,11 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813100841.5824: *4* @test rst3Test doc_only_mode (set in headline)
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -24421,9 +24441,11 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813124317.5879: *4* @test rst3Test doc_only_mode (set in options doc part)
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -25013,9 +25035,11 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100827140832.5913: *4* @test rst3Test show_leo_directives=False
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
@@ -25615,9 +25639,11 @@ This is the body of the section.</p>
 @first # -*- coding: utf-8 -*-
 
 # Note: rst3Test.munge in *this* file accounts for local docutils differences.
-import leo.core.leoImport as leoImport
-if leoImport.docutils is None:
+try:
+    import docutils
+except Exception:
     self.skipTest('no docutils')
+
 if getattr(g.app, 'old_gui_name', None) in ('browser', None):
     self.skipTest('wrong gui')
 s = g.findTestScript(c,'@common leoRst test code',warn=True)

@@ -14,19 +14,9 @@ import urllib
 # Required so the unit test that simulates an @auto leoImport.py will work!
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-# Third-party imports.
-try:
-    import docutils
-    import docutils.core
-    assert docutils and docutils.core
-    # print('leoImport.py:',docutils)
-except ImportError:
-    docutils = None  # type: ignore
-    # print('leoImport.py: can not import docutils')
-try:
-    import lxml.html
-except ImportError:
-    lxml = None  # type: ignore
+#
+# Do third-party imports only as needed.
+#
 # Abbreviation.
 StringIO = io.StringIO
 #@-<< imports >>
@@ -73,6 +63,11 @@ class FreeMindImporter:
     def import_file(self, path):
         """The main line of the FreeMindImporter class."""
         c = self.c
+        try:
+            import lxml.html
+        except ImportError:
+            g.trace("FreeMind importer requires lxml")
+            return
         sfn = g.shortFileName(path)
         if g.os_path_exists(path):
             htmltree = lxml.html.parse(path)
@@ -850,10 +845,7 @@ class LeoImportCommands:
         Import a list of .mm.html files exported from FreeMind:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
         """
-        if lxml:
-            FreeMindImporter(self.c).import_files(files)
-        else:
-            g.es_print('can not import lxml.html')
+        FreeMindImporter(self.c).import_files(files)
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
         """
@@ -1244,10 +1236,15 @@ class LeoImportCommands:
             p, fileName=fileName, s=s, showTree=showTree, ext='.py')
 
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
-        if docutils:
+        try:
+            import docutils
+            import docutils.core
+            assert docutils and docutils.core
             return self.scannerUnitTest(
                 p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
-        return None
+        except ImportError:
+            # print('leoImport.py: can not import docutils')
+            return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
@@ -2655,25 +2652,19 @@ class LegacyExternalFileImporter:
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
-if lxml:
+@g.command('import-free-mind-files')
+def import_free_mind_files(event):
+    """Prompt for free-mind files and import them."""
+    try:
+        import lxml.html
+        assert lxml.html
+    except ImportError:
+        g.trace("FreeMind importer requires lxml")
+        return
+    c = event.get('c')
+    if c:
+        FreeMindImporter(c).prompt_for_files()
 
-    @g.command('import-free-mind-files')
-    def import_free_mind_files(event):
-        """Prompt for free-mind files and import them."""
-        c = event.get('c')
-        if c:
-            FreeMindImporter(c).prompt_for_files()
-
-else:
-
-    @g.command('import-free-mind-files')
-    def import_free_mind_files(event):
-        """
-        Prompt for free-mind files and import them.
-        
-        This command is disabled.  Please install lxml:
-        https://lxml.de/installation.html
-        """
 #@+node:ekr.20200424154303.1: *3* @g.command(import-legacy-external-file)
 @g.command('import-legacy-external-files')
 def import_legacy_external_files(event):
