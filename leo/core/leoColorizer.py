@@ -3050,7 +3050,7 @@ try:
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
 
-    if QtGui:
+    if True: ### QtGui:
 
 
         class PygmentsBlockUserData(QtGui.QTextBlockUserData):
@@ -3071,9 +3071,9 @@ try:
                 ])
                 return f"PygmentsBlockUserData({kwds})"
 
-    else:
-        # For TravisCi.
-        PygmentsBlockUserData = g.NullObject  # type: ignore
+    # else:
+        # # For TravisCi.
+        # PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
 except Exception:
     pass
