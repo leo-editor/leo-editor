@@ -17,22 +17,18 @@ from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
 from leo.core.leoColor import leo_color_database
-#
-# Recover gracefully if pygments can not be imported.
-try:
-    import pygments
-except ImportError:
-    pygments = None
-
-
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
 def make_colorizer(c, widget, wrapper):
     """Return an instance of JEditColorizer or PygmentsColorizer."""
-    use_pygments = pygments and c.config.getBool('use-pygments', default=False)
-    if use_pygments:
-        return PygmentsColorizer(c, widget, wrapper)
+    if c.config.getBool('use-pygments', default=False):
+        try:
+            import pygments
+            assert pygments
+            return PygmentsColorizer(c, widget, wrapper)
+        except ImportError:
+            pass
     return JEditColorizer(c, widget, wrapper)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
 class BaseColorizer:
@@ -2964,11 +2960,11 @@ class QScintillaColorizer(BaseColorizer):
                 g.trace('no lexer for', class_name)
         return d
     #@-others
-#@+node:ekr.20190320062618.1: ** Jupyter classes
+#@+node:ekr.20190320062618.1: ** Pygments classes
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-
-if pygments:
+try:
+    import pygments
     #@+others
     #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
@@ -3079,6 +3075,8 @@ if pygments:
         # For TravisCi.
         PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
+except Exception:
+    pass
 #@-others
 #@@language python
 #@@tabwidth -4
