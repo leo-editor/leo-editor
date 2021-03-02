@@ -153,7 +153,7 @@ import unittest
 try:
     import pytest
 except Exception:
-    pytest = None
+    pytest = None  # type: ignore
 #@-<< imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 #

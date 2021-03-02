@@ -3,6 +3,12 @@
 """Leo's beautification classes."""
 import os
 import time
+# Third-party tools.
+try:
+    import black
+except Exception:
+    black = None  # type: ignore
+# Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst
 #@+others
@@ -85,10 +91,7 @@ def orange_files(event):
 def blacken_files(event):
     """Run black on one or more files at c.p."""
     tag = 'blacken-files'
-    try:
-        import black
-        assert black
-    except Exception:
+    if not black:
         g.es_print(f"{tag} can not import black")
         return
     c = event.get('c')
@@ -110,10 +113,7 @@ def blacken_files_diff(event):
     c.p.
     """
     tag = 'blacken-files-diff'
-    try:
-        import black
-        assert black
-    except Exception:
+    if not black:
         g.es_print(f"{tag} can not import black")
         return
     c = event.get('c')
