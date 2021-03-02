@@ -3075,9 +3075,10 @@ if pygments:
                 ])
                 return f"PygmentsBlockUserData({kwds})"
 
-    else:
-        # For TravisCi.
-        PygmentsBlockUserData = g.NullObject  # type: ignore
+    ###
+    # else:
+        # # For TravisCi.
+        # PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
 #@-others
 #@@language python
