@@ -7,7 +7,7 @@
 import os
 import sys
 import re
-from typing import Any, Dict, Tuple, Union
+from typing import Dict, Tuple, Union
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -53,7 +53,7 @@ class ParserBaseClass:
         'shortcuts',
     ]
     # Keys are settings names, values are (type,value) tuples.
-    settingsDict: Dict[str, Tuple[Any, Union[g.TypedDict, g.GeneralSetting]]] = {}
+    settingsDict: Dict[str, Tuple[str, Union[g.TypedDict, g.GeneralSetting]]] = {}
     #@-<< ParserBaseClass data >>
     #@+others
     #@+node:ekr.20041119204700: *3*  pbc.ctor
