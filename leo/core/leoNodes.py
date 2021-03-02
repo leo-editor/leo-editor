@@ -745,6 +745,8 @@ class Position:
         with_count=False,
     ):
         """
+        Return a UNL representing a clickable link.
+
         with_file=True - include path to Leo file
         with_proto=False - include 'file://'
         with_index - include ',x' at end where x is child index in parent

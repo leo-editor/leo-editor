@@ -146,17 +146,18 @@ class BackgroundProcessManager:
         """The idle-time callback for leo.commands.checkerCommands."""
         if self.process_queue or self.pid:
             self.check_process()
-    #@+node:ekr.20161028095553.1: *3* bpm.put_log (changed)
+    #@+node:ekr.20161028095553.1: *3* bpm.put_log
     def put_log(self, s):
         """
         Put a string to the originating log.
         This is not what g.es_print does!
         
+        Create clickable links s matches self.data.link_pattern.
+        
         New in Leo 6.4: get the filename from link_pattern is link_root is None.
         """
-        # Warning: don't use g.es or g.es_print here!
         #
-        # Check everything first.
+        # Warning: don't use g.es or g.es_print here!
         s = s and s.rstrip()
         if not s:
             return
@@ -184,6 +185,7 @@ class BackgroundProcessManager:
             log.put(s + '\n')
             return
         #
+        # Find the line number, and possibly the filename.
         if link_root:
             # m.group(1) should be the line number.
             try:
