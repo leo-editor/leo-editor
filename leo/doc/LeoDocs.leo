@@ -2398,6 +2398,7 @@
 </v>
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
+<v t="ekr.20050901101608.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21647,7 +21648,6 @@ Python's garbage collector::
 
     gc-collect-garbage
     gc-dump-all-objects
-    gc-dump-new-objects
     gc-dump-objects-verbose
     gc-print-summary
     gc-trace-disable
