@@ -12,8 +12,6 @@ To generate documents from rST files, Python's docutils_ module must be
 installed. The code will use the SilverCity_ syntax coloring package if is is
 available."""
 #@-<< docstring >>
-# pylint: disable=global-variable-not-assigned
-# for SilverCity
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 import html.parser as HTMLParser
