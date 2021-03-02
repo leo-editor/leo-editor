@@ -21,7 +21,6 @@ except ImportError:
     docutils = None  # type: ignore
 try:
     import lxml
-    ###import lxml.html
 except ImportError:
     lxml = None
 #
