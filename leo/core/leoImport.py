@@ -74,9 +74,6 @@ class FreeMindImporter:
     def import_file(self, path):
         """The main line of the FreeMindImporter class."""
         c = self.c
-        if not lxml:
-            g.trace("FreeMind importer requires lxml")
-            return
         sfn = g.shortFileName(path)
         if g.os_path_exists(path):
             htmltree = lxml.html.parse(path)
@@ -110,6 +107,9 @@ class FreeMindImporter:
     #@+node:ekr.20160504043823.1: *3* freemind.prompt_for_files
     def prompt_for_files(self):
         """Prompt for a list of FreeMind (.mm.html) files and import them."""
+        if not lxml:
+            g.trace("FreeMind importer requires lxml")
+            return
         c = self.c
         types = [
             ("FreeMind files", "*.mm.html"),
@@ -2661,12 +2661,6 @@ class LegacyExternalFileImporter:
 @g.command('import-free-mind-files')
 def import_free_mind_files(event):
     """Prompt for free-mind files and import them."""
-    try:
-        import lxml.html
-        assert lxml.html
-    except ImportError:
-        g.trace("FreeMind importer requires lxml")
-        return
     c = event.get('c')
     if c:
         FreeMindImporter(c).prompt_for_files()
