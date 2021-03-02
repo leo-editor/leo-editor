@@ -12,23 +12,28 @@
 import re
 import string
 import time
-assert time
-from typing import Any, Dict
+from typing import Callable, Dict
+#
+# Third-part tools.
+try:
+    import pygments
+except ImportError:
+    pygments = None  # type: ignore
+#
+# Leo imports...
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qsci, QtGui, QtWidgets
 from leo.core.leoColor import leo_color_database
+
+
 #@-<< imports >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
 def make_colorizer(c, widget, wrapper):
     """Return an instance of JEditColorizer or PygmentsColorizer."""
-    if c.config.getBool('use-pygments', default=False):
-        try:
-            import pygments
-            assert pygments
-            return PygmentsColorizer(c, widget, wrapper)
-        except ImportError:
-            pass
+    use_pygments = pygments and c.config.getBool('use-pygments', default=False)
+    if use_pygments:
+        return PygmentsColorizer(c, widget, wrapper)
     return JEditColorizer(c, widget, wrapper)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
 class BaseColorizer:
@@ -2628,12 +2633,11 @@ class PygmentsColorizer(BaseJEditColorizer):
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
     format_dict: Dict[str, str] = {}
         # Keys are repr(Token), values are formats.
-    lexers_dict: Dict[str, Any] = {}
+    lexers_dict: Dict[str, Callable] = {}
         # Keys are language names, values are instantiated, patched lexers.
     state_s_dict: Dict[str, int] = {}
         # Keys are strings, values are ints.
-    state_n_dict: Dict[int, str] = {}
-        # For tracing only.
+    state_n_dict: Dict[int, str] = {}  # For tracing only.
         # Keys are ints, values are strings.
     state_index = 1
         # Index of state number to be allocated.
@@ -2960,11 +2964,11 @@ class QScintillaColorizer(BaseColorizer):
                 g.trace('no lexer for', class_name)
         return d
     #@-others
-#@+node:ekr.20190320062618.1: ** Pygments classes
+#@+node:ekr.20190320062618.1: ** Jupyter classes
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-try:
-    import pygments
+
+if pygments:
     #@+others
     #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
@@ -3050,26 +3054,31 @@ try:
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
 
-    class PygmentsBlockUserData(QtGui.QTextBlockUserData):
-        """ Storage for the user data associated with each line."""
+    if QtGui:
 
-        syntax_stack = ('root',)
 
-        def __init__(self, **kwds):
-            for key, value in kwds.items():
-                setattr(self, key, value)
-            super().__init__()
+        class PygmentsBlockUserData(QtGui.QTextBlockUserData):
+            """ Storage for the user data associated with each line."""
 
-        def __repr__(self):
-            attrs = ['syntax_stack']
-            kwds = ', '.join([
-                f"{attr}={getattr(self, attr)!r}"
-                    for attr in attrs
-            ])
-            return f"PygmentsBlockUserData({kwds})"
+            syntax_stack = ('root',)
+
+            def __init__(self, **kwds):
+                for key, value in kwds.items():
+                    setattr(self, key, value)
+                super().__init__()
+
+            def __repr__(self):
+                attrs = ['syntax_stack']
+                kwds = ', '.join([
+                    f"{attr}={getattr(self, attr)!r}"
+                        for attr in attrs
+                ])
+                return f"PygmentsBlockUserData({kwds})"
+
+    else:
+        # For TravisCi.
+        PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
-except Exception:
-    pass
 #@-others
 #@@language python
 #@@tabwidth -4
