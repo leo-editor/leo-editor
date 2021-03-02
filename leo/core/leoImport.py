@@ -11,11 +11,23 @@ import os
 import re
 import time
 import urllib
-# Required so the unit test that simulates an @auto leoImport.py will work!
+#
+# Third-party imports.
+try:
+    import docutils
+    import docutils.core
+except ImportError:
+    # print('leoImport.py: can not import docutils')
+    docutils = None  # type: ignore
+try:
+    import lxml
+    ###import lxml.html
+except ImportError:
+    lxml = None
+#
+# Leo imports...
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-#
-# Do third-party imports only as needed.
 #
 # Abbreviation.
 StringIO = io.StringIO
@@ -63,9 +75,7 @@ class FreeMindImporter:
     def import_file(self, path):
         """The main line of the FreeMindImporter class."""
         c = self.c
-        try:
-            import lxml.html
-        except ImportError:
+        if not lxml:
             g.trace("FreeMind importer requires lxml")
             return
         sfn = g.shortFileName(path)
@@ -1236,15 +1246,12 @@ class LeoImportCommands:
             p, fileName=fileName, s=s, showTree=showTree, ext='.py')
 
     def rstUnitTest(self, p, fileName=None, s=None, showTree=False):
-        try:
-            import docutils
-            import docutils.core
-            assert docutils and docutils.core
+        if docutils:
             return self.scannerUnitTest(
                 p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
-        except ImportError:
-            # print('leoImport.py: can not import docutils')
-            return None
+       
+        # print('leoImport.py: can not import docutils')
+        return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(
