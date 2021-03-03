@@ -211,20 +211,6 @@ class BackgroundProcessManager:
                 g.trace(f"no @<file> node found for : {path}")
                 log.put(s + '\n')
                 return
-            ###
-                # # This isn't perfect because more than one match may be possible.
-                # sfn = g.shortFileName(path)
-                # for kind in ('@file ', '@clean ', '@auto '):
-                    # for p in c.all_positions():
-                        # if p.h.startswith(kind) and p.h.endswith(sfn):
-                            # link_root = p
-                            # break
-                    # if link_root:
-                        # break
-                # else:
-                    # g.trace(f"no @<file> node found for : {path}")
-                    # log.put(s + '\n')
-                    # return
         #
         # Put a clickable link.
         unl = link_root.get_UNL(with_proto=True, with_count=True)
