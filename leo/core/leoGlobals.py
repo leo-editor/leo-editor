@@ -7441,7 +7441,27 @@ def executeFile(filename, options=''):
     rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
     if rc: g.pr('return code', rc)
     g.pr(so, se)
-#@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
+#@+node:ekr.20040321065415: *3* g.find*Node*
+#@+others
+#@+node:ekr.20210303123423.3: *4* findNodeAnywhere
+def findNodeAnywhere(c, headline, exact=True):
+    h = headline.strip()
+    for p in c.all_unique_positions(copy=False):
+        if p.h.strip() == h:
+            return p.copy()
+    if not exact:
+        for p in c.all_unique_positions(copy=False):
+            if p.h.strip().startswith(h):
+                return p.copy()
+    return None
+#@+node:ekr.20210303123525.1: *4* findNodeByPath
+def findNodeByPath(c, path):
+    """Return the first @<file> node in Cmdr c whose path is given."""
+    for p in c.all_positions():
+        if p.isAnyAtFileNode() and path == g.fullPath(c, p):
+            return p
+    return False
+#@+node:ekr.20210303123423.1: *4* findNodeInChildren
 def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     p1 = p.copy()
@@ -7454,7 +7474,7 @@ def findNodeInChildren(c, p, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-
+#@+node:ekr.20210303123423.2: *4* findNodeInTree
 def findNodeInTree(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     h = headline.strip()
@@ -7467,18 +7487,7 @@ def findNodeInTree(c, p, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-
-def findNodeAnywhere(c, headline, exact=True):
-    h = headline.strip()
-    for p in c.all_unique_positions(copy=False):
-        if p.h.strip() == h:
-            return p.copy()
-    if not exact:
-        for p in c.all_unique_positions(copy=False):
-            if p.h.strip().startswith(h):
-                return p.copy()
-    return None
-
+#@+node:ekr.20210303123423.4: *4* findTopLevelNode
 def findTopLevelNode(c, headline, exact=True):
     h = headline.strip()
     for p in c.rootPosition().self_and_siblings(copy=False):
@@ -7489,6 +7498,7 @@ def findTopLevelNode(c, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
+#@-others
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c, p,
     useSelectedText=True,

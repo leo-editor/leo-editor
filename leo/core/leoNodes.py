@@ -221,7 +221,8 @@ class Position:
     ):
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex: int = childIndex
-        self.v: "VNode" = v
+        self.v: Optional["VNode"] = v
+        ## self.v: "VNode" = v
         # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.

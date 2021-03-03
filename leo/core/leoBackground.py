@@ -153,8 +153,9 @@ class BackgroundProcessManager:
         This is not what g.es_print does!
         
         Create clickable links s matches self.data.link_pattern.
+        See p.get_UNL.
         
-        New in Leo 6.4: get the filename from link_pattern is link_root is None.
+        New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
         #
         # Warning: don't use g.es or g.es_print here!
@@ -205,19 +206,25 @@ class BackgroundProcessManager:
                 log.put(s + '\n')
                 return
             # Look for the @<file> node.
-            # This isn't perfect because more than one match may be possible.
-            sfn = g.shortFileName(path)
-            for kind in ('@file ', '@clean ', '@auto '):
-                for p in c.all_positions():
-                    if p.h.startswith(kind) and p.h.endswith(sfn):
-                        link_root = p
-                        break
-                if link_root:
-                    break
-            else:
+            link_root = g.findNodeByPath(c, path)
+            if not link_root:
                 g.trace(f"no @<file> node found for : {path}")
                 log.put(s + '\n')
                 return
+            ###
+                # # This isn't perfect because more than one match may be possible.
+                # sfn = g.shortFileName(path)
+                # for kind in ('@file ', '@clean ', '@auto '):
+                    # for p in c.all_positions():
+                        # if p.h.startswith(kind) and p.h.endswith(sfn):
+                            # link_root = p
+                            # break
+                    # if link_root:
+                        # break
+                # else:
+                    # g.trace(f"no @<file> node found for : {path}")
+                    # log.put(s + '\n')
+                    # return
         #
         # Put a clickable link.
         unl = link_root.get_UNL(with_proto=True, with_count=True)

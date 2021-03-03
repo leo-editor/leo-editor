@@ -180,8 +180,12 @@ def kill_pylint(event):
 @g.command('mypy')
 def mypy_command(event):
     """
-    Run mypy on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
+    Run mypy on all nodes of the selected tree, or the first @<file> node
+    in an ancestor. However, running mypy on a single file usually
+    suffices.
+    
+    Unlike running mypy outside of Leo, this command creates clickable
+    links in Leo's log pane for each error.
     """
     c = event.get('c')
     if not c:
@@ -230,7 +234,7 @@ def pylint_command(event):
 class MypyCommand:
     """A class to run mypy on all Python @<file> nodes in c.p's tree."""
     
-    # bpm.put_log uses this pattern.
+    # bpm.put_log uses this pattern and assumes the pattern has these groups:
     # m.group(1): A full file path.
     # m.group(2): The line number.
     # m.group(3): The error message.
