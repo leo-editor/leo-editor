@@ -181,11 +181,16 @@ def kill_pylint(event):
 def mypy_command(event):
     """
     Run mypy on all nodes of the selected tree, or the first @<file> node
-    in an ancestor. However, running mypy on a single file usually
-    suffices.
+    in an ancestor. Running mypy on a single file usually suffices.
     
-    Unlike running mypy outside of Leo, this command creates clickable
-    links in Leo's log pane for each error.
+    For example, you can run mypy on most of Leo's files selecting
+    
+      `@edit ../../launchLeo.py`
+      
+    in leoPy.leo, then running Leo's mypy command.
+    
+    Unlike running mypy outside of Leo, Leo's mypy command creates
+    clickable links in Leo's log pane for each error.
     """
     c = event.get('c')
     if not c:
