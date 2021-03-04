@@ -21,6 +21,10 @@ from leo.core import leoExternalFiles
 StringIO = io.StringIO
 #@-<< imports >>
 #@+others
+#@+node:ekr.20150509193629.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the LeoApp class."""
+    return g.new_cmd_decorator(name, ['g', 'app'])
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
 class IdleTimeManager:
     """
@@ -936,11 +940,6 @@ class LeoApp:
             "@shadow",
             "@thin",
         ])
-    #@+node:ekr.20150509193629.1: *4* app.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the LeoApp class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['g', 'app'])
     #@+node:ekr.20090717112235.6007: *4* app.computeSignon & printSignon
     def computeSignon(self):
         from leo.core import leoVersion

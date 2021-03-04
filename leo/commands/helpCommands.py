@@ -592,21 +592,16 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
         The following commands are useful for debugging::
 
-            collect-garbage:   Invoke the garbage collector.
-            debug:             Start an external debugger in another process.
-            disable-gc-trace:  Disable tracing of the garbage collector.
-            dump-all-objects:  Print a summary of all existing Python objects.
-            dump-new-objects:  Print a summary of all newly-created Python objects.
-            enable-gc-trace:   Enable tracing of the garbage collector.
-            free-tree-widgets: Free all widgets used in Leo's outline pane.
-            show-focus:        Print information about the requested focus.
-            show-stats:        Print statistics about existing Python objects.
-            show-gc-summary:   Print a brief summary of all Python objects.
-            run-unit-tests:    Run unit tests in the presently selected tree.
-            verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+            debug:               Start an external debugger in another process.
+            dump-node:           Dump c.p.v, including gnx, uA's, etc.
+            gc-collect-garbage:  Invoke the garbage collector.
+            gc-dump-all-objects: Print a summary of all Python objects.
+            gc-show-summary:     Print a brief summary of Python objects.
+            pdb:                 Start Python's debugger.
+            show-focus:          Print information about the requested focus.
+            show-stats:          Print statistics about existing Python objects.
 
-        Leo also has many debugging settings that enable and disable traces.
-        For details, see the node: @settings-->Debugging in leoSettings.leo.
+        Leo's --trace command-line arg can enable traces.
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)

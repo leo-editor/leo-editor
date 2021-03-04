@@ -7,6 +7,10 @@ Adapted from printing plugin.
 from leo.core import leoGlobals as g
 from leo.core.leoQt import printsupport, QtGui
 #@+others
+#@+node:ekr.20150509035503.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the PrintingController class."""
+    return g.new_cmd_decorator(name, ['c', 'printingController',])
 #@+node:ekr.20150420120520.1: ** class PrintingController
 class PrintingController:
     """A class supporting the commands in Leo's File:Print menu."""
@@ -35,11 +39,6 @@ class PrintingController:
             f"pre {{font-family: {family}; font-size: {size}px}}",
         )
         return '\n'.join(table)
-    #@+node:ekr.20150509035503.1: *3* pr.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the PrintingController class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'printingController',])
     #@+node:ekr.20150420072955.1: *3* pr.Doc constructors
     #@+node:ekr.20150419124739.11: *4* pr.complex document
     def complex_document(self, nodes, heads=False):

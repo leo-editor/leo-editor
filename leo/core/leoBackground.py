@@ -151,25 +151,31 @@ class BackgroundProcessManager:
         """
         Put a string to the originating log.
         This is not what g.es_print does!
+        
+        Create clickable links s matches self.data.link_pattern.
+        See p.get_UNL.
+        
+        New in Leo 6.4: get the filename from link_pattern if link_root is None.
         """
-        # Warning: don't use g.es or g.es_print here!
-        data = self.data
-        s = s and s.rstrip()
-        if not s or not data:
-            return
         #
-        # Make sure c still exists.
+        # Warning: don't use g.es or g.es_print here!
+        s = s and s.rstrip()
+        if not s:
+            return
+        data = self.data
+        if not data:
+            return
         c = data.c
         if not c or not c.exists:
             return
         log = c.frame.log
+        link_pattern, link_root = data.link_pattern, data.link_root
         #
         # Always print the message.
         print(s)
         #
         # Put the plain message if the link is not valid.
-        link_pattern, link_root = data.link_pattern, data.link_root
-        if not (link_pattern and link_root):
+        if not link_pattern:
             log.put(s + '\n')
             return
         try:
@@ -179,12 +185,32 @@ class BackgroundProcessManager:
         if not m:
             log.put(s + '\n')
             return
-        try:
-            line = int(m.group(1))
-        except Exception:
-            # g.es_exception()
-            log.put(s + '\n')
-            return
+        #
+        # Find the line number, and possibly the filename.
+        if link_root:
+            # m.group(1) should be the line number.
+            try:
+                line = int(m.group(1))
+            except Exception:
+                # g.es_exception()
+                log.put(s + '\n')
+                return
+        else:
+            # m.group(1) should be the path to the file.
+            path = m.group(1)
+            # m.group(2) should be the line number.
+            try:
+                line = int(m.group(2))
+            except Exception:
+                # g.es_exception()
+                log.put(s + '\n')
+                return
+            # Look for the @<file> node.
+            link_root = g.findNodeByPath(c, path)
+            if not link_root:
+                g.trace(f"no @<file> node found for : {path}")
+                log.put(s + '\n')
+                return
         #
         # Put a clickable link.
         unl = link_root.get_UNL(with_proto=True, with_count=True)

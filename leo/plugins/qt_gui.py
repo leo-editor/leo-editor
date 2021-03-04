@@ -7,6 +7,7 @@ import datetime
 import functools
 import re
 import sys
+from typing import List
 
 from leo.core import leoColor
 from leo.core import leoGlobals as g
@@ -923,7 +924,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace('(LeoQtGui)', name)
         w.setFocus()
     #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
-    size_warnings = []
+    size_warnings: List[str] = []
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         """Required to handle syntax coloring."""

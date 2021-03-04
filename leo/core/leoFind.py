@@ -2091,8 +2091,6 @@ class LeoFind:
             pos, newpos = self._inner_search_plain(s, i, j, pattern, nocase, word)
         return pos, newpos
     #@+node:ekr.20210110073117.44: *5* find._inner_search_backward
-    debugIndices = []
-
     def _inner_search_backward(self, s, i, j, pattern, nocase, word):
         """
         rfind(sub [,start [,end]])

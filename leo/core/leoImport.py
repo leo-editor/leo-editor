@@ -11,21 +11,23 @@ import os
 import re
 import time
 import urllib
-# Required so the unit test that simulates an @auto leoImport.py will work!
-from leo.core import leoGlobals as g
-from leo.core import leoNodes
+#
 # Third-party imports.
 try:
     import docutils
     import docutils.core
-    # print('leoImport.py:',docutils)
 except ImportError:
-    docutils = None
     # print('leoImport.py: can not import docutils')
+    docutils = None  # type: ignore
 try:
-    import lxml.html
+    import lxml
 except ImportError:
     lxml = None
+#
+# Leo imports...
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+#
 # Abbreviation.
 StringIO = io.StringIO
 #@-<< imports >>
@@ -105,6 +107,9 @@ class FreeMindImporter:
     #@+node:ekr.20160504043823.1: *3* freemind.prompt_for_files
     def prompt_for_files(self):
         """Prompt for a list of FreeMind (.mm.html) files and import them."""
+        if not lxml:
+            g.trace("FreeMind importer requires lxml")
+            return
         c = self.c
         types = [
             ("FreeMind files", "*.mm.html"),
@@ -849,10 +854,7 @@ class LeoImportCommands:
         Import a list of .mm.html files exported from FreeMind:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
         """
-        if lxml:
-            FreeMindImporter(self.c).import_files(files)
-        else:
-            g.es_print('can not import lxml.html')
+        FreeMindImporter(self.c).import_files(files)
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files):
         """
@@ -1246,6 +1248,8 @@ class LeoImportCommands:
         if docutils:
             return self.scannerUnitTest(
                 p, fileName=fileName, s=s, showTree=showTree, ext='.rst')
+       
+        # print('leoImport.py: can not import docutils')
         return None
 
     def textUnitTest(self, p, fileName=None, s=None, showTree=False):
@@ -2654,25 +2658,13 @@ class LegacyExternalFileImporter:
     #@-others
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
-if lxml:
+@g.command('import-free-mind-files')
+def import_free_mind_files(event):
+    """Prompt for free-mind files and import them."""
+    c = event.get('c')
+    if c:
+        FreeMindImporter(c).prompt_for_files()
 
-    @g.command('import-free-mind-files')
-    def import_free_mind_files(event):
-        """Prompt for free-mind files and import them."""
-        c = event.get('c')
-        if c:
-            FreeMindImporter(c).prompt_for_files()
-
-else:
-
-    @g.command('import-free-mind-files')
-    def import_free_mind_files(event):
-        """
-        Prompt for free-mind files and import them.
-        
-        This command is disabled.  Please install lxml:
-        https://lxml.de/installation.html
-        """
 #@+node:ekr.20200424154303.1: *3* @g.command(import-legacy-external-file)
 @g.command('import-legacy-external-files')
 def import_legacy_external_files(event):

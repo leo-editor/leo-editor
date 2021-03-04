@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.153: * @file ../external/npyscreen/fmFileSelector.py
+# type: ignore
 #@+others
 #@+node:ekr.20170428084207.154: ** Declarations
 from . import fmFormMutt

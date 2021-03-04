@@ -18,48 +18,7 @@ def cmd(name):
 
 class DebugCommandsClass(BaseEditCommandsClass):
     #@+others
-    #@+node:ekr.20150514063305.103: ** debug.collectGarbage
-    @cmd('gc-collect-garbage')
-    def collectGarbage(self, event=None):
-        """Run Python's Garbage Collector."""
-        g.collectGarbage()
-    #@+node:ekr.20150514063305.106: ** debug.dumpAll/New/VerboseObjects
-    @cmd('gc-dump-all-objects')
-    def dumpAllObjects(self, event=None):
-        """Print a summary of all existing Python objects."""
-        g.printGcAll()
-
-    @cmd('gc-dump-new-objects')
-    def dumpNewObjects(self, event=None):
-        """
-        Print a summary of all Python objects created
-        since the last time Python's Garbage collector was run.
-        """
-        g.printGcObjects()
-
-    @cmd('gc-dump-objects-verbose')
-    def verboseDumpObjects(self, event=None):
-        """Print a more verbose listing of all existing Python objects."""
-        g.printGcVerbose()
-    #@+node:ekr.20170713112849.1: ** debug.dumpNode
-    @cmd('dump-node')
-    def dumpNode(self, event=None):
-        """Dump c.p.v, including gnx, uA's, etc."""
-        p = self.c.p
-        if p:
-            g.es_print(f"gnx: {p.v.gnx} {p.v.h}")
-            if p.v.u:
-                g.es_print('uAs')
-                g.printDict(p.v.u)
-            else:
-                g.es_print('no uAs')
-    #@+node:ekr.20150514063305.108: ** debug.freeTreeWidgets
-    def freeTreeWidgets(self, event=None):
-        """Free all widgets used in Leo's outline pane."""
-        c = self.c
-        c.frame.tree.destroyWidgets()
-        c.redraw()
-    #@+node:ekr.20150514063305.104: ** debug.invoke_debugger & helper
+    #@+node:ekr.20150514063305.104: ** debug.debug
     @cmd('debug')
     def invoke_debugger(self, event=None):
         """
@@ -118,7 +77,35 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 g.warning('debugger does not exist:', debugger)
         g.es('no debugger found.')
         return None
-    #@+node:ekr.20170429154309.1: ** debug.killLogListener
+    #@+node:ekr.20170713112849.1: ** debug.dump-node
+    @cmd('dump-node')
+    def dumpNode(self, event=None):
+        """Dump c.p.v, including gnx, uA's, etc."""
+        p = self.c.p
+        if p:
+            g.es_print(f"gnx: {p.v.gnx} {p.v.h}")
+            if p.v.u:
+                g.es_print('uAs')
+                g.printDict(p.v.u)
+            else:
+                g.es_print('no uAs')
+    #@+node:ekr.20150514063305.103: ** debug.gc-collect-garbage
+    @cmd('gc-collect-garbage')
+    def collectGarbage(self, event=None):
+        """Run Python's Garbage Collector."""
+        import gc
+        gc.collect()
+    #@+node:ekr.20150514063305.106: ** debug.gc-dump-all-objects
+    @cmd('gc-dump-all-objects')
+    def dumpAllObjects(self, event=None):
+        """Print a summary of all existing Python objects."""
+        g.printGc()
+    #@+node:ekr.20150514063305.111: ** debug.gc-show-summary
+    @cmd('gc-show-summary')
+    def printGcSummary(self, event=None):
+        """Print a brief summary of all Python objects."""
+        g.printGcSummary()
+    #@+node:ekr.20170429154309.1: ** debug.kill-log-listener
     @cmd('kill-log-listener')
     @cmd('log-kill-listener')
     def killLogListener(self, event=None):
@@ -137,39 +124,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def pdb(self, event=None):
         """Fall into pdb."""
         g.pdb()
-    #@+node:ekr.20150514063305.110: ** debug.printFocus
-    @cmd('show-focus')
-    def printFocus(self, event=None):
-        """
-        Print information about the requested focus.
-
-        Doesn't work if the focus isn't in a pane with bindings!
-        """
-        c = self.c
-        # w = g.app.gui.get_focus()
-        g.es_print(
-            'c.requestedFocusWidget:',
-            c.widget_name(c.requestedFocusWidget))
-        g.es_print(
-            '           c.get_focus:',
-            c.widget_name(c.get_focus()))
-    #@+node:ekr.20150514063305.111: ** debug.printGcSummary
-    @cmd('gc-show-summary')
-    def printGcSummary(self, event=None):
-        """Print a brief summary of all Python objects."""
-        g.printGcSummary()
-    #@+node:ekr.20190510060918.1: ** debug.print-sep
-    @cmd('print-sep')
-    def printSep(self, event=None):
-        """Print a separator"""
-        print('\n==========\n')
-    #@+node:ekr.20150514063305.112: ** debug.printStats
-    def printStats(self, event=None):
-        """Print statistics about the objects that Leo is using."""
-        c = self.c
-        c.frame.tree.showStats()
-        self.dumpAllObjects()
-    #@+node:ekr.20150514063305.113: ** debug.runUnitTest commands
+    #@+node:ekr.20150514063305.113: ** debug.run-tests
     @cmd('run-all-unit-tests-locally')
     def runAllUnitTestsLocally(self, event=None):
         """Run all unit tests contained in the presently selected outline.
@@ -218,6 +173,22 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.
         """
         self.c.testManager.runTestsExternally(all=False, marked=False)
+    #@+node:ekr.20150514063305.110: ** debug.show-focus
+    @cmd('show-focus')
+    def printFocus(self, event=None):
+        """
+        Print information about the requested focus.
+
+        Doesn't work if the focus isn't in a pane with bindings!
+        """
+        c = self.c
+        # w = g.app.gui.get_focus()
+        g.es_print(
+            'c.requestedFocusWidget:',
+            c.widget_name(c.requestedFocusWidget))
+        g.es_print(
+            '           c.get_focus:',
+            c.widget_name(c.get_focus()))
     #@-others
 
 #@@language python

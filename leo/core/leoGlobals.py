@@ -15,6 +15,8 @@ import binascii
 import codecs
 import fnmatch
 from functools import reduce
+import gc
+import gettext
 import glob
 import importlib
 import inspect
@@ -22,8 +24,8 @@ import io
 import operator
 import os
 from pathlib import Path
-# Do NOT import pdb here!  We shall define pdb as a _function_ below.
-    # import pdb
+# import pdb  # Do NOT import pdb here!
+              # We shall define pdb as a _function_ below.
 import re
 import shlex
 import shutil
@@ -34,24 +36,13 @@ import tempfile
 import time
 import traceback
 import types
+from typing import Any, Callable, Dict, List, Optional, Set
 import unittest
 import urllib
 import urllib.parse as urlparse
 import webbrowser
-# User imports last.
-try:
-    import requests
-except Exception:
-    requests = None
-try:
-    import gc
-except ImportError:
-    gc = None
-try:
-    import gettext
-except ImportError:  # does not exist in jython.
-    gettext = None
-
+#
+# Abbreviations...
 StringIO = io.StringIO
 #@-<< imports >>
 in_bridge = False
@@ -324,11 +315,10 @@ g_noweb_root = re.compile('<' + '<' + '*' + '>' + '>' + '=', re.MULTILINE)
 g_pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
 g_tabwidth_pat = re.compile(r'(^@tabwidth)', re.MULTILINE)
 #@-<< define regex's >>
-tree_popup_handlers = []  # Set later.
-user_dict = {}
+tree_popup_handlers: List[Callable] = []  # Set later.
+user_dict: Dict[Any, Any] = {}
     # Non-persistent dictionary for free use by scripts and plugins.
-# g = None
-app = None  # The singleton app object. Set by runLeo.py.
+app: Any = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
@@ -1802,7 +1792,7 @@ class SherlockTracer:
                         result.append(f"{name}={val}")
         return ','.join(result)
     #@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
-    bad_fns = []
+    bad_fns: List[str] = []
 
     def do_line(self, frame, arg):
         """print each line of enabled functions."""
@@ -1942,8 +1932,8 @@ class SherlockTracer:
             pass
         return full_name
     #@+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
-    ignored_files = []
-    ignored_functions = []
+    ignored_files: List[str] = []  # List of files.
+    ignored_functions: List[str] = []  # List of files.
 
     def is_enabled(self, file_name, function_name, patterns=None):
         """Return True if tracing for function_name in the given file is enabled."""
@@ -2969,27 +2959,14 @@ def tupleToString(obj, indent='', tag=None):
     s = ''.join(result)
     return f"{tag}...\n{s}\n" if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
-lastObjectCount = 0
-lastObjectsDict = {}
-lastTypesDict = {}
-lastFunctionsDict = {}
 #@+node:ekr.20031218072017.1589: *4* g.clearAllIvars
 def clearAllIvars(o):
     """Clear all ivars of o, a member of some class."""
     if o:
         o.__dict__.clear()
-#@+node:ekr.20031218072017.1590: *4* g.collectGarbage
-def collectGarbage():
-    try:
-        gc.collect()
-    except Exception:
-        pass
 #@+node:ekr.20060127162818: *4* g.enable_gc_debug
-def enable_gc_debug(event=None):
-    # pylint: disable=no-member
-    if not gc:
-        g.error('can not import gc module')
-        return
+def enable_gc_debug():
+
     gc.set_debug(
         gc.DEBUG_STATS |  # prints statistics.
         gc.DEBUG_LEAK |  # Same as all below.
@@ -2998,184 +2975,57 @@ def enable_gc_debug(event=None):
         # gc.DEBUG_INSTANCES |
         # gc.DEBUG_OBJECTS |
         gc.DEBUG_SAVEALL)
-#@+node:ekr.20190609113810.1: *4* g.GetRepresentativeObjects
-def getRepresentativeLiveObjects():
-    """
-    Return a dict.
-    Keys classes.
-    Values are the first (representative) live object for each type.
-    """
-    d = {}  # Keys are types, values are the *first* instance.
-    for obj in gc.get_objects():
-        t = type(obj)
-        if t not in d and hasattr(obj, '__class__'):
-            d[t] = obj
-    return d
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
-def printGc(tag=None):
-    tag = tag or g._callerName(n=2)
-    printGcObjects(tag=tag)
-    printGcRefs(tag=tag)
-    printGcVerbose(tag=tag)
-#@+node:ekr.20031218072017.1593: *5* g.printGcRefs
-def printGcRefs(tag=''):
-    verbose = False
-    refs = gc.get_referrers(app.windowList[0])
-    g.pr('-' * 30, tag)
-    if verbose:
-        g.pr("refs of", app.windowList[0])
-        for ref in refs:
-            g.pr(type(ref))
-    else:
-        g.pr(f"{len(refs):d} referers")
-#@+node:ekr.20060202161935: *4* g.printGcAll
-def printGcAll(full=False, sort_by_n=True):
-    """Print a summary of all presently live objects."""
-    if g.unitTesting:
-        return
-    t1 = time.process_time()
-    objects = gc.get_objects()
-    d = {}  # Keys are types, values are ints (number of instances).
-    for obj in objects:
-        t = type(obj)
-        if hasattr(obj, '__class__'):
-            d[t] = d.get(t, 0) + 1
-    t2 = time.process_time()
-    if full:
-        if sort_by_n:  # Sort by n
-            items = list(d.items())
-            items.sort(key=lambda x: x[1])
-            for z in reversed(items):
-                print(f"{z[1]:8} {z[0]}")
-        else:  # Sort by type
-            g.printObj(d)
-    #
-    # Summarize
-    print(
-        f"\n"
-        f"printGcAll: {len(objects):d} objects "
-        f"in {t2-t1:5.2f} sec. ")
+def printGc():
+    """Called from trace_gc_plugin."""
+    g.printGcSummary()
+    g.printGcObjects()
+    g.printGcRefs()
 #@+node:ekr.20060127164729.1: *4* g.printGcObjects
-def printGcObjects(tag=''):
-    """Print newly allocated objects."""
-    tag = tag or g._callerName(n=2)
-    global lastObjectCount
-    try:
-        n = len(gc.garbage)
-        n2 = len(gc.get_objects())
-        delta = n2 - lastObjectCount
-        if delta == 0: return
-        lastObjectCount = n2
-        #@+<< print number of each type of object >>
-        #@+node:ekr.20040703054646: *5* << print number of each type of object >>
-        global lastTypesDict
-        typesDict = {}
-        for obj in gc.get_objects():
-            t = type(obj)
-            # pylint: disable=no-member
-            if t == 'instance' and t != types.UnicodeType:  # NOQA
-                try: t = obj.__class__
-                except Exception: pass
-            if t != types.FrameType:  # NOQA
-                r = repr(t)  # was type(obj) instead of repr(t)
-                n = typesDict.get(r, 0)
-                typesDict[r] = n + 1
-        # Create the union of all the keys.
-        keys = {}
-        for key in lastTypesDict:
-            if key not in typesDict:
-                keys[key] = None
-        empty = True
-        for key in keys:
-            n3 = lastTypesDict.get(key, 0)
-            n4 = typesDict.get(key, 0)
-            delta2 = n4 - n3
-            if delta2 != 0:
-                empty = False
-                break
-        if not empty:
-            g.pr('-' * 30)
-            g.pr(f"{tag}: garbage: {n}, objects: {n2}, delta: {delta}")
-            if 0:
-                for key in sorted(keys):
-                    n1 = lastTypesDict.get(key, 0)
-                    n2 = typesDict.get(key, 0)
-                    delta2 = n2 - n1
-                    if delta2 != 0:
-                        g.pr(f"{delta2:6d} ={n2:7d} {key}")
-        lastTypesDict = typesDict
-        typesDict = {}
-        #@-<< print number of each type of object >>
-        if 0:
-            #@+<< print added functions >>
-            #@+node:ekr.20040703065638: *5* << print added functions >>
-            global lastFunctionsDict
-            funcDict = {}
-            getspec = inspect.getfullargspec
-            n = 0  # Don't print more than 50 objects.
-            for obj in gc.get_objects():
-                if isinstance(obj, types.FunctionType):
-                    n += 1
-                    key = repr(obj)  # Don't create a pointer to the object!
-                    funcDict[key] = None
-                    if n < 50 and key not in lastFunctionsDict:
-                        g.pr(obj)
-                        data = getspec(obj)
-                        args, varargs, varkw, defaults, kwonlyargs, kwonlydefaults, annotations = data
-                        g.pr("args", args)
-                        if varargs: g.pr("varargs", varargs)
-                        if varkw: g.pr("varkw", varkw)
-                        if defaults:
-                            g.pr("defaults...")
-                            for s in defaults: g.pr(s)
-            lastFunctionsDict = funcDict
-            funcDict = {}
-            #@-<< print added functions >>
-    except Exception:
-        traceback.print_exc()
+lastObjectCount = 0
 
-printNewObjects = pno = printGcObjects
+def printGcObjects():
+    """Print a summary of GC statistics."""
+    global lastObjectCount
+    n = len(gc.garbage)
+    n2 = len(gc.get_objects())
+    delta = n2 - lastObjectCount
+    print('-' * 30)
+    print(f"garbage: {n}")
+    print(f"{delta:6d} = {n2:7d} totals")
+    # print number of each type of object.
+    count, d = 0, {}
+    for obj in gc.get_objects():
+        key = str(type(obj))
+        n = d.get(key, 0)
+        d [key] = n + 1
+        count += 1
+    print(f"{count:7} objects...")
+    # Invert the dict.
+    d2 = {v: k for k, v in d.items()}
+    for key in reversed(sorted(d2.keys())):
+        val = d2.get(key)
+        print(f"{key:7} {val}")
+    lastObjectCount = count
+    return delta
+#@+node:ekr.20031218072017.1593: *4* g.printGcRefs
+def printGcRefs():
+
+    refs = gc.get_referrers(app.windowList[0])
+    print(f"{len(refs):d} referers")
 #@+node:ekr.20060205043324.1: *4* g.printGcSummary
-def printGcSummary(tag=''):
-    tag = tag or g._callerName(n=2)
+def printGcSummary():
+
     g.enable_gc_debug()
     try:
         n = len(gc.garbage)
         n2 = len(gc.get_objects())
-        s = f"{tag}: printGCSummary: garbage: {n}, objects: {n2}"
-        g.pr(s)
+        s = f"printGCSummary: garbage: {n}, objects: {n2}"
+        print(s)
     except Exception:
         traceback.print_exc()
-#@+node:ekr.20060127165509: *4* g.printGcVerbose
-# WARNING: the id trick is not proper because newly allocated objects
-#          can have the same address as old objets.
-
-def printGcVerbose(tag=''):
-    tag = tag or g._callerName(n=2)
-    global lastObjectsDict
-    objects = gc.get_objects()
-    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
-    lastObjectsDict = {}
-    for o in objects:
-        lastObjectsDict[id(o)] = o
-    dicts = 0; seqs = 0
-    i = 0; n = len(newObjects)
-    while i < 100 and i < n:
-        o = newObjects[i]
-        if isinstance(o, dict):
-            dicts += 1
-        elif isinstance(o, (list, tuple)):
-            #g.pr(id(o),repr(o))
-            seqs += 1
-        #else:
-        #    g.pr(o)
-        i += 1
-    g.pr('=' * 40)
-    g.pr(f"dicts: {dicts}, sequences: {seqs}")
-    g.pr(f"{tag}: {len(newObjects)} new, {len(objects)} total objects")
-    g.pr('-' * 40)
 #@+node:ekr.20180528151850.1: *3* g.printTimes
 def printTimes(times):
     """
@@ -5224,7 +5074,9 @@ class GitIssueController:
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, label_list, root, state, limit=100):
         """Get all issues for the base url."""
-        if not requests:
+        try:
+            import requests
+        except Exception:
             g.trace('requests not found: `pip install requests`')
             return
         label = None
@@ -5261,7 +5113,9 @@ class GitIssueController:
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
     def get_one_issue(self, label, state, limit=20):
         """Create a list of issues with the given label."""
-        if not requests:
+        try:
+            import requests
+        except Exception:
             g.trace('requests not found: `pip install requests`')
             return
         root = self.root.insertAsLastChild()
@@ -5487,8 +5341,8 @@ def dummy_act_on_node(c, p, event):
 
 act_on_node = dummy_act_on_node
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
-childrenModifiedSet = set()
-contentModifiedSet = set()
+childrenModifiedSet: Set[bool] = set()
+contentModifiedSet: Set[bool] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
 def doHook(tag, *args, **keywords):
     """
@@ -6061,9 +5915,9 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
         # g.dump_encoded_string(encoding,s)
     return s
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-unicode_warnings = {}  # Keys are g.callers.
+unicode_warnings: Dict[str, bool] = {}  # Keys are g.callers.
 
-def toUnicode(s, encoding=None, reportErrors=False):
+def toUnicode(s: Any, encoding: Optional[str] = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -6950,8 +6804,8 @@ def funcToMethod(f, theClass, name=None):
     setattr(theClass, name or f.__name__, f)
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
-init_zodb_failed = {}  # Keys are paths, values are True.
-init_zodb_db = {}  # Keys are paths, values are ZODB.DB instances.
+init_zodb_failed: Dict[str, bool] = {}  # Keys are paths, values are True.
+init_zodb_db: Dict[str, Any] = {}  # Keys are paths, values are ZODB.DB instances.
 
 def init_zodb(pathToZodbStorage, verbose=True):
     """
@@ -7587,7 +7441,27 @@ def executeFile(filename, options=''):
     rc, so, se = subprocess_wrapper(f"{sys.executable} {fname} {options}")
     if rc: g.pr('return code', rc)
     g.pr(so, se)
-#@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
+#@+node:ekr.20040321065415: *3* g.find*Node*
+#@+others
+#@+node:ekr.20210303123423.3: *4* findNodeAnywhere
+def findNodeAnywhere(c, headline, exact=True):
+    h = headline.strip()
+    for p in c.all_unique_positions(copy=False):
+        if p.h.strip() == h:
+            return p.copy()
+    if not exact:
+        for p in c.all_unique_positions(copy=False):
+            if p.h.strip().startswith(h):
+                return p.copy()
+    return None
+#@+node:ekr.20210303123525.1: *4* findNodeByPath
+def findNodeByPath(c, path):
+    """Return the first @<file> node in Cmdr c whose path is given."""
+    for p in c.all_positions():
+        if p.isAnyAtFileNode() and path == g.fullPath(c, p):
+            return p
+    return False
+#@+node:ekr.20210303123423.1: *4* findNodeInChildren
 def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     p1 = p.copy()
@@ -7600,7 +7474,7 @@ def findNodeInChildren(c, p, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-
+#@+node:ekr.20210303123423.2: *4* findNodeInTree
 def findNodeInTree(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
     h = headline.strip()
@@ -7613,18 +7487,7 @@ def findNodeInTree(c, p, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
-
-def findNodeAnywhere(c, headline, exact=True):
-    h = headline.strip()
-    for p in c.all_unique_positions(copy=False):
-        if p.h.strip() == h:
-            return p.copy()
-    if not exact:
-        for p in c.all_unique_positions(copy=False):
-            if p.h.strip().startswith(h):
-                return p.copy()
-    return None
-
+#@+node:ekr.20210303123423.4: *4* findTopLevelNode
 def findTopLevelNode(c, headline, exact=True):
     h = headline.strip()
     for p in c.rootPosition().self_and_siblings(copy=False):
@@ -7635,6 +7498,7 @@ def findTopLevelNode(c, headline, exact=True):
             if p.h.strip().startswith(h):
                 return p.copy()
     return None
+#@-others
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c, p,
     useSelectedText=True,
@@ -8167,7 +8031,7 @@ def openUrlHelper(event, url=None):
     return None
 #@-others
 # set g when the import is about to complete.
-g = sys.modules.get('leo.core.leoGlobals')
+g: Any = sys.modules.get('leo.core.leoGlobals')
 assert g, sorted(sys.modules.keys())
 if __name__ == '__main__':
     unittest.main()

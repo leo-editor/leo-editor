@@ -5,19 +5,33 @@
 """Commands that invoke external checkers"""
 #@+<< imports >>
 #@+node:ekr.20161021092038.1: ** << imports >> checkerCommands.py
-try:
-    # pylint: disable=import-error
-        # We can't assume the user has this.
-    import flake8
-except Exception:  # May not be ImportError.
-    flake8 = None
-try:
-    import pyflakes
-except ImportError:
-    pyflakes = None
 import shlex
 import sys
 import time
+#
+# Third-party imports.
+# pylint: disable=import-error
+try:
+    import flake8
+    from flake8 import engine, main
+except Exception:  # May not be ImportError.
+    flake8 = None  # type: ignore
+try:
+    import mypy
+except Exception:
+    mypy = None  # type: ignore
+try:
+    import pyflakes
+    from pyflakes import api, reporter
+except Exception:
+    pyflakes = None  # type: ignore
+try:
+    # pylint: disable=import-error
+    from pylint import lint
+except Exception:
+    lint = None  # type: ignore
+#
+# Leo imports.
 from leo.core import leoGlobals as g
 #@-<< imports >>
 #@+others
@@ -148,19 +162,45 @@ def flake8_command(event):
     or the first @<file> node in an ancestor.
     """
     c = event.get('c')
-    if c:
-        if c.isChanged():
-            c.save()
-        if flake8:
-            Flake8Command(c).run()
-        else:
-            g.es_print('can not import flake8')
+    if not c:
+        return
+    if c.isChanged():
+        c.save()
+    if flake8:
+        Flake8Command(c).run()
+    else:
+        g.es_print('can not import flake8')
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
 def kill_pylint(event):
     """Kill any running pylint processes and clear the queue."""
     g.app.backgroundProcessManager.kill('pylint')
+#@+node:ekr.20210302111730.1: *3* mypy command
+@g.command('mypy')
+def mypy_command(event):
+    """
+    Run mypy on all nodes of the selected tree, or the first @<file> node
+    in an ancestor. Running mypy on a single file usually suffices.
+    
+    For example, you can run mypy on most of Leo's files by selecting
+    
+      `@edit ../../launchLeo.py`
+      
+    in leoPy.leo, then running Leo's mypy command.
+    
+    Unlike running mypy outside of Leo, Leo's mypy command creates
+    clickable links in Leo's log pane for each error.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    if c.isChanged():
+        c.save()
+    if mypy:
+        MypyCommand(c).run(c.p)
+    else:
+        g.es_print('can not import mypy')
 #@+node:ekr.20160516072613.1: *3* pyflakes command
 @g.command('pyflakes')
 def pyflakes_command(event):
@@ -195,6 +235,60 @@ def pylint_command(event):
         if data:
             path, p = data
             last_pylint_path = path
+#@+node:ekr.20210302111917.1: ** class MypyCommand
+class MypyCommand:
+    """A class to run mypy on all Python @<file> nodes in c.p's tree."""
+    
+    # bpm.put_log uses this pattern and assumes the pattern has these groups:
+    # m.group(1): A full file path.
+    # m.group(2): The line number.
+    # m.group(3): The error message.
+    link_pattern = r'^(.+):([0-9]+): error: (.*)\s*$'
+
+    def __init__(self, c):
+        """ctor for PyflakesCommand class."""
+        self.c = c
+        self.seen = []  # List of checked paths.
+
+    #@+others
+    #@+node:ekr.20210302111935.3: *3* mypy.check_all
+    def check_all(self, roots):
+        """Run pyflakes on all files in paths."""
+        c = self.c
+        bpm = g.app.backgroundProcessManager
+        for root in roots:
+            fn = self.finalize(root)
+            ### Report the file name.
+            ### g.es(f"mypy: {g.shortFileName(fn)}")
+            bpm.start_process(c,
+                command = f"mypy {fn}",
+                fn=fn,
+                kind='mypy',
+                link_pattern=self.link_pattern,
+                link_root=None,  # Use the file name in the mypy error messages.
+            )
+    #@+node:ekr.20210302111935.5: *3* mypy.finalize
+    def finalize(self, p):
+        """Finalize p's path."""
+        c = self.c
+        aList = g.get_directives_dict_list(p)
+        path = self.c.scanAtPathDirectives(aList)
+        path = c.expand_path_expression(path)  # #1341.
+        fn = p.anyAtFileNodeName()
+        fn = c.expand_path_expression(fn)  # #1341.
+        return g.os_path_finalize_join(path, fn)
+    #@+node:ekr.20210302111935.7: *3* mypy.run
+    def run(self, p):
+        """Run mypy on all Python @<file> nodes in c.p's tree."""
+        c = self.c
+        root = p.copy()
+        # Make sure Leo is on sys.path.
+        leo_path = g.os_path_finalize_join(g.app.loadDir, '..')
+        if leo_path not in sys.path:
+            sys.path.append(leo_path)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        self.check_all(roots)
+    #@-others
 #@+node:ekr.20160517133049.1: ** class Flake8Command
 class Flake8Command:
     """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
@@ -208,12 +302,6 @@ class Flake8Command:
     #@+node:ekr.20160517133049.2: *3* flake8.check_all
     def check_all(self, paths):
         """Run flake8 on all paths."""
-        try:
-            # pylint: disable=import-error
-                # We can't assume the user has this.
-            from flake8 import engine, main
-        except Exception:
-            return
         config_file = self.get_flake8_config()
         if config_file:
             style = engine.get_style_guide(parse_argv=False, config_file=config_file)
@@ -260,6 +348,9 @@ class Flake8Command:
     #@+node:ekr.20160517133049.5: *3* flake8.run
     def run(self, p=None):
         """Run flake8 on all Python @<file> nodes in c.p's tree."""
+        if not flake8:
+            g.es_print('flake8 is not installed')
+            return
         c = self.c
         root = p or c.p
         # Make sure Leo is on sys.path.
@@ -329,10 +420,6 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, log_flag, pyflakes_errors_only, roots):
         """Run pyflakes on all files in paths."""
-        try:
-            from pyflakes import api, reporter
-        except Exception:  # ModuleNotFoundError
-            return True  # Pretend all is fine.
         total_errors = 0
         for i, root in enumerate(roots):
             fn = self.finalize(root)
@@ -399,6 +486,8 @@ class PyflakesCommand:
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
     def run(self, p=None, force=False, pyflakes_errors_only=False):
         """Run Pyflakes on all Python @<file> nodes in c.p's tree."""
+        if not flake8:
+            return True  # Pretend all is fine.
         c = self.c
         root = p or c.p
         # Make sure Leo is on sys.path.
@@ -444,7 +533,8 @@ class PylintCommand:
     def run(self, last_path=None):
         """Run Pylint on all Python @<file> nodes in c.p's tree."""
         c, root = self.c, self.c.p
-        if not self.import_lint():
+        if not lint:
+            g.es_print('pylint is not installed')
             return False
         self.rc_fn = self.get_rc_file()
         if not self.rc_fn:
@@ -479,17 +569,6 @@ class PylintCommand:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
         return data[-1] if data else False
-    #@+node:ekr.20190605183824.1: *3* 2. pylint.import_lint
-    def import_lint(self):
-        """Make sure lint can be imported."""
-        try:
-            # pylint: disable=import-error
-            from pylint import lint
-            assert lint
-            return True
-        except ImportError:
-            g.es_print('pylint is not installed')
-            return False
     #@+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
     def get_rc_file(self):
         """Return the path to the pylint configuration file."""

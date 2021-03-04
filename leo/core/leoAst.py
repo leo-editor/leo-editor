@@ -136,10 +136,6 @@ Leo's outline structure. These comments have the form::
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ekr.20200105054219.1: ** << imports >> (leoAst.py)
-try:
-    import pytest
-except Exception:
-    pytest = None
 import argparse
 import ast
 import codecs
@@ -152,12 +148,17 @@ import sys
 import time
 import tokenize
 import traceback
+from typing import Any, Dict, List
 import unittest
+try:
+    import pytest
+except Exception:
+    pytest = None  # type: ignore
 #@-<< imports >>
-v1, v2, junk, junk, junk = sys.version_info
+v1, v2, junk1, junk2, junk3 = sys.version_info
 #
 # https://docs.python.org/3/library/token.html
-# Async tokens exist in Python 3.5+, but *not* Python 3.7.
+# Async tokens exist in Python 3.5+, but *not* in Python 3.7.
 use_async_tokens = (v1, v2) >= (3, 5) and (v1, v2) < (3, 7)
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
@@ -292,7 +293,7 @@ class LeoGlobals:  # pragma: no cover
             print(f"toEncodedString: Error converting {s!r} to {encoding}")
         return s
     #@+node:ekr.20191226190006.1: *3* LeoGlobals.toUnicode
-    def toUnicode(self, s, encoding='utf-8'):
+    def toUnicode(self, s: Any, encoding: str = 'utf-8') -> str:
         """Convert bytes to unicode if necessary."""
         if isinstance(s, str):
             return s
@@ -1254,9 +1255,9 @@ class TokenOrderGenerator:
         return tokens, tree
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.begin_visitor
-    begin_end_stack = []
+    begin_end_stack: List[str] = []
     node_index = 0  # The index into the node_stack.
-    node_stack = []  # The stack of parent nodes.
+    node_stack: List[ast.AST] = []  # The stack of parent nodes.
 
     def begin_visitor(self, node):
         """Enter a visitor."""
@@ -3386,7 +3387,8 @@ class BaseTest(unittest.TestCase):
     """
 
     # Statistics.
-    counts, times = {}, {}
+    counts: Dict[str, int] = {}
+    times: Dict[str, float] = {}
     #@+others
     #@+node:ekr.20200110103036.1: *4* BaseTest.adjust_expected
     def adjust_expected(self, s):

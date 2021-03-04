@@ -5,6 +5,10 @@ import re
 import string
 from leo.core import leoGlobals as g
 #@+others
+#@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
+def cmd(name):
+    """Command decorator for the ChapterController class."""
+    return g.new_cmd_decorator(name, ['c', 'chapterController',])
 #@+node:ekr.20070317085437: ** class ChapterController
 class ChapterController:
     """A per-commander controller that manages chapters and related nodes."""
@@ -86,11 +90,6 @@ class ChapterController:
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
-    #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the ChapterController class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'chapterController',])
     #@+node:ekr.20070604165126: *3* cc.selectChapter
     @cmd('chapter-select')
     def selectChapter(self, event=None):

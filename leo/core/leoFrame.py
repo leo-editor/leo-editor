@@ -42,6 +42,20 @@ assert time
 #     Called by commands throughout Leo's core that change the body or headline.
 #     These are thin wrappers for updateBody and updateTree.
 #@-<< About handling events >>
+#@+<< command decorators >>
+#@+node:ekr.20150509054428.1: ** << command decorators >> (leoFrame.py)
+def log_cmd(name):  # Not used.
+    """Command decorator for the LeoLog class."""
+    return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
+
+def body_cmd(name):
+    """Command decorator for the c.frame.body class."""
+    return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
+    
+def frame_cmd(name):
+    """Command decorator for the LeoFrame class."""
+    return g.new_cmd_decorator(name, ['c', 'frame',])
+#@-<< command decorators >>
 #@+others
 #@+node:ekr.20140907201613.18660: ** API classes
 # These classes are for documentation and unit testing.
@@ -226,11 +240,6 @@ class LeoBody:
         # Init user settings.
         self.use_chapters = False
             # May be overridden in subclasses.
-    #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the c.frame.body class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor(self):
         pass
@@ -318,8 +327,8 @@ class LeoBody:
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
     #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus (restored)
-    @cmd('editor-cycle-focus')
-    @cmd('cycle-editor-focus')  # There is no LeoQtBody method
+    @body_cmd('editor-cycle-focus')
+    @body_cmd('cycle-editor-focus')  # There is no LeoQtBody method
     def cycleEditorFocus(self, event=None):
         """Cycle keyboard focus between the body text editors."""
         c = self.c
@@ -699,11 +708,6 @@ class LeoFrame:
         #
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot()
-    #@+node:ekr.20150509194519.1: *3* LeoFrame.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the LeoFrame class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
     #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
     def OnBodyClick(self, event=None):
@@ -892,7 +896,7 @@ class LeoFrame:
         if self.statusLine: self.statusLine.update()
     #@+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
-    @cmd('copy-text')
+    @frame_cmd('copy-text')
     def copyText(self, event=None):
         """Copy the selected text from the widget to the clipboard."""
         # f = self
@@ -913,7 +917,7 @@ class LeoFrame:
 
     OnCopyFromMenu = copyText
     #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
-    @cmd('cut-text')
+    @frame_cmd('cut-text')
     def cutText(self, event=None):
         """Invoked from the mini-buffer and from shortcuts."""
         f = self; c = f.c; w = event and event.widget
@@ -949,7 +953,7 @@ class LeoFrame:
 
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
-    @cmd('paste-text')
+    @frame_cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         """
         Paste the clipboard into a widget.
@@ -1016,7 +1020,7 @@ class LeoFrame:
         return self.pasteText(event=event, middleButton=True)
     #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
     #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
-    @cmd('end-edit-headline')
+    @frame_cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
         """End editing of a headline and move focus to the body pane."""
         frame = self
@@ -1122,11 +1126,6 @@ class LeoLog:
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the LeoLog class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName, wrap='none'):
         self.selectTab(tabName, wrap=wrap)

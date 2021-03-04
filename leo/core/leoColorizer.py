@@ -12,16 +12,18 @@
 import re
 import string
 import time
-assert time
-from leo.core import leoGlobals as g
-from leo.core.leoQt import Qsci, QtGui, QtWidgets
-from leo.core.leoColor import leo_color_database
+from typing import Callable, Dict
 #
-# Recover gracefully if pygments can not be imported.
+# Third-part tools.
 try:
     import pygments
 except ImportError:
-    pygments = None
+    pygments = None  # type: ignore
+#
+# Leo imports...
+from leo.core import leoGlobals as g
+from leo.core.leoQt import Qsci, QtGui, QtWidgets
+from leo.core.leoColor import leo_color_database
 
 
 #@-<< imports >>
@@ -311,7 +313,8 @@ class BaseJEditColorizer(BaseColorizer):
                 self.fonts[key] = None  # Essential
                 wrapper.tag_configure(key, font=defaultBodyfont)
     #@+node:ekr.20190326034006.1: *5* bjc.find_font
-    zoom_dict = {}  # Keys are key::settings_names, values are cumulative font size.
+    zoom_dict: Dict[str, int] = {}
+        # Keys are key::settings_names, values are cumulative font size.
 
     def find_font(self, key, setting_name):
         """
@@ -2428,7 +2431,7 @@ if QtGui:
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
-        key_error_d = {}
+        key_error_d: Dict[str, bool] = {}
 
         def _get_format_from_style(self, token, style):
             """ Returns a QTextCharFormat for token by reading a Pygments style.
@@ -2598,7 +2601,7 @@ class PygmentsColorizer(BaseJEditColorizer):
     def getLegacyDefaultFormat(self):
         return None
 
-    traced_dict = {}
+    traced_dict: Dict[str, str] = {}
 
     def getLegacyFormat(self, token, text):
         """Return a jEdit tag for the given pygments token."""
@@ -2628,14 +2631,13 @@ class PygmentsColorizer(BaseJEditColorizer):
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
     #@+node:ekr.20190319151826.78: *3* pyg_c.mainLoop & helpers
-    format_dict = {}
+    format_dict: Dict[str, str] = {}
         # Keys are repr(Token), values are formats.
-    lexers_dict = {}
+    lexers_dict: Dict[str, Callable] = {}
         # Keys are language names, values are instantiated, patched lexers.
-    state_s_dict = {}
+    state_s_dict: Dict[str, int] = {}
         # Keys are strings, values are ints.
-    state_n_dict = {}
-        # For tracing only.
+    state_n_dict: Dict[int, str] = {}  # For tracing only.
         # Keys are ints, values are strings.
     state_index = 1
         # Index of state number to be allocated.
@@ -3073,9 +3075,10 @@ if pygments:
                 ])
                 return f"PygmentsBlockUserData({kwds})"
 
-    else:
-        # For TravisCi.
-        PygmentsBlockUserData = g.NullObject
+    ###
+    # else:
+        # # For TravisCi.
+        # PygmentsBlockUserData = g.NullObject  # type: ignore
     #@-others
 #@-others
 #@@language python

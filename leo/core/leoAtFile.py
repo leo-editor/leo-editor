@@ -15,6 +15,10 @@ from leo.core import leoGlobals as g
 from leo.core import leoNodes
 #@-<< imports >>
 #@+others
+#@+node:ekr.20150509194251.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the AtFileCommands class."""
+    return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile:
     """A class implementing the atFile subcommander."""
@@ -68,11 +72,6 @@ class AtFile:
             'run-pyflakes-on-write', default=False)
         self.underindentEscapeString = c.config.getString(
             'underindent-escape-string') or '\\-'
-    #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the AtFileCommands class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'atFileCommands',])
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self):
         """

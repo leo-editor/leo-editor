@@ -12,8 +12,6 @@ To generate documents from rST files, Python's docutils_ module must be
 installed. The code will use the SilverCity_ syntax coloring package if is is
 available."""
 #@-<< docstring >>
-# pylint: disable=global-variable-not-assigned
-# for SilverCity
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 import html.parser as HTMLParser
@@ -21,39 +19,36 @@ import io
 import pprint
 import re
 import time
-# Leo imports.
-from leo.core import leoGlobals as g
-try:
-    from leo.plugins import mod_http
-except Exception:  # Don't let this crash Leo!
-    mod_http = None
-# Third-part imports.
+#
+# Third-part imports...
 try:
     import docutils
     import docutils.core
-except ImportError:
-    docutils = None
-if docutils:
-    try:
-        from docutils import parsers
-        from docutils.parsers import rst
-        if not parsers or not rst:
-            docutils = None
-    except Exception:  # Don't let this crash Leo!
-        docutils = None
+    from docutils import parsers
+    from docutils.parsers import rst
+except Exception:
+    docutils = None  # type: ignore
 try:
     import SilverCity
 except ImportError:
-    SilverCity = None
-# Aliases.
+    SilverCity = None  # type: ignore
+#
+# Leo imports.
+from leo.core import leoGlobals as g
+from leo.plugins import mod_http
+#
+# Aliases & traces.
 StringIO = io.StringIO
-
 if 'plugins' in g.app.debug:
     print('leoRst.py: docutils:', repr(docutils))
     print('leoRst.py:  parsers:', repr(parsers))
     print('leoRst.py:      rst:', repr(rst))
 #@-<< imports >>
 #@+others
+#@+node:ekr.20150509035745.1: ** cmd (decorator)
+def cmd(name):
+    """Command decorator for the RstCommands class."""
+    return g.new_cmd_decorator(name, ['c', 'rstCommands',])
 #@+node:ekr.20090502071837.12: ** code_block
 def code_block(name, arguments, options,
     content, lineno, content_offset, block_text, state, state_machine
@@ -80,22 +75,22 @@ def code_block(name, arguments, options,
 
 # See http://docutils.sourceforge.net/spec/howto/rst-directives.html
 
-code_block.arguments = (
+code_block.arguments = (    # type: ignore
     1,  # Number of required arguments.
     0,  # Number of optional arguments.
-    0)  # True if final argument may contain whitespace.
+    0,  # True if final argument may contain whitespace.
+)
+
 # A mapping from option name to conversion function.
 if docutils:
-    code_block.options = {
-        'language':
-        docutils.parsers.rst.directives.unchanged
-            # Return the text argument, unchanged.
+    code_block.options = {    # type: ignore
+        'language': docutils.parsers.rst.directives.unchanged  # Return the text argument, unchanged.
     }
-    code_block.content = 1  # True if content is allowed.
+    code_block.content = 1  # type: ignore  # True if content is allowed.
     # Register the directive with docutils.
     docutils.parsers.rst.directives.register_directive('code-block', code_block)
 else:
-    code_block.options = {}
+    code_block.options = {}  # type: ignore
 #@+node:ekr.20090502071837.33: ** class RstCommands
 class RstCommands:
     """
@@ -184,11 +179,6 @@ class RstCommands:
     def reloadSettings(self):
         """RstCommand.reloadSettings"""
         self.debug = self.c.config.getBool('rst3-debug', default=False)
-    #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the RstCommands class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'rstCommands',])
     #@+node:ekr.20090502071837.42: *4* rst.createD0
     def createD0(self):
         """Create the default options dict."""

@@ -42,6 +42,10 @@ def show_stroke(stroke):
         'space':        ' ',
     }
     return d.get(s, s)
+#@+node:ekr.20150509040011.1: **  vc.cmd (decorator)
+def cmd(name):
+    """Command decorator for the VimCommands class."""
+    return g.new_cmd_decorator(name, ['c', 'vimCommands',])
 #@+node:ekr.20140802183521.17996: ** class VimEvent
 class VimEvent:
     """A class to contain the components of the dot."""
@@ -476,11 +480,6 @@ class VimCommands:
         self.j_changed = True
             # False if the .leo file's change indicator should be
             # cleared after doing the j,j abbreviation.
-    #@+node:ekr.20150509040011.1: *3*  vc.cmd (decorator)
-    def cmd(name):
-        """Command decorator for the VimCommands class."""
-        # pylint: disable=no-self-argument
-        return g.new_cmd_decorator(name, ['c', 'vimCommands',])
     #@+node:ekr.20140802225657.18023: *3* vc.acceptance methods
     # All key handlers must end with a call to an acceptance method.
     #
