@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:TomP.20191215195433.1: * @file viewrendered3.py
+#@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
 r"""
@@ -2551,6 +2551,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200121121247.1: *6* << rst special line helpers >>
         def get_rst_code_language(line):
             """Return the language and tag for a line beginning with ".. code::"."""
+            # pylint: disable=global-variable-undefined
             global _in_code_block
             _fields = line.split('.. code::')
             if len(_fields) > 1:
