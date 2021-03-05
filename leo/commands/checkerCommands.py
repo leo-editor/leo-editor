@@ -180,8 +180,9 @@ def kill_pylint(event):
 @g.command('mypy')
 def mypy_command(event):
     """
-    Run mypy on all nodes of the selected tree, or the first @<file> node
-    in an ancestor. Running mypy on a single file usually suffices.
+    Run mypy on all @<file> nodes of the selected tree, or the first
+    @<file> node in an ancestor. Running mypy on a single file usually
+    suffices.
     
     For example, you can run mypy on most of Leo's files by selecting
     
