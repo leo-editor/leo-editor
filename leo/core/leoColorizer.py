@@ -35,7 +35,7 @@ def make_colorizer(c, widget, wrapper):
     if use_pygments:
         return PygmentsColorizer(c, widget, wrapper)
     return JEditColorizer(c, widget, wrapper)
-#@+node:ekr.20170127141855.1: ** class BaseColorizer (object)
+#@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
     """The base class for all Leo colorizers."""
     #@+others
