@@ -31,7 +31,6 @@ class ConvertAtRoot:
     
     errors = 0
     root = None  # Root of @root tree.
-    trace = False
     units = []  # List of positions containing @unit.
 
     #@+others
@@ -76,12 +75,10 @@ class ConvertAtRoot:
             
         for p in root.subtree():
             if munge(p.h).startswith(munge(section_name)):
-                if self.trace:
-                    print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
+                # print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
                 return p
             
-        if self.trace:    
-            print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
+        # print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
         return None
     #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
     section_pat = re.compile(r'\s*<\<(.*)>\>')
@@ -92,13 +89,13 @@ class ConvertAtRoot:
         for s in g.splitLines(p.b):
             m = self.section_pat.match(s)
             if m:
-                if self.trace and not header:
-                    header = True
-                    print('')
-                    print(p.h)
+                # if not header:
+                    # header = True
+                    # print('')
+                    # print(p.h)
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
-                if self.trace and not section_p:
+                if not section_p:
                     print('')
                     print(f"not found: {section_name}")
                     print('')
