@@ -10848,19 +10848,6 @@ def createCompareClones (self,d,kind,parent):
                 copy.moveToLastChildOf(parent)
                 for p2 in copy.self_and_subtree():
                     p2.v.context = c
-#@+node:ekr.20070921070101: *6* createHiddenCommander (EditFileCommandsClass)
-def createHiddenCommander(self,fn):
-    '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
-    import leo.core.leoCommands as leoCommands
-    lm = g.app.loadManager
-    c2 = leoCommands.Commands(fn,gui=g.app.nullGui)
-    theFile = lm.openLeoOrZipFile(fn)
-    if theFile:
-        c2.fileCommands.openLeoFile(theFile,fn,
-            readAtFileNodesFlag=True,silent=True)
-        return c2
-    else:
-        return None
 #@+node:ekr.20070921070101.1: *6* createFileDict
 def createFileDict (self,c):
     '''Create a dictionary of all relevant positions in commander c.'''

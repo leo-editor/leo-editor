@@ -3788,6 +3788,17 @@ def create_temp_file(textMode=False):
         g.es_exception()
         theFile, theFileName = None, ''
     return theFile, theFileName
+#@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
+def createHiddenCommander(fn):
+    """Read the file into a hidden commander (Similar to g.openWithFileName)."""
+    from leo.core.leoCommands import Commands
+    c = Commands(fn, gui=g.app.nullGui)
+    theFile = g.app.loadManager.openLeoOrZipFile(fn)
+    if theFile:
+        c.fileCommands.openLeoFile(
+            theFile, fn, readAtFileNodesFlag=True, silent=True)
+        return c
+    return None
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c=None):
     conf = c.config if c else g.app.config
