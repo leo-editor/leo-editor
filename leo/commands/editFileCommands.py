@@ -206,17 +206,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     copy.moveToLastChildOf(parent)
                     for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
-    #@+node:ekr.20170806094317.15: *4* g.createHiddenCommander
-    def createHiddenCommander(fn):
-        """Read the file into a hidden commander (Similar to g.openWithFileName)."""
-        from leo.core.leoCommands import Commands
-        c = Commands(fn, gui=g.app.nullGui)
-        theFile = g.app.loadManager.openLeoOrZipFile(fn)
-        if theFile:
-            c.fileCommands.openLeoFile(
-                theFile, fn, readAtFileNodesFlag=True, silent=True)
-            return c
-        return None
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
     def createFileDict(self, c):
         """Create a dictionary of all relevant positions in commander c."""
