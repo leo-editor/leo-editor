@@ -3,20 +3,37 @@
 #@+node:ekr.20150514041209.1: * @file ../commands/editFileCommands.py
 #@@first
 """Leo's file-editing commands."""
-#@+<< imports >>
-#@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
+
 import difflib
 import os
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
-#@-<< imports >>
 
 def cmd(name):
     """Command decorator for the EditFileCommandsClass class."""
     return g.new_cmd_decorator(name, ['c', 'editFileCommands',])
 
 #@+others
+#@+node:ekr.20210307053201.1: ** class ConvertAtRoot
+class ConvertAtRoot:
+    """
+    A class to convert @root directives to @clean nodes.
+    """
+
+    #@+others
+    #@+node:ekr.20210307053446.1: *3* atRoot.convert_file
+    def convert_file(self, path):
+        """Convert @root to @clean in the the .leo file at the given path."""
+        if not os.path.exists(path):
+            g.trace(f"not found: {path!r}")
+            return
+        c = g.createHiddenCommander(path)
+        for p in c.all_positions():
+                print(' '*p.level(), p.h)
+        
+        
+    #@-others
 #@+node:ekr.20170806094319.14: ** class EditFileCommandsClass
 class EditFileCommandsClass(BaseEditCommandsClass):
     """A class to load files into buffers and save buffers to files."""
@@ -109,7 +126,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 title="Compare .leo Files", filetypes=filetypes, defaultextension='.leo')
             if not fileName: return
             # Read the file into the hidden commander.
-            c2 = self.createHiddenCommander(fileName)
+            c2 = g.createHiddenCommander(fileName)
             if not c2: return
         # Compute the inserted, deleted and changed dicts.
         d1 = self.createFileDict(c1)
@@ -189,16 +206,16 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     copy.moveToLastChildOf(parent)
                     for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
-    #@+node:ekr.20170806094317.15: *4* efc.createHiddenCommander
-    def createHiddenCommander(self, fn):
+    #@+node:ekr.20170806094317.15: *4* g.createHiddenCommander
+    def createHiddenCommander(fn):
         """Read the file into a hidden commander (Similar to g.openWithFileName)."""
-        lm = g.app.loadManager
-        c2 = leoCommands.Commands(fn, gui=g.app.nullGui)
-        theFile = lm.openLeoOrZipFile(fn)
+        from leo.core.leoCommands import Commands
+        c = Commands(fn, gui=g.app.nullGui)
+        theFile = g.app.loadManager.openLeoOrZipFile(fn)
         if theFile:
-            c2.fileCommands.openLeoFile(
+            c.fileCommands.openLeoFile(
                 theFile, fn, readAtFileNodesFlag=True, silent=True)
-            return c2
+            return c
         return None
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
     def createFileDict(self, c):

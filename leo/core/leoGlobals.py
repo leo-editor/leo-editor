@@ -4199,6 +4199,17 @@ def writeFile(contents, encoding, fileName):
         # g.trace(g.callers())
         # g.es_exception()
         return False
+#@+node:ekr.20170806094317.15: *3* g.createHiddenCommander
+def createHiddenCommander(fn):
+    """Read the file into a hidden commander (Similar to g.openWithFileName)."""
+    from leo.core.leoCommands import Commands
+    c = Commands(fn, gui=g.app.nullGui)
+    theFile = g.app.loadManager.openLeoOrZipFile(fn)
+    if theFile:
+        c.fileCommands.openLeoFile(
+            theFile, fn, readAtFileNodesFlag=True, silent=True)
+        return c
+    return None
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):

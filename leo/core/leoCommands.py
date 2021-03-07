@@ -2172,6 +2172,23 @@ class Commands:
                 g.trace(message)
             return expr
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
+    #@+node:ekr.20210305133229.1: *4* c.execute_external_language_script (NEW)
+    def execute_external_language_script(self,
+        error_regex = None,
+        language_command = None,
+        script_language = None,
+    ):
+        """
+        A general-purpose helper that composes and runs a Leonine script for
+        languages other than python.
+        
+        command:         The external command that runs the language processor.
+        error_regex:     Optional regular expression matching error messages.
+        regex_flags:     Optional flags for the regular expression.
+        script_language: The name of the language.
+        """
+        ### How to specify file name?
+        c = self
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
         """Check an event object."""
