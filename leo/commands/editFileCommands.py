@@ -7,6 +7,7 @@
 #@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
 import difflib
 import os
+import re
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -20,8 +21,18 @@ def cmd(name):
 #@+node:ekr.20210307060752.1: ** class ConvertAtRoot
 class ConvertAtRoot:
     """
-    A class to convert @root directives to @clean nodes.
+    A class to convert @root directives to @clean nodes:
+    
+    - Change @root directive in body to @clean in the headline.
+    - Make clones of section references defined outside of @clean nodes,
+      moving them so they are children of the nodes that reference them.
+    - Comment-out @unit directives.
     """
+    
+    errors = 0
+    root = None  # Root of @root tree.
+    trace = False
+    units = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
@@ -31,9 +42,88 @@ class ConvertAtRoot:
             g.trace(f"not found: {path!r}")
             return
         c = g.createHiddenCommander(path)
+        self.find_all_units(c)
         for p in c.all_positions():
-                print(' '*p.level(), p.h)
+            self.do_node(p)
+        print(f"{self.errors} error{g.plural(self.errors)} in {path}")
+    #@+node:ekr.20210307062819.1: *3* atRoot.do_node
+    def do_node(self, p):
         
+        if '@root' in p.b:
+            self.root = p.copy()
+            self.do_root(p)
+            self.root = None
+        
+    #@+node:ekr.20210307075117.1: *3* atRoot.do_root
+    def do_root(self, p):
+        """
+        Make all necessary clones for section defintions.
+        """
+        for p in p.self_and_subtree():
+            self.make_clones(p)
+    #@+node:ekr.20210307085034.1: *3* atRoot.find_all_units
+    def find_all_units(self, c):
+        """Scan for all @unit nodes."""
+        for p in c.all_positions():
+            if '@unit' in p.b:
+                self.units.append(p.copy())
+    #@+node:ekr.20210307082125.1: *3* atRoot.find_section
+    def find_section(self, root, section_name):
+        """Find the section definition node in root's subtree for the given section."""
+        
+        def munge(s):
+            return s.strip().replace(' ','').lower()
+            
+        for p in root.subtree():
+            if munge(p.h).startswith(munge(section_name)):
+                if self.trace:
+                    print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
+                return p
+            
+        if self.trace:    
+            print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
+        return None
+    #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
+    section_pat = re.compile(r'\s*<\<(.*)>\>')
+
+    def make_clones(self, p):
+        """Make clones for all undefined sections in p.b."""
+        header = False
+        for s in g.splitLines(p.b):
+            m = self.section_pat.match(s)
+            if m:
+                if self.trace and not header:
+                    header = True
+                    print('')
+                    print(p.h)
+                section_name = g.angleBrackets(m.group(1).strip())
+                section_p = self.make_clone(p, section_name)
+                if self.trace and not section_p:
+                    print('')
+                    print(f"not found: {section_name}")
+                    print('')
+                    self.errors += 1
+    #@+node:ekr.20210307080500.1: *3* atRoot.make_clone
+    def make_clone(self, p, section_name):
+        """Make c clone for section, if necessary."""
+        #
+        # First, look in p's subtree.
+        section_p = self.find_section(p, section_name)
+        if section_p:
+            return section_p
+        #
+        # Next, look in the @root tree
+        if p != self.root:
+            section_p = self.find_section(self.root, section_name)
+            if section_p:
+                return section_p
+        #
+        # Finally, look in the @unit tree.
+        for unit_p in self.units:
+            section_p = self.find_section(unit_p, section_name)
+            if section_p:
+                return section_p
+        return None
         
     #@-others
 #@+node:ekr.20170806094319.14: ** class EditFileCommandsClass
