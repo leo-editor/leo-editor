@@ -18,12 +18,6 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'editFileCommands',])
 
 #@+others
-#@+node:ekr.20210308045633.1: ** @cmd convert-at-file
-@cmd('convert-at-root')
-def convert_at_file(event=None):
-    c = event.get('c')
-    if c:
-        ConvertAtRoot().convert_file(c)
 #@+node:ekr.20210307060752.1: ** class ConvertAtRoot
 class ConvertAtRoot:
     """
@@ -59,11 +53,11 @@ class ConvertAtRoot:
                 return False
         return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
-    def convert_file(self, c):
+    @cmd('convert-at-root')
+    def convert_file(self, event=None):
         """Convert @root to @clean in the the .leo file at the given path."""
-        path = c.fileName()
-        if not os.path.exists(path):
-            g.trace(f"not found: {path!r}")
+        c = event.get('c')
+        if not c:
             return
         self.find_all_units(c)
         for p in c.all_positions():
@@ -71,7 +65,8 @@ class ConvertAtRoot:
                 self.root = p.copy()
                 self.do_root(p)
                 self.root = None
-        print(f"{self.errors} error{g.plural(self.errors)} in {path}")
+        c.redraw()
+        print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
         # if not self.errors: self.dump(c)
     #@+node:ekr.20210308045306.1: *3* atRoot.dump
     def dump(self, c):
