@@ -7,6 +7,7 @@
 #@+node:ekr.20170806094317.4: ** << imports >> (editFileCommands.py)
 import difflib
 import os
+import re
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -20,26 +21,155 @@ def cmd(name):
 #@+node:ekr.20210307060752.1: ** class ConvertAtRoot
 class ConvertAtRoot:
     """
-    A class to convert @root directives to @clean nodes.
+    A class to convert @root directives to @clean nodes:
+    
+    - Change @root directive in body to @clean in the headline.
+    - Make clones of section references defined outside of @clean nodes,
+      moving them so they are children of the nodes that reference them.
+    - Comment-out @unit directives.
     """
+    
+    errors = 0
+    root = None  # Root of @root tree.
+    root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
+    section_pat = re.compile(r'\s*<\<.+>\>')
+    units = []  # List of positions containing @unit.
 
     #@+others
+    #@+node:ekr.20210308044128.1: *3* atRoot.check_move
+    def check_clone_move(self, p, parent):
+        """
+        Return False if p or any of p's descendents is a clone of parent
+        or any of parents ancestors.
+        """
+        # Like as checkMoveWithParentWithWarning without warning.
+        clonedVnodes = {}
+        for ancestor in parent.self_and_parents(copy=False):
+            if ancestor.isCloned():
+                v = ancestor.v
+                clonedVnodes[v] = v
+        if not clonedVnodes:
+            return True
+        for p in p.self_and_subtree(copy=False):
+            if p.isCloned() and clonedVnodes.get(p.v):
+                return False
+        return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
-    def convert_file(self, path):
+    @cmd('convert-at-root')
+    def convert_file(self, c):
         """Convert @root to @clean in the the .leo file at the given path."""
-        if not os.path.exists(path):
-            g.trace(f"not found: {path!r}")
-            return
-        c = g.createHiddenCommander(path)
+        self.find_all_units(c)
         for p in c.all_positions():
-                print(' '*p.level(), p.h)
+            m = self.root_pat.search(p.b)
+            path = m and m.group(1)
+            if path:
+                # Weird special case. Don't change section definition!
+                if self.section_pat.match(p.h):
+                    print(f"\nCan not create @clean node: {p.h}\n")
+                    self.errors += 1
+                else:
+                    self.root = p.copy()
+                    p.h = f"@clean {path}"
+                self.do_root(p)
+                self.root = None
+        #
+        # Check the results.
+        link_errors = c.checkOutline(check_links=True)
+        self.errors += link_errors
+        print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
+        c.redraw()
+        # if not self.errors: self.dump(c)
+    #@+node:ekr.20210308045306.1: *3* atRoot.dump
+    def dump(self, c):
+        print(f"Dump of {c.shortFileName()}...")
+        for p in c.all_positions():
+            print(' '*2*p.level(), p.h)
+    #@+node:ekr.20210307075117.1: *3* atRoot.do_root
+    def do_root(self, p):
+        """
+        Make all necessary clones for section defintions.
+        """
+        for p in p.self_and_subtree():
+            self.make_clones(p)
+    #@+node:ekr.20210307085034.1: *3* atRoot.find_all_units
+    def find_all_units(self, c):
+        """Scan for all @unit nodes."""
+        for p in c.all_positions():
+            if '@unit' in p.b:
+                self.units.append(p.copy())
+    #@+node:ekr.20210307082125.1: *3* atRoot.find_section
+    def find_section(self, root, section_name):
+        """Find the section definition node in root's subtree for the given section."""
         
+        def munge(s):
+            return s.strip().replace(' ','').lower()
+            
+        for p in root.subtree():
+            if munge(p.h).startswith(munge(section_name)):
+                # print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
+                return p
+            
+        # print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
+        return None
+    #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
+    section_pat = re.compile(r'\s*<\<(.*)>\>')
+
+    def make_clones(self, p):
+        """Make clones for all undefined sections in p.b."""
+        header = False
+        for s in g.splitLines(p.b):
+            m = self.section_pat.match(s)
+            if m:
+                # if not header:
+                    # header = True
+                    # print('')
+                    # print(p.h)
+                section_name = g.angleBrackets(m.group(1).strip())
+                section_p = self.make_clone(p, section_name)
+                if not section_p:
+                    print(f"MISSING: {section_name:30} {p.h}")
+                    self.errors += 1
+    #@+node:ekr.20210307080500.1: *3* atRoot.make_clone
+    def make_clone(self, p, section_name):
+        """Make c clone for section, if necessary."""
         
+        def clone_and_move(parent, section_p):
+            clone = section_p.clone()
+            if self.check_clone_move(clone, parent):
+                print(f"  CLONE: {section_p.h:30} parent: {parent.h}")
+                clone.moveToLastChildOf(parent)
+            else:
+                print(f"Can not clone: {section_p.h:30} parent: {parent.h}")
+                clone.doDelete()
+                self.errors += 1
+        #
+        # First, look in p's subtree.
+        section_p = self.find_section(p, section_name)
+        if section_p:
+            # g.trace('FOUND', section_name)
+            # Already defined in a good place.
+            return section_p
+        #
+        # Finally, look in the @unit tree.
+        for unit_p in self.units:
+            section_p = self.find_section(unit_p, section_name)
+            if section_p:
+                clone_and_move(p, section_p)
+                return section_p
+        return None
     #@-others
 #@+node:ekr.20170806094319.14: ** class EditFileCommandsClass
 class EditFileCommandsClass(BaseEditCommandsClass):
     """A class to load files into buffers and save buffers to files."""
     #@+others
+    #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
+    @cmd('convert-at-root')
+    def convert_at_root(self, event=None):
+        """Convert @root to @clean in the the .leo."""
+        c = event.get('c')
+        if not c:
+            return
+        ConvertAtRoot().convert_file(c)
     #@+node:ekr.20170806094319.11: *3* efc.clean-at-clean commands
     #@+node:ekr.20170806094319.5: *4* efc.cleanAtCleanFiles
     @cmd('clean-at-clean-files')

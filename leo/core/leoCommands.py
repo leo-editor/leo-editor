@@ -1588,8 +1588,10 @@ class Commands:
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root, parent, warningFlag):
-        """Return False if root or any of root's descendents is a clone of
-        parent or any of parents ancestors."""
+        """
+        Return False if root or any of root's descendents is a clone of parent
+        or any of parents ancestors.
+        """
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
         clonedVnodes = {}
