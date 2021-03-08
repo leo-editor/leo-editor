@@ -54,11 +54,8 @@ class ConvertAtRoot:
         return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
     @cmd('convert-at-root')
-    def convert_file(self, event=None):
+    def convert_file(self, c):
         """Convert @root to @clean in the the .leo file at the given path."""
-        c = event.get('c')
-        if not c:
-            return
         self.find_all_units(c)
         for p in c.all_positions():
             if '@root' in p.b:
@@ -150,6 +147,14 @@ class ConvertAtRoot:
 class EditFileCommandsClass(BaseEditCommandsClass):
     """A class to load files into buffers and save buffers to files."""
     #@+others
+    #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
+    @cmd('convert-at-root')
+    def convert_at_root(self, event=None):
+        """Convert @root to @clean in the the .leo."""
+        c = event.get('c')
+        if not c:
+            return
+        ConvertAtRoot().convert_file(c)
     #@+node:ekr.20170806094319.11: *3* efc.clean-at-clean commands
     #@+node:ekr.20170806094319.5: *4* efc.cleanAtCleanFiles
     @cmd('clean-at-clean-files')
