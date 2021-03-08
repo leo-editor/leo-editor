@@ -32,6 +32,7 @@ class ConvertAtRoot:
     errors = 0
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
+    section_pat = re.compile('\s*<\<.+>\>')
     units = []  # List of positions containing @unit.
 
     #@+others
@@ -62,12 +63,21 @@ class ConvertAtRoot:
             m = self.root_pat.search(p.b)
             path = m and m.group(1)
             if path:
-                self.root = p.copy()
-                p.h = f"@clean {path}"
+                # Weird special case. Don't change section definition!
+                if self.section_pat.match(p.h):
+                    print(f"\nCan not create @clean node: {p.h}\n")
+                    self.errors += 1
+                else:
+                    self.root = p.copy()
+                    p.h = f"@clean {path}"
                 self.do_root(p)
                 self.root = None
-        c.redraw()
+        #
+        # Check the results.
+        link_errors = c.checkOutline(check_links=True)
+        self.errors += link_errors
         print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
+        c.redraw()
         # if not self.errors: self.dump(c)
     #@+node:ekr.20210308045306.1: *3* atRoot.dump
     def dump(self, c):
@@ -136,6 +146,7 @@ class ConvertAtRoot:
         # First, look in p's subtree.
         section_p = self.find_section(p, section_name)
         if section_p:
+            # g.trace('FOUND', section_name)
             # Already defined in a good place.
             return section_p
         #
