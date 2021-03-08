@@ -18,6 +18,12 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c', 'editFileCommands',])
 
 #@+others
+#@+node:ekr.20210308045633.1: ** @cmd convert-at-file
+@cmd('convert-at-root')
+def convert_at_file(event=None):
+    c = event.get('c')
+    if c:
+        ConvertAtRoot().convert_file(c)
 #@+node:ekr.20210307060752.1: ** class ConvertAtRoot
 class ConvertAtRoot:
     """
@@ -34,13 +40,31 @@ class ConvertAtRoot:
     units = []  # List of positions containing @unit.
 
     #@+others
+    #@+node:ekr.20210308044128.1: *3* atRoot.check_move
+    def check_clone_move(self, p, parent):
+        """
+        Return False if p or any of p's descendents is a clone of parent
+        or any of parents ancestors.
+        """
+        # Like as checkMoveWithParentWithWarning without warning.
+        clonedVnodes = {}
+        for ancestor in parent.self_and_parents(copy=False):
+            if ancestor.isCloned():
+                v = ancestor.v
+                clonedVnodes[v] = v
+        if not clonedVnodes:
+            return True
+        for p in p.self_and_subtree(copy=False):
+            if p.isCloned() and clonedVnodes.get(p.v):
+                return False
+        return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
-    def convert_file(self, path):
+    def convert_file(self, c):
         """Convert @root to @clean in the the .leo file at the given path."""
+        path = c.fileName()
         if not os.path.exists(path):
             g.trace(f"not found: {path!r}")
             return
-        c = g.createHiddenCommander(path)
         self.find_all_units(c)
         for p in c.all_positions():
             if '@root' in p.b:
@@ -48,6 +72,12 @@ class ConvertAtRoot:
                 self.do_root(p)
                 self.root = None
         print(f"{self.errors} error{g.plural(self.errors)} in {path}")
+        # if not self.errors: self.dump(c)
+    #@+node:ekr.20210308045306.1: *3* atRoot.dump
+    def dump(self, c):
+        print(f"Dump of {c.shortFileName()}...")
+        for p in c.all_positions():
+            print(' '*2*p.level(), p.h)
     #@+node:ekr.20210307075117.1: *3* atRoot.do_root
     def do_root(self, p):
         """
@@ -98,25 +128,20 @@ class ConvertAtRoot:
         """Make c clone for section, if necessary."""
         
         def clone_and_move(parent, section_p):
-            print(f"  CLONE: {section_p.h:30} parent: {parent.h}")
-            if self.root.isAncestorOf(section_p):
-                print(f"Can not clone: {section_p.h}")
+            clone = section_p.clone()
+            if self.check_clone_move(clone, parent):
+                print(f"  CLONE: {section_p.h:30} parent: {parent.h}")
+                clone.moveToLastChildOf(parent)
+            else:
+                print(f"Can not clone: {section_p.h:30} parent: {parent.h}")
+                clone.doDelete()
                 self.errors += 1
-            # clone = section_p.clone()
-            # clone.moveToLastChildOf(parent)
         #
         # First, look in p's subtree.
         section_p = self.find_section(p, section_name)
         if section_p:
             # Already defined in a good place.
             return section_p
-        #
-        # Next, look in the @root tree
-        if 0:  # Necessary??
-            if p != self.root:
-                section_p = self.find_section(self.root, section_name)
-                if section_p:
-                    return section_p
         #
         # Finally, look in the @unit tree.
         for unit_p in self.units:
@@ -125,7 +150,6 @@ class ConvertAtRoot:
                 clone_and_move(p, section_p)
                 return section_p
         return None
-        
     #@-others
 #@+node:ekr.20170806094319.14: ** class EditFileCommandsClass
 class EditFileCommandsClass(BaseEditCommandsClass):
