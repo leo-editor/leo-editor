@@ -43,16 +43,11 @@ class ConvertAtRoot:
         c = g.createHiddenCommander(path)
         self.find_all_units(c)
         for p in c.all_positions():
-            self.do_node(p)
+            if '@root' in p.b:
+                self.root = p.copy()
+                self.do_root(p)
+                self.root = None
         print(f"{self.errors} error{g.plural(self.errors)} in {path}")
-    #@+node:ekr.20210307062819.1: *3* atRoot.do_node
-    def do_node(self, p):
-        
-        if '@root' in p.b:
-            self.root = p.copy()
-            self.do_root(p)
-            self.root = None
-        
     #@+node:ekr.20210307075117.1: *3* atRoot.do_root
     def do_root(self, p):
         """
@@ -96,29 +91,38 @@ class ConvertAtRoot:
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
                 if not section_p:
-                    print('')
-                    print(f"not found: {section_name}")
-                    print('')
+                    print(f"MISSING: {section_name:30} {p.h}")
                     self.errors += 1
     #@+node:ekr.20210307080500.1: *3* atRoot.make_clone
     def make_clone(self, p, section_name):
         """Make c clone for section, if necessary."""
+        
+        def clone_and_move(parent, section_p):
+            print(f"  CLONE: {section_p.h:30} parent: {parent.h}")
+            if self.root.isAncestorOf(section_p):
+                print(f"Can not clone: {section_p.h}")
+                self.errors += 1
+            # clone = section_p.clone()
+            # clone.moveToLastChildOf(parent)
         #
         # First, look in p's subtree.
         section_p = self.find_section(p, section_name)
         if section_p:
+            # Already defined in a good place.
             return section_p
         #
         # Next, look in the @root tree
-        if p != self.root:
-            section_p = self.find_section(self.root, section_name)
-            if section_p:
-                return section_p
+        if 0:  # Necessary??
+            if p != self.root:
+                section_p = self.find_section(self.root, section_name)
+                if section_p:
+                    return section_p
         #
         # Finally, look in the @unit tree.
         for unit_p in self.units:
             section_p = self.find_section(unit_p, section_name)
             if section_p:
+                clone_and_move(p, section_p)
                 return section_p
         return None
         
