@@ -31,6 +31,7 @@ class ConvertAtRoot:
     
     errors = 0
     root = None  # Root of @root tree.
+    root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
     units = []  # List of positions containing @unit.
 
     #@+others
@@ -58,8 +59,11 @@ class ConvertAtRoot:
         """Convert @root to @clean in the the .leo file at the given path."""
         self.find_all_units(c)
         for p in c.all_positions():
-            if '@root' in p.b:
+            m = self.root_pat.search(p.b)
+            path = m and m.group(1)
+            if path:
                 self.root = p.copy()
+                p.h = f"@clean {path}"
                 self.do_root(p)
                 self.root = None
         c.redraw()
