@@ -166,9 +166,16 @@ class TextFrame(leoFrame.LeoFrame):
         assert self.c == c
         self.top = None
         self.ratio = self.secondary_ratio = 0.0
-    #@+node:ekr.20150107090324.23: *3* createFirstTreeNode
+    #@+node:ekr.20150107090324.23: *3* createFirstTreeNode (cursesGui.py)
     def createFirstTreeNode(self):
         c = self.c
+        #
+        # #1631: Initialize here, not in p._linkAsRoot.
+        c.hiddenRootNode.children = []
+        #
+        # #1817: Clear the gnxDict.
+        c.fileCommands.gnxDict = {}
+        #
         v = leoNodes.vnode(context=c)
         p = leoNodes.position(v)
         v.initHeadString("NewHeadline")
@@ -176,7 +183,6 @@ class TextFrame(leoFrame.LeoFrame):
         # the node hasn't been linked yet.
         p._linkAsRoot()
         # c.setRootPosition(p) # New in 4.4.2.
-
     #@+node:ekr.20150107090324.24: *3* deiconify
     def deiconify(self): pass # N/A
 
