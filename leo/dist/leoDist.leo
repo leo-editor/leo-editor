@@ -257,7 +257,9 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo 6.3, http://leoeditor.com, is now available on
+<t tx="EKR.20040519090846.9">[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fleo-editor%2Fleo-editor&amp;count_bg=%2379C83D&amp;title_bg=%23555555&amp;icon=&amp;icon_color=%23E7E7E7&amp;title=PAGE+VIEWS&amp;edge_flat=false)](https://hits.seeyoufarm.com)
+
+Leo 6.3, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an [IDE, outliner and PIM](http://leoeditor.com/preface.html).
@@ -1660,7 +1662,9 @@ LeoDist.leo:
   Run @button check .leo files in leo-dist.leo.
 
 LeoPyRef.leo:
-- Regenerate from leoPy.leo: run write-LeoPyRef button in LeoPy.leo.
+- Regenerate from leoPy.leo:
+  - Run `script: check-files`.
+  - run write-LeoPyRef button in LeoPy.leo.
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html
