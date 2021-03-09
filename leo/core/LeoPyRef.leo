@@ -130,6 +130,7 @@
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
+<v t="ekr.20210309083845.1"><vh>script: check-files</vh></v>
 <v t="ekr.20210118013157.1"><vh>script: convert-LeoFind</vh>
 <v t="ekr.20210118024739.1"><vh>convert</vh></v>
 <v t="ekr.20210118013807.1"><vh>main</vh></v>
@@ -192,7 +193,6 @@
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3071017d71022858090000007374725f6374696d657103580c000000313331393439313330362e30710458090000007374725f6d74696d657105580d000000313331393439323330312e3532710658090000007374725f6174696d657107580d000000313331393534393339302e38397108755805000000302e332e3171097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6d74696d65710d580d000000313331393436373033382e3235710e58090000007374725f6174696d65710f580c000000313332303432323637302e397110755805000000302e332e3271117d71122858090000007374725f6374696d657113580c000000313331393436303438332e30711458090000007374725f6d74696d657115580d000000313331393436373035302e3438711658090000007374725f6174696d657117580d000000313331393436373035302e34387118755805000000302e332e3371197d711a2858090000007374725f6374696d65711b580c000000313331393436303438332e30711c58090000007374725f6d74696d65711d580d000000313332303432323639302e3534711e58090000007374725f6174696d65711f580d000000313332303433343235372e33367120755805000000302e332e3471217d71222858090000007374725f6374696d657123580c000000313331393633383634382e30712458090000007374725f6d74696d657125580d000000313331393634313038352e3038712658090000007374725f6174696d657127580c000000313331393634353330362e327128755805000000302e332e3571297d712a2858090000007374725f6374696d65712b580c000000313331393633383634382e30712c58090000007374725f6d74696d65712d580c000000313331393634313131372e39712e58090000007374725f6174696d65712f580d000000313331393634313435352e3937713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
-<v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
@@ -661,6 +661,7 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
+<v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
 <v t="ekr.20150304125314.4"><vh>@clean ../../leo_to_html.xsl</vh>
 <v t="ekr.20150304130753.5"><vh>&lt;&lt;style&gt;&gt;</vh></v>
@@ -672,6 +673,8 @@
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
+<v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
+<v t="ekr.20210202110128.1"><vh>@file leoserver.py</vh></v>
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
@@ -684,6 +687,7 @@
 </v>
 <v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
 <v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
+<v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
 <v t="ekr.20170429161422.1"><vh>@file ../external/log_broadcast.py</vh></v>
 <v t="ekr.20170429153135.1"><vh>@file ../external/log_listener.py</vh></v>
@@ -821,6 +825,37 @@ in LeoDocs.leo for full details.
 
 **Important**: Leo no longer uses pluginsManager.txt to enable or disable plugins.
 </t>
+<t tx="EKR.20040614071102.1">def getScript(c, p,
+    useSelectedText=True,
+    forcePythonSentinels=True,
+    useSentinels=True,
+):
+    """
+    Return the expansion of the selected text of node p.
+    Return the expansion of all of node p's body text if
+    p is not the current node or if there is no text selection.
+    """
+    w = c.frame.body.wrapper
+    if not p: p = c.p
+    try:
+        if g.app.inBridge:
+            s = p.b
+        elif w and p == c.p and useSelectedText and w.hasSelection():
+            s = w.getSelectedText()
+        else:
+            s = p.b
+        # Remove extra leading whitespace so the user may execute indented code.
+        s = g.removeExtraLws(s, c.tab_width)
+        s = g.extractExecutableString(c, p, s)
+        script = g.composeScript(c, p, s,
+                    forcePythonSentinels=forcePythonSentinels,
+                    useSentinels=useSentinels)
+    except Exception:
+        g.es_print("unexpected exception in g.getScript")
+        g.es_exception()
+        script = ''
+    return script
+</t>
 <t tx="ajones.20070122153625.2">def on_icondclick(tag, keywords):
     c = keywords.get("c")
     p = keywords.get("p")
@@ -896,6 +931,58 @@ in LeoDocs.leo for full details.
         g.es("...not found: " + name)
         p.b = ''
         p.setDirty()
+</t>
+<t tx="bobjack.20080509080123.2">def universalCallback(self, source_c, function):
+    """Create a universal command callback.
+
+    Create and return a callback that wraps a function with an rClick
+    signature in a callback which adapts standard minibufer command
+    callbacks to a compatible format.
+
+    This also serves to allow rClick callback functions to handle
+    minibuffer commands from sources other than rClick menus so allowing
+    a single function to handle calls from all sources.
+
+    A function wrapped in this wrapper can handle rclick generator
+    and invocation commands and commands typed in the minibuffer.
+
+    It will also be able to handle commands from the minibuffer even
+    if rclick is not installed.
+    """
+
+    def minibufferCallback(event, function=function):
+        # Avoid a pylint complaint.
+        if hasattr(self, 'theContextMenuController'):
+            cm = getattr(self, 'theContextMenuController')
+            keywords = cm.mb_keywords
+        else:
+            cm = keywords = None
+        if not keywords:
+            # If rClick is not loaded or no keywords dict was provided
+            #  then the command must have been issued in a minibuffer
+            #  context.
+            keywords = {'c': self, 'rc_phase': 'minibuffer'}
+        keywords['mb_event'] = event
+        retval = None
+        try:
+            retval = function(keywords)
+        finally:
+            if cm:
+                # Even if there is an error:
+                #   clear mb_keywords prior to next command and
+                #   ensure mb_retval from last command is wiped
+                cm.mb_keywords = None
+                cm.mb_retval = retval
+
+    minibufferCallback.__doc__ = function.__doc__
+        # For g.getDocStringForFunction
+    minibufferCallback.source_c = source_c
+        # For GetArgs.command_source
+    return minibufferCallback
+
+#fix bobjack's spelling error
+
+universallCallback = universalCallback
 </t>
 <t tx="btheado.20111110215920.7164">def scrollDelegate(self, kind):
     """
@@ -1432,6 +1519,60 @@ u.newNewlines = new_newlines
 # See the "About this file" node for important notes.
 </t>
 <t tx="ekr.20031218072017.2604"></t>
+<t tx="ekr.20031218072017.2817">command_count = 0
+
+def doCommand(self, command_func, command_name, event):
+    """
+    Execute the given command function, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the
+    command func if g.doHook("command1") returns False. This provides a
+    simple mechanism for overriding commands.
+    """
+    c, p = self, self.p
+    c.setLog()
+    self.command_count += 1
+    # New in Leo 6.2. Set command_function and command_name ivars.
+    self.command_function = command_func
+    self.command_name = command_name
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.blue(c.disableCommandsMessage)
+        return None
+    if c.exists and c.inCommand and not g.unitTesting:
+        g.app.commandInterruptFlag = True
+        g.error('ignoring command: already executing a command.')
+        return None
+    g.app.commandInterruptFlag = False
+    if not g.doHook("command1", c=c, p=p, label=command_name):
+        try:
+            c.inCommand = True
+            try:
+                return_value = command_func(event)
+            except Exception:
+                g.es_exception()
+                return_value = None
+            if c and c.exists:  # Be careful: the command could destroy c.
+                c.inCommand = False
+                ## c.k.funcReturn = return_value
+        except Exception:
+            c.inCommand = False
+            if g.app.unitTesting:
+                raise
+            g.es_print("exception executing command")
+            g.es_exception(c=c)
+        if c and c.exists:
+            if c.requestCloseWindow:
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2", c=c, p=p, label=command_name)
+    return return_value
+</t>
 <t tx="ekr.20031218072017.2996">@g.commander_command('goto-next-visible')
 def selectVisNext(self, event=None):
     """Select the visible node following the presently selected node."""
@@ -2000,22 +2141,24 @@ def do_find_next(self, settings):
     w.seeInsertPoint()
     return p
 </t>
-<t tx="ekr.20031218072017.3344">def __init__(self, context, gnx=None):
+<t tx="ekr.20031218072017.3344">def __init__(self, context: Cmdr, gnx: Optional[str] = None):
     """
     Ctor for the VNode class.
     To support ZODB, the code must set v._p_changed = 1 whenever
     v.unknownAttributes or any mutable VNode object changes.
     """
     # The primary data: headline and body text.
-    self._headString = 'newHeadline'
-    self._bodyString = ''
+    self._headString: str = 'newHeadline'
+    self._bodyString: str = ''
+    # For zodb.
+    self._p_changed = 0
     # Structure data...
-    self.children = []
+    self.children: List["VNode"] = []
         # Ordered list of all children of this node.
-    self.parents = []
+    self.parents: List["VNode"] = []
         # Unordered list of all parents of this node.
     # Other essential data...
-    self.fileIndex = None
+    self.fileIndex: Union[str, None] = None
         # The immutable fileIndex (gnx) for this node. Set below.
     self.iconVal = 0
         # The present value of the node's icon.
@@ -2025,7 +2168,7 @@ def do_find_next(self, settings):
     self.context = context  # The context containing context.hiddenRootNode.
         # Required so we can compute top-level siblings.
         # It is named .context rather than .c to emphasize its limited usage.
-    self.expandedPositions = []
+    self.expandedPositions: List[Position] = []
         # Positions that should be expanded.
     self.insertSpot = None
         # Location of previous insert point.
@@ -2044,7 +2187,7 @@ def do_find_next(self, settings):
     g.app.nodeIndices.new_vnode_helper(context, gnx, self)
     assert self.fileIndex, g.callers()
 </t>
-<t tx="ekr.20031218072017.3351">def isAtIgnoreNode(self):
+<t tx="ekr.20031218072017.3351">def isAtIgnoreNode(self) -&gt; bool:
     """
     Returns True if:
         
@@ -2411,6 +2554,44 @@ Here is where we insert the &lt; Call XEmacs &gt; code fragment defined above:
                     lastline = s.split('\n')[-1]
                     if lastline.strip():
                         p2.b = s + '\n'
+</t>
+<t tx="ekr.20040703054646">global lastTypesDict
+typesDict = {}
+for obj in gc.get_objects():
+    t = type(obj)
+    # pylint: disable=no-member
+    if t == 'instance' and t != types.UnicodeType:  # NOQA
+        try: t = obj.__class__
+        except Exception: pass
+    if t != types.FrameType:  # NOQA
+        r = repr(t)  # was type(obj) instead of repr(t)
+        n = typesDict.get(r, 0)
+        typesDict[r] = n + 1
+# Create the union of all the keys.
+keys = {}
+for key in lastTypesDict:
+    if key not in typesDict:
+        keys[key] = None
+empty = True
+for key in keys:
+    n3 = lastTypesDict.get(key, 0)
+    n4 = typesDict.get(key, 0)
+    delta2 = n4 - n3
+    if delta2 != 0:
+        empty = False
+        break
+if not empty:
+    g.pr('-' * 30)
+    g.pr(f"{tag}: garbage: {n}, objects: {n2}, delta: {delta}")
+    if 0:
+        for key in sorted(keys):
+            n1 = lastTypesDict.get(key, 0)
+            n2 = typesDict.get(key, 0)
+            delta2 = n2 - n1
+            if delta2 != 0:
+                g.pr(f"{delta2:6d} ={n2:7d} {key}")
+lastTypesDict = typesDict
+typesDict = {}
 </t>
 <t tx="ekr.20040722141148">@nocolor-node
 @
@@ -2791,6 +2972,43 @@ that@others may be nested, as shown in class myClass.
         if g.match_word(p.h.rstrip(), 0, "@settings"):
             return p.copy()
     return None
+</t>
+<t tx="ekr.20041121130043"># These are the canonicalized names.
+# Case is ignored, as are '_' and '-' characters.
+basic_types = [
+    # Headlines have the form @kind name = var
+    'bool',
+    'color',
+    'directory',
+    'int',
+    'ints',
+    'float',
+    'path',
+    'ratio',
+    'string',
+    'strings',
+]
+control_types = [
+    'buttons',
+    'commands',
+    'data',
+    'enabledplugins',
+    'font',
+    'ifenv',
+    'ifhostname',
+    'ifplatform',
+    'ignore',
+    'menus',
+    'mode',
+    'menuat',
+    'openwith',
+    'outlinedata',
+    'popup',
+    'settings',
+    'shortcuts',
+]
+# Keys are settings names, values are (type,value) tuples.
+settingsDict: Dict[str, Tuple[str, Union[g.TypedDict, g.GeneralSetting]]] = {}
 </t>
 <t tx="ekr.20050111122605"></t>
 <t tx="ekr.20050125203937"># Fix #653: undoer problem: be wary of the ternary operator here.
@@ -5067,6 +5285,61 @@ g.execute_shell_commands(command)
         d = self.scanNodeForOptions(p)
         self.tnodeOptionDict [p.v] = d
 </t>
+<t tx="ekr.20060127165509"># WARNING: the id trick is not proper because newly allocated objects
+#          can have the same address as old objets.
+
+def printGcVerbose(tag=''):
+    tag = tag or g._callerName(n=2)
+    global lastObjectsDict
+    objects = gc.get_objects()
+    newObjects = [o for o in objects if id(o) not in lastObjectsDict]
+    lastObjectsDict = {}
+    for o in objects:
+        lastObjectsDict[id(o)] = o
+    dicts = 0; seqs = 0
+    i = 0; n = len(newObjects)
+    while i &lt; 100 and i &lt; n:
+        o = newObjects[i]
+        if isinstance(o, dict):
+            dicts += 1
+        elif isinstance(o, (list, tuple)):
+            #g.pr(id(o),repr(o))
+            seqs += 1
+        #else:
+        #    g.pr(o)
+        i += 1
+    g.pr('=' * 40)
+    g.pr(f"dicts: {dicts}, sequences: {seqs}")
+    g.pr(f"{tag}: {len(newObjects)} new, {len(objects)} total objects")
+    g.pr('-' * 40)
+</t>
+<t tx="ekr.20060202161935">def printGcAll(full=False, sort_by_n=True):
+    """Print a summary of all presently live objects."""
+    if g.unitTesting:
+        return
+    t1 = time.process_time()
+    objects = gc.get_objects()
+    d = {}  # Keys are types, values are ints (number of instances).
+    for obj in objects:
+        t = type(obj)
+        if hasattr(obj, '__class__'):
+            d[t] = d.get(t, 0) + 1
+    t2 = time.process_time()
+    if full:
+        if sort_by_n:  # Sort by n
+            items = list(d.items())
+            items.sort(key=lambda x: x[1])
+            for z in reversed(items):
+                print(f"{z[1]:8} {z[0]}")
+        else:  # Sort by type
+            g.printObj(d)
+    #
+    # Summarize
+    print(
+        f"\n"
+        f"printGcAll: {len(objects):d} objects "
+        f"in {t2-t1:5.2f} sec. ")
+</t>
 <t tx="ekr.20060525102337">def writeNodeToString (self,p=None,ext=None):
     '''
     Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -5244,7 +5517,7 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     atTest.contract()
     # Don't redraw.
 </t>
-<t tx="ekr.20061031131434.10">@cmd('auto-complete-force')
+<t tx="ekr.20061031131434.10">@ac_cmd('auto-complete-force')
 def autoCompleteForce(self, event=None):
     """Show autocompletion, even if autocompletion is not presently enabled."""
     return self.autoComplete(event, force=True)
@@ -5576,7 +5849,7 @@ legend:
             s3 = bi.commandName
             s4 = bi.kind or '&lt;no hash&gt;'
             data.append((s1, s2, s3, s4),)
-    # Print keys by type:
+    # Print keys by type.
     result = []
     result.append('\n' + legend)
     for prefix in (
@@ -5605,37 +5878,37 @@ legend:
     k.showStateAndMode()
     return result  # for unit test.
 </t>
-<t tx="ekr.20061031131434.12">@cmd('disable-autocompleter')
+<t tx="ekr.20061031131434.12">@ac_cmd('disable-autocompleter')
 def disableAutocompleter(self, event=None):
     """Disable the autocompleter."""
     self.k.enable_autocompleter = False
     self.showAutocompleterStatus()
 
-@cmd('disable-calltips')
+@ac_cmd('disable-calltips')
 def disableCalltips(self, event=None):
     """Disable calltips."""
     self.k.enable_calltips = False
     self.showCalltipsStatus()
 
-@cmd('enable-autocompleter')
+@ac_cmd('enable-autocompleter')
 def enableAutocompleter(self, event=None):
     """Enable the autocompleter."""
     self.k.enable_autocompleter = True
     self.showAutocompleterStatus()
 
-@cmd('enable-calltips')
+@ac_cmd('enable-calltips')
 def enableCalltips(self, event=None):
     """Enable calltips."""
     self.k.enable_calltips = True
     self.showCalltipsStatus()
 
-@cmd('toggle-autocompleter')
+@ac_cmd('toggle-autocompleter')
 def toggleAutocompleter(self, event=None):
     """Toggle whether the autocompleter is enabled."""
     self.k.enable_autocompleter = not self.k.enable_autocompleter
     self.showAutocompleterStatus()
 
-@cmd('toggle-calltips')
+@ac_cmd('toggle-calltips')
 def toggleCalltips(self, event=None):
     """Toggle whether calltips are enabled."""
     self.k.enable_calltips = not self.k.enable_calltips
@@ -5761,7 +6034,7 @@ def toggleInputState(self, event=None):
         event = g.app.gui.create_key_event(c)
     c.doCommandByName(commandName, event)
 </t>
-<t tx="ekr.20061031131434.13">@cmd('show-calltips')
+<t tx="ekr.20061031131434.13">@ac_cmd('show-calltips')
 def showCalltips(self, event=None, force=False):
     """Show the calltips at the cursor."""
     c, k = self.c, self.c.k
@@ -5856,7 +6129,7 @@ def keyboardQuit(self, event=None, setFocus=True):
     # c = self.c
     # c.widgetWantsFocus(c.miniBufferWidget)
 </t>
-<t tx="ekr.20061031131434.14">@cmd('show-calltips-force')
+<t tx="ekr.20061031131434.14">@ac_cmd('show-calltips-force')
 def showCalltipsForce(self, event=None):
     """Show the calltips at the cursor, even if calltips are not presently enabled."""
     return self.showCalltips(event, force=True)
@@ -6645,7 +6918,7 @@ def reloadSettings(self):
 
 bindShortcut = bindKey  # For compatibility
 </t>
-<t tx="ekr.20061031131434.9">@cmd('auto-complete')
+<t tx="ekr.20061031131434.9">@ac_cmd('auto-complete')
 def autoComplete(self, event=None, force=False):
     """An event handler for autocompletion."""
     c, k = self.c, self.k
@@ -6877,7 +7150,38 @@ setLabelGray = setLabelGrey
     """The base class for Leo's Find commands."""
     @others
 </t>
-<t tx="ekr.20070130115927.6">@cmd('cut-text')
+<t tx="ekr.20070115135502">def writeScriptFile(self, script):
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script-file-path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = g.os_path_finalize_join(*allParts)  # #1431
+    else:
+        path = g.os_path_finalize_join(g.app.homeLeoDir, 'scriptFile.py')  # #1431
+    #
+    # Write the file.
+    try:
+        with open(path, encoding='utf-8', mode='w') as f:
+            f.write(script)
+    except Exception:
+        g.es_exception()
+        g.es(f"Failed to write script to {path}")
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script-file-path'))
+        path = None
+    return path
+</t>
+<t tx="ekr.20070130115927.6">@frame_cmd('cut-text')
 def cutText(self, event=None):
     """Invoked from the mini-buffer and from shortcuts."""
     f = self; c = f.c; w = event and event.widget
@@ -6913,7 +7217,7 @@ def cutText(self, event=None):
 
 OnCutFromMenu = cutText
 </t>
-<t tx="ekr.20070130115927.7">@cmd('paste-text')
+<t tx="ekr.20070130115927.7">@frame_cmd('paste-text')
 def pasteText(self, event=None, middleButton=False):
     """
     Paste the clipboard into a widget.
@@ -7135,7 +7439,45 @@ OnPasteFromMenu = pasteText
 </t>
 <t tx="ekr.20080412053100.5">@language rest
 </t>
-<t tx="ekr.20080416161551.211">def moveToVisNext(self, c):
+<t tx="ekr.20080416161551.190">def __init__(self,
+    v: "VNode",
+    childIndex: int = 0,
+    stack: List[Tuple["VNode", int]] = None
+):
+    """Create a new position with the given childIndex and parent stack."""
+    self._childIndex: int = childIndex
+    self.v: "VNode" = v
+    # Stack entries are tuples (v, childIndex).
+    if stack:
+        self.stack = stack[:]  # Creating a copy here is safest and best.
+    else:
+        self.stack = []
+    g.app.positions += 1
+</t>
+<t tx="ekr.20080416161551.206">def moveToNthChild(self, n: int):
+    p = self
+    if p.v and len(p.v.children) &gt; n:
+        p.stack.append((p.v, p._childIndex),)
+        p.v = p.v.children[n]
+        p._childIndex = n
+    else:
+        # mypy rightly doesn't like setting p.v to None.
+        # Leo's code must use the test `if p:` as appropriate.
+        p.v = None  # type: ignore
+    return p
+</t>
+<t tx="ekr.20080416161551.207">def moveToParent(self):
+    """Move a position to its parent position."""
+    p = self
+    if p.v and p.stack:
+        p.v, p._childIndex = p.stack.pop()
+    else:
+        # mypy rightly doesn't like setting p.v to None.
+        # Leo's code must use the test `if p:` as appropriate.
+        p.v = None  # type: ignore
+    return p
+</t>
+<t tx="ekr.20080416161551.211">def moveToVisNext(self, c: Cmdr):
     """Move a position to the position of the next visible node."""
     p = self
     limit, limitIsVisible = c.visLimit()
@@ -7631,7 +7973,7 @@ def setBodyString(self, p, s):
     p = self
     return p.bodyString()
 
-def __set_b(self, val):
+def __set_b(self, val: str):
     """
     Set the body text of a position.
 
@@ -7660,7 +8002,7 @@ b = property(
     p = self
     return p.headString()
 
-def __set_h(self, val):
+def __set_h(self, val: str):
     """
     Set the headline text of a position.
 
@@ -8081,6 +8423,27 @@ gnx = property(
             g.blue('in file:', root.h)
 
     return callback
+</t>
+<t tx="ekr.20100813041139.5914">def createDirectoryForFile(self, fn):
+    """
+    Create the directory for fn if
+    a) it doesn't exist and
+    b) the user options allow it.
+
+    Return True if the directory existed or was made.
+    """
+    c, ok = self.c, False  # 1815.
+    # Create the directory if it doesn't exist.
+    theDir, junk = g.os_path_split(fn)
+    theDir = g.os_path_finalize(theDir)  # 1341
+    if g.os_path_exists(theDir):
+        return True
+    if c and c.config and c.config.create_nonexistent_directories:
+        theDir = c.expand_path_expression(theDir)
+        ok = g.makeAllNonExistentDirectories(theDir)
+        if not ok:
+            g.error('did not create:', theDir)
+    return ok
 </t>
 <t tx="ekr.20101004082701.5674"></t>
 <t tx="ekr.20101101175644.5891">def put(self, *args, **keys):
@@ -8524,6 +8887,32 @@ def get_completions(self, prefix):
         g.es_exception()
         return False
 </t>
+<t tx="ekr.20110605040658.17005">def check_event(self, event):
+    """Check an event object."""
+    # c = self
+    from leo.core import leoGui
+
+    if not event:
+        return
+    stroke = event.stroke
+    got = event.char
+    if g.unitTesting:
+        return
+    if stroke and (stroke.find('Alt+') &gt; -1 or stroke.find('Ctrl+') &gt; -1):
+        expected = event.char
+            # Alas, Alt and Ctrl bindings must *retain* the char field,
+            # so there is no way to know what char field to expect.
+    else:
+        expected = event.char
+            # disable the test.
+            # We will use the (weird) key value for, say, Ctrl-s,
+            # if there is no binding for Ctrl-s.
+    if not isinstance(event, leoGui.LeoKeyEvent):
+        if g.app.gui.guiName() not in ('console', 'curses'):
+            g.trace(f"not leo event: {event!r}, callers: {g.callers()}")
+    if expected != got:
+        g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
+</t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.
 </t>
 <t tx="ekr.20110605121601.17873">def full_redraw(self, p=None):
@@ -8679,6 +9068,59 @@ redraw_now = full_redraw
     w = self.treeWidget
     w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
     w.setCurrentItem(item)
+</t>
+<t tx="ekr.20110605121601.17957">if QtWidgets:
+
+
+    class DemoWidget(QtWidgets.QWidget):
+        count = 0
+        @others
+</t>
+<t tx="ekr.20110605121601.17958">def __init__(self, parent=None, color=None):
+    """Ctor for DemoWidget class."""
+    super().__init__(parent)
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    self.layout().setSpacing(0)
+    text = QtWidgets.QTextEdit()
+    self.layout().addWidget(text)
+    DemoWidget.count += 1
+    text.setPlainText(f"#{DemoWidget.count:d}")
+    button_layout = QtWidgets.QHBoxLayout()
+    button_layout.setContentsMargins(QtCore.QMargins(5, 5, 5, 5))
+    self.layout().addLayout(button_layout)
+    button_layout.addWidget(QtWidgets.QPushButton("Go"))
+    button_layout.addWidget(QtWidgets.QPushButton("Stop"))
+    if color:
+        self.setStyleSheet(f"background-color: {color};")
+</t>
+<t tx="ekr.20110605121601.17991">def main():
+    """The main top-level function executed when this file is executed stand-alone."""
+    app = Qt.QApplication(sys.argv)
+    wdg = DemoWidget()
+    wdg2 = DemoWidget()
+    splitter = NestedSplitter()
+    splitter.addWidget(wdg)
+    splitter.addWidget(wdg2)
+
+
+    class DemoProvider:
+
+        def ns_provides(self):
+            return [('Add demo widget', '_add_demo_widget')]
+
+        def ns_provide(self, id_):
+            if id_ == '_add_demo_widget':
+                return DemoWidget()
+            return None
+
+    splitter.register_provider(DemoProvider())
+    holder = QtWidgets.QWidget()
+    holder.setLayout(QtWidgets.QVBoxLayout())
+    holder.layout().setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    holder.layout().addWidget(splitter)
+    holder.show()
+    app.exec_()
 </t>
 <t tx="ekr.20110605121601.18005">if QtWidgets:
 
@@ -10512,6 +10954,11 @@ def printButtons(self, event=None):
             g.warning('bad abbrev:', key, 'unknown command name:', commandName)
 </t>
 <t tx="ekr.20130927050813.13031"></t>
+<t tx="ekr.20131016084446.16724">def setComplexCommand(self, commandName):
+    """Make commandName the command to be executed by repeat-complex-command."""
+    c = self
+    c.k.mb_history.insert(0, commandName)
+</t>
 <t tx="ekr.20131017100903.16689">def repeatComplexCommandHelper(self, event):
     k = self; c = k.c
     char = event.char if event else ''
@@ -11508,7 +11955,7 @@ def expand(self):
         v.expandedPositions.append(p.copy())
     v.expand()
 
-def isExpanded(self):
+def isExpanded(self) -&gt; bool:
     p = self
     if p.isCloned():
         c = p.v.context
@@ -13503,16 +13950,6 @@ CreateDecorators(c,make_changes=False).run()
         ]
     }
 </t>
-<t tx="ekr.20150509035028.1">def cmd(name):
-    """Command decorator for the leoKeys class."""
-    # pylint: disable=no-self-argument
-    return g.new_cmd_decorator(name, ['c', 'k',])
-</t>
-<t tx="ekr.20150509035140.1">def cmd(name):
-    """Command decorator for the AutoCompleter class."""
-    # pylint: disable=no-self-argument
-    return g.new_cmd_decorator(name, ['c', 'k', 'autoCompleter'])
-</t>
 <t tx="ekr.20150509183433.1">g.cls()
 
 # Changed files:
@@ -13837,6 +14274,18 @@ def renameBufferFinisher2(self, name):
         c.endEditing()
         p.h = name
         c.redraw(p)
+</t>
+<t tx="ekr.20150514063305.108">def freeTreeWidgets(self, event=None):
+    """Free all widgets used in Leo's outline pane."""
+    c = self.c
+    c.frame.tree.destroyWidgets()
+    c.redraw()
+</t>
+<t tx="ekr.20150514063305.112">def printStats(self, event=None):
+    """Print statistics about the objects that Leo is using."""
+    c = self.c
+    c.frame.tree.showStats()
+    self.dumpAllObjects()
 </t>
 <t tx="ekr.20150514063305.244">@cmd('indent-relative')
 def indentRelative(self, event):
@@ -15567,7 +16016,7 @@ prefix_lines:
     p = self
     return p.v.u
 
-def __set_u(self, val):
+def __set_u(self, val: Dict):
     p = self
     p.v.u = val
 
@@ -15799,6 +16248,76 @@ def update_plantuml(self, s, keywords):
     w.setHtml(template)
     w.setReadOnly(True)
 
+def update_jinja(self, s, keywords):
+    pc = self
+    h = self.c.p.h
+    p = self.c.p
+    c = self.c
+    oldp = None
+
+    #print "try act"
+    if not h.startswith('@jinja'):
+        #print("Not a @jinja node")
+        return
+
+    def find_root(p):
+        for newp in p.parents():
+            if newp.h.strip() == '@jinja':
+                oldp, p = p, newp
+                #print("Found @jinja node")
+                return oldp, p
+        return None, None
+
+    def find_inputs(p):
+        for newp in p.parents():
+            if newp.h.strip() == '@jinja inputs':
+                oldp, p = p, newp
+                _, p = find_root(p) 
+                return oldp, p
+        return None, None
+        
+    # if on jinja node's children, find the parent
+    if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+        # not at @jinja, find from parents
+        oldp, p = find_root(p)
+
+    elif h.startswith('@jinja variable'):
+        # not at @jinja, first find @jinja inputs, then @jinja
+        oldp, p = find_inputs(p) 
+
+    def untangle(c,p):
+    
+        return g.getScript(c,p,
+            useSelectedText=False,
+            useSentinels=False)
+
+    template_data = {}
+    for child in p.children():
+        if child.h == '@jinja template':
+            template_path = g.os_path_finalize_join(c.getNodePath(p), untangle(c, child).strip())
+            #print("template_path: ", template_path)
+        elif child.h == '@jinja inputs':
+            for template_var_node in child.children():
+                template_data[template_var_node.h.replace('@jinja variable', '').strip()] = untangle(c, template_var_node).strip()
+            #print("template_data: ", template_data)
+
+    if not template_path:
+        g.es("No template_path given. Your @jinja node should contain a child node 'template' with the path to the template (relative or absolute)")
+        return
+
+    #print "act"
+    tmpl = Template(Path(template_path).read_text())
+    out = tmpl.render(template_data)
+    w = pc.ensure_text_widget()
+    pc.show()
+    w.setPlainText(out)
+    p.b = out
+    c.redraw(p)
+    
+    # focus back on entry node
+    if oldp:
+        c.redraw(oldp)
+    
 </t>
 <t tx="ekr.20160924135613.1">def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
     c, p = self.c, self.c.p
@@ -15959,6 +16478,76 @@ self.restarting = False
 self.reverting = False
     # True: executing the revert command.
 self.syntax_error_files = []
+</t>
+<t tx="ekr.20161028095553.1">def put_log(self, s):
+    """
+    Put a string to the originating log.
+    This is not what g.es_print does!
+    
+    Create clickable links s matches self.data.link_pattern.
+    See p.get_UNL.
+    
+    New in Leo 6.4: get the filename from link_pattern if link_root is None.
+    """
+    #
+    # Warning: don't use g.es or g.es_print here!
+    s = s and s.rstrip()
+    if not s:
+        return
+    data = self.data
+    if not data:
+        return
+    c = data.c
+    if not c or not c.exists:
+        return
+    log = c.frame.log
+    link_pattern, link_root = data.link_pattern, data.link_root
+    #
+    # Always print the message.
+    print(s)
+    #
+    # Put the plain message if the link is not valid.
+    if not link_pattern:
+        log.put(s + '\n')
+        return
+    try:
+        m = link_pattern.match(s)
+    except Exception:
+        m = None
+    if not m:
+        log.put(s + '\n')
+        return
+    #
+    # Find the line number, and possibly the filename.
+    if link_root:
+        # m.group(1) should be the line number.
+        try:
+            line = int(m.group(1))
+        except Exception:
+            # g.es_exception()
+            log.put(s + '\n')
+            return
+    else:
+        # m.group(1) should be the path to the file.
+        path = m.group(1)
+        # m.group(2) should be the line number.
+        try:
+            line = int(m.group(2))
+        except Exception:
+            # g.es_exception()
+            log.put(s + '\n')
+            return
+        # Look for the @&lt;file&gt; node.
+        link_root = g.findNodeByPath(c, path)
+        if not link_root:
+            g.trace(f"no @&lt;file&gt; node found for : {path}")
+            log.put(s + '\n')
+            return
+    #
+    # Put a clickable link.
+    unl = link_root.get_UNL(with_proto=True, with_count=True)
+    nodeLink = f"{unl},{-line}"
+    log.put(s + '\n', nodeLink=nodeLink)
 </t>
 <t tx="ekr.20161029103615.1">class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
@@ -17119,6 +17708,39 @@ def starts_block(self, i, lines, new_state, prev_state, stack):
     g.printList(stack)
 </t>
 <t tx="ekr.20161120022121.1"></t>
+<t tx="ekr.20161120105707.1">def nearest_roots(self, copy: bool = True, predicate: Optional[Callable] = None):
+    """
+    A generator yielding all the root positions "near" p1 = self that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+
+    The search first proceeds up the p's tree. If a root is found, this
+    generator yields just that root.
+
+    Otherwise, the generator yields all nodes in p.subtree() that satisfy
+    the predicate. Once a root is found, the generator skips its subtree.
+    """
+    def default_predicate(p):
+        return p.isAnyAtFileNode()
+        
+    the_predicate = predicate or default_predicate
+
+    # First, look up the tree.
+    p1 = self
+    for p in p1.self_and_parents(copy=False):
+        if the_predicate(p):
+            yield p.copy() if copy else p
+            return
+    # Next, look for all .md files in the tree.
+    after = p1.nodeAfterTree()
+    p = p1
+    while p and p != after:
+        if the_predicate(p):
+            yield p.copy() if copy else p
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
 <t tx="ekr.20161123210335.1">def trace_lines(self, lines1, lines2, parent):
     '''Show both s1 and s2.'''
     print('===== s1: %s' % parent.h)
@@ -17423,6 +18045,39 @@ def get_new_dict(self, context):
         else:
             prev_state = new_state
 </t>
+<t tx="ekr.20170123074946.1">def extractExecutableString(c, p, s):
+    """
+    Return all lines for the given @language directive.
+
+    Ignore all lines under control of any other @language directive.
+    """
+    #
+    # Rewritten to fix #1071.
+    if g.unitTesting:
+        return s  # Regretable, but necessary.
+    #
+    # Return s if no @language in effect. Should never happen.
+    language = g.scanForAtLanguage(c, p)
+    if not language:
+        return s
+    #
+    # Return s if @language is unambiguous.
+    pattern = r'^@language\s+(\w+)'
+    matches = list(re.finditer(pattern, s, re.MULTILINE))
+    if len(matches) &lt; 2:
+        return s
+    #
+    # Scan the lines, extracting only the valid lines.
+    extracting, result = False, []
+    for i, line in enumerate(g.splitLines(s)):
+        m = re.match(pattern, line)
+        if m:
+            # g.trace(language, m.group(1))
+            extracting = m.group(1) == language
+        elif extracting:
+            result.append(line)
+    return ''.join(result)
+</t>
 <t tx="ekr.20170126100139.1">def initBlock0(self):
     """
     Init *local* ivars when handling block 0.
@@ -17462,6 +18117,32 @@ def get_new_dict(self, context):
             name = name.replace(pattern, s)
         return name
     return 'no-language'
+</t>
+<t tx="ekr.20170228082641.1">def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
+    """Compose a script from p.b."""
+    # This causes too many special cases.
+        # if not g.unitTesting and forceEncoding:
+            # aList = g.get_directives_dict_list(p)
+            # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+            # s = g.insertCodingLine(encoding,s)
+    if not s.strip():
+        return ''
+    at = c.atFileCommands
+    old_in_script = g.app.inScript
+    try:
+        # #1297: set inScript flags.
+        g.app.inScript = g.inScript = True
+        g.app.scriptDict["script1"] = s
+        # Important: converts unicode to utf-8 encoded strings.
+        script = at.stringToString(p.copy(), s,
+            forcePythonSentinels=forcePythonSentinels,
+            sentinels=useSentinels)
+        script = script.replace("\r\n", "\n")  # Use brute force.
+            # Important, the script is an **encoded string**, not a unicode string.
+        g.app.scriptDict["script2"] = script
+    finally:
+        g.app.inScript = g.inScript = old_in_script
+    return script
 </t>
 <t tx="ekr.20170305105047.1">decorator_pattern = re.compile(r'^\s*@\s*(\w+)')
 
@@ -17818,7 +18499,7 @@ from .eveventhandler import Event
     # g.trace('----- after command')
     g.app.gui.redraw_in_context(c)
 </t>
-<t tx="ekr.20170522015906.1">@cmd('paste-text')
+<t tx="ekr.20170522015906.1">@frame_cmd('paste-text')
 def pasteText(self, event=None, middleButton=False):
     '''
     Paste the clipboard into a widget.
@@ -18599,6 +19280,76 @@ def insertBodyTime(self, event=None):
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
 </t>
+<t tx="ekr.20171123135625.4">@cmd('execute-script')
+def executeScript(self, event=None,
+    args=None, p=None, script=None, useSelectedText=True,
+    define_g=True, define_name='__main__',
+    silent=False, namespace=None, raiseFlag=False,
+    runPyflakes=True,
+):
+    """
+    Execute a *Leo* script.
+    Keyword args:
+    args=None               Not None: set script_args in the execution environment.
+    p=None                  Get the script from p.b, unless script is given.
+    script=None             None: use script in p.b or c.p.b
+    useSelectedText=True    False: use all the text in p.b or c.p.b.
+    define_g=True           True: define g for the script.
+    define_name='__main__'  Not None: define the name symbol.
+    silent=False            No longer used.
+    namespace=None          Not None: execute the script in this namespace.
+    raiseFlag=False         True: reraise any exceptions.
+    runPyflakes=True        True: run pyflakes if allowed by setting.
+    """
+    c, script1 = self, script
+    if runPyflakes:
+        run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
+    else:
+        run_pyflakes = False
+    if not script:
+        if c.forceExecuteEntireBody:
+            useSelectedText = False
+        script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+    script_p = p or c.p
+        # Only for error reporting below.
+    # #532: check all scripts with pyflakes.
+    if run_pyflakes and not g.unitTesting:
+        from leo.commands import checkerCommands as cc
+        # at = c.atFileCommands
+        prefix = ('c,g,p,script_gnx=None,None,None,None;'
+                  'assert c and g and p and script_gnx;\n')
+        cc.PyflakesCommand(c).check_script(script_p, prefix + script)
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0, '.')  # New in Leo 5.0
+            sys.path.insert(0, c.frame.openDirectory)  # per SegundoBob
+            script += '\n'  # Make sure we end the script properly.
+            try:
+                if not namespace or namespace.get('script_gnx') is None:
+                    namespace = namespace or {}
+                    namespace.update(script_gnx=script_p.gnx)
+                # We *always* execute the script with p = c.p.
+                c.executeScriptHelper(args, define_g, define_name, namespace, script)
+            except KeyboardInterrupt:
+                g.es('interrupted')
+            except Exception:
+                if raiseFlag:
+                    raise
+                g.handleScriptException(c, script_p, script, script1)
+            finally:
+                del sys.path[0]
+                del sys.path[0]
+        else:
+            tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+            g.warning("no script selected", tabName=tabName)
+    finally:
+        g.app.log = oldLog
+        self.unredirectScriptOutput()
+</t>
 <t tx="ekr.20171123135625.47">def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """Reformat the body and update the selection."""
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
@@ -18636,6 +19387,34 @@ def insertBodyTime(self, event=None):
     u.afterChangeBody(p, undoType, bunch)
     w.setXScrollPosition(0)  # Never scroll horizontally.
 </t>
+<t tx="ekr.20171123135625.5">def executeScriptHelper(self, args, define_g, define_name, namespace, script):
+    c = self
+    if c.p:
+        p = c.p.copy()  # *Always* use c.p and pass c.p to script.
+        c.setCurrentDirectoryFromContext(p)
+    else:
+        p = None
+    d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+    if define_name: d['__name__'] = define_name
+    d['script_args'] = args or []
+    d['script_gnx'] = g.app.scriptDict.get('script_gnx')
+    if namespace: d.update(namespace)
+    #
+    # A kludge: reset c.inCommand here to handle the case where we *never* return.
+    # (This can happen when there are multiple event loops.)
+    # This does not prevent zombie windows if the script puts up a dialog...
+    try:
+        c.inCommand = False
+        g.inScript = g.app.inScript = True
+            # g.inScript is a synonym for g.app.inScript.
+        if c.write_script_file:
+            scriptFile = self.writeScriptFile(script)
+            exec(compile(script, scriptFile, 'exec'), d)
+        else:
+            exec(script, d)
+    finally:
+        g.inScript = g.app.inScript = False
+</t>
 <t tx="ekr.20171123135625.50">def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     """unformat the body and update the selection."""
     body, w = c.frame.body, c.frame.body.wrapper
@@ -18662,6 +19441,30 @@ def insertBodyTime(self, event=None):
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
 </t>
+<t tx="ekr.20171123135625.6">def redirectScriptOutput(self):
+    c = self
+    if c.config.redirect_execute_script_output_to_log_pane:
+        g.redirectStdout()  # Redirect stdout
+        g.redirectStderr()  # Redirect stderr
+</t>
+<t tx="ekr.20171123135625.7">def setCurrentDirectoryFromContext(self, p):
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    curDir = g.os_path_abspath(os.getcwd())
+    if path and path != curDir:
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+</t>
+<t tx="ekr.20171123135625.8">def unredirectScriptOutput(self):
+    c = self
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+        g.restoreStderr()
+        g.restoreStdout()
+</t>
+<t tx="ekr.20171123201514.1"></t>
 <t tx="ekr.20171124043747.1">def registerCommandShortcut(self, commandName, func, pane, shortcut):
     """
     Register a shortcut for the a command.
@@ -19245,22 +20048,17 @@ else:
 <t tx="ekr.20180418031417.1">def traceVars(self, event):
 
     trace = False and not g.unitTesting
-    traceGC = False
-    verbose = False
-    k = self
     if not trace:
         return
-    if traceGC:
-        g.printNewObjects('masterKey 1')
-    if verbose:
-        char = event.char
-        state = k.state.kind
-        stroke = event.stroke
-        g.trace(
-            f"stroke: {stroke!r}, "
-            f"char: {char!r}, "
-            f"state: {state}, "
-            f"state2: {k.unboundKeyAction}")
+    k = self
+    char = event.char
+    state = k.state.kind
+    stroke = event.stroke
+    g.trace(
+        f"stroke: {stroke!r}, "
+        f"char: {char!r}, "
+        f"state: {state}, "
+        f"state2: {k.unboundKeyAction}")
 </t>
 <t tx="ekr.20180418033838.1">def doBinding(self, event):
     """
@@ -20505,6 +21303,11 @@ https://github.com/leo-editor/leo-editor/issues/1132
 </t>
 <t tx="ekr.20190506060857.1"></t>
 <t tx="ekr.20190506061636.1"></t>
+<t tx="ekr.20190510060918.1">@cmd('print-sep')
+def printSep(self, event=None):
+    """Print a separator"""
+    print('\n==========\n')
+</t>
 <t tx="ekr.20190602134414.1">def _change_all_search_and_replace(self, s):
     """
     Search s for self.find_text and replace with self.change_text.
@@ -20700,413 +21503,6 @@ def init(): # pyzo_file_browser.py
             spot = None
 
     return spot
-</t>
-<t tx="ekr.20191021002252.1">
-(base) c:\leo.repo\leo-editor&gt;mypy leo\core\runLeo.py
-
-leo\external\__init__.py:3: error: Need type annotation for '__all__' (hint: "__all__: List[&lt;type&gt;] = ...")
-
-leo\external\codewise.py:100: error: Cannot find module named '__builtin__'
-leo\external\codewise.py:100: error: Name 'builtins' already defined (by an import)
-
-leo\core\leoGlobals.py:34: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoGlobals.py:39: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoGlobals.py:43: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoGlobals.py:309: error: Need type annotation for 'tree_popup_handlers' (hint: "tree_popup_handlers: List[&lt;type&gt;] = ...")
-leo\core\leoGlobals.py:310: error: Need type annotation for 'user_dict' (hint: "user_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:2088: error: Need type annotation for 'tracing_signatures' (hint: "tracing_signatures: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:2600: error: No library stub file for module 'PyQt5.QtCore'
-leo\core\leoGlobals.py:2600: error: No library stub file for module 'PyQt5'
-leo\core\leoGlobals.py:2603: error: No library stub file for module 'PyQt4.QtCore'
-leo\core\leoGlobals.py:2603: note: (Stub files are from https://github.com/python/typeshed)
-leo\core\leoGlobals.py:2603: error: No library stub file for module 'PyQt4'
-leo\core\leoGlobals.py:2702: error: No library stub file for module 'pylint'
-leo\core\leoGlobals.py:2770: error: Need type annotation for 'lastObjectsDict' (hint: "lastObjectsDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:2771: error: Need type annotation for 'lastTypesDict' (hint: "lastTypesDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:2772: error: Need type annotation for 'lastFunctionsDict' (hint: "lastFunctionsDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:5261: error: Need type annotation for 'childrenModifiedSet' (hint: "childrenModifiedSet: Set[&lt;type&gt;] = ...")
-leo\core\leoGlobals.py:5262: error: Need type annotation for 'contentModifiedSet' (hint: "contentModifiedSet: Set[&lt;type&gt;] = ...")
-leo\core\leoGlobals.py:5767: error: Need type annotation for 'checkUnicode_dict' (hint: "checkUnicode_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:5925: error: Need type annotation for 'unicode_warnings' (hint: "unicode_warnings: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:6814: error: Need type annotation for 'init_zodb_failed' (hint: "init_zodb_failed: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:6815: error: Need type annotation for 'init_zodb_db' (hint: "init_zodb_db: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoGlobals.py:6829: error: Cannot find module named 'ZODB'
-leo\core\leoGlobals.py:6829: note: See https://mypy.readthedocs.io/en/latest/running_mypy.html#missing-imports
-leo\core\leoGlobals.py:6964: error: Need type annotation for 'deprecated_messages' (hint: "deprecated_messages: List[&lt;type&gt;] = ...")
-
-leo\plugins\importers\ipynb.py:7: error: No library stub file for module 'nbformat'
-
-leo\core\leoVim.py:2054: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2058: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2062: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2075: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2080: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2088: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2093: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2097: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2102: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2106: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2110: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2121: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2141: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2147: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2155: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2160: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-leo\core\leoVim.py:2167: error: Argument 1 to "cmd" has incompatible type "str"; expected "VimCommands"
-
-leo\core\leoUndo.py:1162: error: Argument 1 to "cmd" has incompatible type "str"; expected "Undoer"
-leo\core\leoUndo.py:1441: error: Argument 1 to "cmd" has incompatible type "str"; expected "Undoer"
-
-leo\core\leoFind.py:304: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:322: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:327: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:489: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:495: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:505: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:517: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:526: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:587: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:600: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:609: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:624: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:639: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:654: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:669: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:865: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:866: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:867: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:894: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:895: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:896: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:924: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:925: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:926: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:952: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:961: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:972: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:978: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1083: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1090: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1107: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1115: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1133: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1158: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1259: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1266: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1279: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1287: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1292: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1297: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1302: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1307: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1312: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1317: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1322: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1333: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1338: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1343: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1355: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-leo\core\leoFind.py:1411: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFind"
-
-leo\core\leoFind.py:2211: error: Need type annotation for 'debugIndices' (hint: "debugIndices: List[&lt;type&gt;] = ...")
-
-leo\core\leoDebugger.py:75: error: No library stub file for standard library module 'bdb'
-
-leo\commands\checkerCommands.py:12: error: No library stub file for module 'flake8'
-leo\commands\checkerCommands.py:16: error: No library stub file for module 'pyflakes'
-leo\commands\checkerCommands.py:487: error: No library stub file for module 'pylint'
-
-leo\core\leoChapters.py:94: error: Argument 1 to "cmd" has incompatible type "str"; expected "ChapterController"
-leo\core\leoChapters.py:110: error: Argument 1 to "cmd" has incompatible type "str"; expected "ChapterController"
-leo\core\leoChapters.py:119: error: Argument 1 to "cmd" has incompatible type "str"; expected "ChapterController"
-
-leo\core\leoBeautify.py:11: error: Cannot find module named 'leoGlobals'
-leo\core\leoBeautify.py:11: error: Name 'g' already defined (by an import)
-leo\core\leoBeautify.py:18: error: Incompatible types in assignment (expression has type "Callable[[Any], Any]", variable has type "Type[Command]")
-leo\core\leoBeautify.py:31: error: Cannot find module named 'black'
-
-leo\core\leoIPython.py:35: error: Cannot find module named 'ipykernel.connect'
-leo\core\leoIPython.py:40: error: Cannot find module named 'ipykernel.kernelapp'
-leo\core\leoIPython.py:45: error: "None" has no attribute "ipython_inited"
-
-leo\core\leoNodes.py:326: error: Incompatible types in assignment (expression has type "None", base class "object" defined the type as "Callable[[object], int]")
-
-leo\core\leoQt.py:27: error: No library stub file for module 'PyQt5'
-leo\core\leoQt.py:31: error: No library stub file for module 'PyQt4'
-leo\core\leoQt.py:52: error: Name 'QtCore' already defined on line 44
-leo\core\leoQt.py:53: error: Name 'QtGui' already defined on line 44
-leo\core\leoQt.py:54: error: Name 'QtWidgets' already defined on line 44
-leo\core\leoQt.py:55: error: No library stub file for module 'PyQt5.QtCore'
-leo\core\leoQt.py:55: error: Name 'QUrl' already defined on line 44
-leo\core\leoQt.py:56: error: Name 'Signal' already defined on line 49
-leo\core\leoQt.py:57: error: "None" has no attribute "Qt"
-leo\core\leoQt.py:65: error: Name 'QtCore' already defined on line 44
-leo\core\leoQt.py:66: error: Name 'QtGui' already defined on line 44
-leo\core\leoQt.py:67: error: No library stub file for module 'PyQt4.QtCore'
-leo\core\leoQt.py:67: error: Name 'QUrl' already defined on line 44
-leo\core\leoQt.py:68: error: Name 'Signal' already defined on line 49
-leo\core\leoQt.py:82: error: "None" has no attribute "QT_VERSION_STR"
-leo\core\leoQt.py:92: error: "None" has no attribute "QString"
-leo\core\leoQt.py:96: error: No library stub file for module 'PyQt5.QtDeclarative'
-leo\core\leoQt.py:96: error: Name 'QtDeclarative' already defined on line 45
-leo\core\leoQt.py:100: error: No library stub file for module 'PyQt5.phonon'
-leo\core\leoQt.py:100: error: Name 'phonon' already defined on line 46
-leo\core\leoQt.py:101: error: "None" has no attribute "Phonon"
-leo\core\leoQt.py:105: error: Name 'QtMultimedia' already defined on line 45
-leo\core\leoQt.py:109: error: Name 'Qsci' already defined on line 45
-leo\core\leoQt.py:113: error: No library stub file for module 'PyQt5.QtSvg'
-leo\core\leoQt.py:113: error: Name 'QtSvg' already defined on line 45
-leo\core\leoQt.py:117: error: Name 'uic' already defined on line 46
-leo\core\leoQt.py:121: error: Name 'QtWebKit' already defined on line 45
-leo\core\leoQt.py:125: error: Name 'QtWebKit' already defined on line 45
-leo\core\leoQt.py:129: error: No library stub file for module 'PyQt5.QtWebKitWidgets'
-leo\core\leoQt.py:129: error: Name 'QtWebKitWidgets' already defined on line 45
-leo\core\leoQt.py:135: error: No library stub file for module 'PyQt5.QtWebEngineWidgets'
-leo\core\leoQt.py:135: error: Name 'QtWebKitWidgets' already defined on line 45
-leo\core\leoQt.py:136: error: "None" has no attribute "QWebView"
-leo\core\leoQt.py:136: error: "None" has no attribute "QWebEngineView"
-leo\core\leoQt.py:137: error: "None" has no attribute "QWebSettings"
-leo\core\leoQt.py:137: error: "None" has no attribute "QWebEngineSettings"
-leo\core\leoQt.py:138: error: "None" has no attribute "QWebPage"
-leo\core\leoQt.py:138: error: "None" has no attribute "QWebEnginePage"
-leo\core\leoQt.py:143: error: "None" has no attribute "QString"
-leo\core\leoQt.py:147: error: No library stub file for module 'PyQt4.QtDeclarative'
-leo\core\leoQt.py:147: error: Name 'QtDeclarative' already defined on line 45
-leo\core\leoQt.py:153: error: No library stub file for module 'PyQt4.phonon'
-leo\core\leoQt.py:153: error: Name 'phonon' already defined on line 46
-leo\core\leoQt.py:154: error: Item "None" of "Optional[Any]" has no attribute "Phonon"
-leo\core\leoQt.py:158: error: Name 'Qsci' already defined on line 45
-leo\core\leoQt.py:162: error: No library stub file for module 'PyQt4.QtSvg'
-leo\core\leoQt.py:162: error: Name 'QtSvg' already defined on line 45
-leo\core\leoQt.py:166: error: Name 'uic' already defined on line 46
-leo\core\leoQt.py:170: error: Name 'QtWebKit' already defined on line 45
-leo\core\leoQt.py:174: error: No library stub file for module 'PyQt4.QtWebKit'
-leo\core\leoQt.py:174: error: Name 'QtWebKitWidgets' already defined on line 45
-
-leo\core\leoCheck.py:1457: error: Need type annotation for 'assigns_d' (hint: "assigns_d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoCheck.py:1458: error: Need type annotation for 'calls_d' (hint: "calls_d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoCheck.py:1459: error: Need type annotation for 'classes_d' (hint: "classes_d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoCheck.py:1460: error: Need type annotation for 'defs_d' (hint: "defs_d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoCheck.py:1461: error: Need type annotation for 'returns_d' (hint: "returns_d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoCheck.py:2047: error: Need type annotation for 'd' (hint: "d: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-
-leo\plugins\nested_splitter.py:9: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\plugins\nested_splitter.py:26: error: Name 'QtWidgets.QWidget' is not defined
-leo\plugins\nested_splitter.py:51: error: Name 'QtWidgets.QWidget' is not defined
-leo\plugins\nested_splitter.py:108: error: Name 'QtWidgets.QWidget' is not defined
-leo\plugins\nested_splitter.py:130: error: Name 'QtWidgets.QSplitterHandle' is not defined
-leo\plugins\nested_splitter.py:391: error: Name 'QtWidgets.QSplitter' is not defined
-
-leo\plugins\editpane\clicky_splitter.py:13: error: Name 'QtWidgets.QSplitterHandle' is not defined
-leo\plugins\editpane\clicky_splitter.py:25: error: Name 'QtWidgets.QSplitter' is not defined
-
-leo\plugins\qt_text.py:416: error: Name 'QtWidgets.QFrame' is not defined
-leo\plugins\qt_text.py:454: error: Name 'QtWidgets.QTextBrowser' is not defined
-leo\plugins\qt_text.py:485: error: Name 'QtWidgets.QListWidget' is not defined
-leo\plugins\qt_text.py:744: error: Name 'QtWidgets.QFrame' is not defined
-
-leo\core\leoColorizer.py:23: error: No library stub file for module 'pygments'
-leo\core\leoColorizer.py:339: error: Need type annotation for 'zoom_dict' (hint: "zoom_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2325: error: Name 'QtGui.QSyntaxHighlighter' is not defined
-leo\core\leoColorizer.py:2457: error: No library stub file for module 'pygments.styles'
-leo\core\leoColorizer.py:2492: error: Name 'Qsci.QsciLexerCustom' is not defined
-leo\core\leoColorizer.py:2588: error: Need type annotation for 'traced_dict' (hint: "traced_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2618: error: Need type annotation for 'format_dict' (hint: "format_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2620: error: Need type annotation for 'lexers_dict' (hint: "lexers_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2622: error: Need type annotation for 'state_s_dict' (hint: "state_s_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2624: error: Need type annotation for 'state_n_dict' (hint: "state_n_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoColorizer.py:2690: error: No library stub file for module 'pygments.token'
-leo\core\leoColorizer.py:2711: error: No library stub file for module 'pygments.lexers'
-leo\core\leoColorizer.py:2730: error: No library stub file for module 'pygments.lexer'
-leo\core\leoColorizer.py:3044: error: Name 'QtGui.QTextBlockUserData' is not defined
-leo\core\leoColorizer.py:3064: error: Cannot assign to a type
-leo\core\leoColorizer.py:3064: error: Incompatible types in assignment (expression has type "Type[NullObject]", variable has type "Type[PygmentsBlockUserData]")
-
-leo\core\leoRst.py:20: error: "None" has no attribute "debug"
-leo\core\leoRst.py:25: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:35: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:37: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:40: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:45: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:50: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoRst.py:54: error: Cannot find module named 'SilverCity'
-leo\core\leoRst.py:86: error: "Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any], Any]" has no attribute "arguments"
-leo\core\leoRst.py:92: error: "Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any], Any]" has no attribute "options"
-leo\core\leoRst.py:97: error: "Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any], Any]" has no attribute "content"
-leo\core\leoRst.py:101: error: "Callable[[Any, Any, Any, Any, Any, Any, Any, Any, Any], Any]" has no attribute "options"
-leo\core\leoRst.py:306: error: Argument 1 to "cmd" has incompatible type "str"; expected "RstCommands"
-leo\core\leoRst.py:501: error: Argument 1 to "cmd" has incompatible type "str"; expected "RstCommands"
-
-leo\core\leoPrinting.py:97: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:103: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:112: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:118: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:127: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:134: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:145: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:152: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:159: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:165: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:172: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:182: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:188: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:197: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:203: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:212: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:219: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:230: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:237: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:243: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:249: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-leo\core\leoPrinting.py:258: error: Argument 1 to "cmd" has incompatible type "str"; expected "PrintingController"
-
-leo\core\leoImport.py:16: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoImport.py:22: error: No library stub file for module 'lxml.html'
-leo\core\leoImport.py:22: error: No library stub file for module 'lxml'
-
-leo\core\leoFileCommands.py:1802: error: Argument 1 to "cmd" has incompatible type "str"; expected "FileCommands"
-leo\core\leoFileCommands.py:1810: error: Argument 1 to "cmd" has incompatible type "str"; expected "FileCommands"
-leo\core\leoFileCommands.py:1822: error: Argument 1 to "cmd" has incompatible type "str"; expected "FileCommands"
-leo\core\leoFileCommands.py:1829: error: Argument 1 to "cmd" has incompatible type "str"; expected "FileCommands"
-
-leo\core\leoKeys.py:196: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:218: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:223: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:229: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:235: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:241: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:247: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:253: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:259: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:274: error: Argument 1 to "cmd" has incompatible type "str"; expected "AutoCompleterClass"
-leo\core\leoKeys.py:538: error: Cannot find module named 'jedi'
-leo\core\leoKeys.py:2335: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2477: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2551: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2581: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2602: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2623: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2632: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2641: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2650: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:2797: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:3935: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-leo\core\leoKeys.py:3943: error: Argument 1 to "cmd" has incompatible type "str"; expected "KeyHandlerClass"
-
-leo\commands\spellCommands.py:15: error: Cannot find module named 'enchant'
-leo\commands\convertCommands.py:1598: error: No library stub file for module 'nbformat'
-
-leo\core\leoAtFile.py:239: error: Argument 1 to "cmd" has incompatible type "str"; expected "AtFile"
-leo\core\leoAtFile.py:971: error: Argument 1 to "cmd" has incompatible type "str"; expected "AtFile"
-leo\core\leoAtFile.py:979: error: Argument 1 to "cmd" has incompatible type "str"; expected "AtFile"
-leo\core\leoAtFile.py:987: error: Argument 1 to "cmd" has incompatible type "str"; expected "AtFile"
-leo\core\leoAtFile.py:996: error: Argument 1 to "cmd" has incompatible type "str"; expected "AtFile"
-leo\core\leoAtFile.py:2306: error: No library stub file for standard library module 'parser'
-
-leo\core\leoCommands.py:20: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoCommands.py:736: error: Cannot find module named '_pytest.config'
-leo\core\leoCommands.py:737: error: Cannot find module named '_pytest.assertion.rewrite'
-leo\core\leoCommands.py:1990: error: Need type annotation for 'deprecated_messages' (hint: "deprecated_messages: List[&lt;type&gt;] = ...")
-
-leo\core\leoApp.py:1036: error: Cannot find module named 'flexx'
-leo\core\leoApp.py:1443: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoApp"
-leo\core\leoApp.py:1444: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoApp"
-leo\core\leoApp.py:1591: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoApp"
-leo\core\leoApp.py:1592: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoApp"
-
-leo\plugins\editpane\editpane.py:10: error: Cannot find module named 'OpenGL'
-leo\plugins\editpane\editpane.py:66: error: Name 'QtWidgets.QWidget' is not defined
-
-leo\core\leoFrame.py:905: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFrame"
-leo\core\leoFrame.py:926: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFrame"
-leo\core\leoFrame.py:962: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFrame"
-leo\core\leoFrame.py:1030: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFrame"
-leo\core\leoFrame.py:1044: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoFrame"
-
-leo\core\runLeo.py:17: error: Argument 1 to "join" has incompatible type "Optional[str]"; expected "Union[str, _PathLike[str]]"
-leo\core\runLeo.py:28: error: Incompatible types in assignment (expression has type "LeoApp", variable has type "None")
-
-leo\plugins\mod_scripting.py:459: error: Cannot find module named 'rpdb2'
-leo\plugins\mod_scripting.py:504: error: Cannot find module named 'leo.core.leoScriptModule'
-leo\plugins\mod_scripting.py:1204: error: Argument 1 to "cmd" has incompatible type "str"; expected "EvalController"
-leo\plugins\mod_scripting.py:1240: error: Argument 1 to "cmd" has incompatible type "str"; expected "EvalController"
-leo\plugins\mod_scripting.py:1295: error: Argument 1 to "cmd" has incompatible type "str"; expected "EvalController"
-leo\plugins\mod_scripting.py:1319: error: Argument 1 to "cmd" has incompatible type "str"; expected "EvalController"
-leo\plugins\mod_scripting.py:1338: error: Argument 1 to "cmd" has incompatible type "str"; expected "EvalController"
-
-leo\plugins\qt_events.py:46: error: Name 'QtCore.QObject' is not defined
-
-leo\core\leoTest.py:27: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\core\leoTest.py:1711: error: Need type annotation for 'lastObjectsDict' (hint: "lastObjectsDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoTest.py:1712: error: Need type annotation for 'lastTypesDict' (hint: "lastTypesDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoTest.py:1713: error: Need type annotation for 'lastFunctionsDict' (hint: "lastFunctionsDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-
-leo\plugins\cursesGui2.py:39: error: Cannot assign to a type
-leo\plugins\cursesGui2.py:39: error: Incompatible types in assignment (expression has type "None", variable has type "Type[Tk]")
-leo\plugins\cursesGui2.py:48: error: Incompatible types in assignment (expression has type "None", variable has type Module)
-leo\plugins\cursesGui2.py:58: error: Cannot find module named 'npyscreen.utilNotify'
-leo\plugins\cursesGui2.py:58: error: Cannot find module named 'npyscreen'
-leo\plugins\cursesGui2.py:60: error: Cannot find module named 'npyscreen.wgwidget'
-leo\plugins\cursesGui2.py:73: error: Name 'npyscreen.Textfield' is not defined
-leo\plugins\cursesGui2.py:208: error: Name 'npyscreen.Textfield' is not defined
-leo\plugins\cursesGui2.py:299: error: Name 'npyscreen.TreeData' is not defined
-leo\plugins\cursesGui2.py:479: error: Name 'npyscreen.TreeLine' is not defined
-leo\plugins\cursesGui2.py:699: error: Name 'npyscreen.MiniButtonPress' is not defined
-leo\plugins\cursesGui2.py:1823: error: Need type annotation for 'set_focus_fail' (hint: "set_focus_fail: List[&lt;type&gt;] = ...")
-leo\plugins\cursesGui2.py:2328: error: Argument 1 to "cmd" has incompatible type "str"; expected "CoreFrame"
-leo\plugins\cursesGui2.py:2397: error: Argument 1 to "cmd" has incompatible type "str"; expected "CoreLog"
-leo\plugins\cursesGui2.py:2724: error: Name 'npyscreen.NPSApp' is not defined
-leo\plugins\cursesGui2.py:2741: error: Name 'npyscreen.MultiLineEditable' is not defined
-leo\plugins\cursesGui2.py:2955: error: Name 'npyscreen.MultiLineEditable' is not defined
-leo\plugins\cursesGui2.py:3103: error: Name 'npyscreen.Form' is not defined
-leo\plugins\cursesGui2.py:3117: error: Name 'npyscreen.Textfield' is not defined
-leo\plugins\cursesGui2.py:3276: error: Name 'npyscreen.Textfield' is not defined
-leo\plugins\cursesGui2.py:3290: error: Name 'npyscreen.MLTree' is not defined
-leo\plugins\cursesGui2.py:3952: error: Name 'npyscreen.TreeData' is not defined
-
-leo\plugins\qt_frame.py:27: error: Cannot determine type of 'enabled'
-leo\plugins\qt_frame.py:31: error: Cannot assign multiple types to name "splitter_class" without an explicit "Type[...]" annotation
-leo\plugins\qt_frame.py:31: error: "None" has no attribute "QSplitter"
-leo\plugins\qt_frame.py:38: error: Name 'QtWidgets.QMainWindow' is not defined
-leo\plugins\qt_frame.py:1503: error: Name 'QtWidgets.QTabWidget' is not defined
-leo\plugins\qt_frame.py:1737: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtBody"
-leo\plugins\qt_frame.py:1738: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtBody"
-leo\plugins\qt_frame.py:1793: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtBody"
-leo\plugins\qt_frame.py:1794: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtBody"
-leo\plugins\qt_frame.py:2490: error: Need type annotation for 'styleSheetCache' (hint: "styleSheetCache: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\plugins\qt_frame.py:3010: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3022: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3038: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3047: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3063: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3077: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3093: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtFrame"
-leo\plugins\qt_frame.py:3321: error: Argument 1 to "cmd" has incompatible type "str"; expected "LeoQtLog"
-leo\plugins\qt_frame.py:3923: error: Name 'QtWidgets.QTreeWidget' is not defined
-leo\plugins\qt_frame.py:4632: error: Name 'QtWidgets.QTabBar' is not defined
-leo\plugins\qt_frame.py:4647: error: Name 'QtWidgets.QMenu' is not defined
-
-leo\core\leoConfig.py:37: error: Need type annotation for 'settingsDict' (hint: "settingsDict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-leo\core\leoConfig.py:2043: error: Need type annotation for 'no_menu_dict' (hint: "no_menu_dict: Dict[&lt;type&gt;, &lt;type&gt;] = ...")
-
-leo\plugins\leoflexx.py:39: error: Cannot find module named 'flexx'
-leo\plugins\leoflexx.py:40: error: Cannot find module named 'pscript'
-leo\plugins\leoflexx.py:1186: error: Need type annotation for 'attributes' (hint: "attributes: Set[&lt;type&gt;] = ...")
-
-leo\plugins\qt_gui.py:618: error: Cannot find module named 'pyzo'
-leo\plugins\qt_gui.py:619: error: Cannot find module named 'pyzo.core.menu'
-leo\plugins\qt_gui.py:619: error: Cannot find module named 'pyzo.core'
-leo\plugins\qt_gui.py:622: error: Cannot find module named 'pyzo.tools.pyzoFileBrowser'
-leo\plugins\qt_gui.py:622: error: Cannot find module named 'pyzo.tools'
-leo\plugins\qt_gui.py:627: error: Cannot find module named 'pyzo.core.main'
-leo\plugins\qt_gui.py:989: error: Need type annotation for 'size_warnings' (hint: "size_warnings: List[&lt;type&gt;] = ...")
-leo\plugins\qt_gui.py:1349: error: Name 'QtWidgets.QMessageBox' is not defined
-leo\plugins\qt_gui.py:1487: error: No library stub file for module 'PyQt5.QtTest'
-leo\plugins\qt_gui.py:1491: error: "None" has no attribute "QObject"
-leo\plugins\qt_gui.py:1492: error: "None" has no attribute "QObject"
-leo\plugins\qt_gui.py:1493: error: "None" has no attribute "QObject"
-
-Found 360 errors in 40 files (checked 1 source file)
 </t>
 <t tx="ekr.20191029023442.1">@language rest
 @wrap
@@ -21432,15 +21828,6 @@ for v in c.all_nodes():
             print(f"gnx clash: {gnx}")
             g.printObj(aList)
 print('done')</t>
-<t tx="ekr.20200401074555.1">@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/1557
-
-Create mypy command?
-
-@language python
-</t>
 <t tx="ekr.20200422075655.1">@g.commander_command('restart-leo')
 def restartLeo(self, event=None):
     """Restart Leo, reloading all presently open outlines."""
@@ -21607,6 +21994,12 @@ def restartLeo(self, event=None):
     log_w.insert(i, s)
 </t>
 <t tx="ekr.20200524151214.1"></t>
+<t tx="ekr.20200526074132.1">def executeMinibufferCommand(self, commandName):
+    """Call c.doCommandByName, creating the required event."""
+    c = self
+    event = g.app.gui.create_key_event(c)
+    return c.doCommandByName(commandName, event)
+</t>
 <t tx="ekr.20200727095246.1"></t>
 <t tx="ekr.20200913074639.1">@language rest
 @wrap
@@ -22359,7 +22752,13 @@ assert g.os_path_exists(path)
 x = leoImport.LegacyExternalFileImporter(c)
 x.import_file(path)
 </t>
-<t tx="ekr.20201018062305.1">"""Update LeoPyRef.leo from the given list of nodes."""
+<t tx="ekr.20201018062305.1">"""
+Overwrite LeoPyRef.leo from the given list of nodes.
+
+This script will delete any nodes that are in LeoPyRef.leo but not in
+leoPy.leo.
+
+"""
 import os
 @others
 main(node_list = ['Startup', 'Notes', 'Code'])
@@ -29117,7 +29516,8 @@ unindent-region     = Shift-tab</t>
 Issue: https://github.com/leo-editor/leo-editor/issues/1731
 PR: https://github.com/leo-editor/leo-editor/pull/1732
 
-in ekr-tabs branch.
+--- Reopened.
+
 
 @language python
 @nosearch
@@ -29195,27 +29595,13 @@ https://github.com/leo-editor/leo-editor/issues/1734
 
 **Move More**
 
-Fix bugs:
-- Fix rst bug.
-
-- Bug: Deleting headline text:
-  QLineEdit::setSelection: Invalid start position (31)
-
 Promises:
-- (Done) Clear desk and emails by end of Monday.
-- Upload RR's photos.
+- Restart music lessons after second vaccination.
+  Goal: play in rhythm with right notes.
 - Finish Phil's portrait.
-- Play go with Phil 8 pm Thursday. pstraus on igs.
-- Move more. 50 looks. vimeo.
-- Experiment with piano.
-
-</t>
-<t tx="ekr.20201117043352.1">- Make Rebecca an admin.
-
-- Sign in to stripe.
-- Add contact page.
-- Customize my-account page.
-- Set tax and payment methods.
+- Reconnect Woo Commerce.
+- Ride bicycle 2 times. Move every day, preferably outside.
+- Relax and dream.
 </t>
 <t tx="ekr.20201118031649.1">@language rest
 @wrap
@@ -38766,7 +39152,6 @@ https://github.com/leo-editor/leo-editor/issues/1792
 <t tx="ekr.20201222095250.1">g.cls()
 import glob
 import os
-efc = c.editFileCommands
 theme_dir = os.path.join(g.app.loadDir, '..', 'themes')
 assert os.path.exists(theme_dir), repr(theme_dir)
 paths = glob.glob(f"{theme_dir}{os.sep}*.leo")
@@ -38776,7 +39161,7 @@ def clean(s):
     
 for path in paths:
     d = {}
-    c = efc.createHiddenCommander(path)
+    c = g.createHiddenCommander(path)
     sfn = c.shortFileName()
     if sfn == 'old_themes.leo':
         continue
@@ -39285,9 +39670,7 @@ def do_clone_find_tag(self, tag):
         pos, newpos = self._inner_search_plain(s, i, j, pattern, nocase, word)
     return pos, newpos
 </t>
-<t tx="ekr.20210110073117.44">debugIndices = []
-
-def _inner_search_backward(self, s, i, j, pattern, nocase, word):
+<t tx="ekr.20210110073117.44">def _inner_search_backward(self, s, i, j, pattern, nocase, word):
     """
     rfind(sub [,start [,end]])
 
@@ -40438,18 +40821,16 @@ else:
 <t tx="ekr.20210124064805.1">@language rest
 @wrap
 
-- Explore issues relating to #1810.
-
 - Explore various ways of using leoserver.py:
 
 Could Leo be a Jupyter kernel? This might be a good place to play with JS frameworks like vue.js, etc. Could vim interact with leoserver.py?
 
-- Explore adding type checking stub files to Leo.
-
-I am more comfortable with type checking after learning rust.
-
 - Explore other technologies, including templating systems.
-</t>
+
+Post re Sabbatical:
+- An attitude: exploratory, no tedious work, big picture, fun.
+- Could be a permanent attitude.
+- Sabbaticals usually involve travel. Maybe later this year.</t>
 <t tx="ekr.20210128141640.1">gnx: ekr.20201012111338.2
 unl: Declarations (leo_cloud.py)
 gnx: ekr.20201012111338.3
@@ -42853,6 +43234,7 @@ g.execute_shell_commands(command)
 <t tx="ekr.20210218065110.1">@language rest
 @wrap
 
+ekr-keyboard branch.
 
 See https://github.com/leo-editor/leo-editor/issues/1563 concerning German keyboards.
 
@@ -42873,7 +43255,6 @@ docs: https://leoeditor.com/coloring.html#match-mark-previous
 
 @language python
 @nosearch</t>
-<t tx="ekr.20210219115553.2"></t>
 <t tx="ekr.20210219120137.1">@language rest
 @wrap
 
@@ -42881,11 +43262,6 @@ https://github.com/leo-editor/leo-editor/pull/1822
 
 @language python
 </t>
-<t tx="ekr.20210219135156.1">@nosearch
-
-# Word, Ignore Case, Head, Body
-
-# found 71 nodes</t>
 <t tx="ekr.20210219175850.1">def test_batch_change_word(self):
     # settings, x = self.settings, self.x
     c, x = self.c, self.x
@@ -43464,6 +43840,389 @@ for s in g.splitlines(p.b):
     fields = ???
     child = root.insertAsLastChild()
     child.h = </t>
+<t tx="ekr.20210224081636.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1815
+
+when c.config.create_nonexistent_directories is false, the OK value is not defined.
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210226104255.1">g.cls()
+p = c.lastTopLevel()
+lines = g.splitLines(p.b)
+n = lines[0].count(',')
+# print(n)
+for i, s in enumerate(lines):
+    if s.strip():
+        n2 = s.count(',')
+        if n != n2:
+            print(i, n2)
+print('done')
+</t>
+<t tx="ekr.20210226104315.1">SKU,Description,In stock?,Stock,Regular price,Categories,Images
+5100.1,Chenille Scarf Red x Black,1,1,79.00,Clothing,https://rrhandwovens.com/5100-1-scarf-red-x-black-chenille/
+5102.4,Silk Scarf Azalea x Fine,1,1,99.00,Clothing,https://rrhandwovens.com/5102-4-scarf-azalea-x-fine-med-navy-silk/
+6533,Mohair Hat,1,1,39.00,Clothing,https://rrhandwovens.com/5104-3-mohair-scarf6535-hat-2148-millten-cirque-x-lipstickjpeg/
+2148,Mohair Mitten,1,1,39.00,Clothing,https://rrhandwovens.com/5104-3-mohair-scarf6535-hat-2148-millten-cirque-x-lipstickjpeg/
+5104,Mohair Scarf,1,1,59.00,Clothing,https://rrhandwovens.com/5104-3-mohair-scarf6535-hat-2148-millten-cirque-x-lipstickjpeg/
+7108,Silk Cowl Canyons x Pacific,1,1,98.00,Clothing,https://rrhandwovens.com/7108-silk-cowl-canyons-x-pacific/
+7144, Long Cowl Canyons Chenile  x Peacock Silk,1,1,89.00,Clothing,https://rrhandwovens.com/7144-long-cowl-canyons-chenill-x-peacock-silk/
+5112.1,Alpaca Tencel Silk Scarf Deflected Doubleweave,1,1,139.00,Clothing,https://rrhandwovens.com/5112-1-deflected-double-weave-2-tencel-alpaca-silk-scarf/
+5112.6,Rayon Chenille Scarf Forest Floor x Gray/Green,1,1,79.00,Clothing,https://rrhandwovens.com/5112-6-forest-floor-x-grey-green-chenille/
+</t>
+<t tx="ekr.20210228045040.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1557
+
+PR: https://github.com/leo-editor/leo-editor/pull/1830
+
+Config file: http://mypy.readthedocs.io/en/latest/config_file.html
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210228045338.1">- Make Rebecca an admin.
+
+- Sign in to stripe.
+- Add contact page.
+- Customize my-account page.
+- Set tax and payment methods.
+</t>
+<t tx="ekr.20210228133838.1"></t>
+<t tx="ekr.20210301131322.1">@nosearch
+
+# Word, Ignore Case, Regex, Head, Body
+
+# found 5 nodes</t>
+<t tx="ekr.20210302111645.1">@language rest
+@wrap
+
+In ekr-mypy branch.
+https://github.com/leo-editor/leo-editor/issues/1831
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210302111730.1">@g.command('mypy')
+def mypy_command(event):
+    """
+    Run mypy on all @&lt;file&gt; nodes of the selected tree, or the first
+    @&lt;file&gt; node in an ancestor. Running mypy on a single file usually
+    suffices.
+    
+    For example, you can run mypy on most of Leo's files by selecting
+    
+      `@edit ../../launchLeo.py`
+      
+    in leoPy.leo, then running Leo's mypy command.
+    
+    Unlike running mypy outside of Leo, Leo's mypy command creates
+    clickable links in Leo's log pane for each error.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    if c.isChanged():
+        c.save()
+    if mypy:
+        MypyCommand(c).run(c.p)
+    else:
+        g.es_print('can not import mypy')
+</t>
+<t tx="ekr.20210303123525.1">def findNodeByPath(c, path):
+    """Return the first @&lt;file&gt; node in Cmdr c whose path is given."""
+    for p in c.all_positions():
+        if p.isAnyAtFileNode() and path == g.fullPath(c, p):
+            return p
+    return False
+</t>
+<t tx="ekr.20210305085324.1">@language rest
+@wrap
+
+ekr-scripting branch
+
+https://github.com/leo-editor/leo-editor/issues/1715
+
+Test on Rust
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210305133229.1">def execute_external_language_script(self,
+    error_regex = None,
+    language_command = None,
+    script_language = None,
+):
+    """
+    A general-purpose helper that composes and runs a Leonine script for
+    languages other than python.
+    
+    command:         The external command that runs the language processor.
+    error_regex:     Optional regular expression matching error messages.
+    regex_flags:     Optional flags for the regular expression.
+    script_language: The name of the language.
+    """
+    ### How to specify file name?
+    c = self
+</t>
+<t tx="ekr.20210306054001.1">Weight:
+- Lost 20 lbs.
+- Went off diuretic pill.
+- Been on plateau ever since, without panic.
+- Logged all meals.
+- Played with eating mindfully &amp; intuitively.
+
+Movement:
+- Sitting is the new smoking.
+- Took regular breaks.
+- Focus on moving more.
+- Added new excercises.
+
+Mindfulness &amp; Emotions
+- Aha: can have multiple emotions simultaneously.
+
+Goals &amp; Sabbatical
+- Leo Sabbatical very successful.
+- Sabbatical from music.</t>
+<t tx="ekr.20210306153732.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1832
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210307051727.1">g.cls()
+import importlib
+import leo.commands.editFileCommands as editFileCommands
+
+if c.isChanged():
+    c.save()
+
+importlib.reload(editFileCommands)
+
+path = r'c:\test\atRoot.leo'
+hidden_c = g.createHiddenCommander(path)
+editFileCommands.ConvertAtRoot().convert_file(hidden_c)
+print('done')</t>
+<t tx="ekr.20210307060752.1">class ConvertAtRoot:
+    """
+    A class to convert @root directives to @clean nodes:
+    
+    - Change @root directive in body to @clean in the headline.
+    - Make clones of section references defined outside of @clean nodes,
+      moving them so they are children of the nodes that reference them.
+    - Comment-out @unit directives.
+    """
+    
+    errors = 0
+    root = None  # Root of @root tree.
+    root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
+    section_pat = re.compile(r'\s*&lt;\&lt;.+&gt;\&gt;')
+    units = []  # List of positions containing @unit.
+
+    @others
+</t>
+<t tx="ekr.20210307060752.2">@cmd('convert-at-root')
+def convert_file(self, c):
+    """Convert @root to @clean in the the .leo file at the given path."""
+    self.find_all_units(c)
+    for p in c.all_positions():
+        m = self.root_pat.search(p.b)
+        path = m and m.group(1)
+        if path:
+            # Weird special case. Don't change section definition!
+            if self.section_pat.match(p.h):
+                print(f"\nCan not create @clean node: {p.h}\n")
+                self.errors += 1
+            else:
+                self.root = p.copy()
+                p.h = f"@clean {path}"
+            self.do_root(p)
+            self.root = None
+    #
+    # Check the results.
+    link_errors = c.checkOutline(check_links=True)
+    self.errors += link_errors
+    print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
+    c.redraw()
+    # if not self.errors: self.dump(c)
+</t>
+<t tx="ekr.20210307075117.1">def do_root(self, p):
+    """
+    Make all necessary clones for section defintions.
+    """
+    for p in p.self_and_subtree():
+        self.make_clones(p)
+</t>
+<t tx="ekr.20210307075325.1">section_pat = re.compile(r'\s*&lt;\&lt;(.*)&gt;\&gt;')
+
+def make_clones(self, p):
+    """Make clones for all undefined sections in p.b."""
+    header = False
+    for s in g.splitLines(p.b):
+        m = self.section_pat.match(s)
+        if m:
+            # if not header:
+                # header = True
+                # print('')
+                # print(p.h)
+            section_name = g.angleBrackets(m.group(1).strip())
+            section_p = self.make_clone(p, section_name)
+            if not section_p:
+                print(f"MISSING: {section_name:30} {p.h}")
+                self.errors += 1
+</t>
+<t tx="ekr.20210307080500.1">def make_clone(self, p, section_name):
+    """Make c clone for section, if necessary."""
+    
+    def clone_and_move(parent, section_p):
+        clone = section_p.clone()
+        if self.check_clone_move(clone, parent):
+            print(f"  CLONE: {section_p.h:30} parent: {parent.h}")
+            clone.moveToLastChildOf(parent)
+        else:
+            print(f"Can not clone: {section_p.h:30} parent: {parent.h}")
+            clone.doDelete()
+            self.errors += 1
+    #
+    # First, look in p's subtree.
+    section_p = self.find_section(p, section_name)
+    if section_p:
+        # g.trace('FOUND', section_name)
+        # Already defined in a good place.
+        return section_p
+    #
+    # Finally, look in the @unit tree.
+    for unit_p in self.units:
+        section_p = self.find_section(unit_p, section_name)
+        if section_p:
+            clone_and_move(p, section_p)
+            return section_p
+    return None
+</t>
+<t tx="ekr.20210307082125.1">def find_section(self, root, section_name):
+    """Find the section definition node in root's subtree for the given section."""
+    
+    def munge(s):
+        return s.strip().replace(' ','').lower()
+        
+    for p in root.subtree():
+        if munge(p.h).startswith(munge(section_name)):
+            # print(f"      Found {section_name:30} in {root.h}::{root.gnx}")
+            return p
+        
+    # print(f"  Not found {section_name:30} in {root.h}::{root.gnx}")
+    return None
+</t>
+<t tx="ekr.20210307085034.1">def find_all_units(self, c):
+    """Scan for all @unit nodes."""
+    for p in c.all_positions():
+        if '@unit' in p.b:
+            self.units.append(p.copy())
+</t>
+<t tx="ekr.20210308035356.1">- Explore screencast tools, demo.py &amp; Joe Orr's tools.
+- Remove multiple @cmd decorators.</t>
+<t tx="ekr.20210308035425.1">Goal: Play in rhythm with right notes.
+
+Resume lessons after my second shot.
+</t>
+<t tx="ekr.20210308044128.1">def check_clone_move(self, p, parent):
+    """
+    Return False if p or any of p's descendents is a clone of parent
+    or any of parents ancestors.
+    """
+    # Like as checkMoveWithParentWithWarning without warning.
+    clonedVnodes = {}
+    for ancestor in parent.self_and_parents(copy=False):
+        if ancestor.isCloned():
+            v = ancestor.v
+            clonedVnodes[v] = v
+    if not clonedVnodes:
+        return True
+    for p in p.self_and_subtree(copy=False):
+        if p.isCloned() and clonedVnodes.get(p.v):
+            return False
+    return True
+</t>
+<t tx="ekr.20210308045306.1">def dump(self, c):
+    print(f"Dump of {c.shortFileName()}...")
+    for p in c.all_positions():
+        print(' '*2*p.level(), p.h)
+</t>
+<t tx="ekr.20210308051724.1">@cmd('convert-at-root')
+def convert_at_root(self, event=None):
+    """Convert @root to @clean in the the .leo."""
+    c = event.get('c')
+    if not c:
+        return
+    ConvertAtRoot().convert_file(c)
+</t>
+<t tx="ekr.20210309081334.1">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/1789
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20210309083845.1">"""
+Issue https://github.com/leo-editor/leo-editor/issues/1789
+"""
+g.cls()
+import glob
+
+def munge(s):
+    return s.replace('\\','/').lower()
+    
+ignore = [
+    # Core...
+    'format-code.py',       # Script.
+    'leoTangle.py',         # To be deleted.
+    # External...
+    'leoftsindex.py',       # User contributed.
+    'sax2db.py',            # User contributed.
+    'stringlist.py',        # User contributed.
+    # Plugins...
+    'baseNativeTree.py',    # No longer used. To be deleted?
+    'leofts.py',            # User contributed.
+    'qt_main.py',           # Created by Qt designer. Not used.
+    'rst3.py',              # To be deleted?
+]
+ignore = [munge(z) for z in ignore]
+# Find all paths for @&lt;file&gt; nodes.
+seen = {}
+for p in c.all_positions():
+    if p.isAnyAtFileNode():
+        path = munge(g.fullPath(c, p))
+        seen [path] = path
+# Check all .py files.  
+for module in ('core', 'external', 'plugins'):
+    print(f"checking {module}...")
+    pat = g.os_path_finalize_join(g.app.loadDir, '..', module, '*.py')
+    paths = glob.glob(pat)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    paths = [munge(z) for z in paths]
+    # g.printObj(paths, tag=f"\n{len(paths)} files in {module}")
+    for path in paths:
+        if path not in seen and g.shortFileName(path) not in ignore:
+            print(f"Missing: {path}")
+    print('')
+</t>
+<t tx="ekr.20210309084224.1">Missing: C:/leo.repo/leo-editor/leo/core/format-code.py
+Missing: C:/leo.repo/leo-editor/leo/core/leoclient.py
+Missing: C:/leo.repo/leo-editor/leo/core/leoserver.py
+
+Missing: C:/leo.repo/leo-editor/leo/plugins/baseNativeTree.py
+Missing: C:/leo.repo/leo-editor/leo/plugins/leofts.py
+Missing: C:/leo.repo/leo-editor/leo/plugins/qt_main.py
+Missing: C:/leo.repo/leo-editor/leo/plugins/rst3.py
+Missing: C:/leo.repo/leo-editor/leo/plugins/template_gui.py
+</t>
 <t tx="ktenney.20041211072654.14">def processDirectory(self, path, node):
 
     """
@@ -43921,6 +44680,48 @@ def show_times(self, p=None, show=False):
     self.ui.UI.txtDetails.setToolTip("Priority set %s" %
         (str(prisetdate).strip() or '?')
     )
+</t>
+<t tx="tbrown.20111010104549.26758">def get_UNL(
+    self,
+    with_file=True,
+    with_proto=False,
+    with_index=True,
+    with_count=False,
+):
+    """
+    Return a UNL representing a clickable link.
+
+    with_file=True - include path to Leo file
+    with_proto=False - include 'file://'
+    with_index - include ',x' at end where x is child index in parent
+    with_count - include ',x,y' at end where y zero based count of same headlines
+    """
+    aList = []
+    for i in self.self_and_parents(copy=False):
+        if with_index or with_count:
+            count = 0
+            ind = 0
+            p = i.copy()
+            while p.hasBack():
+                ind = ind + 1
+                p.moveToBack()
+                if i.h == p.h:
+                    count = count + 1
+            aList.append(i.h.replace('--&gt;', '--%3E') + ":" + str(ind))
+                # g.recursiveUNLFind and sf.copy_to_my_settings undo this replacement.
+            if count or with_count:
+                aList[-1] = aList[-1] + "," + str(count)
+        else:
+            aList.append(i.h.replace('--&gt;', '--%3E'))
+                # g.recursiveUNLFind  and sf.copy_to_my_settings undo this replacement.
+    UNL = '--&gt;'.join(reversed(aList))
+    if with_proto:
+        # return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
+        s = "unl:" + f"//{self.v.context.fileName()}#{UNL}"
+        return s.replace(' ', '%20')
+    if with_file:
+        return f"{self.v.context.fileName()}#{UNL}"
+    return UNL
 </t>
 <t tx="tbrown.20111011094944.27031">def tab_callback(self):
     """Called when user hits tab on an item in the QListWidget."""
