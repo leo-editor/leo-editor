@@ -698,15 +698,21 @@ class LeoFrame:
         self.tab_width = 0  # The tab width in effect in this pane.
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self):
-        c= self.c
-        v = leoNodes.VNode(context=c)
-        p = leoNodes.Position(v)
-        v.initHeadString("NewHeadline")
+        c = self.c
         #
         # #1631: Initialize here, not in p._linkAsRoot.
         c.hiddenRootNode.children = []
         #
-        # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
+        # #1817: Clear the gnxDict.
+        c.fileCommands.gnxDict = {}
+        #
+        # Create the first node.
+        v = leoNodes.VNode(context=c)
+        p = leoNodes.Position(v)
+        v.initHeadString("NewHeadline")
+        #
+        # New in Leo 4.5: p.moveToRoot would be wrong:
+        #                 the node hasn't been linked yet.
         p._linkAsRoot()
     #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
     #@+node:ekr.20071027150501: *4* LeoFrame.event handlers

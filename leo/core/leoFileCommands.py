@@ -2008,6 +2008,14 @@ class FileCommands:
             current = self.archivedPositionToPosition(str_pos)
         c.setCurrentPosition(current or c.rootPosition())
     #@-others
+#@+node:ekr.20210309114903.1: ** dump-gnx-dict
+@g.command('dump-gnx-dict')
+def dump_clone_parents(event):
+    c = event.get('c')
+    if not c:
+        return
+    d = c.fileCommands.gnxDict
+    g.printObj(d, tag='gnxDict')
 #@+node:ekr.20180708114847.1: ** dump-clone-parents
 @g.command('dump-clone-parents')
 def dump_clone_parents(event):
