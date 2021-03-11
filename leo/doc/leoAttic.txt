@@ -6,7 +6,7 @@
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20190412154439.1: **  Abandoned projects
+#@+node:ekr.20190412154439.1: ** Abandoned projects
 #@+node:ekr.20170203080350.1: *3* Abandoned #396: Show images in Leo's body pane
 https://github.com/leo-editor/leo-editor/issues/396
 
@@ -15372,329 +15372,6 @@ def startRecordingMacro (self,event):
             # g.es('Recording macro. ctrl-g to end...')
     else:
         g.trace('can not happen: no event')
-#@+node:ekr.20210311054925.1: **  Archived documentation
-#@+node:ekr.20210311054730.1: *3* How can I simulate more flexible clones?
-@language rest
-@wrap
-
-A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children. A **gathering script** can provide most of the benefits of detached clone:
-
-1. The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
-
-2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
-
-For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
-
-
-#@+node:ekr.20200209055601.1: **  Archived test stuff
-#@+node:ekr.20200209055610.1: *3* @@button test
-g.cls()
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-if 0: # Run all tests
-    commands = f"python -m unittest leo.core.leoAst"
-    g.execute_shell_commands(commands, trace=False)
-else:
-    file_ = '.leoAst'
-    class_, test = '', ''
-    class_, test = '.TestOrange', '.test_join_leading_whitespace'
-    # class_, test = '.TestOrange', '.test_leo_sentinels'
-    # class_, test = '.TestOrange', '.test_start_of_line_whitespace'
-    # class_, test = '.TestOrange', '.test_join_lines'
-    #
-    # Older
-    #
-    # file_ = '.leoAst'
-    # class_, test = '.TestTOG', ''
-    # class_, test = '.TestFiles', '.compare_tog_vs_asttokens'
-    # class_, test = '.TestFiles', '.optional_file_tests'
-    # class_, test = '.TestTokens', '.show_asttokens_script'
-    # class_, test = '.TestFstringify', '.test_call_with_comments'
-        # # 'test_call_in_rhs' # '.test_braces'
-    # class_, test = '.TestOrange','.test_join_lines'
-        # # 'test_sync_tokens' # '.test_multi_line_pet_peeves'
-    # class_, test = '.TestTokens', '.show_example_dump'
-        # # 'test_line_links'
-    # class_, test = '.TestTopLevelFunctions', '.test_get_encoding_directive'
-    # class_, test = '.TestReassignTokens', ''
-    # class_, test = '.TestTOT', ''
-    commands = f"python -m unittest leo.core{file_}{class_}{test}"
-    g.execute_shell_commands(commands, trace=False)
-#@+node:ekr.20200209055640.1: *3* @@button pt
-# Run pytest coverage tests.
-g.cls()
-import os
-leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-commands = "pytest --cov-report html --cov-report term-missing --cov leo.core.leoAst leo/core/leoAst.py"
-g.execute_shell_commands(commands, trace=False)
-#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
-tm = c.testManager
-path = g.os_path_join(g.app.loadDir,"..","core")
-exclude = ['leoIPython.py',]
-    # leoIPython.py will give an annoying error if IPython can't be imported.
-modules = tm.importAllModulesInPath(path,exclude=exclude)
-suite   = tm.createUnitTestsFromDoctests(modules)
-#@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
-@language rest
-@wrap
-
-- checkout the mvc-prototype branch
-
-- open leo/core/LeoPyRef.leo in Leo and save this document as leo/core/LeoPyRef.db
-  This should provide a large outline for the prototype to play with.
-
-- python leo/extensions/myleoqt.py leo\core\leoPy.db
-#@+node:vitalije.20200502083732.1: *4* @@@file ../extensions/myleoqt.py
-#@+node:vitalije.20200502091628.1: *4* <<imports>>
-from collections import defaultdict
-import sys
-import os
-import pickle
-from PyQt5 import QtCore, QtGui, QtWidgets
-assert QtGui
-import sqlite3
-import time
-import timeit
-import unittest
-from hypothesis.strategies import lists, integers, sampled_from, data
-from hypothesis import given, settings
-from datetime import timedelta
-import random
-
-# Set the path before importing Leo files.
-LEO_INSTALLED_AT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if LEO_INSTALLED_AT not in sys.path:
-    sys.path.append(LEO_INSTALLED_AT)
-LEO_ICONS_DIR = os.path.join(LEO_INSTALLED_AT, 'leo', 'themes', 'light', 'Icons')
-try:
-    import leo.core.leoNodes as leoNodes
-    import leo.core.leoGlobals as g
-except ImportError:
-    print('===== import error!')
-g.app = g.bunch(nodeIndices=leoNodes.NodeIndices('vitalije'))
-
-Q = QtCore.Qt
-#@+node:vitalije.20200502103535.1: *4* draw_tree
-def draw_tree(tree, root, icons):
-    def additem(par, parItem):
-        for ch in par.children:
-            item = QtWidgets.QTreeWidgetItem()
-            item.setFlags(item.flags() |
-                          Q.ItemIsEditable |
-                          item.DontShowIndicatorWhenChildless)
-            parItem.addChild(item)
-            item.setText(0, ch.h)
-            item.setData(0, 1024, ch)
-            item.setExpanded(ch.isExpanded())
-            item.setIcon(0, icons[ch.computeIcon()])
-            additem(ch, item)
-    ritem = tree.invisibleRootItem()
-    ritem.setData(0, 1024, root)
-    additem(root, ritem)
-#@+node:vitalije.20200508091419.1: *4* execute_script
-def execute_script(self):
-    c = self.c
-    t = self.tree
-    root = t.invisibleRootItem()
-    curr = t.currentItem()
-    currpath = path_to_item(root, curr)
-
-    # now we need to replace current top level items
-    # with the their clones so that we can preserve
-    # the original ones for undo
-    t.blockSignals(True)
-    n = root.childCount()
-    olditems = [root.takeChild(0) for x in range(n)]
-    for item in olditems:
-        root.addChild(item.clone())
-
-    # let's find current item in the new tree
-    ncurr = item_from_path(root, currpath)
-    t.setCurrentItem(ncurr)
-    t.blockSignals(False)
-
-    # store old v-nodes data
-    old_vs = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
-
-    # new values for the redo operation
-    # if the script finishes without exception
-    # these values will be updated after the script finishes
-    # for now they are the same as the old values
-    newitems = olditems
-    new_vs = old_vs
-    newcurr = curr
-
-    # some more data for the locals in script
-    p = QtPosition(ncurr)
-    v = p.v
-    script = v.b
-
-    @others
-
-    try:
-        exec(script, dict(c=c, v=v, p=p, tree=t, root=root))
-        # update new values and redraw the tree
-        nset = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
-        new_vs =  nset - old_vs
-        old_vs = old_vs - nset
-        item = t.currentItem()
-        newv = item.data(0, 1024)
-        npath = path_to_item(root, item)
-        self.redraw()
-
-        newcurr = item_from_path(root, npath)
-        # we want to keep the same node selected if possible
-        # but script may delete previously selected node or
-        # some other node so their position won't match
-        if not newcurr or newcurr.data(0, 1024) != newv:
-            # let's try to find item that points to the newv
-            for item in iter_all_v_items(root, newv):
-                newcurr = item
-                break
-
-        # remember the newitems for redo
-        n2 = root.childCount()
-        newitems = [root.child(i) for i in range(n2)]
-
-        # select node if we found one to select
-        if newcurr:
-            t.setCurrentItem(newcurr)
-
-    except KeyboardInterrupt:
-        # sometimes script got into an infinite loop
-        # or work too long
-        undoexec()
-        return
-    except:
-        g.es_print_exception()
-        undoexec()
-        return
-    # script terminated successfully let's add undo/redo pair
-    self.c.addUndo(undoexec, redoexec)
-#@+node:vitalije.20200508104717.1: *5* undoexec
-def undoexec():
-    for v, h, b in old_vs:
-        v.b = b
-        v.h = h
-    t.blockSignals(True)
-    root.takeChildren()
-    for item in olditems:
-        root.addChild(item)
-    reconnect_vnodes(root)
-    t.blockSignals(False)
-    t.setCurrentItem(curr)
-#@+node:vitalije.20200508104721.1: *5* redoexec
-def redoexec():
-    for v, h, b in new_vs:
-        v.b = b
-        v.h = h
-    t.blockSignals(True)
-    root.takeChildren()
-    for item in newitems:
-        root.addChild(item)
-    reconnect_vnodes(root)
-    t.blockSignals(False)
-    t.setCurrentItem(newcurr)
-#@+node:vitalije.20200507182943.1: *4* test_select_and_commnads
-@settings(max_examples=50, deadline=timedelta(seconds=4))
-@given(data())
-def test_select_and_commnads(data):
-    app = demo2_app()
-
-    index = data.draw(integers(min_value=0, max_value=10000))
-    names = data.draw(lists(sampled_from(method_names), min_size=5,
-                             max_size=100))
-
-    select_item_at_index(app, index)
-    a1, b1 = outline_shapes(app)
-    for name in names:
-        meth = getattr(app, name)
-        meth()
-        app.processEvents() #
-        if method_names.index(name) > 3:
-            # possible change in the outline
-            a2, b2 = outline_shapes(app)
-            assert a2 == b2
-            if a1 != a2:
-                # the change is real - let's undo it
-                app.undo()
-                a, b = outline_shapes(app)
-                assert a == a1
-                assert b == b1
-                app.redo()
-            a1, b1 = a2, b2
-#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
-def test_beautifier(c, h, p, settings):
-    '''Test Leo's beautifier code'''
-    if not p:
-        g.trace('not found: %s' % h)
-        return None
-    s = g.getScript(c, p,
-            useSelectedText=False,
-            forcePythonSentinels=True,
-            useSentinels=False)
-    g.trace(h.strip())
-    t1 = time.time()
-    s1 = g.toEncodedString(s)
-    node1 = ast.parse(s1, filename='before', mode='exec')
-    t2 = time.time()
-    readlines = g.ReadLinesClass(s).next
-    tokens = list(tokenize.generate_tokens(readlines))
-    t3 = time.time()
-    beautifier = PythonTokenBeautifier(c)
-    keep_blank_lines = settings.get('tidy-keep-blank-lines')
-    if keep_blank_lines is not None:
-        beautifier.delete_blank_lines = not keep_blank_lines
-    s2 = beautifier.run(tokens)
-    t4 = time.time()
-    try:
-        s2_e = g.toEncodedString(s2)
-        node2 = ast.parse(s2_e, filename='before', mode='exec')
-        ok = compare_ast(node1, node2)
-    except Exception:
-        g.es_exception()
-        ok = False
-    t5 = time.time()
-    #  Update the stats
-    beautifier.n_input_tokens += len(tokens)
-    beautifier.n_output_tokens += len(beautifier.code_list)
-    beautifier.n_strings += len(s2)
-    beautifier.parse_time += (t2 - t1)
-    beautifier.tokenize_time += (t3 - t2)
-    beautifier.beautify_time += (t4 - t3)
-    beautifier.check_time += (t5 - t4)
-    beautifier.total_time += (t5 - t1)
-    if settings.get('input_string'):
-        print('==================== input_string')
-        for i, z in enumerate(g.splitLines(s)):
-            print('%4s %s' % (i + 1, z.rstrip()))
-    if settings.get('input_lines'):
-        print('==================== input_lines')
-        dump_tokens(tokens, verbose=False)
-    if settings.get('input_tokens'):
-        print('==================== input_tokens')
-        dump_tokens(tokens, verbose=True)
-    if settings.get('output_tokens'):
-        print('==================== code_list')
-        for i, z in enumerate(beautifier.code_list):
-            print('%4s %s' % (i, z))
-    if settings.get('output_string'):
-        print('==================== output_string')
-        for i, z in enumerate(g.splitLines(s2)):
-            if z == '\n':
-                print('%4s' % (i + 1))
-            elif z.rstrip():
-                print('%4s %s' % (i + 1, z.rstrip()))
-            else:
-                print('%4s %r' % (i + 1, str(z)))
-    if settings.get('stats'):
-        beautifier.print_stats()
-    if not ok:
-        print('*************** fail: %s ***************' % (h))
-    return beautifier
-        # For statistics.
 #@+node:ekr.20190506094028.1: ** Demo stuff
 #@+node:ekr.20190506094028.2: *3* @@button demo1 @key=Ctrl-8
 g.cls()
@@ -15877,6 +15554,56 @@ def tree(self, s):
 @language python
 
 # A python comment.
+#@+node:ekr.20210311054925.1: ** Documentation
+#@+node:ekr.20210311054730.1: *3* How can I simulate more flexible clones?
+@language rest
+@wrap
+
+A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children. A **gathering script** can provide most of the benefits of detached clone:
+
+1. The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
+
+2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
+
+For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
+
+
+#@+node:ekr.20191029023442.1: *3*  4 kinds of documentation
+@language rest
+@wrap
+
+A tutorial: (learn by doing: teacher guides)
+    is learning-oriented
+    allows the newcomer to get started
+    is a lesson
+    
+A how-to guide: (recipe: users ask questions)
+    is goal-oriented
+    shows how to solve a specific problem
+    is a series of steps
+
+A reference guide:
+    is information-oriented
+    describes the machinery
+    is accurate and complete
+
+An explanation/discussion
+    is understanding-oriented
+    explains
+    provides background and context
+#@+node:ekr.20210311074039.1: ** Find patterns
+#@+node:ekr.20190122185223.1: *3*  regex: find all kwargs
+@language text
+
+Find all kwargs using regex:
+
+^\s*(def\s+\w+\s*\(.*\=.*\))
+
+found 1154 nodes
+
+^\s*(def\s+\w+\s*\(.*\=.*\=.*\))
+
+found 284 nodes
 #@+node:ekr.20191229062845.1: ** From leoAst.py
 #@+node:ekr.20201017155356.1: *3*  ----- Support for Python 3.8 type nodes
 @language rest
@@ -20930,6 +20657,315 @@ def checkConventions(event):
         import leo.core.leoCheck as leoCheck
         importlib.reload(leoCheck)
         leoCheck.ConventionChecker(c).check()
+#@+node:ekr.20200209055601.1: ** Test stuff
+#@+node:ekr.20200209055610.1: *3* @@button test
+g.cls()
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+if 0: # Run all tests
+    commands = f"python -m unittest leo.core.leoAst"
+    g.execute_shell_commands(commands, trace=False)
+else:
+    file_ = '.leoAst'
+    class_, test = '', ''
+    class_, test = '.TestOrange', '.test_join_leading_whitespace'
+    # class_, test = '.TestOrange', '.test_leo_sentinels'
+    # class_, test = '.TestOrange', '.test_start_of_line_whitespace'
+    # class_, test = '.TestOrange', '.test_join_lines'
+    #
+    # Older
+    #
+    # file_ = '.leoAst'
+    # class_, test = '.TestTOG', ''
+    # class_, test = '.TestFiles', '.compare_tog_vs_asttokens'
+    # class_, test = '.TestFiles', '.optional_file_tests'
+    # class_, test = '.TestTokens', '.show_asttokens_script'
+    # class_, test = '.TestFstringify', '.test_call_with_comments'
+        # # 'test_call_in_rhs' # '.test_braces'
+    # class_, test = '.TestOrange','.test_join_lines'
+        # # 'test_sync_tokens' # '.test_multi_line_pet_peeves'
+    # class_, test = '.TestTokens', '.show_example_dump'
+        # # 'test_line_links'
+    # class_, test = '.TestTopLevelFunctions', '.test_get_encoding_directive'
+    # class_, test = '.TestReassignTokens', ''
+    # class_, test = '.TestTOT', ''
+    commands = f"python -m unittest leo.core{file_}{class_}{test}"
+    g.execute_shell_commands(commands, trace=False)
+#@+node:ekr.20200209055640.1: *3* @@button pt
+# Run pytest coverage tests.
+g.cls()
+import os
+leo_editor_dir = os.path.join(g.app.loadDir, '..', '..')
+os.chdir(leo_editor_dir)
+commands = "pytest --cov-report html --cov-report term-missing --cov leo.core.leoAst leo/core/leoAst.py"
+g.execute_shell_commands(commands, trace=False)
+#@+node:ekr.20200219073857.1: *3* @@suite run all doctests
+tm = c.testManager
+path = g.os_path_join(g.app.loadDir,"..","core")
+exclude = ['leoIPython.py',]
+    # leoIPython.py will give an annoying error if IPython can't be imported.
+modules = tm.importAllModulesInPath(path,exclude=exclude)
+suite   = tm.createUnitTestsFromDoctests(modules)
+#@+node:ekr.20200505050955.1: *3* ----- mvc-prototype branch
+@language rest
+@wrap
+
+- checkout the mvc-prototype branch
+
+- open leo/core/LeoPyRef.leo in Leo and save this document as leo/core/LeoPyRef.db
+  This should provide a large outline for the prototype to play with.
+
+- python leo/extensions/myleoqt.py leo\core\leoPy.db
+#@+node:vitalije.20200502083732.1: *4* @@@file ../extensions/myleoqt.py
+#@+node:vitalije.20200502091628.1: *4* <<imports>>
+from collections import defaultdict
+import sys
+import os
+import pickle
+from PyQt5 import QtCore, QtGui, QtWidgets
+assert QtGui
+import sqlite3
+import time
+import timeit
+import unittest
+from hypothesis.strategies import lists, integers, sampled_from, data
+from hypothesis import given, settings
+from datetime import timedelta
+import random
+
+# Set the path before importing Leo files.
+LEO_INSTALLED_AT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if LEO_INSTALLED_AT not in sys.path:
+    sys.path.append(LEO_INSTALLED_AT)
+LEO_ICONS_DIR = os.path.join(LEO_INSTALLED_AT, 'leo', 'themes', 'light', 'Icons')
+try:
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoGlobals as g
+except ImportError:
+    print('===== import error!')
+g.app = g.bunch(nodeIndices=leoNodes.NodeIndices('vitalije'))
+
+Q = QtCore.Qt
+#@+node:vitalije.20200502103535.1: *4* draw_tree
+def draw_tree(tree, root, icons):
+    def additem(par, parItem):
+        for ch in par.children:
+            item = QtWidgets.QTreeWidgetItem()
+            item.setFlags(item.flags() |
+                          Q.ItemIsEditable |
+                          item.DontShowIndicatorWhenChildless)
+            parItem.addChild(item)
+            item.setText(0, ch.h)
+            item.setData(0, 1024, ch)
+            item.setExpanded(ch.isExpanded())
+            item.setIcon(0, icons[ch.computeIcon()])
+            additem(ch, item)
+    ritem = tree.invisibleRootItem()
+    ritem.setData(0, 1024, root)
+    additem(root, ritem)
+#@+node:vitalije.20200508091419.1: *4* execute_script
+def execute_script(self):
+    c = self.c
+    t = self.tree
+    root = t.invisibleRootItem()
+    curr = t.currentItem()
+    currpath = path_to_item(root, curr)
+
+    # now we need to replace current top level items
+    # with the their clones so that we can preserve
+    # the original ones for undo
+    t.blockSignals(True)
+    n = root.childCount()
+    olditems = [root.takeChild(0) for x in range(n)]
+    for item in olditems:
+        root.addChild(item.clone())
+
+    # let's find current item in the new tree
+    ncurr = item_from_path(root, currpath)
+    t.setCurrentItem(ncurr)
+    t.blockSignals(False)
+
+    # store old v-nodes data
+    old_vs = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
+
+    # new values for the redo operation
+    # if the script finishes without exception
+    # these values will be updated after the script finishes
+    # for now they are the same as the old values
+    newitems = olditems
+    new_vs = old_vs
+    newcurr = curr
+
+    # some more data for the locals in script
+    p = QtPosition(ncurr)
+    v = p.v
+    script = v.b
+
+    @others
+
+    try:
+        exec(script, dict(c=c, v=v, p=p, tree=t, root=root))
+        # update new values and redraw the tree
+        nset = set((x, x.h, x.b) for x in c.fileCommands.gnxDict.values())
+        new_vs =  nset - old_vs
+        old_vs = old_vs - nset
+        item = t.currentItem()
+        newv = item.data(0, 1024)
+        npath = path_to_item(root, item)
+        self.redraw()
+
+        newcurr = item_from_path(root, npath)
+        # we want to keep the same node selected if possible
+        # but script may delete previously selected node or
+        # some other node so their position won't match
+        if not newcurr or newcurr.data(0, 1024) != newv:
+            # let's try to find item that points to the newv
+            for item in iter_all_v_items(root, newv):
+                newcurr = item
+                break
+
+        # remember the newitems for redo
+        n2 = root.childCount()
+        newitems = [root.child(i) for i in range(n2)]
+
+        # select node if we found one to select
+        if newcurr:
+            t.setCurrentItem(newcurr)
+
+    except KeyboardInterrupt:
+        # sometimes script got into an infinite loop
+        # or work too long
+        undoexec()
+        return
+    except:
+        g.es_print_exception()
+        undoexec()
+        return
+    # script terminated successfully let's add undo/redo pair
+    self.c.addUndo(undoexec, redoexec)
+#@+node:vitalije.20200508104717.1: *5* undoexec
+def undoexec():
+    for v, h, b in old_vs:
+        v.b = b
+        v.h = h
+    t.blockSignals(True)
+    root.takeChildren()
+    for item in olditems:
+        root.addChild(item)
+    reconnect_vnodes(root)
+    t.blockSignals(False)
+    t.setCurrentItem(curr)
+#@+node:vitalije.20200508104721.1: *5* redoexec
+def redoexec():
+    for v, h, b in new_vs:
+        v.b = b
+        v.h = h
+    t.blockSignals(True)
+    root.takeChildren()
+    for item in newitems:
+        root.addChild(item)
+    reconnect_vnodes(root)
+    t.blockSignals(False)
+    t.setCurrentItem(newcurr)
+#@+node:vitalije.20200507182943.1: *4* test_select_and_commnads
+@settings(max_examples=50, deadline=timedelta(seconds=4))
+@given(data())
+def test_select_and_commnads(data):
+    app = demo2_app()
+
+    index = data.draw(integers(min_value=0, max_value=10000))
+    names = data.draw(lists(sampled_from(method_names), min_size=5,
+                             max_size=100))
+
+    select_item_at_index(app, index)
+    a1, b1 = outline_shapes(app)
+    for name in names:
+        meth = getattr(app, name)
+        meth()
+        app.processEvents() #
+        if method_names.index(name) > 3:
+            # possible change in the outline
+            a2, b2 = outline_shapes(app)
+            assert a2 == b2
+            if a1 != a2:
+                # the change is real - let's undo it
+                app.undo()
+                a, b = outline_shapes(app)
+                assert a == a1
+                assert b == b1
+                app.redo()
+            a1, b1 = a2, b2
+#@+node:ekr.20150521114057.1: *3* test_beautifier (prints stats)
+def test_beautifier(c, h, p, settings):
+    '''Test Leo's beautifier code'''
+    if not p:
+        g.trace('not found: %s' % h)
+        return None
+    s = g.getScript(c, p,
+            useSelectedText=False,
+            forcePythonSentinels=True,
+            useSentinels=False)
+    g.trace(h.strip())
+    t1 = time.time()
+    s1 = g.toEncodedString(s)
+    node1 = ast.parse(s1, filename='before', mode='exec')
+    t2 = time.time()
+    readlines = g.ReadLinesClass(s).next
+    tokens = list(tokenize.generate_tokens(readlines))
+    t3 = time.time()
+    beautifier = PythonTokenBeautifier(c)
+    keep_blank_lines = settings.get('tidy-keep-blank-lines')
+    if keep_blank_lines is not None:
+        beautifier.delete_blank_lines = not keep_blank_lines
+    s2 = beautifier.run(tokens)
+    t4 = time.time()
+    try:
+        s2_e = g.toEncodedString(s2)
+        node2 = ast.parse(s2_e, filename='before', mode='exec')
+        ok = compare_ast(node1, node2)
+    except Exception:
+        g.es_exception()
+        ok = False
+    t5 = time.time()
+    #  Update the stats
+    beautifier.n_input_tokens += len(tokens)
+    beautifier.n_output_tokens += len(beautifier.code_list)
+    beautifier.n_strings += len(s2)
+    beautifier.parse_time += (t2 - t1)
+    beautifier.tokenize_time += (t3 - t2)
+    beautifier.beautify_time += (t4 - t3)
+    beautifier.check_time += (t5 - t4)
+    beautifier.total_time += (t5 - t1)
+    if settings.get('input_string'):
+        print('==================== input_string')
+        for i, z in enumerate(g.splitLines(s)):
+            print('%4s %s' % (i + 1, z.rstrip()))
+    if settings.get('input_lines'):
+        print('==================== input_lines')
+        dump_tokens(tokens, verbose=False)
+    if settings.get('input_tokens'):
+        print('==================== input_tokens')
+        dump_tokens(tokens, verbose=True)
+    if settings.get('output_tokens'):
+        print('==================== code_list')
+        for i, z in enumerate(beautifier.code_list):
+            print('%4s %s' % (i, z))
+    if settings.get('output_string'):
+        print('==================== output_string')
+        for i, z in enumerate(g.splitLines(s2)):
+            if z == '\n':
+                print('%4s' % (i + 1))
+            elif z.rstrip():
+                print('%4s %s' % (i + 1, z.rstrip()))
+            else:
+                print('%4s %r' % (i + 1, str(z)))
+    if settings.get('stats'):
+        beautifier.print_stats()
+    if not ok:
+        print('*************** fail: %s ***************' % (h))
+    return beautifier
+        # For statistics.
 #@-all
 #@@nosearch
 #@-leo
