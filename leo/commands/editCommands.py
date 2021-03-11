@@ -1159,6 +1159,18 @@ class EditCommandsClass(BaseEditCommandsClass):
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.245: *3* ec: info
+    #@+node:ekr.20210311154956.1: *4* ec.copyGnx
+    @cmd('copy-gnx')
+    def copyGnx(self, event):
+        """Copy c.p.gnx to the clipboard and display it in the status area."""
+        c = self.c
+        if not c:
+            return
+        gnx = c.p and c.p.gnx
+        if not gnx:
+            return
+        g.app.gui.replaceClipboardWith(gnx)
+        c.k.setLabelGrey(f"gnx: {gnx}")
     #@+node:ekr.20150514063305.247: *4* ec.lineNumber
     @cmd('line-number')
     def lineNumber(self, event):
@@ -1174,7 +1186,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.setLabelGrey(
             'char: %s row: %d col: %d pos: %d (%d%% of %d)' % (
                 repr(s[i]), row, col, i, percent, len(s)))
-    #@+node:ekr.20150514063305.248: *4* ec.k.viewLossage
+    #@+node:ekr.20150514063305.248: *4* ec.viewLossage
     @cmd('view-lossage')
     def viewLossage(self, event):
         """Put the Emacs-lossage in the minibuffer label."""
