@@ -1,7 +1,0 @@
-.. @+leo-ver=5-thin
-.. @+node:ekr.20060207133601: * @file ../doc/leoToDoLater.txt
-.. @@language rest # override the default .txt coloring.
-
-.. @+all
-.. @-all
-.. @-leo
