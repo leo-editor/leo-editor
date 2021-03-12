@@ -382,21 +382,6 @@
 <v t="ekr.20170213143631.1"><vh>Script: Stand-alone slide</vh></v>
 </v>
 </v>
-<v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131108071132.17025"><vh>improve MacOS install: chmod</vh></v>
-<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
-<v t="ekr.20180124100723.1"><vh>New docs: To do</vh>
-<v t="ekr.20180124100723.2"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20180124100723.3"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20180124100723.4"><vh>Reproducible research</vh></v>
-<v t="ekr.20180124100723.5"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20180124100723.6"><vh>Underlying technologies</vh>
-<v t="ekr.20180124100723.7"><vh>LP and RR</vh></v>
-<v t="ekr.20180124100723.8"><vh>Scripting</vh></v>
-<v t="ekr.20180124100723.9"><vh>Data model</vh></v>
-</v>
-</v>
-</v>
 </v>
 <v t="ekr.20180523093753.1"><vh>Backup of GitHub issues</vh>
 <v t="ekr.20180523101625.1"><vh>GitHub LeoU issues</vh>
@@ -615,13 +600,12 @@
 <v t="ekr.20180529064355.1"><vh>Clones</vh>
 <v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
-<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
 <v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 <v t="ekr.20170228103914.1"><vh>When may I delete clones safely?</vh></v>
-<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-file clones?</vh></v>
+<v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-outline clones?</vh></v>
 <v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
 <v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
 </v>
@@ -2399,6 +2383,7 @@
 <v t="ekr.20201017061850.1"></v>
 <v t="ekr.20201014052236.1"></v>
 <v t="ekr.20050901101608.2"></v>
+<v t="ekr.20110521135104.18151"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11930,19 +11915,15 @@ To install Python, see http://python.org.
 
 **PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
 </t>
-<t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another outline. This is a frequently requested feature. For example::
+<t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
-    I would absolutely love to have the leo files in different project
-    directories, and a "master" leo file to rule them all.
+In contrast, **cross-outline clones** are clones that appear in more than one outline.  Leo's paste-retaining-clones command makes it possible for two outlines to contain nodes with the same gnx. Conceivably, both outlines could use those clones in the *same* external file!
 
-However, cross-file clones will never be a part of Leo. Indeed, cross-file clones would violate the principle that data should be defined and managed in exactly one place. Just as human managers would not willingly accept shared responsibility for even a single line of code, every piece of Leonine data should be the responsibility of one and *only* one .leo file.
+Leo will never encourage cross-outline clones, because such clones are inherently dangerous. Indeed, neither outline would have full responsibility for its own data. 
 
-The problem is fundamental. If the *same* (cloned) data were "owned" by two different Leo files we would have a classic "multiple update problem" for the data. Each outline could change the data in incompatible ways, and whichever outline changed the data last would "win."
+Indeed, the shared clones would be subject to the well-known multiple-update problem. Suppose the two outlines were open simultaneously, and each outline changed the shared clones in different ways. Whichever outline changed the data last would "win." The changes in the other outline would be lost forever!
 
-To make such a scheme workable and safe, one would have to devise a scheme that would keep the data in "component" .leo files consistent even when the component .leo files changed "randomly", without the "master" .leo file being in *any* way in "control" of the changes. Good luck :-)
-
-Let us be clear: it's no good having a scheme that works *most* of the time, it must work *all* the time, even with unexpected or even pathological file updates. If it doesn't you are asking for, and will eventually get, catastrophic data loss, without being aware of the loss for an arbitrarily long period of time. Even with a source code control system this would be an intolerable situation.
-</t>
+In short, Leo will never support features that encourage cross-outline clones.</t>
 <t tx="ekr.20110531155858.20559">.. _`This FAQ entry`: FAQ.html#how-can-i-use-leo-to-develop-leo-itself
 
 Here is the workflow I use to develop Leo. The intention is to help present and potential developers use Leo effectively.
@@ -15338,7 +15319,6 @@ This Cheat Sheet contains a summary of many of Leo's important features.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2 (toggle-calltips) to recreate these lists as you type.
 </t>
-<t tx="ekr.20131007143750.16111"></t>
 <t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
 
 Every plugin should have a top-level init function that returns True if the plugin has been initialized properly. The init function typically:
@@ -17260,40 +17240,6 @@ myDocument.html.txt is the **input** file for sphinx.
             c.redraw()
     return c
 </t>
-<t tx="ekr.20131028213522.17137">Samples of use (Maybe):
-
-    Sample on how to import bookmarks from Internet browser (I have that
-    script ready myself, I could add that)
-
-    Sample of website generated with an outline, easy to open and edit for
-    the user to view its power. Ideally, just after transforming the
-    outline to website, the user should be able to open it and see it in
-    html.
-
-    Sample of RST outline and one click opening with render pane.
-
-    The RPG helper we recently discussed about.
-
-    And as many other practical and ready-to-go samples that could impress
-    the new user. All of them, ready to go, no edit required to view. There
-    are ways of using Leo that beginners can't think of and those would make
-    a great addon for such a beginner's leo file.
-
-Other (JKN)
-    how to invoke Leo (short list of command-line parameters    
-    brief note on creating your own settings (myLeoSettings etc)    
-    How to 'install' plugins, adding buttons    
-    @node summary usage    
-
-More: Rest of the directives:
-    @button    
-    @rclick    
-    and all of them, with sample of usage    
-
-More: Associate leo files    
-    Include the bat + instructions on how to associate Leo files for
-    double-click opening in windows.
-</t>
 <t tx="ekr.20131028213522.17138">::
 
     Usage: launchLeo.py [options] file1, file2, ...
@@ -17437,7 +17383,6 @@ Leo 4.11.1 final was released December 20, 2013.
 </t>
 <t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and `Python's`_ web sites their distinctive appearance and features. After installing docutils or sphinx, you must restart Leo so that the new installation will take effect.
 </t>
-<t tx="ekr.20131108071132.17025"></t>
 <t tx="ekr.20131115075142.16636">Use .leo files to test settings rather than to contain data. These files would typically contain just an @settings tree, and one or two nodes illustrating their effect. Opening such files limits the effects of experimental/non-standard/risky settings. This is a great tip to know.
 
 For example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo and leo14pt.leo in the leo/config folder make it easy to compare different font settings.
@@ -21311,16 +21256,6 @@ Expansion of section names and @others:
   
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
-</t>
-<t tx="ekr.20160414191631.1">A frequently requested feature is for clones that don't share children. The typical use case is to gather data from one place to be used in another. For instance, we might want to document a function by special-cloning only its node excluding its children. A **gathering script** can provide most of the benefits of detached clone:
-
-1. The script has complete flexibility to find a desired positions anywhere, including other .leo files.  This moots the need for cross-file clones.
-
-2. For any gathered position p, the script has complete flexibility to make available p.h, p.b or p.children, depending on the needs of the script.
-
-For example, a documentation script might "scrape" one or more .leo files for data, and then create nodes that reference the scraped data.
-
-
 </t>
 <t tx="ekr.20160415031743.21">Start your file with::
 
@@ -25538,101 +25473,6 @@ As a result, this project is at a reasonable stopping point.
 <t tx="ekr.20180124100450.906">https://github.com/leo-editor/leo-editor/issues/597
 </t>
 <t tx="ekr.20180124100450.913">https://github.com/leo-editor/leo-editor/issues/635</t>
-<t tx="ekr.20180124100723.1">- Leo scripting for scientists.
-</t>
-<t tx="ekr.20180124100723.2">Feature table
-
-- Want Python and its libs.
-
-- You develop software, including scientific software and scripts:
-    Org-mode's script delims make it impossible to develop large software.
-    
-- You want to treat an outline as a programmable database.
-    - Leo *is* a db. Outlines can represent db queries.
-
-- You have hundreds of files to manage.
-    - Leo has a fast caching scheme.
-    
-- You want clone-find commands
-
-</t>
-<t tx="ekr.20180124100723.3">
-"A research project typically relies upon components such as:
-
-    The data being studied;
-    Details of calculations and code used in data analysis;
-    Methodological conventions and assumptions;
-    Decisions among alternate analytic paths.
-
-However, the documents produced by a research project typically stand apart from the things they describe and rely upon, which makes it difficult for other researchers to reproduce the results and to understand fully the conclusions of the research project. This situation is problematic because reproducibility of results and accurate communication are both central to notions of good science.
-
-A software solution to this problem was proposed by \citet{compendium}, who “introduce the concept of a compendium as both a container for the different elements that make up the document and its computations (i.e., text, code, data, …), and as a means for distributing, managing and updating the collection.”"
-</t>
-<t tx="ekr.20180124100723.4">They summarize the uses and implications of a compendium as follows:
-
-    It encapsulates the actual work of the author, not just an abridged version suitable for publication;
-    It can display different levels of detail in derived documents;
-    The computations included in it can be re-run by an interested reader, potentially with different inputs;
-    It contains explicit computational details that make it easier for an interested reader to adapt and extend the methods;
-    It enables programmatic construction of plots and tables;
-    Its components can be treated as data or inputs to software and manipulated programmatically in ways perhaps not envisioned by the author.
-
-Reproducible research thus approaches mixed natural and computational language documents from a different direction than literate programming. Rather than adding prose to computational projects, reproducible research seeks to augment publications of scientific research with the computer code used to carry out the research. Whereas literate programming extracts embedded code into an external file used as input to a compiler or an interpreter, code embedded in a reproducible research document is intended to be executed as part of the document generation process. In this way the data, analysis, and figures supporting a publication can be generated from the publication itself.
-</t>
-<t tx="ekr.20180124100723.5">Show how scripts can invoke other scripts.
-
-Show how to compose results:
-    - With pickle?
-</t>
-<t tx="ekr.20180124100723.6">@language rest
-@wrap
-
-
-
-
-
-</t>
-<t tx="ekr.20180124100723.7">Leo easily supports `Literate programming`_ (LP) and  `Reproducible Research`_ (RR) with unique, powerful underlying technology, not a mishmash of features.
-
-**LP**: Leo redefines LP, showing that many kinds of comments are unnecessary in an outline environment. In LP terms, Leo supports *automatic* `tangling`_ and `weaving`_, but those terms are not used in Leo because they happen automatically.  More importantly, Leo supports `untangling`_, something entirely missing in org mode. Leo can update outlines corresponding to external files when those files change outside of Leo, preserving and updating outline structure as it does so. Untangling requires the `Mulder-Ream update algorithm`_, something entirely missing in org mode.
-</t>
-<t tx="ekr.20180124100723.8">@language rest
-@wrap
-
-Leo is fundamentally more powerful than org mode scripting:
-
-1. Unlike org mode, Leo's outline nodes are true Python objects, *easily* accessible via Leo's Python `API`_. Furthermore, Leo scripting is based on Python and Python's standard library, not elisp and Emacs-specific code. Leo scripts can be run outside of Leo.
-
-2. Leo can `compose`_ both external files and scripts using the same `markup`_. Unlike org mode, Leo's markup applies *everywhere* and is fully integrated with Leo's outline structure. As a result, it is complete natural to compose external files or scripts (experiments) from a suboutline. For example: this defines an external file::
-
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
-    &lt;&lt; imports &gt;&gt;
-    @others
-    # That's all, folks
-    @language python
-    @tabwidth
-    
-And this this defines the top-level part of a script::
-
-@language python
-
-    @language python
-    '''My script'''
-    &lt;&lt; imports &gt;&gt;
-    class Controller:
-        # Child nodes define the methods of this class.
-        @others
-    Controller(c).run # Yes, c *is* defined.
-
-@language rest
-    
-There is no need to put this inside wonky org-mode markup. The @language python directive tells Leo how to execute the script. More importantly, the `@others`_ directive includes *properly indented* code from descendant nodes. At the moment, I can't tell from the org mode docs whether anything like Leo's ``@others`` directive exists.
-</t>
-<t tx="ekr.20180124100723.9">Leo's underlying database is a `directed acyclic graph`_, (DAG) not a `tree`_ or, as in org-mode plain text with a collection of hacks that make that text look like a tree. The technology behind Leo's `clones`_ is based on the underlying DAG. It has been optimized over several decades. Org mode will likely never have clones.
-
-Leo has a full-featured `Document Object Model`_ (DOM) consisting, among other things, of a collection of Python generators that traverse trees, subtrees or ancestor, visiting clones multiple times. Leo distinguishes between `positions`_ in a traversal and `vnodes`_, containing the actual data in each node.
-</t>
 <t tx="ekr.20180124120513.1"></t>
 <t tx="ekr.20180124121124.1"></t>
 <t tx="ekr.20180124121851.1">I'm happy to announce first releases of Leo 5.0 as a debian/ubuntu packages
