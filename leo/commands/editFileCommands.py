@@ -26,7 +26,6 @@ class ConvertAtRoot:
     - Change @root directive in body to @clean in the headline.
     - Make clones of section references defined outside of @clean nodes,
       moving them so they are children of the nodes that reference them.
-    - Comment-out @unit directives.
     """
     
     errors = 0
@@ -165,7 +164,31 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
     def convert_at_root(self, event=None):
-        """Convert @root to @clean in the the .leo."""
+        #@+<< convert-at-root docstring >>
+        #@+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
+        #@@wrap
+        """
+        The convert-at-root command converts @root to @clean throughout the
+        outline.
+
+        This command is not perfect. You will need to adjust the outline by hand if
+        the command reports errors. I recommend using git diff to ensure that the
+        resulting external files are roughly equivalent after running this command.
+
+        This command attempts to do the following:
+
+        - For each node with an @root <path> directive in the body, change the head to
+          @clean <path>. The command does *not* change the headline if the node is
+          a section definition node. In that case, the command reports an error.
+
+        - Clones and moves nodes as needed so that section definition nodes appear
+          as descendants of nodes containing section references. To find section
+          definition nodes, the command looks in all @unit trees. After finding the
+          required definition node, the command makes a clone of the node and moves
+          the clone so it is the last child of the node containing the section
+          references. This move may fail. If so, the command reports an error.
+        """
+        #@-<< convert-at-root docstring >>
         c = event.get('c')
         if not c:
             return
