@@ -1091,32 +1091,26 @@ class FindTabManager:
         self.replace_button = None
         self.replace_then_find_button = None
         self.replace_all_button = None
-    #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
-    def get_find_text(self):
-        s = self.find_findbox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
+    #@+node:ekr.20131119185305.16478: *3* ftm.clear_focus & init_focus & set_entry_focus
+    def clear_focus(self):
+        self.entry_focus = None
+        self.find_findbox.clearFocus()
 
-    def get_change_text(self):
-        s = self.find_replacebox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
-
-    getChangeText = get_change_text
-
-    def set_find_text(self, s):
+    def init_focus(self):
+        self.set_entry_focus()
         w = self.find_findbox
-        s = g.checkUnicode(s)
-        w.clear()
-        w.insert(s)
+        w.setFocus()
+        s = w.text()
+        w.setSelection(0, len(s))
 
-    def set_change_text(self, s):
-        w = self.find_replacebox
-        s = g.checkUnicode(s)
-        w.clear()
-        w.insert(s)
+    def set_entry_focus(self):
+        # Remember the widget that had focus, changing headline widgets
+        # to the tree pane widget.  Headline widgets can disappear!
+        c = self.c
+        w = g.app.gui.get_focus(raw=True)
+        if w != c.frame.body.wrapper.widget:
+            w = c.frame.tree.treeWidget
+        self.entry_focus = w
     #@+node:ekr.20210110143917.1: *3* ftm.get_settings
     def get_settings(self):
         """
@@ -1141,33 +1135,6 @@ class FindTabManager:
             whole_word = self.check_box_whole_word.isChecked(),
             # wrapping = self.check_box_wrap_around.isChecked(),
         )
-    #@+node:ekr.20131119185305.16478: *3* ftm.clear_focus & init_focus & set_entry_focus
-    def clear_focus(self):
-        self.entry_focus = None
-        self.find_findbox.clearFocus()
-
-    def init_focus(self):
-        self.set_entry_focus()
-        w = self.find_findbox
-        w.setFocus()
-        s = w.text()
-        w.setSelection(0, len(s))
-
-    def set_entry_focus(self):
-        # Remember the widget that had focus, changing headline widgets
-        # to the tree pane widget.  Headline widgets can disappear!
-        c = self.c
-        w = g.app.gui.get_focus(raw=True)
-        if w != c.frame.body.wrapper.widget:
-            w = c.frame.tree.treeWidget
-        self.entry_focus = w
-    #@+node:ekr.20150619082825.1: *3* ftm.set_ignore_case
-    def set_ignore_case(self, aBool):
-        """Set the ignore-case checkbox to the given value."""
-        c = self.c
-        c.findCommands.ignore_case = aBool
-        w = self.check_box_ignore_case
-        w.setChecked(aBool)
     #@+node:ekr.20131117120458.16789: *3* ftm.init_widgets (creates callbacks)
     def init_widgets(self):
         """
@@ -1245,6 +1212,31 @@ class FindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
+    #@+node:ekr.20210312120503.1: *3* ftm.set_body_and_headline_checkbox
+    def set_body_and_headline_checkbox(self):
+        """Return the search-body and search-headline checkboxes to their defaults."""
+        # #1840: headline-only one-shot
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
+        table = (
+            ('search_body', self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+        )
+        for setting_name, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            if val != w.isChecked():
+                w.toggle()
+        if find.minibuffer_mode:
+            find.show_find_options_in_status_area()
+    #@+node:ekr.20150619082825.1: *3* ftm.set_ignore_case
+    def set_ignore_case(self, aBool):
+        """Set the ignore-case checkbox to the given value."""
+        c = self.c
+        c.findCommands.ignore_case = aBool
+        w = self.check_box_ignore_case
+        w.setChecked(aBool)
     #@+node:ekr.20131117120458.16792: *3* ftm.set_radio_button
     def set_radio_button(self, name):
         """Set the value of the radio buttons"""
@@ -1262,10 +1254,36 @@ class FindTabManager:
             w.toggle()
         if find.minibuffer_mode:
             find.show_find_options_in_status_area()
+    #@+node:ekr.20131117164142.16853: *3* ftm.text getters/setters
+    def get_find_text(self):
+        s = self.find_findbox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    def get_change_text(self):
+        s = self.find_replacebox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    getChangeText = get_change_text
+
+    def set_find_text(self, s):
+        w = self.find_findbox
+        s = g.checkUnicode(s)
+        w.clear()
+        w.insert(s)
+
+    def set_change_text(self, s):
+        w = self.find_replacebox
+        s = g.checkUnicode(s)
+        w.clear()
+        w.insert(s)
     #@+node:ekr.20131117120458.16791: *3* ftm.toggle_checkbox
     #@@nobeautify
 
-    def toggle_checkbox(self,checkbox_name):
+    def toggle_checkbox(self, checkbox_name):
         """Toggle the value of the checkbox whose name is given."""
         c = self.c
         find = c.findCommands
