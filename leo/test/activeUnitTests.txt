@@ -466,7 +466,7 @@ assert(c.frame==f)
 
 ivars = (
     # Subcommanders...
-    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
+    'atFileCommands','fileCommands','importCommands','undoer',
     # Positions...
     '_currentPosition', # '_topPosition',
     # '_rootPosition'

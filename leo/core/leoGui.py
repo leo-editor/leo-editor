@@ -499,28 +499,15 @@ class StringFindTabManager:
         self.radio_button_suboutline_only = StringRadioButton('suboutline_only')
         # Init the default values.
         self.init_widgets()
-    #@+node:ekr.20210221130549.3: *3* sftm.text getters/setters
-    def get_find_text(self):
-        s = self.find_findbox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
+    #@+node:ekr.20210221130549.5: *3* sftm.clear_focus & init_focus & set_entry_focus
+    def clear_focus(self):
+        pass
 
-    def get_change_text(self):
-        s = self.find_replacebox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
+    def init_focus(self):
+        pass
 
-    def set_find_text(self, s):
-        w = self.find_findbox
-        w.clear()
-        w.insert(s)
-
-    def set_change_text(self, s):
-        w = self.find_replacebox
-        w.clear()
-        w.insert(s)
+    def set_entry_focus(self):
+        pass
     #@+node:ekr.20210221130549.4: *3* sftm.get_settings
     #@@nobeautify
 
@@ -545,15 +532,6 @@ class StringFindTabManager:
             suboutline_only = self.radio_button_suboutline_only.isChecked(),
             whole_word      = self.check_box_whole_word.isChecked(),
         )
-    #@+node:ekr.20210221130549.5: *3* sftm.clear_focus & init_focus & set_entry_focus
-    def clear_focus(self):
-        pass
-
-    def init_focus(self):
-        pass
-
-    def set_entry_focus(self):
-        pass
     #@+node:ekr.20210221130549.7: *3* sftm.init_widgets
     def init_widgets(self):
         """
@@ -603,6 +581,22 @@ class StringFindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
+    #@+node:ekr.20210312122351.1: *3* sftm.set_body_and_headline_checkbox
+    def set_body_and_headline_checkbox(self):
+        """Return the search-body and search-headline checkboxes to their defaults."""
+        # #1840: headline-only one-shot
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
+        table = (
+            ('search_body', self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+        )
+        for setting_name, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            if val != w.isChecked():
+                w.toggle()
     #@+node:ekr.20210221130549.8: *3* sftm.set_radio_button
     #@@nobeautify
 
@@ -616,6 +610,28 @@ class StringFindTabManager:
         w = d.get(name)
         if not w.isChecked():
             w.toggle()
+    #@+node:ekr.20210221130549.3: *3* sftm.text getters/setters
+    def get_find_text(self):
+        s = self.find_findbox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    def get_change_text(self):
+        s = self.find_replacebox.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
+
+    def set_find_text(self, s):
+        w = self.find_findbox
+        w.clear()
+        w.insert(s)
+
+    def set_change_text(self, s):
+        w = self.find_replacebox
+        w.clear()
+        w.insert(s)
     #@+node:ekr.20210221130549.9: *3* sftm.toggle_checkbox
     #@@nobeautify
 
