@@ -2010,7 +2010,7 @@ class FileCommands:
     #@-others
 #@+node:ekr.20210309114903.1: ** dump-gnx-dict
 @g.command('dump-gnx-dict')
-def dump_clone_parents(event):
+def dump_gnx_dict(event):
     c = event.get('c')
     if not c:
         return
