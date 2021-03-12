@@ -1618,6 +1618,9 @@ class LeoFind:
         if not w:
             return
         self.preload_find_pattern(w)
+        # #1840: headline-only one-shot
+        #        Do this first, so the user can override.
+        self.ftm.set_body_and_headline_checkbox()
         if self.minibuffer_mode:
             # Set up the state machine.
             self.ftm.clear_focus()
