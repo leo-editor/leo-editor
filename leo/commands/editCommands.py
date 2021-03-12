@@ -1170,7 +1170,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not gnx:
             return
         g.app.gui.replaceClipboardWith(gnx)
-        c.k.setLabelGrey(f"gnx: {gnx}")
+        status_line = getattr(c.frame, "statusLine", None)
+        if status_line:
+            status_line.put(f"gnx: {gnx}")
     #@+node:ekr.20150514063305.247: *4* ec.lineNumber
     @cmd('line-number')
     def lineNumber(self, event):
