@@ -399,7 +399,7 @@ class FileCommands:
         self.outputFile = None
         self.openDirectory = None
         self.putCount = 0
-        self.toString = False
+        ### self.toString = False
         self.usingClipboard = False
         self.currentPosition = None
         # New in 3.12...
@@ -1050,7 +1050,7 @@ class FileCommands:
                 if c.sqlite_connection:
                     c.sqlite_connection.close()
                     c.sqlite_connection = None
-                ok = self.write_Leo_file(fileName, False)  # outlineOnlyFlag
+                ok = self.write_Leo_file(fileName)
             if ok:
                 if not silent:
                     self.putSavedMessage(fileName)
@@ -1131,7 +1131,7 @@ class FileCommands:
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
-                if self.write_Leo_file(fileName, outlineOnlyFlag=False):
+                if self.write_Leo_file(fileName):
                     c.clearChanged()  # Clears all dirty bits.
                     self.putSavedMessage(fileName)
             finally:
@@ -1152,7 +1152,7 @@ class FileCommands:
             # Disable path-changed messages in writeAllHelper.
             c.ignoreChangedPaths = True
             try:
-                self.write_Leo_file(fileName, outlineOnlyFlag=False)
+                self.write_Leo_file(fileName)
             finally:
                 c.ignoreChangedPaths = False
             if not silent:
@@ -1478,36 +1478,35 @@ class FileCommands:
             self.vnodesDict = vnodesDict
             self.usingClipboard = False
         return s
-    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers
-    def write_Leo_file(self, fileName, outlineOnlyFlag, toString=False, toOPML=False):
+    #@+node:ekr.20031218072017.3046: *4* fc.write_Leo_file & helpers (changed)
+    def write_Leo_file(self, fileName): ###, outlineOnlyFlag=False, toString=False, toOPML=False):
         """Write the .leo file."""
         c, fc = self.c, self
         structure_errors = c.checkOutline()
         if structure_errors:
             g.error('Major structural errors! outline not written')
             return False
-
-        if not outlineOnlyFlag or toOPML:
-            g.app.recentFilesManager.writeRecentFilesFile(c)
-            fc.writeAllAtFileNodesHelper()  # Ignore any errors.
-
+        ### if not outlineOnlyFlag or toOPML:
+        g.app.recentFilesManager.writeRecentFilesFile(c)
+        fc.writeAllAtFileNodesHelper()  # Ignore any errors.
         if fc.isReadOnly(fileName):
             return False
-
         if fileName and fileName.endswith('.db'):
             return fc.exportToSqlite(fileName)
+        return fc.writeToFileHelper(fileName)
 
-        try:
-            fc.putCount = 0
-            fc.toString = toString
-            if toString:
-                ok = fc.writeToStringHelper(fileName)
-            else:
-                ok = fc.writeToFileHelper(fileName, toOPML)
-        finally:
-            fc.outputFile = None
-            fc.toString = False
-        return ok
+        ###
+            # try:
+                # fc.putCount = 0
+                # fc.toString = toString
+                # if toString:
+                    # ok = fc.writeToStringHelper(fileName)
+                # else:
+                    # ok = fc.writeToFileHelper(fileName, toOPML)
+            # finally:
+                # fc.outputFile = None
+                # fc.toString = False
+            # return ok
 
     write_LEO_file = write_Leo_file  # For compatibility with old plugins.
     #@+node:ekr.20040324080359.1: *5* fc.isReadOnly
@@ -1540,55 +1539,60 @@ class FileCommands:
             g.es('All changes will be lost unless you', color='red')
             g.es('can save each changed file.', color='red')
             return False
-    #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers
-    def writeToFileHelper(self, fileName, toOPML):
-        c = self.c; toZip = c.isZipped
+    #@+node:ekr.20100119145629.6111: *5* fc.writeToFileHelper & helpers (changed)
+    def writeToFileHelper(self, fileName): ### , toOPML=False):
+        """Write the .leo file. The file must not be zipped."""
+        c = self.c
+        ### toZip = c.isZipped
+        if c.isZipped:
+            return False ###
         ok, backupName = self.createBackupFile(fileName)
-        if not ok: return False
-        fileName, theActualFile = self.createActualFile(fileName, toOPML, toZip)
-        if not theActualFile: return False
+        if not ok:
+            return False
+        ### fileName, theActualFile = self.createActualFile(fileName, toOPML=False, toZip=toZip)
+        try:
+            theActualFile = open(fileName, 'wb')
+        except Exception:
+            g.es(f"can not create {fileName}")
+            g.es_exception()
+            return False
         self.mFileName = fileName
         self.outputFile = StringIO()  # Always write to a string.
         try:
-            if toOPML:
-                if hasattr(c, 'opmlController'):
-                    c.opmlController.putToOPML(owner=self)
-                else:
-                    # This is not likely ever to be called.
-                    g.trace('leoOPML plugin not active.')
-            else:
-                self.putLeoFile()
+            self.putLeoFile()
+            ###
+                # if toOPML:
+                    # if hasattr(c, 'opmlController'):
+                        # c.opmlController.putToOPML(owner=self)
+                    # else:
+                        # # This is not likely ever to be called.
+                        # g.trace('leoOPML plugin not active.')
+                # else:
+                    # 
             s = self.outputFile.getvalue()
             g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
-            if toZip:
-                self.writeZipFile(s)
-            else:
-                s = bytes(s, self.leo_file_encoding, 'replace')
-                theActualFile.write(s)
-                theActualFile.close()
-                c.setFileTimeStamp(fileName)
-                # raise AttributeError # To test handleWriteLeoFileException.
-                # Delete backup file.
-                if backupName and g.os_path_exists(backupName):
-                    self.deleteFileWithMessage(backupName, 'backup')
+            s = bytes(s, self.leo_file_encoding, 'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName, 'backup')
+            ###
+                # if c.isZipped:
+                    # self.writeZipFile(s)
+                # else:
+                    # s = bytes(s, self.leo_file_encoding, 'replace')
+                    # theActualFile.write(s)
+                    # theActualFile.close()
+                    # c.setFileTimeStamp(fileName)
+                    # # Delete backup file.
+                    # if backupName and g.os_path_exists(backupName):
+                        # self.deleteFileWithMessage(backupName, 'backup')
             return True
         except Exception:
             self.handleWriteLeoFileException(fileName, backupName, theActualFile)
             return False
-    #@+node:ekr.20100119145629.6106: *6* fc.createActualFile
-    def createActualFile(self, fileName, toOPML, toZip):
-        if toZip:
-            self.toString = True
-            theActualFile = None
-        else:
-            try:
-                # 2010/01/21: always write in binary mode.
-                theActualFile = open(fileName, 'wb')
-            except Exception:
-                g.es(f"can not create {fileName}")
-                g.es_exception()
-                theActualFile = None
-        return fileName, theActualFile
     #@+node:ekr.20031218072017.3047: *6* fc.createBackupFile
     def createBackupFile(self, fileName):
         """
@@ -1821,14 +1825,132 @@ class FileCommands:
         c = self.c
         if c.p:
             c.atFileCommands.writeMissing(c.p)
-    #@+node:ekr.20031218072017.3050: *4* fc.writeOutlineOnly
+    #@+node:ekr.20031218072017.3050: *4* fc.writeOutlineOnly (changed)
     @cmd('write-outline-only')
     def writeOutlineOnly(self, event=None):
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
-        self.write_Leo_file(self.mFileName, outlineOnlyFlag=True)
-        g.blue('done')
+        ### self.write_Leo_file(self.mFileName, outlineOnlyFlag=True)
+        fileName = self.mFileName
+        structure_errors = c.checkOutline()
+        if structure_errors:
+            g.error('Major structural errors! outline not written')
+            return False
+
+        ###
+        # if not outlineOnlyFlag or toOPML:
+            # g.app.recentFilesManager.writeRecentFilesFile(c)
+            # fc.writeAllAtFileNodesHelper()  # Ignore any errors.
+
+        if self.isReadOnly(fileName):
+            return False
+        if fileName and fileName.endswith('.db'):
+            return self.exportToSqlite(fileName)
+        return self.writeToFileHelper(fileName) ###, toOPML)
+            
+        ###
+
+            # try:
+                # fc.putCount = 0
+                # fc.toString = toString
+                # if toString:
+                    # ok = fc.writeToStringHelper(fileName)
+                # else:
+                    # ok = fc.writeToFileHelper(fileName, toOPML)
+            # finally:
+                # fc.outputFile = None
+                # fc.toString = False
+            # return ok
+            # g.blue('done')
+    #@+node:ekr.20210314171744.1: *4* fc.writeToOPML (new)
+    def writeToOPML(self, fileName): ###, outlineOnlyFlag=False, toString=False, toOPML=False):
+        """Write the .leo file."""
+        ### c, fc = self.c, self
+        c = self.c
+        structure_errors = c.checkOutline()
+        if structure_errors:
+            g.error('Major structural errors! outline not written')
+            return False
+        ###
+            # if not outlineOnlyFlag or toOPML:
+                # g.app.recentFilesManager.writeRecentFilesFile(c)
+                # fc.writeAllAtFileNodesHelper()  # Ignore any errors.
+        ###
+            # if self.isReadOnly(fileName):
+                # return False
+
+        if fileName and fileName.endswith('.db'):
+            ### return fc.exportToSqlite(fileName)
+            return False
+        ### return fc.writeToStringHelper(fileName)
+        
+            # c = self.c; toZip = c.isZipped
+        ok, backupName = self.createBackupFile(fileName)
+        if not ok:
+            return False
+        ###
+            # fileName, theActualFile = self.createActualFile(fileName, toOPML=True, toZip=False)
+            # if not theActualFile:
+                # return False
+        try:
+            theActualFile = open(fileName, 'wb')
+        except Exception:
+            g.es(f"can not create {fileName}")
+            g.es_exception()
+            return False
+        self.mFileName = fileName
+        self.outputFile = StringIO()  # Always write to a string.
+        try:
+            c.opmlController.putToOPML(owner=self)
+            # if toOPML:
+                # if hasattr(c, 'opmlController'):
+                    # c.opmlController.putToOPML(owner=self)
+                # else:
+                    # # This is not likely ever to be called.
+                    # g.trace('leoOPML plugin not active.')
+            # else:
+                # self.putLeoFile()
+            s = self.outputFile.getvalue()
+            g.app.write_Leo_file_string = s  # 2010/01/19: always set this.
+            s = bytes(s, self.leo_file_encoding, 'replace')
+            theActualFile.write(s)
+            theActualFile.close()
+            c.setFileTimeStamp(fileName)
+            # Delete backup file.
+            if backupName and g.os_path_exists(backupName):
+                self.deleteFileWithMessage(backupName, 'backup')
+            
+            ###
+                # if toZip:
+                    # self.writeZipFile(s)
+                # else:
+                    # s = bytes(s, self.leo_file_encoding, 'replace')
+                    # theActualFile.write(s)
+                    # theActualFile.close()
+                    # c.setFileTimeStamp(fileName)
+                    # # raise AttributeError # To test handleWriteLeoFileException.
+                    # # Delete backup file.
+                    # if backupName and g.os_path_exists(backupName):
+                        # self.deleteFileWithMessage(backupName, 'backup')
+            return True
+        except Exception:
+            self.handleWriteLeoFileException(fileName, backupName, theActualFile)
+            return False
+
+
+        ###
+            # try:
+                # fc.putCount = 0
+                # fc.toString = toString
+                # if toString:
+                    # ok = fc.writeToStringHelper(fileName)
+                # else:
+                    # ok = fc.writeToFileHelper(fileName, toOPML)
+            # finally:
+                # fc.outputFile = None
+                # fc.toString = False
+            # return ok
     #@+node:ekr.20080805114146.2: *3* fc.Utils
     #@+node:ekr.20061006104837.1: *4* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
